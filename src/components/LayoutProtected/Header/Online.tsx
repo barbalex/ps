@@ -11,15 +11,13 @@ import {
   MdCloudDone as NetworkOn,
   MdCloudOff as NetworkOff,
 } from 'react-icons/md'
+import { useIntl } from 'react-intl'
 import styles from './Online.module.css'
 
 import { onlineAtom, operationsQueueAtom } from '../../../store.ts'
 
-interface Props {
-  width?: number
-}
-
-export const Online = (_props: Props) => {
+export const Online = () => {
+  const { formatMessage } = useIntl()
   const navigate = useNavigate()
   const { pathname } = useLocation()
   const canGoBack = useCanGoBack()
@@ -28,10 +26,23 @@ export const Online = (_props: Props) => {
   const operationsQueue = useAtomValue(operationsQueueAtom)
 
   const title = online
-    ? 'Du bist online'
+    ? formatMessage({
+        id: 'onlineStatusOnline',
+        defaultMessage: 'Du bist online',
+      })
     : operationsQueue.length
-      ? `Du bist offline. ${operationsQueue.length} Operationen warten auf Synchronisation`
-      : `Du bist offline`
+      ? formatMessage(
+          {
+            id: 'onlineStatusOfflineQueued',
+            defaultMessage:
+              'Du bist offline. {count} Operationen warten auf Synchronisation',
+          },
+          { count: operationsQueue.length },
+        )
+      : formatMessage({
+          id: 'onlineStatusOffline',
+          defaultMessage: 'Du bist offline',
+        })
 
   const onClick = () => {
     pathname === '/data/queued-operations'
