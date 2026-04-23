@@ -4,14 +4,19 @@ Dernière mise à jour: 17 avril 2026
 
 ## Propriété
 
-Un utilisateur est propriétaire de sa propre ligne utilisateur, des comptes associés, des projets et de toutes les données créées dans ces projets.
+Un utilisateur est propriétaire:
+
+- de sa propre ligne utilisateur,
+- des comptes associés,
+- des projets
+- et de toutes les données créées dans ces projets.
 
 ## Rôles
 
 Les types de rôles sont (du plus élevé au plus bas):
 
 1. Propriétaire: peut attribuer des rôles Gestionnaire
-2. Gestionnaire: peut modifier la configuration des projets et sous-projets, peut attribuer des rôles Éditeur et Lecteur
+2. Gestionnaire: peut modifier la configuration des projets et sous-projets, attribuer des rôles Éditeur et Lecteur
 3. Éditeur: peut modifier des données
 4. Lecteur: peut synchroniser et lire des données
 
@@ -30,11 +35,11 @@ Les rôles sont attribués à quatre niveaux:
 
 Lorsqu'un rôle est défini, son effet s'étend à tous les niveaux inférieurs. L'app définit automatiquement tous les rôles des niveaux inférieurs.
 
-Exemple: lorsque l'utilisateur test@test.ch reçoit le rôle Éditeur sur le projet, l'app lui attribue automatiquement des rôles Éditeur dans tous les sous-projets et lieux.
+Exemple: lorsque test@test.ch reçoit le rôle Éditeur sur le projet, l'app lui attribue automatiquement des rôles Éditeur dans tous les sous-projets et lieux.
 
-La définition de droits inférieurs à un niveau inférieur n'est pas prise en charge. Exemple: lorsqu'un utilisateur a le rôle Lecteur sur un projet, toutes ses données peuvent être synchronisées sans vérifier les niveaux inférieurs.
+La définition de droits inférieurs à un niveau inférieur n'est pas prise en charge. Exemple: si un utilisateur a le rôle Lecteur sur un projet, toutes ses données sont synchronisées sans vérifier les rôles aux niveaux inférieurs.
 
-Des droits supérieurs peuvent être accordés à des niveaux inférieurs, leur effet s'étendant également vers le bas. Exemple: un Lecteur qui doit être Éditeur sur un sous-projet a besoin du rôle Lecteur sur son projet parent pour synchroniser les données parentes sans lesquelles il ne pourrait pas travailler.
+Des droits supérieurs peuvent être accordés à des niveaux inférieurs, leur effet s'étendant également vers le bas. Exemple inverse: un Lecteur qui doit être Éditeur sur un sous-projet a besoin du rôle Lecteur sur le projet parent pour synchroniser les données parentes, sans lesquelles il ne pourrait pas travailler.
 
 ## Comment définir les rôles
 
@@ -44,4 +49,4 @@ Il est important de savoir que lorsque vous définissez des rôles, l'app copie 
 
 D'autre part, vous ne devez définir des rôles sur les niveaux inférieurs (potentiellement nombreux) que si vous souhaitez explicitement différencier. Sinon, vous pouvez simplement les ignorer.
 
-Lors de la création de nouveaux sous-projets et lieux, l'app copie automatiquement les rôles du niveau immédiatement supérieur. Vous n'avez donc à les définir que s'ils doivent explicitement différer.
+Lors de la création de nouveaux sous-projets et lieux, l'app copie automatiquement les rôles du niveau immédiatement supérieur. Vous n'avez donc à les définir vous-même que s'ils doivent explicitement différer.

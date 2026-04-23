@@ -4,14 +4,19 @@ Ultimo aggiornamento: 17 aprile 2026
 
 ## Proprietà
 
-Un utente è proprietario della propria riga utente, degli account associati, dei progetti e di tutti i dati creati in questi progetti.
+Un utente è proprietario:
+
+- della propria riga utente,
+- degli account associati,
+- dei progetti
+- e di tutti i dati creati in questi progetti.
 
 ## Ruoli
 
 I tipi di ruolo sono (dal più alto al più basso):
 
 1. Proprietario: può assegnare ruoli Manager
-2. Manager: può modificare la configurazione di progetti e sottoprogetti, può assegnare ruoli Redattore e Lettore
+2. Manager: può modificare la configurazione di progetti e sottoprogetti, assegnare ruoli Redattore e Lettore
 3. Redattore: può modificare i dati
 4. Lettore: può sincronizzare e leggere i dati
 
@@ -30,11 +35,11 @@ I ruoli vengono assegnati a quattro livelli:
 
 Quando viene impostato un ruolo, il suo effetto si estende a tutti i livelli inferiori. L'app imposta automaticamente tutti i ruoli dei livelli inferiori.
 
-Esempio: quando all'utente test@test.ch viene assegnato il ruolo Redattore sul progetto, l'app assegna automaticamente a questo utente ruoli Redattore in tutti i sottoprogetti e luoghi.
+Esempio: quando test@test.ch riceve il ruolo Redattore sul progetto, l'app assegna automaticamente a questo utente ruoli Redattore in tutti i sottoprogetti e luoghi.
 
-L'impostazione di diritti inferiori a un livello inferiore non è supportata. Esempio: quando un utente ha il ruolo Lettore su un progetto, tutti i suoi dati possono essere sincronizzati senza controllare i livelli inferiori.
+L'impostazione di diritti inferiori a un livello inferiore non è supportata. Esempio: se un utente ha il ruolo Lettore su un progetto, tutti i suoi dati vengono sincronizzati senza controllare i ruoli ai livelli inferiori.
 
-Diritti superiori possono essere assegnati a livelli inferiori, con effetto che si estende anch'esso verso il basso. Esempio: un Lettore che deve essere Redattore su un sottoprogetto necessita del ruolo Lettore sul progetto padre per sincronizzare i dati padre, senza i quali non potrebbe lavorare.
+Diritti superiori possono essere assegnati a livelli inferiori, con effetto che si estende anch'esso verso il basso. Esempio inverso: un Lettore che deve essere Redattore su un sottoprogetto necessita del ruolo Lettore sul progetto padre per sincronizzare i dati padre, senza i quali non potrebbe lavorare.
 
 ## Come impostare i ruoli
 
@@ -44,4 +49,4 @@ I ruoli Proprietario vengono impostati automaticamente dall'app e non possono es
 
 D'altra parte, è necessario impostare i ruoli sui livelli inferiori (potenzialmente numerosi) solo se si desidera esplicitamente differenziare. In caso contrario, si possono semplicemente ignorare.
 
-Quando si creano nuovi sottoprogetti e luoghi, l'app copia automaticamente i ruoli dal livello immediatamente superiore. Pertanto è necessario impostarli solo se devono esplicitamente differire.
+Quando si creano nuovi sottoprogetti e luoghi, l'app copia automaticamente i ruoli dal livello immediatamente superiore. Pertanto è necessario impostarli personalmente solo se devono esplicitamente differire.
