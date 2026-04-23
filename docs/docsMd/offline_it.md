@@ -16,9 +16,9 @@ arten-fördern.app **sincronizza** tutti i tuoi dati dal server nel proprio data
 
 Quando lavori, arten-fördern.app impacchetta i tuoi nuovi dati in piccoli "pacchetti" chiamati operazioni.
 
-Quando sei online, queste operazioni vengono inviate immediatamente al server e diventano disponibili a tutti gli altri collaboratori all'istante.
+Quando sei online, queste operazioni vengono invia immediatamente al server e diventano disponibili a tutti gli altri collaboratori all'istante.
 
-Quando sei offline, le operazioni attendono pazientemente — finché non torni online. Poi vengono inviate subito al server.
+Quando sei offline, le operazioni attendono pazientemente — finché non torni online. Poi vengono invia subito al server.
 
 Il numero di operazioni in coda è visibile come piccolo numero in alto a destra dell'icona della nuvola. Questa icona è visibile solo quando lavori sui dati (quindi non ora, nella documentazione). E le operazioni dovrebbero essere in coda solo offline, quindi non dovresti mai vedere questi numeri quando sei online.
 
