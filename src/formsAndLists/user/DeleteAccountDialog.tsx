@@ -104,13 +104,13 @@ export const DeleteAccountDialog = ({ open, onClose, userId }: Props) => {
             <p>
               <FormattedMessage
                 id="deleteAccountWarning"
-                defaultMessage="Das Löschen Ihres Kontos entfernt alle Ihre Daten dauerhaft und kann nicht rückgängig gemacht werden."
+                defaultMessage="Das Löschen deines Kontos entfernt alle deine Daten dauerhaft und kann nicht rückgängig gemacht werden."
               />
             </p>
             <p>
               <FormattedMessage
                 id="deleteAccountExportHint"
-                defaultMessage="Wenn Sie Ihre Daten behalten möchten, exportieren Sie diese bitte zuerst."
+                defaultMessage="Wenn du deine Daten behalten möchtest, exportiere sie bitte zuerst."
               />
             </p>
             {error && (

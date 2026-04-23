@@ -84,7 +84,7 @@ export const UnitForm = ({ onChange, row, autoFocusRef, validations = {} }) => {
           formatMessage({
             id: 'Pq8RsT',
             defaultMessage:
-              'Standardmässig wird nach Name sortiert. Das können Sie mit diesem Wert übersteuern: Je höher der Wert, desto weiter unten wird die Einheit angezeigt.',
+              'Standardmässig wird nach Name sortiert. Das kannst du mit diesem Wert übersteuern: Je höher der Wert, desto weiter unten wird die Einheit angezeigt.',
           })
         }
       />
