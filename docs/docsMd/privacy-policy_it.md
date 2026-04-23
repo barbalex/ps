@@ -4,7 +4,7 @@ Ultimo aggiornamento: 17 aprile 2026
 
 Il trattamento trasparente dei vostri dati è per noi di grande importanza. La presente informativa sulla privacy spiega quali dati personali raccogliamo, per quali finalità e a chi li trasmettiamo. Rivedreme e aggiorneremo questa informativa qualora fatti rilevanti dovessero cambiare.
 
-Sono uno scienziato naturale e sviluppatore di software, non un giurista. Questa informativa è stata adattata da [Privacy Bee](https://www.privacybee.io) e precisata in buona coscienza. Suggerimenti / reclami benvenuti direttamente [a me](mailto:alex@gabriel-software.ch).
+Sono uno scienziato naturale e sviluppatore di software, non un giurista. Questa informativa è stata adattata da [Privacy Bee](https://www.privacybee.io) e precisata in buona coscienza. Suggerimenti / reclami benvenuti direttamente [a me](mailto:alex@gabriel-software.ch?subject=arten-fördern.app).
 
 ## 1. Quali tipi di dati raccogliamo
 
@@ -40,7 +40,7 @@ Si spera che ciò non sia mai necessario.
 
 https://www.netlify.com
 
-Netlify ospita arten-fördern.app. Offre una serie di funzionalità, tra cui il deployment continuo, l'integrazione Git automatizzata, i certificati SSL, la gestione dei domini e una rete di distribuzione dei contenuti (CDN). Ospitare arten-fördern.app su un proprio server sarebbe più rispettoso della privacy, ma non potremmo garantire la stessa disponibilità. Se avete esigenze particolari (hosting in un determinato paese o presso di voi), contattate [Alex](mailto:alex@gabriel-software.ch).
+Netlify ospita arten-fördern.app. Offre una serie di funzionalità, tra cui il deployment continuo, l'integrazione Git automatizzata, i certificati SSL, la gestione dei domini e una rete di distribuzione dei contenuti (CDN). Ospitare arten-fördern.app su un proprio server sarebbe più rispettoso della privacy, ma non potremmo garantire la stessa disponibilità. Se avete esigenze particolari (hosting in un determinato paese o presso di voi), contattate [Alex](mailto:alex@gabriel-software.ch?subject=arten-fördern.app).
 
 ### Backblaze
 

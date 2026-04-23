@@ -4,7 +4,7 @@ Last updated: 17 April 2026
 
 Transparent handling of your data is very important to us. This privacy policy explains what personal data we collect, for what purpose, and to whom we disclose it. We will review and update this privacy policy if any relevant facts change.
 
-I am a natural scientist and software developer, not a lawyer. This privacy policy was adapted from [Privacy Bee](https://www.privacybee.io) and refined to the best of my knowledge and conscience. Suggestions / complaints are welcome directly [to me](mailto:alex@gabriel-software.ch).
+I am a natural scientist and software developer, not a lawyer. This privacy policy was adapted from [Privacy Bee](https://www.privacybee.io) and refined to the best of my knowledge and conscience. Suggestions / complaints are welcome directly [to me](mailto:alex@gabriel-software.ch?subject=arten-fördern.app).
 
 ## 1. What types of data do we collect
 
@@ -40,7 +40,7 @@ Hopefully this will never be necessary.
 
 https://www.netlify.com
 
-Netlify hosts arten-fördern.app. It provides a range of features including continuous deployment, automated Git integration, SSL certificates, domain management and a content delivery network (CDN). Hosting arten-fördern.app on our own server would be more privacy-friendly, but we could not guarantee quite the same level of availability. If you have specific requirements (hosting in a particular country or on your own infrastructure), please contact [Alex](mailto:alex@gabriel-software.ch).
+Netlify hosts arten-fördern.app. It provides a range of features including continuous deployment, automated Git integration, SSL certificates, domain management and a content delivery network (CDN). Hosting arten-fördern.app on our own server would be more privacy-friendly, but we could not guarantee quite the same level of availability. If you have specific requirements (hosting in a particular country or on your own infrastructure), please contact [Alex](mailto:alex@gabriel-software.ch?subject=arten-fördern.app).
 
 ### Backblaze
 

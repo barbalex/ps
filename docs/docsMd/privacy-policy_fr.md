@@ -4,7 +4,7 @@ Dernière mise à jour: 17 avril 2026
 
 Le traitement transparent de vos données nous tient particulièrement à cœur. La présente politique de confidentialité vous informe des données personnelles que nous collectons, de leur finalité et des destinataires auxquels nous les transmettons. Nous réviserons et actualiserons cette politique de confidentialité si des faits pertinents venaient à changer.
 
-Je suis scientifique et développeur de logiciels, non juriste. Cette politique de confidentialité a été reprise de [Privacy Bee](https://www.privacybee.io) et précisée en toute bonne foi. Suggestions / réclamations bienvenues directement [chez moi](mailto:alex@gabriel-software.ch).
+Je suis scientifique et développeur de logiciels, non juriste. Cette politique de confidentialité a été reprise de [Privacy Bee](https://www.privacybee.io) et précisée en toute bonne foi. Suggestions / réclamations bienvenues directement [chez moi](mailto:alex@gabriel-software.ch?subject=arten-fördern.app).
 
 ## 1. Quels types de données collectons-nous
 
@@ -40,7 +40,7 @@ Espérons que cela ne sera jamais nécessaire.
 
 https://www.netlify.com
 
-Netlify héberge arten-fördern.app. Il offre un ensemble de fonctionnalités, notamment le déploiement continu, l'intégration Git automatisée, les certificats SSL, la gestion des domaines et un réseau de distribution de contenu (CDN). Héberger arten-fördern.app sur notre propre serveur serait plus respectueux de la vie privée, mais nous ne pourrions pas garantir tout à fait la même disponibilité. Si vous avez des exigences particulières (hébergement dans un pays spécifique ou chez vous), contactez [Alex](mailto:alex@gabriel-software.ch).
+Netlify héberge arten-fördern.app. Il offre un ensemble de fonctionnalités, notamment le déploiement continu, l'intégration Git automatisée, les certificats SSL, la gestion des domaines et un réseau de distribution de contenu (CDN). Héberger arten-fördern.app sur notre propre serveur serait plus respectueux de la vie privée, mais nous ne pourrions pas garantir tout à fait la même disponibilité. Si vous avez des exigences particulières (hébergement dans un pays spécifique ou chez vous), contactez [Alex](mailto:alex@gabriel-software.ch?subject=arten-fördern.app).
 
 ### Backblaze
 

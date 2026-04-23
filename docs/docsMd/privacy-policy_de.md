@@ -4,7 +4,7 @@ Zuletzt aktualisiert am 17. April 2026
 
 Ein transparenter Umgang mit Ihren Daten ist uns sehr wichtig. Die vorliegende Datenschutzerklärung informiert darüber, welche Personendaten wir zu welchem Zweck erheben und an wen wir sie weitergeben. Wir werden diese Datenschutzerklärung überprüfen und erneuern wenn sich relevante Fakten ändern sollten.
 
-Ich bin Naturwissenschaftler und Software Entwickler, nicht Jurist. Diese Datenschutzerklärung habe ich von [Privacy Bee](https://www.privacybee.io) übernommen und nach bestem Wissen und Gewissen präzisiert. Anregungen / Reklamationen bitte direkt [an mich](mailto:alex@gabriel-software.ch).
+Ich bin Naturwissenschaftler und Software Entwickler, nicht Jurist. Diese Datenschutzerklärung habe ich von [Privacy Bee](https://www.privacybee.io) übernommen und nach bestem Wissen und Gewissen präzisiert. Anregungen / Reklamationen bitte direkt [an mich](mailto:alex@gabriel-software.ch?subject=arten-fördern.app).
 
 ## 1. Welche Typen von Daten erfassen wir
 
@@ -40,7 +40,7 @@ Hoffentlich wird das nie nötig.
 
 https://www.netlify.com
 
-Netlify hostet arten-fördern.app. Es bietet eine Reihe von Funktionen, einschliesslich Continuous Deployment, automatisierte Git-Integration, SSL-Zertifikate, Domain-Management und Content Delivery Network (CDN). Datenschutzfreundlicher wäre es, arten-fördern.app auf einem eigenen Server zu hosten. Damit könnten wir aber nicht ganz dieselbe Verfügbarkeit gewährleisten. Sollten Sie besondere Ansprüche haben (Hosting in einem bestimmten Land oder bei Ihnen), wenden Sie sich an [Alex](mailto:alex@gabriel-software.ch).
+Netlify hostet arten-fördern.app. Es bietet eine Reihe von Funktionen, einschliesslich Continuous Deployment, automatisierte Git-Integration, SSL-Zertifikate, Domain-Management und Content Delivery Network (CDN). Datenschutzfreundlicher wäre es, arten-fördern.app auf einem eigenen Server zu hosten. Damit könnten wir aber nicht ganz dieselbe Verfügbarkeit gewährleisten. Sollten Sie besondere Ansprüche haben (Hosting in einem bestimmten Land oder bei Ihnen), wenden Sie sich an [Alex](mailto:alex@gabriel-software.ch?subject=arten-fördern.app).
 
 ### Backblaze
 
