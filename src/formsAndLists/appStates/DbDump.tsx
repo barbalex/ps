@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { useSetAtom } from 'jotai'
 import * as fluentUiReactComponents from '@fluentui/react-components'
 const { Button, Spinner } = fluentUiReactComponents
 import { pgDump } from '@electric-sql/pglite-tools/pg_dump'
@@ -6,6 +7,7 @@ import { useIntl } from 'react-intl'
 
 import { usePGlite } from '@electric-sql/pglite-react'
 import fileDownload from 'js-file-download'
+import { addNotificationAtom } from '../../store.ts'
 
 type Props = {
   activeUserId: string | null | undefined
@@ -15,10 +17,12 @@ type Props = {
 export const DbDump = ({ activeUserId, viewedUserId }: Props) => {
   const db = usePGlite()
   const { formatMessage } = useIntl()
+  const addNotification = useSetAtom(addNotificationAtom)
 
   const [dumping, setDumping] = useState(false)
 
-  const isOwnProfile = !!activeUserId && !!viewedUserId && activeUserId === viewedUserId
+  const isOwnProfile =
+    !!activeUserId && !!viewedUserId && activeUserId === viewedUserId
 
   const downloadDump = async () => {
     if (!isOwnProfile || !activeUserId) return
@@ -77,6 +81,18 @@ export const DbDump = ({ activeUserId, viewedUserId }: Props) => {
       } catch {
         // ignore rollback errors
       }
+      addNotification({
+        intent: 'error',
+        title: formatMessage({
+          id: 'dbDump.failedTitle',
+          defaultMessage: 'Export failed',
+        }),
+        body: formatMessage({
+          id: 'dbDump.failedBody',
+          defaultMessage:
+            'Your data export could not be created. Please try again.',
+        }),
+      })
       console.error('Could not export owned data dump:', error)
     } finally {
       setDumping(false)
