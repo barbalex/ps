@@ -361,6 +361,23 @@ export const createProjectCrs = async ({ projectId }) => {
   return project_crs_id
 }
 
+export const createProjectQc = async ({ projectId }) => {
+  const project_qc_id = uuidv7()
+  const db = store.get(pgliteDbAtom)
+  await db.query(
+    `insert into project_qcs (project_qc_id, project_id) values ($1, $2)`,
+    [project_qc_id, projectId],
+  )
+
+  store.set(addOperationAtom, {
+    table: 'project_qcs',
+    operation: 'insert',
+    draft: { project_qc_id, project_id: projectId },
+  })
+
+  return project_qc_id
+}
+
 export const createField = async ({
   projectId = null,
   accountId = null,
