@@ -247,7 +247,7 @@ export const useDataNavData = () => {
               }),
             },
             {
-              id: 'qcs-choose',
+              id: 'qcs-assignment',
               label: buildNavLabel({
                 loading,
                 countFiltered: row?.root_qcs_count_unfiltered ?? 0,

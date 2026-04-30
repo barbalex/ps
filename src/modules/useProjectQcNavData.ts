@@ -4,19 +4,19 @@ import { useLocation } from '@tanstack/react-router'
 import { isEqual } from 'es-toolkit'
 import { useIntl } from 'react-intl'
 
-import { buildNavLabel } from './buildNavLabel.ts'
 import { languageAtom, treeOpenNodesAtom } from '../store.ts'
 
 type Props = {
   projectId: string
+  projectQcId: string
 }
 
 type NavData = {
   id: string
   label: string | null
-}[]
+}
 
-export const useProjectQcsNavData = ({ projectId }: Props) => {
+export const useProjectQcNavData = ({ projectId, projectQcId }: Props) => {
   const [openNodes] = useAtom(treeOpenNodesAtom)
   const [language] = useAtom(languageAtom)
   const location = useLocation()
@@ -24,26 +24,31 @@ export const useProjectQcsNavData = ({ projectId }: Props) => {
 
   const res = useLiveQuery(
     `
-    SELECT
-      project_qc_id AS id,
-      COALESCE(NULLIF(label_${language}, ''), label_de, name) AS label
-    FROM project_qcs
-    WHERE project_id = $1
-    ORDER BY label`,
-    [projectId],
+      SELECT
+        project_qc_id AS id,
+        COALESCE(NULLIF(label_${language}, ''), label_de, name) AS label
+      FROM project_qcs
+      WHERE project_qc_id = $1
+    `,
+    [projectQcId],
   )
 
   const loading = res === undefined
+  const nav: NavData | undefined = res?.rows?.[0]
 
-  const navs: NavData = res?.rows ?? []
-  const parentArray = ['data', 'projects', projectId]
-  const parentUrl = `/${parentArray.join('/')}`
-  const ownArray = [...parentArray, 'project-qcs']
-  const ownUrl = `/${ownArray.join('/')}`
+  const parentArray = ['data', 'projects', projectId, 'project-qcs']
+  const ownArray = [...parentArray, projectQcId]
   const isOpen = openNodes.some((array) => isEqual(array, ownArray))
+  const parentUrl = `/${parentArray.join('/')}`
+  const ownUrl = `/${ownArray.join('/')}`
   const urlPath = location.pathname.split('/').filter((p) => p !== '')
   const isInActiveNodeArray = ownArray.every((part, i) => urlPath[i] === part)
   const isActive = isEqual(urlPath, ownArray)
+
+  const notFound = !!res && !nav
+  const label = notFound
+    ? formatMessage({ id: 'p+ORxp', defaultMessage: 'Nicht gefunden' })
+    : (nav?.label ?? nav?.id)
 
   const navData = {
     isInActiveNodeArray,
@@ -53,19 +58,12 @@ export const useProjectQcsNavData = ({ projectId }: Props) => {
     ownArray,
     urlPath,
     ownUrl,
-    label: buildNavLabel({
-      loading,
-      countFiltered: navs.length,
-      namePlural: formatMessage({
-        id: 'projectOwnQcs.namePlural',
-        defaultMessage: 'Projekt-Qualitätskontrollen',
-      }),
-    }),
+    label,
+    notFound,
     nameSingular: formatMessage({
       id: 'projectOwnQcs.nameSingular',
       defaultMessage: 'Projekt-Qualitätskontrolle',
     }),
-    navs,
   }
 
   return { loading, navData }

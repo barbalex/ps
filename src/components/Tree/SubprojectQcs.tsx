@@ -1,5 +1,5 @@
 import { Node } from './Node.tsx'
-import { useSubprojectQcsNavData } from '../../modules/useSubprojectQcsNavData.ts'
+import { useSubprojectQcAssignmentsNavData } from '../../modules/useSubprojectQcAssignmentsNavData.ts'
 
 interface Props {
   projectId: string
@@ -12,7 +12,7 @@ export const SubprojectQcsNode = ({
   subprojectId,
   level = 5,
 }: Props) => {
-  const { navData } = useSubprojectQcsNavData({ projectId, subprojectId })
+  const { navData } = useSubprojectQcAssignmentsNavData({ projectId, subprojectId })
   const {
     label,
     ownUrl,

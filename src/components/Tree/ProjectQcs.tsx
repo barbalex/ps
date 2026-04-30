@@ -1,4 +1,9 @@
+import { useNavigate } from '@tanstack/react-router'
+
 import { Node } from './Node.tsx'
+import { ProjectQcNode } from './ProjectQcNode.tsx'
+import { removeChildNodes } from '../../modules/tree/removeChildNodes.ts'
+import { addOpenNodes } from '../../modules/tree/addOpenNodes.ts'
 import { useProjectQcsNavData } from '../../modules/useProjectQcsNavData.ts'
 
 interface Props {
@@ -7,17 +12,54 @@ interface Props {
 }
 
 export const ProjectQcsNode = ({ projectId, level = 3 }: Props) => {
+  const navigate = useNavigate()
+
   const { navData } = useProjectQcsNavData({ projectId })
-  const { label, ownUrl, isInActiveNodeArray, isActive } = navData
+  const {
+    label,
+    parentUrl,
+    ownArray,
+    ownUrl,
+    urlPath,
+    isOpen,
+    isInActiveNodeArray,
+    isActive,
+    navs,
+  } = navData
+
+  const onClickButton = () => {
+    if (isOpen) {
+      removeChildNodes({ node: ownArray })
+      if (isInActiveNodeArray && ownArray.length <= urlPath.length) {
+        navigate({ to: parentUrl })
+      }
+      return
+    }
+    addOpenNodes({ nodes: [ownArray] })
+  }
+
+  const showNavs = isOpen && navs.length > 0 && navs[0].id
 
   return (
-    <Node
-      label={label}
-      level={level}
-      isInActiveNodeArray={isInActiveNodeArray}
-      isActive={isActive}
-      childrenCount={0}
-      to={ownUrl}
-    />
+    <>
+      <Node
+        label={label}
+        level={level}
+        isOpen={isOpen}
+        isInActiveNodeArray={isInActiveNodeArray}
+        isActive={isActive}
+        childrenCount={navs.length}
+        to={ownUrl}
+        onClickButton={onClickButton}
+      />
+      {showNavs &&
+        navs.map((nav, i) => (
+          <ProjectQcNode
+            key={`${nav.id}-${i}`}
+            projectId={projectId}
+            nav={nav}
+          />
+        ))}
+    </>
   )
 }

@@ -10,7 +10,7 @@ We will later also add project_cqs to /data/projects/018cfcf7-6424-7000-a100-851
 
 lets add routes, tree nav, breadcrumbs, list view and form for project_qcs.
 
-## We will later also add project_cqs to /data/projects/018cfcf7-6424-7000-a100-851c5cc2c878/qcs-choose and /data/projects/018cfcf7-6424-7000-a100-851c5cc2c878/subprojects/018cfd27-ee92-7000-b678-e75497d6c60e/qcs-choose. But not yet.
+We will later also add project_cqs to /data/projects/018cfcf7-6424-7000-a100-851c5cc2c878/qcs-choose and /data/projects/018cfcf7-6424-7000-a100-851c5cc2c878/subprojects/018cfd27-ee92-7000-b678-e75497d6c60e/qcs-choose. But not yet.
 
 ensure project_qcs are only visible to owners and project designers (nav tree, list views thus use...Data hooks).
 

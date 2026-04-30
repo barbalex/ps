@@ -9,29 +9,27 @@ import { treeOpenNodesAtom } from '../store.ts'
 
 type Props = {
   projectId: string
-  subprojectId: string
 }
 
-export const useSubprojectQcsNavData = ({ projectId, subprojectId }: Props) => {
+export const useProjectQcAssignmentsNavData = ({ projectId }: Props) => {
   const [openNodes] = useAtom(treeOpenNodesAtom)
   const location = useLocation()
   const { formatMessage } = useIntl()
 
-  const parentArray = [
-    'data',
-    'projects',
-    projectId,
-    'subprojects',
-    subprojectId,
-  ]
+  const parentArray = ['data', 'projects', projectId]
   const parentUrl = `/${parentArray.join('/')}`
-  const ownArray = [...parentArray, 'qcs-choose']
+  const ownArray = [...parentArray, 'qcs-assignment']
   const ownUrl = `/${ownArray.join('/')}`
   const isOpen = openNodes.some((array) => isEqual(array, ownArray))
 
   const res = useLiveQuery(
-    `SELECT count(*) AS count FROM qcs_assignment qa JOIN qcs q ON q.qcs_id = qa.qc_id WHERE qa.subproject_id = $1 AND q.is_subproject_level = true`,
-    [subprojectId],
+    `SELECT count(*) AS count
+     FROM qcs_assignment qa
+     JOIN qcs q ON q.qcs_id = qa.qc_id
+     WHERE qa.project_id = $1
+       AND qa.subproject_id IS NULL
+       AND q.is_project_level = true`,
+    [projectId],
   )
 
   const loading = res === undefined
@@ -54,8 +52,8 @@ export const useSubprojectQcsNavData = ({ projectId, subprojectId }: Props) => {
       isFiltered: false,
       countFiltered: count,
       countUnfiltered: count,
-      namePlural: formatMessage({
-        id: 'subprojectQcs.title',
+        namePlural: formatMessage({
+          id: 'subprojectQcs.title',
         defaultMessage: 'Qualitätskontrollen: wählen',
       }),
     }),

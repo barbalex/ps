@@ -115,12 +115,14 @@ import { WidgetsForFieldsFetcher } from './WidgetsForFieldsFetcher.tsx'
 import { WidgetForFieldFetcher } from './WidgetForFieldFetcher.tsx'
 import { QcsFetcher } from './QcsFetcher.tsx'
 import { QcFetcher } from './QcFetcher.tsx'
-import { SubprojectQcsFetcher } from './SubprojectQcsFetcher.tsx'
+import { SubprojectQcsAssignmentFetcher } from './SubprojectQcsAssignmentFetcher.tsx'
 import { SubprojectQcsRunFetcher } from './SubprojectQcsRunFetcher.tsx'
 import { RootQcsFetcher } from './RootQcsFetcher.tsx'
 import { RootQcsRunFetcher } from './RootQcsRunFetcher.tsx'
-import { ProjectQcsFetcher } from './ProjectQcsFetcher.tsx'
+import { ProjectQcsAssignmentFetcher } from './ProjectQcsAssignmentFetcher.tsx'
 import { ProjectQcsRunFetcher } from './ProjectQcsRunFetcher.tsx'
+import { ProjectQcsFetcher } from './ProjectQcsFetcher.tsx'
+import { ProjectQcFetcher } from './ProjectQcFetcher.tsx'
 import { FieldsFetcher } from './FieldsFetcher.tsx'
 import { FieldFetcher } from './FieldFetcher.tsx'
 import { CrssFetcher } from './CrssFetcher.tsx'
@@ -787,7 +789,7 @@ export const FetcherRouter = ({ fetcherName, params, ...other }) => {
     }
     case 'useSubprojectQcsNavData': {
       if (!params.projectId || !params.subprojectId) return null
-      return <SubprojectQcsFetcher params={params} {...other} />
+      return <SubprojectQcsAssignmentFetcher params={params} {...other} />
     }
     case 'useSubprojectQcsRunNavData': {
       if (!params.projectId || !params.subprojectId) return null
@@ -801,7 +803,15 @@ export const FetcherRouter = ({ fetcherName, params, ...other }) => {
     }
     case 'useProjectQcsNavData': {
       if (!params.projectId) return null
+      return <ProjectQcsAssignmentFetcher params={params} {...other} />
+    }
+    case 'useProjectOwnQcsNavData': {
+      if (!params.projectId) return null
       return <ProjectQcsFetcher params={params} {...other} />
+    }
+    case 'useProjectOwnQcNavData': {
+      if (!params.projectId || !params.projectQcId) return null
+      return <ProjectQcFetcher params={params} {...other} />
     }
     case 'useProjectQcsRunNavData': {
       if (!params.projectId) return null

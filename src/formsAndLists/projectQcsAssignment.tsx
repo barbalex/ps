@@ -1,0 +1,189 @@
+import { useState } from 'react'
+import { useParams } from '@tanstack/react-router'
+import { usePGlite, useLiveQuery } from '@electric-sql/pglite-react'
+import { useSetAtom, useAtom } from 'jotai'
+import { useIntl } from 'react-intl'
+import * as fluentUiReactComponents from '@fluentui/react-components'
+
+import { createProjectQcsAssignment } from '../modules/createRows.ts'
+import { useProjectQcAssignmentsNavData } from '../modules/useProjectQcAssignmentsNavData.ts'
+import { CheckboxField } from '../components/shared/CheckboxField.tsx'
+import { Loading } from '../components/shared/Loading.tsx'
+import { addOperationAtom, languageAtom } from '../store.ts'
+import styles from './projectQcsAssignment.module.css'
+
+import '../form.css'
+
+const { Button, Input, Field } = fluentUiReactComponents
+
+type QcRow = {
+  qcs_id: string
+  name: string | null
+  label: string | null
+}
+
+type ActiveEntry = {
+  qcs_assignment_id: string
+  qc_id: string
+}
+
+export const ProjectQcs = ({ from }) => {
+  const { projectId } = useParams({ from })
+  const { navData } = useProjectQcAssignmentsNavData({ projectId })
+  const { formatMessage } = useIntl()
+  const [language] = useAtom(languageAtom)
+  const addOperation = useSetAtom(addOperationAtom)
+  const db = usePGlite()
+
+  const [searchTerm, setSearchTerm] = useState('')
+
+  // Load all project-level QCS
+  const qcsRes = useLiveQuery(
+    `SELECT qcs_id, name, COALESCE(NULLIF(label_${language}, ''), label_de) AS label
+     FROM qcs WHERE is_project_level = true ORDER BY label`,
+  )
+
+  // Load active assignments for this project
+  const activeRes = useLiveQuery(
+    `SELECT qcs_assignment_id, qc_id FROM qcs_assignment
+     WHERE project_id = $1 AND subproject_id IS NULL`,
+    [projectId],
+  )
+
+  const loading = qcsRes === undefined || activeRes === undefined
+
+  if (loading) return <Loading />
+
+  const allQcs: QcRow[] = qcsRes?.rows ?? []
+  const activeEntries: ActiveEntry[] = activeRes?.rows ?? []
+  const activeQcIds = new Set(activeEntries.map((r) => r.qc_id))
+
+  // Apply search filter
+  const filteredQcs = searchTerm.trim()
+    ? allQcs.filter((qc) => {
+        const term = searchTerm.toLowerCase()
+        return (
+          (qc.label ?? '').toLowerCase().includes(term) ||
+          (qc.name ?? '').toLowerCase().includes(term)
+        )
+      })
+    : allQcs
+
+  const toggle = async (qcId: string) => {
+    if (activeQcIds.has(qcId)) {
+      const entry = activeEntries.find((e) => e.qc_id === qcId)
+      if (!entry) return
+      try {
+        await db.query(
+          `DELETE FROM qcs_assignment WHERE qcs_assignment_id = $1`,
+          [entry.qcs_assignment_id],
+        )
+        addOperation({
+          table: 'qcs_assignment',
+          rowIdName: 'qcs_assignment_id',
+          rowId: entry.qcs_assignment_id,
+          operation: 'delete',
+          prev: {
+            qcs_assignment_id: entry.qcs_assignment_id,
+            qc_id: qcId,
+            project_id: projectId,
+          },
+        })
+      } catch (error) {
+        console.error('Error removing project QC:', error)
+      }
+    } else {
+      await createProjectQcsAssignment({ projectId, qcId })
+    }
+  }
+
+  const activateAll = async () => {
+    for (const qc of filteredQcs.filter((q) => !activeQcIds.has(q.qcs_id))) {
+      await createProjectQcsAssignment({ projectId, qcId: qc.qcs_id })
+    }
+  }
+
+  const deactivateAll = async () => {
+    for (const entry of activeEntries.filter((e) =>
+      filteredQcs.some((qc) => qc.qcs_id === e.qc_id),
+    )) {
+      try {
+        await db.query(
+          `DELETE FROM qcs_assignment WHERE qcs_assignment_id = $1`,
+          [entry.qcs_assignment_id],
+        )
+        addOperation({
+          table: 'qcs_assignment',
+          rowIdName: 'qcs_assignment_id',
+          rowId: entry.qcs_assignment_id,
+          operation: 'delete',
+          prev: {
+            qcs_assignment_id: entry.qcs_assignment_id,
+            qc_id: entry.qc_id,
+            project_id: projectId,
+          },
+        })
+      } catch (error) {
+        console.error('Error removing project QC:', error)
+      }
+    }
+  }
+
+  return (
+    <div className="list-view">
+      <div className="list-view-header">
+        <h1>{navData.label}</h1>
+      </div>
+      <div className={styles.filters}>
+        <Field
+          label={formatMessage({
+            id: 'projectQcs.filter',
+            defaultMessage: 'Filtern',
+          })}
+        >
+          <Input
+            value={searchTerm}
+            onChange={(_, data) => setSearchTerm(data.value)}
+            placeholder={formatMessage({
+              id: 'projectQcs.filterPlaceholder',
+              defaultMessage: 'Name...',
+            })}
+            appearance="underline"
+          />
+        </Field>
+        <Button appearance="subtle" onClick={activateAll}>
+          {formatMessage({
+            id: 'projectQcs.activateAll',
+            defaultMessage: 'Alle aktivieren',
+          })}
+        </Button>
+        <Button appearance="subtle" onClick={deactivateAll}>
+          {formatMessage({
+            id: 'projectQcs.deactivateAll',
+            defaultMessage: 'Alle deaktivieren',
+          })}
+        </Button>
+      </div>
+      <div className="list-container">
+        {filteredQcs.length === 0 ? (
+          <div className={styles.empty}>
+            {formatMessage({
+              id: 'projectQcs.empty',
+              defaultMessage: 'Keine Qualitätskontrollen vorhanden',
+            })}
+          </div>
+        ) : (
+          filteredQcs.map((qc) => (
+            <CheckboxField
+              key={qc.qcs_id}
+              label={qc.label ?? qc.name ?? qc.qcs_id}
+              name={qc.qcs_id}
+              value={activeQcIds.has(qc.qcs_id)}
+              onChange={() => toggle(qc.qcs_id)}
+            />
+          ))
+        )}
+      </div>
+    </div>
+  )
+}
