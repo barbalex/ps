@@ -1,6 +1,8 @@
-/** Represents the table partman.template_public_qcs_history */
-export default interface TemplatePublicQcsHistory {
-  qcs_id: string;
+/** Represents the table partman.template_public_project_qcs_history */
+export default interface TemplatePublicProjectQcsHistory {
+  project_qc_id: string;
+
+  project_id: string;
 
   name: string | null;
 
@@ -15,8 +17,6 @@ export default interface TemplatePublicQcsHistory {
   description: string | null;
 
   sort: number | null;
-
-  is_root_level: boolean | null;
 
   is_project_level: boolean | null;
 
@@ -35,9 +35,11 @@ export default interface TemplatePublicQcsHistory {
   updated_by: string | null;
 }
 
-/** Represents the initializer for the table partman.template_public_qcs_history */
-export interface TemplatePublicQcsHistoryInitializer {
-  qcs_id: string;
+/** Represents the initializer for the table partman.template_public_project_qcs_history */
+export interface TemplatePublicProjectQcsHistoryInitializer {
+  project_qc_id: string;
+
+  project_id: string;
 
   name?: string | null;
 
@@ -52,8 +54,6 @@ export interface TemplatePublicQcsHistoryInitializer {
   description?: string | null;
 
   sort?: number | null;
-
-  is_root_level?: boolean | null;
 
   is_project_level?: boolean | null;
 
@@ -72,9 +72,11 @@ export interface TemplatePublicQcsHistoryInitializer {
   updated_by?: string | null;
 }
 
-/** Represents the mutator for the table partman.template_public_qcs_history */
-export interface TemplatePublicQcsHistoryMutator {
-  qcs_id?: string;
+/** Represents the mutator for the table partman.template_public_project_qcs_history */
+export interface TemplatePublicProjectQcsHistoryMutator {
+  project_qc_id?: string;
+
+  project_id?: string;
 
   name?: string | null;
 
@@ -89,8 +91,6 @@ export interface TemplatePublicQcsHistoryMutator {
   description?: string | null;
 
   sort?: number | null;
-
-  is_root_level?: boolean | null;
 
   is_project_level?: boolean | null;
 

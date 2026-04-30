@@ -1,3 +1,5 @@
+import type { ProjectsProjectId } from './Projects.js';
+
 /** Identifier type for public.project_qcs */
 export type ProjectQcsProjectQcId = string & { __brand: 'public.project_qcs' };
 
@@ -8,7 +10,7 @@ export type ProjectQcsProjectQcId = string & { __brand: 'public.project_qcs' };
 export default interface ProjectQcs {
   project_qc_id: ProjectQcsProjectQcId;
 
-  project_id: string;
+  project_id: ProjectsProjectId;
 
   name: string | null;
 
@@ -50,7 +52,7 @@ export interface ProjectQcsInitializer {
   /** Default value: uuid_generate_v7() */
   project_qc_id?: ProjectQcsProjectQcId;
 
-  project_id: string;
+  project_id: ProjectsProjectId;
 
   name?: string | null;
 
@@ -96,7 +98,7 @@ export interface ProjectQcsInitializer {
 export interface ProjectQcsMutator {
   project_qc_id?: ProjectQcsProjectQcId;
 
-  project_id?: string;
+  project_id?: ProjectsProjectId;
 
   name?: string | null;
 
