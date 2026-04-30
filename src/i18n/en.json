@@ -1028,5 +1028,6 @@
   "confirmDeleteAccountTitle": "Really delete account?",
   "confirmDeleteAccountWithProjects": "{count, plural, one {This will permanently delete the following project} other {This will permanently delete the following {count} projects}} and all their data:",
   "confirmDeleteAccountNoProjects": "This account has no projects. It will be permanently deleted.",
-  "confirmDeleteAccountConfirm": "Delete account"
+  "confirmDeleteAccountConfirm": "Delete account",
+  "qcs.info": "These are predefined quality controls. They are available in every project. They can be applied at the project or sub-project level. In the project you can create your own quality controls that are only available in that project and its sub-projects."
 }

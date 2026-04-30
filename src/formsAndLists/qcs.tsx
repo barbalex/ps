@@ -6,6 +6,7 @@ import { Row } from '../components/shared/Row.tsx'
 import { FilterButton } from '../components/shared/FilterButton.tsx'
 import { Loading } from '../components/shared/Loading.tsx'
 import { useQcsNavData } from '../modules/useQcsNavData.ts'
+import { Info } from './qcs/Info.tsx'
 
 import '../form.css'
 
@@ -30,6 +31,7 @@ export const Qcs = () => {
         nameSingular={nameSingular}
         addRow={add}
         menus={<FilterButton isFiltered={isFiltered} />}
+        info={<Info />}
       />
       <div className="list-container">
         {loading ? (
