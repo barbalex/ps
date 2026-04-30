@@ -1917,8 +1917,6 @@ COMMENT ON TABLE project_crs IS 'List of crs used in a project. Can be set when 
 CREATE TABLE IF NOT EXISTS qcs(
   qcs_id uuid PRIMARY KEY DEFAULT public.uuid_generate_v7(),
   name text DEFAULT NULL,
-  table_name text DEFAULT NULL,
-  place_level integer DEFAULT NULL,
   label_de text DEFAULT NULL,
   label_en text DEFAULT NULL,
   label_fr text DEFAULT NULL,
@@ -1941,8 +1939,6 @@ CREATE INDEX IF NOT EXISTS qcs_name_idx ON qcs USING btree(name);
 CREATE INDEX IF NOT EXISTS qcs_label_de_idx ON qcs USING btree(label_de);
 CREATE INDEX IF NOT EXISTS qcs_sort_idx ON qcs USING btree(sort);
 
-COMMENT ON COLUMN qcs.table_name IS 'The table this quality control applies to. E.g. observations, places, actions, checks. Used to group and sort qcs in the ui';
-COMMENT ON COLUMN qcs.place_level IS 'The place level this quality control applies to. 1 or 2. Only relevant when table_name is places, actions or checks';
 COMMENT ON TABLE qcs IS 'Quality control rules for data validation. No history tracking needed as these are root-level configuration managed by administrators.';
 
 --------------------------------------------------------------

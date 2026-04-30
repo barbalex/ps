@@ -1,0 +1,80 @@
+/** Represents the table partman.template_public_wfs_services_history */
+export default interface TemplatePublicWfsServicesHistory {
+  wfs_service_id: string;
+
+  project_id: string;
+
+  url: string | null;
+
+  version: string | null;
+
+  info_formats: unknown | null;
+
+  info_format: string | null;
+
+  default_crs: string | null;
+
+  label: string | null;
+
+  sys_period: string;
+
+  created_at: Date;
+
+  updated_at: Date;
+
+  updated_by: string | null;
+}
+
+/** Represents the initializer for the table partman.template_public_wfs_services_history */
+export interface TemplatePublicWfsServicesHistoryInitializer {
+  wfs_service_id: string;
+
+  project_id: string;
+
+  url?: string | null;
+
+  version?: string | null;
+
+  info_formats?: unknown | null;
+
+  info_format?: string | null;
+
+  default_crs?: string | null;
+
+  label?: string | null;
+
+  sys_period: string;
+
+  created_at: Date;
+
+  updated_at: Date;
+
+  updated_by?: string | null;
+}
+
+/** Represents the mutator for the table partman.template_public_wfs_services_history */
+export interface TemplatePublicWfsServicesHistoryMutator {
+  wfs_service_id?: string;
+
+  project_id?: string;
+
+  url?: string | null;
+
+  version?: string | null;
+
+  info_formats?: unknown | null;
+
+  info_format?: string | null;
+
+  default_crs?: string | null;
+
+  label?: string | null;
+
+  sys_period?: string;
+
+  created_at?: Date;
+
+  updated_at?: Date;
+
+  updated_by?: string | null;
+}

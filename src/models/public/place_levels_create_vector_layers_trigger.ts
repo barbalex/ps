@@ -1,0 +1,2 @@
+export interface place_levels_create_vector_layers_trigger_params {
+}

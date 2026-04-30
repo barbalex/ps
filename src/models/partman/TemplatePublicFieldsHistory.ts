@@ -1,8 +1,5 @@
-/**
- * Represents the table public.fields_history
- * System-versioned history of fields. Managed by temporal_tables and partitioned yearly by updated_at.
- */
-export default interface FieldsHistory {
+/** Represents the table partman.template_public_fields_history */
+export default interface TemplatePublicFieldsHistory {
   field_id: string;
 
   project_id: string | null;
@@ -29,7 +26,6 @@ export default interface FieldsHistory {
 
   label: string | null;
 
-  /** System period written by temporal_tables. lower(sys_period) is when the row version became current, upper(sys_period) when it stopped being current. */
   sys_period: string;
 
   created_at: Date;
@@ -39,13 +35,9 @@ export default interface FieldsHistory {
   updated_by: string | null;
 }
 
-/**
- * Represents the initializer for the table public.fields_history
- * System-versioned history of fields. Managed by temporal_tables and partitioned yearly by updated_at.
- */
-export interface FieldsHistoryInitializer {
-  /** Default value: uuid_generate_v7() */
-  field_id?: string;
+/** Represents the initializer for the table partman.template_public_fields_history */
+export interface TemplatePublicFieldsHistoryInitializer {
+  field_id: string;
 
   project_id?: string | null;
 
@@ -53,7 +45,6 @@ export interface FieldsHistoryInitializer {
 
   table_name?: string | null;
 
-  /** Default value: 1 */
   level?: number | null;
 
   field_type_id?: string | null;
@@ -68,28 +59,21 @@ export interface FieldsHistoryInitializer {
 
   preset?: string | null;
 
-  /** Default value: false */
   obsolete?: boolean | null;
 
   label?: string | null;
 
-  /** System period written by temporal_tables. lower(sys_period) is when the row version became current, upper(sys_period) when it stopped being current. */
   sys_period: string;
 
-  /** Default value: now() */
-  created_at?: Date;
+  created_at: Date;
 
-  /** Default value: now() */
-  updated_at?: Date;
+  updated_at: Date;
 
   updated_by?: string | null;
 }
 
-/**
- * Represents the mutator for the table public.fields_history
- * System-versioned history of fields. Managed by temporal_tables and partitioned yearly by updated_at.
- */
-export interface FieldsHistoryMutator {
+/** Represents the mutator for the table partman.template_public_fields_history */
+export interface TemplatePublicFieldsHistoryMutator {
   field_id?: string;
 
   project_id?: string | null;
@@ -116,7 +100,6 @@ export interface FieldsHistoryMutator {
 
   label?: string | null;
 
-  /** System period written by temporal_tables. lower(sys_period) is when the row version became current, upper(sys_period) when it stopped being current. */
   sys_period?: string;
 
   created_at?: Date;

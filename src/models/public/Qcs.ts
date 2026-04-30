@@ -10,12 +10,6 @@ export default interface Qcs {
 
   name: string | null;
 
-  /** The table this quality control applies to. E.g. observations, places, actions, checks. Used to group and sort qcs in the ui */
-  table_name: string | null;
-
-  /** The place level this quality control applies to. 1 or 2. Only relevant when table_name is places, actions or checks */
-  place_level: number | null;
-
   label_de: string | null;
 
   label_en: string | null;
@@ -57,12 +51,6 @@ export interface QcsInitializer {
   qcs_id?: QcsQcsId;
 
   name?: string | null;
-
-  /** The table this quality control applies to. E.g. observations, places, actions, checks. Used to group and sort qcs in the ui */
-  table_name?: string | null;
-
-  /** The place level this quality control applies to. 1 or 2. Only relevant when table_name is places, actions or checks */
-  place_level?: number | null;
 
   label_de?: string | null;
 
@@ -110,12 +98,6 @@ export interface QcsMutator {
   qcs_id?: QcsQcsId;
 
   name?: string | null;
-
-  /** The table this quality control applies to. E.g. observations, places, actions, checks. Used to group and sort qcs in the ui */
-  table_name?: string | null;
-
-  /** The place level this quality control applies to. 1 or 2. Only relevant when table_name is places, actions or checks */
-  place_level?: number | null;
 
   label_de?: string | null;
 

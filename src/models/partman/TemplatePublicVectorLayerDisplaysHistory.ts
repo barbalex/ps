@@ -1,0 +1,151 @@
+import type { default as public_VectorLayerMarkerTypesEnum } from '../public/VectorLayerMarkerTypesEnum.js';
+import type { default as public_VectorLayerLineCapsEnum } from '../public/VectorLayerLineCapsEnum.js';
+import type { default as public_VectorLayerLineJoinsEnum } from '../public/VectorLayerLineJoinsEnum.js';
+import type { default as public_VectorLayerFillRulesEnum } from '../public/VectorLayerFillRulesEnum.js';
+
+/** Represents the table partman.template_public_vector_layer_displays_history */
+export default interface TemplatePublicVectorLayerDisplaysHistory {
+  vector_layer_display_id: string;
+
+  vector_layer_id: string | null;
+
+  display_property_value: string | null;
+
+  marker_type: public_VectorLayerMarkerTypesEnum | null;
+
+  circle_marker_radius: number | null;
+
+  marker_symbol: string | null;
+
+  marker_size: number | null;
+
+  stroke: boolean | null;
+
+  color: string | null;
+
+  weight: number | null;
+
+  line_cap: public_VectorLayerLineCapsEnum | null;
+
+  line_join: public_VectorLayerLineJoinsEnum | null;
+
+  dash_array: string | null;
+
+  dash_offset: string | null;
+
+  fill: boolean | null;
+
+  fill_color: string | null;
+
+  fill_opacity_percent: number | null;
+
+  fill_rule: public_VectorLayerFillRulesEnum | null;
+
+  label: string | null;
+
+  sys_period: string;
+
+  created_at: Date;
+
+  updated_at: Date;
+
+  updated_by: string | null;
+}
+
+/** Represents the initializer for the table partman.template_public_vector_layer_displays_history */
+export interface TemplatePublicVectorLayerDisplaysHistoryInitializer {
+  vector_layer_display_id: string;
+
+  vector_layer_id?: string | null;
+
+  display_property_value?: string | null;
+
+  marker_type?: public_VectorLayerMarkerTypesEnum | null;
+
+  circle_marker_radius?: number | null;
+
+  marker_symbol?: string | null;
+
+  marker_size?: number | null;
+
+  stroke?: boolean | null;
+
+  color?: string | null;
+
+  weight?: number | null;
+
+  line_cap?: public_VectorLayerLineCapsEnum | null;
+
+  line_join?: public_VectorLayerLineJoinsEnum | null;
+
+  dash_array?: string | null;
+
+  dash_offset?: string | null;
+
+  fill?: boolean | null;
+
+  fill_color?: string | null;
+
+  fill_opacity_percent?: number | null;
+
+  fill_rule?: public_VectorLayerFillRulesEnum | null;
+
+  label?: string | null;
+
+  sys_period: string;
+
+  created_at: Date;
+
+  updated_at: Date;
+
+  updated_by?: string | null;
+}
+
+/** Represents the mutator for the table partman.template_public_vector_layer_displays_history */
+export interface TemplatePublicVectorLayerDisplaysHistoryMutator {
+  vector_layer_display_id?: string;
+
+  vector_layer_id?: string | null;
+
+  display_property_value?: string | null;
+
+  marker_type?: public_VectorLayerMarkerTypesEnum | null;
+
+  circle_marker_radius?: number | null;
+
+  marker_symbol?: string | null;
+
+  marker_size?: number | null;
+
+  stroke?: boolean | null;
+
+  color?: string | null;
+
+  weight?: number | null;
+
+  line_cap?: public_VectorLayerLineCapsEnum | null;
+
+  line_join?: public_VectorLayerLineJoinsEnum | null;
+
+  dash_array?: string | null;
+
+  dash_offset?: string | null;
+
+  fill?: boolean | null;
+
+  fill_color?: string | null;
+
+  fill_opacity_percent?: number | null;
+
+  fill_rule?: public_VectorLayerFillRulesEnum | null;
+
+  label?: string | null;
+
+  sys_period?: string;
+
+  created_at?: Date;
+
+  updated_at?: Date;
+
+  updated_by?: string | null;
+}

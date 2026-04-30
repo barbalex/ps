@@ -1,0 +1,56 @@
+/** Represents the table partman.template_public_wfs_service_layers_history */
+export default interface TemplatePublicWfsServiceLayersHistory {
+  wfs_service_layer_id: string;
+
+  wfs_service_id: string | null;
+
+  name: string | null;
+
+  label: string | null;
+
+  sys_period: string;
+
+  created_at: Date;
+
+  updated_at: Date;
+
+  updated_by: string | null;
+}
+
+/** Represents the initializer for the table partman.template_public_wfs_service_layers_history */
+export interface TemplatePublicWfsServiceLayersHistoryInitializer {
+  wfs_service_layer_id: string;
+
+  wfs_service_id?: string | null;
+
+  name?: string | null;
+
+  label?: string | null;
+
+  sys_period: string;
+
+  created_at: Date;
+
+  updated_at: Date;
+
+  updated_by?: string | null;
+}
+
+/** Represents the mutator for the table partman.template_public_wfs_service_layers_history */
+export interface TemplatePublicWfsServiceLayersHistoryMutator {
+  wfs_service_layer_id?: string;
+
+  wfs_service_id?: string | null;
+
+  name?: string | null;
+
+  label?: string | null;
+
+  sys_period?: string;
+
+  created_at?: Date;
+
+  updated_at?: Date;
+
+  updated_by?: string | null;
+}

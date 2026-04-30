@@ -11,6 +11,8 @@ export default interface UsersHistory {
 
   email: string | null;
 
+  image: string | null;
+
   email_verified: boolean | null;
 
   two_factor_enabled: boolean | null;
@@ -42,6 +44,8 @@ export interface UsersHistoryInitializer {
   name?: string | null;
 
   email?: string | null;
+
+  image?: string | null;
 
   /** Default value: false */
   email_verified?: boolean | null;
@@ -79,6 +83,8 @@ export interface UsersHistoryMutator {
   name?: string | null;
 
   email?: string | null;
+
+  image?: string | null;
 
   email_verified?: boolean | null;
 

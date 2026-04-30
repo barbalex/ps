@@ -1,0 +1,74 @@
+/** Represents the table partman.template_public_accounts_history */
+export default interface TemplatePublicAccountsHistory {
+  account_id: string;
+
+  user_id: string | null;
+
+  type: string | null;
+
+  period_start: Date | null;
+
+  period_end: Date | null;
+
+  projects_label_by: string | null;
+
+  label: string | null;
+
+  sys_period: string;
+
+  created_at: Date;
+
+  updated_at: Date;
+
+  updated_by: string | null;
+}
+
+/** Represents the initializer for the table partman.template_public_accounts_history */
+export interface TemplatePublicAccountsHistoryInitializer {
+  account_id: string;
+
+  user_id?: string | null;
+
+  type?: string | null;
+
+  period_start?: Date | null;
+
+  period_end?: Date | null;
+
+  projects_label_by?: string | null;
+
+  label?: string | null;
+
+  sys_period: string;
+
+  created_at: Date;
+
+  updated_at: Date;
+
+  updated_by?: string | null;
+}
+
+/** Represents the mutator for the table partman.template_public_accounts_history */
+export interface TemplatePublicAccountsHistoryMutator {
+  account_id?: string;
+
+  user_id?: string | null;
+
+  type?: string | null;
+
+  period_start?: Date | null;
+
+  period_end?: Date | null;
+
+  projects_label_by?: string | null;
+
+  label?: string | null;
+
+  sys_period?: string;
+
+  created_at?: Date;
+
+  updated_at?: Date;
+
+  updated_by?: string | null;
+}

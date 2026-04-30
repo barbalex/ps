@@ -1,0 +1,74 @@
+/** Represents the table partman.template_public_subprojects_history */
+export default interface TemplatePublicSubprojectsHistory {
+  subproject_id: string;
+
+  project_id: string | null;
+
+  name: string | null;
+
+  start_year: number | null;
+
+  end_year: number | null;
+
+  data: unknown | null;
+
+  label: string | null;
+
+  created_at: Date;
+
+  updated_at: Date;
+
+  updated_by: string | null;
+
+  sys_period: string;
+}
+
+/** Represents the initializer for the table partman.template_public_subprojects_history */
+export interface TemplatePublicSubprojectsHistoryInitializer {
+  subproject_id: string;
+
+  project_id?: string | null;
+
+  name?: string | null;
+
+  start_year?: number | null;
+
+  end_year?: number | null;
+
+  data?: unknown | null;
+
+  label?: string | null;
+
+  created_at: Date;
+
+  updated_at: Date;
+
+  updated_by?: string | null;
+
+  sys_period: string;
+}
+
+/** Represents the mutator for the table partman.template_public_subprojects_history */
+export interface TemplatePublicSubprojectsHistoryMutator {
+  subproject_id?: string;
+
+  project_id?: string | null;
+
+  name?: string | null;
+
+  start_year?: number | null;
+
+  end_year?: number | null;
+
+  data?: unknown | null;
+
+  label?: string | null;
+
+  created_at?: Date;
+
+  updated_at?: Date;
+
+  updated_by?: string | null;
+
+  sys_period?: string;
+}

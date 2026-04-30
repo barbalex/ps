@@ -1,0 +1,2 @@
+export interface projects_create_vector_layers_trigger_params {
+}

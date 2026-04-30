@@ -16,6 +16,8 @@ export default interface Users {
   /** Users email address for communication and login. Needs to be unique. Project manager can list project user by email before this user creates an own login (thus has no user_id yet) */
   email: string | null;
 
+  image: string | null;
+
   /** Whether the users email is verified */
   email_verified: boolean | null;
 
@@ -53,6 +55,8 @@ export interface UsersInitializer {
 
   /** Users email address for communication and login. Needs to be unique. Project manager can list project user by email before this user creates an own login (thus has no user_id yet) */
   email?: string | null;
+
+  image?: string | null;
 
   /**
    * Whether the users email is verified
@@ -102,6 +106,8 @@ export interface UsersMutator {
 
   /** Users email address for communication and login. Needs to be unique. Project manager can list project user by email before this user creates an own login (thus has no user_id yet) */
   email?: string | null;
+
+  image?: string | null;
 
   /** Whether the users email is verified */
   email_verified?: boolean | null;

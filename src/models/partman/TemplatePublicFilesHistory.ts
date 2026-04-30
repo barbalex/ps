@@ -1,0 +1,140 @@
+/** Represents the table partman.template_public_files_history */
+export default interface TemplatePublicFilesHistory {
+  file_id: string;
+
+  project_id: string | null;
+
+  subproject_id: string | null;
+
+  place_id: string | null;
+
+  action_id: string | null;
+
+  check_id: string | null;
+
+  name: string | null;
+
+  size: string | null;
+
+  label: string | null;
+
+  data: unknown | null;
+
+  mimetype: string | null;
+
+  width: number | null;
+
+  height: number | null;
+
+  file: unknown | null;
+
+  preview: unknown | null;
+
+  url: string | null;
+
+  uuid: string | null;
+
+  preview_uuid: string | null;
+
+  sys_period: string;
+
+  created_at: Date;
+
+  updated_at: Date;
+
+  updated_by: string | null;
+}
+
+/** Represents the initializer for the table partman.template_public_files_history */
+export interface TemplatePublicFilesHistoryInitializer {
+  file_id: string;
+
+  project_id?: string | null;
+
+  subproject_id?: string | null;
+
+  place_id?: string | null;
+
+  action_id?: string | null;
+
+  check_id?: string | null;
+
+  name?: string | null;
+
+  size?: string | null;
+
+  label?: string | null;
+
+  data?: unknown | null;
+
+  mimetype?: string | null;
+
+  width?: number | null;
+
+  height?: number | null;
+
+  file?: unknown | null;
+
+  preview?: unknown | null;
+
+  url?: string | null;
+
+  uuid?: string | null;
+
+  preview_uuid?: string | null;
+
+  sys_period: string;
+
+  created_at: Date;
+
+  updated_at: Date;
+
+  updated_by?: string | null;
+}
+
+/** Represents the mutator for the table partman.template_public_files_history */
+export interface TemplatePublicFilesHistoryMutator {
+  file_id?: string;
+
+  project_id?: string | null;
+
+  subproject_id?: string | null;
+
+  place_id?: string | null;
+
+  action_id?: string | null;
+
+  check_id?: string | null;
+
+  name?: string | null;
+
+  size?: string | null;
+
+  label?: string | null;
+
+  data?: unknown | null;
+
+  mimetype?: string | null;
+
+  width?: number | null;
+
+  height?: number | null;
+
+  file?: unknown | null;
+
+  preview?: unknown | null;
+
+  url?: string | null;
+
+  uuid?: string | null;
+
+  preview_uuid?: string | null;
+
+  sys_period?: string;
+
+  created_at?: Date;
+
+  updated_at?: Date;
+
+  updated_by?: string | null;
+}

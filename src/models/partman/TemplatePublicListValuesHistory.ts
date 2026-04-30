@@ -1,0 +1,86 @@
+/** Represents the table partman.template_public_list_values_history */
+export default interface TemplatePublicListValuesHistory {
+  list_value_id: string;
+
+  list_id: string | null;
+
+  value_integer: number | null;
+
+  value_numeric: string | null;
+
+  value_text: string | null;
+
+  value_date: Date | null;
+
+  value_datetime: Date | null;
+
+  obsolete: boolean | null;
+
+  label: string | null;
+
+  sys_period: string;
+
+  created_at: Date;
+
+  updated_at: Date;
+
+  updated_by: string | null;
+}
+
+/** Represents the initializer for the table partman.template_public_list_values_history */
+export interface TemplatePublicListValuesHistoryInitializer {
+  list_value_id: string;
+
+  list_id?: string | null;
+
+  value_integer?: number | null;
+
+  value_numeric?: string | null;
+
+  value_text?: string | null;
+
+  value_date?: Date | null;
+
+  value_datetime?: Date | null;
+
+  obsolete?: boolean | null;
+
+  label?: string | null;
+
+  sys_period: string;
+
+  created_at: Date;
+
+  updated_at: Date;
+
+  updated_by?: string | null;
+}
+
+/** Represents the mutator for the table partman.template_public_list_values_history */
+export interface TemplatePublicListValuesHistoryMutator {
+  list_value_id?: string;
+
+  list_id?: string | null;
+
+  value_integer?: number | null;
+
+  value_numeric?: string | null;
+
+  value_text?: string | null;
+
+  value_date?: Date | null;
+
+  value_datetime?: Date | null;
+
+  obsolete?: boolean | null;
+
+  label?: string | null;
+
+  sys_period?: string;
+
+  created_at?: Date;
+
+  updated_at?: Date;
+
+  updated_by?: string | null;
+}
