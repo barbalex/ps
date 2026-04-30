@@ -2016,6 +2016,55 @@ END
 $$;
 
 --------------------------------------------------------------
+-- project_qcs -> project_qcs_history
+-- Retention: 5 years
+--
+ALTER TABLE project_qcs
+ADD COLUMN IF NOT EXISTS sys_period tstzrange;
+
+UPDATE project_qcs
+SET sys_period = tstzrange(updated_at, NULL, '[)')
+WHERE sys_period IS NULL;
+
+ALTER TABLE project_qcs
+ALTER COLUMN sys_period SET NOT NULL;
+
+COMMENT ON COLUMN project_qcs.sys_period IS 'System period maintained by temporal_tables for auditing and historic queries.';
+
+CREATE TABLE IF NOT EXISTS project_qcs_history (
+	LIKE project_qcs INCLUDING DEFAULTS
+) PARTITION BY RANGE (updated_at);
+
+ALTER TABLE project_qcs_history OWNER TO partman_user;
+
+COMMENT ON TABLE project_qcs_history IS 'System-versioned history of project_qcs. Managed by temporal_tables and partitioned yearly by updated_at.';
+COMMENT ON COLUMN project_qcs_history.sys_period IS 'System period written by temporal_tables. lower(sys_period) is when the row version became current, upper(sys_period) when it stopped being current.';
+
+CREATE INDEX IF NOT EXISTS project_qcs_history_updated_at_idx
+ON project_qcs_history USING btree (updated_at);
+
+CREATE INDEX IF NOT EXISTS project_qcs_history_project_qc_id_updated_at_idx
+ON project_qcs_history USING btree (project_qc_id, updated_at);
+
+CREATE INDEX IF NOT EXISTS project_qcs_history_sys_period_idx
+ON project_qcs_history USING gist (sys_period);
+
+DO $$
+BEGIN
+	IF NOT EXISTS (
+		SELECT 1
+		FROM pg_trigger
+		WHERE tgname = 'versioning_project_qcs_trigger'
+			AND tgrelid = 'project_qcs'::regclass
+	) THEN
+		CREATE TRIGGER versioning_project_qcs_trigger
+		BEFORE INSERT OR UPDATE OR DELETE ON project_qcs
+		FOR EACH ROW EXECUTE PROCEDURE versioning('sys_period', 'project_qcs_history', true);
+	END IF;
+END
+$$;
+
+--------------------------------------------------------------
 -- projects -> projects_history
 -- Retention: keep forever
 --
@@ -3271,6 +3320,23 @@ WHERE NOT EXISTS (
 );
 
 SELECT partman.create_parent(
+	p_parent_table := 'public.project_qcs_history',
+	p_control := 'updated_at',
+	p_interval := '1 year',
+	p_type := 'range',
+	p_premake := 4,
+	p_start_partition := to_char(date_trunc('year', CURRENT_TIMESTAMP), 'YYYY-MM-DD HH24:MI:SS'),
+	p_default_table := true,
+	p_automatic_maintenance := 'on',
+	p_jobmon := false
+)
+WHERE NOT EXISTS (
+	SELECT 1
+	FROM partman.part_config
+	WHERE parent_table = 'public.project_qcs_history'
+);
+
+SELECT partman.create_parent(
 	p_parent_table := 'public.projects_history',
 	p_control := 'updated_at',
 	p_interval := '1 year',
@@ -3646,6 +3712,13 @@ SET jobmon = false,
 	retention_keep_table = true,
 	retention_keep_index = true
 WHERE parent_table = 'public.projects_history';
+UPDATE partman.part_config
+SET jobmon = false,
+	retention = '5 years',
+	retention_keep_table = false,
+	retention_keep_index = false
+WHERE parent_table = 'public.project_qcs_history';
+
 
 UPDATE partman.part_config
 SET jobmon = false,

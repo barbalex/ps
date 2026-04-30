@@ -1113,6 +1113,18 @@ export const startSyncing = async (userId: string) => {
         },
         table: 'qcs_assignment',
         primaryKey: ['qcs_assignment_id'],
+            project_qcs: {
+              shape: {
+                url,
+                params: {
+                  table: 'project_qcs',
+                  where: `project_id IN (SELECT project_id FROM project_users WHERE user_id = $1)`,
+                  params: { '1': userId },
+                },
+              },
+              table: 'project_qcs',
+              primaryKey: ['project_qc_id'],
+            },
       },
     }
 

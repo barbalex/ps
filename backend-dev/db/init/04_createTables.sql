@@ -1964,4 +1964,35 @@ CREATE INDEX IF NOT EXISTS qcs_assignment_label_idx ON qcs_assignment USING btre
 
 COMMENT ON TABLE qcs_assignment IS 'Quality controls assigned to a project or subproject. The level(s) of applicability (root, project, subproject) are defined on the qcs table itself.';
 
+--------------------------------------------------------------
+-- project_qcs: project-specific quality controls
+--
+CREATE TABLE IF NOT EXISTS project_qcs(
+  project_qc_id uuid PRIMARY KEY DEFAULT public.uuid_generate_v7(),
+  project_id uuid NOT NULL REFERENCES projects(project_id) ON DELETE CASCADE ON UPDATE CASCADE DEFERRABLE INITIALLY DEFERRED,
+  name text DEFAULT NULL,
+  label_de text DEFAULT NULL,
+  label_en text DEFAULT NULL,
+  label_fr text DEFAULT NULL,
+  label_it text DEFAULT NULL,
+  description text DEFAULT NULL,
+  sort smallint DEFAULT NULL,
+  is_project_level boolean DEFAULT false,
+  is_subproject_level boolean DEFAULT false,
+  filter_by_year boolean DEFAULT false,
+  sql text DEFAULT NULL,
+  sys_period tstzrange DEFAULT NULL,
+  created_at timestamptz NOT NULL DEFAULT now(),
+  updated_at timestamptz NOT NULL DEFAULT now(),
+  updated_by text DEFAULT NULL,
+  UNIQUE (project_id, name)
+);
+
+CREATE INDEX IF NOT EXISTS project_qcs_project_id_idx ON project_qcs USING btree(project_id);
+CREATE INDEX IF NOT EXISTS project_qcs_name_idx ON project_qcs USING btree(name);
+CREATE INDEX IF NOT EXISTS project_qcs_label_de_idx ON project_qcs USING btree(label_de);
+CREATE INDEX IF NOT EXISTS project_qcs_sort_idx ON project_qcs USING btree(sort);
+
+COMMENT ON TABLE project_qcs IS 'Project-specific quality controls. Only visible within the project and its sub-projects. Created by project owners and designers.';
+
 COMMIT;
