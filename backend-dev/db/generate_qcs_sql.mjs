@@ -1,6 +1,6 @@
 #!/usr/bin/env node
-// Regenerates backend/db/init/09_seedQcs.sql from seed-data/qcs.csv.
-// Run from the project root: node backend/db/generate_qcs_sql.mjs
+// Regenerates backend-dev/db/init/09_seedQcs.sql from seed-data/qcs.csv.
+// Run from the project root: node backend-dev/db/generate_qcs_sql.mjs
 
 import { readFileSync, writeFileSync } from 'fs'
 import { fileURLToPath } from 'url'
@@ -10,7 +10,7 @@ const __dirname = dirname(fileURLToPath(import.meta.url))
 const projectRoot = join(__dirname, '..', '..')
 
 const csvPath = join(projectRoot, 'seed-data', 'qcs.csv')
-const sqlPath = join(projectRoot, 'backend', 'db', 'init', '09_seedQcs.sql')
+const sqlPath = join(projectRoot, 'backend-dev', 'db', 'init', '09_seedQcs.sql')
 
 const csv = readFileSync(csvPath, 'utf-8')
 
@@ -106,7 +106,7 @@ const valueLines = rows
 
 const sql = `-- qcs: quality controls for data
 -- Generated from seed-data/qcs.csv
--- Run \`node backend/db/generate_qcs_sql.mjs\` from project root to regenerate after editing the CSV.
+-- Run \`node backend-dev/db/generate_qcs_sql.mjs\` from project root to regenerate after editing the CSV.
 
 INSERT INTO qcs (name, label_de, label_en, label_fr, label_it, is_root_level, is_project_level, is_subproject_level, filter_by_year, sql)
 VALUES
