@@ -1,12 +1,25 @@
 ---
+TODO: test passkey on mobile
+TODO: test verification of login via email/password: does a banner appear before I verificated?
+---
+
+---
+
+Better-Auth:
+
+- Last Login Method: https://better-auth.com/docs/plugins/last-login-method
+- jwt?: https://better-auth.com/docs/plugins/jwt
+- payment: https://better-auth.com/docs/plugins/stripe
+
+---
+
 lets create a new table project_qcs. it's goal is to enable owners and project designers to create own qcs that are only visible in this project and its sub-projects. It will have the same structure as qcs but with an additional column project_id, while is_root_level is not needed.
 
 We need to ensure the data is synced, and only where the active user is reader of the respective project.
 
 we will later add routes, tree nav, breadcrumbs, list view and form for project_qcs, but not yet.
 
-We will later also add project_cqs to /data/projects/018cfcf7-6424-7000-a100-851c5cc2c878/qcs-choose and /data/projects/018cfcf7-6424-7000-a100-851c5cc2c878/subprojects/018cfd27-ee92-7000-b678-e75497d6c60e/qcs-choose. But not yet.
----
+## We will later also add project_cqs to /data/projects/018cfcf7-6424-7000-a100-851c5cc2c878/qcs-choose and /data/projects/018cfcf7-6424-7000-a100-851c5cc2c878/subprojects/018cfd27-ee92-7000-b678-e75497d6c60e/qcs-choose. But not yet.
 
 lets add routes, tree nav, breadcrumbs, list view and form for project_qcs.
 
