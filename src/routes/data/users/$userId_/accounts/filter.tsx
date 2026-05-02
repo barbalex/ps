@@ -4,6 +4,6 @@ import { AccountFilter } from '../../../../../formsAndLists/account/Filter.tsx'
 
 const from = '/data/users/$userId_/accounts/filter'
 
-export const Route = createFileRoute(from)({
+export const Route = createFileRoute('/data/users/$userId_/accounts/filter')({
   component: () => <AccountFilter from={from} />,
 })

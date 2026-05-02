@@ -1,10 +1,8 @@
 import { createFileRoute } from '@tanstack/react-router'
 
 import { CheckIndex } from '../../../../../../../../../../formsAndLists/check'
-const from =
-  '/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/checks/$checkId_/'
 
-export const Route = createFileRoute(from)({
+export const Route = createFileRoute('/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/checks/$checkId_/')({
   component: () => (
     <CheckIndex
       from="/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/checks/$checkId_/"

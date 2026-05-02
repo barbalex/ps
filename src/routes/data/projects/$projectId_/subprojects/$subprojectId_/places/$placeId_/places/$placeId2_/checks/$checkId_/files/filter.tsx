@@ -5,6 +5,6 @@ import { FileFilter } from '../../../../../../../../../../../../../formsAndLists
 const from =
   '/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/places/$placeId2_/checks/$checkId_/files/filter'
 
-export const Route = createFileRoute(from)({
+export const Route = createFileRoute('/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/places/$placeId2_/checks/$checkId_/files/filter')({
   component: () => <FileFilter from={from} />,
 })

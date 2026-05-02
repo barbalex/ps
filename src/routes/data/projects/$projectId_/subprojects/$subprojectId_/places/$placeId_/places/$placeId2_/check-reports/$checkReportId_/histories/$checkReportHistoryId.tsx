@@ -5,6 +5,6 @@ import { CheckReportHistoryCompare } from '../../../../../../../../../../../../.
 const from =
   '/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/places/$placeId2_/check-reports/$checkReportId_/histories/$checkReportHistoryId'
 
-export const Route = createFileRoute(from)({
+export const Route = createFileRoute('/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/places/$placeId2_/check-reports/$checkReportId_/histories/$checkReportHistoryId')({
   component: () => <CheckReportHistoryCompare from={from} />,
 })

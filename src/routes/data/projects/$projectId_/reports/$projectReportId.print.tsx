@@ -2,9 +2,8 @@ import { createFileRoute } from '@tanstack/react-router'
 
 import { ProjectReportPrint } from '../../../../../formsAndLists/projectReport/Print.tsx'
 
-const from = '/data/projects/$projectId_/reports/$projectReportId/print'
 
-export const Route = createFileRoute(from)({
+export const Route = createFileRoute('/data/projects/$projectId_/reports/$projectReportId/print')({
   component: () => (
     <ProjectReportPrint from="/data/projects/$projectId_/reports/$projectReportId/print" />
   ),

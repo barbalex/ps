@@ -7,7 +7,7 @@ export const ProjectQcNode = ({ projectId, nav, level = 4 }) => {
   const location = useLocation()
 
   const urlPath = location.pathname.split('/').filter((p) => p !== '')
-  const ownArray = ['data', 'projects', projectId, 'project-qcs', nav.id]
+  const ownArray = ['data', 'projects', projectId, 'qcs', nav.id]
   const ownUrl = `/${ownArray.join('/')}`
 
   const isInActiveNodeArray = ownArray.every((part, i) => urlPath[i] === part)

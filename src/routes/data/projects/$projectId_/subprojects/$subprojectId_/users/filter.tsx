@@ -5,6 +5,6 @@ import { SubprojectUserFilter } from '../../../../../../../formsAndLists/subproj
 const from =
   '/data/projects/$projectId_/subprojects/$subprojectId_/users/filter'
 
-export const Route = createFileRoute(from)({
+export const Route = createFileRoute('/data/projects/$projectId_/subprojects/$subprojectId_/users/filter')({
   component: () => <SubprojectUserFilter from={from} />,
 })

@@ -1,9 +1,8 @@
 import { createFileRoute } from '@tanstack/react-router'
 
 import { ListWithValues } from '../../../../../../formsAndLists/list/WithValues.tsx'
-const from = '/data/projects/$projectId_/lists/$listId_/list'
 
-export const Route = createFileRoute(from)({
+export const Route = createFileRoute('/data/projects/$projectId_/lists/$listId_/list')({
   component: () => (
     <ListWithValues from="/data/projects/$projectId_/lists/$listId_/list" />
   ),

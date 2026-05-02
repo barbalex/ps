@@ -4,6 +4,6 @@ import { WidgetForFieldFilter } from '../../../formsAndLists/widgetForField/Filt
 
 const from = '/data/widgets-for-fields/filter'
 
-export const Route = createFileRoute(from)({
+export const Route = createFileRoute('/data/widgets-for-fields/filter')({
   component: () => <WidgetForFieldFilter from={from} />,
 })

@@ -2,10 +2,8 @@ import { createFileRoute } from '@tanstack/react-router'
 
 import { Chart } from '../../../../../../../../formsAndLists/chart'
 import { NotFound } from '../../../../../../../../components/NotFound.tsx'
-const from =
-  '/data/projects/$projectId_/subprojects/$subprojectId_/charts/$chartId_/chart'
 
-export const Route = createFileRoute(from)({
+export const Route = createFileRoute('/data/projects/$projectId_/subprojects/$subprojectId_/charts/$chartId_/chart')({
   component: () => (
     <Chart from="/data/projects/$projectId_/subprojects/$subprojectId_/charts/$chartId_/chart" />
   ),

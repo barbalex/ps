@@ -5,6 +5,6 @@ import { ObservationHistoryCompare } from '../../../../../../../../../../../form
 const from =
   '/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/observations/$observationId_/histories/$observationHistoryId'
 
-export const Route = createFileRoute(from)({
+export const Route = createFileRoute('/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/observations/$observationId_/histories/$observationHistoryId')({
   component: () => <ObservationHistoryCompare from={from} />,
 })

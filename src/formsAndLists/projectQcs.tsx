@@ -8,7 +8,7 @@ import { Loading } from '../components/shared/Loading.tsx'
 
 import '../form.css'
 
-const from = '/data/projects/$projectId_/project-qcs/'
+const from = '/data/projects/$projectId_/qcs/'
 
 export const ProjectQcs = () => {
   const { projectId } = useParams({ from })

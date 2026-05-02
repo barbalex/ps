@@ -5,6 +5,6 @@ import { ChartFilter } from '../../../../../../../formsAndLists/chart/Filter.tsx
 const from =
   '/data/projects/$projectId_/subprojects/$subprojectId_/charts/filter'
 
-export const Route = createFileRoute(from)({
+export const Route = createFileRoute('/data/projects/$projectId_/subprojects/$subprojectId_/charts/filter')({
   component: () => <ChartFilter from={from} />,
 })

@@ -38,7 +38,7 @@ export const useProjectQcsNavData = ({ projectId }: Props) => {
   const navs: NavData = res?.rows ?? []
   const parentArray = ['data', 'projects', projectId]
   const parentUrl = `/${parentArray.join('/')}`
-  const ownArray = [...parentArray, 'project-qcs']
+  const ownArray = [...parentArray, 'qcs']
   const ownUrl = `/${ownArray.join('/')}`
   const isOpen = openNodes.some((array) => isEqual(array, ownArray))
   const urlPath = location.pathname.split('/').filter((p) => p !== '')

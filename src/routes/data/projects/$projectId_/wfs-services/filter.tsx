@@ -4,6 +4,6 @@ import { WfsServiceFilter } from '../../../../../formsAndLists/wfsService/Filter
 
 const from = '/data/projects/$projectId_/wfs-services/filter'
 
-export const Route = createFileRoute(from)({
+export const Route = createFileRoute('/data/projects/$projectId_/wfs-services/filter')({
   component: () => <WfsServiceFilter from={from} />,
 })

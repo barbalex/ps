@@ -489,7 +489,7 @@ export const useProjectNavData = ({
                   }),
                 },
                 {
-                  id: 'project-qcs',
+                  id: 'qcs',
                   label: buildNavLabel({
                     loading,
                     countFiltered: nav?.project_qcs_count_unfiltered ?? 0,

@@ -4,6 +4,6 @@ import { UserFilter } from '../../../formsAndLists/user/Filter.tsx'
 
 const from = '/data/users/filter'
 
-export const Route = createFileRoute(from)({
+export const Route = createFileRoute('/data/users/filter')({
   component: () => <UserFilter from={from} />,
 })

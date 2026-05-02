@@ -4,6 +4,6 @@ import { WmsServiceFilter } from '../../../../../formsAndLists/wmsService/Filter
 
 const from = '/data/projects/$projectId_/wms-services/filter'
 
-export const Route = createFileRoute(from)({
+export const Route = createFileRoute('/data/projects/$projectId_/wms-services/filter')({
   component: () => <WmsServiceFilter from={from} />,
 })

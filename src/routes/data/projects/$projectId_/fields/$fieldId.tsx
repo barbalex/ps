@@ -1,9 +1,8 @@
 import { createFileRoute } from '@tanstack/react-router'
 
 import { Field } from '../../../../../formsAndLists/field'
-const from = '/data/projects/$projectId_/fields/$fieldId'
 
-export const Route = createFileRoute(from)({
+export const Route = createFileRoute('/data/projects/$projectId_/fields/$fieldId')({
   component: () => <Field from="/data/projects/$projectId_/fields/$fieldId" />,
   beforeLoad: ({ params }) => {
     if (!params.projectId || params.projectId === 'undefined') {

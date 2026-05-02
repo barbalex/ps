@@ -4,6 +4,6 @@ import { FieldHistoryCompare } from '../../../../../../../formsAndLists/field/Hi
 
 const from = '/data/projects/$projectId_/fields/$fieldId_/histories/$fieldHistoryId'
 
-export const Route = createFileRoute(from)({
+export const Route = createFileRoute('/data/projects/$projectId_/fields/$fieldId_/histories/$fieldHistoryId')({
   component: () => <FieldHistoryCompare from={from} />,
 })

@@ -6,16 +6,16 @@ import { useSetAtom } from 'jotai'
 import { getValueFromChange } from '../../modules/getValueFromChange.ts'
 import { Header } from './Header.tsx'
 import { Loading } from '../../components/shared/Loading.tsx'
-import { ProjectOwnQcForm as Form } from './Form.tsx'
+import { ProjectQcForm as Form } from './Form.tsx'
 import { NotFound } from '../../components/NotFound.tsx'
 import { addOperationAtom } from '../../store.ts'
 import type ProjectQcs from '../../models/public/ProjectQcs.ts'
 
 import '../../form.css'
 
-const from = '/data/projects/$projectId_/project-qcs/$projectQcId/'
+const from = '/data/projects/$projectId_/qcs/$projectQcId/'
 
-export const ProjectOwnQc = () => {
+export const ProjectQc = () => {
   const { projectQcId } = useParams({ from })
   const db = usePGlite()
   const addOperation = useSetAtom(addOperationAtom)

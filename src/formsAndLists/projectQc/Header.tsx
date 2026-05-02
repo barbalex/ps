@@ -8,7 +8,7 @@ import { createProjectQc } from '../../modules/createRows.ts'
 import { FormHeader } from '../../components/FormHeader/index.tsx'
 import { addOperationAtom } from '../../store.ts'
 
-const from = '/data/projects/$projectId_/project-qcs/$projectQcId/'
+const from = '/data/projects/$projectId_/qcs/$projectQcId/'
 
 export const Header = ({ autoFocusRef }) => {
   const { projectId, projectQcId } = useParams({ from })

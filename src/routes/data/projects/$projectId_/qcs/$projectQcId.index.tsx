@@ -1,11 +1,11 @@
 import { createFileRoute } from '@tanstack/react-router'
 
-import { ProjectOwnQc } from '../../../../../formsAndLists/projectOwnQc/index.tsx'
+import { ProjectQc } from '../../../../../formsAndLists/projectQc/index.tsx'
 
 export const Route = createFileRoute(
-  '/data/projects/$projectId_/project-qcs/$projectQcId/',
+  '/data/projects/$projectId_/qcs/$projectQcId/',
 )({
-  component: ProjectOwnQc,
+  component: ProjectQc,
   beforeLoad: ({ params }) => {
     if (!params.projectId || params.projectId === 'undefined') {
       throw new Error('Invalid or missing projectId in route parameters')

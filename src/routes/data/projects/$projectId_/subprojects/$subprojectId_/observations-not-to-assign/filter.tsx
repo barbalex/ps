@@ -5,6 +5,6 @@ import { ObservationNotToAssignFilter } from '../../../../../../../formsAndLists
 const from =
   '/data/projects/$projectId_/subprojects/$subprojectId_/observations-not-to-assign/filter'
 
-export const Route = createFileRoute(from)({
+export const Route = createFileRoute('/data/projects/$projectId_/subprojects/$subprojectId_/observations-not-to-assign/filter')({
   component: () => <ObservationNotToAssignFilter from={from} />,
 })

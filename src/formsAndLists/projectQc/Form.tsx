@@ -6,7 +6,7 @@ import { SqlEditorField } from '../../components/shared/SqlEditorField.tsx'
 
 import '../../form.css'
 
-export const ProjectOwnQcForm = ({
+export const ProjectQcForm = ({
   onChange,
   validations = {},
   row,

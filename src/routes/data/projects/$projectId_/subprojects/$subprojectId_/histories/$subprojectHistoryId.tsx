@@ -5,6 +5,6 @@ import { SubprojectHistoryCompare } from '../../../../../../../formsAndLists/sub
 const from =
   '/data/projects/$projectId_/subprojects/$subprojectId_/histories/$subprojectHistoryId'
 
-export const Route = createFileRoute(from)({
+export const Route = createFileRoute('/data/projects/$projectId_/subprojects/$subprojectId_/histories/$subprojectHistoryId')({
   component: () => <SubprojectHistoryCompare from={from} />,
 })

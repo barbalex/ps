@@ -5,6 +5,6 @@ import { PlaceHistoryCompare } from '../../../../../../../../../../../formsAndLi
 const from =
   '/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/places/$placeId2_/histories/$placeHistoryId'
 
-export const Route = createFileRoute(from)({
+export const Route = createFileRoute('/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/places/$placeId2_/histories/$placeHistoryId')({
   component: () => <PlaceHistoryCompare from={from} />,
 })

@@ -36,7 +36,7 @@ export const useProjectQcNavData = ({ projectId, projectQcId }: Props) => {
   const loading = res === undefined
   const nav: NavData | undefined = res?.rows?.[0]
 
-  const parentArray = ['data', 'projects', projectId, 'project-qcs']
+  const parentArray = ['data', 'projects', projectId, 'qcs']
   const ownArray = [...parentArray, projectQcId]
   const isOpen = openNodes.some((array) => isEqual(array, ownArray))
   const parentUrl = `/${parentArray.join('/')}`

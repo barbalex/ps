@@ -5,7 +5,7 @@ import { NotFound } from '../../../../../../../components/NotFound.tsx'
 
 const from = '/data/users/$userId_/accounts/$accountId_/project-fields/'
 
-export const Route = createFileRoute(from)({
+export const Route = createFileRoute('/data/users/$userId_/accounts/$accountId_/project-fields/')({
   component: () => <Fields from={from} />,
   notFoundComponent: NotFound,
 })

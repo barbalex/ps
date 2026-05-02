@@ -4,7 +4,7 @@ import { Field } from '../../../../../../../formsAndLists/field/index.tsx'
 
 const from = '/data/users/$userId_/accounts/$accountId_/project-fields/$fieldId'
 
-export const Route = createFileRoute(from)({
+export const Route = createFileRoute('/data/users/$userId_/accounts/$accountId_/project-fields/$fieldId')({
   component: () => <Field from={from} />,
   beforeLoad: ({ params }) => {
     const userId = params.userId ?? params.userId_

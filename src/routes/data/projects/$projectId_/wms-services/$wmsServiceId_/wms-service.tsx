@@ -1,10 +1,8 @@
 import { createFileRoute } from '@tanstack/react-router'
 
 import { WmsService } from '../../../../../../formsAndLists/wmsService'
-const from =
-  '/data/projects/$projectId_/wms-services/$wmsServiceId_/wms-service'
 
-export const Route = createFileRoute(from)({
+export const Route = createFileRoute('/data/projects/$projectId_/wms-services/$wmsServiceId_/wms-service')({
   component: () => (
     <WmsService
       from={

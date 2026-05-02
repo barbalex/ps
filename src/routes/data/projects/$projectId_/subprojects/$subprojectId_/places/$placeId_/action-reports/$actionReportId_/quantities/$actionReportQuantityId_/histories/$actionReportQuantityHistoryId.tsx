@@ -5,6 +5,6 @@ import { ActionReportQuantityHistoryCompare } from '../../../../../../../../../.
 const from =
   '/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/action-reports/$actionReportId_/quantities/$actionReportQuantityId_/histories/$actionReportQuantityHistoryId'
 
-export const Route = createFileRoute(from)({
+export const Route = createFileRoute('/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/action-reports/$actionReportId_/quantities/$actionReportQuantityId_/histories/$actionReportQuantityHistoryId')({
   component: () => <ActionReportQuantityHistoryCompare from={from} />,
 })

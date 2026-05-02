@@ -5,7 +5,7 @@ import { VectorLayerDisplay } from '../../../../../../../../formsAndLists/vector
 const from =
   '/data/projects/$projectId_/vector-layers/$vectorLayerId_/displays/$vectorLayerDisplayId_/vector-layer-display'
 
-export const Route = createFileRoute(from)({
+export const Route = createFileRoute('/data/projects/$projectId_/vector-layers/$vectorLayerId_/displays/$vectorLayerDisplayId_/vector-layer-display')({
   component: () => <VectorLayerDisplay from={from} />,
   beforeLoad: ({ params }) => {
     if (!params.projectId || params.projectId === 'undefined') {

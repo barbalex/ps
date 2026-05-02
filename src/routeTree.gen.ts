@@ -70,7 +70,7 @@ import { Route as DataProjectsProjectIdSubprojectDesignsRouteRouteImport } from 
 import { Route as DataProjectsProjectIdReportsRouteRouteImport } from './routes/data/projects/$projectId_/reports/route'
 import { Route as DataProjectsProjectIdQcsRunRouteRouteImport } from './routes/data/projects/$projectId_/qcs-run/route'
 import { Route as DataProjectsProjectIdQcsAssignmentRouteRouteImport } from './routes/data/projects/$projectId_/qcs-assignment/route'
-import { Route as DataProjectsProjectIdProjectQcsRouteRouteImport } from './routes/data/projects/$projectId_/project-qcs/route'
+import { Route as DataProjectsProjectIdQcsRouteRouteImport } from './routes/data/projects/$projectId_/qcs/route'
 import { Route as DataProjectsProjectIdPlaceLevelsRouteRouteImport } from './routes/data/projects/$projectId_/place-levels/route'
 import { Route as DataProjectsProjectIdListsRouteRouteImport } from './routes/data/projects/$projectId_/lists/route'
 import { Route as DataProjectsProjectIdFilesRouteRouteImport } from './routes/data/projects/$projectId_/files/route'
@@ -89,9 +89,9 @@ import { Route as DataProjectsProjectIdTaxonomiesIndexRouteImport } from './rout
 import { Route as DataProjectsProjectIdSubprojectsIndexRouteImport } from './routes/data/projects/$projectId_/subprojects/index'
 import { Route as DataProjectsProjectIdSubprojectDesignsIndexRouteImport } from './routes/data/projects/$projectId_/subproject-designs/index'
 import { Route as DataProjectsProjectIdReportsIndexRouteImport } from './routes/data/projects/$projectId_/reports/index'
+import { Route as DataProjectsProjectIdQcsIndexRouteImport } from './routes/data/projects/$projectId_/qcs/index'
 import { Route as DataProjectsProjectIdQcsRunIndexRouteImport } from './routes/data/projects/$projectId_/qcs-run/index'
 import { Route as DataProjectsProjectIdQcsAssignmentIndexRouteImport } from './routes/data/projects/$projectId_/qcs-assignment/index'
-import { Route as DataProjectsProjectIdProjectQcsIndexRouteImport } from './routes/data/projects/$projectId_/project-qcs/index'
 import { Route as DataProjectsProjectIdPlaceLevelsIndexRouteImport } from './routes/data/projects/$projectId_/place-levels/index'
 import { Route as DataProjectsProjectIdListsIndexRouteImport } from './routes/data/projects/$projectId_/lists/index'
 import { Route as DataProjectsProjectIdFilesIndexRouteImport } from './routes/data/projects/$projectId_/files/index'
@@ -128,11 +128,11 @@ import { Route as DataProjectsProjectIdWfsServicesWfsServiceIdIndexRouteImport }
 import { Route as DataProjectsProjectIdVectorLayersVectorLayerIdIndexRouteImport } from './routes/data/projects/$projectId_/vector-layers/$vectorLayerId_/index'
 import { Route as DataProjectsProjectIdUsersProjectUserIdIndexRouteImport } from './routes/data/projects/$projectId_/users/$projectUserId.index'
 import { Route as DataProjectsProjectIdUnitsUnitIdIndexRouteImport } from './routes/data/projects/$projectId_/units/$unitId.index'
-import { Route as DataProjectsProjectIdProjectQcsProjectQcIdIndexRouteImport } from './routes/data/projects/$projectId_/project-qcs/$projectQcId.index'
 import { Route as DataProjectsProjectIdTaxonomiesTaxonomyIdIndexRouteImport } from './routes/data/projects/$projectId_/taxonomies/$taxonomyId_/index'
 import { Route as DataProjectsProjectIdSubprojectsSubprojectIdIndexRouteImport } from './routes/data/projects/$projectId_/subprojects/$subprojectId_/index'
 import { Route as DataProjectsProjectIdSubprojectDesignsSubprojectReportDesignIdIndexRouteImport } from './routes/data/projects/$projectId_/subproject-designs/$subprojectReportDesignId.index'
 import { Route as DataProjectsProjectIdReportsProjectReportIdIndexRouteImport } from './routes/data/projects/$projectId_/reports/$projectReportId.index'
+import { Route as DataProjectsProjectIdQcsProjectQcIdIndexRouteImport } from './routes/data/projects/$projectId_/qcs/$projectQcId.index'
 import { Route as DataProjectsProjectIdPlaceLevelsPlaceLevelIdIndexRouteImport } from './routes/data/projects/$projectId_/place-levels/$placeLevelId.index'
 import { Route as DataProjectsProjectIdListsListIdIndexRouteImport } from './routes/data/projects/$projectId_/lists/$listId_/index'
 import { Route as DataProjectsProjectIdDesignsProjectReportDesignIdIndexRouteImport } from './routes/data/projects/$projectId_/designs/$projectReportDesignId.index'
@@ -768,10 +768,10 @@ const DataProjectsProjectIdQcsAssignmentRouteRoute =
     path: '/qcs-assignment',
     getParentRoute: () => DataProjectsProjectIdRouteRoute,
   } as any)
-const DataProjectsProjectIdProjectQcsRouteRoute =
-  DataProjectsProjectIdProjectQcsRouteRouteImport.update({
-    id: '/project-qcs',
-    path: '/project-qcs',
+const DataProjectsProjectIdQcsRouteRoute =
+  DataProjectsProjectIdQcsRouteRouteImport.update({
+    id: '/qcs',
+    path: '/qcs',
     getParentRoute: () => DataProjectsProjectIdRouteRoute,
   } as any)
 const DataProjectsProjectIdPlaceLevelsRouteRoute =
@@ -882,6 +882,12 @@ const DataProjectsProjectIdReportsIndexRoute =
     path: '/',
     getParentRoute: () => DataProjectsProjectIdReportsRouteRoute,
   } as any)
+const DataProjectsProjectIdQcsIndexRoute =
+  DataProjectsProjectIdQcsIndexRouteImport.update({
+    id: '/',
+    path: '/',
+    getParentRoute: () => DataProjectsProjectIdQcsRouteRoute,
+  } as any)
 const DataProjectsProjectIdQcsRunIndexRoute =
   DataProjectsProjectIdQcsRunIndexRouteImport.update({
     id: '/',
@@ -893,12 +899,6 @@ const DataProjectsProjectIdQcsAssignmentIndexRoute =
     id: '/',
     path: '/',
     getParentRoute: () => DataProjectsProjectIdQcsAssignmentRouteRoute,
-  } as any)
-const DataProjectsProjectIdProjectQcsIndexRoute =
-  DataProjectsProjectIdProjectQcsIndexRouteImport.update({
-    id: '/',
-    path: '/',
-    getParentRoute: () => DataProjectsProjectIdProjectQcsRouteRoute,
   } as any)
 const DataProjectsProjectIdPlaceLevelsIndexRoute =
   DataProjectsProjectIdPlaceLevelsIndexRouteImport.update({
@@ -1119,12 +1119,6 @@ const DataProjectsProjectIdUnitsUnitIdIndexRoute =
     path: '/$unitId/',
     getParentRoute: () => DataProjectsProjectIdUnitsRouteRoute,
   } as any)
-const DataProjectsProjectIdProjectQcsProjectQcIdIndexRoute =
-  DataProjectsProjectIdProjectQcsProjectQcIdIndexRouteImport.update({
-    id: '/$projectQcId/',
-    path: '/$projectQcId/',
-    getParentRoute: () => DataProjectsProjectIdProjectQcsRouteRoute,
-  } as any)
 const DataProjectsProjectIdTaxonomiesTaxonomyIdIndexRoute =
   DataProjectsProjectIdTaxonomiesTaxonomyIdIndexRouteImport.update({
     id: '/',
@@ -1151,6 +1145,12 @@ const DataProjectsProjectIdReportsProjectReportIdIndexRoute =
     id: '/$projectReportId/',
     path: '/$projectReportId/',
     getParentRoute: () => DataProjectsProjectIdReportsRouteRoute,
+  } as any)
+const DataProjectsProjectIdQcsProjectQcIdIndexRoute =
+  DataProjectsProjectIdQcsProjectQcIdIndexRouteImport.update({
+    id: '/$projectQcId/',
+    path: '/$projectQcId/',
+    getParentRoute: () => DataProjectsProjectIdQcsRouteRoute,
   } as any)
 const DataProjectsProjectIdPlaceLevelsPlaceLevelIdIndexRoute =
   DataProjectsProjectIdPlaceLevelsPlaceLevelIdIndexRouteImport.update({
@@ -1306,12 +1306,14 @@ const DataProjectsProjectIdSubprojectsSubprojectIdQcsRunRouteRoute =
       DataProjectsProjectIdSubprojectsSubprojectIdRouteRoute,
   } as any)
 const DataProjectsProjectIdSubprojectsSubprojectIdQcsAssignmentRouteRoute =
-  DataProjectsProjectIdSubprojectsSubprojectIdQcsAssignmentRouteRouteImport.update({
-    id: '/qcs-assignment',
-    path: '/qcs-assignment',
-    getParentRoute: () =>
-      DataProjectsProjectIdSubprojectsSubprojectIdRouteRoute,
-  } as any)
+  DataProjectsProjectIdSubprojectsSubprojectIdQcsAssignmentRouteRouteImport.update(
+    {
+      id: '/qcs-assignment',
+      path: '/qcs-assignment',
+      getParentRoute: () =>
+        DataProjectsProjectIdSubprojectsSubprojectIdRouteRoute,
+    } as any,
+  )
 const DataProjectsProjectIdSubprojectsSubprojectIdPlacesRouteRoute =
   DataProjectsProjectIdSubprojectsSubprojectIdPlacesRouteRouteImport.update({
     id: '/places',
@@ -1439,12 +1441,14 @@ const DataProjectsProjectIdSubprojectsSubprojectIdQcsRunIndexRoute =
       DataProjectsProjectIdSubprojectsSubprojectIdQcsRunRouteRoute,
   } as any)
 const DataProjectsProjectIdSubprojectsSubprojectIdQcsAssignmentIndexRoute =
-  DataProjectsProjectIdSubprojectsSubprojectIdQcsAssignmentIndexRouteImport.update({
-    id: '/',
-    path: '/',
-    getParentRoute: () =>
-      DataProjectsProjectIdSubprojectsSubprojectIdQcsAssignmentRouteRoute,
-  } as any)
+  DataProjectsProjectIdSubprojectsSubprojectIdQcsAssignmentIndexRouteImport.update(
+    {
+      id: '/',
+      path: '/',
+      getParentRoute: () =>
+        DataProjectsProjectIdSubprojectsSubprojectIdQcsAssignmentRouteRoute,
+    } as any,
+  )
 const DataProjectsProjectIdSubprojectsSubprojectIdPlacesIndexRoute =
   DataProjectsProjectIdSubprojectsSubprojectIdPlacesIndexRouteImport.update({
     id: '/',
@@ -3806,8 +3810,8 @@ export interface FileRoutesByFullPath {
   '/data/projects/$projectId/files': typeof DataProjectsProjectIdFilesRouteRouteWithChildren
   '/data/projects/$projectId/lists': typeof DataProjectsProjectIdListsRouteRouteWithChildren
   '/data/projects/$projectId/place-levels': typeof DataProjectsProjectIdPlaceLevelsRouteRouteWithChildren
+  '/data/projects/$projectId/qcs': typeof DataProjectsProjectIdQcsRouteRouteWithChildren
   '/data/projects/$projectId/qcs-assignment': typeof DataProjectsProjectIdQcsAssignmentRouteRouteWithChildren
-  '/data/projects/$projectId/project-qcs': typeof DataProjectsProjectIdProjectQcsRouteRouteWithChildren
   '/data/projects/$projectId/qcs-run': typeof DataProjectsProjectIdQcsRunRouteRouteWithChildren
   '/data/projects/$projectId/reports': typeof DataProjectsProjectIdReportsRouteRouteWithChildren
   '/data/projects/$projectId/subproject-designs': typeof DataProjectsProjectIdSubprojectDesignsRouteRouteWithChildren
@@ -3854,8 +3858,8 @@ export interface FileRoutesByFullPath {
   '/data/projects/$projectId/lists/': typeof DataProjectsProjectIdListsIndexRoute
   '/data/projects/$projectId/place-levels/': typeof DataProjectsProjectIdPlaceLevelsIndexRoute
   '/data/projects/$projectId/qcs-assignment/': typeof DataProjectsProjectIdQcsAssignmentIndexRoute
-  '/data/projects/$projectId/project-qcs/': typeof DataProjectsProjectIdProjectQcsIndexRoute
   '/data/projects/$projectId/qcs-run/': typeof DataProjectsProjectIdQcsRunIndexRoute
+  '/data/projects/$projectId/qcs/': typeof DataProjectsProjectIdQcsIndexRoute
   '/data/projects/$projectId/reports/': typeof DataProjectsProjectIdReportsIndexRoute
   '/data/projects/$projectId/subproject-designs/': typeof DataProjectsProjectIdSubprojectDesignsIndexRoute
   '/data/projects/$projectId/subprojects/': typeof DataProjectsProjectIdSubprojectsIndexRoute
@@ -3899,12 +3903,12 @@ export interface FileRoutesByFullPath {
   '/data/projects/$projectId/designs/$projectReportDesignId/': typeof DataProjectsProjectIdDesignsProjectReportDesignIdIndexRoute
   '/data/projects/$projectId/lists/$listId/': typeof DataProjectsProjectIdListsListIdIndexRoute
   '/data/projects/$projectId/place-levels/$placeLevelId/': typeof DataProjectsProjectIdPlaceLevelsPlaceLevelIdIndexRoute
+  '/data/projects/$projectId/qcs/$projectQcId/': typeof DataProjectsProjectIdQcsProjectQcIdIndexRoute
   '/data/projects/$projectId/reports/$projectReportId/': typeof DataProjectsProjectIdReportsProjectReportIdIndexRoute
   '/data/projects/$projectId/subproject-designs/$subprojectReportDesignId/': typeof DataProjectsProjectIdSubprojectDesignsSubprojectReportDesignIdIndexRoute
   '/data/projects/$projectId/subprojects/$subprojectId/': typeof DataProjectsProjectIdSubprojectsSubprojectIdIndexRoute
   '/data/projects/$projectId/taxonomies/$taxonomyId/': typeof DataProjectsProjectIdTaxonomiesTaxonomyIdIndexRoute
   '/data/projects/$projectId/units/$unitId/': typeof DataProjectsProjectIdUnitsUnitIdIndexRoute
-  '/data/projects/$projectId/project-qcs/$projectQcId/': typeof DataProjectsProjectIdProjectQcsProjectQcIdIndexRoute
   '/data/projects/$projectId/users/$projectUserId/': typeof DataProjectsProjectIdUsersProjectUserIdIndexRoute
   '/data/projects/$projectId/vector-layers/$vectorLayerId/': typeof DataProjectsProjectIdVectorLayersVectorLayerIdIndexRoute
   '/data/projects/$projectId/wfs-services/$wfsServiceId/': typeof DataProjectsProjectIdWfsServicesWfsServiceIdIndexRoute
@@ -4244,6 +4248,7 @@ export interface FileRoutesByTo {
   '/data/projects/$projectId/place-levels': typeof DataProjectsProjectIdPlaceLevelsIndexRoute
   '/data/projects/$projectId/qcs-assignment': typeof DataProjectsProjectIdQcsAssignmentIndexRoute
   '/data/projects/$projectId/qcs-run': typeof DataProjectsProjectIdQcsRunIndexRoute
+  '/data/projects/$projectId/qcs': typeof DataProjectsProjectIdQcsIndexRoute
   '/data/projects/$projectId/reports': typeof DataProjectsProjectIdReportsIndexRoute
   '/data/projects/$projectId/subproject-designs': typeof DataProjectsProjectIdSubprojectDesignsIndexRoute
   '/data/projects/$projectId/subprojects': typeof DataProjectsProjectIdSubprojectsIndexRoute
@@ -4268,6 +4273,7 @@ export interface FileRoutesByTo {
   '/data/projects/$projectId/designs/$projectReportDesignId': typeof DataProjectsProjectIdDesignsProjectReportDesignIdIndexRoute
   '/data/projects/$projectId/lists/$listId': typeof DataProjectsProjectIdListsListIdIndexRoute
   '/data/projects/$projectId/place-levels/$placeLevelId': typeof DataProjectsProjectIdPlaceLevelsPlaceLevelIdIndexRoute
+  '/data/projects/$projectId/qcs/$projectQcId': typeof DataProjectsProjectIdQcsProjectQcIdIndexRoute
   '/data/projects/$projectId/reports/$projectReportId': typeof DataProjectsProjectIdReportsProjectReportIdIndexRoute
   '/data/projects/$projectId/subproject-designs/$subprojectReportDesignId': typeof DataProjectsProjectIdSubprojectDesignsSubprojectReportDesignIdIndexRoute
   '/data/projects/$projectId/subprojects/$subprojectId': typeof DataProjectsProjectIdSubprojectsSubprojectIdIndexRoute
@@ -4551,8 +4557,8 @@ export interface FileRoutesById {
   '/data/projects/$projectId_/files': typeof DataProjectsProjectIdFilesRouteRouteWithChildren
   '/data/projects/$projectId_/lists': typeof DataProjectsProjectIdListsRouteRouteWithChildren
   '/data/projects/$projectId_/place-levels': typeof DataProjectsProjectIdPlaceLevelsRouteRouteWithChildren
+  '/data/projects/$projectId_/qcs': typeof DataProjectsProjectIdQcsRouteRouteWithChildren
   '/data/projects/$projectId_/qcs-assignment': typeof DataProjectsProjectIdQcsAssignmentRouteRouteWithChildren
-  '/data/projects/$projectId_/project-qcs': typeof DataProjectsProjectIdProjectQcsRouteRouteWithChildren
   '/data/projects/$projectId_/qcs-run': typeof DataProjectsProjectIdQcsRunRouteRouteWithChildren
   '/data/projects/$projectId_/reports': typeof DataProjectsProjectIdReportsRouteRouteWithChildren
   '/data/projects/$projectId_/subproject-designs': typeof DataProjectsProjectIdSubprojectDesignsRouteRouteWithChildren
@@ -4599,8 +4605,8 @@ export interface FileRoutesById {
   '/data/projects/$projectId_/lists/': typeof DataProjectsProjectIdListsIndexRoute
   '/data/projects/$projectId_/place-levels/': typeof DataProjectsProjectIdPlaceLevelsIndexRoute
   '/data/projects/$projectId_/qcs-assignment/': typeof DataProjectsProjectIdQcsAssignmentIndexRoute
-  '/data/projects/$projectId_/project-qcs/': typeof DataProjectsProjectIdProjectQcsIndexRoute
   '/data/projects/$projectId_/qcs-run/': typeof DataProjectsProjectIdQcsRunIndexRoute
+  '/data/projects/$projectId_/qcs/': typeof DataProjectsProjectIdQcsIndexRoute
   '/data/projects/$projectId_/reports/': typeof DataProjectsProjectIdReportsIndexRoute
   '/data/projects/$projectId_/subproject-designs/': typeof DataProjectsProjectIdSubprojectDesignsIndexRoute
   '/data/projects/$projectId_/subprojects/': typeof DataProjectsProjectIdSubprojectsIndexRoute
@@ -4644,12 +4650,12 @@ export interface FileRoutesById {
   '/data/projects/$projectId_/designs/$projectReportDesignId/': typeof DataProjectsProjectIdDesignsProjectReportDesignIdIndexRoute
   '/data/projects/$projectId_/lists/$listId_/': typeof DataProjectsProjectIdListsListIdIndexRoute
   '/data/projects/$projectId_/place-levels/$placeLevelId/': typeof DataProjectsProjectIdPlaceLevelsPlaceLevelIdIndexRoute
+  '/data/projects/$projectId_/qcs/$projectQcId/': typeof DataProjectsProjectIdQcsProjectQcIdIndexRoute
   '/data/projects/$projectId_/reports/$projectReportId/': typeof DataProjectsProjectIdReportsProjectReportIdIndexRoute
   '/data/projects/$projectId_/subproject-designs/$subprojectReportDesignId/': typeof DataProjectsProjectIdSubprojectDesignsSubprojectReportDesignIdIndexRoute
   '/data/projects/$projectId_/subprojects/$subprojectId_/': typeof DataProjectsProjectIdSubprojectsSubprojectIdIndexRoute
   '/data/projects/$projectId_/taxonomies/$taxonomyId_/': typeof DataProjectsProjectIdTaxonomiesTaxonomyIdIndexRoute
   '/data/projects/$projectId_/units/$unitId/': typeof DataProjectsProjectIdUnitsUnitIdIndexRoute
-  '/data/projects/$projectId_/project-qcs/$projectQcId/': typeof DataProjectsProjectIdProjectQcsProjectQcIdIndexRoute
   '/data/projects/$projectId_/users/$projectUserId/': typeof DataProjectsProjectIdUsersProjectUserIdIndexRoute
   '/data/projects/$projectId_/vector-layers/$vectorLayerId_/': typeof DataProjectsProjectIdVectorLayersVectorLayerIdIndexRoute
   '/data/projects/$projectId_/wfs-services/$wfsServiceId_/': typeof DataProjectsProjectIdWfsServicesWfsServiceIdIndexRoute
@@ -4983,6 +4989,7 @@ export interface FileRouteTypes {
     | '/data/projects/$projectId/files'
     | '/data/projects/$projectId/lists'
     | '/data/projects/$projectId/place-levels'
+    | '/data/projects/$projectId/qcs'
     | '/data/projects/$projectId/qcs-assignment'
     | '/data/projects/$projectId/qcs-run'
     | '/data/projects/$projectId/reports'
@@ -5031,6 +5038,7 @@ export interface FileRouteTypes {
     | '/data/projects/$projectId/place-levels/'
     | '/data/projects/$projectId/qcs-assignment/'
     | '/data/projects/$projectId/qcs-run/'
+    | '/data/projects/$projectId/qcs/'
     | '/data/projects/$projectId/reports/'
     | '/data/projects/$projectId/subproject-designs/'
     | '/data/projects/$projectId/subprojects/'
@@ -5074,6 +5082,7 @@ export interface FileRouteTypes {
     | '/data/projects/$projectId/designs/$projectReportDesignId/'
     | '/data/projects/$projectId/lists/$listId/'
     | '/data/projects/$projectId/place-levels/$placeLevelId/'
+    | '/data/projects/$projectId/qcs/$projectQcId/'
     | '/data/projects/$projectId/reports/$projectReportId/'
     | '/data/projects/$projectId/subproject-designs/$subprojectReportDesignId/'
     | '/data/projects/$projectId/subprojects/$subprojectId/'
@@ -5418,6 +5427,7 @@ export interface FileRouteTypes {
     | '/data/projects/$projectId/place-levels'
     | '/data/projects/$projectId/qcs-assignment'
     | '/data/projects/$projectId/qcs-run'
+    | '/data/projects/$projectId/qcs'
     | '/data/projects/$projectId/reports'
     | '/data/projects/$projectId/subproject-designs'
     | '/data/projects/$projectId/subprojects'
@@ -5442,6 +5452,7 @@ export interface FileRouteTypes {
     | '/data/projects/$projectId/designs/$projectReportDesignId'
     | '/data/projects/$projectId/lists/$listId'
     | '/data/projects/$projectId/place-levels/$placeLevelId'
+    | '/data/projects/$projectId/qcs/$projectQcId'
     | '/data/projects/$projectId/reports/$projectReportId'
     | '/data/projects/$projectId/subproject-designs/$subprojectReportDesignId'
     | '/data/projects/$projectId/subprojects/$subprojectId'
@@ -5724,6 +5735,7 @@ export interface FileRouteTypes {
     | '/data/projects/$projectId_/files'
     | '/data/projects/$projectId_/lists'
     | '/data/projects/$projectId_/place-levels'
+    | '/data/projects/$projectId_/qcs'
     | '/data/projects/$projectId_/qcs-assignment'
     | '/data/projects/$projectId_/qcs-run'
     | '/data/projects/$projectId_/reports'
@@ -5772,6 +5784,7 @@ export interface FileRouteTypes {
     | '/data/projects/$projectId_/place-levels/'
     | '/data/projects/$projectId_/qcs-assignment/'
     | '/data/projects/$projectId_/qcs-run/'
+    | '/data/projects/$projectId_/qcs/'
     | '/data/projects/$projectId_/reports/'
     | '/data/projects/$projectId_/subproject-designs/'
     | '/data/projects/$projectId_/subprojects/'
@@ -5815,6 +5828,7 @@ export interface FileRouteTypes {
     | '/data/projects/$projectId_/designs/$projectReportDesignId/'
     | '/data/projects/$projectId_/lists/$listId_/'
     | '/data/projects/$projectId_/place-levels/$placeLevelId/'
+    | '/data/projects/$projectId_/qcs/$projectQcId/'
     | '/data/projects/$projectId_/reports/$projectReportId/'
     | '/data/projects/$projectId_/subproject-designs/$subprojectReportDesignId/'
     | '/data/projects/$projectId_/subprojects/$subprojectId_/'
@@ -6533,11 +6547,11 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DataProjectsProjectIdQcsAssignmentRouteRouteImport
       parentRoute: typeof DataProjectsProjectIdRouteRoute
     }
-    '/data/projects/$projectId_/project-qcs': {
-      id: '/data/projects/$projectId_/project-qcs'
-      path: '/project-qcs'
-      fullPath: '/data/projects/$projectId/project-qcs'
-      preLoaderRoute: typeof DataProjectsProjectIdProjectQcsRouteRouteImport
+    '/data/projects/$projectId_/qcs': {
+      id: '/data/projects/$projectId_/qcs'
+      path: '/qcs'
+      fullPath: '/data/projects/$projectId/qcs'
+      preLoaderRoute: typeof DataProjectsProjectIdQcsRouteRouteImport
       parentRoute: typeof DataProjectsProjectIdRouteRoute
     }
     '/data/projects/$projectId_/place-levels': {
@@ -6666,6 +6680,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DataProjectsProjectIdReportsIndexRouteImport
       parentRoute: typeof DataProjectsProjectIdReportsRouteRoute
     }
+    '/data/projects/$projectId_/qcs/': {
+      id: '/data/projects/$projectId_/qcs/'
+      path: '/'
+      fullPath: '/data/projects/$projectId/qcs/'
+      preLoaderRoute: typeof DataProjectsProjectIdQcsIndexRouteImport
+      parentRoute: typeof DataProjectsProjectIdQcsRouteRoute
+    }
     '/data/projects/$projectId_/qcs-run/': {
       id: '/data/projects/$projectId_/qcs-run/'
       path: '/'
@@ -6679,13 +6700,6 @@ declare module '@tanstack/react-router' {
       fullPath: '/data/projects/$projectId/qcs-assignment/'
       preLoaderRoute: typeof DataProjectsProjectIdQcsAssignmentIndexRouteImport
       parentRoute: typeof DataProjectsProjectIdQcsAssignmentRouteRoute
-    }
-    '/data/projects/$projectId_/project-qcs/': {
-      id: '/data/projects/$projectId_/project-qcs/'
-      path: '/'
-      fullPath: '/data/projects/$projectId/project-qcs/'
-      preLoaderRoute: typeof DataProjectsProjectIdProjectQcsIndexRouteImport
-      parentRoute: typeof DataProjectsProjectIdProjectQcsRouteRoute
     }
     '/data/projects/$projectId_/place-levels/': {
       id: '/data/projects/$projectId_/place-levels/'
@@ -6939,13 +6953,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DataProjectsProjectIdUnitsUnitIdIndexRouteImport
       parentRoute: typeof DataProjectsProjectIdUnitsRouteRoute
     }
-    '/data/projects/$projectId_/project-qcs/$projectQcId/': {
-      id: '/data/projects/$projectId_/project-qcs/$projectQcId/'
-      path: '/$projectQcId'
-      fullPath: '/data/projects/$projectId/project-qcs/$projectQcId/'
-      preLoaderRoute: typeof DataProjectsProjectIdProjectQcsProjectQcIdIndexRouteImport
-      parentRoute: typeof DataProjectsProjectIdProjectQcsRouteRoute
-    }
     '/data/projects/$projectId_/taxonomies/$taxonomyId_/': {
       id: '/data/projects/$projectId_/taxonomies/$taxonomyId_/'
       path: '/'
@@ -6973,6 +6980,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/data/projects/$projectId/reports/$projectReportId/'
       preLoaderRoute: typeof DataProjectsProjectIdReportsProjectReportIdIndexRouteImport
       parentRoute: typeof DataProjectsProjectIdReportsRouteRoute
+    }
+    '/data/projects/$projectId_/qcs/$projectQcId/': {
+      id: '/data/projects/$projectId_/qcs/$projectQcId/'
+      path: '/$projectQcId'
+      fullPath: '/data/projects/$projectId/qcs/$projectQcId/'
+      preLoaderRoute: typeof DataProjectsProjectIdQcsProjectQcIdIndexRouteImport
+      parentRoute: typeof DataProjectsProjectIdQcsRouteRoute
     }
     '/data/projects/$projectId_/place-levels/$placeLevelId/': {
       id: '/data/projects/$projectId_/place-levels/$placeLevelId/'
@@ -9366,6 +9380,23 @@ const DataProjectsProjectIdPlaceLevelsRouteRouteWithChildren =
     DataProjectsProjectIdPlaceLevelsRouteRouteChildren,
   )
 
+interface DataProjectsProjectIdQcsRouteRouteChildren {
+  DataProjectsProjectIdQcsIndexRoute: typeof DataProjectsProjectIdQcsIndexRoute
+  DataProjectsProjectIdQcsProjectQcIdIndexRoute: typeof DataProjectsProjectIdQcsProjectQcIdIndexRoute
+}
+
+const DataProjectsProjectIdQcsRouteRouteChildren: DataProjectsProjectIdQcsRouteRouteChildren =
+  {
+    DataProjectsProjectIdQcsIndexRoute: DataProjectsProjectIdQcsIndexRoute,
+    DataProjectsProjectIdQcsProjectQcIdIndexRoute:
+      DataProjectsProjectIdQcsProjectQcIdIndexRoute,
+  }
+
+const DataProjectsProjectIdQcsRouteRouteWithChildren =
+  DataProjectsProjectIdQcsRouteRoute._addFileChildren(
+    DataProjectsProjectIdQcsRouteRouteChildren,
+  )
+
 interface DataProjectsProjectIdQcsAssignmentRouteRouteChildren {
   DataProjectsProjectIdQcsAssignmentIndexRoute: typeof DataProjectsProjectIdQcsAssignmentIndexRoute
 }
@@ -9379,24 +9410,6 @@ const DataProjectsProjectIdQcsAssignmentRouteRouteChildren: DataProjectsProjectI
 const DataProjectsProjectIdQcsAssignmentRouteRouteWithChildren =
   DataProjectsProjectIdQcsAssignmentRouteRoute._addFileChildren(
     DataProjectsProjectIdQcsAssignmentRouteRouteChildren,
-  )
-
-interface DataProjectsProjectIdProjectQcsRouteRouteChildren {
-  DataProjectsProjectIdProjectQcsIndexRoute: typeof DataProjectsProjectIdProjectQcsIndexRoute
-  DataProjectsProjectIdProjectQcsProjectQcIdIndexRoute: typeof DataProjectsProjectIdProjectQcsProjectQcIdIndexRoute
-}
-
-const DataProjectsProjectIdProjectQcsRouteRouteChildren: DataProjectsProjectIdProjectQcsRouteRouteChildren =
-  {
-    DataProjectsProjectIdProjectQcsIndexRoute:
-      DataProjectsProjectIdProjectQcsIndexRoute,
-    DataProjectsProjectIdProjectQcsProjectQcIdIndexRoute:
-      DataProjectsProjectIdProjectQcsProjectQcIdIndexRoute,
-  }
-
-const DataProjectsProjectIdProjectQcsRouteRouteWithChildren =
-  DataProjectsProjectIdProjectQcsRouteRoute._addFileChildren(
-    DataProjectsProjectIdProjectQcsRouteRouteChildren,
   )
 
 interface DataProjectsProjectIdQcsRunRouteRouteChildren {
@@ -11424,7 +11437,7 @@ interface DataProjectsProjectIdRouteRouteChildren {
   DataProjectsProjectIdFilesRouteRoute: typeof DataProjectsProjectIdFilesRouteRouteWithChildren
   DataProjectsProjectIdListsRouteRoute: typeof DataProjectsProjectIdListsRouteRouteWithChildren
   DataProjectsProjectIdPlaceLevelsRouteRoute: typeof DataProjectsProjectIdPlaceLevelsRouteRouteWithChildren
-  DataProjectsProjectIdProjectQcsRouteRoute: typeof DataProjectsProjectIdProjectQcsRouteRouteWithChildren
+  DataProjectsProjectIdQcsRouteRoute: typeof DataProjectsProjectIdQcsRouteRouteWithChildren
   DataProjectsProjectIdQcsAssignmentRouteRoute: typeof DataProjectsProjectIdQcsAssignmentRouteRouteWithChildren
   DataProjectsProjectIdQcsRunRouteRoute: typeof DataProjectsProjectIdQcsRunRouteRouteWithChildren
   DataProjectsProjectIdReportsRouteRoute: typeof DataProjectsProjectIdReportsRouteRouteWithChildren
@@ -11458,8 +11471,8 @@ const DataProjectsProjectIdRouteRouteChildren: DataProjectsProjectIdRouteRouteCh
       DataProjectsProjectIdListsRouteRouteWithChildren,
     DataProjectsProjectIdPlaceLevelsRouteRoute:
       DataProjectsProjectIdPlaceLevelsRouteRouteWithChildren,
-    DataProjectsProjectIdProjectQcsRouteRoute:
-      DataProjectsProjectIdProjectQcsRouteRouteWithChildren,
+    DataProjectsProjectIdQcsRouteRoute:
+      DataProjectsProjectIdQcsRouteRouteWithChildren,
     DataProjectsProjectIdQcsAssignmentRouteRoute:
       DataProjectsProjectIdQcsAssignmentRouteRouteWithChildren,
     DataProjectsProjectIdQcsRunRouteRoute:
@@ -11530,12 +11543,15 @@ interface DataQcsAssignmentRouteRouteChildren {
   DataQcsAssignmentIndexRoute: typeof DataQcsAssignmentIndexRoute
 }
 
-const DataQcsAssignmentRouteRouteChildren: DataQcsAssignmentRouteRouteChildren = {
-  DataQcsAssignmentIndexRoute: DataQcsAssignmentIndexRoute,
-}
+const DataQcsAssignmentRouteRouteChildren: DataQcsAssignmentRouteRouteChildren =
+  {
+    DataQcsAssignmentIndexRoute: DataQcsAssignmentIndexRoute,
+  }
 
 const DataQcsAssignmentRouteRouteWithChildren =
-  DataQcsAssignmentRouteRoute._addFileChildren(DataQcsAssignmentRouteRouteChildren)
+  DataQcsAssignmentRouteRoute._addFileChildren(
+    DataQcsAssignmentRouteRouteChildren,
+  )
 
 interface DataQcsRunRouteRouteChildren {
   DataQcsRunIndexRoute: typeof DataQcsRunIndexRoute

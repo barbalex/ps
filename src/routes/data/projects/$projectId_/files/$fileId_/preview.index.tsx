@@ -4,6 +4,6 @@ import { FilePreview } from '../../../../../../formsAndLists/filePreview'
 
 const from = '/data/projects/$projectId_/files/$fileId_/preview'
 
-export const Route = createFileRoute(from)({
+export const Route = createFileRoute('/data/projects/$projectId_/files/$fileId_/preview/')({
   component: () => <FilePreview from={from} />,
 })

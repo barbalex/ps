@@ -5,7 +5,7 @@ import { NotFound } from '../../../../components/NotFound.tsx'
 
 const from = '/data/projects/$projectId_/project'
 
-export const Route = createFileRoute(from)({
+export const Route = createFileRoute('/data/projects/$projectId_/project')({
   component: () => <ProjectIndex from={from} />,
   notFoundComponent: NotFound,
   beforeLoad: ({ params }) => {

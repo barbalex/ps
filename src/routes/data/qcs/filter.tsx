@@ -4,6 +4,6 @@ import { QcFilter } from '../../../formsAndLists/qc/Filter.tsx'
 
 const from = '/data/qcs/filter'
 
-export const Route = createFileRoute(from)({
+export const Route = createFileRoute('/data/qcs/filter')({
   component: () => <QcFilter from={from} />,
 })
