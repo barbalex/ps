@@ -1063,12 +1063,12 @@ AFTER INSERT OR UPDATE OF value_unit, field, calc_method, table_name ON chart_su
 FOR EACH ROW
 EXECUTE PROCEDURE chart_subjects_label_trigger();
 
--- qcs_assignment: set label from qcs.name with qcs_assignment_id as fallback
+-- qcs_assignment: set label from qcs.label_de with qcs_assignment_id as fallback
 CREATE OR REPLACE FUNCTION qcs_assignment_label_trigger()
 RETURNS TRIGGER AS $$
 DECLARE
   is_syncing BOOLEAN;
-  _qc_name TEXT;
+  _qc_label TEXT;
 BEGIN
   SELECT COALESCE(NULLIF(current_setting('electric.syncing', true), ''), 'false')::boolean INTO is_syncing;
   IF is_syncing THEN
@@ -1076,13 +1076,13 @@ BEGIN
   END IF;
 
   IF NEW.qc_id IS NULL THEN
-    _qc_name := NULL;
+    _qc_label := NULL;
   ELSE
-    SELECT qcs.name INTO _qc_name FROM qcs WHERE qcs.qcs_id = NEW.qc_id;
+    SELECT qcs.label_de INTO _qc_label FROM qcs WHERE qcs.qcs_id = NEW.qc_id;
   END IF;
 
   UPDATE qcs_assignment
-    SET label = coalesce(nullif(_qc_name, ''), NEW.qcs_assignment_id::text)
+    SET label = coalesce(nullif(_qc_label, ''), NEW.qcs_assignment_id::text)
   WHERE qcs_assignment.qcs_assignment_id = NEW.qcs_assignment_id;
   RETURN NEW;
 END;
@@ -1093,7 +1093,7 @@ AFTER INSERT OR UPDATE OF qc_id ON qcs_assignment
 FOR EACH ROW
 EXECUTE PROCEDURE qcs_assignment_label_trigger();
 
--- when qcs.name changes, update labels of all related qcs_assignment rows
+-- when qcs.label_de changes, update labels of all related qcs_assignment rows
 CREATE OR REPLACE FUNCTION qcs_name_update_qcs_assignment_label_trigger()
 RETURNS TRIGGER AS $$
 DECLARE
@@ -1105,14 +1105,14 @@ BEGIN
   END IF;
 
   UPDATE qcs_assignment
-    SET label = coalesce(nullif(NEW.name, ''), qcs_assignment_id::text)
+    SET label = coalesce(nullif(NEW.label_de, ''), qcs_assignment_id::text)
   WHERE qcs_assignment.qc_id = NEW.qcs_id;
   RETURN NEW;
 END;
 $$ LANGUAGE plpgsql;
 
 CREATE OR REPLACE TRIGGER qcs_name_update_qcs_assignment_label_trigger
-AFTER UPDATE OF name ON qcs
+AFTER UPDATE OF label_de ON qcs
 FOR EACH ROW
 EXECUTE PROCEDURE qcs_name_update_qcs_assignment_label_trigger();
 

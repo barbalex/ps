@@ -2,8 +2,6 @@
 export default interface TemplatePublicQcsHistory {
   qcs_id: string;
 
-  name: string | null;
-
   label_de: string | null;
 
   label_en: string | null;

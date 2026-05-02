@@ -4,8 +4,6 @@ export default interface TemplatePublicProjectQcsHistory {
 
   project_id: string;
 
-  name: string | null;
-
   label_de: string | null;
 
   label_en: string | null;

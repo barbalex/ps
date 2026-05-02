@@ -12,8 +12,6 @@ export default interface ProjectQcs {
 
   project_id: ProjectsProjectId;
 
-  name: string | null;
-
   label_de: string | null;
 
   label_en: string | null;

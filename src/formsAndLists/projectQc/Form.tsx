@@ -34,16 +34,6 @@ export const ProjectQcForm = ({
   return (
     <>
       <TextField
-        label={formatMessage({ id: 'XkV5yZ', defaultMessage: 'Name' })}
-        name="name"
-        value={row?.name ?? ''}
-        onChange={onChange}
-        autoFocus
-        ref={autoFocusRef}
-        validationMessage={validations?.name?.message}
-        validationState={validations?.name?.state}
-      />
-      <TextField
         label={formatMessage({
           id: 'qc.labelDe',
           defaultMessage: 'Bezeichnung (DE)',
@@ -51,6 +41,8 @@ export const ProjectQcForm = ({
         name="label_de"
         value={row?.label_de ?? ''}
         onChange={onChange}
+        autoFocus
+        ref={autoFocusRef}
       />
       <TextField
         label={formatMessage({

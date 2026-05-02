@@ -69,7 +69,7 @@ function parseCSV(text, delimiter = ';') {
 
 const allRows = parseCSV(csv)
 // skip header, skip empty trailing rows
-const rows = allRows.slice(1).filter((r) => r[4]?.trim())
+const rows = allRows.slice(1).filter((r) => r[0]?.trim())
 
 // Escape single quotes for SQL string literals
 const esc = (s) => (s ?? '').trim().replaceAll("'", "''")
@@ -78,13 +78,12 @@ const bool = (s) => ((s ?? '').trim() === 'true' ? 'true' : 'false')
 
 const valueLines = rows
   .map((cols) => {
-    // label_de;label_en;label_fr;label_it;name;is_root_level;is_project_level;is_subproject_level;filter_by_year;sql;sort;description
+    // label_de;label_en;label_fr;label_it;is_root_level;is_project_level;is_subproject_level;filter_by_year;sql;sort;description
     const [
       label_de,
       label_en,
       label_fr,
       label_it,
-      name,
       is_root_level,
       is_project_level,
       is_subproject_level,
@@ -92,12 +91,12 @@ const valueLines = rows
       sql_val,
     ] = cols
 
-    if (!name?.trim()) return null
+    if (!label_de?.trim()) return null
 
     const sqlLiteral = (sql_val ?? '').trim() ? `'${esc(sql_val)}'` : 'NULL'
 
     return (
-      `('${esc(name)}', '${esc(label_de)}', '${esc(label_en)}', '${esc(label_fr)}', '${esc(label_it)}', ` +
+      `('${esc(label_de)}', '${esc(label_en)}', '${esc(label_fr)}', '${esc(label_it)}', ` +
       `${bool(is_root_level)}, ${bool(is_project_level)}, ${bool(is_subproject_level)}, ${bool(filter_by_year)}, ${sqlLiteral})`
     )
   })
@@ -108,11 +107,10 @@ const sql = `-- qcs: quality controls for data
 -- Generated from seed-data/qcs.csv
 -- Run \`node backend/db/generate_qcs_sql.mjs\` from project root to regenerate after editing the CSV.
 
-INSERT INTO qcs (name, label_de, label_en, label_fr, label_it, is_root_level, is_project_level, is_subproject_level, filter_by_year, sql)
+INSERT INTO qcs (label_de, label_en, label_fr, label_it, is_root_level, is_project_level, is_subproject_level, filter_by_year, sql)
 VALUES
 ${valueLines}
-ON CONFLICT (name) DO UPDATE SET
-  label_de            = EXCLUDED.label_de,
+ON CONFLICT (label_de) DO UPDATE SET
   label_en            = EXCLUDED.label_en,
   label_fr            = EXCLUDED.label_fr,
   label_it            = EXCLUDED.label_it,

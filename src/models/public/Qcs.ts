@@ -8,8 +8,6 @@ export type QcsQcsId = string & { __brand: 'public.qcs' };
 export default interface Qcs {
   qcs_id: QcsQcsId;
 
-  name: string | null;
-
   label_de: string | null;
 
   label_en: string | null;

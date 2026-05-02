@@ -18,7 +18,6 @@ const { Button, Input, Field } = fluentUiReactComponents
 
 type QcRow = {
   qcs_id: string
-  name: string | null
   label: string | null
 }
 
@@ -39,7 +38,7 @@ export const SubprojectQcs = ({ from }) => {
 
   // Load all qcs with subproject level
   const qcsRes = useLiveQuery(
-    `SELECT qcs_id, name, COALESCE(NULLIF(label_${language}, ''), label_de) AS label
+    `SELECT qcs_id, COALESCE(NULLIF(label_${language}, ''), label_de) AS label
      FROM qcs WHERE is_subproject_level = true ORDER BY label`,
   )
 
@@ -59,13 +58,7 @@ export const SubprojectQcs = ({ from }) => {
 
   // Apply search filter
   const filteredQcs = searchTerm.trim()
-    ? allQcs.filter((qc) => {
-        const term = searchTerm.toLowerCase()
-        return (
-          (qc.label ?? '').toLowerCase().includes(term) ||
-          (qc.name ?? '').toLowerCase().includes(term)
-        )
-      })
+    ? allQcs.filter((qc) => (qc.label ?? '').toLowerCase().includes(searchTerm.toLowerCase()))
     : allQcs
 
   const toggle = async (qcId: string) => {
@@ -175,7 +168,7 @@ export const SubprojectQcs = ({ from }) => {
           filteredQcs.map((qc) => (
             <CheckboxField
               key={qc.qcs_id}
-              label={qc.label ?? qc.name ?? qc.qcs_id}
+              label={qc.label ?? qc.qcs_id}
               name={qc.qcs_id}
               value={activeQcIds.has(qc.qcs_id)}
               onChange={() => toggle(qc.qcs_id)}

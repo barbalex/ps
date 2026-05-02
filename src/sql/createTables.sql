@@ -1916,7 +1916,6 @@ COMMENT ON TABLE project_crs IS 'List of crs used in a project. Can be set when 
 --
 CREATE TABLE IF NOT EXISTS qcs(
   qcs_id uuid PRIMARY KEY DEFAULT public.uuid_generate_v7(),
-  name text DEFAULT NULL,
   label_de text DEFAULT NULL,
   label_en text DEFAULT NULL,
   label_fr text DEFAULT NULL,
@@ -1932,10 +1931,9 @@ CREATE TABLE IF NOT EXISTS qcs(
   created_at timestamptz NOT NULL DEFAULT now(),
   updated_at timestamptz NOT NULL DEFAULT now(),
   updated_by text DEFAULT NULL,
-  UNIQUE (name)
+  UNIQUE (label_de)
 );
 
-CREATE INDEX IF NOT EXISTS qcs_name_idx ON qcs USING btree(name);
 CREATE INDEX IF NOT EXISTS qcs_label_de_idx ON qcs USING btree(label_de);
 CREATE INDEX IF NOT EXISTS qcs_sort_idx ON qcs USING btree(sort);
 
@@ -1970,7 +1968,6 @@ COMMENT ON TABLE qcs_assignment IS 'Quality controls assigned to a project or su
 CREATE TABLE IF NOT EXISTS project_qcs(
   project_qc_id uuid PRIMARY KEY DEFAULT public.uuid_generate_v7(),
   project_id uuid NOT NULL REFERENCES projects(project_id) ON DELETE CASCADE ON UPDATE CASCADE DEFERRABLE INITIALLY DEFERRED,
-  name text DEFAULT NULL,
   label_de text DEFAULT NULL,
   label_en text DEFAULT NULL,
   label_fr text DEFAULT NULL,
@@ -1984,12 +1981,10 @@ CREATE TABLE IF NOT EXISTS project_qcs(
   sys_period tstzrange DEFAULT NULL,
   created_at timestamptz NOT NULL DEFAULT now(),
   updated_at timestamptz NOT NULL DEFAULT now(),
-  updated_by text DEFAULT NULL,
-  UNIQUE (project_id, name)
+  updated_by text DEFAULT NULL
 );
 
 CREATE INDEX IF NOT EXISTS project_qcs_project_id_idx ON project_qcs USING btree(project_id);
-CREATE INDEX IF NOT EXISTS project_qcs_name_idx ON project_qcs USING btree(name);
 CREATE INDEX IF NOT EXISTS project_qcs_label_de_idx ON project_qcs USING btree(label_de);
 CREATE INDEX IF NOT EXISTS project_qcs_sort_idx ON project_qcs USING btree(sort);
 
