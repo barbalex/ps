@@ -12,7 +12,10 @@ type Props = {
   subprojectId: string
 }
 
-export const useSubprojectQcAssignmentsNavData = ({ projectId, subprojectId }: Props) => {
+export const useSubprojectQcAssignmentsNavData = ({
+  projectId,
+  subprojectId,
+}: Props) => {
   const [openNodes] = useAtom(treeOpenNodesAtom)
   const location = useLocation()
   const { formatMessage } = useIntl()
@@ -30,8 +33,18 @@ export const useSubprojectQcAssignmentsNavData = ({ projectId, subprojectId }: P
   const isOpen = openNodes.some((array) => isEqual(array, ownArray))
 
   const res = useLiveQuery(
-    `SELECT count(*) AS count FROM qcs_assignment qa JOIN qcs q ON q.qcs_id = qa.qc_id WHERE qa.subproject_id = $1 AND q.is_subproject_level = true`,
-    [subprojectId],
+    `SELECT count(*) AS count FROM (
+       SELECT qa.qcs_assignment_id
+       FROM qcs_assignment qa
+       JOIN qcs q ON q.qcs_id = qa.qc_id
+       WHERE qa.subproject_id = $1
+         AND q.is_subproject_level = true
+       UNION ALL
+       SELECT pqa.project_qcs_assignment_id
+       FROM project_qcs_assignment pqa
+       WHERE pqa.subproject_id = $2
+     ) t`,
+    [subprojectId, subprojectId],
   )
 
   const loading = res === undefined
