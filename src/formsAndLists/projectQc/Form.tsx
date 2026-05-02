@@ -18,14 +18,14 @@ export const ProjectQcForm = ({
     const parts: string[] = []
     parts.push(
       formatMessage({
-        id: 'projectOwnQc.sql.hintProject',
-        defaultMessage: 'Projekt-Ebene: $1 = project_id (uuid)',
+        id: 'projectQc.sql.hintProject',
+          defaultMessage: 'Projekt-Ebene: $1 = project_id (uuid)'
       }),
     )
     parts.push(
       formatMessage({
-        id: 'projectOwnQc.sql.hintSubproject',
-        defaultMessage: 'Teilprojekt-Ebene: $1 = subproject_id (uuid)',
+        id: 'projectQc.sql.hintSubproject',
+          defaultMessage: 'Teilprojekt-Ebene: $1 = subproject_id (uuid)'
       }),
     )
     return parts.join('\n')

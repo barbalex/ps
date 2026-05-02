@@ -5,13 +5,13 @@
 export default interface QcsHistory {
   qcs_id: string;
 
-  label_de: string | null;
+  name_de: string | null;
 
-  label_en: string | null;
+  name_en: string | null;
 
-  label_fr: string | null;
+  name_fr: string | null;
 
-  label_it: string | null;
+  name_it: string | null;
 
   description: string | null;
 
@@ -45,13 +45,13 @@ export interface QcsHistoryInitializer {
   /** Default value: uuid_generate_v7() */
   qcs_id?: string;
 
-  label_de?: string | null;
+  name_de?: string | null;
 
-  label_en?: string | null;
+  name_en?: string | null;
 
-  label_fr?: string | null;
+  name_fr?: string | null;
 
-  label_it?: string | null;
+  name_it?: string | null;
 
   description?: string | null;
 
@@ -90,13 +90,13 @@ export interface QcsHistoryInitializer {
 export interface QcsHistoryMutator {
   qcs_id?: string;
 
-  label_de?: string | null;
+  name_de?: string | null;
 
-  label_en?: string | null;
+  name_en?: string | null;
 
-  label_fr?: string | null;
+  name_fr?: string | null;
 
-  label_it?: string | null;
+  name_it?: string | null;
 
   description?: string | null;
 

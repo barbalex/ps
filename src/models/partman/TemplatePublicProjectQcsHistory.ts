@@ -4,13 +4,13 @@ export default interface TemplatePublicProjectQcsHistory {
 
   project_id: string;
 
-  label_de: string | null;
+  name_de: string | null;
 
-  label_en: string | null;
+  name_en: string | null;
 
-  label_fr: string | null;
+  name_fr: string | null;
 
-  label_it: string | null;
+  name_it: string | null;
 
   description: string | null;
 
@@ -39,13 +39,13 @@ export interface TemplatePublicProjectQcsHistoryInitializer {
 
   project_id: string;
 
-  label_de?: string | null;
+  name_de?: string | null;
 
-  label_en?: string | null;
+  name_en?: string | null;
 
-  label_fr?: string | null;
+  name_fr?: string | null;
 
-  label_it?: string | null;
+  name_it?: string | null;
 
   description?: string | null;
 
@@ -74,13 +74,13 @@ export interface TemplatePublicProjectQcsHistoryMutator {
 
   project_id?: string;
 
-  label_de?: string | null;
+  name_de?: string | null;
 
-  label_en?: string | null;
+  name_en?: string | null;
 
-  label_fr?: string | null;
+  name_fr?: string | null;
 
-  label_it?: string | null;
+  name_it?: string | null;
 
   description?: string | null;
 

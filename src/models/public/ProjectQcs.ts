@@ -12,13 +12,13 @@ export default interface ProjectQcs {
 
   project_id: ProjectsProjectId;
 
-  label_de: string | null;
+  name_de: string | null;
 
-  label_en: string | null;
+  name_en: string | null;
 
-  label_fr: string | null;
+  name_fr: string | null;
 
-  label_it: string | null;
+  name_it: string | null;
 
   description: string | null;
 
@@ -52,13 +52,13 @@ export interface ProjectQcsInitializer {
 
   project_id: ProjectsProjectId;
 
-  label_de?: string | null;
+  name_de?: string | null;
 
-  label_en?: string | null;
+  name_en?: string | null;
 
-  label_fr?: string | null;
+  name_fr?: string | null;
 
-  label_it?: string | null;
+  name_it?: string | null;
 
   description?: string | null;
 
@@ -96,13 +96,13 @@ export interface ProjectQcsMutator {
 
   project_id?: ProjectsProjectId;
 
-  label_de?: string | null;
+  name_de?: string | null;
 
-  label_en?: string | null;
+  name_en?: string | null;
 
-  label_fr?: string | null;
+  name_fr?: string | null;
 
-  label_it?: string | null;
+  name_it?: string | null;
 
   description?: string | null;
 

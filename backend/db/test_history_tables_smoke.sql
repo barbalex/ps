@@ -52,10 +52,9 @@ BEGIN
 	VALUES ('Temporal smoke message ' || left(v_suffix, 8))
 	RETURNING message_id INTO v_message_id;
 
-	INSERT INTO qcs (name, table_name, label_de)
+	INSERT INTO qcs (name, name_de)
 	VALUES (
 		'temporal_smoke_qc_' || left(v_suffix, 12),
-		'projects',
 		'Temporal smoke qc ' || left(v_suffix, 8)
 	)
 	RETURNING qcs_id INTO v_qcs_id;

@@ -2,13 +2,13 @@
 export default interface TemplatePublicQcsHistory {
   qcs_id: string;
 
-  label_de: string | null;
+  name_de: string | null;
 
-  label_en: string | null;
+  name_en: string | null;
 
-  label_fr: string | null;
+  name_fr: string | null;
 
-  label_it: string | null;
+  name_it: string | null;
 
   description: string | null;
 
@@ -37,13 +37,13 @@ export default interface TemplatePublicQcsHistory {
 export interface TemplatePublicQcsHistoryInitializer {
   qcs_id: string;
 
-  label_de?: string | null;
+  name_de?: string | null;
 
-  label_en?: string | null;
+  name_en?: string | null;
 
-  label_fr?: string | null;
+  name_fr?: string | null;
 
-  label_it?: string | null;
+  name_it?: string | null;
 
   description?: string | null;
 
@@ -72,13 +72,13 @@ export interface TemplatePublicQcsHistoryInitializer {
 export interface TemplatePublicQcsHistoryMutator {
   qcs_id?: string;
 
-  label_de?: string | null;
+  name_de?: string | null;
 
-  label_en?: string | null;
+  name_en?: string | null;
 
-  label_fr?: string | null;
+  name_fr?: string | null;
 
-  label_it?: string | null;
+  name_it?: string | null;
 
   description?: string | null;
 

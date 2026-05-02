@@ -28,7 +28,7 @@ export const useQcNavData = ({ qcsId }: Props) => {
     `
     SELECT
       qcs_id AS id,
-      COALESCE(NULLIF(label_${language}, ''), label_de) AS label
+      COALESCE(NULLIF(name_${language}, ''), name_de) AS label
     FROM qcs
     WHERE qcs_id = $1
     `,

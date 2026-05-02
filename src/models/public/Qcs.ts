@@ -8,13 +8,13 @@ export type QcsQcsId = string & { __brand: 'public.qcs' };
 export default interface Qcs {
   qcs_id: QcsQcsId;
 
-  label_de: string | null;
+  name_de: string | null;
 
-  label_en: string | null;
+  name_en: string | null;
 
-  label_fr: string | null;
+  name_fr: string | null;
 
-  label_it: string | null;
+  name_it: string | null;
 
   description: string | null;
 
@@ -48,13 +48,13 @@ export interface QcsInitializer {
   /** Default value: uuid_generate_v7() */
   qcs_id?: QcsQcsId;
 
-  label_de?: string | null;
+  name_de?: string | null;
 
-  label_en?: string | null;
+  name_en?: string | null;
 
-  label_fr?: string | null;
+  name_fr?: string | null;
 
-  label_it?: string | null;
+  name_it?: string | null;
 
   description?: string | null;
 
@@ -93,13 +93,13 @@ export interface QcsInitializer {
 export interface QcsMutator {
   qcs_id?: QcsQcsId;
 
-  label_de?: string | null;
+  name_de?: string | null;
 
-  label_en?: string | null;
+  name_en?: string | null;
 
-  label_fr?: string | null;
+  name_fr?: string | null;
 
-  label_it?: string | null;
+  name_it?: string | null;
 
   description?: string | null;
 
