@@ -36,11 +36,15 @@ ensure project_qcs are only visible to owners and project designers (nav tree, l
 
 ---
 
-lets add the same history compare flow for project_qcs (like project_crs), so each project_qcs form gets a histories view and toggle
+/data/projects/018cfcf7-6424-7000-a100-851c5cc2c878/qcs: its node in the nav tree should only be visible while designing
 
 ---
 
+in project's list view, while designing: many of the nav tree nodes that are children of the project are not shown. they should be
+
 ---
+
+/data/projects/018cfcf7-6424-7000-a100-851c5cc2c878/configuration's node in nav tree is shown when not designing. Should only be shown while designing, as in the list view
 
 ---
 

@@ -489,17 +489,6 @@ export const useProjectNavData = ({
                   }),
                 },
                 {
-                  id: 'qcs',
-                  label: buildNavLabel({
-                    loading,
-                    countFiltered: nav?.project_qcs_count_unfiltered ?? 0,
-                    namePlural: formatMessage({
-                      id: 'qcs.namePlural',
-                      defaultMessage: 'Qualitätskontrollen',
-                    }),
-                  }),
-                },
-                {
                   id: 'place-levels',
                   label: buildNavLabel({
                     loading,
@@ -507,6 +496,21 @@ export const useProjectNavData = ({
                     namePlural: formatMessage({
                       id: 'aYuCCc',
                       defaultMessage: 'Ort-Stufen',
+                    }),
+                  }),
+                },
+              ]
+            : []),
+          ...(designing
+            ? [
+                {
+                  id: 'qcs',
+                  label: buildNavLabel({
+                    loading,
+                    countFiltered: nav?.project_qcs_count_unfiltered ?? 0,
+                    namePlural: formatMessage({
+                      id: 'qcs.namePlural',
+                      defaultMessage: 'Qualitätskontrollen',
                     }),
                   }),
                 },
