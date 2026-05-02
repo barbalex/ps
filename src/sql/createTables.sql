@@ -1981,7 +1981,8 @@ CREATE TABLE IF NOT EXISTS project_qcs(
   sys_period tstzrange DEFAULT NULL,
   created_at timestamptz NOT NULL DEFAULT now(),
   updated_at timestamptz NOT NULL DEFAULT now(),
-  updated_by text DEFAULT NULL
+  updated_by text DEFAULT NULL,
+  UNIQUE (project_id, label_de)
 );
 
 CREATE INDEX IF NOT EXISTS project_qcs_project_id_idx ON project_qcs USING btree(project_id);
