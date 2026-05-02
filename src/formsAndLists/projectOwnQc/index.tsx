@@ -6,7 +6,7 @@ import { useSetAtom } from 'jotai'
 import { getValueFromChange } from '../../modules/getValueFromChange.ts'
 import { Header } from './Header.tsx'
 import { Loading } from '../../components/shared/Loading.tsx'
-import { ProjectQcForm as Form } from './Form.tsx'
+import { ProjectOwnQcForm as Form } from './Form.tsx'
 import { NotFound } from '../../components/NotFound.tsx'
 import { addOperationAtom } from '../../store.ts'
 import type ProjectQcs from '../../models/public/ProjectQcs.ts'
@@ -15,7 +15,7 @@ import '../../form.css'
 
 const from = '/data/projects/$projectId_/qcs/$projectQcId/'
 
-export const ProjectQc = () => {
+export const ProjectOwnQc = () => {
   const { projectQcId } = useParams({ from })
   const db = usePGlite()
   const addOperation = useSetAtom(addOperationAtom)
@@ -23,10 +23,9 @@ export const ProjectQc = () => {
 
   const autoFocusRef = useRef<HTMLInputElement>(null)
 
-  const res = useLiveQuery(
-    `SELECT * FROM project_qcs WHERE project_qc_id = $1`,
-    [projectQcId],
-  )
+  const res = useLiveQuery(`SELECT * FROM project_qcs WHERE project_qc_id = $1`, [
+    projectQcId,
+  ])
   const row: ProjectQcs | undefined = res?.rows?.[0]
 
   const onChange = async (e, data) => {
@@ -34,10 +33,10 @@ export const ProjectQc = () => {
     if (row?.[name] === value) return
 
     try {
-      await db.query(
-        `UPDATE project_qcs SET ${name} = $1 WHERE project_qc_id = $2`,
-        [value, projectQcId],
-      )
+      await db.query(`UPDATE project_qcs SET ${name} = $1 WHERE project_qc_id = $2`, [
+        value,
+        projectQcId,
+      ])
     } catch (error) {
       setValidations((prev) => ({
         ...prev,
