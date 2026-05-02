@@ -31,10 +31,9 @@ export const Header = ({ autoFocusRef }) => {
 
   const deleteRow = async () => {
     try {
-      const prevRes = await db.query(
-        `SELECT * FROM qcs WHERE qcs_id = $1`,
-        [qcsId],
-      )
+      const prevRes = await db.query(`SELECT * FROM qcs WHERE qcs_id = $1`, [
+        qcsId,
+      ])
       const prev = prevRes?.rows?.[0] ?? {}
       await db.query(`DELETE FROM qcs WHERE qcs_id = $1`, [qcsId])
       addOperation({
@@ -52,7 +51,9 @@ export const Header = ({ autoFocusRef }) => {
 
   const toNext = async () => {
     try {
-      const res = await db.query(`SELECT qcs_id FROM qcs ORDER BY label`)
+      const res = await db.query(
+        `SELECT qcs_id FROM qcs ORDER BY COALESCE(NULLIF(name_de, ''), qcs_id::text)`,
+      )
       const rows = res?.rows
       const len = rows.length
       const index = rows.findIndex((p) => p.qcs_id === qcsIdRef.current)
@@ -68,7 +69,9 @@ export const Header = ({ autoFocusRef }) => {
 
   const toPrevious = async () => {
     try {
-      const res = await db.query(`SELECT qcs_id FROM qcs ORDER BY label`)
+      const res = await db.query(
+        `SELECT qcs_id FROM qcs ORDER BY COALESCE(NULLIF(name_de, ''), qcs_id::text)`,
+      )
       const rows = res?.rows
       const len = rows.length
       const index = rows.findIndex((p) => p.qcs_id === qcsIdRef.current)
@@ -84,7 +87,10 @@ export const Header = ({ autoFocusRef }) => {
 
   return (
     <FormHeader
-      title={formatMessage({ id: 'qcs.nameSingular', defaultMessage: 'Qualitätskontrolle' })}
+      title={formatMessage({
+        id: 'qcs.nameSingular',
+        defaultMessage: 'Qualitätskontrolle',
+      })}
       addRow={addRow}
       deleteRow={deleteRow}
       toNext={toNext}
