@@ -36,15 +36,11 @@ ensure project_qcs are only visible to owners and project designers (nav tree, l
 
 ---
 
-If you want, I can now add the same history compare flow for project_qcs (like project_crs), so each project_qcs form gets a histories view and toggle
+lets add the same history compare flow for project_qcs (like project_crs), so each project_qcs form gets a histories view and toggle
 
 ---
 
 ---
-
-DOING: project_crs form: 'Teilprojekt-Ebene' should become: '{name of subproject as defined in the projects table}-Ebene'. Also update all translations. Fallback remains 'Teilprojekt-Ebene' (if not defined in the projects table)
-
-TODO: check if also in filter
 
 ---
 
