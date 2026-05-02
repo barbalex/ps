@@ -1,6 +1,6 @@
 import { createFileRoute } from '@tanstack/react-router'
 
-import { ActionReportQuantity } from '../../../../../../../../../../../../../formsAndLists/actionReportQuantity'
+import { ActionReportQuantity } from '../../../../../../../../../../../../../formsAndLists/actionReportQuantity/index.tsx'
 
 export const Route = createFileRoute('/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/places/$placeId2_/action-reports/$actionReportId_/quantities/$actionReportQuantityId/')({
   component: () => (

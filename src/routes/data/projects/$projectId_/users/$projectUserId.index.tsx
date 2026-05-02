@@ -1,6 +1,6 @@
 import { createFileRoute } from '@tanstack/react-router'
 
-import { ProjectUser } from '../../../../../formsAndLists/projectUser'
+import { ProjectUser } from '../../../../../formsAndLists/projectUser/index.tsx'
 
 export const Route = createFileRoute(
   '/data/projects/$projectId_/users/$projectUserId/',

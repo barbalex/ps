@@ -1,6 +1,6 @@
 import { createFileRoute } from '@tanstack/react-router'
 
-import { VectorLayerDisplay } from '../../../../../../../../formsAndLists/vectorLayerDisplay'
+import { VectorLayerDisplay } from '../../../../../../../../formsAndLists/vectorLayerDisplay/index.tsx'
 
 const from =
   '/data/projects/$projectId_/vector-layers/$vectorLayerId_/displays/$vectorLayerDisplayId_/vector-layer-display'

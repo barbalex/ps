@@ -1,6 +1,6 @@
 import { createFileRoute } from '@tanstack/react-router'
 
-import { PlaceUser } from '../../../../../../../../../formsAndLists/placeUser'
+import { PlaceUser } from '../../../../../../../../../formsAndLists/placeUser/index.tsx'
 
 export const Route = createFileRoute('/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/users/$placeUserId/')({
   component: () => (

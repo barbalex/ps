@@ -1,6 +1,6 @@
 import { createFileRoute } from '@tanstack/react-router'
 
-import { GoalReport } from '../../../../../../../../../../formsAndLists/goalReport'
+import { GoalReport } from '../../../../../../../../../../formsAndLists/goalReport/index.tsx'
 import { NotFound } from '../../../../../../../../../../components/NotFound.tsx'
 
 export const Route = createFileRoute('/data/projects/$projectId_/subprojects/$subprojectId_/goals/$goalId_/reports/$goalReportId_/')({

@@ -1,6 +1,6 @@
 import { createFileRoute } from '@tanstack/react-router'
 
-import { ActionTaxon } from '../../../../../../../../../../../formsAndLists/actionTaxon'
+import { ActionTaxon } from '../../../../../../../../../../../formsAndLists/actionTaxon/index.tsx'
 
 export const Route = createFileRoute('/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/actions/$actionId_/taxa/$actionTaxonId/')({
   component: () => (

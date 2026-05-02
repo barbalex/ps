@@ -1,6 +1,6 @@
 import { createFileRoute } from '@tanstack/react-router'
 
-import { Observation } from '../../../../../../../../../formsAndLists/observation'
+import { Observation } from '../../../../../../../../../formsAndLists/observation/index.tsx'
 
 export const Route = createFileRoute('/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/observations/$observationId/')({
   component: () => (

@@ -1,7 +1,7 @@
 import { createFileRoute, stripSearchParams } from '@tanstack/react-router'
 import { type } from 'arktype'
 
-import { ObservationImport } from '../../../../../../../formsAndLists/observationImport'
+import { ObservationImport } from '../../../../../../../formsAndLists/observationImport/index.tsx'
 
 const defaultValues = {
   observationImportTab: 1,
