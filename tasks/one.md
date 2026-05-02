@@ -28,6 +28,22 @@ ensure project_qcs are only visible to owners and project designers (nav tree, l
 
 ---
 
+qcs and project_qcs: do we need name? use label instead?
+
+---
+
+qcs and project_qcs: nach Jahr filtern: explain, do we need it for project_qcs?
+
+---
+
+qcs and project_qcs: sort value: explain in ui
+
+---
+
+project_qcs form: explain in subtitle
+
+---
+
 lets add project_cqs to /data/projects/018cfcf7-6424-7000-a100-851c5cc2c878/qcs-choose and /data/projects/018cfcf7-6424-7000-a100-851c5cc2c878/subprojects/018cfd27-ee92-7000-b678-e75497d6c60e/qcs-choose, i.e. ensure they are also listed and when choosen run
 
 ---
