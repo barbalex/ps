@@ -44,8 +44,10 @@ in project's list view, while designing: many of the nav tree nodes that are chi
 
 ---
 
-/data/projects/018cfcf7-6424-7000-a100-851c5cc2c878/configuration's node in nav tree is shown when not designing. Should only be shown while designing, as in the list view
+/data/projects/018cfcf7-6424-7000-a100-851c5cc2c878/subproject-designs's node in nav tree is shown when not designing. Should only be shown while designing, as in the list view. Same for: /designs
 
 ---
+
+/data/projects/018cfcf7-6424-7000-a100-851c5cc2c878/subproject-designs's node in project list viw is not shown when designing. it should (only when designing). Same for: /designs
 
 sudo do-release-upgrade -d

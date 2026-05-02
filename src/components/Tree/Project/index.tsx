@@ -34,7 +34,8 @@ const parentArray = ['data', 'projects']
 
 export const ProjectNode = ({ nav, level = 2 }) => {
   const [openNodes] = useAtom(treeOpenNodesAtom)
-  const [designing] = useAtom(designingAtom)
+  const [designingMap] = useAtom(designingAtom)
+  const designing = designingMap[nav.id] ?? false
   const { formatMessage } = useIntl()
 
   const { pathname } = useLocation()
@@ -125,7 +126,7 @@ export const ProjectNode = ({ nav, level = 2 }) => {
           {showDesigningNodes && (
             <ProjectReportDesignsNode projectId={nav.id} level={3} />
           )}
-          {showProjectReports && showReportsNav && (
+          {showProjectReports && (
             <ProjectReportsNode projectId={nav.id} />
           )}
           {showWmsNodes && <WmsServicesNode projectId={nav.id} />}

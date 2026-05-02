@@ -76,6 +76,8 @@ type NavDataNotForBreadcrumb = {
   vector_layers_count_filtered?: number
   files_count_unfiltered?: number
   files_count_filtered?: number
+  qcs_assignment_count?: number
+  qcs_run_count?: number
 }
 
 type NavDataNotForBreadcrumbDesigning = {
@@ -119,6 +121,8 @@ type NavDataNotForBreadcrumbDesigning = {
   place_levels_count_unfiltered?: number
   fields_count_unfiltered?: number
   fields_count_filtered?: number
+  qcs_assignment_count?: number
+  qcs_run_count?: number
 }
 
 export const useProjectNavData = ({
@@ -182,7 +186,9 @@ export const useProjectNavData = ({
             vector_layers_count_unfiltered AS (SELECT count(*) FROM vector_layers WHERE project_id = '${projectId}'),
             vector_layers_count_filtered AS (SELECT count(*) FROM vector_layers WHERE project_id = '${projectId}' ${vectorLayersIsFiltered ? ` AND ${vectorLayersFilterString}` : ''}),
             files_count_unfiltered AS (SELECT count(*) FROM files WHERE project_id = '${projectId}'),
-            files_count_filtered AS (SELECT count(*) FROM files WHERE project_id = '${projectId}' ${filesIsFiltered ? ` AND ${filesFilterString}` : ''})
+            files_count_filtered AS (SELECT count(*) FROM files WHERE project_id = '${projectId}' ${filesIsFiltered ? ` AND ${filesFilterString}` : ''}),
+            qcs_assignment_count AS (SELECT count(*) FROM (SELECT qa.qcs_assignment_id FROM qcs_assignment qa JOIN qcs q ON q.qcs_id = qa.qc_id WHERE qa.project_id = '${projectId}' AND qa.subproject_id IS NULL AND q.is_project_level = true UNION ALL SELECT pqa.project_qcs_assignment_id FROM project_qcs_assignment pqa WHERE pqa.project_id = '${projectId}' AND pqa.subproject_id IS NULL) t),
+            qcs_run_count AS (SELECT count(*) FROM qcs_assignment qa JOIN qcs q ON q.qcs_id = qa.qc_id WHERE qa.project_id = '${projectId}' AND qa.subproject_id IS NULL AND q.is_project_level = true)
             ${
               designing
                 ? `, project_users_count_unfiltered AS (SELECT count(*) FROM project_users WHERE project_id = '${projectId}'),
@@ -232,7 +238,9 @@ export const useProjectNavData = ({
             vector_layers_count_unfiltered.count AS vector_layers_count_unfiltered,
             vector_layers_count_filtered.count AS vector_layers_count_filtered,
             files_count_unfiltered.count AS files_count_unfiltered,
-            files_count_filtered.count AS files_count_filtered
+            files_count_filtered.count AS files_count_filtered,
+            qcs_assignment_count.count AS qcs_assignment_count,
+            qcs_run_count.count AS qcs_run_count
             ${
               designing
                 ? `, project_users_count_unfiltered.count AS project_users_count_unfiltered,
@@ -267,7 +275,9 @@ export const useProjectNavData = ({
             vector_layers_count_unfiltered,
             vector_layers_count_filtered,
             files_count_unfiltered,
-            files_count_filtered
+            files_count_filtered,
+            qcs_assignment_count,
+            qcs_run_count
             ${
               designing
                 ? `, project_users_count_unfiltered,
@@ -453,6 +463,10 @@ export const useProjectNavData = ({
                     }),
                   }),
                 },
+              ]
+            : []),
+          ...(designing
+            ? [
                 {
                   id: 'lists',
                   label: buildNavLabel({
@@ -550,6 +564,28 @@ export const useProjectNavData = ({
                 },
               ]
             : []),
+          {
+            id: 'qcs-assignment',
+            label: buildNavLabel({
+              loading,
+              countFiltered: nav?.qcs_assignment_count ?? 0,
+              namePlural: formatMessage({
+                id: 'subprojectQcs.title',
+                defaultMessage: 'Qualitätskontrollen: wählen',
+              }),
+            }),
+          },
+          {
+            id: 'qcs-run',
+            label: buildNavLabel({
+              loading,
+              countFiltered: nav?.qcs_run_count ?? 0,
+              namePlural: formatMessage({
+                id: 'subprojectQcsRun.title',
+                defaultMessage: 'Qualitätskontrollen: ausführen',
+              }),
+            }),
+          },
         ],
   }
 
