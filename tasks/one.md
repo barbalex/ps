@@ -38,7 +38,7 @@ qcs and project_qcs: sort value: explain in ui
 
 ---
 
-project_qcs form: explain in subtitle
+project_qcs list view: explain in subtitle, similar to the qcs list view: 'Hier kannst du eigene Qualitätskontrollen erstellen. Sie sind in diesem Projekt verfügbar. Sie können auf Ebene Projekt oder {subproject name as defined in the project table} angewendet werden.'
 
 ---
 
