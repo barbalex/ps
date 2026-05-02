@@ -52,10 +52,10 @@ export const SubprojectQcs = ({ from }) => {
 
   const [searchTerm, setSearchTerm] = useState('')
 
-  // Load all qcs with subproject level
+  // Load all qcs with subproject level that have SQL
   const qcsRes = useLiveQuery(
     `SELECT qcs_id, COALESCE(NULLIF(name_${language}, ''), name_de) AS label
-     FROM qcs WHERE is_subproject_level = true ORDER BY label`,
+     FROM qcs WHERE is_subproject_level = true AND sql IS NOT NULL AND sql != '' ORDER BY label`,
   )
 
   // Load active qcs_assignment for this subproject
@@ -64,10 +64,10 @@ export const SubprojectQcs = ({ from }) => {
     [subprojectId],
   )
 
-  // Load project-specific QCs for this project at subproject level
+  // Load project-specific QCs for this project at subproject level that have SQL
   const projectQcsRes = useLiveQuery(
     `SELECT project_qc_id, COALESCE(NULLIF(name_${language}, ''), name_de) AS label
-     FROM project_qcs WHERE project_id = $1 AND is_subproject_level = true ORDER BY label`,
+     FROM project_qcs WHERE project_id = $1 AND is_subproject_level = true AND sql IS NOT NULL AND sql != '' ORDER BY label`,
     [projectId],
   )
 

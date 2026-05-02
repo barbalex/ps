@@ -44,7 +44,9 @@ qcs and project_qcs: explain how label translations work, like somewhere else (w
 
 ---
 
-lets add project_cqs to /data/projects/018cfcf7-6424-7000-a100-851c5cc2c878/qcs-choose (when Projekt-Ebene is true) and /data/projects/018cfcf7-6424-7000-a100-851c5cc2c878/subprojects/018cfd27-ee92-7000-b678-e75497d6c60e/qcs-choose (when Teilprojekt-Ebene is true), i.e. ensure they are also listed, can be choosen and when choosen will be run
+---
+
+using the next button in the qc form's header does nothing but errors with: Header.tsx:65 Error navigating to next qc: error: column "label" does not exist
 
 ---
 
