@@ -40,11 +40,11 @@ qcs and project_qcs: sort value: explain in ui
 
 ---
 
----
-
 qcs and project_qcs: explain how label translations work, like somewhere else (where?). Fallback de
 
-lets add project_cqs to /data/projects/018cfcf7-6424-7000-a100-851c5cc2c878/qcs-choose and /data/projects/018cfcf7-6424-7000-a100-851c5cc2c878/subprojects/018cfd27-ee92-7000-b678-e75497d6c60e/qcs-choose, i.e. ensure they are also listed and when choosen run
+---
+
+lets add project_cqs to /data/projects/018cfcf7-6424-7000-a100-851c5cc2c878/qcs-choose (when Projekt-Ebene is true) and /data/projects/018cfcf7-6424-7000-a100-851c5cc2c878/subprojects/018cfd27-ee92-7000-b678-e75497d6c60e/qcs-choose (when Teilprojekt-Ebene is true), i.e. ensure they are also listed, can be choosen and when choosen will be run
 
 ---
 

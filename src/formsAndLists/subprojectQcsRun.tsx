@@ -191,9 +191,27 @@ export const SubprojectQcsRun = ({ from }: { from: string }) => {
     [subprojectId],
   )
 
-  const loading = qcsRes === undefined
+  // Load chosen project-specific QCs for this subproject
+  const projectQcsRes = useLiveQuery(
+    `SELECT pq.project_qc_id AS qcs_id,
+            COALESCE(NULLIF(pq.name_${language}, ''), pq.name_de) AS label,
+            pq.sql,
+            pq.filter_by_year
+     FROM project_qcs_assignment pqa
+     JOIN project_qcs pq ON pq.project_qc_id = pqa.project_qc_id
+     WHERE pqa.subproject_id = $1
+       AND pq.sql IS NOT NULL
+       AND pq.sql != ''
+     ORDER BY label`,
+    [subprojectId],
+  )
 
-  const qcRows: QcRow[] = (qcsRes?.rows ?? []) as QcRow[]
+  const loading = qcsRes === undefined || projectQcsRes === undefined
+
+  const qcRows: QcRow[] = [
+    ...((qcsRes?.rows ?? []) as QcRow[]),
+    ...((projectQcsRes?.rows ?? []) as QcRow[]),
+  ].sort((a, b) => (a.label ?? '').localeCompare(b.label ?? ''))
 
   // Filter by label at parent level so unmounted QcCards don't run live queries
   const labelFilteredQcs = labelFilter.trim()

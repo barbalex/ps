@@ -1848,3 +1848,33 @@ export const createProjectQcsAssignment = async ({ projectId, qcId }) => {
 
   return qcs_assignment_id
 }
+
+export const createProjectQcsAssignmentForProjectQc = async ({
+  projectId,
+  subprojectId,
+  projectQcId,
+}: {
+  projectId?: string
+  subprojectId?: string
+  projectQcId: string
+}) => {
+  const db = store.get(pgliteDbAtom)
+  const project_qcs_assignment_id = uuidv7()
+  await db.query(
+    `insert into project_qcs_assignment (project_qcs_assignment_id, project_id, subproject_id, project_qc_id) values ($1, $2, $3, $4)`,
+    [project_qcs_assignment_id, projectId ?? null, subprojectId ?? null, projectQcId],
+  )
+
+  store.set(addOperationAtom, {
+    table: 'project_qcs_assignment',
+    operation: 'insert',
+    draft: {
+      project_qcs_assignment_id,
+      project_id: projectId ?? null,
+      subproject_id: subprojectId ?? null,
+      project_qc_id: projectQcId,
+    },
+  })
+
+  return project_qcs_assignment_id
+}

@@ -193,9 +193,28 @@ export const ProjectQcsRun = ({ from }: { from: string }) => {
     [projectId],
   )
 
-  const loading = qcsRes === undefined
+  // Load chosen project-specific QCs for this project
+  const projectQcsRes = useLiveQuery(
+    `SELECT pq.project_qc_id AS qcs_id,
+            COALESCE(NULLIF(pq.name_${language}, ''), pq.name_de) AS label,
+            pq.sql,
+            pq.filter_by_year
+     FROM project_qcs_assignment pqa
+     JOIN project_qcs pq ON pq.project_qc_id = pqa.project_qc_id
+     WHERE pqa.project_id = $1
+       AND pqa.subproject_id IS NULL
+       AND pq.sql IS NOT NULL
+       AND pq.sql != ''
+     ORDER BY label`,
+    [projectId],
+  )
 
-  const qcRows: QcRow[] = (qcsRes?.rows ?? []) as QcRow[]
+  const loading = qcsRes === undefined || projectQcsRes === undefined
+
+  const qcRows: QcRow[] = [
+    ...((qcsRes?.rows ?? []) as QcRow[]),
+    ...((projectQcsRes?.rows ?? []) as QcRow[]),
+  ].sort((a, b) => (a.label ?? '').localeCompare(b.label ?? ''))
 
   const labelFilteredQcs = labelFilter.trim()
     ? qcRows.filter((qc) =>

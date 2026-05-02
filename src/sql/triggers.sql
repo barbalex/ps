@@ -1423,3 +1423,57 @@ CREATE OR REPLACE TRIGGER place_levels_create_vector_layers_trigger
 AFTER INSERT OR UPDATE OF level, actions, checks ON place_levels
 FOR EACH ROW
 EXECUTE PROCEDURE place_levels_create_vector_layers_trigger();
+
+--------------------------------------------------------------
+-- project_qcs_assignment: set label from project_qcs.name_de with project_qcs_assignment_id as fallback
+CREATE OR REPLACE FUNCTION project_qcs_assignment_label_trigger()
+RETURNS TRIGGER AS $$
+DECLARE
+  is_syncing BOOLEAN;
+  _qc_label TEXT;
+BEGIN
+  SELECT COALESCE(NULLIF(current_setting('electric.syncing', true), ''), 'false')::boolean INTO is_syncing;
+  IF is_syncing THEN
+    RETURN OLD;
+  END IF;
+
+  IF NEW.project_qc_id IS NULL THEN
+    _qc_label := NULL;
+  ELSE
+    SELECT project_qcs.name_de INTO _qc_label FROM project_qcs WHERE project_qcs.project_qc_id = NEW.project_qc_id;
+  END IF;
+
+  UPDATE project_qcs_assignment
+    SET label = coalesce(nullif(_qc_label, ''), NEW.project_qcs_assignment_id::text)
+  WHERE project_qcs_assignment.project_qcs_assignment_id = NEW.project_qcs_assignment_id;
+  RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE OR REPLACE TRIGGER project_qcs_assignment_label_trigger
+AFTER INSERT OR UPDATE OF project_qc_id ON project_qcs_assignment
+FOR EACH ROW
+EXECUTE PROCEDURE project_qcs_assignment_label_trigger();
+
+-- when project_qcs.name_de changes, update labels of all related project_qcs_assignment rows
+CREATE OR REPLACE FUNCTION project_qcs_name_update_project_qcs_assignment_label_trigger()
+RETURNS TRIGGER AS $$
+DECLARE
+  is_syncing BOOLEAN;
+BEGIN
+  SELECT COALESCE(NULLIF(current_setting('electric.syncing', true), ''), 'false')::boolean INTO is_syncing;
+  IF is_syncing THEN
+    RETURN OLD;
+  END IF;
+
+  UPDATE project_qcs_assignment
+    SET label = coalesce(nullif(NEW.name_de, ''), project_qcs_assignment_id::text)
+  WHERE project_qcs_assignment.project_qc_id = NEW.project_qc_id;
+  RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE OR REPLACE TRIGGER project_qcs_name_update_project_qcs_assignment_label_trigger
+AFTER UPDATE OF name_de ON project_qcs
+FOR EACH ROW
+EXECUTE PROCEDURE project_qcs_name_update_project_qcs_assignment_label_trigger();
