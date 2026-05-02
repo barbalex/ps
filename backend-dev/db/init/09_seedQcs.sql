@@ -431,7 +431,7 @@ WHERE p.subproject_id = $1
   AND NOT EXISTS (SELECT 1
 FROM checks c
 WHERE c.place_id = p.place_id
-  AND date_part(''year'', c.date) = date_part(''year'', now()))
+  AND date_part(''year'', c.date) = $2)
 ORDER BY p.label'),
 ('Orte (relevante und aktuell existierende) ohne Massnahmen', 'Places (relevant and currently existing) without actions', 'Lieux (pertinents et actuellement existants) sans actions', 'Luoghi (rilevanti e attualmente esistenti) senza azioni', false, false, true, false, 'SELECT p.label, ''/data/projects/'' || sp.project_id || ''/subprojects/'' || p.subproject_id || ''/places/'' || p.place_id || ''/actions/'' AS url
 FROM places p
@@ -454,7 +454,7 @@ WHERE p.subproject_id = $1
   AND NOT EXISTS (SELECT 1
 FROM actions a
 WHERE a.place_id = p.place_id
-  AND date_part(''year'', a.date) = date_part(''year'', now()))
+  AND date_part(''year'', a.date) = $2)
 ORDER BY p.label'),
 ('Orte (relevante und aktuell existierende) ohne Berichte', 'Places (relevant and currently existing) without reports', 'Lieux (pertinents et actuellement existants) sans rapports', 'Luoghi (rilevanti e attualmente esistenti) senza rapporti', false, false, true, false, NULL),
 ('Orte (relevante und aktuell existierende) ohne Bericht in Jahr', 'Places (relevant and currently existing) without report in year', 'Lieux (pertinents et actuellement existants) sans rapport dans l''année', 'Luoghi (rilevanti e attualmente esistenti) senza rapporto nell''anno', false, false, true, true, NULL),
@@ -481,7 +481,7 @@ WHERE p.subproject_id = $1
 FROM check_reports pcr
 WHERE pcr.place_id = p.place_id)
 ORDER BY p.label'),
-('Orte (relevante und aktuell existierende) ohne Kontroll-Bericht in Jahr', 'Places (relevant and currently existing) without check report in year', 'Lieux (pertinents et actuellement existants) sans rapport de contrôle dans l''année', 'Luoghi (rilevanti e attualmente esistenti) senza rapporto di controllo nell''anno', false, false, true, false, 'SELECT p.label, ''/data/projects/'' || sp.project_id || ''/subprojects/'' || p.subproject_id || ''/places/'' || p.place_id || ''/check-reports/'' AS url
+('Orte (relevante und aktuell existierende) ohne Kontroll-Bericht in Jahr', 'Places (relevant and currently existing) without check report in year', 'Lieux (pertinents et actuellement existants) sans rapport de contrôle dans l''année', 'Luoghi (rilevanti e attualmente esistenti) senza rapporto di controllo nell''anno', false, false, true, true, 'SELECT p.label, ''/data/projects/'' || sp.project_id || ''/subprojects/'' || p.subproject_id || ''/places/'' || p.place_id || ''/check-reports/'' AS url
 FROM places p
 JOIN subprojects sp ON sp.subproject_id = p.subproject_id
 WHERE p.subproject_id = $1
@@ -491,7 +491,7 @@ WHERE p.subproject_id = $1
   AND NOT EXISTS (SELECT 1
 FROM check_reports pcr
 WHERE pcr.place_id = p.place_id
-  AND pcr.year = date_part(''year'', now())::integer)
+  AND pcr.year = $2)
 ORDER BY p.label'),
 ('Orte (relevante und aktuell existierende) ohne Massnahmen-Bericht', 'Places (relevant and currently existing) without action report', 'Lieux (pertinents et actuellement existants) sans rapport d''action', 'Luoghi (rilevanti e attualmente esistenti) senza rapporto di azione', false, false, true, false, 'SELECT p.label, ''/data/projects/'' || sp.project_id || ''/subprojects/'' || p.subproject_id || ''/places/'' || p.place_id || ''/action-reports/'' AS url
 FROM places p
@@ -504,7 +504,7 @@ WHERE p.subproject_id = $1
 FROM action_reports par
 WHERE par.place_id = p.place_id)
 ORDER BY p.label'),
-('Orte (relevante und aktuell existierende) ohne Massnahmen-Bericht in Jahr', 'Places (relevant and currently existing) without action report in year', 'Lieux (pertinents et actuellement existants) sans rapport d''action dans l''année', 'Luoghi (rilevanti e attualmente esistenti) senza rapporto di azione nell''anno', false, false, true, false, 'SELECT p.label, ''/data/projects/'' || sp.project_id || ''/subprojects/'' || p.subproject_id || ''/places/'' || p.place_id || ''/action-reports/'' AS url
+('Orte (relevante und aktuell existierende) ohne Massnahmen-Bericht in Jahr', 'Places (relevant and currently existing) without action report in year', 'Lieux (pertinents et actuellement existants) sans rapport d''action dans l''année', 'Luoghi (rilevanti e attualmente esistenti) senza rapporto di azione nell''anno', false, false, true, true, 'SELECT p.label, ''/data/projects/'' || sp.project_id || ''/subprojects/'' || p.subproject_id || ''/places/'' || p.place_id || ''/action-reports/'' AS url
 FROM places p
 JOIN subprojects sp ON sp.subproject_id = p.subproject_id
 WHERE p.subproject_id = $1
@@ -514,7 +514,7 @@ WHERE p.subproject_id = $1
   AND NOT EXISTS (SELECT 1
 FROM action_reports par
 WHERE par.place_id = p.place_id
-  AND par.year = date_part(''year'', now())::integer)
+  AND par.year = $2)
 ORDER BY p.label'),
 ('Ort-Benutzer ohne Benutzer', 'Place users without user', 'Utilisateurs de lieu sans utilisateur', 'Utenti di luogo senza utente', false, false, true, false, 'SELECT pu.label, ''/data/projects/'' || sp.project_id || ''/subprojects/'' || p.subproject_id || ''/places/'' || pu.place_id || ''/users/'' || pu.place_user_id || ''/'' AS url
 FROM place_users pu
