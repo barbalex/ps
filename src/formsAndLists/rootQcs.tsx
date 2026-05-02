@@ -36,7 +36,7 @@ export const RootQcs = () => {
 
   // Load all root-level QCS
   const qcsRes = useLiveQuery(
-    `SELECT qcs_id, COALESCE(NULLIF(label_${language}, ''), label_de) AS label
+    `SELECT qcs_id, COALESCE(NULLIF(label_${language}, ''), name_de) AS label
      FROM qcs WHERE is_root_level = true ORDER BY label`,
   )
 

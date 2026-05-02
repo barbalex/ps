@@ -7,8 +7,6 @@ export default interface ProjectQcsHistory {
 
   project_id: string;
 
-  name: string | null;
-
   label_de: string | null;
 
   label_en: string | null;
@@ -48,8 +46,6 @@ export interface ProjectQcsHistoryInitializer {
   project_qc_id?: string;
 
   project_id: string;
-
-  name?: string | null;
 
   label_de?: string | null;
 
@@ -94,8 +90,6 @@ export interface ProjectQcsHistoryMutator {
   project_qc_id?: string;
 
   project_id?: string;
-
-  name?: string | null;
 
   label_de?: string | null;
 

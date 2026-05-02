@@ -39,8 +39,6 @@ export interface TemplatePublicProjectQcsHistoryInitializer {
 
   project_id: string;
 
-  name?: string | null;
-
   label_de?: string | null;
 
   label_en?: string | null;
@@ -75,8 +73,6 @@ export interface TemplatePublicProjectQcsHistoryMutator {
   project_qc_id?: string;
 
   project_id?: string;
-
-  name?: string | null;
 
   label_de?: string | null;
 

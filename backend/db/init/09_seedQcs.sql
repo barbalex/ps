@@ -2,7 +2,7 @@
 -- Generated from seed-data/qcs.csv
 -- Run `node backend/db/generate_qcs_sql.mjs` from project root to regenerate after editing the CSV.
 
-INSERT INTO qcs (label_de, label_en, label_fr, label_it, is_root_level, is_project_level, is_subproject_level, filter_by_year, sql)
+INSERT INTO qcs (name_de, name_en, name_fr, name_it, is_root_level, is_project_level, is_subproject_level, filter_by_year, sql)
 VALUES
 ('Projekte ohne Namen', 'Projects without name', 'Projets sans nom', 'Progetti senza nome', false, true, false, false, 'SELECT p.label, ''/data/projects/'' || p.project_id || ''/project'' AS url
 FROM projects p
@@ -705,10 +705,10 @@ FROM action_taxa atx
 WHERE atx.action_id = a.action_id
   AND atx.unit_id != proj.action_taxa_default_unit_id)
 ORDER BY a.label')
-ON CONFLICT (label_de) DO UPDATE SET
-  label_en            = EXCLUDED.label_en,
-  label_fr            = EXCLUDED.label_fr,
-  label_it            = EXCLUDED.label_it,
+ON CONFLICT (name_de) DO UPDATE SET
+  name_en             = EXCLUDED.name_en,
+  name_fr             = EXCLUDED.name_fr,
+  name_it             = EXCLUDED.name_it,
   is_root_level       = EXCLUDED.is_root_level,
   is_project_level    = EXCLUDED.is_project_level,
   is_subproject_level = EXCLUDED.is_subproject_level,

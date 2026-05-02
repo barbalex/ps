@@ -48,8 +48,6 @@ export interface QcsInitializer {
   /** Default value: uuid_generate_v7() */
   qcs_id?: QcsQcsId;
 
-  name?: string | null;
-
   label_de?: string | null;
 
   label_en?: string | null;
@@ -94,8 +92,6 @@ export interface QcsInitializer {
  */
 export interface QcsMutator {
   qcs_id?: QcsQcsId;
-
-  name?: string | null;
 
   label_de?: string | null;
 

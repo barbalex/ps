@@ -38,7 +38,7 @@ export const ProjectQcs = ({ from }) => {
 
   // Load all project-level QCS
   const qcsRes = useLiveQuery(
-    `SELECT qcs_id, COALESCE(NULLIF(label_${language}, ''), label_de) AS label
+    `SELECT qcs_id, COALESCE(NULLIF(label_${language}, ''), name_de) AS label
      FROM qcs WHERE is_project_level = true ORDER BY label`,
   )
 

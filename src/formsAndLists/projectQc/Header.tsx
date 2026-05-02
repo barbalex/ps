@@ -62,7 +62,7 @@ export const Header = ({ autoFocusRef }) => {
         `SELECT project_qc_id
          FROM project_qcs
          WHERE project_id = $1
-         ORDER BY COALESCE(NULLIF(label_de, ''), project_qc_id)`,
+         ORDER BY COALESCE(NULLIF(name_de, ''), project_qc_id)`,
         [projectId],
       )
       const rows = res?.rows ?? []
@@ -85,7 +85,7 @@ export const Header = ({ autoFocusRef }) => {
         `SELECT project_qc_id
          FROM project_qcs
          WHERE project_id = $1
-         ORDER BY COALESCE(NULLIF(label_de, ''), project_qc_id)`,
+         ORDER BY COALESCE(NULLIF(name_de, ''), project_qc_id)`,
         [projectId],
       )
       const rows = res?.rows ?? []

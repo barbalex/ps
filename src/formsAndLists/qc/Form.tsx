@@ -50,40 +50,40 @@ export const QcForm = ({ onChange, validations = {}, row, autoFocusRef }) => {
     <>
       <TextField
         label={formatMessage({
-          id: 'qc.labelDe',
-          defaultMessage: 'Bezeichnung (DE)',
+          id: 'qc.nameDe',
+          defaultMessage: 'Name (DE)',
         })}
-        name="label_de"
-        value={row?.label_de ?? ''}
+        name="name_de"
+        value={row?.name_de ?? ''}
         onChange={onChange}
         autoFocus
         ref={autoFocusRef}
       />
       <TextField
         label={formatMessage({
-          id: 'qc.labelEn',
-          defaultMessage: 'Bezeichnung (EN)',
+          id: 'qc.nameEn',
+          defaultMessage: 'Name (EN)',
         })}
-        name="label_en"
-        value={row?.label_en ?? ''}
+        name="name_en"
+        value={row?.name_en ?? ''}
         onChange={onChange}
       />
       <TextField
         label={formatMessage({
-          id: 'qc.labelFr',
-          defaultMessage: 'Bezeichnung (FR)',
+          id: 'qc.nameFr',
+          defaultMessage: 'Name (FR)',
         })}
-        name="label_fr"
-        value={row?.label_fr ?? ''}
+        name="name_fr"
+        value={row?.name_fr ?? ''}
         onChange={onChange}
       />
       <TextField
         label={formatMessage({
-          id: 'qc.labelIt',
-          defaultMessage: 'Bezeichnung (IT)',
+          id: 'qc.nameIt',
+          defaultMessage: 'Name (IT)',
         })}
-        name="label_it"
-        value={row?.label_it ?? ''}
+        name="name_it"
+        value={row?.name_it ?? ''}
         onChange={onChange}
       />
       <SwitchField

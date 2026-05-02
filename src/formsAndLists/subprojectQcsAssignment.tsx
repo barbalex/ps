@@ -38,7 +38,7 @@ export const SubprojectQcs = ({ from }) => {
 
   // Load all qcs with subproject level
   const qcsRes = useLiveQuery(
-    `SELECT qcs_id, COALESCE(NULLIF(label_${language}, ''), label_de) AS label
+    `SELECT qcs_id, COALESCE(NULLIF(label_${language}, ''), name_de) AS label
      FROM qcs WHERE is_subproject_level = true ORDER BY label`,
   )
 

@@ -5,8 +5,6 @@
 export default interface QcsHistory {
   qcs_id: string;
 
-  name: string | null;
-
   label_de: string | null;
 
   label_en: string | null;
@@ -46,8 +44,6 @@ export default interface QcsHistory {
 export interface QcsHistoryInitializer {
   /** Default value: uuid_generate_v7() */
   qcs_id?: string;
-
-  name?: string | null;
 
   label_de?: string | null;
 
@@ -93,8 +89,6 @@ export interface QcsHistoryInitializer {
  */
 export interface QcsHistoryMutator {
   qcs_id?: string;
-
-  name?: string | null;
 
   label_de?: string | null;
 

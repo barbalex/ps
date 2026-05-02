@@ -1916,10 +1916,10 @@ COMMENT ON TABLE project_crs IS 'List of crs used in a project. Can be set when 
 --
 CREATE TABLE IF NOT EXISTS qcs(
   qcs_id uuid PRIMARY KEY DEFAULT public.uuid_generate_v7(),
-  label_de text DEFAULT NULL,
-  label_en text DEFAULT NULL,
-  label_fr text DEFAULT NULL,
-  label_it text DEFAULT NULL,
+  name_de text DEFAULT NULL,
+  name_en text DEFAULT NULL,
+  name_fr text DEFAULT NULL,
+  name_it text DEFAULT NULL,
   description text DEFAULT NULL,
   sort smallint DEFAULT NULL,
   is_root_level boolean DEFAULT false,
@@ -1931,10 +1931,10 @@ CREATE TABLE IF NOT EXISTS qcs(
   created_at timestamptz NOT NULL DEFAULT now(),
   updated_at timestamptz NOT NULL DEFAULT now(),
   updated_by text DEFAULT NULL,
-  UNIQUE (label_de)
+  UNIQUE (name_de)
 );
 
-CREATE INDEX IF NOT EXISTS qcs_label_de_idx ON qcs USING btree(label_de);
+CREATE INDEX IF NOT EXISTS qcs_name_de_idx ON qcs USING btree(name_de);
 CREATE INDEX IF NOT EXISTS qcs_sort_idx ON qcs USING btree(sort);
 
 COMMENT ON TABLE qcs IS 'Quality control rules for data validation. No history tracking needed as these are root-level configuration managed by administrators.';
@@ -1968,10 +1968,10 @@ COMMENT ON TABLE qcs_assignment IS 'Quality controls assigned to a project or su
 CREATE TABLE IF NOT EXISTS project_qcs(
   project_qc_id uuid PRIMARY KEY DEFAULT public.uuid_generate_v7(),
   project_id uuid NOT NULL REFERENCES projects(project_id) ON DELETE CASCADE ON UPDATE CASCADE DEFERRABLE INITIALLY DEFERRED,
-  label_de text DEFAULT NULL,
-  label_en text DEFAULT NULL,
-  label_fr text DEFAULT NULL,
-  label_it text DEFAULT NULL,
+  name_de text DEFAULT NULL,
+  name_en text DEFAULT NULL,
+  name_fr text DEFAULT NULL,
+  name_it text DEFAULT NULL,
   description text DEFAULT NULL,
   sort smallint DEFAULT NULL,
   is_project_level boolean DEFAULT false,
@@ -1982,11 +1982,11 @@ CREATE TABLE IF NOT EXISTS project_qcs(
   created_at timestamptz NOT NULL DEFAULT now(),
   updated_at timestamptz NOT NULL DEFAULT now(),
   updated_by text DEFAULT NULL,
-  UNIQUE (project_id, label_de)
+  UNIQUE (project_id, name_de)
 );
 
 CREATE INDEX IF NOT EXISTS project_qcs_project_id_idx ON project_qcs USING btree(project_id);
-CREATE INDEX IF NOT EXISTS project_qcs_label_de_idx ON project_qcs USING btree(label_de);
+CREATE INDEX IF NOT EXISTS project_qcs_name_de_idx ON project_qcs USING btree(name_de);
 CREATE INDEX IF NOT EXISTS project_qcs_sort_idx ON project_qcs USING btree(sort);
 
 COMMENT ON TABLE project_qcs IS 'Project-specific quality controls. Only visible within the project and its sub-projects. Created by project owners and designers.';

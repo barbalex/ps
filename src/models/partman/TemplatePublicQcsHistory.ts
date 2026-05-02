@@ -37,8 +37,6 @@ export default interface TemplatePublicQcsHistory {
 export interface TemplatePublicQcsHistoryInitializer {
   qcs_id: string;
 
-  name?: string | null;
-
   label_de?: string | null;
 
   label_en?: string | null;
@@ -73,8 +71,6 @@ export interface TemplatePublicQcsHistoryInitializer {
 /** Represents the mutator for the table partman.template_public_qcs_history */
 export interface TemplatePublicQcsHistoryMutator {
   qcs_id?: string;
-
-  name?: string | null;
 
   label_de?: string | null;
 

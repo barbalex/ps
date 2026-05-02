@@ -179,7 +179,7 @@ export const SubprojectQcsRun = ({ from }: { from: string }) => {
   // Load chosen QCs for this subproject, joined with qcs data
   const qcsRes = useLiveQuery(
     `SELECT q.qcs_id,
-            COALESCE(NULLIF(q.label_${language}, ''), q.label_de) AS label,
+            COALESCE(NULLIF(q.label_${language}, ''), q.name_de) AS label,
             q.sql,
             q.filter_by_year
      FROM qcs_assignment qa
