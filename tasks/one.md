@@ -28,8 +28,6 @@ ensure project_qcs are only visible to owners and project designers (nav tree, l
 
 ---
 
-now lets remove project_qcs.name as well and use label instead
-
 ---
 
 qcs and project_qcs: nach Jahr filtern: explain, do we need it for project_qcs?
