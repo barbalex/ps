@@ -44,7 +44,7 @@ export const useQcsNavData = () => {
         count_filtered AS (SELECT count(*) FROM qcs ${isFiltered ? ` WHERE ${filterString}` : ''})
       SELECT
         qcs_id AS id,
-        COALESCE(NULLIF(label_${language}, ''), name_de) AS label,
+        COALESCE(NULLIF(name_${language}, ''), name_de) AS label,
         count_unfiltered.count AS count_unfiltered,
         count_filtered.count AS count_filtered
       FROM qcs, count_unfiltered, count_filtered

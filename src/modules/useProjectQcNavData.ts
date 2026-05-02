@@ -26,7 +26,7 @@ export const useProjectQcNavData = ({ projectId, projectQcId }: Props) => {
     `
       SELECT
         project_qc_id AS id,
-        COALESCE(NULLIF(label_${language}, ''), name_de, project_qc_id::text) AS label
+        COALESCE(NULLIF(name_${language}, ''), name_de, project_qc_id::text) AS label
       FROM project_qcs
       WHERE project_qc_id = $1
     `,
