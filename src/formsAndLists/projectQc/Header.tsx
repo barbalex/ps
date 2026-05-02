@@ -1,22 +1,29 @@
 import { useParams, useNavigate } from '@tanstack/react-router'
-import { usePGlite } from '@electric-sql/pglite-react'
+import { usePGlite, useLiveQuery } from '@electric-sql/pglite-react'
 import { useSetAtom } from 'jotai'
 import { useRef, useEffect } from 'react'
 import { useIntl } from 'react-intl'
 
 import { createProjectQc } from '../../modules/createRows.ts'
 import { FormHeader } from '../../components/FormHeader/index.tsx'
+import { HistoryToggleButton } from '../../components/shared/HistoryCompare/HistoryToggleButton.tsx'
 import { addOperationAtom } from '../../store.ts'
 
 const from = '/data/projects/$projectId_/qcs/$projectQcId/'
 
 export const Header = ({ autoFocusRef }) => {
   const { projectId, projectQcId } = useParams({ from })
+  const basePath = `/data/projects/${projectId}/qcs/${projectQcId}`
   const navigate = useNavigate()
   const addOperation = useSetAtom(addOperationAtom)
   const { formatMessage } = useIntl()
 
   const db = usePGlite()
+
+  const countRes = useLiveQuery(
+    `SELECT COUNT(*) as count FROM project_qcs WHERE project_id = '${projectId}'`,
+  )
+  const rowCount = countRes?.rows?.[0]?.count ?? 2
 
   const projectQcIdRef = useRef(projectQcId)
   useEffect(() => {
@@ -112,10 +119,21 @@ export const Header = ({ autoFocusRef }) => {
       deleteRow={deleteRow}
       toNext={toNext}
       toPrevious={toPrevious}
+      toNextDisabled={rowCount <= 1}
+      toPreviousDisabled={rowCount <= 1}
       tableName={formatMessage({
         id: 'qcs.nameSingular',
         defaultMessage: 'Qualitätskontrolle',
       })}
+      siblings={
+        <HistoryToggleButton
+          historiesPath={`${basePath}/histories`}
+          formPath={basePath}
+          historyTable="project_qcs_history"
+          rowIdField="project_qc_id"
+          rowId={projectQcId}
+        />
+      }
     />
   )
 }
