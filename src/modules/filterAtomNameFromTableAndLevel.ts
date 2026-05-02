@@ -26,6 +26,7 @@ const tablesAbovePlaces = [
   'observation_imports',
   'subproject_files',
   'charts',
+  'project_qcs',
 ]
 
 export const filterAtomNameFromTableAndLevel = ({ table, level }) => {

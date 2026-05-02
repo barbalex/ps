@@ -7,6 +7,7 @@ import { createProjectQc } from '../modules/createRows.ts'
 import { useProjectQcsNavData } from '../modules/useProjectQcsNavData.ts'
 import { ListHeader } from '../components/ListHeader.tsx'
 import { Row } from '../components/shared/Row.tsx'
+import { FilterButton } from '../components/shared/FilterButton.tsx'
 import { Loading } from '../components/shared/Loading.tsx'
 import { languageAtom } from '../store.ts'
 import { subprojectNameSingularExpr } from '../modules/subprojectNameCols.ts'
@@ -21,7 +22,7 @@ export const ProjectQcs = () => {
   const [language] = useAtom(languageAtom)
   const { formatMessage } = useIntl()
 
-  const { loading, navData } = useProjectQcsNavData({ projectId })
+  const { loading, navData, isFiltered } = useProjectQcsNavData({ projectId })
   const { navs, label, nameSingular } = navData
 
   const projectRes = useLiveQuery(
@@ -55,6 +56,7 @@ export const ProjectQcs = () => {
         nameSingular={nameSingular}
         description={description}
         addRow={add}
+        menus={<FilterButton isFiltered={isFiltered} />}
       />
       <div className="list-container">
         {loading ? (

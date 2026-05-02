@@ -12,37 +12,21 @@ Better-Auth, possible extensions:
 
 ---
 
-lets create a new table project_qcs. it's goal is to enable owners and project designers to create own qcs that are only visible in this project and its sub-projects. It will have the same structure as qcs but with an additional column project_id, while is_root_level is not needed.
-
-We need to ensure the data is synced, and only where the active user is reader of the respective project.
-
-we will later add routes, tree nav, breadcrumbs, list view and form for project_qcs, but not yet.
-
-We will later also add project_cqs to /data/projects/018cfcf7-6424-7000-a100-851c5cc2c878/qcs-choose and /data/projects/018cfcf7-6424-7000-a100-851c5cc2c878/subprojects/018cfd27-ee92-7000-b678-e75497d6c60e/qcs-choose. But not yet.
-
-lets add routes, tree nav, breadcrumbs, list view and form for project_qcs.
-
-We will later also add project_cqs to /data/projects/018cfcf7-6424-7000-a100-851c5cc2c878/qcs-choose and /data/projects/018cfcf7-6424-7000-a100-851c5cc2c878/subprojects/018cfd27-ee92-7000-b678-e75497d6c60e/qcs-choose. But not yet.
-
-ensure project_qcs are only visible to owners and project designers (nav tree, list views thus use...Data hooks).
-
 ---
 
 ---
 
-qcs and project_qcs: nach Jahr filtern: explain, do we need it for project_qcs?
+qcs and project_qcs: nach Jahr filtern: explain
 
 ---
 
-qcs and project_qcs: sort value: explain in ui
+qcs.sort and project_qcs.sort: remove. Also in history tables
 
 ---
 
 ---
 
 qcs and project_qcs: explain how label translations work, like somewhere else (where?). Fallback de
-
----
 
 ---
 
@@ -58,7 +42,11 @@ If you want, I can now add the same history compare flow for project_qcs (like p
 
 ---
 
-does filter exist?
+DOING: does filter exist?
+
+---
+
+project_crs form: 'Teilprojekt-Ebene' should become: '{name of subproject as defined in the projects table}-Ebene'. Also update all translations. Fallback remains 'Teilprojekt-Ebene' (if not defined in the projects table)
 
 ---
 

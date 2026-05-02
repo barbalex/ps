@@ -402,6 +402,7 @@ export const actionReports2FilterAtom = atomWithStorage(
   [],
 )
 export const qcsFilterAtom = atomWithStorage('qcsFilterAtom', [])
+export const projectQcsFilterAtom = atomWithStorage('projectQcsFilterAtom', [])
 // TODO: add
 export const filesFilterAtom = atomWithStorage('filesFilterAtom', [])
 // TODO: add more filters
@@ -458,6 +459,7 @@ export const filterAtoms = {
   actionReports1: actionReports1FilterAtom,
   actionReports2: actionReports2FilterAtom,
   files: filesFilterAtom,
+  projectQcs: projectQcsFilterAtom,
 }
 
 // postgrestClient

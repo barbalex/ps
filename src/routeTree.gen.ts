@@ -109,6 +109,7 @@ import { Route as DataProjectsProjectIdUnitsFilterRouteImport } from './routes/d
 import { Route as DataProjectsProjectIdTaxonomiesFilterRouteImport } from './routes/data/projects/$projectId_/taxonomies/filter'
 import { Route as DataProjectsProjectIdSubprojectsFilterRouteImport } from './routes/data/projects/$projectId_/subprojects/filter'
 import { Route as DataProjectsProjectIdReportsFilterRouteImport } from './routes/data/projects/$projectId_/reports/filter'
+import { Route as DataProjectsProjectIdQcsFilterRouteImport } from './routes/data/projects/$projectId_/qcs/filter'
 import { Route as DataProjectsProjectIdListsFilterRouteImport } from './routes/data/projects/$projectId_/lists/filter'
 import { Route as DataProjectsProjectIdHistoriesProjectHistoryIdRouteImport } from './routes/data/projects/$projectId_/histories/$projectHistoryId'
 import { Route as DataProjectsProjectIdFilesFilterRouteImport } from './routes/data/projects/$projectId_/files/filter'
@@ -1001,6 +1002,12 @@ const DataProjectsProjectIdReportsFilterRoute =
     id: '/filter',
     path: '/filter',
     getParentRoute: () => DataProjectsProjectIdReportsRouteRoute,
+  } as any)
+const DataProjectsProjectIdQcsFilterRoute =
+  DataProjectsProjectIdQcsFilterRouteImport.update({
+    id: '/filter',
+    path: '/filter',
+    getParentRoute: () => DataProjectsProjectIdQcsRouteRoute,
   } as any)
 const DataProjectsProjectIdListsFilterRoute =
   DataProjectsProjectIdListsFilterRouteImport.update({
@@ -3840,6 +3847,7 @@ export interface FileRoutesByFullPath {
   '/data/projects/$projectId/files/filter': typeof DataProjectsProjectIdFilesFilterRoute
   '/data/projects/$projectId/histories/$projectHistoryId': typeof DataProjectsProjectIdHistoriesProjectHistoryIdRoute
   '/data/projects/$projectId/lists/filter': typeof DataProjectsProjectIdListsFilterRoute
+  '/data/projects/$projectId/qcs/filter': typeof DataProjectsProjectIdQcsFilterRoute
   '/data/projects/$projectId/reports/filter': typeof DataProjectsProjectIdReportsFilterRoute
   '/data/projects/$projectId/subprojects/filter': typeof DataProjectsProjectIdSubprojectsFilterRoute
   '/data/projects/$projectId/taxonomies/filter': typeof DataProjectsProjectIdTaxonomiesFilterRoute
@@ -4229,6 +4237,7 @@ export interface FileRoutesByTo {
   '/data/projects/$projectId/files/filter': typeof DataProjectsProjectIdFilesFilterRoute
   '/data/projects/$projectId/histories/$projectHistoryId': typeof DataProjectsProjectIdHistoriesProjectHistoryIdRoute
   '/data/projects/$projectId/lists/filter': typeof DataProjectsProjectIdListsFilterRoute
+  '/data/projects/$projectId/qcs/filter': typeof DataProjectsProjectIdQcsFilterRoute
   '/data/projects/$projectId/reports/filter': typeof DataProjectsProjectIdReportsFilterRoute
   '/data/projects/$projectId/subprojects/filter': typeof DataProjectsProjectIdSubprojectsFilterRoute
   '/data/projects/$projectId/taxonomies/filter': typeof DataProjectsProjectIdTaxonomiesFilterRoute
@@ -4587,6 +4596,7 @@ export interface FileRoutesById {
   '/data/projects/$projectId_/files/filter': typeof DataProjectsProjectIdFilesFilterRoute
   '/data/projects/$projectId_/histories/$projectHistoryId': typeof DataProjectsProjectIdHistoriesProjectHistoryIdRoute
   '/data/projects/$projectId_/lists/filter': typeof DataProjectsProjectIdListsFilterRoute
+  '/data/projects/$projectId_/qcs/filter': typeof DataProjectsProjectIdQcsFilterRoute
   '/data/projects/$projectId_/reports/filter': typeof DataProjectsProjectIdReportsFilterRoute
   '/data/projects/$projectId_/subprojects/filter': typeof DataProjectsProjectIdSubprojectsFilterRoute
   '/data/projects/$projectId_/taxonomies/filter': typeof DataProjectsProjectIdTaxonomiesFilterRoute
@@ -5019,6 +5029,7 @@ export interface FileRouteTypes {
     | '/data/projects/$projectId/files/filter'
     | '/data/projects/$projectId/histories/$projectHistoryId'
     | '/data/projects/$projectId/lists/filter'
+    | '/data/projects/$projectId/qcs/filter'
     | '/data/projects/$projectId/reports/filter'
     | '/data/projects/$projectId/subprojects/filter'
     | '/data/projects/$projectId/taxonomies/filter'
@@ -5408,6 +5419,7 @@ export interface FileRouteTypes {
     | '/data/projects/$projectId/files/filter'
     | '/data/projects/$projectId/histories/$projectHistoryId'
     | '/data/projects/$projectId/lists/filter'
+    | '/data/projects/$projectId/qcs/filter'
     | '/data/projects/$projectId/reports/filter'
     | '/data/projects/$projectId/subprojects/filter'
     | '/data/projects/$projectId/taxonomies/filter'
@@ -5765,6 +5777,7 @@ export interface FileRouteTypes {
     | '/data/projects/$projectId_/files/filter'
     | '/data/projects/$projectId_/histories/$projectHistoryId'
     | '/data/projects/$projectId_/lists/filter'
+    | '/data/projects/$projectId_/qcs/filter'
     | '/data/projects/$projectId_/reports/filter'
     | '/data/projects/$projectId_/subprojects/filter'
     | '/data/projects/$projectId_/taxonomies/filter'
@@ -6819,6 +6832,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/data/projects/$projectId/reports/filter'
       preLoaderRoute: typeof DataProjectsProjectIdReportsFilterRouteImport
       parentRoute: typeof DataProjectsProjectIdReportsRouteRoute
+    }
+    '/data/projects/$projectId_/qcs/filter': {
+      id: '/data/projects/$projectId_/qcs/filter'
+      path: '/filter'
+      fullPath: '/data/projects/$projectId/qcs/filter'
+      preLoaderRoute: typeof DataProjectsProjectIdQcsFilterRouteImport
+      parentRoute: typeof DataProjectsProjectIdQcsRouteRoute
     }
     '/data/projects/$projectId_/lists/filter': {
       id: '/data/projects/$projectId_/lists/filter'
@@ -9381,12 +9401,14 @@ const DataProjectsProjectIdPlaceLevelsRouteRouteWithChildren =
   )
 
 interface DataProjectsProjectIdQcsRouteRouteChildren {
+  DataProjectsProjectIdQcsFilterRoute: typeof DataProjectsProjectIdQcsFilterRoute
   DataProjectsProjectIdQcsIndexRoute: typeof DataProjectsProjectIdQcsIndexRoute
   DataProjectsProjectIdQcsProjectQcIdIndexRoute: typeof DataProjectsProjectIdQcsProjectQcIdIndexRoute
 }
 
 const DataProjectsProjectIdQcsRouteRouteChildren: DataProjectsProjectIdQcsRouteRouteChildren =
   {
+    DataProjectsProjectIdQcsFilterRoute: DataProjectsProjectIdQcsFilterRoute,
     DataProjectsProjectIdQcsIndexRoute: DataProjectsProjectIdQcsIndexRoute,
     DataProjectsProjectIdQcsProjectQcIdIndexRoute:
       DataProjectsProjectIdQcsProjectQcIdIndexRoute,
