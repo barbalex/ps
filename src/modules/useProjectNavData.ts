@@ -121,6 +121,8 @@ type NavDataNotForBreadcrumbDesigning = {
   place_levels_count_unfiltered?: number
   fields_count_unfiltered?: number
   fields_count_filtered?: number
+  subproject_report_designs_count?: number
+  project_report_designs_count?: number
   qcs_assignment_count?: number
   qcs_run_count?: number
 }
@@ -201,7 +203,9 @@ export const useProjectNavData = ({
             project_qcs_count_unfiltered AS (SELECT count(*) FROM project_qcs WHERE project_id = '${projectId}'),
             place_levels_count_unfiltered AS (SELECT count(*) FROM place_levels WHERE project_id = '${projectId}'),
             fields_count_unfiltered AS (SELECT count(*) FROM fields WHERE project_id = '${projectId}'),
-            fields_count_filtered AS (SELECT count(*) FROM fields WHERE project_id = '${projectId}' ${fieldsIsFiltered ? ` AND ${fieldsFilterString}` : ''})`
+            fields_count_filtered AS (SELECT count(*) FROM fields WHERE project_id = '${projectId}' ${fieldsIsFiltered ? ` AND ${fieldsFilterString}` : ''}),
+            subproject_report_designs_count AS (SELECT count(*) FROM subproject_report_designs WHERE project_id = '${projectId}'),
+            project_report_designs_count AS (SELECT count(*) FROM project_report_designs WHERE project_id = '${projectId}')`
                 : ''
             }`
           : ''
@@ -253,7 +257,9 @@ export const useProjectNavData = ({
             project_qcs_count_unfiltered.count AS project_qcs_count_unfiltered,
             place_levels_count_unfiltered.count AS place_levels_count_unfiltered,
             fields_count_unfiltered.count AS fields_count_unfiltered,
-            fields_count_filtered.count AS fields_count_filtered`
+            fields_count_filtered.count AS fields_count_filtered,
+            subproject_report_designs_count.count AS subproject_report_designs_count,
+            project_report_designs_count.count AS project_report_designs_count`
                 : ''
             }`
             : ''
@@ -290,7 +296,9 @@ export const useProjectNavData = ({
             project_qcs_count_unfiltered,
             place_levels_count_unfiltered,
             fields_count_unfiltered,
-            fields_count_filtered`
+            fields_count_filtered,
+            subproject_report_designs_count,
+            project_report_designs_count`
                 : ''
             }`
             : ''
@@ -358,6 +366,32 @@ export const useProjectNavData = ({
                 formatMessage({ id: 'Jou8/E', defaultMessage: 'Teilprojekte' }),
             }),
           },
+          ...(designing
+            ? [
+                {
+                  id: 'subproject-designs',
+                  label: buildNavLabel({
+                    loading,
+                    countFiltered: nav?.subproject_report_designs_count ?? 0,
+                    namePlural: formatMessage({
+                      id: '6GiFz4',
+                      defaultMessage: 'Teilprojekt-Bericht-Designs',
+                    }),
+                  }),
+                },
+                {
+                  id: 'designs',
+                  label: buildNavLabel({
+                    loading,
+                    countFiltered: nav?.project_report_designs_count ?? 0,
+                    namePlural: formatMessage({
+                      id: 'rImbPW',
+                      defaultMessage: 'Bericht-Designs',
+                    }),
+                  }),
+                },
+              ]
+            : []),
           ...(designing || (nav?.project_reports ?? true)
             ? [
                 {
