@@ -16,19 +16,47 @@ export const ProjectQcForm = ({
 
   const paramHint = (() => {
     const parts: string[] = []
-    parts.push(
-      formatMessage({
-        id: 'projectQc.sql.hintProject',
-          defaultMessage: 'Projekt-Ebene: $1 = project_id (uuid)'
-      }),
-    )
-    parts.push(
-      formatMessage({
-        id: 'projectQc.sql.hintSubproject',
-          defaultMessage: 'Teilprojekt-Ebene: $1 = subproject_id (uuid)'
-      }),
-    )
-    return parts.join('\n')
+    if (row?.is_project_level) {
+      if (row?.filter_by_year) {
+        parts.push(
+          formatMessage({
+            id: 'qc.sql.hintProjectYear',
+            defaultMessage: '$1 = project_id (uuid), $2 = year (integer)',
+          }),
+        )
+      } else {
+        parts.push(
+          formatMessage({
+            id: 'qc.sql.hintProject',
+            defaultMessage: '$1 = project_id (uuid)',
+          }),
+        )
+      }
+    }
+    if (row?.is_subproject_level) {
+      if (row?.filter_by_year) {
+        parts.push(
+          formatMessage({
+            id: 'qc.sql.hintSubprojectYear',
+            defaultMessage: '$1 = subproject_id (uuid), $2 = year (integer)',
+          }),
+        )
+      } else {
+        parts.push(
+          formatMessage({
+            id: 'qc.sql.hintSubproject',
+            defaultMessage: '$1 = subproject_id (uuid)',
+          }),
+        )
+      }
+    }
+    return parts.length
+      ? parts.join('\n')
+      : formatMessage({
+          id: 'qc.sql.hintNone',
+          defaultMessage:
+            'Set is_root_level, is_project_level or is_subproject_level to see available parameters.',
+        })
   })()
 
   return (
@@ -117,7 +145,7 @@ export const ProjectQcForm = ({
         value={row?.sql ?? ''}
         onChange={onChange}
         height={220}
-        paramHint={paramHint}
+        hint={paramHint}
       />
     </>
   )
