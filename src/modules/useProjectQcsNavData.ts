@@ -57,12 +57,12 @@ export const useProjectQcsNavData = ({ projectId }: Props) => {
       loading,
       countFiltered: navs.length,
       namePlural: formatMessage({
-        id: 'projectOwnQcs.namePlural',
+        id: 'qcs.namePlural',
         defaultMessage: 'Qualitätskontrollen',
       }),
     }),
     nameSingular: formatMessage({
-      id: 'projectOwnQcs.nameSingular',
+      id: 'qcs.nameSingular',
       defaultMessage: 'Qualitätskontrolle',
     }),
     navs,

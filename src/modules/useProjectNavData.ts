@@ -494,7 +494,7 @@ export const useProjectNavData = ({
                     loading,
                     countFiltered: nav?.project_qcs_count_unfiltered ?? 0,
                     namePlural: formatMessage({
-                      id: 'projectOwnQcs.namePlural',
+                      id: 'qcs.namePlural',
                       defaultMessage: 'Qualitätskontrollen',
                     }),
                   }),
