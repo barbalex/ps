@@ -14,28 +14,55 @@ export const QcForm = ({ onChange, validations = {}, row, autoFocusRef }) => {
   const paramHint = (() => {
     const parts: string[] = []
     if (row?.is_root_level) {
-      parts.push(
-        formatMessage({
-          id: 'qc.sql.hintRoot',
-          defaultMessage: 'Root level: no parameters needed.',
-        }),
-      )
+      if (row?.filter_by_year) {
+        parts.push(
+          formatMessage({
+            id: 'qc.sql.hintRootYear',
+            defaultMessage: '$1 = year (integer)',
+          }),
+        )
+      } else {
+        parts.push(
+          formatMessage({
+            id: 'qc.sql.hintRoot',
+            defaultMessage: 'no parameters needed.',
+          }),
+        )
+      }
     }
     if (row?.is_project_level) {
-      parts.push(
-        formatMessage({
-          id: 'qc.sql.hintProject',
-          defaultMessage: 'Project level: $1 = project_id (uuid)',
-        }),
-      )
+      if (row?.filter_by_year) {
+        parts.push(
+          formatMessage({
+            id: 'qc.sql.hintProjectYear',
+            defaultMessage: '$1 = project_id (uuid), $2 = year (integer)',
+          }),
+        )
+      } else {
+        parts.push(
+          formatMessage({
+            id: 'qc.sql.hintProject',
+            defaultMessage: '$1 = project_id (uuid)',
+          }),
+        )
+      }
     }
     if (row?.is_subproject_level) {
-      parts.push(
-        formatMessage({
-          id: 'qc.sql.hintSubproject',
-          defaultMessage: 'Subproject level: $1 = subproject_id (uuid)',
-        }),
-      )
+      if (row?.filter_by_year) {
+        parts.push(
+          formatMessage({
+            id: 'qc.sql.hintSubprojectYear',
+            defaultMessage: '$1 = subproject_id (uuid), $2 = year (integer)',
+          }),
+        )
+      } else {
+        parts.push(
+          formatMessage({
+            id: 'qc.sql.hintSubproject',
+            defaultMessage: '$1 = subproject_id (uuid)',
+          }),
+        )
+      }
     }
     return parts.length
       ? parts.join('\n')

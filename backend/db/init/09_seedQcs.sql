@@ -289,6 +289,7 @@ ORDER BY sr.label'),
 FROM subproject_reports sr
 JOIN subprojects sp ON sp.subproject_id = sr.subproject_id
 WHERE sr.subproject_id = $1
+  AND sr.year = $2
   AND sr.data IS NULL
 ORDER BY sr.label'),
 ('Projekt-Bericht-Designs ohne Name', 'Project report designs without name', 'Designs de rapport de projet sans nom', 'Design di rapporto di progetto senza nome', false, true, false, false, 'SELECT prd.label, ''/data/projects/'' || prd.project_id || ''/designs/'' || prd.project_report_design_id || ''/'' AS url
@@ -343,6 +344,7 @@ FROM goals g
 JOIN subprojects sp ON sp.subproject_id = g.subproject_id
 JOIN projects p ON p.project_id = sp.project_id
 WHERE g.subproject_id = $1
+  AND g.year = $2
   AND nullif(g.name, '''') IS NULL
 ORDER BY g.label'),
 ('Ziele ohne Bericht', 'Goals without report', 'Objectifs sans rapport', 'Obiettivi senza rapporto', false, false, true, true, 'SELECT g.label, ''/data/projects/'' || sp.project_id || ''/subprojects/'' || g.subproject_id || ''/goals/'' || g.goal_id || CASE WHEN p.goal_reports_in_goal IS FALSE THEN ''/goal'' ELSE '''' END AS url
@@ -350,6 +352,7 @@ FROM goals g
 JOIN subprojects sp ON sp.subproject_id = g.subproject_id
 JOIN projects p ON p.project_id = sp.project_id
 WHERE g.subproject_id = $1
+  AND g.year = $2
   AND NOT EXISTS (SELECT 1
 FROM goal_reports gr
 WHERE gr.goal_id = g.goal_id)
@@ -544,6 +547,7 @@ JOIN places p ON p.place_id = c.place_id
 JOIN subprojects sp ON sp.subproject_id = p.subproject_id
 WHERE p.subproject_id = $1
   AND c.relevant_for_reports = true
+  AND date_part(''year'', c.date) = $2
   AND c.geometry IS NULL
 ORDER BY c.label'),
 ('Kontrollen (relevante) ohne Menge', 'Checks (relevant) without quantity', 'Contrôles (pertinents) sans quantité', 'Controlli (rilevanti) senza quantità', false, false, true, true, 'SELECT c.label, ''/data/projects/'' || sp.project_id || ''/subprojects/'' || p.subproject_id || ''/places/'' || c.place_id || ''/checks/'' || c.check_id || ''/quantities/'' AS url
@@ -552,6 +556,7 @@ JOIN places p ON p.place_id = c.place_id
 JOIN subprojects sp ON sp.subproject_id = p.subproject_id
 WHERE p.subproject_id = $1
   AND c.relevant_for_reports = true
+  AND date_part(''year'', c.date) = $2
   AND NOT EXISTS (SELECT 1
 FROM check_quantities cq
 WHERE cq.check_id = c.check_id)
@@ -562,6 +567,7 @@ JOIN places p ON p.place_id = c.place_id
 JOIN subprojects sp ON sp.subproject_id = p.subproject_id
 WHERE p.subproject_id = $1
   AND c.relevant_for_reports = true
+  AND date_part(''year'', c.date) = $2
   AND NOT EXISTS (SELECT 1
 FROM check_taxa ct
 WHERE ct.check_id = c.check_id)
@@ -572,6 +578,7 @@ JOIN places p ON p.place_id = c.place_id
 JOIN subprojects sp ON sp.subproject_id = p.subproject_id
 WHERE p.subproject_id = $1
   AND c.relevant_for_reports = true
+  AND date_part(''year'', c.date) = $2
   AND NOT EXISTS (SELECT 1
 FROM files f
 WHERE f.check_id = c.check_id)
@@ -590,6 +597,7 @@ JOIN places p ON p.place_id = a.place_id
 JOIN subprojects sp ON sp.subproject_id = p.subproject_id
 WHERE p.subproject_id = $1
   AND a.relevant_for_reports = true
+  AND date_part(''year'', a.date) = $2
   AND a.geometry IS NULL
 ORDER BY a.label'),
 ('Massnahmen (relevante) ohne Menge', 'Actions (relevant) without quantity', 'Actions (pertinentes) sans quantité', 'Azioni (rilevanti) senza quantità', false, false, true, true, 'SELECT a.label, ''/data/projects/'' || sp.project_id || ''/subprojects/'' || p.subproject_id || ''/places/'' || a.place_id || ''/actions/'' || a.action_id || ''/quantities/'' AS url
@@ -598,6 +606,7 @@ JOIN places p ON p.place_id = a.place_id
 JOIN subprojects sp ON sp.subproject_id = p.subproject_id
 WHERE p.subproject_id = $1
   AND a.relevant_for_reports = true
+  AND date_part(''year'', a.date) = $2
   AND NOT EXISTS (SELECT 1
 FROM action_quantities aq
 WHERE aq.action_id = a.action_id)
@@ -608,6 +617,7 @@ JOIN places p ON p.place_id = a.place_id
 JOIN subprojects sp ON sp.subproject_id = p.subproject_id
 WHERE p.subproject_id = $1
   AND a.relevant_for_reports = true
+  AND date_part(''year'', a.date) = $2
   AND NOT EXISTS (SELECT 1
 FROM action_taxa atx
 WHERE atx.action_id = a.action_id)
@@ -618,6 +628,7 @@ JOIN places p ON p.place_id = a.place_id
 JOIN subprojects sp ON sp.subproject_id = p.subproject_id
 WHERE p.subproject_id = $1
   AND a.relevant_for_reports = true
+  AND date_part(''year'', a.date) = $2
   AND NOT EXISTS (SELECT 1
 FROM files f
 WHERE f.action_id = a.action_id)
@@ -630,6 +641,7 @@ JOIN subprojects sp ON sp.subproject_id = p.subproject_id
 JOIN projects proj ON proj.project_id = sp.project_id
 WHERE p.subproject_id = $1
   AND c.relevant_for_reports = true
+  AND date_part(''year'', c.date) = $2
   AND proj.checks_default_unit_id IS NOT NULL
   AND EXISTS (SELECT 1
 FROM check_quantities cq
@@ -649,6 +661,7 @@ WHERE p.subproject_id = $1
 FROM check_reports pcr
 JOIN check_report_quantities pcrq ON pcrq.place_check_report_id = pcr.place_check_report_id
 WHERE pcr.place_id = p.place_id
+  AND pcr.year = $2
   AND pcrq.unit_id != proj.check_reports_default_unit_id)
 ORDER BY p.label'),
 ('Kontroll-Taxon-Mengen: Standard-Einheit nicht verwendet', 'Check taxon quantities: default unit not used', 'Quantités de taxon de contrôle : unité par défaut non utilisée', 'Quantità di taxon di controllo: unità predefinita non utilizzata', false, false, true, true, 'SELECT c.label, ''/data/projects/'' || sp.project_id || ''/subprojects/'' || p.subproject_id || ''/places/'' || c.place_id || ''/checks/'' || c.check_id || ''/check'' AS url
@@ -658,6 +671,7 @@ JOIN subprojects sp ON sp.subproject_id = p.subproject_id
 JOIN projects proj ON proj.project_id = sp.project_id
 WHERE p.subproject_id = $1
   AND c.relevant_for_reports = true
+  AND date_part(''year'', c.date) = $2
   AND proj.check_taxa_default_unit_id IS NOT NULL
   AND EXISTS (SELECT 1
 FROM check_taxa ct
@@ -671,6 +685,7 @@ JOIN subprojects sp ON sp.subproject_id = p.subproject_id
 JOIN projects proj ON proj.project_id = sp.project_id
 WHERE p.subproject_id = $1
   AND a.relevant_for_reports = true
+  AND date_part(''year'', a.date) = $2
   AND proj.actions_default_unit_id IS NOT NULL
   AND EXISTS (SELECT 1
 FROM action_quantities aq
@@ -690,6 +705,7 @@ WHERE p.subproject_id = $1
 FROM action_reports par
 JOIN action_report_quantities parq ON parq.place_action_report_id = par.place_action_report_id
 WHERE par.place_id = p.place_id
+  AND par.year = $2
   AND parq.unit_id != proj.action_reports_default_unit_id)
 ORDER BY p.label'),
 ('Massnahmen-Taxon-Mengen: Standard-Einheit nicht verwendet', 'Action taxon quantities: default unit not used', 'Quantités de taxon d''actions : unité par défaut non utilisée', 'Quantità di taxon di azioni: unità predefinita non utilizzata', false, false, true, true, 'SELECT a.label, ''/data/projects/'' || sp.project_id || ''/subprojects/'' || p.subproject_id || ''/places/'' || a.place_id || ''/actions/'' || a.action_id || ''/action'' AS url
@@ -699,6 +715,7 @@ JOIN subprojects sp ON sp.subproject_id = p.subproject_id
 JOIN projects proj ON proj.project_id = sp.project_id
 WHERE p.subproject_id = $1
   AND a.relevant_for_reports = true
+  AND date_part(''year'', a.date) = $2
   AND proj.action_taxa_default_unit_id IS NOT NULL
   AND EXISTS (SELECT 1
 FROM action_taxa atx
