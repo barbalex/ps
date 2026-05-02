@@ -777,6 +777,7 @@
   "qc.isRootLevel": "Livello radice",
   "qc.isProjectLevel": "Livello progetto",
   "qc.isSubprojectLevel": "Livello sottoprogetto",
+  "qc.isSubprojectLevelSuffix": "livello",
   "qc.description": "Descrizione",
   "qc.sql": "SQL",
   "qc.sql.hintRoot": "nessun parametro richiesto.",

@@ -30,8 +30,6 @@ qcs and project_qcs: explain how label translations work, like somewhere else (w
 
 ---
 
-using the next button in the qc form's header does nothing but errors with: Header.tsx:65 Error navigating to next qc: error: column "label" does not exist
-
 ---
 
 ensure project_qcs are only visible to owners and project designers (nav tree, list views thus use...Data hooks).
@@ -42,11 +40,11 @@ If you want, I can now add the same history compare flow for project_qcs (like p
 
 ---
 
-DOING: does filter exist?
-
 ---
 
-project_crs form: 'Teilprojekt-Ebene' should become: '{name of subproject as defined in the projects table}-Ebene'. Also update all translations. Fallback remains 'Teilprojekt-Ebene' (if not defined in the projects table)
+DOING: project_crs form: 'Teilprojekt-Ebene' should become: '{name of subproject as defined in the projects table}-Ebene'. Also update all translations. Fallback remains 'Teilprojekt-Ebene' (if not defined in the projects table)
+
+TODO: check if also in filter
 
 ---
 

@@ -1,8 +1,13 @@
 import { useIntl } from 'react-intl'
+import { useLiveQuery } from '@electric-sql/pglite-react'
+import { useAtom } from 'jotai'
+import { useParams } from '@tanstack/react-router'
 
 import { TextField } from '../../components/shared/TextField.tsx'
 import { SwitchField } from '../../components/shared/SwitchField.tsx'
 import { SqlEditorField } from '../../components/shared/SqlEditorField.tsx'
+import { languageAtom } from '../../store.ts'
+import { subprojectNameSingularExpr } from '../../modules/subprojectNameCols.ts'
 
 import '../../form.css'
 
@@ -13,6 +18,22 @@ export const ProjectQcForm = ({
   autoFocusRef,
 }) => {
   const { formatMessage } = useIntl()
+  const [language] = useAtom(languageAtom)
+  const { projectId } = useParams({ strict: false })
+
+  const resSubprojectName = useLiveQuery(
+    `SELECT ${subprojectNameSingularExpr(language)} AS subproject_name_singular FROM projects WHERE project_id = $1`,
+    [projectId ?? null],
+  )
+  const subprojectNameSingular =
+    resSubprojectName?.rows?.[0]?.subproject_name_singular
+  const levelSuffix = formatMessage({
+    id: 'qc.isSubprojectLevelSuffix',
+    defaultMessage: 'Ebene',
+  })
+  const subprojectLevelLabel = subprojectNameSingular
+    ? `${subprojectNameSingular}-${levelSuffix}`
+    : formatMessage({ id: 'qc.isSubprojectLevel', defaultMessage: 'Teilprojekt-Ebene' })
 
   const paramHint = (() => {
     const parts: string[] = []
@@ -109,10 +130,7 @@ export const ProjectQcForm = ({
         onChange={onChange}
       />
       <SwitchField
-        label={formatMessage({
-          id: 'qc.isSubprojectLevel',
-          defaultMessage: 'Teilprojekt-Ebene',
-        })}
+        label={subprojectLevelLabel}
         name="is_subproject_level"
         value={row?.is_subproject_level}
         onChange={onChange}

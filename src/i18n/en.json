@@ -793,6 +793,7 @@
   "qc.isRootLevel": "Root level",
   "qc.isProjectLevel": "Project level",
   "qc.isSubprojectLevel": "Subproject level",
+  "qc.isSubprojectLevelSuffix": "level",
   "qc.description": "Description",
   "qc.sql": "SQL",
   "qc.sql.hintRoot": "no parameters needed.",
