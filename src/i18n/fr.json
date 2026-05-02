@@ -730,6 +730,7 @@
   "gHiJkL": "Nom convivial. Exemple: \"Nom du projet\"",
   "qcs.nameSingular": "Contrôle de qualité",
   "qcs.namePlural": "Contrôles de qualité",
+  "projectQcs.description": "Ici, vous pouvez créer vos propres contrôles de qualité. Ils sont disponibles dans ce projet. Ils peuvent être appliqués au niveau projet ou {subprojectName}.",
   "subprojectQcsRun.title": "Contrôles qualité : exécuter",
   "subprojectQcsRun.year": "Année du rapport",
   "subprojectQcsRun.filter": "Filtrer par libellé",

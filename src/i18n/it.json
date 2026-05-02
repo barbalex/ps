@@ -730,6 +730,7 @@
   "gHiJkL": "Nome intuitivo. Esempio: \"Nome Progetto\"",
   "qcs.nameSingular": "Controllo qualità",
   "qcs.namePlural": "Controlli qualità",
+  "projectQcs.description": "Qui puoi creare i tuoi controlli qualità. Sono disponibili in questo progetto. Possono essere applicati a livello di progetto o di {subprojectName}.",
   "subprojectQcsRun.title": "Controlli qualità: esegui",
   "subprojectQcsRun.year": "Anno del rapporto",
   "subprojectQcsRun.filter": "Filtra per etichetta",

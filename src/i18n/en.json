@@ -746,6 +746,7 @@
   "gHiJkL": "Human-friendly name. Example: \"Project Name\"",
   "qcs.nameSingular": "Quality control",
   "qcs.namePlural": "Quality controls",
+  "projectQcs.description": "Here you can create your own quality controls. They are available in this project. They can be applied at the project or {subprojectName} level.",
   "subprojectQcsRun.title": "Quality controls: run",
   "subprojectQcsRun.year": "Report year",
   "subprojectQcsRun.filter": "Filter by label",
