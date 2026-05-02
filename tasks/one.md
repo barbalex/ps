@@ -28,7 +28,7 @@ ensure project_qcs are only visible to owners and project designers (nav tree, l
 
 ---
 
-qcs and project_qcs: do we need name? use label instead?
+project_qcs: remove name and use label instead
 
 ---
 
