@@ -62,7 +62,7 @@ export const useProjectQcNavData = ({ projectId, projectQcId }: Props) => {
     notFound,
     nameSingular: formatMessage({
       id: 'projectOwnQcs.nameSingular',
-      defaultMessage: 'Projekt-Qualitätskontrolle',
+      defaultMessage: 'Qualitätskontrolle',
     }),
   }
 

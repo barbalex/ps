@@ -106,7 +106,7 @@ export const Header = ({ autoFocusRef }) => {
     <FormHeader
       title={formatMessage({
         id: 'projectOwnQcs.nameSingular',
-        defaultMessage: 'Projekt-Qualitätskontrolle',
+        defaultMessage: 'Qualitätskontrolle',
       })}
       addRow={addRow}
       deleteRow={deleteRow}
@@ -114,7 +114,7 @@ export const Header = ({ autoFocusRef }) => {
       toPrevious={toPrevious}
       tableName={formatMessage({
         id: 'projectOwnQcs.nameSingular',
-        defaultMessage: 'Projekt-Qualitätskontrolle',
+        defaultMessage: 'Qualitätskontrolle',
       })}
     />
   )

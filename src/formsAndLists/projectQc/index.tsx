@@ -64,7 +64,7 @@ export const ProjectQc = () => {
   if (!res) return <Loading />
 
   if (!row) {
-    return <NotFound table="Projekt-Qualitätskontrolle" id={projectQcId} />
+    return <NotFound table="Qualitätskontrolle" id={projectQcId} />
   }
 
   return (

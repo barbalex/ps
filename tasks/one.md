@@ -5,10 +5,9 @@ TODO: test verification of login via email/password: does a banner appear before
 
 ---
 
-Better-Auth:
+Better-Auth, possible extensions:
 
 - Last Login Method: https://better-auth.com/docs/plugins/last-login-method
-- jwt?: https://better-auth.com/docs/plugins/jwt
 - payment: https://better-auth.com/docs/plugins/stripe
 
 ---
