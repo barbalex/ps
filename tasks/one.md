@@ -34,3 +34,7 @@ If you want, I can now add the same history compare flow for project_qcs (like p
 ---
 
 does filter exist?
+
+---
+
+sudo do-release-upgrade -d
