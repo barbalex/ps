@@ -44,7 +44,11 @@ Felder ohne Tabelle;Fields without table;Champs sans table;Campi senza tabella;t
 FROM fields f
 WHERE nullif(f.table_name, '') IS NULL
 ORDER BY f.label";;
-Ort-Felder ohne Stufe;Place fields without level;Champs de lieu sans niveau;Campi di luogo senza livello;true;false;false;false;;;
+Ort-Felder ohne Stufe;Place fields without level;Champs de lieu sans niveau;Campi di luogo senza livello;true;false;false;false;"SELECT f.label, '/data/projects/' || f.project_id || '/fields/' || f.field_id AS url
+FROM fields f
+WHERE f.table_name = 'places'
+  AND f.level IS NULL
+ORDER BY f.label";;
 Felder ohne Namen;Fields without name;Champs sans nom;Campi senza nome;true;false;false;false;"SELECT f.label, '/data/projects/' || f.project_id || '/fields/' || f.field_id AS url
 FROM fields f
 WHERE nullif(f.name, '') IS NULL
@@ -454,8 +458,36 @@ FROM actions a
 WHERE a.place_id = p.place_id
   AND date_part('year', a.date) = $2)
 ORDER BY p.label";;
-Orte (relevante und aktuell existierende) ohne Berichte;Places (relevant and currently existing) without reports;Lieux (pertinents et actuellement existants) sans rapports;Luoghi (rilevanti e attualmente esistenti) senza rapporti;false;false;true;false;;;
-Orte (relevante und aktuell existierende) ohne Bericht in Jahr;Places (relevant and currently existing) without report in year;Lieux (pertinents et actuellement existants) sans rapport dans l'année;Luoghi (rilevanti e attualmente esistenti) senza rapporto nell'anno;false;false;true;true;;;
+Orte (relevante und aktuell existierende) ohne Berichte;Places (relevant and currently existing) without reports;Lieux (pertinents et actuellement existants) sans rapports;Luoghi (rilevanti e attualmente esistenti) senza rapporti;false;false;true;false;"SELECT p.label, '/data/projects/' || sp.project_id || '/subprojects/' || p.subproject_id || '/places/' || p.place_id || '/place' AS url
+FROM places p
+JOIN subprojects sp ON sp.subproject_id = p.subproject_id
+WHERE p.subproject_id = $1
+  AND p.relevant_for_reports = true
+  AND (p.until IS NULL
+  OR p.until >= date_part('year', now())::integer)
+  AND NOT EXISTS (SELECT 1
+FROM check_reports cr
+WHERE cr.place_id = p.place_id)
+  AND NOT EXISTS (SELECT 1
+FROM action_reports ar
+WHERE ar.place_id = p.place_id)
+ORDER BY p.label";;
+Orte (relevante und aktuell existierende) ohne Bericht in Jahr;Places (relevant and currently existing) without report in year;Lieux (pertinents et actuellement existants) sans rapport dans l'année;Luoghi (rilevanti e attualmente esistenti) senza rapporto nell'anno;false;false;true;true;"SELECT p.label, '/data/projects/' || sp.project_id || '/subprojects/' || p.subproject_id || '/places/' || p.place_id || '/place' AS url
+FROM places p
+JOIN subprojects sp ON sp.subproject_id = p.subproject_id
+WHERE p.subproject_id = $1
+  AND p.relevant_for_reports = true
+  AND (p.until IS NULL
+  OR p.until >= date_part('year', now())::integer)
+  AND NOT EXISTS (SELECT 1
+FROM check_reports cr
+WHERE cr.place_id = p.place_id
+  AND cr.year = $2)
+  AND NOT EXISTS (SELECT 1
+FROM action_reports ar
+WHERE ar.place_id = p.place_id
+  AND ar.year = $2)
+ORDER BY p.label";;
 Orte (relevante und aktuell existierende) Stufe 1 ohne Stufe 2;Places (relevant and currently existing) level 1 without level 2;Lieux (pertinents et actuellement existants) niveau 1 sans niveau 2;Luoghi (rilevanti e attualmente esistenti) livello 1 senza livello 2;false;false;true;false;"SELECT p.label, '/data/projects/' || s.project_id || '/subprojects/' || p.subproject_id || '/places/' || p.place_id || '/place' AS url
 FROM places p
 JOIN subprojects s ON s.subproject_id = p.subproject_id
@@ -628,7 +660,30 @@ WHERE p.subproject_id = $1
 FROM files f
 WHERE f.action_id = a.action_id)
 ORDER BY a.label";;
-Ort-Bericht-Mengen: Standard-Einheit nicht verwendet;Place report quantities: default unit not used;Quantités de rapport de lieu : unité par défaut non utilisée;Quantità di rapporto di luogo: unità predefinita non utilizzata;false;false;true;false;;;
+Ort-Bericht-Mengen: Standard-Einheit nicht verwendet;Place report quantities: default unit not used;Quantités de rapport de lieu : unité par défaut non utilisée;Quantità di rapporto di luogo: unità predefinita non utilizzata;false;false;true;false;"SELECT p.label, '/data/projects/' || sp.project_id || '/subprojects/' || p.subproject_id || '/places/' || p.place_id || '/place' AS url
+FROM places p
+JOIN subprojects sp ON sp.subproject_id = p.subproject_id
+JOIN projects proj ON proj.project_id = sp.project_id
+WHERE p.subproject_id = $1
+  AND p.relevant_for_reports = true
+  AND (p.until IS NULL
+  OR p.until >= date_part('year', now())::integer)
+  AND (
+    (proj.check_reports_default_unit_id IS NOT NULL
+    AND EXISTS (SELECT 1
+FROM check_reports cr
+JOIN check_report_quantities crq ON crq.place_check_report_id = cr.place_check_report_id
+WHERE cr.place_id = p.place_id
+  AND crq.unit_id != proj.check_reports_default_unit_id))
+  OR
+    (proj.action_reports_default_unit_id IS NOT NULL
+    AND EXISTS (SELECT 1
+FROM action_reports ar
+JOIN action_report_quantities arq ON arq.place_action_report_id = ar.place_action_report_id
+WHERE ar.place_id = p.place_id
+  AND arq.unit_id != proj.action_reports_default_unit_id))
+  )
+ORDER BY p.label";;
 Kontroll-Mengen: Standard-Einheit nicht verwendet;Check quantities: default unit not used;Quantités de contrôle : unité par défaut non utilisée;Quantità di controllo: unità predefinita non utilizzata;false;false;true;true;"SELECT c.label, '/data/projects/' || sp.project_id || '/subprojects/' || p.subproject_id || '/places/' || c.place_id || '/checks/' || c.check_id || '/check' AS url
 FROM checks c
 JOIN places p ON p.place_id = c.place_id
