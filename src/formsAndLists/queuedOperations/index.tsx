@@ -38,8 +38,8 @@ export const QueuedOperations = () => {
           <h3 className={styles.title}>{formatMessage({ id: 'qoPendingOpsTitle', defaultMessage: 'Ausstehende Operationen' })}</h3>
           <div>
             <Button
-              aria-label={formatMessage({ id: 'qoReadDocsBtn', defaultMessage: 'Dokumentation zu "offline arbeiten" lesen' })}
-              title={formatMessage({ id: 'qoReadDocsBtn', defaultMessage: 'Dokumentation zu "offline arbeiten" lesen' })}
+              aria-label={formatMessage({ id: 'qoReadDocsBtn', defaultMessage: 'Dokumentation öffnen' })}
+              title={formatMessage({ id: 'qoReadDocsBtn', defaultMessage: 'Dokumentation öffnen' })}
               onClick={openDocs}
               icon={<IoMdInformationCircleOutline />}
             />

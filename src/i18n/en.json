@@ -994,7 +994,7 @@
   "qoPendingOpsTitle": "Pending Operations",
   "qoCloseBtn": "close",
   "qoOpenGuideBtn": "open guide",
-  "qoReadDocsBtn": "Read documentation on working offline",
+  "qoReadDocsBtn": "Open documentation",
   "qoNoPendingOps": "There are currently no pending operations",
   "qoHeadingTime": "Time",
   "qoHeadingTable": "Table",
