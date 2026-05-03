@@ -190,7 +190,7 @@ export const ProjectQcForm = ({
             },
             {
               link: (chunks) => (
-                <a href="/data/qcs" target="_blank" rel="noreferrer">
+                <a href="/data/qcs" target="_blank">
                   {chunks}
                 </a>
               ),

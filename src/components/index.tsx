@@ -127,7 +127,17 @@ export const Home = () => {
             </h3>
             <FormattedMessage
               id="OW3d3V"
-              defaultMessage="Du bist offline? Einfach weiter arbeiten. Wieder online, werden deine Daten synchronisiert."
+              defaultMessage="Du bist offline? Einfach {weiterArbeiten}. Wieder online, werden deine Daten synchronisiert."
+              values={{
+                weiterArbeiten: (
+                  <Link to="/docs/offline" target="_blank">
+                    <FormattedMessage
+                      id="OW3d3V.weiterArbeiten"
+                      defaultMessage="weiter arbeiten"
+                    />
+                  </Link>
+                ),
+              }}
             />
           </div>
           <div className={styles.card}>
@@ -228,7 +238,7 @@ export const Home = () => {
               defaultMessage="Haben mehrere Mitarbeitende aus versehen offline die gleichen Daten geändert? Das lässt sich einfach korrigieren. {duSiehst}, wer was wann geändert hat."
               values={{
                 duSiehst: (
-                  <Link to="/docs/histories" target="_blank" rel="noreferrer">
+                  <Link to="/docs/histories" target="_blank">
                     <FormattedMessage
                       id="rEN8QI.duSiehst"
                       defaultMessage="Du siehst"
@@ -250,11 +260,7 @@ export const Home = () => {
               defaultMessage="Alle {deineDaten} werden auf dein Gerät synchronisiert. Du kannst sie jederzeit exportieren."
               values={{
                 deineDaten: (
-                  <Link
-                    to="/docs/privacy-policy"
-                    target="_blank"
-                    rel="noreferrer"
-                  >
+                  <Link to="/docs/privacy-policy" target="_blank">
                     <FormattedMessage
                       id="9LbkBJ.deineDaten"
                       defaultMessage="deine Daten"
@@ -277,7 +283,7 @@ export const Home = () => {
               values={{
                 br,
                 zahlt: (
-                  <Link to="/docs/pricing" target="_blank" rel="noreferrer">
+                  <Link to="/docs/pricing" target="_blank">
                     <FormattedMessage
                       id="9ZCq87.zahlt"
                       defaultMessage="zahlt"
@@ -296,7 +302,7 @@ export const Home = () => {
               defaultMessage="Der Code ist {link}. Du kannst das Projekt jederzeit einsehen, mitgestalten, kopieren und selber weiter entwickeln (lassen)."
               values={{
                 link: (
-                  <a href="/docs/open-source" target="_blank" rel="noreferrer">
+                  <a href="/docs/open-source" target="_blank">
                     <FormattedMessage
                       id="yoo7JY.offen"
                       defaultMessage="offen"
