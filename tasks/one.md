@@ -16,9 +16,9 @@ Better-Auth, possible extensions:
 
 ---
 
-qcs and project_qcs: nach Jahr filtern: explain
-
-qcs and project_qcs forms: we need to explain to the user what 'Nach Jahr filtern' means: 'Wenn wahr, wird der Abfrage eine Variable für das gewünschte Berichts-Jahr übergeben'
+we need to refactor qcs and project_qcs 'is_project_level' and 'is_subproject_level':
+1. instead of two boolean values we need a crs_level_enum containing two values: 'project' and 'subproject'
+2. in the forms, this is shown as a radio input. its label is: ' is translated and, for project_crs, uses the name for the subproject defined in the project table 
 
 ---
 
