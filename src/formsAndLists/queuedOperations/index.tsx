@@ -53,7 +53,7 @@ export const QueuedOperations = () => {
           </div>
         </div>
         <div className={styles.noOpsContainer}>
-          {formatMessage({ id: 'qoNoPendingOps', defaultMessage: 'Momentan keine pendenten Operationen' })}
+          {formatMessage({ id: 'qoNoPendingOps', defaultMessage: 'Momentan gibt es keine ausstehenden Operationen' })}
         </div>
       </div>
     )

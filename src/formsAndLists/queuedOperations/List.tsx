@@ -1,6 +1,6 @@
 import { useAtomValue, useSetAtom } from 'jotai'
 import { useIntl } from 'react-intl'
-import { IoMdInformationCircleOutline } from 'react-icons/io'
+import { MdMenuBook } from 'react-icons/md'
 import * as fluentUiReactComponents from '@fluentui/react-components'
 const { Button } = fluentUiReactComponents
 
@@ -52,15 +52,15 @@ export const QueuedOperationsList = () => {
         })}
         menus={
           <Button
-            icon={<IoMdInformationCircleOutline />}
+            icon={<MdMenuBook />}
             onClick={openDocs}
             title={formatMessage({
               id: 'qoReadDocsBtn',
-              defaultMessage: 'Dokumentation lesen',
+              defaultMessage: 'Dokumentation öffnen',
             })}
             aria-label={formatMessage({
               id: 'qoReadDocsBtn',
-              defaultMessage: 'Dokumentation lesen',
+              defaultMessage: 'Dokumentation öffnen',
             })}
           />
         }
@@ -70,7 +70,7 @@ export const QueuedOperationsList = () => {
           <div style={{ padding: '0 15px' }}>
             {formatMessage({
               id: 'qoNoPendingOps',
-              defaultMessage: 'Momentan keine pendenten Operationen',
+              defaultMessage: 'Momentan gibt es keine ausstehenden Operationen',
             })}
           </div>
         )}

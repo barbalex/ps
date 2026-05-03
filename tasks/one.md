@@ -24,7 +24,7 @@ Better-Auth, possible extensions:
 
 ---
 
-all \_users forms (for instance: /data/projects/018cfcf7-6424-7000-a100-851c5cc2c878/users/019ded81-b753-74f6-8da3-9a25d44a457e) need a button linking to the roles docs: /docs/user-roles
+/data/queued-operations needs a button linking to the roles docs: /docs/offline
 
 ---
 
