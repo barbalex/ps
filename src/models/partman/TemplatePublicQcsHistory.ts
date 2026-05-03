@@ -1,3 +1,5 @@
+import type { default as public_QcsLevelEnum } from '../public/QcsLevelEnum.js';
+
 /** Represents the table partman.template_public_qcs_history */
 export default interface TemplatePublicQcsHistory {
   qcs_id: string;
@@ -12,7 +14,7 @@ export default interface TemplatePublicQcsHistory {
 
   description: string | null;
 
-  level: 'root' | 'project' | 'subproject' | null;
+  level: public_QcsLevelEnum | null;
 
   filter_by_year: boolean | null;
 
@@ -41,7 +43,7 @@ export interface TemplatePublicQcsHistoryInitializer {
 
   description?: string | null;
 
-  level?: 'root' | 'project' | 'subproject' | null;
+  level?: public_QcsLevelEnum | null;
 
   filter_by_year?: boolean | null;
 
@@ -70,7 +72,7 @@ export interface TemplatePublicQcsHistoryMutator {
 
   description?: string | null;
 
-  level?: 'root' | 'project' | 'subproject' | null;
+  level?: public_QcsLevelEnum | null;
 
   filter_by_year?: boolean | null;
 

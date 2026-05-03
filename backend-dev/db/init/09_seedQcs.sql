@@ -1,6 +1,6 @@
 -- qcs: quality controls for data
 -- Generated from seed-data/qcs.csv
--- Run `node backend-dev/db/generate_qcs_sql.mjs` from project root to regenerate after editing the CSV.
+-- Run `node backend/db/generate_qcs_sql.mjs` from project root to regenerate after editing the CSV.
 
 INSERT INTO qcs (name_de, name_en, name_fr, name_it, level, filter_by_year, sql)
 VALUES

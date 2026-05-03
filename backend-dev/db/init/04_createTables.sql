@@ -1971,7 +1971,6 @@ CREATE TABLE IF NOT EXISTS project_qcs(
   name_en text DEFAULT NULL,
   name_fr text DEFAULT NULL,
   name_it text DEFAULT NULL,
-  description text DEFAULT NULL,
   level project_qcs_level_enum DEFAULT NULL,
   filter_by_year boolean DEFAULT false,
   sql text DEFAULT NULL,
