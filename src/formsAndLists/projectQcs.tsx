@@ -3,7 +3,7 @@ import { useLiveQuery } from '@electric-sql/pglite-react'
 import { useAtom } from 'jotai'
 import { useIntl } from 'react-intl'
 import * as fluentUiReactComponents from '@fluentui/react-components'
-import { IoMdInformationCircleOutline } from 'react-icons/io'
+import { MdMenuBook } from 'react-icons/md'
 
 const { Button } = fluentUiReactComponents
 
@@ -67,7 +67,7 @@ export const ProjectQcs = () => {
           <>
             <FilterButton isFiltered={isFiltered} />
             <Button
-              icon={<IoMdInformationCircleOutline />}
+              icon={<MdMenuBook />}
               title={formatMessage({
                 id: 'qc.openDocs',
                 defaultMessage: 'Dokumentation öffnen',
