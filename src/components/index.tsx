@@ -52,7 +52,7 @@ export const Home = () => {
             </h3>
             <FormattedMessage
               id="lOK5dy"
-              defaultMessage="Arten in Populationen gliedern. Fakultativ: Populationen in Teil-Populationen gliedern."
+              defaultMessage="Arten in Populationen gliedern, fakultativ in Teil-Populationen."
             />
           </div>
           <div className={styles.card}>
