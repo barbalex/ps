@@ -3,6 +3,9 @@ import { usePGlite, useLiveQuery } from '@electric-sql/pglite-react'
 import { useSetAtom } from 'jotai'
 import { useRef, useEffect } from 'react'
 import { useIntl } from 'react-intl'
+import { MdMenuBook } from 'react-icons/md'
+import * as fluentUiReactComponents from '@fluentui/react-components'
+const { Button } = fluentUiReactComponents
 
 import { createAccount } from '../../modules/createRows.ts'
 import { FormHeader } from '../../components/FormHeader/index.tsx'
@@ -103,6 +106,9 @@ export const Header = ({ autoFocusRef }) => {
     }
   }
 
+  const openDocs = () =>
+    window.open('/docs/user-accounts', '_blank', 'noreferrer')
+
   return (
     <FormHeader
       title={formatMessage({ id: '9oKaIi', defaultMessage: 'Konto' })}
@@ -113,6 +119,16 @@ export const Header = ({ autoFocusRef }) => {
       toNextDisabled={rowCount <= 1}
       toPreviousDisabled={rowCount <= 1}
       tableName="account"
+      siblings={
+        <Button
+          icon={<MdMenuBook />}
+          title={formatMessage({
+            id: 'qc.openDocs',
+            defaultMessage: 'Dokumentation öffnen',
+          })}
+          onClick={openDocs}
+        />
+      }
     />
   )
 }
