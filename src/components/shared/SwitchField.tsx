@@ -13,6 +13,7 @@ export const SwitchField = ({
   validationMessage,
   validationState = 'none',
   button,
+  hint,
   ref,
 }) => {
   // ensure value is true, false or null
@@ -24,6 +25,7 @@ export const SwitchField = ({
         label={undefined}
         validationMessage={validationMessage}
         validationState={validationState}
+        hint={hint}
       >
         <Switch
           label={label ?? '(no label provided)'}

@@ -148,6 +148,11 @@ export const QcForm = ({ onChange, validations = {}, row, autoFocusRef }) => {
         name="filter_by_year"
         value={row?.filter_by_year}
         onChange={onChange}
+        hint={formatMessage({
+          id: 'qc.filterByYearHint',
+          defaultMessage:
+            'Wenn wahr, wird der Abfrage eine Variable für das gewünschte Berichts-Jahr übergeben',
+        })}
       />
       <TextField
         label={formatMessage({
