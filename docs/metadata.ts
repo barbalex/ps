@@ -49,6 +49,14 @@ export const docsMeta: DocMeta[] = [
     isTechnical: false,
   },
   {
+    id: 'pricing',
+    label_de: 'Preise',
+    label_en: 'Pricing',
+    label_fr: 'Tarification',
+    label_it: 'Prezzi',
+    isTechnical: false,
+  },
+  {
     id: 'user-roles',
     label_de: 'Benutzerrollen',
     label_en: 'User Roles',
@@ -78,14 +86,6 @@ export const docsMeta: DocMeta[] = [
     label_en: 'Privacy Policy',
     label_fr: 'Politique de confidentialité',
     label_it: 'Informativa sulla privacy',
-    isTechnical: false,
-  },
-  {
-    id: 'pricing',
-    label_de: 'Preise',
-    label_en: 'Pricing',
-    label_fr: 'Tarification',
-    label_it: 'Prezzi',
     isTechnical: false,
   },
   {

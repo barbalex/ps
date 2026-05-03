@@ -249,8 +249,18 @@ export const Home = () => {
             </h3>
             <FormattedMessage
               id="9ZCq87"
-              defaultMessage="Es zahlt, wer Projekte konfiguriert.{br}Testen und mitarbeiten ist gratis."
-              values={{ br }}
+              defaultMessage="Es {zahlt}, wer Projekte konfiguriert.{br}Testen und mitarbeiten ist gratis."
+              values={{
+                br,
+                zahlt: (
+                  <Link to="/docs/pricing" target="_blank" rel="noreferrer">
+                    <FormattedMessage
+                      id="9ZCq87.zahlt"
+                      defaultMessage="zahlt"
+                    />
+                  </Link>
+                ),
+              }}
             />
           </div>
           <div className={styles.card}>
