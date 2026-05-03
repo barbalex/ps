@@ -20,10 +20,6 @@ qcs and project_qcs: nach Jahr filtern: explain
 
 ---
 
-lets remove qcs.sort and project_qcs.sort. Also in history tables
-
----
-
 qcs and project_qcs: explain how label translations work, like somewhere else (where?). Fallback de
 
 ---
