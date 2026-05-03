@@ -1,4 +1,5 @@
 import type { ProjectsProjectId } from './Projects.js';
+import type { default as QcsLevelEnum } from './QcsLevelEnum.js';
 
 /** Identifier type for public.project_qcs */
 export type ProjectQcsProjectQcId = string & { __brand: 'public.project_qcs' };
@@ -22,7 +23,7 @@ export default interface ProjectQcs {
 
   description: string | null;
 
-  level: 'project' | 'subproject' | null;
+  level: QcsLevelEnum | null;
 
   filter_by_year: boolean | null;
 
@@ -58,7 +59,7 @@ export interface ProjectQcsInitializer {
 
   description?: string | null;
 
-  level?: 'project' | 'subproject' | null;
+  level?: QcsLevelEnum | null;
 
   /** Default value: false */
   filter_by_year?: boolean | null;
@@ -96,7 +97,7 @@ export interface ProjectQcsMutator {
 
   description?: string | null;
 
-  level?: 'project' | 'subproject' | null;
+  level?: QcsLevelEnum | null;
 
   filter_by_year?: boolean | null;
 

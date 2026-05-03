@@ -775,7 +775,7 @@
   "qc.nameIt": "Nom (IT)",
   "qc.tableName": "Table",
   "qc.isRootLevel": "Niveau racine",
-  "qc.level": "À quel niveau la qualité est-elle contrôlée ?",
+  "qc.level": "À quel niveau la qualité est-elle contrôlée?",
   "qc.level.project": "Projet",
   "qc.level.subproject": "Sous-projet",
   "qc.filterByYear": "Filtrer par année",

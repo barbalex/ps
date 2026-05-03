@@ -1,6 +1,6 @@
 #!/usr/bin/env node
-// Regenerates backend-dev/db/init/09_seedQcs.sql from seed-data/qcs.csv.
-// Run from the project root: node backend-dev/db/generate_qcs_sql.mjs
+// Regenerates backend/db/init/09_seedQcs.sql from seed-data/qcs.csv.
+// Run from the project root: node backend/db/generate_qcs_sql.mjs
 
 import { readFileSync, writeFileSync } from 'fs'
 import { fileURLToPath } from 'url'
@@ -10,7 +10,7 @@ const __dirname = dirname(fileURLToPath(import.meta.url))
 const projectRoot = join(__dirname, '..', '..')
 
 const csvPath = join(projectRoot, 'seed-data', 'qcs.csv')
-const sqlPath = join(projectRoot, 'backend-dev', 'db', 'init', '09_seedQcs.sql')
+const sqlPath = join(projectRoot, 'backend', 'db', 'init', '09_seedQcs.sql')
 
 const csv = readFileSync(csvPath, 'utf-8')
 

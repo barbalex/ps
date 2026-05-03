@@ -1,3 +1,5 @@
+import type { default as QcsLevelEnum } from './QcsLevelEnum.js';
+
 /**
  * Represents the table public.project_qcs_history
  * System-versioned history of project_qcs. Managed by temporal_tables and partitioned yearly by updated_at.
@@ -17,7 +19,7 @@ export default interface ProjectQcsHistory {
 
   description: string | null;
 
-  level: 'project' | 'subproject' | null;
+  level: QcsLevelEnum | null;
 
   filter_by_year: boolean | null;
 
@@ -53,7 +55,7 @@ export interface ProjectQcsHistoryInitializer {
 
   description?: string | null;
 
-  level?: 'project' | 'subproject' | null;
+  level?: QcsLevelEnum | null;
 
   /** Default value: false */
   filter_by_year?: boolean | null;
@@ -91,7 +93,7 @@ export interface ProjectQcsHistoryMutator {
 
   description?: string | null;
 
-  level?: 'project' | 'subproject' | null;
+  level?: QcsLevelEnum | null;
 
   filter_by_year?: boolean | null;
 
