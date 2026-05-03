@@ -293,7 +293,7 @@ export const Home = () => {
               defaultMessage="Du darfst gerne reinschauen, testen und mir deine Eindrücke und Wünsche {link}."
               values={{
                 link: (
-                  <Link to="/docs/issues">
+                  <Link to="/docs/issues" target="_blank">
                     <FormattedMessage id="9KB+sP" defaultMessage="mitteilen" />
                   </Link>
                 ),
