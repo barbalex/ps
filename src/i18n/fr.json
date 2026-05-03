@@ -780,6 +780,7 @@
   "qc.section.query": "Requête",
   "qc.section.query.description": "La requête doit détecter les enregistrements suspects. Elle retourne deux champs : label (description) et url (un lien pour ouvrir l'enregistrement).",
   "projectQc.section.query.description": "La requête doit détecter les enregistrements suspects. Elle retourne deux champs : label (description) et url (un lien pour ouvrir l'enregistrement). Vous trouverez des exemples dans les <link>contrôles qualité préparés</link>.",
+  "qc.openDocs": "ouvrir la documentation",
   "qc.tableName": "Table",
   "qc.isRootLevel": "Niveau racine",
   "qc.level": "À quel niveau la qualité est-elle contrôlée?",

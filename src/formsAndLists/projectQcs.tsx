@@ -2,6 +2,10 @@ import { useParams, useNavigate } from '@tanstack/react-router'
 import { useLiveQuery } from '@electric-sql/pglite-react'
 import { useAtom } from 'jotai'
 import { useIntl } from 'react-intl'
+import * as fluentUiReactComponents from '@fluentui/react-components'
+import { IoMdInformationCircleOutline } from 'react-icons/io'
+
+const { Button } = fluentUiReactComponents
 
 import { createProjectQc } from '../modules/createRows.ts'
 import { useProjectQcsNavData } from '../modules/useProjectQcsNavData.ts'
@@ -49,6 +53,9 @@ export const ProjectQcs = () => {
     navigate({ to: `${id}/` })
   }
 
+  const openDocs = () =>
+    window.open('/docs/quality-controls', '_blank', 'noreferrer')
+
   return (
     <div className="list-view">
       <ListHeader
@@ -56,7 +63,19 @@ export const ProjectQcs = () => {
         nameSingular={nameSingular}
         description={description}
         addRow={add}
-        menus={<FilterButton isFiltered={isFiltered} />}
+        menus={
+          <>
+            <FilterButton isFiltered={isFiltered} />
+            <Button
+              icon={<IoMdInformationCircleOutline />}
+              title={formatMessage({
+                id: 'qc.openDocs',
+                defaultMessage: 'Dokumentation öffnen',
+              })}
+              onClick={openDocs}
+            />
+          </>
+        }
       />
       <div className="list-container">
         {loading ? (

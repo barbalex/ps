@@ -780,6 +780,8 @@
   "qc.section.query": "Query",
   "qc.section.query.description": "La query deve individuare i record sospetti. Restituisce due campi: label (etichetta) e url (un link per aprire il record).",
   "projectQc.section.query.description": "La query deve individuare i record sospetti. Restituisce due campi: label (etichetta) e url (un link per aprire il record). Esempi si trovano nei <link>controlli qualità preparati</link>.",
+  "qc.openDocs": "aprire la documentazione",
+  "qc.openDocs": "aprire la documentazione",
   "qc.tableName": "Tabella",
   "qc.isRootLevel": "Livello radice",
   "qc.level": "A quale livello viene controllata la qualità?",

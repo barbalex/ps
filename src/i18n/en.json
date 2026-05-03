@@ -796,6 +796,7 @@
   "qc.section.query": "Query",
   "qc.section.query.description": "The query should uncover suspicious records. It returns two fields: label (description) and url (a link to open the record).",
   "projectQc.section.query.description": "The query should uncover suspicious records. It returns two fields: label (description) and url (a link to open the record). You can find examples at the <link>prepared quality controls</link>.",
+  "qc.openDocs": "open documentation",
   "qc.tableName": "Table",
   "qc.isRootLevel": "Root level",
   "qc.level": "At which level is quality controlled?",
