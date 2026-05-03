@@ -12,13 +12,12 @@
 <h2>Roles</h2>
 <p>Role types are (from high to low):</p>
 <ol>
-<li>Owner: can set Manager roles</li>
-<li>Manager: can edit project- and subproject configuration, set Editor and Reader roles</li>
-<li>Editor: can edit data</li>
-<li>Reader: can sync and read data</li>
+<li><strong>Owner</strong>: can set Designer roles</li>
+<li><strong>Designer</strong>: can edit project- and subproject configuration, set Writer and Reader roles</li>
+<li><strong>Writer</strong>: can edit data</li>
+<li><strong>Reader</strong>: can sync and read data</li>
 </ol>
-<p>A role type always includes all lower role types. They are not separately set, only a single role needs to be set per level.</p>
-<p>A role is the combination of user and role.</p>
+<p>A role always includes all lower roles. They are not separately set, only a single role needs to be set per level.</p>
 <h2>Where roles are given</h2>
 <p>Roles are given at four levels:</p>
 <ol>
@@ -28,9 +27,9 @@
 </ol>
 <h2>How roles work</h2>
 <p>When a role is set, its effect extends down all levels. The app automatically sets all lower level roles.</p>
-<p>Example: When <a href="mailto:test@test.ch" target="_blank">test@test.ch</a> gets the Editor role on the project, the app automatically gives this user Editor roles in all subprojects and places.</p>
+<p>Example: When <a href="mailto:test@test.ch" target="_blank">test@test.ch</a> gets the Writer role on the project, the app automatically gives this user Writer roles in all subprojects and places.</p>
 <p>Setting lower rights at a lower level is not supported. Example: If a user has the Reader role on a project, all their data is synced without checking roles on lower levels.</p>
-<p>Higher rights can be given at lower levels, their effect extends down as well. Reverse example: A Reader who should be Editor on a subproject needs the Reader role on the parent project to sync parent data, without which they could not work.</p>
+<p>Higher rights can be given at lower levels, their effect extends down as well. Reverse example: A Reader who should be Writer on a subproject needs the Reader role on the parent project to sync parent data, without which they could not work.</p>
 <h2>How to set roles</h2>
 <p>Owner roles are set automatically by the app and can&#39;t be changed.</p>
 <p>It is important to know that when you set roles, the app automatically copies this role to all lower levels. Setting lower roles at higher levels after having set higher ones lower down will lead to the roles at lower levels getting nuked. Thus <strong>roles should be set from top (projects) to bottom (subprojects, places level 1, places level 2)</strong>.</p>

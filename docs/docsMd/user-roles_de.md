@@ -15,7 +15,7 @@ Ein Benutzer ist Eigentümer:
 
 ## Rollen
 
-Rollentypen sind (von hoch nach tief):
+Rollen sind von hoch nach tief:
 
 1. **Eigentümer**: kann Designer-Rollen vergeben
 2. **Designer**: kann Projekt- und Teilprojekt-Konfigurationen bearbeiten, Schreiber- und Leser-Rollen vergeben

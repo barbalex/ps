@@ -17,14 +17,12 @@ A user is owner:
 
 Role types are (from high to low):
 
-1. Owner: can set Manager roles
-2. Manager: can edit project- and subproject configuration, set Editor and Reader roles
-3. Editor: can edit data
-4. Reader: can sync and read data
+1. **Owner**: can set Designer roles
+2. **Designer**: can edit project- and subproject configuration, set Writer and Reader roles
+3. **Writer**: can edit data
+4. **Reader**: can sync and read data
 
-A role type always includes all lower role types. They are not separately set, only a single role needs to be set per level.
-
-A role is the combination of user and role.
+A role always includes all lower roles. They are not separately set, only a single role needs to be set per level.
 
 ## Where roles are given
 
@@ -38,11 +36,11 @@ Roles are given at four levels:
 
 When a role is set, its effect extends down all levels. The app automatically sets all lower level roles.
 
-Example: When test@test.ch gets the Editor role on the project, the app automatically gives this user Editor roles in all subprojects and places.
+Example: When test@test.ch gets the Writer role on the project, the app automatically gives this user Writer roles in all subprojects and places.
 
 Setting lower rights at a lower level is not supported. Example: If a user has the Reader role on a project, all their data is synced without checking roles on lower levels.
 
-Higher rights can be given at lower levels, their effect extends down as well. Reverse example: A Reader who should be Editor on a subproject needs the Reader role on the parent project to sync parent data, without which they could not work.
+Higher rights can be given at lower levels, their effect extends down as well. Reverse example: A Reader who should be Writer on a subproject needs the Reader role on the parent project to sync parent data, without which they could not work.
 
 ## How to set roles
 

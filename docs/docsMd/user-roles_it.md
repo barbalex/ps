@@ -17,13 +17,12 @@ Un utente è proprietario:
 
 I tipi di ruolo sono (dal più alto al più basso):
 
-1. Proprietario: può assegnare ruoli Manager
-2. Manager: può modificare la configurazione di progetti e sottoprogetti, assegnare ruoli Redattore e Lettore
-3. Redattore: può modificare i dati
-4. Lettore: può sincronizzare e leggere i dati
+1. **Proprietario**: può assegnare ruoli Designer
+2. **Designer**: può modificare la configurazione di progetti e sottoprogetti, assegnare ruoli Redattore e Lettore
+3. **Redattore**: può modificare i dati
+4. **Lettore**: può sincronizzare e leggere i dati
 
-Un tipo di ruolo include sempre tutti i tipi di ruolo inferiori. Non vengono impostati separatamente — è sufficiente impostare un solo ruolo per livello.
-Un ruolo è la combinazione di utente e tipo di ruolo.
+Un ruolo include sempre tutti i ruoli inferiori. Non vengono impostati separatamente — è sufficiente impostare un solo ruolo per livello.
 
 ## Dove vengono assegnati i ruoli
 
