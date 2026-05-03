@@ -1,6 +1,8 @@
 # Verwendete Technologien
 
-Zuletzt aktualisiert am 17. April 2026
+*Zuletzt aktualisiert am 17. April 2026*
+
+---
 
 - [Akamai](https://www.linode.com) für die physischen Server
 - [Docker](<https://de.wikipedia.org/wiki/Docker_(Software)>) um die App auf dem Server zu betreiben

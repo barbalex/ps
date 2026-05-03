@@ -1,6 +1,8 @@
 # Qualitäts-Kontrollen
 
-Zuletzt aktualisiert am 3.5.2026
+*Zuletzt aktualisiert am 3.5.2026*
+
+---
 
 Qualitäts-Kontrollen können helfen, die Qualität der erfassten Daten zu verbessern. Sie sollen verdächtige Daten aufspüren.
 

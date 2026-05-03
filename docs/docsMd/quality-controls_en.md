@@ -1,6 +1,8 @@
 # Quality Controls
 
-Last updated: 3 May 2026
+*Last updated: 3 May 2026*
+
+---
 
 Quality controls can help improve the quality of recorded data. Their purpose is to detect suspicious records.
 

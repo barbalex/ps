@@ -1,6 +1,8 @@
 # Requisiti tecnici
 
-Ultimo aggiornamento: 17 aprile 2026
+*Ultimo aggiornamento: 17 aprile 2026*
+
+---
 
 arten-fördern.app funziona nel browser. Quale browser si utilizzi è generalmente irrilevante, ma dovrebbe essere sempre aggiornato.
 

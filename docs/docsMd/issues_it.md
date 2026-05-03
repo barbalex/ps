@@ -1,6 +1,8 @@
 # Feedback e bug
 
-Ultimo aggiornamento: 17 aprile 2026
+*Ultimo aggiornamento: 17 aprile 2026*
+
+---
 
 Sono sempre felice di ricevere feedback, suggerimenti, idee e (va detto, un po' meno) segnalazioni di bug.
 

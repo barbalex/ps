@@ -1,6 +1,8 @@
 # Contrôles de qualité
 
-Dernière mise à jour: 3 mai 2026
+*Dernière mise à jour: 3 mai 2026*
+
+---
 
 Les contrôles de qualité peuvent aider à améliorer la qualité des données saisies. Leur but est de détecter les enregistrements suspects.
 

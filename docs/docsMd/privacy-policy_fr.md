@@ -1,6 +1,8 @@
 # Politique de confidentialité
 
-Dernière mise à jour: 17 avril 2026
+*Dernière mise à jour: 17 avril 2026*
+
+---
 
 Le traitement transparent de tes données nous tient particulièrement à coeur. La présente politique de confidentialité t'informe des données personnelles que nous collectons, de leur finalité et des destinataires auxquels nous les transmettons. Nous réviserons et actualiserons cette politique de confidentialité si des faits pertinents venaient à changer.
 

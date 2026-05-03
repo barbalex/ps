@@ -1,6 +1,8 @@
 # Open Source
 
-Ultimo aggiornamento: 17 aprile 2026
+*Ultimo aggiornamento: 17 aprile 2026*
+
+---
 
 arten-fördern.app è sviluppata da [Gabriel-Software](https://gabriel-software.ch).
 

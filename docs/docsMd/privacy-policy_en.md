@@ -1,6 +1,8 @@
 # Privacy Policy
 
-Last updated: 17 April 2026
+*Last updated: 17 April 2026*
+
+---
 
 Transparent handling of your data is very important to us. This privacy policy explains what personal data we collect, for what purpose, and to whom we disclose it. We will review and update this privacy policy if any relevant facts change.
 

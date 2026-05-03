@@ -1,6 +1,8 @@
 # Mit Wischen löschen in Listen
 
-Zuletzt aktualisiert am 17. April 2026
+*Zuletzt aktualisiert am 17. April 2026*
+
+---
 
 ## Übersicht
 

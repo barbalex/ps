@@ -1,6 +1,8 @@
 # Ruoli utente
 
-Ultimo aggiornamento: 17 aprile 2026
+*Ultimo aggiornamento: 17 aprile 2026*
+
+---
 
 ## Proprietà
 

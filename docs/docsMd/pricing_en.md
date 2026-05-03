@@ -1,6 +1,8 @@
 # Pricing
 
-Last updated: 17 April 2026
+*Last updated: 17 April 2026*
+
+---
 
 There are two ways to pay for arten-fördern.app:
 

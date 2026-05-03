@@ -1,6 +1,8 @@
 # Comptes utilisateurs
 
-Dernière mise à jour: 17 avril 2026
+*Dernière mise à jour: 17 avril 2026*
+
+---
 
 Il existe quatre types de compte:
 

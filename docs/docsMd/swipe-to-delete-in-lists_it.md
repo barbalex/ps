@@ -1,6 +1,8 @@
 # Scorri per eliminare nelle liste
 
-Ultimo aggiornamento: 17 aprile 2026
+*Ultimo aggiornamento: 17 aprile 2026*
+
+---
 
 ## Panoramica
 

@@ -1,6 +1,8 @@
 # Account utente
 
-Ultimo aggiornamento: 17 aprile 2026
+*Ultimo aggiornamento: 17 aprile 2026*
+
+---
 
 Esistono quattro tipi di account:
 

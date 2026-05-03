@@ -1,6 +1,8 @@
 # Informativa sulla privacy
 
-Ultimo aggiornamento: 17 aprile 2026
+*Ultimo aggiornamento: 17 aprile 2026*
+
+---
 
 Un trattamento trasparente dei tuoi dati è molto importante per noi. La presente informativa sulla privacy spiega quali dati personali raccogliamo, per quale finalità e a chi li trasmettiamo. Verificheremo e aggiorneremo questa informativa se dovessero cambiare fatti rilevanti.
 

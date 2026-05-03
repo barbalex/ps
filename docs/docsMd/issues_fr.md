@@ -1,6 +1,8 @@
 # Retours et bugs
 
-Dernière mise à jour: 17 avril 2026
+*Dernière mise à jour: 17 avril 2026*
+
+---
 
 Je suis toujours heureux de recevoir des retours, suggestions, idées et (il faut l'avouer, un peu moins) des signalements de bugs.
 

@@ -1,6 +1,8 @@
 # Tarifs
 
-Dernière mise à jour: 17 avril 2026
+*Dernière mise à jour: 17 avril 2026*
+
+---
 
 Il existe deux modèles pour payer arten-fördern.app:
 

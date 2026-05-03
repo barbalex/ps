@@ -1,6 +1,8 @@
 # Prezzi
 
-Ultimo aggiornamento: 17 aprile 2026
+*Ultimo aggiornamento: 17 aprile 2026*
+
+---
 
 Esistono due modi per pagare arten-fördern.app:
 

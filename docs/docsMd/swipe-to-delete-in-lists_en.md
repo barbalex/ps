@@ -1,6 +1,8 @@
 # Swipe to Delete in Lists
 
-Last updated: 17 April 2026
+*Last updated: 17 April 2026*
+
+---
 
 ## Overview
 

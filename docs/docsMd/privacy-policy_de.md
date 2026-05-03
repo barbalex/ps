@@ -1,6 +1,8 @@
 # Datenschutzerklärung
 
-Zuletzt aktualisiert am 17. April 2026
+*Zuletzt aktualisiert am 17. April 2026*
+
+---
 
 Ein transparenter Umgang mit deinen Daten ist uns sehr wichtig. Die vorliegende Datenschutzerklärung informiert darüber, welche Personendaten wir zu welchem Zweck erheben und an wen wir sie weitergeben. Wir werden diese Datenschutzerklärung überprüfen und erneuern wenn sich relevante Fakten ändern sollten.
 

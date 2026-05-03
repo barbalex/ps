@@ -1,6 +1,8 @@
 # Controlli di qualità
 
-Ultimo aggiornamento: 3 maggio 2026
+*Ultimo aggiornamento: 3 maggio 2026*
+
+---
 
 I controlli di qualità possono contribuire a migliorare la qualità dei dati registrati. Il loro scopo è individuare i record sospetti.
 

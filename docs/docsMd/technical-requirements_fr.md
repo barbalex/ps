@@ -1,6 +1,8 @@
 # Exigences techniques
 
-Dernière mise à jour: 17 avril 2026
+*Dernière mise à jour: 17 avril 2026*
+
+---
 
 arten-fördern.app fonctionne dans le navigateur. Lequel importe peu en général, mais il devrait toujours être à jour.
 

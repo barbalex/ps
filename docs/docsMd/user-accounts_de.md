@@ -1,6 +1,8 @@
 # Benutzerkonten
 
-Zuletzt aktualisiert am 17. April 2026
+*Zuletzt aktualisiert am 17. April 2026*
+
+---
 
 Es gibt vier Konto Typen:
 

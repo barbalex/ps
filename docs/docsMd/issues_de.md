@@ -1,6 +1,8 @@
 # Rückmeldungen und Fehler
 
-Zuletzt aktualisiert am 17. April 2026
+*Zuletzt aktualisiert am 17. April 2026*
+
+---
 
 Ich freue mich über Rückmeldungen, Anregungen, Ideen und (zugegeben etwas weniger) Fehlermeldungen.
 

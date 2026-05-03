@@ -1,6 +1,8 @@
 # User Accounts
 
-Last updated: 17 April 2026
+*Last updated: 17 April 2026*
+
+---
 
 There are four account types:
 
