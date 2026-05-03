@@ -225,7 +225,17 @@ export const Home = () => {
             </h3>
             <FormattedMessage
               id="rEN8QI"
-              defaultMessage="Haben mehrere Mitarbeitende aus versehen offline die gleichen Daten geändert? Das lässt sich einfach korrigieren. Du siehst, wer was wann geändert hat."
+              defaultMessage="Haben mehrere Mitarbeitende aus versehen offline die gleichen Daten geändert? Das lässt sich einfach korrigieren. {duSiehst}, wer was wann geändert hat."
+              values={{
+                duSiehst: (
+                  <Link to="/docs/histories" target="_blank" rel="noreferrer">
+                    <FormattedMessage
+                      id="rEN8QI.duSiehst"
+                      defaultMessage="Du siehst"
+                    />
+                  </Link>
+                ),
+              }}
             />
           </div>
           <div className={styles.card}>
