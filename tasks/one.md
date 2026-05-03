@@ -20,10 +20,6 @@ Better-Auth, possible extensions:
 
 ---
 
-qcs and project_qcs: explain how name translations work: 'Hier wird der Name für die Qualitäts-Kontrolle in allen Sprachen definiert. Fehlt eine Sprache, wird Deutsch verwendet.'. Fallback de
-
-Also: format like /data/projects/018cfcf7-6424-7000-a100-851c5cc2c878/configuration for better ui: section with title 'Name' and its explanation.
-
 ---
 
 lets remove qcs.description and project_qcs.description (do not forget histories)
