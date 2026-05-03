@@ -90,7 +90,7 @@ export const ProjectQcForm = ({
         <TextField
           label={formatMessage({
             id: 'qc.nameDe',
-            defaultMessage: 'Name (DE)',
+            defaultMessage: 'Deutsch',
           })}
           name="name_de"
           value={row?.name_de ?? ''}
@@ -101,7 +101,7 @@ export const ProjectQcForm = ({
         <TextField
           label={formatMessage({
             id: 'qc.nameEn',
-            defaultMessage: 'Name (EN)',
+            defaultMessage: 'Englisch',
           })}
           name="name_en"
           value={row?.name_en ?? ''}
@@ -110,7 +110,7 @@ export const ProjectQcForm = ({
         <TextField
           label={formatMessage({
             id: 'qc.nameFr',
-            defaultMessage: 'Name (FR)',
+            defaultMessage: 'Französisch',
           })}
           name="name_fr"
           value={row?.name_fr ?? ''}
@@ -119,7 +119,7 @@ export const ProjectQcForm = ({
         <TextField
           label={formatMessage({
             id: 'qc.nameIt',
-            defaultMessage: 'Name (IT)',
+            defaultMessage: 'Italienisch',
           })}
           name="name_it"
           value={row?.name_it ?? ''}
