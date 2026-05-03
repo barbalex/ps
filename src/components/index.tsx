@@ -237,7 +237,21 @@ export const Home = () => {
             </h3>
             <FormattedMessage
               id="9LbkBJ"
-              defaultMessage="Alle deine Daten werden auf dein Gerät synchronisiert. Du kannst sie jederzeit exportieren."
+              defaultMessage="Alle {deineDaten} werden auf dein Gerät synchronisiert. Du kannst sie jederzeit exportieren."
+              values={{
+                deineDaten: (
+                  <Link
+                    to="/docs/privacy-policy"
+                    target="_blank"
+                    rel="noreferrer"
+                  >
+                    <FormattedMessage
+                      id="9LbkBJ.deineDaten"
+                      defaultMessage="deine Daten"
+                    />
+                  </Link>
+                ),
+              }}
             />
           </div>
           <div className={styles.card}>
