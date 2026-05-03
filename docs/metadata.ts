@@ -17,14 +17,6 @@ export const docsMeta: DocMeta[] = [
     isTechnical: false,
   },
   {
-    id: 'technical-requirements',
-    label_de: 'Technische Anforderungen',
-    label_en: 'Technical Requirements',
-    label_fr: 'Exigences techniques',
-    label_it: 'Requisiti tecnici',
-    isTechnical: false,
-  },
-  {
     id: 'offline',
     label_de: 'Offline arbeiten',
     label_en: 'Working offline',
@@ -86,6 +78,14 @@ export const docsMeta: DocMeta[] = [
     label_en: 'Privacy Policy',
     label_fr: 'Politique de confidentialité',
     label_it: 'Informativa sulla privacy',
+    isTechnical: false,
+  },
+  {
+    id: 'technical-requirements',
+    label_de: 'Technische Anforderungen',
+    label_en: 'Technical Requirements',
+    label_fr: 'Exigences techniques',
+    label_it: 'Requisiti tecnici',
     isTechnical: false,
   },
   {
