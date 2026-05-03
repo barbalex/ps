@@ -24,8 +24,6 @@ Better-Auth, possible extensions:
 
 ---
 
-/data/queued-operations needs a button linking to the roles docs: /docs/offline
-
 ---
 
 ---
