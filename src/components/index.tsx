@@ -259,7 +259,17 @@ export const Home = () => {
             </h3>
             <FormattedMessage
               id="yoo7JY"
-              defaultMessage="Der Code ist offen. Du kannst das Projekt jederzeit einsehen, mitgestalten, kopieren und selber weiter entwickeln (lassen)."
+              defaultMessage="Der Code ist {link}. Du kannst das Projekt jederzeit einsehen, mitgestalten, kopieren und selber weiter entwickeln (lassen)."
+              values={{
+                link: (
+                  <a href="/docs/open-source" target="_blank" rel="noreferrer">
+                    <FormattedMessage
+                      id="yoo7JY.offen"
+                      defaultMessage="offen"
+                    />
+                  </a>
+                ),
+              }}
             />
           </div>
           <div className={styles.card}>
