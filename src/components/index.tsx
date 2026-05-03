@@ -36,20 +36,23 @@ export const Home = () => {
         <div className={styles.cardContainer}>
           <div className={styles.card}>
             <h3 className={styles.cardTitle}>
-              <FormattedMessage id="h5g7Kk" defaultMessage="Orte" />
+              <FormattedMessage
+                id="HomeWasIstDas"
+                defaultMessage="Was ist das?"
+              />
             </h3>
             <FormattedMessage
-              id="lOK5dy"
-              defaultMessage="Arten in Populationen gliedern."
+              id="HomeWasIstDasText"
+              defaultMessage="arten-fördern.app hilft Naturschutzfachleuten, bedrohte Arten und Lebensräume zu fördern."
             />
           </div>
           <div className={styles.card}>
             <h3 className={styles.cardTitle}>
-              <FormattedMessage id="2iLc/W" defaultMessage="Zweistufige Orte" />
+              <FormattedMessage id="h5g7Kk" defaultMessage="Orte" />
             </h3>
             <FormattedMessage
-              id="74x/v0"
-              defaultMessage="Populationen in Teil-Populationen gliedern (fakultativ)."
+              id="lOK5dy"
+              defaultMessage="Arten in Populationen gliedern. Fakultativ: Populationen in Teil-Populationen gliedern."
             />
           </div>
           <div className={styles.card}>
