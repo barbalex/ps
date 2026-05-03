@@ -38,7 +38,7 @@ export const useSubprojectQcAssignmentsNavData = ({
        FROM qcs_assignment qa
        JOIN qcs q ON q.qcs_id = qa.qc_id
        WHERE qa.subproject_id = $1
-         AND q.is_subproject_level = true
+         AND q.level = 'subproject'
        UNION ALL
        SELECT pqa.project_qcs_assignment_id
        FROM project_qcs_assignment pqa

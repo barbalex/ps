@@ -29,7 +29,7 @@ export const useProjectQcAssignmentsNavData = ({ projectId }: Props) => {
        JOIN qcs q ON q.qcs_id = qa.qc_id
        WHERE qa.project_id = $1
          AND qa.subproject_id IS NULL
-         AND q.is_project_level = true
+         AND q.level = 'project'
        UNION ALL
        SELECT pqa.project_qcs_assignment_id
        FROM project_qcs_assignment pqa

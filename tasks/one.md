@@ -16,6 +16,8 @@ Better-Auth, possible extensions:
 
 ---
 
+DOING:
+
 we need to refactor qcs and project_qcs 'is_project_level' and 'is_subproject_level':
 
 1. instead of two boolean values we need a qcs_level_enum containing two values: 'project' and 'subproject'
@@ -23,9 +25,10 @@ we need to refactor qcs and project_qcs 'is_project_level' and 'is_subproject_le
 
 ---
 
-qcs and project_qcs: explain how label translations work, like somewhere else (where?). Fallback de
-
 ---
+
+qcs and project_qcs: explain how name translations work: 'Hier wird der Name für die Qualitäts-Kontrolle in allen Sprachen definiert. Fehlt eine Sprache, wird Deutsch verwendet.'. Fallback de
+Also: format like /data/projects/018cfcf7-6424-7000-a100-851c5cc2c878/configuration for better ui: section with title 'Name' and its explanation.
 
 ---
 

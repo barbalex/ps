@@ -2,6 +2,7 @@ import { useIntl } from 'react-intl'
 
 import { TextField } from '../../components/shared/TextField.tsx'
 import { SwitchField } from '../../components/shared/SwitchField.tsx'
+import { RadioGroupField } from '../../components/shared/RadioGroupField.tsx'
 import { SqlEditorField } from '../../components/shared/SqlEditorField.tsx'
 
 import '../../form.css'
@@ -30,7 +31,7 @@ export const QcForm = ({ onChange, validations = {}, row, autoFocusRef }) => {
         )
       }
     }
-    if (row?.is_project_level) {
+    if (row?.level === 'project') {
       if (row?.filter_by_year) {
         parts.push(
           formatMessage({
@@ -47,7 +48,7 @@ export const QcForm = ({ onChange, validations = {}, row, autoFocusRef }) => {
         )
       }
     }
-    if (row?.is_subproject_level) {
+    if (row?.level === 'subproject') {
       if (row?.filter_by_year) {
         parts.push(
           formatMessage({
@@ -69,7 +70,7 @@ export const QcForm = ({ onChange, validations = {}, row, autoFocusRef }) => {
       : formatMessage({
           id: 'qc.sql.hintNone',
           defaultMessage:
-            'Set is_root_level, is_project_level or is_subproject_level to see available parameters.',
+            'Set is_root_level or level to see available parameters.',
         })
   })()
 
@@ -122,23 +123,19 @@ export const QcForm = ({ onChange, validations = {}, row, autoFocusRef }) => {
         value={row?.is_root_level}
         onChange={onChange}
       />
-      <SwitchField
+      <RadioGroupField
         label={formatMessage({
-          id: 'qc.isProjectLevel',
-          defaultMessage: 'Projekt-Ebene',
+          id: 'qc.level',
+          defaultMessage: 'Auf welcher Ebene wird Qualität kontrolliert?',
         })}
-        name="is_project_level"
-        value={row?.is_project_level}
+        name="level"
+        list={['project', 'subproject']}
+        value={row?.level ?? null}
         onChange={onChange}
-      />
-      <SwitchField
-        label={formatMessage({
-          id: 'qc.isSubprojectLevel',
-          defaultMessage: 'Teilprojekt-Ebene',
-        })}
-        name="is_subproject_level"
-        value={row?.is_subproject_level}
-        onChange={onChange}
+        labelMap={{
+          project: formatMessage({ id: 'qc.level.project', defaultMessage: 'Projekt' }),
+          subproject: formatMessage({ id: 'qc.level.subproject', defaultMessage: 'Teilprojekt' }),
+        }}
       />
       <SwitchField
         label={formatMessage({

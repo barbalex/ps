@@ -17,9 +17,7 @@ export default interface QcsHistory {
 
   is_root_level: boolean | null
 
-  is_project_level: boolean | null
-
-  is_subproject_level: boolean | null
+  level: 'project' | 'subproject' | null
 
   filter_by_year: boolean | null
 
@@ -56,11 +54,7 @@ export interface QcsHistoryInitializer {
   /** Default value: false */
   is_root_level?: boolean | null
 
-  /** Default value: false */
-  is_project_level?: boolean | null
-
-  /** Default value: false */
-  is_subproject_level?: boolean | null
+  level?: 'project' | 'subproject' | null
 
   /** Default value: false */
   filter_by_year?: boolean | null
@@ -98,9 +92,7 @@ export interface QcsHistoryMutator {
 
   is_root_level?: boolean | null
 
-  is_project_level?: boolean | null
-
-  is_subproject_level?: boolean | null
+  level?: 'project' | 'subproject' | null
 
   filter_by_year?: boolean | null
 

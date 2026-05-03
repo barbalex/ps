@@ -21,8 +21,7 @@ export const preferredOrder = [
   'name_fr',
   'name_it',
   'description',
-  'is_project_level',
-  'is_subproject_level',
+  'level',
   'filter_by_year',
   'sql',
 ]

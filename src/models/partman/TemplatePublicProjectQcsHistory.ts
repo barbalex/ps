@@ -14,11 +14,7 @@ export default interface TemplatePublicProjectQcsHistory {
 
   description: string | null;
 
-  sort: number | null;
-
-  is_project_level: boolean | null;
-
-  is_subproject_level: boolean | null;
+  level: 'project' | 'subproject' | null;
 
   filter_by_year: boolean | null;
 
@@ -49,11 +45,7 @@ export interface TemplatePublicProjectQcsHistoryInitializer {
 
   description?: string | null;
 
-  sort?: number | null;
-
-  is_project_level?: boolean | null;
-
-  is_subproject_level?: boolean | null;
+  level?: 'project' | 'subproject' | null;
 
   filter_by_year?: boolean | null;
 
@@ -84,11 +76,7 @@ export interface TemplatePublicProjectQcsHistoryMutator {
 
   description?: string | null;
 
-  sort?: number | null;
-
-  is_project_level?: boolean | null;
-
-  is_subproject_level?: boolean | null;
+  level?: 'project' | 'subproject' | null;
 
   filter_by_year?: boolean | null;
 

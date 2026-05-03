@@ -2,167 +2,167 @@
 -- Generated from seed-data/qcs.csv
 -- Run `node backend/db/generate_qcs_sql.mjs` from project root to regenerate after editing the CSV.
 
-INSERT INTO qcs (name_de, name_en, name_fr, name_it, is_root_level, is_project_level, is_subproject_level, filter_by_year, sql)
+INSERT INTO qcs (name_de, name_en, name_fr, name_it, is_root_level, level, filter_by_year, sql)
 VALUES
-('Projekte ohne Namen', 'Projects without name', 'Projets sans nom', 'Progetti senza nome', false, true, false, false, 'SELECT p.label, ''/data/projects/'' || p.project_id || ''/project'' AS url
+('Projekte ohne Namen', 'Projects without name', 'Projets sans nom', 'Progetti senza nome', false, 'project', false, 'SELECT p.label, ''/data/projects/'' || p.project_id || ''/project'' AS url
 FROM projects p
 WHERE p.project_id = $1
   AND nullif(p.name, '''') IS NULL
 ORDER BY p.label'),
-('Benutzer ohne Email', 'Users without email', 'Utilisateurs sans email', 'Utenti senza email', true, false, false, false, 'SELECT label, ''/data/users/'' || user_id AS url
+('Benutzer ohne Email', 'Users without email', 'Utilisateurs sans email', 'Utenti senza email', true, NULL, false, 'SELECT label, ''/data/users/'' || user_id AS url
 FROM users
 WHERE nullif(email, '''') IS NULL
 ORDER BY label'),
-('Benutzer ohne Name', 'Users without name', 'Utilisateurs sans nom', 'Utenti senza nome', true, false, false, false, 'SELECT label, ''/data/users/'' || user_id AS url
+('Benutzer ohne Name', 'Users without name', 'Utilisateurs sans nom', 'Utenti senza nome', true, NULL, false, 'SELECT label, ''/data/users/'' || user_id AS url
 FROM users
 WHERE nullif(name, '''') IS NULL
 ORDER BY label'),
-('Konten ohne Benutzer', 'Accounts without user', 'Comptes sans utilisateur', 'Account senza utente', true, false, false, false, 'SELECT label, ''/data/accounts/'' || account_id AS url
+('Konten ohne Benutzer', 'Accounts without user', 'Comptes sans utilisateur', 'Account senza utente', true, NULL, false, 'SELECT label, ''/data/accounts/'' || account_id AS url
 FROM accounts
 WHERE user_id IS NULL
 ORDER BY label'),
-('Konten ohne Typ', 'Accounts without type', 'Comptes sans type', 'Account senza tipo', true, false, false, false, 'SELECT label, ''/data/accounts/'' || account_id AS url
+('Konten ohne Typ', 'Accounts without type', 'Comptes sans type', 'Account senza tipo', true, NULL, false, 'SELECT label, ''/data/accounts/'' || account_id AS url
 FROM accounts
 WHERE nullif(type, '''') IS NULL
 ORDER BY label'),
-('Konten ohne Startzeitpunkt', 'Accounts without start date', 'Comptes sans date de début', 'Account senza data di inizio', true, false, false, false, 'SELECT label, ''/data/accounts/'' || account_id AS url
+('Konten ohne Startzeitpunkt', 'Accounts without start date', 'Comptes sans date de début', 'Account senza data di inizio', true, NULL, false, 'SELECT label, ''/data/accounts/'' || account_id AS url
 FROM accounts
 WHERE period_start IS NULL
 ORDER BY label'),
-('Feld-Typen ohne Namen', 'Field types without name', 'Types de champ sans nom', 'Tipi di campo senza nome', true, false, false, false, 'SELECT label, ''/data/field-types/'' || field_type_id AS url
+('Feld-Typen ohne Namen', 'Field types without name', 'Types de champ sans nom', 'Tipi di campo senza nome', true, NULL, false, 'SELECT label, ''/data/field-types/'' || field_type_id AS url
 FROM field_types
 WHERE nullif(name, '''') IS NULL
 ORDER BY label'),
-('Widget-Typen ohne Namen', 'Widget types without name', 'Types de widget sans nom', 'Tipi di widget senza nome', true, false, false, false, 'SELECT label, ''/data/widget-types/'' || widget_type_id AS url
+('Widget-Typen ohne Namen', 'Widget types without name', 'Types de widget sans nom', 'Tipi di widget senza nome', true, NULL, false, 'SELECT label, ''/data/widget-types/'' || widget_type_id AS url
 FROM widget_types
 WHERE nullif(name, '''') IS NULL
 ORDER BY label'),
-('Widgets für Felder ohne Feld-Typ', 'Widgets for fields without field type', 'Widgets pour champs sans type de champ', 'Widget per campi senza tipo di campo', true, false, false, false, 'SELECT label, ''/data/widgets-for-fields/'' || widget_for_field_id AS url
+('Widgets für Felder ohne Feld-Typ', 'Widgets for fields without field type', 'Widgets pour champs sans type de champ', 'Widget per campi senza tipo di campo', true, NULL, false, 'SELECT label, ''/data/widgets-for-fields/'' || widget_for_field_id AS url
 FROM widgets_for_fields
 WHERE field_type_id IS NULL
 ORDER BY label'),
-('Widgets für Felder ohne Widget-Typ', 'Widgets for fields without widget type', 'Widgets pour champs sans type de widget', 'Widget per campi senza tipo di widget', true, false, false, false, 'SELECT label, ''/data/widgets-for-fields/'' || widget_for_field_id AS url
+('Widgets für Felder ohne Widget-Typ', 'Widgets for fields without widget type', 'Widgets pour champs sans type de widget', 'Widget per campi senza tipo di widget', true, NULL, false, 'SELECT label, ''/data/widgets-for-fields/'' || widget_for_field_id AS url
 FROM widgets_for_fields
 WHERE widget_type_id IS NULL
 ORDER BY label'),
-('Felder ohne Tabelle', 'Fields without table', 'Champs sans table', 'Campi senza tabella', true, false, false, false, 'SELECT f.label, ''/data/projects/'' || f.project_id || ''/fields/'' || f.field_id AS url
+('Felder ohne Tabelle', 'Fields without table', 'Champs sans table', 'Campi senza tabella', true, NULL, false, 'SELECT f.label, ''/data/projects/'' || f.project_id || ''/fields/'' || f.field_id AS url
 FROM fields f
 WHERE nullif(f.table_name, '''') IS NULL
 ORDER BY f.label'),
-('Ort-Felder ohne Stufe', 'Place fields without level', 'Champs de lieu sans niveau', 'Campi di luogo senza livello', true, false, false, false, 'SELECT f.label, ''/data/projects/'' || f.project_id || ''/fields/'' || f.field_id AS url
+('Ort-Felder ohne Stufe', 'Place fields without level', 'Champs de lieu sans niveau', 'Campi di luogo senza livello', true, NULL, false, 'SELECT f.label, ''/data/projects/'' || f.project_id || ''/fields/'' || f.field_id AS url
 FROM fields f
 WHERE f.table_name = ''places''
   AND f.level IS NULL
 ORDER BY f.label'),
-('Felder ohne Namen', 'Fields without name', 'Champs sans nom', 'Campi senza nome', true, false, false, false, 'SELECT f.label, ''/data/projects/'' || f.project_id || ''/fields/'' || f.field_id AS url
+('Felder ohne Namen', 'Fields without name', 'Champs sans nom', 'Campi senza nome', true, NULL, false, 'SELECT f.label, ''/data/projects/'' || f.project_id || ''/fields/'' || f.field_id AS url
 FROM fields f
 WHERE nullif(f.name, '''') IS NULL
 ORDER BY f.label'),
-('Felder ohne Feld-Typ', 'Fields without field type', 'Champs sans type de champ', 'Campi senza tipo di campo', true, false, false, false, 'SELECT f.label, ''/data/projects/'' || f.project_id || ''/fields/'' || f.field_id AS url
+('Felder ohne Feld-Typ', 'Fields without field type', 'Champs sans type de champ', 'Campi senza tipo di campo', true, NULL, false, 'SELECT f.label, ''/data/projects/'' || f.project_id || ''/fields/'' || f.field_id AS url
 FROM fields f
 WHERE f.field_type_id IS NULL
 ORDER BY f.label'),
-('Felder ohne Widget', 'Fields without widget', 'Champs sans widget', 'Campi senza widget', true, false, false, false, 'SELECT f.label, ''/data/projects/'' || f.project_id || ''/fields/'' || f.field_id AS url
+('Felder ohne Widget', 'Fields without widget', 'Champs sans widget', 'Campi senza widget', true, NULL, false, 'SELECT f.label, ''/data/projects/'' || f.project_id || ''/fields/'' || f.field_id AS url
 FROM fields f
 WHERE f.widget_type_id IS NULL
 ORDER BY f.label'),
-('Ort-Stufen ohne Stufe', 'Place levels without level', 'Niveaux de lieu sans niveau', 'Livelli di luogo senza livello', false, true, false, false, 'SELECT pl.label, ''/data/projects/'' || pl.project_id || ''/place-levels/'' || pl.place_level_id || ''/'' AS url
+('Ort-Stufen ohne Stufe', 'Place levels without level', 'Niveaux de lieu sans niveau', 'Livelli di luogo senza livello', false, 'project', false, 'SELECT pl.label, ''/data/projects/'' || pl.project_id || ''/place-levels/'' || pl.place_level_id || ''/'' AS url
 FROM place_levels pl
 WHERE pl.project_id = $1
   AND pl.level IS NULL
 ORDER BY pl.label'),
-('Ort-Stufen ohne Deutsche Namen', 'Place levels without German name', 'Niveaux de lieu sans nom allemand', 'Livelli di luogo senza nome tedesco', false, true, false, false, 'SELECT pl.label, ''/data/projects/'' || pl.project_id || ''/place-levels/'' || pl.place_level_id || ''/'' AS url
+('Ort-Stufen ohne Deutsche Namen', 'Place levels without German name', 'Niveaux de lieu sans nom allemand', 'Livelli di luogo senza nome tedesco', false, 'project', false, 'SELECT pl.label, ''/data/projects/'' || pl.project_id || ''/place-levels/'' || pl.place_level_id || ''/'' AS url
 FROM place_levels pl
 WHERE pl.project_id = $1
   AND nullif(pl.name_singular_de, '''') IS NULL
 ORDER BY pl.label'),
-('Ort-Stufen ohne Englische Namen', 'Place levels without English name', 'Niveaux de lieu sans nom anglais', 'Livelli di luogo senza nome inglese', false, true, false, false, 'SELECT pl.label, ''/data/projects/'' || pl.project_id || ''/place-levels/'' || pl.place_level_id || ''/'' AS url
+('Ort-Stufen ohne Englische Namen', 'Place levels without English name', 'Niveaux de lieu sans nom anglais', 'Livelli di luogo senza nome inglese', false, 'project', false, 'SELECT pl.label, ''/data/projects/'' || pl.project_id || ''/place-levels/'' || pl.place_level_id || ''/'' AS url
 FROM place_levels pl
 WHERE pl.project_id = $1
   AND nullif(pl.name_singular_en, '''') IS NULL
 ORDER BY pl.label'),
-('Ort-Stufen ohne Französische Namen', 'Place levels without French name', 'Niveaux de lieu sans nom français', 'Livelli di luogo senza nome francese', false, true, false, false, 'SELECT pl.label, ''/data/projects/'' || pl.project_id || ''/place-levels/'' || pl.place_level_id || ''/'' AS url
+('Ort-Stufen ohne Französische Namen', 'Place levels without French name', 'Niveaux de lieu sans nom français', 'Livelli di luogo senza nome francese', false, 'project', false, 'SELECT pl.label, ''/data/projects/'' || pl.project_id || ''/place-levels/'' || pl.place_level_id || ''/'' AS url
 FROM place_levels pl
 WHERE pl.project_id = $1
   AND nullif(pl.name_singular_fr, '''') IS NULL
 ORDER BY pl.label'),
-('Ort-Stufen ohne Italienische Namen', 'Place levels without Italian name', 'Niveaux de lieu sans nom italien', 'Livelli di luogo senza nome italiano', false, true, false, false, 'SELECT pl.label, ''/data/projects/'' || pl.project_id || ''/place-levels/'' || pl.place_level_id || ''/'' AS url
+('Ort-Stufen ohne Italienische Namen', 'Place levels without Italian name', 'Niveaux de lieu sans nom italien', 'Livelli di luogo senza nome italiano', false, 'project', false, 'SELECT pl.label, ''/data/projects/'' || pl.project_id || ''/place-levels/'' || pl.place_level_id || ''/'' AS url
 FROM place_levels pl
 WHERE pl.project_id = $1
   AND nullif(pl.name_singular_it, '''') IS NULL
 ORDER BY pl.label'),
-('Beobachtungs-Importe ohne Geometrie-Feld', 'Observation imports without geometry field', 'Importations d''observations sans champ de géométrie', 'Importazioni di osservazioni senza campo geometria', false, true, false, false, 'SELECT oi.label, ''/data/projects/'' || sp.project_id || ''/subprojects/'' || oi.subproject_id || ''/observation-imports/'' || oi.observation_import_id || ''/'' AS url
+('Beobachtungs-Importe ohne Geometrie-Feld', 'Observation imports without geometry field', 'Importations d''observations sans champ de géométrie', 'Importazioni di osservazioni senza campo geometria', false, 'project', false, 'SELECT oi.label, ''/data/projects/'' || sp.project_id || ''/subprojects/'' || oi.subproject_id || ''/observation-imports/'' || oi.observation_import_id || ''/'' AS url
 FROM observation_imports oi
 JOIN subprojects sp ON sp.subproject_id = oi.subproject_id
 WHERE sp.project_id = $1
   AND oi.geometry_method IS NULL
 ORDER BY oi.label'),
-('Beobachtungs-Importe ohne KBS', 'Observation imports without CRS', 'Importations d''observations sans SCR', 'Importazioni di osservazioni senza SRC', false, true, false, false, 'SELECT oi.label, ''/data/projects/'' || sp.project_id || ''/subprojects/'' || oi.subproject_id || ''/observation-imports/'' || oi.observation_import_id || ''/'' AS url
+('Beobachtungs-Importe ohne KBS', 'Observation imports without CRS', 'Importations d''observations sans SCR', 'Importazioni di osservazioni senza SRC', false, 'project', false, 'SELECT oi.label, ''/data/projects/'' || sp.project_id || ''/subprojects/'' || oi.subproject_id || ''/observation-imports/'' || oi.observation_import_id || ''/'' AS url
 FROM observation_imports oi
 JOIN subprojects sp ON sp.subproject_id = oi.subproject_id
 WHERE sp.project_id = $1
   AND nullif(oi.crs, '''') IS NULL
 ORDER BY oi.label'),
-('Beobachtungs-Importe ohne Beschriftung', 'Observation imports without label', 'Importations d''observations sans étiquette', 'Importazioni di osservazioni senza etichetta', false, true, false, false, 'SELECT oi.label, ''/data/projects/'' || sp.project_id || ''/subprojects/'' || oi.subproject_id || ''/observation-imports/'' || oi.observation_import_id || ''/'' AS url
+('Beobachtungs-Importe ohne Beschriftung', 'Observation imports without label', 'Importations d''observations sans étiquette', 'Importazioni di osservazioni senza etichetta', false, 'project', false, 'SELECT oi.label, ''/data/projects/'' || sp.project_id || ''/subprojects/'' || oi.subproject_id || ''/observation-imports/'' || oi.observation_import_id || ''/'' AS url
 FROM observation_imports oi
 JOIN subprojects sp ON sp.subproject_id = oi.subproject_id
 WHERE sp.project_id = $1
   AND (oi.label_creation IS NULL
   OR jsonb_array_length(oi.label_creation) = 0)
 ORDER BY oi.label'),
-('Beobachtungs-Importe ohne Name', 'Observation imports without name', 'Importations d''observations sans nom', 'Importazioni di osservazioni senza nome', false, true, false, false, 'SELECT oi.label, ''/data/projects/'' || sp.project_id || ''/subprojects/'' || oi.subproject_id || ''/observation-imports/'' || oi.observation_import_id || ''/'' AS url
+('Beobachtungs-Importe ohne Name', 'Observation imports without name', 'Importations d''observations sans nom', 'Importazioni di osservazioni senza nome', false, 'project', false, 'SELECT oi.label, ''/data/projects/'' || sp.project_id || ''/subprojects/'' || oi.subproject_id || ''/observation-imports/'' || oi.observation_import_id || ''/'' AS url
 FROM observation_imports oi
 JOIN subprojects sp ON sp.subproject_id = oi.subproject_id
 WHERE sp.project_id = $1
   AND nullif(oi.name, '''') IS NULL
 ORDER BY oi.label'),
-('WMS-Dienste ohne URL', 'WMS services without URL', 'Services WMS sans URL', 'Servizi WMS senza URL', false, true, false, false, 'SELECT ws.label, ''/data/projects/'' || ws.project_id || ''/wms-services/'' || ws.wms_service_id || ''/wms-service'' AS url
+('WMS-Dienste ohne URL', 'WMS services without URL', 'Services WMS sans URL', 'Servizi WMS senza URL', false, 'project', false, 'SELECT ws.label, ''/data/projects/'' || ws.project_id || ''/wms-services/'' || ws.wms_service_id || ''/wms-service'' AS url
 FROM wms_services ws
 WHERE ws.project_id = $1
   AND nullif(ws.url, '''') IS NULL
 ORDER BY ws.label'),
-('WMS-Dienste ohne Ebenen', 'WMS services without layers', 'Services WMS sans couches', 'Servizi WMS senza livelli', false, true, false, false, 'SELECT ws.label, ''/data/projects/'' || ws.project_id || ''/wms-services/'' || ws.wms_service_id || ''/wms-service'' AS url
+('WMS-Dienste ohne Ebenen', 'WMS services without layers', 'Services WMS sans couches', 'Servizi WMS senza livelli', false, 'project', false, 'SELECT ws.label, ''/data/projects/'' || ws.project_id || ''/wms-services/'' || ws.wms_service_id || ''/wms-service'' AS url
 FROM wms_services ws
 WHERE ws.project_id = $1
   AND NOT EXISTS (SELECT 1
 FROM wms_service_layers wsl
 WHERE wsl.wms_service_id = ws.wms_service_id)
 ORDER BY ws.label'),
-('WMS-Ebenen ohne Ebene', 'WMS layers without layer', 'Couches WMS sans couche', 'Layer WMS senza layer', false, true, false, false, 'SELECT wl.label, ''/data/projects/'' || wl.project_id || ''/wms-layers/'' || wl.wms_layer_id AS url
+('WMS-Ebenen ohne Ebene', 'WMS layers without layer', 'Couches WMS sans couche', 'Layer WMS senza layer', false, 'project', false, 'SELECT wl.label, ''/data/projects/'' || wl.project_id || ''/wms-layers/'' || wl.wms_layer_id AS url
 FROM wms_layers wl
 WHERE wl.project_id = $1
   AND nullif(wl.wms_service_layer_name, '''') IS NULL
 ORDER BY wl.label'),
-('WFS-Dienste ohne URL', 'WFS services without URL', 'Services WFS sans URL', 'Servizi WFS senza URL', false, true, false, false, 'SELECT ws.label, ''/data/projects/'' || ws.project_id || ''/wfs-services/'' || ws.wfs_service_id || ''/wfs-service'' AS url
+('WFS-Dienste ohne URL', 'WFS services without URL', 'Services WFS sans URL', 'Servizi WFS senza URL', false, 'project', false, 'SELECT ws.label, ''/data/projects/'' || ws.project_id || ''/wfs-services/'' || ws.wfs_service_id || ''/wfs-service'' AS url
 FROM wfs_services ws
 WHERE ws.project_id = $1
   AND nullif(ws.url, '''') IS NULL
 ORDER BY ws.label'),
-('WFS-Dienste ohne Ebenen', 'WFS services without layers', 'Services WFS sans couches', 'Servizi WFS senza livelli', false, true, false, false, 'SELECT ws.label, ''/data/projects/'' || ws.project_id || ''/wfs-services/'' || ws.wfs_service_id || ''/wfs-service'' AS url
+('WFS-Dienste ohne Ebenen', 'WFS services without layers', 'Services WFS sans couches', 'Servizi WFS senza livelli', false, 'project', false, 'SELECT ws.label, ''/data/projects/'' || ws.project_id || ''/wfs-services/'' || ws.wfs_service_id || ''/wfs-service'' AS url
 FROM wfs_services ws
 WHERE ws.project_id = $1
   AND NOT EXISTS (SELECT 1
 FROM wfs_service_layers wsl
 WHERE wsl.wfs_service_id = ws.wfs_service_id)
 ORDER BY ws.label'),
-('Vektor-Ebenen ohne Anzeigen', 'Vector layers without display', 'Couches vectorielles sans affichage', 'Layer vettoriali senza visualizzazione', false, true, false, false, 'SELECT vl.label, ''/data/projects/'' || vl.project_id || ''/vector-layers/'' || vl.vector_layer_id || ''/vector-layer'' AS url
+('Vektor-Ebenen ohne Anzeigen', 'Vector layers without display', 'Couches vectorielles sans affichage', 'Layer vettoriali senza visualizzazione', false, 'project', false, 'SELECT vl.label, ''/data/projects/'' || vl.project_id || ''/vector-layers/'' || vl.vector_layer_id || ''/vector-layer'' AS url
 FROM vector_layers vl
 WHERE vl.project_id = $1
   AND NOT EXISTS (SELECT 1
 FROM vector_layer_displays vld
 WHERE vld.vector_layer_id = vl.vector_layer_id)
 ORDER BY vl.label'),
-('Vektor-Ebenen ohne Typ', 'Vector layers without type', 'Couches vectorielles sans type', 'Layer vettoriali senza tipo', false, true, false, false, 'SELECT vl.label, ''/data/projects/'' || vl.project_id || ''/vector-layers/'' || vl.vector_layer_id || ''/vector-layer'' AS url
+('Vektor-Ebenen ohne Typ', 'Vector layers without type', 'Couches vectorielles sans type', 'Layer vettoriali senza tipo', false, 'project', false, 'SELECT vl.label, ''/data/projects/'' || vl.project_id || ''/vector-layers/'' || vl.vector_layer_id || ''/vector-layer'' AS url
 FROM vector_layers vl
 WHERE vl.project_id = $1
   AND vl.type IS NULL
 ORDER BY vl.label'),
-('Vektor-Ebenen ohne Name', 'Vector layers without name', 'Couches vectorielles sans nom', 'Layer vettoriali senza nome', false, true, false, false, 'SELECT vl.label, ''/data/projects/'' || vl.project_id || ''/vector-layers/'' || vl.vector_layer_id || ''/vector-layer'' AS url
+('Vektor-Ebenen ohne Name', 'Vector layers without name', 'Couches vectorielles sans nom', 'Layer vettoriali senza nome', false, 'project', false, 'SELECT vl.label, ''/data/projects/'' || vl.project_id || ''/vector-layers/'' || vl.vector_layer_id || ''/vector-layer'' AS url
 FROM vector_layers vl
 WHERE vl.project_id = $1
   AND nullif(vl.label, '''') IS NULL
 ORDER BY vl.label'),
-('Vektor-Ebene ohne «Presentation»', 'Vector layer without presentation', 'Couche vectorielle sans présentation', 'Layer vettoriale senza presentazione', false, true, false, false, 'SELECT vl.label, ''/data/projects/'' || vl.project_id || ''/vector-layers/'' || vl.vector_layer_id || ''/vector-layer'' AS url
+('Vektor-Ebene ohne «Presentation»', 'Vector layer without presentation', 'Couche vectorielle sans présentation', 'Layer vettoriale senza presentazione', false, 'project', false, 'SELECT vl.label, ''/data/projects/'' || vl.project_id || ''/vector-layers/'' || vl.vector_layer_id || ''/vector-layer'' AS url
 FROM vector_layers vl
 WHERE vl.project_id = $1
   AND vl.display_by_property IS NOT NULL
@@ -171,179 +171,179 @@ FROM vector_layer_displays vld
 WHERE vld.vector_layer_id = vl.vector_layer_id
   AND vld.display_property_value IS NOT NULL)
 ORDER BY vl.label'),
-('Diagramme ohne Themen', 'Charts without subjects', 'Graphiques sans sujets', 'Grafici senza soggetti', false, false, true, false, 'SELECT c.label, ''/data/projects/'' || c.project_id || ''/subprojects/'' || c.subproject_id || ''/charts/'' || c.chart_id || ''/chart'' AS url
+('Diagramme ohne Themen', 'Charts without subjects', 'Graphiques sans sujets', 'Grafici senza soggetti', false, 'subproject', false, 'SELECT c.label, ''/data/projects/'' || c.project_id || ''/subprojects/'' || c.subproject_id || ''/charts/'' || c.chart_id || ''/chart'' AS url
 FROM charts c
 WHERE c.subproject_id = $1
   AND NOT EXISTS (SELECT 1
 FROM chart_subjects cs
 WHERE cs.chart_id = c.chart_id)
 ORDER BY c.label'),
-('Diagramme ohne Typ', 'Charts without type', 'Graphiques sans type', 'Grafici senza tipo', false, false, true, false, 'SELECT c.label, ''/data/projects/'' || c.project_id || ''/subprojects/'' || c.subproject_id || ''/charts/'' || c.chart_id || ''/chart'' AS url
+('Diagramme ohne Typ', 'Charts without type', 'Graphiques sans type', 'Grafici senza tipo', false, 'subproject', false, 'SELECT c.label, ''/data/projects/'' || c.project_id || ''/subprojects/'' || c.subproject_id || ''/charts/'' || c.chart_id || ''/chart'' AS url
 FROM charts c
 WHERE c.subproject_id = $1
   AND c.chart_type IS NULL
 ORDER BY c.label'),
-('Diagramme ohne Name', 'Charts without name', 'Graphiques sans nom', 'Grafici senza nome', false, false, true, false, 'SELECT c.label, ''/data/projects/'' || c.project_id || ''/subprojects/'' || c.subproject_id || ''/charts/'' || c.chart_id || ''/chart'' AS url
+('Diagramme ohne Name', 'Charts without name', 'Graphiques sans nom', 'Grafici senza nome', false, 'subproject', false, 'SELECT c.label, ''/data/projects/'' || c.project_id || ''/subprojects/'' || c.subproject_id || ''/charts/'' || c.chart_id || ''/chart'' AS url
 FROM charts c
 WHERE c.subproject_id = $1
   AND nullif(c.name, '''') IS NULL
 ORDER BY c.label'),
-('Diagramm-Themen ohne Name', 'Chart subjects without name', 'Sujets de graphique sans nom', 'Soggetti grafici senza nome', false, false, true, false, 'SELECT cs.label, ''/data/projects/'' || c.project_id || ''/subprojects/'' || c.subproject_id || ''/charts/'' || cs.chart_id || ''/subjects/'' || cs.chart_subject_id || ''/'' AS url
+('Diagramm-Themen ohne Name', 'Chart subjects without name', 'Sujets de graphique sans nom', 'Soggetti grafici senza nome', false, 'subproject', false, 'SELECT cs.label, ''/data/projects/'' || c.project_id || ''/subprojects/'' || c.subproject_id || ''/charts/'' || cs.chart_id || ''/subjects/'' || cs.chart_subject_id || ''/'' AS url
 FROM chart_subjects cs
 JOIN charts c ON c.chart_id = cs.chart_id
 WHERE c.subproject_id = $1
   AND nullif(cs.name, '''') IS NULL
 ORDER BY cs.label'),
-('Diagramm-Themen ohne Tabelle', 'Chart subjects without table', 'Sujets de graphique sans table', 'Soggetti grafici senza tabella', false, false, true, false, 'SELECT cs.label, ''/data/projects/'' || c.project_id || ''/subprojects/'' || c.subproject_id || ''/charts/'' || cs.chart_id || ''/subjects/'' || cs.chart_subject_id || ''/'' AS url
+('Diagramm-Themen ohne Tabelle', 'Chart subjects without table', 'Sujets de graphique sans table', 'Soggetti grafici senza tabella', false, 'subproject', false, 'SELECT cs.label, ''/data/projects/'' || c.project_id || ''/subprojects/'' || c.subproject_id || ''/charts/'' || cs.chart_id || ''/subjects/'' || cs.chart_subject_id || ''/'' AS url
 FROM chart_subjects cs
 JOIN charts c ON c.chart_id = cs.chart_id
 WHERE c.subproject_id = $1
   AND cs.table_name IS NULL
 ORDER BY cs.label'),
-('Diagramm-Themen ohne Berechnungsmethode', 'Chart subjects without calculation method', 'Sujets de graphique sans méthode de calcul', 'Soggetti grafici senza metodo di calcolo', false, false, true, false, 'SELECT cs.label, ''/data/projects/'' || c.project_id || ''/subprojects/'' || c.subproject_id || ''/charts/'' || cs.chart_id || ''/subjects/'' || cs.chart_subject_id || ''/'' AS url
+('Diagramm-Themen ohne Berechnungsmethode', 'Chart subjects without calculation method', 'Sujets de graphique sans méthode de calcul', 'Soggetti grafici senza metodo di calcolo', false, 'subproject', false, 'SELECT cs.label, ''/data/projects/'' || c.project_id || ''/subprojects/'' || c.subproject_id || ''/charts/'' || cs.chart_id || ''/subjects/'' || cs.chart_subject_id || ''/'' AS url
 FROM chart_subjects cs
 JOIN charts c ON c.chart_id = cs.chart_id
 WHERE c.subproject_id = $1
   AND cs.calc_method IS NULL
 ORDER BY cs.label'),
-('Diagramm-Themen ohne Farbe', 'Chart subjects without color', 'Sujets de graphique sans couleur', 'Soggetti grafici senza colore', false, false, true, false, 'SELECT cs.label, ''/data/projects/'' || c.project_id || ''/subprojects/'' || c.subproject_id || ''/charts/'' || cs.chart_id || ''/subjects/'' || cs.chart_subject_id || ''/'' AS url
+('Diagramm-Themen ohne Farbe', 'Chart subjects without color', 'Sujets de graphique sans couleur', 'Soggetti grafici senza colore', false, 'subproject', false, 'SELECT cs.label, ''/data/projects/'' || c.project_id || ''/subprojects/'' || c.subproject_id || ''/charts/'' || cs.chart_id || ''/subjects/'' || cs.chart_subject_id || ''/'' AS url
 FROM chart_subjects cs
 JOIN charts c ON c.chart_id = cs.chart_id
 WHERE c.subproject_id = $1
   AND nullif(cs.stroke, '''') IS NULL
   AND nullif(cs.fill, '''') IS NULL
 ORDER BY cs.label'),
-('Projekt-KBS ohne KBS', 'Project CRS without CRS', 'CRS de projet sans CRS', 'CRS di progetto senza CRS', false, true, false, false, 'SELECT pc.label, ''/data/projects/'' || pc.project_id || ''/crs/'' || pc.project_crs_id || ''/'' AS url
+('Projekt-KBS ohne KBS', 'Project CRS without CRS', 'CRS de projet sans CRS', 'CRS di progetto senza CRS', false, 'project', false, 'SELECT pc.label, ''/data/projects/'' || pc.project_id || ''/crs/'' || pc.project_crs_id || ''/'' AS url
 FROM project_crs pc
 WHERE pc.project_id = $1
   AND nullif(pc.code, '''') IS NULL
 ORDER BY pc.label'),
-('Einheiten ohne Name', 'Units without name', 'Unités sans nom', 'Unità senza nome', false, true, false, false, 'SELECT u.label, ''/data/projects/'' || u.project_id || ''/units/'' || u.unit_id || ''/'' AS url
+('Einheiten ohne Name', 'Units without name', 'Unités sans nom', 'Unità senza nome', false, 'project', false, 'SELECT u.label, ''/data/projects/'' || u.project_id || ''/units/'' || u.unit_id || ''/'' AS url
 FROM units u
 WHERE u.project_id = $1
   AND nullif(u.name, '''') IS NULL
 ORDER BY u.label'),
-('Einheiten ohne Typ', 'Units without type', 'Unités sans type', 'Unità senza tipo', false, true, false, false, 'SELECT u.label, ''/data/projects/'' || u.project_id || ''/units/'' || u.unit_id || ''/'' AS url
+('Einheiten ohne Typ', 'Units without type', 'Unités sans type', 'Unità senza tipo', false, 'project', false, 'SELECT u.label, ''/data/projects/'' || u.project_id || ''/units/'' || u.unit_id || ''/'' AS url
 FROM units u
 WHERE u.project_id = $1
   AND u.type IS NULL
 ORDER BY u.label'),
-('Taxonomien ohne Name', 'Taxonomies without name', 'Taxonomies sans nom', 'Tassonomie senza nome', false, true, false, false, 'SELECT t.label, ''/data/projects/'' || t.project_id || ''/taxonomies/'' || t.taxonomy_id || ''/taxonomy'' AS url
+('Taxonomien ohne Name', 'Taxonomies without name', 'Taxonomies sans nom', 'Tassonomie senza nome', false, 'project', false, 'SELECT t.label, ''/data/projects/'' || t.project_id || ''/taxonomies/'' || t.taxonomy_id || ''/taxonomy'' AS url
 FROM taxonomies t
 WHERE t.project_id = $1
   AND nullif(t.name, '''') IS NULL
 ORDER BY t.label'),
-('Taxonomien ohne Typ', 'Taxonomies without type', 'Taxonomies sans type', 'Tassonomie senza tipo', false, true, false, false, 'SELECT t.label, ''/data/projects/'' || t.project_id || ''/taxonomies/'' || t.taxonomy_id || ''/taxonomy'' AS url
+('Taxonomien ohne Typ', 'Taxonomies without type', 'Taxonomies sans type', 'Tassonomie senza tipo', false, 'project', false, 'SELECT t.label, ''/data/projects/'' || t.project_id || ''/taxonomies/'' || t.taxonomy_id || ''/taxonomy'' AS url
 FROM taxonomies t
 WHERE t.project_id = $1
   AND t.type IS NULL
 ORDER BY t.label'),
-('Taxonomien ohne Taxa', 'Taxonomies without taxa', 'Taxonomies sans taxons', 'Tassonomie senza taxa', false, true, false, false, 'SELECT t.label, ''/data/projects/'' || t.project_id || ''/taxonomies/'' || t.taxonomy_id || ''/taxonomy'' AS url
+('Taxonomien ohne Taxa', 'Taxonomies without taxa', 'Taxonomies sans taxons', 'Tassonomie senza taxa', false, 'project', false, 'SELECT t.label, ''/data/projects/'' || t.project_id || ''/taxonomies/'' || t.taxonomy_id || ''/taxonomy'' AS url
 FROM taxonomies t
 WHERE t.project_id = $1
   AND NOT EXISTS (SELECT 1
 FROM taxa tx
 WHERE tx.taxonomy_id = t.taxonomy_id)
 ORDER BY t.label'),
-('Taxon ohne Namen', 'Taxon without name', 'Taxon sans nom', 'Taxon senza nome', false, true, false, false, 'SELECT tx.label, ''/data/projects/'' || t.project_id || ''/taxonomies/'' || tx.taxonomy_id || ''/taxa/'' || tx.taxon_id || ''/'' AS url
+('Taxon ohne Namen', 'Taxon without name', 'Taxon sans nom', 'Taxon senza nome', false, 'project', false, 'SELECT tx.label, ''/data/projects/'' || t.project_id || ''/taxonomies/'' || tx.taxonomy_id || ''/taxa/'' || tx.taxon_id || ''/'' AS url
 FROM taxa tx
 JOIN taxonomies t ON t.taxonomy_id = tx.taxonomy_id
 WHERE t.project_id = $1
   AND nullif(tx.name, '''') IS NULL
 ORDER BY tx.label'),
-('Listen ohne Namen', 'Lists without name', 'Listes sans nom', 'Liste senza nome', false, true, false, false, 'SELECT l.label, ''/data/projects/'' || l.project_id || ''/lists/'' || l.list_id || ''/list'' AS url
+('Listen ohne Namen', 'Lists without name', 'Listes sans nom', 'Liste senza nome', false, 'project', false, 'SELECT l.label, ''/data/projects/'' || l.project_id || ''/lists/'' || l.list_id || ''/list'' AS url
 FROM lists l
 WHERE l.project_id = $1
   AND nullif(l.name, '''') IS NULL
 ORDER BY l.label'),
-('Listen ohne Wert-Typ', 'Lists without value type', 'Listes sans type de valeur', 'Liste senza tipo di valore', false, true, false, false, 'SELECT l.label, ''/data/projects/'' || l.project_id || ''/lists/'' || l.list_id || ''/list'' AS url
+('Listen ohne Wert-Typ', 'Lists without value type', 'Listes sans type de valeur', 'Liste senza tipo di valore', false, 'project', false, 'SELECT l.label, ''/data/projects/'' || l.project_id || ''/lists/'' || l.list_id || ''/list'' AS url
 FROM lists l
 WHERE l.project_id = $1
   AND l.value_type IS NULL
 ORDER BY l.label'),
-('Listen ohne Werte', 'Lists without values', 'Listes sans valeurs', 'Liste senza valori', false, true, false, false, 'SELECT l.label, ''/data/projects/'' || l.project_id || ''/lists/'' || l.list_id || ''/list'' AS url
+('Listen ohne Werte', 'Lists without values', 'Listes sans valeurs', 'Liste senza valori', false, 'project', false, 'SELECT l.label, ''/data/projects/'' || l.project_id || ''/lists/'' || l.list_id || ''/list'' AS url
 FROM lists l
 WHERE l.project_id = $1
   AND NOT EXISTS (SELECT 1
 FROM list_values lv
 WHERE lv.list_id = l.list_id)
 ORDER BY l.label'),
-('Projekt-Benutzer ohne Benutzer', 'Project users without user', 'Utilisateurs de projet sans utilisateur', 'Utenti di progetto senza utente', false, true, false, false, 'SELECT pu.label, ''/data/projects/'' || pu.project_id || ''/users/'' || pu.project_user_id || ''/'' AS url
+('Projekt-Benutzer ohne Benutzer', 'Project users without user', 'Utilisateurs de projet sans utilisateur', 'Utenti di progetto senza utente', false, 'project', false, 'SELECT pu.label, ''/data/projects/'' || pu.project_id || ''/users/'' || pu.project_user_id || ''/'' AS url
 FROM project_users pu
 WHERE pu.project_id = $1
   AND pu.user_id IS NULL
 ORDER BY pu.label'),
-('Projekt-Benutzer ohne Rolle', 'Project users without role', 'Utilisateurs de projet sans rôle', 'Utenti di progetto senza ruolo', false, true, false, false, 'SELECT pu.label, ''/data/projects/'' || pu.project_id || ''/users/'' || pu.project_user_id || ''/'' AS url
+('Projekt-Benutzer ohne Rolle', 'Project users without role', 'Utilisateurs de projet sans rôle', 'Utenti di progetto senza ruolo', false, 'project', false, 'SELECT pu.label, ''/data/projects/'' || pu.project_id || ''/users/'' || pu.project_user_id || ''/'' AS url
 FROM project_users pu
 WHERE pu.project_id = $1
   AND pu.role IS NULL
 ORDER BY pu.label'),
-('Projekt-Berichte ohne Jahr', 'Project reports without year', 'Rapports de projet sans année', 'Rapporti di progetto senza anno', false, true, false, false, 'SELECT pr.label, ''/data/projects/'' || pr.project_id || ''/reports/'' || pr.project_report_id || ''/'' AS url
+('Projekt-Berichte ohne Jahr', 'Project reports without year', 'Rapports de projet sans année', 'Rapporti di progetto senza anno', false, 'project', false, 'SELECT pr.label, ''/data/projects/'' || pr.project_id || ''/reports/'' || pr.project_report_id || ''/'' AS url
 FROM project_reports pr
 WHERE pr.project_id = $1
   AND pr.year IS NULL
 ORDER BY pr.label'),
-('Teil-Projekt-Berichte ohne Jahr', 'Subproject reports without year', 'Rapports de sous-projet sans année', 'Rapporti di sottoprogetto senza anno', false, false, true, false, 'SELECT sr.label, ''/data/projects/'' || sp.project_id || ''/subprojects/'' || sr.subproject_id || ''/reports/'' || sr.subproject_report_id || ''/'' AS url
+('Teil-Projekt-Berichte ohne Jahr', 'Subproject reports without year', 'Rapports de sous-projet sans année', 'Rapporti di sottoprogetto senza anno', false, 'subproject', false, 'SELECT sr.label, ''/data/projects/'' || sp.project_id || ''/subprojects/'' || sr.subproject_id || ''/reports/'' || sr.subproject_report_id || ''/'' AS url
 FROM subproject_reports sr
 JOIN subprojects sp ON sp.subproject_id = sr.subproject_id
 WHERE sr.subproject_id = $1
   AND sr.year IS NULL
 ORDER BY sr.label'),
-('Teil-Projekt-Berichte ohne Daten', 'Subproject reports without data', 'Rapports de sous-projet sans données', 'Rapporti di sottoprogetto senza dati', false, false, true, true, 'SELECT sr.label, ''/data/projects/'' || sp.project_id || ''/subprojects/'' || sr.subproject_id || ''/reports/'' || sr.subproject_report_id || ''/'' AS url
+('Teil-Projekt-Berichte ohne Daten', 'Subproject reports without data', 'Rapports de sous-projet sans données', 'Rapporti di sottoprogetto senza dati', false, 'subproject', true, 'SELECT sr.label, ''/data/projects/'' || sp.project_id || ''/subprojects/'' || sr.subproject_id || ''/reports/'' || sr.subproject_report_id || ''/'' AS url
 FROM subproject_reports sr
 JOIN subprojects sp ON sp.subproject_id = sr.subproject_id
 WHERE sr.subproject_id = $1
   AND sr.year = $2
   AND sr.data IS NULL
 ORDER BY sr.label'),
-('Projekt-Bericht-Designs ohne Name', 'Project report designs without name', 'Designs de rapport de projet sans nom', 'Design di rapporto di progetto senza nome', false, true, false, false, 'SELECT prd.label, ''/data/projects/'' || prd.project_id || ''/designs/'' || prd.project_report_design_id || ''/'' AS url
+('Projekt-Bericht-Designs ohne Name', 'Project report designs without name', 'Designs de rapport de projet sans nom', 'Design di rapporto di progetto senza nome', false, 'project', false, 'SELECT prd.label, ''/data/projects/'' || prd.project_id || ''/designs/'' || prd.project_report_design_id || ''/'' AS url
 FROM project_report_designs prd
 WHERE prd.project_id = $1
   AND nullif(prd.name, '''') IS NULL
 ORDER BY prd.label'),
-('Projekt-Bericht-Designs ohne Design', 'Project report designs without design', 'Designs de rapport de projet sans design', 'Design di rapporto di progetto senza design', false, true, false, false, 'SELECT prd.label, ''/data/projects/'' || prd.project_id || ''/designs/'' || prd.project_report_design_id || ''/'' AS url
+('Projekt-Bericht-Designs ohne Design', 'Project report designs without design', 'Designs de rapport de projet sans design', 'Design di rapporto di progetto senza design', false, 'project', false, 'SELECT prd.label, ''/data/projects/'' || prd.project_id || ''/designs/'' || prd.project_report_design_id || ''/'' AS url
 FROM project_report_designs prd
 WHERE prd.project_id = $1
   AND prd.design IS NULL
 ORDER BY prd.label'),
-('Teil-Projekt-Bericht-Designs ohne Name', 'Subproject report designs without name', 'Designs de rapport de sous-projet sans nom', 'Design di rapporto di sottoprogetto senza nome', false, false, true, false, 'SELECT srd.label, ''/data/projects/'' || srd.project_id || ''/subproject-designs/'' || srd.subproject_report_design_id || ''/'' AS url
+('Teil-Projekt-Bericht-Designs ohne Name', 'Subproject report designs without name', 'Designs de rapport de sous-projet sans nom', 'Design di rapporto di sottoprogetto senza nome', false, 'subproject', false, 'SELECT srd.label, ''/data/projects/'' || srd.project_id || ''/subproject-designs/'' || srd.subproject_report_design_id || ''/'' AS url
 FROM subproject_report_designs srd
 JOIN subprojects sp ON sp.project_id = srd.project_id
 WHERE sp.subproject_id = $1
   AND nullif(srd.name, '''') IS NULL
 ORDER BY srd.label'),
-('Teil-Projekt-Bericht-Designs ohne Design', 'Subproject report designs without design', 'Designs de rapport de sous-projet sans design', 'Design di rapporto di sottoprogetto senza design', false, false, true, false, 'SELECT srd.label, ''/data/projects/'' || srd.project_id || ''/subproject-designs/'' || srd.subproject_report_design_id || ''/'' AS url
+('Teil-Projekt-Bericht-Designs ohne Design', 'Subproject report designs without design', 'Designs de rapport de sous-projet sans design', 'Design di rapporto di sottoprogetto senza design', false, 'subproject', false, 'SELECT srd.label, ''/data/projects/'' || srd.project_id || ''/subproject-designs/'' || srd.subproject_report_design_id || ''/'' AS url
 FROM subproject_report_designs srd
 JOIN subprojects sp ON sp.project_id = srd.project_id
 WHERE sp.subproject_id = $1
   AND srd.design IS NULL
 ORDER BY srd.label'),
-('Teil-Projekt-Benutzer ohne Benutzer', 'Subproject users without user', 'Utilisateurs de sous-projet sans utilisateur', 'Utenti di sottoprogetto senza utente', false, false, true, false, 'SELECT su.label, ''/data/projects/'' || sp.project_id || ''/subprojects/'' || su.subproject_id || ''/users/'' || su.subproject_user_id || ''/'' AS url
+('Teil-Projekt-Benutzer ohne Benutzer', 'Subproject users without user', 'Utilisateurs de sous-projet sans utilisateur', 'Utenti di sottoprogetto senza utente', false, 'subproject', false, 'SELECT su.label, ''/data/projects/'' || sp.project_id || ''/subprojects/'' || su.subproject_id || ''/users/'' || su.subproject_user_id || ''/'' AS url
 FROM subproject_users su
 JOIN subprojects sp ON sp.subproject_id = su.subproject_id
 WHERE su.subproject_id = $1
   AND su.user_id IS NULL
 ORDER BY su.label'),
-('Teil-Projekt-Benutzer ohne Rolle', 'Subproject users without role', 'Utilisateurs de sous-projet sans rôle', 'Utenti di sottoprogetto senza ruolo', false, false, true, false, 'SELECT su.label, ''/data/projects/'' || sp.project_id || ''/subprojects/'' || su.subproject_id || ''/users/'' || su.subproject_user_id || ''/'' AS url
+('Teil-Projekt-Benutzer ohne Rolle', 'Subproject users without role', 'Utilisateurs de sous-projet sans rôle', 'Utenti di sottoprogetto senza ruolo', false, 'subproject', false, 'SELECT su.label, ''/data/projects/'' || sp.project_id || ''/subprojects/'' || su.subproject_id || ''/users/'' || su.subproject_user_id || ''/'' AS url
 FROM subproject_users su
 JOIN subprojects sp ON sp.subproject_id = su.subproject_id
 WHERE su.subproject_id = $1
   AND su.role IS NULL
 ORDER BY su.label'),
-('Teil-Projekt-Taxa ohne Taxon', 'Subproject taxa without taxon', 'Taxons de sous-projet sans taxon', 'Taxa di sottoprogetto senza taxon', false, false, true, false, 'SELECT st.label, ''/data/projects/'' || sp.project_id || ''/subprojects/'' || st.subproject_id || ''/taxa/'' || st.subproject_taxon_id || ''/'' AS url
+('Teil-Projekt-Taxa ohne Taxon', 'Subproject taxa without taxon', 'Taxons de sous-projet sans taxon', 'Taxa di sottoprogetto senza taxon', false, 'subproject', false, 'SELECT st.label, ''/data/projects/'' || sp.project_id || ''/subprojects/'' || st.subproject_id || ''/taxa/'' || st.subproject_taxon_id || ''/'' AS url
 FROM subproject_taxa st
 JOIN subprojects sp ON sp.subproject_id = st.subproject_id
 WHERE st.subproject_id = $1
   AND st.taxon_id IS NULL
 ORDER BY st.label'),
-('Ziele ohne Jahr', 'Goals without year', 'Objectifs sans année', 'Obiettivi senza anno', false, false, true, false, 'SELECT g.label, ''/data/projects/'' || sp.project_id || ''/subprojects/'' || g.subproject_id || ''/goals/'' || g.goal_id || CASE WHEN p.goal_reports_in_goal IS FALSE THEN ''/goal'' ELSE '''' END AS url
+('Ziele ohne Jahr', 'Goals without year', 'Objectifs sans année', 'Obiettivi senza anno', false, 'subproject', false, 'SELECT g.label, ''/data/projects/'' || sp.project_id || ''/subprojects/'' || g.subproject_id || ''/goals/'' || g.goal_id || CASE WHEN p.goal_reports_in_goal IS FALSE THEN ''/goal'' ELSE '''' END AS url
 FROM goals g
 JOIN subprojects sp ON sp.subproject_id = g.subproject_id
 JOIN projects p ON p.project_id = sp.project_id
 WHERE g.subproject_id = $1
   AND g.year IS NULL
 ORDER BY g.label'),
-('Ziele ohne Namen', 'Goals without name', 'Objectifs sans nom', 'Obiettivi senza nome', false, false, true, true, 'SELECT g.label, ''/data/projects/'' || sp.project_id || ''/subprojects/'' || g.subproject_id || ''/goals/'' || g.goal_id || CASE WHEN p.goal_reports_in_goal IS FALSE THEN ''/goal'' ELSE '''' END AS url
+('Ziele ohne Namen', 'Goals without name', 'Objectifs sans nom', 'Obiettivi senza nome', false, 'subproject', true, 'SELECT g.label, ''/data/projects/'' || sp.project_id || ''/subprojects/'' || g.subproject_id || ''/goals/'' || g.goal_id || CASE WHEN p.goal_reports_in_goal IS FALSE THEN ''/goal'' ELSE '''' END AS url
 FROM goals g
 JOIN subprojects sp ON sp.subproject_id = g.subproject_id
 JOIN projects p ON p.project_id = sp.project_id
@@ -351,7 +351,7 @@ WHERE g.subproject_id = $1
   AND g.year = $2
   AND nullif(g.name, '''') IS NULL
 ORDER BY g.label'),
-('Ziele ohne Bericht', 'Goals without report', 'Objectifs sans rapport', 'Obiettivi senza rapporto', false, false, true, true, 'SELECT g.label, ''/data/projects/'' || sp.project_id || ''/subprojects/'' || g.subproject_id || ''/goals/'' || g.goal_id || CASE WHEN p.goal_reports_in_goal IS FALSE THEN ''/goal'' ELSE '''' END AS url
+('Ziele ohne Bericht', 'Goals without report', 'Objectifs sans rapport', 'Obiettivi senza rapporto', false, 'subproject', true, 'SELECT g.label, ''/data/projects/'' || sp.project_id || ''/subprojects/'' || g.subproject_id || ''/goals/'' || g.goal_id || CASE WHEN p.goal_reports_in_goal IS FALSE THEN ''/goal'' ELSE '''' END AS url
 FROM goals g
 JOIN subprojects sp ON sp.subproject_id = g.subproject_id
 JOIN projects p ON p.project_id = sp.project_id
@@ -361,17 +361,17 @@ WHERE g.subproject_id = $1
 FROM goal_reports gr
 WHERE gr.goal_id = g.goal_id)
 ORDER BY g.label'),
-('Teil-Projekt ohne Name', 'Subproject without name', 'Sous-projet sans nom', 'Sottoprogetto senza nome', false, false, true, false, 'SELECT sp.label, ''/data/projects/'' || sp.project_id || ''/subprojects/'' || sp.subproject_id || ''/subproject'' AS url
+('Teil-Projekt ohne Name', 'Subproject without name', 'Sous-projet sans nom', 'Sottoprogetto senza nome', false, 'subproject', false, 'SELECT sp.label, ''/data/projects/'' || sp.project_id || ''/subprojects/'' || sp.subproject_id || ''/subproject'' AS url
 FROM subprojects sp
 WHERE sp.subproject_id = $1
   AND nullif(sp.name, '''') IS NULL
 ORDER BY sp.label'),
-('Teil-Projekt ohne Startjahr', 'Subproject without start year', 'Sous-projet sans année de début', 'Sottoprogetto senza anno di inizio', false, false, true, false, 'SELECT sp.label, ''/data/projects/'' || sp.project_id || ''/subprojects/'' || sp.subproject_id || ''/subproject'' AS url
+('Teil-Projekt ohne Startjahr', 'Subproject without start year', 'Sous-projet sans année de début', 'Sottoprogetto senza anno di inizio', false, 'subproject', false, 'SELECT sp.label, ''/data/projects/'' || sp.project_id || ''/subprojects/'' || sp.subproject_id || ''/subproject'' AS url
 FROM subprojects sp
 WHERE sp.subproject_id = $1
   AND sp.start_year IS NULL
 ORDER BY sp.label'),
-('Teil-Projekt ohne Orte', 'Subproject without places', 'Sous-projet sans lieux', 'Sottoprogetto senza luoghi', false, false, true, false, 'SELECT sp.label, ''/data/projects/'' || sp.project_id || ''/subprojects/'' || sp.subproject_id || ''/subproject'' AS url
+('Teil-Projekt ohne Orte', 'Subproject without places', 'Sous-projet sans lieux', 'Sottoprogetto senza luoghi', false, 'subproject', false, 'SELECT sp.label, ''/data/projects/'' || sp.project_id || ''/subprojects/'' || sp.subproject_id || ''/subproject'' AS url
 FROM subprojects sp
 WHERE sp.subproject_id = $1
   AND NOT EXISTS (SELECT 1
@@ -379,7 +379,7 @@ FROM places p
 WHERE p.subproject_id = sp.subproject_id
   AND p.level = 1)
 ORDER BY sp.label'),
-('Orte (relevante und aktuell existierende) ohne Geometrie', 'Places (relevant and currently existing) without geometry', 'Lieux (pertinents et actuellement existants) sans géométrie', 'Luoghi (rilevanti e attualmente esistenti) senza geometria', false, false, true, false, 'SELECT p.label, ''/data/projects/'' || sp.project_id || ''/subprojects/'' || p.subproject_id || ''/places/'' || p.place_id || ''/place'' AS url
+('Orte (relevante und aktuell existierende) ohne Geometrie', 'Places (relevant and currently existing) without geometry', 'Lieux (pertinents et actuellement existants) sans géométrie', 'Luoghi (rilevanti e attualmente esistenti) senza geometria', false, 'subproject', false, 'SELECT p.label, ''/data/projects/'' || sp.project_id || ''/subprojects/'' || p.subproject_id || ''/places/'' || p.place_id || ''/place'' AS url
 FROM places p
 JOIN subprojects sp ON sp.subproject_id = p.subproject_id
 WHERE p.subproject_id = $1
@@ -388,7 +388,7 @@ WHERE p.subproject_id = $1
   OR p.until >= date_part(''year'', now())::integer)
   AND p.geometry IS NULL
 ORDER BY p.label'),
-('Orte (relevante und aktuell existierende) ohne Seit wann', 'Places (relevant and currently existing) without since date', 'Lieux (pertinents et actuellement existants) sans date de début', 'Luoghi (rilevanti e attualmente esistenti) senza data di inizio', false, false, true, false, 'SELECT p.label, ''/data/projects/'' || sp.project_id || ''/subprojects/'' || p.subproject_id || ''/places/'' || p.place_id || ''/place'' AS url
+('Orte (relevante und aktuell existierende) ohne Seit wann', 'Places (relevant and currently existing) without since date', 'Lieux (pertinents et actuellement existants) sans date de début', 'Luoghi (rilevanti e attualmente esistenti) senza data di inizio', false, 'subproject', false, 'SELECT p.label, ''/data/projects/'' || sp.project_id || ''/subprojects/'' || p.subproject_id || ''/places/'' || p.place_id || ''/place'' AS url
 FROM places p
 JOIN subprojects sp ON sp.subproject_id = p.subproject_id
 WHERE p.subproject_id = $1
@@ -397,7 +397,7 @@ WHERE p.subproject_id = $1
   OR p.until >= date_part(''year'', now())::integer)
   AND p.since IS NULL
 ORDER BY p.label'),
-('Orte (relevante und aktuell existierende) ohne Name', 'Places (relevant and currently existing) without name', 'Lieux (pertinents et actuellement existants) sans nom', 'Luoghi (rilevanti e attualmente esistenti) senza nome', false, false, true, false, 'SELECT p.label, ''/data/projects/'' || sp.project_id || ''/subprojects/'' || p.subproject_id || ''/places/'' || p.place_id || ''/place'' AS url
+('Orte (relevante und aktuell existierende) ohne Name', 'Places (relevant and currently existing) without name', 'Lieux (pertinents et actuellement existants) sans nom', 'Luoghi (rilevanti e attualmente esistenti) senza nome', false, 'subproject', false, 'SELECT p.label, ''/data/projects/'' || sp.project_id || ''/subprojects/'' || p.subproject_id || ''/places/'' || p.place_id || ''/place'' AS url
 FROM places p
 JOIN subprojects sp ON sp.subproject_id = p.subproject_id
 WHERE p.subproject_id = $1
@@ -406,7 +406,7 @@ WHERE p.subproject_id = $1
   OR p.until >= date_part(''year'', now())::integer)
   AND nullif(p.label, '''') IS NULL
 ORDER BY p.label'),
-('Orte (relevante und aktuell existierende) ohne Dateien', 'Places (relevant and currently existing) without files', 'Lieux (pertinents et actuellement existants) sans fichiers', 'Luoghi (rilevanti e attualmente esistenti) senza file', false, false, true, false, 'SELECT p.label, ''/data/projects/'' || sp.project_id || ''/subprojects/'' || p.subproject_id || ''/places/'' || p.place_id || ''/files/'' AS url
+('Orte (relevante und aktuell existierende) ohne Dateien', 'Places (relevant and currently existing) without files', 'Lieux (pertinents et actuellement existants) sans fichiers', 'Luoghi (rilevanti e attualmente esistenti) senza file', false, 'subproject', false, 'SELECT p.label, ''/data/projects/'' || sp.project_id || ''/subprojects/'' || p.subproject_id || ''/places/'' || p.place_id || ''/files/'' AS url
 FROM places p
 JOIN subprojects sp ON sp.subproject_id = p.subproject_id
 WHERE p.subproject_id = $1
@@ -417,7 +417,7 @@ WHERE p.subproject_id = $1
 FROM files f
 WHERE f.place_id = p.place_id)
 ORDER BY p.label'),
-('Orte (relevante und aktuell existierende) ohne Kontrollen', 'Places (relevant and currently existing) without checks', 'Lieux (pertinents et actuellement existants) sans contrôles', 'Luoghi (rilevanti e attualmente esistenti) senza controlli', false, false, true, false, 'SELECT p.label, ''/data/projects/'' || sp.project_id || ''/subprojects/'' || p.subproject_id || ''/places/'' || p.place_id || ''/checks/'' AS url
+('Orte (relevante und aktuell existierende) ohne Kontrollen', 'Places (relevant and currently existing) without checks', 'Lieux (pertinents et actuellement existants) sans contrôles', 'Luoghi (rilevanti e attualmente esistenti) senza controlli', false, 'subproject', false, 'SELECT p.label, ''/data/projects/'' || sp.project_id || ''/subprojects/'' || p.subproject_id || ''/places/'' || p.place_id || ''/checks/'' AS url
 FROM places p
 JOIN subprojects sp ON sp.subproject_id = p.subproject_id
 WHERE p.subproject_id = $1
@@ -428,7 +428,7 @@ WHERE p.subproject_id = $1
 FROM checks c
 WHERE c.place_id = p.place_id)
 ORDER BY p.label'),
-('Orte (relevante und aktuell existierende) ohne Kontrolle in Jahr', 'Places (relevant and currently existing) without check in year', 'Lieux (pertinents et actuellement existants) sans contrôle dans l''année', 'Luoghi (rilevanti e attualmente esistenti) senza controllo nell''anno', false, false, true, true, 'SELECT p.label, ''/data/projects/'' || sp.project_id || ''/subprojects/'' || p.subproject_id || ''/places/'' || p.place_id || ''/checks/'' AS url
+('Orte (relevante und aktuell existierende) ohne Kontrolle in Jahr', 'Places (relevant and currently existing) without check in year', 'Lieux (pertinents et actuellement existants) sans contrôle dans l''année', 'Luoghi (rilevanti e attualmente esistenti) senza controllo nell''anno', false, 'subproject', true, 'SELECT p.label, ''/data/projects/'' || sp.project_id || ''/subprojects/'' || p.subproject_id || ''/places/'' || p.place_id || ''/checks/'' AS url
 FROM places p
 JOIN subprojects sp ON sp.subproject_id = p.subproject_id
 WHERE p.subproject_id = $1
@@ -440,7 +440,7 @@ FROM checks c
 WHERE c.place_id = p.place_id
   AND date_part(''year'', c.date) = $2)
 ORDER BY p.label'),
-('Orte (relevante und aktuell existierende) ohne Massnahmen', 'Places (relevant and currently existing) without actions', 'Lieux (pertinents et actuellement existants) sans actions', 'Luoghi (rilevanti e attualmente esistenti) senza azioni', false, false, true, false, 'SELECT p.label, ''/data/projects/'' || sp.project_id || ''/subprojects/'' || p.subproject_id || ''/places/'' || p.place_id || ''/actions/'' AS url
+('Orte (relevante und aktuell existierende) ohne Massnahmen', 'Places (relevant and currently existing) without actions', 'Lieux (pertinents et actuellement existants) sans actions', 'Luoghi (rilevanti e attualmente esistenti) senza azioni', false, 'subproject', false, 'SELECT p.label, ''/data/projects/'' || sp.project_id || ''/subprojects/'' || p.subproject_id || ''/places/'' || p.place_id || ''/actions/'' AS url
 FROM places p
 JOIN subprojects sp ON sp.subproject_id = p.subproject_id
 WHERE p.subproject_id = $1
@@ -451,7 +451,7 @@ WHERE p.subproject_id = $1
 FROM actions a
 WHERE a.place_id = p.place_id)
 ORDER BY p.label'),
-('Orte (relevante und aktuell existierende) ohne Massnahme in Jahr', 'Places (relevant and currently existing) without action in year', 'Lieux (pertinents et actuellement existants) sans action dans l''année', 'Luoghi (rilevanti e attualmente esistenti) senza azione nell''anno', false, false, true, true, 'SELECT p.label, ''/data/projects/'' || sp.project_id || ''/subprojects/'' || p.subproject_id || ''/places/'' || p.place_id || ''/actions/'' AS url
+('Orte (relevante und aktuell existierende) ohne Massnahme in Jahr', 'Places (relevant and currently existing) without action in year', 'Lieux (pertinents et actuellement existants) sans action dans l''année', 'Luoghi (rilevanti e attualmente esistenti) senza azione nell''anno', false, 'subproject', true, 'SELECT p.label, ''/data/projects/'' || sp.project_id || ''/subprojects/'' || p.subproject_id || ''/places/'' || p.place_id || ''/actions/'' AS url
 FROM places p
 JOIN subprojects sp ON sp.subproject_id = p.subproject_id
 WHERE p.subproject_id = $1
@@ -463,7 +463,7 @@ FROM actions a
 WHERE a.place_id = p.place_id
   AND date_part(''year'', a.date) = $2)
 ORDER BY p.label'),
-('Orte (relevante und aktuell existierende) ohne Berichte', 'Places (relevant and currently existing) without reports', 'Lieux (pertinents et actuellement existants) sans rapports', 'Luoghi (rilevanti e attualmente esistenti) senza rapporti', false, false, true, false, 'SELECT p.label, ''/data/projects/'' || sp.project_id || ''/subprojects/'' || p.subproject_id || ''/places/'' || p.place_id || ''/place'' AS url
+('Orte (relevante und aktuell existierende) ohne Berichte', 'Places (relevant and currently existing) without reports', 'Lieux (pertinents et actuellement existants) sans rapports', 'Luoghi (rilevanti e attualmente esistenti) senza rapporti', false, 'subproject', false, 'SELECT p.label, ''/data/projects/'' || sp.project_id || ''/subprojects/'' || p.subproject_id || ''/places/'' || p.place_id || ''/place'' AS url
 FROM places p
 JOIN subprojects sp ON sp.subproject_id = p.subproject_id
 WHERE p.subproject_id = $1
@@ -477,7 +477,7 @@ WHERE cr.place_id = p.place_id)
 FROM action_reports ar
 WHERE ar.place_id = p.place_id)
 ORDER BY p.label'),
-('Orte (relevante und aktuell existierende) ohne Bericht in Jahr', 'Places (relevant and currently existing) without report in year', 'Lieux (pertinents et actuellement existants) sans rapport dans l''année', 'Luoghi (rilevanti e attualmente esistenti) senza rapporto nell''anno', false, false, true, true, 'SELECT p.label, ''/data/projects/'' || sp.project_id || ''/subprojects/'' || p.subproject_id || ''/places/'' || p.place_id || ''/place'' AS url
+('Orte (relevante und aktuell existierende) ohne Bericht in Jahr', 'Places (relevant and currently existing) without report in year', 'Lieux (pertinents et actuellement existants) sans rapport dans l''année', 'Luoghi (rilevanti e attualmente esistenti) senza rapporto nell''anno', false, 'subproject', true, 'SELECT p.label, ''/data/projects/'' || sp.project_id || ''/subprojects/'' || p.subproject_id || ''/places/'' || p.place_id || ''/place'' AS url
 FROM places p
 JOIN subprojects sp ON sp.subproject_id = p.subproject_id
 WHERE p.subproject_id = $1
@@ -493,7 +493,7 @@ FROM action_reports ar
 WHERE ar.place_id = p.place_id
   AND ar.year = $2)
 ORDER BY p.label'),
-('Orte (relevante und aktuell existierende) Stufe 1 ohne Stufe 2', 'Places (relevant and currently existing) level 1 without level 2', 'Lieux (pertinents et actuellement existants) niveau 1 sans niveau 2', 'Luoghi (rilevanti e attualmente esistenti) livello 1 senza livello 2', false, false, true, false, 'SELECT p.label, ''/data/projects/'' || s.project_id || ''/subprojects/'' || p.subproject_id || ''/places/'' || p.place_id || ''/place'' AS url
+('Orte (relevante und aktuell existierende) Stufe 1 ohne Stufe 2', 'Places (relevant and currently existing) level 1 without level 2', 'Lieux (pertinents et actuellement existants) niveau 1 sans niveau 2', 'Luoghi (rilevanti e attualmente esistenti) livello 1 senza livello 2', false, 'subproject', false, 'SELECT p.label, ''/data/projects/'' || s.project_id || ''/subprojects/'' || p.subproject_id || ''/places/'' || p.place_id || ''/place'' AS url
 FROM places p
 JOIN subprojects s ON s.subproject_id = p.subproject_id
 WHERE p.subproject_id = $1
@@ -505,7 +505,7 @@ WHERE p.subproject_id = $1
 FROM places p2
 WHERE p2.parent_id = p.place_id)
 ORDER BY p.label'),
-('Orte (relevante und aktuell existierende) ohne Kontroll-Bericht', 'Places (relevant and currently existing) without check report', 'Lieux (pertinents et actuellement existants) sans rapport de contrôle', 'Luoghi (rilevanti e attualmente esistenti) senza rapporto di controllo', false, false, true, false, 'SELECT p.label, ''/data/projects/'' || sp.project_id || ''/subprojects/'' || p.subproject_id || ''/places/'' || p.place_id || ''/check-reports/'' AS url
+('Orte (relevante und aktuell existierende) ohne Kontroll-Bericht', 'Places (relevant and currently existing) without check report', 'Lieux (pertinents et actuellement existants) sans rapport de contrôle', 'Luoghi (rilevanti e attualmente esistenti) senza rapporto di controllo', false, 'subproject', false, 'SELECT p.label, ''/data/projects/'' || sp.project_id || ''/subprojects/'' || p.subproject_id || ''/places/'' || p.place_id || ''/check-reports/'' AS url
 FROM places p
 JOIN subprojects sp ON sp.subproject_id = p.subproject_id
 WHERE p.subproject_id = $1
@@ -516,7 +516,7 @@ WHERE p.subproject_id = $1
 FROM check_reports pcr
 WHERE pcr.place_id = p.place_id)
 ORDER BY p.label'),
-('Orte (relevante und aktuell existierende) ohne Kontroll-Bericht in Jahr', 'Places (relevant and currently existing) without check report in year', 'Lieux (pertinents et actuellement existants) sans rapport de contrôle dans l''année', 'Luoghi (rilevanti e attualmente esistenti) senza rapporto di controllo nell''anno', false, false, true, true, 'SELECT p.label, ''/data/projects/'' || sp.project_id || ''/subprojects/'' || p.subproject_id || ''/places/'' || p.place_id || ''/check-reports/'' AS url
+('Orte (relevante und aktuell existierende) ohne Kontroll-Bericht in Jahr', 'Places (relevant and currently existing) without check report in year', 'Lieux (pertinents et actuellement existants) sans rapport de contrôle dans l''année', 'Luoghi (rilevanti e attualmente esistenti) senza rapporto di controllo nell''anno', false, 'subproject', true, 'SELECT p.label, ''/data/projects/'' || sp.project_id || ''/subprojects/'' || p.subproject_id || ''/places/'' || p.place_id || ''/check-reports/'' AS url
 FROM places p
 JOIN subprojects sp ON sp.subproject_id = p.subproject_id
 WHERE p.subproject_id = $1
@@ -528,7 +528,7 @@ FROM check_reports pcr
 WHERE pcr.place_id = p.place_id
   AND pcr.year = $2)
 ORDER BY p.label'),
-('Orte (relevante und aktuell existierende) ohne Massnahmen-Bericht', 'Places (relevant and currently existing) without action report', 'Lieux (pertinents et actuellement existants) sans rapport d''action', 'Luoghi (rilevanti e attualmente esistenti) senza rapporto di azione', false, false, true, false, 'SELECT p.label, ''/data/projects/'' || sp.project_id || ''/subprojects/'' || p.subproject_id || ''/places/'' || p.place_id || ''/action-reports/'' AS url
+('Orte (relevante und aktuell existierende) ohne Massnahmen-Bericht', 'Places (relevant and currently existing) without action report', 'Lieux (pertinents et actuellement existants) sans rapport d''action', 'Luoghi (rilevanti e attualmente esistenti) senza rapporto di azione', false, 'subproject', false, 'SELECT p.label, ''/data/projects/'' || sp.project_id || ''/subprojects/'' || p.subproject_id || ''/places/'' || p.place_id || ''/action-reports/'' AS url
 FROM places p
 JOIN subprojects sp ON sp.subproject_id = p.subproject_id
 WHERE p.subproject_id = $1
@@ -539,7 +539,7 @@ WHERE p.subproject_id = $1
 FROM action_reports par
 WHERE par.place_id = p.place_id)
 ORDER BY p.label'),
-('Orte (relevante und aktuell existierende) ohne Massnahmen-Bericht in Jahr', 'Places (relevant and currently existing) without action report in year', 'Lieux (pertinents et actuellement existants) sans rapport d''action dans l''année', 'Luoghi (rilevanti e attualmente esistenti) senza rapporto di azione nell''anno', false, false, true, true, 'SELECT p.label, ''/data/projects/'' || sp.project_id || ''/subprojects/'' || p.subproject_id || ''/places/'' || p.place_id || ''/action-reports/'' AS url
+('Orte (relevante und aktuell existierende) ohne Massnahmen-Bericht in Jahr', 'Places (relevant and currently existing) without action report in year', 'Lieux (pertinents et actuellement existants) sans rapport d''action dans l''année', 'Luoghi (rilevanti e attualmente esistenti) senza rapporto di azione nell''anno', false, 'subproject', true, 'SELECT p.label, ''/data/projects/'' || sp.project_id || ''/subprojects/'' || p.subproject_id || ''/places/'' || p.place_id || ''/action-reports/'' AS url
 FROM places p
 JOIN subprojects sp ON sp.subproject_id = p.subproject_id
 WHERE p.subproject_id = $1
@@ -551,21 +551,21 @@ FROM action_reports par
 WHERE par.place_id = p.place_id
   AND par.year = $2)
 ORDER BY p.label'),
-('Ort-Benutzer ohne Benutzer', 'Place users without user', 'Utilisateurs de lieu sans utilisateur', 'Utenti di luogo senza utente', false, false, true, false, 'SELECT pu.label, ''/data/projects/'' || sp.project_id || ''/subprojects/'' || p.subproject_id || ''/places/'' || pu.place_id || ''/users/'' || pu.place_user_id || ''/'' AS url
+('Ort-Benutzer ohne Benutzer', 'Place users without user', 'Utilisateurs de lieu sans utilisateur', 'Utenti di luogo senza utente', false, 'subproject', false, 'SELECT pu.label, ''/data/projects/'' || sp.project_id || ''/subprojects/'' || p.subproject_id || ''/places/'' || pu.place_id || ''/users/'' || pu.place_user_id || ''/'' AS url
 FROM place_users pu
 JOIN places p ON p.place_id = pu.place_id
 JOIN subprojects sp ON sp.subproject_id = p.subproject_id
 WHERE p.subproject_id = $1
   AND pu.user_id IS NULL
 ORDER BY pu.label'),
-('Ort-Benutzer ohne Rolle', 'Place users without role', 'Utilisateurs de lieu sans rôle', 'Utenti di luogo senza ruolo', false, false, true, false, 'SELECT pu.label, ''/data/projects/'' || sp.project_id || ''/subprojects/'' || p.subproject_id || ''/places/'' || pu.place_id || ''/users/'' || pu.place_user_id || ''/'' AS url
+('Ort-Benutzer ohne Rolle', 'Place users without role', 'Utilisateurs de lieu sans rôle', 'Utenti di luogo senza ruolo', false, 'subproject', false, 'SELECT pu.label, ''/data/projects/'' || sp.project_id || ''/subprojects/'' || p.subproject_id || ''/places/'' || pu.place_id || ''/users/'' || pu.place_user_id || ''/'' AS url
 FROM place_users pu
 JOIN places p ON p.place_id = pu.place_id
 JOIN subprojects sp ON sp.subproject_id = p.subproject_id
 WHERE p.subproject_id = $1
   AND pu.role IS NULL
 ORDER BY pu.label'),
-('Kontrollen (relevante) ohne Datum', 'Checks (relevant) without date', 'Contrôles (pertinents) sans date', 'Controlli (rilevanti) senza data', false, false, true, false, 'SELECT c.label, ''/data/projects/'' || sp.project_id || ''/subprojects/'' || p.subproject_id || ''/places/'' || c.place_id || ''/checks/'' || c.check_id || ''/check'' AS url
+('Kontrollen (relevante) ohne Datum', 'Checks (relevant) without date', 'Contrôles (pertinents) sans date', 'Controlli (rilevanti) senza data', false, 'subproject', false, 'SELECT c.label, ''/data/projects/'' || sp.project_id || ''/subprojects/'' || p.subproject_id || ''/places/'' || c.place_id || ''/checks/'' || c.check_id || ''/check'' AS url
 FROM checks c
 JOIN places p ON p.place_id = c.place_id
 JOIN subprojects sp ON sp.subproject_id = p.subproject_id
@@ -573,7 +573,7 @@ WHERE p.subproject_id = $1
   AND c.relevant_for_reports = true
   AND c.date IS NULL
 ORDER BY c.label'),
-('Kontrollen (relevante) ohne Geometrie', 'Checks (relevant) without geometry', 'Contrôles (pertinents) sans géométrie', 'Controlli (rilevanti) senza geometria', false, false, true, true, 'SELECT c.label, ''/data/projects/'' || sp.project_id || ''/subprojects/'' || p.subproject_id || ''/places/'' || c.place_id || ''/checks/'' || c.check_id || ''/check'' AS url
+('Kontrollen (relevante) ohne Geometrie', 'Checks (relevant) without geometry', 'Contrôles (pertinents) sans géométrie', 'Controlli (rilevanti) senza geometria', false, 'subproject', true, 'SELECT c.label, ''/data/projects/'' || sp.project_id || ''/subprojects/'' || p.subproject_id || ''/places/'' || c.place_id || ''/checks/'' || c.check_id || ''/check'' AS url
 FROM checks c
 JOIN places p ON p.place_id = c.place_id
 JOIN subprojects sp ON sp.subproject_id = p.subproject_id
@@ -582,7 +582,7 @@ WHERE p.subproject_id = $1
   AND date_part(''year'', c.date) = $2
   AND c.geometry IS NULL
 ORDER BY c.label'),
-('Kontrollen (relevante) ohne Menge', 'Checks (relevant) without quantity', 'Contrôles (pertinents) sans quantité', 'Controlli (rilevanti) senza quantità', false, false, true, true, 'SELECT c.label, ''/data/projects/'' || sp.project_id || ''/subprojects/'' || p.subproject_id || ''/places/'' || c.place_id || ''/checks/'' || c.check_id || ''/quantities/'' AS url
+('Kontrollen (relevante) ohne Menge', 'Checks (relevant) without quantity', 'Contrôles (pertinents) sans quantité', 'Controlli (rilevanti) senza quantità', false, 'subproject', true, 'SELECT c.label, ''/data/projects/'' || sp.project_id || ''/subprojects/'' || p.subproject_id || ''/places/'' || c.place_id || ''/checks/'' || c.check_id || ''/quantities/'' AS url
 FROM checks c
 JOIN places p ON p.place_id = c.place_id
 JOIN subprojects sp ON sp.subproject_id = p.subproject_id
@@ -593,7 +593,7 @@ WHERE p.subproject_id = $1
 FROM check_quantities cq
 WHERE cq.check_id = c.check_id)
 ORDER BY c.label'),
-('Kontrollen (relevante) ohne Taxa', 'Checks (relevant) without taxa', 'Contrôles (pertinents) sans taxons', 'Controlli (rilevanti) senza taxa', false, false, true, true, 'SELECT c.label, ''/data/projects/'' || sp.project_id || ''/subprojects/'' || p.subproject_id || ''/places/'' || c.place_id || ''/checks/'' || c.check_id || ''/taxa/'' AS url
+('Kontrollen (relevante) ohne Taxa', 'Checks (relevant) without taxa', 'Contrôles (pertinents) sans taxons', 'Controlli (rilevanti) senza taxa', false, 'subproject', true, 'SELECT c.label, ''/data/projects/'' || sp.project_id || ''/subprojects/'' || p.subproject_id || ''/places/'' || c.place_id || ''/checks/'' || c.check_id || ''/taxa/'' AS url
 FROM checks c
 JOIN places p ON p.place_id = c.place_id
 JOIN subprojects sp ON sp.subproject_id = p.subproject_id
@@ -604,7 +604,7 @@ WHERE p.subproject_id = $1
 FROM check_taxa ct
 WHERE ct.check_id = c.check_id)
 ORDER BY c.label'),
-('Kontrollen (relevante) ohne Datei', 'Checks (relevant) without file', 'Contrôles (pertinents) sans fichier', 'Controlli (rilevanti) senza file', false, false, true, true, 'SELECT c.label, ''/data/projects/'' || sp.project_id || ''/subprojects/'' || p.subproject_id || ''/places/'' || c.place_id || ''/checks/'' || c.check_id || ''/files/'' AS url
+('Kontrollen (relevante) ohne Datei', 'Checks (relevant) without file', 'Contrôles (pertinents) sans fichier', 'Controlli (rilevanti) senza file', false, 'subproject', true, 'SELECT c.label, ''/data/projects/'' || sp.project_id || ''/subprojects/'' || p.subproject_id || ''/places/'' || c.place_id || ''/checks/'' || c.check_id || ''/files/'' AS url
 FROM checks c
 JOIN places p ON p.place_id = c.place_id
 JOIN subprojects sp ON sp.subproject_id = p.subproject_id
@@ -615,7 +615,7 @@ WHERE p.subproject_id = $1
 FROM files f
 WHERE f.check_id = c.check_id)
 ORDER BY c.label'),
-('Massnahmen (relevante) ohne Datum', 'Actions (relevant) without date', 'Actions (pertinentes) sans date', 'Azioni (rilevanti) senza data', false, false, true, false, 'SELECT a.label, ''/data/projects/'' || sp.project_id || ''/subprojects/'' || p.subproject_id || ''/places/'' || a.place_id || ''/actions/'' || a.action_id || ''/action'' AS url
+('Massnahmen (relevante) ohne Datum', 'Actions (relevant) without date', 'Actions (pertinentes) sans date', 'Azioni (rilevanti) senza data', false, 'subproject', false, 'SELECT a.label, ''/data/projects/'' || sp.project_id || ''/subprojects/'' || p.subproject_id || ''/places/'' || a.place_id || ''/actions/'' || a.action_id || ''/action'' AS url
 FROM actions a
 JOIN places p ON p.place_id = a.place_id
 JOIN subprojects sp ON sp.subproject_id = p.subproject_id
@@ -623,7 +623,7 @@ WHERE p.subproject_id = $1
   AND a.relevant_for_reports = true
   AND a.date IS NULL
 ORDER BY a.label'),
-('Massnahmen (relevante) ohne Geometrie', 'Actions (relevant) without geometry', 'Actions (pertinentes) sans géométrie', 'Azioni (rilevanti) senza geometria', false, false, true, true, 'SELECT a.label, ''/data/projects/'' || sp.project_id || ''/subprojects/'' || p.subproject_id || ''/places/'' || a.place_id || ''/actions/'' || a.action_id || ''/action'' AS url
+('Massnahmen (relevante) ohne Geometrie', 'Actions (relevant) without geometry', 'Actions (pertinentes) sans géométrie', 'Azioni (rilevanti) senza geometria', false, 'subproject', true, 'SELECT a.label, ''/data/projects/'' || sp.project_id || ''/subprojects/'' || p.subproject_id || ''/places/'' || a.place_id || ''/actions/'' || a.action_id || ''/action'' AS url
 FROM actions a
 JOIN places p ON p.place_id = a.place_id
 JOIN subprojects sp ON sp.subproject_id = p.subproject_id
@@ -632,7 +632,7 @@ WHERE p.subproject_id = $1
   AND date_part(''year'', a.date) = $2
   AND a.geometry IS NULL
 ORDER BY a.label'),
-('Massnahmen (relevante) ohne Menge', 'Actions (relevant) without quantity', 'Actions (pertinentes) sans quantité', 'Azioni (rilevanti) senza quantità', false, false, true, true, 'SELECT a.label, ''/data/projects/'' || sp.project_id || ''/subprojects/'' || p.subproject_id || ''/places/'' || a.place_id || ''/actions/'' || a.action_id || ''/quantities/'' AS url
+('Massnahmen (relevante) ohne Menge', 'Actions (relevant) without quantity', 'Actions (pertinentes) sans quantité', 'Azioni (rilevanti) senza quantità', false, 'subproject', true, 'SELECT a.label, ''/data/projects/'' || sp.project_id || ''/subprojects/'' || p.subproject_id || ''/places/'' || a.place_id || ''/actions/'' || a.action_id || ''/quantities/'' AS url
 FROM actions a
 JOIN places p ON p.place_id = a.place_id
 JOIN subprojects sp ON sp.subproject_id = p.subproject_id
@@ -643,7 +643,7 @@ WHERE p.subproject_id = $1
 FROM action_quantities aq
 WHERE aq.action_id = a.action_id)
 ORDER BY a.label'),
-('Massnahmen (relevante) ohne Taxa', 'Actions (relevant) without taxa', 'Actions (pertinentes) sans taxons', 'Azioni (rilevanti) senza taxa', false, false, true, true, 'SELECT a.label, ''/data/projects/'' || sp.project_id || ''/subprojects/'' || p.subproject_id || ''/places/'' || a.place_id || ''/actions/'' || a.action_id || ''/taxa/'' AS url
+('Massnahmen (relevante) ohne Taxa', 'Actions (relevant) without taxa', 'Actions (pertinentes) sans taxons', 'Azioni (rilevanti) senza taxa', false, 'subproject', true, 'SELECT a.label, ''/data/projects/'' || sp.project_id || ''/subprojects/'' || p.subproject_id || ''/places/'' || a.place_id || ''/actions/'' || a.action_id || ''/taxa/'' AS url
 FROM actions a
 JOIN places p ON p.place_id = a.place_id
 JOIN subprojects sp ON sp.subproject_id = p.subproject_id
@@ -654,7 +654,7 @@ WHERE p.subproject_id = $1
 FROM action_taxa atx
 WHERE atx.action_id = a.action_id)
 ORDER BY a.label'),
-('Massnahmen (relevante) ohne Datei', 'Actions (relevant) without file', 'Actions (pertinentes) sans fichier', 'Azioni (rilevanti) senza file', false, false, true, true, 'SELECT a.label, ''/data/projects/'' || sp.project_id || ''/subprojects/'' || p.subproject_id || ''/places/'' || a.place_id || ''/actions/'' || a.action_id || ''/files/'' AS url
+('Massnahmen (relevante) ohne Datei', 'Actions (relevant) without file', 'Actions (pertinentes) sans fichier', 'Azioni (rilevanti) senza file', false, 'subproject', true, 'SELECT a.label, ''/data/projects/'' || sp.project_id || ''/subprojects/'' || p.subproject_id || ''/places/'' || a.place_id || ''/actions/'' || a.action_id || ''/files/'' AS url
 FROM actions a
 JOIN places p ON p.place_id = a.place_id
 JOIN subprojects sp ON sp.subproject_id = p.subproject_id
@@ -665,7 +665,7 @@ WHERE p.subproject_id = $1
 FROM files f
 WHERE f.action_id = a.action_id)
 ORDER BY a.label'),
-('Ort-Bericht-Mengen: Standard-Einheit nicht verwendet', 'Place report quantities: default unit not used', 'Quantités de rapport de lieu : unité par défaut non utilisée', 'Quantità di rapporto di luogo: unità predefinita non utilizzata', false, false, true, false, 'SELECT p.label, ''/data/projects/'' || sp.project_id || ''/subprojects/'' || p.subproject_id || ''/places/'' || p.place_id || ''/place'' AS url
+('Ort-Bericht-Mengen: Standard-Einheit nicht verwendet', 'Place report quantities: default unit not used', 'Quantités de rapport de lieu : unité par défaut non utilisée', 'Quantità di rapporto di luogo: unità predefinita non utilizzata', false, 'subproject', false, 'SELECT p.label, ''/data/projects/'' || sp.project_id || ''/subprojects/'' || p.subproject_id || ''/places/'' || p.place_id || ''/place'' AS url
 FROM places p
 JOIN subprojects sp ON sp.subproject_id = p.subproject_id
 JOIN projects proj ON proj.project_id = sp.project_id
@@ -689,7 +689,7 @@ WHERE ar.place_id = p.place_id
   AND arq.unit_id != proj.action_reports_default_unit_id))
   )
 ORDER BY p.label'),
-('Kontroll-Mengen: Standard-Einheit nicht verwendet', 'Check quantities: default unit not used', 'Quantités de contrôle : unité par défaut non utilisée', 'Quantità di controllo: unità predefinita non utilizzata', false, false, true, true, 'SELECT c.label, ''/data/projects/'' || sp.project_id || ''/subprojects/'' || p.subproject_id || ''/places/'' || c.place_id || ''/checks/'' || c.check_id || ''/check'' AS url
+('Kontroll-Mengen: Standard-Einheit nicht verwendet', 'Check quantities: default unit not used', 'Quantités de contrôle : unité par défaut non utilisée', 'Quantità di controllo: unità predefinita non utilizzata', false, 'subproject', true, 'SELECT c.label, ''/data/projects/'' || sp.project_id || ''/subprojects/'' || p.subproject_id || ''/places/'' || c.place_id || ''/checks/'' || c.check_id || ''/check'' AS url
 FROM checks c
 JOIN places p ON p.place_id = c.place_id
 JOIN subprojects sp ON sp.subproject_id = p.subproject_id
@@ -703,7 +703,7 @@ FROM check_quantities cq
 WHERE cq.check_id = c.check_id
   AND cq.unit_id != proj.checks_default_unit_id)
 ORDER BY c.label'),
-('Kontroll-Bericht-Mengen: Standard-Einheit nicht verwendet', 'Check report quantities: default unit not used', 'Quantités de rapport de contrôle: unité par défaut non utilisée', 'Quantità di rapporto di controllo: unità predefinita non utilizzata', false, false, true, true, 'SELECT p.label, ''/data/projects/'' || sp.project_id || ''/subprojects/'' || p.subproject_id || ''/places/'' || p.place_id || ''/check-reports/'' AS url
+('Kontroll-Bericht-Mengen: Standard-Einheit nicht verwendet', 'Check report quantities: default unit not used', 'Quantités de rapport de contrôle: unité par défaut non utilisée', 'Quantità di rapporto di controllo: unità predefinita non utilizzata', false, 'subproject', true, 'SELECT p.label, ''/data/projects/'' || sp.project_id || ''/subprojects/'' || p.subproject_id || ''/places/'' || p.place_id || ''/check-reports/'' AS url
 FROM places p
 JOIN subprojects sp ON sp.subproject_id = p.subproject_id
 JOIN projects proj ON proj.project_id = sp.project_id
@@ -719,7 +719,7 @@ WHERE pcr.place_id = p.place_id
   AND pcr.year = $2
   AND pcrq.unit_id != proj.check_reports_default_unit_id)
 ORDER BY p.label'),
-('Kontroll-Taxon-Mengen: Standard-Einheit nicht verwendet', 'Check taxon quantities: default unit not used', 'Quantités de taxon de contrôle : unité par défaut non utilisée', 'Quantità di taxon di controllo: unità predefinita non utilizzata', false, false, true, true, 'SELECT c.label, ''/data/projects/'' || sp.project_id || ''/subprojects/'' || p.subproject_id || ''/places/'' || c.place_id || ''/checks/'' || c.check_id || ''/check'' AS url
+('Kontroll-Taxon-Mengen: Standard-Einheit nicht verwendet', 'Check taxon quantities: default unit not used', 'Quantités de taxon de contrôle : unité par défaut non utilisée', 'Quantità di taxon di controllo: unità predefinita non utilizzata', false, 'subproject', true, 'SELECT c.label, ''/data/projects/'' || sp.project_id || ''/subprojects/'' || p.subproject_id || ''/places/'' || c.place_id || ''/checks/'' || c.check_id || ''/check'' AS url
 FROM checks c
 JOIN places p ON p.place_id = c.place_id
 JOIN subprojects sp ON sp.subproject_id = p.subproject_id
@@ -733,7 +733,7 @@ FROM check_taxa ct
 WHERE ct.check_id = c.check_id
   AND ct.unit_id != proj.check_taxa_default_unit_id)
 ORDER BY c.label'),
-('Massnahmen-Mengen: Standard-Einheit nicht verwendet', 'Action quantities: default unit not used', 'Quantités d''actions : unité par défaut non utilisée', 'Quantità di azioni: unità predefinita non utilizzata', false, false, true, true, 'SELECT a.label, ''/data/projects/'' || sp.project_id || ''/subprojects/'' || p.subproject_id || ''/places/'' || a.place_id || ''/actions/'' || a.action_id || ''/action'' AS url
+('Massnahmen-Mengen: Standard-Einheit nicht verwendet', 'Action quantities: default unit not used', 'Quantités d''actions : unité par défaut non utilisée', 'Quantità di azioni: unità predefinita non utilizzata', false, 'subproject', true, 'SELECT a.label, ''/data/projects/'' || sp.project_id || ''/subprojects/'' || p.subproject_id || ''/places/'' || a.place_id || ''/actions/'' || a.action_id || ''/action'' AS url
 FROM actions a
 JOIN places p ON p.place_id = a.place_id
 JOIN subprojects sp ON sp.subproject_id = p.subproject_id
@@ -747,7 +747,7 @@ FROM action_quantities aq
 WHERE aq.action_id = a.action_id
   AND aq.unit_id != proj.actions_default_unit_id)
 ORDER BY a.label'),
-('Massnahmen-Bericht-Mengen: Standard-Einheit nicht verwendet', 'Place action report quantities: default unit not used', 'Quantités de rapport d''action de lieu : unité par défaut non utilisée', 'Quantità di rapporto di azione di luogo: unità predefinita non utilizzata', false, false, true, true, 'SELECT p.label, ''/data/projects/'' || sp.project_id || ''/subprojects/'' || p.subproject_id || ''/places/'' || p.place_id || ''/action-reports/'' AS url
+('Massnahmen-Bericht-Mengen: Standard-Einheit nicht verwendet', 'Place action report quantities: default unit not used', 'Quantités de rapport d''action de lieu : unité par défaut non utilisée', 'Quantità di rapporto di azione di luogo: unità predefinita non utilizzata', false, 'subproject', true, 'SELECT p.label, ''/data/projects/'' || sp.project_id || ''/subprojects/'' || p.subproject_id || ''/places/'' || p.place_id || ''/action-reports/'' AS url
 FROM places p
 JOIN subprojects sp ON sp.subproject_id = p.subproject_id
 JOIN projects proj ON proj.project_id = sp.project_id
@@ -763,7 +763,7 @@ WHERE par.place_id = p.place_id
   AND par.year = $2
   AND parq.unit_id != proj.action_reports_default_unit_id)
 ORDER BY p.label'),
-('Massnahmen-Taxon-Mengen: Standard-Einheit nicht verwendet', 'Action taxon quantities: default unit not used', 'Quantités de taxon d''actions : unité par défaut non utilisée', 'Quantità di taxon di azioni: unità predefinita non utilizzata', false, false, true, true, 'SELECT a.label, ''/data/projects/'' || sp.project_id || ''/subprojects/'' || p.subproject_id || ''/places/'' || a.place_id || ''/actions/'' || a.action_id || ''/action'' AS url
+('Massnahmen-Taxon-Mengen: Standard-Einheit nicht verwendet', 'Action taxon quantities: default unit not used', 'Quantités de taxon d''actions : unité par défaut non utilisée', 'Quantità di taxon di azioni: unità predefinita non utilizzata', false, 'subproject', true, 'SELECT a.label, ''/data/projects/'' || sp.project_id || ''/subprojects/'' || p.subproject_id || ''/places/'' || a.place_id || ''/actions/'' || a.action_id || ''/action'' AS url
 FROM actions a
 JOIN places p ON p.place_id = a.place_id
 JOIN subprojects sp ON sp.subproject_id = p.subproject_id
@@ -778,11 +778,10 @@ WHERE atx.action_id = a.action_id
   AND atx.unit_id != proj.action_taxa_default_unit_id)
 ORDER BY a.label')
 ON CONFLICT (name_de) DO UPDATE SET
-  name_en             = EXCLUDED.name_en,
-  name_fr             = EXCLUDED.name_fr,
-  name_it             = EXCLUDED.name_it,
-  is_root_level       = EXCLUDED.is_root_level,
-  is_project_level    = EXCLUDED.is_project_level,
-  is_subproject_level = EXCLUDED.is_subproject_level,
-  filter_by_year      = EXCLUDED.filter_by_year;
+  name_en        = EXCLUDED.name_en,
+  name_fr        = EXCLUDED.name_fr,
+  name_it        = EXCLUDED.name_it,
+  is_root_level  = EXCLUDED.is_root_level,
+  level          = EXCLUDED.level,
+  filter_by_year = EXCLUDED.filter_by_year;
   -- NOTE: sql is intentionally excluded from ON CONFLICT — it is user-edited and must not be overwritten by CSV regeneration.

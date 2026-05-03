@@ -12,13 +12,9 @@ export default interface TemplatePublicQcsHistory {
 
   description: string | null;
 
-  sort: number | null;
-
   is_root_level: boolean | null;
 
-  is_project_level: boolean | null;
-
-  is_subproject_level: boolean | null;
+  level: 'project' | 'subproject' | null;
 
   filter_by_year: boolean | null;
 
@@ -47,13 +43,9 @@ export interface TemplatePublicQcsHistoryInitializer {
 
   description?: string | null;
 
-  sort?: number | null;
-
   is_root_level?: boolean | null;
 
-  is_project_level?: boolean | null;
-
-  is_subproject_level?: boolean | null;
+  level?: 'project' | 'subproject' | null;
 
   filter_by_year?: boolean | null;
 
@@ -82,13 +74,9 @@ export interface TemplatePublicQcsHistoryMutator {
 
   description?: string | null;
 
-  sort?: number | null;
-
   is_root_level?: boolean | null;
 
-  is_project_level?: boolean | null;
-
-  is_subproject_level?: boolean | null;
+  level?: 'project' | 'subproject' | null;
 
   filter_by_year?: boolean | null;
 

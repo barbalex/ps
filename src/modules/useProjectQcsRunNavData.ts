@@ -36,7 +36,7 @@ export const useProjectQcsRunNavData = ({ projectId }: Props) => {
      JOIN qcs q ON q.qcs_id = qa.qc_id
      WHERE qa.project_id = $1
        AND qa.subproject_id IS NULL
-       AND q.is_project_level = true`,
+       AND q.level = 'project'`,
     [projectId],
   )
 

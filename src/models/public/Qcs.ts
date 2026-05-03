@@ -20,9 +20,7 @@ export default interface Qcs {
 
   is_root_level: boolean | null
 
-  is_project_level: boolean | null
-
-  is_subproject_level: boolean | null
+  level: 'project' | 'subproject' | null
 
   filter_by_year: boolean | null
 
@@ -59,11 +57,7 @@ export interface QcsInitializer {
   /** Default value: false */
   is_root_level?: boolean | null
 
-  /** Default value: false */
-  is_project_level?: boolean | null
-
-  /** Default value: false */
-  is_subproject_level?: boolean | null
+  level?: 'project' | 'subproject' | null
 
   /** Default value: false */
   filter_by_year?: boolean | null
@@ -101,9 +95,7 @@ export interface QcsMutator {
 
   is_root_level?: boolean | null
 
-  is_project_level?: boolean | null
-
-  is_subproject_level?: boolean | null
+  level?: 'project' | 'subproject' | null
 
   filter_by_year?: boolean | null
 
