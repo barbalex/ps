@@ -1,9 +1,9 @@
 import { useIntl } from 'react-intl'
 
 import { TextField } from '../../components/shared/TextField.tsx'
-import { SwitchField } from '../../components/shared/SwitchField.tsx'
 import { RadioGroupField } from '../../components/shared/RadioGroupField.tsx'
 import { SqlEditorField } from '../../components/shared/SqlEditorField.tsx'
+import { SwitchField } from '../../components/shared/SwitchField.tsx'
 
 import '../../form.css'
 
@@ -14,7 +14,7 @@ export const QcForm = ({ onChange, validations = {}, row, autoFocusRef }) => {
   // Build the parameter hint based on which level flags are set
   const paramHint = (() => {
     const parts: string[] = []
-    if (row?.is_root_level) {
+    if (row?.level === 'root') {
       if (row?.filter_by_year) {
         parts.push(
           formatMessage({
@@ -70,7 +70,7 @@ export const QcForm = ({ onChange, validations = {}, row, autoFocusRef }) => {
       : formatMessage({
           id: 'qc.sql.hintNone',
           defaultMessage:
-            'Set is_root_level or level to see available parameters.',
+            'Set level to see available parameters.',
         })
   })()
 
@@ -114,25 +114,17 @@ export const QcForm = ({ onChange, validations = {}, row, autoFocusRef }) => {
         value={row?.name_it ?? ''}
         onChange={onChange}
       />
-      <SwitchField
-        label={formatMessage({
-          id: 'qc.isRootLevel',
-          defaultMessage: 'Root-Ebene',
-        })}
-        name="is_root_level"
-        value={row?.is_root_level}
-        onChange={onChange}
-      />
       <RadioGroupField
         label={formatMessage({
           id: 'qc.level',
           defaultMessage: 'Auf welcher Ebene wird Qualität kontrolliert?',
         })}
         name="level"
-        list={['project', 'subproject']}
+        list={['root', 'project', 'subproject']}
         value={row?.level ?? null}
         onChange={onChange}
         labelMap={{
+          root: formatMessage({ id: 'qc.level.root', defaultMessage: 'Root' }),
           project: formatMessage({ id: 'qc.level.project', defaultMessage: 'Projekt' }),
           subproject: formatMessage({ id: 'qc.level.subproject', defaultMessage: 'Teilprojekt' }),
         }}

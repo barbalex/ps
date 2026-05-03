@@ -1914,7 +1914,8 @@ COMMENT ON TABLE project_crs IS 'List of crs used in a project. Can be set when 
 --------------------------------------------------------------
 -- qcs: quality controls for data
 --
-CREATE TYPE qcs_level_enum AS ENUM ('project', 'subproject');
+CREATE TYPE qcs_level_enum AS ENUM ('root', 'project', 'subproject');
+CREATE TYPE project_qcs_level_enum AS ENUM ('project', 'subproject');
 
 CREATE TABLE IF NOT EXISTS qcs(
   qcs_id uuid PRIMARY KEY DEFAULT public.uuid_generate_v7(),
@@ -1923,7 +1924,6 @@ CREATE TABLE IF NOT EXISTS qcs(
   name_fr text DEFAULT NULL,
   name_it text DEFAULT NULL,
   description text DEFAULT NULL,
-  is_root_level boolean DEFAULT false,
   level qcs_level_enum DEFAULT NULL,
   filter_by_year boolean DEFAULT false,
   sql text DEFAULT NULL,
@@ -1972,7 +1972,7 @@ CREATE TABLE IF NOT EXISTS project_qcs(
   name_fr text DEFAULT NULL,
   name_it text DEFAULT NULL,
   description text DEFAULT NULL,
-  level qcs_level_enum DEFAULT NULL,
+  level project_qcs_level_enum DEFAULT NULL,
   filter_by_year boolean DEFAULT false,
   sql text DEFAULT NULL,
   sys_period tstzrange DEFAULT NULL,

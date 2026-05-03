@@ -1,6 +1,6 @@
 #!/usr/bin/env node
-// Regenerates backend/db/init/09_seedQcs.sql from seed-data/qcs.csv.
-// Run from the project root: node backend/db/generate_qcs_sql.mjs
+// Regenerates backend-dev/db/init/09_seedQcs.sql from seed-data/qcs.csv.
+// Run from the project root: node backend-dev/db/generate_qcs_sql.mjs
 
 import { readFileSync, writeFileSync } from 'fs'
 import { fileURLToPath } from 'url'
@@ -10,7 +10,7 @@ const __dirname = dirname(fileURLToPath(import.meta.url))
 const projectRoot = join(__dirname, '..', '..')
 
 const csvPath = join(projectRoot, 'seed-data', 'qcs.csv')
-const sqlPath = join(projectRoot, 'backend', 'db', 'init', '09_seedQcs.sql')
+const sqlPath = join(projectRoot, 'backend-dev', 'db', 'init', '09_seedQcs.sql')
 
 const csv = readFileSync(csvPath, 'utf-8')
 
@@ -78,13 +78,12 @@ const bool = (s) => ((s ?? '').trim() === 'true' ? 'true' : 'false')
 
 const valueLines = rows
   .map((cols) => {
-    // name_de;name_en;name_fr;name_it;is_root_level;level;filter_by_year;sql;description
+    // name_de;name_en;name_fr;name_it;level;filter_by_year;sql;description
     const [
       name_de,
       name_en,
       name_fr,
       name_it,
-      is_root_level,
       level,
       filter_by_year,
       sql_val,
@@ -97,7 +96,7 @@ const valueLines = rows
 
     return (
       `('${esc(name_de)}', '${esc(name_en)}', '${esc(name_fr)}', '${esc(name_it)}', ` +
-      `${bool(is_root_level)}, ${levelLiteral}, ${bool(filter_by_year)}, ${sqlLiteral})`
+      `${levelLiteral}, ${bool(filter_by_year)}, ${sqlLiteral})`
     )
   })
   .filter(Boolean)
@@ -105,16 +104,15 @@ const valueLines = rows
 
 const sql = `-- qcs: quality controls for data
 -- Generated from seed-data/qcs.csv
--- Run \`node backend/db/generate_qcs_sql.mjs\` from project root to regenerate after editing the CSV.
+-- Run \`node backend-dev/db/generate_qcs_sql.mjs\` from project root to regenerate after editing the CSV.
 
-INSERT INTO qcs (name_de, name_en, name_fr, name_it, is_root_level, level, filter_by_year, sql)
+INSERT INTO qcs (name_de, name_en, name_fr, name_it, level, filter_by_year, sql)
 VALUES
 ${valueLines}
 ON CONFLICT (name_de) DO UPDATE SET
   name_en        = EXCLUDED.name_en,
   name_fr        = EXCLUDED.name_fr,
   name_it        = EXCLUDED.name_it,
-  is_root_level  = EXCLUDED.is_root_level,
   level          = EXCLUDED.level,
   filter_by_year = EXCLUDED.filter_by_year;
   -- NOTE: sql is intentionally excluded from ON CONFLICT — it is user-edited and must not be overwritten by CSV regeneration.

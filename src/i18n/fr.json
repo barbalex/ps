@@ -788,7 +788,7 @@
   "qc.sql.hintRootYear": "$1 = année (entier)",
   "qc.sql.hintProjectYear": "$1 = project_id (uuid), $2 = année (entier)",
   "qc.sql.hintSubprojectYear": "$1 = subproject_id (uuid), $2 = année (entier)",
-  "qc.sql.hintNone": "Définissez is_root_level ou level pour voir les paramètres disponibles.",
+  "qc.sql.hintNone": "Définissez level pour voir les paramètres disponibles.",
   "subprojectQcsRun.openInDialog": "Ouvrir dans une boîte de dialogue",
   "bHistProjSetting": "Comparer l'historique",
   "altInOwnFormNav": "Alternative: Afficher dans son propre formulaire, avec son propre dossier dans l'arborescence de navigation",
