@@ -55,11 +55,11 @@ export const QueuedOperationsList = () => {
             icon={<MdMenuBook />}
             onClick={openDocs}
             title={formatMessage({
-              id: 'qoReadDocsBtn',
+              id: 'qc.openDocs',
               defaultMessage: 'Dokumentation öffnen',
             })}
             aria-label={formatMessage({
-              id: 'qoReadDocsBtn',
+              id: 'qc.openDocs',
               defaultMessage: 'Dokumentation öffnen',
             })}
           />
