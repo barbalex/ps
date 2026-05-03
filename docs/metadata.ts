@@ -25,6 +25,14 @@ export const docsMeta: DocMeta[] = [
     isTechnical: false,
   },
   {
+    id: 'histories',
+    label_de: 'Geschichte',
+    label_en: 'History',
+    label_fr: 'Historique',
+    label_it: 'Cronologia',
+    isTechnical: false,
+  },
+  {
     id: 'quality-controls',
     label_de: 'Qualitätskontrollen',
     label_en: 'Quality Controls',
