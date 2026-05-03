@@ -18,6 +18,8 @@ Better-Auth, possible extensions:
 
 qcs and project_qcs: nach Jahr filtern: explain
 
+qcs and project_qcs forms: we need to explain to the user what 'Nach Jahr filtern' means: 'Wenn wahr, wird der Abfrage eine Variable für das gewünschte Berichts-Jahr übergeben'
+
 ---
 
 qcs and project_qcs: explain how label translations work, like somewhere else (where?). Fallback de
