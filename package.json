@@ -140,7 +140,11 @@
     "vite-plugin-cjs-interop": "3.3.0",
     "vite-plugin-svgr": "5.2.0"
   },
+  "overrides": {
+    "tabster": "8.8.0"
+  },
   "devRemarks": {
-    "nothing": "now"
+    "nothing": "now",
+    "tabster": "errors were caused. tabster@8.7.0 bundled its own keyborg@2.6.0 which conflicted with the top-level keyborg@2.14.0 required by @fluentui/react-components — keyborg 2.14 removed getNavigating, so forcing tabster@8.8.0 (which depends on keyborg@^2.14.0) eliminates the nested copy and makes both packages use the same API."
   }
 }
