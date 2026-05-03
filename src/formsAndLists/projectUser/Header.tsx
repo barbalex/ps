@@ -3,6 +3,10 @@ import { usePGlite } from '@electric-sql/pglite-react'
 import { useSetAtom } from 'jotai'
 import { useRef, useEffect } from 'react'
 import { useIntl } from 'react-intl'
+import * as fluentUiReactComponents from '@fluentui/react-components'
+import { MdMenuBook } from 'react-icons/md'
+
+const { Button } = fluentUiReactComponents
 
 import { createProjectUser } from '../../modules/createRows.ts'
 import { FormHeader } from '../../components/FormHeader/index.tsx'
@@ -111,6 +115,9 @@ export const Header = ({ autoFocusRef }) => {
     }
   }
 
+  const openDocs = () =>
+    window.open('/docs/user-roles', '_blank', 'noreferrer')
+
   return (
     <FormHeader
       title={formatMessage({ id: 'gi+ubY', defaultMessage: 'Projekt-Benutzer' })}
@@ -120,13 +127,23 @@ export const Header = ({ autoFocusRef }) => {
       toPrevious={toPrevious}
       tableName="project user"
       siblings={
-        <HistoryToggleButton
-          historiesPath={`${basePath}/histories`}
-          formPath={basePath}
-          historyTable="project_users_history"
-          rowIdField="project_user_id"
-          rowId={projectUserId}
-        />
+        <>
+          <HistoryToggleButton
+            historiesPath={`${basePath}/histories`}
+            formPath={basePath}
+            historyTable="project_users_history"
+            rowIdField="project_user_id"
+            rowId={projectUserId}
+          />
+          <Button
+            icon={<MdMenuBook />}
+            title={formatMessage({
+              id: 'user.openDocs',
+              defaultMessage: 'Dokumentation öffnen',
+            })}
+            onClick={openDocs}
+          />
+        </>
       }
     />
   )

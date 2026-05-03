@@ -3,6 +3,10 @@ import { useSetAtom } from 'jotai'
 import { usePGlite } from '@electric-sql/pglite-react'
 import { useRef, useEffect } from 'react'
 import { useIntl } from 'react-intl'
+import * as fluentUiReactComponents from '@fluentui/react-components'
+import { MdMenuBook } from 'react-icons/md'
+
+const { Button } = fluentUiReactComponents
 
 import { createUser } from '../../modules/createRows.ts'
 import { FormHeader } from '../../components/FormHeader/index.tsx'
@@ -80,6 +84,9 @@ export const Header = ({ autoFocusRef }) => {
     }
   }
 
+  const openDocs = () =>
+    window.open('/docs/user-roles', '_blank', 'noreferrer')
+
   return (
     <FormHeader
       title={formatMessage({ id: 'qyI8KV', defaultMessage: 'Benutzer' })}
@@ -88,6 +95,16 @@ export const Header = ({ autoFocusRef }) => {
       toNext={toNext}
       toPrevious={toPrevious}
       tableName="user"
+      siblings={
+        <Button
+          icon={<MdMenuBook />}
+          title={formatMessage({
+            id: 'user.openDocs',
+            defaultMessage: 'Dokumentation öffnen',
+          })}
+          onClick={openDocs}
+        />
+      }
     />
   )
 }

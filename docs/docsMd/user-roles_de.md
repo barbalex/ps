@@ -1,6 +1,6 @@
 # Benutzerrollen
 
-*Zuletzt aktualisiert am 17. April 2026*
+_Zuletzt aktualisiert am 17. April 2026_
 
 ---
 
@@ -17,14 +17,12 @@ Ein Benutzer ist Eigentümer:
 
 Rollentypen sind (von hoch nach tief):
 
-1. Eigentümer: kann Designer-Rollen vergeben
-2. Designer: kann Projekt- und Teilprojekt-Konfigurationen bearbeiten, Schreiber- und Leser-Rollen vergeben
-3. Schreiber: kann Daten bearbeiten
-4. Leser: kann Daten synchronisieren und lesen
+1. **Eigentümer**: kann Designer-Rollen vergeben
+2. **Designer**: kann Projekt- und Teilprojekt-Konfigurationen bearbeiten, Schreiber- und Leser-Rollen vergeben
+3. **Schreiber**: kann Daten bearbeiten
+4. **Leser**: kann Daten synchronisieren und lesen
 
-Ein Rollentyp schliesst immer alle niedrigeren Rollentypen ein. Sie werden nicht separat gesetzt, es muss pro Ebene nur eine einzige Rolle gesetzt werden.
-
-Eine Rolle ist die Kombination aus Benutzer und Rollentyp.
+Eine Rolle schliesst immer alle niedrigeren Rollen ein. Sie werden nicht separat gesetzt, es muss pro Ebene nur eine einzige Rolle gesetzt werden.
 
 ## Wo Rollen vergeben werden
 

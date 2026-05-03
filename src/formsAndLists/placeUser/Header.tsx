@@ -3,6 +3,10 @@ import { usePGlite, useLiveQuery } from '@electric-sql/pglite-react'
 import { useSetAtom, useAtom } from 'jotai'
 import { useRef, useEffect } from 'react'
 import { useIntl } from 'react-intl'
+import * as fluentUiReactComponents from '@fluentui/react-components'
+import { MdMenuBook } from 'react-icons/md'
+
+const { Button } = fluentUiReactComponents
 
 import { createPlaceUser } from '../../modules/createRows.ts'
 import { FormHeader } from '../../components/FormHeader/index.tsx'
@@ -115,6 +119,9 @@ export const Header = ({ autoFocusRef, from }) => {
     }
   }
 
+  const openDocs = () =>
+    window.open('/docs/user-roles', '_blank', 'noreferrer')
+
   return (
     <FormHeader
       title={title}
@@ -124,13 +131,23 @@ export const Header = ({ autoFocusRef, from }) => {
       toPrevious={toPrevious}
       tableName="place user"
       siblings={
-        <HistoryToggleButton
-          historiesPath={`${basePath}/histories`}
-          formPath={basePath}
-          historyTable="place_users_history"
-          rowIdField="place_user_id"
-          rowId={placeUserId}
-        />
+        <>
+          <HistoryToggleButton
+            historiesPath={`${basePath}/histories`}
+            formPath={basePath}
+            historyTable="place_users_history"
+            rowIdField="place_user_id"
+            rowId={placeUserId}
+          />
+          <Button
+            icon={<MdMenuBook />}
+            title={formatMessage({
+              id: 'user.openDocs',
+              defaultMessage: 'Dokumentation öffnen',
+            })}
+            onClick={openDocs}
+          />
+        </>
       }
     />
   )
