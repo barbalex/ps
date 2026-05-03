@@ -778,6 +778,8 @@
   "qc.isProjectLevel": "Niveau projet",
   "qc.isSubprojectLevel": "Niveau sous-projet",
   "qc.isSubprojectLevelSuffix": "niveau",
+  "qc.filterByYear": "Filtrer par année",
+  "qc.filterByYearHint": "Si vrai, une variable pour l'année de rapport souhaitée est transmise à la requête",
   "qc.description": "Description",
   "qc.sql": "SQL",
   "qc.sql.hintRoot": "aucun paramètre requis.",
