@@ -22,8 +22,6 @@ export default interface ProjectQcs {
 
   description: string | null;
 
-  sort: number | null;
-
   is_project_level: boolean | null;
 
   is_subproject_level: boolean | null;
@@ -61,8 +59,6 @@ export interface ProjectQcsInitializer {
   name_it?: string | null;
 
   description?: string | null;
-
-  sort?: number | null;
 
   /** Default value: false */
   is_project_level?: boolean | null;
@@ -105,8 +101,6 @@ export interface ProjectQcsMutator {
   name_it?: string | null;
 
   description?: string | null;
-
-  sort?: number | null;
 
   is_project_level?: boolean | null;
 

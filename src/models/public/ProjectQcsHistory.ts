@@ -17,8 +17,6 @@ export default interface ProjectQcsHistory {
 
   description: string | null;
 
-  sort: number | null;
-
   is_project_level: boolean | null;
 
   is_subproject_level: boolean | null;
@@ -56,8 +54,6 @@ export interface ProjectQcsHistoryInitializer {
   name_it?: string | null;
 
   description?: string | null;
-
-  sort?: number | null;
 
   /** Default value: false */
   is_project_level?: boolean | null;
@@ -100,8 +96,6 @@ export interface ProjectQcsHistoryMutator {
   name_it?: string | null;
 
   description?: string | null;
-
-  sort?: number | null;
 
   is_project_level?: boolean | null;
 

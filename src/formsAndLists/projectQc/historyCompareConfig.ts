@@ -25,5 +25,4 @@ export const preferredOrder = [
   'is_subproject_level',
   'filter_by_year',
   'sql',
-  'sort',
 ]

@@ -113,7 +113,6 @@ export const ProjectQcHistoryCompare = () => {
     'is_subproject_level',
     'filter_by_year',
     'sql',
-    'sort',
   ])
 
   const formatFieldLabel = createHistoryFieldLabelFormatter({
@@ -124,7 +123,6 @@ export const ProjectQcHistoryCompare = () => {
       name_fr: { id: 'qc.nameFr', defaultMessage: 'Name (FR)' },
       name_it: { id: 'qc.nameIt', defaultMessage: 'Name (IT)' },
       description: { id: 'v6Yf4v', defaultMessage: 'Beschreibung' },
-      sort: { id: 'Ml4jRf', defaultMessage: 'Sortierung' },
       is_project_level: {
         id: 'qc.isProjectLevel',
         defaultMessage: 'Projekt-Ebene',

@@ -3,38 +3,36 @@
  * System-versioned history of qcs. Managed by temporal_tables and partitioned yearly by updated_at.
  */
 export default interface QcsHistory {
-  qcs_id: string;
+  qcs_id: string
 
-  name_de: string | null;
+  name_de: string | null
 
-  name_en: string | null;
+  name_en: string | null
 
-  name_fr: string | null;
+  name_fr: string | null
 
-  name_it: string | null;
+  name_it: string | null
 
-  description: string | null;
+  description: string | null
 
-  sort: number | null;
+  is_root_level: boolean | null
 
-  is_root_level: boolean | null;
+  is_project_level: boolean | null
 
-  is_project_level: boolean | null;
+  is_subproject_level: boolean | null
 
-  is_subproject_level: boolean | null;
+  filter_by_year: boolean | null
 
-  filter_by_year: boolean | null;
-
-  sql: string | null;
+  sql: string | null
 
   /** System period written by temporal_tables. lower(sys_period) is when the row version became current, upper(sys_period) when it stopped being current. */
-  sys_period: string;
+  sys_period: string
 
-  created_at: Date;
+  created_at: Date
 
-  updated_at: Date;
+  updated_at: Date
 
-  updated_by: string | null;
+  updated_by: string | null
 }
 
 /**
@@ -43,44 +41,42 @@ export default interface QcsHistory {
  */
 export interface QcsHistoryInitializer {
   /** Default value: uuid_generate_v7() */
-  qcs_id?: string;
+  qcs_id?: string
 
-  name_de?: string | null;
+  name_de?: string | null
 
-  name_en?: string | null;
+  name_en?: string | null
 
-  name_fr?: string | null;
+  name_fr?: string | null
 
-  name_it?: string | null;
+  name_it?: string | null
 
-  description?: string | null;
-
-  sort?: number | null;
+  description?: string | null
 
   /** Default value: false */
-  is_root_level?: boolean | null;
+  is_root_level?: boolean | null
 
   /** Default value: false */
-  is_project_level?: boolean | null;
+  is_project_level?: boolean | null
 
   /** Default value: false */
-  is_subproject_level?: boolean | null;
+  is_subproject_level?: boolean | null
 
   /** Default value: false */
-  filter_by_year?: boolean | null;
+  filter_by_year?: boolean | null
 
-  sql?: string | null;
+  sql?: string | null
 
   /** System period written by temporal_tables. lower(sys_period) is when the row version became current, upper(sys_period) when it stopped being current. */
-  sys_period: string;
+  sys_period: string
 
   /** Default value: now() */
-  created_at?: Date;
+  created_at?: Date
 
   /** Default value: now() */
-  updated_at?: Date;
+  updated_at?: Date
 
-  updated_by?: string | null;
+  updated_by?: string | null
 }
 
 /**
@@ -88,36 +84,34 @@ export interface QcsHistoryInitializer {
  * System-versioned history of qcs. Managed by temporal_tables and partitioned yearly by updated_at.
  */
 export interface QcsHistoryMutator {
-  qcs_id?: string;
+  qcs_id?: string
 
-  name_de?: string | null;
+  name_de?: string | null
 
-  name_en?: string | null;
+  name_en?: string | null
 
-  name_fr?: string | null;
+  name_fr?: string | null
 
-  name_it?: string | null;
+  name_it?: string | null
 
-  description?: string | null;
+  description?: string | null
 
-  sort?: number | null;
+  is_root_level?: boolean | null
 
-  is_root_level?: boolean | null;
+  is_project_level?: boolean | null
 
-  is_project_level?: boolean | null;
+  is_subproject_level?: boolean | null
 
-  is_subproject_level?: boolean | null;
+  filter_by_year?: boolean | null
 
-  filter_by_year?: boolean | null;
-
-  sql?: string | null;
+  sql?: string | null
 
   /** System period written by temporal_tables. lower(sys_period) is when the row version became current, upper(sys_period) when it stopped being current. */
-  sys_period?: string;
+  sys_period?: string
 
-  created_at?: Date;
+  created_at?: Date
 
-  updated_at?: Date;
+  updated_at?: Date
 
-  updated_by?: string | null;
+  updated_by?: string | null
 }

@@ -78,7 +78,7 @@ const bool = (s) => ((s ?? '').trim() === 'true' ? 'true' : 'false')
 
 const valueLines = rows
   .map((cols) => {
-    // name_de;name_en;name_fr;name_it;is_root_level;is_project_level;is_subproject_level;filter_by_year;sql;sort;description
+    // name_de;name_en;name_fr;name_it;is_root_level;is_project_level;is_subproject_level;filter_by_year;sql;description
     const [
       name_de,
       name_en,

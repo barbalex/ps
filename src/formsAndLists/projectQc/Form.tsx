@@ -33,7 +33,10 @@ export const ProjectQcForm = ({
   })
   const subprojectLevelLabel = subprojectNameSingular
     ? `${subprojectNameSingular}-${levelSuffix}`
-    : formatMessage({ id: 'qc.isSubprojectLevel', defaultMessage: 'Teilprojekt-Ebene' })
+    : formatMessage({
+        id: 'qc.isSubprojectLevel',
+        defaultMessage: 'Teilprojekt-Ebene',
+      })
 
   const paramHint = (() => {
     const parts: string[] = []
@@ -142,13 +145,6 @@ export const ProjectQcForm = ({
         })}
         name="filter_by_year"
         value={row?.filter_by_year}
-        onChange={onChange}
-      />
-      <TextField
-        label={formatMessage({ id: 'Ml4jRf', defaultMessage: 'Sortierung' })}
-        name="sort"
-        type="number"
-        value={row?.sort ?? ''}
         onChange={onChange}
       />
       <TextField

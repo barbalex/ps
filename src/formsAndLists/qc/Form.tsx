@@ -169,18 +169,6 @@ export const QcForm = ({ onChange, validations = {}, row, autoFocusRef }) => {
         validationMessage={validations?.sql?.message}
         validationState={validations?.sql?.state}
       />
-      <TextField
-        label={formatMessage({
-          id: 'Pq7nWk',
-          defaultMessage: 'Sortier-Reihenfolge',
-        })}
-        name="sort"
-        value={row?.sort ?? ''}
-        type="number"
-        onChange={onChange}
-        validationMessage={validations?.sort?.message}
-        validationState={validations?.sort?.state}
-      />
     </>
   )
 }

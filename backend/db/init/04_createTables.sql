@@ -1921,7 +1921,6 @@ CREATE TABLE IF NOT EXISTS qcs(
   name_fr text DEFAULT NULL,
   name_it text DEFAULT NULL,
   description text DEFAULT NULL,
-  sort smallint DEFAULT NULL,
   is_root_level boolean DEFAULT false,
   is_project_level boolean DEFAULT false,
   is_subproject_level boolean DEFAULT false,
@@ -1935,7 +1934,6 @@ CREATE TABLE IF NOT EXISTS qcs(
 );
 
 CREATE INDEX IF NOT EXISTS qcs_name_de_idx ON qcs USING btree(name_de);
-CREATE INDEX IF NOT EXISTS qcs_sort_idx ON qcs USING btree(sort);
 
 COMMENT ON TABLE qcs IS 'Quality control rules for data validation. No history tracking needed as these are root-level configuration managed by administrators.';
 
@@ -1973,7 +1971,6 @@ CREATE TABLE IF NOT EXISTS project_qcs(
   name_fr text DEFAULT NULL,
   name_it text DEFAULT NULL,
   description text DEFAULT NULL,
-  sort smallint DEFAULT NULL,
   is_project_level boolean DEFAULT false,
   is_subproject_level boolean DEFAULT false,
   filter_by_year boolean DEFAULT false,
@@ -1987,7 +1984,6 @@ CREATE TABLE IF NOT EXISTS project_qcs(
 
 CREATE INDEX IF NOT EXISTS project_qcs_project_id_idx ON project_qcs USING btree(project_id);
 CREATE INDEX IF NOT EXISTS project_qcs_name_de_idx ON project_qcs USING btree(name_de);
-CREATE INDEX IF NOT EXISTS project_qcs_sort_idx ON project_qcs USING btree(sort);
 
 COMMENT ON TABLE project_qcs IS 'Project-specific quality controls. Only visible within the project and its sub-projects. Created by project owners and designers.';
 
