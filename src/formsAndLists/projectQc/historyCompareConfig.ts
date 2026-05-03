@@ -20,7 +20,6 @@ export const preferredOrder = [
   'name_en',
   'name_fr',
   'name_it',
-  'description',
   'level',
   'filter_by_year',
   'sql',

@@ -16,7 +16,6 @@ import '../../form.css'
 
 export const ProjectQcForm = ({
   onChange,
-  validations = {},
   row,
   autoFocusRef,
 }) => {
@@ -198,15 +197,6 @@ export const ProjectQcForm = ({
             },
           )}
         </SectionDescription>
-        <TextField
-          label={formatMessage({
-            id: 'v6Yf4v',
-            defaultMessage: 'Beschreibung',
-          })}
-          name="description"
-          value={row?.description ?? ''}
-          onChange={onChange}
-        />
         <SqlEditorField
           label={formatMessage({ id: 'qc.sql', defaultMessage: 'SQL' })}
           name="sql"

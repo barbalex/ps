@@ -22,8 +22,6 @@ Better-Auth, possible extensions:
 
 ---
 
-lets remove qcs.description and project_qcs.description (do not forget histories)
-
 ---
 
 link to /docs/quality-controls

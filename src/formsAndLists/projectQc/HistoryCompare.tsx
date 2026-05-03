@@ -108,7 +108,6 @@ export const ProjectQcHistoryCompare = () => {
     'name_en',
     'name_fr',
     'name_it',
-    'description',
     'level',
     'filter_by_year',
     'sql',
@@ -121,7 +120,6 @@ export const ProjectQcHistoryCompare = () => {
       name_en: { id: 'qc.nameEn', defaultMessage: 'Name (EN)' },
       name_fr: { id: 'qc.nameFr', defaultMessage: 'Name (FR)' },
       name_it: { id: 'qc.nameIt', defaultMessage: 'Name (IT)' },
-      description: { id: 'v6Yf4v', defaultMessage: 'Beschreibung' },
       level: {
         id: 'qc.level',
         defaultMessage: 'Auf welcher Ebene wird Qualität kontrolliert?',

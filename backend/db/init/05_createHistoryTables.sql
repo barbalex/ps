@@ -2028,6 +2028,8 @@ ADD COLUMN IF NOT EXISTS description text DEFAULT NULL;
 ALTER TABLE project_qcs
 ADD COLUMN IF NOT EXISTS sql text DEFAULT NULL;
 
+ALTER TABLE project_qcs DROP COLUMN IF EXISTS description;
+
 UPDATE project_qcs
 SET sys_period = tstzrange(updated_at, NULL, '[)')
 WHERE sys_period IS NULL;
@@ -2051,6 +2053,8 @@ ADD COLUMN IF NOT EXISTS description text DEFAULT NULL;
 
 ALTER TABLE project_qcs_history
 ADD COLUMN IF NOT EXISTS sql text DEFAULT NULL;
+
+ALTER TABLE project_qcs_history DROP COLUMN IF EXISTS description;
 
 CREATE INDEX IF NOT EXISTS project_qcs_history_updated_at_idx
 ON project_qcs_history USING btree (updated_at);
@@ -2485,6 +2489,8 @@ $$;
 ALTER TABLE qcs
 ADD COLUMN IF NOT EXISTS sys_period tstzrange;
 
+ALTER TABLE qcs DROP COLUMN IF EXISTS description;
+
 UPDATE qcs
 SET sys_period = tstzrange(updated_at, NULL, '[)')
 WHERE sys_period IS NULL;
@@ -2502,6 +2508,8 @@ ALTER TABLE qcs_history OWNER TO partman_user;
 
 COMMENT ON TABLE qcs_history IS 'System-versioned history of qcs. Managed by temporal_tables and partitioned yearly by updated_at.';
 COMMENT ON COLUMN qcs_history.sys_period IS 'System period written by temporal_tables. lower(sys_period) is when the row version became current, upper(sys_period) when it stopped being current.';
+
+ALTER TABLE qcs_history DROP COLUMN IF EXISTS description;
 
 CREATE INDEX IF NOT EXISTS qcs_history_updated_at_idx
 ON qcs_history USING btree (updated_at);

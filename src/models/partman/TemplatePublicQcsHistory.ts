@@ -12,8 +12,6 @@ export default interface TemplatePublicQcsHistory {
 
   name_it: string | null;
 
-  description: string | null;
-
   level: public_QcsLevelEnum | null;
 
   filter_by_year: boolean | null;
@@ -41,8 +39,6 @@ export interface TemplatePublicQcsHistoryInitializer {
 
   name_it?: string | null;
 
-  description?: string | null;
-
   level?: public_QcsLevelEnum | null;
 
   filter_by_year?: boolean | null;
@@ -69,8 +65,6 @@ export interface TemplatePublicQcsHistoryMutator {
   name_fr?: string | null;
 
   name_it?: string | null;
-
-  description?: string | null;
 
   level?: public_QcsLevelEnum | null;
 

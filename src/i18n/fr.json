@@ -787,7 +787,6 @@
   "qc.level.subproject": "Sous-projet",
   "qc.filterByYear": "Filtrer par année",
   "qc.filterByYearHint": "Si vrai, une variable pour l'année de rapport souhaitée est transmise à la requête",
-  "qc.description": "Description",
   "qc.sql": "SQL",
   "qc.sql.hintRoot": "aucun paramètre requis.",
   "qc.sql.hintProject": "$1 = project_id (uuid)",

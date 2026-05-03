@@ -177,17 +177,6 @@ export const QcForm = ({ onChange, validations = {}, row, autoFocusRef }) => {
               'Die Abfrage soll verdächtige Datensätze aufdecken. Sie retourniert zwei Felder: label (Beschriftung) und url (ein Link um den Datensatz aufzurufen).',
           })}
         </SectionDescription>
-        <TextField
-          label={formatMessage({
-            id: 'qc.description',
-            defaultMessage: 'Beschreibung',
-          })}
-          name="description"
-          value={row?.description ?? ''}
-          onChange={onChange}
-          validationMessage={validations?.description?.message}
-          validationState={validations?.description?.state}
-        />
         <SqlEditorField
           label={formatMessage({ id: 'qc.sql', defaultMessage: 'SQL' })}
           name="sql"

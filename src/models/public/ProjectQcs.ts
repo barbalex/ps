@@ -21,8 +21,6 @@ export default interface ProjectQcs {
 
   name_it: string | null;
 
-  description: string | null;
-
   level: ProjectQcsLevelEnum | null;
 
   filter_by_year: boolean | null;
@@ -56,8 +54,6 @@ export interface ProjectQcsInitializer {
   name_fr?: string | null;
 
   name_it?: string | null;
-
-  description?: string | null;
 
   level?: ProjectQcsLevelEnum | null;
 
@@ -94,8 +90,6 @@ export interface ProjectQcsMutator {
   name_fr?: string | null;
 
   name_it?: string | null;
-
-  description?: string | null;
 
   level?: ProjectQcsLevelEnum | null;
 

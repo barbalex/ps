@@ -15,8 +15,6 @@ export default interface QcsHistory {
 
   name_it: string | null;
 
-  description: string | null;
-
   level: QcsLevelEnum | null;
 
   filter_by_year: boolean | null;
@@ -48,8 +46,6 @@ export interface QcsHistoryInitializer {
   name_fr?: string | null;
 
   name_it?: string | null;
-
-  description?: string | null;
 
   level?: QcsLevelEnum | null;
 
@@ -84,8 +80,6 @@ export interface QcsHistoryMutator {
   name_fr?: string | null;
 
   name_it?: string | null;
-
-  description?: string | null;
 
   level?: QcsLevelEnum | null;
 

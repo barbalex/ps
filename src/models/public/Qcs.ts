@@ -18,8 +18,6 @@ export default interface Qcs {
 
   name_it: string | null;
 
-  description: string | null;
-
   level: QcsLevelEnum | null;
 
   filter_by_year: boolean | null;
@@ -51,8 +49,6 @@ export interface QcsInitializer {
   name_fr?: string | null;
 
   name_it?: string | null;
-
-  description?: string | null;
 
   level?: QcsLevelEnum | null;
 
@@ -87,8 +83,6 @@ export interface QcsMutator {
   name_fr?: string | null;
 
   name_it?: string | null;
-
-  description?: string | null;
 
   level?: QcsLevelEnum | null;
 
