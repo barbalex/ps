@@ -8,8 +8,8 @@ Benutzer mit der Rolle "Eigentümer" oder "Designer" können wählen, welche der
 
 Es gibt sie auf Stufe Projekt und Teil-Projekt (Art/Biotop).
 
-Das Ergebnis sind Listen von verdächtigen Datensätzen. Sie können nacheinander abgearbeitet werden.
+Das Ergebnis sind Listen von verdächtigen Datensätzen. Sie können nacheinander korrigiert werden.
 
-Qualitätskontrollen haben den Vorteil, die Benutzer während der Eingabe nicht zu unterbrechen oder zu behindern. Du kannst ein Formular auch verlassen, wenn noch nicht alle erforderlichen Felder ausgefüllt wurden. Aber wenn du vergisst, das nachzuholen, schlägt hoffentlich eine Qualitätskontrolle Alarm.
+Qualitätskontrollen unterbrechen dich nicht während der Eingabe. Du kannst ein Formular auch verlassen, wenn noch nicht alle erforderlichen Felder ausgefüllt wurden. Aber wenn du vergisst, das nachzuholen, schlägt hoffentlich eine Qualitätskontrolle Alarm.
 
 Qualitätskontrollen sollten aber möglichst wenige, im Normalfall keine falschen Alarme schlagen.
