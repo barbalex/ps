@@ -1,7 +1,7 @@
 import type { PGlite } from '@electric-sql/pglite'
 
 type RowData = Record<string, unknown>
-type Permission = 'writer' | 'designer'
+type Permission = 'write-all' | 'design'
 
 type CheckConfig = {
   /** SQL returning a single `role` column. $1 = userId, $2 = parentId */
@@ -10,7 +10,7 @@ type CheckConfig = {
   minPermission?: Permission
 }
 
-const ROLE_ORDER = ['reader', 'writer', 'designer', 'owner']
+const ROLE_ORDER = ['read-specific', 'read-all', 'write-specific', 'write-all', 'design', 'own']
 
 function hasPermission(role: string | undefined, min: Permission = 'writer'): boolean {
   if (!role) return false
@@ -55,17 +55,17 @@ const TABLE_CONFIG: Record<string, CheckConfig> = {
   project_users: {
     sql: `SELECT role FROM project_users WHERE project_id = $2 AND user_id = $1`,
     getParentId: (row) => row.project_id as string,
-    minPermission: 'designer',
+    minPermission: 'design',
   },
   subproject_users: {
     sql: `SELECT role FROM subproject_users WHERE subproject_id = $2 AND user_id = $1`,
     getParentId: (row) => row.subproject_id as string,
-    minPermission: 'designer',
+    minPermission: 'design',
   },
   place_users: {
     sql: `SELECT role FROM place_users WHERE place_id = $2 AND user_id = $1`,
     getParentId: (row) => row.place_id as string,
-    minPermission: 'designer',
+    minPermission: 'design',
   },
 
   // Project-level — direct project_id

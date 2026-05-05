@@ -37,7 +37,7 @@ export interface PlaceUsersHistoryInitializer {
 
   user_id?: string | null;
 
-  /** Default value: 'reader'::user_roles_enum */
+  /** Default value: 'read-all'::user_roles_enum */
   role?: UserRolesEnum | null;
 
   label?: string | null;

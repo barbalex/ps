@@ -26,7 +26,7 @@ export const DesigningButton = ({ from }) => {
   )
   const userRole = resultProject?.rows?.[0]?.role
 
-  const userMayDesign = userRole === 'designer' || userRole === 'owner'
+  const userMayDesign = userRole === 'design' || userRole === 'own'
 
   if (!userMayDesign) return null
 

@@ -12,8 +12,8 @@
 -- this check.
 --
 -- Role requirement:
---   Data tables ..............  writer, designer, or owner
---   *_users tables ...........  designer or owner
+--   Data tables ..............  write-all, design, or own
+--   *_users tables ...........  design or own
 --   projects INSERT ..........  any authenticated user (becomes owner via trigger)
 -- ─────────────────────────────────────────────────────────────────────────────
 
@@ -37,18 +37,18 @@ $$;
 
 -- ─── Write-access helpers ─────────────────────────────────────────────────────
 
--- Returns TRUE when the user has writer+ on the given project directly.
+-- Returns TRUE when the user has write-all+ on the given project directly.
 CREATE OR REPLACE FUNCTION user_can_write_project(p_project_id uuid, p_user_id uuid)
 RETURNS boolean LANGUAGE sql STABLE SECURITY DEFINER AS $$
   SELECT EXISTS (
     SELECT 1 FROM project_users
     WHERE project_id = p_project_id
       AND user_id    = p_user_id
-      AND role       >= 'writer'::user_roles_enum
+      AND role       >= 'write-all'::user_roles_enum
   )
 $$;
 
--- Returns TRUE when the user has writer+ on the subproject OR its parent project.
+-- Returns TRUE when the user has write-all+ on the subproject OR its parent project.
 CREATE OR REPLACE FUNCTION user_can_write_subproject(p_subproject_id uuid, p_user_id uuid)
 RETURNS boolean LANGUAGE sql STABLE SECURITY DEFINER AS $$
   SELECT user_can_write_project(
@@ -59,11 +59,11 @@ RETURNS boolean LANGUAGE sql STABLE SECURITY DEFINER AS $$
     SELECT 1 FROM subproject_users
     WHERE subproject_id = p_subproject_id
       AND user_id       = p_user_id
-      AND role          >= 'writer'::user_roles_enum
+      AND role          >= 'write-all'::user_roles_enum
   )
 $$;
 
--- Returns TRUE when the user has writer+ on the place, its subproject, or the project.
+-- Returns TRUE when the user has write-all+ on the place, its subproject, or the project.
 CREATE OR REPLACE FUNCTION user_can_write_place(p_place_id uuid, p_user_id uuid)
 RETURNS boolean LANGUAGE sql STABLE SECURITY DEFINER AS $$
   SELECT user_can_write_subproject(
@@ -74,11 +74,11 @@ RETURNS boolean LANGUAGE sql STABLE SECURITY DEFINER AS $$
     SELECT 1 FROM place_users
     WHERE place_id = p_place_id
       AND user_id  = p_user_id
-      AND role     >= 'writer'::user_roles_enum
+      AND role     >= 'write-all'::user_roles_enum
   )
 $$;
 
--- ─── Role-management helpers (designer or higher required) ───────────────────
+-- ─── Role-management helpers (design or higher required) ────────────────────
 
 CREATE OR REPLACE FUNCTION user_can_manage_project_roles(p_project_id uuid, p_user_id uuid)
 RETURNS boolean LANGUAGE sql STABLE SECURITY DEFINER AS $$
@@ -86,7 +86,7 @@ RETURNS boolean LANGUAGE sql STABLE SECURITY DEFINER AS $$
     SELECT 1 FROM project_users
     WHERE project_id = p_project_id
       AND user_id    = p_user_id
-      AND role       >= 'designer'::user_roles_enum
+      AND role       >= 'design'::user_roles_enum
   )
 $$;
 
@@ -100,7 +100,7 @@ RETURNS boolean LANGUAGE sql STABLE SECURITY DEFINER AS $$
     SELECT 1 FROM subproject_users
     WHERE subproject_id = p_subproject_id
       AND user_id       = p_user_id
-      AND role          >= 'designer'::user_roles_enum
+      AND role          >= 'design'::user_roles_enum
   )
 $$;
 
@@ -114,7 +114,7 @@ RETURNS boolean LANGUAGE sql STABLE SECURITY DEFINER AS $$
     SELECT 1 FROM place_users
     WHERE place_id = p_place_id
       AND user_id  = p_user_id
-      AND role     >= 'designer'::user_roles_enum
+      AND role     >= 'design'::user_roles_enum
   )
 $$;
 
@@ -129,7 +129,7 @@ $$;
 
 -- For the projects table itself.
 -- INSERT: any authenticated user is allowed (the owner trigger makes them owner).
--- UPDATE/DELETE: writer+ on the project required.
+-- UPDATE/DELETE: write-all+ on the project required.
 CREATE OR REPLACE FUNCTION enforce_projects_write()
 RETURNS trigger LANGUAGE plpgsql SECURITY DEFINER AS $$
 DECLARE
@@ -295,7 +295,7 @@ BEGIN
 END;
 $$;
 
--- For project_users: designer or owner required.
+-- For project_users: design or own required.
 CREATE OR REPLACE FUNCTION enforce_project_users_write()
 RETURNS trigger LANGUAGE plpgsql SECURITY DEFINER AS $$
 DECLARE
@@ -315,7 +315,7 @@ BEGIN
 
   v_project_id := CASE WHEN TG_OP = 'DELETE' THEN OLD.project_id ELSE NEW.project_id END;
 
-  IF TG_OP <> 'DELETE' AND NEW.role = 'owner'::user_roles_enum THEN
+  IF TG_OP <> 'DELETE' AND NEW.role = 'own'::user_roles_enum THEN
     RAISE EXCEPTION 'Only triggers may set the owner role'
       USING ERRCODE = '42501',
             HINT = 'The owner role is assigned automatically to the user who created a project';
@@ -332,7 +332,7 @@ BEGIN
 END;
 $$;
 
--- For subproject_users: designer+ on subproject or parent project required.
+-- For subproject_users: design+ on subproject or parent project required.
 CREATE OR REPLACE FUNCTION enforce_subproject_users_write()
 RETURNS trigger LANGUAGE plpgsql SECURITY DEFINER AS $$
 DECLARE
@@ -352,7 +352,7 @@ BEGIN
 
   v_subproject_id := CASE WHEN TG_OP = 'DELETE' THEN OLD.subproject_id ELSE NEW.subproject_id END;
 
-  IF TG_OP <> 'DELETE' AND NEW.role = 'owner'::user_roles_enum THEN
+  IF TG_OP <> 'DELETE' AND NEW.role = 'own'::user_roles_enum THEN
     RAISE EXCEPTION 'Only triggers may set the owner role'
       USING ERRCODE = '42501',
             HINT = 'The owner role is assigned automatically to the user who created a project';
@@ -371,7 +371,7 @@ BEGIN
 END;
 $$;
 
--- For place_users: designer+ on place, subproject, or parent project required.
+-- For place_users: design+ on place, subproject, or parent project required.
 CREATE OR REPLACE FUNCTION enforce_place_users_write()
 RETURNS trigger LANGUAGE plpgsql SECURITY DEFINER AS $$
 DECLARE
@@ -391,7 +391,7 @@ BEGIN
 
   v_place_id := CASE WHEN TG_OP = 'DELETE' THEN OLD.place_id ELSE NEW.place_id END;
 
-  IF TG_OP <> 'DELETE' AND NEW.role = 'owner'::user_roles_enum THEN
+  IF TG_OP <> 'DELETE' AND NEW.role = 'own'::user_roles_enum THEN
     RAISE EXCEPTION 'Only triggers may set the owner role'
       USING ERRCODE = '42501',
             HINT = 'The owner role is assigned automatically to the user who created a project';

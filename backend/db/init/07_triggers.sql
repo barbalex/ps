@@ -1139,8 +1139,8 @@ BEGIN
 
   IF _user_id IS NOT NULL THEN
     INSERT INTO project_users(project_id, user_id, role)
-    VALUES (NEW.project_id, _user_id, 'owner')
-    ON CONFLICT (project_id, user_id) DO UPDATE SET role = 'owner';
+    VALUES (NEW.project_id, _user_id, 'own')
+    ON CONFLICT (project_id, user_id) DO UPDATE SET role = 'own';
   END IF;
 
   RETURN NEW;
@@ -1179,19 +1179,22 @@ BEGIN
       );
     RETURN OLD;
   ELSE
-    -- upsert into subproject_users for all subprojects of the project
-    INSERT INTO subproject_users(subproject_id, user_id, role)
-    SELECT subproject_id, NEW.user_id, NEW.role
-    FROM subprojects
-    WHERE project_id = NEW.project_id
-    ON CONFLICT (subproject_id, user_id) DO UPDATE SET role = EXCLUDED.role;
-    -- upsert into place_users for all places of those subprojects
-    INSERT INTO place_users(place_id, user_id, role)
-    SELECT p.place_id, NEW.user_id, NEW.role
-    FROM places p
-    INNER JOIN subprojects s ON p.subproject_id = s.subproject_id
-    WHERE s.project_id = NEW.project_id
-    ON CONFLICT (place_id, user_id) DO UPDATE SET role = EXCLUDED.role;
+    -- Only cascade when role is non-specific (read-all, write-all, design, own)
+    IF NEW.role NOT IN ('read-specific', 'write-specific') THEN
+      -- upsert into subproject_users for all subprojects of the project
+      INSERT INTO subproject_users(subproject_id, user_id, role)
+      SELECT subproject_id, NEW.user_id, NEW.role
+      FROM subprojects
+      WHERE project_id = NEW.project_id
+      ON CONFLICT (subproject_id, user_id) DO UPDATE SET role = EXCLUDED.role;
+      -- upsert into place_users for all places of those subprojects
+      INSERT INTO place_users(place_id, user_id, role)
+      SELECT p.place_id, NEW.user_id, NEW.role
+      FROM places p
+      INNER JOIN subprojects s ON p.subproject_id = s.subproject_id
+      WHERE s.project_id = NEW.project_id
+      ON CONFLICT (place_id, user_id) DO UPDATE SET role = EXCLUDED.role;
+    END IF;
     RETURN NEW;
   END IF;
 END;
@@ -1222,11 +1225,14 @@ BEGIN
       );
     RETURN OLD;
   ELSE
-    INSERT INTO place_users(place_id, user_id, role)
-    SELECT place_id, NEW.user_id, NEW.role
-    FROM places
-    WHERE subproject_id = NEW.subproject_id
-    ON CONFLICT (place_id, user_id) DO UPDATE SET role = EXCLUDED.role;
+    -- Only cascade when role is non-specific (read-all, write-all, design, own)
+    IF NEW.role NOT IN ('read-specific', 'write-specific') THEN
+      INSERT INTO place_users(place_id, user_id, role)
+      SELECT place_id, NEW.user_id, NEW.role
+      FROM places
+      WHERE subproject_id = NEW.subproject_id
+      ON CONFLICT (place_id, user_id) DO UPDATE SET role = EXCLUDED.role;
+    END IF;
     RETURN NEW;
   END IF;
 END;
@@ -1249,10 +1255,12 @@ BEGIN
     RETURN NEW;
   END IF;
 
+  -- Only inherit from parent roles that cascade (non-specific)
   INSERT INTO subproject_users(subproject_id, user_id, role)
   SELECT NEW.subproject_id, pu.user_id, pu.role
   FROM project_users pu
   WHERE pu.project_id = NEW.project_id
+    AND pu.role NOT IN ('read-specific', 'write-specific')
   ON CONFLICT (subproject_id, user_id) DO NOTHING;
 
   RETURN NEW;
@@ -1276,10 +1284,12 @@ BEGIN
     RETURN NEW;
   END IF;
 
+  -- Only inherit from parent roles that cascade (non-specific)
   INSERT INTO place_users(place_id, user_id, role)
   SELECT NEW.place_id, su.user_id, su.role
   FROM subproject_users su
   WHERE su.subproject_id = NEW.subproject_id
+    AND su.role NOT IN ('read-specific', 'write-specific')
   ON CONFLICT (place_id, user_id) DO NOTHING;
 
   RETURN NEW;

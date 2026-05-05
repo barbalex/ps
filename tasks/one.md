@@ -15,7 +15,7 @@ Better-Auth, possible extensions:
 ---
 
 roles are now defined as: CREATE TYPE user_roles_enum AS ENUM ('reader', 'writer', 'designer', 'owner').
-Triggers fetch the parent's roles on insert and spread them to all lower levels insert/update. See 'User roles: cascade and inheritance triggers' in /home/alex/Documents/GitHub/ps/backend/db/init/07_triggers.sql.
+Triggers fetch the parent's roles on insert and spread them to all lower levels on insert/update. See 'User roles: cascade and inheritance triggers' in /home/alex/Documents/GitHub/ps/backend/db/init/07_triggers.sql.
 
 This is efficient to set higher roles at lower levels. But not to give NO roles at lower levels i.e. to prevent a user to read/sync something at lower level.
 
@@ -36,17 +36,22 @@ CREATE TYPE user_roles_enum AS ENUM ('read-specific', 'read-all', 'write-specifi
 
 Implementation:
 
-1. change role creation
-2. check all usages of roles and rename them (where used in code), add and rename/re-translate where used in the ui
-3. Update triggers to only run if parent is -all (or design or own)
-4. Create triggers that REMOVE lower level roles if this level's role is set to -specific
-5. Inform user in the ui that this happened
-6. Check other roles usage in code?
-7. Update the docs (/docs/user-roles)
+1. Update role creation
+2. Update triggers to only run if parent is -all (or design or own)
+3. Update /home/alex/Documents/GitHub/ps/backend/db/init/12_writePermissionTriggers.sql
+4. Check all usages of roles and rename them (where used in code), add and rename/re-translate where used in the ui
+5. Create triggers that REMOVE lower level roles if this level's role is set to -specific
+6. Inform user in the ui that this happened
+7. Check other roles usage in code?
+8. Update the docs (/docs/user-roles)
 
-Lets start by implementing 1 to 3. We will go on with 4 later.
+Lets start by implementing 1 to 4. We will go on with 5 later.
 
 ---
+
+On to step 5: Create triggers that REMOVE lower level roles if this level's role is set to -specific.
+Example: If project_users role is set to 'read-specific', this user's datasets in subproject_users and place_users are removed.
+Example 2: If place_users (level 1)  role is set to 'write-specific', this user's datasets in place_users (level 2) is removed.
 
 ---
 

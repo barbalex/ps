@@ -368,10 +368,27 @@ export const userRoleOptions: {
   defaultMessage: string
   sort: number
 }[] = [
-  { value: 'reader', labelId: 'cV3WxY', defaultMessage: 'Leser', sort: 1 },
-  { value: 'writer', labelId: 'bR2StU', defaultMessage: 'Schreiber', sort: 2 },
-  { value: 'designer', labelId: 'aM1NpQ', defaultMessage: 'Designer', sort: 3 },
-  { value: 'owner', labelId: 'dZ4AbC', defaultMessage: 'Eigentümer', sort: 4 },
+  {
+    value: 'read-specific',
+    labelId: 'eF7GhI',
+    defaultMessage: 'Leser (spezifisch)',
+    sort: 1,
+  },
+  { value: 'read-all', labelId: 'cV3WxY', defaultMessage: 'Leser', sort: 2 },
+  {
+    value: 'write-specific',
+    labelId: 'fJ8KlM',
+    defaultMessage: 'Schreiber (spezifisch)',
+    sort: 3,
+  },
+  {
+    value: 'write-all',
+    labelId: 'bR2StU',
+    defaultMessage: 'Schreiber',
+    sort: 4,
+  },
+  { value: 'design', labelId: 'aM1NpQ', defaultMessage: 'Designer', sort: 5 },
+  { value: 'own', labelId: 'dZ4AbC', defaultMessage: 'Eigentümer', sort: 6 },
 ]
 
 export const projectTypeOptions: {

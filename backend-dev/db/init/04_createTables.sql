@@ -418,7 +418,7 @@ COMMENT ON TABLE subprojects IS 'Goal: manage subprojects. Will most often be a 
 --------------------------------------------------------------
 -- project_users
 --
-CREATE TYPE user_roles_enum AS ENUM ('reader', 'writer', 'designer', 'owner');
+CREATE TYPE user_roles_enum AS ENUM ('read-specific', 'read-all', 'write-specific', 'write-all', 'design', 'own');
 
 CREATE TABLE IF NOT EXISTS project_users(
   project_user_id uuid PRIMARY KEY DEFAULT public.uuid_generate_v7(),
@@ -439,7 +439,7 @@ ALTER TABLE project_users
 ADD CONSTRAINT project_users_project_id_user_id_unique UNIQUE (project_id, user_id);
 
 
-COMMENT ON COLUMN project_users.role IS 'One of: "reader", "writer", "designer", "owner". Preset: "reader"';
+COMMENT ON COLUMN project_users.role IS 'One of: "read-specific", "read-all", "write-specific", "write-all", "design", "own". Preset: "read-all"';
 COMMENT ON TABLE project_users IS 'A way to give users access to projects (without giving them access to the whole account).';
 
 --------------------------------------------------------------
@@ -464,7 +464,7 @@ ALTER TABLE subproject_users
 ADD CONSTRAINT subproject_users_subproject_id_user_id_unique UNIQUE (subproject_id, user_id);
 
 
-COMMENT ON COLUMN subproject_users.role IS 'One of: "reader", "writer", "designer", "owner". Preset: "reader"';
+COMMENT ON COLUMN subproject_users.role IS 'One of: "read-specific", "read-all", "write-specific", "write-all", "design", "own". Preset: "read-all"';
 COMMENT ON TABLE subproject_users IS 'A way to give users access to subprojects (without giving them access to the whole project). TODO: define what data from the project the user can see.';
 
 --------------------------------------------------------------
@@ -1020,7 +1020,7 @@ CREATE TABLE IF NOT EXISTS place_users(
   place_user_id uuid PRIMARY KEY DEFAULT public.uuid_generate_v7(),
   place_id uuid DEFAULT NULL REFERENCES places(place_id) ON DELETE CASCADE ON UPDATE CASCADE DEFERRABLE INITIALLY DEFERRED,
   user_id uuid DEFAULT NULL REFERENCES users(user_id) ON DELETE CASCADE ON UPDATE CASCADE DEFERRABLE INITIALLY DEFERRED,
-  "role" user_roles_enum DEFAULT 'reader',
+  "role" user_roles_enum DEFAULT 'read-all',
   label text DEFAULT NULL,
   sys_period tstzrange DEFAULT NULL,
   created_at timestamptz NOT NULL DEFAULT now(),
@@ -1036,7 +1036,7 @@ ADD CONSTRAINT place_users_place_id_user_id_unique UNIQUE (place_id, user_id);
 
 
 COMMENT ON TABLE place_users IS 'A way to give users access to places without giving them access to the whole project or subproject.';
-COMMENT ON COLUMN place_users.role IS 'One of: "reader", "writer", "designer", "owner". Preset: "reader"';
+COMMENT ON COLUMN place_users.role IS 'One of: "read-specific", "read-all", "write-specific", "write-all", "design", "own". Preset: "read-all"';
 
 --------------------------------------------------------------
 -- goals

@@ -92,12 +92,12 @@ export const createProject = async (account_id?: string) => {
     project_user_id: uuidv7(),
     project_id,
     user_id: userId,
-    role: 'owner',
+    role: 'own',
   }
   await db.query(
     `insert into project_users (project_user_id, project_id, user_id, role) values ($1, $2, $3, $4)
-     on conflict (project_id, user_id) do update set role = 'owner'`,
-    [projectUserData.project_user_id, project_id, userId, 'owner'],
+     on conflict (project_id, user_id) do update set role = 'own'`,
+    [projectUserData.project_user_id, project_id, userId, 'own'],
   )
   // Note: We intentionally do NOT queue an addOperationAtom for project_users here.
   // The backend fires projects_insert_owner_trigger AFTER INSERT which creates the
@@ -513,7 +513,7 @@ export const createProjectUser = async ({ projectId }) => {
   const project_user_id = uuidv7()
   await db.query(
     `insert into project_users (project_user_id, project_id, role) values ($1, $2, $3)`,
-    [project_user_id, projectId, 'reader'],
+    [project_user_id, projectId, 'read-all'],
   )
 
   store.set(addOperationAtom, {
@@ -522,7 +522,7 @@ export const createProjectUser = async ({ projectId }) => {
     draft: {
       project_user_id,
       project_id: projectId,
-      role: 'reader',
+      role: 'read-all',
     },
   })
 
@@ -765,7 +765,7 @@ export const createSubprojectUser = async ({ subprojectId }) => {
   // TODO: these should both be upserts
   await db.query(
     `insert into subproject_users (subproject_user_id, subproject_id, role) values ($1, $2, $3)`,
-    [subproject_user_id, subprojectId, 'reader'],
+    [subproject_user_id, subprojectId, 'read-all'],
   )
 
   store.set(addOperationAtom, {
@@ -774,7 +774,7 @@ export const createSubprojectUser = async ({ subprojectId }) => {
     draft: {
       subproject_user_id,
       subproject_id: subprojectId,
-      role: 'reader',
+      role: 'read-all',
     },
   })
 
@@ -786,7 +786,7 @@ export const createPlaceUser = async ({ placeId }) => {
   const place_user_id = uuidv7()
   await db.query(
     `insert into place_users (place_user_id, place_id, role) values ($1, $2, $3)`,
-    [place_user_id, placeId, 'reader'],
+    [place_user_id, placeId, 'read-all'],
   )
 
   store.set(addOperationAtom, {
@@ -795,7 +795,7 @@ export const createPlaceUser = async ({ placeId }) => {
     draft: {
       place_user_id,
       place_id: placeId,
-      role: 'reader',
+      role: 'read-all',
     },
   })
 
@@ -1862,7 +1862,12 @@ export const createProjectQcsAssignmentForProjectQc = async ({
   const project_qcs_assignment_id = uuidv7()
   await db.query(
     `insert into project_qcs_assignment (project_qcs_assignment_id, project_id, subproject_id, project_qc_id) values ($1, $2, $3, $4)`,
-    [project_qcs_assignment_id, projectId ?? null, subprojectId ?? null, projectQcId],
+    [
+      project_qcs_assignment_id,
+      projectId ?? null,
+      subprojectId ?? null,
+      projectQcId,
+    ],
   )
 
   store.set(addOperationAtom, {

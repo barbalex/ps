@@ -16,7 +16,7 @@ export default interface SubprojectUsers {
 
   user_id: UsersUserId | null;
 
-  /** One of: "reader", "writer", "designer", "owner". Preset: "reader" */
+  /** One of: "read-specific", "read-all", "write-specific", "write-all", "design", "own". Preset: "read-all" */
   role: UserRolesEnum | null;
 
   label: string | null;
@@ -43,7 +43,7 @@ export interface SubprojectUsersInitializer {
 
   user_id?: UsersUserId | null;
 
-  /** One of: "reader", "writer", "designer", "owner". Preset: "reader" */
+  /** One of: "read-specific", "read-all", "write-specific", "write-all", "design", "own". Preset: "read-all" */
   role?: UserRolesEnum | null;
 
   label?: string | null;
@@ -71,7 +71,7 @@ export interface SubprojectUsersMutator {
 
   user_id?: UsersUserId | null;
 
-  /** One of: "reader", "writer", "designer", "owner". Preset: "reader" */
+  /** One of: "read-specific", "read-all", "write-specific", "write-all", "design", "own". Preset: "read-all" */
   role?: UserRolesEnum | null;
 
   label?: string | null;

@@ -16,7 +16,7 @@ export default interface PlaceUsers {
 
   user_id: UsersUserId | null;
 
-  /** One of: "reader", "writer", "designer", "owner". Preset: "reader" */
+  /** One of: "read-specific", "read-all", "write-specific", "write-all", "design", "own". Preset: "read-all" */
   role: UserRolesEnum | null;
 
   label: string | null;
@@ -44,8 +44,8 @@ export interface PlaceUsersInitializer {
   user_id?: UsersUserId | null;
 
   /**
-   * One of: "reader", "writer", "designer", "owner". Preset: "reader"
-   * Default value: 'reader'::user_roles_enum
+   * One of: "read-specific", "read-all", "write-specific", "write-all", "design", "own". Preset: "read-all"
+   * Default value: 'read-all'::user_roles_enum
    */
   role?: UserRolesEnum | null;
 
@@ -74,7 +74,7 @@ export interface PlaceUsersMutator {
 
   user_id?: UsersUserId | null;
 
-  /** One of: "reader", "writer", "designer", "owner". Preset: "reader" */
+  /** One of: "read-specific", "read-all", "write-specific", "write-all", "design", "own". Preset: "read-all" */
   role?: UserRolesEnum | null;
 
   label?: string | null;
