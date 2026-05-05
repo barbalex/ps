@@ -1,37 +1,42 @@
 <h1>User Roles</h1>
-<p><em>Last updated: 17 April 2026</em></p>
+<p><em>Last updated: 5 May 2026</em></p>
 <hr>
 <h2>Ownership</h2>
 <p>A user is owner:</p>
 <ul>
-<li>of their own user row,</li>
-<li>of the related accounts,</li>
+<li>of their own user record,</li>
+<li>of the associated accounts,</li>
 <li>of projects</li>
 <li>and of all data created in these projects.</li>
 </ul>
+<p>Owner roles are set automatically by the app and cannot be changed.</p>
 <h2>Roles</h2>
-<p>Role types are (from high to low):</p>
+<p>Roles are listed from high to low:</p>
 <ol>
-<li><strong>Owner</strong>: can set Designer roles</li>
-<li><strong>Designer</strong>: can edit project- and subproject configuration, set Writer and Reader roles</li>
-<li><strong>Writer</strong>: can edit data</li>
-<li><strong>Reader</strong>: can sync and read data</li>
+<li><strong>Owner</strong>: can assign Designer roles</li>
+<li><strong>Designer</strong>: can edit all project and subproject configurations, assign Writer and Reader roles</li>
+<li><strong>Writer</strong>: can edit all data</li>
+<li><strong>Writer (specific)</strong>: can edit data for which they have been assigned this role</li>
+<li><strong>Reader</strong>: can sync and read all data</li>
+<li><strong>Reader (specific)</strong>: can sync and read data for which they have been assigned this role</li>
 </ol>
-<p>A role always includes all lower roles. They are not separately set, only a single role needs to be set per level.</p>
-<h2>Where roles are given</h2>
-<p>Roles are given at four levels:</p>
+<p>A role always includes all lower roles. They are not set separately — only a single role needs to be set per level.</p>
+<p>There are <em>specific</em> roles. The others apply <em>generally</em>. More on this below.</p>
+<h2>Where roles are assigned</h2>
+<p>Roles are assigned at four levels:</p>
 <ol>
-<li>projects</li>
-<li>subprojects (species or biotopes)</li>
-<li>places (levels 1 and 2, for instance: populations and subpopulations)</li>
+<li>Projects</li>
+<li>Subprojects (species or biotopes)</li>
+<li>Places level 1, e.g. populations</li>
+<li>Places level 2, e.g. subpopulations</li>
 </ol>
-<h2>How roles work</h2>
-<p>When a role is set, its effect extends down all levels. The app automatically sets all lower level roles.</p>
-<p>Example: When <a href="mailto:test@test.ch" target="_blank">test@test.ch</a> gets the Writer role on the project, the app automatically gives this user Writer roles in all subprojects and places.</p>
-<p>Setting lower rights at a lower level is not supported. Example: If a user has the Reader role on a project, all their data is synced without checking roles on lower levels.</p>
-<p>Higher rights can be given at lower levels, their effect extends down as well. Reverse example: A Reader who should be Writer on a subproject needs the Reader role on the parent project to sync parent data, without which they could not work.</p>
-<h2>How to set roles</h2>
-<p>Owner roles are set automatically by the app and can&#39;t be changed.</p>
-<p>It is important to know that when you set roles, the app automatically copies this role to all lower levels. Setting lower roles at higher levels after having set higher ones lower down will lead to the roles at lower levels getting nuked. Thus <strong>roles should be set from top (projects) to bottom (subprojects, places level 1, places level 2)</strong>.</p>
-<p>On the other hand you only have to set roles on (potentially numerous) lower levels if you explicitely want to differentiate there. If not, you can simply ignore them.</p>
-<p>When creating new subprojects and places, the app automatically copies down the roles from the next higher level. So you only have to set them yourself if they explicitely should differ.</p>
+<h2>How general roles work</h2>
+<p>When a general role is set, its effect extends to all lower levels. The app automatically sets all lower-level roles.</p>
+<p>Higher rights can be granted at lower levels, and their effect also extends downward. Setting lower rights at lower levels is only supported for specific roles.</p>
+<p>It is important to know that when setting general roles, the app automatically copies this role to all lower levels. Therefore <strong>general roles should be assigned from top (projects) to bottom (subprojects, places level 1, places level 2)</strong>.</p>
+<p>Example: If you give <a href="mailto:test@test.ch" target="_blank">test@test.ch</a> the Reader role on the project, the app automatically gives them Reader roles in all subprojects and places. You can additionally grant them write access on specific subprojects or places.</p>
+<h2>How specific roles work</h2>
+<p>Specific roles are intended for cases where you want to grant a user rights for only part of the data. When a specific role is chosen, roles at the next lower level must therefore be assigned manually (they are not set automatically).</p>
+<p>Example: You give <a href="mailto:test@test.ch" target="_blank">test@test.ch</a> the role <code>Reader (specific)</code> on a project. You can then grant them differentiated rights at the subproject level: Writer, Reader — or none. If you give them no rights on a subproject, they will not see that subproject.</p>
+<h2>Users need rights all the way up</h2>
+<p>It is not enough to give a user who should work on a subproject write access on that subproject alone. They need the Reader role on the parent project in order to sync parent data, without which they could not work.</p>

@@ -20,11 +20,11 @@ Eigentümer-Rollen werden automatisch von der App gesetzt und können nicht geä
 Rollen sind von hoch nach tief:
 
 1. **Eigentümer**: kann Designer-Rollen vergeben
-2. **Designer**: kann Projekt- und Teilprojekt-Konfigurationen bearbeiten, Schreiber- und Leser-Rollen vergeben
+2. **Designer**: kann alle Projekt- und Teilprojekt-Konfigurationen bearbeiten, Schreiber- und Leser-Rollen vergeben
 3. **Schreiber**: kann alle Daten bearbeiten
-4. **Schreiber (spezifisch)**: kann nur Daten bearbeiten, wo er die entsprechende Rolle zugewiesen bekommt
-5. **Leser**: kann Daten synchronisieren und lesen
-6. **Leser (spezifisch)**: kann nur Daten synchronisieren und lesen, wo er die entsprechende Rolle zugewiesen bekommt
+4. **Schreiber (spezifisch)**: kann Daten bearbeiten, für die er die entsprechende Rolle zugewiesen bekommt
+5. **Leser**: kann alle Daten synchronisieren und lesen
+6. **Leser (spezifisch)**: kann Daten synchronisieren und lesen, für die er die entsprechende Rolle zugewiesen bekommt
 
 Eine Rolle schliesst immer alle niedrigeren Rollen ein. Sie werden nicht separat gesetzt, es muss pro Ebene nur eine einzige Rolle gesetzt werden.
 
@@ -53,9 +53,7 @@ Beispiel: Gibst du test@test.ch die Leser-Rolle auf dem Projekt, gibt ihm die Ap
 
 Spezifische Rollen sind dazu da, dass man einem Benutzer nur für einen Teil der Daten Rechte vergeben kann. Wählt man eine spezifische Rolle, müssen daher in der nächsttieferen Stufe die Rollen manuell vergeben werden (sie werden nicht automatisch gesetzt).
 
-Beispiel für spezifische Rollen: Du gibst test@test.ch die rolle `Leser (spezifisch)` auf einem Projekt. Nun kannst tu ihm auf Stufe Arten differenziert Rechte geben: Schreiber, Leser - oder keine. Wenn du ihm bei einer keine Art Rechte gibst, sieht er diese Art nicht.
-
-Beispiel für generelle Rollen: Du gibst test@test.ch die rolle `Leser` auf einem Projekt. Er sieht nun automatisch ALLE aktuellen und künftigen Daten dieses Projekts. Du kannst ihm zusätzlich bei ausgewählten Arten Schreibrechte geben.
+Beispiel: Du gibst test@test.ch die rolle `Leser (spezifisch)` auf einem Projekt. Nun kannst tu ihm auf Stufe Arten differenziert Rechte geben: Schreiber, Leser - oder keine. Wenn du ihm bei einer keine Art Rechte gibst, sieht er diese Art nicht.
 
 ## Benutzer brauchen bis ganz oben Rechte
 

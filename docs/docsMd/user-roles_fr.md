@@ -1,6 +1,6 @@
 # Rôles utilisateurs
 
-*Dernière mise à jour: 17 avril 2026*
+*Dernière mise à jour: 5 mai 2026*
 
 ---
 
@@ -8,46 +8,53 @@
 
 Un utilisateur est propriétaire:
 
-- de sa propre ligne utilisateur,
+- de sa propre fiche utilisateur,
 - des comptes associés,
 - des projets
 - et de toutes les données créées dans ces projets.
 
+Les rôles Propriétaire sont définis automatiquement par l'app et ne peuvent pas être modifiés.
+
 ## Rôles
 
-Les types de rôles sont (du plus élevé au plus bas):
+Les rôles sont listés du plus élevé au plus bas:
 
 1. **Propriétaire**: peut attribuer des rôles Designer
-2. **Designer**: peut modifier la configuration des projets et sous-projets, attribuer des rôles Rédacteur et Lecteur
-3. **Rédacteur**: peut modifier des données
-4. **Lecteur**: peut synchroniser et lire des données
+2. **Designer**: peut modifier les configurations de projets et de sous-projets, attribuer des rôles Rédacteur et Lecteur
+3. **Rédacteur**: peut modifier toutes les données
+4. **Rédacteur (spécifique)**: peut modifier les données pour lesquelles ce rôle lui a été attribué
+5. **Lecteur**: peut synchroniser et lire toutes les données
+6. **Lecteur (spécifique)**: peut synchroniser et lire les données pour lesquelles ce rôle lui a été attribué
 
 Un rôle inclut toujours tous les rôles inférieurs. Ils ne sont pas définis séparément — un seul rôle doit être défini par niveau.
+
+Il existe des rôles _spécifiques_. Les autres s'appliquent _généralement_. Plus de détails ci-dessous.
 
 ## Où les rôles sont attribués
 
 Les rôles sont attribués à quatre niveaux:
 
-1. projets
-2. sous-projets (espèces ou biotopes)
-3. lieux (niveaux 1 et 2, par exemple: populations et sous-populations)
+1. Projets
+2. Sous-projets (espèces ou biotopes)
+3. Lieux niveau 1, par ex. populations
+4. Lieux niveau 2, par ex. sous-populations
 
-## Comment fonctionnent les rôles
+## Comment fonctionnent les rôles généraux
 
-Lorsqu'un rôle est défini, son effet s'étend à tous les niveaux inférieurs. L'app définit automatiquement tous les rôles des niveaux inférieurs.
+Lorsqu'un rôle général est défini, son effet s'étend à tous les niveaux inférieurs. L'app définit automatiquement tous les rôles des niveaux inférieurs.
 
-Exemple: lorsque test@test.ch reçoit le rôle Rédacteur sur le projet, l'app lui attribue automatiquement des rôles Rédacteur dans tous les sous-projets et lieux.
+Des droits supérieurs peuvent être accordés à des niveaux inférieurs, leur effet s'étendant également vers le bas. La définition de droits inférieurs à des niveaux inférieurs n'est prise en charge que pour les rôles spécifiques.
 
-La définition de droits inférieurs à un niveau inférieur n'est pas prise en charge. Exemple: si un utilisateur a le rôle Lecteur sur un projet, toutes ses données sont synchronisées sans vérifier les rôles aux niveaux inférieurs.
+Il est important de savoir que lors de la définition de rôles généraux, l'app copie automatiquement ce rôle à tous les niveaux inférieurs. Ainsi, **les rôles généraux doivent être attribués de haut en bas (projets → sous-projets → lieux niveau 1 → lieux niveau 2)**.
 
-Des droits supérieurs peuvent être accordés à des niveaux inférieurs, leur effet s'étendant également vers le bas. Exemple inverse: un Lecteur qui doit être Rédacteur sur un sous-projet a besoin du rôle Lecteur sur le projet parent pour synchroniser les données parentes, sans lesquelles il ne pourrait pas travailler.
+Exemple: si tu donnes à test@test.ch le rôle Lecteur sur le projet, l'app lui attribue automatiquement des rôles Lecteur dans tous les sous-projets et lieux. Tu peux en outre lui accorder des droits d'écriture sur des sous-projets ou lieux spécifiques.
 
-## Comment définir les rôles
+## Comment fonctionnent les rôles spécifiques
 
-Les rôles Propriétaire sont définis automatiquement par l'app et ne peuvent pas être modifiés.
+Les rôles spécifiques permettent d'accorder à un utilisateur des droits uniquement sur une partie des données. Lorsqu'un rôle spécifique est choisi, les rôles au niveau immédiatement inférieur doivent donc être attribués manuellement (ils ne sont pas définis automatiquement).
 
-Il est important de savoir que lorsque tu définis des rôles, l'app copie automatiquement ce rôle à tous les niveaux inférieurs. Définir des rôles inférieurs à des niveaux supérieurs après avoir défini des rôles supérieurs à des niveaux inférieurs entraînera l'écrasement des rôles aux niveaux inférieurs. Ainsi, **les rôles doivent être définis de haut en bas (projets → sous-projets → lieux niveau 1 → lieux niveau 2)**.
+Exemple: tu donnes à test@test.ch le rôle `Lecteur (spécifique)` sur un projet. Tu peux ensuite lui accorder des droits différenciés au niveau des sous-projets: Rédacteur, Lecteur — ou aucun. Si tu ne lui accordes aucun droit sur un sous-projet, il ne verra pas ce sous-projet.
 
-D'autre part, tu ne dois définir des rôles sur les niveaux inférieurs (potentiellement nombreux) que si tu souhaites explicitement différencier. Sinon, tu peux simplement les ignorer.
+## Les utilisateurs ont besoin de droits jusqu'au sommet
 
-Lors de la création de nouveaux sous-projets et lieux, l'app copie automatiquement les rôles du niveau immédiatement supérieur. Tu n'as donc à les définir toi-même que s'ils doivent explicitement différer.
+Il ne suffit pas de donner à un utilisateur qui doit travailler sur un sous-projet des droits d'écriture sur ce sous-projet uniquement. Il a besoin du rôle Lecteur sur le projet parent pour synchroniser les données parentes, sans lesquelles il ne pourrait pas travailler.

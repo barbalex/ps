@@ -1017,7 +1017,7 @@
   "specificRoleNotice": "Un ruolo specifico è stato impostato. Tutti i ruoli di livello inferiore (se presenti) sono stati rimossi e devono essere impostati manualmente.",
   "specificRoleConfirmTitle": "Impostare il ruolo '{role}'?",
   "specificRoleConfirmContent": "Impostando il ruolo '{role}' verranno rimossi tutti i ruoli di livello inferiore (se presenti) per questo utente. Questi dovranno essere impostati manualmente in seguito.",
-  "specificRoleConfirmBtn": "Imposta ruolo",,
+  "specificRoleConfirmBtn": "Imposta ruolo",
   "docsList": "Documentazione",
   "docSingular": "Doc",
   "docsFilterAll": "Tutti",

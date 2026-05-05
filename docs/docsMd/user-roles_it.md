@@ -1,6 +1,6 @@
 # Ruoli utente
 
-*Ultimo aggiornamento: 17 aprile 2026*
+*Ultimo aggiornamento: 5 maggio 2026*
 
 ---
 
@@ -8,46 +8,53 @@
 
 Un utente è proprietario:
 
-- della propria riga utente,
+- della propria scheda utente,
 - degli account associati,
 - dei progetti
 - e di tutti i dati creati in questi progetti.
 
+I ruoli Proprietario vengono impostati automaticamente dall'app e non possono essere modificati.
+
 ## Ruoli
 
-I tipi di ruolo sono (dal più alto al più basso):
+I ruoli sono elencati dal più alto al più basso:
 
 1. **Proprietario**: può assegnare ruoli Designer
-2. **Designer**: può modificare la configurazione di progetti e sottoprogetti, assegnare ruoli Redattore e Lettore
-3. **Redattore**: può modificare i dati
-4. **Lettore**: può sincronizzare e leggere i dati
+2. **Designer**: può modificare tutte le configurazioni di progetti e sottoprogetti, assegnare ruoli Redattore e Lettore
+3. **Redattore**: può modificare tutti i dati
+4. **Redattore (specifico)**: può modificare i dati per i quali gli è stato assegnato questo ruolo
+5. **Lettore**: può sincronizzare e leggere tutti i dati
+6. **Lettore (specifico)**: può sincronizzare e leggere i dati per i quali gli è stato assegnato questo ruolo
 
 Un ruolo include sempre tutti i ruoli inferiori. Non vengono impostati separatamente — è sufficiente impostare un solo ruolo per livello.
+
+Esistono ruoli _specifici_. Gli altri si applicano _in generale_. Maggiori dettagli più avanti.
 
 ## Dove vengono assegnati i ruoli
 
 I ruoli vengono assegnati a quattro livelli:
 
-1. progetti
-2. sottoprogetti (specie o biotopi)
-3. luoghi (livelli 1 e 2, ad esempio: popolazioni e sottopopolazioni)
+1. Progetti
+2. Sottoprogetti (specie o biotopi)
+3. Luoghi livello 1, ad es. popolazioni
+4. Luoghi livello 2, ad es. sottopopolazioni
 
-## Come funzionano i ruoli
+## Come funzionano i ruoli generali
 
-Quando viene impostato un ruolo, il suo effetto si estende a tutti i livelli inferiori. L'app imposta automaticamente tutti i ruoli dei livelli inferiori.
+Quando viene impostato un ruolo generale, il suo effetto si estende a tutti i livelli inferiori. L'app imposta automaticamente tutti i ruoli dei livelli inferiori.
 
-Esempio: quando test@test.ch riceve il ruolo Redattore sul progetto, l'app assegna automaticamente a questo utente ruoli Redattore in tutti i sottoprogetti e luoghi.
+Diritti superiori possono essere assegnati a livelli inferiori, con effetto che si estende anch'esso verso il basso. L'impostazione di diritti inferiori a livelli inferiori è supportata solo per i ruoli specifici.
 
-L'impostazione di diritti inferiori a un livello inferiore non è supportata. Esempio: se un utente ha il ruolo Lettore su un progetto, tutti i suoi dati vengono sincronizzati senza controllare i ruoli ai livelli inferiori.
+È importante sapere che quando si impostano ruoli generali, l'app copia automaticamente quel ruolo a tutti i livelli inferiori. Pertanto, **i ruoli generali devono essere assegnati dall'alto verso il basso (progetti → sottoprogetti → luoghi livello 1 → luoghi livello 2)**.
 
-Diritti superiori possono essere assegnati a livelli inferiori, con effetto che si estende anch'esso verso il basso. Esempio inverso: un Lettore che deve essere Redattore su un sottoprogetto necessita del ruolo Lettore sul progetto padre per sincronizzare i dati padre, senza i quali non potrebbe lavorare.
+Esempio: se dai a test@test.ch il ruolo Lettore sul progetto, l'app assegna automaticamente a questa persona ruoli Lettore in tutti i sottoprogetti e luoghi. Puoi inoltre concederle diritti di scrittura su sottoprogetti o luoghi specifici.
 
-## Come impostare i ruoli
+## Come funzionano i ruoli specifici
 
-I ruoli Proprietario vengono impostati automaticamente dall'app e non possono essere modificati.
+I ruoli specifici servono per concedere a un utente diritti solo su una parte dei dati. Quando si sceglie un ruolo specifico, i ruoli al livello immediatamente inferiore devono quindi essere assegnati manualmente (non vengono impostati automaticamente).
 
-È importante sapere che quando si impostano i ruoli, l'app copia automaticamente quel ruolo a tutti i livelli inferiori. Impostare ruoli inferiori a livelli superiori dopo aver impostato ruoli superiori a livelli inferiori comporterà la sovrascrittura dei ruoli ai livelli inferiori. Pertanto, **i ruoli devono essere impostati dall'alto verso il basso (progetti → sottoprogetti → luoghi livello 1 → luoghi livello 2)**.
+Esempio: dai a test@test.ch il ruolo `Lettore (specifico)` su un progetto. Puoi quindi assegnargli diritti differenziati a livello di sottoprogetto: Redattore, Lettore — o nessuno. Se non gli assegni alcun diritto su un sottoprogetto, non vedrà quel sottoprogetto.
 
-D'altra parte, è necessario impostare i ruoli sui livelli inferiori (potenzialmente numerosi) solo se si desidera esplicitamente differenziare. In caso contrario, si possono semplicemente ignorare.
+## Gli utenti hanno bisogno di diritti fino in cima
 
-Quando si creano nuovi sottoprogetti e luoghi, l'app copia automaticamente i ruoli dal livello immediatamente superiore. Pertanto è necessario impostarli personalmente solo se devono esplicitamente differire.
+Non è sufficiente dare a un utente che deve lavorare su un sottoprogetto i soli diritti di scrittura su quel sottoprogetto. Ha bisogno del ruolo Lettore sul progetto padre per sincronizzare i dati padre, senza i quali non potrebbe lavorare.
