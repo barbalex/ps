@@ -1194,6 +1194,20 @@ BEGIN
       INNER JOIN subprojects s ON p.subproject_id = s.subproject_id
       WHERE s.project_id = NEW.project_id
       ON CONFLICT (place_id, user_id) DO UPDATE SET role = EXCLUDED.role;
+    ELSE
+      -- role is -specific: remove all lower-level rows for this user under this project
+      DELETE FROM subproject_users
+      WHERE user_id = NEW.user_id
+        AND subproject_id IN (
+          SELECT subproject_id FROM subprojects WHERE project_id = NEW.project_id
+        );
+      DELETE FROM place_users
+      WHERE user_id = NEW.user_id
+        AND place_id IN (
+          SELECT p.place_id FROM places p
+          INNER JOIN subprojects s ON p.subproject_id = s.subproject_id
+          WHERE s.project_id = NEW.project_id
+        );
     END IF;
     RETURN NEW;
   END IF;
@@ -1232,6 +1246,13 @@ BEGIN
       FROM places
       WHERE subproject_id = NEW.subproject_id
       ON CONFLICT (place_id, user_id) DO UPDATE SET role = EXCLUDED.role;
+    ELSE
+      -- role is -specific: remove all lower-level rows for this user under this subproject
+      DELETE FROM place_users
+      WHERE user_id = NEW.user_id
+        AND place_id IN (
+          SELECT place_id FROM places WHERE subproject_id = NEW.subproject_id
+        );
     END IF;
     RETURN NEW;
   END IF;
@@ -1301,6 +1322,44 @@ AFTER INSERT ON places
 FOR EACH ROW
 WHEN (pg_trigger_depth() < 1)
 EXECUTE PROCEDURE places_insert_inherit_role_trigger();
+
+-- item 5: when a place_users (level 1) role is set to -specific, remove this user's
+-- place_users rows for all level-2 children of that place.
+CREATE OR REPLACE FUNCTION place_users_specific_trigger()
+RETURNS TRIGGER AS $$
+DECLARE
+  is_syncing BOOLEAN;
+  v_level integer;
+BEGIN
+  SELECT COALESCE(NULLIF(current_setting('electric.syncing', true), ''), 'false')::boolean INTO is_syncing;
+  IF is_syncing THEN
+    RETURN NEW;
+  END IF;
+
+  -- Only act when the new role is -specific
+  IF NEW.role NOT IN ('read-specific', 'write-specific') THEN
+    RETURN NEW;
+  END IF;
+
+  SELECT level INTO v_level FROM places WHERE place_id = NEW.place_id;
+
+  IF v_level = 1 THEN
+    DELETE FROM place_users
+    WHERE user_id = NEW.user_id
+      AND place_id IN (
+        SELECT place_id FROM places WHERE parent_id = NEW.place_id
+      );
+  END IF;
+
+  RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE OR REPLACE TRIGGER place_users_specific_trigger
+AFTER INSERT OR UPDATE OF role ON place_users
+FOR EACH ROW
+WHEN (pg_trigger_depth() < 1)
+EXECUTE PROCEDURE place_users_specific_trigger();
 
 --------------------------------------------------------------
 -- Better Auth compatibility helpers

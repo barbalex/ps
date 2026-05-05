@@ -65,4 +65,7 @@ Example 2: If place_users (level 1)  role is set to 'write-specific', this user'
 
 ---
 
+An owner or designer should be able to add not yet existing users to project_users, subproject_users and place_users.
+So far a user is created on root level. We need a + button right of the User field in the project_users form. Click opens a dialog where an email can be entered. Clicking save: 1. check if this email already exists. If so: tell user and empty email input, focus it. 2. if email does not yet exist (in a users table), create a new users dataset and use it's id to set this user in the ..._users form then focus the role.
+
 ---
