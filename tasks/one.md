@@ -51,7 +51,7 @@ Lets start by implementing 1 to 4. We will go on with 5 later.
 
 On to step 5: Create triggers that REMOVE lower level roles if this level's role is set to -specific.
 Example: If project_users role is set to 'read-specific', this user's datasets in subproject_users and place_users are removed.
-Example 2: If place_users (level 1)  role is set to 'write-specific', this user's datasets in place_users (level 2) is removed.
+Example 2: If place_users (level 1) role is set to 'write-specific', this user's datasets in place_users (level 2) is removed.
 
 ---
 
@@ -66,6 +66,6 @@ Example 2: If place_users (level 1)  role is set to 'write-specific', this user'
 ---
 
 An owner or designer should be able to add not yet existing users to project_users, subproject_users and place_users.
-So far a user is created on root level. We need a + button right of the User field in the project_users form. Click opens a dialog where an email can be entered. Clicking save: 1. check if this email already exists. If so: tell user and empty email input, focus it. 2. if email does not yet exist (in a users table), create a new users dataset and use it's id to set this user in the ..._users form then focus the role.
+So far a user is created on root level. We need a + button right of the User field in the project_users form. Click opens a dialog where an email can be entered. Clicking save: 1. check if this email already exists. If so: tell user and empty email input, focus it. 2. if email does not yet exist (in a users table), create a new users dataset and use it's id to set this user in the ...\_users form then focus the role.
 
 ---
