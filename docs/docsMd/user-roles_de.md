@@ -26,9 +26,9 @@ Rollen sind von hoch nach tief:
 5. **Leser**: kann Daten synchronisieren und lesen
 6. **Leser (spezifisch)**: kann nur Daten synchronisieren und lesen, wo er die entsprechende Rolle zugewiesen bekommt
 
-Es gibt _spezifische_ Rollen. Die übrigen gelten _generell_. Mehr dazu weiter unten.
-
 Eine Rolle schliesst immer alle niedrigeren Rollen ein. Sie werden nicht separat gesetzt, es muss pro Ebene nur eine einzige Rolle gesetzt werden.
+
+Es gibt _spezifische_ Rollen. Die übrigen gelten _generell_. Mehr dazu weiter unten.
 
 ## Wo Rollen vergeben werden
 
@@ -41,11 +41,13 @@ Rollen werden auf vier Ebenen vergeben:
 
 ## Wie generelle Rollen funktionieren
 
-Wenn eine generelle Rolle gesetzt wird, erstreckt sich ihre Wirkung auf alle tieferen Ebenen. Die App setzt automatisch alle niedrigeren Rollen (und überschreibt dabei schon bestehende!).
+Wenn eine generelle Rolle gesetzt wird, erstreckt sich ihre Wirkung auf alle tieferen Ebenen. Die App setzt automatisch alle niedrigeren Rollen.
 
-Das Setzen niedrigerer Rechte auf tieferer Ebene wird nur bei spezifischen Rollen unterstützt. Höhere Rechte hingegen können auf tieferen Ebenen vergeben werden. Ihre Wirkung erstreckt sich ebenfalls nach unten.
+Auf tieferen Ebenen können Höhere Rechte vergeben werden. Ihre Wirkung erstreckt sich ebenfalls nach unten. Das Setzen niedrigerer Rechte auf tieferen Ebenen wird nur bei spezifischen Rollen unterstützt.
 
-Beispiel: Wenn test@test.ch die Leser-Rolle auf dem Projekt erhält, gibt ihm die App automatisch Leser-Rollen in allen Teilprojekten und Orten. Du kannst ihm zusätzlich auf bestimmten Arten, Populationen oder Teilpopulationen Schreibrechte vergeben.
+Es ist wichtig zu wissen, dass die App beim Setzen von generellen Rollen diese Rolle automatisch auf alle tieferen Ebenen kopiert. Daher **sollten generelle Rollen von oben (Projekte) nach unten (Teilprojekte, Orte Ebene 1, Orte Ebene 2) vergeben werden**.
+
+Beispiel: Gibst du test@test.ch die Leser-Rolle auf dem Projekt, gibt ihm die App automatisch Leser-Rollen in allen Teilprojekten und Orten. Du kannst ihm zusätzlich auf bestimmten Teilprojekten oder Orten Schreibrechte vergeben.
 
 ## Wie spezifische Rollen funktionieren
 
@@ -55,16 +57,6 @@ Beispiel für spezifische Rollen: Du gibst test@test.ch die rolle `Leser (spezif
 
 Beispiel für generelle Rollen: Du gibst test@test.ch die rolle `Leser` auf einem Projekt. Er sieht nun automatisch ALLE aktuellen und künftigen Daten dieses Projekts. Du kannst ihm zusätzlich bei ausgewählten Arten Schreibrechte geben.
 
-## Wie Rollen gesetzt werden
+## Benutzer brauchen bis ganz oben Rechte
 
-Eigentümer-Rollen werden automatisch von der App gesetzt und können nicht geändert werden.
-
-Es ist wichtig zu wissen, dass die App beim Setzen von Rollen diese Rolle automatisch auf alle tieferen Ebenen kopiert. Das Setzen niedrigerer Rollen auf höheren Ebenen, nachdem auf tieferen Ebenen bereits höhere Rollen gesetzt wurden, führt dazu, dass die Rollen auf den tieferen Ebenen überschrieben werden. Daher **sollten Rollen von oben (Projekte) nach unten (Teilprojekte, Orte Ebene 1, Orte Ebene 2) gesetzt werden**.
-
-Andererseits muss man Rollen auf (möglicherweise zahlreichen) tieferen Ebenen nur setzen, wenn man dort explizit differenzieren möchte. Sonst kann man sie einfach ignorieren.
-
-Beim Erstellen neuer Teilprojekte und Orte kopiert die App automatisch die Rollen der nächsthöheren Ebene nach unten. Man muss sie also nur selber setzen, wenn sie explizit abweichen sollen.
-
-## Ein Benutzer braucht bis ganz oben Rechte
-
-Ein Leser, der auf einem Teilprojekt schreiben soll, benötigt die Leser-Rolle auf dem übergeordneten Projekt, um übergeordnete Daten zu synchronisieren, ohne die er nicht arbeiten könnte.
+Es reicht nicht, einem Benutzer, der an einem Teilprojekt arbeiten soll, auf diesem Teilprojekt Schreibrechte zu geben. Er benötigt die Leser-Rolle auf dem übergeordneten Projekt, um übergeordnete Daten zu synchronisieren, ohne die er nicht arbeiten könnte.
