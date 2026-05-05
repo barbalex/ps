@@ -14,6 +14,7 @@ import { NotFound } from '../../components/NotFound.tsx'
 import { addOperationAtom } from '../../store.ts'
 import type ProjectUsers from '../../models/public/ProjectUsers.ts'
 import { userRoleOptions } from '../../modules/constants.ts'
+import { AddUserButton } from '../../components/shared/AddUserButton.tsx'
 
 import styles from './index.module.css'
 
@@ -39,6 +40,7 @@ export const ProjectUser = () => {
   const { formatMessage } = useIntl()
 
   const autoFocusRef = useRef<HTMLInputElement>(null)
+  const roleRef = useRef<HTMLInputElement>(null)
 
   const db = usePGlite()
   const res = useLiveQuery(
@@ -126,6 +128,30 @@ export const ProjectUser = () => {
       draft: { role: value },
       prev: { ...row },
     })
+  }
+
+  const onUserCreated = async (userId: string) => {
+    try {
+      await db.query(
+        `UPDATE project_users SET user_id = $1 WHERE project_user_id = $2`,
+        [userId, projectUserId],
+      )
+    } catch (error) {
+      setValidations((prev) => ({
+        ...prev,
+        user_id: { state: 'error', message: error.message },
+      }))
+      return
+    }
+    addOperation({
+      table: 'project_users',
+      rowIdName: 'project_user_id',
+      rowId: projectUserId,
+      operation: 'update',
+      draft: { user_id: userId },
+      prev: { ...row },
+    })
+    setTimeout(() => roleRef.current?.focus(), 50)
   }
 
   if (!res) return <Loading />
@@ -217,6 +243,12 @@ export const ProjectUser = () => {
           ref={autoFocusRef}
           validationState={validations?.user_id?.state}
           validationMessage={validations?.user_id?.message}
+          button={
+            <AddUserButton
+              onUserCreated={onUserCreated}
+              disabled={isOwner}
+            />
+          }
         />
         <RadioGroupField
           label={formatMessage({ id: 'Gj0HkM', defaultMessage: 'Rolle' })}
@@ -236,6 +268,7 @@ export const ProjectUser = () => {
           disabled={isOwner || !row.user_id}
           validationState={validations?.role?.state}
           validationMessage={validations?.role?.message}
+          ref={roleRef}
         />
       </div>
     </div>

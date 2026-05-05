@@ -1234,5 +1234,23 @@
   },
   "specificRoleConfirmBtn": {
     "defaultMessage": "Rolle setzen"
+  },
+  "addUser.tooltip": {
+    "defaultMessage": "Neuen Benutzer erstellen"
+  },
+  "addUser.title": {
+    "defaultMessage": "Neuen Benutzer erstellen"
+  },
+  "addUser.emailLabel": {
+    "defaultMessage": "E-Mail-Adresse"
+  },
+  "addUser.emailRequired": {
+    "defaultMessage": "Bitte eine E-Mail-Adresse eingeben."
+  },
+  "addUser.emailExists": {
+    "defaultMessage": "Ein Benutzer mit dieser E-Mail-Adresse existiert bereits."
+  },
+  "addUser.saveBtn": {
+    "defaultMessage": "Speichern"
   }
 }

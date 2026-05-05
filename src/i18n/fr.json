@@ -1032,5 +1032,11 @@
   "confirmDeleteAccountWithProjects": "{count, plural, one {La suppression de ce compte supprimera définitivement le projet suivant} other {La suppression de ce compte supprimera définitivement les {count} projets suivants}} et toutes leurs données:",
   "confirmDeleteAccountNoProjects": "Ce compte n'a aucun projet. Il sera supprimé définitivement.",
   "confirmDeleteAccountConfirm": "Supprimer le compte",
-  "qcs.info": "Ce sont des contrôles qualité prédéfinis. Ils sont disponibles dans chaque projet. Ils peuvent être appliqués au niveau du projet ou du sous-projet. Dans le projet, vous pouvez créer vos propres contrôles qualité qui ne sont disponibles que dans ce projet et ses sous-projets."
+  "qcs.info": "Ce sont des contrôles qualité prédéfinis. Ils sont disponibles dans chaque projet. Ils peuvent être appliqués au niveau du projet ou du sous-projet. Dans le projet, vous pouvez créer vos propres contrôles qualité qui ne sont disponibles que dans ce projet et ses sous-projets.",
+  "addUser.tooltip": "Créer un nouvel utilisateur",
+  "addUser.title": "Créer un nouvel utilisateur",
+  "addUser.emailLabel": "Adresse e-mail",
+  "addUser.emailRequired": "Veuillez saisir une adresse e-mail.",
+  "addUser.emailExists": "Un utilisateur avec cette adresse e-mail existe déjà.",
+  "addUser.saveBtn": "Enregistrer"
 }

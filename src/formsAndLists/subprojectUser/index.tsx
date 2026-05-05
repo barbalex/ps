@@ -14,6 +14,7 @@ import { NotFound } from '../../components/NotFound.tsx'
 import { addOperationAtom } from '../../store.ts'
 import type SubprojectUsers from '../../models/public/SubprojectUsers.ts'
 import { userRoleOptions } from '../../modules/constants.ts'
+import { AddUserButton } from '../../components/shared/AddUserButton.tsx'
 
 import styles from './index.module.css'
 
@@ -40,6 +41,7 @@ export const SubprojectUser = () => {
   const { formatMessage } = useIntl()
 
   const autoFocusRef = useRef<HTMLInputElement>(null)
+  const roleRef = useRef<HTMLInputElement>(null)
 
   const db = usePGlite()
 
@@ -130,6 +132,30 @@ export const SubprojectUser = () => {
     })
   }
 
+  const onUserCreated = async (userId: string) => {
+    try {
+      await db.query(
+        `UPDATE subproject_users SET user_id = $1 WHERE subproject_user_id = $2`,
+        [userId, subprojectUserId],
+      )
+    } catch (error) {
+      setValidations((prev) => ({
+        ...prev,
+        user_id: { state: 'error', message: error.message },
+      }))
+      return
+    }
+    addOperation({
+      table: 'subproject_users',
+      rowIdName: 'subproject_user_id',
+      rowId: subprojectUserId,
+      operation: 'update',
+      draft: { user_id: userId },
+      prev: { ...row },
+    })
+    setTimeout(() => roleRef.current?.focus(), 50)
+  }
+
   return (
     <div className="form-outer-container">
       <Header autoFocusRef={autoFocusRef} />
@@ -212,6 +238,12 @@ export const SubprojectUser = () => {
               ref={autoFocusRef}
               validationState={validations?.user_id?.state}
               validationMessage={validations?.user_id?.message}
+              button={
+                <AddUserButton
+                  onUserCreated={onUserCreated}
+                  disabled={isOwner}
+                />
+              }
             />
             <RadioGroupField
               label={formatMessage({ id: 'Gj0HkM', defaultMessage: 'Rolle' })}
@@ -231,6 +263,7 @@ export const SubprojectUser = () => {
               disabled={isOwner || !row.user_id}
               validationState={validations?.role?.state}
               validationMessage={validations?.role?.message}
+              ref={roleRef}
             />
           </>
         ) : (

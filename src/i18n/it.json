@@ -1036,5 +1036,11 @@
   "confirmDeleteAccountWithProjects": "{count, plural, one {L'eliminazione di questo account eliminerà definitivamente il seguente progetto} other {L'eliminazione di questo account eliminerà definitivamente i seguenti {count} progetti}} e tutti i dati correlati:",
   "confirmDeleteAccountNoProjects": "Questo account non ha progetti. Verrà eliminato definitivamente.",
   "confirmDeleteAccountConfirm": "Elimina account",
-  "qcs.info": "Questi sono controlli di qualità predefiniti. Sono disponibili in ogni progetto. Possono essere applicati a livello di progetto o sotto-progetto. Nel progetto puoi creare i tuoi controlli di qualità disponibili solo in quel progetto e nei suoi sotto-progetti."
+  "qcs.info": "Questi sono controlli di qualità predefiniti. Sono disponibili in ogni progetto. Possono essere applicati a livello di progetto o sotto-progetto. Nel progetto puoi creare i tuoi controlli di qualità disponibili solo in quel progetto e nei suoi sotto-progetti.",
+  "addUser.tooltip": "Crea nuovo utente",
+  "addUser.title": "Crea nuovo utente",
+  "addUser.emailLabel": "Indirizzo e-mail",
+  "addUser.emailRequired": "Inserire un indirizzo e-mail.",
+  "addUser.emailExists": "Esiste già un utente con questo indirizzo e-mail.",
+  "addUser.saveBtn": "Salva"
 }
