@@ -182,47 +182,64 @@ export const SubprojectUser = () => {
                 })}
               </p>
             )}
-            <Dialog
-              open={pendingRole !== null}
-              onOpenChange={(_, data) => {
-                if (!data.open) setPendingRole(null)
-              }}
-            >
-              <DialogSurface>
-                <DialogBody>
-                  <DialogTitle>
-                    {formatMessage({
-                      id: 'specificRoleConfirmTitle',
-                      defaultMessage: 'Spezifische Rolle setzen?',
-                    })}
-                  </DialogTitle>
-                  <DialogContent>
-                    {formatMessage({
-                      id: 'specificRoleConfirmContent',
-                      defaultMessage:
-                        'Durch das Setzen einer spezifischen Rolle werden alle untergeordneten Rollen (falls vorhanden) für diesen Benutzer entfernt. Diese müssen danach manuell gesetzt werden.',
-                    })}
-                  </DialogContent>
-                  <DialogActions>
-                    <Button appearance="primary" onClick={onConfirmRole}>
-                      {formatMessage({
-                        id: 'specificRoleConfirmBtn',
-                        defaultMessage: 'Rolle setzen',
-                      })}
-                    </Button>
-                    <Button
-                      appearance="secondary"
-                      onClick={() => setPendingRole(null)}
-                    >
-                      {formatMessage({
-                        id: 'cancel',
-                        defaultMessage: 'Abbrechen',
-                      })}
-                    </Button>
-                  </DialogActions>
-                </DialogBody>
-              </DialogSurface>
-            </Dialog>
+            {(() => {
+              const opt = userRoleOptions.find((o) => o.value === pendingRole)
+              const label = opt
+                ? formatMessage({
+                    id: opt.labelId,
+                    defaultMessage: opt.defaultMessage,
+                  })
+                : pendingRole ?? ''
+              return (
+                <Dialog
+                  open={pendingRole !== null}
+                  onOpenChange={(_, data) => {
+                    if (!data.open) setPendingRole(null)
+                  }}
+                >
+                  <DialogSurface>
+                    <DialogBody>
+                      <DialogTitle>
+                        {formatMessage(
+                          {
+                            id: 'specificRoleConfirmTitle',
+                            defaultMessage: 'Rolle „{role}“ setzen?',
+                          },
+                          { role: label },
+                        )}
+                      </DialogTitle>
+                      <DialogContent>
+                        {formatMessage(
+                          {
+                            id: 'specificRoleConfirmContent',
+                            defaultMessage:
+                              'Durch das Setzen der Rolle „{role}“ werden alle untergeordneten Rollen (falls vorhanden) für diesen Benutzer entfernt. Diese müssen danach manuell gesetzt werden.',
+                          },
+                          { role: label },
+                        )}
+                      </DialogContent>
+                      <DialogActions>
+                        <Button appearance="primary" onClick={onConfirmRole}>
+                          {formatMessage({
+                            id: 'specificRoleConfirmBtn',
+                            defaultMessage: 'Rolle setzen',
+                          })}
+                        </Button>
+                        <Button
+                          appearance="secondary"
+                          onClick={() => setPendingRole(null)}
+                        >
+                          {formatMessage({
+                            id: 'cancel',
+                            defaultMessage: 'Abbrechen',
+                          })}
+                        </Button>
+                      </DialogActions>
+                    </DialogBody>
+                  </DialogSurface>
+                </Dialog>
+              )
+            })()}
             <DropdownField
               label={formatMessage({
                 id: 'qyI8KV',

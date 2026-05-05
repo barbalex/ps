@@ -167,6 +167,16 @@ export const PlaceUser = ({ from }) => {
   const showSpecificNotice =
     row.role === 'read-specific' || row.role === 'write-specific'
 
+  const pendingRoleOption = userRoleOptions.find(
+    (o) => o.value === pendingRole,
+  )
+  const pendingRoleLabel = pendingRoleOption
+    ? formatMessage({
+        id: pendingRoleOption.labelId,
+        defaultMessage: pendingRoleOption.defaultMessage,
+      })
+    : pendingRole ?? ''
+
   return (
     <div className="form-outer-container">
       <Header autoFocusRef={autoFocusRef} from={from} />
@@ -198,17 +208,23 @@ export const PlaceUser = ({ from }) => {
           <DialogSurface>
             <DialogBody>
               <DialogTitle>
-                {formatMessage({
-                  id: 'specificRoleConfirmTitle',
-                  defaultMessage: 'Spezifische Rolle setzen?',
-                })}
+                {formatMessage(
+                  {
+                    id: 'specificRoleConfirmTitle',
+                    defaultMessage: 'Rolle „{role}“ setzen?',
+                  },
+                  { role: pendingRoleLabel },
+                )}
               </DialogTitle>
               <DialogContent>
-                {formatMessage({
-                  id: 'specificRoleConfirmContent',
-                  defaultMessage:
-                    'Durch das Setzen einer spezifischen Rolle werden alle untergeordneten Rollen (falls vorhanden) für diesen Benutzer entfernt. Diese müssen danach manuell gesetzt werden.',
-                })}
+                {formatMessage(
+                  {
+                    id: 'specificRoleConfirmContent',
+                    defaultMessage:
+                      'Durch das Setzen der Rolle „{role}“ werden alle untergeordneten Rollen (falls vorhanden) für diesen Benutzer entfernt. Diese müssen danach manuell gesetzt werden.',
+                  },
+                  { role: pendingRoleLabel },
+                )}
               </DialogContent>
               <DialogActions>
                 <Button appearance="primary" onClick={onConfirmRole}>
