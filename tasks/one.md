@@ -15,7 +15,7 @@ Better-Auth, possible extensions:
 ---
 
 roles are now defined as: CREATE TYPE user_roles_enum AS ENUM ('reader', 'writer', 'designer', 'owner').
-Triggers fetch the parent's roles on insert and spread them to all lower levels insert/update.
+Triggers fetch the parent's roles on insert and spread them to all lower levels insert/update. See 'User roles: cascade and inheritance triggers' in /home/alex/Documents/GitHub/ps/backend/db/init/07_triggers.sql.
 
 This is efficient to set higher roles at lower levels. But not to give NO roles at lower levels i.e. to prevent a user to read/sync something at lower level.
 
@@ -23,9 +23,10 @@ We need to enable giving a user a role for only part of a project/subproject/pla
 
 The idea is to have '-specific' and '-all' versions of reader and writer roles (it makes no sense to have owners and designers that can only own/design parts of projects).
 
-The fetching/spreading triggers should only run if the parent's role is '-all' or higher than writer. If then role is '-specific', the owner/designer needs to set the childrens roles themselves.
+When a owner/designer gives a -specific role, he needs to manually set the next lower level's roles.
+The fetching/spreading triggers should only run if the parent's role is '-all', edit or own.
 
-In this way the person giving roles, can exclude certain users from reading/syncing other subprojects by giving the user 'read-specific' at the project level and (for instance) 'writer-all' at the subproject level.
+Example usage: The person giving roles can exclude certain users from reading/syncing other subprojects by giving the user 'read-specific' at the project level and 'writer-all' at the subproject level.
 
 Not syncing lower levels works by user roles not existing below a -specific role. That is already implemented.
 
@@ -35,19 +36,15 @@ CREATE TYPE user_roles_enum AS ENUM ('read-specific', 'read-all', 'write-specifi
 
 Implementation:
 
-1. change role definition
+1. change role creation
 2. check all usages of roles and rename them (where used in code), add and rename/re-translate where used in the ui
+3. Update triggers to only run if parent is -all (or design or own)
+4. Create triggers that REMOVE lower level roles if this level's role is set to -specific
+5. Inform user in the ui that this happened
+6. Check other roles usage in code?
+7. Update the docs (/docs/user-roles)
 
----
-
-We will later have to:
-
-- Check sync where clauses to ensure a row is NOT synced, if parent role is -specific. This is not needed. It is ensured by not having a role
-- Update triggers to only run if parent is -all (or design or own)
-- Create triggers that REMOVE lower level roles if this level's role is set to -specific
-- Inform user in the ui that this happened
-- Check other roles usage in code?
-- Update the docs (/docs/user-roles)
+Lets start by implementing 1 to 3. We will go on with 4 later.
 
 ---
 
