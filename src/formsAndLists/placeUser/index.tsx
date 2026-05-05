@@ -3,6 +3,7 @@ import { useParams } from '@tanstack/react-router'
 import { usePGlite, useLiveQuery } from '@electric-sql/pglite-react'
 import { useSetAtom } from 'jotai'
 import { useIntl } from 'react-intl'
+import * as fluentUiReactComponents from '@fluentui/react-components'
 
 import { DropdownField } from '../../components/shared/DropdownField.tsx'
 import { RadioGroupField } from '../../components/shared/RadioGroupField.tsx'
@@ -18,12 +19,23 @@ import styles from './index.module.css'
 
 import '../../form.css'
 
+const {
+  Dialog,
+  DialogSurface,
+  DialogBody,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
+  Button,
+} = fluentUiReactComponents
+
 export const PlaceUser = ({ from }) => {
   const { placeUserId } = useParams({ from })
   const addOperation = useSetAtom(addOperationAtom)
   const { formatMessage } = useIntl()
 
   const [validations, setValidations] = useState({})
+  const [pendingRole, setPendingRole] = useState<string | null>(null)
 
   const autoFocusRef = useRef<HTMLInputElement>(null)
 
@@ -44,6 +56,14 @@ export const PlaceUser = ({ from }) => {
     const { name, value } = getValueFromChange(e, data)
     // only change if value has changed: maybe only focus entered and left
     if (row[name] === value) return
+
+    if (
+      name === 'role' &&
+      (value === 'read-specific' || value === 'write-specific')
+    ) {
+      setPendingRole(value)
+      return
+    }
 
     try {
       await db.query(
@@ -74,6 +94,39 @@ export const PlaceUser = ({ from }) => {
     })
   }
 
+  const onConfirmRole = async () => {
+    const value = pendingRole!
+    setPendingRole(null)
+    try {
+      await db.query(
+        `UPDATE place_users SET role = $1 WHERE place_user_id = $2`,
+        [value, placeUserId],
+      )
+    } catch (error) {
+      setValidations((prev) => ({
+        ...prev,
+        role: { state: 'error', message: error.message },
+      }))
+      return
+    }
+    setValidations((prev) => {
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      const { role: _, ...rest } = prev
+      return rest
+    })
+    if (!row.user_id) return
+    addOperation({
+      table: 'place_users',
+      filters: [
+        { function: 'eq', column: 'place_id', value: row.place_id },
+        { function: 'eq', column: 'user_id', value: row.user_id },
+      ],
+      operation: 'update',
+      draft: { role: value },
+      prev: { ...row },
+    })
+  }
+
   if (!res) return <Loading />
 
   if (!row) {
@@ -84,6 +137,9 @@ export const PlaceUser = ({ from }) => {
       />
     )
   }
+
+  const showSpecificNotice =
+    row.role === 'read-specific' || row.role === 'write-specific'
 
   return (
     <div className="form-outer-container">
@@ -98,6 +154,56 @@ export const PlaceUser = ({ from }) => {
             })}
           </p>
         )}
+        {showSpecificNotice && (
+          <p className={styles.specificRoleNotice}>
+            {formatMessage({
+              id: 'specificRoleNotice',
+              defaultMessage:
+                'Eine spezifische Rolle wurde gesetzt. Alle untergeordneten Rollen (falls vorhanden) wurden entfernt und müssen manuell gesetzt werden.',
+            })}
+          </p>
+        )}
+        <Dialog
+          open={pendingRole !== null}
+          onOpenChange={(_, data) => {
+            if (!data.open) setPendingRole(null)
+          }}
+        >
+          <DialogSurface>
+            <DialogBody>
+              <DialogTitle>
+                {formatMessage({
+                  id: 'specificRoleConfirmTitle',
+                  defaultMessage: 'Spezifische Rolle setzen?',
+                })}
+              </DialogTitle>
+              <DialogContent>
+                {formatMessage({
+                  id: 'specificRoleConfirmContent',
+                  defaultMessage:
+                    'Durch das Setzen einer spezifischen Rolle werden alle untergeordneten Rollen (falls vorhanden) für diesen Benutzer entfernt. Diese müssen danach manuell gesetzt werden.',
+                })}
+              </DialogContent>
+              <DialogActions>
+                <Button appearance="primary" onClick={onConfirmRole}>
+                  {formatMessage({
+                    id: 'specificRoleConfirmBtn',
+                    defaultMessage: 'Rolle setzen',
+                  })}
+                </Button>
+                <Button
+                  appearance="secondary"
+                  onClick={() => setPendingRole(null)}
+                >
+                  {formatMessage({
+                    id: 'cancel',
+                    defaultMessage: 'Abbrechen',
+                  })}
+                </Button>
+              </DialogActions>
+            </DialogBody>
+          </DialogSurface>
+        </Dialog>
         <DropdownField
           label={formatMessage({ id: 'qyI8KV', defaultMessage: 'Benutzer' })}
           name="user_id"
@@ -126,7 +232,7 @@ export const PlaceUser = ({ from }) => {
           )}
           value={row.role ?? ''}
           onChange={onChange}
-          disabled={isOwner}
+          disabled={isOwner || !row.user_id}
           validationState={validations?.role?.state}
           validationMessage={validations?.role?.message}
         />

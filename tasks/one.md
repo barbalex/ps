@@ -55,9 +55,16 @@ Example 2: If place_users (level 1) role is set to 'write-specific', this user's
 
 ---
 
----
+On to step 6: Inform user in the ui that this happened
+When user chooses in a ...\_users form a ...-specific role, inform him that all lower roles (if existing) have been removed and have to be set manually. Ensure this is translated.
 
 ---
+
+On to step 7: are there not yet refactored usages of roles in the code? Or code using the old role names? (writer, reader)?
+
+---
+
+On to step 8: I refactor \_de, then translate, then build
 
 ---
 

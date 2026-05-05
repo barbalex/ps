@@ -1222,5 +1222,17 @@
   },
   "ownerRoleNotEditable": {
     "defaultMessage": "Diese Rolle wird automatisch gesetzt und kann nicht bearbeitet werden."
+  },
+  "specificRoleNotice": {
+    "defaultMessage": "Eine spezifische Rolle wurde gesetzt. Alle untergeordneten Rollen (falls vorhanden) wurden entfernt und müssen manuell gesetzt werden."
+  },
+  "specificRoleConfirmTitle": {
+    "defaultMessage": "Spezifische Rolle setzen?"
+  },
+  "specificRoleConfirmContent": {
+    "defaultMessage": "Durch das Setzen einer spezifischen Rolle werden alle untergeordneten Rollen (falls vorhanden) für diesen Benutzer entfernt. Diese müssen danach manuell gesetzt werden."
+  },
+  "specificRoleConfirmBtn": {
+    "defaultMessage": "Rolle setzen"
   }
 }

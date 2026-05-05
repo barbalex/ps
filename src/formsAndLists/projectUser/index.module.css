@@ -1,3 +1,9 @@
 .ownerNotice {
   margin: 3px 0;
 }
+
+.specificRoleNotice {
+  margin: 3px 0;
+  color: var(--colorNeutralForeground2);
+  font-style: italic;
+}

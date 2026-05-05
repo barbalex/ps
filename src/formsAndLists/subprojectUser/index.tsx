@@ -3,6 +3,7 @@ import { useParams } from '@tanstack/react-router'
 import { usePGlite, useLiveQuery } from '@electric-sql/pglite-react'
 import { useSetAtom } from 'jotai'
 import { useIntl } from 'react-intl'
+import * as fluentUiReactComponents from '@fluentui/react-components'
 
 import { DropdownField } from '../../components/shared/DropdownField.tsx'
 import { RadioGroupField } from '../../components/shared/RadioGroupField.tsx'
@@ -18,6 +19,16 @@ import styles from './index.module.css'
 
 import '../../form.css'
 
+const {
+  Dialog,
+  DialogSurface,
+  DialogBody,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
+  Button,
+} = fluentUiReactComponents
+
 const from =
   '/data/projects/$projectId_/subprojects/$subprojectId_/users/$subprojectUserId/'
 
@@ -25,6 +36,7 @@ export const SubprojectUser = () => {
   const { subprojectUserId } = useParams({ from })
   const addOperation = useSetAtom(addOperationAtom)
   const [validations, setValidations] = useState({})
+  const [pendingRole, setPendingRole] = useState<string | null>(null)
   const { formatMessage } = useIntl()
 
   const autoFocusRef = useRef<HTMLInputElement>(null)
@@ -47,6 +59,14 @@ export const SubprojectUser = () => {
     const { name, value } = getValueFromChange(e, data)
     // only change if value has changed: maybe only focus entered and left
     if (row[name] === value) return
+
+    if (
+      name === 'role' &&
+      (value === 'read-specific' || value === 'write-specific')
+    ) {
+      setPendingRole(value)
+      return
+    }
 
     try {
       await db.query(
@@ -77,6 +97,39 @@ export const SubprojectUser = () => {
     })
   }
 
+  const onConfirmRole = async () => {
+    const value = pendingRole!
+    setPendingRole(null)
+    try {
+      await db.query(
+        `UPDATE subproject_users SET role = $1 WHERE subproject_user_id = $2`,
+        [value, subprojectUserId],
+      )
+    } catch (error) {
+      setValidations((prev) => ({
+        ...prev,
+        role: { state: 'error', message: error.message },
+      }))
+      return
+    }
+    setValidations((prev) => {
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      const { role: _, ...rest } = prev
+      return rest
+    })
+    if (!row.user_id) return
+    addOperation({
+      table: 'subproject_users',
+      filters: [
+        { function: 'eq', column: 'subproject_id', value: row.subproject_id },
+        { function: 'eq', column: 'user_id', value: row.user_id },
+      ],
+      operation: 'update',
+      draft: { role: value },
+      prev: { ...row },
+    })
+  }
+
   return (
     <div className="form-outer-container">
       <Header autoFocusRef={autoFocusRef} />
@@ -94,6 +147,56 @@ export const SubprojectUser = () => {
                 })}
               </p>
             )}
+            {(row.role === 'read-specific' || row.role === 'write-specific') && (
+              <p className={styles.specificRoleNotice}>
+                {formatMessage({
+                  id: 'specificRoleNotice',
+                  defaultMessage:
+                    'Eine spezifische Rolle wurde gesetzt. Alle untergeordneten Rollen (falls vorhanden) wurden entfernt und müssen manuell gesetzt werden.',
+                })}
+              </p>
+            )}
+            <Dialog
+              open={pendingRole !== null}
+              onOpenChange={(_, data) => {
+                if (!data.open) setPendingRole(null)
+              }}
+            >
+              <DialogSurface>
+                <DialogBody>
+                  <DialogTitle>
+                    {formatMessage({
+                      id: 'specificRoleConfirmTitle',
+                      defaultMessage: 'Spezifische Rolle setzen?',
+                    })}
+                  </DialogTitle>
+                  <DialogContent>
+                    {formatMessage({
+                      id: 'specificRoleConfirmContent',
+                      defaultMessage:
+                        'Durch das Setzen einer spezifischen Rolle werden alle untergeordneten Rollen (falls vorhanden) für diesen Benutzer entfernt. Diese müssen danach manuell gesetzt werden.',
+                    })}
+                  </DialogContent>
+                  <DialogActions>
+                    <Button appearance="primary" onClick={onConfirmRole}>
+                      {formatMessage({
+                        id: 'specificRoleConfirmBtn',
+                        defaultMessage: 'Rolle setzen',
+                      })}
+                    </Button>
+                    <Button
+                      appearance="secondary"
+                      onClick={() => setPendingRole(null)}
+                    >
+                      {formatMessage({
+                        id: 'cancel',
+                        defaultMessage: 'Abbrechen',
+                      })}
+                    </Button>
+                  </DialogActions>
+                </DialogBody>
+              </DialogSurface>
+            </Dialog>
             <DropdownField
               label={formatMessage({
                 id: 'qyI8KV',
@@ -125,7 +228,7 @@ export const SubprojectUser = () => {
               )}
               value={row.role ?? ''}
               onChange={onChange}
-              disabled={isOwner}
+              disabled={isOwner || !row.user_id}
               validationState={validations?.role?.state}
               validationMessage={validations?.role?.message}
             />
