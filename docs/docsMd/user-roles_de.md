@@ -13,6 +13,8 @@ Ein Benutzer ist Eigentümer:
 - Projekte
 - und aller in diesen Projekten erstellten Daten.
 
+Eigentümer-Rollen werden automatisch von der App gesetzt und können nicht geändert werden.
+
 ## Rollen
 
 Rollen sind von hoch nach tief:
@@ -34,21 +36,20 @@ Rollen werden auf vier Ebenen vergeben:
 
 1. Projekte
 2. Teilprojekte (Arten oder Biotope)
-3. Orte (Ebene 1 und 2, z.B.: Populationen und Teilpopulationen)
+3. Orte Ebene 1, z.B. Populationen
+4. Orte Ebene 2, z.B. Teilpopulationen
 
 ## Wie generelle Rollen funktionieren
 
-Wenn eine generelle Rolle gesetzt wird, erstreckt sich ihre Wirkung auf alle tieferen Ebenen. Die App setzt automatisch alle niedrigeren Rollen.
+Wenn eine generelle Rolle gesetzt wird, erstreckt sich ihre Wirkung auf alle tieferen Ebenen. Die App setzt automatisch alle niedrigeren Rollen (und überschreibt dabei schon bestehende!).
 
-Beispiel: Wenn test@test.ch die Schreiber-Rolle auf dem Projekt erhält, gibt ihm die App automatisch Schreiber-Rollen in allen Teilprojekten und Orten.
+Das Setzen niedrigerer Rechte auf tieferer Ebene wird nur bei spezifischen Rollen unterstützt. Höhere Rechte hingegen können auf tieferen Ebenen vergeben werden. Ihre Wirkung erstreckt sich ebenfalls nach unten.
 
-Das Setzen niedrigerer Rechte auf tieferer Ebene wird bei generellen Rollen nicht unterstützt. Für diesen Zweck gibt es die spezifischen Rollen.
-
-Höhere Rechte können auf tieferen Ebenen vergeben werden, ihre Wirkung erstreckt sich ebenfalls nach unten.
+Beispiel: Wenn test@test.ch die Leser-Rolle auf dem Projekt erhält, gibt ihm die App automatisch Leser-Rollen in allen Teilprojekten und Orten. Du kannst ihm zusätzlich auf bestimmten Arten, Populationen oder Teilpopulationen Schreibrechte vergeben.
 
 ## Wie spezifische Rollen funktionieren
 
-Spezifische Rollen sind dazu da, dass man einem Benutzer nur für einen Teil der Daten Rechte vergeben kann. Wählt man eine spezifische Rolle, müssen daher in der nächsttieferen Stufe die Rollen manuell vergeben werden.
+Spezifische Rollen sind dazu da, dass man einem Benutzer nur für einen Teil der Daten Rechte vergeben kann. Wählt man eine spezifische Rolle, müssen daher in der nächsttieferen Stufe die Rollen manuell vergeben werden (sie werden nicht automatisch gesetzt).
 
 Beispiel für spezifische Rollen: Du gibst test@test.ch die rolle `Leser (spezifisch)` auf einem Projekt. Nun kannst tu ihm auf Stufe Arten differenziert Rechte geben: Schreiber, Leser - oder keine. Wenn du ihm bei einer keine Art Rechte gibst, sieht er diese Art nicht.
 
