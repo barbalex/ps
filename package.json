@@ -62,7 +62,7 @@
     "@turf/polygon-to-line": "7.3.5",
     "@uidotdev/usehooks": "2.4.1",
     "@uiw/react-codemirror": "4.25.9",
-    "@uploadcare/file-uploader": "1.29.0",
+    "@uploadcare/file-uploader": "1.29.1",
     "@uploadcare/react-uploader": "1.15.0",
     "@vercel/analytics": "2.0.1",
     "allotment": "1.20.5",
