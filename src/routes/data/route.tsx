@@ -9,7 +9,6 @@ import { AuthAndDb } from '../../components/AuthAndDb.tsx'
 import { NotFound } from '../../components/NotFound.tsx'
 import { getSession } from '../../modules/authClient.ts'
 import { isVerificationGraceExpired } from '../../modules/emailVerificationGrace.ts'
-import { ensurePgliteDb } from '../../modules/ensurePgliteDb.ts'
 import {
   sessionVerifiedAtom,
   store,
@@ -33,6 +32,8 @@ export const Route = createFileRoute('/data')({
   middlewares: [stripSearchParams(defaultValues)],
   notFoundComponent: NotFound,
   beforeLoad: async ({ location }) => {
+    // Start loading PGlite now (parallel with auth check); module cache makes repeats free
+    const pgliteModulePromise = import('../../modules/ensurePgliteDb.ts')
     // 1. ensure user is authenticated
     const sessionVerified = store.get(sessionVerifiedAtom)
 
@@ -67,6 +68,7 @@ export const Route = createFileRoute('/data')({
         const userId = store.get(userIdAtom)
         if (!userId)
           throw redirect({ to: '/auth', search: { redirect: location.href } })
+        const { ensurePgliteDb } = await pgliteModulePromise
         await ensurePgliteDb()
         return { navDataFetcher: 'useDataBreadcrumbData' }
       }
@@ -104,6 +106,7 @@ export const Route = createFileRoute('/data')({
     }
 
     // 2. Ensure a DB instance exists before protected route components mount
+    const { ensurePgliteDb } = await pgliteModulePromise
     await ensurePgliteDb()
 
     return { navDataFetcher: 'useDataBreadcrumbData' }
