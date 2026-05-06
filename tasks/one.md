@@ -29,7 +29,7 @@ steps:
 
 ---
 
-New: exports.
+New feature: exports.
 
 Very similar to: qcs.
 
