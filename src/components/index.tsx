@@ -1,7 +1,7 @@
 import { Link } from '@tanstack/react-router'
 import { FormattedMessage, useIntl } from 'react-intl'
 
-import styles from './home.module.css'
+import styles from './index.module.css'
 
 const br = <br />
 
@@ -29,23 +29,11 @@ export const Home = () => {
       <div className={styles.scrollContainer}>
         <h6 className={styles.pageTitle}>
           <FormattedMessage
-            id="aP3RsT"
-            defaultMessage="Ein Werkzeug für Naturschutzfachleute, um bedrohte Arten und Lebensräume zu fördern."
+            id="HomeWasIstDasText"
+            defaultMessage="arten-fördern.app hilft Naturschutzfachleuten, bedrohte Arten und Lebensräume zu fördern"
           />
         </h6>
         <div className={styles.cardContainer}>
-          <div className={styles.card}>
-            <h3 className={styles.cardTitle}>
-              <FormattedMessage
-                id="HomeWasIstDas"
-                defaultMessage="Was ist das?"
-              />
-            </h3>
-            <FormattedMessage
-              id="HomeWasIstDasText"
-              defaultMessage="arten-fördern.app hilft Naturschutzfachleuten, bedrohte Arten und Lebensräume zu fördern."
-            />
-          </div>
           <div className={styles.card}>
             <h3 className={styles.cardTitle}>
               <FormattedMessage id="h5g7Kk" defaultMessage="Orte" />
