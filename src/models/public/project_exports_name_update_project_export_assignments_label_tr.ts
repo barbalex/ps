@@ -1,0 +1,2 @@
+export interface project_exports_name_update_project_export_assignments_label_tr_params {
+}

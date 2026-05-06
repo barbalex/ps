@@ -1,0 +1,2 @@
+export interface project_export_assignments_label_trigger_params {
+}

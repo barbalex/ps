@@ -3,14 +3,14 @@ import type { SubprojectsSubprojectId } from './Subprojects.js';
 import type { ProjectQcsProjectQcId } from './ProjectQcs.js';
 
 /** Identifier type for public.project_qc_assignments */
-export type ProjectQcAssignmentsProjectQcAssignmentsId = string & { __brand: 'public.project_qc_assignments' };
+export type ProjectQcAssignmentsProjectQcAssignmentId = string & { __brand: 'public.project_qc_assignments' };
 
 /**
  * Represents the table public.project_qc_assignments
  * Project-specific quality controls assigned to a project or subproject level for execution.
  */
 export default interface ProjectQcAssignments {
-  project_qc_assignment_id: ProjectQcAssignmentsProjectQcAssignmentsId;
+  project_qc_assignment_id: ProjectQcAssignmentsProjectQcAssignmentId;
 
   project_id: ProjectsProjectId | null;
 
@@ -35,7 +35,7 @@ export default interface ProjectQcAssignments {
  */
 export interface ProjectQcAssignmentsInitializer {
   /** Default value: uuid_generate_v7() */
-  project_qc_assignment_id?: ProjectQcAssignmentsProjectQcAssignmentsId;
+  project_qc_assignment_id?: ProjectQcAssignmentsProjectQcAssignmentId;
 
   project_id?: ProjectsProjectId | null;
 
@@ -61,7 +61,7 @@ export interface ProjectQcAssignmentsInitializer {
  * Project-specific quality controls assigned to a project or subproject level for execution.
  */
 export interface ProjectQcAssignmentsMutator {
-  project_qc_assignment_id?: ProjectQcAssignmentsProjectQcAssignmentsId;
+  project_qc_assignment_id?: ProjectQcAssignmentsProjectQcAssignmentId;
 
   project_id?: ProjectsProjectId | null;
 
