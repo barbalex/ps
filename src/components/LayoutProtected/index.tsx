@@ -1,6 +1,8 @@
 import { createRef, useEffect } from 'react'
 import { useAtomValue } from 'jotai'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
+import * as UC from '@uploadcare/file-uploader'
+UC.defineComponents(UC)
 import { useSearch } from '@tanstack/react-router'
 
 import { createPostgrestClient } from '../../modules/createPostgrestClient.ts'

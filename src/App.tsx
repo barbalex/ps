@@ -15,10 +15,6 @@ const messages = { en, fr, it, de: undefined } as const
 
 import { router } from './router.tsx'
 
-// TODO: is this really needed?
-import * as UC from '@uploadcare/file-uploader'
-UC.defineComponents(UC)
-
 import './style.css'
 import styles from './App.module.css'
 
