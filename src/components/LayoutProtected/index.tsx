@@ -46,42 +46,42 @@ export const LayoutProtected = () => {
   // - ui remains more consistent when logging in
   return (
     <QueryClientProvider client={tanstackQueryClient}>
-    <UploaderContext.Provider value={uploaderRef}>
-      <uc-config
-        ctx-name="uploadcare-uploader"
-        pubkey="db67c21b6d9964e195b8"
-        maxLocalFileSizeBytes="100000000"
-        multiple="false"
-        sourceList="local, camera, dropbox, gdrive, gphotos"
-        useCloudImageEditor="true"
-      ></uc-config>
-      <uc-upload-ctx-provider
-        id="uploaderctx"
-        ctx-name="uploadcare-uploader"
-        ref={uploaderRef}
-      ></uc-upload-ctx-provider>
-      {onlyForm !== true && (
-        <>
-          <Header />
-          <EmailVerificationBanner />
-          {!mapIsMaximized && <Breadcrumbs />}
-          <Notifications />
-        </>
-      )}
-      <TableLayersProvider />
-      <OwnVectorLayerPropertiesProvider />
-      <ObservationAssignChooser />
-      <ChooseAccountForProject />
-      <ConfirmDeleteAccount />
-      <IsDesktopViewSetter />
-      <ApiDetector />
-      <AppAdminDetector />
-      <TreeOpenNodesSetter />
-      <AutoFetchCapabilities />
-      <OperationsObserver />
-      <Main />
-      <BackgroundTasks />
-    </UploaderContext.Provider>
+      <UploaderContext.Provider value={uploaderRef}>
+        <uc-config
+          ctx-name="uploadcare-uploader"
+          pubkey="db67c21b6d9964e195b8"
+          maxLocalFileSizeBytes="100000000"
+          multiple="false"
+          sourceList="local, camera, dropbox, gdrive, gphotos"
+          useCloudImageEditor="true"
+        ></uc-config>
+        <uc-upload-ctx-provider
+          id="uploaderctx"
+          ctx-name="uploadcare-uploader"
+          ref={uploaderRef}
+        ></uc-upload-ctx-provider>
+        {onlyForm !== true && (
+          <>
+            <Header />
+            <EmailVerificationBanner />
+            {!mapIsMaximized && <Breadcrumbs />}
+            <Notifications />
+          </>
+        )}
+        <TableLayersProvider />
+        <OwnVectorLayerPropertiesProvider />
+        <ObservationAssignChooser />
+        <ChooseAccountForProject />
+        <ConfirmDeleteAccount />
+        <IsDesktopViewSetter />
+        <ApiDetector />
+        <AppAdminDetector />
+        <TreeOpenNodesSetter />
+        <AutoFetchCapabilities />
+        <OperationsObserver />
+        <Main />
+        <BackgroundTasks />
+      </UploaderContext.Provider>
     </QueryClientProvider>
   )
 }
