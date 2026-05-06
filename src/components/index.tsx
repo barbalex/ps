@@ -28,12 +28,12 @@ export const Home = () => {
         />
       </picture>
       <div className={styles.scrollContainer}>
-        <h6 className={styles.pageTitle}>
+        <h2 className={styles.pageTitle}>
           <FormattedMessage
             id="HomeWasIstDasText"
             defaultMessage="arten-fördern.app hilft Naturschutz&shy;fachleuten, bedrohte Arten und Lebensräume zu fördern"
           />
-        </h6>
+        </h2>
         <div className={styles.cardContainer}>
           <div className={styles.card}>
             <h3 className={styles.cardTitle}>
