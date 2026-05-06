@@ -151,6 +151,18 @@ export const projectQcsRunLabelFilterAtom = atomWithStorage(
 )
 export const projectQcsRunFilteredCountAtom = atom<number | null>(null)
 
+export const rootExportsRunLabelFilterAtom = atomWithStorage(
+  'rootExportsRunLabelFilter',
+  '',
+)
+export const rootExportsRunFilteredCountAtom = atom<number | null>(null)
+
+export const projectExportsRunLabelFilterAtom = atomWithStorage(
+  'projectExportsRunLabelFilter',
+  '',
+)
+export const projectExportsRunFilteredCountAtom = atom<number | null>(null)
+
 const SUPPORTED_LANGUAGES = ['en', 'de', 'fr', 'it'] as const
 export type Language = (typeof SUPPORTED_LANGUAGES)[number]
 const _navLang = navigator.language.split('-')[0] as Language

@@ -10,9 +10,19 @@ type CheckConfig = {
   minPermission?: Permission
 }
 
-const ROLE_ORDER = ['read-specific', 'read-all', 'write-specific', 'write-all', 'design', 'own']
+const ROLE_ORDER = [
+  'read-specific',
+  'read-all',
+  'write-specific',
+  'write-all',
+  'design',
+  'own',
+]
 
-function hasPermission(role: string | undefined, min: Permission = 'writer'): boolean {
+function hasPermission(
+  role: string | undefined,
+  min: Permission = 'writer',
+): boolean {
   if (!role) return false
   return ROLE_ORDER.indexOf(role) >= ROLE_ORDER.indexOf(min)
 }
@@ -31,6 +41,7 @@ const SKIP_TABLES = new Set([
   'widgets_for_fields',
   'crs',
   'qcs',
+  'exports',
   'messages',
   'user_messages',
 ])
@@ -86,6 +97,9 @@ const TABLE_CONFIG: Record<string, CheckConfig> = {
   vector_layers: projectDirect(),
   project_crs: projectDirect(),
   qc_assignments: projectDirect(),
+  export_assignments: { ...projectDirect(), minPermission: 'design' },
+  project_exports: { ...projectDirect(), minPermission: 'design' },
+  project_export_assignments: { ...projectDirect(), minPermission: 'design' },
 
   // Project-level — via join
   taxa: {
@@ -189,7 +203,9 @@ export async function checkWritePermission(
   const config = TABLE_CONFIG[table]
   if (!config) {
     // Unknown table — allow by default so we don't disrupt unknown flows
-    console.warn(`checkWritePermission: no config for table "${table}", allowing write`)
+    console.warn(
+      `checkWritePermission: no config for table "${table}", allowing write`,
+    )
     return { allowed: true }
   }
 

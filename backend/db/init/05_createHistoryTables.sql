@@ -3754,4 +3754,302 @@ SET jobmon = false,
 	retention_keep_index = true
 WHERE parent_table = 'public.places_history';
 
+-- exports -> exports_history
+-- Retention: 5 years
+--
 RESET ROLE;
+ALTER TABLE exports
+ADD COLUMN IF NOT EXISTS sys_period tstzrange;
+
+UPDATE exports
+SET sys_period = tstzrange(updated_at, NULL, '[)')
+WHERE sys_period IS NULL;
+
+ALTER TABLE exports
+ALTER COLUMN sys_period SET NOT NULL;
+
+COMMENT ON COLUMN exports.sys_period IS 'System period maintained by temporal_tables for auditing and historic queries.';
+
+CREATE TABLE IF NOT EXISTS exports_history (
+        LIKE exports INCLUDING DEFAULTS
+) PARTITION BY RANGE (updated_at);
+
+ALTER TABLE exports_history OWNER TO partman_user;
+
+COMMENT ON TABLE exports_history IS 'System-versioned history of exports. Managed by temporal_tables and partitioned yearly by updated_at.';
+COMMENT ON COLUMN exports_history.sys_period IS 'System period written by temporal_tables. lower(sys_period) is when the row version became current, upper(sys_period) when it stopped being current.';
+
+CREATE INDEX IF NOT EXISTS exports_history_updated_at_idx
+ON exports_history USING btree (updated_at);
+
+CREATE INDEX IF NOT EXISTS exports_history_id_updated_at_idx
+ON exports_history USING btree (exports_id, updated_at);
+
+CREATE INDEX IF NOT EXISTS exports_history_sys_period_idx
+ON exports_history USING gist (sys_period);
+
+DO $$
+BEGIN
+        IF NOT EXISTS (
+                SELECT 1
+                FROM pg_trigger
+                WHERE tgname = 'versioning_exports_trigger'
+                        AND tgrelid = 'exports'::regclass
+        ) THEN
+                CREATE TRIGGER versioning_exports_trigger
+                BEFORE INSERT OR UPDATE OR DELETE ON exports
+                FOR EACH ROW EXECUTE PROCEDURE versioning('sys_period', 'exports_history', true);
+        END IF;
+END
+$$;
+
+SET ROLE partman_user;
+SELECT partman.create_parent(
+        p_parent_table := 'public.exports_history',
+        p_control := 'updated_at',
+        p_interval := '1 year',
+        p_type := 'range',
+        p_premake := 4,
+        p_start_partition := to_char(date_trunc('year', CURRENT_TIMESTAMP), 'YYYY-MM-DD HH24:MI:SS'),
+        p_default_table := true,
+        p_automatic_maintenance := 'on',
+        p_jobmon := false
+)
+WHERE NOT EXISTS (
+        SELECT 1
+        FROM partman.part_config
+        WHERE parent_table = 'public.exports_history'
+);
+
+--------------------------------------------------------------
+-- export_assignments -> export_assignments_history
+-- Retention: 5 years
+--
+RESET ROLE;
+ALTER TABLE export_assignments
+ADD COLUMN IF NOT EXISTS sys_period tstzrange;
+
+UPDATE export_assignments
+SET sys_period = tstzrange(updated_at, NULL, '[)')
+WHERE sys_period IS NULL;
+
+ALTER TABLE export_assignments
+ALTER COLUMN sys_period SET NOT NULL;
+
+COMMENT ON COLUMN export_assignments.sys_period IS 'System period maintained by temporal_tables for auditing and historic queries.';
+
+CREATE TABLE IF NOT EXISTS export_assignments_history (
+        LIKE export_assignments INCLUDING DEFAULTS
+) PARTITION BY RANGE (updated_at);
+
+ALTER TABLE export_assignments_history OWNER TO partman_user;
+
+COMMENT ON TABLE export_assignments_history IS 'System-versioned history of export_assignments. Managed by temporal_tables and partitioned yearly by updated_at.';
+COMMENT ON COLUMN export_assignments_history.sys_period IS 'System period written by temporal_tables. lower(sys_period) is when the row version became current, upper(sys_period) when it stopped being current.';
+
+CREATE INDEX IF NOT EXISTS export_assignments_history_updated_at_idx
+ON export_assignments_history USING btree (updated_at);
+
+CREATE INDEX IF NOT EXISTS export_assignments_history_id_updated_at_idx
+ON export_assignments_history USING btree (export_assignment_id, updated_at);
+
+CREATE INDEX IF NOT EXISTS export_assignments_history_sys_period_idx
+ON export_assignments_history USING gist (sys_period);
+
+DO $$
+BEGIN
+        IF NOT EXISTS (
+                SELECT 1
+                FROM pg_trigger
+                WHERE tgname = 'versioning_export_assignments_trigger'
+                        AND tgrelid = 'export_assignments'::regclass
+        ) THEN
+                CREATE TRIGGER versioning_export_assignments_trigger
+                BEFORE INSERT OR UPDATE OR DELETE ON export_assignments
+                FOR EACH ROW EXECUTE PROCEDURE versioning('sys_period', 'export_assignments_history', true);
+        END IF;
+END
+$$;
+
+SET ROLE partman_user;
+SELECT partman.create_parent(
+        p_parent_table := 'public.export_assignments_history',
+        p_control := 'updated_at',
+        p_interval := '1 year',
+        p_type := 'range',
+        p_premake := 4,
+        p_start_partition := to_char(date_trunc('year', CURRENT_TIMESTAMP), 'YYYY-MM-DD HH24:MI:SS'),
+        p_default_table := true,
+        p_automatic_maintenance := 'on',
+        p_jobmon := false
+)
+WHERE NOT EXISTS (
+        SELECT 1
+        FROM partman.part_config
+        WHERE parent_table = 'public.export_assignments_history'
+);
+
+--------------------------------------------------------------
+-- project_exports -> project_exports_history
+-- Retention: 5 years
+--
+RESET ROLE;
+ALTER TABLE project_exports
+ADD COLUMN IF NOT EXISTS sys_period tstzrange;
+
+UPDATE project_exports
+SET sys_period = tstzrange(updated_at, NULL, '[)')
+WHERE sys_period IS NULL;
+
+ALTER TABLE project_exports
+ALTER COLUMN sys_period SET NOT NULL;
+
+COMMENT ON COLUMN project_exports.sys_period IS 'System period maintained by temporal_tables for auditing and historic queries.';
+
+CREATE TABLE IF NOT EXISTS project_exports_history (
+        LIKE project_exports INCLUDING DEFAULTS
+) PARTITION BY RANGE (updated_at);
+
+ALTER TABLE project_exports_history OWNER TO partman_user;
+
+COMMENT ON TABLE project_exports_history IS 'System-versioned history of project_exports. Managed by temporal_tables and partitioned yearly by updated_at.';
+COMMENT ON COLUMN project_exports_history.sys_period IS 'System period written by temporal_tables. lower(sys_period) is when the row version became current, upper(sys_period) when it stopped being current.';
+
+CREATE INDEX IF NOT EXISTS project_exports_history_updated_at_idx
+ON project_exports_history USING btree (updated_at);
+
+CREATE INDEX IF NOT EXISTS project_exports_history_id_updated_at_idx
+ON project_exports_history USING btree (project_exports_id, updated_at);
+
+CREATE INDEX IF NOT EXISTS project_exports_history_sys_period_idx
+ON project_exports_history USING gist (sys_period);
+
+DO $$
+BEGIN
+        IF NOT EXISTS (
+                SELECT 1
+                FROM pg_trigger
+                WHERE tgname = 'versioning_project_exports_trigger'
+                        AND tgrelid = 'project_exports'::regclass
+        ) THEN
+                CREATE TRIGGER versioning_project_exports_trigger
+                BEFORE INSERT OR UPDATE OR DELETE ON project_exports
+                FOR EACH ROW EXECUTE PROCEDURE versioning('sys_period', 'project_exports_history', true);
+        END IF;
+END
+$$;
+
+SET ROLE partman_user;
+SELECT partman.create_parent(
+        p_parent_table := 'public.project_exports_history',
+        p_control := 'updated_at',
+        p_interval := '1 year',
+        p_type := 'range',
+        p_premake := 4,
+        p_start_partition := to_char(date_trunc('year', CURRENT_TIMESTAMP), 'YYYY-MM-DD HH24:MI:SS'),
+        p_default_table := true,
+        p_automatic_maintenance := 'on',
+        p_jobmon := false
+)
+WHERE NOT EXISTS (
+        SELECT 1
+        FROM partman.part_config
+        WHERE parent_table = 'public.project_exports_history'
+);
+
+--------------------------------------------------------------
+-- project_export_assignments -> project_export_assignments_history
+-- Retention: 5 years
+--
+RESET ROLE;
+ALTER TABLE project_export_assignments
+ADD COLUMN IF NOT EXISTS sys_period tstzrange;
+
+UPDATE project_export_assignments
+SET sys_period = tstzrange(updated_at, NULL, '[)')
+WHERE sys_period IS NULL;
+
+ALTER TABLE project_export_assignments
+ALTER COLUMN sys_period SET NOT NULL;
+
+COMMENT ON COLUMN project_export_assignments.sys_period IS 'System period maintained by temporal_tables for auditing and historic queries.';
+
+CREATE TABLE IF NOT EXISTS project_export_assignments_history (
+        LIKE project_export_assignments INCLUDING DEFAULTS
+) PARTITION BY RANGE (updated_at);
+
+ALTER TABLE project_export_assignments_history OWNER TO partman_user;
+
+COMMENT ON TABLE project_export_assignments_history IS 'System-versioned history of project_export_assignments. Managed by temporal_tables and partitioned yearly by updated_at.';
+COMMENT ON COLUMN project_export_assignments_history.sys_period IS 'System period written by temporal_tables. lower(sys_period) is when the row version became current, upper(sys_period) when it stopped being current.';
+
+CREATE INDEX IF NOT EXISTS project_export_assignments_history_updated_at_idx
+ON project_export_assignments_history USING btree (updated_at);
+
+CREATE INDEX IF NOT EXISTS project_export_assignments_history_id_updated_at_idx
+ON project_export_assignments_history USING btree (project_export_assignment_id, updated_at);
+
+CREATE INDEX IF NOT EXISTS project_export_assignments_history_sys_period_idx
+ON project_export_assignments_history USING gist (sys_period);
+
+DO $$
+BEGIN
+        IF NOT EXISTS (
+                SELECT 1
+                FROM pg_trigger
+                WHERE tgname = 'versioning_project_export_assignments_trigger'
+                        AND tgrelid = 'project_export_assignments'::regclass
+        ) THEN
+                CREATE TRIGGER versioning_project_export_assignments_trigger
+                BEFORE INSERT OR UPDATE OR DELETE ON project_export_assignments
+                FOR EACH ROW EXECUTE PROCEDURE versioning('sys_period', 'project_export_assignments_history', true);
+        END IF;
+END
+$$;
+
+SET ROLE partman_user;
+SELECT partman.create_parent(
+        p_parent_table := 'public.project_export_assignments_history',
+        p_control := 'updated_at',
+        p_interval := '1 year',
+        p_type := 'range',
+        p_premake := 4,
+        p_start_partition := to_char(date_trunc('year', CURRENT_TIMESTAMP), 'YYYY-MM-DD HH24:MI:SS'),
+        p_default_table := true,
+        p_automatic_maintenance := 'on',
+        p_jobmon := false
+)
+WHERE NOT EXISTS (
+        SELECT 1
+        FROM partman.part_config
+        WHERE parent_table = 'public.project_export_assignments_history'
+);
+
+UPDATE partman.part_config
+SET jobmon = false,
+        retention = '5 years',
+        retention_keep_table = false,
+        retention_keep_index = false
+WHERE parent_table = 'public.exports_history';
+
+UPDATE partman.part_config
+SET jobmon = false,
+        retention = '5 years',
+        retention_keep_table = false,
+        retention_keep_index = false
+WHERE parent_table = 'public.export_assignments_history';
+
+UPDATE partman.part_config
+SET jobmon = false,
+        retention = '5 years',
+        retention_keep_table = false,
+        retention_keep_index = false
+WHERE parent_table = 'public.project_exports_history';
+
+UPDATE partman.part_config
+SET jobmon = false,
+        retention = '5 years',
+        retention_keep_table = false,
+        retention_keep_index = false
+WHERE parent_table = 'public.project_export_assignments_history';
+

@@ -1546,3 +1546,109 @@ CREATE OR REPLACE TRIGGER project_qcs_name_update_project_qc_assignments_label_t
 AFTER UPDATE OF name_de ON project_qcs
 FOR EACH ROW
 EXECUTE PROCEDURE project_qcs_name_update_project_qc_assignments_label_trigger();
+
+-- export_assignments label trigger
+CREATE OR REPLACE FUNCTION export_assignments_label_trigger()
+RETURNS TRIGGER AS $$
+DECLARE
+  is_syncing BOOLEAN;
+  _exports_label TEXT;
+BEGIN
+  SELECT COALESCE(NULLIF(current_setting('electric.syncing', true), ''), 'false')::boolean INTO is_syncing;
+  IF is_syncing THEN
+    RETURN OLD;
+  END IF;
+
+  IF NEW.exports_id IS NULL THEN
+    _exports_label := NULL;
+  ELSE
+    SELECT exports.name_de INTO _exports_label FROM exports WHERE exports.exports_id = NEW.exports_id;
+  END IF;
+
+  UPDATE export_assignments
+    SET label = coalesce(nullif(_exports_label, ''), NEW.export_assignment_id::text)
+  WHERE export_assignments.export_assignment_id = NEW.export_assignment_id;
+  RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE OR REPLACE TRIGGER export_assignments_label_trigger
+AFTER INSERT OR UPDATE OF exports_id ON export_assignments
+FOR EACH ROW
+EXECUTE PROCEDURE export_assignments_label_trigger();
+
+-- when exports.name_de changes, update labels of all related export_assignments rows
+CREATE OR REPLACE FUNCTION exports_name_update_export_assignments_label_trigger()
+RETURNS TRIGGER AS $$
+DECLARE
+  is_syncing BOOLEAN;
+BEGIN
+  SELECT COALESCE(NULLIF(current_setting('electric.syncing', true), ''), 'false')::boolean INTO is_syncing;
+  IF is_syncing THEN
+    RETURN OLD;
+  END IF;
+
+  UPDATE export_assignments
+    SET label = coalesce(nullif(NEW.name_de, ''), export_assignment_id::text)
+  WHERE export_assignments.exports_id = NEW.exports_id;
+  RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE OR REPLACE TRIGGER exports_name_update_export_assignments_label_trigger
+AFTER UPDATE OF name_de ON exports
+FOR EACH ROW
+EXECUTE PROCEDURE exports_name_update_export_assignments_label_trigger();
+
+-- project_export_assignments label trigger
+CREATE OR REPLACE FUNCTION project_export_assignments_label_trigger()
+RETURNS TRIGGER AS $$
+DECLARE
+  is_syncing BOOLEAN;
+  _exports_label TEXT;
+BEGIN
+  SELECT COALESCE(NULLIF(current_setting('electric.syncing', true), ''), 'false')::boolean INTO is_syncing;
+  IF is_syncing THEN
+    RETURN OLD;
+  END IF;
+
+  IF NEW.project_exports_id IS NULL THEN
+    _exports_label := NULL;
+  ELSE
+    SELECT project_exports.name_de INTO _exports_label FROM project_exports WHERE project_exports.project_exports_id = NEW.project_exports_id;
+  END IF;
+
+  UPDATE project_export_assignments
+    SET label = coalesce(nullif(_exports_label, ''), NEW.project_export_assignment_id::text)
+  WHERE project_export_assignments.project_export_assignment_id = NEW.project_export_assignment_id;
+  RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE OR REPLACE TRIGGER project_export_assignments_label_trigger
+AFTER INSERT OR UPDATE OF project_exports_id ON project_export_assignments
+FOR EACH ROW
+EXECUTE PROCEDURE project_export_assignments_label_trigger();
+
+-- when project_exports.name_de changes, update labels of all related project_export_assignments rows
+CREATE OR REPLACE FUNCTION project_exports_name_update_project_export_assignments_label_trigger()
+RETURNS TRIGGER AS $$
+DECLARE
+  is_syncing BOOLEAN;
+BEGIN
+  SELECT COALESCE(NULLIF(current_setting('electric.syncing', true), ''), 'false')::boolean INTO is_syncing;
+  IF is_syncing THEN
+    RETURN OLD;
+  END IF;
+
+  UPDATE project_export_assignments
+    SET label = coalesce(nullif(NEW.name_de, ''), project_export_assignment_id::text)
+  WHERE project_export_assignments.project_exports_id = NEW.project_exports_id;
+  RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE OR REPLACE TRIGGER project_exports_name_update_project_export_assignments_label_trigger
+AFTER UPDATE OF name_de ON project_exports
+FOR EACH ROW
+EXECUTE PROCEDURE project_exports_name_update_project_export_assignments_label_trigger();

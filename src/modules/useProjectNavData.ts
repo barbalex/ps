@@ -78,6 +78,8 @@ type NavDataNotForBreadcrumb = {
   files_count_filtered?: number
   qc_assignments_count?: number
   qcs_run_count?: number
+  export_assignments_count?: number
+  exports_run_count?: number
 }
 
 type NavDataNotForBreadcrumbDesigning = {
@@ -125,6 +127,8 @@ type NavDataNotForBreadcrumbDesigning = {
   project_report_designs_count?: number
   qc_assignments_count?: number
   qcs_run_count?: number
+  export_assignments_count?: number
+  exports_run_count?: number
 }
 
 export const useProjectNavData = ({
@@ -190,7 +194,9 @@ export const useProjectNavData = ({
             files_count_unfiltered AS (SELECT count(*) FROM files WHERE project_id = '${projectId}'),
             files_count_filtered AS (SELECT count(*) FROM files WHERE project_id = '${projectId}' ${filesIsFiltered ? ` AND ${filesFilterString}` : ''}),
             qc_assignments_count AS (SELECT count(*) FROM (SELECT qa.qc_assignment_id FROM qc_assignments qa JOIN qcs q ON q.qcs_id = qa.qc_id WHERE qa.project_id = '${projectId}' AND qa.subproject_id IS NULL AND q.level = 'project' UNION ALL SELECT pqa.project_qc_assignment_id FROM project_qc_assignments pqa WHERE pqa.project_id = '${projectId}' AND pqa.subproject_id IS NULL) t),
-            qcs_run_count AS (SELECT count(*) FROM qc_assignments qa JOIN qcs q ON q.qcs_id = qa.qc_id WHERE qa.project_id = '${projectId}' AND qa.subproject_id IS NULL AND q.level = 'project')
+            qcs_run_count AS (SELECT count(*) FROM qc_assignments qa JOIN qcs q ON q.qcs_id = qa.qc_id WHERE qa.project_id = '${projectId}' AND qa.subproject_id IS NULL AND q.level = 'project'),
+            export_assignments_count AS (SELECT count(*) FROM (SELECT ea.export_assignment_id FROM export_assignments ea JOIN exports e ON e.exports_id = ea.exports_id WHERE ea.project_id = '${projectId}' AND ea.subproject_id IS NULL AND e.level = 'project' UNION ALL SELECT pea.project_export_assignment_id FROM project_export_assignments pea WHERE pea.project_id = '${projectId}' AND pea.subproject_id IS NULL) t),
+            exports_run_count AS (SELECT count(*) FROM export_assignments ea JOIN exports e ON e.exports_id = ea.exports_id WHERE ea.project_id = '${projectId}' AND ea.subproject_id IS NULL AND e.level = 'project')
             ${
               designing
                 ? `, project_users_count_unfiltered AS (SELECT count(*) FROM project_users WHERE project_id = '${projectId}'),
@@ -244,7 +250,9 @@ export const useProjectNavData = ({
             files_count_unfiltered.count AS files_count_unfiltered,
             files_count_filtered.count AS files_count_filtered,
             qc_assignments_count.count AS qc_assignments_count,
-            qcs_run_count.count AS qcs_run_count
+            qcs_run_count.count AS qcs_run_count,
+            export_assignments_count.count AS export_assignments_count,
+            exports_run_count.count AS exports_run_count
             ${
               designing
                 ? `, project_users_count_unfiltered.count AS project_users_count_unfiltered,
@@ -283,7 +291,9 @@ export const useProjectNavData = ({
             files_count_unfiltered,
             files_count_filtered,
             qc_assignments_count,
-            qcs_run_count
+            qcs_run_count,
+            export_assignments_count,
+            exports_run_count
             ${
               designing
                 ? `, project_users_count_unfiltered,
@@ -620,6 +630,32 @@ export const useProjectNavData = ({
               }),
             }),
           },
+          ...(designing
+            ? [
+                {
+                  id: 'export-assignments',
+                  label: buildNavLabel({
+                    loading,
+                    countFiltered: nav?.export_assignments_count ?? 0,
+                    namePlural: formatMessage({
+                      id: 'projectExports.title',
+                      defaultMessage: 'Exporte: wählen',
+                    }),
+                  }),
+                },
+                {
+                  id: 'exports-run',
+                  label: buildNavLabel({
+                    loading,
+                    countFiltered: nav?.exports_run_count ?? 0,
+                    namePlural: formatMessage({
+                      id: 'projectExportsRun.title',
+                      defaultMessage: 'Exporte: ausführen',
+                    }),
+                  }),
+                },
+              ]
+            : []),
         ],
   }
 

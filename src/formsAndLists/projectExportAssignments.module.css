@@ -1,0 +1,11 @@
+.filters {
+  padding: 8px 10px;
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  align-items: flex-end;
+}
+
+.empty {
+  padding: 10px;
+}

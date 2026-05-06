@@ -1883,3 +1883,89 @@ export const createProjectQcAssignmentsForProjectQc = async ({
 
   return project_qc_assignment_id
 }
+
+export const createRootExportAssignment = async ({ exportsId }: { exportsId: string }) => {
+  const db = store.get(pgliteDbAtom)
+  const export_assignment_id = uuidv7()
+  await db.query(
+    `insert into export_assignments (export_assignment_id, exports_id) values ($1, $2)`,
+    [export_assignment_id, exportsId],
+  )
+
+  store.set(addOperationAtom, {
+    table: 'export_assignments',
+    operation: 'insert',
+    draft: { export_assignment_id, exports_id: exportsId },
+  })
+
+  return export_assignment_id
+}
+
+export const createProjectExportAssignment = async ({ projectId, exportsId }: { projectId: string; exportsId: string }) => {
+  const db = store.get(pgliteDbAtom)
+  const export_assignment_id = uuidv7()
+  await db.query(
+    `insert into export_assignments (export_assignment_id, project_id, exports_id) values ($1, $2, $3)`,
+    [export_assignment_id, projectId, exportsId],
+  )
+
+  store.set(addOperationAtom, {
+    table: 'export_assignments',
+    operation: 'insert',
+    draft: { export_assignment_id, project_id: projectId, exports_id: exportsId },
+  })
+
+  return export_assignment_id
+}
+
+export const createSubprojectExportAssignment = async ({ subprojectId, exportsId }: { subprojectId: string; exportsId: string }) => {
+  const db = store.get(pgliteDbAtom)
+  const export_assignment_id = uuidv7()
+  await db.query(
+    `insert into export_assignments (export_assignment_id, subproject_id, exports_id) values ($1, $2, $3)`,
+    [export_assignment_id, subprojectId, exportsId],
+  )
+
+  store.set(addOperationAtom, {
+    table: 'export_assignments',
+    operation: 'insert',
+    draft: { export_assignment_id, subproject_id: subprojectId, exports_id: exportsId },
+  })
+
+  return export_assignment_id
+}
+
+export const createProjectExportAssignmentForProjectExport = async ({
+  projectId,
+  subprojectId,
+  projectExportsId,
+}: {
+  projectId?: string
+  subprojectId?: string
+  projectExportsId: string
+}) => {
+  const db = store.get(pgliteDbAtom)
+  const project_export_assignment_id = uuidv7()
+  await db.query(
+    `insert into project_export_assignments (project_export_assignment_id, project_id, subproject_id, project_exports_id) values ($1, $2, $3, $4)`,
+    [
+      project_export_assignment_id,
+      projectId ?? null,
+      subprojectId ?? null,
+      projectExportsId,
+    ],
+  )
+
+  store.set(addOperationAtom, {
+    table: 'project_export_assignments',
+    operation: 'insert',
+    draft: {
+      project_export_assignment_id,
+      project_id: projectId ?? null,
+      subproject_id: subprojectId ?? null,
+      project_exports_id: projectExportsId,
+    },
+  })
+
+  return project_export_assignment_id
+}

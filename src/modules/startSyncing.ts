@@ -1126,6 +1126,52 @@ export const startSyncing = async (userId: string) => {
               primaryKey: ['project_qc_id'],
             },
       },
+      exports: {
+        shape: {
+          url,
+          params: {
+            table: 'exports',
+          },
+        },
+        table: 'exports',
+        primaryKey: ['exports_id'],
+      },
+      export_assignments: {
+        shape: {
+          url,
+          params: {
+            table: 'export_assignments',
+            where: `project_id IN (SELECT project_id FROM project_users WHERE user_id = $1)`,
+            params: { '1': userId },
+          },
+        },
+        table: 'export_assignments',
+        primaryKey: ['export_assignment_id'],
+        project_exports: {
+          shape: {
+            url,
+            params: {
+              table: 'project_exports',
+              where: `project_id IN (SELECT project_id FROM project_users WHERE user_id = $1)`,
+              params: { '1': userId },
+            },
+          },
+          table: 'project_exports',
+          primaryKey: ['project_exports_id'],
+        },
+        project_export_assignments: {
+          shape: {
+            url,
+            params: {
+              table: 'project_export_assignments',
+              where: `project_id IN (SELECT project_id FROM project_users WHERE user_id = $1)`,
+              params: { '1': userId },
+            },
+          },
+          table: 'project_export_assignments',
+          primaryKey: ['project_export_assignment_id'],
+        },
+      },
     }
 
     const shapes = Object.fromEntries(

@@ -674,3 +674,9 @@ BEFORE INSERT OR UPDATE OR DELETE ON qc_assignments
 FOR EACH ROW
 WHEN (pg_trigger_depth() < 1)
 EXECUTE FUNCTION enforce_multilevel_write();
+
+CREATE OR REPLACE TRIGGER enforce_multilevel_write_trigger
+BEFORE INSERT OR UPDATE OR DELETE ON export_assignments
+FOR EACH ROW
+WHEN (pg_trigger_depth() < 1)
+EXECUTE FUNCTION enforce_multilevel_write();

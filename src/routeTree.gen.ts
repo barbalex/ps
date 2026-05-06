@@ -24,6 +24,8 @@ import { Route as DataQcAssignmentsRouteRouteImport } from './routes/data/qc-ass
 import { Route as DataProjectsRouteRouteImport } from './routes/data/projects/route'
 import { Route as DataMessagesRouteRouteImport } from './routes/data/messages/route'
 import { Route as DataFieldTypesRouteRouteImport } from './routes/data/field-types/route'
+import { Route as DataExportsRunRouteRouteImport } from './routes/data/exports-run/route'
+import { Route as DataExportAssignmentsRouteRouteImport } from './routes/data/export-assignments/route'
 import { Route as DataCrsRouteRouteImport } from './routes/data/crs/route'
 import { Route as LayoutDocsRouteRouteImport } from './routes/_layout/docs/route'
 import { Route as DataWidgetsForFieldsIndexRouteImport } from './routes/data/widgets-for-fields/index'
@@ -36,6 +38,8 @@ import { Route as DataQcAssignmentsIndexRouteImport } from './routes/data/qc-ass
 import { Route as DataProjectsIndexRouteImport } from './routes/data/projects/index'
 import { Route as DataMessagesIndexRouteImport } from './routes/data/messages/index'
 import { Route as DataFieldTypesIndexRouteImport } from './routes/data/field-types/index'
+import { Route as DataExportsRunIndexRouteImport } from './routes/data/exports-run/index'
+import { Route as DataExportAssignmentsIndexRouteImport } from './routes/data/export-assignments/index'
 import { Route as DataCrsIndexRouteImport } from './routes/data/crs/index'
 import { Route as LayoutDocsIndexRouteImport } from './routes/_layout/docs/index'
 import { Route as DataWidgetsForFieldsFilterRouteImport } from './routes/data/widgets-for-fields/filter'
@@ -75,6 +79,8 @@ import { Route as DataProjectsProjectIdPlaceLevelsRouteRouteImport } from './rou
 import { Route as DataProjectsProjectIdListsRouteRouteImport } from './routes/data/projects/$projectId_/lists/route'
 import { Route as DataProjectsProjectIdFilesRouteRouteImport } from './routes/data/projects/$projectId_/files/route'
 import { Route as DataProjectsProjectIdFieldsRouteRouteImport } from './routes/data/projects/$projectId_/fields/route'
+import { Route as DataProjectsProjectIdExportsRunRouteRouteImport } from './routes/data/projects/$projectId_/exports-run/route'
+import { Route as DataProjectsProjectIdExportAssignmentsRouteRouteImport } from './routes/data/projects/$projectId_/export-assignments/route'
 import { Route as DataProjectsProjectIdDesignsRouteRouteImport } from './routes/data/projects/$projectId_/designs/route'
 import { Route as DataProjectsProjectIdCrsRouteRouteImport } from './routes/data/projects/$projectId_/crs/route'
 import { Route as DataProjectsProjectIdConfigurationRouteRouteImport } from './routes/data/projects/$projectId_/configuration/route'
@@ -96,6 +102,8 @@ import { Route as DataProjectsProjectIdPlaceLevelsIndexRouteImport } from './rou
 import { Route as DataProjectsProjectIdListsIndexRouteImport } from './routes/data/projects/$projectId_/lists/index'
 import { Route as DataProjectsProjectIdFilesIndexRouteImport } from './routes/data/projects/$projectId_/files/index'
 import { Route as DataProjectsProjectIdFieldsIndexRouteImport } from './routes/data/projects/$projectId_/fields/index'
+import { Route as DataProjectsProjectIdExportsRunIndexRouteImport } from './routes/data/projects/$projectId_/exports-run/index'
+import { Route as DataProjectsProjectIdExportAssignmentsIndexRouteImport } from './routes/data/projects/$projectId_/export-assignments/index'
 import { Route as DataProjectsProjectIdDesignsIndexRouteImport } from './routes/data/projects/$projectId_/designs/index'
 import { Route as DataProjectsProjectIdCrsIndexRouteImport } from './routes/data/projects/$projectId_/crs/index'
 import { Route as DataProjectsProjectIdConfigurationIndexRouteImport } from './routes/data/projects/$projectId_/configuration/index'
@@ -517,6 +525,17 @@ const DataFieldTypesRouteRoute = DataFieldTypesRouteRouteImport.update({
   path: '/field-types',
   getParentRoute: () => DataRouteRoute,
 } as any)
+const DataExportsRunRouteRoute = DataExportsRunRouteRouteImport.update({
+  id: '/exports-run',
+  path: '/exports-run',
+  getParentRoute: () => DataRouteRoute,
+} as any)
+const DataExportAssignmentsRouteRoute =
+  DataExportAssignmentsRouteRouteImport.update({
+    id: '/export-assignments',
+    path: '/export-assignments',
+    getParentRoute: () => DataRouteRoute,
+  } as any)
 const DataCrsRouteRoute = DataCrsRouteRouteImport.update({
   id: '/crs',
   path: '/crs',
@@ -579,6 +598,17 @@ const DataFieldTypesIndexRoute = DataFieldTypesIndexRouteImport.update({
   path: '/',
   getParentRoute: () => DataFieldTypesRouteRoute,
 } as any)
+const DataExportsRunIndexRoute = DataExportsRunIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => DataExportsRunRouteRoute,
+} as any)
+const DataExportAssignmentsIndexRoute =
+  DataExportAssignmentsIndexRouteImport.update({
+    id: '/',
+    path: '/',
+    getParentRoute: () => DataExportAssignmentsRouteRoute,
+  } as any)
 const DataCrsIndexRoute = DataCrsIndexRouteImport.update({
   id: '/',
   path: '/',
@@ -800,6 +830,18 @@ const DataProjectsProjectIdFieldsRouteRoute =
     path: '/fields',
     getParentRoute: () => DataProjectsProjectIdRouteRoute,
   } as any)
+const DataProjectsProjectIdExportsRunRouteRoute =
+  DataProjectsProjectIdExportsRunRouteRouteImport.update({
+    id: '/exports-run',
+    path: '/exports-run',
+    getParentRoute: () => DataProjectsProjectIdRouteRoute,
+  } as any)
+const DataProjectsProjectIdExportAssignmentsRouteRoute =
+  DataProjectsProjectIdExportAssignmentsRouteRouteImport.update({
+    id: '/export-assignments',
+    path: '/export-assignments',
+    getParentRoute: () => DataProjectsProjectIdRouteRoute,
+  } as any)
 const DataProjectsProjectIdDesignsRouteRoute =
   DataProjectsProjectIdDesignsRouteRouteImport.update({
     id: '/designs',
@@ -925,6 +967,18 @@ const DataProjectsProjectIdFieldsIndexRoute =
     id: '/',
     path: '/',
     getParentRoute: () => DataProjectsProjectIdFieldsRouteRoute,
+  } as any)
+const DataProjectsProjectIdExportsRunIndexRoute =
+  DataProjectsProjectIdExportsRunIndexRouteImport.update({
+    id: '/',
+    path: '/',
+    getParentRoute: () => DataProjectsProjectIdExportsRunRouteRoute,
+  } as any)
+const DataProjectsProjectIdExportAssignmentsIndexRoute =
+  DataProjectsProjectIdExportAssignmentsIndexRouteImport.update({
+    id: '/',
+    path: '/',
+    getParentRoute: () => DataProjectsProjectIdExportAssignmentsRouteRoute,
   } as any)
 const DataProjectsProjectIdDesignsIndexRoute =
   DataProjectsProjectIdDesignsIndexRouteImport.update({
@@ -3778,6 +3832,8 @@ export interface FileRoutesByFullPath {
   '/': typeof LayoutIndexRoute
   '/docs': typeof LayoutDocsRouteRouteWithChildren
   '/data/crs': typeof DataCrsRouteRouteWithChildren
+  '/data/export-assignments': typeof DataExportAssignmentsRouteRouteWithChildren
+  '/data/exports-run': typeof DataExportsRunRouteRouteWithChildren
   '/data/field-types': typeof DataFieldTypesRouteRouteWithChildren
   '/data/messages': typeof DataMessagesRouteRouteWithChildren
   '/data/projects': typeof DataProjectsRouteRouteWithChildren
@@ -3809,6 +3865,8 @@ export interface FileRoutesByFullPath {
   '/data/widgets-for-fields/filter': typeof DataWidgetsForFieldsFilterRoute
   '/docs/': typeof LayoutDocsIndexRoute
   '/data/crs/': typeof DataCrsIndexRoute
+  '/data/export-assignments/': typeof DataExportAssignmentsIndexRoute
+  '/data/exports-run/': typeof DataExportsRunIndexRoute
   '/data/field-types/': typeof DataFieldTypesIndexRoute
   '/data/messages/': typeof DataMessagesIndexRoute
   '/data/projects/': typeof DataProjectsIndexRoute
@@ -3822,6 +3880,8 @@ export interface FileRoutesByFullPath {
   '/data/projects/$projectId/configuration': typeof DataProjectsProjectIdConfigurationRouteRouteWithChildren
   '/data/projects/$projectId/crs': typeof DataProjectsProjectIdCrsRouteRouteWithChildren
   '/data/projects/$projectId/designs': typeof DataProjectsProjectIdDesignsRouteRouteWithChildren
+  '/data/projects/$projectId/export-assignments': typeof DataProjectsProjectIdExportAssignmentsRouteRouteWithChildren
+  '/data/projects/$projectId/exports-run': typeof DataProjectsProjectIdExportsRunRouteRouteWithChildren
   '/data/projects/$projectId/fields': typeof DataProjectsProjectIdFieldsRouteRouteWithChildren
   '/data/projects/$projectId/files': typeof DataProjectsProjectIdFilesRouteRouteWithChildren
   '/data/projects/$projectId/lists': typeof DataProjectsProjectIdListsRouteRouteWithChildren
@@ -3870,6 +3930,8 @@ export interface FileRoutesByFullPath {
   '/data/projects/$projectId/configuration/': typeof DataProjectsProjectIdConfigurationIndexRoute
   '/data/projects/$projectId/crs/': typeof DataProjectsProjectIdCrsIndexRoute
   '/data/projects/$projectId/designs/': typeof DataProjectsProjectIdDesignsIndexRoute
+  '/data/projects/$projectId/export-assignments/': typeof DataProjectsProjectIdExportAssignmentsIndexRoute
+  '/data/projects/$projectId/exports-run/': typeof DataProjectsProjectIdExportsRunIndexRoute
   '/data/projects/$projectId/fields/': typeof DataProjectsProjectIdFieldsIndexRoute
   '/data/projects/$projectId/files/': typeof DataProjectsProjectIdFilesIndexRoute
   '/data/projects/$projectId/lists/': typeof DataProjectsProjectIdListsIndexRoute
@@ -4227,6 +4289,8 @@ export interface FileRoutesByTo {
   '/data/widgets-for-fields/filter': typeof DataWidgetsForFieldsFilterRoute
   '/docs': typeof LayoutDocsIndexRoute
   '/data/crs': typeof DataCrsIndexRoute
+  '/data/export-assignments': typeof DataExportAssignmentsIndexRoute
+  '/data/exports-run': typeof DataExportsRunIndexRoute
   '/data/field-types': typeof DataFieldTypesIndexRoute
   '/data/messages': typeof DataMessagesIndexRoute
   '/data/projects': typeof DataProjectsIndexRoute
@@ -4261,6 +4325,8 @@ export interface FileRoutesByTo {
   '/data/projects/$projectId/configuration': typeof DataProjectsProjectIdConfigurationIndexRoute
   '/data/projects/$projectId/crs': typeof DataProjectsProjectIdCrsIndexRoute
   '/data/projects/$projectId/designs': typeof DataProjectsProjectIdDesignsIndexRoute
+  '/data/projects/$projectId/export-assignments': typeof DataProjectsProjectIdExportAssignmentsIndexRoute
+  '/data/projects/$projectId/exports-run': typeof DataProjectsProjectIdExportsRunIndexRoute
   '/data/projects/$projectId/fields': typeof DataProjectsProjectIdFieldsIndexRoute
   '/data/projects/$projectId/files': typeof DataProjectsProjectIdFilesIndexRoute
   '/data/projects/$projectId/lists': typeof DataProjectsProjectIdListsIndexRoute
@@ -4528,6 +4594,8 @@ export interface FileRoutesById {
   '/_layout': typeof LayoutRouteWithChildren
   '/_layout/docs': typeof LayoutDocsRouteRouteWithChildren
   '/data/crs': typeof DataCrsRouteRouteWithChildren
+  '/data/export-assignments': typeof DataExportAssignmentsRouteRouteWithChildren
+  '/data/exports-run': typeof DataExportsRunRouteRouteWithChildren
   '/data/field-types': typeof DataFieldTypesRouteRouteWithChildren
   '/data/messages': typeof DataMessagesRouteRouteWithChildren
   '/data/projects': typeof DataProjectsRouteRouteWithChildren
@@ -4560,6 +4628,8 @@ export interface FileRoutesById {
   '/data/widgets-for-fields/filter': typeof DataWidgetsForFieldsFilterRoute
   '/_layout/docs/': typeof LayoutDocsIndexRoute
   '/data/crs/': typeof DataCrsIndexRoute
+  '/data/export-assignments/': typeof DataExportAssignmentsIndexRoute
+  '/data/exports-run/': typeof DataExportsRunIndexRoute
   '/data/field-types/': typeof DataFieldTypesIndexRoute
   '/data/messages/': typeof DataMessagesIndexRoute
   '/data/projects/': typeof DataProjectsIndexRoute
@@ -4573,6 +4643,8 @@ export interface FileRoutesById {
   '/data/projects/$projectId_/configuration': typeof DataProjectsProjectIdConfigurationRouteRouteWithChildren
   '/data/projects/$projectId_/crs': typeof DataProjectsProjectIdCrsRouteRouteWithChildren
   '/data/projects/$projectId_/designs': typeof DataProjectsProjectIdDesignsRouteRouteWithChildren
+  '/data/projects/$projectId_/export-assignments': typeof DataProjectsProjectIdExportAssignmentsRouteRouteWithChildren
+  '/data/projects/$projectId_/exports-run': typeof DataProjectsProjectIdExportsRunRouteRouteWithChildren
   '/data/projects/$projectId_/fields': typeof DataProjectsProjectIdFieldsRouteRouteWithChildren
   '/data/projects/$projectId_/files': typeof DataProjectsProjectIdFilesRouteRouteWithChildren
   '/data/projects/$projectId_/lists': typeof DataProjectsProjectIdListsRouteRouteWithChildren
@@ -4621,6 +4693,8 @@ export interface FileRoutesById {
   '/data/projects/$projectId_/configuration/': typeof DataProjectsProjectIdConfigurationIndexRoute
   '/data/projects/$projectId_/crs/': typeof DataProjectsProjectIdCrsIndexRoute
   '/data/projects/$projectId_/designs/': typeof DataProjectsProjectIdDesignsIndexRoute
+  '/data/projects/$projectId_/export-assignments/': typeof DataProjectsProjectIdExportAssignmentsIndexRoute
+  '/data/projects/$projectId_/exports-run/': typeof DataProjectsProjectIdExportsRunIndexRoute
   '/data/projects/$projectId_/fields/': typeof DataProjectsProjectIdFieldsIndexRoute
   '/data/projects/$projectId_/files/': typeof DataProjectsProjectIdFilesIndexRoute
   '/data/projects/$projectId_/lists/': typeof DataProjectsProjectIdListsIndexRoute
@@ -4963,6 +5037,8 @@ export interface FileRouteTypes {
     | '/'
     | '/docs'
     | '/data/crs'
+    | '/data/export-assignments'
+    | '/data/exports-run'
     | '/data/field-types'
     | '/data/messages'
     | '/data/projects'
@@ -4994,6 +5070,8 @@ export interface FileRouteTypes {
     | '/data/widgets-for-fields/filter'
     | '/docs/'
     | '/data/crs/'
+    | '/data/export-assignments/'
+    | '/data/exports-run/'
     | '/data/field-types/'
     | '/data/messages/'
     | '/data/projects/'
@@ -5007,6 +5085,8 @@ export interface FileRouteTypes {
     | '/data/projects/$projectId/configuration'
     | '/data/projects/$projectId/crs'
     | '/data/projects/$projectId/designs'
+    | '/data/projects/$projectId/export-assignments'
+    | '/data/projects/$projectId/exports-run'
     | '/data/projects/$projectId/fields'
     | '/data/projects/$projectId/files'
     | '/data/projects/$projectId/lists'
@@ -5055,6 +5135,8 @@ export interface FileRouteTypes {
     | '/data/projects/$projectId/configuration/'
     | '/data/projects/$projectId/crs/'
     | '/data/projects/$projectId/designs/'
+    | '/data/projects/$projectId/export-assignments/'
+    | '/data/projects/$projectId/exports-run/'
     | '/data/projects/$projectId/fields/'
     | '/data/projects/$projectId/files/'
     | '/data/projects/$projectId/lists/'
@@ -5412,6 +5494,8 @@ export interface FileRouteTypes {
     | '/data/widgets-for-fields/filter'
     | '/docs'
     | '/data/crs'
+    | '/data/export-assignments'
+    | '/data/exports-run'
     | '/data/field-types'
     | '/data/messages'
     | '/data/projects'
@@ -5446,6 +5530,8 @@ export interface FileRouteTypes {
     | '/data/projects/$projectId/configuration'
     | '/data/projects/$projectId/crs'
     | '/data/projects/$projectId/designs'
+    | '/data/projects/$projectId/export-assignments'
+    | '/data/projects/$projectId/exports-run'
     | '/data/projects/$projectId/fields'
     | '/data/projects/$projectId/files'
     | '/data/projects/$projectId/lists'
@@ -5712,6 +5798,8 @@ export interface FileRouteTypes {
     | '/_layout'
     | '/_layout/docs'
     | '/data/crs'
+    | '/data/export-assignments'
+    | '/data/exports-run'
     | '/data/field-types'
     | '/data/messages'
     | '/data/projects'
@@ -5744,6 +5832,8 @@ export interface FileRouteTypes {
     | '/data/widgets-for-fields/filter'
     | '/_layout/docs/'
     | '/data/crs/'
+    | '/data/export-assignments/'
+    | '/data/exports-run/'
     | '/data/field-types/'
     | '/data/messages/'
     | '/data/projects/'
@@ -5757,6 +5847,8 @@ export interface FileRouteTypes {
     | '/data/projects/$projectId_/configuration'
     | '/data/projects/$projectId_/crs'
     | '/data/projects/$projectId_/designs'
+    | '/data/projects/$projectId_/export-assignments'
+    | '/data/projects/$projectId_/exports-run'
     | '/data/projects/$projectId_/fields'
     | '/data/projects/$projectId_/files'
     | '/data/projects/$projectId_/lists'
@@ -5805,6 +5897,8 @@ export interface FileRouteTypes {
     | '/data/projects/$projectId_/configuration/'
     | '/data/projects/$projectId_/crs/'
     | '/data/projects/$projectId_/designs/'
+    | '/data/projects/$projectId_/export-assignments/'
+    | '/data/projects/$projectId_/exports-run/'
     | '/data/projects/$projectId_/fields/'
     | '/data/projects/$projectId_/files/'
     | '/data/projects/$projectId_/lists/'
@@ -6253,6 +6347,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DataFieldTypesRouteRouteImport
       parentRoute: typeof DataRouteRoute
     }
+    '/data/exports-run': {
+      id: '/data/exports-run'
+      path: '/exports-run'
+      fullPath: '/data/exports-run'
+      preLoaderRoute: typeof DataExportsRunRouteRouteImport
+      parentRoute: typeof DataRouteRoute
+    }
+    '/data/export-assignments': {
+      id: '/data/export-assignments'
+      path: '/export-assignments'
+      fullPath: '/data/export-assignments'
+      preLoaderRoute: typeof DataExportAssignmentsRouteRouteImport
+      parentRoute: typeof DataRouteRoute
+    }
     '/data/crs': {
       id: '/data/crs'
       path: '/crs'
@@ -6336,6 +6444,20 @@ declare module '@tanstack/react-router' {
       fullPath: '/data/field-types/'
       preLoaderRoute: typeof DataFieldTypesIndexRouteImport
       parentRoute: typeof DataFieldTypesRouteRoute
+    }
+    '/data/exports-run/': {
+      id: '/data/exports-run/'
+      path: '/'
+      fullPath: '/data/exports-run/'
+      preLoaderRoute: typeof DataExportsRunIndexRouteImport
+      parentRoute: typeof DataExportsRunRouteRoute
+    }
+    '/data/export-assignments/': {
+      id: '/data/export-assignments/'
+      path: '/'
+      fullPath: '/data/export-assignments/'
+      preLoaderRoute: typeof DataExportAssignmentsIndexRouteImport
+      parentRoute: typeof DataExportAssignmentsRouteRoute
     }
     '/data/crs/': {
       id: '/data/crs/'
@@ -6610,6 +6732,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DataProjectsProjectIdFieldsRouteRouteImport
       parentRoute: typeof DataProjectsProjectIdRouteRoute
     }
+    '/data/projects/$projectId_/exports-run': {
+      id: '/data/projects/$projectId_/exports-run'
+      path: '/exports-run'
+      fullPath: '/data/projects/$projectId/exports-run'
+      preLoaderRoute: typeof DataProjectsProjectIdExportsRunRouteRouteImport
+      parentRoute: typeof DataProjectsProjectIdRouteRoute
+    }
+    '/data/projects/$projectId_/export-assignments': {
+      id: '/data/projects/$projectId_/export-assignments'
+      path: '/export-assignments'
+      fullPath: '/data/projects/$projectId/export-assignments'
+      preLoaderRoute: typeof DataProjectsProjectIdExportAssignmentsRouteRouteImport
+      parentRoute: typeof DataProjectsProjectIdRouteRoute
+    }
     '/data/projects/$projectId_/designs': {
       id: '/data/projects/$projectId_/designs'
       path: '/designs'
@@ -6756,6 +6892,20 @@ declare module '@tanstack/react-router' {
       fullPath: '/data/projects/$projectId/fields/'
       preLoaderRoute: typeof DataProjectsProjectIdFieldsIndexRouteImport
       parentRoute: typeof DataProjectsProjectIdFieldsRouteRoute
+    }
+    '/data/projects/$projectId_/exports-run/': {
+      id: '/data/projects/$projectId_/exports-run/'
+      path: '/'
+      fullPath: '/data/projects/$projectId/exports-run/'
+      preLoaderRoute: typeof DataProjectsProjectIdExportsRunIndexRouteImport
+      parentRoute: typeof DataProjectsProjectIdExportsRunRouteRoute
+    }
+    '/data/projects/$projectId_/export-assignments/': {
+      id: '/data/projects/$projectId_/export-assignments/'
+      path: '/'
+      fullPath: '/data/projects/$projectId/export-assignments/'
+      preLoaderRoute: typeof DataProjectsProjectIdExportAssignmentsIndexRouteImport
+      parentRoute: typeof DataProjectsProjectIdExportAssignmentsRouteRoute
     }
     '/data/projects/$projectId_/designs/': {
       id: '/data/projects/$projectId_/designs/'
@@ -9184,6 +9334,31 @@ const DataCrsRouteRouteWithChildren = DataCrsRouteRoute._addFileChildren(
   DataCrsRouteRouteChildren,
 )
 
+interface DataExportAssignmentsRouteRouteChildren {
+  DataExportAssignmentsIndexRoute: typeof DataExportAssignmentsIndexRoute
+}
+
+const DataExportAssignmentsRouteRouteChildren: DataExportAssignmentsRouteRouteChildren =
+  {
+    DataExportAssignmentsIndexRoute: DataExportAssignmentsIndexRoute,
+  }
+
+const DataExportAssignmentsRouteRouteWithChildren =
+  DataExportAssignmentsRouteRoute._addFileChildren(
+    DataExportAssignmentsRouteRouteChildren,
+  )
+
+interface DataExportsRunRouteRouteChildren {
+  DataExportsRunIndexRoute: typeof DataExportsRunIndexRoute
+}
+
+const DataExportsRunRouteRouteChildren: DataExportsRunRouteRouteChildren = {
+  DataExportsRunIndexRoute: DataExportsRunIndexRoute,
+}
+
+const DataExportsRunRouteRouteWithChildren =
+  DataExportsRunRouteRoute._addFileChildren(DataExportsRunRouteRouteChildren)
+
 interface DataFieldTypesRouteRouteChildren {
   DataFieldTypesFieldTypeIdRoute: typeof DataFieldTypesFieldTypeIdRoute
   DataFieldTypesFilterRoute: typeof DataFieldTypesFilterRoute
@@ -9269,6 +9444,36 @@ const DataProjectsProjectIdDesignsRouteRouteChildren: DataProjectsProjectIdDesig
 const DataProjectsProjectIdDesignsRouteRouteWithChildren =
   DataProjectsProjectIdDesignsRouteRoute._addFileChildren(
     DataProjectsProjectIdDesignsRouteRouteChildren,
+  )
+
+interface DataProjectsProjectIdExportAssignmentsRouteRouteChildren {
+  DataProjectsProjectIdExportAssignmentsIndexRoute: typeof DataProjectsProjectIdExportAssignmentsIndexRoute
+}
+
+const DataProjectsProjectIdExportAssignmentsRouteRouteChildren: DataProjectsProjectIdExportAssignmentsRouteRouteChildren =
+  {
+    DataProjectsProjectIdExportAssignmentsIndexRoute:
+      DataProjectsProjectIdExportAssignmentsIndexRoute,
+  }
+
+const DataProjectsProjectIdExportAssignmentsRouteRouteWithChildren =
+  DataProjectsProjectIdExportAssignmentsRouteRoute._addFileChildren(
+    DataProjectsProjectIdExportAssignmentsRouteRouteChildren,
+  )
+
+interface DataProjectsProjectIdExportsRunRouteRouteChildren {
+  DataProjectsProjectIdExportsRunIndexRoute: typeof DataProjectsProjectIdExportsRunIndexRoute
+}
+
+const DataProjectsProjectIdExportsRunRouteRouteChildren: DataProjectsProjectIdExportsRunRouteRouteChildren =
+  {
+    DataProjectsProjectIdExportsRunIndexRoute:
+      DataProjectsProjectIdExportsRunIndexRoute,
+  }
+
+const DataProjectsProjectIdExportsRunRouteRouteWithChildren =
+  DataProjectsProjectIdExportsRunRouteRoute._addFileChildren(
+    DataProjectsProjectIdExportsRunRouteRouteChildren,
   )
 
 interface DataProjectsProjectIdFieldsRouteRouteChildren {
@@ -11480,6 +11685,8 @@ interface DataProjectsProjectIdRouteRouteChildren {
   DataProjectsProjectIdConfigurationRouteRoute: typeof DataProjectsProjectIdConfigurationRouteRouteWithChildren
   DataProjectsProjectIdCrsRouteRoute: typeof DataProjectsProjectIdCrsRouteRouteWithChildren
   DataProjectsProjectIdDesignsRouteRoute: typeof DataProjectsProjectIdDesignsRouteRouteWithChildren
+  DataProjectsProjectIdExportAssignmentsRouteRoute: typeof DataProjectsProjectIdExportAssignmentsRouteRouteWithChildren
+  DataProjectsProjectIdExportsRunRouteRoute: typeof DataProjectsProjectIdExportsRunRouteRouteWithChildren
   DataProjectsProjectIdFieldsRouteRoute: typeof DataProjectsProjectIdFieldsRouteRouteWithChildren
   DataProjectsProjectIdFilesRouteRoute: typeof DataProjectsProjectIdFilesRouteRouteWithChildren
   DataProjectsProjectIdListsRouteRoute: typeof DataProjectsProjectIdListsRouteRouteWithChildren
@@ -11510,6 +11717,10 @@ const DataProjectsProjectIdRouteRouteChildren: DataProjectsProjectIdRouteRouteCh
       DataProjectsProjectIdCrsRouteRouteWithChildren,
     DataProjectsProjectIdDesignsRouteRoute:
       DataProjectsProjectIdDesignsRouteRouteWithChildren,
+    DataProjectsProjectIdExportAssignmentsRouteRoute:
+      DataProjectsProjectIdExportAssignmentsRouteRouteWithChildren,
+    DataProjectsProjectIdExportsRunRouteRoute:
+      DataProjectsProjectIdExportsRunRouteRouteWithChildren,
     DataProjectsProjectIdFieldsRouteRoute:
       DataProjectsProjectIdFieldsRouteRouteWithChildren,
     DataProjectsProjectIdFilesRouteRoute:
@@ -11751,6 +11962,8 @@ const DataWidgetsForFieldsRouteRouteWithChildren =
 
 interface DataRouteRouteChildren {
   DataCrsRouteRoute: typeof DataCrsRouteRouteWithChildren
+  DataExportAssignmentsRouteRoute: typeof DataExportAssignmentsRouteRouteWithChildren
+  DataExportsRunRouteRoute: typeof DataExportsRunRouteRouteWithChildren
   DataFieldTypesRouteRoute: typeof DataFieldTypesRouteRouteWithChildren
   DataMessagesRouteRoute: typeof DataMessagesRouteRouteWithChildren
   DataProjectsRouteRoute: typeof DataProjectsRouteRouteWithChildren
@@ -11766,6 +11979,8 @@ interface DataRouteRouteChildren {
 
 const DataRouteRouteChildren: DataRouteRouteChildren = {
   DataCrsRouteRoute: DataCrsRouteRouteWithChildren,
+  DataExportAssignmentsRouteRoute: DataExportAssignmentsRouteRouteWithChildren,
+  DataExportsRunRouteRoute: DataExportsRunRouteRouteWithChildren,
   DataFieldTypesRouteRoute: DataFieldTypesRouteRouteWithChildren,
   DataMessagesRouteRoute: DataMessagesRouteRouteWithChildren,
   DataProjectsRouteRoute: DataProjectsRouteRouteWithChildren,

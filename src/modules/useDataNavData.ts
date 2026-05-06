@@ -30,6 +30,8 @@ type NavDataFiltered = {
   accounts_count_unfiltered: number
   qcs_count_unfiltered?: number
   root_qcs_count_unfiltered?: number
+  exports_count_unfiltered?: number
+  root_exports_count_unfiltered?: number
   field_types_count_unfiltered?: number
   field_types_count_filtered?: number
   widget_types_count_unfiltered?: number
@@ -84,6 +86,8 @@ export const useDataNavData = () => {
             widgets_for_fields_count_filtered AS (SELECT count(*) FROM widgets_for_fields ${widgetsForFieldsIsFiltered ? ` WHERE ${widgetsForFieldsFilterString}` : ''}),
             qcs_count_unfiltered AS (SELECT count(*) FROM qcs),
             root_qcs_count_unfiltered AS (SELECT count(*) FROM qc_assignments WHERE project_id IS NULL AND subproject_id IS NULL),
+            exports_count_unfiltered AS (SELECT count(*) FROM exports),
+            root_exports_count_unfiltered AS (SELECT count(*) FROM export_assignments WHERE project_id IS NULL AND subproject_id IS NULL),
             crs_count_unfiltered AS (SELECT count(*) FROM crs),
           `
             : ''
@@ -105,6 +109,8 @@ export const useDataNavData = () => {
               widgets_for_fields_count_filtered.count AS widgets_for_fields_count_filtered,
               qcs_count_unfiltered.count AS qcs_count_unfiltered,
               root_qcs_count_unfiltered.count AS root_qcs_count_unfiltered,
+              exports_count_unfiltered.count AS exports_count_unfiltered,
+              root_exports_count_unfiltered.count AS root_exports_count_unfiltered,
               crs_count_unfiltered.count AS crs_count_unfiltered,
             `
             : ''
@@ -126,6 +132,8 @@ export const useDataNavData = () => {
               widgets_for_fields_count_filtered,
               qcs_count_unfiltered,
               root_qcs_count_unfiltered,
+              exports_count_unfiltered,
+              root_exports_count_unfiltered,
               crs_count_unfiltered,
             `
             : ''
@@ -265,6 +273,28 @@ export const useDataNavData = () => {
                 namePlural: formatMessage({
                   id: 'subprojectQcsRun.title',
                   defaultMessage: 'Qualitätskontrollen: ausführen',
+                }),
+              }),
+            },
+            {
+              id: 'export-assignments',
+              label: buildNavLabel({
+                loading,
+                countFiltered: row?.exports_count_unfiltered ?? 0,
+                namePlural: formatMessage({
+                  id: 'rootExports.title',
+                  defaultMessage: 'Exporte: wählen',
+                }),
+              }),
+            },
+            {
+              id: 'exports-run',
+              label: buildNavLabel({
+                loading,
+                countFiltered: row?.root_exports_count_unfiltered ?? 0,
+                namePlural: formatMessage({
+                  id: 'rootExportsRun.title',
+                  defaultMessage: 'Exporte: ausführen',
                 }),
               }),
             },

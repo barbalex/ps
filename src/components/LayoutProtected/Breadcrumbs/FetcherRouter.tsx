@@ -119,8 +119,12 @@ import { SubprojectQcAssignmentsFetcher } from './SubprojectQcAssignmentsFetcher
 import { SubprojectQcsRunFetcher } from './SubprojectQcsRunFetcher.tsx'
 import { RootQcsFetcher } from './RootQcsFetcher.tsx'
 import { RootQcsRunFetcher } from './RootQcsRunFetcher.tsx'
+import { RootExportsFetcher } from './RootExportsFetcher.tsx'
+import { RootExportsRunFetcher } from './RootExportsRunFetcher.tsx'
 import { ProjectQcAssignmentsFetcher } from './ProjectQcAssignmentsFetcher.tsx'
 import { ProjectQcsRunFetcher } from './ProjectQcsRunFetcher.tsx'
+import { ProjectExportAssignmentsFetcher } from './ProjectExportAssignmentsFetcher.tsx'
+import { ProjectExportsRunFetcher } from './ProjectExportsRunFetcher.tsx'
 import { ProjectQcsFetcher } from './ProjectQcsFetcher.tsx'
 import { ProjectQcFetcher } from './ProjectQcFetcher.tsx'
 import { FieldsFetcher } from './FieldsFetcher.tsx'
@@ -801,6 +805,12 @@ export const FetcherRouter = ({ fetcherName, params, ...other }) => {
     case 'useRootQcsRunNavData': {
       return <RootQcsRunFetcher params={params} {...other} />
     }
+    case 'useRootExportsNavData': {
+      return <RootExportsFetcher params={params} {...other} />
+    }
+    case 'useRootExportsRunNavData': {
+      return <RootExportsRunFetcher params={params} {...other} />
+    }
     case 'useProjectQcsNavData': {
       if (!params.projectId) return null
       return <ProjectQcAssignmentsFetcher params={params} {...other} />
@@ -816,6 +826,14 @@ export const FetcherRouter = ({ fetcherName, params, ...other }) => {
     case 'useProjectQcsRunNavData': {
       if (!params.projectId) return null
       return <ProjectQcsRunFetcher params={params} {...other} />
+    }
+    case 'useProjectExportAssignmentsNavData': {
+      if (!params.projectId) return null
+      return <ProjectExportAssignmentsFetcher params={params} {...other} />
+    }
+    case 'useProjectExportsRunNavData': {
+      if (!params.projectId) return null
+      return <ProjectExportsRunFetcher params={params} {...other} />
     }
     case 'useWidgetsForFieldsNavData': {
       if (!params.projectId) return null

@@ -2010,3 +2010,99 @@ CREATE INDEX IF NOT EXISTS project_qc_assignments_label_idx ON project_qc_assign
 COMMENT ON TABLE project_qc_assignments IS 'Project-specific quality controls assigned to a project or subproject level for execution.';
 
 COMMIT;
+--------------------------------------------------------------
+-- exports
+--
+CREATE TYPE exports_level_enum AS ENUM ('root', 'project', 'subproject');
+
+CREATE TABLE IF NOT EXISTS exports(
+  exports_id uuid PRIMARY KEY DEFAULT public.uuid_generate_v7(),
+  name_de text DEFAULT NULL,
+  name_en text DEFAULT NULL,
+  name_fr text DEFAULT NULL,
+  name_it text DEFAULT NULL,
+  level exports_level_enum DEFAULT NULL,
+  sql text DEFAULT NULL,
+  sys_period tstzrange DEFAULT NULL,
+  created_at timestamptz NOT NULL DEFAULT now(),
+  updated_at timestamptz NOT NULL DEFAULT now(),
+  updated_by text DEFAULT NULL,
+  UNIQUE (name_de)
+);
+
+CREATE INDEX IF NOT EXISTS exports_name_de_idx ON exports USING btree(name_de);
+
+COMMENT ON TABLE exports IS 'Predefined exports available to all projects if assigned. Created by root administrators.';
+
+--------------------------------------------------------------
+-- export_assignments
+--
+CREATE TABLE IF NOT EXISTS export_assignments(
+  export_assignment_id uuid PRIMARY KEY DEFAULT public.uuid_generate_v7(),
+  project_id uuid DEFAULT NULL REFERENCES projects(project_id) ON DELETE CASCADE ON UPDATE CASCADE DEFERRABLE INITIALLY DEFERRED,
+  subproject_id uuid DEFAULT NULL REFERENCES subprojects(subproject_id) ON DELETE CASCADE ON UPDATE CASCADE DEFERRABLE INITIALLY DEFERRED,
+  exports_id uuid NOT NULL REFERENCES exports(exports_id) ON DELETE CASCADE ON UPDATE CASCADE DEFERRABLE INITIALLY DEFERRED,
+  label text DEFAULT NULL,
+  sys_period tstzrange DEFAULT NULL,
+  created_at timestamptz NOT NULL DEFAULT now(),
+  updated_at timestamptz NOT NULL DEFAULT now(),
+  updated_by text DEFAULT NULL,
+  UNIQUE (subproject_id, exports_id)
+);
+
+CREATE INDEX IF NOT EXISTS export_assignments_project_id_idx ON export_assignments USING btree(project_id);
+CREATE INDEX IF NOT EXISTS export_assignments_subproject_id_idx ON export_assignments USING btree(subproject_id);
+CREATE INDEX IF NOT EXISTS export_assignments_exports_id_idx ON export_assignments USING btree(exports_id);
+CREATE INDEX IF NOT EXISTS export_assignments_label_idx ON export_assignments USING btree(label);
+
+COMMENT ON TABLE export_assignments IS 'Predefined exports assigned to a project or subproject level for execution.';
+
+--------------------------------------------------------------
+-- project_exports
+--
+CREATE TYPE project_exports_level_enum AS ENUM ('project', 'subproject');
+
+CREATE TABLE IF NOT EXISTS project_exports(
+  project_exports_id uuid PRIMARY KEY DEFAULT public.uuid_generate_v7(),
+  project_id uuid NOT NULL REFERENCES projects(project_id) ON DELETE CASCADE ON UPDATE CASCADE DEFERRABLE INITIALLY DEFERRED,
+  name_de text DEFAULT NULL,
+  name_en text DEFAULT NULL,
+  name_fr text DEFAULT NULL,
+  name_it text DEFAULT NULL,
+  level project_exports_level_enum DEFAULT NULL,
+  sql text DEFAULT NULL,
+  sys_period tstzrange DEFAULT NULL,
+  created_at timestamptz NOT NULL DEFAULT now(),
+  updated_at timestamptz NOT NULL DEFAULT now(),
+  updated_by text DEFAULT NULL,
+  UNIQUE (project_id, name_de)
+);
+
+CREATE INDEX IF NOT EXISTS project_exports_project_id_idx ON project_exports USING btree(project_id);
+CREATE INDEX IF NOT EXISTS project_exports_name_de_idx ON project_exports USING btree(name_de);
+
+COMMENT ON TABLE project_exports IS 'Project-specific exports. Only visible within the project and its sub-projects. Created by project owners and designers.';
+
+--------------------------------------------------------------
+-- project_export_assignments
+--
+CREATE TABLE IF NOT EXISTS project_export_assignments(
+  project_export_assignment_id uuid PRIMARY KEY DEFAULT public.uuid_generate_v7(),
+  project_id uuid DEFAULT NULL REFERENCES projects(project_id) ON DELETE CASCADE ON UPDATE CASCADE DEFERRABLE INITIALLY DEFERRED,
+  subproject_id uuid DEFAULT NULL REFERENCES subprojects(subproject_id) ON DELETE CASCADE ON UPDATE CASCADE DEFERRABLE INITIALLY DEFERRED,
+  project_exports_id uuid NOT NULL REFERENCES project_exports(project_exports_id) ON DELETE CASCADE ON UPDATE CASCADE DEFERRABLE INITIALLY DEFERRED,
+  label text DEFAULT NULL,
+  sys_period tstzrange DEFAULT NULL,
+  created_at timestamptz NOT NULL DEFAULT now(),
+  updated_at timestamptz NOT NULL DEFAULT now(),
+  updated_by text DEFAULT NULL,
+  UNIQUE (project_id, project_exports_id),
+  UNIQUE (subproject_id, project_exports_id)
+);
+
+CREATE INDEX IF NOT EXISTS project_export_assignments_project_id_idx ON project_export_assignments USING btree(project_id);
+CREATE INDEX IF NOT EXISTS project_export_assignments_subproject_id_idx ON project_export_assignments USING btree(subproject_id);
+CREATE INDEX IF NOT EXISTS project_export_assignments_project_exports_id_idx ON project_export_assignments USING btree(project_exports_id);
+CREATE INDEX IF NOT EXISTS project_export_assignments_label_idx ON project_export_assignments USING btree(label);
+
+COMMENT ON TABLE project_export_assignments IS 'Project-specific exports assigned to a project or subproject level for execution.';
