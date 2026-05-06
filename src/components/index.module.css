@@ -83,6 +83,8 @@
   padding-bottom: 1em;
   padding-left: 0.8em;
   padding-right: 0.8em;
+  overflow-wrap: break-word;
+  word-break: break-word;
   font-weight: 700 !important;
   text-shadow:
     2px 2px 3px white,

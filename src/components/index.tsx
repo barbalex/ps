@@ -30,7 +30,7 @@ export const Home = () => {
         <h6 className={styles.pageTitle}>
           <FormattedMessage
             id="HomeWasIstDasText"
-            defaultMessage="arten-fördern.app hilft Naturschutzfachleuten, bedrohte Arten und Lebensräume zu fördern"
+            defaultMessage="arten-fördern.app hilft Naturschutz&shy;fachleuten, bedrohte Arten und Lebensräume zu fördern"
           />
         </h6>
         <div className={styles.cardContainer}>
