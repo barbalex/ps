@@ -8,7 +8,6 @@ import * as fluentUiReactComponents from '@fluentui/react-components'
 const { FluentProvider } = fluentUiReactComponents
 import { Provider as JotaiProvider, useAtomValue } from 'jotai'
 import { IntlProvider, useIntl } from 'react-intl'
-import { Analytics } from '@vercel/analytics/next'
 
 import { version as appVersion } from '../package.json'
 
@@ -91,7 +90,6 @@ export const App = () => {
           </div>
         </FluentProvider>
       </IntlProvider>
-      <Analytics />
     </JotaiProvider>
   )
 }
