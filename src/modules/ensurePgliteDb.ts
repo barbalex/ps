@@ -17,6 +17,37 @@ const createDb = () =>
     relaxedDurability: true,
   })
 
+const isWasmAbort = (err: unknown) =>
+  err instanceof Error &&
+  (err.message.includes('Aborted') || err.name === 'RuntimeError')
+
+/** Delete all IndexedDB databases that look like they belong to this app. */
+const deleteIdbDatabases = async () => {
+  if (typeof indexedDB === 'undefined') return
+  const fallback = ['ps', '/ps']
+  const discovered =
+    'databases' in indexedDB
+      ? await indexedDB
+          .databases()
+          .then((dbs) =>
+            dbs.map((d) => d.name).filter(Boolean) as string[],
+          )
+          .catch(() => [])
+      : []
+  const toDelete = [...new Set([...fallback, ...discovered])].filter((n) =>
+    /ps|pglite|electric/i.test(n),
+  )
+  await Promise.all(
+    toDelete.map(
+      (name) =>
+        new Promise<void>((resolve) => {
+          const req = indexedDB.deleteDatabase(name)
+          req.onsuccess = req.onerror = req.onblocked = () => resolve()
+        }),
+    ),
+  )
+}
+
 export const ensurePgliteDb = async () => {
   const existingDb = store.get(pgliteDbAtom) as PGlite | null
 
@@ -24,6 +55,18 @@ export const ensurePgliteDb = async () => {
 
   if (!creatingDbPromise) {
     creatingDbPromise = createDb()
+      .catch(async (err) => {
+        if (isWasmAbort(err)) {
+          console.warn(
+            'PGlite WASM aborted on open — local database may be corrupted. ' +
+              'Deleting IndexedDB and retrying…',
+            err,
+          )
+          await deleteIdbDatabases()
+          return createDb()
+        }
+        throw err
+      })
       .then((db) => {
         store.set(pgliteDbAtom, db)
 

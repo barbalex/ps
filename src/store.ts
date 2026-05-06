@@ -475,7 +475,7 @@ export const postgrestClientAtom = atom(null)
 // - filter
 // - draft: object with key-value pairs for the operation
 // - prev: object with key-value pairs of previous value for reverting the operation
-export const operationsQueueAtom = atomWithStorage('operationsQueueAtom', [])
+export const operationsQueueAtom = atomWithStorage('operationsQueueAtom', [], undefined, { getOnInit: true })
 
 // Inline revert so store.ts doesn't need to import revertOperation.ts (which imports store.ts — circular)
 async function revertOperationInPlace(db, operation) {
