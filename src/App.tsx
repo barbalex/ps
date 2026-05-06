@@ -30,8 +30,7 @@ import { lightTheme } from './modules/theme.ts'
 import { UploaderContext } from './UploaderContext.ts'
 import { store, languageAtom, intlAtom } from './store.ts'
 
-import { createPostgrestClient } from './modules/createPostgrestClient.ts'
-createPostgrestClient()
+
 
 const IntlSetter = () => {
   const intl = useIntl()
@@ -44,7 +43,6 @@ const tanstackQueryClient = new QueryClient()
 export const App = () => {
   const uploaderRef = createRef<HTMLElement | null>(null)
   const language = useAtomValue(languageAtom, { store })
-
   useEffect(() => {
     const titles: Record<string, string> = {
       de: 'Arten fördern',

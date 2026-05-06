@@ -7,6 +7,8 @@ import { fetchPostgrestToken } from './fetchPostgrestToken.ts'
 const postgrestClientUrl = constants.getPostgrestUri()
 
 export const createPostgrestClient = async () => {
+  if (store.get(postgrestClientAtom)) return
+
   const token = await fetchPostgrestToken()
   const postgrestClient = new PostgrestClient(postgrestClientUrl, {
     headers: token ? { Authorization: `Bearer ${token}` } : {},
