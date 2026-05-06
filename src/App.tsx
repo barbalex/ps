@@ -1,9 +1,5 @@
 import { useEffect } from 'react'
 import { RouterProvider } from '@tanstack/react-router'
-import {
-  QueryClient,
-  QueryClientProvider as TanstackQueryClientProvider,
-} from '@tanstack/react-query'
 import * as fluentUiReactComponents from '@fluentui/react-components'
 const { FluentProvider } = fluentUiReactComponents
 import { Provider as JotaiProvider, useAtomValue } from 'jotai'
@@ -37,8 +33,6 @@ const IntlSetter = () => {
   return null
 }
 
-const tanstackQueryClient = new QueryClient()
-
 export const App = () => {
   const language = useAtomValue(languageAtom, { store })
   useEffect(() => {
@@ -65,9 +59,7 @@ export const App = () => {
         <IntlSetter />
         <FluentProvider theme={lightTheme}>
           <div id="router-container" className={styles.routerContainer}>
-            <TanstackQueryClientProvider client={tanstackQueryClient}>
-              <RouterProvider router={router} />
-            </TanstackQueryClientProvider>
+            <RouterProvider router={router} />
           </div>
         </FluentProvider>
       </IntlProvider>

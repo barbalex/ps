@@ -1,5 +1,6 @@
 import { createRef, useEffect } from 'react'
 import { useAtomValue } from 'jotai'
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { useSearch } from '@tanstack/react-router'
 
 import { createPostgrestClient } from '../../modules/createPostgrestClient.ts'
@@ -25,6 +26,7 @@ import { AutoFetchCapabilities } from '../AutoFetchCapabilities.tsx'
 import { mapMaximizedAtom } from '../../store.ts'
 
 const from = '/data'
+const tanstackQueryClient = new QueryClient()
 
 // memoizing this component creates error
 export const LayoutProtected = () => {
@@ -43,6 +45,7 @@ export const LayoutProtected = () => {
   // - they are not (very) sensitive
   // - ui remains more consistent when logging in
   return (
+    <QueryClientProvider client={tanstackQueryClient}>
     <UploaderContext.Provider value={uploaderRef}>
       <uc-config
         ctx-name="uploadcare-uploader"
@@ -79,5 +82,6 @@ export const LayoutProtected = () => {
       <Main />
       <BackgroundTasks />
     </UploaderContext.Provider>
+    </QueryClientProvider>
   )
 }
