@@ -8,6 +8,8 @@ import { WidgetsForFieldsNode } from './WidgetsForFields.tsx'
 import { QcsNode } from './Qcs.tsx'
 import { RootQcsNode } from './RootQcs.tsx'
 import { RootQcsRunNode } from './RootQcsRun.tsx'
+import { RootExportsNode } from './RootExports.tsx'
+import { RootExportsRunNode } from './RootExportsRun.tsx'
 import { MessagesNode } from './Messages.tsx'
 import { CrssNode } from './Crss.tsx'
 import { QueuedOperationsNode } from './QueuedOperations.tsx'
@@ -37,6 +39,8 @@ export const Tree = () => {
           <QcsNode />
           <RootQcsNode />
           <RootQcsRunNode />
+          <RootExportsNode />
+          <RootExportsRunNode />
           <CrssNode />
         </>
       )}

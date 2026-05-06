@@ -25,6 +25,8 @@ import { SubprojectReportDesignsNode } from '../SubprojectReportDesigns.tsx'
 import { ProjectQcsNode } from '../ProjectQcs.tsx'
 import { ProjectQcAssignmentsNode } from '../ProjectQcAssignments.tsx'
 import { ProjectQcsRunNode } from '../ProjectQcsRun.tsx'
+import { ProjectExportAssignmentsNode } from '../ProjectExportAssignments.tsx'
+import { ProjectExportsRunNode } from '../ProjectExportsRun.tsx'
 import { removeChildNodes } from '../../../modules/tree/removeChildNodes.ts'
 import { addOpenNodes } from '../../../modules/tree/addOpenNodes.ts'
 import { designingAtom, treeOpenNodesAtom } from '../../../store.ts'
@@ -148,6 +150,12 @@ export const ProjectNode = ({ nav, level = 2 }) => {
           {showDesigningNodes && <ProjectQcsNode projectId={nav.id} />}
           <ProjectQcAssignmentsNode projectId={nav.id} level={level + 1} />
           <ProjectQcsRunNode projectId={nav.id} level={level + 1} />
+          {designing && (
+            <>
+              <ProjectExportAssignmentsNode projectId={nav.id} level={level + 1} />
+              <ProjectExportsRunNode projectId={nav.id} level={level + 1} />
+            </>
+          )}
         </>
       )}
     </>
