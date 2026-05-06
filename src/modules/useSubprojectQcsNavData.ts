@@ -25,12 +25,12 @@ export const useSubprojectQcsNavData = ({ projectId, subprojectId }: Props) => {
     subprojectId,
   ]
   const parentUrl = `/${parentArray.join('/')}`
-  const ownArray = [...parentArray, 'qcs-assignment']
+  const ownArray = [...parentArray, 'qc-assignments']
   const ownUrl = `/${ownArray.join('/')}`
   const isOpen = openNodes.some((array) => isEqual(array, ownArray))
 
   const res = useLiveQuery(
-    `SELECT count(*) AS count FROM qcs_assignment qa JOIN qcs q ON q.qcs_id = qa.qc_id WHERE qa.subproject_id = $1 AND q.level = 'subproject'`,
+    `SELECT count(*) AS count FROM qc_assignments qa JOIN qcs q ON q.qcs_id = qa.qc_id WHERE qa.subproject_id = $1 AND q.level = 'subproject'`,
     [subprojectId],
   )
 

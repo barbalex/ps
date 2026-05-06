@@ -76,7 +76,7 @@ type NavDataNotForBreadcrumb = {
   vector_layers_count_filtered?: number
   files_count_unfiltered?: number
   files_count_filtered?: number
-  qcs_assignment_count?: number
+  qc_assignments_count?: number
   qcs_run_count?: number
 }
 
@@ -123,7 +123,7 @@ type NavDataNotForBreadcrumbDesigning = {
   fields_count_filtered?: number
   subproject_report_designs_count?: number
   project_report_designs_count?: number
-  qcs_assignment_count?: number
+  qc_assignments_count?: number
   qcs_run_count?: number
 }
 
@@ -189,8 +189,8 @@ export const useProjectNavData = ({
             vector_layers_count_filtered AS (SELECT count(*) FROM vector_layers WHERE project_id = '${projectId}' ${vectorLayersIsFiltered ? ` AND ${vectorLayersFilterString}` : ''}),
             files_count_unfiltered AS (SELECT count(*) FROM files WHERE project_id = '${projectId}'),
             files_count_filtered AS (SELECT count(*) FROM files WHERE project_id = '${projectId}' ${filesIsFiltered ? ` AND ${filesFilterString}` : ''}),
-            qcs_assignment_count AS (SELECT count(*) FROM (SELECT qa.qcs_assignment_id FROM qcs_assignment qa JOIN qcs q ON q.qcs_id = qa.qc_id WHERE qa.project_id = '${projectId}' AND qa.subproject_id IS NULL AND q.level = 'project' UNION ALL SELECT pqa.project_qcs_assignment_id FROM project_qcs_assignment pqa WHERE pqa.project_id = '${projectId}' AND pqa.subproject_id IS NULL) t),
-            qcs_run_count AS (SELECT count(*) FROM qcs_assignment qa JOIN qcs q ON q.qcs_id = qa.qc_id WHERE qa.project_id = '${projectId}' AND qa.subproject_id IS NULL AND q.level = 'project')
+            qc_assignments_count AS (SELECT count(*) FROM (SELECT qa.qc_assignment_id FROM qc_assignments qa JOIN qcs q ON q.qcs_id = qa.qc_id WHERE qa.project_id = '${projectId}' AND qa.subproject_id IS NULL AND q.level = 'project' UNION ALL SELECT pqa.project_qc_assignment_id FROM project_qc_assignments pqa WHERE pqa.project_id = '${projectId}' AND pqa.subproject_id IS NULL) t),
+            qcs_run_count AS (SELECT count(*) FROM qc_assignments qa JOIN qcs q ON q.qcs_id = qa.qc_id WHERE qa.project_id = '${projectId}' AND qa.subproject_id IS NULL AND q.level = 'project')
             ${
               designing
                 ? `, project_users_count_unfiltered AS (SELECT count(*) FROM project_users WHERE project_id = '${projectId}'),
@@ -243,7 +243,7 @@ export const useProjectNavData = ({
             vector_layers_count_filtered.count AS vector_layers_count_filtered,
             files_count_unfiltered.count AS files_count_unfiltered,
             files_count_filtered.count AS files_count_filtered,
-            qcs_assignment_count.count AS qcs_assignment_count,
+            qc_assignments_count.count AS qc_assignments_count,
             qcs_run_count.count AS qcs_run_count
             ${
               designing
@@ -282,7 +282,7 @@ export const useProjectNavData = ({
             vector_layers_count_filtered,
             files_count_unfiltered,
             files_count_filtered,
-            qcs_assignment_count,
+            qc_assignments_count,
             qcs_run_count
             ${
               designing
@@ -599,10 +599,10 @@ export const useProjectNavData = ({
               ]
             : []),
           {
-            id: 'qcs-assignment',
+            id: 'qc-assignments',
             label: buildNavLabel({
               loading,
-              countFiltered: nav?.qcs_assignment_count ?? 0,
+              countFiltered: nav?.qc_assignments_count ?? 0,
               namePlural: formatMessage({
                 id: 'subprojectQcs.title',
                 defaultMessage: 'Qualitätskontrollen: wählen',

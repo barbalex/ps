@@ -183,7 +183,7 @@ export const ProjectQcsRun = ({ from }: { from: string }) => {
             COALESCE(NULLIF(q.name_${language}, ''), q.name_de) AS label,
             q.sql,
             q.filter_by_year
-     FROM qcs_assignment qa
+     FROM qc_assignments qa
      JOIN qcs q ON q.qcs_id = qa.qc_id
      WHERE qa.project_id = $1
        AND qa.subproject_id IS NULL
@@ -199,7 +199,7 @@ export const ProjectQcsRun = ({ from }: { from: string }) => {
             COALESCE(NULLIF(pq.name_${language}, ''), pq.name_de) AS label,
             pq.sql,
             pq.filter_by_year
-     FROM project_qcs_assignment pqa
+     FROM project_qc_assignments pqa
      JOIN project_qcs pq ON pq.project_qc_id = pqa.project_qc_id
      WHERE pqa.project_id = $1
        AND pqa.subproject_id IS NULL

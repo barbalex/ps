@@ -4,7 +4,7 @@ import { useSetAtom, useAtom } from 'jotai'
 import { useIntl } from 'react-intl'
 import * as fluentUiReactComponents from '@fluentui/react-components'
 
-import { createRootQcsAssignment } from '../modules/createRows.ts'
+import { createRootQcAssignments } from '../modules/createRows.ts'
 import { useRootQcsNavData } from '../modules/useRootQcsNavData.ts'
 import { CheckboxField } from '../components/shared/CheckboxField.tsx'
 import { Loading } from '../components/shared/Loading.tsx'
@@ -21,7 +21,7 @@ type QcRow = {
 }
 
 type ActiveEntry = {
-  qcs_assignment_id: string
+  qc_assignment_id: string
   qc_id: string
 }
 
@@ -42,7 +42,7 @@ export const RootQcs = () => {
 
   // Load active assignments for root level (no project_id, no subproject_id)
   const activeRes = useLiveQuery(
-    `SELECT qcs_assignment_id, qc_id FROM qcs_assignment
+    `SELECT qc_assignment_id, qc_id FROM qc_assignments
      WHERE project_id IS NULL AND subproject_id IS NULL`,
   )
 
@@ -65,16 +65,16 @@ export const RootQcs = () => {
       if (!entry) return
       try {
         await db.query(
-          `DELETE FROM qcs_assignment WHERE qcs_assignment_id = $1`,
-          [entry.qcs_assignment_id],
+          `DELETE FROM qc_assignments WHERE qc_assignment_id = $1`,
+          [entry.qc_assignment_id],
         )
         addOperation({
-          table: 'qcs_assignment',
-          rowIdName: 'qcs_assignment_id',
-          rowId: entry.qcs_assignment_id,
+          table: 'qc_assignments',
+          rowIdName: 'qc_assignment_id',
+          rowId: entry.qc_assignment_id,
           operation: 'delete',
           prev: {
-            qcs_assignment_id: entry.qcs_assignment_id,
+            qc_assignment_id: entry.qc_assignment_id,
             qc_id: qcId,
           },
         })
@@ -82,13 +82,13 @@ export const RootQcs = () => {
         console.error('Error removing root QC:', error)
       }
     } else {
-      await createRootQcsAssignment({ qcId })
+      await createRootQcAssignments({ qcId })
     }
   }
 
   const activateAll = async () => {
     for (const qc of filteredQcs.filter((q) => !activeQcIds.has(q.qcs_id))) {
-      await createRootQcsAssignment({ qcId: qc.qcs_id })
+      await createRootQcAssignments({ qcId: qc.qcs_id })
     }
   }
 
@@ -98,16 +98,16 @@ export const RootQcs = () => {
     )) {
       try {
         await db.query(
-          `DELETE FROM qcs_assignment WHERE qcs_assignment_id = $1`,
-          [entry.qcs_assignment_id],
+          `DELETE FROM qc_assignments WHERE qc_assignment_id = $1`,
+          [entry.qc_assignment_id],
         )
         addOperation({
-          table: 'qcs_assignment',
-          rowIdName: 'qcs_assignment_id',
-          rowId: entry.qcs_assignment_id,
+          table: 'qc_assignments',
+          rowIdName: 'qc_assignment_id',
+          rowId: entry.qc_assignment_id,
           operation: 'delete',
           prev: {
-            qcs_assignment_id: entry.qcs_assignment_id,
+            qc_assignment_id: entry.qc_assignment_id,
             qc_id: entry.qc_id,
           },
         })

@@ -175,7 +175,7 @@ WITH expected(parent_table) AS (
 		('public.vector_layers_history'),
 		('public.vector_layer_displays_history'),
 		('public.qcs_history'),
-		('public.qcs_assignment_history')
+		('public.qc_assignments_history')
 ),
 missing AS (
 	SELECT e.parent_table

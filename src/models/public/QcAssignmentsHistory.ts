@@ -1,9 +1,9 @@
 /**
- * Represents the table public.qcs_assignment_history
- * System-versioned history of qcs_assignment. Managed by temporal_tables and partitioned yearly by updated_at.
+ * Represents the table public.qc_assignments_history
+ * System-versioned history of qc_assignments. Managed by temporal_tables and partitioned yearly by updated_at.
  */
-export default interface QcsAssignmentHistory {
-  qcs_assignment_id: string;
+export default interface QcAssignmentsHistory {
+  qc_assignment_id: string;
 
   project_id: string | null;
 
@@ -24,12 +24,12 @@ export default interface QcsAssignmentHistory {
 }
 
 /**
- * Represents the initializer for the table public.qcs_assignment_history
- * System-versioned history of qcs_assignment. Managed by temporal_tables and partitioned yearly by updated_at.
+ * Represents the initializer for the table public.qc_assignments_history
+ * System-versioned history of qc_assignments. Managed by temporal_tables and partitioned yearly by updated_at.
  */
-export interface QcsAssignmentHistoryInitializer {
+export interface QcAssignmentsHistoryInitializer {
   /** Default value: uuid_generate_v7() */
-  qcs_assignment_id?: string;
+  qc_assignment_id?: string;
 
   project_id?: string | null;
 
@@ -52,11 +52,11 @@ export interface QcsAssignmentHistoryInitializer {
 }
 
 /**
- * Represents the mutator for the table public.qcs_assignment_history
- * System-versioned history of qcs_assignment. Managed by temporal_tables and partitioned yearly by updated_at.
+ * Represents the mutator for the table public.qc_assignments_history
+ * System-versioned history of qc_assignments. Managed by temporal_tables and partitioned yearly by updated_at.
  */
-export interface QcsAssignmentHistoryMutator {
-  qcs_assignment_id?: string;
+export interface QcAssignmentsHistoryMutator {
+  qc_assignment_id?: string;
 
   project_id?: string | null;
 

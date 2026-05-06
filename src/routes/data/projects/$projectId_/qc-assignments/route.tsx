@@ -1,6 +1,6 @@
 import { createFileRoute, Outlet } from '@tanstack/react-router'
 
-export const Route = createFileRoute('/data/projects/$projectId_/qcs-assignment')({
+export const Route = createFileRoute('/data/projects/$projectId_/qc-assignments')({
   component: Outlet,
   beforeLoad: ({ params }) => {
     if (!params.projectId || params.projectId === 'undefined') {

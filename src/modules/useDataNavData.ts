@@ -83,7 +83,7 @@ export const useDataNavData = () => {
             widgets_for_fields_count_unfiltered AS (SELECT count(*) FROM widgets_for_fields),
             widgets_for_fields_count_filtered AS (SELECT count(*) FROM widgets_for_fields ${widgetsForFieldsIsFiltered ? ` WHERE ${widgetsForFieldsFilterString}` : ''}),
             qcs_count_unfiltered AS (SELECT count(*) FROM qcs),
-            root_qcs_count_unfiltered AS (SELECT count(*) FROM qcs_assignment WHERE project_id IS NULL AND subproject_id IS NULL),
+            root_qcs_count_unfiltered AS (SELECT count(*) FROM qc_assignments WHERE project_id IS NULL AND subproject_id IS NULL),
             crs_count_unfiltered AS (SELECT count(*) FROM crs),
           `
             : ''
@@ -247,7 +247,7 @@ export const useDataNavData = () => {
               }),
             },
             {
-              id: 'qcs-assignment',
+              id: 'qc-assignments',
               label: buildNavLabel({
                 loading,
                 countFiltered: row?.root_qcs_count_unfiltered ?? 0,

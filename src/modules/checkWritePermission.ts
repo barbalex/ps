@@ -85,7 +85,7 @@ const TABLE_CONFIG: Record<string, CheckConfig> = {
   wfs_services: projectDirect(),
   vector_layers: projectDirect(),
   project_crs: projectDirect(),
-  qcs_assignment: projectDirect(),
+  qc_assignments: projectDirect(),
 
   // Project-level — via join
   taxa: {

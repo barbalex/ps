@@ -23,7 +23,7 @@ import { FilesNode } from '../Files.tsx'
 import { ProjectReportDesignsNode } from '../ProjectReportDesigns.tsx'
 import { SubprojectReportDesignsNode } from '../SubprojectReportDesigns.tsx'
 import { ProjectQcsNode } from '../ProjectQcs.tsx'
-import { ProjectQcsAssignmentNode } from '../ProjectQcsAssignment.tsx'
+import { ProjectQcAssignmentsNode } from '../ProjectQcAssignments.tsx'
 import { ProjectQcsRunNode } from '../ProjectQcsRun.tsx'
 import { removeChildNodes } from '../../../modules/tree/removeChildNodes.ts'
 import { addOpenNodes } from '../../../modules/tree/addOpenNodes.ts'
@@ -146,7 +146,7 @@ export const ProjectNode = ({ nav, level = 2 }) => {
             </>
           )}
           {showDesigningNodes && <ProjectQcsNode projectId={nav.id} />}
-          <ProjectQcsAssignmentNode projectId={nav.id} level={level + 1} />
+          <ProjectQcAssignmentsNode projectId={nav.id} level={level + 1} />
           <ProjectQcsRunNode projectId={nav.id} level={level + 1} />
         </>
       )}

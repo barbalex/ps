@@ -1967,50 +1967,50 @@ END
 $$;
 
 --------------------------------------------------------------
--- qcs_assignment -> qcs_assignment_history
+-- qc_assignments -> qc_assignments_history
 -- Retention: 5 years
 --
-ALTER TABLE qcs_assignment
+ALTER TABLE qc_assignments
 ADD COLUMN IF NOT EXISTS sys_period tstzrange;
 
-UPDATE qcs_assignment
+UPDATE qc_assignments
 SET sys_period = tstzrange(updated_at, NULL, '[)')
 WHERE sys_period IS NULL;
 
-ALTER TABLE qcs_assignment
+ALTER TABLE qc_assignments
 ALTER COLUMN sys_period SET NOT NULL;
 
-COMMENT ON COLUMN qcs_assignment.sys_period IS 'System period maintained by temporal_tables for auditing and historic queries.';
+COMMENT ON COLUMN qc_assignments.sys_period IS 'System period maintained by temporal_tables for auditing and historic queries.';
 
-CREATE TABLE IF NOT EXISTS qcs_assignment_history (
-	LIKE qcs_assignment INCLUDING DEFAULTS
+CREATE TABLE IF NOT EXISTS qc_assignments_history (
+	LIKE qc_assignments INCLUDING DEFAULTS
 ) PARTITION BY RANGE (updated_at);
 
-ALTER TABLE qcs_assignment_history OWNER TO partman_user;
+ALTER TABLE qc_assignments_history OWNER TO partman_user;
 
-COMMENT ON TABLE qcs_assignment_history IS 'System-versioned history of qcs_assignment. Managed by temporal_tables and partitioned yearly by updated_at.';
-COMMENT ON COLUMN qcs_assignment_history.sys_period IS 'System period written by temporal_tables. lower(sys_period) is when the row version became current, upper(sys_period) when it stopped being current.';
+COMMENT ON TABLE qc_assignments_history IS 'System-versioned history of qc_assignments. Managed by temporal_tables and partitioned yearly by updated_at.';
+COMMENT ON COLUMN qc_assignments_history.sys_period IS 'System period written by temporal_tables. lower(sys_period) is when the row version became current, upper(sys_period) when it stopped being current.';
 
-CREATE INDEX IF NOT EXISTS qcs_assignment_history_updated_at_idx
-ON qcs_assignment_history USING btree (updated_at);
+CREATE INDEX IF NOT EXISTS qc_assignments_history_updated_at_idx
+ON qc_assignments_history USING btree (updated_at);
 
-CREATE INDEX IF NOT EXISTS qcs_assignment_history_id_updated_at_idx
-ON qcs_assignment_history USING btree (qcs_assignment_id, updated_at);
+CREATE INDEX IF NOT EXISTS qc_assignments_history_id_updated_at_idx
+ON qc_assignments_history USING btree (qc_assignment_id, updated_at);
 
-CREATE INDEX IF NOT EXISTS qcs_assignment_history_sys_period_idx
-ON qcs_assignment_history USING gist (sys_period);
+CREATE INDEX IF NOT EXISTS qc_assignments_history_sys_period_idx
+ON qc_assignments_history USING gist (sys_period);
 
 DO $$
 BEGIN
 	IF NOT EXISTS (
 		SELECT 1
 		FROM pg_trigger
-		WHERE tgname = 'versioning_qcs_assignment_trigger'
-			AND tgrelid = 'qcs_assignment'::regclass
+		WHERE tgname = 'versioning_qc_assignments_trigger'
+			AND tgrelid = 'qc_assignments'::regclass
 	) THEN
-		CREATE TRIGGER versioning_qcs_assignment_trigger
-		BEFORE INSERT OR UPDATE OR DELETE ON qcs_assignment
-		FOR EACH ROW EXECUTE PROCEDURE versioning('sys_period', 'qcs_assignment_history', true);
+		CREATE TRIGGER versioning_qc_assignments_trigger
+		BEFORE INSERT OR UPDATE OR DELETE ON qc_assignments
+		FOR EACH ROW EXECUTE PROCEDURE versioning('sys_period', 'qc_assignments_history', true);
 	END IF;
 END
 $$;
@@ -3323,7 +3323,7 @@ WHERE NOT EXISTS (
 );
 
 SELECT partman.create_parent(
-	p_parent_table := 'public.qcs_assignment_history',
+	p_parent_table := 'public.qc_assignments_history',
 	p_control := 'updated_at',
 	p_interval := '1 year',
 	p_type := 'range',
@@ -3336,7 +3336,7 @@ SELECT partman.create_parent(
 WHERE NOT EXISTS (
 	SELECT 1
 	FROM partman.part_config
-	WHERE parent_table = 'public.qcs_assignment_history'
+	WHERE parent_table = 'public.qc_assignments_history'
 );
 
 SELECT partman.create_parent(
@@ -3724,7 +3724,7 @@ SET jobmon = false,
 	retention = '5 years',
 	retention_keep_table = false,
 	retention_keep_index = false
-WHERE parent_table = 'public.qcs_assignment_history';
+WHERE parent_table = 'public.qc_assignments_history';
 
 UPDATE partman.part_config
 SET jobmon = false,

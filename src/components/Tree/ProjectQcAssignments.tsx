@@ -6,7 +6,7 @@ interface Props {
   level?: number
 }
 
-export const ProjectQcsAssignmentNode = ({ projectId, level = 3 }: Props) => {
+export const ProjectQcAssignmentsNode = ({ projectId, level = 3 }: Props) => {
   const { navData } = useProjectQcAssignmentsNavData({ projectId })
   const { label, ownUrl, isInActiveNodeArray, isActive } = navData
 

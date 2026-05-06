@@ -115,11 +115,11 @@ import { WidgetsForFieldsFetcher } from './WidgetsForFieldsFetcher.tsx'
 import { WidgetForFieldFetcher } from './WidgetForFieldFetcher.tsx'
 import { QcsFetcher } from './QcsFetcher.tsx'
 import { QcFetcher } from './QcFetcher.tsx'
-import { SubprojectQcsAssignmentFetcher } from './SubprojectQcsAssignmentFetcher.tsx'
+import { SubprojectQcAssignmentsFetcher } from './SubprojectQcAssignmentsFetcher.tsx'
 import { SubprojectQcsRunFetcher } from './SubprojectQcsRunFetcher.tsx'
 import { RootQcsFetcher } from './RootQcsFetcher.tsx'
 import { RootQcsRunFetcher } from './RootQcsRunFetcher.tsx'
-import { ProjectQcsAssignmentFetcher } from './ProjectQcsAssignmentFetcher.tsx'
+import { ProjectQcAssignmentsFetcher } from './ProjectQcAssignmentsFetcher.tsx'
 import { ProjectQcsRunFetcher } from './ProjectQcsRunFetcher.tsx'
 import { ProjectQcsFetcher } from './ProjectQcsFetcher.tsx'
 import { ProjectQcFetcher } from './ProjectQcFetcher.tsx'
@@ -789,7 +789,7 @@ export const FetcherRouter = ({ fetcherName, params, ...other }) => {
     }
     case 'useSubprojectQcsNavData': {
       if (!params.projectId || !params.subprojectId) return null
-      return <SubprojectQcsAssignmentFetcher params={params} {...other} />
+      return <SubprojectQcAssignmentsFetcher params={params} {...other} />
     }
     case 'useSubprojectQcsRunNavData': {
       if (!params.projectId || !params.subprojectId) return null
@@ -803,7 +803,7 @@ export const FetcherRouter = ({ fetcherName, params, ...other }) => {
     }
     case 'useProjectQcsNavData': {
       if (!params.projectId) return null
-      return <ProjectQcsAssignmentFetcher params={params} {...other} />
+      return <ProjectQcAssignmentsFetcher params={params} {...other} />
     }
     case 'useProjectOwnQcsNavData': {
       if (!params.projectId) return null

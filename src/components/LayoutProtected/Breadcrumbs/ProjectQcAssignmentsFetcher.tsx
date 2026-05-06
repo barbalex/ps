@@ -1,7 +1,7 @@
 import { useProjectQcAssignmentsNavData } from '../../../modules/useProjectQcAssignmentsNavData.ts'
 import { FetcherReturner } from './FetcherReturner.tsx'
 
-export const ProjectQcsAssignmentFetcher = ({ params, ...other }) => {
+export const ProjectQcAssignmentsFetcher = ({ params, ...other }) => {
   const { navData } = useProjectQcAssignmentsNavData(params)
 
   return (

@@ -1063,8 +1063,8 @@ AFTER INSERT OR UPDATE OF value_unit, field, calc_method, table_name ON chart_su
 FOR EACH ROW
 EXECUTE PROCEDURE chart_subjects_label_trigger();
 
--- qcs_assignment: set label from qcs.name_de with qcs_assignment_id as fallback
-CREATE OR REPLACE FUNCTION qcs_assignment_label_trigger()
+-- qc_assignments: set label from qcs.name_de with qc_assignment_id as fallback
+CREATE OR REPLACE FUNCTION qc_assignments_label_trigger()
 RETURNS TRIGGER AS $$
 DECLARE
   is_syncing BOOLEAN;
@@ -1081,20 +1081,20 @@ BEGIN
     SELECT qcs.name_de INTO _qc_label FROM qcs WHERE qcs.qcs_id = NEW.qc_id;
   END IF;
 
-  UPDATE qcs_assignment
-    SET label = coalesce(nullif(_qc_label, ''), NEW.qcs_assignment_id::text)
-  WHERE qcs_assignment.qcs_assignment_id = NEW.qcs_assignment_id;
+  UPDATE qc_assignments
+    SET label = coalesce(nullif(_qc_label, ''), NEW.qc_assignment_id::text)
+  WHERE qc_assignments.qc_assignment_id = NEW.qc_assignment_id;
   RETURN NEW;
 END;
 $$ LANGUAGE plpgsql;
 
-CREATE OR REPLACE TRIGGER qcs_assignment_label_trigger
-AFTER INSERT OR UPDATE OF qc_id ON qcs_assignment
+CREATE OR REPLACE TRIGGER qc_assignments_label_trigger
+AFTER INSERT OR UPDATE OF qc_id ON qc_assignments
 FOR EACH ROW
-EXECUTE PROCEDURE qcs_assignment_label_trigger();
+EXECUTE PROCEDURE qc_assignments_label_trigger();
 
--- when qcs.name_de changes, update labels of all related qcs_assignment rows
-CREATE OR REPLACE FUNCTION qcs_name_update_qcs_assignment_label_trigger()
+-- when qcs.name_de changes, update labels of all related qc_assignments rows
+CREATE OR REPLACE FUNCTION qcs_name_update_qc_assignments_label_trigger()
 RETURNS TRIGGER AS $$
 DECLARE
   is_syncing BOOLEAN;
@@ -1104,17 +1104,17 @@ BEGIN
     RETURN OLD;
   END IF;
 
-  UPDATE qcs_assignment
-    SET label = coalesce(nullif(NEW.name_de, ''), qcs_assignment_id::text)
-  WHERE qcs_assignment.qc_id = NEW.qcs_id;
+  UPDATE qc_assignments
+    SET label = coalesce(nullif(NEW.name_de, ''), qc_assignment_id::text)
+  WHERE qc_assignments.qc_id = NEW.qcs_id;
   RETURN NEW;
 END;
 $$ LANGUAGE plpgsql;
 
-CREATE OR REPLACE TRIGGER qcs_name_update_qcs_assignment_label_trigger
+CREATE OR REPLACE TRIGGER qcs_name_update_qc_assignments_label_trigger
 AFTER UPDATE OF name_de ON qcs
 FOR EACH ROW
-EXECUTE PROCEDURE qcs_name_update_qcs_assignment_label_trigger();
+EXECUTE PROCEDURE qcs_name_update_qc_assignments_label_trigger();
 
 --------------------------------------------------------------
 -- User roles: cascade and inheritance triggers
@@ -1494,8 +1494,8 @@ FOR EACH ROW
 EXECUTE PROCEDURE place_levels_create_vector_layers_trigger();
 
 --------------------------------------------------------------
--- project_qcs_assignment: set label from project_qcs.name_de with project_qcs_assignment_id as fallback
-CREATE OR REPLACE FUNCTION project_qcs_assignment_label_trigger()
+-- project_qc_assignments: set label from project_qcs.name_de with project_qc_assignment_id as fallback
+CREATE OR REPLACE FUNCTION project_qc_assignments_label_trigger()
 RETURNS TRIGGER AS $$
 DECLARE
   is_syncing BOOLEAN;
@@ -1512,20 +1512,20 @@ BEGIN
     SELECT project_qcs.name_de INTO _qc_label FROM project_qcs WHERE project_qcs.project_qc_id = NEW.project_qc_id;
   END IF;
 
-  UPDATE project_qcs_assignment
-    SET label = coalesce(nullif(_qc_label, ''), NEW.project_qcs_assignment_id::text)
-  WHERE project_qcs_assignment.project_qcs_assignment_id = NEW.project_qcs_assignment_id;
+  UPDATE project_qc_assignments
+    SET label = coalesce(nullif(_qc_label, ''), NEW.project_qc_assignment_id::text)
+  WHERE project_qc_assignments.project_qc_assignment_id = NEW.project_qc_assignment_id;
   RETURN NEW;
 END;
 $$ LANGUAGE plpgsql;
 
-CREATE OR REPLACE TRIGGER project_qcs_assignment_label_trigger
-AFTER INSERT OR UPDATE OF project_qc_id ON project_qcs_assignment
+CREATE OR REPLACE TRIGGER project_qc_assignments_label_trigger
+AFTER INSERT OR UPDATE OF project_qc_id ON project_qc_assignments
 FOR EACH ROW
-EXECUTE PROCEDURE project_qcs_assignment_label_trigger();
+EXECUTE PROCEDURE project_qc_assignments_label_trigger();
 
--- when project_qcs.name_de changes, update labels of all related project_qcs_assignment rows
-CREATE OR REPLACE FUNCTION project_qcs_name_update_project_qcs_assignment_label_trigger()
+-- when project_qcs.name_de changes, update labels of all related project_qc_assignments rows
+CREATE OR REPLACE FUNCTION project_qcs_name_update_project_qc_assignments_label_trigger()
 RETURNS TRIGGER AS $$
 DECLARE
   is_syncing BOOLEAN;
@@ -1535,14 +1535,14 @@ BEGIN
     RETURN OLD;
   END IF;
 
-  UPDATE project_qcs_assignment
-    SET label = coalesce(nullif(NEW.name_de, ''), project_qcs_assignment_id::text)
-  WHERE project_qcs_assignment.project_qc_id = NEW.project_qc_id;
+  UPDATE project_qc_assignments
+    SET label = coalesce(nullif(NEW.name_de, ''), project_qc_assignment_id::text)
+  WHERE project_qc_assignments.project_qc_id = NEW.project_qc_id;
   RETURN NEW;
 END;
 $$ LANGUAGE plpgsql;
 
-CREATE OR REPLACE TRIGGER project_qcs_name_update_project_qcs_assignment_label_trigger
+CREATE OR REPLACE TRIGGER project_qcs_name_update_project_qc_assignments_label_trigger
 AFTER UPDATE OF name_de ON project_qcs
 FOR EACH ROW
-EXECUTE PROCEDURE project_qcs_name_update_project_qcs_assignment_label_trigger();
+EXECUTE PROCEDURE project_qcs_name_update_project_qc_assignments_label_trigger();

@@ -18,21 +18,21 @@ export const useProjectQcAssignmentsNavData = ({ projectId }: Props) => {
 
   const parentArray = ['data', 'projects', projectId]
   const parentUrl = `/${parentArray.join('/')}`
-  const ownArray = [...parentArray, 'qcs-assignment']
+  const ownArray = [...parentArray, 'qc-assignments']
   const ownUrl = `/${ownArray.join('/')}`
   const isOpen = openNodes.some((array) => isEqual(array, ownArray))
 
   const res = useLiveQuery(
     `SELECT count(*) AS count FROM (
-       SELECT qa.qcs_assignment_id
-       FROM qcs_assignment qa
+       SELECT qa.qc_assignment_id
+       FROM qc_assignments qa
        JOIN qcs q ON q.qcs_id = qa.qc_id
        WHERE qa.project_id = $1
          AND qa.subproject_id IS NULL
          AND q.level = 'project'
        UNION ALL
-       SELECT pqa.project_qcs_assignment_id
-       FROM project_qcs_assignment pqa
+       SELECT pqa.project_qc_assignment_id
+       FROM project_qc_assignments pqa
        WHERE pqa.project_id = $2
          AND pqa.subproject_id IS NULL
      ) t`,

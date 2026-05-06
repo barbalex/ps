@@ -14,13 +14,13 @@ export const useRootQcsNavData = () => {
 
   const parentArray = ['data']
   const parentUrl = `/${parentArray.join('/')}`
-  const ownArray = [...parentArray, 'qcs-assignment']
+  const ownArray = [...parentArray, 'qc-assignments']
   const ownUrl = `/${ownArray.join('/')}`
     const isOpen = openNodes.some((array) => isEqual(array, ownArray))
 
   const res = useLiveQuery(
     `SELECT count(*) AS count
-     FROM qcs_assignment
+     FROM qc_assignments
      WHERE project_id IS NULL AND subproject_id IS NULL`,
   )
 

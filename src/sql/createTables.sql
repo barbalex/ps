@@ -1938,10 +1938,10 @@ CREATE INDEX IF NOT EXISTS qcs_name_de_idx ON qcs USING btree(name_de);
 COMMENT ON TABLE qcs IS 'Quality control rules for data validation. No history tracking needed as these are root-level configuration managed by administrators.';
 
 --------------------------------------------------------------
--- qcs_assignment
+-- qc_assignments
 --
-CREATE TABLE IF NOT EXISTS qcs_assignment(
-  qcs_assignment_id uuid PRIMARY KEY DEFAULT public.uuid_generate_v7(),
+CREATE TABLE IF NOT EXISTS qc_assignments(
+  qc_assignment_id uuid PRIMARY KEY DEFAULT public.uuid_generate_v7(),
   project_id uuid DEFAULT NULL REFERENCES projects(project_id) ON DELETE CASCADE ON UPDATE CASCADE DEFERRABLE INITIALLY DEFERRED,
   subproject_id uuid DEFAULT NULL REFERENCES subprojects(subproject_id) ON DELETE CASCADE ON UPDATE CASCADE DEFERRABLE INITIALLY DEFERRED,
   qc_id uuid NOT NULL REFERENCES qcs(qcs_id) ON DELETE CASCADE ON UPDATE CASCADE DEFERRABLE INITIALLY DEFERRED,
@@ -1953,12 +1953,12 @@ CREATE TABLE IF NOT EXISTS qcs_assignment(
   UNIQUE (subproject_id, qc_id)
 );
 
-CREATE INDEX IF NOT EXISTS qcs_assignment_project_id_idx ON qcs_assignment USING btree(project_id);
-CREATE INDEX IF NOT EXISTS qcs_assignment_subproject_id_idx ON qcs_assignment USING btree(subproject_id);
-CREATE INDEX IF NOT EXISTS qcs_assignment_qc_id_idx ON qcs_assignment USING btree(qc_id);
-CREATE INDEX IF NOT EXISTS qcs_assignment_label_idx ON qcs_assignment USING btree(label);
+CREATE INDEX IF NOT EXISTS qc_assignments_project_id_idx ON qc_assignments USING btree(project_id);
+CREATE INDEX IF NOT EXISTS qc_assignments_subproject_id_idx ON qc_assignments USING btree(subproject_id);
+CREATE INDEX IF NOT EXISTS qc_assignments_qc_id_idx ON qc_assignments USING btree(qc_id);
+CREATE INDEX IF NOT EXISTS qc_assignments_label_idx ON qc_assignments USING btree(label);
 
-COMMENT ON TABLE qcs_assignment IS 'Quality controls assigned to a project or subproject. The level(s) of applicability (root, project, subproject) are defined on the qcs table itself.';
+COMMENT ON TABLE qc_assignments IS 'Quality controls assigned to a project or subproject. The level(s) of applicability (root, project, subproject) are defined on the qcs table itself.';
 
 --------------------------------------------------------------
 -- project_qcs: project-specific quality controls
@@ -1986,10 +1986,10 @@ CREATE INDEX IF NOT EXISTS project_qcs_name_de_idx ON project_qcs USING btree(na
 COMMENT ON TABLE project_qcs IS 'Project-specific quality controls. Only visible within the project and its sub-projects. Created by project owners and designers.';
 
 --------------------------------------------------------------
--- project_qcs_assignment
+-- project_qc_assignments
 --
-CREATE TABLE IF NOT EXISTS project_qcs_assignment(
-  project_qcs_assignment_id uuid PRIMARY KEY DEFAULT public.uuid_generate_v7(),
+CREATE TABLE IF NOT EXISTS project_qc_assignments(
+  project_qc_assignment_id uuid PRIMARY KEY DEFAULT public.uuid_generate_v7(),
   project_id uuid DEFAULT NULL REFERENCES projects(project_id) ON DELETE CASCADE ON UPDATE CASCADE DEFERRABLE INITIALLY DEFERRED,
   subproject_id uuid DEFAULT NULL REFERENCES subprojects(subproject_id) ON DELETE CASCADE ON UPDATE CASCADE DEFERRABLE INITIALLY DEFERRED,
   project_qc_id uuid NOT NULL REFERENCES project_qcs(project_qc_id) ON DELETE CASCADE ON UPDATE CASCADE DEFERRABLE INITIALLY DEFERRED,
@@ -2002,11 +2002,11 @@ CREATE TABLE IF NOT EXISTS project_qcs_assignment(
   UNIQUE (subproject_id, project_qc_id)
 );
 
-CREATE INDEX IF NOT EXISTS project_qcs_assignment_project_id_idx ON project_qcs_assignment USING btree(project_id);
-CREATE INDEX IF NOT EXISTS project_qcs_assignment_subproject_id_idx ON project_qcs_assignment USING btree(subproject_id);
-CREATE INDEX IF NOT EXISTS project_qcs_assignment_project_qc_id_idx ON project_qcs_assignment USING btree(project_qc_id);
-CREATE INDEX IF NOT EXISTS project_qcs_assignment_label_idx ON project_qcs_assignment USING btree(label);
+CREATE INDEX IF NOT EXISTS project_qc_assignments_project_id_idx ON project_qc_assignments USING btree(project_id);
+CREATE INDEX IF NOT EXISTS project_qc_assignments_subproject_id_idx ON project_qc_assignments USING btree(subproject_id);
+CREATE INDEX IF NOT EXISTS project_qc_assignments_project_qc_id_idx ON project_qc_assignments USING btree(project_qc_id);
+CREATE INDEX IF NOT EXISTS project_qc_assignments_label_idx ON project_qc_assignments USING btree(label);
 
-COMMENT ON TABLE project_qcs_assignment IS 'Project-specific quality controls assigned to a project or subproject level for execution.';
+COMMENT ON TABLE project_qc_assignments IS 'Project-specific quality controls assigned to a project or subproject level for execution.';
 
 COMMIT;

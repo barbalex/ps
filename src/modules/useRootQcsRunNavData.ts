@@ -28,7 +28,7 @@ export const useRootQcsRunNavData = () => {
 
   const res = useLiveQuery(
     `SELECT count(*) AS count
-     FROM qcs_assignment
+     FROM qc_assignments
      WHERE project_id IS NULL AND subproject_id IS NULL`,
   )
 

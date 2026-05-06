@@ -1,2 +1,0 @@
-export interface project_qcs_name_update_project_qcs_assignment_label_trigger_params {
-}

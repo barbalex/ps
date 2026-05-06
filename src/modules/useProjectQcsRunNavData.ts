@@ -32,7 +32,7 @@ export const useProjectQcsRunNavData = ({ projectId }: Props) => {
 
   const res = useLiveQuery(
     `SELECT count(*) AS count
-     FROM qcs_assignment qa
+     FROM qc_assignments qa
      JOIN qcs q ON q.qcs_id = qa.qc_id
      WHERE qa.project_id = $1
        AND qa.subproject_id IS NULL

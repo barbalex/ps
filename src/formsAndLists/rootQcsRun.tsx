@@ -179,7 +179,7 @@ export const RootQcsRun = () => {
             COALESCE(NULLIF(q.name_${language}, ''), q.name_de) AS label,
             q.sql,
             q.filter_by_year
-     FROM qcs_assignment qa
+     FROM qc_assignments qa
      JOIN qcs q ON q.qcs_id = qa.qc_id
      WHERE qa.project_id IS NULL
        AND qa.subproject_id IS NULL

@@ -408,7 +408,7 @@ BEGIN
 END;
 $$;
 
--- For tables with multiple nullable level FKs (charts, files, qcs_assignment).
+-- For tables with multiple nullable level FKs (charts, files, qc_assignments).
 -- Uses the most specific non-null ID: place > subproject > project.
 CREATE OR REPLACE FUNCTION enforce_multilevel_write()
 RETURNS trigger LANGUAGE plpgsql SECURITY DEFINER AS $$
@@ -654,7 +654,7 @@ FOR EACH ROW
 WHEN (pg_trigger_depth() < 1)
 EXECUTE FUNCTION enforce_place_users_write();
 
--- multi-level tables: charts, files, qcs_assignment
+-- multi-level tables: charts, files, qc_assignments
 -- (have project_id, subproject_id, place_id all nullable;
 --  check the most specific non-null one)
 CREATE OR REPLACE TRIGGER enforce_multilevel_write_trigger
@@ -670,7 +670,7 @@ WHEN (pg_trigger_depth() < 1)
 EXECUTE FUNCTION enforce_multilevel_write();
 
 CREATE OR REPLACE TRIGGER enforce_multilevel_write_trigger
-BEFORE INSERT OR UPDATE OR DELETE ON qcs_assignment
+BEFORE INSERT OR UPDATE OR DELETE ON qc_assignments
 FOR EACH ROW
 WHEN (pg_trigger_depth() < 1)
 EXECUTE FUNCTION enforce_multilevel_write();

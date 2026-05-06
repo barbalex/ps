@@ -5,15 +5,12 @@ import { useSetAtom, useAtom } from 'jotai'
 import { useIntl } from 'react-intl'
 import * as fluentUiReactComponents from '@fluentui/react-components'
 
-import {
-  createProjectQcsAssignment,
-  createProjectQcsAssignmentForProjectQc,
-} from '../modules/createRows.ts'
-import { useProjectQcAssignmentsNavData } from '../modules/useProjectQcAssignmentsNavData.ts'
+import { createSubprojectQc, createProjectQcAssignmentsForProjectQc } from '../modules/createRows.ts'
+import { useSubprojectQcAssignmentsNavData } from '../modules/useSubprojectQcAssignmentsNavData.ts'
 import { CheckboxField } from '../components/shared/CheckboxField.tsx'
 import { Loading } from '../components/shared/Loading.tsx'
 import { addOperationAtom, languageAtom } from '../store.ts'
-import styles from './projectQcsAssignment.module.css'
+import styles from './subprojectQcAssignments.module.css'
 
 import '../form.css'
 
@@ -25,7 +22,7 @@ type QcRow = {
 }
 
 type ActiveEntry = {
-  qcs_assignment_id: string
+  qc_assignment_id: string
   qc_id: string
 }
 
@@ -35,7 +32,7 @@ type ProjectQcRow = {
 }
 
 type ActiveProjectQcEntry = {
-  project_qcs_assignment_id: string
+  project_qc_assignment_id: string
   project_qc_id: string
 }
 
@@ -45,9 +42,9 @@ type UnifiedQcItem = {
   source: 'qcs' | 'project_qcs'
 }
 
-export const ProjectQcsAssignment = ({ from }) => {
-  const { projectId } = useParams({ from })
-  const { navData } = useProjectQcAssignmentsNavData({ projectId })
+export const SubprojectQcAssignments = ({ from }) => {
+  const { projectId, subprojectId } = useParams({ from })
+  const { navData } = useSubprojectQcAssignmentsNavData({ projectId, subprojectId })
   const { formatMessage } = useIntl()
   const [language] = useAtom(languageAtom)
   const addOperation = useSetAtom(addOperationAtom)
@@ -55,31 +52,30 @@ export const ProjectQcsAssignment = ({ from }) => {
 
   const [searchTerm, setSearchTerm] = useState('')
 
-  // Load all project-level QCS that have SQL
+  // Load all qcs with subproject level that have SQL
   const qcsRes = useLiveQuery(
     `SELECT qcs_id, COALESCE(NULLIF(name_${language}, ''), name_de) AS label
-     FROM qcs WHERE level = 'project' AND sql IS NOT NULL AND sql != '' ORDER BY label`,
+     FROM qcs WHERE level = 'subproject' AND sql IS NOT NULL AND sql != '' ORDER BY label`,
   )
 
-  // Load active assignments for this project
+  // Load active qc_assignments for this subproject
   const activeRes = useLiveQuery(
-    `SELECT qcs_assignment_id, qc_id FROM qcs_assignment
-     WHERE project_id = $1 AND subproject_id IS NULL`,
-    [projectId],
+    `SELECT qc_assignment_id, qc_id FROM qc_assignments WHERE subproject_id = $1`,
+    [subprojectId],
   )
 
-  // Load project-specific QCs for this project at project level that have SQL
+  // Load project-specific QCs for this project at subproject level that have SQL
   const projectQcsRes = useLiveQuery(
     `SELECT project_qc_id, COALESCE(NULLIF(name_${language}, ''), name_de) AS label
-     FROM project_qcs WHERE project_id = $1 AND level = 'project' AND sql IS NOT NULL AND sql != '' ORDER BY label`,
+     FROM project_qcs WHERE project_id = $1 AND level = 'subproject' AND sql IS NOT NULL AND sql != '' ORDER BY label`,
     [projectId],
   )
 
-  // Load active project_qcs assignments for this project
+  // Load active project_qcs assignments for this subproject
   const activeProjectQcRes = useLiveQuery(
-    `SELECT project_qcs_assignment_id, project_qc_id FROM project_qcs_assignment
-     WHERE project_id = $1 AND subproject_id IS NULL`,
-    [projectId],
+    `SELECT project_qc_assignment_id, project_qc_id FROM project_qc_assignments
+     WHERE subproject_id = $1`,
+    [subprojectId],
   )
 
   const loading =
@@ -95,19 +91,12 @@ export const ProjectQcsAssignment = ({ from }) => {
   const activeQcIds = new Set(activeEntries.map((r) => r.qc_id))
 
   const allProjectQcs: ProjectQcRow[] = projectQcsRes?.rows ?? []
-  const activeProjectQcEntries: ActiveProjectQcEntry[] =
-    activeProjectQcRes?.rows ?? []
-  const activeProjectQcIds = new Set(
-    activeProjectQcEntries.map((r) => r.project_qc_id),
-  )
+  const activeProjectQcEntries: ActiveProjectQcEntry[] = activeProjectQcRes?.rows ?? []
+  const activeProjectQcIds = new Set(activeProjectQcEntries.map((r) => r.project_qc_id))
 
   // Merge both lists into a unified sorted list
   const allItems: UnifiedQcItem[] = [
-    ...allQcs.map((qc) => ({
-      id: qc.qcs_id,
-      label: qc.label,
-      source: 'qcs' as const,
-    })),
+    ...allQcs.map((qc) => ({ id: qc.qcs_id, label: qc.label, source: 'qcs' as const })),
     ...allProjectQcs.map((qc) => ({
       id: qc.project_qc_id,
       label: qc.label,
@@ -117,15 +106,11 @@ export const ProjectQcsAssignment = ({ from }) => {
 
   // Apply search filter
   const filteredItems = searchTerm.trim()
-    ? allItems.filter((item) =>
-        (item.label ?? '').toLowerCase().includes(searchTerm.toLowerCase()),
-      )
+    ? allItems.filter((item) => (item.label ?? '').toLowerCase().includes(searchTerm.toLowerCase()))
     : allItems
 
   const isActive = (item: UnifiedQcItem) =>
-    item.source === 'qcs'
-      ? activeQcIds.has(item.id)
-      : activeProjectQcIds.has(item.id)
+    item.source === 'qcs' ? activeQcIds.has(item.id) : activeProjectQcIds.has(item.id)
 
   const toggle = async (item: UnifiedQcItem) => {
     if (item.source === 'qcs') {
@@ -134,56 +119,51 @@ export const ProjectQcsAssignment = ({ from }) => {
         if (!entry) return
         try {
           await db.query(
-            `DELETE FROM qcs_assignment WHERE qcs_assignment_id = $1`,
-            [entry.qcs_assignment_id],
+            `DELETE FROM qc_assignments WHERE qc_assignment_id = $1`,
+            [entry.qc_assignment_id],
           )
           addOperation({
-            table: 'qcs_assignment',
-            rowIdName: 'qcs_assignment_id',
-            rowId: entry.qcs_assignment_id,
+            table: 'qc_assignments',
+            rowIdName: 'qc_assignment_id',
+            rowId: entry.qc_assignment_id,
             operation: 'delete',
             prev: {
-              qcs_assignment_id: entry.qcs_assignment_id,
+              qc_assignment_id: entry.qc_assignment_id,
               qc_id: item.id,
-              project_id: projectId,
+              subproject_id: subprojectId,
             },
           })
         } catch (error) {
-          console.error('Error removing project QC:', error)
+          console.error('Error removing subproject QC:', error)
         }
       } else {
-        await createProjectQcsAssignment({ projectId, qcId: item.id })
+        await createSubprojectQc({ subprojectId, qcId: item.id })
       }
     } else {
       if (activeProjectQcIds.has(item.id)) {
-        const entry = activeProjectQcEntries.find(
-          (e) => e.project_qc_id === item.id,
-        )
+        const entry = activeProjectQcEntries.find((e) => e.project_qc_id === item.id)
         if (!entry) return
         try {
           await db.query(
-            `DELETE FROM project_qcs_assignment WHERE project_qcs_assignment_id = $1`,
-            [entry.project_qcs_assignment_id],
+            `DELETE FROM project_qc_assignments WHERE project_qc_assignment_id = $1`,
+            [entry.project_qc_assignment_id],
           )
           addOperation({
-            table: 'project_qcs_assignment',
-            rowIdName: 'project_qcs_assignment_id',
-            rowId: entry.project_qcs_assignment_id,
+            table: 'project_qc_assignments',
+            rowIdName: 'project_qc_assignment_id',
+            rowId: entry.project_qc_assignment_id,
             operation: 'delete',
             prev: {
-              project_qcs_assignment_id: entry.project_qcs_assignment_id,
+              project_qc_assignment_id: entry.project_qc_assignment_id,
               project_qc_id: item.id,
-              project_id: projectId,
+              subproject_id: subprojectId,
             },
           })
         } catch (error) {
           console.error('Error removing project-specific QC:', error)
         }
       } else {
-        await createProjectQcsAssignmentForProjectQc({
-          projectId,
-          projectQcId: item.id,
-        })
+        await createProjectQcAssignmentsForProjectQc({ subprojectId, projectQcId: item.id })
       }
     }
   }
@@ -191,12 +171,9 @@ export const ProjectQcsAssignment = ({ from }) => {
   const activateAll = async () => {
     for (const item of filteredItems.filter((i) => !isActive(i))) {
       if (item.source === 'qcs') {
-        await createProjectQcsAssignment({ projectId, qcId: item.id })
+        await createSubprojectQc({ subprojectId, qcId: item.id })
       } else {
-        await createProjectQcsAssignmentForProjectQc({
-          projectId,
-          projectQcId: item.id,
-        })
+        await createProjectQcAssignmentsForProjectQc({ subprojectId, projectQcId: item.id })
       }
     }
   }
@@ -208,42 +185,40 @@ export const ProjectQcsAssignment = ({ from }) => {
         if (!entry) continue
         try {
           await db.query(
-            `DELETE FROM qcs_assignment WHERE qcs_assignment_id = $1`,
-            [entry.qcs_assignment_id],
+            `DELETE FROM qc_assignments WHERE qc_assignment_id = $1`,
+            [entry.qc_assignment_id],
           )
           addOperation({
-            table: 'qcs_assignment',
-            rowIdName: 'qcs_assignment_id',
-            rowId: entry.qcs_assignment_id,
+            table: 'qc_assignments',
+            rowIdName: 'qc_assignment_id',
+            rowId: entry.qc_assignment_id,
             operation: 'delete',
             prev: {
-              qcs_assignment_id: entry.qcs_assignment_id,
+              qc_assignment_id: entry.qc_assignment_id,
               qc_id: item.id,
-              project_id: projectId,
+              subproject_id: subprojectId,
             },
           })
         } catch (error) {
-          console.error('Error removing project QC:', error)
+          console.error('Error removing subproject QC:', error)
         }
       } else {
-        const entry = activeProjectQcEntries.find(
-          (e) => e.project_qc_id === item.id,
-        )
+        const entry = activeProjectQcEntries.find((e) => e.project_qc_id === item.id)
         if (!entry) continue
         try {
           await db.query(
-            `DELETE FROM project_qcs_assignment WHERE project_qcs_assignment_id = $1`,
-            [entry.project_qcs_assignment_id],
+            `DELETE FROM project_qc_assignments WHERE project_qc_assignment_id = $1`,
+            [entry.project_qc_assignment_id],
           )
           addOperation({
-            table: 'project_qcs_assignment',
-            rowIdName: 'project_qcs_assignment_id',
-            rowId: entry.project_qcs_assignment_id,
+            table: 'project_qc_assignments',
+            rowIdName: 'project_qc_assignment_id',
+            rowId: entry.project_qc_assignment_id,
             operation: 'delete',
             prev: {
-              project_qcs_assignment_id: entry.project_qcs_assignment_id,
+              project_qc_assignment_id: entry.project_qc_assignment_id,
               project_qc_id: item.id,
-              project_id: projectId,
+              subproject_id: subprojectId,
             },
           })
         } catch (error) {
@@ -261,7 +236,7 @@ export const ProjectQcsAssignment = ({ from }) => {
       <div className={styles.filters}>
         <Field
           label={formatMessage({
-            id: 'projectQcs.filter',
+            id: 'subprojectQcs.filter',
             defaultMessage: 'Filtern',
           })}
         >
@@ -269,7 +244,7 @@ export const ProjectQcsAssignment = ({ from }) => {
             value={searchTerm}
             onChange={(_, data) => setSearchTerm(data.value)}
             placeholder={formatMessage({
-              id: 'projectQcs.filterPlaceholder',
+              id: 'subprojectQcs.filterPlaceholder',
               defaultMessage: 'Name...',
             })}
             appearance="underline"
@@ -277,13 +252,13 @@ export const ProjectQcsAssignment = ({ from }) => {
         </Field>
         <Button appearance="subtle" onClick={activateAll}>
           {formatMessage({
-            id: 'projectQcs.activateAll',
+            id: 'subprojectQcs.activateAll',
             defaultMessage: 'Alle aktivieren',
           })}
         </Button>
         <Button appearance="subtle" onClick={deactivateAll}>
           {formatMessage({
-            id: 'projectQcs.deactivateAll',
+            id: 'subprojectQcs.deactivateAll',
             defaultMessage: 'Alle deaktivieren',
           })}
         </Button>
@@ -292,7 +267,7 @@ export const ProjectQcsAssignment = ({ from }) => {
         {filteredItems.length === 0 ? (
           <div className={styles.empty}>
             {formatMessage({
-              id: 'projectQcs.empty',
+              id: 'subprojectQcs.empty',
               defaultMessage: 'Keine Qualitätskontrollen vorhanden',
             })}
           </div>

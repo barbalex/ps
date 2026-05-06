@@ -66,7 +66,7 @@ VALUES
 	('charts', '5_years'),
 	('chart_subjects', '5_years'),
 	('qcs', '5_years'),
-	('qcs_assignment', '5_years');
+	('qc_assignments', '5_years');
 
 CREATE TEMP TABLE history_coverage_results (
 	table_name text,
