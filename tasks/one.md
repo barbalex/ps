@@ -12,14 +12,18 @@ Better-Auth, possible extensions:
 
 ---
 
-Lets rename: qcs_assignment > qc_assignments.
+Lets rename: 
+1. qcs_assignment > qc_assignments.
+2. project_qcs_assignment > project_qc_assignments
 
+steps:
 1. rename table
 2. rename history table
 3. rename triggers
 4. rename column names deriving from this name. Example: qcs_assignment_id > qc_assignment_id
 5. rename files deriving from this name. Example: /home/alex/Documents/GitHub/ps/src/formsAndLists/subprojectQcsAssignment.tsx > subprojectQcAssignments
-6. rename functions/components deriving from this name
+6. rename functions/components deriving from this name. Example: ProjectQcsAssignment > ProjectQcAssignments
+7. rename routes, nav tree components, use...Data hooks, breadcrumbs... what did I forget?
 
 ---
 
