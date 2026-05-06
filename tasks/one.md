@@ -12,14 +12,23 @@ Better-Auth, possible extensions:
 
 ---
 
+Lets rename: qcs_assignment > qc_assignments.
+
+1. rename table
+2. rename history table
+3. rename triggers
+4. rename column names deriving from this name. Example: qcs_assignment_id > qc_assignment_id
+5. rename files deriving from this name. Example: /home/alex/Documents/GitHub/ps/src/formsAndLists/subprojectQcsAssignment.tsx > subprojectQcAssignments
+6. rename functions/components deriving from this name
+
 ---
 
-on production (https://xn--arten-frdern-bjb.app/data/projects?onlyForm=false), login, then:
+New: exports.
 
-Access to fetch at 'https://sync.xn--arten-frdern-bjb.app/v1/shape?log=full&offset=-1&params%5B1%5D=018cf95a-d817-7000-92fa-bb3b2ad59dda&table=auth_sessions&where=user_id+%3D+%241' from origin 'https://xn--arten-frdern-bjb.app' has been blocked by CORS policy: Request header field authorization is not allowed by Access-Control-Allow-Headers in preflight response.
-route-h0zDp7tQ.js:367 GET https://sync.xn--arten-frdern-bjb.app/v1/shape?log=full&offset=-1&params%5B1%5D=018cf95a-d817-7000-92fa-bb3b2ad59dda&table=auth_sessions&where=user_id+%3D+%241 net::ERR_FAILED
+Similar to: qcs.
 
-And sync never ends.
+There are genearal exports, like qcs. And there are project_export, like project_qcs.
+qcs are predefined and available in every project, _if_ they are assigned (thus: exports_assignment)  
 
 ---
 
