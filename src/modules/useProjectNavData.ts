@@ -120,6 +120,7 @@ type NavDataNotForBreadcrumbDesigning = {
   units_count_filtered?: number
   project_crs_count_unfiltered?: number
   project_qcs_count_unfiltered?: number
+  project_exports_count_unfiltered?: number
   place_levels_count_unfiltered?: number
   fields_count_unfiltered?: number
   fields_count_filtered?: number
@@ -207,6 +208,7 @@ export const useProjectNavData = ({
             units_count_filtered AS (SELECT count(*) FROM units WHERE project_id = '${projectId}' ${unitsIsFiltered ? ` AND ${unitsFilterString}` : ''}),
             project_crs_count_unfiltered AS (SELECT count(*) FROM project_crs WHERE project_id = '${projectId}'),
             project_qcs_count_unfiltered AS (SELECT count(*) FROM project_qcs WHERE project_id = '${projectId}'),
+            project_exports_count_unfiltered AS (SELECT count(*) FROM project_exports WHERE project_id = '${projectId}'),
             place_levels_count_unfiltered AS (SELECT count(*) FROM place_levels WHERE project_id = '${projectId}'),
             fields_count_unfiltered AS (SELECT count(*) FROM fields WHERE project_id = '${projectId}'),
             fields_count_filtered AS (SELECT count(*) FROM fields WHERE project_id = '${projectId}' ${fieldsIsFiltered ? ` AND ${fieldsFilterString}` : ''}),
@@ -263,6 +265,7 @@ export const useProjectNavData = ({
             units_count_filtered.count AS units_count_filtered,
             project_crs_count_unfiltered.count AS project_crs_count_unfiltered,
             project_qcs_count_unfiltered.count AS project_qcs_count_unfiltered,
+            project_exports_count_unfiltered.count AS project_exports_count_unfiltered,
             place_levels_count_unfiltered.count AS place_levels_count_unfiltered,
             fields_count_unfiltered.count AS fields_count_unfiltered,
             fields_count_filtered.count AS fields_count_filtered,
@@ -304,6 +307,7 @@ export const useProjectNavData = ({
             units_count_filtered,
             project_crs_count_unfiltered,
             project_qcs_count_unfiltered,
+            project_exports_count_unfiltered,
             place_levels_count_unfiltered,
             fields_count_unfiltered,
             fields_count_filtered,
@@ -569,6 +573,17 @@ export const useProjectNavData = ({
                     namePlural: formatMessage({
                       id: 'qcs.namePlural',
                       defaultMessage: 'Qualitätskontrollen',
+                    }),
+                  }),
+                },
+                {
+                  id: 'exports',
+                  label: buildNavLabel({
+                    loading,
+                    countFiltered: nav?.project_exports_count_unfiltered ?? 0,
+                    namePlural: formatMessage({
+                      id: 'exports.namePlural',
+                      defaultMessage: 'Exporte',
                     }),
                   }),
                 },

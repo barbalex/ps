@@ -415,6 +415,8 @@ export const actionReports2FilterAtom = atomWithStorage(
 )
 export const qcsFilterAtom = atomWithStorage('qcsFilterAtom', [])
 export const projectQcsFilterAtom = atomWithStorage('projectQcsFilterAtom', [])
+export const exportsFilterAtom = atomWithStorage('exportsFilterAtom', [])
+export const projectExportsFilterAtom = atomWithStorage('projectExportsFilterAtom', [])
 // TODO: add
 export const filesFilterAtom = atomWithStorage('filesFilterAtom', [])
 // TODO: add more filters
@@ -472,6 +474,8 @@ export const filterAtoms = {
   actionReports2: actionReports2FilterAtom,
   files: filesFilterAtom,
   projectQcs: projectQcsFilterAtom,
+  exports: exportsFilterAtom,
+  projectExports: projectExportsFilterAtom,
 }
 
 // postgrestClient

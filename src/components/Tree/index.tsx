@@ -10,6 +10,7 @@ import { RootQcsNode } from './RootQcs.tsx'
 import { RootQcsRunNode } from './RootQcsRun.tsx'
 import { RootExportsNode } from './RootExports.tsx'
 import { RootExportsRunNode } from './RootExportsRun.tsx'
+import { ExportsNode } from './Exports.tsx'
 import { MessagesNode } from './Messages.tsx'
 import { CrssNode } from './Crss.tsx'
 import { QueuedOperationsNode } from './QueuedOperations.tsx'
@@ -37,6 +38,7 @@ export const Tree = () => {
           )}
           {/* TODO: restrict editing to app administrator once auth supports it */}
           <QcsNode />
+          <ExportsNode />
           <RootQcsNode />
           <RootQcsRunNode />
           <RootExportsNode />

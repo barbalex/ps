@@ -1,0 +1,6 @@
+name_de;name_en;name_fr;name_it;level;filter_by_year;sql;description
+Projekte ohne Namen;Projects without name;Projets sans nom;Progetti senza nome;project;false;"SELECT p.label, '/data/projects/' || p.project_id || '/project' AS url
+FROM projects p
+WHERE p.project_id = $1
+  AND nullif(p.name, '') IS NULL
+ORDER BY p.label";

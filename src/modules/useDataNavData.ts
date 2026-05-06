@@ -255,6 +255,17 @@ export const useDataNavData = () => {
               }),
             },
             {
+              id: 'exports',
+              label: buildNavLabel({
+                loading,
+                countFiltered: row?.exports_count_unfiltered ?? 0,
+                namePlural: formatMessage({
+                  id: 'exports.namePlural',
+                  defaultMessage: 'Exporte',
+                }),
+              }),
+            },
+            {
               id: 'qc-assignments',
               label: buildNavLabel({
                 loading,

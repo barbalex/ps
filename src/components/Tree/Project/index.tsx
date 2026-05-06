@@ -23,6 +23,7 @@ import { FilesNode } from '../Files.tsx'
 import { ProjectReportDesignsNode } from '../ProjectReportDesigns.tsx'
 import { SubprojectReportDesignsNode } from '../SubprojectReportDesigns.tsx'
 import { ProjectQcsNode } from '../ProjectQcs.tsx'
+import { ProjectExportsNode } from '../ProjectExports.tsx'
 import { ProjectQcAssignmentsNode } from '../ProjectQcAssignments.tsx'
 import { ProjectQcsRunNode } from '../ProjectQcsRun.tsx'
 import { ProjectExportAssignmentsNode } from '../ProjectExportAssignments.tsx'
@@ -148,6 +149,7 @@ export const ProjectNode = ({ nav, level = 2 }) => {
             </>
           )}
           {showDesigningNodes && <ProjectQcsNode projectId={nav.id} />}
+          {showDesigningNodes && <ProjectExportsNode projectId={nav.id} />}
           <ProjectQcAssignmentsNode projectId={nav.id} level={level + 1} />
           <ProjectQcsRunNode projectId={nav.id} level={level + 1} />
           {designing && (

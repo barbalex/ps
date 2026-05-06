@@ -1969,3 +1969,35 @@ export const createProjectExportAssignmentForProjectExport = async ({
 
   return project_export_assignment_id
 }
+
+export const createExport = async () => {
+  const db = store.get(pgliteDbAtom)
+  const exports_id = uuidv7()
+  await db.query(`insert into exports (exports_id) values ($1)`, [exports_id])
+
+  store.set(addOperationAtom, {
+    table: 'exports',
+    operation: 'insert',
+    draft: { exports_id },
+  })
+
+  return exports_id
+}
+
+export const createProjectExport = async ({ projectId }: { projectId: string }) => {
+  const db = store.get(pgliteDbAtom)
+  const project_exports_id = uuidv7()
+  await db.query(
+    `insert into project_exports (project_exports_id, project_id) values ($1, $2)`,
+    [project_exports_id, projectId],
+  )
+
+  store.set(addOperationAtom, {
+    table: 'project_exports',
+    operation: 'insert',
+    draft: { project_exports_id, project_id: projectId },
+  })
+
+  return project_exports_id
+}
+

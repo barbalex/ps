@@ -127,6 +127,10 @@ import { ProjectExportAssignmentsFetcher } from './ProjectExportAssignmentsFetch
 import { ProjectExportsRunFetcher } from './ProjectExportsRunFetcher.tsx'
 import { ProjectQcsFetcher } from './ProjectQcsFetcher.tsx'
 import { ProjectQcFetcher } from './ProjectQcFetcher.tsx'
+import { ExportsFetcher } from './ExportsFetcher.tsx'
+import { ExportFetcher } from './ExportFetcher.tsx'
+import { ProjectExportsFetcher } from './ProjectExportsFetcher.tsx'
+import { ProjectExportFetcher } from './ProjectExportFetcher.tsx'
 import { FieldsFetcher } from './FieldsFetcher.tsx'
 import { FieldFetcher } from './FieldFetcher.tsx'
 import { CrssFetcher } from './CrssFetcher.tsx'
@@ -784,6 +788,13 @@ export const FetcherRouter = ({ fetcherName, params, ...other }) => {
       if (!params.widgetTypeId) return null
       return <WidgetTypeFetcher params={params} {...other} />
     }
+    case 'useExportsNavData': {
+      return <ExportsFetcher params={params} {...other} />
+    }
+    case 'useExportNavData': {
+      if (!params.exportsId) return null
+      return <ExportFetcher params={params} {...other} />
+    }
     case 'useQcsNavData': {
       return <QcsFetcher params={params} {...other} />
     }
@@ -834,6 +845,14 @@ export const FetcherRouter = ({ fetcherName, params, ...other }) => {
     case 'useProjectExportsRunNavData': {
       if (!params.projectId) return null
       return <ProjectExportsRunFetcher params={params} {...other} />
+    }
+    case 'useProjectOwnExportsNavData': {
+      if (!params.projectId) return null
+      return <ProjectExportsFetcher params={params} {...other} />
+    }
+    case 'useProjectOwnExportNavData': {
+      if (!params.projectId || !params.projectExportsId) return null
+      return <ProjectExportFetcher params={params} {...other} />
     }
     case 'useWidgetsForFieldsNavData': {
       if (!params.projectId) return null
