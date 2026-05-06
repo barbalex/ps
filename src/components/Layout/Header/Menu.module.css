@@ -1,13 +1,23 @@
 .button {
-  background-color: rgba(38, 82, 37, 0) !important;
-  border: none !important;
-  color: white !important;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  background: transparent;
+  border: none;
+  color: white;
+  cursor: pointer;
+  border-radius: 4px;
+  font-size: 20px;
+  padding: 0;
 
   &:hover {
     filter: brightness(85%);
   }
 
   &:disabled {
-    cursor: default !important;
+    cursor: default;
+    opacity: 0.5;
   }
 }

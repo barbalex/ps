@@ -1,5 +1,4 @@
 import { useState } from 'react'
-import * as fluentUiReactComponents from '@fluentui/react-components'
 import { useIntl } from 'react-intl'
 import { useAtom } from 'jotai'
 import { useParams } from '@tanstack/react-router'
@@ -10,10 +9,8 @@ import { docsMeta, type DocMeta } from '../../docs/metadata.ts'
 import { languageAtom, type Language } from '../store.ts'
 
 import '../form.css'
-
+import styles from './docs.module.css'
 import { MdClose } from 'react-icons/md'
-
-const { Button, Input, ToggleButton } = fluentUiReactComponents
 
 type TypeFilter = 'all' | 'contentual' | 'technical'
 
@@ -52,31 +49,15 @@ export const DocsList = () => {
   return (
     <div className="list-view">
       <ListHeader label={label} nameSingular={nameSingular} />
-      <div
-        style={{
-          padding: '6px 10px',
-          display: 'flex',
-          flexDirection: 'column',
-          gap: 4,
-        }}
-      >
-        <div style={{ display: 'flex', gap: 2 }}>
+      <div className={styles.filterContainer}>
+        <div className={styles.typeFilterRow}>
           {(['all', 'contentual', 'technical'] as const).map((value) => {
             const checked = typeFilter === value
             return (
-              <ToggleButton
+              <button
                 key={value}
-                size="small"
-                checked={checked}
+                className={checked ? styles.toggleButtonActive : styles.toggleButton}
                 onClick={() => setTypeFilter(value)}
-                style={{
-                  flex: 1,
-                  ...(checked && {
-                    backgroundColor: 'rgba(38, 82, 37, 0.85)',
-                    color: 'white',
-                    borderColor: 'rgba(38, 82, 37, 0.85)',
-                  }),
-                }}
               >
                 {formatMessage({
                   id:
@@ -92,29 +73,31 @@ export const DocsList = () => {
                         ? 'Inhaltlich'
                         : 'Technisch',
                 })}
-              </ToggleButton>
+              </button>
             )
           })}
         </div>
-        <Input
-          appearance="underline"
-          placeholder={formatMessage({
-            id: 'docsFilterText',
-            defaultMessage: 'Filtern...',
-          })}
-          value={textFilter}
-          onChange={(_, data) => setTextFilter(data.value)}
-          contentAfter={
-            textFilter ? (
-              <Button
-                appearance="transparent"
-                size="small"
-                icon={<MdClose />}
-                onClick={() => setTextFilter('')}
-              />
-            ) : undefined
-          }
-        />
+        <div className={styles.inputWrapper}>
+          <input
+            type="text"
+            className={styles.input}
+            placeholder={formatMessage({
+              id: 'docsFilterText',
+              defaultMessage: 'Filtern...',
+            })}
+            value={textFilter}
+            onChange={(e) => setTextFilter(e.target.value)}
+          />
+          {textFilter && (
+            <button
+              className={styles.clearButton}
+              onClick={() => setTextFilter('')}
+              aria-label="Clear"
+            >
+              <MdClose />
+            </button>
+          )}
+        </div>
       </div>
       <div className="list-container">
         {filtered.map((doc) => (

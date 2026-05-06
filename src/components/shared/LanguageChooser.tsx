@@ -1,6 +1,4 @@
-import * as fluentUiReactComponents from '@fluentui/react-components'
-const { Menu, MenuTrigger, MenuPopover, MenuList, MenuItem, MenuButton } =
-  fluentUiReactComponents
+import { useRef, useEffect, useState } from 'react'
 import { useAtom } from 'jotai'
 
 import { languageAtom, type Language } from '../../store.ts'
@@ -14,35 +12,72 @@ interface Props {
 
 export const LanguageChooser = (_props: Props) => {
   const [language, setLanguage] = useAtom(languageAtom)
+  const [open, setOpen] = useState(false)
+  const [popupPos, setPopupPos] = useState({ top: 0, right: 0 })
+  const triggerRef = useRef<HTMLButtonElement>(null)
+  const popupRef = useRef<HTMLUListElement>(null)
+
+  useEffect(() => {
+    if (!open) return
+    const handleClickOutside = (e: MouseEvent) => {
+      if (
+        triggerRef.current && !triggerRef.current.contains(e.target as Node) &&
+        popupRef.current && !popupRef.current.contains(e.target as Node)
+      ) {
+        setOpen(false)
+      }
+    }
+    document.addEventListener('mousedown', handleClickOutside)
+    return () => document.removeEventListener('mousedown', handleClickOutside)
+  }, [open])
+
+  const handleToggle = () => {
+    if (!open && triggerRef.current) {
+      const rect = triggerRef.current.getBoundingClientRect()
+      setPopupPos({
+        top: rect.bottom + 4,
+        right: window.innerWidth - rect.right,
+      })
+    }
+    setOpen((v) => !v)
+  }
+
+  const handleSelect = (lang: Language) => {
+    setLanguage(lang)
+    setOpen(false)
+  }
 
   return (
-    <Menu>
-      <MenuTrigger disableButtonEnhancement>
-        <MenuButton
-          size="medium"
-          appearance="transparent"
-          className={styles.button}
-          title="Choose language"
+    <>
+      <button
+        ref={triggerRef}
+        className={styles.summary}
+        title="Choose language"
+        onClick={handleToggle}
+        aria-haspopup="listbox"
+        aria-expanded={open}
+      >
+        {language.toUpperCase()}
+      </button>
+      {open && (
+        <ul
+          ref={popupRef}
+          className={styles.popup}
+          style={{ top: popupPos.top, right: popupPos.right }}
+          role="listbox"
         >
-          {language.toUpperCase()}
-        </MenuButton>
-      </MenuTrigger>
-      <MenuPopover>
-        <MenuList>
           {LANGUAGES.map((lang) => (
-            <MenuItem
-              key={lang}
-              onClick={() => setLanguage(lang)}
-            >
-              <span
-                className={language === lang ? styles.menuItemActive : undefined}
+            <li key={lang}>
+              <button
+                className={`${styles.option} ${language === lang ? styles.menuItemActive : ''}`}
+                onClick={() => handleSelect(lang)}
               >
                 {lang.toUpperCase()}
-              </span>
-            </MenuItem>
+              </button>
+            </li>
           ))}
-        </MenuList>
-      </MenuPopover>
-    </Menu>
+        </ul>
+      )}
+    </>
   )
 }

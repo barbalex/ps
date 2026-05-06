@@ -1,5 +1,6 @@
 body {
   margin: 0;
+  font-family: system-ui, -apple-system, sans-serif;
   -webkit-font-smoothing: antialiased;
   display: flex;
   flex-direction: column;

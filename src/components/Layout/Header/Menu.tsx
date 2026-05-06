@@ -1,6 +1,4 @@
 import { useState } from 'react'
-import * as fluentUiReactComponents from '@fluentui/react-components'
-const { Button, Spinner, Tooltip } = fluentUiReactComponents
 import { MdLogin, MdMenuBook } from 'react-icons/md'
 import { useNavigate, useLocation } from '@tanstack/react-router'
 import { useAtom } from 'jotai'
@@ -41,23 +39,22 @@ export const Menu = () => {
   return (
     <div className={globalStyles.controls}>
       <LanguageChooser />
-      <Tooltip content={docsLabel}>
-        <Button
-          size="medium"
-          icon={<MdMenuBook />}
-          onClick={onClickDocs}
-          className={styles.button}
-          aria-label={docsLabel}
-        />
-      </Tooltip>
-      <Button
-        size="medium"
-        icon={loading ? <Spinner size="tiny" /> : <MdLogin />}
+      <button
+        className={styles.button}
+        onClick={onClickDocs}
+        title={docsLabel}
+        aria-label={docsLabel}
+      >
+        <MdMenuBook />
+      </button>
+      <button
+        className={styles.button}
         onClick={onClickEnter}
         disabled={loading}
         title="Enter"
-        className={styles.button}
-      />
+      >
+        <MdLogin />
+      </button>
     </div>
   )
 }
