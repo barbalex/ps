@@ -1,8 +1,9 @@
-import { useEffect } from 'react'
+import { createRef, useEffect } from 'react'
 import { useAtomValue } from 'jotai'
 import { useSearch } from '@tanstack/react-router'
 
 import { createPostgrestClient } from '../../modules/createPostgrestClient.ts'
+import { UploaderContext } from '../../UploaderContext.ts'
 
 import { Main } from './Main.tsx'
 import { Breadcrumbs } from './Breadcrumbs/index.tsx'
@@ -27,6 +28,7 @@ const from = '/data'
 
 // memoizing this component creates error
 export const LayoutProtected = () => {
+  const uploaderRef = createRef<HTMLElement | null>(null)
   const mapIsMaximized = useAtomValue(mapMaximizedAtom)
 
   useEffect(() => {
@@ -41,7 +43,20 @@ export const LayoutProtected = () => {
   // - they are not (very) sensitive
   // - ui remains more consistent when logging in
   return (
-    <>
+    <UploaderContext.Provider value={uploaderRef}>
+      <uc-config
+        ctx-name="uploadcare-uploader"
+        pubkey="db67c21b6d9964e195b8"
+        maxLocalFileSizeBytes="100000000"
+        multiple="false"
+        sourceList="local, camera, dropbox, gdrive, gphotos"
+        useCloudImageEditor="true"
+      ></uc-config>
+      <uc-upload-ctx-provider
+        id="uploaderctx"
+        ctx-name="uploadcare-uploader"
+        ref={uploaderRef}
+      ></uc-upload-ctx-provider>
       {onlyForm !== true && (
         <>
           <Header />
@@ -63,6 +78,6 @@ export const LayoutProtected = () => {
       <OperationsObserver />
       <Main />
       <BackgroundTasks />
-    </>
+    </UploaderContext.Provider>
   )
 }

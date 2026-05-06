@@ -1,4 +1,4 @@
-import { createRef, useEffect } from 'react'
+import { useEffect } from 'react'
 import { RouterProvider } from '@tanstack/react-router'
 import {
   QueryClient,
@@ -27,7 +27,6 @@ import './style.css'
 import styles from './App.module.css'
 
 import { lightTheme } from './modules/theme.ts'
-import { UploaderContext } from './UploaderContext.ts'
 import { store, languageAtom, intlAtom } from './store.ts'
 
 
@@ -41,7 +40,6 @@ const IntlSetter = () => {
 const tanstackQueryClient = new QueryClient()
 
 export const App = () => {
-  const uploaderRef = createRef<HTMLElement | null>(null)
   const language = useAtomValue(languageAtom, { store })
   useEffect(() => {
     const titles: Record<string, string> = {
@@ -66,25 +64,10 @@ export const App = () => {
       >
         <IntlSetter />
         <FluentProvider theme={lightTheme}>
-          <uc-config
-            ctx-name="uploadcare-uploader"
-            pubkey="db67c21b6d9964e195b8"
-            maxLocalFileSizeBytes="100000000"
-            multiple="false"
-            sourceList="local, camera, dropbox, gdrive, gphotos"
-            useCloudImageEditor="true"
-          ></uc-config>
-          <uc-upload-ctx-provider
-            id="uploaderctx"
-            ctx-name="uploadcare-uploader"
-            ref={uploaderRef}
-          ></uc-upload-ctx-provider>
           <div id="router-container" className={styles.routerContainer}>
-            <UploaderContext.Provider value={uploaderRef}>
-              <TanstackQueryClientProvider client={tanstackQueryClient}>
-                <RouterProvider router={router} />
-              </TanstackQueryClientProvider>
-            </UploaderContext.Provider>
+            <TanstackQueryClientProvider client={tanstackQueryClient}>
+              <RouterProvider router={router} />
+            </TanstackQueryClientProvider>
           </div>
         </FluentProvider>
       </IntlProvider>
