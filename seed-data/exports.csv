@@ -1,6 +1,6 @@
 name_de;name_en;name_fr;name_it;level;filter_by_year;sql;description
-Projekte ohne Namen;Projects without name;Projets sans nom;Progetti senza nome;project;false;"SELECT p.label, '/data/projects/' || p.project_id || '/project' AS url
-FROM projects p
-WHERE p.project_id = $1
-  AND nullif(p.name, '') IS NULL
-ORDER BY p.label";
+Projekte;;;;root;false;;query of all projects with all columns
+Projekte mit Statistik;;;;root;false;;project_id, label, counts of: subprojects, supbroject-report-designs, project-report-designs, project-reports, wms-services, wms-layers, wfs-services, vector-layers, lists, taxonomies, crs, place-levels, quality-controls, quality-controls-assigned, exports, exports-assigned. Plus: sums of statistics of subprojects. Plus: sums of statistics of places level 1. plus: sums of statistics of places level 2
+Teilprojekte;;;;project;false;;query of all subprojects with all columns
+Teilprojekte mit Statistik;;;;project;false;;subproject_id, label, counts of: goals, reports, taxa, users, files, obervation imports, obervations, observations to assess, observations not to assign, observations assigned, charts, places level 1. Plus: sums of statistics of places level 1. Plus: sums of statistics of places level 2 users level 2, files level 2
+Orte Stufe 1;;;;subproject;false;;place_id, label, counts of: checks, check-reports, actions, action-reports, observations assigned, users, files, places level 2. Plus: sums of statistics of places level 2
