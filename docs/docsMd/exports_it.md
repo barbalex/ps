@@ -18,3 +18,5 @@ Formati:
 Gli utenti con il ruolo "Proprietario" o "Designer" possono scegliere quali delle esportazioni predefinite sono disponibili — e possono crearne di proprie.
 
 Le esportazioni sono disponibili a livello di progetto e sotto-progetto (specie/biotopo).
+
+Vuoi filtrare l'esportazione? Puoi impostare qualsiasi filtro sulla tabella di base nel modulo di filtro e applicarlo durante l'esecuzione dell'esportazione.

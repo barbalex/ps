@@ -154,9 +154,6 @@ export const RootExportsRun = () => {
     return !!getFilterString(baseTable)
   }
 
-  const currentYear = new Date().getFullYear().toString()
-  const [year, setYear] = useState(currentYear)
-
   const exportsRes = useLiveQuery(
     `SELECT e.exports_id,
             COALESCE(NULLIF(e.name_${language}, ''), e.name_de) AS label,
