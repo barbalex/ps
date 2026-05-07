@@ -63,8 +63,8 @@
 }
 
 .stepIcon {
-  width: 19px;
-  height: 19px;
+  width: 24px;
+  height: 24px;
   margin-left: auto;
   flex-shrink: 0;
 }
@@ -110,8 +110,8 @@
 }
 
 .spinner {
-  width: 16px;
-  height: 16px;
+  width: 24px;
+  height: 24px;
   color: #3f8a30;
   animation: spin 1s linear infinite;
   margin-left: auto;

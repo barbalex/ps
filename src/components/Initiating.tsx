@@ -63,8 +63,8 @@ export const Initiating = ({
             {dbActive && (
               <svg
                 className={styles.spinner}
-                width="16"
-                height="16"
+                width="24"
+                height="24"
                 viewBox="0 0 16 16"
                 fill="none"
                 aria-hidden="true"
@@ -118,8 +118,8 @@ export const Initiating = ({
             {syncActive && (
               <svg
                 className={styles.spinner}
-                width="16"
-                height="16"
+                width="24"
+                height="24"
                 viewBox="0 0 16 16"
                 fill="none"
                 aria-hidden="true"
