@@ -17,4 +17,4 @@ Formats :
 
 Les utilisateurs ayant le rôle « Propriétaire » ou « Concepteur » peuvent choisir lesquels des exports préparés sont disponibles — et peuvent en créer de nouveaux.
 
-Ils sont disponibles au niveau du projet et du sous-projet (espèce/biotope).
+Les exports sont disponibles au niveau du projet et du sous-projet (espèce/biotope).

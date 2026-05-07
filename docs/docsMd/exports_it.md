@@ -17,4 +17,4 @@ Formati:
 
 Gli utenti con il ruolo "Proprietario" o "Designer" possono scegliere quali delle esportazioni predefinite sono disponibili — e possono crearne di proprie.
 
-Sono disponibili a livello di progetto e sotto-progetto (specie/biotopo).
+Le esportazioni sono disponibili a livello di progetto e sotto-progetto (specie/biotopo).

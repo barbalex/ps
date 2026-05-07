@@ -17,4 +17,4 @@ Formats:
 
 Users with the role "Owner" or "Designer" can choose which of the prepared exports are available — and can create their own.
 
-They are available at the project and sub-project level (species/biotope).
+Exports are available at the project and sub-project level (species/biotope).
