@@ -155,6 +155,20 @@ export const ProjectExportForm = ({ onChange, validations = {}, row, autoFocusRe
           validationMessage={validations?.sql?.message}
           validationState={validations?.sql?.state}
         />
+        <TextField
+          label={formatMessage({
+            id: 'projectExport.baseTable',
+            defaultMessage: 'Basis-Tabelle',
+          })}
+          name="base_table"
+          value={row?.base_table ?? ''}
+          onChange={onChange}
+          hint={formatMessage({
+            id: 'projectExport.baseTable.hint',
+            defaultMessage:
+              'Name der Haupt-Tabelle dieser Abfrage (z.B. projects, subprojects, places). Wird verwendet, um den aktuellen App-Filter anzuwenden.',
+          })}
+        />
       </Section>
     </>
   )
