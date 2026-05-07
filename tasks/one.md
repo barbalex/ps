@@ -51,8 +51,6 @@ project_exports: add filter_by_year (column, project_export form, exports-run vi
 
 ---
 
-DOING: export and project_export run views: translate
-
 ---
 
 /data/exports/filter: perpetually loading
