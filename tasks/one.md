@@ -47,4 +47,13 @@ project_exports: add filter_by_year (column, project_export form, exports-run vi
 
 ---
 
-exports.csv: please add 1. sql 2. translations for en, fr and it
+DOING: exports.csv: please add 1. sql 2. translations for en, fr and it
+
+---
+
+export and project_export form: translate
+
+---
+
+Baue lokale Datenbank view:
+Right of 'Initialisiere Datenbak' and 'Synchronisiere mit Server': these icons should be same size as 1. and 2. left of the text
