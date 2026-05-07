@@ -117,6 +117,8 @@ import { QcsFetcher } from './QcsFetcher.tsx'
 import { QcFetcher } from './QcFetcher.tsx'
 import { SubprojectQcAssignmentsFetcher } from './SubprojectQcAssignmentsFetcher.tsx'
 import { SubprojectQcsRunFetcher } from './SubprojectQcsRunFetcher.tsx'
+import { SubprojectExportAssignmentsFetcher } from './SubprojectExportAssignmentsFetcher.tsx'
+import { SubprojectExportsRunFetcher } from './SubprojectExportsRunFetcher.tsx'
 import { RootQcsFetcher } from './RootQcsFetcher.tsx'
 import { RootQcsRunFetcher } from './RootQcsRunFetcher.tsx'
 import { RootExportsFetcher } from './RootExportsFetcher.tsx'
@@ -809,6 +811,14 @@ export const FetcherRouter = ({ fetcherName, params, ...other }) => {
     case 'useSubprojectQcsRunNavData': {
       if (!params.projectId || !params.subprojectId) return null
       return <SubprojectQcsRunFetcher params={params} {...other} />
+    }
+    case 'useSubprojectExportAssignmentsNavData': {
+      if (!params.projectId || !params.subprojectId) return null
+      return <SubprojectExportAssignmentsFetcher params={params} {...other} />
+    }
+    case 'useSubprojectExportsRunNavData': {
+      if (!params.projectId || !params.subprojectId) return null
+      return <SubprojectExportsRunFetcher params={params} {...other} />
     }
     case 'useRootQcsNavData': {
       return <RootQcsFetcher params={params} {...other} />

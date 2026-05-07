@@ -1,0 +1,44 @@
+.filters {
+  padding: 8px 10px;
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  align-items: flex-end;
+}
+
+.highlight {
+  background: var(--colorBrandBackground2);
+  color: inherit;
+  padding: 0 1px;
+  border-radius: 2px;
+}
+
+.yearInput {
+  width: 90px;
+}
+
+.clearFilter {
+  cursor: pointer;
+}
+
+.exportList {
+  padding: 8px 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.exportRow {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.exportLabel {
+  flex: 1;
+}
+
+.formatButtons {
+  display: flex;
+  gap: 4px;
+}

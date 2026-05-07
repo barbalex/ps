@@ -13,6 +13,8 @@ import { SubprojectTaxaNode } from './SubprojectTaxa.tsx'
 import { SubprojectUsersNode } from './SubprojectUsers.tsx'
 import { SubprojectQcsNode } from './SubprojectQcs.tsx'
 import { SubprojectQcsRunNode } from './SubprojectQcsRun.tsx'
+import { SubprojectExportAssignmentsNode } from './SubprojectExportAssignments.tsx'
+import { SubprojectExportsRunNode } from './SubprojectExportsRun.tsx'
 import { ObservationImportsNode } from './ObservationImports.tsx'
 import { FilesNode } from './Files.tsx'
 import { ChartsNode } from './Charts.tsx'
@@ -155,6 +157,18 @@ export const SubprojectNode = ({ projectId, nav, level = 4 }) => {
             <SubprojectQcsNode projectId={projectId} subprojectId={nav.id} />
           )}
           <SubprojectQcsRunNode projectId={projectId} subprojectId={nav.id} />
+          {showDesigningNodes && (
+            <SubprojectExportAssignmentsNode
+              projectId={projectId}
+              subprojectId={nav.id}
+            />
+          )}
+          {showDesigningNodes && (
+            <SubprojectExportsRunNode
+              projectId={projectId}
+              subprojectId={nav.id}
+            />
+          )}
           {showFilesNav && (
             <FilesNode projectId={projectId} subprojectId={nav.id} level={5} />
           )}
