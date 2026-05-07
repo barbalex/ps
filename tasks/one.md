@@ -47,11 +47,13 @@ project_exports: add filter_by_year (column, project_export form, exports-run vi
 
 ---
 
-DOING: exports.csv: please add 1. sql 2. translations for en, fr and it
+/data/projects/018cfcf7-6424-7000-a100-851c5cc2c878/exports-run: perpetually loading
 
 ---
 
 export and project_export form: translate
+
+export and project_export run views: translate
 
 ---
 
