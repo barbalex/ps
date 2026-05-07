@@ -1117,5 +1117,9 @@
   "addUser.emailLabel": "Email address",
   "addUser.emailRequired": "Please enter an email address.",
   "addUser.emailExists": "A user with this email address already exists.",
-  "addUser.saveBtn": "Save"
+  "addUser.saveBtn": "Save",
+  "export.baseTable": "Base table",
+  "export.baseTable.hint": "Name of the main table this query is based on (e.g. projects, subprojects, places). Used to apply the current app filter.",
+  "projectExport.baseTable": "Base table",
+  "projectExport.baseTable.hint": "Name of the main table this query is based on (e.g. projects, subprojects, places). Used to apply the current app filter."
 }
