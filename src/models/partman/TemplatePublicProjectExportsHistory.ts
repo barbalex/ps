@@ -18,6 +18,8 @@ export default interface TemplatePublicProjectExportsHistory {
 
   sql: string | null;
 
+  description: string | null;
+
   sys_period: string;
 
   created_at: Date;
@@ -45,6 +47,8 @@ export interface TemplatePublicProjectExportsHistoryInitializer {
 
   sql?: string | null;
 
+  description?: string | null;
+
   sys_period: string;
 
   created_at: Date;
@@ -71,6 +75,8 @@ export interface TemplatePublicProjectExportsHistoryMutator {
   level?: public_ProjectExportsLevelEnum | null;
 
   sql?: string | null;
+
+  description?: string | null;
 
   sys_period?: string;
 

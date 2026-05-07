@@ -21,6 +21,8 @@ export default interface ProjectExportsHistory {
 
   sql: string | null;
 
+  description: string | null;
+
   /** System period written by temporal_tables. lower(sys_period) is when the row version became current, upper(sys_period) when it stopped being current. */
   sys_period: string;
 
@@ -52,6 +54,8 @@ export interface ProjectExportsHistoryInitializer {
   level?: ProjectExportsLevelEnum | null;
 
   sql?: string | null;
+
+  description?: string | null;
 
   /** System period written by temporal_tables. lower(sys_period) is when the row version became current, upper(sys_period) when it stopped being current. */
   sys_period: string;
@@ -85,6 +89,8 @@ export interface ProjectExportsHistoryMutator {
   level?: ProjectExportsLevelEnum | null;
 
   sql?: string | null;
+
+  description?: string | null;
 
   /** System period written by temporal_tables. lower(sys_period) is when the row version became current, upper(sys_period) when it stopped being current. */
   sys_period?: string;

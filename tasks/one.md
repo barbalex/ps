@@ -39,4 +39,16 @@ TODO: filter by app-filter
 
 ---
 
+exports: history
+
+---
+
+lets add a description column to exports and project_exports.
+
+Goal: Describe the query so that an ai agent can build the sql.
+
+1. add the column in tables and histories
+2. needed in triggers?
+3. add it in form(s)
+
 ---

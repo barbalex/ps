@@ -2023,6 +2023,7 @@ CREATE TABLE IF NOT EXISTS exports(
   name_it text DEFAULT NULL,
   level exports_level_enum DEFAULT NULL,
   sql text DEFAULT NULL,
+  description text DEFAULT NULL,
   sys_period tstzrange DEFAULT NULL,
   created_at timestamptz NOT NULL DEFAULT now(),
   updated_at timestamptz NOT NULL DEFAULT now(),
@@ -2033,6 +2034,7 @@ CREATE TABLE IF NOT EXISTS exports(
 CREATE INDEX IF NOT EXISTS exports_name_de_idx ON exports USING btree(name_de);
 
 COMMENT ON TABLE exports IS 'Predefined exports available to all projects if assigned. Created by root administrators.';
+COMMENT ON COLUMN exports.description IS 'Describe the query so that an ai agent can build the sql.';
 
 --------------------------------------------------------------
 -- export_assignments
@@ -2071,6 +2073,7 @@ CREATE TABLE IF NOT EXISTS project_exports(
   name_it text DEFAULT NULL,
   level project_exports_level_enum DEFAULT NULL,
   sql text DEFAULT NULL,
+  description text DEFAULT NULL,
   sys_period tstzrange DEFAULT NULL,
   created_at timestamptz NOT NULL DEFAULT now(),
   updated_at timestamptz NOT NULL DEFAULT now(),
@@ -2082,6 +2085,7 @@ CREATE INDEX IF NOT EXISTS project_exports_project_id_idx ON project_exports USI
 CREATE INDEX IF NOT EXISTS project_exports_name_de_idx ON project_exports USING btree(name_de);
 
 COMMENT ON TABLE project_exports IS 'Project-specific exports. Only visible within the project and its sub-projects. Created by project owners and designers.';
+COMMENT ON COLUMN project_exports.description IS 'Describe the query so that an ai agent can build the sql.';
 
 --------------------------------------------------------------
 -- project_export_assignments

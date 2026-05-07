@@ -16,6 +16,8 @@ export default interface TemplatePublicExportsHistory {
 
   sql: string | null;
 
+  description: string | null;
+
   sys_period: string;
 
   created_at: Date;
@@ -41,6 +43,8 @@ export interface TemplatePublicExportsHistoryInitializer {
 
   sql?: string | null;
 
+  description?: string | null;
+
   sys_period: string;
 
   created_at: Date;
@@ -65,6 +69,8 @@ export interface TemplatePublicExportsHistoryMutator {
   level?: public_ExportsLevelEnum | null;
 
   sql?: string | null;
+
+  description?: string | null;
 
   sys_period?: string;
 

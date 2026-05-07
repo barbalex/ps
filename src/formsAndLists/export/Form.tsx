@@ -3,6 +3,7 @@ import { useIntl } from 'react-intl'
 import { TextField } from '../../components/shared/TextField.tsx'
 import { RadioGroupField } from '../../components/shared/RadioGroupField.tsx'
 import { SqlEditorField } from '../../components/shared/SqlEditorField.tsx'
+import { TextArea } from '../../components/shared/TextArea.tsx'
 import { Section } from '../../components/shared/Section.tsx'
 import { SectionDescription } from '../../components/shared/SectionDescription.tsx'
 
@@ -127,6 +128,12 @@ export const ExportForm = ({ onChange, validations = {}, row, autoFocusRef }) =>
               'Die Abfrage exportiert Daten. Sie retourniert beliebige Felder, die in der Exportdatei erscheinen.',
           })}
         </SectionDescription>
+        <TextArea
+          label={formatMessage({ id: 'export.description', defaultMessage: 'Beschreibung' })}
+          name="description"
+          value={row?.description ?? ''}
+          onChange={onChange}
+        />
         <SqlEditorField
           label={formatMessage({ id: 'export.sql', defaultMessage: 'SQL' })}
           name="sql"

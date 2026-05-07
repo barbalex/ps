@@ -25,6 +25,8 @@ export default interface ProjectExports {
 
   sql: string | null;
 
+  description: string | null;
+
   /** System period maintained by temporal_tables for auditing and historic queries. */
   sys_period: string;
 
@@ -56,6 +58,8 @@ export interface ProjectExportsInitializer {
   level?: ProjectExportsLevelEnum | null;
 
   sql?: string | null;
+
+  description?: string | null;
 
   /** System period maintained by temporal_tables for auditing and historic queries. */
   sys_period: string;
@@ -89,6 +93,8 @@ export interface ProjectExportsMutator {
   level?: ProjectExportsLevelEnum | null;
 
   sql?: string | null;
+
+  description?: string | null;
 
   /** System period maintained by temporal_tables for auditing and historic queries. */
   sys_period?: string;

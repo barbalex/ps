@@ -22,6 +22,8 @@ export default interface Exports {
 
   sql: string | null;
 
+  description: string | null;
+
   /** System period maintained by temporal_tables for auditing and historic queries. */
   sys_period: string;
 
@@ -51,6 +53,8 @@ export interface ExportsInitializer {
   level?: ExportsLevelEnum | null;
 
   sql?: string | null;
+
+  description?: string | null;
 
   /** System period maintained by temporal_tables for auditing and historic queries. */
   sys_period: string;
@@ -82,6 +86,8 @@ export interface ExportsMutator {
   level?: ExportsLevelEnum | null;
 
   sql?: string | null;
+
+  description?: string | null;
 
   /** System period maintained by temporal_tables for auditing and historic queries. */
   sys_period?: string;
