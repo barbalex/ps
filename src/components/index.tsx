@@ -141,8 +141,16 @@ export const Home = () => {
             </h3>
             <FormattedMessage
               id="2hj7nH"
-              defaultMessage="Du kannst arten-fördern.app deinen eigenen Bedürfnissen anpassen. Vermisst du eine Funktion? {link}"
+              defaultMessage="Du kannst arten-fördern.app deinen eigenen Bedürfnissen {anpassen}. Vermisst du eine Funktion? {link}"
               values={{
+                anpassen: (
+                  <Link to="/docs/configuration" target="_blank">
+                    <FormattedMessage
+                      id="2hj7nH.anpassen"
+                      defaultMessage="anpassen"
+                    />
+                  </Link>
+                ),
                 link: (
                   <Link to="/docs/issues" target="_blank">
                     <FormattedMessage
