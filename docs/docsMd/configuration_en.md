@@ -6,7 +6,7 @@ _Last updated: 6 May 2026_
 
 arten-fördern.app came about because:
 
-- [apflora.ch](https://apflora.ch) demonstrates the value of such a project. The nature conservation professionals involved wanted to be able to use it in other projects too
+- [apflora.ch](https://apflora.ch) demonstrates the value of such a project. Some nature conservation professionals involved wanted to be able to use it in other projects too
 - There is no ‘one size fits all’ for nature conservation projects: most projects could/should not use apflora.ch unchanged
 - Very few public institutions or ecological consultancies can or want to afford the development of a tailor-made product such as https://apflora.ch, https://vermehrung.ch or https://arteigenschaften.ch
 
