@@ -27,7 +27,7 @@ There are forms to run exports. Different from qcs/project_qcs in that the queri
 
 ---
 
-general exports: import from exports.csv file
+general exports: lets enable importing from exports.csv file. Same as for qcs (runs on db build).
 
 ---
 
@@ -42,13 +42,5 @@ TODO: filter by app-filter
 exports: history
 
 ---
-
-lets add a description column to exports and project_exports.
-
-Goal: Describe the query so that an ai agent can build the sql.
-
-1. add the column in tables and histories
-2. needed in triggers?
-3. add it in form(s)
 
 ---
