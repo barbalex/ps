@@ -3,6 +3,7 @@ import { useIntl } from 'react-intl'
 import { TextField } from '../../components/shared/TextField.tsx'
 import { RadioGroupField } from '../../components/shared/RadioGroupField.tsx'
 import { SqlEditorField } from '../../components/shared/SqlEditorField.tsx'
+import { SwitchField } from '../../components/shared/SwitchField.tsx'
 import { TextArea } from '../../components/shared/TextArea.tsx'
 import { Section } from '../../components/shared/Section.tsx'
 import { SectionDescription } from '../../components/shared/SectionDescription.tsx'
@@ -16,14 +17,18 @@ export const ProjectExportForm = ({ onChange, validations = {}, row, autoFocusRe
   const paramHint = (() => {
     if (row?.level === 'project') {
       return formatMessage({
-        id: 'projectExport.sql.hintProject',
-        defaultMessage: '$1 = project_id (uuid), $2 = year (integer, optional)',
+        id: row?.filter_by_year ? 'projectExport.sql.hintProjectYear' : 'projectExport.sql.hintProject',
+        defaultMessage: row?.filter_by_year
+          ? '$1 = project_id (uuid), $2 = year (integer)'
+          : '$1 = project_id (uuid)',
       })
     }
     if (row?.level === 'subproject') {
       return formatMessage({
-        id: 'projectExport.sql.hintSubproject',
-        defaultMessage: '$1 = subproject_id (uuid), $2 = year (integer, optional)',
+        id: row?.filter_by_year ? 'projectExport.sql.hintSubprojectYear' : 'projectExport.sql.hintSubproject',
+        defaultMessage: row?.filter_by_year
+          ? '$1 = subproject_id (uuid), $2 = year (integer)'
+          : '$1 = subproject_id (uuid)',
       })
     }
     return formatMessage({
@@ -109,6 +114,20 @@ export const ProjectExportForm = ({ onChange, validations = {}, row, autoFocusRe
               defaultMessage: 'Teilprojekt',
             }),
           }}
+        />
+        <SwitchField
+          label={formatMessage({
+            id: 'projectExport.filterByYear',
+            defaultMessage: 'Nach Jahr filtern',
+          })}
+          name="filter_by_year"
+          value={row?.filter_by_year}
+          onChange={onChange}
+          hint={formatMessage({
+            id: 'projectExport.filterByYearHint',
+            defaultMessage:
+              'Wenn wahr, wird der Abfrage eine Variable für das gewünschte Berichts-Jahr übergeben',
+          })}
         />
       </Section>
       <Section

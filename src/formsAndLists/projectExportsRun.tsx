@@ -24,6 +24,8 @@ type ExportRow = {
   exports_id: string
   label: string | null
   sql: string | null
+  filter_by_year: boolean | null
+  is_project_export: boolean
 }
 
 type ExportFormat = 'csv' | 'xlsx' | 'ods'
@@ -63,17 +65,33 @@ async function runAndDownload({
   year,
   label,
   format,
+  projectId,
+  filterByYear,
+  isProjectExport,
 }: {
   db: ReturnType<typeof usePGlite>
   sql: string
   year: string
   label: string
   format: ExportFormat
+  projectId: string
+  filterByYear: boolean | null
+  isProjectExport: boolean
 }) {
   const params: (string | number)[] = []
-  if (sql.includes('$1')) {
-    const yearNum = parseInt(year, 10)
-    if (!isNaN(yearNum)) params.push(yearNum)
+  if (isProjectExport) {
+    // project_exports: $1 = project_id, $2 = year (if filter_by_year)
+    if (sql.includes('$1')) params.push(projectId)
+    if (filterByYear && sql.includes('$2')) {
+      const yearNum = parseInt(year, 10)
+      if (!isNaN(yearNum)) params.push(yearNum)
+    }
+  } else {
+    // general exports assigned at project level (root-level exports): $1 = year (if filter_by_year)
+    if (filterByYear && sql.includes('$1')) {
+      const yearNum = parseInt(year, 10)
+      if (!isNaN(yearNum)) params.push(yearNum)
+    }
   }
 
   const result = await db.query(sql, params)
@@ -121,7 +139,9 @@ export const ProjectExportsRun = ({ from }: { from: string }) => {
   const exportsRes = useLiveQuery(
     `SELECT e.exports_id AS exports_id,
             COALESCE(NULLIF(e.name_${language}, ''), e.name_de) AS label,
-            e.sql
+            e.sql,
+            e.filter_by_year,
+            false AS is_project_export
      FROM export_assignments ea
      JOIN exports e ON e.exports_id = ea.exports_id
      WHERE ea.project_id = $1
@@ -131,7 +151,9 @@ export const ProjectExportsRun = ({ from }: { from: string }) => {
      UNION ALL
      SELECT pe.project_exports_id::text AS exports_id,
             COALESCE(NULLIF(pe.name_${language}, ''), pe.name_de) AS label,
-            pe.sql
+            pe.sql,
+            pe.filter_by_year,
+            true AS is_project_export
      FROM project_export_assignments pea
      JOIN project_exports pe ON pe.project_exports_id = pea.project_exports_id
      WHERE pea.project_id = $2
@@ -167,6 +189,9 @@ export const ProjectExportsRun = ({ from }: { from: string }) => {
         year,
         label: e.label ?? e.exports_id,
         format,
+        projectId,
+        filterByYear: e.filter_by_year,
+        isProjectExport: e.is_project_export,
       })
     } catch (error) {
       console.error('Error running export:', error)

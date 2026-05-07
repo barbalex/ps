@@ -32,6 +32,7 @@ general exports: lets enable importing from exports.csv file. Same as for qcs (r
 ---
 
 TODO: docs for exports
+Please create the md's for en,fr,it
 
 ---
 

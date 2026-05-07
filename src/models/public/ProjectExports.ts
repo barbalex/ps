@@ -23,6 +23,8 @@ export default interface ProjectExports {
 
   level: ProjectExportsLevelEnum | null;
 
+  filter_by_year: boolean | null;
+
   sql: string | null;
 
   /** Describe the query so that an ai agent can build the sql. */
@@ -57,6 +59,9 @@ export interface ProjectExportsInitializer {
   name_it?: string | null;
 
   level?: ProjectExportsLevelEnum | null;
+
+  /** Default value: false */
+  filter_by_year?: boolean | null;
 
   sql?: string | null;
 
@@ -93,6 +98,8 @@ export interface ProjectExportsMutator {
   name_it?: string | null;
 
   level?: ProjectExportsLevelEnum | null;
+
+  filter_by_year?: boolean | null;
 
   sql?: string | null;
 

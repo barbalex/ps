@@ -2073,6 +2073,7 @@ CREATE TABLE IF NOT EXISTS project_exports(
   name_fr text DEFAULT NULL,
   name_it text DEFAULT NULL,
   level project_exports_level_enum DEFAULT NULL,
+  filter_by_year boolean DEFAULT false,
   sql text DEFAULT NULL,
   description text DEFAULT NULL,
   sys_period tstzrange DEFAULT NULL,
