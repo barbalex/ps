@@ -1,10 +1,10 @@
 # Tarifs
 
-_Dernière mise à jour : 17 avril 2026_
+_Dernière mise à jour: 17 avril 2026_
 
 ---
 
-Il existe deux modèles pour payer arten-fördern.app :
+Il existe deux modèles pour payer arten-fördern.app:
 
 1. Choisir un compte et payer à l'avance
 2. Conclure un contrat séparé
