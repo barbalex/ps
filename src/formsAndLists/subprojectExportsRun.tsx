@@ -71,6 +71,7 @@ async function runAndDownload({
   format,
   subprojectId,
   filterByYear,
+  baseTable,
   filterString,
 }: {
   db: ReturnType<typeof usePGlite>
@@ -80,6 +81,7 @@ async function runAndDownload({
   format: ExportFormat
   subprojectId: string
   filterByYear: boolean | null
+  baseTable?: string | null
   filterString?: string
 }) {
   const params: (string | number)[] = []
@@ -89,9 +91,11 @@ async function runAndDownload({
     if (!isNaN(yearNum)) params.push(yearNum)
   }
 
+  // Shadow the base table with a filtered CTE so the export SQL automatically
+  // queries only rows that match the current app filter.
   const effectiveSql =
-    filterString
-      ? `WITH __export AS (\n${sql}\n)\nSELECT * FROM __export\nWHERE ${filterString}`
+    filterString && baseTable
+      ? `WITH "${baseTable}" AS (\n  SELECT * FROM "${baseTable}" WHERE ${filterString}\n)\n${sql}`
       : sql
 
   const result = await db.query(effectiveSql, params)
@@ -227,6 +231,7 @@ export const SubprojectExportsRun = ({ from }: { from: string }) => {
         format,
         subprojectId,
         filterByYear: e.filter_by_year,
+        baseTable: e.base_table,
         filterString: filterStr || undefined,
       })
     } catch (error) {
