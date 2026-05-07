@@ -35,8 +35,6 @@ TODO: exports: filter by app-filter
 
 ---
 
-DOING: exports: history
-
 ---
 
 ---
