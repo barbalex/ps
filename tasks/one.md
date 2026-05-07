@@ -22,13 +22,18 @@ Better-Auth, possible extensions:
 
 TODO: exports: filter by app-filter
 
----
+in the views at /data/exports-run, /data/projects/018cfcf7-6424-7000-a100-851c5cc2c878/exports-run and /data/projects/018cfcf7-6424-7000-a100-851c5cc2c878/subprojects/018cfd27-ee92-7000-b678-e75497d6c60e/exports-run:
+
+_IF_ a filter is set
+
+TODO: how to know on what table?
+New column: filter_table?
 
 ---
 
 ---
 
-/data/projects/018cfcf7-6424-7000-a100-851c5cc2c878/exports/filter: loading permanently
+---
 
 ---
 
