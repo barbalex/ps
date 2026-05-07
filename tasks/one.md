@@ -26,11 +26,8 @@ Better-Auth, possible extensions:
 
 lets add buttons that link to /docs/exports at:
 
-- /data/exports
-- /data/exports-run
-- /data/projects/018cfcf7-6424-7000-a100-851c5cc2c878/exports
-- /data/projects/018cfcf7-6424-7000-a100-851c5cc2c878/exports-run
-- /data/projects/018cfcf7-6424-7000-a100-851c5cc2c878/subprojects/018cfd27-ee92-7000-b678-e75497d6c60e/exports-run
+- data/exports/019e0362-9360-7c12-91ba-426115f3f125
+- /data/projects/018cfcf7-6424-7000-a100-851c5cc2c878/exports/019e03cb-fb54-7000-9b0d-96c30c03a627
 
 ---
 

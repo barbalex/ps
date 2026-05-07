@@ -8,6 +8,10 @@ import { createProjectExport } from '../../modules/createRows.ts'
 import { FormHeader } from '../../components/FormHeader/index.tsx'
 import { HistoryToggleButton } from '../../components/shared/HistoryCompare/HistoryToggleButton.tsx'
 import { addOperationAtom } from '../../store.ts'
+import * as fluentUiReactComponents from '@fluentui/react-components'
+import { MdMenuBook } from 'react-icons/md'
+
+const { Button } = fluentUiReactComponents
 
 const from = '/data/projects/$projectId_/exports/$projectExportsId/'
 
@@ -122,13 +126,25 @@ export const Header = ({ autoFocusRef }) => {
       toPrevious={toPrevious}
       tableName="projectExport"
       siblings={
-        <HistoryToggleButton
-          historiesPath={`${basePath}/histories`}
-          formPath={basePath}
-          historyTable="project_exports_history"
-          rowIdField="project_exports_id"
-          rowId={projectExportsId}
-        />
+        <>
+          <HistoryToggleButton
+            historiesPath={`${basePath}/histories`}
+            formPath={basePath}
+            historyTable="project_exports_history"
+            rowIdField="project_exports_id"
+            rowId={projectExportsId}
+          />
+          <Button
+            icon={<MdMenuBook />}
+            title={formatMessage({
+              id: 'exports.openDocs',
+              defaultMessage: 'Dokumentation öffnen',
+            })}
+            onClick={() =>
+              window.open('/docs/exports', '_blank', 'noreferrer')
+            }
+          />
+        </>
       }
     />
   )

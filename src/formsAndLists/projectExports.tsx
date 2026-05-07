@@ -1,5 +1,7 @@
 import { useParams, useNavigate } from '@tanstack/react-router'
 import { useIntl } from 'react-intl'
+import * as fluentUiReactComponents from '@fluentui/react-components'
+import { MdMenuBook } from 'react-icons/md'
 
 import { createProjectExport } from '../modules/createRows.ts'
 import { useProjectExportsNavData } from '../modules/useProjectExportsNavData.ts'
@@ -9,6 +11,8 @@ import { FilterButton } from '../components/shared/FilterButton.tsx'
 import { Loading } from '../components/shared/Loading.tsx'
 
 import '../form.css'
+
+const { Button } = fluentUiReactComponents
 
 const from = '/data/projects/$projectId_/exports/'
 
@@ -37,7 +41,21 @@ export const ProjectExports = () => {
             'Hier kannst du eigene Exporte erstellen. Sie sind in diesem Projekt verfügbar.',
         })}
         addRow={add}
-        menus={<FilterButton isFiltered={isFiltered} />}
+        menus={
+          <>
+            <FilterButton isFiltered={isFiltered} />
+            <Button
+              icon={<MdMenuBook />}
+              title={formatMessage({
+                id: 'exports.openDocs',
+                defaultMessage: 'Dokumentation öffnen',
+              })}
+              onClick={() =>
+                window.open('/docs/exports', '_blank', 'noreferrer')
+              }
+            />
+          </>
+        }
       />
       <div className="list-container">
         {loading ? (

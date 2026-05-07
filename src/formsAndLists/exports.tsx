@@ -1,5 +1,7 @@
 import { useNavigate } from '@tanstack/react-router'
 import { useIntl } from 'react-intl'
+import * as fluentUiReactComponents from '@fluentui/react-components'
+import { MdMenuBook } from 'react-icons/md'
 
 import { createExport } from '../modules/createRows.ts'
 import { ListHeader } from '../components/ListHeader.tsx'
@@ -9,6 +11,8 @@ import { Loading } from '../components/shared/Loading.tsx'
 import { useExportsNavData } from '../modules/useExportsNavData.ts'
 
 import '../form.css'
+
+const { Button } = fluentUiReactComponents
 
 const from = '/data/exports'
 
@@ -31,7 +35,21 @@ export const Exports = () => {
         label={label}
         nameSingular={nameSingular}
         addRow={add}
-        menus={<FilterButton isFiltered={isFiltered} />}
+        menus={
+          <>
+            <FilterButton isFiltered={isFiltered} />
+            <Button
+              icon={<MdMenuBook />}
+              title={formatMessage({
+                id: 'exports.openDocs',
+                defaultMessage: 'Dokumentation öffnen',
+              })}
+              onClick={() =>
+                window.open('/docs/exports', '_blank', 'noreferrer')
+              }
+            />
+          </>
+        }
       />
       <div className="list-container">
         {loading ? (

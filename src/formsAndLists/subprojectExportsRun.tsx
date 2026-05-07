@@ -16,6 +16,7 @@ import {
   places1FilterAtom,
 } from '../store.ts'
 import { Dismiss16Regular } from '@fluentui/react-icons'
+import { MdMenuBook } from 'react-icons/md'
 import { useSubprojectExportsRunNavData } from '../modules/useSubprojectExportsRunNavData.ts'
 import { filterStringFromFilter } from '../modules/filterStringFromFilter.ts'
 import styles from './subprojectExportsRun.module.css'
@@ -243,6 +244,16 @@ export const SubprojectExportsRun = ({ from }: { from: string }) => {
     <div className="list-view">
       <div className="list-view-header">
         <h1>{navData.label}</h1>
+        <Button
+          icon={<MdMenuBook />}
+          title={formatMessage({
+            id: 'exports.openDocs',
+            defaultMessage: 'Dokumentation öffnen',
+          })}
+          onClick={() =>
+            window.open('/docs/exports', '_blank', 'noreferrer')
+          }
+        />
       </div>
 
       <div className="list-container">
