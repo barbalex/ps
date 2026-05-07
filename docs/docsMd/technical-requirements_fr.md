@@ -12,4 +12,4 @@ En tant qu'[application web progressive](https://web.dev/explore/progressive-web
 
 Tu peux ensuite généralement aussi lancer arten-fördern.app depuis un raccourci. Selon ton système d'exploitation, elle se comporte alors globalement comme n'importe quelle application obtenue via un store ou installée directement.
 
-Tu n'as pas à te soucier des mises à jour ; elles s'effectuent automatiquement.
+Tu n'as pas à te soucier des mises à jour; elles s'effectuent automatiquement.
