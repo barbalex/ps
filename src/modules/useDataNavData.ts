@@ -178,14 +178,6 @@ export const useDataNavData = () => {
         }),
       },
       {
-        id: 'accounts',
-        label: buildNavLabel({
-          loading,
-          countFiltered: row?.accounts_count_unfiltered ?? 0,
-          namePlural: formatMessage({ id: '/40i9A', defaultMessage: 'Konten' }),
-        }),
-      },
-      {
         id: 'users',
         label: buildNavLabel({
           loading,
