@@ -576,17 +576,6 @@ export const useProjectNavData = ({
                     }),
                   }),
                 },
-                {
-                  id: 'exports',
-                  label: buildNavLabel({
-                    loading,
-                    countFiltered: nav?.project_exports_count_unfiltered ?? 0,
-                    namePlural: formatMessage({
-                      id: 'exports.namePlural',
-                      defaultMessage: 'Exporte',
-                    }),
-                  }),
-                },
               ]
             : []),
           ...(designing && nav?.units_in_project === false
@@ -647,6 +636,17 @@ export const useProjectNavData = ({
           },
           ...(designing
             ? [
+                {
+                  id: 'exports',
+                  label: buildNavLabel({
+                    loading,
+                    countFiltered: nav?.project_exports_count_unfiltered ?? 0,
+                    namePlural: formatMessage({
+                      id: 'exports.namePlural',
+                      defaultMessage: 'Exporte',
+                    }),
+                  }),
+                },
                 {
                   id: 'export-assignments',
                   label: buildNavLabel({
