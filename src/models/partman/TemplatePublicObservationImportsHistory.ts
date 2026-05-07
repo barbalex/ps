@@ -1,4 +1,4 @@
-import type { default as public_ObservationImportsGeometryMethodsEnum } from '../public/ObservationImportsGeometryMethodsEnum.js';
+import type { default as public_ObservationImportsGeometryMethodsEnum } from '../public/ObservationImportsGeometryMethodsEnum.ts';
 
 /** Represents the table partman.template_public_observation_imports_history */
 export default interface TemplatePublicObservationImportsHistory {

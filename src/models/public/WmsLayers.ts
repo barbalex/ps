@@ -1,5 +1,5 @@
-import type { ProjectsProjectId } from './Projects.js';
-import type { WmsServicesWmsServiceId } from './WmsServices.js';
+import type { ProjectsProjectId } from './Projects.ts';
+import type { WmsServicesWmsServiceId } from './WmsServices.ts';
 
 /** Identifier type for public.wms_layers */
 export type WmsLayersWmsLayerId = string & { __brand: 'public.wms_layers' };

@@ -1,5 +1,5 @@
-import type { default as public_VectorLayerTypesEnum } from '../public/VectorLayerTypesEnum.js';
-import type { default as public_VectorLayerOwnTablesEnum } from '../public/VectorLayerOwnTablesEnum.js';
+import type { default as public_VectorLayerTypesEnum } from '../public/VectorLayerTypesEnum.ts';
+import type { default as public_VectorLayerOwnTablesEnum } from '../public/VectorLayerOwnTablesEnum.ts';
 
 /** Represents the table partman.template_public_vector_layers_history */
 export default interface TemplatePublicVectorLayersHistory {

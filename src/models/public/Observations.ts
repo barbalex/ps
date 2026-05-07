@@ -1,5 +1,5 @@
-import type { ObservationImportsObservationImportId } from './ObservationImports.js';
-import type { PlacesPlaceId } from './Places.js';
+import type { ObservationImportsObservationImportId } from './ObservationImports.ts';
+import type { PlacesPlaceId } from './Places.ts';
 
 /** Identifier type for public.observations */
 export type ObservationsObservationId = string & { __brand: 'public.observations' };

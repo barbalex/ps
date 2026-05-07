@@ -1,4 +1,4 @@
-import type { WmsServicesWmsServiceId } from './WmsServices.js';
+import type { WmsServicesWmsServiceId } from './WmsServices.ts';
 
 /** Identifier type for public.wms_service_layers */
 export type WmsServiceLayersWmsServiceLayerId = string & { __brand: 'public.wms_service_layers' };

@@ -1,4 +1,4 @@
-import type { UsersUserId } from './Users.js';
+import type { UsersUserId } from './Users.ts';
 
 /** Identifier type for public.auth_two_factors */
 export type AuthTwoFactorsId = string & { __brand: 'public.auth_two_factors' };

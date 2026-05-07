@@ -1,6 +1,6 @@
-import type { ProjectsProjectId } from './Projects.js';
-import type { SubprojectsSubprojectId } from './Subprojects.js';
-import type { QcsQcsId } from './Qcs.js';
+import type { ProjectsProjectId } from './Projects.ts';
+import type { SubprojectsSubprojectId } from './Subprojects.ts';
+import type { QcsQcsId } from './Qcs.ts';
 
 /** Identifier type for public.qc_assignments */
 export type QcAssignmentsQcAssignmentId = string & { __brand: 'public.qc_assignments' };

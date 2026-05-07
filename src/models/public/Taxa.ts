@@ -1,4 +1,4 @@
-import type { TaxonomiesTaxonomyId } from './Taxonomies.js';
+import type { TaxonomiesTaxonomyId } from './Taxonomies.ts';
 
 /** Identifier type for public.taxa */
 export type TaxaTaxonId = string & { __brand: 'public.taxa' };

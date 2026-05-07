@@ -1,7 +1,7 @@
-import type { default as public_ChartSubjectTableNamesEnum } from '../public/ChartSubjectTableNamesEnum.js';
-import type { default as public_ChartSubjectTableLevelsEnum } from '../public/ChartSubjectTableLevelsEnum.js';
-import type { default as public_ChartSubjectCalcMethodsEnum } from '../public/ChartSubjectCalcMethodsEnum.js';
-import type { default as public_ChartSubjectTypesEnum } from '../public/ChartSubjectTypesEnum.js';
+import type { default as public_ChartSubjectTableNamesEnum } from '../public/ChartSubjectTableNamesEnum.ts';
+import type { default as public_ChartSubjectTableLevelsEnum } from '../public/ChartSubjectTableLevelsEnum.ts';
+import type { default as public_ChartSubjectCalcMethodsEnum } from '../public/ChartSubjectCalcMethodsEnum.ts';
+import type { default as public_ChartSubjectTypesEnum } from '../public/ChartSubjectTypesEnum.ts';
 
 /** Represents the table partman.template_public_chart_subjects_history */
 export default interface TemplatePublicChartSubjectsHistory {

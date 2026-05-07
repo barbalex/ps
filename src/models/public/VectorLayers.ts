@@ -1,7 +1,7 @@
-import type { ProjectsProjectId } from './Projects.js';
-import type { default as VectorLayerTypesEnum } from './VectorLayerTypesEnum.js';
-import type { default as VectorLayerOwnTablesEnum } from './VectorLayerOwnTablesEnum.js';
-import type { WfsServicesWfsServiceId } from './WfsServices.js';
+import type { ProjectsProjectId } from './Projects.ts';
+import type { default as VectorLayerTypesEnum } from './VectorLayerTypesEnum.ts';
+import type { default as VectorLayerOwnTablesEnum } from './VectorLayerOwnTablesEnum.ts';
+import type { WfsServicesWfsServiceId } from './WfsServices.ts';
 
 /** Identifier type for public.vector_layers */
 export type VectorLayersVectorLayerId = string & { __brand: 'public.vector_layers' };

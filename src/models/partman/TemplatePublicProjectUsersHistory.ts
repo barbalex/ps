@@ -1,4 +1,4 @@
-import type { default as public_UserRolesEnum } from '../public/UserRolesEnum.js';
+import type { default as public_UserRolesEnum } from '../public/UserRolesEnum.ts';
 
 /** Represents the table partman.template_public_project_users_history */
 export default interface TemplatePublicProjectUsersHistory {

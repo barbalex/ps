@@ -1,4 +1,4 @@
-import type { WfsServicesWfsServiceId } from './WfsServices.js';
+import type { WfsServicesWfsServiceId } from './WfsServices.ts';
 
 /** Identifier type for public.wfs_service_layers */
 export type WfsServiceLayersWfsServiceLayerId = string & { __brand: 'public.wfs_service_layers' };

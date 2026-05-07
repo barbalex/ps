@@ -1,5 +1,5 @@
-import type { CrsCrsId } from './Crs.js';
-import type { ProjectsProjectId } from './Projects.js';
+import type { CrsCrsId } from './Crs.ts';
+import type { ProjectsProjectId } from './Projects.ts';
 
 /** Identifier type for public.project_crs */
 export type ProjectCrsProjectCrsId = string & { __brand: 'public.project_crs' };

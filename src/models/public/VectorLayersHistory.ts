@@ -1,5 +1,5 @@
-import type { default as VectorLayerTypesEnum } from './VectorLayerTypesEnum.js';
-import type { default as VectorLayerOwnTablesEnum } from './VectorLayerOwnTablesEnum.js';
+import type { default as VectorLayerTypesEnum } from './VectorLayerTypesEnum.ts';
+import type { default as VectorLayerOwnTablesEnum } from './VectorLayerOwnTablesEnum.ts';
 
 /**
  * Represents the table public.vector_layers_history

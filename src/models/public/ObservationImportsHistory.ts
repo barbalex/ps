@@ -1,4 +1,4 @@
-import type { default as ObservationImportsGeometryMethodsEnum } from './ObservationImportsGeometryMethodsEnum.js';
+import type { default as ObservationImportsGeometryMethodsEnum } from './ObservationImportsGeometryMethodsEnum.ts';
 
 /**
  * Represents the table public.observation_imports_history

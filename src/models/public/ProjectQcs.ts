@@ -1,5 +1,5 @@
-import type { ProjectsProjectId } from './Projects.js';
-import type { default as ProjectQcsLevelEnum } from './ProjectQcsLevelEnum.js';
+import type { ProjectsProjectId } from './Projects.ts';
+import type { default as ProjectQcsLevelEnum } from './ProjectQcsLevelEnum.ts';
 
 /** Identifier type for public.project_qcs */
 export type ProjectQcsProjectQcId = string & { __brand: 'public.project_qcs' };

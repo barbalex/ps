@@ -1,5 +1,5 @@
-import type { UsersUserId } from './Users.js';
-import type { MessagesMessageId } from './Messages.js';
+import type { UsersUserId } from './Users.ts';
+import type { MessagesMessageId } from './Messages.ts';
 
 /** Identifier type for public.user_messages */
 export type UserMessagesUserMessageId = string & { __brand: 'public.user_messages' };

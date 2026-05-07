@@ -1,4 +1,4 @@
-import type { default as ListValueTypesEnum } from './ListValueTypesEnum.js';
+import type { default as ListValueTypesEnum } from './ListValueTypesEnum.ts';
 
 /**
  * Represents the table public.lists_history

@@ -1,4 +1,4 @@
-import type { UsersUserId } from './Users.js';
+import type { UsersUserId } from './Users.ts';
 
 /** Identifier type for public.accounts */
 export type AccountsAccountId = string & { __brand: 'public.accounts' };

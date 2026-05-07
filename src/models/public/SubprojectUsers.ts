@@ -1,6 +1,6 @@
-import type { SubprojectsSubprojectId } from './Subprojects.js';
-import type { UsersUserId } from './Users.js';
-import type { default as UserRolesEnum } from './UserRolesEnum.js';
+import type { SubprojectsSubprojectId } from './Subprojects.ts';
+import type { UsersUserId } from './Users.ts';
+import type { default as UserRolesEnum } from './UserRolesEnum.ts';
 
 /** Identifier type for public.subproject_users */
 export type SubprojectUsersSubprojectUserId = string & { __brand: 'public.subproject_users' };

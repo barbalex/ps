@@ -1,4 +1,4 @@
-import type { default as public_UnitTypesEnum } from '../public/UnitTypesEnum.js';
+import type { default as public_UnitTypesEnum } from '../public/UnitTypesEnum.ts';
 
 /** Represents the table partman.template_public_units_history */
 export default interface TemplatePublicUnitsHistory {

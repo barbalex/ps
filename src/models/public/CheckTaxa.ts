@@ -1,6 +1,6 @@
-import type { ChecksCheckId } from './Checks.js';
-import type { TaxaTaxonId } from './Taxa.js';
-import type { UnitsUnitId } from './Units.js';
+import type { ChecksCheckId } from './Checks.ts';
+import type { TaxaTaxonId } from './Taxa.ts';
+import type { UnitsUnitId } from './Units.ts';
 
 /** Identifier type for public.check_taxa */
 export type CheckTaxaCheckTaxonId = string & { __brand: 'public.check_taxa' };

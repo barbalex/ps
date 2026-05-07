@@ -1,5 +1,5 @@
-import type { SubprojectsSubprojectId } from './Subprojects.js';
-import type { default as ObservationImportsGeometryMethodsEnum } from './ObservationImportsGeometryMethodsEnum.js';
+import type { SubprojectsSubprojectId } from './Subprojects.ts';
+import type { default as ObservationImportsGeometryMethodsEnum } from './ObservationImportsGeometryMethodsEnum.ts';
 
 /** Identifier type for public.observation_imports */
 export type ObservationImportsObservationImportId = string & { __brand: 'public.observation_imports' };

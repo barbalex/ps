@@ -1,7 +1,7 @@
-import type { default as ChartSubjectTableNamesEnum } from './ChartSubjectTableNamesEnum.js';
-import type { default as ChartSubjectTableLevelsEnum } from './ChartSubjectTableLevelsEnum.js';
-import type { default as ChartSubjectCalcMethodsEnum } from './ChartSubjectCalcMethodsEnum.js';
-import type { default as ChartSubjectTypesEnum } from './ChartSubjectTypesEnum.js';
+import type { default as ChartSubjectTableNamesEnum } from './ChartSubjectTableNamesEnum.ts';
+import type { default as ChartSubjectTableLevelsEnum } from './ChartSubjectTableLevelsEnum.ts';
+import type { default as ChartSubjectCalcMethodsEnum } from './ChartSubjectCalcMethodsEnum.ts';
+import type { default as ChartSubjectTypesEnum } from './ChartSubjectTypesEnum.ts';
 
 /**
  * Represents the table public.chart_subjects_history

@@ -1,4 +1,4 @@
-import type { ProjectsProjectId } from './Projects.js';
+import type { ProjectsProjectId } from './Projects.ts';
 
 /** Identifier type for public.wfs_services */
 export type WfsServicesWfsServiceId = string & { __brand: 'public.wfs_services' };

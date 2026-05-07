@@ -1,4 +1,4 @@
-import type { default as public_ChartTypesEnum } from '../public/ChartTypesEnum.js';
+import type { default as public_ChartTypesEnum } from '../public/ChartTypesEnum.ts';
 
 /** Represents the table partman.template_public_charts_history */
 export default interface TemplatePublicChartsHistory {

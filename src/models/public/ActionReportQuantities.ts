@@ -1,5 +1,5 @@
-import type { ActionReportsPlaceActionReportId } from './ActionReports.js';
-import type { UnitsUnitId } from './Units.js';
+import type { ActionReportsPlaceActionReportId } from './ActionReports.ts';
+import type { UnitsUnitId } from './Units.ts';
 
 /** Identifier type for public.action_report_quantities */
 export type ActionReportQuantitiesPlaceActionReportQuantityId = string & { __brand: 'public.action_report_quantities' };

@@ -1,5 +1,5 @@
-import type { ActionsActionId } from './Actions.js';
-import type { UnitsUnitId } from './Units.js';
+import type { ActionsActionId } from './Actions.ts';
+import type { UnitsUnitId } from './Units.ts';
 
 /** Identifier type for public.action_quantities */
 export type ActionQuantitiesActionQuantityId = string & { __brand: 'public.action_quantities' };

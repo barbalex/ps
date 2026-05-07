@@ -1,6 +1,6 @@
-import type { ActionsActionId } from './Actions.js';
-import type { TaxaTaxonId } from './Taxa.js';
-import type { UnitsUnitId } from './Units.js';
+import type { ActionsActionId } from './Actions.ts';
+import type { TaxaTaxonId } from './Taxa.ts';
+import type { UnitsUnitId } from './Units.ts';
 
 /** Identifier type for public.action_taxa */
 export type ActionTaxaActionTaxonId = string & { __brand: 'public.action_taxa' };

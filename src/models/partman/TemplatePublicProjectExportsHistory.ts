@@ -1,4 +1,4 @@
-import type { default as public_ProjectExportsLevelEnum } from '../public/ProjectExportsLevelEnum.js';
+import type { default as public_ProjectExportsLevelEnum } from '../public/ProjectExportsLevelEnum.ts';
 
 /** Represents the table partman.template_public_project_exports_history */
 export default interface TemplatePublicProjectExportsHistory {

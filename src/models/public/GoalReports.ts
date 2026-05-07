@@ -1,4 +1,4 @@
-import type { GoalsGoalId } from './Goals.js';
+import type { GoalsGoalId } from './Goals.ts';
 
 /** Identifier type for public.goal_reports */
 export type GoalReportsGoalReportId = string & { __brand: 'public.goal_reports' };

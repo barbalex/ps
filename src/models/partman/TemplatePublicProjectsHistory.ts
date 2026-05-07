@@ -1,4 +1,4 @@
-import type { default as public_ProjectTypesEnum } from '../public/ProjectTypesEnum.js';
+import type { default as public_ProjectTypesEnum } from '../public/ProjectTypesEnum.ts';
 
 /** Represents the table partman.template_public_projects_history */
 export default interface TemplatePublicProjectsHistory {

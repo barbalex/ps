@@ -1,4 +1,4 @@
-import type { default as TaxonomyTypesEnum } from './TaxonomyTypesEnum.js';
+import type { default as TaxonomyTypesEnum } from './TaxonomyTypesEnum.ts';
 
 /**
  * Represents the table public.taxonomies_history

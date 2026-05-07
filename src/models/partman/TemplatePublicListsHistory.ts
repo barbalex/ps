@@ -1,4 +1,4 @@
-import type { default as public_ListValueTypesEnum } from '../public/ListValueTypesEnum.js';
+import type { default as public_ListValueTypesEnum } from '../public/ListValueTypesEnum.ts';
 
 /** Represents the table partman.template_public_lists_history */
 export default interface TemplatePublicListsHistory {

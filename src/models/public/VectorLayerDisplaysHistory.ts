@@ -1,7 +1,7 @@
-import type { default as VectorLayerMarkerTypesEnum } from './VectorLayerMarkerTypesEnum.js';
-import type { default as VectorLayerLineCapsEnum } from './VectorLayerLineCapsEnum.js';
-import type { default as VectorLayerLineJoinsEnum } from './VectorLayerLineJoinsEnum.js';
-import type { default as VectorLayerFillRulesEnum } from './VectorLayerFillRulesEnum.js';
+import type { default as VectorLayerMarkerTypesEnum } from './VectorLayerMarkerTypesEnum.ts';
+import type { default as VectorLayerLineCapsEnum } from './VectorLayerLineCapsEnum.ts';
+import type { default as VectorLayerLineJoinsEnum } from './VectorLayerLineJoinsEnum.ts';
+import type { default as VectorLayerFillRulesEnum } from './VectorLayerFillRulesEnum.ts';
 
 /**
  * Represents the table public.vector_layer_displays_history

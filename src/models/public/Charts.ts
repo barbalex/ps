@@ -1,7 +1,7 @@
-import type { ProjectsProjectId } from './Projects.js';
-import type { SubprojectsSubprojectId } from './Subprojects.js';
-import type { PlacesPlaceId } from './Places.js';
-import type { default as ChartTypesEnum } from './ChartTypesEnum.js';
+import type { ProjectsProjectId } from './Projects.ts';
+import type { SubprojectsSubprojectId } from './Subprojects.ts';
+import type { PlacesPlaceId } from './Places.ts';
+import type { default as ChartTypesEnum } from './ChartTypesEnum.ts';
 
 /** Identifier type for public.charts */
 export type ChartsChartId = string & { __brand: 'public.charts' };

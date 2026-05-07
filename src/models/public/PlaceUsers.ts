@@ -1,6 +1,6 @@
-import type { PlacesPlaceId } from './Places.js';
-import type { UsersUserId } from './Users.js';
-import type { default as UserRolesEnum } from './UserRolesEnum.js';
+import type { PlacesPlaceId } from './Places.ts';
+import type { UsersUserId } from './Users.ts';
+import type { default as UserRolesEnum } from './UserRolesEnum.ts';
 
 /** Identifier type for public.place_users */
 export type PlaceUsersPlaceUserId = string & { __brand: 'public.place_users' };

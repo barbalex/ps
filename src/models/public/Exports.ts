@@ -1,4 +1,4 @@
-import type { default as ExportsLevelEnum } from './ExportsLevelEnum.js';
+import type { default as ExportsLevelEnum } from './ExportsLevelEnum.ts';
 
 /** Identifier type for public.exports */
 export type ExportsExportsId = string & { __brand: 'public.exports' };

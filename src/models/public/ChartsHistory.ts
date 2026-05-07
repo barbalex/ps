@@ -1,4 +1,4 @@
-import type { default as ChartTypesEnum } from './ChartTypesEnum.js';
+import type { default as ChartTypesEnum } from './ChartTypesEnum.ts';
 
 /**
  * Represents the table public.charts_history

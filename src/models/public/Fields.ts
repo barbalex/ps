@@ -1,8 +1,8 @@
-import type { ProjectsProjectId } from './Projects.js';
-import type { AccountsAccountId } from './Accounts.js';
-import type { FieldTypesFieldTypeId } from './FieldTypes.js';
-import type { WidgetTypesWidgetTypeId } from './WidgetTypes.js';
-import type { ListsListId } from './Lists.js';
+import type { ProjectsProjectId } from './Projects.ts';
+import type { AccountsAccountId } from './Accounts.ts';
+import type { FieldTypesFieldTypeId } from './FieldTypes.ts';
+import type { WidgetTypesWidgetTypeId } from './WidgetTypes.ts';
+import type { ListsListId } from './Lists.ts';
 
 /** Identifier type for public.fields */
 export type FieldsFieldId = string & { __brand: 'public.fields' };

@@ -1,4 +1,4 @@
-import type { default as ProjectExportsLevelEnum } from './ProjectExportsLevelEnum.js';
+import type { default as ProjectExportsLevelEnum } from './ProjectExportsLevelEnum.ts';
 
 /**
  * Represents the table public.project_exports_history

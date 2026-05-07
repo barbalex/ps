@@ -1,8 +1,8 @@
-import type { VectorLayersVectorLayerId } from './VectorLayers.js';
-import type { default as VectorLayerMarkerTypesEnum } from './VectorLayerMarkerTypesEnum.js';
-import type { default as VectorLayerLineCapsEnum } from './VectorLayerLineCapsEnum.js';
-import type { default as VectorLayerLineJoinsEnum } from './VectorLayerLineJoinsEnum.js';
-import type { default as VectorLayerFillRulesEnum } from './VectorLayerFillRulesEnum.js';
+import type { VectorLayersVectorLayerId } from './VectorLayers.ts';
+import type { default as VectorLayerMarkerTypesEnum } from './VectorLayerMarkerTypesEnum.ts';
+import type { default as VectorLayerLineCapsEnum } from './VectorLayerLineCapsEnum.ts';
+import type { default as VectorLayerLineJoinsEnum } from './VectorLayerLineJoinsEnum.ts';
+import type { default as VectorLayerFillRulesEnum } from './VectorLayerFillRulesEnum.ts';
 
 /** Identifier type for public.vector_layer_displays */
 export type VectorLayerDisplaysVectorLayerDisplayId = string & { __brand: 'public.vector_layer_displays' };

@@ -1,6 +1,6 @@
-import type { ProjectsProjectId } from './Projects.js';
-import type { default as TaxonomyTypesEnum } from './TaxonomyTypesEnum.js';
-import type { UnitsUnitId } from './Units.js';
+import type { ProjectsProjectId } from './Projects.ts';
+import type { default as TaxonomyTypesEnum } from './TaxonomyTypesEnum.ts';
+import type { UnitsUnitId } from './Units.ts';
 
 /** Identifier type for public.taxonomies */
 export type TaxonomiesTaxonomyId = string & { __brand: 'public.taxonomies' };

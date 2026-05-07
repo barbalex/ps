@@ -1,6 +1,6 @@
-import type { AccountsAccountId } from './Accounts.js';
-import type { default as ProjectTypesEnum } from './ProjectTypesEnum.js';
-import type { UnitsUnitId } from './Units.js';
+import type { AccountsAccountId } from './Accounts.ts';
+import type { default as ProjectTypesEnum } from './ProjectTypesEnum.ts';
+import type { UnitsUnitId } from './Units.ts';
 
 /** Identifier type for public.projects */
 export type ProjectsProjectId = string & { __brand: 'public.projects' };

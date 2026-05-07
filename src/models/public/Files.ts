@@ -1,8 +1,8 @@
-import type { ProjectsProjectId } from './Projects.js';
-import type { SubprojectsSubprojectId } from './Subprojects.js';
-import type { PlacesPlaceId } from './Places.js';
-import type { ActionsActionId } from './Actions.js';
-import type { ChecksCheckId } from './Checks.js';
+import type { ProjectsProjectId } from './Projects.ts';
+import type { SubprojectsSubprojectId } from './Subprojects.ts';
+import type { PlacesPlaceId } from './Places.ts';
+import type { ActionsActionId } from './Actions.ts';
+import type { ChecksCheckId } from './Checks.ts';
 
 /** Identifier type for public.files */
 export type FilesFileId = string & { __brand: 'public.files' };

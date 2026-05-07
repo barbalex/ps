@@ -1,4 +1,4 @@
-import type { default as UnitTypesEnum } from './UnitTypesEnum.js';
+import type { default as UnitTypesEnum } from './UnitTypesEnum.ts';
 
 /**
  * Represents the table public.units_history

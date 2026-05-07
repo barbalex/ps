@@ -1,4 +1,4 @@
-import type { VectorLayersVectorLayerId } from './VectorLayers.js';
+import type { VectorLayersVectorLayerId } from './VectorLayers.ts';
 
 /** Identifier type for public.vector_layer_geoms */
 export type VectorLayerGeomsVectorLayerGeomId = string & { __brand: 'public.vector_layer_geoms' };

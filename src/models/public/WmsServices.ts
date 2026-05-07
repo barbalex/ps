@@ -1,4 +1,4 @@
-import type { ProjectsProjectId } from './Projects.js';
+import type { ProjectsProjectId } from './Projects.ts';
 
 /** Identifier type for public.wms_services */
 export type WmsServicesWmsServiceId = string & { __brand: 'public.wms_services' };

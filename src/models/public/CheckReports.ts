@@ -1,4 +1,4 @@
-import type { PlacesPlaceId } from './Places.js';
+import type { PlacesPlaceId } from './Places.ts';
 
 /** Identifier type for public.check_reports */
 export type CheckReportsPlaceCheckReportId = string & { __brand: 'public.check_reports' };

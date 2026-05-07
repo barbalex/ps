@@ -1,5 +1,5 @@
-import type { WmsLayersWmsLayerId } from './WmsLayers.js';
-import type { VectorLayersVectorLayerId } from './VectorLayers.js';
+import type { WmsLayersWmsLayerId } from './WmsLayers.ts';
+import type { VectorLayersVectorLayerId } from './VectorLayers.ts';
 
 /** Identifier type for public.layer_presentations */
 export type LayerPresentationsLayerPresentationId = string & { __brand: 'public.layer_presentations' };

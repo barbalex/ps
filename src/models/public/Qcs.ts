@@ -1,4 +1,4 @@
-import type { default as QcsLevelEnum } from './QcsLevelEnum.js';
+import type { default as QcsLevelEnum } from './QcsLevelEnum.ts';
 
 /** Identifier type for public.qcs */
 export type QcsQcsId = string & { __brand: 'public.qcs' };

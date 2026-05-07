@@ -1,5 +1,5 @@
-import type { CheckReportsPlaceCheckReportId } from './CheckReports.js';
-import type { UnitsUnitId } from './Units.js';
+import type { CheckReportsPlaceCheckReportId } from './CheckReports.ts';
+import type { UnitsUnitId } from './Units.ts';
 
 /** Identifier type for public.check_report_quantities */
 export type CheckReportQuantitiesPlaceCheckReportQuantityId = string & { __brand: 'public.check_report_quantities' };

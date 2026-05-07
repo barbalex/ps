@@ -1,4 +1,4 @@
-import type { default as ProjectTypesEnum } from './ProjectTypesEnum.js';
+import type { default as ProjectTypesEnum } from './ProjectTypesEnum.ts';
 
 /**
  * Represents the table public.projects_history

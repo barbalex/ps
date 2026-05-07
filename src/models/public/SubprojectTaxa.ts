@@ -1,5 +1,5 @@
-import type { SubprojectsSubprojectId } from './Subprojects.js';
-import type { TaxaTaxonId } from './Taxa.js';
+import type { SubprojectsSubprojectId } from './Subprojects.ts';
+import type { TaxaTaxonId } from './Taxa.ts';
 
 /** Identifier type for public.subproject_taxa */
 export type SubprojectTaxaSubprojectTaxonId = string & { __brand: 'public.subproject_taxa' };

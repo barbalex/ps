@@ -1,5 +1,5 @@
-import type { ProjectsProjectId } from './Projects.js';
-import type { default as ProjectExportsLevelEnum } from './ProjectExportsLevelEnum.js';
+import type { ProjectsProjectId } from './Projects.ts';
+import type { default as ProjectExportsLevelEnum } from './ProjectExportsLevelEnum.ts';
 
 /** Identifier type for public.project_exports */
 export type ProjectExportsProjectExportsId = string & { __brand: 'public.project_exports' };

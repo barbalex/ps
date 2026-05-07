@@ -1,7 +1,7 @@
-import type { default as public_VectorLayerMarkerTypesEnum } from '../public/VectorLayerMarkerTypesEnum.js';
-import type { default as public_VectorLayerLineCapsEnum } from '../public/VectorLayerLineCapsEnum.js';
-import type { default as public_VectorLayerLineJoinsEnum } from '../public/VectorLayerLineJoinsEnum.js';
-import type { default as public_VectorLayerFillRulesEnum } from '../public/VectorLayerFillRulesEnum.js';
+import type { default as public_VectorLayerMarkerTypesEnum } from '../public/VectorLayerMarkerTypesEnum.ts';
+import type { default as public_VectorLayerLineCapsEnum } from '../public/VectorLayerLineCapsEnum.ts';
+import type { default as public_VectorLayerLineJoinsEnum } from '../public/VectorLayerLineJoinsEnum.ts';
+import type { default as public_VectorLayerFillRulesEnum } from '../public/VectorLayerFillRulesEnum.ts';
 
 /** Represents the table partman.template_public_vector_layer_displays_history */
 export default interface TemplatePublicVectorLayerDisplaysHistory {

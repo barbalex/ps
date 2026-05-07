@@ -1,5 +1,5 @@
-import type { ChecksCheckId } from './Checks.js';
-import type { UnitsUnitId } from './Units.js';
+import type { ChecksCheckId } from './Checks.ts';
+import type { UnitsUnitId } from './Units.ts';
 
 /** Identifier type for public.check_quantities */
 export type CheckQuantitiesCheckQuantityId = string & { __brand: 'public.check_quantities' };

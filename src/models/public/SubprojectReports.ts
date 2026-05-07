@@ -1,4 +1,4 @@
-import type { SubprojectsSubprojectId } from './Subprojects.js';
+import type { SubprojectsSubprojectId } from './Subprojects.ts';
 
 /** Identifier type for public.subproject_reports */
 export type SubprojectReportsSubprojectReportId = string & { __brand: 'public.subproject_reports' };

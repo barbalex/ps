@@ -1,4 +1,4 @@
-import type { default as UserRolesEnum } from './UserRolesEnum.js';
+import type { default as UserRolesEnum } from './UserRolesEnum.ts';
 
 /**
  * Represents the table public.place_users_history

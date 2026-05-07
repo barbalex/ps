@@ -1,4 +1,4 @@
-import type { default as public_TaxonomyTypesEnum } from '../public/TaxonomyTypesEnum.js';
+import type { default as public_TaxonomyTypesEnum } from '../public/TaxonomyTypesEnum.ts';
 
 /** Represents the table partman.template_public_taxonomies_history */
 export default interface TemplatePublicTaxonomiesHistory {

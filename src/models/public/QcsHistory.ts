@@ -1,4 +1,4 @@
-import type { default as QcsLevelEnum } from './QcsLevelEnum.js';
+import type { default as QcsLevelEnum } from './QcsLevelEnum.ts';
 
 /**
  * Represents the table public.qcs_history

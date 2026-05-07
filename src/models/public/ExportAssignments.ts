@@ -1,6 +1,6 @@
-import type { ProjectsProjectId } from './Projects.js';
-import type { SubprojectsSubprojectId } from './Subprojects.js';
-import type { ExportsExportsId } from './Exports.js';
+import type { ProjectsProjectId } from './Projects.ts';
+import type { SubprojectsSubprojectId } from './Subprojects.ts';
+import type { ExportsExportsId } from './Exports.ts';
 
 /** Identifier type for public.export_assignments */
 export type ExportAssignmentsExportAssignmentId = string & { __brand: 'public.export_assignments' };

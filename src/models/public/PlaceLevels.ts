@@ -1,4 +1,4 @@
-import type { ProjectsProjectId } from './Projects.js';
+import type { ProjectsProjectId } from './Projects.ts';
 
 /** Identifier type for public.place_levels */
 export type PlaceLevelsPlaceLevelId = string & { __brand: 'public.place_levels' };

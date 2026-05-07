@@ -1,5 +1,5 @@
-import type { ProjectsProjectId } from './Projects.js';
-import type { default as ListValueTypesEnum } from './ListValueTypesEnum.js';
+import type { ProjectsProjectId } from './Projects.ts';
+import type { default as ListValueTypesEnum } from './ListValueTypesEnum.ts';
 
 /** Identifier type for public.lists */
 export type ListsListId = string & { __brand: 'public.lists' };

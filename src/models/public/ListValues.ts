@@ -1,4 +1,4 @@
-import type { ListsListId } from './Lists.js';
+import type { ListsListId } from './Lists.ts';
 
 /** Identifier type for public.list_values */
 export type ListValuesListValueId = string & { __brand: 'public.list_values' };

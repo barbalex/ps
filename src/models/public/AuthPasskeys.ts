@@ -1,4 +1,4 @@
-import type { UsersUserId } from './Users.js';
+import type { UsersUserId } from './Users.ts';
 
 /** Identifier type for public.auth_passkeys */
 export type AuthPasskeysAuthPasskeyId = string & { __brand: 'public.auth_passkeys' };

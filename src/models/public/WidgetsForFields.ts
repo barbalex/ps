@@ -1,5 +1,5 @@
-import type { FieldTypesFieldTypeId } from './FieldTypes.js';
-import type { WidgetTypesWidgetTypeId } from './WidgetTypes.js';
+import type { FieldTypesFieldTypeId } from './FieldTypes.ts';
+import type { WidgetTypesWidgetTypeId } from './WidgetTypes.ts';
 
 /** Identifier type for public.widgets_for_fields */
 export type WidgetsForFieldsWidgetForFieldId = string & { __brand: 'public.widgets_for_fields' };

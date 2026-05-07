@@ -1,9 +1,9 @@
-import type { ChartsChartId } from './Charts.js';
-import type { default as ChartSubjectTableNamesEnum } from './ChartSubjectTableNamesEnum.js';
-import type { default as ChartSubjectTableLevelsEnum } from './ChartSubjectTableLevelsEnum.js';
-import type { default as ChartSubjectCalcMethodsEnum } from './ChartSubjectCalcMethodsEnum.js';
-import type { UnitsUnitId } from './Units.js';
-import type { default as ChartSubjectTypesEnum } from './ChartSubjectTypesEnum.js';
+import type { ChartsChartId } from './Charts.ts';
+import type { default as ChartSubjectTableNamesEnum } from './ChartSubjectTableNamesEnum.ts';
+import type { default as ChartSubjectTableLevelsEnum } from './ChartSubjectTableLevelsEnum.ts';
+import type { default as ChartSubjectCalcMethodsEnum } from './ChartSubjectCalcMethodsEnum.ts';
+import type { UnitsUnitId } from './Units.ts';
+import type { default as ChartSubjectTypesEnum } from './ChartSubjectTypesEnum.ts';
 
 /** Identifier type for public.chart_subjects */
 export type ChartSubjectsChartSubjectId = string & { __brand: 'public.chart_subjects' };

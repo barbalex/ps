@@ -1,4 +1,4 @@
-import type { PlacesPlaceId } from './Places.js';
+import type { PlacesPlaceId } from './Places.ts';
 
 /** Identifier type for public.actions */
 export type ActionsActionId = string & { __brand: 'public.actions' };
