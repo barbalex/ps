@@ -1,6 +1,6 @@
 # Pricing
 
-*Last updated: 17 April 2026*
+_Last updated: 17 April 2026_
 
 ---
 
@@ -29,38 +29,18 @@ For example, I can imagine showing account users a rough statistic: number of ac
 
 I do not want this project only to make me rich. I believe in its value for ecological consultancies and public nature conservation offices. That is why I would like to start at low prices, to see whether that is true. And not prevent this value from being realized from the start by setting discouraging prices.
 
-But that does not rule out having to increase prices later. Just like Netflix, Adobe & co...
+But that does not rule out having to increase prices later. Just like Netflix, Adobe, Microsoft & co...
 
 ## Sign a contract
 
 ### Comprehensive
 
-Paying in advance on the internet is usually not how public institutions work. They have different financial and internal processes, and they normally want to secure operations, maintenance, and support over multiple years.
+Paying in advance on the internet is usually not how public institutions work. They have different financial and internal processes, and they want to secure operations, maintenance, and support over multiple years.
 
 That is why it is also possible to sign a tailored contract with gabriel-software.ch. In that case, prices are negotiated.
 
 If it works out, this will likely become the main source of income. And make it possible to keep subscription prices relatively low. Because public institutions would then cover the base load (infrastructure, technical maintenance, bug fixes).
 
-### Configure for your needs
+### Configuration
 
-arten-fördern.app was created because, on the one hand, there is no 'one size fits all' for nature conservation projects. And on the other hand, only very few public institutions or ecological consultancies can afford the development of a tailor-made product such as https://apflora.ch, https://vermehrung.ch or https://arteigenschaften.ch.
-
-That is why arten-fördern.app is highly configurable. This is the technically most demanding part of the application. It is also the part that is hardest to understand and implement. Because right at the beginning, before you have worked with it, you already need to know how to organize your project optimally and how arten-fördern.app can support that.
-
-You have three ways to master this hurdle:
-
-#### 1 I just get started and take care of configuration when it becomes necessary
-
-I am of course happy if you take out a subscription for that. But it hurts me to think how very likely this could have gone much better for you. Configuration changes made later can be extremely time-consuming and cumbersome for all collaborators.
-
-#### 2 I take a lot of time at the start and configure it myself
-
-Good idea. If you plan your project well and learn how to configure arten-fördern.app optimally for it, it will work out well. Please tell me where I need to improve documentation to simplify the process, or what should work differently in your case.
-
-#### 3 I take time at the start and get support while doing it
-
-You can probably shorten the time needed to really understand and plan arten-fördern.app and your project a lot if I can think along and advise you. This will probably also reduce the risk of having to adjust configuration later. Such processes can be very painful.
-
-This process is also very interesting for me. Instead of charging particularly high rates for demanding consulting, at the beginning I am willing to collaborate at modest rates (right at the beginning, even free for ecological consultancies) and treat the rest as training, networking, and marketing.
-
-I think offering this rate for free at the start and increasing it later is fair: at the beginning, marketing and training are more important for me. And above all: you know the rate in advance. It is not a model where I make you dependent on me and then raise prices.
+It is worth configuring arten-fördern.app properly for your project. BEFORE you start the actual work. It may be worth involving me in this process. And that (can) cost something. [More information here.](/docs/configuration)

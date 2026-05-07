@@ -1,6 +1,6 @@
 # Preise
 
-*Zuletzt aktualisiert am 17. April 2026*
+_Zuletzt aktualisiert am 17. April 2026_
 
 ---
 
@@ -23,44 +23,24 @@ Das ist mir zuwider.
 
 Ein faires Modell geht davon aus, wieviele Kunden ein Abo lösen werden und kann daher abschätzen, mit welchen Preisen das Modell nachhaltig funktioniert.
 
-Nur ist das recht schwer abzuschätzen. Ich werde daher Beträge festlegen und jedes Jahr in Abhängigkeit der Nachfrage überdenken. Meine Absicht ist, möglichst transparent zu informieren, damit ihr selber auch abschätzen könnt, wie die Sache läuft.
+Nur ist das schwer abzuschätzen. Ich werde daher Beträge festlegen und jedes Jahr in Abhängigkeit der Nachfrage überdenken. Meine Absicht ist, möglichst transparent zu informieren, damit ihr selber auch abschätzen könnt, wie die Sache läuft.
 
 Ich könnte mir z.B. vorstellen, dass Benutzer mit Konto eine grobe Statistik sehen: Anzahl Konten pro Typ.
 
 Ich will mit diesem Projekt nicht nur reich werden. Ich glaube an seinen Nutzen für Ökobüros und öffentliche Naturschutz-Fachstellen. Daher würde ich gerne günstig anfangen, um zu sehen, ob das stimmt. Und nicht von vornherein über abschreckende Preise verhindern, dass dieser Nutzen erzielt wird.
 
-Was dann aber wiederum nicht ausschliesst, dass ich später die Preise erhöhen muss. Genau wie Netflix, Adobe & co...
+Was dann aber wiederum nicht ausschliesst, dass ich später die Preise erhöhen muss. Genau wie Netflix, Adobe, Microsoft & co...
 
 ## Vertrag abschliessen
 
 ### Umfassend
 
-Vorauszahlung im Internet ist üblicherweise nicht die Art, wie öffentliche Institutionen arbeiten. Sie haben andere finanzielle und interne Abläufe und möchten sich normalerweise Betrieb, Unterhalt und Support über mehrere Jahre sichern.
+Vorauszahlung im Internet ist üblicherweise nicht die Art, wie öffentliche Institutionen arbeiten. Sie haben andere finanzielle und interne Abläufe und möchten sich Betrieb, Unterhalt und Support über mehrere Jahre sichern.
 
 Darum kann man auch mit gabriel-software.ch einen massgeschneiderten Vertrag abschliessen. Preise sind dann Verhandlungssache.
 
 Das dürfte, wenn es klappt, die Haupteinnahme-Quelle werden. Und ermöglichen, die Preise für Abos verhältnismässig günstig zu halten. Denn über die öffentlichen Institutionen wäre dann die Grundlast (Infrastruktur, technischer Unterhalt, Fehlerkorrekturen) gedeckt.
 
-### Für deine Bedürfnisse konfigurieren
+### Konfiguration
 
-arten-fördern.app ist enstanden, weil es einerseits kein 'one size fits all' gibt für Naturschutzprojekte. Und anderseits weil sich nur die wenigsten öffentlichen Institutionen oder Ökobüros die Entwicklung eines massgeschneiderten Produkts wie z.B. https://apflora.ch, https://vermehrung.ch oder https://arteigenschaften.ch leisten (können).
-
-Deshalb ist arten-fördern.app sehr stark konfigurierbar. Das ist der technisch anspruchvollste Teil der Anwendung. Es ist auch der Teil, der am schwierigsten zu verstehen und durchzuführen ist. Denn du musst schon ganz am Anfang, bevor du damit gearbeitet hast, wissen, wie du dein Projekt optimal organisierst und arten-fördern.app dabei einsetzen kannst.
-
-Du hast drei Varianten, diese Hürde zu meistern:
-
-#### 1 Ich fange einfach mal an und kümmere mich um Konfiguration, wenn es nötig wird
-
-Es freut mich natürlich, wenn du dafür ein Abo löst. Aber mir tut es weh, wenn ich daran denke, wie viel besser es sehr wahrscheinlich für dich hätte laufen können. Nachträgliche Konfigurations-Änderungen können extrem aufwändig und für alle Mitarbeitenden mühsam sein.
-
-#### 2 Ich nehme mir am Anfang sehr viel Zeit und konfiguriere selbst
-
-Gute Idee. Wenn du dein Projekt gut planst und lernst, arten-fördern.app optimal dafür zu konfigurieren, kommt es gut! Sag mir bitte, wo ich besser dokumentieren muss um den Prozess zu vereinfachen oder was für deinen Fall anders funktionieren sollte.
-
-#### 3 Ich nehme mir am Anfang Zeit und lasse mich dabei unterstützen
-
-Du kannst die Zeit, arten-fördern.app und dein Projekt wirklich gut zu verstehen und planen wahrscheinlich stark verkürzen, wenn ich mitdenken und beraten darf. Das reduziert vermutlich auch das Risiko, später die Konfiguration anpassen zu müssen. Solche Vorgänge können sehr schmerzhaft sein.
-
-Dieser Prozess ist auch für mich sehr interessant. Statt für die anspruchsvolle Beratung besonders hohe Ansätze zu verrechnen, bin ich daher am Anfang gewillt, zu bescheidenen Tarifen mitzuarbeiten (ganz am Anfang für Ökobüros sogar gratis) und den Rest als Weiterbildung, Vernetzung und Marketing abzubuchen.
-
-Dass ich diesen Tarif zu Beginn gratis anbiete und später erhöhe finde ich fair: Am Anfang überwiegt für mich Marketing und Weiterbildung. Und vor allem: Den Tarif kennt ihr voraus. Es ist kein Modell wo ich euch von mir abhängig mache und danach die Preise erhöhe.
+Es lohnt sich, arten-förder.app für dein Projekt richtig zu konfigurieren. BEVOR Ihr mit der eigentlichen Arbeit beginnt. Es kann sich lohnen, mich dabei einzubinden. Und das (kann) kosten. [Mehr Infos hier.](/docs/configuration)
