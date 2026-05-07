@@ -11,14 +11,18 @@ import {
   languageAtom,
   projectExportsRunLabelFilterAtom,
   projectExportsRunFilteredCountAtom,
+  projectsFilterAtom,
+  subprojectsFilterAtom,
+  places1FilterAtom,
 } from '../store.ts'
 import { Dismiss16Regular } from '@fluentui/react-icons'
 import { useProjectExportsRunNavData } from '../modules/useProjectExportsRunNavData.ts'
+import { filterStringFromFilter } from '../modules/filterStringFromFilter.ts'
 import styles from './projectExportsRun.module.css'
 
 import '../form.css'
 
-const { Button, Input, Field, Text } = fluentUiReactComponents
+const { Button, Checkbox, Input, Field, Text } = fluentUiReactComponents
 
 type ExportRow = {
   exports_id: string
@@ -26,6 +30,7 @@ type ExportRow = {
   sql: string | null
   filter_by_year: boolean | null
   is_project_export: boolean
+  base_table: string | null
 }
 
 type ExportFormat = 'csv' | 'xlsx' | 'ods'
@@ -67,6 +72,7 @@ async function runAndDownload({
   format,
   projectId,
   filterByYear,
+  filterString,
 }: {
   db: ReturnType<typeof usePGlite>
   sql: string
@@ -76,6 +82,7 @@ async function runAndDownload({
   projectId: string
   filterByYear: boolean | null
   isProjectExport: boolean
+  filterString?: string
 }) {
   // All exports shown in the project run view use $1 = project_id.
   // Year ($2) is only added when filter_by_year is true.
@@ -86,7 +93,12 @@ async function runAndDownload({
     if (!isNaN(yearNum)) params.push(yearNum)
   }
 
-  const result = await db.query(sql, params)
+  const effectiveSql =
+    filterString
+      ? `WITH __export AS (\n${sql}\n)\nSELECT * FROM __export\nWHERE ${filterString}`
+      : sql
+
+  const result = await db.query(effectiveSql, params)
   const rows = result.rows as Record<string, unknown>[]
 
   if (rows.length === 0) return
@@ -128,6 +140,29 @@ export const ProjectExportsRun = ({ from }: { from: string }) => {
 
   const currentYear = new Date().getFullYear().toString()
   const [year, setYear] = useState(currentYear)
+  const [applyFilter, setApplyFilter] = useState<Record<string, boolean>>({})
+
+  const [projectsFilter] = useAtom(projectsFilterAtom)
+  const [subprojectsFilter] = useAtom(subprojectsFilterAtom)
+  const [places1Filter] = useAtom(places1FilterAtom)
+
+  const filtersByTable: Record<string, Record<string, unknown>[]> = {
+    projects: projectsFilter,
+    subprojects: subprojectsFilter,
+    places: places1Filter,
+  }
+
+  const getFilterString = (baseTable: string | null): string => {
+    if (!baseTable) return ''
+    const filter = filtersByTable[baseTable]
+    if (!filter?.length) return ''
+    return filterStringFromFilter(filter, undefined)
+  }
+
+  const hasActiveFilter = (baseTable: string | null): boolean => {
+    if (!baseTable) return false
+    return !!getFilterString(baseTable)
+  }
 
   // Load assigned root-level exports for this project
   const exportsRes = useLiveQuery(
@@ -135,6 +170,7 @@ export const ProjectExportsRun = ({ from }: { from: string }) => {
             COALESCE(NULLIF(e.name_${language}, ''), e.name_de) AS label,
             e.sql,
             e.filter_by_year,
+            e.base_table,
             false AS is_project_export
      FROM export_assignments ea
      JOIN exports e ON e.exports_id = ea.exports_id
@@ -152,6 +188,7 @@ export const ProjectExportsRun = ({ from }: { from: string }) => {
             COALESCE(NULLIF(pe.name_${language}, ''), pe.name_de) AS label,
             pe.sql,
             pe.filter_by_year,
+            pe.base_table,
             true AS is_project_export
      FROM project_export_assignments pea
      JOIN project_exports pe ON pe.project_exports_id = pea.project_exports_id
@@ -184,6 +221,8 @@ export const ProjectExportsRun = ({ from }: { from: string }) => {
 
   const handleDownload = async (e: ExportRow, format: ExportFormat) => {
     if (!e.sql) return
+    const filterStr =
+      applyFilter[e.exports_id] ? getFilterString(e.base_table) : undefined
     try {
       await runAndDownload({
         db,
@@ -194,6 +233,7 @@ export const ProjectExportsRun = ({ from }: { from: string }) => {
         projectId,
         filterByYear: e.filter_by_year,
         isProjectExport: e.is_project_export,
+        filterString: filterStr || undefined,
       })
     } catch (error) {
       console.error('Error running export:', error)
@@ -269,6 +309,22 @@ export const ProjectExportsRun = ({ from }: { from: string }) => {
                     term={labelFilter}
                   />
                 </Text>
+                {hasActiveFilter(e.base_table) && (
+                  <Checkbox
+                    label={formatMessage({
+                      id: 'exportsRun.applyFilter',
+                      defaultMessage: 'Aktuellen Filter anwenden',
+                    })}
+                    checked={applyFilter[e.exports_id] ?? false}
+                    onChange={(_, data) =>
+                      setApplyFilter((prev) => ({
+                        ...prev,
+                        [e.exports_id]: !!data.checked,
+                      }))
+                    }
+                    size="medium"
+                  />
+                )}
                 <div className={styles.formatButtons}>
                   <Button
                     appearance="subtle"

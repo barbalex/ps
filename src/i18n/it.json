@@ -844,6 +844,7 @@
   "exportsRun.filter": "Filtra per label",
   "exportsRun.filterPlaceholder": "Filtra...",
   "exportsRun.clearFilter": "Cancella filtro",
+  "exportsRun.applyFilter": "Applica il filtro corrente",
   "exportsRun.empty": "Nessun export disponibile",
   "rootExportsRun.title": "Export: esegui",
   "projectExportsRun.title": "Export: esegui",

@@ -10,19 +10,24 @@ import {
   languageAtom,
   rootExportsRunLabelFilterAtom,
   rootExportsRunFilteredCountAtom,
+  projectsFilterAtom,
+  subprojectsFilterAtom,
+  places1FilterAtom,
 } from '../store.ts'
 import { Dismiss16Regular } from '@fluentui/react-icons'
 import { useRootExportsRunNavData } from '../modules/useRootExportsRunNavData.ts'
+import { filterStringFromFilter } from '../modules/filterStringFromFilter.ts'
 import styles from './rootExportsRun.module.css'
 
 import '../form.css'
 
-const { Button, Input, Field, Text } = fluentUiReactComponents
+const { Button, Checkbox, Input, Field, Text } = fluentUiReactComponents
 
 type ExportRow = {
   exports_id: string
   label: string | null
   sql: string | null
+  base_table: string | null
 }
 
 /** Highlight all occurrences of `term` in `text` */
@@ -62,12 +67,14 @@ async function runAndDownload({
   year,
   label,
   format,
+  filterString,
 }: {
   db: ReturnType<typeof usePGlite>
   sql: string
   year: string
   label: string
   format: ExportFormat
+  filterString?: string
 }) {
   const params: (string | number)[] = []
   if (sql.includes('$1')) {
@@ -75,7 +82,12 @@ async function runAndDownload({
     if (!isNaN(yearNum)) params.push(yearNum)
   }
 
-  const result = await db.query(sql, params)
+  const effectiveSql =
+    filterString
+      ? `WITH __export AS (\n${sql}\n)\nSELECT * FROM __export\nWHERE ${filterString}`
+      : sql
+
+  const result = await db.query(effectiveSql, params)
   const rows = result.rows as Record<string, unknown>[]
 
   if (rows.length === 0) return
@@ -114,11 +126,38 @@ export const RootExportsRun = () => {
 
   const currentYear = new Date().getFullYear().toString()
   const [year, setYear] = useState(currentYear)
+  const [applyFilter, setApplyFilter] = useState<Record<string, boolean>>({})
+
+  const [projectsFilter] = useAtom(projectsFilterAtom)
+  const [subprojectsFilter] = useAtom(subprojectsFilterAtom)
+  const [places1Filter] = useAtom(places1FilterAtom)
+
+  const filtersByTable: Record<string, Record<string, unknown>[]> = {
+    projects: projectsFilter,
+    subprojects: subprojectsFilter,
+    places: places1Filter,
+  }
+
+  const getFilterString = (baseTable: string | null): string => {
+    if (!baseTable) return ''
+    const filter = filtersByTable[baseTable]
+    if (!filter?.length) return ''
+    return filterStringFromFilter(filter, undefined)
+  }
+
+  const hasActiveFilter = (baseTable: string | null): boolean => {
+    if (!baseTable) return false
+    return !!getFilterString(baseTable)
+  }
+
+  const currentYear = new Date().getFullYear().toString()
+  const [year, setYear] = useState(currentYear)
 
   const exportsRes = useLiveQuery(
     `SELECT e.exports_id,
             COALESCE(NULLIF(e.name_${language}, ''), e.name_de) AS label,
-            e.sql
+            e.sql,
+            e.base_table
      FROM export_assignments ea
      JOIN exports e ON e.exports_id = ea.exports_id
      WHERE ea.project_id IS NULL
@@ -146,6 +185,8 @@ export const RootExportsRun = () => {
 
   const handleDownload = async (e: ExportRow, format: ExportFormat) => {
     if (!e.sql) return
+    const filterStr =
+      applyFilter[e.exports_id] ? getFilterString(e.base_table) : undefined
     try {
       await runAndDownload({
         db,
@@ -153,6 +194,7 @@ export const RootExportsRun = () => {
         year,
         label: e.label ?? e.exports_id,
         format,
+        filterString: filterStr || undefined,
       })
     } catch (error) {
       console.error('Error running export:', error)
@@ -228,6 +270,22 @@ export const RootExportsRun = () => {
                     term={labelFilter}
                   />
                 </Text>
+                {hasActiveFilter(e.base_table) && (
+                  <Checkbox
+                    label={formatMessage({
+                      id: 'exportsRun.applyFilter',
+                      defaultMessage: 'Aktuellen Filter anwenden',
+                    })}
+                    checked={applyFilter[e.exports_id] ?? false}
+                    onChange={(_, data) =>
+                      setApplyFilter((prev) => ({
+                        ...prev,
+                        [e.exports_id]: !!data.checked,
+                      }))
+                    }
+                    size="medium"
+                  />
+                )}
                 <div className={styles.formatButtons}>
                   <Button
                     appearance="subtle"

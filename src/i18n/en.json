@@ -860,6 +860,7 @@
   "exportsRun.filter": "Filter by label",
   "exportsRun.filterPlaceholder": "Filter...",
   "exportsRun.clearFilter": "Clear filter",
+  "exportsRun.applyFilter": "Apply current filter",
   "exportsRun.empty": "No exports available",
   "rootExportsRun.title": "Exports: run",
   "projectExportsRun.title": "Exports: run",

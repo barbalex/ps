@@ -843,6 +843,7 @@
   "exportsRun.filter": "Filtrer par label",
   "exportsRun.filterPlaceholder": "Filtre...",
   "exportsRun.clearFilter": "Effacer le filtre",
+  "exportsRun.applyFilter": "Appliquer le filtre actuel",
   "exportsRun.empty": "Aucun export disponible",
   "rootExportsRun.title": "Exports : exécuter",
   "projectExportsRun.title": "Exports : exécuter",

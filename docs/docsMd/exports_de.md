@@ -18,3 +18,5 @@ Formate:
 Benutzer mit der Rolle "Eigentümer" oder "Designer" können wählen, welche der vorbereiteten Exporte zur Verfügung stehen. Und eigene generieren.
 
 Exporte gibt es auf Stufe Projekt und Teil-Projekt (Art/Biotop).
+
+Möchten Sie den Export filtern? Sie können auf der Basis-Tabelle im Filter-Formular einen beliebigen Filter setzen und diesen dann beim Export anwenden.
