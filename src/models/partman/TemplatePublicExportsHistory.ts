@@ -14,6 +14,8 @@ export default interface TemplatePublicExportsHistory {
 
   level: public_ExportsLevelEnum | null;
 
+  filter_by_year: boolean | null;
+
   sql: string | null;
 
   description: string | null;
@@ -41,6 +43,8 @@ export interface TemplatePublicExportsHistoryInitializer {
 
   level?: public_ExportsLevelEnum | null;
 
+  filter_by_year?: boolean | null;
+
   sql?: string | null;
 
   description?: string | null;
@@ -67,6 +71,8 @@ export interface TemplatePublicExportsHistoryMutator {
   name_it?: string | null;
 
   level?: public_ExportsLevelEnum | null;
+
+  filter_by_year?: boolean | null;
 
   sql?: string | null;
 

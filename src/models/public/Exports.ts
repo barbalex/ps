@@ -20,8 +20,11 @@ export default interface Exports {
 
   level: ExportsLevelEnum | null;
 
+  filter_by_year: boolean | null;
+
   sql: string | null;
 
+  /** Describe the query so that an ai agent can build the sql. */
   description: string | null;
 
   /** System period maintained by temporal_tables for auditing and historic queries. */
@@ -52,8 +55,12 @@ export interface ExportsInitializer {
 
   level?: ExportsLevelEnum | null;
 
+  /** Default value: false */
+  filter_by_year?: boolean | null;
+
   sql?: string | null;
 
+  /** Describe the query so that an ai agent can build the sql. */
   description?: string | null;
 
   /** System period maintained by temporal_tables for auditing and historic queries. */
@@ -85,8 +92,11 @@ export interface ExportsMutator {
 
   level?: ExportsLevelEnum | null;
 
+  filter_by_year?: boolean | null;
+
   sql?: string | null;
 
+  /** Describe the query so that an ai agent can build the sql. */
   description?: string | null;
 
   /** System period maintained by temporal_tables for auditing and historic queries. */

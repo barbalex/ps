@@ -25,6 +25,7 @@ export default interface ProjectExports {
 
   sql: string | null;
 
+  /** Describe the query so that an ai agent can build the sql. */
   description: string | null;
 
   /** System period maintained by temporal_tables for auditing and historic queries. */
@@ -59,6 +60,7 @@ export interface ProjectExportsInitializer {
 
   sql?: string | null;
 
+  /** Describe the query so that an ai agent can build the sql. */
   description?: string | null;
 
   /** System period maintained by temporal_tables for auditing and historic queries. */
@@ -94,6 +96,7 @@ export interface ProjectExportsMutator {
 
   sql?: string | null;
 
+  /** Describe the query so that an ai agent can build the sql. */
   description?: string | null;
 
   /** System period maintained by temporal_tables for auditing and historic queries. */
