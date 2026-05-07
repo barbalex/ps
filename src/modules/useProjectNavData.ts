@@ -387,10 +387,12 @@ export const useProjectNavData = ({
                   label: buildNavLabel({
                     loading,
                     countFiltered: nav?.subproject_report_designs_count ?? 0,
-                    namePlural: formatMessage({
-                      id: '6GiFz4',
-                      defaultMessage: 'Teilprojekt-Bericht-Designs',
-                    }),
+                    namePlural: nav?.subprojects_name_singular
+                      ? `${nav.subprojects_name_singular}-${formatMessage({ id: 'bCJkLm', defaultMessage: 'Bericht-Designs' })}`
+                      : formatMessage({
+                          id: '6GiFz4',
+                          defaultMessage: 'Teilprojekt-Bericht-Designs',
+                        }),
                   }),
                 },
                 {
