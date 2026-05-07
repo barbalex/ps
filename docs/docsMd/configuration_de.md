@@ -6,27 +6,28 @@ _Zuletzt aktualisiert am 6.5.2026_
 
 arten-fördern.app ist enstanden, weil:
 
-- es kein 'one size fits all' gibt für Naturschutzprojekte
-- und weil sich nur die wenigsten öffentlichen Institutionen oder Ökobüros die Entwicklung eines massgeschneiderten Produkts wie z.B. https://apflora.ch, https://vermehrung.ch oder https://arteigenschaften.ch leisten (können)
+- [apflora.ch](https://apflora.ch) zeigt den Nutzen eines solchen Werkzeugs. Beteiligte Naturschutzfachleute haben gewünscht, es auch in anderen Projekten verwenden zu können
+- Es gibt kein «one size fits all» für Naturschutzprojekte: Die meisten Projekte könnten/sollten apflora.ch nicht unverändert verwenden
+- Nur die wenigsten öffentlichen Institutionen oder Ökobüros können oder wollen sich die Entwicklung eines massgeschneiderten Produkts wie z.B. https://apflora.ch, https://vermehrung.ch oder https://arteigenschaften.ch leisten
 
-Deshalb ist arten-fördern.app sehr stark konfigurierbar. Das war für mich der anspruchvollste Teil der Entwicklung. Für dich bedeutet es: Du ganz am Anfang überlegen, wie du dein Projekt optimal organisierst und arten-fördern.app dafür einsetzen kannst.
+Deshalb ist arten-fördern.app stark konfigurierbar. Das war der anspruchvollste Teil der Entwicklung.
+
+Für dich bedeutet es: Du musst ganz am Anfang überlegen, wie du dein Projekt optimal organisierst und arten-fördern.app dafür einsetzt.
 
 Dafür hast du drei Varianten:
 
-## 1 Ich fange einfach mal an und kümmere mich um Konfiguration, wenn es nötig wird
+## 1 «Ich fange einfach mal an und kümmere mich um Konfiguration, wenn es nötig wird»
 
-Es freut mich, wenn du dafür ein Abo löst. Aber die Chance ist gross, dass es für euch hätte viel besser laufen können. Nachträgliche Konfigurations-Änderungen können sehr aufwändig sein und alle Mitarbeitenden beeinflussen.
+Es freut mich, wenn du dafür ein Abo löst. Aber es ist wahrscheinlich, dass es für euch hätte viel besser laufen können. Nachträgliche Konfigurations-Änderungen können sehr aufwändig sein und alle Mitarbeitenden betreffen.
 
 Ist ein Projekt erfolgreich, entwickelt es sich über die Jahre weiter. Spätere Anpassungen/Erweiterungen sind daher auch bei guter Vorbereitung selten vermeidbar. Aber minimierbar.
 
-## 2 Ich nehme mir am Anfang sehr viel Zeit und konfiguriere selbst
+## 2 «Ich nehme mir am Anfang viel Zeit und konfiguriere selbst»
 
-Gute Idee. Sag mir bitte, was ich besser dokumentieren muss um den Prozess zu vereinfachen oder was für deinen Fall anders funktionieren sollte.
+Gute Idee. Sag mir bitte, was ich besser dokumentieren soll und was für dein Projekt fehlt oder anders funktionieren sollte.
 
-## 3 Ich nehme mir am Anfang Zeit und lasse mich dabei unterstützen
+## 3 «Ich nehme mir am Anfang Zeit und lasse mich dabei unterstützen»
 
-Du kannst deinen Aufwand wahrscheinlich reduzieren, wenn ich mitdenken und beraten darf. Auch das Risiko, die Konfiguration nachträglich anpassen zu müssen.
+Ich entwickle zwar heute Software, [verstehe aber auch einiges von Naturschutz](https://gabriel-software.ch/kontakt). Wenn ich mitdenke kannst du vermutlich deinen Aufwand und die Wahrscheinlichkeit oder das Ausmass späterer Änderungen reduzieren.
 
-Dein Projekt und die optimale Konfiguration von arten-fördern.app interessiert mich. Ich bin daher gewillt, am Anfang zu bescheidenen Tarifen mitzuarbeiten (ganz am Anfang für Ökobüros gratis) und den Rest als Weiterbildung, Vernetzung und Marketing abzubuchen.
-
-Dass ich diese Leistung zu Beginn gratis anbiete und später den Tarif erhöhe finde ich fair: Am Anfang überwiegt für mich Marketing und Weiterbildung. Und ihr kennt den Tarif im Voraus.
+Dein Projekt und seine optimale Konfiguration in arten-fördern.app interessiert mich. Ich würde daher anfänglich gerne gratis oder zu bescheidenen Tarifen mit planen und den Aufwand als Weiterbildung, Vernetzung und Marketing abbuchen.
