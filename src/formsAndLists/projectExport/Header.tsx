@@ -6,6 +6,7 @@ import { useIntl } from 'react-intl'
 
 import { createProjectExport } from '../../modules/createRows.ts'
 import { FormHeader } from '../../components/FormHeader/index.tsx'
+import { HistoryToggleButton } from '../../components/shared/HistoryCompare/HistoryToggleButton.tsx'
 import { addOperationAtom } from '../../store.ts'
 
 const from = '/data/projects/$projectId_/exports/$projectExportsId/'
@@ -22,6 +23,8 @@ export const Header = ({ autoFocusRef }) => {
   useEffect(() => {
     projectExportsIdRef.current = projectExportsId
   }, [projectExportsId])
+
+  const basePath = `/data/projects/${projectId}/exports/${projectExportsId}`
 
   const addRow = async () => {
     const id = await createProjectExport({ projectId })
@@ -118,6 +121,15 @@ export const Header = ({ autoFocusRef }) => {
       toNext={toNext}
       toPrevious={toPrevious}
       tableName="projectExport"
+      siblings={
+        <HistoryToggleButton
+          historiesPath={`${basePath}/histories`}
+          formPath={basePath}
+          historyTable="project_exports_history"
+          rowIdField="project_exports_id"
+          rowId={projectExportsId}
+        />
+      }
     />
   )
 }

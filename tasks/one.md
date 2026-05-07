@@ -35,13 +35,13 @@ TODO: exports: filter by app-filter
 
 ---
 
-TODO: exports: history
+DOING: exports: history
 
 ---
 
-project_exports: add filter_by_year (column, project_export form, exports-run view)
-
 ---
+
+/data/projects/018cfcf7-6424-7000-a100-851c5cc2c878/exports/filter: loading permanently
 
 ---
 

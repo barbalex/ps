@@ -43,7 +43,10 @@ export const HistoryToggleButton = ({
     `SELECT enable_histories FROM projects WHERE project_id = $1`,
     [projectId],
   )
-  const historiesEnabled = projectRes?.rows?.[0]?.enable_histories === true
+  const historiesEnabled =
+    projectId == null
+      ? true
+      : projectRes?.rows?.[0]?.enable_histories === true
   const isHistoryRoute = location.pathname.startsWith(`${historiesPath}/`)
 
   const onClickHistory = async () => {
