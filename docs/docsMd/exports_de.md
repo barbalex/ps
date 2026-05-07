@@ -17,4 +17,4 @@ Formate:
 
 Benutzer mit der Rolle "Eigentümer" oder "Designer" können wählen, welche der vorbereiteten Exporte zur Verfügung stehen. Und eigene generieren.
 
-Es gibt sie auf Stufe Projekt und Teil-Projekt (Art/Biotop).
+Exporte gibt es auf Stufe Projekt und Teil-Projekt (Art/Biotop).

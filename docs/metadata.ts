@@ -41,6 +41,14 @@ export const docsMeta: DocMeta[] = [
     isTechnical: false,
   },
   {
+    id: 'exports',
+    label_de: 'Exporte',
+    label_en: 'Exports',
+    label_fr: 'Exports',
+    label_it: 'Esportazioni',
+    isTechnical: false,
+  },
+  {
     id: 'user-accounts',
     label_de: 'Benutzerkonten',
     label_en: 'User Accounts',
