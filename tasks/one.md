@@ -57,6 +57,3 @@ project_exports: add filter_by_year (column, project_export form, exports-run vi
 /data/exports/filter: perpetually loading
 
 ---
-
-'Baue lokale Datenbank' view (appears after logging in):
-Right of 'Initialisiere Datenbak' and 'Synchronisiere mit Server': these icons should be same size as 1. and 2. left of the text

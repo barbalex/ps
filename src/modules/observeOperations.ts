@@ -15,8 +15,15 @@ import { invalidatePostgrestToken } from './fetchPostgrestToken.ts'
 // https://jotai.org/docs/extensions/effect
 // TODO: make this dependent on store.shortTermOnline
 // TODO: ensure function is run all 30 seconds
+let isProcessing = false
+
 export const observeOperations = () =>
   observe(async (get) => {
+    // Guard: if a network send is already in-flight, skip this trigger.
+    // Without this, rapid queue changes (e.g. "activate all") cause the same
+    // oldest operation to be sent multiple times before it is removed, producing 409s.
+    if (isProcessing) return
+
     const online = get(shortTermOnlineAtom)
     const operations = get(operationsQueueAtom)
     // console.log(`observeOperations, operations queue:`, operations)
@@ -36,9 +43,13 @@ export const observeOperations = () =>
     const firstOperation = operations.at(-1)
     if (!firstOperation) return
 
+    isProcessing = true
     try {
       await executeOperation(firstOperation)
     } catch (error) {
+      // Release the lock BEFORE any queue mutation so the observer can pick up
+      // the next operation immediately when removeOperation fires.
+      isProcessing = false
       if (error?.code === '23505') {
         // duplicate key value violates unique constraint
         // The row is already present on server, so this operation is effectively done.
@@ -103,6 +114,9 @@ export const observeOperations = () =>
       // else: Move this operation to the end of the queue to prevent it from blocking others, inform use
       return
     }
+    // Release lock BEFORE queue mutation so the observer sees isProcessing = false
+    // when it fires on the queue change caused by removeOperation.
+    isProcessing = false
     // if successful: return remove operation
     return removeOperation(firstOperation)
   }, store)
