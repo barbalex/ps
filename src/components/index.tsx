@@ -144,7 +144,7 @@ export const Home = () => {
               defaultMessage="Du kannst arten-fördern.app deinen eigenen Bedürfnissen anpassen. Vermisst du eine Funktion? {link}"
               values={{
                 link: (
-                  <Link to="/docs/issues">
+                  <Link to="/docs/issues" target="_blank">
                     <FormattedMessage
                       id="OogWmh"
                       defaultMessage="Ich bin interessiert!"
@@ -172,8 +172,16 @@ export const Home = () => {
             </h3>
             <FormattedMessage
               id="HsHmZy"
-              defaultMessage="Ich helfe dir gerne bei der Erst-Konfiguration, damit dein Team möglichst effizient arbeitet. Profitiere von {link}."
+              defaultMessage="Ich helfe dir gerne bei der {erstKonfiguration}, damit dein Team möglichst effizient arbeitet. Profitiere von {link}."
               values={{
+                erstKonfiguration: (
+                  <Link to="/docs/configuration" target="_blank">
+                    <FormattedMessage
+                      id="HsHmZy.erstKonfiguration"
+                      defaultMessage="Erst-Konfiguration"
+                    />
+                  </Link>
+                ),
                 link: (
                   <a
                     href="https://gabriel-software.ch/kontakt/"
@@ -344,7 +352,7 @@ export const Home = () => {
               defaultMessage="...findest du in der {link}."
               values={{
                 link: (
-                  <Link to="/docs">
+                  <Link to="/docs" target="_blank">
                     <FormattedMessage
                       id="navigationDocs"
                       defaultMessage="Dokumentation"
