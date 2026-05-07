@@ -56,6 +56,7 @@ import { Route as DataProjectsFilterRouteImport } from './routes/data/projects/f
 import { Route as DataMessagesMessageIdRouteImport } from './routes/data/messages/$messageId'
 import { Route as DataFieldTypesFilterRouteImport } from './routes/data/field-types/filter'
 import { Route as DataFieldTypesFieldTypeIdRouteImport } from './routes/data/field-types/$fieldTypeId'
+import { Route as DataExportsFilterRouteImport } from './routes/data/exports/filter'
 import { Route as DataExportsExportsIdRouteImport } from './routes/data/exports/$exportsId'
 import { Route as DataCrsFilterRouteImport } from './routes/data/crs/filter'
 import { Route as DataCrsCrsIdRouteImport } from './routes/data/crs/$crsId'
@@ -704,6 +705,11 @@ const DataFieldTypesFieldTypeIdRoute =
     path: '/$fieldTypeId',
     getParentRoute: () => DataFieldTypesRouteRoute,
   } as any)
+const DataExportsFilterRoute = DataExportsFilterRouteImport.update({
+  id: '/filter',
+  path: '/filter',
+  getParentRoute: () => DataExportsRouteRoute,
+} as any)
 const DataExportsExportsIdRoute = DataExportsExportsIdRouteImport.update({
   id: '/$exportsId',
   path: '/$exportsId',
@@ -3932,6 +3938,7 @@ export interface FileRoutesByFullPath {
   '/data/crs/$crsId': typeof DataCrsCrsIdRoute
   '/data/crs/filter': typeof DataCrsFilterRoute
   '/data/exports/$exportsId': typeof DataExportsExportsIdRoute
+  '/data/exports/filter': typeof DataExportsFilterRoute
   '/data/field-types/$fieldTypeId': typeof DataFieldTypesFieldTypeIdRoute
   '/data/field-types/filter': typeof DataFieldTypesFilterRoute
   '/data/messages/$messageId': typeof DataMessagesMessageIdRoute
@@ -4365,6 +4372,7 @@ export interface FileRoutesByTo {
   '/data/crs/$crsId': typeof DataCrsCrsIdRoute
   '/data/crs/filter': typeof DataCrsFilterRoute
   '/data/exports/$exportsId': typeof DataExportsExportsIdRoute
+  '/data/exports/filter': typeof DataExportsFilterRoute
   '/data/field-types/$fieldTypeId': typeof DataFieldTypesFieldTypeIdRoute
   '/data/field-types/filter': typeof DataFieldTypesFilterRoute
   '/data/messages/$messageId': typeof DataMessagesMessageIdRoute
@@ -4711,6 +4719,7 @@ export interface FileRoutesById {
   '/data/crs/$crsId': typeof DataCrsCrsIdRoute
   '/data/crs/filter': typeof DataCrsFilterRoute
   '/data/exports/$exportsId': typeof DataExportsExportsIdRoute
+  '/data/exports/filter': typeof DataExportsFilterRoute
   '/data/field-types/$fieldTypeId': typeof DataFieldTypesFieldTypeIdRoute
   '/data/field-types/filter': typeof DataFieldTypesFilterRoute
   '/data/messages/$messageId': typeof DataMessagesMessageIdRoute
@@ -5163,6 +5172,7 @@ export interface FileRouteTypes {
     | '/data/crs/$crsId'
     | '/data/crs/filter'
     | '/data/exports/$exportsId'
+    | '/data/exports/filter'
     | '/data/field-types/$fieldTypeId'
     | '/data/field-types/filter'
     | '/data/messages/$messageId'
@@ -5596,6 +5606,7 @@ export interface FileRouteTypes {
     | '/data/crs/$crsId'
     | '/data/crs/filter'
     | '/data/exports/$exportsId'
+    | '/data/exports/filter'
     | '/data/field-types/$fieldTypeId'
     | '/data/field-types/filter'
     | '/data/messages/$messageId'
@@ -5941,6 +5952,7 @@ export interface FileRouteTypes {
     | '/data/crs/$crsId'
     | '/data/crs/filter'
     | '/data/exports/$exportsId'
+    | '/data/exports/filter'
     | '/data/field-types/$fieldTypeId'
     | '/data/field-types/filter'
     | '/data/messages/$messageId'
@@ -6701,6 +6713,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/data/field-types/$fieldTypeId'
       preLoaderRoute: typeof DataFieldTypesFieldTypeIdRouteImport
       parentRoute: typeof DataFieldTypesRouteRoute
+    }
+    '/data/exports/filter': {
+      id: '/data/exports/filter'
+      path: '/filter'
+      fullPath: '/data/exports/filter'
+      preLoaderRoute: typeof DataExportsFilterRouteImport
+      parentRoute: typeof DataExportsRouteRoute
     }
     '/data/exports/$exportsId': {
       id: '/data/exports/$exportsId'
@@ -9551,11 +9570,13 @@ const DataExportAssignmentsRouteRouteWithChildren =
 
 interface DataExportsRouteRouteChildren {
   DataExportsExportsIdRoute: typeof DataExportsExportsIdRoute
+  DataExportsFilterRoute: typeof DataExportsFilterRoute
   DataExportsIndexRoute: typeof DataExportsIndexRoute
 }
 
 const DataExportsRouteRouteChildren: DataExportsRouteRouteChildren = {
   DataExportsExportsIdRoute: DataExportsExportsIdRoute,
+  DataExportsFilterRoute: DataExportsFilterRoute,
   DataExportsIndexRoute: DataExportsIndexRoute,
 }
 

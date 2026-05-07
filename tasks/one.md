@@ -43,14 +43,8 @@ project_exports: add filter_by_year (column, project_export form, exports-run vi
 
 ---
 
-DOING: /data/projects/018cfcf7-6424-7000-a100-851c5cc2c878/subprojects/018cfd27-ee92-7000-b678-e75497d6c60e: 'Exporte: wählen' and 'Exporte: ausführen' missing in nav tree nodes and list view
-
 ---
 
-this export: /data/projects/018cfcf7-6424-7000-a100-851c5cc2c878/exports/019e0241-6862-7000-927f-5d1fd9fe28c3 cant be choosen here: /data/projects/018cfcf7-6424-7000-a100-851c5cc2c878/export-assignments. But should be
-
 ---
-
-/data/exports/filter: perpetually loading
 
 ---
