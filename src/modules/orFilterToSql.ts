@@ -18,6 +18,13 @@ export const orFilterToSql = (
     if (tablePrefix) {
       columnDescriptor = `${tablePrefix}.${columnDescriptor}`
     }
+    // exact match from radio / enum fields
+    if (value !== null && typeof value === 'object' && '$eq' in value) {
+      const eqVal = (value as { $eq: unknown }).$eq
+      if (typeof eqVal === 'string') {
+        return `${columnDescriptor}::text = '${eqVal}'`
+      }
+    }
     if (isUuid.anyNonNil(value)) {
       return `${columnDescriptor}::uuid = '${value}'`
     }

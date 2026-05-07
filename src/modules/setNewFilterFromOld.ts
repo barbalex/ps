@@ -13,12 +13,16 @@ export const setNewFilterFromOld = ({
   const newOrFilter = { ...existingOrFilter }
 
   if (value !== undefined && value !== null && value !== '') {
-    newOrFilter[name] = useValueUnchanged
-      ? value // numbers get passed as string when coming from options
-      : // need to convert them back to numbers
-        !isNaN(value)
-        ? parseFloat(value)
-        : value
+    // radio inputs select exact enum values — wrap so SQL uses = instead of ILIKE
+    const coercedValue =
+      targetType === 'radio' && typeof value === 'string'
+        ? { $eq: value }
+        : useValueUnchanged
+          ? value
+          : !isNaN(value)
+            ? parseFloat(value)
+            : value
+    newOrFilter[name] = coercedValue
   } else {
     delete newOrFilter[name]
   }

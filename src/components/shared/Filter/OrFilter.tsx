@@ -21,7 +21,15 @@ export const OrFilter = ({
   children,
 }: Props) => {
   // when emptying an or filter, row is undefined - catch this
-  const row = orFilters?.[orIndex] ?? {}
+  const rawRow = orFilters?.[orIndex] ?? {}
+  // unwrap { $eq: value } objects so form components display the plain value
+  const row = Object.fromEntries(
+    Object.entries(rawRow).map(([k, v]) =>
+      v !== null && typeof v === 'object' && '$eq' in v
+        ? [k, (v as { $eq: unknown }).$eq]
+        : [k, v],
+    ),
+  )
 
   const onChange = (e, data) => {
     const { name, value, targetType } = getValueFromChange(e, data)
