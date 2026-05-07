@@ -48,6 +48,8 @@ type NavData = {
   files_count_filtered?: number | null
   files_count_unfiltered?: number | null
   files_active_subprojects?: boolean | null
+  subproject_qc_assignments_count?: number | null
+  subproject_qcs_run_count?: number | null
   subproject_files_in_subproject?: boolean | null
   charts?: boolean | null
   charts_count?: number | null
@@ -94,7 +96,9 @@ export const useSubprojectNavData = ({ projectId, subprojectId }: Props) => {
         subproject_users_count AS (SELECT count(*) FROM subproject_users WHERE subproject_id = '${subprojectId}'),
         files_count_unfiltered AS (SELECT count(*) FROM files WHERE subproject_id = '${subprojectId}'),
         files_count_filtered AS (SELECT count(*) FROM files WHERE subproject_id = '${subprojectId}' ${filesIsFiltered ? ` AND ${filesFilterString}` : ''}),
-        charts_count AS (SELECT count(*) FROM charts WHERE subproject_id = '${subprojectId}')
+        charts_count AS (SELECT count(*) FROM charts WHERE subproject_id = '${subprojectId}'),
+        subproject_qc_assignments_count AS (SELECT count(*) FROM (SELECT qa.qc_assignment_id FROM qc_assignments qa JOIN qcs q ON q.qcs_id = qa.qc_id WHERE qa.subproject_id = '${subprojectId}' AND q.level = 'subproject' UNION ALL SELECT pqa.project_qc_assignment_id FROM project_qc_assignments pqa WHERE pqa.subproject_id = '${subprojectId}') t),
+        subproject_qcs_run_count AS (SELECT count(*) FROM qc_assignments qa JOIN qcs q ON q.qcs_id = qa.qc_id WHERE qa.subproject_id = '${subprojectId}' AND q.level = 'subproject')
       SELECT
         sp.subproject_id AS id,
         sp.label, 
@@ -123,7 +127,9 @@ export const useSubprojectNavData = ({ projectId, subprojectId }: Props) => {
         subproject_users_count.count AS subproject_users_count,
         files_count_unfiltered.count AS files_count_unfiltered,
         files_count_filtered.count AS files_count_filtered,
-        charts_count.count AS charts_count
+        charts_count.count AS charts_count,
+        subproject_qc_assignments_count.count AS subproject_qc_assignments_count,
+        subproject_qcs_run_count.count AS subproject_qcs_run_count
       FROM 
         subprojects sp
         INNER JOIN projects p ON p.project_id = sp.project_id, 
@@ -141,7 +147,9 @@ export const useSubprojectNavData = ({ projectId, subprojectId }: Props) => {
         subproject_users_count,
         files_count_unfiltered,
         files_count_filtered,
-        charts_count
+        charts_count,
+        subproject_qc_assignments_count,
+        subproject_qcs_run_count
       WHERE sp.subproject_id = '${subprojectId}'`
 
   const res = useLiveQuery(sql)
@@ -206,8 +214,10 @@ export const useSubprojectNavData = ({ projectId, subprojectId }: Props) => {
                     label: buildNavLabel({
                       loading,
                       isFiltered: subprojectReportsIsFiltered,
-                      countFiltered: nav?.subproject_reports_count_filtered ?? 0,
-                      countUnfiltered: nav?.subproject_reports_count_unfiltered ?? 0,
+                      countFiltered:
+                        nav?.subproject_reports_count_filtered ?? 0,
+                      countUnfiltered:
+                        nav?.subproject_reports_count_unfiltered ?? 0,
                       namePlural: formatMessage({
                         id: 'CiJ0SG',
                         defaultMessage: 'Berichte',
@@ -288,6 +298,28 @@ export const useSubprojectNavData = ({ projectId, subprojectId }: Props) => {
             },
           ]
         : []),
+      {
+        id: 'qc-assignments',
+        label: buildNavLabel({
+          loading,
+          countFiltered: nav?.subproject_qc_assignments_count ?? 0,
+          namePlural: formatMessage({
+            id: 'subprojectQcs.title',
+            defaultMessage: 'Qualitätskontrollen: wählen',
+          }),
+        }),
+      },
+      {
+        id: 'qcs-run',
+        label: buildNavLabel({
+          loading,
+          countFiltered: nav?.subproject_qcs_run_count ?? 0,
+          namePlural: formatMessage({
+            id: 'subprojectQcsRun.title',
+            defaultMessage: 'Qualitätskontrollen: ausführen',
+          }),
+        }),
+      },
       ...(designing && nav?.subproject_users_in_subproject === false
         ? [
             {
