@@ -67,7 +67,6 @@ async function runAndDownload({
   format,
   projectId,
   filterByYear,
-  isProjectExport,
 }: {
   db: ReturnType<typeof usePGlite>
   sql: string
@@ -78,20 +77,13 @@ async function runAndDownload({
   filterByYear: boolean | null
   isProjectExport: boolean
 }) {
+  // All exports shown in the project run view use $1 = project_id.
+  // Year ($2) is only added when filter_by_year is true.
   const params: (string | number)[] = []
-  if (isProjectExport) {
-    // project_exports: $1 = project_id, $2 = year (if filter_by_year)
-    if (sql.includes('$1')) params.push(projectId)
-    if (filterByYear && sql.includes('$2')) {
-      const yearNum = parseInt(year, 10)
-      if (!isNaN(yearNum)) params.push(yearNum)
-    }
-  } else {
-    // general exports assigned at project level (root-level exports): $1 = year (if filter_by_year)
-    if (filterByYear && sql.includes('$1')) {
-      const yearNum = parseInt(year, 10)
-      if (!isNaN(yearNum)) params.push(yearNum)
-    }
+  if (sql.includes('$1')) params.push(projectId)
+  if (filterByYear && sql.includes('$2')) {
+    const yearNum = parseInt(year, 10)
+    if (!isNaN(yearNum)) params.push(yearNum)
   }
 
   const result = await db.query(sql, params)
@@ -128,7 +120,9 @@ export const ProjectExportsRun = ({ from }: { from: string }) => {
   const { navData } = useProjectExportsRunNavData({ projectId })
   const { formatMessage } = useIntl()
   const [language] = useAtom(languageAtom)
-  const [labelFilter, setLabelFilter] = useAtom(projectExportsRunLabelFilterAtom)
+  const [labelFilter, setLabelFilter] = useAtom(
+    projectExportsRunLabelFilterAtom,
+  )
   const setFilteredCount = useSetAtom(projectExportsRunFilteredCountAtom)
   const db = usePGlite()
 
