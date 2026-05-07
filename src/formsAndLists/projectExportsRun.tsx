@@ -135,7 +135,7 @@ export const ProjectExportsRun = ({ from }: { from: string }) => {
   const currentYear = new Date().getFullYear().toString()
   const [year, setYear] = useState(currentYear)
 
-  // Load both assigned exports and project_exports for this project
+  // Load assigned root-level exports for this project
   const exportsRes = useLiveQuery(
     `SELECT e.exports_id AS exports_id,
             COALESCE(NULLIF(e.name_${language}, ''), e.name_de) AS label,
@@ -148,25 +148,33 @@ export const ProjectExportsRun = ({ from }: { from: string }) => {
        AND ea.subproject_id IS NULL
        AND e.sql IS NOT NULL
        AND e.sql != ''
-     UNION ALL
-     SELECT pe.project_exports_id::text AS exports_id,
+     ORDER BY label`,
+    [projectId],
+  )
+
+  // Load project-specific exports for this project
+  const projectExportsRes = useLiveQuery(
+    `SELECT pe.project_exports_id AS exports_id,
             COALESCE(NULLIF(pe.name_${language}, ''), pe.name_de) AS label,
             pe.sql,
             pe.filter_by_year,
             true AS is_project_export
      FROM project_export_assignments pea
      JOIN project_exports pe ON pe.project_exports_id = pea.project_exports_id
-     WHERE pea.project_id = $2
+     WHERE pea.project_id = $1
        AND pea.subproject_id IS NULL
        AND pe.sql IS NOT NULL
        AND pe.sql != ''
      ORDER BY label`,
-    [projectId, projectId],
+    [projectId],
   )
 
-  const loading = exportsRes === undefined
+  const loading = exportsRes === undefined || projectExportsRes === undefined
 
-  const exportRows: ExportRow[] = (exportsRes?.rows ?? []) as ExportRow[]
+  const exportRows: ExportRow[] = [
+    ...((exportsRes?.rows ?? []) as ExportRow[]),
+    ...((projectExportsRes?.rows ?? []) as ExportRow[]),
+  ].sort((a, b) => (a.label ?? '').localeCompare(b.label ?? ''))
 
   const labelFilteredExports = labelFilter.trim()
     ? exportRows.filter((e) =>

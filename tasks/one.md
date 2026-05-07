@@ -27,12 +27,10 @@ There are forms to run exports. Different from qcs/project_qcs in that the queri
 
 ---
 
-general exports: lets enable importing from exports.csv file. Same as for qcs (runs on db build).
-
 ---
 
 TODO: docs for exports
-Please create the md's for en,fr,it
+Please create the .md files for en,fr,it
 
 ---
 
@@ -48,7 +46,7 @@ project_exports: add filter_by_year (column, project_export form, exports-run vi
 
 ---
 
-/data/projects/018cfcf7-6424-7000-a100-851c5cc2c878/exports-run: perpetually loading
+DOING: /data/projects/018cfcf7-6424-7000-a100-851c5cc2c878/exports-run: perpetually loading
 
 ---
 

@@ -4,9 +4,16 @@ _Zuletzt aktualisiert am 7.5.2026_
 
 ---
 
-Exporte ermöglichen es, Teile der Daten zu exportieren. Und eigene Abfragen zu generieren.
+Exporte ermöglichen es:
 
-Formate: .csv, .xlsx, .ods.
+1. Teile der Daten zu exportieren
+2. Eigene Abfragen zu generieren
+
+Formate:
+
+- .csv (einfach, generell benutzbar)
+- .ods (für Tabellen-Dokumente)
+- .xlsx (für Tabellen-Dokumente)
 
 Benutzer mit der Rolle "Eigentümer" oder "Designer" können wählen, welche der vorbereiteten Exporte zur Verfügung stehen. Und eigene generieren.
 
