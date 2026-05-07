@@ -2,12 +2,12 @@
 -- Generated from seed-data/exports.csv
 -- Run `node backend/db/generate_exports_sql.mjs` from project root to regenerate after editing the CSV.
 
-INSERT INTO exports (name_de, name_en, name_fr, name_it, level, filter_by_year, sql, description)
+INSERT INTO exports (name_de, name_en, name_fr, name_it, level, filter_by_year, base_table, sql, description)
 VALUES
-('Projekte', 'Projects', 'Projets', 'Progetti', 'root', false, 'SELECT *
+('Projekte', 'Projects', 'Projets', 'Progetti', 'root', false, 'projects', 'SELECT *
 FROM projects
 ORDER BY label', 'query of all projects with all columns'),
-('Projekte mit Statistik', 'Projects with statistics', 'Projets avec statistiques', 'Progetti con statistiche', 'root', false, 'SELECT
+('Projekte mit Statistik', 'Projects with statistics', 'Projets avec statistiques', 'Progetti con statistiche', 'root', false, 'projects', 'SELECT
   p.project_id,
   p.label,
   (SELECT count(*) FROM subprojects s WHERE s.project_id = p.project_id) AS subprojects,
@@ -28,11 +28,11 @@ ORDER BY label', 'query of all projects with all columns'),
   (SELECT count(*) FROM places pl2 JOIN subprojects sp ON sp.subproject_id = pl2.subproject_id WHERE sp.project_id = p.project_id AND pl2.level = 2) AS places_level_2
 FROM projects p
 ORDER BY p.label', 'project_id, label, counts of: subprojects, supbroject-report-designs, project-report-designs, project-reports, wms-services, wms-layers, wfs-services, vector-layers, lists, taxonomies, crs, place-levels, quality-controls, quality-controls-assigned, exports, exports-assigned. Plus: sums of statistics of subprojects. Plus: sums of statistics of places level 1. plus: sums of statistics of places level 2'),
-('Teilprojekte', 'Subprojects', 'Sous-projets', 'Sottoprogetti', 'project', false, 'SELECT *
+('Teilprojekte', 'Subprojects', 'Sous-projets', 'Sottoprogetti', 'project', false, 'subprojects', 'SELECT *
 FROM subprojects
 WHERE project_id = $1
 ORDER BY label', 'query of all subprojects with all columns'),
-('Teilprojekte mit Statistik', 'Subprojects with statistics', 'Sous-projets avec statistiques', 'Sottoprogetti con statistiche', 'project', false, 'SELECT
+('Teilprojekte mit Statistik', 'Subprojects with statistics', 'Sous-projets avec statistiques', 'Sottoprogetti con statistiche', 'project', false, 'subprojects', 'SELECT
   s.subproject_id,
   s.label,
   s.start_year,
@@ -53,7 +53,7 @@ ORDER BY label', 'query of all subprojects with all columns'),
 FROM subprojects s
 WHERE s.project_id = $1
 ORDER BY s.label', 'subproject_id, label, counts of: goals, reports, taxa, users, files, obervation imports, obervations, observations to assess, observations not to assign, observations assigned, charts, places level 1. Plus: sums of statistics of places level 1. Plus: sums of statistics of places level 2 users level 2, files level 2'),
-('Orte Stufe 1', 'Places level 1', 'Lieux niveau 1', 'Luoghi livello 1', 'subproject', false, 'SELECT
+('Orte Stufe 1', 'Places level 1', 'Lieux niveau 1', 'Luoghi livello 1', 'subproject', false, 'places', 'SELECT
   p.place_id,
   p.label,
   p.since,
@@ -77,5 +77,6 @@ ON CONFLICT (name_de) DO UPDATE SET
   name_it        = EXCLUDED.name_it,
   level          = EXCLUDED.level,
   filter_by_year = EXCLUDED.filter_by_year,
+  base_table     = EXCLUDED.base_table,
   description    = EXCLUDED.description;
   -- NOTE: sql is intentionally excluded from ON CONFLICT — it is user-edited and must not be overwritten by CSV regeneration.

@@ -19,6 +19,8 @@ export default interface ExportsHistory {
 
   filter_by_year: boolean | null;
 
+  base_table: string | null;
+
   sql: string | null;
 
   description: string | null;
@@ -54,6 +56,8 @@ export interface ExportsHistoryInitializer {
   /** Default value: false */
   filter_by_year?: boolean | null;
 
+  base_table?: string | null;
+
   sql?: string | null;
 
   description?: string | null;
@@ -88,6 +92,8 @@ export interface ExportsHistoryMutator {
   level?: ExportsLevelEnum | null;
 
   filter_by_year?: boolean | null;
+
+  base_table?: string | null;
 
   sql?: string | null;
 

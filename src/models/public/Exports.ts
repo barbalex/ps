@@ -22,6 +22,9 @@ export default interface Exports {
 
   filter_by_year: boolean | null;
 
+  /** The main table this export queries. Used to apply the current app filter when running the export. */
+  base_table: string | null;
+
   sql: string | null;
 
   /** Describe the query so that an ai agent can build the sql. */
@@ -58,6 +61,9 @@ export interface ExportsInitializer {
   /** Default value: false */
   filter_by_year?: boolean | null;
 
+  /** The main table this export queries. Used to apply the current app filter when running the export. */
+  base_table?: string | null;
+
   sql?: string | null;
 
   /** Describe the query so that an ai agent can build the sql. */
@@ -93,6 +99,9 @@ export interface ExportsMutator {
   level?: ExportsLevelEnum | null;
 
   filter_by_year?: boolean | null;
+
+  /** The main table this export queries. Used to apply the current app filter when running the export. */
+  base_table?: string | null;
 
   sql?: string | null;
 

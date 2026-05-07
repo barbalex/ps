@@ -78,7 +78,7 @@ const bool = (s) => ((s ?? '').trim() === 'true' ? 'true' : 'false')
 
 const valueLines = rows
   .map((cols) => {
-    // name_de;name_en;name_fr;name_it;level;filter_by_year;sql;description
+    // name_de;name_en;name_fr;name_it;level;filter_by_year;base_table;sql;description
     const [
       name_de,
       name_en,
@@ -86,6 +86,7 @@ const valueLines = rows
       name_it,
       level,
       filter_by_year,
+      base_table,
       sql_val,
       description,
     ] = cols
@@ -95,10 +96,11 @@ const valueLines = rows
     const sqlLiteral = (sql_val ?? '').trim() ? `'${esc(sql_val)}'` : 'NULL'
     const levelLiteral = (level ?? '').trim() ? `'${esc(level)}'` : 'NULL'
     const descLiteral = (description ?? '').trim() ? `'${esc(description)}'` : 'NULL'
+    const baseTableLiteral = (base_table ?? '').trim() ? `'${esc(base_table)}'` : 'NULL'
 
     return (
       `('${esc(name_de)}', '${esc(name_en)}', '${esc(name_fr)}', '${esc(name_it)}', ` +
-      `${levelLiteral}, ${bool(filter_by_year)}, ${sqlLiteral}, ${descLiteral})`
+      `${levelLiteral}, ${bool(filter_by_year)}, ${baseTableLiteral}, ${sqlLiteral}, ${descLiteral})`
     )
   })
   .filter(Boolean)
@@ -108,7 +110,7 @@ const sql = `-- exports: general exports available to all projects
 -- Generated from seed-data/exports.csv
 -- Run \`node backend/db/generate_exports_sql.mjs\` from project root to regenerate after editing the CSV.
 
-INSERT INTO exports (name_de, name_en, name_fr, name_it, level, filter_by_year, sql, description)
+INSERT INTO exports (name_de, name_en, name_fr, name_it, level, filter_by_year, base_table, sql, description)
 VALUES
 ${valueLines}
 ON CONFLICT (name_de) DO UPDATE SET
@@ -117,6 +119,7 @@ ON CONFLICT (name_de) DO UPDATE SET
   name_it        = EXCLUDED.name_it,
   level          = EXCLUDED.level,
   filter_by_year = EXCLUDED.filter_by_year,
+  base_table     = EXCLUDED.base_table,
   description    = EXCLUDED.description;
   -- NOTE: sql is intentionally excluded from ON CONFLICT — it is user-edited and must not be overwritten by CSV regeneration.
 `
