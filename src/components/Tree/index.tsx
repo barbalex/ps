@@ -38,9 +38,9 @@ export const Tree = () => {
           )}
           {/* TODO: restrict editing to app administrator once auth supports it */}
           <QcsNode />
-          <ExportsNode />
           <RootQcsNode />
           <RootQcsRunNode />
+          <ExportsNode />
           <RootExportsNode />
           <RootExportsRunNode />
           <CrssNode />
