@@ -149,11 +149,11 @@ export const ProjectNode = ({ nav, level = 2 }) => {
             </>
           )}
           {showDesigningNodes && <ProjectQcsNode projectId={nav.id} />}
-          {showDesigningNodes && <ProjectExportsNode projectId={nav.id} />}
           <ProjectQcAssignmentsNode projectId={nav.id} level={level + 1} />
           <ProjectQcsRunNode projectId={nav.id} level={level + 1} />
           {designing && (
             <>
+              {showDesigningNodes && <ProjectExportsNode projectId={nav.id} />}
               <ProjectExportAssignmentsNode projectId={nav.id} level={level + 1} />
               <ProjectExportsRunNode projectId={nav.id} level={level + 1} />
             </>
