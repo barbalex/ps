@@ -1,6 +1,6 @@
 # Open Source
 
-_Last updated: 17 April 2026_
+_Last updated: 8 May 2026_
 
 ---
 
@@ -13,7 +13,9 @@ The code is [open source](https://github.com/barbalex/ps/blob/main/LICENSE). Eve
 1. Nature conservation serves nature and society. Of course I need an income. But I am also an idealist: open source code serves the public far better and more sustainably than closed source. It is my contribution to nature conservation. And I hope I can still make a living from it.
 2. Besides private ecological consulting firms, public authorities are the primary target audience for arten-fördern.app. I believe that public authorities should use open source code as exclusively as possible (idealist, after all...).
 3. I am a one-person company. Closed source code would die with me. Open source can easily continue to be operated and developed.
-4. Even though my background gives me a great deal of relevant expertise for developing nature conservation software: I don't have a monopoly on wisdom. In this open source project, anyone can contribute. I can well imagine individual cantons or ecological consulting firms funding further developments that everyone can then benefit from. This works well in other projects (e.g. QGIS).
+4. Even though my background gives me [a great deal of relevant expertise](https://gabriel-software.ch/kontakt) for developing nature conservation software: I don't have a monopoly on wisdom. In this open source project, anyone can contribute. I can well imagine individual cantons or ecological consulting firms funding further developments that everyone can then benefit from. This works well in other projects (e.g. [QGIS](https://www.qgis.org)).
+
+If there is interest, I would be open to transferring the project to a non-profit association — again, similar to [QGIS](https://www.qgis.org/community/foundation/charter).
 
 ## Isn't it foolish to give up control?
 

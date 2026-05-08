@@ -1,6 +1,6 @@
 # Open Source
 
-_Zuletzt aktualisiert am 17. April 2026_
+_Zuletzt aktualisiert am 8.5.2026_
 
 ---
 
@@ -13,7 +13,9 @@ Der Code ist [open source](https://github.com/barbalex/ps/blob/main/LICENSE). Es
 1. Naturschutz dient der Natur und der Allgemeinheit. Natürlich brauche ich ein Einkommen. Ich bin aber auch Idealist: Open source Code dient der Allgemeinheit viel besser und nachhaltiger als closed source. Es ist mein Beitrag an den Naturschutz. Und ich hoffe, dass ich trotzdem davon leben kann.
 2. Neben privaten Ökobüros sind öffentliche Institutionen das primäre Zielpublikum für arten-fördern.app. Ich finde, öffentliche Institutionen sollten möglichst ausschliesslich open source Code verwenden (Idealist halt...).
 3. Ich bin eine Einpersonen-Firma. Closed source Code würde mit mir sterben. Open source kann problemlos weiter betrieben und entwickelt werden.
-4. Auch wenn ich aufgrund meiner Geschichte für die Entwicklung einer Naturschutz-Software sehr viel Know-How mitbringe: Ich habe die Weisheit nicht gepachtet. In diesem open source Projekt kann jeder beitragen. Ich kann mir gut vorstellen, dass einzelne Kantone oder Ökobüros Weiterentwicklungen finanzieren, von denen dann alle profitieren können. Das funktioniert in anderen Projekten auch (z.B. QGIS).
+4. Auch wenn ich aufgrund meiner Geschichte für die Entwicklung einer Naturschutz-Software [viel Know-How](https://gabriel-software.ch/kontakt) mitbringe: Ich habe die Weisheit nicht "mit Löffeln gefressen". In diesem open source Projekt kann jeder beitragen. Ich kann mir gut vorstellen, dass einzelne Kantone oder Ökobüros Weiterentwicklungen finanzieren, von denen dann alle profitieren können, ähnlich wie z.B. bei [QGIS](https://www.qgis.org).
+
+Bei Interesse wäre ich offen dafür, das Projekt in einen gemeinnützigen Verein überzuführen - wiederum ähnlich wie bei [QGIS](https://www.qgis.org/community/foundation/charter).
 
 ## Ist es nicht dumm, die Kontrolle aus der Hand zu geben?
 
