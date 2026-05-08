@@ -10137,10 +10137,10 @@ INSERT INTO actions(action_id, place_id, date) values
 ('018df982-a04e-719c-ae67-c4307e01d106', '018df4fa-cfb3-739c-bca2-d55dfe876995', '2020-03-03'),
 ('018df982-a04e-719c-ae67-c4307e01d105', '018df4fa-cfb3-739c-bca2-d55dfe876995', '2019-03-03');
 -- charts
-INSERT INTO charts(subproject_id, chart_id, chart_type, name, years_last_x) values 
-('018cfd27-ee92-7000-b678-e75497d6c60e', '018df502-138a-77bb-82b9-e5ab16c988ee', 'Area', 'Actions and Checks', 5),
-('018cfd27-ee92-7000-b678-e75497d6c60e', '018e0434-030d-7451-a1fe-b9bb917a8c4c', 'Area', 'Populations', 5),
-('018cfd27-ee92-7000-b678-e75497d6c60e', '018e0a30-ce91-7899-8daf-4c3a4b4ff414', 'Area', 'Subpopulations', 5);
+INSERT INTO charts(project_id, subproject_id, chart_id, chart_type, name, years_last_x) values 
+('018cfcf7-6424-7000-a100-851c5cc2c878', '018cfd27-ee92-7000-b678-e75497d6c60e', '018df502-138a-77bb-82b9-e5ab16c988ee', 'Area', 'Actions and Checks', 5),
+('018cfcf7-6424-7000-a100-851c5cc2c878', '018cfd27-ee92-7000-b678-e75497d6c60e', '018e0434-030d-7451-a1fe-b9bb917a8c4c', 'Area', 'Populations', 5),
+('018cfcf7-6424-7000-a100-851c5cc2c878', '018cfd27-ee92-7000-b678-e75497d6c60e', '018e0a30-ce91-7899-8daf-4c3a4b4ff414', 'Area', 'Subpopulations', 5);
 -- chartSubjects
 INSERT INTO chart_subjects(chart_id, chart_subject_id, table_name, table_level, name, calc_method, type, stroke, fill, connect_nulls) values 
 ('018df502-138a-77bb-82b9-e5ab16c988ee', '018df505-0d65-71a2-b214-76343bfc95cb', 'checks', '1', 'Number of Checks', 'count_rows', 'monotone', '#FF0000', '#ffffff', true),
