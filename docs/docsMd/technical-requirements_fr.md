@@ -1,6 +1,6 @@
 # Exigences techniques
 
-_Dernière mise à jour: 7 mai 2026_
+_Dernière mise à jour: 8 mai 2026_
 
 ---
 

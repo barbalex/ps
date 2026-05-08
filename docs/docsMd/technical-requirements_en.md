@@ -1,6 +1,6 @@
 # Technical Requirements
 
-_Last updated: 7 May 2026_
+_Last updated: 8 May 2026_
 
 ---
 

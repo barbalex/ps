@@ -1,6 +1,6 @@
 # Requisiti tecnici
 
-_Ultimo aggiornamento: 7 maggio 2026_
+_Ultimo aggiornamento: 8 maggio 2026_
 
 ---
 

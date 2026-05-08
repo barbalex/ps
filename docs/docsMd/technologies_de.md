@@ -1,16 +1,16 @@
 # Verwendete Technologien
 
-*Zuletzt aktualisiert am 17. April 2026*
+_Zuletzt aktualisiert am 8.5.2026_
 
 ---
 
 - [Akamai](https://www.linode.com) für die physischen Server
 - [Docker](<https://de.wikipedia.org/wiki/Docker_(Software)>) um die App auf dem Server zu betreiben
 - [PostgreSQL](https://www.postgresql.org) als Datenbank auf dem Server
-- [Better Auth](https://better-auth.com) für die Authentifizierung
-- [Electric](https://electric-sql.com/sync) für die Synchronisierung
+- [Better Auth](https://better-auth.com) für die Authentifizierung (Server und App)
+- [Electric](https://electric-sql.com/sync) für die Synchronisierung zwischen Server und App
 - [PGlite](https://pglite.dev) als Datenbank in der App
 - [Jotai](https://jotai.org) um den Zustand der App zu steuern
-- [React](https://react.dev) für die Benutzeroberfläche
-- [Vite](https://vite.dev) als Entwicklungs-Umgebung
+- [React](https://react.dev) für die Benutzeroberfläche der App
+- [Vite](https://vite.dev) um die App zu bauen
 - Unter gütiger Mithilfe von [Claude](https://claude.com/product/claude-code)
