@@ -6,7 +6,7 @@ _Zuletzt aktualisiert am 8.5.2026_
 
 ## Wieso?
 
-- [apflora.ch](https://apflora.ch) zeigt den Nutzen eines solchen Werkzeugs. Beteiligte Naturschutzfachleute haben gewünscht, es auch in anderen Projekten verwenden zu können
+- [apflora.ch](https://apflora.ch) wird [seit 2005](https://apflora.ch/Dokumentation/geschichte) entwickelt und zeigt den Nutzen eines solchen Werkzeugs. Beteiligte Naturschutzfachleute haben gewünscht, es auch in anderen Projekten verwenden zu können
 - Es gibt kein «one size fits all» für Naturschutzprojekte: Die meisten Projekte könnten/sollten apflora.ch nicht unverändert verwenden
 - Nur die wenigsten öffentlichen Institutionen oder Ökobüros können oder wollen sich die Entwicklung eines massgeschneiderten Produkts wie z.B. https://apflora.ch, https://vermehrung.ch oder https://arteigenschaften.ch leisten
 

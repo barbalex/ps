@@ -6,7 +6,7 @@ _Ultimo aggiornamento: 8 maggio 2026_
 
 ## Perché?
 
-- [apflora.ch](https://apflora.ch) dimostra l'utilità di un tale progetto. Alcuni esperti di protezione della natura coinvolti hanno desiderato poterlo usare anche in altri progetti
+- [apflora.ch](https://apflora.ch) è [sviluppato dal 2005](https://apflora.ch/Dokumentation/geschichte) e dimostra l'utilità di un tale strumento. Alcuni esperti di protezione della natura coinvolti hanno desiderato poterlo usare anche in altri progetti
 - Non esiste una soluzione «universale» per i progetti di protezione della natura: la maggior parte dei progetti non potrebbe/dovrebbe usare apflora.ch senza modifiche
 - Pochissime istituzioni pubbliche o studi ecologici possono o vogliono permettersi lo sviluppo di un prodotto su misura come https://apflora.ch, https://vermehrung.ch o https://arteigenschaften.ch
 
