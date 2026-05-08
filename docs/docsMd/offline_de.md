@@ -1,6 +1,6 @@
 # Offline arbeiten
 
-*Zuletzt aktualisiert am 17. April 2026*
+_Zuletzt aktualisiert am 8.5.2026_
 
 ---
 
@@ -22,14 +22,12 @@ Online werden diese Operationen umgehend dem Server geschickt und stehen sofort 
 
 Offline stehen die Operationen geduldig an. Bis du wieder online bist. Dann werden sie umgehend zum Server geschickt.
 
-Wieviele Operationen gerade anstehen, siehst du an der kleinen Zahl oben rechts des Wolken-Symbols. Dieses Symbol ist nur sichtbar, wenn du an Daten arbeitest (also nicht jetzt, in der Dokumentation). Und Operationen sollten nur offline anstehen - online siehst du diese Zahlen also nie.
-
-Sobald Operationen anstehen, werden sie im Navigations-Baum unten links sichtbar (auch den Navigations-Baum siehst du nur, wenn du an Daten arbeitest). Dort könntest du wenn nötig einzelne oder alle Operationen löschen. Aber das willst du vermutlich nicht, denn damit gingen sie verloren.
+Sobald Operationen Schlange stehen, siehst du das an einer kleinen Zahl oben rechts des Wolken-Symbols in der Menü-Leiste. Sie werden auch im Navigations-Baum sichtbar (unten links). Dort könntest du wenn nötig einzelne oder alle Operationen löschen. Aber das willst du vermutlich nicht, denn damit gingen sie verloren.
 
 ## Konflikte
 
-Arbeiten zwei Mitarbeiter gleichzeitig offline am selben Datensatz, kann es sein, dass mehrere Versionen erfasst wurden. Unterscheiden sich diese Versionen, nennen wir das einen Konflikt. Die zuletzt zum Server synchronisierte Version "gewinnt", wird also - ohne deine Korrektur - künftig angezeigt.
+Arbeiten zwei Mitarbeiter gleichzeitig offline am selben Datensatz, kann es sein, dass widersprüchliche Versionen erfasst wurden. Das nennen wir einen Konflikt. Die zuletzt zum Server synchronisierte Version "gewinnt" und wird künftig angezeigt.
 
-Wenn du Konflikte bemerkst, kannst du sie ganz einfach lösen: Öffne die Geschichte des Datensatzes mit dem Geschichte-Menü im Formular. Dann siehst du alle Versionen in der Reihenfolge wie sie beim Server eingetroffen sind. Du siehst, wie sie sich von der aktuellen Version unterscheiden. Und kannst die Daten direkt korrigieren.
+Wenn du Konflikte bemerkst, kannst du sie einfach lösen: Öffne die Geschichte des Datensatzes mit dem Geschichts-Menü im Formular. Dann siehst du alle Versionen in der Reihenfolge wie sie beim Server eingetroffen sind. Du siehst, wie sie sich von der aktuellen Version unterscheiden und kannst sie direkt korrigieren.
 
-Geschichten werden nur auf dem Server gespeichert. Darum kannst du sie nur online sehen.
+Geschichten werden nur auf dem Server gespeichert. Darum siehst du sie nur online.

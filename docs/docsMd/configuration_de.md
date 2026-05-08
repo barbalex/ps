@@ -15,7 +15,6 @@ _Zuletzt aktualisiert am 8.5.2026_
 Deshalb ist arten-fördern.app stark konfigurierbar:
 
 - Freie Bennennung von Teilprojekten (z.B. als 'Arten' oder 'Biotope')
-- Wahl von Standard-Einheiten (aus selber definierten Listen, siehe unten)
 - Wahl, welche Fähigkeiten verwendet werden und wie sie angezeigt werden
 - Wahl der Anzahl Stufen für Orte (1 oder 2)
 - Freie Benennung der Ort-Stufen
@@ -23,6 +22,7 @@ Deshalb ist arten-fördern.app stark konfigurierbar:
 - Möglichkeit in vielen Tabellen eigene Felder zu ergänzen
 - Freie Definition und Import von Taxonomien
 - Freie Definition und Import von Listen
+- Wahl von Standard-Einheiten (aus selber definierten Listen)
 - Wahl vorbereiteter Diagramme, Möglichkeit eigene zu bauen
 - Möglichkeit, eigene Berichte zu bauen, auf Stufe Projekt und Teil-Projekt, mit Einbezug der Diagramme
 - Möglichkeit, Beobachtungen aus jeglicher Quelle zu importieren
