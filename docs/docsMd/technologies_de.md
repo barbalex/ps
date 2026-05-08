@@ -4,7 +4,7 @@ _Zuletzt aktualisiert am 8.5.2026_
 
 ---
 
-- [Akamai](https://www.linode.com) für die physischen Server
+- [Akamai](https://www.linode.com) für die physischen Server (in Frankfurt)
 - [Docker](<https://de.wikipedia.org/wiki/Docker_(Software)>) um die App auf dem Server zu betreiben
 - [PostgreSQL](https://www.postgresql.org) als Datenbank auf dem Server
 - [Better Auth](https://better-auth.com) für die Authentifizierung (Server und App)

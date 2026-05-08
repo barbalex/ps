@@ -8,7 +8,7 @@ arten-fördern.app fonctionne dans le navigateur. Lequel importe peu en généra
 
 arten-fördern.app fonctionne sur tous les systèmes d'exploitation.
 
-En tant qu'[application web progressive](https://web.dev/explore/progressive-web-apps), tu peux également installer arten-fördern.app. La procédure exacte dépend du navigateur. Elle s'exécute ensuite dans sa propre fenêtre, sans barre d'adresse.
+En tant qu'[application web progressive](https://web.dev/explore/progressive-web-apps), tu peux également installer arten-fördern.app : ouvre l'application dans le navigateur, puis l'étape suivante dépend du navigateur utilisé. Souvent, une invite 'install' apparaît dans la barre d'adresse. Ou il existe une entrée dans le menu pour cela (chez moi : 'Save and share' > 'Install page as app'). Après l'installation, tu devrais trouver une entrée dans le menu Démarrer de ton PC et l'application s'exécute dans sa propre fenêtre, sans barre d'adresse.
 
 Tu peux ensuite généralement aussi lancer arten-fördern.app depuis un raccourci. Selon ton système d'exploitation, elle se comporte alors globalement comme n'importe quelle application obtenue via un store ou installée directement.
 
