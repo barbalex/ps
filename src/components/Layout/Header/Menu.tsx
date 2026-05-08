@@ -53,7 +53,7 @@ export const Menu = () => {
         disabled={loading}
         title="Enter"
       >
-        <MdLogin />
+        <MdLogin className={loading ? styles.spinning : undefined} />
       </button>
     </div>
   )
