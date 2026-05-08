@@ -112,12 +112,4 @@ export const docsMeta: DocMeta[] = [
     label_it: 'Tecnologie utilizzate',
     isTechnical: true,
   },
-  {
-    id: 'swipe-to-delete-in-lists',
-    label_de: 'Mit Wischen löschen in Listen',
-    label_en: 'Swipe to delete in lists',
-    label_fr: 'Glisser pour supprimer dans les listes',
-    label_it: 'Scorri per eliminare nelle liste',
-    isTechnical: true,
-  },
 ]
