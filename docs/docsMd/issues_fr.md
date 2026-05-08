@@ -1,10 +1,10 @@
 # Retours et bugs
 
-*Dernière mise à jour: 17 avril 2026*
+*Dernière mise à jour: 8 mai 2026*
 
 ---
 
-Je suis toujours heureux de recevoir des retours, suggestions, idées et (il faut l'avouer, un peu moins) des signalements de bugs.
+Je suis toujours heureux de recevoir des retours, suggestions, idées et (_il faut l'avouer, un peu moins_) des signalements de bugs.
 
 Le meilleur moyen est de passer par GitHub, où le code est hébergé:
 
@@ -15,4 +15,6 @@ Le meilleur moyen est de passer par GitHub, où le code est hébergé:
 
 GitHub est idéal car il permet de garder une vue d'ensemble, de prioriser, de documenter l'évolution et de faire le lien direct avec le nouveau code. Toute personne qui participe à un issue ou s'y abonne est automatiquement notifiée par email des nouveaux commentaires — par exemple lorsqu'un bug a été corrigé.
 
-Il faut bien sûr créer un compte GitHub pour participer à la discussion. Et celle-ci est publique. Si tu ne le souhaites pas, ou si tu trouves cela simplement trop compliqué, tu peux aussi m'envoyer un [email](mailto:alex@gabriel-software.ch?subject=arten-fördern.app). Si je trouve la suggestion utile, j'ouvrirai moi-même l'issue. À ta demande, sans mentionner la source. En général, je suis heureux de citer ceux qui ont proposé de bonnes idées.
+Il faut créer un compte (gratuit) pour participer à la discussion sur GitHub. Et celle-ci est publique. Si tu ne le souhaites pas, ou si tu trouves cela simplement trop compliqué, tu peux aussi m'envoyer un [email](mailto:alex@gabriel-software.ch?subject=arten-fördern.app).
+
+Si je trouve la suggestion utile, j'ouvrirai moi-même l'issue. À ta demande, sans mentionner la source. En général, je suis heureux de citer ceux qui ont proposé de bonnes idées.
