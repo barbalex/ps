@@ -1,15 +1,17 @@
 # Pricing
 
-_Last updated: 17 April 2026_
+_Last updated: 8 May 2026_
 
 ---
 
-There are two ways to pay for arten-fördern.app:
+## 1 Maintenance and Further Development
+
+There are two models:
 
 1. Choose an account and pay in advance
-2. Sign a separate contract
+2. Sign maintenance and development contracts
 
-## Choose an account and pay in advance
+### 2.1 Choose an account and pay in advance
 
 This method is fast and convenient for everyone involved. And beyond your email address, you barely need to provide any personal data.
 
@@ -29,18 +31,16 @@ For example, I can imagine showing account users a rough statistic: number of ac
 
 I do not want this project only to make me rich. I believe in its value for ecological consultancies and public nature conservation offices. That is why I would like to start at low prices, to see whether that is true. And not prevent this value from being realized from the start by setting discouraging prices.
 
-But that does not rule out having to increase prices later. Just like Netflix, Adobe, Microsoft & co...
+But that does not rule out having to increase prices later. Just like Netflix, Adobe, Microsoft & co... 😞 But if it gets too much for you, you can always run the project yourself — it is [open source](/docs/open-source).
 
-## Sign a contract
+### 2.2 Sign maintenance and development contracts
 
-### Comprehensive
+Paying in advance on the internet is usually not how public institutions work. They have different financial and internal processes, and they want to secure operations, maintenance, and support over multiple years. They also appreciate the possibility of having specific customizations made for their project.
 
-Paying in advance on the internet is usually not how public institutions work. They have different financial and internal processes, and they want to secure operations, maintenance, and support over multiple years.
+That is why it is also possible to sign a tailored contract with [gabriel-software.ch](https://gabriel-software.ch). In that case, prices are negotiated.
 
-That is why it is also possible to sign a tailored contract with gabriel-software.ch. In that case, prices are negotiated.
+If it works out, this will likely become the main source of income (and already is today). And make it possible to keep subscription prices relatively low. Because public institutions would then cover the base load (infrastructure, technical maintenance, bug fixes).
 
-If it works out, this will likely become the main source of income. And make it possible to keep subscription prices relatively low. Because public institutions would then cover the base load (infrastructure, technical maintenance, bug fixes).
-
-### Configuration
+## 2 Configuration
 
 It is worth configuring arten-fördern.app properly for your project. BEFORE you start the actual work. It may be worth involving me in this process. And that (can) cost something. [More information here.](/docs/configuration)

@@ -1,15 +1,17 @@
 # Prezzi
 
-_Ultimo aggiornamento: 17 aprile 2026_
+_Ultimo aggiornamento: 8 maggio 2026_
 
 ---
 
-Esistono due modi per pagare arten-fördern.app:
+## 1 Manutenzione e ulteriore sviluppo
+
+Esistono due modelli:
 
 1. Scegliere un account e pagare in anticipo
-2. Stipulare un contratto separato
+2. Stipulare contratti di manutenzione e sviluppo
 
-## Scegliere un account e pagare in anticipo
+### 2.1 Scegliere un account e pagare in anticipo
 
 Questo metodo è veloce e comodo per tutte le parti coinvolte. E oltre all'indirizzo e-mail, non hai quasi bisogno di trasmettere dati personali.
 
@@ -29,18 +31,16 @@ Potrei ad esempio immaginare che gli utenti con account vedano una statistica ap
 
 Con questo progetto non voglio solo diventare ricco. Credo nella sua utilità per gli studi ecologici e per gli uffici pubblici specializzati in protezione della natura. Per questo vorrei iniziare con prezzi bassi, per vedere se è davvero così. E non impedire fin dall'inizio che questa utilità si realizzi con prezzi scoraggianti.
 
-Ciò però non esclude che io debba aumentare i prezzi in seguito. Proprio come Netflix, Adobe, Microsoft & co...
+Ciò però non esclude che io debba aumentare i prezzi in seguito. Proprio come Netflix, Adobe, Microsoft & co... 😞 Ma se dovesse diventare troppo, potete sempre gestire il progetto da soli — è [open source](/docs/open-source).
 
-## Stipulare un contratto
+### 2.2 Stipulare contratti di manutenzione e sviluppo
 
-### Completo
+Il pagamento anticipato su internet di solito non è il modo in cui lavorano le istituzioni pubbliche. Hanno processi finanziari e interni diversi e desiderano garantirsi esercizio, manutenzione e supporto per più anni. Apprezzano anche la possibilità di far realizzare adattamenti specifici per il loro progetto.
 
-Il pagamento anticipato su internet di solito non è il modo in cui lavorano le istituzioni pubbliche. Hanno processi finanziari e interni diversi e desiderano garantirsi esercizio, manutenzione e supporto per più anni.
+Per questo è anche possibile stipulare un contratto su misura con [gabriel-software.ch](https://gabriel-software.ch). I prezzi, in quel caso, sono oggetto di trattativa.
 
-Per questo è anche possibile stipulare un contratto su misura con gabriel-software.ch. I prezzi, in quel caso, sono oggetto di trattativa.
+Se funziona, questa dovrebbe diventare la principale fonte di reddito (ed è già così oggi). E permettere di mantenere relativamente bassi i prezzi degli abbonamenti. Perché il carico di base (infrastruttura, manutenzione tecnica, correzione dei bug) verrebbe allora coperto dalle istituzioni pubbliche.
 
-Se funziona, questa dovrebbe diventare la principale fonte di reddito. E permettere di mantenere relativamente bassi i prezzi degli abbonamenti. Perché il carico di base (infrastruttura, manutenzione tecnica, correzione dei bug) verrebbe allora coperto dalle istituzioni pubbliche.
-
-### Configurazione
+## 2 Configurazione
 
 Vale la pena configurare arten-fördern.app correttamente per il tuo progetto. PRIMA di iniziare il lavoro vero e proprio. Può valere la pena coinvolgermi in questo processo. E ciò (può) avere un costo. [Ulteriori informazioni qui.](/docs/configuration)

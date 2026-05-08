@@ -1,15 +1,17 @@
 # Preise
 
-_Zuletzt aktualisiert am 17. April 2026_
+_Zuletzt aktualisiert am 8.5.2026_
 
 ---
 
-Es gibt zwei Modelle, arten-fördern.app zu bezahlen:
+## 1 Unterhalt und Weiter-Entwicklung
+
+Es gibt zwei Modelle:
 
 1. Konto wählen und voraus zahlen
-2. Separaten Vertrag abschliessen
+2. Unterhalts- und Entwicklungs-Verträge abschliessen
 
-## Konto wählen und voraus zahlen
+### 2.1 Konto wählen und voraus zahlen
 
 Diese Methode ist für alle Beteiligten schnell und bequem. Und über die E-Mail-Adresse hinaus brauchst du kaum Personendaten zu übermitteln.
 
@@ -29,18 +31,16 @@ Ich könnte mir z.B. vorstellen, dass Benutzer mit Konto eine grobe Statistik se
 
 Ich will mit diesem Projekt nicht nur reich werden. Ich glaube an seinen Nutzen für Ökobüros und öffentliche Naturschutz-Fachstellen. Daher würde ich gerne günstig anfangen, um zu sehen, ob das stimmt. Und nicht von vornherein über abschreckende Preise verhindern, dass dieser Nutzen erzielt wird.
 
-Was dann aber wiederum nicht ausschliesst, dass ich später die Preise erhöhen muss. Genau wie Netflix, Adobe, Microsoft & co...
+Was dann aber wiederum nicht ausschliesst, dass ich später die Preise erhöhen muss. Genau wie Netflix, Adobe, Microsoft & co. 😞. Wenn es euch zu bunt wird, könnt ihr das Projekt immer noch selber betreiben - es ist ja [open source](/docs/open-source).
 
-## Vertrag abschliessen
+### 2.2 Unterhalts- und Entwicklungs-Verträge abschliessen
 
-### Umfassend
+Vorauszahlung im Internet ist üblicherweise nicht die Art, wie öffentliche Institutionen arbeiten. Sie haben andere finanzielle und interne Abläufe und möchten sich Betrieb, Unterhalt und Support über mehrere Jahre sichern. Sie schätzen auch die Möglichkeit, spezifische Anpassungen für ihr Projekt vornehmen zu lassen.
 
-Vorauszahlung im Internet ist üblicherweise nicht die Art, wie öffentliche Institutionen arbeiten. Sie haben andere finanzielle und interne Abläufe und möchten sich Betrieb, Unterhalt und Support über mehrere Jahre sichern.
+Darum kann man auch mit [gabriel-software.ch](https://gabriel-software.ch) einen massgeschneiderten Vertrag abschliessen. Preise sind dann Verhandlungssache.
 
-Darum kann man auch mit gabriel-software.ch einen massgeschneiderten Vertrag abschliessen. Preise sind dann Verhandlungssache.
+Das dürfte, wenn es klappt, meine Haupteinnahme-Quelle werden (ist schon heute so). Und ermöglichen, die Preise für Abos verhältnismässig günstig zu halten. Denn über die öffentlichen Institutionen wäre dann die Grundlast (Infrastruktur, technischer Unterhalt, Fehlerkorrekturen) gedeckt.
 
-Das dürfte, wenn es klappt, die Haupteinnahme-Quelle werden. Und ermöglichen, die Preise für Abos verhältnismässig günstig zu halten. Denn über die öffentlichen Institutionen wäre dann die Grundlast (Infrastruktur, technischer Unterhalt, Fehlerkorrekturen) gedeckt.
+## 2 Konfiguration
 
-### Konfiguration
-
-Es lohnt sich, arten-förder.app für dein Projekt richtig zu konfigurieren. BEVOR Ihr mit der eigentlichen Arbeit beginnt. Es kann sich lohnen, mich dabei einzubinden. Und das (kann) kosten. [Mehr Infos hier.](/docs/configuration)
+Es lohnt sich, arten-fördern.app für dein Projekt richtig zu konfigurieren. BEVOR Ihr mit der eigentlichen Arbeit beginnt. Es kann sich lohnen, mich dabei einzubinden. Und das (kann) kosten. [Mehr Infos hier.](/docs/configuration)
