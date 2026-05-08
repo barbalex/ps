@@ -66,4 +66,5 @@
   overflow: auto;
   scrollbar-width: thin;
   min-height: 0;
+  user-select: text;
 }
