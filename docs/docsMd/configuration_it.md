@@ -1,6 +1,6 @@
 # Configurazione
 
-_Ultimo aggiornamento: 6 maggio 2026_
+_Ultimo aggiornamento: 8 maggio 2026_
 
 ---
 
@@ -10,7 +10,27 @@ arten-fördern.app è nato perché:
 - Non esiste una soluzione «universale» per i progetti di protezione della natura: la maggior parte dei progetti non potrebbe/dovrebbe usare apflora.ch senza modifiche
 - Pochissime istituzioni pubbliche o studi ecologici possono o vogliono permettersi lo sviluppo di un prodotto su misura come https://apflora.ch, https://vermehrung.ch o https://arteigenschaften.ch
 
-Per questo arten-fördern.app è altamente configurabile. Questa è stata la parte più impegnativa dello sviluppo.
+Per questo arten-fördern.app è altamente configurabile:
+
+- Denominazione libera dei sottoprogetti (p.es. come 'specie' o 'biotopi')
+- Scelta di unità predefinite (da liste definite autonomamente, vedi sotto)
+- Scelta delle funzionalità utilizzate e del loro modo di visualizzazione
+- Scelta del numero di livelli per i luoghi (1 o 2)
+- Denominazione libera dei livelli dei luoghi
+- Scelta delle funzionalità utilizzate per ogni livello di luogo (misure, controlli, rapporti ecc.)
+- Possibilità di aggiungere campi personalizzati in molte tabelle
+- Definizione e importazione libere di tassonomie
+- Definizione e importazione libere di liste
+- Selezione di grafici predefiniti, possibilità di creare i propri
+- Possibilità di creare rapporti personalizzati a livello di progetto e sottoprogetto, con integrazione dei grafici
+- Possibilità di importare osservazioni da qualsiasi fonte
+- Integrazione di diverse fonti per livelli mappa (WMS, WFS, importazioni...)
+- Scelta libera del sistema di riferimento di coordinate, possibilità di definire il proprio
+- Selezione di controlli qualità predefiniti, possibilità di creare i propri
+- Selezione di esportazioni predefinite, possibilità di creare le proprie
+- Disponibile in 4 lingue: tedesco, francese, italiano, inglese
+
+Questa è stata la parte più impegnativa dello sviluppo.
 
 Per te significa: devi riflettere fin dall'inizio su come organizzare al meglio il tuo progetto e su come utilizzare arten-fördern.app per farlo.
 

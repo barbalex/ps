@@ -1,6 +1,6 @@
 # Configuration
 
-_Last updated: 6 May 2026_
+_Last updated: 8 May 2026_
 
 ---
 
@@ -10,7 +10,27 @@ arten-fördern.app came about because:
 - There is no ‘one size fits all’ for nature conservation projects: most projects could/should not use apflora.ch unchanged
 - Very few public institutions or ecological consultancies can or want to afford the development of a tailor-made product such as https://apflora.ch, https://vermehrung.ch or https://arteigenschaften.ch
 
-That is why arten-fördern.app is highly configurable. This was the most demanding part of development.
+That is why arten-fördern.app is highly configurable:
+
+- Free naming of subprojects (e.g. as 'species' or 'habitats')
+- Choice of default units (from self-defined lists, see below)
+- Choice of which features are used and how they are displayed
+- Choice of the number of levels for places (1 or 2)
+- Free naming of place levels
+- Choice of which features are used in which place levels (actions, checks, reports etc.)
+- Ability to add custom fields to many tables
+- Free definition and import of taxonomies
+- Free definition and import of lists
+- Selection of ready-made charts, ability to build custom ones
+- Ability to build custom reports at project and sub-project level, incorporating charts
+- Ability to import observations from any source
+- Inclusion of various sources for map layers (WMS, WFS, imports...)
+- Free choice of coordinate reference system, ability to define your own
+- Selection of ready-made quality checks, ability to build custom ones
+- Selection of ready-made exports, ability to build custom ones
+- Available in 4 languages: German, French, Italian, English
+
+This was the most demanding part of development.
 
 For you it means: you need to think at the very beginning about how to best organise your project and how to use arten-fördern.app for it.
 

@@ -1,8 +1,10 @@
 # Konfiguration
 
-_Zuletzt aktualisiert am 6.5.2026_
+_Zuletzt aktualisiert am 8.5.2026_
 
 ---
+
+## Wieso?
 
 arten-fördern.app ist enstanden, weil:
 
@@ -10,41 +12,47 @@ arten-fördern.app ist enstanden, weil:
 - Es gibt kein «one size fits all» für Naturschutzprojekte: Die meisten Projekte könnten/sollten apflora.ch nicht unverändert verwenden
 - Nur die wenigsten öffentlichen Institutionen oder Ökobüros können oder wollen sich die Entwicklung eines massgeschneiderten Produkts wie z.B. https://apflora.ch, https://vermehrung.ch oder https://arteigenschaften.ch leisten
 
+## Was?
+
 Deshalb ist arten-fördern.app stark konfigurierbar:
 
-- Freie Bennennung von Teilprojekten (z.B. Arten, Biotope)
+- Freie Bennennung von Teilprojekten (z.B. als 'Arten' oder 'Biotope')
 - Wahl von Standard-Einheiten (aus selber definierten Listen, siehe unten)
 - Wahl, welche Fähigkeiten verwendet werden und wie sie angezeigt werden
 - Wahl der Anzahl Stufen für Orte (1 oder 2)
 - Freie Benennung der Ort-Stufen
 - Wahl, in welchen Ort-Stufen welche Fähigkeiten genutzt werden (Massnahmen, Kontrollen, Berichte etc.)
+- Möglichkeit in vielen Tabellen eigene Felder zu ergänzen
 - Freie Definition und Import von Taxonomien
 - Freie Definition und Import von Listen
 - Wahl vorbereiteter Diagramme, Möglichkeit eigene zu bauen
-- Möglichkeit, eigene Berichte zu bauen, auf Stufe Projekt und Teil-Projekt, inklusive der Diagramme
-- Möglichkeit, selber Beobachtungen aus jeglicher Quelle zu importieren
+- Möglichkeit, eigene Berichte zu bauen, auf Stufe Projekt und Teil-Projekt, mit Einbezug der Diagramme
+- Möglichkeit, Beobachtungen aus jeglicher Quelle zu importieren
 - Einbezug diverser Quellen für Karten-Layer (WMS, WFS, Importe...)
-- Wahl jeglichen Koordinaten-Bezugs-Systems, Fähigkeit eigenes zu verwenden
+- Freie Wahl des Koordinaten-Bezugs-Systems, Möglichkeit eigenes zu definieren
 - Wahl vorbereiteter Qualitätskontrollen, Möglichkeit eigene zu bauen
 - Wahl vorbereiteter Exporte, Möglichkeit eigene zu bauen
+- 4 Sprachig: Deutsch, Französisch, Italienisch, Englisch
 
 Das war der anspruchvollste Teil der Entwicklung.
 
 Für dich bedeutet es: Du musst ganz am Anfang überlegen, wie du dein Projekt optimal organisierst und arten-fördern.app dafür einsetzt.
 
+## Wie?
+
 Dafür hast du drei Varianten:
 
-## 1 «Ich fange einfach mal an und kümmere mich um Konfiguration, wenn es nötig wird»
+### 1 «Ich fange einfach mal an und kümmere mich um Konfiguration, wenn es nötig wird»
 
 Es freut mich, wenn du dafür ein Abo löst. Aber es ist wahrscheinlich, dass es für euch hätte viel besser laufen können. Nachträgliche Konfigurations-Änderungen können sehr aufwändig sein und alle Mitarbeitenden betreffen.
 
 Ist ein Projekt erfolgreich, entwickelt es sich über die Jahre weiter. Spätere Anpassungen/Erweiterungen sind daher auch bei guter Vorbereitung selten vermeidbar. Aber minimierbar.
 
-## 2 «Ich nehme mir am Anfang viel Zeit und konfiguriere selbst»
+### 2 «Ich nehme mir am Anfang viel Zeit und konfiguriere selbst»
 
 Gute Idee. Sag mir bitte, was ich besser dokumentieren soll und was für dein Projekt fehlt oder anders funktionieren sollte.
 
-## 3 «Ich nehme mir am Anfang Zeit und lasse mich dabei unterstützen»
+### 3 «Ich nehme mir am Anfang Zeit und lasse mich dabei unterstützen»
 
 Ich entwickle zwar heute Software, [verstehe aber auch einiges von Naturschutz](https://gabriel-software.ch/kontakt). Wenn ich mitdenke kannst du vermutlich deinen Aufwand und die Wahrscheinlichkeit oder das Ausmass späterer Änderungen reduzieren.
 
