@@ -10,7 +10,25 @@ arten-fördern.app ist enstanden, weil:
 - Es gibt kein «one size fits all» für Naturschutzprojekte: Die meisten Projekte könnten/sollten apflora.ch nicht unverändert verwenden
 - Nur die wenigsten öffentlichen Institutionen oder Ökobüros können oder wollen sich die Entwicklung eines massgeschneiderten Produkts wie z.B. https://apflora.ch, https://vermehrung.ch oder https://arteigenschaften.ch leisten
 
-Deshalb ist arten-fördern.app stark konfigurierbar. Das war der anspruchvollste Teil der Entwicklung.
+Deshalb ist arten-fördern.app stark konfigurierbar:
+
+- Freie Bennennung von Teilprojekten (z.B. Arten, Biotope)
+- Wahl von Standard-Einheiten (aus selber definierten Listen, siehe unten)
+- Wahl, welche Fähigkeiten verwendet werden und wie sie angezeigt werden
+- Wahl der Anzahl Stufen für Orte (1 oder 2)
+- Freie Benennung der Ort-Stufen
+- Wahl, in welchen Ort-Stufen welche Fähigkeiten genutzt werden (Massnahmen, Kontrollen, Berichte etc.)
+- Freie Definition und Import von Taxonomien
+- Freie Definition und Import von Listen
+- Wahl vorbereiteter Diagramme, Möglichkeit eigene zu bauen
+- Möglichkeit, eigene Berichte zu bauen, auf Stufe Projekt und Teil-Projekt, inklusive der Diagramme
+- Möglichkeit, selber Beobachtungen aus jeglicher Quelle zu importieren
+- Einbezug diverser Quellen für Karten-Layer (WMS, WFS, Importe...)
+- Wahl jeglichen Koordinaten-Bezugs-Systems, Fähigkeit eigenes zu verwenden
+- Wahl vorbereiteter Qualitätskontrollen, Möglichkeit eigene zu bauen
+- Wahl vorbereiteter Exporte, Möglichkeit eigene zu bauen
+
+Das war der anspruchvollste Teil der Entwicklung.
 
 Für dich bedeutet es: Du musst ganz am Anfang überlegen, wie du dein Projekt optimal organisierst und arten-fördern.app dafür einsetzt.
 
