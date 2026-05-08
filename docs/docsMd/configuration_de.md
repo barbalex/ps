@@ -6,8 +6,6 @@ _Zuletzt aktualisiert am 8.5.2026_
 
 ## Wieso?
 
-arten-fördern.app ist enstanden, weil:
-
 - [apflora.ch](https://apflora.ch) zeigt den Nutzen eines solchen Werkzeugs. Beteiligte Naturschutzfachleute haben gewünscht, es auch in anderen Projekten verwenden zu können
 - Es gibt kein «one size fits all» für Naturschutzprojekte: Die meisten Projekte könnten/sollten apflora.ch nicht unverändert verwenden
 - Nur die wenigsten öffentlichen Institutionen oder Ökobüros können oder wollen sich die Entwicklung eines massgeschneiderten Produkts wie z.B. https://apflora.ch, https://vermehrung.ch oder https://arteigenschaften.ch leisten
@@ -34,11 +32,9 @@ Deshalb ist arten-fördern.app stark konfigurierbar:
 - Wahl vorbereiteter Exporte, Möglichkeit eigene zu bauen
 - 4 Sprachig: Deutsch, Französisch, Italienisch, Englisch
 
-Das war der anspruchvollste Teil der Entwicklung.
-
-Für dich bedeutet es: Du musst ganz am Anfang überlegen, wie du dein Projekt optimal organisierst und arten-fördern.app dafür einsetzt.
-
 ## Wie?
+
+Du musst ganz am Anfang überlegen, wie du dein Projekt optimal organisierst und arten-fördern.app dafür einsetzt.
 
 Dafür hast du drei Varianten:
 
