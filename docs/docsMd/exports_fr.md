@@ -1,6 +1,6 @@
 # Exports
 
-*Dernière mise à jour: 7 mai 2026*
+*Dernière mise à jour: 8 mai 2026*
 
 ---
 
@@ -19,4 +19,4 @@ Les utilisateurs ayant le rôle « Propriétaire » ou « Concepteur » peuvent 
 
 Les exports sont disponibles au niveau du projet et du sous-projet (espèce/biotope).
 
-Vous souhaitez filtrer l'export? Vous pouvez définir un filtre quelconque sur la table de base dans le formulaire de filtre, puis l'appliquer lors de l'exécution de l'export.
+Tu veux filtrer l'export? Tu peux définir un filtre quelconque sur la table de base dans le formulaire de filtre, puis l'appliquer lors de l'exécution de l'export.

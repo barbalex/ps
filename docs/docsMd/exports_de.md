@@ -1,6 +1,6 @@
 # Exporte
 
-_Zuletzt aktualisiert am 7.5.2026_
+_Zuletzt aktualisiert am 8.5.2026_
 
 ---
 
@@ -19,4 +19,4 @@ Benutzer mit der Rolle "Eigentümer" oder "Designer" können wählen, welche der
 
 Exporte gibt es auf Stufe Projekt und Teil-Projekt (Art/Biotop).
 
-Möchten Sie den Export filtern? Sie können auf der Basis-Tabelle im Filter-Formular einen beliebigen Filter setzen und diesen dann beim Export anwenden.
+Willst du den Export filtern? Du kannst auf der Basis-Tabelle im Filter-Formular einen beliebigen Filter setzen und diesen dann beim Export anwenden.

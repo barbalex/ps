@@ -1,6 +1,6 @@
 # Esportazioni
 
-*Ultimo aggiornamento: 7 maggio 2026*
+*Ultimo aggiornamento: 8 maggio 2026*
 
 ---
 
