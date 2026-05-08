@@ -32,11 +32,9 @@ Per questo arten-fördern.app è altamente configurabile:
 - Selezione di esportazioni predefinite, possibilità di creare le proprie
 - Disponibile in 4 lingue: tedesco, francese, italiano, inglese
 
-Questa è stata la parte più impegnativa dello sviluppo.
-
-Per te significa: devi riflettere fin dall'inizio su come organizzare al meglio il tuo progetto e su come utilizzare arten-fördern.app per farlo.
-
 ## Come?
+
+Devi riflettere fin dall'inizio su come organizzare al meglio il tuo progetto e su come utilizzare arten-fördern.app per farlo.
 
 Per questo hai tre opzioni:
 
