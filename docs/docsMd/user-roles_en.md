@@ -1,6 +1,6 @@
 # User Roles
 
-*Last updated: 5 May 2026*
+*Last updated: 8 May 2026*
 
 ---
 
@@ -14,13 +14,14 @@ A user is owner:
 - and of all data created in these projects.
 
 Owner roles are set automatically by the app and cannot be changed.
+Just as in real life, ownership is not only a privilege but also a burden 😁: [it is the owners who finance arten-fördern.app](/docs/pricing).
 
 ## Roles
 
 Roles are listed from high to low:
 
 1. **Owner**: can assign Designer roles
-2. **Designer**: can edit all project and subproject configurations, assign Writer and Reader roles
+2. **Designer**: can create and configure projects and subprojects, assign Writer and Reader roles
 3. **Writer**: can edit all data
 4. **Writer (specific)**: can edit data for which they have been assigned this role
 5. **Reader**: can sync and read all data
@@ -58,3 +59,5 @@ Example: You give test@test.ch the role `Reader (specific)` on a project. You ca
 ## Users need rights all the way up
 
 It is not enough to give a user who should work on a subproject write access on that subproject alone. They need the Reader role on the parent project in order to sync parent data, without which they could not work.
+
+So give them 'Reader (specific)' on the project if they should only see that one subproject. Or 'Reader' if they should see all subprojects.

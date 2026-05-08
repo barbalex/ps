@@ -1,6 +1,6 @@
 # Ruoli utente
 
-*Ultimo aggiornamento: 5 maggio 2026*
+*Ultimo aggiornamento: 8 maggio 2026*
 
 ---
 
@@ -14,13 +14,14 @@ Un utente è proprietario:
 - e di tutti i dati creati in questi progetti.
 
 I ruoli Proprietario vengono impostati automaticamente dall'app e non possono essere modificati.
+Come nella vita reale, la proprietà non è solo un privilegio ma anche un onere 😁: [sono i proprietari a finanziare arten-fördern.app](/docs/pricing).
 
 ## Ruoli
 
 I ruoli sono elencati dal più alto al più basso:
 
 1. **Proprietario**: può assegnare ruoli Designer
-2. **Designer**: può modificare tutte le configurazioni di progetti e sottoprogetti, assegnare ruoli Redattore e Lettore
+2. **Designer**: può creare e configurare progetti e sottoprogetti, assegnare ruoli Redattore e Lettore
 3. **Redattore**: può modificare tutti i dati
 4. **Redattore (specifico)**: può modificare i dati per i quali gli è stato assegnato questo ruolo
 5. **Lettore**: può sincronizzare e leggere tutti i dati
@@ -58,3 +59,5 @@ Esempio: dai a test@test.ch il ruolo `Lettore (specifico)` su un progetto. Puoi 
 ## Gli utenti hanno bisogno di diritti fino in cima
 
 Non è sufficiente dare a un utente che deve lavorare su un sottoprogetto i soli diritti di scrittura su quel sottoprogetto. Ha bisogno del ruolo Lettore sul progetto padre per sincronizzare i dati padre, senza i quali non potrebbe lavorare.
+
+Assegnagli quindi 'Lettore (specifico)' sul progetto se deve vedere solo quel sottoprogetto. Oppure 'Lettore' se deve vedere tutti i sottoprogetti.

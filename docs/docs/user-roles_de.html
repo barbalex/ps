@@ -1,5 +1,5 @@
-<h1>Benutzerrollen</h1>
-<p><em>Zuletzt aktualisiert am 5.5.2026</em></p>
+<h1>Benutzer-Rollen</h1>
+<p><em>Zuletzt aktualisiert am 8.5.2026</em></p>
 <hr>
 <h2>Eigentümerschaft</h2>
 <p>Ein Benutzer ist Eigentümer:</p>
@@ -7,20 +7,21 @@
 <li>seines eigenen Benutzer-Datensatzes,</li>
 <li>der zugehörigen Konten,</li>
 <li>Projekte</li>
-<li>und aller in diesen Projekten erstellten Daten.</li>
+<li>und aller in diesen Projekten enthaltenen Daten.</li>
 </ul>
-<p>Eigentümer-Rollen werden automatisch von der App gesetzt und können nicht geändert werden.</p>
+<p>Eigentümer-Rollen werden automatisch von der App gesetzt und können nicht geändert werden.
+Wie im richtigen Leben ist Eigentum nicht nur ein Privileg, sondern auch eine Last 😁: <a href="/docs/pricing" target="_blank">Es sind die Eigentümer, die arten-fördern.app finanzieren</a>.</p>
 <h2>Rollen</h2>
 <p>Rollen sind von hoch nach tief:</p>
 <ol>
 <li><strong>Eigentümer</strong>: kann Designer-Rollen vergeben</li>
-<li><strong>Designer</strong>: kann alle Projekt- und Teilprojekt-Konfigurationen bearbeiten, Schreiber- und Leser-Rollen vergeben</li>
+<li><strong>Designer</strong>: kann Projekte und Teilprojekte erstellen und konfigurieren, Schreiber- und Leser-Rollen vergeben</li>
 <li><strong>Schreiber</strong>: kann alle Daten bearbeiten</li>
 <li><strong>Schreiber (spezifisch)</strong>: kann Daten bearbeiten, für die er die entsprechende Rolle zugewiesen bekommt</li>
 <li><strong>Leser</strong>: kann alle Daten synchronisieren und lesen</li>
 <li><strong>Leser (spezifisch)</strong>: kann Daten synchronisieren und lesen, für die er die entsprechende Rolle zugewiesen bekommt</li>
 </ol>
-<p>Eine Rolle schliesst immer alle niedrigeren Rollen ein. Sie werden nicht separat gesetzt, es muss pro Ebene nur eine einzige Rolle gesetzt werden.</p>
+<p>Eine Rolle schliesst immer alle niedrigeren Rollen ein - es wird pro Ebene nur eine einzige Rolle gesetzt.</p>
 <p>Es gibt <em>spezifische</em> Rollen. Die übrigen gelten <em>generell</em>. Mehr dazu weiter unten.</p>
 <h2>Wo Rollen vergeben werden</h2>
 <p>Rollen werden auf vier Ebenen vergeben:</p>
@@ -32,11 +33,12 @@
 </ol>
 <h2>Wie generelle Rollen funktionieren</h2>
 <p>Wenn eine generelle Rolle gesetzt wird, erstreckt sich ihre Wirkung auf alle tieferen Ebenen. Die App setzt automatisch alle niedrigeren Rollen.</p>
-<p>Auf tieferen Ebenen können Höhere Rechte vergeben werden. Ihre Wirkung erstreckt sich ebenfalls nach unten. Das Setzen niedrigerer Rechte auf tieferen Ebenen wird nur bei spezifischen Rollen unterstützt.</p>
+<p>Auf tieferen Ebenen können höhere Rechte vergeben werden. Ihre Wirkung erstreckt sich ebenfalls nach unten. Das Setzen niedrigerer Rechte auf tieferen Ebenen wird nur bei spezifischen Rollen unterstützt.</p>
 <p>Es ist wichtig zu wissen, dass die App beim Setzen von generellen Rollen diese Rolle automatisch auf alle tieferen Ebenen kopiert. Daher <strong>sollten generelle Rollen von oben (Projekte) nach unten (Teilprojekte, Orte Ebene 1, Orte Ebene 2) vergeben werden</strong>.</p>
-<p>Beispiel: Gibst du <a href="mailto:test@test.ch" target="_blank">test@test.ch</a> die Leser-Rolle auf dem Projekt, gibt ihm die App automatisch Leser-Rollen in allen Teilprojekten und Orten. Du kannst ihm zusätzlich auf bestimmten Teilprojekten oder Orten Schreibrechte vergeben.</p>
+<p>Beispiel: Gibst du <a href="mailto:test@test.ch" target="_blank">test@test.ch</a> die Leser-Rolle auf dem Projekt, gibt ihm die App automatisch Leser-Rollen in allen Teilprojekten und Orten. Du kannst ihm zusätzlich auf bestimmten Teilprojekten oder Orten Schreibrechte geben.</p>
 <h2>Wie spezifische Rollen funktionieren</h2>
-<p>Spezifische Rollen sind dazu da, dass man einem Benutzer nur für einen Teil der Daten Rechte vergeben kann. Wählt man eine spezifische Rolle, müssen daher in der nächsttieferen Stufe die Rollen manuell vergeben werden (sie werden nicht automatisch gesetzt).</p>
-<p>Beispiel: Du gibst <a href="mailto:test@test.ch" target="_blank">test@test.ch</a> die rolle <code>Leser (spezifisch)</code> auf einem Projekt. Nun kannst tu ihm auf Stufe Arten differenziert Rechte geben: Schreiber, Leser - oder keine. Wenn du ihm bei einer keine Art Rechte gibst, sieht er diese Art nicht.</p>
+<p>Spezifische Rollen sind dazu da, einem Benutzer nur für einen Teil der Daten Rechte zu geben. Wählt man eine spezifische Rolle, müssen daher in der nächsttieferen Stufe die Rollen manuell vergeben werden, sie werden nicht automatisch gesetzt.</p>
+<p>Beispiel: Du gibst <a href="mailto:test@test.ch" target="_blank">test@test.ch</a> die rolle <code>Leser (spezifisch)</code> auf einem Projekt. Nun kannst tu ihm auf Stufe Arten differenziert Rechte geben: Schreiber, Leser - oder keine. Wenn du ihm bei einer keine Art Rechte gibst, sieht er sie nicht.</p>
 <h2>Benutzer brauchen bis ganz oben Rechte</h2>
-<p>Es reicht nicht, einem Benutzer, der an einem Teilprojekt arbeiten soll, auf diesem Teilprojekt Schreibrechte zu geben. Er benötigt die Leser-Rolle auf dem übergeordneten Projekt, um übergeordnete Daten zu synchronisieren, ohne die er nicht arbeiten könnte.</p>
+<p>Es reicht nicht, einem Benutzer, der an einem Teilprojekt arbeiten soll, auf diesem Teilprojekt &#39;Schreiber&#39; zu geben. Er benötigt die Leser-Rolle auf dem übergeordneten Projekt, um übergeordnete Daten zu synchronisieren. Denn ohne diese könnte er nicht arbeiten.</p>
+<p>Gib ihm also auf dem Projekt &#39;Leser (spezifisch)&#39;, wenn er nur dieses Teilprojekt sehen soll. Oder &#39;Leser&#39;, wenn er alle Teilprojekte sehen soll.</p>

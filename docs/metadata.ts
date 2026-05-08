@@ -66,7 +66,7 @@ export const docsMeta: DocMeta[] = [
   },
   {
     id: 'user-roles',
-    label_de: 'Benutzerrollen',
+    label_de: 'Benutzer-Rollen',
     label_en: 'User Roles',
     label_fr: 'Rôles Utilisateurs',
     label_it: 'Ruoli Utente',
