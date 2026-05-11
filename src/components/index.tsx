@@ -12,17 +12,17 @@ export const Home = () => {
     <div className={styles.container}>
       <picture>
         <source
-          srcSet="home_700.avif 700w, home_1000.avif 1000w, home_1400.avif 1400w, home_2000.avif 2000w, home_2500.avif 2500w"
+          srcSet="puls_700.avif 700w, puls_1000.avif 1000w, puls_1400.avif 1400w, puls_1550.avif 1550w"
           type="image/avif"
         />
         <img
-          src="home_700.webp"
-          srcSet="home_700.webp 700w, home_1000.webp 1000w, home_1400.webp 1400w, home_2000.webp 2000w, home_2500.webp 2500w"
+          src="puls_700.avif"
+          srcSet="puls_700.avif 700w, puls_1000.avif 1000w, puls_1400.avif 1400w, puls_1550.avif 1550w"
           sizes="100vw"
           fetchPriority="high"
           alt={intl.formatMessage({
             id: 'rxRJ6H',
-            defaultMessage: 'Spinnen-Ragwurz',
+            defaultMessage: 'Pulsatilla',
           })}
           className={styles.img}
         />
