@@ -102,6 +102,37 @@ export default defineConfig({
   build: {
     outDir: 'frontend/dist',
     emptyOutDir: true,
+    rollupOptions: {
+      output: {
+        manualChunks: (id) => {
+          if (id.includes('react-icons/')) return 'vendor-react-icons'
+          if (id.includes('@fluentui/')) return 'vendor-fluent'
+          if (id.includes('react-intl') || id.includes('@formatjs/'))
+            return 'vendor-intl'
+          if (
+            id.includes('leaflet') ||
+            id.includes('react-leaflet') ||
+            id.includes('@react-leaflet') ||
+            id.includes('proj4') ||
+            id.includes('@turf/') ||
+            id.includes('reproject')
+          )
+            return 'vendor-maps'
+          if (id.includes('recharts')) return 'vendor-charts'
+          if (id.includes('framer-motion')) return 'vendor-motion'
+          if (id.includes('@electric-sql/')) return 'vendor-pglite'
+          if (id.includes('node_modules/@tanstack/')) return 'vendor-tanstack'
+          if (
+            id.includes('node_modules/react/') ||
+            id.includes('node_modules/react-dom/') ||
+            id.includes('node_modules/react-is/') ||
+            id.includes('node_modules/react-error-boundary/') ||
+            id.includes('node_modules/react-transition-group/')
+          )
+            return 'vendor-react'
+        },
+      },
+    },
   },
   css: {
     modules: {

@@ -1,12 +1,16 @@
 import { Outlet, useSearch } from '@tanstack/react-router'
 import { Allotment } from 'allotment'
 import { useAtomValue } from 'jotai'
+import { lazy, Suspense } from 'react'
 import 'allotment/dist/style.css'
 
 import { Tree } from '../Tree/index.tsx'
-import { MapContainer } from '../Map/index.tsx'
 import { mapMaximizedAtom, tabsAtom } from '../../store.ts'
 import styles from './Main.module.css'
+
+const MapContainer = lazy(() =>
+  import('../Map/index.tsx').then((m) => ({ default: m.MapContainer })),
+)
 
 const from = '/data'
 
@@ -54,7 +58,9 @@ export const Main = () => {
           )}
           {mapVisible && (
             <div className="allotment-map">
-              <MapContainer />
+              <Suspense>
+                <MapContainer />
+              </Suspense>
             </div>
           )}
         </Allotment>
