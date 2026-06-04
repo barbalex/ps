@@ -196,7 +196,7 @@ export const ClickListener = () => {
     )
     const wmsLayers = resWmsLayers?.rows ?? []
 
-    // loop through vector layers and get infos
+    // loop through wms layers and get infos
     for await (const layer of wmsLayers) {
       const {
         version,
