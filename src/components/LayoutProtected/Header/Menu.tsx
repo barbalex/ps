@@ -112,8 +112,14 @@ export const Menu = () => {
   }
 
   const docsLabel = isInDocs
-    ? intl.formatMessage({ id: 'navigationDocsGoBack', defaultMessage: 'Zurück' })
-    : intl.formatMessage({ id: 'navigationDocs', defaultMessage: 'Dokumentation' })
+    ? intl.formatMessage({
+        id: 'navigationDocsGoBack',
+        defaultMessage: 'Zurück',
+      })
+    : intl.formatMessage({
+        id: 'navigationDocs',
+        defaultMessage: 'Dokumentation',
+      })
 
   return (
     <div className={`${styles.container} no-print`}>
@@ -142,30 +148,6 @@ export const Menu = () => {
             })}
           />
         </Tooltip>
-        <LanguageChooser width={44} />
-        {isAuthenticated ? (
-          <UserMenu
-            authUser={authUser}
-            session={session}
-            buttonClassName={styles.button}
-            onConfirmLogout={onConfirmLogout}
-          />
-        ) : (
-          <Tooltip
-            content={
-              isHome
-                ? intl.formatMessage({ defaultMessage: 'App öffnen' })
-                : intl.formatMessage({ defaultMessage: 'Anmelden' })
-            }
-          >
-            <Button
-              size="medium"
-              icon={<MdLogin />}
-              onClick={onClickEnter}
-              className={styles.button}
-            />
-          </Tooltip>
-        )}
         <Tooltip content={docsLabel}>
           <Button
             size="medium"
@@ -177,6 +159,30 @@ export const Menu = () => {
         </Tooltip>
         <Online width={44} />
       </MenuBar>
+      <LanguageChooser width={44} />
+      {isAuthenticated ? (
+        <UserMenu
+          authUser={authUser}
+          session={session}
+          buttonClassName={styles.button}
+          onConfirmLogout={onConfirmLogout}
+        />
+      ) : (
+        <Tooltip
+          content={
+            isHome
+              ? intl.formatMessage({ defaultMessage: 'App öffnen' })
+              : intl.formatMessage({ defaultMessage: 'Anmelden' })
+          }
+        >
+          <Button
+            size="medium"
+            icon={<MdLogin />}
+            onClick={onClickEnter}
+            className={styles.button}
+          />
+        </Tooltip>
+      )}
     </div>
   )
 }

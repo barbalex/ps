@@ -9,9 +9,6 @@ import babel from '@rolldown/plugin-babel'
 
 // https://vitejs.dev/config/
 export default defineConfig({
-  define: {
-    'process.env': {},
-  },
   server: {
     port: 5176,
     // host: '0.0.0.0',

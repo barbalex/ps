@@ -221,11 +221,7 @@ export const UserMenu = ({
             )}
             <MenuItem
               icon={<MdFingerprint />}
-              onClick={() =>
-                requestAnimationFrame(() =>
-                  requestAnimationFrame(() => setPasskeyOpen(true)),
-                )
-              }
+              onClick={() => setPasskeyOpen(true)}
             >
               <FormattedMessage
                 id="passkeyAddMenuItem"
