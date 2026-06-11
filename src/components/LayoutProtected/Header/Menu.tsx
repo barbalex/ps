@@ -131,6 +131,30 @@ export const Menu = () => {
         onClickMapView={onClickMapView}
       />
       <MenuBar addMargin={false} showBorder={false} grow={false}>
+        <LanguageChooser width={44} />
+        {isAuthenticated ? (
+          <UserMenu
+            authUser={authUser}
+            session={session}
+            buttonClassName={styles.button}
+            onConfirmLogout={onConfirmLogout}
+          />
+        ) : (
+          <Tooltip
+            content={
+              isHome
+                ? intl.formatMessage({ defaultMessage: 'App öffnen' })
+                : intl.formatMessage({ defaultMessage: 'Anmelden' })
+            }
+          >
+            <Button
+              size="medium"
+              icon={<MdLogin />}
+              onClick={onClickEnter}
+              className={styles.button}
+            />
+          </Tooltip>
+        )}
         <Tooltip
           content={intl.formatMessage({
             id: 'navigationHome',
@@ -159,30 +183,6 @@ export const Menu = () => {
         </Tooltip>
         <Online width={44} />
       </MenuBar>
-      <LanguageChooser width={44} />
-      {isAuthenticated ? (
-        <UserMenu
-          authUser={authUser}
-          session={session}
-          buttonClassName={styles.button}
-          onConfirmLogout={onConfirmLogout}
-        />
-      ) : (
-        <Tooltip
-          content={
-            isHome
-              ? intl.formatMessage({ defaultMessage: 'App öffnen' })
-              : intl.formatMessage({ defaultMessage: 'Anmelden' })
-          }
-        >
-          <Button
-            size="medium"
-            icon={<MdLogin />}
-            onClick={onClickEnter}
-            className={styles.button}
-          />
-        </Tooltip>
-      )}
     </div>
   )
 }
