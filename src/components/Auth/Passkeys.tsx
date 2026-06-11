@@ -18,6 +18,11 @@ export const Passkeys = ({ onLoggedIn }: PasskeysProps) => {
     id: 'authSectionPasskeys',
     defaultMessage: '3. Passkeys',
   })
+  const passkeyHintLabel = formatMessage({
+    id: 'authPasskeyHint',
+    defaultMessage:
+      'Nur möglich, wenn du bereits einen Passkey registriert hast. Melde dich zuerst per E-Mail an und füge danach unter deinem Benutzerkonto einen Passkey hinzu.',
+  })
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState('')
 
@@ -78,6 +83,7 @@ export const Passkeys = ({ onLoggedIn }: PasskeysProps) => {
   return (
     <div className={styles.authSection}>
       <h2 className={styles.sectionTitle}>{passkeySectionLabel}</h2>
+      <p className={styles.authHint}>{passkeyHintLabel}</p>
       {error && <div className={styles.generalError}>{error}</div>}
       <button
         type="button"
