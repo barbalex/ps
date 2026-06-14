@@ -75,7 +75,6 @@ This does:
    - `test_history_tables_full_coverage.sql`
 3. Copies selected files into `src/sql/`:
    - `01_immutableDate.sql` -> `immutableDate.sql`
-   - `02_uuidv7.sql` -> `uuidv7.sql`
    - `04_createTables.sql` -> `createTables.sql`
    - `07_triggers.sql` -> `triggers.sql`
    - `08_syncIgnoreDuplicateInsertTriggers.sql` -> `syncIgnoreDuplicateInsertTriggers.sql`

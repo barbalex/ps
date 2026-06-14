@@ -27,7 +27,7 @@ DECLARE
 	v_qcs_id uuid;
 	v_suffix text;
 BEGIN
-	v_suffix := replace(uuidv7()::text, '-', '');
+	v_suffix := replace(uuid_generate_v7()::text, '-', '');
 
 	INSERT INTO users (name, email)
 	VALUES (
