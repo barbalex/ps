@@ -31,9 +31,7 @@ const deleteIdbDatabases = async () => {
     'databases' in indexedDB
       ? await indexedDB
           .databases()
-          .then((dbs) =>
-            dbs.map((d) => d.name).filter(Boolean) as string[],
-          )
+          .then((dbs) => dbs.map((d) => d.name).filter(Boolean) as string[])
           .catch(() => [])
       : []
   const toDelete = [...new Set([...fallback, ...discovered])].filter((n) =>
