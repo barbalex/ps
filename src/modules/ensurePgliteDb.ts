@@ -2,6 +2,7 @@ import { PGlite } from '@electric-sql/pglite'
 import { electricSync } from '@electric-sql/pglite-sync'
 import { postgis } from '@electric-sql/pglite-postgis'
 import { live } from '@electric-sql/pglite/live'
+import { pg_uuidv7 } from '@electric-sql/pglite-pg_uuidv7'
 
 import { pgliteDbAtom, store } from '../store.ts'
 
@@ -13,6 +14,7 @@ const createDb = () =>
       live,
       electric: electricSync(),
       postgis,
+      pg_uuidv7,
     },
     relaxedDurability: true,
   })
@@ -29,9 +31,7 @@ const deleteIdbDatabases = async () => {
     'databases' in indexedDB
       ? await indexedDB
           .databases()
-          .then((dbs) =>
-            dbs.map((d) => d.name).filter(Boolean) as string[],
-          )
+          .then((dbs) => dbs.map((d) => d.name).filter(Boolean) as string[])
           .catch(() => [])
       : []
   const toDelete = [...new Set([...fallback, ...discovered])].filter((n) =>
