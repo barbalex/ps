@@ -32,7 +32,7 @@ export default interface WmsLayersHistory {
  * System-versioned history of wms_layers. Managed by temporal_tables and partitioned yearly by updated_at.
  */
 export interface WmsLayersHistoryInitializer {
-  /** Default value: uuid_generate_v7() */
+  /** Default value: uuidv7() */
   wms_layer_id?: string;
 
   project_id: string;

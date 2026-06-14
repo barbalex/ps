@@ -32,7 +32,7 @@ export default interface WmsServiceLayersHistory {
  * System-versioned history of wms_service_layers. Managed by temporal_tables and partitioned yearly by updated_at.
  */
 export interface WmsServiceLayersHistoryInitializer {
-  /** Default value: uuid_generate_v7() */
+  /** Default value: uuidv7() */
   wms_service_layer_id?: string;
 
   wms_service_id?: string | null;

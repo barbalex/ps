@@ -32,7 +32,7 @@ export default interface TaxaHistory {
  * System-versioned history of taxa. Managed by temporal_tables and partitioned yearly by updated_at.
  */
 export interface TaxaHistoryInitializer {
-  /** Default value: uuid_generate_v7() */
+  /** Default value: uuidv7() */
   taxon_id?: string;
 
   taxonomy_id?: string | null;

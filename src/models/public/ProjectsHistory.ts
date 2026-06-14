@@ -128,7 +128,7 @@ export default interface ProjectsHistory {
  * System-versioned history of projects. Managed by temporal_tables and partitioned yearly by updated_at.
  */
 export interface ProjectsHistoryInitializer {
-  /** Default value: uuid_generate_v7() */
+  /** Default value: uuidv7() */
   project_id?: string;
 
   account_id?: string | null;

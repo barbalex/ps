@@ -28,7 +28,7 @@ export default interface SubprojectReportsHistory {
  * System-versioned history of subproject_reports. Managed by temporal_tables and partitioned yearly by updated_at.
  */
 export interface SubprojectReportsHistoryInitializer {
-  /** Default value: uuid_generate_v7() */
+  /** Default value: uuidv7() */
   subproject_report_id?: string;
 
   subproject_id?: string | null;

@@ -36,7 +36,7 @@ export default interface UnitsHistory {
  * System-versioned history of units. Managed by temporal_tables and partitioned yearly by updated_at.
  */
 export interface UnitsHistoryInitializer {
-  /** Default value: uuid_generate_v7() */
+  /** Default value: uuidv7() */
   unit_id?: string;
 
   project_id?: string | null;

@@ -40,7 +40,7 @@ export default interface ExportsHistory {
  * System-versioned history of exports. Managed by temporal_tables and partitioned yearly by updated_at.
  */
 export interface ExportsHistoryInitializer {
-  /** Default value: uuid_generate_v7() */
+  /** Default value: uuidv7() */
   exports_id?: string;
 
   name_de?: string | null;

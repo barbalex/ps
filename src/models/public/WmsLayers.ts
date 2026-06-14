@@ -40,7 +40,7 @@ export default interface WmsLayers {
  * Goal: Bring your own wms layers. Not versioned (not recorded and only added by manager).
  */
 export interface WmsLayersInitializer {
-  /** Default value: uuid_generate_v7() */
+  /** Default value: uuidv7() */
   wms_layer_id?: WmsLayersWmsLayerId;
 
   project_id: ProjectsProjectId;

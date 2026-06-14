@@ -41,7 +41,7 @@ export default interface CheckReportQuantities {
  * Quantities of place check reports
  */
 export interface CheckReportQuantitiesInitializer {
-  /** Default value: uuid_generate_v7() */
+  /** Default value: uuidv7() */
   place_check_report_quantity_id?: CheckReportQuantitiesPlaceCheckReportQuantityId;
 
   place_check_report_id?: CheckReportsPlaceCheckReportId | null;

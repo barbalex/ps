@@ -124,7 +124,7 @@ export default interface PlaceLevels {
  * Goal: manage place levels. Enable working with one or two levels. Organize what features are used on which level.
  */
 export interface PlaceLevelsInitializer {
-  /** Default value: uuid_generate_v7() */
+  /** Default value: uuidv7() */
   place_level_id?: PlaceLevelsPlaceLevelId;
 
   project_id?: ProjectsProjectId | null;

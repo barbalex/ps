@@ -43,7 +43,7 @@ export default interface Actions {
  * Actions are what is done to improve the situation of (promote) the subproject in this place.
  */
 export interface ActionsInitializer {
-  /** Default value: uuid_generate_v7() */
+  /** Default value: uuidv7() */
   action_id?: ActionsActionId;
 
   place_id?: PlacesPlaceId | null;

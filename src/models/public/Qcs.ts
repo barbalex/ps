@@ -39,7 +39,7 @@ export default interface Qcs {
  * Quality control rules for data validation. No history tracking needed as these are root-level configuration managed by administrators.
  */
 export interface QcsInitializer {
-  /** Default value: uuid_generate_v7() */
+  /** Default value: uuidv7() */
   qcs_id?: QcsQcsId;
 
   name_de?: string | null;

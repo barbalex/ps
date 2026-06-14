@@ -31,7 +31,7 @@ export default interface WmsServiceLayers {
 
 /** Represents the initializer for the table public.wms_service_layers */
 export interface WmsServiceLayersInitializer {
-  /** Default value: uuid_generate_v7() */
+  /** Default value: uuidv7() */
   wms_service_layer_id?: WmsServiceLayersWmsServiceLayerId;
 
   wms_service_id?: WmsServicesWmsServiceId | null;

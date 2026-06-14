@@ -62,7 +62,7 @@ export default interface VectorLayers {
  * Goal: Bring your own wms layers. Either from wfs or importing GeoJSON. Should only contain metadata, not data fetched from wms or wmts servers (that should only be saved locally on the client).
  */
 export interface VectorLayersInitializer {
-  /** Default value: uuid_generate_v7() */
+  /** Default value: uuidv7() */
   vector_layer_id?: VectorLayersVectorLayerId;
 
   label?: string | null;

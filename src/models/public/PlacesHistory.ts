@@ -42,7 +42,7 @@ export default interface PlacesHistory {
  * System-versioned history of places. Managed by temporal_tables and partitioned yearly by updated_at.
  */
 export interface PlacesHistoryInitializer {
-  /** Default value: uuid_generate_v7() */
+  /** Default value: uuidv7() */
   place_id?: string;
 
   subproject_id?: string | null;

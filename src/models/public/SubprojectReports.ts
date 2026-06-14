@@ -35,7 +35,7 @@ export default interface SubprojectReports {
  * Reporting on the success of subprojects.
  */
 export interface SubprojectReportsInitializer {
-  /** Default value: uuid_generate_v7() */
+  /** Default value: uuidv7() */
   subproject_report_id?: SubprojectReportsSubprojectReportId;
 
   subproject_id?: SubprojectsSubprojectId | null;

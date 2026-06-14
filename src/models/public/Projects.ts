@@ -173,7 +173,7 @@ export default interface Projects {
  * Goal: manage projects
  */
 export interface ProjectsInitializer {
-  /** Default value: uuid_generate_v7() */
+  /** Default value: uuidv7() */
   project_id?: ProjectsProjectId;
 
   /** redundant account_id enhances data safety */

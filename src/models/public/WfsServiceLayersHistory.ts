@@ -26,7 +26,7 @@ export default interface WfsServiceLayersHistory {
  * System-versioned history of wfs_service_layers. Managed by temporal_tables and partitioned yearly by updated_at.
  */
 export interface WfsServiceLayersHistoryInitializer {
-  /** Default value: uuid_generate_v7() */
+  /** Default value: uuidv7() */
   wfs_service_layer_id?: string;
 
   wfs_service_id?: string | null;

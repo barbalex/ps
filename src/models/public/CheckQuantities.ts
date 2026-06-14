@@ -41,7 +41,7 @@ export default interface CheckQuantities {
  * Quantities of checks i.e. the situation of the subproject in this place
  */
 export interface CheckQuantitiesInitializer {
-  /** Default value: uuid_generate_v7() */
+  /** Default value: uuidv7() */
   check_quantity_id?: CheckQuantitiesCheckQuantityId;
 
   check_id?: ChecksCheckId | null;

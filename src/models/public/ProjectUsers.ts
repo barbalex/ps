@@ -36,7 +36,7 @@ export default interface ProjectUsers {
  * A way to give users access to projects (without giving them access to the whole account).
  */
 export interface ProjectUsersInitializer {
-  /** Default value: uuid_generate_v7() */
+  /** Default value: uuidv7() */
   project_user_id?: ProjectUsersProjectUserId;
 
   project_id?: ProjectsProjectId | null;

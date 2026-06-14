@@ -73,7 +73,7 @@ export const SqlInitializer = () => {
               DEFERRABLE INITIALLY DEFERRED;
             ALTER TABLE IF EXISTS auth_verifications ADD COLUMN IF NOT EXISTS sys_period tstzrange DEFAULT NULL;
             CREATE TABLE IF NOT EXISTS auth_passkeys(
-              auth_passkey_id uuid PRIMARY KEY DEFAULT public.uuid_generate_v7(),
+              auth_passkey_id uuid PRIMARY KEY DEFAULT uuidv7(),
               name text DEFAULT NULL,
               public_key text NOT NULL,
               user_id uuid NOT NULL REFERENCES users(user_id) ON DELETE CASCADE ON UPDATE CASCADE DEFERRABLE INITIALLY DEFERRED,
@@ -444,6 +444,11 @@ export const SqlInitializer = () => {
       } catch (error) {
         console.error('Error creating postgis extension:', error)
       }
+      try {
+        await db.exec(`CREATE EXTENSION IF NOT EXISTS pg_uuidv7;`)
+      } catch (error) {
+        console.error('Error creating pg_uuidv7 extension:', error)
+      }
       const createSql = (await import(`../sql/createTables.sql?raw`)).default
       try {
         await db.exec(createSql)
@@ -462,7 +467,10 @@ export const SqlInitializer = () => {
       try {
         await db.exec(syncIgnoreDuplicateInsertTriggersSql)
       } catch (error) {
-        console.error('Error executing syncIgnoreDuplicateInsertTriggersSql:', error)
+        console.error(
+          'Error executing syncIgnoreDuplicateInsertTriggersSql:',
+          error,
+        )
       }
 
       setSqlInitializing(false)

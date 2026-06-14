@@ -36,7 +36,7 @@ export default interface UsersHistory {
  * System-versioned history of users. Managed by temporal_tables and partitioned yearly by updated_at.
  */
 export interface UsersHistoryInitializer {
-  /** Default value: uuid_generate_v7() */
+  /** Default value: uuidv7() */
   user_id?: string;
 
   id?: string | null;

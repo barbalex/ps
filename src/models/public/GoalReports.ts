@@ -32,7 +32,7 @@ export default interface GoalReports {
  * Reporting on the success of goals.
  */
 export interface GoalReportsInitializer {
-  /** Default value: uuid_generate_v7() */
+  /** Default value: uuidv7() */
   goal_report_id?: GoalReportsGoalReportId;
 
   goal_id?: GoalsGoalId | null;

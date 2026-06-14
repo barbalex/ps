@@ -35,7 +35,7 @@ export default interface ProjectReports {
  * Reporting on the success of projects.
  */
 export interface ProjectReportsInitializer {
-  /** Default value: uuid_generate_v7() */
+  /** Default value: uuidv7() */
   project_report_id?: ProjectReportsProjectReportId;
 
   project_id?: ProjectsProjectId | null;

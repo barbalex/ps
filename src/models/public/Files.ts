@@ -67,7 +67,7 @@ export default interface Files {
  * used to store files.
  */
 export interface FilesInitializer {
-  /** Default value: uuid_generate_v7() */
+  /** Default value: uuidv7() */
   file_id?: FilesFileId;
 
   project_id?: ProjectsProjectId | null;

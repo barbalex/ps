@@ -35,7 +35,7 @@ export default interface QcAssignments {
  * Quality controls assigned to a project or subproject. The level(s) of applicability (root, project, subproject) are defined on the qcs table itself.
  */
 export interface QcAssignmentsInitializer {
-  /** Default value: uuid_generate_v7() */
+  /** Default value: uuidv7() */
   qc_assignment_id?: QcAssignmentsQcAssignmentId;
 
   project_id?: ProjectsProjectId | null;

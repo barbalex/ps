@@ -34,7 +34,7 @@ export default interface ActionsHistory {
  * System-versioned history of actions. Managed by temporal_tables and partitioned yearly by updated_at.
  */
 export interface ActionsHistoryInitializer {
-  /** Default value: uuid_generate_v7() */
+  /** Default value: uuidv7() */
   action_id?: string;
 
   place_id?: string | null;

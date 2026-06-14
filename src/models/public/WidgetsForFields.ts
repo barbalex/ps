@@ -31,7 +31,7 @@ export default interface WidgetsForFields {
  * Mapping of field types to widget types. No history tracking needed as this is root-level configuration managed by administrators.
  */
 export interface WidgetsForFieldsInitializer {
-  /** Default value: uuid_generate_v7() */
+  /** Default value: uuidv7() */
   widget_for_field_id?: WidgetsForFieldsWidgetForFieldId;
 
   field_type_id?: FieldTypesFieldTypeId | null;

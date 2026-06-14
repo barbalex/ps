@@ -31,7 +31,7 @@ export default interface FieldTypes {
  * Root-level field type definitions. No history tracking needed as these are application-level configuration managed by administrators.
  */
 export interface FieldTypesInitializer {
-  /** Default value: uuid_generate_v7() */
+  /** Default value: uuidv7() */
   field_type_id?: FieldTypesFieldTypeId;
 
   name?: string | null;

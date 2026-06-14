@@ -28,7 +28,7 @@ export default interface FieldTypesHistory {
  * System-versioned history of field_types. Managed by temporal_tables and partitioned yearly by updated_at.
  */
 export interface FieldTypesHistoryInitializer {
-  /** Default value: uuid_generate_v7() */
+  /** Default value: uuidv7() */
   field_type_id?: string;
 
   name?: string | null;

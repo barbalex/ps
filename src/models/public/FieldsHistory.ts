@@ -44,7 +44,7 @@ export default interface FieldsHistory {
  * System-versioned history of fields. Managed by temporal_tables and partitioned yearly by updated_at.
  */
 export interface FieldsHistoryInitializer {
-  /** Default value: uuid_generate_v7() */
+  /** Default value: uuidv7() */
   field_id?: string;
 
   project_id?: string | null;

@@ -90,7 +90,7 @@ export default interface PlaceLevelsHistory {
  * System-versioned history of place_levels. Managed by temporal_tables and partitioned yearly by updated_at.
  */
 export interface PlaceLevelsHistoryInitializer {
-  /** Default value: uuid_generate_v7() */
+  /** Default value: uuidv7() */
   place_level_id?: string;
 
   project_id?: string | null;

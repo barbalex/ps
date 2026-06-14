@@ -35,7 +35,7 @@ export default interface Taxa {
 
 /** Represents the initializer for the table public.taxa */
 export interface TaxaInitializer {
-  /** Default value: uuid_generate_v7() */
+  /** Default value: uuidv7() */
   taxon_id?: TaxaTaxonId;
 
   taxonomy_id?: TaxonomiesTaxonomyId | null;

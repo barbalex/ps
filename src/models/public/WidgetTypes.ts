@@ -32,7 +32,7 @@ export default interface WidgetTypes {
  * Root-level widget type definitions. No history tracking needed as these are application-level configuration managed by administrators.
  */
 export interface WidgetTypesInitializer {
-  /** Default value: uuid_generate_v7() */
+  /** Default value: uuidv7() */
   widget_type_id?: WidgetTypesWidgetTypeId;
 
   name?: string | null;

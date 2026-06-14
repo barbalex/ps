@@ -45,7 +45,7 @@ export default interface Exports {
  * Predefined exports available to all projects if assigned. Created by root administrators.
  */
 export interface ExportsInitializer {
-  /** Default value: uuid_generate_v7() */
+  /** Default value: uuidv7() */
   exports_id?: ExportsExportsId;
 
   name_de?: string | null;

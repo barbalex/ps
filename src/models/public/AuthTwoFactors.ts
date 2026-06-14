@@ -24,7 +24,7 @@ export default interface AuthTwoFactors {
 
 /** Represents the initializer for the table public.auth_two_factors */
 export interface AuthTwoFactorsInitializer {
-  /** Default value: uuid_generate_v7() */
+  /** Default value: uuidv7() */
   id?: AuthTwoFactorsId;
 
   user_id: UsersUserId;

@@ -32,7 +32,7 @@ export default interface CheckReportQuantitiesHistory {
  * System-versioned history of check_report_quantities. Managed by temporal_tables and partitioned yearly by updated_at.
  */
 export interface CheckReportQuantitiesHistoryInitializer {
-  /** Default value: uuid_generate_v7() */
+  /** Default value: uuidv7() */
   place_check_report_quantity_id?: string;
 
   place_check_report_id?: string | null;

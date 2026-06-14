@@ -37,7 +37,7 @@ export default interface SubprojectReportDesigns {
  * Design of subproject reports, stored as JSON.
  */
 export interface SubprojectReportDesignsInitializer {
-  /** Default value: uuid_generate_v7() */
+  /** Default value: uuidv7() */
   subproject_report_design_id?: SubprojectReportDesignsSubprojectReportDesignId;
 
   project_id?: ProjectsProjectId | null;

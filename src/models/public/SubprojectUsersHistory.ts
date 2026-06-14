@@ -30,7 +30,7 @@ export default interface SubprojectUsersHistory {
  * System-versioned history of subproject_users. Managed by temporal_tables and partitioned yearly by updated_at.
  */
 export interface SubprojectUsersHistoryInitializer {
-  /** Default value: uuid_generate_v7() */
+  /** Default value: uuidv7() */
   subproject_user_id?: string;
 
   subproject_id?: string | null;

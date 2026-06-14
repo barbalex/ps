@@ -1376,7 +1376,7 @@ BEGIN
   END IF;
 
   IF NEW.user_id IS NULL AND NEW.id IS NULL THEN
-    NEW.user_id := public.uuid_generate_v7();
+    NEW.user_id := uuidv7();
     NEW.id := NEW.user_id;
   ELSIF NEW.user_id IS NULL THEN
     NEW.user_id := NEW.id;
@@ -1404,7 +1404,7 @@ BEGIN
   END IF;
 
   IF NEW.auth_account_id IS NULL AND NEW.id IS NULL THEN
-    NEW.auth_account_id := public.uuid_generate_v7();
+    NEW.auth_account_id := uuidv7();
     NEW.id := NEW.auth_account_id;
   ELSIF NEW.auth_account_id IS NULL THEN
     NEW.auth_account_id := NEW.id;

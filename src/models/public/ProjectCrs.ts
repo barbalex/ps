@@ -38,7 +38,7 @@ export default interface ProjectCrs {
  * List of crs used in a project. Can be set when configuring a project. Values copied from crs table.
  */
 export interface ProjectCrsInitializer {
-  /** Default value: uuid_generate_v7() */
+  /** Default value: uuidv7() */
   project_crs_id?: ProjectCrsProjectCrsId;
 
   crs_id?: CrsCrsId | null;

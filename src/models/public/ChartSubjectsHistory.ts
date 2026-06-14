@@ -55,7 +55,7 @@ export default interface ChartSubjectsHistory {
  * System-versioned history of chart_subjects. Managed by temporal_tables and partitioned yearly by updated_at.
  */
 export interface ChartSubjectsHistoryInitializer {
-  /** Default value: uuid_generate_v7() */
+  /** Default value: uuidv7() */
   chart_subject_id?: string;
 
   chart_id?: string | null;

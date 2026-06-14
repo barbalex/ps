@@ -64,7 +64,7 @@ export default interface Charts {
  * Charts for projects, subprojects or places.
  */
 export interface ChartsInitializer {
-  /** Default value: uuid_generate_v7() */
+  /** Default value: uuidv7() */
   chart_id?: ChartsChartId;
 
   project_id?: ProjectsProjectId | null;

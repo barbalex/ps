@@ -36,7 +36,7 @@ export default interface QcsHistory {
  * System-versioned history of qcs. Managed by temporal_tables and partitioned yearly by updated_at.
  */
 export interface QcsHistoryInitializer {
-  /** Default value: uuid_generate_v7() */
+  /** Default value: uuidv7() */
   qcs_id?: string;
 
   name_de?: string | null;

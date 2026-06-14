@@ -42,7 +42,7 @@ export default interface ProjectQcs {
  * Project-specific quality controls. Only visible within the project and its sub-projects. Created by project owners and designers.
  */
 export interface ProjectQcsInitializer {
-  /** Default value: uuid_generate_v7() */
+  /** Default value: uuidv7() */
   project_qc_id?: ProjectQcsProjectQcId;
 
   project_id: ProjectsProjectId;

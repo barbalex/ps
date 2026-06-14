@@ -28,7 +28,7 @@ export default interface ProjectExportAssignmentsHistory {
  * System-versioned history of project_export_assignments. Managed by temporal_tables and partitioned yearly by updated_at.
  */
 export interface ProjectExportAssignmentsHistoryInitializer {
-  /** Default value: uuid_generate_v7() */
+  /** Default value: uuidv7() */
   project_export_assignment_id?: string;
 
   project_id?: string | null;

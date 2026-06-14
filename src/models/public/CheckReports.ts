@@ -35,7 +35,7 @@ export default interface CheckReports {
  * Reporting on the situation of the subproject in this place during checks.
  */
 export interface CheckReportsInitializer {
-  /** Default value: uuid_generate_v7() */
+  /** Default value: uuidv7() */
   place_check_report_id?: CheckReportsPlaceCheckReportId;
 
   place_id?: PlacesPlaceId | null;

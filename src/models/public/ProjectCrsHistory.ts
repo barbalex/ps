@@ -32,7 +32,7 @@ export default interface ProjectCrsHistory {
  * System-versioned history of project_crs. Managed by temporal_tables and partitioned yearly by updated_at.
  */
 export interface ProjectCrsHistoryInitializer {
-  /** Default value: uuid_generate_v7() */
+  /** Default value: uuidv7() */
   project_crs_id?: string;
 
   crs_id?: string | null;

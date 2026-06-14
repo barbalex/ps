@@ -79,7 +79,7 @@ export default interface VectorLayerDisplays {
  * Goal: manage all map related properties of vector layers including places, actions, checks and observations
  */
 export interface VectorLayerDisplaysInitializer {
-  /** Default value: uuid_generate_v7() */
+  /** Default value: uuidv7() */
   vector_layer_display_id?: VectorLayerDisplaysVectorLayerDisplayId;
 
   vector_layer_id?: VectorLayersVectorLayerId | null;

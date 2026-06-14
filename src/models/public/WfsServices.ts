@@ -40,7 +40,7 @@ export default interface WfsServices {
  * A layer of a WFS service.
  */
 export interface WfsServicesInitializer {
-  /** Default value: uuid_generate_v7() */
+  /** Default value: uuidv7() */
   wfs_service_id?: WfsServicesWfsServiceId;
 
   project_id: ProjectsProjectId;

@@ -61,7 +61,7 @@ export default interface VectorLayerDisplaysHistory {
  * System-versioned history of vector_layer_displays. Managed by temporal_tables and partitioned yearly by updated_at.
  */
 export interface VectorLayerDisplaysHistoryInitializer {
-  /** Default value: uuid_generate_v7() */
+  /** Default value: uuidv7() */
   vector_layer_display_id?: string;
 
   vector_layer_id?: string | null;

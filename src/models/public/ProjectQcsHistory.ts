@@ -38,7 +38,7 @@ export default interface ProjectQcsHistory {
  * System-versioned history of project_qcs. Managed by temporal_tables and partitioned yearly by updated_at.
  */
 export interface ProjectQcsHistoryInitializer {
-  /** Default value: uuid_generate_v7() */
+  /** Default value: uuidv7() */
   project_qc_id?: string;
 
   project_id: string;

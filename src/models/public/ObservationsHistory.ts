@@ -36,7 +36,7 @@ export default interface ObservationsHistory {
  * System-versioned history of observations. Managed by temporal_tables and partitioned yearly by updated_at.
  */
 export interface ObservationsHistoryInitializer {
-  /** Default value: uuid_generate_v7() */
+  /** Default value: uuidv7() */
   observation_id?: string;
 
   observation_import_id?: string | null;

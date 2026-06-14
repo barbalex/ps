@@ -37,7 +37,7 @@ export default interface WmsServices {
 
 /** Represents the initializer for the table public.wms_services */
 export interface WmsServicesInitializer {
-  /** Default value: uuid_generate_v7() */
+  /** Default value: uuidv7() */
   wms_service_id?: WmsServicesWmsServiceId;
 
   project_id: ProjectsProjectId;

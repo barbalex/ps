@@ -41,7 +41,7 @@ export default interface Subprojects {
  * Goal: manage subprojects. Will most often be a species that is promoted. Can also be a (class of) biotope(s).
  */
 export interface SubprojectsInitializer {
-  /** Default value: uuid_generate_v7() */
+  /** Default value: uuidv7() */
   subproject_id?: SubprojectsSubprojectId;
 
   project_id?: ProjectsProjectId | null;

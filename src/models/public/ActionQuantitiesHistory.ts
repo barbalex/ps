@@ -32,7 +32,7 @@ export default interface ActionQuantitiesHistory {
  * System-versioned history of action_quantities. Managed by temporal_tables and partitioned yearly by updated_at.
  */
 export interface ActionQuantitiesHistoryInitializer {
-  /** Default value: uuid_generate_v7() */
+  /** Default value: uuidv7() */
   action_quantity_id?: string;
 
   action_id?: string | null;

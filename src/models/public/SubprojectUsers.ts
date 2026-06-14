@@ -36,7 +36,7 @@ export default interface SubprojectUsers {
  * A way to give users access to subprojects (without giving them access to the whole project). TODO: define what data from the project the user can see.
  */
 export interface SubprojectUsersInitializer {
-  /** Default value: uuid_generate_v7() */
+  /** Default value: uuidv7() */
   subproject_user_id?: SubprojectUsersSubprojectUserId;
 
   subproject_id?: SubprojectsSubprojectId | null;

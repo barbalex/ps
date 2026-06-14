@@ -49,7 +49,7 @@ export default interface Taxonomies {
  * A taxonomy is a list of taxa (species or biotopes).
  */
 export interface TaxonomiesInitializer {
-  /** Default value: uuid_generate_v7() */
+  /** Default value: uuidv7() */
   taxonomy_id?: TaxonomiesTaxonomyId;
 
   project_id?: ProjectsProjectId | null;

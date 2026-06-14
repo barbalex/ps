@@ -55,7 +55,7 @@ export default interface Fields {
  * Root-level form field definitions. No history tracking needed as these are application-level configuration managed by administrators.
  */
 export interface FieldsInitializer {
-  /** Default value: uuid_generate_v7() */
+  /** Default value: uuidv7() */
   field_id?: FieldsFieldId;
 
   project_id?: ProjectsProjectId | null;

@@ -57,7 +57,7 @@ export default interface Places {
  * Places are where actions and checks are done. They can be organized in a hierarchy of one or two levels.
  */
 export interface PlacesInitializer {
-  /** Default value: uuid_generate_v7() */
+  /** Default value: uuidv7() */
   place_id?: PlacesPlaceId;
 
   /** always set to optimize queries */

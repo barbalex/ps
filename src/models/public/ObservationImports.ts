@@ -64,7 +64,7 @@ export default interface ObservationImports {
  * observation imports. Used also for species (when from gbif, of an area, format: SPECIES_LIST). Is created in client, synced to server, executed by gbif backend server, written to db and synced back to client
  */
 export interface ObservationImportsInitializer {
-  /** Default value: uuid_generate_v7() */
+  /** Default value: uuidv7() */
   observation_import_id?: ObservationImportsObservationImportId;
 
   subproject_id?: SubprojectsSubprojectId | null;

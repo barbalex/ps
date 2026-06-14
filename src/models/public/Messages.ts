@@ -27,7 +27,7 @@ export default interface Messages {
  * System messages for users. No history tracking needed as these are transient notifications managed by the system.
  */
 export interface MessagesInitializer {
-  /** Default value: uuid_generate_v7() */
+  /** Default value: uuidv7() */
   message_id?: MessagesMessageId;
 
   /** Default value: now() */

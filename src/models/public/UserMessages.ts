@@ -25,7 +25,7 @@ export default interface UserMessages {
 
 /** Represents the initializer for the table public.user_messages */
 export interface UserMessagesInitializer {
-  /** Default value: uuid_generate_v7() */
+  /** Default value: uuidv7() */
   user_message_id?: UserMessagesUserMessageId;
 
   user_id?: UsersUserId | null;

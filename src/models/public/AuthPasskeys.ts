@@ -34,7 +34,7 @@ export default interface AuthPasskeys {
 
 /** Represents the initializer for the table public.auth_passkeys */
 export interface AuthPasskeysInitializer {
-  /** Default value: uuid_generate_v7() */
+  /** Default value: uuidv7() */
   auth_passkey_id?: AuthPasskeysAuthPasskeyId;
 
   name?: string | null;

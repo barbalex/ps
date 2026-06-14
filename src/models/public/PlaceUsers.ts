@@ -36,7 +36,7 @@ export default interface PlaceUsers {
  * A way to give users access to places without giving them access to the whole project or subproject.
  */
 export interface PlaceUsersInitializer {
-  /** Default value: uuid_generate_v7() */
+  /** Default value: uuidv7() */
   place_user_id?: PlaceUsersPlaceUserId;
 
   place_id?: PlacesPlaceId | null;

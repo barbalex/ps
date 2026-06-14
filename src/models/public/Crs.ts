@@ -31,7 +31,7 @@ export default interface Crs {
  * List of coordinate reference systems (from https://spatialreference.org). No history tracking needed as this is root-level reference data managed by administrators.
  */
 export interface CrsInitializer {
-  /** Default value: uuid_generate_v7() */
+  /** Default value: uuidv7() */
   crs_id?: CrsCrsId;
 
   code?: string | null;

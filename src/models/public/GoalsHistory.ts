@@ -30,7 +30,7 @@ export default interface GoalsHistory {
  * System-versioned history of goals. Managed by temporal_tables and partitioned yearly by updated_at.
  */
 export interface GoalsHistoryInitializer {
-  /** Default value: uuid_generate_v7() */
+  /** Default value: uuidv7() */
   goal_id?: string;
 
   subproject_id?: string | null;

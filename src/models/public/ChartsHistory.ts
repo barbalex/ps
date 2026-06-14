@@ -52,7 +52,7 @@ export default interface ChartsHistory {
  * System-versioned history of charts. Managed by temporal_tables and partitioned yearly by updated_at.
  */
 export interface ChartsHistoryInitializer {
-  /** Default value: uuid_generate_v7() */
+  /** Default value: uuidv7() */
   chart_id?: string;
 
   project_id?: string | null;

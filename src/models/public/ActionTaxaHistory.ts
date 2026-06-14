@@ -34,7 +34,7 @@ export default interface ActionTaxaHistory {
  * System-versioned history of action_taxa. Managed by temporal_tables and partitioned yearly by updated_at.
  */
 export interface ActionTaxaHistoryInitializer {
-  /** Default value: uuid_generate_v7() */
+  /** Default value: uuidv7() */
   action_taxon_id?: string;
 
   action_id?: string | null;

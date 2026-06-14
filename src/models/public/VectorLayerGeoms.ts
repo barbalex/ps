@@ -44,7 +44,7 @@ export default interface VectorLayerGeoms {
  * Goal: Save vector layers client side for 1. offline usage 2. better filtering (to viewport) 3. enable displaying by field values. Data is downloaded when manager configures vector layer. Not versioned (not recorded and only added by manager).
  */
 export interface VectorLayerGeomsInitializer {
-  /** Default value: uuid_generate_v7() */
+  /** Default value: uuidv7() */
   vector_layer_geom_id?: VectorLayerGeomsVectorLayerGeomId;
 
   vector_layer_id?: VectorLayersVectorLayerId | null;

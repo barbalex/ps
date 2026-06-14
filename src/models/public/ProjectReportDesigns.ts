@@ -37,7 +37,7 @@ export default interface ProjectReportDesigns {
  * Customizable designs for project reports, stored as JSON.
  */
 export interface ProjectReportDesignsInitializer {
-  /** Default value: uuid_generate_v7() */
+  /** Default value: uuidv7() */
   project_report_design_id?: ProjectReportDesignsProjectReportDesignId;
 
   project_id?: ProjectsProjectId | null;

@@ -20,7 +20,7 @@ export default interface AuthVerifications {
 
 /** Represents the initializer for the table public.auth_verifications */
 export interface AuthVerificationsInitializer {
-  /** Default value: uuid_generate_v7() */
+  /** Default value: uuidv7() */
   auth_verification_id?: AuthVerificationsAuthVerificationId;
 
   identifier?: string | null;

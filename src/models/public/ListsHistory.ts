@@ -34,7 +34,7 @@ export default interface ListsHistory {
  * System-versioned history of lists. Managed by temporal_tables and partitioned yearly by updated_at.
  */
 export interface ListsHistoryInitializer {
-  /** Default value: uuid_generate_v7() */
+  /** Default value: uuidv7() */
   list_id?: string;
 
   project_id?: string | null;

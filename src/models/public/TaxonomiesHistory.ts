@@ -38,7 +38,7 @@ export default interface TaxonomiesHistory {
  * System-versioned history of taxonomies. Managed by temporal_tables and partitioned yearly by updated_at.
  */
 export interface TaxonomiesHistoryInitializer {
-  /** Default value: uuid_generate_v7() */
+  /** Default value: uuidv7() */
   taxonomy_id?: string;
 
   project_id?: string | null;

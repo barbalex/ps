@@ -45,7 +45,7 @@ export default interface Users {
  * Goal: manage users and authorize them
  */
 export interface UsersInitializer {
-  /** Default value: uuid_generate_v7() */
+  /** Default value: uuidv7() */
   user_id?: UsersUserId;
 
   id?: string | null;

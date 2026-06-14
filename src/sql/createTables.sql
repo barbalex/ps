@@ -4,7 +4,7 @@ BEGIN;
 -- users
 --
 CREATE TABLE IF NOT EXISTS users(
-  user_id uuid PRIMARY KEY DEFAULT public.uuid_generate_v7(),
+  user_id uuid PRIMARY KEY DEFAULT uuidv7(),
   -- id is expected by better-auth
   id uuid DEFAULT NULL,
   name text DEFAULT NULL,
@@ -39,7 +39,7 @@ COMMENT ON TABLE users IS 'Goal: manage users and authorize them';
 -- auth_sessions
 --
 CREATE TABLE IF NOT EXISTS auth_sessions(
-  auth_session_id uuid PRIMARY KEY DEFAULT public.uuid_generate_v7(),
+  auth_session_id uuid PRIMARY KEY DEFAULT uuidv7(),
   user_id uuid DEFAULT NULL REFERENCES users(user_id) ON DELETE CASCADE ON UPDATE CASCADE DEFERRABLE INITIALLY DEFERRED,
   token text DEFAULT NULL,
   expires_at timestamptz DEFAULT NULL,
@@ -56,7 +56,7 @@ CREATE INDEX IF NOT EXISTS sessions_user_id_idx ON auth_sessions USING btree(use
 -- auth_accounts
 --
 CREATE TABLE IF NOT EXISTS auth_accounts(
-  auth_account_id uuid PRIMARY KEY DEFAULT public.uuid_generate_v7(),
+  auth_account_id uuid PRIMARY KEY DEFAULT uuidv7(),
   id uuid DEFAULT NULL,
   user_id uuid DEFAULT NULL REFERENCES users(user_id) ON DELETE CASCADE ON UPDATE NO action DEFERRABLE INITIALLY DEFERRED,
   sso_account_id text DEFAULT NULL,
@@ -91,7 +91,7 @@ COMMENT ON COLUMN auth_accounts.password IS 'The password of the account. Mainly
 -- accounts
 --
 CREATE TABLE IF NOT EXISTS accounts(
-  account_id uuid PRIMARY KEY DEFAULT public.uuid_generate_v7(),
+  account_id uuid PRIMARY KEY DEFAULT uuidv7(),
   user_id uuid DEFAULT NULL REFERENCES users(user_id) ON DELETE CASCADE ON UPDATE NO action DEFERRABLE INITIALLY DEFERRED,
   type text DEFAULT NULL,
   period_start date DEFAULT CURRENT_DATE,
@@ -120,7 +120,7 @@ COMMENT ON COLUMN accounts.projects_label_by IS 'Used to label projects in lists
 -- auth_verifications
 --
 CREATE TABLE IF NOT EXISTS auth_verifications(
-  auth_verification_id uuid PRIMARY KEY DEFAULT public.uuid_generate_v7(),
+  auth_verification_id uuid PRIMARY KEY DEFAULT uuidv7(),
   identifier text DEFAULT NULL,
   value text DEFAULT NULL,
   expires_at timestamptz DEFAULT NULL,
@@ -133,7 +133,7 @@ CREATE TABLE IF NOT EXISTS auth_verifications(
 -- auth_two_factors
 --
 CREATE TABLE IF NOT EXISTS auth_two_factors(
-  id uuid PRIMARY KEY DEFAULT public.uuid_generate_v7(),
+  id uuid PRIMARY KEY DEFAULT uuidv7(),
   user_id uuid NOT NULL REFERENCES users(user_id) ON DELETE CASCADE ON UPDATE CASCADE DEFERRABLE INITIALLY DEFERRED,
   secret text NOT NULL,
   backup_codes text NOT NULL,
@@ -149,7 +149,7 @@ CREATE UNIQUE INDEX IF NOT EXISTS auth_two_factors_user_id_idx ON auth_two_facto
 -- auth_passkeys
 --
 CREATE TABLE IF NOT EXISTS auth_passkeys(
-  auth_passkey_id uuid PRIMARY KEY DEFAULT public.uuid_generate_v7(),
+  auth_passkey_id uuid PRIMARY KEY DEFAULT uuidv7(),
   name text DEFAULT NULL,
   public_key text NOT NULL,
   user_id uuid NOT NULL REFERENCES users(user_id) ON DELETE CASCADE ON UPDATE CASCADE DEFERRABLE INITIALLY DEFERRED,
@@ -175,7 +175,7 @@ CREATE TYPE project_types_enum AS ENUM ('species', 'biotope');
 -- TODO: add crs for presentation
 -- TODO: add geometry
 CREATE TABLE IF NOT EXISTS projects(
-  project_id uuid PRIMARY KEY DEFAULT public.uuid_generate_v7(),
+  project_id uuid PRIMARY KEY DEFAULT uuidv7(),
   account_id uuid DEFAULT NULL REFERENCES accounts(account_id) ON DELETE CASCADE ON UPDATE CASCADE DEFERRABLE INITIALLY DEFERRED,
   name text DEFAULT NULL,
   label text DEFAULT NULL,
@@ -300,7 +300,7 @@ COMMENT ON TABLE projects IS 'Goal: manage projects';
 -- place_levels
 --
 CREATE TABLE IF NOT EXISTS place_levels(
-  place_level_id uuid PRIMARY KEY DEFAULT public.uuid_generate_v7(),
+  place_level_id uuid PRIMARY KEY DEFAULT uuidv7(),
   project_id uuid DEFAULT NULL REFERENCES projects(project_id) ON DELETE CASCADE ON UPDATE CASCADE DEFERRABLE INITIALLY DEFERRED,
   level integer DEFAULT 1,
   name_singular_de text DEFAULT NULL,
@@ -390,7 +390,7 @@ COMMENT ON TABLE place_levels IS 'Goal: manage place levels. Enable working with
 -- subprojects
 --
 CREATE TABLE IF NOT EXISTS subprojects(
-  subproject_id uuid PRIMARY KEY DEFAULT public.uuid_generate_v7(),
+  subproject_id uuid PRIMARY KEY DEFAULT uuidv7(),
   project_id uuid DEFAULT NULL REFERENCES projects(project_id) ON DELETE CASCADE ON UPDATE CASCADE DEFERRABLE INITIALLY DEFERRED,
   name text DEFAULT NULL,
   start_year integer DEFAULT NULL,
@@ -421,7 +421,7 @@ COMMENT ON TABLE subprojects IS 'Goal: manage subprojects. Will most often be a 
 CREATE TYPE user_roles_enum AS ENUM ('read-specific', 'read-all', 'write-specific', 'write-all', 'design', 'own');
 
 CREATE TABLE IF NOT EXISTS project_users(
-  project_user_id uuid PRIMARY KEY DEFAULT public.uuid_generate_v7(),
+  project_user_id uuid PRIMARY KEY DEFAULT uuidv7(),
   project_id uuid DEFAULT NULL REFERENCES projects(project_id) ON DELETE CASCADE ON UPDATE CASCADE DEFERRABLE INITIALLY DEFERRED,
   user_id uuid DEFAULT NULL REFERENCES users(user_id) ON DELETE CASCADE ON UPDATE CASCADE DEFERRABLE INITIALLY DEFERRED,
   "role" user_roles_enum DEFAULT NULL,
@@ -446,7 +446,7 @@ COMMENT ON TABLE project_users IS 'A way to give users access to projects (witho
 -- subproject_users
 --
 CREATE TABLE IF NOT EXISTS subproject_users(
-  subproject_user_id uuid PRIMARY KEY DEFAULT public.uuid_generate_v7(),
+  subproject_user_id uuid PRIMARY KEY DEFAULT uuidv7(),
   subproject_id uuid DEFAULT NULL REFERENCES subprojects(subproject_id) ON DELETE CASCADE ON UPDATE CASCADE DEFERRABLE INITIALLY DEFERRED,
   user_id uuid DEFAULT NULL REFERENCES users(user_id) ON DELETE CASCADE ON UPDATE CASCADE DEFERRABLE INITIALLY DEFERRED,
   "role" user_roles_enum DEFAULT NULL,
@@ -478,7 +478,7 @@ as $$ begin return $1::text; end $$
 language plpgsql;
 
 CREATE TABLE IF NOT EXISTS taxonomies(
-  taxonomy_id uuid PRIMARY KEY DEFAULT public.uuid_generate_v7(),
+  taxonomy_id uuid PRIMARY KEY DEFAULT uuidv7(),
   project_id uuid DEFAULT NULL REFERENCES projects(project_id) ON DELETE CASCADE ON UPDATE CASCADE DEFERRABLE INITIALLY DEFERRED,
   type taxonomy_types_enum DEFAULT NULL,
   unit_id uuid DEFAULT NULL, -- FK to units added below after units table
@@ -521,7 +521,7 @@ COMMENT ON COLUMN taxonomies.data IS 'Room for taxonomy specific data, defined i
 -- taxa
 --
 CREATE TABLE IF NOT EXISTS taxa(
-  taxon_id uuid PRIMARY KEY DEFAULT public.uuid_generate_v7(),
+  taxon_id uuid PRIMARY KEY DEFAULT uuidv7(),
   taxonomy_id uuid DEFAULT NULL REFERENCES taxonomies(taxonomy_id) ON DELETE CASCADE ON UPDATE CASCADE DEFERRABLE INITIALLY DEFERRED,
   name text DEFAULT NULL,
   id_in_source text DEFAULT NULL,
@@ -547,7 +547,7 @@ COMMENT ON COLUMN taxa.url IS 'URL of taxon, like "https://www.infoflora.ch/de/f
 -- subproject_taxa
 --
 CREATE TABLE IF NOT EXISTS subproject_taxa(
-  subproject_taxon_id uuid PRIMARY KEY DEFAULT public.uuid_generate_v7(),
+  subproject_taxon_id uuid PRIMARY KEY DEFAULT uuidv7(),
   subproject_id uuid DEFAULT NULL REFERENCES subprojects(subproject_id) ON DELETE CASCADE ON UPDATE CASCADE DEFERRABLE INITIALLY DEFERRED,
   taxon_id uuid DEFAULT NULL REFERENCES taxa(taxon_id) ON DELETE CASCADE ON UPDATE CASCADE DEFERRABLE INITIALLY DEFERRED,
   label text DEFAULT NULL,
@@ -571,7 +571,7 @@ CREATE TYPE list_value_types_enum AS ENUM ('integer', 'numeric', 'text', 'date',
 
 
 CREATE TABLE IF NOT EXISTS lists(
-  list_id uuid PRIMARY KEY DEFAULT public.uuid_generate_v7(),
+  list_id uuid PRIMARY KEY DEFAULT uuidv7(),
   project_id uuid DEFAULT NULL REFERENCES projects(project_id) ON DELETE CASCADE ON UPDATE CASCADE DEFERRABLE INITIALLY DEFERRED,
   name text DEFAULT NULL,
   value_type list_value_types_enum DEFAULT NULL,
@@ -599,7 +599,7 @@ COMMENT ON COLUMN lists.obsolete IS 'Is list obsolete? If so, show set values bu
 -- list_values
 --
 CREATE TABLE IF NOT EXISTS list_values(
-  list_value_id uuid PRIMARY KEY DEFAULT public.uuid_generate_v7(),
+  list_value_id uuid PRIMARY KEY DEFAULT uuidv7(),
   list_id uuid DEFAULT NULL REFERENCES lists(list_id) ON DELETE CASCADE ON UPDATE CASCADE DEFERRABLE INITIALLY DEFERRED,
   value_integer integer DEFAULT NULL,
   value_numeric numeric DEFAULT NULL,
@@ -627,7 +627,7 @@ WHERE
 CREATE TYPE unit_types_enum AS ENUM ('integer', 'numeric', 'text');
 
 CREATE TABLE IF NOT EXISTS units(
-  unit_id uuid PRIMARY KEY DEFAULT public.uuid_generate_v7(),
+  unit_id uuid PRIMARY KEY DEFAULT uuidv7(),
   project_id uuid DEFAULT NULL REFERENCES projects(project_id) ON DELETE CASCADE ON UPDATE CASCADE DEFERRABLE INITIALLY DEFERRED,
   list_id uuid DEFAULT NULL REFERENCES lists(list_id) ON DELETE SET NULL ON UPDATE CASCADE DEFERRABLE INITIALLY DEFERRED,
   name text DEFAULT NULL,
@@ -665,7 +665,7 @@ ALTER TABLE projects ADD CONSTRAINT projects_place_action_reports_default_unit_i
 -- places
 --
 CREATE TABLE IF NOT EXISTS places(
-  place_id uuid PRIMARY KEY DEFAULT public.uuid_generate_v7(),
+  place_id uuid PRIMARY KEY DEFAULT uuidv7(),
   subproject_id uuid DEFAULT NULL REFERENCES subprojects(subproject_id) ON DELETE CASCADE ON UPDATE CASCADE DEFERRABLE INITIALLY DEFERRED,
   parent_id uuid DEFAULT NULL REFERENCES places(place_id) ON DELETE NO action ON UPDATE CASCADE DEFERRABLE INITIALLY DEFERRED,
   level integer DEFAULT 1,
@@ -708,7 +708,7 @@ COMMENT ON COLUMN places.relevant_for_reports IS 'Whether place is relevant for 
 -- actions
 --
 CREATE TABLE IF NOT EXISTS actions(
-  action_id uuid PRIMARY KEY DEFAULT public.uuid_generate_v7(),
+  action_id uuid PRIMARY KEY DEFAULT uuidv7(),
   place_id uuid DEFAULT NULL REFERENCES places(place_id) ON DELETE CASCADE ON UPDATE CASCADE DEFERRABLE INITIALLY DEFERRED,
   date date DEFAULT CURRENT_DATE,
   data jsonb DEFAULT NULL,
@@ -738,7 +738,7 @@ COMMENT ON COLUMN actions.relevant_for_reports IS 'Whether action is relevant fo
 -- action_quantities
 --
 CREATE TABLE IF NOT EXISTS action_quantities(
-  action_quantity_id uuid PRIMARY KEY DEFAULT public.uuid_generate_v7(),
+  action_quantity_id uuid PRIMARY KEY DEFAULT uuidv7(),
   action_id uuid DEFAULT NULL REFERENCES actions(action_id) ON DELETE CASCADE ON UPDATE CASCADE DEFERRABLE INITIALLY DEFERRED,
   unit_id uuid DEFAULT NULL REFERENCES units(unit_id) ON DELETE NO action ON UPDATE CASCADE DEFERRABLE INITIALLY DEFERRED,
   quantity_integer integer DEFAULT NULL,
@@ -767,7 +767,7 @@ COMMENT ON COLUMN action_quantities.quantity_text IS 'Used for text quantities';
 -- action_taxa
 --
 CREATE TABLE IF NOT EXISTS action_taxa(
-  action_taxon_id uuid PRIMARY KEY DEFAULT public.uuid_generate_v7(),
+  action_taxon_id uuid PRIMARY KEY DEFAULT uuidv7(),
   action_id uuid DEFAULT NULL REFERENCES actions(action_id) ON DELETE CASCADE ON UPDATE CASCADE DEFERRABLE INITIALLY DEFERRED,
   taxon_id uuid DEFAULT NULL REFERENCES taxa(taxon_id) ON DELETE CASCADE ON UPDATE CASCADE DEFERRABLE INITIALLY DEFERRED,
   unit_id uuid DEFAULT NULL REFERENCES units(unit_id) ON DELETE NO action ON UPDATE CASCADE DEFERRABLE INITIALLY DEFERRED,
@@ -794,7 +794,7 @@ CREATE INDEX IF NOT EXISTS action_taxa_label_idx ON action_taxa USING btree(labe
 -- checks
 --
 CREATE TABLE IF NOT EXISTS checks(
-  check_id uuid PRIMARY KEY DEFAULT public.uuid_generate_v7(),
+  check_id uuid PRIMARY KEY DEFAULT uuidv7(),
   place_id uuid DEFAULT NULL REFERENCES places(place_id) ON DELETE CASCADE ON UPDATE CASCADE DEFERRABLE INITIALLY DEFERRED,
   date date DEFAULT CURRENT_DATE,
   data jsonb DEFAULT NULL,
@@ -822,7 +822,7 @@ COMMENT ON COLUMN checks.bbox IS 'bbox of the geometry. Set client-side on every
 -- check_quantities
 --
 CREATE TABLE IF NOT EXISTS check_quantities(
-  check_quantity_id uuid PRIMARY KEY DEFAULT public.uuid_generate_v7(),
+  check_quantity_id uuid PRIMARY KEY DEFAULT uuidv7(),
   check_id uuid DEFAULT NULL REFERENCES checks(check_id) ON DELETE CASCADE ON UPDATE CASCADE DEFERRABLE INITIALLY DEFERRED,
   -- with this reference to "on update cascade", when setting unit_id, live_query re-execution fails with memory error
   unit_id uuid DEFAULT NULL REFERENCES units(unit_id) ON DELETE NO action ON UPDATE no action DEFERRABLE INITIALLY DEFERRED,
@@ -852,7 +852,7 @@ COMMENT ON COLUMN check_quantities.quantity_text IS 'Used for text quantities';
 -- check_taxa
 --
 CREATE TABLE IF NOT EXISTS check_taxa(
-  check_taxon_id uuid PRIMARY KEY DEFAULT public.uuid_generate_v7(),
+  check_taxon_id uuid PRIMARY KEY DEFAULT uuidv7(),
   check_id uuid DEFAULT NULL REFERENCES checks(check_id) ON DELETE CASCADE ON UPDATE CASCADE DEFERRABLE INITIALLY DEFERRED,
   taxon_id uuid DEFAULT NULL REFERENCES taxa(taxon_id) ON DELETE CASCADE ON UPDATE CASCADE DEFERRABLE INITIALLY DEFERRED,
   unit_id uuid DEFAULT NULL REFERENCES units(unit_id) ON DELETE NO action ON UPDATE CASCADE DEFERRABLE INITIALLY DEFERRED,
@@ -879,7 +879,7 @@ CREATE INDEX IF NOT EXISTS check_taxa_label_idx ON check_taxa USING btree(label)
 -- check_reports
 --
 CREATE TABLE IF NOT EXISTS check_reports(
-  place_check_report_id uuid PRIMARY KEY DEFAULT public.uuid_generate_v7(),
+  place_check_report_id uuid PRIMARY KEY DEFAULT uuidv7(),
   place_id uuid DEFAULT NULL REFERENCES places(place_id) ON DELETE CASCADE ON UPDATE CASCADE DEFERRABLE INITIALLY DEFERRED,
   year integer DEFAULT DATE_PART('year', now()::date),
   data jsonb DEFAULT NULL,
@@ -902,7 +902,7 @@ COMMENT ON COLUMN check_reports.data IS 'Room for place check report specific da
 -- check_report_quantities
 --
 CREATE TABLE IF NOT EXISTS check_report_quantities(
-  place_check_report_quantity_id uuid PRIMARY KEY DEFAULT public.uuid_generate_v7(),
+  place_check_report_quantity_id uuid PRIMARY KEY DEFAULT uuidv7(),
   place_check_report_id uuid DEFAULT NULL REFERENCES check_reports(place_check_report_id) ON DELETE CASCADE ON UPDATE CASCADE DEFERRABLE INITIALLY DEFERRED,
   unit_id uuid DEFAULT NULL REFERENCES units(unit_id) ON DELETE NO action ON UPDATE no action DEFERRABLE INITIALLY DEFERRED,
   quantity_integer integer DEFAULT NULL,
@@ -931,7 +931,7 @@ COMMENT ON COLUMN check_report_quantities.quantity_text IS 'Used for text quanti
 -- action_reports
 --
 CREATE TABLE IF NOT EXISTS action_reports(
-  place_action_report_id uuid PRIMARY KEY DEFAULT public.uuid_generate_v7(),
+  place_action_report_id uuid PRIMARY KEY DEFAULT uuidv7(),
   place_id uuid DEFAULT NULL REFERENCES places(place_id) ON DELETE CASCADE ON UPDATE CASCADE DEFERRABLE INITIALLY DEFERRED,
   year integer DEFAULT DATE_PART('year', now()::date),
   data jsonb DEFAULT NULL,
@@ -954,7 +954,7 @@ COMMENT ON COLUMN action_reports.data IS 'Room for place action report specific 
 -- action_report_quantities
 --
 CREATE TABLE IF NOT EXISTS action_report_quantities(
-  place_action_report_quantity_id uuid PRIMARY KEY DEFAULT public.uuid_generate_v7(),
+  place_action_report_quantity_id uuid PRIMARY KEY DEFAULT uuidv7(),
   place_action_report_id uuid DEFAULT NULL REFERENCES action_reports(place_action_report_id) ON DELETE CASCADE ON UPDATE CASCADE DEFERRABLE INITIALLY DEFERRED,
   unit_id uuid DEFAULT NULL REFERENCES units(unit_id) ON DELETE NO action ON UPDATE no action DEFERRABLE INITIALLY DEFERRED,
   quantity_integer integer DEFAULT NULL,
@@ -983,7 +983,7 @@ COMMENT ON COLUMN action_report_quantities.quantity_text IS 'Used for text quant
 -- messages
 --
 CREATE TABLE IF NOT EXISTS messages(
-  message_id uuid PRIMARY KEY DEFAULT public.uuid_generate_v7(),
+  message_id uuid PRIMARY KEY DEFAULT uuidv7(),
   date timestamp DEFAULT now(),
   message text DEFAULT NULL,
   sys_period tstzrange DEFAULT NULL,
@@ -1000,7 +1000,7 @@ COMMENT ON TABLE messages IS 'System messages for users. No history tracking nee
 -- user_messages
 --
 CREATE TABLE IF NOT EXISTS user_messages(
-  user_message_id uuid PRIMARY KEY DEFAULT public.uuid_generate_v7(),
+  user_message_id uuid PRIMARY KEY DEFAULT uuidv7(),
   user_id uuid DEFAULT NULL REFERENCES users(user_id) ON DELETE CASCADE ON UPDATE CASCADE DEFERRABLE INITIALLY DEFERRED,
   message_id uuid DEFAULT NULL REFERENCES messages(message_id) ON DELETE CASCADE ON UPDATE CASCADE DEFERRABLE INITIALLY DEFERRED,
   read boolean DEFAULT FALSE,
@@ -1017,7 +1017,7 @@ CREATE INDEX IF NOT EXISTS user_messages_message_id_idx ON user_messages USING b
 -- place_users
 --
 CREATE TABLE IF NOT EXISTS place_users(
-  place_user_id uuid PRIMARY KEY DEFAULT public.uuid_generate_v7(),
+  place_user_id uuid PRIMARY KEY DEFAULT uuidv7(),
   place_id uuid DEFAULT NULL REFERENCES places(place_id) ON DELETE CASCADE ON UPDATE CASCADE DEFERRABLE INITIALLY DEFERRED,
   user_id uuid DEFAULT NULL REFERENCES users(user_id) ON DELETE CASCADE ON UPDATE CASCADE DEFERRABLE INITIALLY DEFERRED,
   "role" user_roles_enum DEFAULT 'read-all',
@@ -1042,7 +1042,7 @@ COMMENT ON COLUMN place_users.role IS 'One of: "read-specific", "read-all", "wri
 -- goals
 --
 CREATE TABLE IF NOT EXISTS goals(
-  goal_id uuid PRIMARY KEY DEFAULT public.uuid_generate_v7(),
+  goal_id uuid PRIMARY KEY DEFAULT uuidv7(),
   subproject_id uuid DEFAULT NULL REFERENCES subprojects(subproject_id) ON DELETE CASCADE ON UPDATE CASCADE DEFERRABLE INITIALLY DEFERRED,
   year integer DEFAULT DATE_PART('year', now()::date),
   name text DEFAULT NULL,
@@ -1070,7 +1070,7 @@ COMMENT ON TABLE goals IS 'What is to be achieved in the subproject in this year
 -- goal_reports
 --
 CREATE TABLE IF NOT EXISTS goal_reports(
-  goal_report_id uuid PRIMARY KEY DEFAULT public.uuid_generate_v7(),
+  goal_report_id uuid PRIMARY KEY DEFAULT uuidv7(),
   goal_id uuid DEFAULT NULL REFERENCES goals(goal_id) ON DELETE CASCADE ON UPDATE CASCADE DEFERRABLE INITIALLY DEFERRED,
   data jsonb DEFAULT NULL,
   label text DEFAULT NULL,
@@ -1090,7 +1090,7 @@ COMMENT ON COLUMN goal_reports.data IS 'Room for goal report specific data, defi
 -- subproject_reports
 --
 CREATE TABLE IF NOT EXISTS subproject_reports(
-  subproject_report_id uuid PRIMARY KEY DEFAULT public.uuid_generate_v7(),
+  subproject_report_id uuid PRIMARY KEY DEFAULT uuidv7(),
   subproject_id uuid DEFAULT NULL REFERENCES subprojects(subproject_id) ON DELETE CASCADE ON UPDATE CASCADE DEFERRABLE INITIALLY DEFERRED,
   year integer DEFAULT DATE_PART('year', now()::date),
   data jsonb DEFAULT NULL,
@@ -1113,7 +1113,7 @@ COMMENT ON COLUMN subproject_reports.data IS 'Room for subproject report specifi
 -- subproject_report_designs
 --
 CREATE TABLE IF NOT EXISTS subproject_report_designs(
-  subproject_report_design_id uuid PRIMARY KEY DEFAULT public.uuid_generate_v7(),
+  subproject_report_design_id uuid PRIMARY KEY DEFAULT uuidv7(),
   project_id uuid DEFAULT NULL REFERENCES projects(project_id) ON DELETE CASCADE ON UPDATE CASCADE DEFERRABLE INITIALLY DEFERRED,
   name text DEFAULT NULL,
   label text GENERATED ALWAYS AS (coalesce(nullif(name, ''), subproject_report_design_id::text)) STORED,
@@ -1139,7 +1139,7 @@ COMMENT ON COLUMN subproject_report_designs.design IS 'JSON design of the subpro
 -- project_reports
 --
 CREATE TABLE IF NOT EXISTS project_reports(
-  project_report_id uuid PRIMARY KEY DEFAULT public.uuid_generate_v7(),
+  project_report_id uuid PRIMARY KEY DEFAULT uuidv7(),
   project_id uuid DEFAULT NULL REFERENCES projects(project_id) ON DELETE CASCADE ON UPDATE CASCADE DEFERRABLE INITIALLY DEFERRED,
   year integer DEFAULT DATE_PART('year', now()::date),
   data jsonb DEFAULT NULL,
@@ -1168,7 +1168,7 @@ COMMENT ON COLUMN project_reports.data IS 'Room for project report specific data
 -- maybe add templates? templates including fields?
 --
 CREATE TABLE IF NOT EXISTS project_report_subdesigns(
-  project_report_subdesign_id uuid PRIMARY KEY DEFAULT public.uuid_generate_v7(),
+  project_report_subdesign_id uuid PRIMARY KEY DEFAULT uuidv7(),
   project_id uuid DEFAULT NULL REFERENCES projects(project_id) ON DELETE CASCADE ON UPDATE CASCADE DEFERRABLE INITIALLY DEFERRED,
   name text DEFAULT NULL,
   design jsonb DEFAULT NULL,
@@ -1190,7 +1190,7 @@ COMMENT ON COLUMN project_report_subdesigns.design IS 'JSON design of the projec
 -- project_report_designs
 --
 CREATE TABLE IF NOT EXISTS project_report_designs(
-  project_report_design_id uuid PRIMARY KEY DEFAULT public.uuid_generate_v7(),
+  project_report_design_id uuid PRIMARY KEY DEFAULT uuidv7(),
   project_id uuid DEFAULT NULL REFERENCES projects(project_id) ON DELETE CASCADE ON UPDATE CASCADE DEFERRABLE INITIALLY DEFERRED,
   name text DEFAULT NULL,
   label text GENERATED ALWAYS AS (coalesce(nullif(name, ''), project_report_design_id::text)) STORED,
@@ -1216,7 +1216,7 @@ COMMENT ON COLUMN project_report_designs.design IS 'JSON design of the project r
 -- files
 --
 CREATE TABLE IF NOT EXISTS files(
-  file_id uuid PRIMARY KEY DEFAULT public.uuid_generate_v7(),
+  file_id uuid PRIMARY KEY DEFAULT uuidv7(),
   project_id uuid DEFAULT NULL REFERENCES projects(project_id) ON DELETE CASCADE ON UPDATE CASCADE DEFERRABLE INITIALLY DEFERRED,
   subproject_id uuid DEFAULT NULL REFERENCES subprojects(subproject_id) ON DELETE CASCADE ON UPDATE CASCADE DEFERRABLE INITIALLY DEFERRED,
   place_id uuid DEFAULT NULL REFERENCES places(place_id) ON DELETE CASCADE ON UPDATE CASCADE DEFERRABLE INITIALLY DEFERRED,
@@ -1259,7 +1259,7 @@ COMMENT ON COLUMN files.url IS 'URL of file, if it is saved on a web service';
 -- field_types
 --
 CREATE TABLE IF NOT EXISTS field_types(
-  field_type_id uuid PRIMARY KEY DEFAULT public.uuid_generate_v7(),
+  field_type_id uuid PRIMARY KEY DEFAULT uuidv7(),
   name text DEFAULT NULL,
   -- no account_id as field_types are predefined for all projects
   sort smallint DEFAULT NULL,
@@ -1281,7 +1281,7 @@ COMMENT ON TABLE field_types IS 'Root-level field type definitions. No history t
 -- widget_types
 --
 CREATE TABLE IF NOT EXISTS widget_types(
-  widget_type_id uuid PRIMARY KEY DEFAULT public.uuid_generate_v7(),
+  widget_type_id uuid PRIMARY KEY DEFAULT uuidv7(),
   name text DEFAULT NULL,
   -- no account_id as field_types are predefined for all projects
   needs_list boolean DEFAULT FALSE,
@@ -1304,7 +1304,7 @@ COMMENT ON TABLE widget_types IS 'Root-level widget type definitions. No history
 -- widgets_for_fields
 --
 CREATE TABLE IF NOT EXISTS widgets_for_fields(
-  widget_for_field_id uuid PRIMARY KEY DEFAULT public.uuid_generate_v7(),
+  widget_for_field_id uuid PRIMARY KEY DEFAULT uuidv7(),
   field_type_id uuid DEFAULT NULL REFERENCES field_types(field_type_id) ON DELETE CASCADE ON UPDATE CASCADE DEFERRABLE INITIALLY DEFERRED,
   widget_type_id uuid DEFAULT NULL REFERENCES widget_types(widget_type_id) ON DELETE CASCADE ON UPDATE CASCADE DEFERRABLE INITIALLY DEFERRED,
   label text DEFAULT NULL,
@@ -1324,7 +1324,7 @@ COMMENT ON TABLE widgets_for_fields IS 'Mapping of field types to widget types. 
 -- fields
 --
 CREATE TABLE IF NOT EXISTS fields(
-  field_id uuid PRIMARY KEY DEFAULT public.uuid_generate_v7(),
+  field_id uuid PRIMARY KEY DEFAULT uuidv7(),
   project_id uuid DEFAULT NULL REFERENCES projects(project_id) ON DELETE CASCADE ON UPDATE CASCADE DEFERRABLE INITIALLY DEFERRED,
   account_id uuid DEFAULT NULL REFERENCES accounts(account_id) ON DELETE CASCADE ON UPDATE CASCADE DEFERRABLE INITIALLY DEFERRED,
   table_name text DEFAULT NULL,
@@ -1374,7 +1374,7 @@ COMMENT ON COLUMN fields.level IS 'level of field if places or below: 1, 2';
 -- this table is used to store the sort order of fields per table_name
 -- https://stackoverflow.com/a/35456954/712005
 CREATE TABLE IF NOT EXISTS field_sorts(
-  field_sort_id uuid PRIMARY KEY DEFAULT public.uuid_generate_v7(),
+  field_sort_id uuid PRIMARY KEY DEFAULT uuidv7(),
   project_id uuid DEFAULT NULL REFERENCES projects(project_id) ON DELETE CASCADE ON UPDATE CASCADE DEFERRABLE INITIALLY DEFERRED,
   table_name text DEFAULT NULL,
   sorted_field_ids uuid[] DEFAULT NULL,
@@ -1397,7 +1397,7 @@ COMMENT ON TABLE field_sorts IS 'Stores the sort order of fields per table_name'
 CREATE TYPE observation_imports_geometry_methods_enum AS ENUM ('coordinates', 'geojson');
 
 CREATE TABLE IF NOT EXISTS observation_imports(
-  observation_import_id uuid PRIMARY KEY DEFAULT public.uuid_generate_v7(),
+  observation_import_id uuid PRIMARY KEY DEFAULT uuidv7(),
   subproject_id uuid DEFAULT NULL REFERENCES subprojects(subproject_id) ON DELETE CASCADE ON UPDATE CASCADE DEFERRABLE INITIALLY DEFERRED,
   created_time timestamptz DEFAULT now(),
   inserted_count integer DEFAULT NULL,
@@ -1437,7 +1437,7 @@ COMMENT ON COLUMN observation_imports.gbif_filters IS 'area, groups, speciesKeys
 -- INSERT INTO observation_imports(observation_import_id, account_id, subproject_id, gbif_filters, created_time, gbif_download_key, gbif_error, inserted_count, attribution)
 --   VALUES ('018e1dc5-992e-7167-a294-434163a27d4b', '018cf958-27e2-7000-90d3-59f024d467be', '018cfd27-ee92-7000-b678-e75497d6c60e', '{"area": "POLYGON((0 0, 0 1, 1 1, 1 0, 0 0))"}', '2020-01-01T00:00:00Z', '00000000-0000-0000-0000-000000000000', NULL, 0, NULL);
 CREATE TABLE IF NOT EXISTS observations(
-  observation_id uuid PRIMARY KEY DEFAULT public.uuid_generate_v7(),
+  observation_id uuid PRIMARY KEY DEFAULT uuidv7(),
   observation_import_id uuid DEFAULT NULL REFERENCES observation_imports(observation_import_id) ON DELETE CASCADE ON UPDATE CASCADE DEFERRABLE INITIALLY DEFERRED,
   place_id uuid DEFAULT NULL REFERENCES places(place_id) ON DELETE SET NULL ON UPDATE CASCADE DEFERRABLE INITIALLY DEFERRED,
   not_to_assign boolean DEFAULT FALSE, -- TODO: index?,
@@ -1469,7 +1469,7 @@ COMMENT ON COLUMN observations.label IS 'label of observation, used to show it i
 -- wms_services
 --
 CREATE TABLE IF NOT EXISTS wms_services(
-  wms_service_id uuid PRIMARY KEY DEFAULT public.uuid_generate_v7(),
+  wms_service_id uuid PRIMARY KEY DEFAULT uuidv7(),
   project_id uuid NOT NULL REFERENCES projects(project_id) ON DELETE CASCADE ON UPDATE CASCADE DEFERRABLE INITIALLY DEFERRED,
   url text DEFAULT NULL,
   image_formats jsonb DEFAULT NULL, -- available image formats. text array
@@ -1493,7 +1493,7 @@ CREATE INDEX IF NOT EXISTS wms_services_label_idx ON wms_services USING btree(la
 -- wms_service_layers
 --
 CREATE TABLE IF NOT EXISTS wms_service_layers(
-  wms_service_layer_id uuid PRIMARY KEY DEFAULT public.uuid_generate_v7(),
+  wms_service_layer_id uuid PRIMARY KEY DEFAULT uuidv7(),
   wms_service_id uuid DEFAULT NULL REFERENCES wms_services(wms_service_id) ON DELETE CASCADE ON UPDATE CASCADE DEFERRABLE INITIALLY DEFERRED,
   name text DEFAULT NULL,
   label text DEFAULT NULL,
@@ -1515,7 +1515,7 @@ CREATE INDEX IF NOT EXISTS wms_service_layers_wms_service_id_idx ON wms_service_
 -- wmts_url_template text DEFAULT NULL,
 -- wmts_subdomains jsonb DEFAULT NULL, -- array of text
 CREATE TABLE IF NOT EXISTS wms_layers(
-  wms_layer_id uuid PRIMARY KEY DEFAULT public.uuid_generate_v7(),
+  wms_layer_id uuid PRIMARY KEY DEFAULT uuidv7(),
   project_id uuid NOT NULL REFERENCES projects(project_id) ON DELETE CASCADE ON UPDATE CASCADE DEFERRABLE INITIALLY DEFERRED,
   wms_service_id uuid DEFAULT NULL REFERENCES wms_services(wms_service_id) ON DELETE CASCADE ON UPDATE CASCADE DEFERRABLE INITIALLY DEFERRED,
   wms_service_layer_name text DEFAULT NULL, -- a name from wms_service_layers. NOT referenced because the uuid changes when the service is updated
@@ -1540,7 +1540,7 @@ COMMENT ON COLUMN wms_layers.local_data_bounds IS 'Array of bounds and their siz
 -- wfs_services
 --
 CREATE TABLE IF NOT EXISTS wfs_services(
-  wfs_service_id uuid PRIMARY KEY DEFAULT public.uuid_generate_v7(),
+  wfs_service_id uuid PRIMARY KEY DEFAULT uuidv7(),
   project_id uuid NOT NULL REFERENCES projects(project_id) ON DELETE CASCADE ON UPDATE CASCADE DEFERRABLE INITIALLY DEFERRED,
   url text DEFAULT NULL,
   version text DEFAULT NULL, -- often: 1.1.0 or 2.0.0
@@ -1565,7 +1565,7 @@ COMMENT ON COLUMN wfs_services.default_crs IS 'It seems that this is the crs bbo
 -- wfs_service_layers
 --
 CREATE TABLE IF NOT EXISTS wfs_service_layers(
-  wfs_service_layer_id uuid PRIMARY KEY DEFAULT public.uuid_generate_v7(),
+  wfs_service_layer_id uuid PRIMARY KEY DEFAULT uuidv7(),
   wfs_service_id uuid DEFAULT NULL REFERENCES wfs_services(wfs_service_id) ON DELETE CASCADE ON UPDATE CASCADE DEFERRABLE INITIALLY DEFERRED,
   name text DEFAULT NULL,
   label text DEFAULT NULL,
@@ -1598,7 +1598,7 @@ CREATE TYPE vector_layer_own_tables_enum AS ENUM (
 );
 
 CREATE TABLE IF NOT EXISTS vector_layers(
-  vector_layer_id uuid PRIMARY KEY DEFAULT public.uuid_generate_v7(),
+  vector_layer_id uuid PRIMARY KEY DEFAULT uuidv7(),
   label text DEFAULT NULL,
   project_id uuid NOT NULL REFERENCES projects(project_id) ON DELETE CASCADE ON UPDATE CASCADE DEFERRABLE INITIALLY DEFERRED,
   type vector_layer_types_enum DEFAULT NULL,
@@ -1640,7 +1640,7 @@ COMMENT ON COLUMN vector_layers.polygon_count IS 'Number of polygon features. Us
 --
 -- seperate from vector_layers because vector_layers : vector_layer_geoms = 1 : n
 CREATE TABLE IF NOT EXISTS vector_layer_geoms(
-  vector_layer_geom_id uuid PRIMARY KEY DEFAULT public.uuid_generate_v7(),
+  vector_layer_geom_id uuid PRIMARY KEY DEFAULT uuidv7(),
   vector_layer_id uuid DEFAULT NULL REFERENCES vector_layers(vector_layer_id) ON DELETE CASCADE ON UPDATE CASCADE DEFERRABLE INITIALLY DEFERRED,
   geometry geometry(GeometryCollection, 4326) DEFAULT NULL,
   properties jsonb DEFAULT NULL,
@@ -1687,7 +1687,7 @@ CREATE TYPE vector_layer_fill_rules_enum AS ENUM (
 
 -- manage all map related properties here? For imported/wfs and also own tables?
 CREATE TABLE IF NOT EXISTS vector_layer_displays(
-  vector_layer_display_id uuid PRIMARY KEY DEFAULT public.uuid_generate_v7(),
+  vector_layer_display_id uuid PRIMARY KEY DEFAULT uuidv7(),
   vector_layer_id uuid DEFAULT NULL REFERENCES vector_layers(vector_layer_id) ON DELETE CASCADE ON UPDATE CASCADE DEFERRABLE INITIALLY DEFERRED,
   display_property_value text DEFAULT NULL,
   marker_type vector_layer_marker_types_enum DEFAULT 'circle',
@@ -1738,7 +1738,7 @@ COMMENT ON COLUMN vector_layer_displays.fill_rule IS 'A string that defines how 
 --
 -- need a table to manage layer presentation for all layers (wms and vector)
 CREATE TABLE IF NOT EXISTS layer_presentations(
-  layer_presentation_id uuid PRIMARY KEY DEFAULT public.uuid_generate_v7(),
+  layer_presentation_id uuid PRIMARY KEY DEFAULT uuidv7(),
   wms_layer_id uuid DEFAULT NULL REFERENCES wms_layers(wms_layer_id) ON DELETE CASCADE ON UPDATE CASCADE DEFERRABLE INITIALLY DEFERRED,
   vector_layer_id uuid DEFAULT NULL REFERENCES vector_layers(vector_layer_id) ON DELETE CASCADE ON UPDATE CASCADE DEFERRABLE INITIALLY DEFERRED,
   active boolean DEFAULT FALSE,
@@ -1773,7 +1773,7 @@ CREATE TYPE chart_types_enum AS ENUM (
 );
 
 CREATE TABLE IF NOT EXISTS charts(
-  chart_id uuid PRIMARY KEY DEFAULT public.uuid_generate_v7(),
+  chart_id uuid PRIMARY KEY DEFAULT uuidv7(),
   project_id uuid DEFAULT NULL REFERENCES projects(project_id) ON DELETE CASCADE ON UPDATE CASCADE DEFERRABLE INITIALLY DEFERRED,
   subproject_id uuid DEFAULT NULL REFERENCES subprojects(subproject_id) ON DELETE CASCADE ON UPDATE CASCADE DEFERRABLE INITIALLY DEFERRED,
   place_id uuid DEFAULT NULL REFERENCES places(place_id) ON DELETE CASCADE ON UPDATE CASCADE DEFERRABLE INITIALLY DEFERRED,
@@ -1825,7 +1825,7 @@ CREATE TYPE chart_subject_calc_methods_enum AS ENUM (
 CREATE TYPE chart_subject_types_enum AS ENUM ('linear', 'monotone');
 
 CREATE TABLE IF NOT EXISTS chart_subjects(
-  chart_subject_id uuid PRIMARY KEY DEFAULT public.uuid_generate_v7(),
+  chart_subject_id uuid PRIMARY KEY DEFAULT uuidv7(),
   chart_id uuid DEFAULT NULL REFERENCES charts(chart_id) ON DELETE CASCADE ON UPDATE CASCADE DEFERRABLE INITIALLY DEFERRED,
   table_name chart_subject_table_names_enum DEFAULT NULL,
   table_level chart_subject_table_levels_enum DEFAULT '1', -- not relevant for subprojects 
@@ -1869,7 +1869,7 @@ COMMENT ON COLUMN chart_subjects.fill IS 'Fill color of the chart';
 -- crs
 --
 CREATE TABLE IF NOT EXISTS crs(
-  crs_id uuid PRIMARY KEY DEFAULT public.uuid_generate_v7(),
+  crs_id uuid PRIMARY KEY DEFAULT uuidv7(),
   code text DEFAULT NULL,
   name text DEFAULT NULL,
   proj4 text DEFAULT NULL,
@@ -1892,7 +1892,7 @@ COMMENT ON COLUMN crs.proj4 IS 'proj4 string for the crs. From (example): https:
 -- need additional table project_crs to store the crs's used in a project
 -- same as crs - data will be copied from crs to project_crs (goal: users need not sync all crs's)
 CREATE TABLE IF NOT EXISTS project_crs(
-  project_crs_id uuid PRIMARY KEY DEFAULT public.uuid_generate_v7(),
+  project_crs_id uuid PRIMARY KEY DEFAULT uuidv7(),
   crs_id uuid REFERENCES crs(crs_id) ON DELETE NO action ON UPDATE CASCADE DEFERRABLE INITIALLY DEFERRED,
   project_id uuid DEFAULT NULL REFERENCES projects(project_id) ON DELETE CASCADE ON UPDATE CASCADE DEFERRABLE INITIALLY DEFERRED,
   code text DEFAULT NULL,
@@ -1918,7 +1918,7 @@ CREATE TYPE qcs_level_enum AS ENUM ('root', 'project', 'subproject');
 CREATE TYPE project_qcs_level_enum AS ENUM ('project', 'subproject');
 
 CREATE TABLE IF NOT EXISTS qcs(
-  qcs_id uuid PRIMARY KEY DEFAULT public.uuid_generate_v7(),
+  qcs_id uuid PRIMARY KEY DEFAULT uuidv7(),
   name_de text DEFAULT NULL,
   name_en text DEFAULT NULL,
   name_fr text DEFAULT NULL,
@@ -1941,7 +1941,7 @@ COMMENT ON TABLE qcs IS 'Quality control rules for data validation. No history t
 -- qc_assignments
 --
 CREATE TABLE IF NOT EXISTS qc_assignments(
-  qc_assignment_id uuid PRIMARY KEY DEFAULT public.uuid_generate_v7(),
+  qc_assignment_id uuid PRIMARY KEY DEFAULT uuidv7(),
   project_id uuid DEFAULT NULL REFERENCES projects(project_id) ON DELETE CASCADE ON UPDATE CASCADE DEFERRABLE INITIALLY DEFERRED,
   subproject_id uuid DEFAULT NULL REFERENCES subprojects(subproject_id) ON DELETE CASCADE ON UPDATE CASCADE DEFERRABLE INITIALLY DEFERRED,
   qc_id uuid NOT NULL REFERENCES qcs(qcs_id) ON DELETE CASCADE ON UPDATE CASCADE DEFERRABLE INITIALLY DEFERRED,
@@ -1964,7 +1964,7 @@ COMMENT ON TABLE qc_assignments IS 'Quality controls assigned to a project or su
 -- project_qcs: project-specific quality controls
 --
 CREATE TABLE IF NOT EXISTS project_qcs(
-  project_qc_id uuid PRIMARY KEY DEFAULT public.uuid_generate_v7(),
+  project_qc_id uuid PRIMARY KEY DEFAULT uuidv7(),
   project_id uuid NOT NULL REFERENCES projects(project_id) ON DELETE CASCADE ON UPDATE CASCADE DEFERRABLE INITIALLY DEFERRED,
   name_de text DEFAULT NULL,
   name_en text DEFAULT NULL,
@@ -1989,7 +1989,7 @@ COMMENT ON TABLE project_qcs IS 'Project-specific quality controls. Only visible
 -- project_qc_assignments
 --
 CREATE TABLE IF NOT EXISTS project_qc_assignments(
-  project_qc_assignment_id uuid PRIMARY KEY DEFAULT public.uuid_generate_v7(),
+  project_qc_assignment_id uuid PRIMARY KEY DEFAULT uuidv7(),
   project_id uuid DEFAULT NULL REFERENCES projects(project_id) ON DELETE CASCADE ON UPDATE CASCADE DEFERRABLE INITIALLY DEFERRED,
   subproject_id uuid DEFAULT NULL REFERENCES subprojects(subproject_id) ON DELETE CASCADE ON UPDATE CASCADE DEFERRABLE INITIALLY DEFERRED,
   project_qc_id uuid NOT NULL REFERENCES project_qcs(project_qc_id) ON DELETE CASCADE ON UPDATE CASCADE DEFERRABLE INITIALLY DEFERRED,
@@ -2016,7 +2016,7 @@ COMMIT;
 CREATE TYPE exports_level_enum AS ENUM ('root', 'project', 'subproject');
 
 CREATE TABLE IF NOT EXISTS exports(
-  exports_id uuid PRIMARY KEY DEFAULT public.uuid_generate_v7(),
+  exports_id uuid PRIMARY KEY DEFAULT uuidv7(),
   name_de text DEFAULT NULL,
   name_en text DEFAULT NULL,
   name_fr text DEFAULT NULL,
@@ -2045,7 +2045,7 @@ COMMENT ON COLUMN exports.description IS 'Describe the query so that an ai agent
 -- export_assignments
 --
 CREATE TABLE IF NOT EXISTS export_assignments(
-  export_assignment_id uuid PRIMARY KEY DEFAULT public.uuid_generate_v7(),
+  export_assignment_id uuid PRIMARY KEY DEFAULT uuidv7(),
   project_id uuid DEFAULT NULL REFERENCES projects(project_id) ON DELETE CASCADE ON UPDATE CASCADE DEFERRABLE INITIALLY DEFERRED,
   subproject_id uuid DEFAULT NULL REFERENCES subprojects(subproject_id) ON DELETE CASCADE ON UPDATE CASCADE DEFERRABLE INITIALLY DEFERRED,
   exports_id uuid NOT NULL REFERENCES exports(exports_id) ON DELETE CASCADE ON UPDATE CASCADE DEFERRABLE INITIALLY DEFERRED,
@@ -2070,7 +2070,7 @@ COMMENT ON TABLE export_assignments IS 'Predefined exports assigned to a project
 CREATE TYPE project_exports_level_enum AS ENUM ('project', 'subproject');
 
 CREATE TABLE IF NOT EXISTS project_exports(
-  project_exports_id uuid PRIMARY KEY DEFAULT public.uuid_generate_v7(),
+  project_exports_id uuid PRIMARY KEY DEFAULT uuidv7(),
   project_id uuid NOT NULL REFERENCES projects(project_id) ON DELETE CASCADE ON UPDATE CASCADE DEFERRABLE INITIALLY DEFERRED,
   name_de text DEFAULT NULL,
   name_en text DEFAULT NULL,
@@ -2100,7 +2100,7 @@ COMMENT ON COLUMN project_exports.base_table IS 'The main table this export quer
 -- project_export_assignments
 --
 CREATE TABLE IF NOT EXISTS project_export_assignments(
-  project_export_assignment_id uuid PRIMARY KEY DEFAULT public.uuid_generate_v7(),
+  project_export_assignment_id uuid PRIMARY KEY DEFAULT uuidv7(),
   project_id uuid DEFAULT NULL REFERENCES projects(project_id) ON DELETE CASCADE ON UPDATE CASCADE DEFERRABLE INITIALLY DEFERRED,
   subproject_id uuid DEFAULT NULL REFERENCES subprojects(subproject_id) ON DELETE CASCADE ON UPDATE CASCADE DEFERRABLE INITIALLY DEFERRED,
   project_exports_id uuid NOT NULL REFERENCES project_exports(project_exports_id) ON DELETE CASCADE ON UPDATE CASCADE DEFERRABLE INITIALLY DEFERRED,

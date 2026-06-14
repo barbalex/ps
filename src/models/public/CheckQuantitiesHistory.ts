@@ -32,7 +32,7 @@ export default interface CheckQuantitiesHistory {
  * System-versioned history of check_quantities. Managed by temporal_tables and partitioned yearly by updated_at.
  */
 export interface CheckQuantitiesHistoryInitializer {
-  /** Default value: uuid_generate_v7() */
+  /** Default value: uuidv7() */
   check_quantity_id?: string;
 
   check_id?: string | null;

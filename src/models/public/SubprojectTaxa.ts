@@ -33,7 +33,7 @@ export default interface SubprojectTaxa {
  * list wor what taxa data is managed in the subproject.
  */
 export interface SubprojectTaxaInitializer {
-  /** Default value: uuid_generate_v7() */
+  /** Default value: uuidv7() */
   subproject_taxon_id?: SubprojectTaxaSubprojectTaxonId;
 
   subproject_id?: SubprojectsSubprojectId | null;

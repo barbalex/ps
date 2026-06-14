@@ -35,7 +35,7 @@ export default interface Goals {
  * What is to be achieved in the subproject in this year.
  */
 export interface GoalsInitializer {
-  /** Default value: uuid_generate_v7() */
+  /** Default value: uuidv7() */
   goal_id?: GoalsGoalId;
 
   subproject_id?: SubprojectsSubprojectId | null;

@@ -54,7 +54,7 @@ export default interface AuthAccounts {
  * Goal: earn money. Separate from users to allow for multiple auth_accounts per user. Enables seeing the account history.
  */
 export interface AuthAccountsInitializer {
-  /** Default value: uuid_generate_v7() */
+  /** Default value: uuidv7() */
   auth_account_id?: AuthAccountsAuthAccountId;
 
   id?: string | null;

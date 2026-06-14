@@ -34,7 +34,7 @@ export default interface CheckTaxaHistory {
  * System-versioned history of check_taxa. Managed by temporal_tables and partitioned yearly by updated_at.
  */
 export interface CheckTaxaHistoryInitializer {
-  /** Default value: uuid_generate_v7() */
+  /** Default value: uuidv7() */
   check_taxon_id?: string;
 
   check_id?: string | null;

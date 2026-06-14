@@ -38,7 +38,7 @@ export default interface WmsServicesHistory {
  * System-versioned history of wms_services. Managed by temporal_tables and partitioned yearly by updated_at.
  */
 export interface WmsServicesHistoryInitializer {
-  /** Default value: uuid_generate_v7() */
+  /** Default value: uuidv7() */
   wms_service_id?: string;
 
   project_id: string;

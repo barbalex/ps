@@ -30,7 +30,7 @@ export default interface FieldSorts {
  * Stores the sort order of fields per table_name
  */
 export interface FieldSortsInitializer {
-  /** Default value: uuid_generate_v7() */
+  /** Default value: uuidv7() */
   field_sort_id?: FieldSortsFieldSortId;
 
   project_id?: ProjectsProjectId | null;

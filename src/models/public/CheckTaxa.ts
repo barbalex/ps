@@ -35,7 +35,7 @@ export default interface CheckTaxa {
 
 /** Represents the initializer for the table public.check_taxa */
 export interface CheckTaxaInitializer {
-  /** Default value: uuid_generate_v7() */
+  /** Default value: uuidv7() */
   check_taxon_id?: CheckTaxaCheckTaxonId;
 
   check_id?: ChecksCheckId | null;

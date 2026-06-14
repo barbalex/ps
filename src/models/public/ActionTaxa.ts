@@ -35,7 +35,7 @@ export default interface ActionTaxa {
 
 /** Represents the initializer for the table public.action_taxa */
 export interface ActionTaxaInitializer {
-  /** Default value: uuid_generate_v7() */
+  /** Default value: uuidv7() */
   action_taxon_id?: ActionTaxaActionTaxonId;
 
   action_id?: ActionsActionId | null;

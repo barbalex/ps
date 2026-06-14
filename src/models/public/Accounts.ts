@@ -40,7 +40,7 @@ export default interface Accounts {
  * Goal: earn money. Separate from users to allow for multiple accounts per user. Enables seeing the account history.
  */
 export interface AccountsInitializer {
-  /** Default value: uuid_generate_v7() */
+  /** Default value: uuidv7() */
   account_id?: AccountsAccountId;
 
   /** user that owns the account. null for accounts that are not owned by a user */

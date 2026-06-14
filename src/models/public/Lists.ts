@@ -40,7 +40,7 @@ export default interface Lists {
  * Manage lists of values. These lists can then be used on option-lists or dropdown-lists
  */
 export interface ListsInitializer {
-  /** Default value: uuid_generate_v7() */
+  /** Default value: uuidv7() */
   list_id?: ListsListId;
 
   project_id?: ProjectsProjectId | null;

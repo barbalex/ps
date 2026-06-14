@@ -25,7 +25,7 @@ export default interface WfsServiceLayers {
 
 /** Represents the initializer for the table public.wfs_service_layers */
 export interface WfsServiceLayersInitializer {
-  /** Default value: uuid_generate_v7() */
+  /** Default value: uuidv7() */
   wfs_service_layer_id?: WfsServiceLayersWfsServiceLayerId;
 
   wfs_service_id?: WfsServicesWfsServiceId | null;

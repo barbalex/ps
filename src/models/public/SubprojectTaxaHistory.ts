@@ -26,7 +26,7 @@ export default interface SubprojectTaxaHistory {
  * System-versioned history of subproject_taxa. Managed by temporal_tables and partitioned yearly by updated_at.
  */
 export interface SubprojectTaxaHistoryInitializer {
-  /** Default value: uuid_generate_v7() */
+  /** Default value: uuidv7() */
   subproject_taxon_id?: string;
 
   subproject_id?: string | null;

@@ -35,7 +35,7 @@ export default interface ListValues {
 
 /** Represents the initializer for the table public.list_values */
 export interface ListValuesInitializer {
-  /** Default value: uuid_generate_v7() */
+  /** Default value: uuidv7() */
   list_value_id?: ListValuesListValueId;
 
   list_id?: ListsListId | null;

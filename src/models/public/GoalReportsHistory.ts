@@ -26,7 +26,7 @@ export default interface GoalReportsHistory {
  * System-versioned history of goal_reports. Managed by temporal_tables and partitioned yearly by updated_at.
  */
 export interface GoalReportsHistoryInitializer {
-  /** Default value: uuid_generate_v7() */
+  /** Default value: uuidv7() */
   goal_report_id?: string;
 
   goal_id?: string | null;

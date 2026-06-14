@@ -44,7 +44,7 @@ export default interface LayerPresentations {
  * Goal: manage all presentation related properties of all layers (including wms and vector layers). Editable by all users.
  */
 export interface LayerPresentationsInitializer {
-  /** Default value: uuid_generate_v7() */
+  /** Default value: uuidv7() */
   layer_presentation_id?: LayerPresentationsLayerPresentationId;
 
   wms_layer_id?: WmsLayersWmsLayerId | null;

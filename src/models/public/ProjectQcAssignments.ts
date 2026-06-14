@@ -34,7 +34,7 @@ export default interface ProjectQcAssignments {
  * Project-specific quality controls assigned to a project or subproject level for execution.
  */
 export interface ProjectQcAssignmentsInitializer {
-  /** Default value: uuid_generate_v7() */
+  /** Default value: uuidv7() */
   project_qc_assignment_id?: ProjectQcAssignmentsProjectQcAssignmentId;
 
   project_id?: ProjectsProjectId | null;

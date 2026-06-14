@@ -45,7 +45,7 @@ export default interface Units {
  * Manage units of values. These units can then be used for values of actions, checks, reports, goals, taxa
  */
 export interface UnitsInitializer {
-  /** Default value: uuid_generate_v7() */
+  /** Default value: uuidv7() */
   unit_id?: UnitsUnitId;
 
   project_id?: ProjectsProjectId | null;

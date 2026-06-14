@@ -24,7 +24,7 @@ export default interface MessagesHistory {
  * System-versioned history of messages. Managed by temporal_tables and partitioned yearly by updated_at.
  */
 export interface MessagesHistoryInitializer {
-  /** Default value: uuid_generate_v7() */
+  /** Default value: uuidv7() */
   message_id?: string;
 
   /** Default value: now() */

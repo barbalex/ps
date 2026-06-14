@@ -28,7 +28,7 @@ export default interface ActionReportsHistory {
  * System-versioned history of action_reports. Managed by temporal_tables and partitioned yearly by updated_at.
  */
 export interface ActionReportsHistoryInitializer {
-  /** Default value: uuid_generate_v7() */
+  /** Default value: uuidv7() */
   place_action_report_id?: string;
 
   place_id?: string | null;

@@ -32,7 +32,7 @@ export default interface AccountsHistory {
  * System-versioned history of accounts. Managed by temporal_tables and partitioned yearly by updated_at.
  */
 export interface AccountsHistoryInitializer {
-  /** Default value: uuid_generate_v7() */
+  /** Default value: uuidv7() */
   account_id?: string;
 
   user_id?: string | null;

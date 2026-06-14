@@ -26,7 +26,7 @@ export default interface AuthSessions {
 
 /** Represents the initializer for the table public.auth_sessions */
 export interface AuthSessionsInitializer {
-  /** Default value: uuid_generate_v7() */
+  /** Default value: uuidv7() */
   auth_session_id?: AuthSessionsAuthSessionId;
 
   user_id?: UsersUserId | null;

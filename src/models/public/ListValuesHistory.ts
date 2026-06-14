@@ -36,7 +36,7 @@ export default interface ListValuesHistory {
  * System-versioned history of list_values. Managed by temporal_tables and partitioned yearly by updated_at.
  */
 export interface ListValuesHistoryInitializer {
-  /** Default value: uuid_generate_v7() */
+  /** Default value: uuidv7() */
   list_value_id?: string;
 
   list_id?: string | null;

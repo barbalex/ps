@@ -30,7 +30,7 @@ export default interface PlaceUsersHistory {
  * System-versioned history of place_users. Managed by temporal_tables and partitioned yearly by updated_at.
  */
 export interface PlaceUsersHistoryInitializer {
-  /** Default value: uuid_generate_v7() */
+  /** Default value: uuidv7() */
   place_user_id?: string;
 
   place_id?: string | null;

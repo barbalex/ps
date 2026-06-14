@@ -41,7 +41,7 @@ export default interface ActionReportQuantities {
  * Quantities of place action reports
  */
 export interface ActionReportQuantitiesInitializer {
-  /** Default value: uuid_generate_v7() */
+  /** Default value: uuidv7() */
   place_action_report_quantity_id?: ActionReportQuantitiesPlaceActionReportQuantityId;
 
   place_action_report_id?: ActionReportsPlaceActionReportId | null;

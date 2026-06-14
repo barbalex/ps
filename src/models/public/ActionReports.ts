@@ -35,7 +35,7 @@ export default interface ActionReports {
  * Reporting on actions taken in this place.
  */
 export interface ActionReportsInitializer {
-  /** Default value: uuid_generate_v7() */
+  /** Default value: uuidv7() */
   place_action_report_id?: ActionReportsPlaceActionReportId;
 
   place_id?: PlacesPlaceId | null;

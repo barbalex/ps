@@ -47,7 +47,7 @@ export default interface Observations {
  * observations. Imported for subprojects (species projects) or projects (biotope projects).
  */
 export interface ObservationsInitializer {
-  /** Default value: uuid_generate_v7() */
+  /** Default value: uuidv7() */
   observation_id?: ObservationsObservationId;
 
   observation_import_id?: ObservationImportsObservationImportId | null;

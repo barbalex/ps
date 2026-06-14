@@ -41,7 +41,7 @@ export default interface ActionQuantities {
  * Quantities of actions. Measuring or assessing
  */
 export interface ActionQuantitiesInitializer {
-  /** Default value: uuid_generate_v7() */
+  /** Default value: uuidv7() */
   action_quantity_id?: ActionQuantitiesActionQuantityId;
 
   action_id?: ActionsActionId | null;

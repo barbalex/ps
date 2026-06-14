@@ -35,7 +35,7 @@ export default interface ExportAssignments {
  * Predefined exports assigned to a project or subproject level for execution.
  */
 export interface ExportAssignmentsInitializer {
-  /** Default value: uuid_generate_v7() */
+  /** Default value: uuidv7() */
   export_assignment_id?: ExportAssignmentsExportAssignmentId;
 
   project_id?: ProjectsProjectId | null;

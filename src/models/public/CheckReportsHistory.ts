@@ -28,7 +28,7 @@ export default interface CheckReportsHistory {
  * System-versioned history of check_reports. Managed by temporal_tables and partitioned yearly by updated_at.
  */
 export interface CheckReportsHistoryInitializer {
-  /** Default value: uuid_generate_v7() */
+  /** Default value: uuidv7() */
   place_check_report_id?: string;
 
   place_id?: string | null;

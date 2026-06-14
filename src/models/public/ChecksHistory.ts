@@ -34,7 +34,7 @@ export default interface ChecksHistory {
  * System-versioned history of checks. Managed by temporal_tables and partitioned yearly by updated_at.
  */
 export interface ChecksHistoryInitializer {
-  /** Default value: uuid_generate_v7() */
+  /** Default value: uuidv7() */
   check_id?: string;
 
   place_id?: string | null;

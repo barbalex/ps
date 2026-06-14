@@ -68,7 +68,7 @@ export default interface ChartSubjects {
  * Subjects for charts. Or: what is shown in the chart
  */
 export interface ChartSubjectsInitializer {
-  /** Default value: uuid_generate_v7() */
+  /** Default value: uuidv7() */
   chart_subject_id?: ChartSubjectsChartSubjectId;
 
   chart_id?: ChartsChartId | null;

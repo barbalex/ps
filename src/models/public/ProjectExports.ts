@@ -48,7 +48,7 @@ export default interface ProjectExports {
  * Project-specific exports. Only visible within the project and its sub-projects. Created by project owners and designers.
  */
 export interface ProjectExportsInitializer {
-  /** Default value: uuid_generate_v7() */
+  /** Default value: uuidv7() */
   project_exports_id?: ProjectExportsProjectExportsId;
 
   project_id: ProjectsProjectId;
