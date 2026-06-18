@@ -3,7 +3,7 @@ export type CrsCrsId = string & { __brand: 'public.crs' };
 
 /**
  * Represents the table public.crs
- * List of coordinate reference systems (from https://spatialreference.org). No history tracking needed as this is root-level reference data managed by administrators.
+ * List of coordinate reference systems (from https://spatialreference.org). No history tracking needed as this is root-level reference data managed by administrators. Actually: this is only used on the server. project_crs are fetched from here
  */
 export default interface Crs {
   crs_id: CrsCrsId;
@@ -28,7 +28,7 @@ export default interface Crs {
 
 /**
  * Represents the initializer for the table public.crs
- * List of coordinate reference systems (from https://spatialreference.org). No history tracking needed as this is root-level reference data managed by administrators.
+ * List of coordinate reference systems (from https://spatialreference.org). No history tracking needed as this is root-level reference data managed by administrators. Actually: this is only used on the server. project_crs are fetched from here
  */
 export interface CrsInitializer {
   /** Default value: uuidv7() */
@@ -54,7 +54,7 @@ export interface CrsInitializer {
 
 /**
  * Represents the mutator for the table public.crs
- * List of coordinate reference systems (from https://spatialreference.org). No history tracking needed as this is root-level reference data managed by administrators.
+ * List of coordinate reference systems (from https://spatialreference.org). No history tracking needed as this is root-level reference data managed by administrators. Actually: this is only used on the server. project_crs are fetched from here
  */
 export interface CrsMutator {
   crs_id?: CrsCrsId;

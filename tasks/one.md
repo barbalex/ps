@@ -21,6 +21,8 @@ We will later remove the ui and code for crs completely: /data/crs list, /data/c
 
 ---
 
+Lets remove the ui and code for crs completely: /data/crs list, /data/crs/019aeb6d-6cdb-71c4-924b-8e402195d8cc form, routes, tree nodes, breadcrumbs, use...Data hooks
+
 ---
 
 ---
