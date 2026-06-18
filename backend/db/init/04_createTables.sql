@@ -1883,7 +1883,7 @@ CREATE TABLE IF NOT EXISTS crs(
 CREATE INDEX IF NOT EXISTS crs_code_idx ON crs USING btree(code);
 CREATE INDEX IF NOT EXISTS crs_label_idx ON crs USING btree(label);
 
-COMMENT ON TABLE crs IS 'List of coordinate reference systems (from https://spatialreference.org). No history tracking needed as this is root-level reference data managed by administrators.';
+COMMENT ON TABLE crs IS 'List of coordinate reference systems (from https://spatialreference.org). No history tracking needed as this is root-level reference data managed by administrators. Actually: this is only used on the server. project_crs are fetched from here';
 COMMENT ON COLUMN crs.proj4 IS 'proj4 string for the crs. From (example): https://epsg.io/4326.proj4';
 
 --------------------------------------------------------------

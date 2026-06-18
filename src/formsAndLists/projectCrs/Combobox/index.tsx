@@ -6,10 +6,10 @@ import { useIntl } from 'react-intl'
 
 import { useDebouncedCallback } from 'use-debounce'
 import { usePGlite } from '@electric-sql/pglite-react'
-import { useSetAtom } from 'jotai'
+import { useSetAtom, useAtomValue } from 'jotai'
 
 import { Options } from './options.tsx'
-import { addOperationAtom } from '../../../store.ts'
+import { addOperationAtom, postgrestClientAtom } from '../../../store.ts'
 import type Crs from '../../../models/public/Crs.ts'
 
 const from = '/data/projects/$projectId_/crs/$projectCrsId/'
@@ -18,20 +18,22 @@ export const ComboboxFilteringOptions = ({ autoFocus, ref }) => {
   const db = usePGlite()
   const { projectCrsId } = useParams({ from })
   const addOperation = useSetAtom(addOperationAtom)
+  const postgrestClient = useAtomValue(postgrestClientAtom)
   const { formatMessage } = useIntl()
 
   const [filter, setFilter] = useState('')
   const [crs, setCrs] = useState([])
 
   const fetchData = useCallback(async () => {
-    const sql = filter
-      ? 'SELECT * FROM crs WHERE code ILIKE $1 OR name ILIKE $1'
-      : 'SELECT * FROM crs'
-    const vals = filter ? [`%${filter}%`] : []
-    const res = await db.query(sql, vals)
-    const crs: Crs[] = res?.rows
+    if (!postgrestClient) return
+    const res = await postgrestClient
+      .from('crs')
+      .select('crs_id, code, name, proj4')
+      .or(`code.ilike.%${filter}%,name.ilike.%${filter}%`)
+      .limit(100)
+    const crs: Crs[] = res?.data ?? []
     setCrs(crs)
-  }, [db, filter])
+  }, [postgrestClient, filter])
 
   const fetchDataDebounced = useDebouncedCallback(fetchData, 500, {
     trailing: true,

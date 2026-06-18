@@ -1050,25 +1050,6 @@ export const startSyncing = async (userId: string) => {
         table: 'chart_subjects',
         primaryKey: ['chart_subject_id'],
       },
-      crs: {
-        shape: {
-          url,
-          params: {
-            table: 'crs',
-            columns: [
-              'crs_id',
-              'code',
-              'name',
-              'proj4',
-              'created_at',
-              'updated_at',
-              'updated_by',
-            ],
-          },
-        },
-        table: 'crs',
-        primaryKey: ['crs_id'],
-      },
       project_crs: {
         shape: {
           url,
