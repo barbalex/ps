@@ -12,7 +12,6 @@ import { RootExportsNode } from './RootExports.tsx'
 import { RootExportsRunNode } from './RootExportsRun.tsx'
 import { ExportsNode } from './Exports.tsx'
 import { MessagesNode } from './Messages.tsx'
-import { CrssNode } from './Crss.tsx'
 import { QueuedOperationsNode } from './QueuedOperations.tsx'
 import { designingAtom, isAppAmin, operationsQueueAtom } from '../../store.ts'
 import styles from './index.module.css'
@@ -43,7 +42,6 @@ export const Tree = () => {
           <ExportsNode />
           <RootExportsNode />
           <RootExportsRunNode />
-          <CrssNode />
         </>
       )}
       <MessagesNode />

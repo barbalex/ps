@@ -27,7 +27,6 @@ import { Route as DataFieldTypesRouteRouteImport } from './routes/data/field-typ
 import { Route as DataExportsRunRouteRouteImport } from './routes/data/exports-run/route'
 import { Route as DataExportsRouteRouteImport } from './routes/data/exports/route'
 import { Route as DataExportAssignmentsRouteRouteImport } from './routes/data/export-assignments/route'
-import { Route as DataCrsRouteRouteImport } from './routes/data/crs/route'
 import { Route as LayoutDocsRouteRouteImport } from './routes/_layout/docs/route'
 import { Route as DataWidgetsForFieldsIndexRouteImport } from './routes/data/widgets-for-fields/index'
 import { Route as DataWidgetTypesIndexRouteImport } from './routes/data/widget-types/index'
@@ -42,7 +41,6 @@ import { Route as DataFieldTypesIndexRouteImport } from './routes/data/field-typ
 import { Route as DataExportsIndexRouteImport } from './routes/data/exports/index'
 import { Route as DataExportsRunIndexRouteImport } from './routes/data/exports-run/index'
 import { Route as DataExportAssignmentsIndexRouteImport } from './routes/data/export-assignments/index'
-import { Route as DataCrsIndexRouteImport } from './routes/data/crs/index'
 import { Route as LayoutDocsIndexRouteImport } from './routes/_layout/docs/index'
 import { Route as DataWidgetsForFieldsFilterRouteImport } from './routes/data/widgets-for-fields/filter'
 import { Route as DataWidgetsForFieldsWidgetForFieldIdRouteImport } from './routes/data/widgets-for-fields/$widgetForFieldId'
@@ -58,8 +56,6 @@ import { Route as DataFieldTypesFilterRouteImport } from './routes/data/field-ty
 import { Route as DataFieldTypesFieldTypeIdRouteImport } from './routes/data/field-types/$fieldTypeId'
 import { Route as DataExportsFilterRouteImport } from './routes/data/exports/filter'
 import { Route as DataExportsExportsIdRouteImport } from './routes/data/exports/$exportsId'
-import { Route as DataCrsFilterRouteImport } from './routes/data/crs/filter'
-import { Route as DataCrsCrsIdRouteImport } from './routes/data/crs/$crsId'
 import { Route as LayoutDocsDocIdRouteImport } from './routes/_layout/docs/$docId'
 import { Route as DataUsersUserIdRouteRouteImport } from './routes/data/users/$userId_/route'
 import { Route as DataProjectsProjectIdRouteRouteImport } from './routes/data/projects/$projectId_/route'
@@ -555,11 +551,6 @@ const DataExportAssignmentsRouteRoute =
     path: '/export-assignments',
     getParentRoute: () => DataRouteRoute,
   } as any)
-const DataCrsRouteRoute = DataCrsRouteRouteImport.update({
-  id: '/crs',
-  path: '/crs',
-  getParentRoute: () => DataRouteRoute,
-} as any)
 const LayoutDocsRouteRoute = LayoutDocsRouteRouteImport.update({
   id: '/docs',
   path: '/docs',
@@ -633,11 +624,6 @@ const DataExportAssignmentsIndexRoute =
     path: '/',
     getParentRoute: () => DataExportAssignmentsRouteRoute,
   } as any)
-const DataCrsIndexRoute = DataCrsIndexRouteImport.update({
-  id: '/',
-  path: '/',
-  getParentRoute: () => DataCrsRouteRoute,
-} as any)
 const LayoutDocsIndexRoute = LayoutDocsIndexRouteImport.update({
   id: '/',
   path: '/',
@@ -717,16 +703,6 @@ const DataExportsExportsIdRoute = DataExportsExportsIdRouteImport.update({
   id: '/$exportsId',
   path: '/$exportsId',
   getParentRoute: () => DataExportsRouteRoute,
-} as any)
-const DataCrsFilterRoute = DataCrsFilterRouteImport.update({
-  id: '/filter',
-  path: '/filter',
-  getParentRoute: () => DataCrsRouteRoute,
-} as any)
-const DataCrsCrsIdRoute = DataCrsCrsIdRouteImport.update({
-  id: '/$crsId',
-  path: '/$crsId',
-  getParentRoute: () => DataCrsRouteRoute,
 } as any)
 const LayoutDocsDocIdRoute = LayoutDocsDocIdRouteImport.update({
   id: '/$docId',
@@ -3939,7 +3915,6 @@ export interface FileRoutesByFullPath {
   '/data': typeof DataRouteRouteWithChildren
   '/': typeof LayoutIndexRoute
   '/docs': typeof LayoutDocsRouteRouteWithChildren
-  '/data/crs': typeof DataCrsRouteRouteWithChildren
   '/data/export-assignments': typeof DataExportAssignmentsRouteRouteWithChildren
   '/data/exports': typeof DataExportsRouteRouteWithChildren
   '/data/exports-run': typeof DataExportsRunRouteRouteWithChildren
@@ -3958,8 +3933,6 @@ export interface FileRoutesByFullPath {
   '/data/projects/$projectId': typeof DataProjectsProjectIdRouteRouteWithChildren
   '/data/users/$userId': typeof DataUsersUserIdRouteRouteWithChildren
   '/docs/$docId': typeof LayoutDocsDocIdRoute
-  '/data/crs/$crsId': typeof DataCrsCrsIdRoute
-  '/data/crs/filter': typeof DataCrsFilterRoute
   '/data/exports/$exportsId': typeof DataExportsExportsIdRoute
   '/data/exports/filter': typeof DataExportsFilterRoute
   '/data/field-types/$fieldTypeId': typeof DataFieldTypesFieldTypeIdRoute
@@ -3975,7 +3948,6 @@ export interface FileRoutesByFullPath {
   '/data/widgets-for-fields/$widgetForFieldId': typeof DataWidgetsForFieldsWidgetForFieldIdRoute
   '/data/widgets-for-fields/filter': typeof DataWidgetsForFieldsFilterRoute
   '/docs/': typeof LayoutDocsIndexRoute
-  '/data/crs/': typeof DataCrsIndexRoute
   '/data/export-assignments/': typeof DataExportAssignmentsIndexRoute
   '/data/exports-run/': typeof DataExportsRunIndexRoute
   '/data/exports/': typeof DataExportsIndexRoute
@@ -4395,8 +4367,6 @@ export interface FileRoutesByTo {
   '/data': typeof DataIndexRoute
   '/data/users/$userId': typeof DataUsersUserIdRouteRouteWithChildren
   '/docs/$docId': typeof LayoutDocsDocIdRoute
-  '/data/crs/$crsId': typeof DataCrsCrsIdRoute
-  '/data/crs/filter': typeof DataCrsFilterRoute
   '/data/exports/$exportsId': typeof DataExportsExportsIdRoute
   '/data/exports/filter': typeof DataExportsFilterRoute
   '/data/field-types/$fieldTypeId': typeof DataFieldTypesFieldTypeIdRoute
@@ -4412,7 +4382,6 @@ export interface FileRoutesByTo {
   '/data/widgets-for-fields/$widgetForFieldId': typeof DataWidgetsForFieldsWidgetForFieldIdRoute
   '/data/widgets-for-fields/filter': typeof DataWidgetsForFieldsFilterRoute
   '/docs': typeof LayoutDocsIndexRoute
-  '/data/crs': typeof DataCrsIndexRoute
   '/data/export-assignments': typeof DataExportAssignmentsIndexRoute
   '/data/exports-run': typeof DataExportsRunIndexRoute
   '/data/exports': typeof DataExportsIndexRoute
@@ -4725,7 +4694,6 @@ export interface FileRoutesById {
   '/data': typeof DataRouteRouteWithChildren
   '/_layout': typeof LayoutRouteWithChildren
   '/_layout/docs': typeof LayoutDocsRouteRouteWithChildren
-  '/data/crs': typeof DataCrsRouteRouteWithChildren
   '/data/export-assignments': typeof DataExportAssignmentsRouteRouteWithChildren
   '/data/exports': typeof DataExportsRouteRouteWithChildren
   '/data/exports-run': typeof DataExportsRunRouteRouteWithChildren
@@ -4745,8 +4713,6 @@ export interface FileRoutesById {
   '/data/projects/$projectId_': typeof DataProjectsProjectIdRouteRouteWithChildren
   '/data/users/$userId_': typeof DataUsersUserIdRouteRouteWithChildren
   '/_layout/docs/$docId': typeof LayoutDocsDocIdRoute
-  '/data/crs/$crsId': typeof DataCrsCrsIdRoute
-  '/data/crs/filter': typeof DataCrsFilterRoute
   '/data/exports/$exportsId': typeof DataExportsExportsIdRoute
   '/data/exports/filter': typeof DataExportsFilterRoute
   '/data/field-types/$fieldTypeId': typeof DataFieldTypesFieldTypeIdRoute
@@ -4762,7 +4728,6 @@ export interface FileRoutesById {
   '/data/widgets-for-fields/$widgetForFieldId': typeof DataWidgetsForFieldsWidgetForFieldIdRoute
   '/data/widgets-for-fields/filter': typeof DataWidgetsForFieldsFilterRoute
   '/_layout/docs/': typeof LayoutDocsIndexRoute
-  '/data/crs/': typeof DataCrsIndexRoute
   '/data/export-assignments/': typeof DataExportAssignmentsIndexRoute
   '/data/exports-run/': typeof DataExportsRunIndexRoute
   '/data/exports/': typeof DataExportsIndexRoute
@@ -5182,7 +5147,6 @@ export interface FileRouteTypes {
     | '/data'
     | '/'
     | '/docs'
-    | '/data/crs'
     | '/data/export-assignments'
     | '/data/exports'
     | '/data/exports-run'
@@ -5201,8 +5165,6 @@ export interface FileRouteTypes {
     | '/data/projects/$projectId'
     | '/data/users/$userId'
     | '/docs/$docId'
-    | '/data/crs/$crsId'
-    | '/data/crs/filter'
     | '/data/exports/$exportsId'
     | '/data/exports/filter'
     | '/data/field-types/$fieldTypeId'
@@ -5218,7 +5180,6 @@ export interface FileRouteTypes {
     | '/data/widgets-for-fields/$widgetForFieldId'
     | '/data/widgets-for-fields/filter'
     | '/docs/'
-    | '/data/crs/'
     | '/data/export-assignments/'
     | '/data/exports-run/'
     | '/data/exports/'
@@ -5638,8 +5599,6 @@ export interface FileRouteTypes {
     | '/data'
     | '/data/users/$userId'
     | '/docs/$docId'
-    | '/data/crs/$crsId'
-    | '/data/crs/filter'
     | '/data/exports/$exportsId'
     | '/data/exports/filter'
     | '/data/field-types/$fieldTypeId'
@@ -5655,7 +5614,6 @@ export interface FileRouteTypes {
     | '/data/widgets-for-fields/$widgetForFieldId'
     | '/data/widgets-for-fields/filter'
     | '/docs'
-    | '/data/crs'
     | '/data/export-assignments'
     | '/data/exports-run'
     | '/data/exports'
@@ -5967,7 +5925,6 @@ export interface FileRouteTypes {
     | '/data'
     | '/_layout'
     | '/_layout/docs'
-    | '/data/crs'
     | '/data/export-assignments'
     | '/data/exports'
     | '/data/exports-run'
@@ -5987,8 +5944,6 @@ export interface FileRouteTypes {
     | '/data/projects/$projectId_'
     | '/data/users/$userId_'
     | '/_layout/docs/$docId'
-    | '/data/crs/$crsId'
-    | '/data/crs/filter'
     | '/data/exports/$exportsId'
     | '/data/exports/filter'
     | '/data/field-types/$fieldTypeId'
@@ -6004,7 +5959,6 @@ export interface FileRouteTypes {
     | '/data/widgets-for-fields/$widgetForFieldId'
     | '/data/widgets-for-fields/filter'
     | '/_layout/docs/'
-    | '/data/crs/'
     | '/data/export-assignments/'
     | '/data/exports-run/'
     | '/data/exports/'
@@ -6552,13 +6506,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DataExportAssignmentsRouteRouteImport
       parentRoute: typeof DataRouteRoute
     }
-    '/data/crs': {
-      id: '/data/crs'
-      path: '/crs'
-      fullPath: '/data/crs'
-      preLoaderRoute: typeof DataCrsRouteRouteImport
-      parentRoute: typeof DataRouteRoute
-    }
     '/_layout/docs': {
       id: '/_layout/docs'
       path: '/docs'
@@ -6656,13 +6603,6 @@ declare module '@tanstack/react-router' {
       fullPath: '/data/export-assignments/'
       preLoaderRoute: typeof DataExportAssignmentsIndexRouteImport
       parentRoute: typeof DataExportAssignmentsRouteRoute
-    }
-    '/data/crs/': {
-      id: '/data/crs/'
-      path: '/'
-      fullPath: '/data/crs/'
-      preLoaderRoute: typeof DataCrsIndexRouteImport
-      parentRoute: typeof DataCrsRouteRoute
     }
     '/_layout/docs/': {
       id: '/_layout/docs/'
@@ -6768,20 +6708,6 @@ declare module '@tanstack/react-router' {
       fullPath: '/data/exports/$exportsId'
       preLoaderRoute: typeof DataExportsExportsIdRouteImport
       parentRoute: typeof DataExportsRouteRoute
-    }
-    '/data/crs/filter': {
-      id: '/data/crs/filter'
-      path: '/filter'
-      fullPath: '/data/crs/filter'
-      preLoaderRoute: typeof DataCrsFilterRouteImport
-      parentRoute: typeof DataCrsRouteRoute
-    }
-    '/data/crs/$crsId': {
-      id: '/data/crs/$crsId'
-      path: '/$crsId'
-      fullPath: '/data/crs/$crsId'
-      preLoaderRoute: typeof DataCrsCrsIdRouteImport
-      parentRoute: typeof DataCrsRouteRoute
     }
     '/_layout/docs/$docId': {
       id: '/_layout/docs/$docId'
@@ -9600,22 +9526,6 @@ declare module '@tanstack/react-router' {
   }
 }
 
-interface DataCrsRouteRouteChildren {
-  DataCrsCrsIdRoute: typeof DataCrsCrsIdRoute
-  DataCrsFilterRoute: typeof DataCrsFilterRoute
-  DataCrsIndexRoute: typeof DataCrsIndexRoute
-}
-
-const DataCrsRouteRouteChildren: DataCrsRouteRouteChildren = {
-  DataCrsCrsIdRoute: DataCrsCrsIdRoute,
-  DataCrsFilterRoute: DataCrsFilterRoute,
-  DataCrsIndexRoute: DataCrsIndexRoute,
-}
-
-const DataCrsRouteRouteWithChildren = DataCrsRouteRoute._addFileChildren(
-  DataCrsRouteRouteChildren,
-)
-
 interface DataExportAssignmentsRouteRouteChildren {
   DataExportAssignmentsIndexRoute: typeof DataExportAssignmentsIndexRoute
 }
@@ -12324,7 +12234,6 @@ const DataWidgetsForFieldsRouteRouteWithChildren =
   )
 
 interface DataRouteRouteChildren {
-  DataCrsRouteRoute: typeof DataCrsRouteRouteWithChildren
   DataExportAssignmentsRouteRoute: typeof DataExportAssignmentsRouteRouteWithChildren
   DataExportsRouteRoute: typeof DataExportsRouteRouteWithChildren
   DataExportsRunRouteRoute: typeof DataExportsRunRouteRouteWithChildren
@@ -12342,7 +12251,6 @@ interface DataRouteRouteChildren {
 }
 
 const DataRouteRouteChildren: DataRouteRouteChildren = {
-  DataCrsRouteRoute: DataCrsRouteRouteWithChildren,
   DataExportAssignmentsRouteRoute: DataExportAssignmentsRouteRouteWithChildren,
   DataExportsRouteRoute: DataExportsRouteRouteWithChildren,
   DataExportsRunRouteRoute: DataExportsRunRouteRouteWithChildren,

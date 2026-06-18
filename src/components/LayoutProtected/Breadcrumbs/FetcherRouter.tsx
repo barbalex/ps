@@ -135,8 +135,7 @@ import { ProjectExportsFetcher } from './ProjectExportsFetcher.tsx'
 import { ProjectExportFetcher } from './ProjectExportFetcher.tsx'
 import { FieldsFetcher } from './FieldsFetcher.tsx'
 import { FieldFetcher } from './FieldFetcher.tsx'
-import { CrssFetcher } from './CrssFetcher.tsx'
-import { CrsFetcher } from './CrsFetcher.tsx'
+
 import { FilesFetcher } from './FilesFetcher.tsx'
 import { FileFetcher } from './FileFetcher.tsx'
 import { MessagesFetcher } from './MessagesFetcher.tsx'
@@ -882,13 +881,7 @@ export const FetcherRouter = ({ fetcherName, params, ...other }) => {
       }
       return <FieldFetcher params={params} {...other} />
     }
-    case 'useCrssNavData': {
-      return <CrssFetcher params={params} {...other} />
-    }
-    case 'useCrsNavData': {
-      if (!params.crsId) return null
-      return <CrsFetcher params={params} {...other} />
-    }
+
     case 'useFilesNavData': {
       if (!params.projectId) return null
       return <FilesFetcher params={params} {...other} />
