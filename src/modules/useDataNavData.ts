@@ -38,7 +38,6 @@ type NavDataFiltered = {
   widget_types_count_filtered?: number
   widgets_for_fields_count_unfiltered?: number
   widgets_for_fields_count_filtered?: number
-  crs_count_unfiltered?: number
   messages_count_unfiltered: number
 }
 
@@ -88,7 +87,6 @@ export const useDataNavData = () => {
             root_qcs_count_unfiltered AS (SELECT count(*) FROM qc_assignments WHERE project_id IS NULL AND subproject_id IS NULL),
             exports_count_unfiltered AS (SELECT count(*) FROM exports),
             root_exports_count_unfiltered AS (SELECT count(*) FROM export_assignments WHERE project_id IS NULL AND subproject_id IS NULL),
-            crs_count_unfiltered AS (SELECT count(*) FROM crs),
           `
             : ''
         }
@@ -111,7 +109,6 @@ export const useDataNavData = () => {
               root_qcs_count_unfiltered.count AS root_qcs_count_unfiltered,
               exports_count_unfiltered.count AS exports_count_unfiltered,
               root_exports_count_unfiltered.count AS root_exports_count_unfiltered,
-              crs_count_unfiltered.count AS crs_count_unfiltered,
             `
             : ''
         }
@@ -134,7 +131,6 @@ export const useDataNavData = () => {
               root_qcs_count_unfiltered,
               exports_count_unfiltered,
               root_exports_count_unfiltered,
-              crs_count_unfiltered,
             `
             : ''
         }
@@ -298,17 +294,6 @@ export const useDataNavData = () => {
                 namePlural: formatMessage({
                   id: 'rootExportsRun.title',
                   defaultMessage: 'Exporte: ausführen',
-                }),
-              }),
-            },
-            {
-              id: 'crs',
-              label: buildNavLabel({
-                loading,
-                countFiltered: row?.crs_count_unfiltered ?? 0,
-                namePlural: formatMessage({
-                  id: 'OzBS9Z',
-                  defaultMessage: 'KBS',
                 }),
               }),
             },
