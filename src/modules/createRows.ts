@@ -1764,7 +1764,6 @@ export const createObservationImport = async ({ subprojectId }) => {
 // no insert as this data is inserted in bulk
 export const createObservation = ({ observationImportId, data = null }) => ({
   observation_id: uuidv7(),
-  account_id,
   observation_import_id: observationImportId,
   data,
 })

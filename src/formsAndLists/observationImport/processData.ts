@@ -35,13 +35,13 @@ const insertObservations = async (data, additionalData, db, resolve) => {
       const values = chunk
         .map(
           (c) =>
-            `('${c.observation_import_id}', '${c.account_id}', '${
+            `('${c.observation_import_id}', '${
               c.observation_id
             }', '${JSON.stringify(c.data)}')`,
         )
         .join(',')
       await db.query(
-        `INSERT INTO observations (observation_import_id, account_id, observation_id, data) VALUES ${values}`,
+        `INSERT INTO observations (observation_import_id, observation_id, data) VALUES ${values}`,
       )
       processed += chunk.length
       backgroundTasks.updateProgress(taskId, processed)
@@ -108,7 +108,6 @@ export const processData = async ({
         const duplicateCount = await checkDuplicates(
           db,
           data,
-          additionalData.account_id,
         )
 
         if (duplicateCount > 0) {

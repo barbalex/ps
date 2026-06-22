@@ -5,7 +5,6 @@
 export const checkDuplicates = async (
   db: any,
   dataRows: any[],
-  accountId: string,
 ): Promise<number> => {
   if (!dataRows || dataRows.length === 0) return 0
 
@@ -27,8 +26,8 @@ export const checkDuplicates = async (
   for (const newRow of rowsToCheck) {
     // Build WHERE conditions for non-object fields
     const conditions: string[] = []
-    const values: any[] = [accountId]
-    let paramIndex = 2
+    const values: any[] = []
+    let paramIndex = 1
 
     for (const [key, value] of Object.entries(newRow)) {
       // Only include non-object values in the query
@@ -48,8 +47,7 @@ export const checkDuplicates = async (
     const query = `
       SELECT COUNT(*) as count 
       FROM observations 
-      WHERE account_id = $1 
-      AND ${conditions.join(' AND ')}
+      WHERE ${conditions.join(' AND ')}
     `
 
     try {

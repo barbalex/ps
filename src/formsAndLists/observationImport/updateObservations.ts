@@ -150,10 +150,9 @@ export const replaceObservations = async ({ file, observationImport, db }) => {
           )
 
           await db.query(
-            `INSERT INTO observations (observation_import_id, account_id, observation_id, data, id_in_source, geometry, label) VALUES ($1, $2, $3, $4, $5, $6, $7)`,
+            `INSERT INTO observations (observation_import_id, observation_id, data, id_in_source, geometry, label) VALUES ($1, $2, $3, $4, $5, $6)`,
             [
               occ.observation_import_id,
-              occ.account_id,
               occ.observation_id,
               JSON.stringify(occ.data),
               idInSource ? String(idInSource) : null,
@@ -330,10 +329,9 @@ export const updateAndExtendObservations = async ({
             )
 
             await db.query(
-              `INSERT INTO observations (observation_import_id, account_id, observation_id, data, id_in_source, geometry, label) VALUES ($1, $2, $3, $4, $5, $6, $7)`,
+              `INSERT INTO observations (observation_import_id, observation_id, data, id_in_source, geometry, label) VALUES ($1, $2, $3, $4, $5, $6)`,
               [
                 newOcc.observation_import_id,
-                newOcc.account_id,
                 newOcc.observation_id,
                 JSON.stringify(newOcc.data),
                 idInSource,
