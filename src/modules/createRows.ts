@@ -1734,10 +1734,9 @@ export const createObservationImport = async ({ subprojectId }) => {
   const date = new Date()
 
   await db.query(
-    `INSERT INTO observation_imports (observation_import_id, account_id, subproject_id, geometry_method, crs, created_time, download_from_gbif) VALUES ($1, $2, $3, $4, $5, $6, $7) ON CONFLICT (observation_import_id) DO NOTHING`,
+    `INSERT INTO observation_imports (observation_import_id, subproject_id, geometry_method, crs, created_time, download_from_gbif) VALUES ($1, $2, $3, $4, $5, $6) ON CONFLICT (observation_import_id) DO NOTHING`,
     [
       observation_import_id,
-      '018cf958-27e2-7000-90d3-59f024d467be',
       subprojectId,
       'coordinates',
       'EPSG:4326',
@@ -1751,7 +1750,6 @@ export const createObservationImport = async ({ subprojectId }) => {
     operation: 'insert',
     draft: {
       observation_import_id,
-      account_id,
       subproject_id: subprojectId,
       geometry_method: 'coordinates',
       crs: 'EPSG:4326',
