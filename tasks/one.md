@@ -29,6 +29,8 @@ clicking 'new' at http://localhost:5176/data/projects/018cfcf7-6424-7000-a100-85
 
 ---
 
+a while ago I removed account_id from many tables. this is the second problem surfacing since. are there more similar problems where account_id or 018cf958-27e2-7000-90d3-59f024d467be are used?
+
 ---
 
 ---
