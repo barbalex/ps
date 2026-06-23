@@ -4,8 +4,6 @@ import { uuidv7 } from '@kripod/uuidv7'
 import { addOperationAtom, store, pgliteDbAtom, intlAtom } from '../../store.ts'
 import { backgroundTasks } from '../../modules/backgroundTasks.ts'
 
-const account_id = '018cf958-27e2-7000-90d3-59f024d467be' // TODO: replace with auth data when implemented
-
 const parseWorkbook = (file: File, buffer: ArrayBuffer): XLSX.WorkBook => {
   const ext = file.name.split('.').pop()?.toLowerCase()
   if (ext === 'tsv') {
@@ -54,7 +52,6 @@ export const importTaxa = async ({
   const seen = new Set<string>()
   const drafts: {
     taxon_id: string
-    account_id: string
     taxonomy_id: string
     name: string
     id_in_source?: string
