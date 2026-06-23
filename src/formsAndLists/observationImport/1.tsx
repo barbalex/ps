@@ -288,7 +288,6 @@ export const One = ({
           processData={wrappedProcessData}
           additionalData={{
             observation_import_id: observationImport.observation_import_id,
-            account_id: observationImport.account_id,
           }}
         />
       )}
