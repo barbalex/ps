@@ -1741,6 +1741,7 @@ CREATE TABLE IF NOT EXISTS layer_presentations(
   layer_presentation_id uuid PRIMARY KEY DEFAULT uuidv7(),
   wms_layer_id uuid DEFAULT NULL REFERENCES wms_layers(wms_layer_id) ON DELETE CASCADE ON UPDATE CASCADE DEFERRABLE INITIALLY DEFERRED,
   vector_layer_id uuid DEFAULT NULL REFERENCES vector_layers(vector_layer_id) ON DELETE CASCADE ON UPDATE CASCADE DEFERRABLE INITIALLY DEFERRED,
+  project_id uuid DEFAULT NULL REFERENCES projects(project_id) ON DELETE CASCADE ON UPDATE CASCADE DEFERRABLE INITIALLY DEFERRED,
   active boolean DEFAULT FALSE,
   opacity_percent integer DEFAULT 100,
   transparent boolean DEFAULT TRUE,
@@ -1756,6 +1757,7 @@ CREATE TABLE IF NOT EXISTS layer_presentations(
 
 CREATE INDEX IF NOT EXISTS layer_presentations_wms_layer_id_idx ON layer_presentations USING btree(wms_layer_id);
 CREATE INDEX IF NOT EXISTS layer_presentations_vector_layer_id_idx ON layer_presentations USING btree(vector_layer_id);
+CREATE INDEX IF NOT EXISTS layer_presentations_project_id_idx ON layer_presentations USING btree(project_id);
 CREATE INDEX IF NOT EXISTS layer_presentations_active_idx ON layer_presentations USING btree(active);
 CREATE INDEX IF NOT EXISTS layer_presentations_grayscale_idx ON layer_presentations(grayscale)
 WHERE

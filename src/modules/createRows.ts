@@ -1467,17 +1467,35 @@ export const createLayerPresentation = async ({
 }) => {
   const db = store.get(pgliteDbAtom)
   const layer_presentation_id = uuidv7()
+
+  // Resolve project_id from the referenced layer table
+  let projectId: string | null = null
+  if (vectorLayerId) {
+    const res = await db.query(
+      `SELECT project_id FROM vector_layers WHERE vector_layer_id = $1`,
+      [vectorLayerId],
+    )
+    projectId = res?.rows?.[0]?.project_id ?? null
+  } else if (wmsLayerId) {
+    const res = await db.query(
+      `SELECT project_id FROM wms_layers WHERE wms_layer_id = $1`,
+      [wmsLayerId],
+    )
+    projectId = res?.rows?.[0]?.project_id ?? null
+  }
+
   await db.query(
     `
     INSERT INTO layer_presentations
-    (layer_presentation_id, account_id, vector_layer_id, wms_layer_id, active, opacity_percent, grayscale, transparent, max_zoom, min_zoom)
-    VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)
+    (layer_presentation_id, account_id, vector_layer_id, wms_layer_id, project_id, active, opacity_percent, grayscale, transparent, max_zoom, min_zoom)
+    VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11)
   `,
     [
       layer_presentation_id,
       accountId,
       vectorLayerId,
       wmsLayerId,
+      projectId,
       active,
       100,
       false,
@@ -1497,6 +1515,7 @@ export const createLayerPresentation = async ({
         account_id: accountId,
         vector_layer_id: vectorLayerId,
         wms_layer_id: wmsLayerId,
+        project_id: projectId,
         active,
         opacity_percent: 100,
         grayscale: false,

@@ -941,7 +941,7 @@ BEGIN
   -- check if layer_presentation already exists
   SELECT EXISTS(SELECT 1 FROM layer_presentations WHERE vector_layer_id = NEW.vector_layer_id) INTO lp_exists;
   IF NOT lp_exists THEN
-    INSERT INTO layer_presentations (vector_layer_id) VALUES (NEW.vector_layer_id);
+    INSERT INTO layer_presentations (vector_layer_id, project_id) VALUES (NEW.vector_layer_id, NEW.project_id);
   END IF;
   RETURN NEW;
 END;
@@ -997,6 +997,26 @@ AFTER INSERT OR UPDATE of field_type_id, widget_type_id ON widgets_for_fields
 FOR EACH ROW
 EXECUTE PROCEDURE widgets_for_fields_label_trigger();
 
+-- layer_presentations: auto-populate project_id from wms_layers or vector_layers
+CREATE OR REPLACE FUNCTION layer_presentations_set_project_id_trigger()
+RETURNS TRIGGER AS $$
+BEGIN
+  IF NEW.project_id IS NULL THEN
+    IF NEW.wms_layer_id IS NOT NULL THEN
+      SELECT project_id INTO NEW.project_id FROM wms_layers WHERE wms_layer_id = NEW.wms_layer_id;
+    ELSIF NEW.vector_layer_id IS NOT NULL THEN
+      SELECT project_id INTO NEW.project_id FROM vector_layers WHERE vector_layer_id = NEW.vector_layer_id;
+    END IF;
+  END IF;
+  RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE OR REPLACE TRIGGER layer_presentations_set_project_id_trigger
+BEFORE INSERT ON layer_presentations
+FOR EACH ROW
+EXECUTE PROCEDURE layer_presentations_set_project_id_trigger();
+
 -- on insert wms_layers if type is in:
 -- places1, places2, actions1, actions2, checks1, checks2, observations_assigned1, observations_assigned2, observations_to_assess, observations_not_to_assign
 -- create a corresponding layer_presentation
@@ -1015,7 +1035,7 @@ BEGIN
   -- check if layer_presentation already exists
   SELECT EXISTS(SELECT 1 FROM layer_presentations WHERE wms_layer_id = NEW.wms_layer_id) INTO lp_exists;
   IF NOT lp_exists THEN
-    INSERT INTO layer_presentations (wms_layer_id) VALUES (NEW.wms_layer_id);
+    INSERT INTO layer_presentations (wms_layer_id, project_id) VALUES (NEW.wms_layer_id, NEW.project_id);
   END IF;
   RETURN NEW;
 END;

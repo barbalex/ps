@@ -101,6 +101,10 @@ export const SqlInitializer = () => {
             ALTER TABLE IF EXISTS field_sorts ADD COLUMN IF NOT EXISTS sys_period tstzrange DEFAULT NULL;
             ALTER TABLE IF EXISTS vector_layer_geoms ADD COLUMN IF NOT EXISTS sys_period tstzrange DEFAULT NULL;
             ALTER TABLE IF EXISTS layer_presentations ADD COLUMN IF NOT EXISTS sys_period tstzrange DEFAULT NULL;
+            ALTER TABLE IF EXISTS layer_presentations ADD COLUMN IF NOT EXISTS project_id uuid DEFAULT NULL REFERENCES projects(project_id) ON DELETE CASCADE ON UPDATE CASCADE DEFERRABLE INITIALLY DEFERRED;
+            CREATE INDEX IF NOT EXISTS layer_presentations_project_id_idx ON layer_presentations USING btree(project_id);
+            UPDATE layer_presentations SET project_id = wl.project_id FROM wms_layers wl WHERE layer_presentations.wms_layer_id = wl.wms_layer_id AND layer_presentations.project_id IS NULL;
+            UPDATE layer_presentations SET project_id = vl.project_id FROM vector_layers vl WHERE layer_presentations.vector_layer_id = vl.vector_layer_id AND layer_presentations.project_id IS NULL;
             ALTER TABLE IF EXISTS crs ADD COLUMN IF NOT EXISTS sys_period tstzrange DEFAULT NULL;
             ALTER TABLE IF EXISTS places ADD COLUMN IF NOT EXISTS name text DEFAULT NULL;
 
