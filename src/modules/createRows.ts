@@ -1624,14 +1624,8 @@ export const createChart = async ({
   const db = store.get(pgliteDbAtom)
   const chart_id = uuidv7()
   await db.query(
-    `INSERT INTO charts (chart_id, account_id, project_id, subproject_id, place_id) VALUES ($1, $2, $3, $4, $5)`,
-    [
-      chart_id,
-      '018cf958-27e2-7000-90d3-59f024d467be',
-      projectId,
-      subprojectId,
-      placeId,
-    ],
+    `INSERT INTO charts (chart_id, project_id, subproject_id, place_id) VALUES ($1, $2, $3, $4)`,
+    [chart_id, projectId, subprojectId, placeId],
   )
 
   store.set(addOperationAtom, {
@@ -1639,7 +1633,6 @@ export const createChart = async ({
     operation: 'insert',
     draft: {
       chart_id,
-      account_id,
       project_id: projectId,
       subproject_id: subprojectId,
       place_id: placeId,
@@ -1661,9 +1654,9 @@ export const createSubprojectReportDesign = async ({ projectId }) => {
   const active = existingRes.rows.length === 0
 
   await db.query(
-    `INSERT INTO subproject_report_designs (subproject_report_design_id, account_id, project_id, active) VALUES ($1, $2, $3, $4)
+    `INSERT INTO subproject_report_designs (subproject_report_design_id, project_id, active) VALUES ($1, $2, $3)
      ON CONFLICT (subproject_report_design_id) DO NOTHING`,
-    [subproject_report_design_id, account_id, projectId, active],
+    [subproject_report_design_id, projectId, active],
   )
 
   store.set(addOperationAtom, {
@@ -1671,7 +1664,6 @@ export const createSubprojectReportDesign = async ({ projectId }) => {
     operation: 'insert',
     draft: {
       subproject_report_design_id,
-      account_id,
       project_id: projectId,
       active,
     },
@@ -1692,9 +1684,9 @@ export const createProjectReportDesign = async ({ projectId }) => {
   const active = existingRes.rows.length === 0
 
   await db.query(
-    `INSERT INTO project_report_designs (project_report_design_id, account_id, project_id, active) VALUES ($1, $2, $3, $4)
+    `INSERT INTO project_report_designs (project_report_design_id, project_id, active) VALUES ($1, $2, $3)
      ON CONFLICT (project_report_design_id) DO NOTHING`,
-    [project_report_design_id, account_id, projectId, active],
+    [project_report_design_id, projectId, active],
   )
 
   store.set(addOperationAtom, {
@@ -1702,7 +1694,6 @@ export const createProjectReportDesign = async ({ projectId }) => {
     operation: 'insert',
     draft: {
       project_report_design_id,
-      account_id,
       project_id: projectId,
       active,
     },
@@ -1716,17 +1707,8 @@ export const createChartSubject = async ({ chartId }) => {
   const chart_subject_id = uuidv7()
 
   await db.query(
-    `INSERT INTO chart_subjects (chart_subject_id, account_id, chart_id, type, stroke, fill, fill_graded, connect_nulls) VALUES ($1, $2, $3, $4, $5, $6, $7, $8)`,
-    [
-      chart_subject_id,
-      account_id,
-      chartId,
-      'monotone',
-      '#FF0000',
-      '#ffffff',
-      true,
-      true,
-    ],
+    `INSERT INTO chart_subjects (chart_subject_id, chart_id, type, stroke, fill, fill_graded, connect_nulls) VALUES ($1, $2, $3, $4, $5, $6, $7)`,
+    [chart_subject_id, chartId, 'monotone', '#FF0000', '#ffffff', true, true],
   )
 
   store.set(addOperationAtom, {
@@ -1734,7 +1716,6 @@ export const createChartSubject = async ({ chartId }) => {
     operation: 'insert',
     draft: {
       chart_subject_id,
-      account_id,
       chart_id: chartId,
       type: 'monotone',
       stroke: '#FF0000',
