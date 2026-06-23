@@ -12,7 +12,7 @@ export const ObservationsAssigned1 = ({ layerPresentation }) => {
 
   const res = useLiveQuery(
     `
-    SELECT o.observation_id, o.account_id, o.observation_import_id, o.place_id, o.not_to_assign,
+    SELECT o.observation_id, o.observation_import_id, o.place_id, o.not_to_assign,
       o.comment, o.data, o.id_in_source, ST_AsGeoJSON(o.geometry)::json as geometry,
       o.label, o.created_at, o.updated_at, o.updated_by
     FROM observations o
