@@ -83,7 +83,6 @@ export const importTaxa = async ({
     const taxon_id = uuidv7()
     const draft = {
       taxon_id,
-      account_id,
       taxonomy_id: taxonomyId,
       name,
       ...(id_in_source !== null ? { id_in_source } : {}),
@@ -112,12 +111,11 @@ export const importTaxa = async ({
       const placeholders = batch
         .map(
           (_, rowIndex) =>
-            `($${rowIndex * 6 + 1}, $${rowIndex * 6 + 2}, $${rowIndex * 6 + 3}, $${rowIndex * 6 + 4}, $${rowIndex * 6 + 5}, $${rowIndex * 6 + 6})`,
+            `($${rowIndex * 5 + 1}, $${rowIndex * 5 + 2}, $${rowIndex * 5 + 3}, $${rowIndex * 5 + 4}, $${rowIndex * 5 + 5})`,
         )
         .join(', ')
       const args = batch.flatMap((draft) => [
         draft.taxon_id,
-        draft.account_id,
         draft.taxonomy_id,
         draft.name,
         draft.id_in_source ?? null,
@@ -125,7 +123,7 @@ export const importTaxa = async ({
       ])
 
       await db.query(
-        `INSERT INTO taxa (taxon_id, account_id, taxonomy_id, name, id_in_source, url)
+        `INSERT INTO taxa (taxon_id, taxonomy_id, name, id_in_source, url)
          VALUES ${placeholders}
          ON CONFLICT (taxon_id) DO NOTHING`,
         args,
