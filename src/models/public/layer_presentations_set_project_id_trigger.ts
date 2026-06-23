@@ -1,0 +1,2 @@
+export interface layer_presentations_set_project_id_trigger_params {
+}

@@ -1,5 +1,6 @@
 import type { WmsLayersWmsLayerId } from './WmsLayers.ts';
 import type { VectorLayersVectorLayerId } from './VectorLayers.ts';
+import type { ProjectsProjectId } from './Projects.ts';
 
 /** Identifier type for public.layer_presentations */
 export type LayerPresentationsLayerPresentationId = string & { __brand: 'public.layer_presentations' };
@@ -14,6 +15,8 @@ export default interface LayerPresentations {
   wms_layer_id: WmsLayersWmsLayerId | null;
 
   vector_layer_id: VectorLayersVectorLayerId | null;
+
+  project_id: ProjectsProjectId | null;
 
   active: boolean | null;
 
@@ -50,6 +53,8 @@ export interface LayerPresentationsInitializer {
   wms_layer_id?: WmsLayersWmsLayerId | null;
 
   vector_layer_id?: VectorLayersVectorLayerId | null;
+
+  project_id?: ProjectsProjectId | null;
 
   /** Default value: false */
   active?: boolean | null;
@@ -93,6 +98,8 @@ export interface LayerPresentationsMutator {
   wms_layer_id?: WmsLayersWmsLayerId | null;
 
   vector_layer_id?: VectorLayersVectorLayerId | null;
+
+  project_id?: ProjectsProjectId | null;
 
   active?: boolean | null;
 
