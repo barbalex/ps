@@ -640,9 +640,9 @@ export const createListValue = async ({ listId }) => {
   const list_value_id = uuidv7()
   await db.query(
     `
-    insert into list_values (list_value_id, account_id, list_id, obsolete) 
-    values ($1, $2, $3, $4)`,
-    [list_value_id, account_id, listId, false],
+    insert into list_values (list_value_id, list_id, obsolete)
+    values ($1, $2, $3)`,
+    [list_value_id, listId, false],
   )
 
   store.set(addOperationAtom, {
@@ -650,7 +650,6 @@ export const createListValue = async ({ listId }) => {
     operation: 'insert',
     draft: {
       list_value_id,
-      account_id,
       list_id: listId,
       obsolete: false,
     },
@@ -708,7 +707,6 @@ export const createGoalReport = async ({ projectId, goalId }) => {
   const data = {
     goal_report_id,
     goal_id: goalId,
-    account_id,
     ...presetData,
   }
 
@@ -1460,7 +1458,6 @@ export const createVectorLayerDisplay = async ({
 export const createLayerPresentation = async ({
   vectorLayerId = null,
   wmsLayerId = null,
-  accountId = account_id, // null,
   active = false,
   transparent = false,
   skipOperationQueue = false, // system-managed table layers shouldn't sync back to server
@@ -1487,12 +1484,11 @@ export const createLayerPresentation = async ({
   await db.query(
     `
     INSERT INTO layer_presentations
-    (layer_presentation_id, account_id, vector_layer_id, wms_layer_id, project_id, active, opacity_percent, grayscale, transparent, max_zoom, min_zoom)
-    VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11)
+    (layer_presentation_id, vector_layer_id, wms_layer_id, project_id, active, opacity_percent, grayscale, transparent, max_zoom, min_zoom)
+    VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)
   `,
     [
       layer_presentation_id,
-      accountId,
       vectorLayerId,
       wmsLayerId,
       projectId,
@@ -1512,7 +1508,6 @@ export const createLayerPresentation = async ({
       operation: 'insert',
       draft: {
         layer_presentation_id,
-        account_id: accountId,
         vector_layer_id: vectorLayerId,
         wms_layer_id: wmsLayerId,
         project_id: projectId,
