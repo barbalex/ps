@@ -3,8 +3,6 @@ import { uuidv7 } from '@kripod/uuidv7'
 
 import { addOperationAtom, store, pgliteDbAtom } from '../../store.ts'
 
-const account_id = '018cf958-27e2-7000-90d3-59f024d467be' // TODO: replace with auth data when implemented
-
 const VALUE_COLUMN: Record<string, string> = {
   integer: 'value_integer',
   numeric: 'value_numeric',
@@ -90,17 +88,16 @@ export const importListValues = async ({
     const list_value_id = uuidv7()
     const draft = {
       list_value_id,
-      account_id,
       list_id: listId,
       [col]: value,
       obsolete: false,
     }
 
     await db.query(
-      `INSERT INTO list_values (list_value_id, account_id, list_id, ${col}, obsolete)
-       VALUES ($1, $2, $3, $4, $5)
+      `INSERT INTO list_values (list_value_id, list_id, ${col}, obsolete)
+       VALUES ($1, $2, $3, $4)
        ON CONFLICT (list_value_id) DO NOTHING`,
-      [list_value_id, account_id, listId, value, false],
+      [list_value_id, listId, value, false],
     )
 
     store.set(addOperationAtom, {
