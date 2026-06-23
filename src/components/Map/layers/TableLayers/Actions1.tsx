@@ -12,7 +12,7 @@ export const Actions1 = ({ layerPresentation }) => {
   // TODO: query only inside current map bounds using places.bbox
   const resActions = useLiveQuery(
     `
-    SELECT actions.action_id, actions.account_id, actions.place_id, actions.date, actions.data,
+    SELECT actions.action_id, actions.place_id, actions.date, actions.data,
       ST_AsGeoJSON(actions.geometry)::json as geometry, actions.bbox, actions.relevant_for_reports,
       actions.label, actions.created_at, actions.updated_at, actions.updated_by
     FROM actions
