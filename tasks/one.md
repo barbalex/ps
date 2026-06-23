@@ -25,6 +25,8 @@ Lets remove the ui and code for crs completely: /data/crs list, /data/crs/019aeb
 
 ---
 
+clicking 'new' at http://localhost:5176/data/projects/018cfcf7-6424-7000-a100-851c5cc2c878/subprojects/018cfd27-ee92-7000-b678-e75497d6c60e/charts?onlyForm=false leads to error: Uncaught (in promise) error: column "account_id" of relation "charts" does not exist
+
 ---
 
 ---
