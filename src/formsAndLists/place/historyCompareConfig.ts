@@ -3,7 +3,6 @@ export const excludedDisplayFields = new Set(['sys_period', 'created_at'])
 
 export const excludedRestoreFields = new Set([
   'place_id',
-  'account_id',
   'subproject_id',
   'label',
   'created_at',

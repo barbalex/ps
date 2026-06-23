@@ -2,7 +2,6 @@ export const excludedDisplayFields = new Set(['sys_period', 'created_at'])
 
 export const excludedRestoreFields = new Set([
   'list_value_id',
-  'account_id',
   'list_id',
   'label',
   'sys_period',

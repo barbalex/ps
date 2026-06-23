@@ -8,7 +8,6 @@ export const excludedDisplayFields = new Set([
 
 export const excludedRestoreFields = new Set([
   'observation_import_id',
-  'account_id',
   'subproject_id',
   'created_time',
   'inserted_count',

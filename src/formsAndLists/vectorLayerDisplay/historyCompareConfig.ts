@@ -2,13 +2,11 @@ export const excludedDisplayFields = new Set([
   'sys_period',
   'created_at',
   'label',
-  'account_id',
   'vector_layer_id',
 ])
 
 export const excludedRestoreFields = new Set([
   'vector_layer_display_id',
-  'account_id',
   'vector_layer_id',
   'label',
   'sys_period',

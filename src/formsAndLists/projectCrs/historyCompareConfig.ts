@@ -7,7 +7,6 @@ export const excludedDisplayFields = new Set([
 
 export const excludedRestoreFields = new Set([
   'project_crs_id',
-  'account_id',
   'project_id',
   'crs_id',
   'label',

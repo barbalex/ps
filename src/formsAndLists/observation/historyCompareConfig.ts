@@ -9,7 +9,6 @@ export const excludedDisplayFields = new Set([
 
 export const excludedRestoreFields = new Set([
   'observation_id',
-  'account_id',
   'observation_import_id',
   'id_in_source',
   'geometry',

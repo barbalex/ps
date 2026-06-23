@@ -2,13 +2,11 @@ export const excludedDisplayFields = new Set([
   'sys_period',
   'created_at',
   'label',
-  'account_id',
   'project_id',
 ])
 
 export const excludedRestoreFields = new Set([
   'wfs_service_id',
-  'account_id',
   'project_id',
   'label',
   'sys_period',

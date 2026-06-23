@@ -2,7 +2,6 @@ export const excludedDisplayFields = new Set(['sys_period', 'created_at'])
 
 export const excludedRestoreFields = new Set([
   'check_quantity_id',
-  'account_id',
   'check_id',
   'label',
   'sys_period',

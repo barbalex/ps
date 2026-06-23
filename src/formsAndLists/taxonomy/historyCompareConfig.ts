@@ -7,7 +7,6 @@ export const excludedDisplayFields = new Set([
 
 export const excludedRestoreFields = new Set([
   'taxonomy_id',
-  'account_id',
   'project_id',
   'label',
   'sys_period',

@@ -1,7 +1,6 @@
 export const excludedDisplayFields = new Set([
   'sys_period',
   'created_at',
-  'account_id',
   'project_id',
   'subproject_id',
   'place_id',
@@ -10,7 +9,6 @@ export const excludedDisplayFields = new Set([
 
 export const excludedRestoreFields = new Set([
   'chart_id',
-  'account_id',
   'project_id',
   'subproject_id',
   'place_id',

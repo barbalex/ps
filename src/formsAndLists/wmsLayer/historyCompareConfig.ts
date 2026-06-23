@@ -1,13 +1,11 @@
 export const excludedDisplayFields = new Set([
   'sys_period',
   'created_at',
-  'account_id',
   'project_id',
 ])
 
 export const excludedRestoreFields = new Set([
   'wms_layer_id',
-  'account_id',
   'project_id',
   'sys_period',
   'created_at',
