@@ -242,14 +242,14 @@ export const ClickListener = () => {
     const filterStringVl = filterStringFromFilter(vectorLayersFilter, 'vl')
     const resActiveVectorLayers = await db.query(
       `
-        SELECT vl.* 
+        SELECT vl.*
         FROM vector_layers vl
           INNER JOIN layer_presentations lp ON lp.vector_layer_id = vl.vector_layer_id AND lp.active = true
-        WHERE 
-          project_id = $1
-          AND wfs_service_id IS NOT NULL
-          ${filterStringVl ? ` AND ${filterStringVl}` : ''} 
-        ORDER BY label
+        WHERE
+          vl.project_id = $1
+          AND vl.wfs_service_id IS NOT NULL
+          ${filterStringVl ? ` AND ${filterStringVl}` : ''}
+        ORDER BY vl.label
       `,
       [projectId],
     )
