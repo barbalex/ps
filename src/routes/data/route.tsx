@@ -29,7 +29,11 @@ const schema = type({
 export const Route = createFileRoute('/data')({
   component: AuthAndDb,
   validateSearch: schema,
-  middlewares: [stripSearchParams(defaultValues)],
+  search: {
+    // stripSearchParams removes params equal to their defaults from the URL,
+    // so `onlyForm` only appears when it is explicitly true
+    middlewares: [stripSearchParams(defaultValues)],
+  },
   notFoundComponent: NotFound,
   beforeLoad: async ({ location }) => {
     // Start loading PGlite now (parallel with auth check); module cache makes repeats free
