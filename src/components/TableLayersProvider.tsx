@@ -1,15 +1,12 @@
 import { useEffect, useRef } from 'react'
-import { useAtomValue, useAtom } from 'jotai'
+import { useAtomValue } from 'jotai'
 import { usePGlite, useLiveQuery } from '@electric-sql/pglite-react'
 
 import { createVectorLayer } from '../modules/createRows.ts'
 import { useFirstRender } from '../modules/useFirstRender.ts'
-import { updateTableVectorLayerLabels } from '../modules/updateTableVectorLayerLabels.ts'
-import { getOwnLayerLabels } from '../modules/ownLayerLabels.ts'
 import {
   initialSyncingAtom,
   sqlInitializingAtom,
-  languageAtom,
   operationsQueueAtom,
   store,
 } from '../store.ts'
@@ -19,18 +16,12 @@ import type Projects from '../models/public/Projects.ts'
 // Places (level 1/2), actions (level 1/2), and checks (level 1/2) vector layers
 // are created by server-side PostgreSQL triggers on project INSERT and
 // place_levels INSERT/UPDATE. Only observation-dependent layers are created here.
+// Own layers carry a stable, language-neutral `name` (e.g. 'observations_assigned_1');
+// their localized display label is derived at render time (see vectorLayerLabel.ts),
+// so there is nothing to "correct" or sync here anymore.
 export const TableLayersProvider = () => {
   const initialSyncing = useAtomValue(initialSyncingAtom)
   const sqlInitializing = useAtomValue(sqlInitializingAtom)
-  const [language] = useAtom(languageAtom)
-  const {
-    placesLabel,
-    observationsAssignedLinesLabel,
-    observationsAssignedByPlaceLabel,
-    observationsAssignedLabel,
-    observationsToAssessLabel,
-    observationsNotToAssignLabel,
-  } = getOwnLayerLabels(language)
 
   // every project needs vector_layers and vector_layer_displays for the geometry tables
   const db = usePGlite()
@@ -47,7 +38,7 @@ export const TableLayersProvider = () => {
 
   // If there are already queued insert ops for vector_layers for a project,
   // those ops will reach the server and Electric will sync the rows back.
-  // Creating new ones here would cause (project_id, label) unique-constraint 409s.
+  // Creating new ones here would cause (project_id, name) unique-constraint 409s.
   const operationsQueue = useAtomValue(operationsQueueAtom)
   const pendingVLProjectIds = new Set(
     operationsQueue
@@ -109,11 +100,10 @@ export const TableLayersProvider = () => {
 
         const resPL = await db.query(
           `
-          SELECT 
-            level, 
-            name_singular_${language}, 
+          SELECT
+            level,
             observations
-          FROM place_levels 
+          FROM place_levels
           WHERE project_id = $1`,
           [projectId],
         )
@@ -121,8 +111,6 @@ export const TableLayersProvider = () => {
         // depending on place_levels, find what vectorLayerTables need vector layers
         const placeLevel1 = placeLevels?.find((pl) => pl.level === 1)
         const placeLevel2 = placeLevels?.find((pl) => pl.level === 2)
-        const pl1Singular = placeLevel1?.[`name_singular_${language}`]
-        const pl2Singular = placeLevel2?.[`name_singular_${language}`]
         if (placeLevel1?.observations && observationCount) {
           const observationsVectorLayersCount = await db.query(
             `
@@ -142,9 +130,7 @@ export const TableLayersProvider = () => {
               type: 'own',
               ownTable: 'observations_assigned',
               ownTableLevel: 1,
-              label: pl1Singular
-                ? observationsAssignedByPlaceLabel(pl1Singular)
-                : observationsAssignedLabel,
+              name: 'observations_assigned_1',
             })
           }
 
@@ -168,9 +154,7 @@ export const TableLayersProvider = () => {
               type: 'own',
               ownTable: 'observations_assigned_lines',
               ownTableLevel: 1,
-              label: pl1Singular
-                ? observationsAssignedLinesLabel(pl1Singular)
-                : observationsAssignedLinesLabel(placesLabel),
+              name: 'observations_assigned_lines_1',
             })
           }
         }
@@ -193,7 +177,7 @@ export const TableLayersProvider = () => {
               projectId,
               type: 'own',
               ownTable: 'observations_to_assess',
-              label: observationsToAssessLabel,
+              name: 'observations_to_assess',
             })
           }
         }
@@ -218,7 +202,7 @@ export const TableLayersProvider = () => {
               projectId,
               type: 'own',
               ownTable: 'observations_not_to_assign',
-              label: observationsNotToAssignLabel,
+              name: 'observations_not_to_assign',
             })
           }
         }
@@ -243,9 +227,7 @@ export const TableLayersProvider = () => {
               type: 'own',
               ownTable: 'observations_assigned',
               ownTableLevel: 2,
-              label: pl2Singular
-                ? observationsAssignedByPlaceLabel(pl2Singular)
-                : observationsAssignedLabel,
+              name: 'observations_assigned_2',
             })
           }
 
@@ -269,14 +251,10 @@ export const TableLayersProvider = () => {
               type: 'own',
               ownTable: 'observations_assigned_lines',
               ownTableLevel: 2,
-              label: pl2Singular
-                ? observationsAssignedLinesLabel(pl2Singular)
-                : observationsAssignedLinesLabel(placesLabel),
+              name: 'observations_assigned_lines_2',
             })
           }
         }
-
-        await updateTableVectorLayerLabels({ project_id: projectId })
       }
     }
     runOnce()
@@ -284,7 +262,6 @@ export const TableLayersProvider = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [
     projects.length,
-    language,
     observationCount,
     initialSyncing,
     sqlInitializing,
