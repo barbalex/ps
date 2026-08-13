@@ -8,6 +8,23 @@ import { completeVectorLayerDisplaysForLayerWithProperties } from './completeVec
 import { addOperationAtom } from '../../store.ts'
 import type VectorLayers from '../../models/public/VectorLayers.ts'
 
+/**
+ * A vector_layer's `properties` is a jsonb array of field names that is NULL
+ * until first set (see the column comment in createTables.sql). Compare it
+ * against the field names derived from the `fields` table without:
+ *  - treating a NULL server value as different from an empty list, which would
+ *    enqueue a spurious "pending operation" on every fresh sync for any layer
+ *    whose table has no fields yet; and
+ *  - being sensitive to array order, since the `fields` queries below have no
+ *    ORDER BY and would otherwise flap on every sync.
+ */
+const propertiesEqual = (stored: unknown, computed: string[]): boolean => {
+  const storedArr = Array.isArray(stored) ? stored : []
+  if (storedArr.length === 0 && computed.length === 0) return true
+  if (storedArr.length !== computed.length) return false
+  return isEqual([...storedArr].sort(), [...computed].sort())
+}
+
 export const OwnVectorLayerPropertiesProvider = () => {
   const { project_id = '99999999-9999-9999-9999-999999999999' } = useParams({
     from: '/data',
@@ -158,7 +175,7 @@ export const OwnVectorLayerPropertiesProvider = () => {
         vectorLayer.own_table === 'places' &&
         vectorLayer.own_table_level === 1
       ) {
-        if (!isEqual(vectorLayer.properties, places1Properties)) {
+        if (!propertiesEqual(vectorLayer.properties, places1Properties)) {
           db.query(
             `UPDATE vector_layers SET properties = $1 WHERE vector_layer_id = $2`,
             [places1Properties, vectorLayer.vector_layer_id],
@@ -182,7 +199,7 @@ export const OwnVectorLayerPropertiesProvider = () => {
         vectorLayer.own_table === 'places' &&
         vectorLayer.own_table_level === 2
       ) {
-        if (!isEqual(vectorLayer.properties, places2Properties)) {
+        if (!propertiesEqual(vectorLayer.properties, places2Properties)) {
           db.query(
             `UPDATE vector_layers SET properties = $1 WHERE vector_layer_id = $2`,
             [places2Properties, vectorLayer.vector_layer_id],
@@ -206,7 +223,7 @@ export const OwnVectorLayerPropertiesProvider = () => {
         vectorLayer.own_table === 'actions' &&
         vectorLayer.own_table_level === 1
       ) {
-        if (!isEqual(vectorLayer.properties, actions1Properties)) {
+        if (!propertiesEqual(vectorLayer.properties, actions1Properties)) {
           db.query(
             `UPDATE vector_layers SET properties = $1 WHERE vector_layer_id = $2`,
             [actions1Properties, vectorLayer.vector_layer_id],
@@ -230,7 +247,7 @@ export const OwnVectorLayerPropertiesProvider = () => {
         vectorLayer.own_table === 'actions' &&
         vectorLayer.own_table_level === 2
       ) {
-        if (!isEqual(vectorLayer.properties, actions2Properties)) {
+        if (!propertiesEqual(vectorLayer.properties, actions2Properties)) {
           db.query(
             `UPDATE vector_layers SET properties = $1 WHERE vector_layer_id = $2`,
             [actions2Properties, vectorLayer.vector_layer_id],
@@ -254,7 +271,7 @@ export const OwnVectorLayerPropertiesProvider = () => {
         vectorLayer.own_table === 'checks' &&
         vectorLayer.own_table_level === 1
       ) {
-        if (!isEqual(vectorLayer.properties, checks1Properties)) {
+        if (!propertiesEqual(vectorLayer.properties, checks1Properties)) {
           db.query(
             `UPDATE vector_layers SET properties = $1 WHERE vector_layer_id = $2`,
             [checks1Properties, vectorLayer.vector_layer_id],
@@ -278,7 +295,7 @@ export const OwnVectorLayerPropertiesProvider = () => {
         vectorLayer.own_table === 'checks' &&
         vectorLayer.own_table_level === 2
       ) {
-        if (!isEqual(vectorLayer.properties, checks2Properties)) {
+        if (!propertiesEqual(vectorLayer.properties, checks2Properties)) {
           db.query(
             `UPDATE vector_layers SET properties = $1 WHERE vector_layer_id = $2`,
             [checks2Properties, vectorLayer.vector_layer_id],
@@ -299,7 +316,9 @@ export const OwnVectorLayerPropertiesProvider = () => {
       }
       // observations-assigned
       if (vectorLayer.own_table === 'observations_assigned') {
-        if (!isEqual(vectorLayer.properties, observationsAssignedFields)) {
+        if (
+          !propertiesEqual(vectorLayer.properties, observationsAssignedFields)
+        ) {
           db.query(
             `UPDATE vector_layers SET properties = $1 WHERE vector_layer_id = $2`,
             [observationsAssignedFields, vectorLayer.vector_layer_id],
@@ -321,7 +340,10 @@ export const OwnVectorLayerPropertiesProvider = () => {
       // observations-assigned-lines
       if (vectorLayer.own_table === 'observations_assigned_lines') {
         if (
-          !isEqual(vectorLayer.properties, observationsAssignedLinesProperties)
+          !propertiesEqual(
+            vectorLayer.properties,
+            observationsAssignedLinesProperties,
+          )
         ) {
           db.query(
             `UPDATE vector_layers SET properties = $1 WHERE vector_layer_id = $2`,
@@ -343,7 +365,9 @@ export const OwnVectorLayerPropertiesProvider = () => {
       }
       // observations-to-assess
       if (vectorLayer.own_table === 'observations_to_assess') {
-        if (!isEqual(vectorLayer.properties, observationsToAssessFields)) {
+        if (
+          !propertiesEqual(vectorLayer.properties, observationsToAssessFields)
+        ) {
           db.query(
             `UPDATE vector_layers SET properties = $1 WHERE vector_layer_id = $2`,
             [observationsToAssessFields, vectorLayer.vector_layer_id],
@@ -364,7 +388,12 @@ export const OwnVectorLayerPropertiesProvider = () => {
       }
       // observations-not-to-assign
       if (vectorLayer.own_table === 'observations_not_to_assign') {
-        if (!isEqual(vectorLayer.properties, observationsNotToAssignFields)) {
+        if (
+          !propertiesEqual(
+            vectorLayer.properties,
+            observationsNotToAssignFields,
+          )
+        ) {
           db.query(
             `UPDATE vector_layers SET properties = $1 WHERE vector_layer_id = $2`,
             [observationsNotToAssignFields, vectorLayer.vector_layer_id],
