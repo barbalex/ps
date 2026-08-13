@@ -85,6 +85,7 @@ export const useVectorLayerNavData = ({ projectId, vectorLayerId }: Props) => {
     urlPath,
     ownUrl,
     label,
+    name: nav?.name,
     notFound,
     nameSingular: formatMessage({ id: 'fN0sZQ', defaultMessage: 'Vektor-Ebene' }),
     navs: [
