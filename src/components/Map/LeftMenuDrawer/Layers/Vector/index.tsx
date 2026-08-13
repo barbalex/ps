@@ -12,7 +12,7 @@ import { getVectorLayerLabel } from '../../../../../modules/vectorLayerLabel.ts'
 import { languageAtom } from '../../../../../store.ts'
 import layerStyles from '../index.module.css'
 import type LayerPresentations from '../../../../../models/public/LayerPresentations.ts'
-import type VectorLayers from '../../../../../models/public/VectorLayers.ts'
+import type VectorLayersModel from '../../../../../models/public/VectorLayers.ts'
 
 // what accordion items are open
 // needs to be controlled to prevent opening when layer is deactivated
@@ -54,7 +54,7 @@ export const VectorLayers = () => {
   // Attach the derived display label (wfs/upload layers use stored label_<lang>)
   const vectorLayerIds = (res?.rows ?? []).map((l) => ({
     ...l,
-    label: getVectorLayerLabel(l as VectorLayers, language, undefined),
+    label: getVectorLayerLabel(l as VectorLayersModel, language, undefined),
   }))
 
   const addRow = async () => {

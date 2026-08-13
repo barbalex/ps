@@ -3,6 +3,9 @@ import { useIntl } from 'react-intl'
 import { vectorLayerTypeOptions } from '../../../modules/constants.ts'
 import { TextFieldInactive } from '../../../components/shared/TextFieldInactive.tsx'
 import { TextField } from '../../../components/shared/TextField.tsx'
+import { Section } from '../../../components/shared/Section.tsx'
+import { SectionDescription } from '../../../components/shared/SectionDescription.tsx'
+import { useVectorLayerLabel } from '../../../modules/vectorLayerLabel.ts'
 import { LayersDropdown } from './LayersDropdown.tsx'
 import { DropdownField } from '../../../components/shared/DropdownField.tsx'
 import { RadioGroupField } from '../../../components/shared/RadioGroupField.tsx'
@@ -38,6 +41,8 @@ export const VectorLayerForm = ({
         formatMessage({ id: o.labelId, defaultMessage: o.defaultMessage }),
       ]),
   )
+  // Own layers derive their display label from place_levels (no stored label)
+  const computedLabel = useVectorLayerLabel(row, row?.project_id)
 
   return (
     <>
@@ -95,47 +100,79 @@ export const VectorLayerForm = ({
         </>
       )}
       {row?.type === 'upload' && <div>TODO: Upload</div>}
-      {/* Label fields - shared pattern */}
-      {row?.type === 'wfs' &&
-        row?.wfs_service_id &&
-        row.wfs_service_layer_name && (
-          <TextField
-            label={nameLabel}
-            name="label"
-            value={row.label ?? ''}
-            onChange={onChange}
-            validationMessage={validations?.label?.message}
-            validationState={validations?.label?.state}
-          />
-        )}
-      {row?.type === 'own' && (
+      {/* Name + localized labels.
+          - own layers: label is derived from place_levels (read-only), name is system-set
+          - wfs/upload: editable name + per-language label_de/en/fr/it (de fallback) */}
+      {row?.type === 'own' ? (
+        <TextFieldInactive
+          label={designationLabel}
+          name="label"
+          value={computedLabel}
+        />
+      ) : isFilter ? (
         <TextField
           label={nameLabel}
-          name="label"
-          value={row.label ?? ''}
+          name="name"
+          value={row.name ?? ''}
           onChange={onChange}
-          validationMessage={validations?.label?.message}
-          validationState={validations?.label?.state}
+          validationMessage={validations?.name?.message}
+          validationState={validations?.name?.state}
         />
-      )}
-      {!['wfs', 'upload', 'own'].includes(row.type) && (
+      ) : (
         <>
-          {isFilter ? (
+          <TextField
+            label={nameLabel}
+            name="name"
+            value={row.name ?? ''}
+            onChange={onChange}
+            validationMessage={validations?.name?.message}
+            validationState={validations?.name?.state}
+          />
+          <Section title={designationLabel}>
+            <SectionDescription>
+              {formatMessage({
+                id: 'vectorLayer.section.label.description',
+                defaultMessage:
+                  'Die Bezeichnung der Ebene in allen Sprachen. Fehlt eine Sprache, wird Deutsch verwendet.',
+              })}
+            </SectionDescription>
             <TextField
-              label={designationLabel}
-              name="label"
-              value={row.label ?? ''}
+              label={formatMessage({
+                id: 'vectorLayer.labelDe',
+                defaultMessage: 'Deutsch',
+              })}
+              name="label_de"
+              value={row.label_de ?? ''}
               onChange={onChange}
-              validationMessage={validations?.label?.message}
-              validationState={validations?.label?.state}
             />
-          ) : (
-            <TextFieldInactive
-              label={designationLabel}
-              name="label"
-              value={row.label}
+            <TextField
+              label={formatMessage({
+                id: 'vectorLayer.labelEn',
+                defaultMessage: 'Englisch',
+              })}
+              name="label_en"
+              value={row.label_en ?? ''}
+              onChange={onChange}
             />
-          )}
+            <TextField
+              label={formatMessage({
+                id: 'vectorLayer.labelFr',
+                defaultMessage: 'Französisch',
+              })}
+              name="label_fr"
+              value={row.label_fr ?? ''}
+              onChange={onChange}
+            />
+            <TextField
+              label={formatMessage({
+                id: 'vectorLayer.labelIt',
+                defaultMessage: 'Italienisch',
+              })}
+              name="label_it"
+              value={row.label_it ?? ''}
+              onChange={onChange}
+            />
+          </Section>
         </>
       )}
       <Property vectorLayer={row} from={from} />

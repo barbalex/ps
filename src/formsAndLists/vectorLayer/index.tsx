@@ -56,21 +56,6 @@ export const VectorLayer = ({ from }) => {
       draft: { [name]: value },
       prev: { ...row },
     })
-
-    const newLabel = value?.label
-    if (!newLabel) return
-    await db.query(
-      `UPDATE vector_layers SET label = $1 WHERE vector_layer_id = $2`,
-      [newLabel, vectorLayerId],
-    )
-    addOperation({
-      table: 'vector_layers',
-      rowIdName: 'vector_layer_id',
-      rowId: vectorLayerId,
-      operation: 'update',
-      draft: { label: newLabel },
-      prev: { ...row },
-    })
   }
 
   if (!res) return <Loading />

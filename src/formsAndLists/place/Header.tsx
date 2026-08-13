@@ -35,12 +35,7 @@ interface Props {
   namePlural: string
 }
 
-export const Header = ({
-  autoFocusRef,
-  from,
-  nameSingular,
-  namePlural,
-}: Props) => {
+export const Header = ({ autoFocusRef, from, nameSingular }: Props) => {
   const { formatMessage } = useIntl()
   const isForm =
     from ===
