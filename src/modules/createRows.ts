@@ -1277,17 +1277,19 @@ export const createVectorLayer = async ({
   type = null,
   ownTable = null,
   ownTableLevel = null,
-  label = null,
+  name = null,
   maxFeatures = 1000,
   skipOperationQueue = false, // system-managed layers shouldn't sync back to server
 }) => {
   const db = store.get(pgliteDbAtom)
 
-  // First check if vector_layer already exists (e.g., from sync)
+  // First check if vector_layer already exists (e.g., from sync).
+  // Dedup by name — a NULL name never matches (NULL = NULL is not true), so
+  // unnamed wfs/upload layers are always inserted.
   const existing = await db.query(
-    `select * from vector_layers 
-     where project_id = $1 and label = $2`,
-    [projectId, label],
+    `select * from vector_layers
+     where project_id = $1 and name = $2`,
+    [projectId, name],
   )
 
   if (existing?.rows?.[0]) {
@@ -1298,13 +1300,13 @@ export const createVectorLayer = async ({
   // Create new vector_layer locally
   const vector_layer_id = uuidv7()
   const res = await db.query(
-    `insert into vector_layers (vector_layer_id, project_id, label, type, own_table, own_table_level, max_features) 
-     values ($1, $2, $3, $4, $5, $6, $7) 
+    `insert into vector_layers (vector_layer_id, project_id, name, type, own_table, own_table_level, max_features)
+     values ($1, $2, $3, $4, $5, $6, $7)
      returning *`,
     [
       vector_layer_id,
       projectId,
-      label,
+      name,
       type,
       ownTable,
       ownTableLevel,
@@ -1320,7 +1322,7 @@ export const createVectorLayer = async ({
       draft: {
         vector_layer_id,
         project_id: projectId,
-        label,
+        name,
         type,
         own_table: ownTable,
         own_table_level: ownTableLevel,
