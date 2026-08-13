@@ -6,6 +6,8 @@ import { usePGlite, useLiveQuery } from '@electric-sql/pglite-react'
 
 import { ErrorBoundary } from '../../../../shared/ErrorBoundary.tsx'
 import { OwnLayer } from './OwnLayer.tsx'
+import { getVectorLayerLabel } from '../../../../../modules/vectorLayerLabel.ts'
+import { languageAtom } from '../../../../../store.ts'
 import layerStyles from '../index.module.css'
 import type VectorLayers from '../../../../models/public/VectorLayers.ts'
 import type LayerPresentations from '../../../../../models/public/LayerPresentations.ts'
@@ -16,6 +18,7 @@ const openItemsAtom = atom([])
 
 export const OwnLayers = () => {
   const [openItems, setOpenItems] = useAtom(openItemsAtom)
+  const [language] = useAtom(languageAtom)
   const { projectId = '99999999-9999-9999-9999-999999999999', subprojectId } =
     useParams({ strict: false })
   const hasActiveSubproject = !!subprojectId && subprojectId !== 'undefined'
@@ -24,15 +27,15 @@ export const OwnLayers = () => {
   // Show table-based vector layers that are not currently active
   const res = useLiveQuery(
     `
-    SELECT * 
-    FROM vector_layers 
+    SELECT *
+    FROM vector_layers
     WHERE
       own_table IS NOT NULL
       AND project_id = $1
       AND NOT EXISTS (
         SELECT 1
         FROM layer_presentations
-        WHERE 
+        WHERE
           layer_presentations.vector_layer_id = vector_layers.vector_layer_id
           AND layer_presentations.active
       )
@@ -52,11 +55,20 @@ export const OwnLayers = () => {
         WHEN own_table = 'observations_assigned_lines' AND own_table_level = 2 THEN 11
         ELSE 12
       END,
-      label
+      name
   `,
     [projectId],
   )
-  const ownVectorLayers: VectorLayers[] = res?.rows ?? []
+  const placeLevelsRes = useLiveQuery(
+    `SELECT * FROM place_levels WHERE project_id = $1`,
+    [projectId],
+  )
+  const placeLevels = placeLevelsRes?.rows ?? []
+  // Attach the derived display label so children can render layer.label
+  const ownVectorLayers = (res?.rows ?? []).map((l) => ({
+    ...l,
+    label: getVectorLayerLabel(l as VectorLayers, language, placeLevels),
+  }))
 
   const onToggleItem = (event, { value: vectorLayerId, openItems }) => {
     // use setTimeout to let the child checkbox set the layers active status
