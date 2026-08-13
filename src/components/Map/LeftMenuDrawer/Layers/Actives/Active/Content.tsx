@@ -50,6 +50,11 @@ import {
 } from '../../../../../../store.ts'
 import { DragHandle } from '../../../../../shared/DragAndDrop/DragHandle.tsx'
 import { boundsFromBbox } from '../../../../../../modules/boundsFromBbox.ts'
+import {
+  getVectorLayerLabel,
+  usePlaceLevels,
+} from '../../../../../../modules/vectorLayerLabel.ts'
+import type VectorLayers from '../../../../../../models/public/VectorLayers.ts'
 import layerStyles from '../../index.module.css'
 
 import './active.css'
@@ -80,8 +85,15 @@ export const Content = ({ layer, isOpen, layerCount, dragHandleRef }) => {
   const isVectorLayer = layer.layer_type === 'vector'
   const isWmsLayer = layer.layer_type === 'wms'
 
-  // Get the layer name for state (same format as in TableLayer)
-  const layerNameForState = layer?.label?.replace?.(/ /g, '-')?.toLowerCase?.()
+  const placeLevels = usePlaceLevels(layer.project_id)
+  // Derived display label: own/wfs/upload vector layers compute it (there is no
+  // stored label column anymore); wms layers keep their own stored label.
+  const label = isVectorLayer
+    ? getVectorLayerLabel(layer as VectorLayers, language, placeLevels)
+    : layer.label
+
+  // Stable identity key for drag/drop state (same value as in TableLayer)
+  const layerNameForState = layer.name
 
   // Check if this is an observation layer
   const tableName = layer.own_table_level
@@ -126,9 +138,7 @@ export const Content = ({ layer, isOpen, layerCount, dragHandleRef }) => {
   useEffect(() => {
     if (!assignMenuOpen || !isObservationLayer) return
 
-    const placeLayerNames = activePlaceLayers
-      .map((pl) => pl.label?.replace?.(/ /g, '-')?.toLowerCase?.())
-      .filter(Boolean)
+    const placeLayerNames = activePlaceLayers.map((pl) => pl.name).filter(Boolean)
 
     const selectedFromStore = droppableLayers.filter((dl) =>
       placeLayerNames.includes(dl),
@@ -257,9 +267,7 @@ export const Content = ({ layer, isOpen, layerCount, dragHandleRef }) => {
 
     // If only one place layer is available, directly start/stop assignment without opening menu
     if (activePlaceLayers.length === 1) {
-      const placeLayerName = activePlaceLayers[0]?.label
-        ?.replace?.(/ /g, '-')
-        ?.toLowerCase?.()
+      const placeLayerName = activePlaceLayers[0]?.name
 
       if (isAssigning) {
         // Stop assigning
@@ -543,7 +551,7 @@ export const Content = ({ layer, isOpen, layerCount, dragHandleRef }) => {
             // because nested buttons are not allowed
             as="a"
           />
-          <p className={layerStyles.headerLabel}>{layer.label}</p>
+          <p className={layerStyles.headerLabel}>{label}</p>
         </div>
         {isObservationLayer &&
           (activePlaceLayers.length === 1 ? (
@@ -603,9 +611,7 @@ export const Content = ({ layer, isOpen, layerCount, dragHandleRef }) => {
                   </MenuGroupHeader>
                   {!isAssigning &&
                     activePlaceLayers.map((placeLayer) => {
-                      const placeLayerName = placeLayer.label
-                        ?.replace?.(/ /g, '-')
-                        ?.toLowerCase?.()
+                      const placeLayerName = placeLayer.name
                       const isChecked =
                         selectedPlaceLayers.includes(placeLayerName)
                       return (
@@ -621,7 +627,6 @@ export const Content = ({ layer, isOpen, layerCount, dragHandleRef }) => {
                             checked={isChecked}
                             label={
                               placeLayer.name_plural ||
-                              placeLayer.label ||
                               `Places ${placeLayer.own_table_level}`
                             }
                             onChange={(e) => {
@@ -680,14 +685,14 @@ export const Content = ({ layer, isOpen, layerCount, dragHandleRef }) => {
               <Button
                 size="medium"
                 icon={<MdDeleteOutline />}
-                title={formatMessage({ id: 'layerDeleteBtnTitle', defaultMessage: "Layer {label} löschen" }, { label: layer.label })}
+                title={formatMessage({ id: 'layerDeleteBtnTitle', defaultMessage: "Layer {label} löschen" }, { label })}
                 className={layerStyles.deleteButton}
               />
             </MenuTrigger>
 
             <MenuPopover>
               <MenuList>
-                <MenuGroupHeader>{formatMessage({ id: 'layerDeleteConfirmHeader', defaultMessage: "Layer {label} löschen?" }, { label: layer.label })}</MenuGroupHeader>
+                <MenuGroupHeader>{formatMessage({ id: 'layerDeleteConfirmHeader', defaultMessage: "Layer {label} löschen?" }, { label })}</MenuGroupHeader>
                 <MenuItem onClick={onDelete}>{formatMessage({ id: 'layerDeleteYes', defaultMessage: 'Ja' })}</MenuItem>
                 <MenuItem>{formatMessage({ id: 'layerDeleteNo', defaultMessage: 'Nein' })}</MenuItem>
               </MenuList>
