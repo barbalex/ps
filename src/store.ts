@@ -282,7 +282,7 @@ export const drawingOnMapAtom = atom(
 )
 // The layers that are currently draggable. Any of: observations-to-assess, observations-not-to-assign, observations-assigned-1, observations-assigned-2
 export const draggableLayersAtom = atomWithStorage('draggableLayersAtom', [])
-// The layers that are currently droppable (any of: places-1, places-2). Array of layer names in the same format as draggableLayersAtom
+// The layers that are currently droppable (any of: places_1, places_2). Array of layer names in the same format as draggableLayersAtom
 export const droppableLayersAtom = atomWithStorage('droppableLayersAtom', [])
 // Whether to show a dialog to confirm assigning an observation to a single target. Preset: true
 export const confirmAssigningToSingleTargetAtom = atomWithStorage(
