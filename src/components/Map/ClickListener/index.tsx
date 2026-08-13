@@ -7,16 +7,19 @@ import { usePGlite } from '@electric-sql/pglite-react'
 import { layersDataFromRequestData } from './layersDataFromRequestData.ts'
 import { fetchData } from './fetchData.ts'
 import { filterStringFromFilter } from '../../../modules/filterStringFromFilter.ts'
+import { getVectorLayerLabel } from '../../../modules/vectorLayerLabel.ts'
 import {
   mapInfoAtom,
   wmsLayersFilterAtom,
   vectorLayersFilterAtom,
+  languageAtom,
 } from '../../../store.ts'
 
 export const ClickListener = () => {
   const setMapInfo = useSetAtom(mapInfoAtom)
   const wmsLayersFilter = useAtomValue(wmsLayersFilterAtom)
   const vectorLayersFilter = useAtomValue(vectorLayersFilterAtom)
+  const language = useAtomValue(languageAtom)
 
   const { projectId = '99999999-9999-9999-9999-999999999999' } = useParams({
     strict: false,
@@ -249,7 +252,7 @@ export const ClickListener = () => {
           vl.project_id = $1
           AND vl.wfs_service_id IS NOT NULL
           ${filterStringVl ? ` AND ${filterStringVl}` : ''}
-        ORDER BY vl.label
+        ORDER BY vl.name
       `,
       [projectId],
     )
@@ -296,13 +299,14 @@ export const ClickListener = () => {
         bbox: `${x},${y},${x2},${y2}`,
         // cql_filter: `INTERSECTS(geom, POINT (${lng} ${lat}))`, // did not work
       }
+      const layerLabel = getVectorLayerLabel(layer, language, undefined)
       const requestData = await fetchData({
         url: wfsService.url,
         params,
-        layerLabel: layer.label,
+        layerLabel,
       })
       const features = requestData?.features.map((f) => ({
-        label: layer.label,
+        label: layerLabel,
         featureLabel: 'Feature',
         properties: Object.entries(f.properties ?? {}),
       }))
