@@ -4,8 +4,10 @@ import { useLocation } from '@tanstack/react-router'
 import { isEqual } from 'es-toolkit'
 import { useIntl } from 'react-intl'
 
-import { treeOpenNodesAtom } from '../store.ts'
+import { treeOpenNodesAtom, languageAtom } from '../store.ts'
 import { buildNavLabel } from './buildNavLabel.ts'
+import { getVectorLayerLabel } from './vectorLayerLabel.ts'
+import type VectorLayers from '../models/public/VectorLayers.ts'
 
 type Props = {
   projectId: string
@@ -20,6 +22,7 @@ type NavData = {
 
 export const useVectorLayerNavData = ({ projectId, vectorLayerId }: Props) => {
   const [openNodes] = useAtom(treeOpenNodesAtom)
+  const [language] = useAtom(languageAtom)
   const location = useLocation()
   const { formatMessage } = useIntl()
 
@@ -29,14 +32,26 @@ export const useVectorLayerNavData = ({ projectId, vectorLayerId }: Props) => {
       vector_layer_displays_count_unfiltered AS (SELECT count(*) FROM vector_layer_displays WHERE vector_layer_id = '${vectorLayerId}')
     SELECT
       vector_layer_id AS id,
-      label,
+      name,
+      type,
+      own_table,
+      own_table_level,
+      label_de,
+      label_en,
+      label_fr,
+      label_it,
       vector_layer_displays_count_unfiltered.count AS vector_layer_displays_count_unfiltered
     FROM
-      vector_layers, 
+      vector_layers,
       vector_layer_displays_count_unfiltered
     WHERE
       vector_layers.vector_layer_id = '${vectorLayerId}'`,
   )
+  const placeLevelsRes = useLiveQuery(
+    `SELECT * FROM place_levels WHERE project_id = $1`,
+    [projectId],
+  )
+  const placeLevels = placeLevelsRes?.rows ?? []
 
   const loading = res === undefined
 
@@ -53,7 +68,13 @@ export const useVectorLayerNavData = ({ projectId, vectorLayerId }: Props) => {
   const isActive = isEqual(urlPath, ownArray)
 
   const notFound = !!res && !nav
-  const label = notFound ? formatMessage({ id: 'p+ORxp', defaultMessage: 'Nicht gefunden' }) : (nav?.label ?? nav?.id)
+  const label = notFound
+    ? formatMessage({ id: 'p+ORxp', defaultMessage: 'Nicht gefunden' })
+    : getVectorLayerLabel(
+        { ...nav, vector_layer_id: nav?.id } as VectorLayers,
+        language,
+        placeLevels,
+      ) || nav?.id
 
   const navData = {
     isInActiveNodeArray,
