@@ -6,7 +6,9 @@ import { useIntl } from 'react-intl'
 
 import { filterStringFromFilter } from './filterStringFromFilter.ts'
 import { buildNavLabel } from './buildNavLabel.ts'
-import { vectorLayersFilterAtom, treeOpenNodesAtom } from '../store.ts'
+import { getVectorLayerLabel } from './vectorLayerLabel.ts'
+import { vectorLayersFilterAtom, treeOpenNodesAtom, languageAtom } from '../store.ts'
+import type VectorLayers from '../models/public/VectorLayers.ts'
 
 type Props = {
   projectId: string
@@ -26,6 +28,7 @@ type NavDataClosed = {
 
 export const useVectorLayersNavData = ({ projectId }: Props) => {
   const [openNodes] = useAtom(treeOpenNodesAtom)
+  const [language] = useAtom(languageAtom)
   const location = useLocation()
   const { formatMessage } = useIntl()
 
@@ -45,14 +48,21 @@ export const useVectorLayersNavData = ({ projectId }: Props) => {
         count_filtered AS (SELECT count(*) FROM vector_layers WHERE project_id = '${projectId}' ${isFiltered ? ` AND ${filterString}` : ''})
       SELECT
         vector_layer_id AS id,
-        label,
+        name,
+        type,
+        own_table,
+        own_table_level,
+        label_de,
+        label_en,
+        label_fr,
+        label_it,
         count_unfiltered.count AS count_unfiltered,
         count_filtered.count AS count_filtered
       FROM vector_layers, count_unfiltered, count_filtered
       WHERE
         project_id = '${projectId}'
         ${isFiltered ? ` AND ${filterString}` : ''}
-      ORDER BY label
+      ORDER BY name
     `
     : `
       WITH
@@ -64,10 +74,31 @@ export const useVectorLayersNavData = ({ projectId }: Props) => {
       FROM count_unfiltered, count_filtered
     `
   const res = useLiveQuery(sql)
+  const placeLevelsRes = useLiveQuery(
+    `SELECT * FROM place_levels WHERE project_id = $1`,
+    [projectId],
+  )
+  const placeLevels = placeLevelsRes?.rows ?? []
 
   const loading = res === undefined
 
-  const navs: NavDataOpen[] | NavDataClosed[] = res?.rows ?? []
+  const rawRows = res?.rows ?? []
+  // Compute the localized display label per layer (own layers derive it from
+  // place_levels; wfs/upload use stored label_<lang> with de fallback).
+  const navs: NavDataOpen[] | NavDataClosed[] = isOpen
+    ? (rawRows
+        .map((r) => ({
+          id: r.id,
+          label: getVectorLayerLabel(
+            { ...r, vector_layer_id: r.id } as VectorLayers,
+            language,
+            placeLevels,
+          ),
+          count_unfiltered: r.count_unfiltered,
+          count_filtered: r.count_filtered,
+        }))
+        .sort((a, b) => a.label.localeCompare(b.label)) as NavDataOpen[])
+    : (rawRows as NavDataClosed[])
   const countUnfiltered = navs[0]?.count_unfiltered ?? 0
   const countFiltered = navs[0]?.count_filtered ?? 0
 
