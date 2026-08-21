@@ -67,7 +67,14 @@ export const ensurePgliteDb = async () => {
         }
         throw err
       })
-      .then((db) => {
+      .then(async (db) => {
+        // Shape data arrives in non-deterministic order, so foreign keys
+        // would reject child rows applied before their parents (breaking
+        // first-load sync on fresh devices). The local database is a cache
+        // — the server enforces constraints — so disable trigger-based
+        // FK checks for this connection.
+        await db.exec("SET session_replication_role = 'replica'")
+
         store.set(pgliteDbAtom, db)
 
         if (import.meta.env.DEV) {

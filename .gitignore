@@ -14,3 +14,6 @@ deploy-backend.sh
 
 dig.log
 et -e
+# playwright
+test-results/
+playwright-report/

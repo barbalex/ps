@@ -594,6 +594,11 @@ export const removeOperationAtom = atom(
 export const onlineAtom = atom(true)
 export const shortTermOnlineAtom = atom(true)
 
+// bumped periodically so the operations observer re-runs:
+// a reconnect can happen while a failed operation is still retrying,
+// and that missed atom change would otherwise leave the queue stalled
+export const operationsRetryTickAtom = atom(0)
+
 export const pgliteDbAtom = atom(null)
 
 // an array of objects with keys:

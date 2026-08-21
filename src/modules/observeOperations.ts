@@ -3,6 +3,7 @@ import { observe } from 'jotai-effect'
 import {
   operationsQueueAtom,
   shortTermOnlineAtom,
+  operationsRetryTickAtom,
   addNotificationAtom,
   store,
 } from '../store.ts'
@@ -23,6 +24,9 @@ export const observeOperations = () =>
     // Without this, rapid queue changes (e.g. "activate all") cause the same
     // oldest operation to be sent multiple times before it is removed, producing 409s.
     if (isProcessing) return
+
+    // always tracked so the periodic tick re-runs this effect
+    void get(operationsRetryTickAtom)
 
     const online = get(shortTermOnlineAtom)
     const operations = get(operationsQueueAtom)
