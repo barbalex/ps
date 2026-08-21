@@ -1,89 +1,106 @@
-import { Draggable, Droppable } from '@hello-pangea/dnd'
+import { useRef, useEffect } from 'react'
+import { draggable } from '@atlaskit/pragmatic-drag-and-drop/element/adapter'
+import { autoScrollForElements } from '@atlaskit/pragmatic-drag-and-drop-auto-scroll/element'
 import { BsArrowsMove } from 'react-icons/bs'
 import { useIntl } from 'react-intl'
 
-// import { LabelElement } from './index.tsx'
+import { labelCreatorItemKey } from './dnd.ts'
 import styles from './FieldList.module.css'
 
-// interface Props {
-//   fields: string[]
-//   label: LabelElement[]
-// }
-
 // only show fields not yet added to label
-// TODO: build labelElements from fields
-export const FieldList = ({ fieldLabels }) => {
+interface FieldListProps {
+  fieldLabels: { type: 'field'; value: string; id: string }[]
+  instanceId: symbol
+}
+
+export const FieldList = ({ fieldLabels, instanceId }: FieldListProps) => {
   const { formatMessage } = useIntl()
+  const fieldsListRef = useRef<HTMLDivElement>(null)
+  const separatorRef = useRef<HTMLDivElement>(null)
+  const fieldRefs = useRef(new Map<string, HTMLDivElement>())
+
+  // keep the field list scrollable while dragging
+  useEffect(() => {
+    const element = fieldsListRef.current
+    if (!element) return
+    return autoScrollForElements({
+      element,
+    })
+  }, [])
+
+  useEffect(() => {
+    const cleanups: (() => void)[] = []
+
+    fieldRefs.current.forEach((element, id) => {
+      cleanups.push(
+        draggable({
+          element,
+          getInitialData: () => ({
+            [labelCreatorItemKey]: true,
+            instanceId,
+            kind: 'field',
+            id,
+          }),
+        }),
+      )
+    })
+
+    const separatorElement = separatorRef.current
+    if (separatorElement) {
+      cleanups.push(
+        draggable({
+          element: separatorElement,
+          getInitialData: () => ({
+            [labelCreatorItemKey]: true,
+            instanceId,
+            kind: 'separator',
+          }),
+        }),
+      )
+    }
+
+    return () => cleanups.forEach((cleanup) => cleanup())
+  }, [fieldLabels, instanceId])
 
   return (
     <div className={styles.container}>
-      <Droppable droppableId="fieldList">
-        {(provided) => (
-          <>
+      <div className={styles.fieldList}>
+        <h5 className={styles.title}>
+          {formatMessage({ id: 'fLdTtl', defaultMessage: 'Felder' })}{' '}
+          <span className={styles.titleSpan}>({fieldLabels.length})</span>
+        </h5>
+        <div className={styles.fieldsList} ref={fieldsListRef}>
+          {(fieldLabels ?? []).map((fieldLabel) => (
             <div
-              ref={provided.innerRef}
-              {...provided.droppableProps}
-              className={styles.fieldList}
+              key={fieldLabel.id}
+              ref={(element) => {
+                if (element) {
+                  fieldRefs.current.set(fieldLabel.id, element)
+                } else {
+                  fieldRefs.current.delete(fieldLabel.id)
+                }
+              }}
+              className={styles.fieldContainer}
             >
-              <h5 className={styles.title}>
-                {formatMessage({ id: 'fLdTtl', defaultMessage: 'Felder' })}{' '}
-                <span className={styles.titleSpan}>({fieldLabels.length})</span>
-              </h5>
-              <div className={styles.fieldsList}>
-                {(fieldLabels ?? []).map((fieldLabel, index) => (
-                  <Draggable
-                    key={fieldLabel.id}
-                    draggableId={fieldLabel.id}
-                    index={index}
-                  >
-                    {(provided, snapshot) => (
-                      <div
-                        {...provided.draggableProps}
-                        {...provided.dragHandleProps}
-                        ref={provided.innerRef}
-                        style={provided.draggableProps.style}
-                        className={`${styles.fieldContainer}${snapshot.isDragging ? ` ${styles.fieldContainerDragging}` : ''}`}
-                      >
-                        {fieldLabel.value}
-                        <BsArrowsMove className={styles.fieldHandle} />
-                      </div>
-                    )}
-                  </Draggable>
-                ))}
-              </div>
-              <h5 className={styles.title}>
-                {formatMessage({
-                  id: 'fLdSep',
-                  defaultMessage: 'Trenntext / Zeichen',
-                })}
-              </h5>
-              {/* TODO: this draggable needs a uuidv7 draggableId that changes after every addition of a separator */}
-              <Draggable
-                key="separator"
-                draggableId="separator"
-                index={fieldLabels.length}
-              >
-                {(provided, snapshot) => (
-                  <div
-                    {...provided.draggableProps}
-                    {...provided.dragHandleProps}
-                    ref={provided.innerRef}
-                    style={provided.draggableProps.style}
-                    className={`${styles.dividerContainer}${snapshot.isDragging ? ` ${styles.dividerContainerDragging}` : ''}`}
-                  >
-                    {formatMessage({
-                      id: 'fLdAny',
-                      defaultMessage: 'Beliebiger Text',
-                    })}
-                    <BsArrowsMove className={styles.fieldHandle} />
-                  </div>
-                )}
-              </Draggable>
+              {fieldLabel.value}
+              <BsArrowsMove className={styles.fieldHandle} />
             </div>
-            {provided.placeholder}
-          </>
-        )}
-      </Droppable>
+          ))}
+        </div>
+        <h5 className={styles.title}>
+          {formatMessage({
+            id: 'fLdSep',
+            defaultMessage: 'Trenntext / Zeichen',
+          })}
+        </h5>
+        <div ref={separatorRef} className={styles.dividerContainer}>
+          {formatMessage({
+            id: 'fLdAny',
+            defaultMessage: 'Beliebiger Text',
+          })}
+          <BsArrowsMove className={styles.fieldHandle} />
+        </div>
+      </div>
     </div>
   )
 }

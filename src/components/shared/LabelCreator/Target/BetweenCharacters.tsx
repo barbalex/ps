@@ -2,16 +2,16 @@ import * as fluentUiReactComponents from '@fluentui/react-components'
 const { Input } = fluentUiReactComponents
 import { useIntl } from 'react-intl'
 
-import { TargetElement } from './TargetElements.tsx'
 import { LabelElement } from '../index.tsx'
 import styles from './BetweenCharacters.module.css'
 
 interface Props {
-  el: TargetElement
-  label: LabelElement[]
-  name: string
-  onChange: () => void
+  el: { type: 'field' | 'separator'; value: string; id?: string }
+  label: ({ type: 'field' | 'separator'; value: string; id?: string })[] | null
+  name?: string
+  onChange: (newLabel: LabelElement[] | null) => void
   index: number
+  isDragging: boolean
   children: React.ReactNode
 }
 
@@ -20,17 +20,19 @@ export const BetweenCharacters = ({
   label,
   onChange,
   index,
+  isDragging,
   children,
-  snapshot,
-  provided,
 }: Props) => {
   const { formatMessage } = useIntl()
 
-  const onBlur = (event) => {
-    const newLabel = [...label]
+  const onBlur: fluentUiReactComponents.InputProps['onChange'] = (
+    _ev,
+    data,
+  ) => {
+    const newLabel = [...(label ?? [])]
     newLabel.forEach((labelElement, i) => {
       if (i === index) {
-        labelElement.value = event.target.value
+        labelElement.value = data.value
       }
     })
     onChange(newLabel)
@@ -38,16 +40,9 @@ export const BetweenCharacters = ({
 
   return (
     <div
-      style={provided.draggableProps.style}
-      className={
-        snapshot.isDragging ? styles.containerDragging : styles.container
-      }
+      className={isDragging ? styles.containerDragging : styles.container}
     >
       <Input
-        label={formatMessage({
-          id: 'bChrSp',
-          defaultMessage: 'Trennzeichen (beliebiger Text)',
-        })}
         placeholder={formatMessage({
           id: 'bChrPh',
           defaultMessage: 'Beliebigen Text eingeben',
