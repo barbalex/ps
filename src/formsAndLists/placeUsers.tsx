@@ -8,7 +8,7 @@ import { Row } from "../components/shared/Row.tsx";
 import { Loading } from "../components/shared/Loading.tsx";
 import "../form.css";
 
-export const PlaceUsers = ({ from, hideHeader = false }) => {
+export const PlaceUsers = ({ hideHeader = false }) => {
   const { projectId, subprojectId, placeId, placeId2 } = useParams({ strict: false });
   const navigate = useNavigate();
   const usersBaseUrl = `/data/projects/${projectId}/subprojects/${subprojectId}/places/${placeId}${placeId2 ? `/places/${placeId2}` : ''}/users`;

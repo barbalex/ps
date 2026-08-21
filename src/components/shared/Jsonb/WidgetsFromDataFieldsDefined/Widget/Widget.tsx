@@ -32,7 +32,6 @@ export const Widget = ({
   orIndex,
   autoFocus,
   ref,
-  from,
 }) => {
   const { placeId, placeId2 } = useParams({ strict: false })
   const location = useLocation()
@@ -96,7 +95,7 @@ export const Widget = ({
       return
     }
     setValidations((prev) => {
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+       
       const { [name]: _, ...rest } = prev
       return rest
     })

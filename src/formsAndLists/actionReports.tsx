@@ -1,5 +1,4 @@
 import { useParams, useNavigate } from '@tanstack/react-router'
-import { useLiveQuery } from '@electric-sql/pglite-react'
 
 import { createActionReport } from '../modules/createRows.ts'
 import { ListHeader } from '../components/ListHeader.tsx'
