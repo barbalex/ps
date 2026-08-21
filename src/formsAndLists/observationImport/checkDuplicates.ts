@@ -3,13 +3,13 @@
  * Samples up to 100 rows and queries the database for each to check duplicates
  */
 export const checkDuplicates = async (
-  db: any,
-  dataRows: any[],
+  db: { query: (sql: string, params?: unknown[]) => Promise<unknown> },
+  dataRows: Record<string, unknown>[],
 ): Promise<number> => {
   if (!dataRows || dataRows.length === 0) return 0
 
   // Sample rows: all if < 100, else every nth row to get ~100 samples
-  let rowsToCheck: any[]
+  let rowsToCheck: Record<string, unknown>[]
   if (dataRows.length <= 100) {
     rowsToCheck = dataRows
   } else {
@@ -26,7 +26,7 @@ export const checkDuplicates = async (
   for (const newRow of rowsToCheck) {
     // Build WHERE conditions for non-object fields
     const conditions: string[] = []
-    const values: any[] = []
+    const values: unknown[] = []
     let paramIndex = 1
 
     for (const [key, value] of Object.entries(newRow)) {
@@ -57,7 +57,7 @@ export const checkDuplicates = async (
       if (count > 0) {
         duplicateCount++
       }
-    } catch (error) {
+    } catch {
       // Continue checking other rows even if one fails
     }
   }
