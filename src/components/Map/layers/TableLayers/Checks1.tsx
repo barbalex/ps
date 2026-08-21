@@ -30,7 +30,7 @@ export const Checks1 = ({ layerPresentation }) => {
     // add p's properties to all features:
     // somehow there is a data property with empty object as value???
     // TODO: make properties more readable for user
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+     
     const { geometry, bbox, data, ...properties } = p
     const fc = {
       type: 'FeatureCollection',

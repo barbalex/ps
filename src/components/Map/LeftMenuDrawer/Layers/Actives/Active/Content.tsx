@@ -13,7 +13,6 @@ const {
   ToggleButton,
   Tab,
   TabList,
-  SelectTabData,
   Checkbox,
 } = fluentUiReactComponents
 import { BsCheckSquareFill } from 'react-icons/bs'
