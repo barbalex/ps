@@ -13,6 +13,8 @@
     "hooks:install": "node scripts/install-git-hooks.mjs",
     "format": "prettier --write .",
     "lint": "eslint . --max-warnings 0",
+    "test": "vitest run",
+    "test:watch": "vitest",
     "preview": "vite preview",
     "how-to-install-using-sfw": "sfw npm install -f",
     "ncu using cooldown": "ncu -c 5 -i",
@@ -137,7 +139,8 @@
     "kanel": "4.0.3",
     "typescript": "6.0.3",
     "vite": "8.2.1",
-    "vite-plugin-svgr": "5.2.0"
+    "vite-plugin-svgr": "5.2.0",
+    "vitest": "4.1.11"
   },
   "overrides": {
     "tabster": "8.8.0"

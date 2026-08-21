@@ -1,7 +1,7 @@
 import type { PGlite } from '@electric-sql/pglite'
 
 type RowData = Record<string, unknown>
-type Permission = 'write-all' | 'design'
+type Permission = 'write-specific' | 'write-all' | 'design'
 
 type CheckConfig = {
   /** SQL returning a single `role` column. $1 = userId, $2 = parentId */
@@ -21,7 +21,7 @@ const ROLE_ORDER = [
 
 function hasPermission(
   role: string | undefined,
-  min: Permission = 'writer',
+  min: Permission = 'write-specific',
 ): boolean {
   if (!role) return false
   return ROLE_ORDER.indexOf(role) >= ROLE_ORDER.indexOf(min)
@@ -292,5 +292,5 @@ async function checkLayerPresentation(
     const role = res.rows[0]?.role
     return { allowed: hasPermission(role), userRole: role }
   }
-  return { allowed: true }
+  return { allowed: false }
 }
