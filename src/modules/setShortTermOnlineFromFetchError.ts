@@ -1,13 +1,9 @@
-import { useSetAtom } from 'jotai'
+import { shortTermOnlineAtom, store } from '../store.ts'
 
-import { shortTermOnlineAtom } from '../store.ts'
-
-// better name: setShortTermOnlineFromFetchError
-export const setShortTermOnlineFromFetchError = (error) => {
-  const setShortTermOnline = useSetAtom(shortTermOnlineAtom)
-
+// not a hook: set the jotai store directly so this works outside components too
+export const setShortTermOnlineFromFetchError = (error: unknown) => {
   if (error?.message?.includes?.('Failed to fetch')) {
     console.log('checkForOfflineError, network is failing')
-    return setShortTermOnline(false)
+    store.set(shortTermOnlineAtom, false)
   }
 }

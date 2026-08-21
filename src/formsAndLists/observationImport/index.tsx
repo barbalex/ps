@@ -1,4 +1,4 @@
-import { useRef, useState, useEffect } from 'react'
+import { useRef, useState, useEffect, useMemo } from 'react'
 import { useParams, useSearch, useNavigate } from '@tanstack/react-router'
 import * as fluentUiReactComponents from '@fluentui/react-components'
 const { Tab, TabList } = fluentUiReactComponents
@@ -49,7 +49,7 @@ export const ObservationImport = () => {
     `SELECT * FROM observations WHERE observation_import_id = $1`,
     [observationImportId],
   )
-  const observations = oResult?.rows ?? []
+  const observations = useMemo(() => oResult?.rows ?? [], [oResult])
 
   const observationsWithoutGeometryCountResult = useLiveQuery(
     `SELECT count(*) FROM observations WHERE observation_import_id = $1 AND geometry is null`,
@@ -102,7 +102,15 @@ export const ObservationImport = () => {
         setCoordinatesAutoDetected(true)
       }
     }
-  }, [observationFields.length, observationImport?.observation_import_id])
+  }, [
+    addOperation,
+    db,
+    observationImport,
+    observationFields,
+    observationImportId,
+    observations,
+    setCoordinatesAutoDetected,
+  ])
 
   const onChange = async (e, data) => {
     const { name, value } = getValueFromChange(e, data)
@@ -138,7 +146,7 @@ export const ObservationImport = () => {
     }
 
     setValidations((prev) => {
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+       
       const { [name]: _, ...rest } = prev
       return rest
     })

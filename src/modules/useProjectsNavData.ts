@@ -1,6 +1,5 @@
 import { useLiveQuery } from '@electric-sql/pglite-react'
 import { useAtom } from 'jotai'
-import { useLocation } from '@tanstack/react-router'
 import { isEqual } from 'es-toolkit'
 import { useIntl } from 'react-intl'
 
@@ -63,7 +62,6 @@ export const useProjectsNavData = (params?: Props) => {
   const forBreadcrumb = params?.forBreadcrumb ?? false
   const { formatMessage } = useIntl()
   const [openNodes] = useAtom(treeOpenNodesAtom)
-  const location = useLocation()
 
   const [filter] = useAtom(projectsFilterAtom)
   const filterString = filterStringFromFilter(filter, 'projects')

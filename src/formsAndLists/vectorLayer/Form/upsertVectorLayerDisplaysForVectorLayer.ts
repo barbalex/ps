@@ -267,6 +267,7 @@ export const upsertVectorLayerDisplaysForVectorLayer = async ({
     )
     throw new Error(
       `error fetching table rows for table ${table}, level ${level}`,
+      { cause: error },
     )
   }
   const distinctValues = tableRows?.map((row) => row?.[displayByProperty])

@@ -119,7 +119,7 @@ export const CheckQuantityHistoryCompare = ({
     }
 
     setValidations((prev) => {
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+       
       const { [name]: _unused, ...rest } = prev
       return rest
     })
@@ -162,7 +162,7 @@ export const CheckQuantityHistoryCompare = ({
     }
 
     setValidations((prev) => {
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+       
       const { [unitValueField]: _unused, ...rest } = prev
       return rest
     })

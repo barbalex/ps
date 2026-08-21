@@ -7,10 +7,9 @@ import { store, pgliteDbAtom } from '../../store.ts'
 // TODO: not done, needed?
 export const completeVectorLayerDisplaysForLayerWithProperties = async ({
   vectorLayerId,
-  properties,
 }) => {
   const db = store.get(pgliteDbAtom)
-  const vectorLayerDisplays = await db.query(
+  await db.query(
     `SELECT * FROM vector_layer_displays WHERE vector_layer_id = $1`,
     [vectorLayerId],
   )

@@ -135,7 +135,7 @@ export const ListWithValues = ({ from }: { from: string }) => {
       return
     }
     setValidations((prev) => {
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+       
       const { [name]: _, ...rest } = prev
       return rest
     })

@@ -98,7 +98,7 @@ export const CheckTaxonHistoryCompare = ({
     }
 
     setValidations((prev) => {
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+       
       const { [name]: _unused, ...rest } = prev
       return rest
     })

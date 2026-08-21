@@ -25,7 +25,6 @@ import '../../form.css'
 
 export const VectorLayerDisplay = ({
   vectorLayerDisplayId: vectorLayerDisplayIdFromProps,
-  from,
 }) => {
   // When called from map drawer, we get the ID via props
   // When called from router, we get it from params
@@ -70,7 +69,7 @@ export const VectorLayerDisplay = ({
       return
     }
     setValidations((prev) => {
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+       
       const { [name]: _, ...rest } = prev
       return rest
     })

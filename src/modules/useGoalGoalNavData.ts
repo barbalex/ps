@@ -11,11 +11,6 @@ type Props = {
   goalId_: string
 }
 
-type NavData = {
-  id: string
-  label: string | null
-}
-
 export const useGoalGoalNavData = ({
   projectId_,
   subprojectId_,
@@ -28,21 +23,19 @@ export const useGoalGoalNavData = ({
   const subprojectId = subprojectId_?.replace(/_/g, '-')
   const goalId = goalId_?.replace(/_/g, '-')
 
-  const projectQuery = useLiveQuery(/* sql */ `
+  useLiveQuery(/* sql */ `
     SELECT
       label,
       project_id as id
     FROM projects
     WHERE project_id = '${projectId}'`)
-  const project = projectQuery?.rows?.[0]
 
-  const subprojectQuery = useLiveQuery(/* sql */ `
+  useLiveQuery(/* sql */ `
     SELECT
       label,
       subproject_id as id
     FROM subprojects
     WHERE subproject_id = '${subprojectId}'`)
-  const subproject = subprojectQuery?.rows?.[0]
 
   const goalQuery = useLiveQuery(/* sql */ `
     SELECT

@@ -1,5 +1,5 @@
 import * as fluentUiReactComponents from '@fluentui/react-components'
-const { Tab, TabList, SelectTabEvent, SelectTabData } = fluentUiReactComponents
+const { Tab, TabList } = fluentUiReactComponents
 import { useSearch, useNavigate } from '@tanstack/react-router'
 
 import { ErrorBoundary } from '../../shared/ErrorBoundary.tsx'

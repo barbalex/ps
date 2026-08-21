@@ -25,7 +25,6 @@ export const FieldList = ({
   fieldsTable,
   id,
   valueArray = [],
-  from,
 }: Props) => {
   const { projectId } = useParams({ strict: false })
 

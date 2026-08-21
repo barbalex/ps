@@ -11,7 +11,7 @@ import { backgroundTasks } from '../../modules/backgroundTasks.ts'
 set_cptable(cptable)
 
 // Helper to calculate geometry from observation data
-const calculateGeometry = (observationData, observationImport, proj4Setup) => {
+const calculateGeometry = (observationData, observationImport, _proj4Setup) => {
   if (
     !observationImport.x_coordinate_field ||
     !observationImport.y_coordinate_field

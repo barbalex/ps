@@ -65,7 +65,7 @@ export const ProjectCrsForm = ({ autoFocusRef }) => {
       return
     }
     setValidations((prev) => {
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+       
       const { [name]: _, ...rest } = prev
       return rest
     })
@@ -99,7 +99,7 @@ export const ProjectCrsForm = ({ autoFocusRef }) => {
       return
     }
     setValidations((prev) => {
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+       
       const { map_presentation_crs: _, ...rest } = prev
       return rest
     })

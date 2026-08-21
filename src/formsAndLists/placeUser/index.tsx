@@ -80,7 +80,7 @@ export const PlaceUser = ({ from }) => {
       return
     }
     setValidations((prev) => {
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+       
       const { [name]: _, ...rest } = prev
       return rest
     })
@@ -112,7 +112,7 @@ export const PlaceUser = ({ from }) => {
       return
     }
     setValidations((prev) => {
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+       
       const { role: _, ...rest } = prev
       return rest
     })

@@ -20,7 +20,6 @@ import {
   addNotificationAtom,
   mapLayerSortingAtom,
 } from '../../store.ts'
-import type Actions from '../../models/public/Actions.ts'
 
 export const Header = ({ autoFocusRef, from, allInline = false }) => {
   const { formatMessage } = useIntl()

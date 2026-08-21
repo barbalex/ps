@@ -13,11 +13,6 @@ type Props = {
   checkReportId: string
 }
 
-type NavData = {
-  id: string
-  label: string | null
-}
-
 export const useCheckReportReportNavData = ({
   projectId,
   subprojectId,

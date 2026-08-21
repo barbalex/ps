@@ -199,7 +199,7 @@ export const Form = ({ autoFocusRef, from }) => {
       return
     }
     setValidations((prev) => {
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+       
       const { active: _, ...rest } = prev
       return rest
     })
@@ -231,7 +231,7 @@ export const Form = ({ autoFocusRef, from }) => {
       return
     }
     setValidations((prev) => {
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+       
       const { [name]: _, ...rest } = prev
       return rest
     })

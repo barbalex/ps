@@ -55,7 +55,7 @@ export const ChartSubjectForm = ({ autoFocusRef }: Props) => {
       return
     }
     setValidations((prev) => {
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+       
       const { [name]: _, ...rest } = prev
       return rest
     })

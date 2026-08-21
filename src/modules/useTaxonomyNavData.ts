@@ -7,11 +7,6 @@ import { useIntl } from 'react-intl'
 import { buildNavLabel } from './buildNavLabel.ts'
 import { treeOpenNodesAtom } from '../store.ts'
 
-type Props = {
-  projectId: string
-  taxonomyId: string
-}
-
 type NavData = {
   id: string
   label: string | null

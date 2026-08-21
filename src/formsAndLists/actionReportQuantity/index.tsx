@@ -93,7 +93,7 @@ export const ActionReportQuantity = ({ from }) => {
       return
     }
     setValidations((prev) => {
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+       
       const { [name]: _, ...rest } = prev
       return rest
     })
@@ -131,7 +131,7 @@ export const ActionReportQuantity = ({ from }) => {
       return
     }
     setValidations((prev) => {
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+       
       const { [unitValueField]: _, ...rest } = prev
       return rest
     })

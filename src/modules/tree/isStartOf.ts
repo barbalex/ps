@@ -1,10 +1,5 @@
 import { isEqual } from 'es-toolkit'
 
-interface Props {
-  node: string[]
-  otherNode: string[]
-}
-
 export const isStartOf = ({ node = [], otherNode = [] }) => {
   if (node.length > otherNode.length) return false
 

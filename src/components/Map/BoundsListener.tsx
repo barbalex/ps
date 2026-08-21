@@ -1,7 +1,6 @@
 import { useEffect, useRef, useCallback } from 'react'
 import { useMap, useMapEvents } from 'react-leaflet'
 import { useAtomValue, useSetAtom } from 'jotai'
-import { useBeforeunload } from 'react-beforeunload'
 
 import {
   mapBoundsAtom,

@@ -12,23 +12,12 @@ type Props = {
   goalReportId_: string
 }
 
-type NavData = {
-  id: string
-  label: string | null
-}
-
 export const useGoalReportReportNavData = ({
-  projectId_,
-  subprojectId_,
-  goalId_,
   goalReportId_,
 }: Props) => {
   const [openNodes] = useAtom(treeOpenNodesAtom)
   const { formatMessage } = useIntl()
 
-  const projectId = projectId_?.replace(/_/g, '-')
-  const subprojectId = subprojectId_?.replace(/_/g, '-')
-  const goalId = goalId_?.replace(/_/g, '-')
   const goalReportId = goalReportId_?.replace(/_/g, '-')
 
   const goalReportQuery = useLiveQuery(/* sql */ `

@@ -1,5 +1,9 @@
 import * as fluentUiReactComponents from '@fluentui/react-components'
-type InputOnChangeData = React.ComponentProps<typeof fluentUiReactComponents.Input>['onChange'] extends (e: any, data: infer D) => void ? D : never
+type InputOnChangeData = Parameters<
+  NonNullable<
+    React.ComponentProps<typeof fluentUiReactComponents.Input>['onChange']
+  >
+>[1]
 
 export const getValueFromChange = (
   e: React.ChangeEvent<HTMLInputElement>,

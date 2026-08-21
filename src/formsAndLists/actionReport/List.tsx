@@ -1,5 +1,4 @@
 import { useParams } from '@tanstack/react-router'
-import { useLiveQuery } from '@electric-sql/pglite-react'
 
 import { useActionReportNavData } from '../../modules/useActionReportNavData.ts'
 import { Loading } from '../../components/shared/Loading.tsx'

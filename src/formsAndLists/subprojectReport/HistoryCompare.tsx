@@ -75,7 +75,7 @@ export const SubprojectReportHistoryCompare = () => {
       return
     }
     setValidations((prev) => {
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+       
       const { [name]: _unused, ...rest } = prev
       return rest
     })

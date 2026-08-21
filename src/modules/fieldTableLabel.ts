@@ -42,7 +42,6 @@ export const getFieldTableOptionKey = ({ tableName, level }: { tableName?: strin
 
 export const resolveFieldTableContext = ({
   formatMessage,
-  language,
   projectType,
   projectNamePlural,
   placeLevel1Singular,

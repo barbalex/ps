@@ -1255,7 +1255,7 @@ export const createMessage = async () => {
 export const createWmsLayer = async ({ projectId }) => {
   const db = store.get(pgliteDbAtom)
   const wms_layer_id = uuidv7()
-  const res = await db.query(
+  await db.query(
     `INSERT INTO wms_layers (wms_layer_id, project_id) VALUES ($1, $2)`,
     [wms_layer_id, projectId],
   )
@@ -1299,7 +1299,7 @@ export const createVectorLayer = async ({
 
   // Create new vector_layer locally
   const vector_layer_id = uuidv7()
-  const res = await db.query(
+  await db.query(
     `insert into vector_layers (vector_layer_id, project_id, name, type, own_table, own_table_level, max_features)
      values ($1, $2, $3, $4, $5, $6, $7)
      returning *`,

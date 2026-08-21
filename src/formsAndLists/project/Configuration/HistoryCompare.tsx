@@ -67,10 +67,6 @@ export const ProjectConfigurationHistoryCompare = () => {
   const leftContent = <Configuration from={configFrom} />
 
   const lang = locale.split('-')[0]
-  const subprojectName =
-    (row?.[`subproject_name_plural_${lang}`] as string | undefined) ??
-    (row?.subproject_name_plural as string | undefined) ??
-    formatMessage({ id: 'subprojectPluralFallback', defaultMessage: 'Arten' })
   const subprojectNameSingular =
     (row?.[`subproject_name_singular_${lang}`] as string | undefined) ??
     (row?.subproject_name_singular as string | undefined) ??

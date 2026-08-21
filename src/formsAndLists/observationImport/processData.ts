@@ -99,7 +99,7 @@ export const processData = async ({
           sheetName = workbook.SheetNames[0],
           worksheet = workbook.Sheets[sheetName]
         const data = utils.sheet_to_json(worksheet).map((d) => {
-          // eslint-disable-next-line @typescript-eslint/no-unused-vars
+           
           const { __rowNum__, ...rest } = d
           return rest
         })
