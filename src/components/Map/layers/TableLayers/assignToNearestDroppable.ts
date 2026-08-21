@@ -8,7 +8,6 @@ import { point, points } from '@turf/helpers'
 
 import {
   addOperationAtom,
-  addNotificationAtom,
   store,
   pgliteDbAtom,
 } from '../../../../store.ts'

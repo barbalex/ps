@@ -1,10 +1,13 @@
 /**
  * Validates if a value looks like a valid coordinate
  */
-const isValidCoordinate = (value: any, type: 'x' | 'y'): boolean => {
+const isValidCoordinate = (
+  value: unknown,
+  type: 'x' | 'y',
+): boolean => {
   if (value === null || value === undefined || value === '') return false
 
-  const num = typeof value === 'number' ? value : parseFloat(value)
+  const num = typeof value === 'number' ? value : parseFloat(String(value))
 
   if (isNaN(num)) return false
 
@@ -17,12 +20,14 @@ const isValidCoordinate = (value: any, type: 'x' | 'y'): boolean => {
   return num >= -180 && num <= 180
 }
 
+type ObservationRow = { data?: Record<string, unknown> }
+
 /**
  * Checks if a field contains valid coordinate values
  * Samples up to 10 non-null values
  */
 const validateFieldValues = (
-  observations: any[],
+  observations: ObservationRow[],
   fieldName: string,
   type: 'x' | 'y',
 ): boolean => {
@@ -52,7 +57,7 @@ const validateFieldValues = (
  */
 export const detectCoordinateFields = (
   fields: string[],
-  observations?: any[],
+  observations?: ObservationRow[],
 ): { x_coordinate_field: string | null; y_coordinate_field: string | null } => {
   if (!fields || fields.length === 0) {
     return { x_coordinate_field: null, y_coordinate_field: null }
