@@ -7,7 +7,6 @@ import { useIntl } from 'react-intl'
 import { getValueFromChange } from '../../modules/getValueFromChange.ts'
 import { Header } from './Header.tsx'
 import { PlaceLevelForm } from './Form.tsx'
-import { updateTableVectorLayerLabels } from '../../modules/updateTableVectorLayerLabels.ts'
 import { Loading } from '../../components/shared/Loading.tsx'
 import { NotFound } from '../../components/NotFound.tsx'
 import { addOperationAtom, designingAtom } from '../../store.ts'
@@ -64,29 +63,8 @@ export const PlaceLevel = () => {
       draft: { [name]: value },
       prev: { ...row },
     })
-    // if name fields changed, need to update the label of corresponding vector layers
-    if (
-      row &&
-      [
-        'name_plural_de',
-        'name_plural_en',
-        'name_plural_fr',
-        'name_plural_it',
-        'name_singular_de',
-        'name_singular_en',
-        'name_singular_fr',
-        'name_singular_it',
-        'actions',
-        'checks',
-        'observations',
-      ].includes(name) &&
-      row.level &&
-      row.project_id
-    ) {
-      await updateTableVectorLayerLabels({
-        project_id: row.project_id,
-      })
-    }
+    // NOTE: own vector-layer labels are derived from place_levels at render time,
+    // so renaming a place level updates them automatically — no write needed here.
   }
 
   if (!res) return <Loading />

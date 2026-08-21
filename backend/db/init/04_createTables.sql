@@ -1599,7 +1599,11 @@ CREATE TYPE vector_layer_own_tables_enum AS ENUM (
 
 CREATE TABLE IF NOT EXISTS vector_layers(
   vector_layer_id uuid PRIMARY KEY DEFAULT uuidv7(),
-  label text DEFAULT NULL,
+  name text DEFAULT NULL, -- stable, language-neutral identifier; unique per project. Used as the layer identity key (dedup, drag/drop state). Own layers use own_table + '_' + level (e.g. 'places_1').
+  label_de text DEFAULT NULL, -- localized display labels. For own layers these stay NULL (label is derived from place_levels at render time). de is the fallback language.
+  label_en text DEFAULT NULL,
+  label_fr text DEFAULT NULL,
+  label_it text DEFAULT NULL,
   project_id uuid NOT NULL REFERENCES projects(project_id) ON DELETE CASCADE ON UPDATE CASCADE DEFERRABLE INITIALLY DEFERRED,
   type vector_layer_types_enum DEFAULT NULL,
   own_table vector_layer_own_tables_enum DEFAULT NULL,
@@ -1617,11 +1621,11 @@ CREATE TABLE IF NOT EXISTS vector_layers(
   created_at timestamptz NOT NULL DEFAULT now(),
   updated_at timestamptz NOT NULL DEFAULT now(),
   updated_by text DEFAULT NULL,
-  -- make combination of project_id and label unique, using explicit error message
-  CONSTRAINT vector_layer_labels_should_be_unique_in_project UNIQUE(project_id, label)
+  -- make combination of project_id and name unique, using explicit error message
+  CONSTRAINT vector_layer_names_should_be_unique_in_project UNIQUE(project_id, name)
 );
 
-CREATE INDEX IF NOT EXISTS vector_layers_label_idx ON vector_layers USING btree(label);
+CREATE INDEX IF NOT EXISTS vector_layers_name_idx ON vector_layers USING btree(name);
 CREATE INDEX IF NOT EXISTS vector_layers_project_id_idx ON vector_layers USING btree(project_id);
 CREATE INDEX IF NOT EXISTS vector_layers_type_idx ON vector_layers USING btree(type);
 CREATE INDEX IF NOT EXISTS vector_layers_own_table_idx ON vector_layers USING btree(own_table);

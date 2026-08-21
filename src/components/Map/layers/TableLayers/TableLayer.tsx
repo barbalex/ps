@@ -6,6 +6,7 @@ import * as icons from 'react-icons/md'
 import { useAtomValue, useSetAtom } from 'jotai'
 
 import { vectorLayerDisplayToProperties } from '../../../../modules/vectorLayerDisplayToProperties.ts'
+import { useVectorLayerLabel } from '../../../../modules/vectorLayerLabel.ts'
 import { ErrorBoundary } from '../../MapErrorBoundary.tsx'
 import { assignToNearestDroppable } from './assignToNearestDroppable.ts'
 import {
@@ -29,7 +30,10 @@ export const TableLayer = ({ data, layerPresentation, activeId = null, activeIdF
 
   const layer = layerPresentation.vector_layers
 
-  const layerNameForState = layer?.label?.replace?.(/ /g, '-')?.toLowerCase?.()
+  // Derived display label (own layers derive it from place_levels) for the info
+  // panel, and the stable `name` as the drag/drop identity key.
+  const label = useVectorLayerLabel(layer, layer?.project_id)
+  const layerNameForState = layer?.name
 
   const isDraggable = draggableLayers.includes(layerNameForState)
 
@@ -136,7 +140,7 @@ export const TableLayer = ({ data, layerPresentation, activeId = null, activeIdF
                 : { className: 'clickable-hitbox' }),
             })
             // Store vector layer label on clickableCircle too
-            clickableCircle.vectorLayerLabel = layer?.label
+            clickableCircle.vectorLayerLabel = label
             // Mark as internal layer to skip in click detection
             clickableCircle._isInternal = true
 
@@ -161,7 +165,7 @@ export const TableLayer = ({ data, layerPresentation, activeId = null, activeIdF
             marker.feature = feature
             clickableCircle.feature = feature
             // Store vector layer label for grouping in info panel
-            marker.vectorLayerLabel = layer?.label
+            marker.vectorLayerLabel = label
             // Store reference to clickable circle for popup handling
             marker._clickableCircle = clickableCircle
 
@@ -260,7 +264,7 @@ export const TableLayer = ({ data, layerPresentation, activeId = null, activeIdF
               ? { className: 'draggable-hitbox' }
               : { className: 'clickable-hitbox' }),
           })
-          clickableCircle.vectorLayerLabel = layer?.label
+          clickableCircle.vectorLayerLabel = label
           clickableCircle._isInternal = true
 
           const markerIconStyle = {
@@ -296,7 +300,7 @@ export const TableLayer = ({ data, layerPresentation, activeId = null, activeIdF
           group.feature = feature
           clickableCircle.feature = feature
           marker.feature = feature
-          group.vectorLayerLabel = layer?.label
+          group.vectorLayerLabel = label
           group._clickableCircle = clickableCircle
 
           if (isDraggable) {
@@ -366,7 +370,7 @@ export const TableLayer = ({ data, layerPresentation, activeId = null, activeIdF
         onEachFeature={(feature, geoLayer) => {
           if (!feature) return
           if (geoLayer) {
-            geoLayer.vectorLayerLabel = layer?.label
+            geoLayer.vectorLayerLabel = label
           }
           // Table layer data is shown in the Info sidebar via ClickListener
           // so we don't bind popups here

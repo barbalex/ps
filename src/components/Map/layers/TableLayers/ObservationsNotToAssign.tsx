@@ -63,9 +63,7 @@ export const ObservationsNotToAssign = ({ layerPresentation }) => {
   if (!layerPresentation) return null
 
   const layer = layerPresentation.vector_layers
-  const isDraggable = draggableLayers?.includes?.(
-    layer?.label?.replace(/ /g, '-')?.toLowerCase(),
-  )
+  const isDraggable = draggableLayers?.includes?.(layer?.name)
 
   // popups pop on mouseup (=dragend)
   // so they should not be bound when draggable or they will pop on dragend

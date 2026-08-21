@@ -150,7 +150,7 @@ export const Layer = ({ layerPresentationId, index }) => {
     return (
       <Pane
         key={`${layerPresentationId}/${mapLayerSorting.join()}`}
-        name={vectorLayer.label}
+        name={vectorLayer.name ?? vectorLayer.vector_layer_id}
         className={styles.pane}
         style={
           { '--pane-z-index': paneBaseIndex - index } as React.CSSProperties
@@ -187,7 +187,7 @@ export const Layer = ({ layerPresentationId, index }) => {
     return (
       <Pane
         key={`${layerPresentationId}/${mapLayerSorting.join()}`}
-        name={vectorLayer.label}
+        name={vectorLayer.name ?? vectorLayer.vector_layer_id}
         className={styles.pane}
         style={
           { '--pane-z-index': paneBaseIndex - index } as React.CSSProperties

@@ -145,24 +145,24 @@ WHERE ws.project_id = $1
 FROM wfs_service_layers wsl
 WHERE wsl.wfs_service_id = ws.wfs_service_id)
 ORDER BY ws.label'),
-('Vektor-Ebenen ohne Anzeigen', 'Vector layers without display', 'Couches vectorielles sans affichage', 'Layer vettoriali senza visualizzazione', 'project', false, 'SELECT vl.label, ''/data/projects/'' || vl.project_id || ''/vector-layers/'' || vl.vector_layer_id || ''/vector-layer'' AS url
+('Vektor-Ebenen ohne Anzeigen', 'Vector layers without display', 'Couches vectorielles sans affichage', 'Layer vettoriali senza visualizzazione', 'project', false, 'SELECT COALESCE(NULLIF(vl.label_en,''), vl.label_de, vl.name) AS label, ''/data/projects/'' || vl.project_id || ''/vector-layers/'' || vl.vector_layer_id || ''/vector-layer'' AS url
 FROM vector_layers vl
 WHERE vl.project_id = $1
   AND NOT EXISTS (SELECT 1
 FROM vector_layer_displays vld
 WHERE vld.vector_layer_id = vl.vector_layer_id)
-ORDER BY vl.label'),
-('Vektor-Ebenen ohne Typ', 'Vector layers without type', 'Couches vectorielles sans type', 'Layer vettoriali senza tipo', 'project', false, 'SELECT vl.label, ''/data/projects/'' || vl.project_id || ''/vector-layers/'' || vl.vector_layer_id || ''/vector-layer'' AS url
+ORDER BY vl.label_de, vl.name'),
+('Vektor-Ebenen ohne Typ', 'Vector layers without type', 'Couches vectorielles sans type', 'Layer vettoriali senza tipo', 'project', false, 'SELECT COALESCE(NULLIF(vl.label_en,''), vl.label_de, vl.name) AS label, ''/data/projects/'' || vl.project_id || ''/vector-layers/'' || vl.vector_layer_id || ''/vector-layer'' AS url
 FROM vector_layers vl
 WHERE vl.project_id = $1
   AND vl.type IS NULL
-ORDER BY vl.label'),
-('Vektor-Ebenen ohne Name', 'Vector layers without name', 'Couches vectorielles sans nom', 'Layer vettoriali senza nome', 'project', false, 'SELECT vl.label, ''/data/projects/'' || vl.project_id || ''/vector-layers/'' || vl.vector_layer_id || ''/vector-layer'' AS url
+ORDER BY vl.label_de, vl.name'),
+('Vektor-Ebenen ohne Name', 'Vector layers without name', 'Couches vectorielles sans nom', 'Layer vettoriali senza nome', 'project', false, 'SELECT COALESCE(NULLIF(vl.label_en,''), vl.label_de, vl.name) AS label, ''/data/projects/'' || vl.project_id || ''/vector-layers/'' || vl.vector_layer_id || ''/vector-layer'' AS url
 FROM vector_layers vl
 WHERE vl.project_id = $1
-  AND nullif(vl.label, '''') IS NULL
-ORDER BY vl.label'),
-('Vektor-Ebene ohne «Presentation»', 'Vector layer without presentation', 'Couche vectorielle sans présentation', 'Layer vettoriale senza presentazione', 'project', false, 'SELECT vl.label, ''/data/projects/'' || vl.project_id || ''/vector-layers/'' || vl.vector_layer_id || ''/vector-layer'' AS url
+  AND vl.name IS NULL
+ORDER BY vl.label_de, vl.name'),
+('Vektor-Ebene ohne «Presentation»', 'Vector layer without presentation', 'Couche vectorielle sans présentation', 'Layer vettoriale senza presentazione', 'project', false, 'SELECT COALESCE(NULLIF(vl.label_en,''), vl.label_de, vl.name) AS label, ''/data/projects/'' || vl.project_id || ''/vector-layers/'' || vl.vector_layer_id || ''/vector-layer'' AS url
 FROM vector_layers vl
 WHERE vl.project_id = $1
   AND vl.display_by_property IS NOT NULL
@@ -170,7 +170,7 @@ WHERE vl.project_id = $1
 FROM vector_layer_displays vld
 WHERE vld.vector_layer_id = vl.vector_layer_id
   AND vld.display_property_value IS NOT NULL)
-ORDER BY vl.label'),
+ORDER BY vl.label_de, vl.name'),
 ('Diagramme ohne Themen', 'Charts without subjects', 'Graphiques sans sujets', 'Grafici senza soggetti', 'subproject', false, 'SELECT c.label, ''/data/projects/'' || c.project_id || ''/subprojects/'' || c.subproject_id || ''/charts/'' || c.chart_id || ''/chart'' AS url
 FROM charts c
 WHERE c.subproject_id = $1

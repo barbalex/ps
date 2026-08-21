@@ -63,10 +63,8 @@ export const Header = ({ autoFocusRef, row, from }) => {
     vectorLayerIdRef.current = vectorLayerId
   }, [vectorLayerId])
 
-  // need to:
-  // 1. lowercase all
-  // 2. replace all spaces with -
-  const layerNameForState = row.label?.replace?.(/ /g, '-')?.toLowerCase?.()
+  // Stable identity key for drag/drop state (matches the layer's `name`)
+  const layerNameForState = row.name
   const isDraggable = draggableLayers.includes(layerNameForState)
 
   const onClickToggleAssign = () => {
@@ -105,22 +103,22 @@ export const Header = ({ autoFocusRef, row, from }) => {
   }
 
   const onClickAssignToPlaces1 = () => {
-    // Toggle places-1 in droppableLayers
-    if (droppableLayers.includes('places-1')) {
-      setDroppableLayers(droppableLayers.filter((l) => l !== 'places-1'))
+    // Toggle places_1 in droppableLayers
+    if (droppableLayers.includes('places_1')) {
+      setDroppableLayers(droppableLayers.filter((l) => l !== 'places_1'))
     } else {
-      setDroppableLayers([...droppableLayers, 'places-1'])
+      setDroppableLayers([...droppableLayers, 'places_1'])
     }
     onClickToggleAssign()
     onClickAssignToPlaces()
   }
 
   const onClickAssignToPlaces2 = () => {
-    // Toggle places-2 in droppableLayers
-    if (droppableLayers.includes('places-2')) {
-      setDroppableLayers(droppableLayers.filter((l) => l !== 'places-2'))
+    // Toggle places_2 in droppableLayers
+    if (droppableLayers.includes('places_2')) {
+      setDroppableLayers(droppableLayers.filter((l) => l !== 'places_2'))
     } else {
-      setDroppableLayers([...droppableLayers, 'places-2'])
+      setDroppableLayers([...droppableLayers, 'places_2'])
     }
     onClickToggleAssign()
     onClickAssignToPlaces()
@@ -157,7 +155,7 @@ export const Header = ({ autoFocusRef, row, from }) => {
   const toNext = async () => {
     try {
       const res = await db.query(
-        `SELECT vector_layer_id FROM vector_layers WHERE project_id = $1 order by label`,
+        `SELECT vector_layer_id FROM vector_layers WHERE project_id = $1 order by name`,
         [projectId],
       )
       const rows = res?.rows
@@ -183,7 +181,7 @@ export const Header = ({ autoFocusRef, row, from }) => {
   const toPrevious = async () => {
     try {
       const res = await db.query(
-        `SELECT vector_layer_id FROM vector_layers WHERE project_id = $1 order by label`,
+        `SELECT vector_layer_id FROM vector_layers WHERE project_id = $1 order by name`,
         [projectId],
       )
       const rows = res?.rows

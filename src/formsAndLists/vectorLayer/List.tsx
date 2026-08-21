@@ -14,7 +14,7 @@ export const VectorLayerList = ({ from }) => {
     projectId,
     vectorLayerId,
   })
-  const { navs, label, notFound } = navData
+  const { navs, label, name, notFound } = navData
 
   if (notFound) {
     return (
@@ -29,7 +29,7 @@ export const VectorLayerList = ({ from }) => {
     <div className="list-view">
       <Header
         from={from}
-        row={{ label, vector_layer_id: vectorLayerId }}
+        row={{ label, name, vector_layer_id: vectorLayerId }}
       />
       <div className="list-container">
         {loading ?

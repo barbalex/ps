@@ -4,7 +4,11 @@ import { useAtom } from 'jotai'
 
 import { WmsLegend } from './WMS.tsx'
 import { VectorLegend } from './Vector/index.tsx'
-import { mapLayerSortingAtom } from '../../../../store.ts'
+import { mapLayerSortingAtom, languageAtom } from '../../../../store.ts'
+import {
+  getVectorLayerLabel,
+  usePlaceLevels,
+} from '../../../../modules/vectorLayerLabel.ts'
 import { Container } from './Container.tsx'
 import styles from './index.module.css'
 import type WMSLayers from '../../../../models/public/WMSLayers.ts'
@@ -12,7 +16,9 @@ import type VectorLayers from '../../../../models/public/VectorLayers.ts'
 
 export const Legends = () => {
   const [mapLayerSorting] = useAtom(mapLayerSortingAtom)
+  const [language] = useAtom(languageAtom)
   const { projectId } = useParams({ strict: false })
+  const placeLevels = usePlaceLevels(projectId)
 
   const resWmsLayers = useLiveQuery(
     `
@@ -63,7 +69,10 @@ export const Legends = () => {
     GROUP BY vl.vector_layer_id
   `,
   )
-  const activeVectorLayers: VectorLayers[] = resVectorLayers?.rows ?? []
+  const activeVectorLayers = (resVectorLayers?.rows ?? []).map((l) => ({
+    ...l,
+    label: getVectorLayerLabel(l as VectorLayers, language, placeLevels),
+  }))
 
   // sort by mapLayerSorting
   const activeLayers = [...activeWmsLayers, ...activeVectorLayers].sort(

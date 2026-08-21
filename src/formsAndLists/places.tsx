@@ -35,7 +35,7 @@ export const Places = ({ from }) => {
       type: 'own',
       ownTable: 'places',
       ownTableLevel: placeId ? 2 : 1,
-      label: namePlural,
+      name: placeId ? 'places_2' : 'places_1',
     })
 
     navigate({

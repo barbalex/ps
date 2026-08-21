@@ -35,12 +35,7 @@ interface Props {
   namePlural: string
 }
 
-export const Header = ({
-  autoFocusRef,
-  from,
-  nameSingular,
-  namePlural,
-}: Props) => {
+export const Header = ({ autoFocusRef, from, nameSingular }: Props) => {
   const { formatMessage } = useIntl()
   const isForm =
     from ===
@@ -85,7 +80,7 @@ export const Header = ({
       type: 'own',
       ownTable: 'places',
       ownTableLevel: placeId2 ? 2 : 1,
-      label: namePlural,
+      name: placeId2 ? 'places_2' : 'places_1',
     })
 
     const idName = placeId2 ? 'placeId2' : 'placeId'

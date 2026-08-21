@@ -1456,12 +1456,12 @@ BEGIN
     RETURN NEW;
   END IF;
 
-  INSERT INTO vector_layers (project_id, type, own_table, own_table_level, label)
+  INSERT INTO vector_layers (project_id, type, own_table, own_table_level, name)
   VALUES
-    (NEW.project_id, 'own', 'places',  1, 'places (1)'),
-    (NEW.project_id, 'own', 'actions', 1, 'actions (1)'),
-    (NEW.project_id, 'own', 'checks',  1, 'checks (1)')
-  ON CONFLICT ON CONSTRAINT vector_layer_labels_should_be_unique_in_project DO NOTHING;
+    (NEW.project_id, 'own', 'places',  1, 'places_1'),
+    (NEW.project_id, 'own', 'actions', 1, 'actions_1'),
+    (NEW.project_id, 'own', 'checks',  1, 'checks_1')
+  ON CONFLICT ON CONSTRAINT vector_layer_names_should_be_unique_in_project DO NOTHING;
 
   RETURN NEW;
 END;
@@ -1488,20 +1488,20 @@ BEGIN
     RETURN NEW;
   END IF;
 
-  INSERT INTO vector_layers (project_id, type, own_table, own_table_level, label)
-  VALUES (NEW.project_id, 'own', 'places', 2, 'places (2)')
-  ON CONFLICT ON CONSTRAINT vector_layer_labels_should_be_unique_in_project DO NOTHING;
+  INSERT INTO vector_layers (project_id, type, own_table, own_table_level, name)
+  VALUES (NEW.project_id, 'own', 'places', 2, 'places_2')
+  ON CONFLICT ON CONSTRAINT vector_layer_names_should_be_unique_in_project DO NOTHING;
 
   IF NEW.actions THEN
-    INSERT INTO vector_layers (project_id, type, own_table, own_table_level, label)
-    VALUES (NEW.project_id, 'own', 'actions', 2, 'actions (2)')
-    ON CONFLICT ON CONSTRAINT vector_layer_labels_should_be_unique_in_project DO NOTHING;
+    INSERT INTO vector_layers (project_id, type, own_table, own_table_level, name)
+    VALUES (NEW.project_id, 'own', 'actions', 2, 'actions_2')
+    ON CONFLICT ON CONSTRAINT vector_layer_names_should_be_unique_in_project DO NOTHING;
   END IF;
 
   IF NEW.checks THEN
-    INSERT INTO vector_layers (project_id, type, own_table, own_table_level, label)
-    VALUES (NEW.project_id, 'own', 'checks', 2, 'checks (2)')
-    ON CONFLICT ON CONSTRAINT vector_layer_labels_should_be_unique_in_project DO NOTHING;
+    INSERT INTO vector_layers (project_id, type, own_table, own_table_level, name)
+    VALUES (NEW.project_id, 'own', 'checks', 2, 'checks_2')
+    ON CONFLICT ON CONSTRAINT vector_layer_names_should_be_unique_in_project DO NOTHING;
   END IF;
 
   RETURN NEW;

@@ -8,8 +8,11 @@ import { usePGlite, useLiveQuery } from '@electric-sql/pglite-react'
 import { ErrorBoundary } from '../../../../shared/ErrorBoundary.tsx'
 import { VectorLayer } from './VectorLayer.tsx'
 import { createVectorLayer } from '../../../../../modules/createRows.ts'
+import { getVectorLayerLabel } from '../../../../../modules/vectorLayerLabel.ts'
+import { languageAtom } from '../../../../../store.ts'
 import layerStyles from '../index.module.css'
 import type LayerPresentations from '../../../../../models/public/LayerPresentations.ts'
+import type VectorLayersModel from '../../../../../models/public/VectorLayers.ts'
 
 // what accordion items are open
 // needs to be controlled to prevent opening when layer is deactivated
@@ -18,6 +21,7 @@ const openItemsAtom = atom([])
 // TODO: this component re-renders indefinitely
 export const VectorLayers = () => {
   const [openItems, setOpenItems] = useAtom(openItemsAtom)
+  const [language] = useAtom(languageAtom)
   const { projectId = '99999999-9999-9999-9999-999999999999' } = useParams({
     strict: false,
   })
@@ -45,9 +49,13 @@ export const VectorLayers = () => {
         AND lp2.active
       )
     GROUP BY vl.vector_layer_id
-    ORDER BY vl.label`
+    ORDER BY vl.name`
   const res = useLiveQuery(sql, [projectId])
-  const vectorLayerIds: { vector_layer_id: string }[] = res?.rows ?? []
+  // Attach the derived display label (wfs/upload layers use stored label_<lang>)
+  const vectorLayerIds = (res?.rows ?? []).map((l) => ({
+    ...l,
+    label: getVectorLayerLabel(l as VectorLayersModel, language, undefined),
+  }))
 
   const addRow = async () => {
     const vectorLayerId = await createVectorLayer({ projectId, type: 'wfs' })

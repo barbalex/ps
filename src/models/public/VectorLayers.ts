@@ -13,8 +13,6 @@ export type VectorLayersVectorLayerId = string & { __brand: 'public.vector_layer
 export default interface VectorLayers {
   vector_layer_id: VectorLayersVectorLayerId;
 
-  label: string | null;
-
   project_id: ProjectsProjectId;
 
   type: VectorLayerTypesEnum | null;
@@ -55,6 +53,16 @@ export default interface VectorLayers {
   updated_at: Date;
 
   updated_by: string | null;
+
+  name: string | null;
+
+  label_de: string | null;
+
+  label_en: string | null;
+
+  label_fr: string | null;
+
+  label_it: string | null;
 }
 
 /**
@@ -64,8 +72,6 @@ export default interface VectorLayers {
 export interface VectorLayersInitializer {
   /** Default value: uuidv7() */
   vector_layer_id?: VectorLayersVectorLayerId;
-
-  label?: string | null;
 
   project_id: ProjectsProjectId;
 
@@ -111,6 +117,16 @@ export interface VectorLayersInitializer {
   updated_at?: Date;
 
   updated_by?: string | null;
+
+  name?: string | null;
+
+  label_de?: string | null;
+
+  label_en?: string | null;
+
+  label_fr?: string | null;
+
+  label_it?: string | null;
 }
 
 /**
@@ -119,8 +135,6 @@ export interface VectorLayersInitializer {
  */
 export interface VectorLayersMutator {
   vector_layer_id?: VectorLayersVectorLayerId;
-
-  label?: string | null;
 
   project_id?: ProjectsProjectId;
 
@@ -162,4 +176,14 @@ export interface VectorLayersMutator {
   updated_at?: Date;
 
   updated_by?: string | null;
+
+  name?: string | null;
+
+  label_de?: string | null;
+
+  label_en?: string | null;
+
+  label_fr?: string | null;
+
+  label_it?: string | null;
 }
