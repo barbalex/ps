@@ -17,7 +17,7 @@ import styles from './AddField.module.css'
 // 4. which is:
 //    - a title and the necessary part of the field form
 //    - a search param in the url: editingField=fieldId
-export const AddField = ({ tableName, level, from }) => {
+export const AddField = ({ tableName, level }) => {
   const [designing] = useAtom(designingAtom)
   const { projectId } = useParams({ strict: false })
   const navigate = useNavigate()

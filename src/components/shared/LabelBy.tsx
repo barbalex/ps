@@ -22,7 +22,6 @@ export const LabelBy = ({
   table,
   label,
   name,
-  from,
 }: Props) => {
   const { projectId } = useParams({ strict: false })
 

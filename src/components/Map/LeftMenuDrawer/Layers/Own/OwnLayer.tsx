@@ -7,7 +7,6 @@ const {
   AccordionPanel,
   Tab,
   TabList,
-  SelectTabData,
 } = fluentUiReactComponents
 import { BsSquare } from 'react-icons/bs'
 import { useAtom, useSetAtom } from 'jotai'

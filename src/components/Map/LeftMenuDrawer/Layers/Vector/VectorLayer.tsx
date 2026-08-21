@@ -14,13 +14,11 @@ const {
   ToggleButton,
   Tab,
   TabList,
-  SelectTabData,
 } = fluentUiReactComponents
 import { BsSquare } from 'react-icons/bs'
 import { MdDeleteOutline } from 'react-icons/md'
 import { useAtom, useSetAtom } from 'jotai'
 import { usePGlite } from '@electric-sql/pglite-react'
-import { useLocation } from '@tanstack/react-router'
 import { useIntl } from 'react-intl'
 
 import { ErrorBoundary } from '../../../../shared/ErrorBoundary.tsx'
@@ -52,7 +50,6 @@ export const VectorLayer = ({ layer, isLast, isOpen }) => {
   const [vectorLayerDisplayId, setVectorLayerDisplayId] = useAtom(
     mapDrawerVectorLayerDisplayAtom,
   )
-  const { pathname } = useLocation()
 
   const db = usePGlite()
   const [tab, setTab] = useState<TabType>(() => {

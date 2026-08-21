@@ -14,7 +14,6 @@ const {
   ToggleButton,
   Tab,
   TabList,
-  SelectTabData,
 } = fluentUiReactComponents
 import { BsSquare } from 'react-icons/bs'
 import { MdDeleteOutline } from 'react-icons/md'
