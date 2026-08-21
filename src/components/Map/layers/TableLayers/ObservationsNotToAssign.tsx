@@ -32,7 +32,7 @@ export const ObservationsNotToAssign = ({ layerPresentation }) => {
     // add p's properties to all features:
     // TODO: make properties more readable for user
     // Idea: use iframe to open form, see TableLayer
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+     
     const { geometry, bbox, data, ...properties } = p
     const fc = {
       type: 'FeatureCollection',
