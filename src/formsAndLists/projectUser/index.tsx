@@ -87,10 +87,8 @@ export const ProjectUser = () => {
     })
     addOperation({
       table: 'project_users',
-      filters: [
-        { function: 'eq', column: 'project_id', value: row.project_id },
-        { function: 'eq', column: 'user_id', value: row.user_id },
-      ],
+      rowIdName: 'project_user_id',
+      rowId: projectUserId,
       operation: 'update',
       draft: { [name]: value },
       prev: { ...row },
@@ -120,10 +118,8 @@ export const ProjectUser = () => {
     if (!row.user_id) return
     addOperation({
       table: 'project_users',
-      filters: [
-        { function: 'eq', column: 'project_id', value: row.project_id },
-        { function: 'eq', column: 'user_id', value: row.user_id },
-      ],
+      rowIdName: 'project_user_id',
+      rowId: projectUserId,
       operation: 'update',
       draft: { role: value },
       prev: { ...row },

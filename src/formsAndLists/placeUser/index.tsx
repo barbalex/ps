@@ -86,10 +86,8 @@ export const PlaceUser = ({ from }) => {
     })
     addOperation({
       table: 'place_users',
-      filters: [
-        { function: 'eq', column: 'place_id', value: row.place_id },
-        { function: 'eq', column: 'user_id', value: row.user_id },
-      ],
+      rowIdName: 'place_user_id',
+      rowId: placeUserId,
       operation: 'update',
       draft: { [name]: value },
       prev: { ...row },
@@ -119,10 +117,8 @@ export const PlaceUser = ({ from }) => {
     if (!row.user_id) return
     addOperation({
       table: 'place_users',
-      filters: [
-        { function: 'eq', column: 'place_id', value: row.place_id },
-        { function: 'eq', column: 'user_id', value: row.user_id },
-      ],
+      rowIdName: 'place_user_id',
+      rowId: placeUserId,
       operation: 'update',
       draft: { role: value },
       prev: { ...row },

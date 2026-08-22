@@ -89,10 +89,8 @@ export const SubprojectUser = () => {
     })
     addOperation({
       table: 'subproject_users',
-      filters: [
-        { function: 'eq', column: 'subproject_id', value: row.subproject_id },
-        { function: 'eq', column: 'user_id', value: row.user_id },
-      ],
+      rowIdName: 'subproject_user_id',
+      rowId: subprojectUserId,
       operation: 'update',
       draft: { [name]: value },
       prev: { ...row },
@@ -122,10 +120,8 @@ export const SubprojectUser = () => {
     if (!row.user_id) return
     addOperation({
       table: 'subproject_users',
-      filters: [
-        { function: 'eq', column: 'subproject_id', value: row.subproject_id },
-        { function: 'eq', column: 'user_id', value: row.user_id },
-      ],
+      rowIdName: 'subproject_user_id',
+      rowId: subprojectUserId,
       operation: 'update',
       draft: { role: value },
       prev: { ...row },

@@ -112,6 +112,20 @@ export const observeOperations = () =>
         })
 
         return revertOperation(firstOperation)
+      } else if (error?.code === '22P02') {
+        // Malformed value (e.g. a null id serialized into a filter).
+        // This operation can never succeed — drop it so it doesn't block
+        // the queue. The local change stays; the user should redo the edit.
+        console.error(
+          'observeOperations, dropping malformed operation:',
+          firstOperation,
+        )
+        store.set(addNotificationAtom, {
+          intent: 'error',
+          title: 'Change not synced',
+          body: `A change in "${firstOperation.table}" was malformed and could not be synced. It was removed from the queue — please redo the edit.`,
+        })
+        return removeOperation(firstOperation)
       }
 
       // if network error: return, setting shortTermOnline false
