@@ -1,6 +1,6 @@
 # Benutzer-Rollen
 
-_Zuletzt aktualisiert am 8.5.2026_
+_Zuletzt aktualisiert am 22.8.2026_
 
 ---
 
@@ -13,6 +13,8 @@ Ein Benutzer ist Eigentümer:
 - Projekte
 - und aller in diesen Projekten enthaltenen Daten.
 
+Projekte werden innerhalb eines Kontos erstellt. Nur der Eigentümer des Kontos kann in ihm Projekte erstellen.
+
 Eigentümer-Rollen werden automatisch von der App gesetzt und können nicht geändert werden.
 Wie im richtigen Leben ist Eigentum nicht nur ein Privileg, sondern auch eine Last 😁: [Es sind die Eigentümer, die arten-fördern.app finanzieren](/docs/pricing).
 
@@ -21,7 +23,7 @@ Wie im richtigen Leben ist Eigentum nicht nur ein Privileg, sondern auch eine La
 Rollen sind von hoch nach tief:
 
 1. **Eigentümer**: kann Designer-Rollen vergeben
-2. **Designer**: kann Projekte und Teilprojekte erstellen und konfigurieren, Schreiber- und Leser-Rollen vergeben
+2. **Designer**: kann Projekte konfigurieren, Teilprojekte erstellen und konfigurieren, Schreiber- und Leser-Rollen vergeben
 3. **Schreiber**: kann alle Daten bearbeiten
 4. **Schreiber (spezifisch)**: kann Daten bearbeiten, für die er die entsprechende Rolle zugewiesen bekommt
 5. **Leser**: kann alle Daten synchronisieren und lesen

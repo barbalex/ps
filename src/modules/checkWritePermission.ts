@@ -128,7 +128,8 @@ const TABLE_CONFIG: Record<string, CheckConfig> = {
   },
 
   // Subproject-level — direct subproject_id
-  subprojects: subprojectDirect(),
+  // subprojects itself is governed by the project (backend: enforce_project_write)
+  subprojects: projectDirect(),
   subproject_taxa: subprojectDirect(),
   observation_imports: subprojectDirect(),
   goals: subprojectDirect(),
@@ -141,7 +142,8 @@ const TABLE_CONFIG: Record<string, CheckConfig> = {
   },
 
   // Place-level — direct place_id
-  places: placeDirect(),
+  // places itself is special-cased in checkWritePermission (checkPlaces):
+  // the backend governs it by the subproject/project, never by place_users
   checks: placeDirect(),
   check_reports: placeDirect(),
   action_reports: placeDirect(),
@@ -178,6 +180,8 @@ const TABLE_CONFIG: Record<string, CheckConfig> = {
 /**
  * Given a table name and row data (merged prev + draft), determine if the
  * current user has permission to write.
+ * `operation` ('insert' | 'update' | ...) distinguishes create flows, where
+ * anchor tables can't be checked by their own id yet.
  * Returns an object: { allowed: boolean; userRole?: string }
  */
 export async function checkWritePermission(
@@ -185,8 +189,15 @@ export async function checkWritePermission(
   userId: string,
   table: string,
   row: RowData,
+  operation?: string,
 ): Promise<{ allowed: boolean; userRole?: string }> {
   if (SKIP_TABLES.has(table)) return { allowed: true }
+
+  // The backend (enforce_projects_write) lets only the owner of the account
+  // create a project in it; projects_insert_owner_trigger assigns the own role
+  if (table === 'projects' && operation === 'insert') {
+    return checkProjectInsert(db, userId, row)
+  }
 
   // Files and charts carry multiple optional parent IDs; check the most specific.
   if (table === 'files' || table === 'charts') {
@@ -198,6 +209,12 @@ export async function checkWritePermission(
   // Layer presentations can link to wms_layer or vector_layer
   if (table === 'layer_presentations') {
     return checkLayerPresentation(db, userId, row)
+  }
+  // The backend (enforce_places_write) governs places by their subproject
+  // or the subproject's project — place_users is never consulted for them,
+  // and a newly created place has no place_users rows anyway
+  if (table === 'places') {
+    return checkPlaces(db, userId, row)
   }
 
   const config = TABLE_CONFIG[table]
@@ -290,7 +307,60 @@ async function checkLayerPresentation(
       [userId, row.vector_layer_id],
     )
     const role = res.rows[0]?.role
-    return { allowed: hasPermission(role), userRole: role }
+    if (role) return { allowed: hasPermission(role), userRole: role }
   }
   return { allowed: false }
+}
+
+// Mirrors the backend's enforce_projects_write: only the owner of the
+// account (accounts.user_id) may create a project in it. A missing or
+// foreign account_id is denied.
+async function checkProjectInsert(
+  db: PGlite,
+  userId: string,
+  row: RowData,
+): Promise<{ allowed: boolean; userRole?: string }> {
+  if (!row.account_id) return { allowed: false }
+  const res = await db.query<{ allowed: boolean }>(
+    `SELECT EXISTS(SELECT 1 FROM accounts WHERE account_id = $2 AND user_id = $1) AS allowed`,
+    [userId, row.account_id],
+  )
+  return { allowed: Boolean(res.rows[0]?.allowed) }
+}
+
+// Mirrors the backend's enforce_places_write: places are governed by the
+// role on their subproject or on the subproject's project. Level-2 places
+// carry parent_id instead of subproject_id, so navigate up one level.
+async function checkPlaces(
+  db: PGlite,
+  userId: string,
+  row: RowData,
+): Promise<{ allowed: boolean; userRole?: string }> {
+  let subprojectId = row.subproject_id as string | null | undefined
+  if (!subprojectId && row.parent_id) {
+    const parentRes = await db.query<{ subproject_id: string | null }>(
+      `SELECT subproject_id FROM places WHERE place_id = $1`,
+      [row.parent_id],
+    )
+    subprojectId = parentRes.rows[0]?.subproject_id ?? null
+  }
+  if (!subprojectId) return { allowed: true }
+
+  const res = await db.query<{
+    sub_role: string | null
+    proj_role: string | null
+  }>(
+    `SELECT
+      (SELECT role FROM subproject_users WHERE subproject_id = $2 AND user_id = $1) AS sub_role,
+      (SELECT pu.role FROM project_users pu
+        JOIN subprojects sp ON sp.project_id = pu.project_id
+        WHERE sp.subproject_id = $2 AND pu.user_id = $1) AS proj_role`,
+    [userId, subprojectId],
+  )
+  const subRole = res.rows[0]?.sub_role ?? undefined
+  const projRole = res.rows[0]?.proj_role ?? undefined
+  return {
+    allowed: hasPermission(subRole) || hasPermission(projRole),
+    userRole: subRole ?? projRole,
+  }
 }

@@ -1,6 +1,6 @@
 # User Roles
 
-*Last updated: 8 May 2026*
+*Last updated: 22 August 2026*
 
 ---
 
@@ -13,6 +13,8 @@ A user is owner:
 - of projects
 - and of all data created in these projects.
 
+Projects are created within an account. Only the account's owner can create projects in it.
+
 Owner roles are set automatically by the app and cannot be changed.
 Just as in real life, ownership is not only a privilege but also a burden 😁: [it is the owners who finance arten-fördern.app](/docs/pricing).
 
@@ -21,7 +23,7 @@ Just as in real life, ownership is not only a privilege but also a burden 😁: 
 Roles are listed from high to low:
 
 1. **Owner**: can assign Designer roles
-2. **Designer**: can create and configure projects and subprojects, assign Writer and Reader roles
+2. **Designer**: can configure projects, create and configure subprojects, assign Writer and Reader roles
 3. **Writer**: can edit all data
 4. **Writer (specific)**: can edit data for which they have been assigned this role
 5. **Reader**: can sync and read all data

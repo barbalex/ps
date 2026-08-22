@@ -1,6 +1,6 @@
 # Ruoli utente
 
-*Ultimo aggiornamento: 8 maggio 2026*
+*Ultimo aggiornamento: 22 agosto 2026*
 
 ---
 
@@ -13,6 +13,8 @@ Un utente è proprietario:
 - dei progetti
 - e di tutti i dati creati in questi progetti.
 
+I progetti vengono creati all'interno di un account. Solo il proprietario dell'account può crearvi progetti.
+
 I ruoli Proprietario vengono impostati automaticamente dall'app e non possono essere modificati.
 Come nella vita reale, la proprietà non è solo un privilegio ma anche un onere 😁: [sono i proprietari a finanziare arten-fördern.app](/docs/pricing).
 
@@ -21,7 +23,7 @@ Come nella vita reale, la proprietà non è solo un privilegio ma anche un onere
 I ruoli sono elencati dal più alto al più basso:
 
 1. **Proprietario**: può assegnare ruoli Designer
-2. **Designer**: può creare e configurare progetti e sottoprogetti, assegnare ruoli Redattore e Lettore
+2. **Designer**: può configurare progetti, creare e configurare sottoprogetti, assegnare ruoli Redattore e Lettore
 3. **Redattore**: può modificare tutti i dati
 4. **Redattore (specifico)**: può modificare i dati per i quali gli è stato assegnato questo ruolo
 5. **Lettore**: può sincronizzare e leggere tutti i dati

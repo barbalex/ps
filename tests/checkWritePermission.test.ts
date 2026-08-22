@@ -17,7 +17,8 @@ const check = (
   userId: string,
   table: string,
   row: Record<string, unknown>,
-) => checkWritePermission(fixture.db, userId, table, row)
+  operation?: string,
+) => checkWritePermission(fixture.db, userId, table, row, operation)
 
 describe('checkWritePermission — project level', () => {
   it('allows a project writer and reports their role', async () => {
@@ -136,6 +137,147 @@ describe('checkWritePermission — multi-parent and custom tables', () => {
       project_id: fixture.ids.project,
     })
     expect(viaProject.userRole).toBe('design')
+  })
+})
+
+describe('checkWritePermission — anchor-table inserts (create flows)', () => {
+  // Regression: places used to be checked via place_users by the row's own
+  // (brand-new) place_id, which never has place_users rows — so creating a
+  // place was always denied. The backend (enforce_places_write) governs
+  // places by the subproject or its project instead.
+  it('allows a project writer to create a level-1 place', async () => {
+    const res = await check(
+      fixture.ids.writer,
+      'places',
+      {
+        place_id: 'new-place',
+        subproject_id: fixture.ids.subproject,
+        level: 1,
+      },
+      'insert',
+    )
+    expect(res.allowed).toBe(true)
+    expect(res.userRole).toBe('write-all')
+  })
+
+  it('resolves level-2 places through the parent place', async () => {
+    const res = await check(
+      fixture.ids.writer,
+      'places',
+      { place_id: 'new-place-2', parent_id: fixture.ids.place, level: 2 },
+      'insert',
+    )
+    expect(res.allowed).toBe(true)
+    expect(res.userRole).toBe('write-all')
+  })
+
+  it('denies creating a place for a user with only a role on another place', async () => {
+    const res = await check(
+      fixture.ids.stranger,
+      'places',
+      {
+        place_id: 'new-place',
+        subproject_id: fixture.ids.subproject,
+        level: 1,
+      },
+      'insert',
+    )
+    expect(res.allowed).toBe(false)
+    expect(res.userRole).toBeUndefined()
+  })
+
+  it('denies read-only roles when creating a place', async () => {
+    const reader = await check(
+      fixture.ids.reader,
+      'places',
+      {
+        place_id: 'new-place',
+        subproject_id: fixture.ids.subproject,
+        level: 1,
+      },
+      'insert',
+    )
+    expect(reader.allowed).toBe(false)
+    expect(reader.userRole).toBe('read-all')
+
+    const outsider = await check(
+      fixture.ids.outsider,
+      'places',
+      {
+        place_id: 'new-place',
+        subproject_id: fixture.ids.subproject,
+        level: 1,
+      },
+      'insert',
+    )
+    expect(outsider.allowed).toBe(false)
+  })
+
+  it('denies updating a place for a place-only reader (places are governed by subproject/project)', async () => {
+    const res = await check(fixture.ids.stranger, 'places', {
+      place_id: fixture.ids.place,
+      subproject_id: fixture.ids.subproject,
+    })
+    expect(res.allowed).toBe(false)
+  })
+
+  it('allows creating a project in an account the user owns', async () => {
+    const res = await check(
+      fixture.ids.writer,
+      'projects',
+      { project_id: 'new-project', account_id: fixture.ids.account },
+      'insert',
+    )
+    expect(res.allowed).toBe(true)
+  })
+
+  it('denies creating a project in an account owned by someone else', async () => {
+    const res = await check(
+      fixture.ids.outsider,
+      'projects',
+      { project_id: 'new-project', account_id: fixture.ids.account },
+      'insert',
+    )
+    expect(res.allowed).toBe(false)
+    expect(res.userRole).toBeUndefined()
+  })
+
+  it('denies creating a project without an account', async () => {
+    const res = await check(
+      fixture.ids.writer,
+      'projects',
+      { project_id: 'new-project' },
+      'insert',
+    )
+    expect(res.allowed).toBe(false)
+  })
+
+  it('still requires a writer role to update a project', async () => {
+    const res = await check(fixture.ids.reader, 'projects', {
+      project_id: fixture.ids.project,
+    })
+    expect(res.allowed).toBe(false)
+    expect(res.userRole).toBe('read-all')
+  })
+
+  it('checks subprojects against the project role (as the backend does)', async () => {
+    const writer = await check(
+      fixture.ids.writer,
+      'subprojects',
+      { subproject_id: 'new-subproject', project_id: fixture.ids.project },
+      'insert',
+    )
+    expect(writer.allowed).toBe(true)
+
+    // outsider only has a subproject-level role, not a project role
+    const outsider = await check(
+      fixture.ids.outsider,
+      'subprojects',
+      { subproject_id: 'new-subproject', project_id: fixture.ids.project },
+      'insert',
+    )
+    expect(outsider.allowed).toBe(false)
+    expect(outsider.userRole).toBeUndefined()
   })
 })
 

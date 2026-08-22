@@ -29,6 +29,7 @@ export type TestFixture = {
     otherPlace: string
     action: string
     wmsLayer: string
+    account: string
   }
 }
 
@@ -58,6 +59,7 @@ export async function createTestDb(): Promise<TestFixture> {
     otherPlace: '30000000-0000-7000-8000-000000000002',
     action: '40000000-0000-7000-8000-000000000001',
     wmsLayer: '50000000-0000-7000-8000-000000000001',
+    account: '60000000-0000-7000-8000-000000000001',
   }
 
   // Role inheritance happens via triggers at write time:
@@ -72,6 +74,10 @@ export async function createTestDb(): Promise<TestFixture> {
       ('${ids.designer}', 'designer@example.com'),
       ('${ids.outsider}', 'outsider@example.com'),
       ('${ids.stranger}', 'stranger@example.com');
+
+    -- account owned by writer (for project-creation checks)
+    INSERT INTO accounts (account_id, user_id, type) VALUES
+      ('${ids.account}', '${ids.writer}', 'free');
 
     INSERT INTO projects (project_id, name) VALUES
       ('${ids.project}', 'Test Project');

@@ -1,29 +1,6 @@
 import { removeOperation } from './removeOperation.ts'
 import { store, pgliteDbAtom } from '../store.ts'
-
-// Irregular table→PK mappings that don't follow the simple "strip s" rule.
-const IRREGULAR_PK: Record<string, string> = {
-  taxa: 'taxon_id',
-}
-
-// Infer the primary-key column name from the table name following codebase
-// convention: strip trailing 's' (or 'ies'→'y'), append '_id'.
-// Falls back to scanning the draft for the first *_id key that isn't in the
-// provided FK columns set.
-const inferPkColumn = (
-  table: string,
-  draft: Record<string, unknown> = {},
-): string | undefined => {
-  if (IRREGULAR_PK[table]) return IRREGULAR_PK[table]
-  let candidate: string
-  if (table.endsWith('ies')) {
-    candidate = `${table.slice(0, -3)}y_id`
-  } else {
-    candidate = `${table.replace(/s$/, '')}_id`
-  }
-  if (candidate in draft) return candidate
-  return undefined
-}
+import { inferPkColumn } from './inferPkColumn.ts'
 
 // reverts an optimistic operation (change in PGlite) after writing to the server fails
 export const revertOperation = async (o) => {

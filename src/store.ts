@@ -4,6 +4,7 @@ import type { IntlShape } from 'react-intl'
 import { constants } from './modules/constants.ts'
 import { uuidv7 } from '@kripod/uuidv7'
 import { checkWritePermission } from './modules/checkWritePermission.ts'
+import { inferPkColumn } from './modules/inferPkColumn.ts'
 // import { atom } from 'jotai'
 
 export const store = createStore()
@@ -504,11 +505,21 @@ async function revertOperationInPlace(db, operation) {
   const { table, rowIdName, rowId, operation: op, draft, prev } = operation
   if (op === 'delete') return
   if (op === 'insert') {
+    // rowIdName/rowId may not be set on insert operations from createRows.ts;
+    // infer the PK column from the table name following the codebase convention.
+    const pkColumn = rowIdName ?? inferPkColumn(table, draft)
+    const pkValue = rowId ?? (pkColumn ? draft?.[pkColumn] : undefined)
+    if (!pkColumn || pkValue == null) {
+      console.error(
+        `revertOperationInPlace: cannot determine PK for insert revert on ${table}`,
+      )
+      return
+    }
     try {
-      await db.query(`DELETE FROM ${table} WHERE ${rowIdName} = $1`, [rowId])
+      await db.query(`DELETE FROM ${table} WHERE ${pkColumn} = $1`, [pkValue])
     } catch (e) {
       console.error(
-        `revertOperationInPlace: error deleting row ${rowId} from ${table}:`,
+        `revertOperationInPlace: error deleting row ${pkValue} from ${table}:`,
         e,
       )
     }
@@ -558,6 +569,7 @@ export const addOperationAtom = atom(
         userId,
         opDraft.table,
         row,
+        opDraft.operation,
       )
       if (!allowed) {
         await revertOperationInPlace(db, operation)

@@ -14,7 +14,7 @@
 -- Role requirement:
 --   Data tables ..............  write-all, design, or own
 --   *_users tables ...........  design or own
---   projects INSERT ..........  any authenticated user (becomes owner via trigger)
+--   projects INSERT ..........  only the owner of the target account
 -- ─────────────────────────────────────────────────────────────────────────────
 
 -- ─── Helper: extract user_id from PostgREST JWT ──────────────────────────────
@@ -128,7 +128,8 @@ $$;
 -- ─── Trigger functions ────────────────────────────────────────────────────────
 
 -- For the projects table itself.
--- INSERT: any authenticated user is allowed (the owner trigger makes them owner).
+-- INSERT: only the owner of the account (accounts.user_id) may create a
+-- project in it; the insert-owner trigger then makes them owner.
 -- UPDATE/DELETE: write-all+ on the project required.
 CREATE OR REPLACE FUNCTION enforce_projects_write()
 RETURNS trigger LANGUAGE plpgsql SECURITY DEFINER AS $$
@@ -146,9 +147,17 @@ BEGIN
             HINT = 'A valid session is required to modify data';
   END IF;
 
-  -- Any authenticated user may create a project; the insert-owner trigger
-  -- immediately adds them as owner.
   IF TG_OP = 'INSERT' THEN
+    IF NOT EXISTS (
+      SELECT 1 FROM accounts
+      WHERE account_id = NEW.account_id
+        AND user_id = v_user_id
+    ) THEN
+      RAISE EXCEPTION 'Insufficient permissions: only the account owner can create projects in this account'
+        USING ERRCODE = '42501',
+              DETAIL  = format('table=projects operation=INSERT account_id=%s', NEW.account_id),
+              HINT    = 'Projects can only be created in an account you own';
+    END IF;
     RETURN NEW;
   END IF;
 

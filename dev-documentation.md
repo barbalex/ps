@@ -251,6 +251,8 @@ A user can delete their own account from the user form (`src/formsAndLists/user/
 
 # 6 User Roles
 
+The user-facing documentation of this model lives in `docs/docsMd/user-roles_{de,en,fr,it}.md` — it is the source of truth for the roles model. Keep it correct and translated in all four languages.
+
 ## Rules
 
 1.  User owns own user row, related accounts, projects and other data
@@ -265,6 +267,7 @@ A user can delete their own account from the user form (`src/formsAndLists/user/
 10. Higher rights can be given at lower levels, their effect extending down as well. Example: A reader who shall be writer on a subproject needs the reader role on its project to sync in parent data
 11. Setting lower roles at higher levels after having set higher ones lower down will nuke higher roles at lower levels. That's a problem we will have to live with? Will have to inform users if this happens in projects/subprojects
 12. Owners are recognized by the 'owner' role given (the trigger that sets the owner roles uses above definition of what a user owns)
+13. Only the owner of an account (`accounts.user_id`) can create projects in that account. Enforced in `enforce_projects_write` (backend) and `checkWritePermission` (client)
 
 ## Implementation
 
