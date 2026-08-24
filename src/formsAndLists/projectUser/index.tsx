@@ -5,16 +5,13 @@ import { useSetAtom } from 'jotai'
 import { useIntl } from 'react-intl'
 import * as fluentUiReactComponents from '@fluentui/react-components'
 
-import { DropdownField } from '../../components/shared/DropdownField.tsx'
 import { RadioGroupField } from '../../components/shared/RadioGroupField.tsx'
 import { getValueFromChange } from '../../modules/getValueFromChange.ts'
 import { Header } from './Header.tsx'
 import { Loading } from '../../components/shared/Loading.tsx'
 import { NotFound } from '../../components/NotFound.tsx'
 import { addOperationAtom } from '../../store.ts'
-import type ProjectUsers from '../../models/public/ProjectUsers.ts'
 import { userRoleOptions } from '../../modules/constants.ts'
-import { AddUserButton } from '../../components/shared/AddUserButton.tsx'
 
 import styles from './index.module.css'
 
@@ -28,9 +25,20 @@ const {
   DialogContent,
   DialogActions,
   Button,
+  Field,
+  Input,
 } = fluentUiReactComponents
 
 const from = '/data/projects/$projectId_/users/$projectUserId/'
+
+type Row = {
+  project_user_id: string
+  project_id: string | null
+  email: string | null
+  role: string | null
+  project_role_id: string | null
+  [key: string]: unknown
+}
 
 export const ProjectUser = () => {
   const { projectUserId } = useParams({ from })
@@ -44,16 +52,16 @@ export const ProjectUser = () => {
 
   const db = usePGlite()
   const res = useLiveQuery(
-    `SELECT * FROM project_users WHERE project_user_id = $1`,
+    `SELECT pu.*, pr.role, pr.project_role_id
+     FROM project_users pu
+     LEFT JOIN project_roles pr ON pr.project_user_id = pu.project_user_id
+     WHERE pu.project_user_id = $1`,
     [projectUserId],
   )
-  const row: ProjectUsers | undefined = res?.rows?.[0]
+  const row: Row | undefined = res?.rows?.[0]
 
-  const ownerRes = useLiveQuery(
-    `SELECT a.user_id FROM projects p JOIN accounts a ON p.account_id = a.account_id WHERE p.project_id = $1`,
-    [row?.project_id ?? null],
-  )
-  const isOwner = !!(row?.user_id && ownerRes?.rows?.[0]?.user_id === row.user_id)
+  // the owner row is created by trigger and must not be edited
+  const isOwner = row?.role === 'own'
 
   const onChange = async (e, data) => {
     const { name, value } = getValueFromChange(e, data)
@@ -68,10 +76,16 @@ export const ProjectUser = () => {
       return
     }
 
+    // email edits write the directory; role edits write project_roles
+    const table = name === 'role' ? 'project_roles' : 'project_users'
+    const rowIdName = name === 'role' ? 'project_role_id' : 'project_user_id'
+    const rowId = name === 'role' ? row.project_role_id : projectUserId
+    if (!rowId) return
+
     try {
       await db.query(
-        `UPDATE project_users SET ${name} = $1 WHERE project_user_id = $2`,
-        [value, projectUserId],
+        `UPDATE ${table} SET ${name} = $1 WHERE ${rowIdName} = $2`,
+        [value, rowId],
       )
     } catch (error) {
       setValidations((prev) => ({
@@ -81,14 +95,13 @@ export const ProjectUser = () => {
       return
     }
     setValidations((prev) => {
-       
       const { [name]: _, ...rest } = prev
       return rest
     })
     addOperation({
-      table: 'project_users',
-      rowIdName: 'project_user_id',
-      rowId: projectUserId,
+      table,
+      rowIdName,
+      rowId,
       operation: 'update',
       draft: { [name]: value },
       prev: { ...row },
@@ -98,10 +111,11 @@ export const ProjectUser = () => {
   const onConfirmRole = async () => {
     const value = pendingRole!
     setPendingRole(null)
+    if (!row.project_role_id) return
     try {
       await db.query(
-        `UPDATE project_users SET role = $1 WHERE project_user_id = $2`,
-        [value, projectUserId],
+        `UPDATE project_roles SET role = $1 WHERE project_role_id = $2`,
+        [value, row.project_role_id],
       )
     } catch (error) {
       setValidations((prev) => ({
@@ -111,43 +125,17 @@ export const ProjectUser = () => {
       return
     }
     setValidations((prev) => {
-       
       const { role: _, ...rest } = prev
       return rest
     })
-    if (!row.user_id) return
     addOperation({
-      table: 'project_users',
-      rowIdName: 'project_user_id',
-      rowId: projectUserId,
+      table: 'project_roles',
+      rowIdName: 'project_role_id',
+      rowId: row.project_role_id,
       operation: 'update',
       draft: { role: value },
       prev: { ...row },
     })
-  }
-
-  const onUserCreated = async (userId: string) => {
-    try {
-      await db.query(
-        `UPDATE project_users SET user_id = $1 WHERE project_user_id = $2`,
-        [userId, projectUserId],
-      )
-    } catch (error) {
-      setValidations((prev) => ({
-        ...prev,
-        user_id: { state: 'error', message: error.message },
-      }))
-      return
-    }
-    addOperation({
-      table: 'project_users',
-      rowIdName: 'project_user_id',
-      rowId: projectUserId,
-      operation: 'update',
-      draft: { user_id: userId },
-      prev: { ...row },
-    })
-    setTimeout(() => roleRef.current?.focus(), 50)
   }
 
   if (!res) return <Loading />
@@ -157,7 +145,7 @@ export const ProjectUser = () => {
       <NotFound
         table={formatMessage({
           id: 'gi+ubY',
-          defaultMessage: 'Projekt-Benutzer',
+          defaultMessage: 'Projektbenutzer',
         })}
         id={projectUserId}
       />
@@ -179,7 +167,7 @@ export const ProjectUser = () => {
 
   return (
     <div className="form-outer-container">
-      <Header autoFocusRef={autoFocusRef} />
+      <Header autoFocusRef={autoFocusRef} from={from} />
       <div className="form-container">
         {isOwner && (
           <p className={styles.ownerNotice}>
@@ -237,31 +225,32 @@ export const ProjectUser = () => {
                   appearance="secondary"
                   onClick={() => setPendingRole(null)}
                 >
-                  {formatMessage({ id: 'cancel', defaultMessage: 'Abbrechen' })}
+                  {formatMessage({
+                    id: 'cancel',
+                    defaultMessage: 'Abbrechen',
+                  })}
                 </Button>
               </DialogActions>
             </DialogBody>
           </DialogSurface>
         </Dialog>
-        <DropdownField
-          label={formatMessage({ id: 'qyI8KV', defaultMessage: 'Benutzer' })}
-          name="user_id"
-          table="users"
-          where={`user_id NOT IN (SELECT user_id FROM project_users WHERE project_id = '${row.project_id}' AND project_user_id != '${projectUserId}' AND user_id IS NOT NULL)`}
-          value={row.user_id ?? ''}
-          onChange={onChange}
-          disabled={isOwner}
-          autoFocus
-          ref={autoFocusRef}
-          validationState={validations?.user_id?.state}
-          validationMessage={validations?.user_id?.message}
-          button={
-            <AddUserButton
-              onUserCreated={onUserCreated}
-              disabled={isOwner}
-            />
-          }
-        />
+        <Field
+          label={formatMessage({
+            id: 'addUser.emailLabel',
+            defaultMessage: 'E-Mail-Adresse',
+          })}
+          validationState={validations?.email?.state ? 'error' : undefined}
+          validationMessage={validations?.email?.message}
+        >
+          <Input
+            name="email"
+            value={row.email ?? ''}
+            onChange={onChange}
+            disabled={isOwner}
+            autoFocus
+            ref={autoFocusRef}
+          />
+        </Field>
         <RadioGroupField
           label={formatMessage({ id: 'Gj0HkM', defaultMessage: 'Rolle' })}
           name="role"
@@ -277,7 +266,7 @@ export const ProjectUser = () => {
           )}
           value={row.role ?? ''}
           onChange={onChange}
-          disabled={isOwner || !row.user_id}
+          disabled={isOwner}
           validationState={validations?.role?.state}
           validationMessage={validations?.role?.message}
           ref={roleRef}

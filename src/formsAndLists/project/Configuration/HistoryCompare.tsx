@@ -228,7 +228,7 @@ export const ProjectConfigurationHistoryCompare = () => {
         id: 'ZPEO8P',
         defaultMessage: 'Diagramme',
       },
-      subproject_users_in_subproject: {
+      subproject_roles_in_subproject: {
         id: 'N3qLx9',
         defaultMessage: 'Benutzer in {subprojectNameSingular} anzeigen',
         values: { subprojectNameSingular },

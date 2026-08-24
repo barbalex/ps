@@ -12,9 +12,8 @@ import { Header } from './Header.tsx'
 import { Loading } from '../../components/shared/Loading.tsx'
 import { NotFound } from '../../components/NotFound.tsx'
 import { addOperationAtom } from '../../store.ts'
-import type SubprojectUsers from '../../models/public/SubprojectUsers.ts'
+import type SubprojectRoles from '../../models/public/SubprojectRoles.ts'
 import { userRoleOptions } from '../../modules/constants.ts'
-import { AddUserButton } from '../../components/shared/AddUserButton.tsx'
 
 import styles from './index.module.css'
 
@@ -33,29 +32,36 @@ const {
 const from =
   '/data/projects/$projectId_/subprojects/$subprojectId_/users/$subprojectUserId/'
 
+type Row = SubprojectRoles & { email: string | null; project_id: string | null }
+
 export const SubprojectUser = () => {
   const { subprojectUserId } = useParams({ from })
   const addOperation = useSetAtom(addOperationAtom)
+  const { formatMessage } = useIntl()
+
   const [validations, setValidations] = useState({})
   const [pendingRole, setPendingRole] = useState<string | null>(null)
-  const { formatMessage } = useIntl()
 
   const autoFocusRef = useRef<HTMLInputElement>(null)
   const roleRef = useRef<HTMLInputElement>(null)
 
   const db = usePGlite()
-
   const res = useLiveQuery(
-    `SELECT * FROM subproject_users WHERE subproject_user_id = $1`,
+    `SELECT sr.*, pu.email, sp.project_id
+     FROM subproject_roles sr
+     JOIN project_users pu ON pu.project_user_id = sr.project_user_id
+     JOIN subprojects sp ON sp.subproject_id = sr.subproject_id
+     WHERE sr.subproject_role_id = $1`,
     [subprojectUserId],
   )
-  const row: SubprojectUsers | undefined = res?.rows?.[0]
+  const row: Row | undefined = res?.rows?.[0]
 
+  // the project owner's own directory row: its role is maintained by triggers
   const ownerRes = useLiveQuery(
-    `SELECT a.user_id FROM subprojects sp JOIN projects p ON sp.project_id = p.project_id JOIN accounts a ON p.account_id = a.account_id WHERE sp.subproject_id = $1`,
-    [row?.subproject_id ?? null],
+    `SELECT 1 FROM project_roles WHERE project_user_id = $1 AND role = 'own'`,
+    [row?.project_user_id ?? null],
   )
-  const isOwner = !!(row?.user_id && ownerRes?.rows?.[0]?.user_id === row.user_id)
+  const isOwner = (ownerRes?.rows?.length ?? 0) > 0
 
   const onChange = async (e, data) => {
     const { name, value } = getValueFromChange(e, data)
@@ -72,7 +78,7 @@ export const SubprojectUser = () => {
 
     try {
       await db.query(
-        `UPDATE subproject_users SET ${name} = $1 WHERE subproject_user_id = $2`,
+        `UPDATE subproject_roles SET ${name} = $1 WHERE subproject_role_id = $2`,
         [value, subprojectUserId],
       )
     } catch (error) {
@@ -83,13 +89,12 @@ export const SubprojectUser = () => {
       return
     }
     setValidations((prev) => {
-       
       const { [name]: _, ...rest } = prev
       return rest
     })
     addOperation({
-      table: 'subproject_users',
-      rowIdName: 'subproject_user_id',
+      table: 'subproject_roles',
+      rowIdName: 'subproject_role_id',
       rowId: subprojectUserId,
       operation: 'update',
       draft: { [name]: value },
@@ -102,7 +107,7 @@ export const SubprojectUser = () => {
     setPendingRole(null)
     try {
       await db.query(
-        `UPDATE subproject_users SET role = $1 WHERE subproject_user_id = $2`,
+        `UPDATE subproject_roles SET role = $1 WHERE subproject_role_id = $2`,
         [value, subprojectUserId],
       )
     } catch (error) {
@@ -113,14 +118,13 @@ export const SubprojectUser = () => {
       return
     }
     setValidations((prev) => {
-       
       const { role: _, ...rest } = prev
       return rest
     })
-    if (!row.user_id) return
+    if (!row.project_user_id) return
     addOperation({
-      table: 'subproject_users',
-      rowIdName: 'subproject_user_id',
+      table: 'subproject_roles',
+      rowIdName: 'subproject_role_id',
       rowId: subprojectUserId,
       operation: 'update',
       draft: { role: value },
@@ -128,160 +132,127 @@ export const SubprojectUser = () => {
     })
   }
 
-  const onUserCreated = async (userId: string) => {
-    try {
-      await db.query(
-        `UPDATE subproject_users SET user_id = $1 WHERE subproject_user_id = $2`,
-        [userId, subprojectUserId],
-      )
-    } catch (error) {
-      setValidations((prev) => ({
-        ...prev,
-        user_id: { state: 'error', message: error.message },
-      }))
-      return
-    }
-    addOperation({
-      table: 'subproject_users',
-      rowIdName: 'subproject_user_id',
-      rowId: subprojectUserId,
-      operation: 'update',
-      draft: { user_id: userId },
-      prev: { ...row },
-    })
-    setTimeout(() => roleRef.current?.focus(), 50)
+  if (!res) return <Loading />
+
+  if (!row) {
+    return <NotFound table="User" id={subprojectUserId} />
   }
+
+  const showSpecificNotice =
+    row.role === 'read-specific' || row.role === 'write-specific'
+
+  const pendingRoleOption = userRoleOptions.find(
+    (o) => o.value === pendingRole,
+  )
+  const pendingRoleLabel = pendingRoleOption
+    ? formatMessage({
+        id: pendingRoleOption.labelId,
+        defaultMessage: pendingRoleOption.defaultMessage,
+      })
+    : pendingRole ?? ''
 
   return (
     <div className="form-outer-container">
-      <Header autoFocusRef={autoFocusRef} />
+      <Header autoFocusRef={autoFocusRef} from={from} />
       <div className="form-container">
-        {!res ? (
-          <Loading />
-        ) : row ? (
-          <>
-            {isOwner && (
-              <p className={styles.ownerNotice}>
-                {formatMessage({
-                  id: 'ownerRoleNotEditable',
-                  defaultMessage:
-                    'Diese Rolle wird automatisch gesetzt und kann nicht bearbeitet werden.',
-                })}
-              </p>
-            )}
-            {(row.role === 'read-specific' || row.role === 'write-specific') && (
-              <p className={styles.specificRoleNotice}>
-                {formatMessage({
-                  id: 'specificRoleNotice',
-                  defaultMessage:
-                    'Eine spezifische Rolle wurde gesetzt. Alle untergeordneten Rollen (falls vorhanden) wurden entfernt und müssen manuell gesetzt werden.',
-                })}
-              </p>
-            )}
-            {(() => {
-              const opt = userRoleOptions.find((o) => o.value === pendingRole)
-              const label = opt
-                ? formatMessage({
-                    id: opt.labelId,
-                    defaultMessage: opt.defaultMessage,
-                  })
-                : pendingRole ?? ''
-              return (
-                <Dialog
-                  open={pendingRole !== null}
-                  onOpenChange={(_, data) => {
-                    if (!data.open) setPendingRole(null)
-                  }}
-                >
-                  <DialogSurface>
-                    <DialogBody>
-                      <DialogTitle>
-                        {formatMessage(
-                          {
-                            id: 'specificRoleConfirmTitle',
-                            defaultMessage: 'Rolle „{role}“ setzen?',
-                          },
-                          { role: label },
-                        )}
-                      </DialogTitle>
-                      <DialogContent>
-                        {formatMessage(
-                          {
-                            id: 'specificRoleConfirmContent',
-                            defaultMessage:
-                              'Durch das Setzen der Rolle „{role}“ werden alle untergeordneten Rollen (falls vorhanden) für diesen Benutzer entfernt. Diese müssen danach manuell gesetzt werden.',
-                          },
-                          { role: label },
-                        )}
-                      </DialogContent>
-                      <DialogActions>
-                        <Button appearance="primary" onClick={onConfirmRole}>
-                          {formatMessage({
-                            id: 'specificRoleConfirmBtn',
-                            defaultMessage: 'Rolle setzen',
-                          })}
-                        </Button>
-                        <Button
-                          appearance="secondary"
-                          onClick={() => setPendingRole(null)}
-                        >
-                          {formatMessage({
-                            id: 'cancel',
-                            defaultMessage: 'Abbrechen',
-                          })}
-                        </Button>
-                      </DialogActions>
-                    </DialogBody>
-                  </DialogSurface>
-                </Dialog>
-              )
-            })()}
-            <DropdownField
-              label={formatMessage({
-                id: 'qyI8KV',
-                defaultMessage: 'Benutzer',
-              })}
-              name="user_id"
-              table="users"
-              where={`user_id NOT IN (SELECT user_id FROM subproject_users WHERE subproject_id = '${row.subproject_id}' AND subproject_user_id != '${subprojectUserId}' AND user_id IS NOT NULL)`}
-              value={row.user_id ?? ''}
-              onChange={onChange}
-              disabled={isOwner}
-              autoFocus
-              ref={autoFocusRef}
-              validationState={validations?.user_id?.state}
-              validationMessage={validations?.user_id?.message}
-              button={
-                <AddUserButton
-                  onUserCreated={onUserCreated}
-                  disabled={isOwner}
-                />
-              }
-            />
-            <RadioGroupField
-              label={formatMessage({ id: 'Gj0HkM', defaultMessage: 'Rolle' })}
-              name="role"
-              list={userRoleOptions.map((o) => o.value)}
-              labelMap={Object.fromEntries(
-                userRoleOptions.map((o) => [
-                  o.value,
-                  formatMessage({
-                    id: o.labelId,
-                    defaultMessage: o.defaultMessage,
-                  }),
-                ]),
-              )}
-              value={row.role ?? ''}
-              onChange={onChange}
-              disabled={isOwner || !row.user_id}
-              validationState={validations?.role?.state}
-              validationMessage={validations?.role?.message}
-              ref={roleRef}
-            />
-          </>
-        ) : (
-          <NotFound table="User" id={subprojectUserId} />
+        {isOwner && (
+          <p className={styles.ownerNotice}>
+            {formatMessage({
+              id: 'ownerRoleNotEditable',
+              defaultMessage:
+                'Diese Rolle wird automatisch gesetzt und kann nicht bearbeitet werden.',
+            })}
+          </p>
         )}
+        {showSpecificNotice && (
+          <p className={styles.specificRoleNotice}>
+            {formatMessage({
+              id: 'specificRoleNotice',
+              defaultMessage:
+                'Eine spezifische Rolle wurde gesetzt. Alle untergeordneten Rollen (falls vorhanden) wurden entfernt und müssen manuell gesetzt werden.',
+            })}
+          </p>
+        )}
+        <Dialog
+          open={pendingRole !== null}
+          onOpenChange={(_, data) => {
+            if (!data.open) setPendingRole(null)
+          }}
+        >
+          <DialogSurface>
+            <DialogBody>
+              <DialogTitle>
+                {formatMessage(
+                  {
+                    id: 'specificRoleConfirmTitle',
+                    defaultMessage: 'Rolle „{role}“ setzen?',
+                  },
+                  { role: pendingRoleLabel },
+                )}
+              </DialogTitle>
+              <DialogContent>
+                {formatMessage(
+                  {
+                    id: 'specificRoleConfirmContent',
+                    defaultMessage:
+                      'Durch das Setzen der Rolle „{role}“ werden alle untergeordneten Rollen (falls vorhanden) für diesen Benutzer entfernt. Diese müssen danach manuell gesetzt werden.',
+                  },
+                  { role: pendingRoleLabel },
+                )}
+              </DialogContent>
+              <DialogActions>
+                <Button appearance="primary" onClick={onConfirmRole}>
+                  {formatMessage({
+                    id: 'specificRoleConfirmBtn',
+                    defaultMessage: 'Rolle setzen',
+                  })}
+                </Button>
+                <Button
+                  appearance="secondary"
+                  onClick={() => setPendingRole(null)}
+                >
+                  {formatMessage({
+                    id: 'cancel',
+                    defaultMessage: 'Abbrechen',
+                  })}
+                </Button>
+              </DialogActions>
+            </DialogBody>
+          </DialogSurface>
+        </Dialog>
+        <DropdownField
+          label={formatMessage({ id: 'qyI8KV', defaultMessage: 'Benutzer' })}
+          name="project_user_id"
+          table="project_users"
+          where={`project_id = '${row.project_id}' AND project_user_id NOT IN (SELECT project_user_id FROM subproject_roles WHERE subproject_id = '${row.subproject_id}' AND subproject_role_id != '${subprojectUserId}')`}
+          value={row.project_user_id ?? ''}
+          onChange={onChange}
+          disabled={isOwner}
+          autoFocus
+          ref={autoFocusRef}
+          validationState={validations?.project_user_id?.state}
+          validationMessage={validations?.project_user_id?.message}
+        />
+        <RadioGroupField
+          label={formatMessage({ id: 'Gj0HkM', defaultMessage: 'Rolle' })}
+          name="role"
+          list={userRoleOptions.map((o) => o.value)}
+          labelMap={Object.fromEntries(
+            userRoleOptions.map((o) => [
+              o.value,
+              formatMessage({
+                id: o.labelId,
+                defaultMessage: o.defaultMessage,
+              }),
+            ]),
+          )}
+          value={row.role ?? ''}
+          onChange={onChange}
+          disabled={isOwner || !row.project_user_id}
+          validationState={validations?.role?.state}
+          validationMessage={validations?.role?.message}
+          ref={roleRef}
+        />
       </div>
     </div>
   )

@@ -23,7 +23,8 @@ import { NotFound } from '../../components/NotFound.tsx'
 import { Section } from '../../components/shared/Section.tsx'
 import { FilterButton } from '../../components/shared/FilterButton.tsx'
 import { getValueFromChange } from '../../modules/getValueFromChange.ts'
-import { createField, createProjectReport, createProjectUser, createUnit } from '../../modules/createRows.ts'
+import {createField, createProjectReport, createUnit} from '../../modules/createRows.ts'
+import { AddProjectUserButton } from '../../components/shared/AddProjectUserButton.tsx'
 import {
   addOperationAtom,
   designingAtom,
@@ -144,11 +145,6 @@ export const ProjectWithFiles = ({ from }: { from: string }) => {
     if (!id) return
     navigate({ to: `${reportsUrl}/${id}/` })
   }
-  const onClickAddProjectUser = async () => {
-    const id = await createProjectUser({ projectId })
-    if (!id) return
-    navigate({ to: `${usersUrl}/${id}/` })
-  }
   const onClickAddUnit = async () => {
     const id = await createUnit({ projectId })
     if (!id) return
@@ -178,11 +174,9 @@ export const ProjectWithFiles = ({ from }: { from: string }) => {
     isDesigning && usersInProject && isUsersList ? (
       <>
         <FilterButton isFiltered={projectUsersIsFiltered} />
-        <Button
-          size="medium"
-          title={newLabel}
-          icon={<FaPlus />}
-          onClick={onClickAddProjectUser}
+        <AddProjectUserButton
+          scope={{ kind: 'project', projectId }}
+          onUserCreated={(id) => navigate({ to: `${usersUrl}/${id}/` })}
         />
       </>
     ) : undefined

@@ -1,14 +1,12 @@
-import type { default as public_UserRolesEnum } from '../public/UserRolesEnum.ts';
-
 /** Represents the table partman.template_public_project_users_history */
 export default interface TemplatePublicProjectUsersHistory {
   project_user_id: string;
 
   project_id: string | null;
 
-  user_id: string | null;
+  email: string;
 
-  role: public_UserRolesEnum | null;
+  auth_user_id: string | null;
 
   label: string | null;
 
@@ -27,9 +25,9 @@ export interface TemplatePublicProjectUsersHistoryInitializer {
 
   project_id?: string | null;
 
-  user_id?: string | null;
+  email: string;
 
-  role?: public_UserRolesEnum | null;
+  auth_user_id?: string | null;
 
   label?: string | null;
 
@@ -48,9 +46,9 @@ export interface TemplatePublicProjectUsersHistoryMutator {
 
   project_id?: string | null;
 
-  user_id?: string | null;
+  email?: string;
 
-  role?: public_UserRolesEnum | null;
+  auth_user_id?: string | null;
 
   label?: string | null;
 

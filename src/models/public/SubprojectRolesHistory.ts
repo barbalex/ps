@@ -1,17 +1,17 @@
 import type { default as UserRolesEnum } from './UserRolesEnum.ts';
 
 /**
- * Represents the table public.subproject_users_history
- * System-versioned history of subproject_users. Managed by temporal_tables and partitioned yearly by updated_at.
+ * Represents the table public.subproject_roles_history
+ * System-versioned history of subproject_roles. Managed by temporal_tables and partitioned yearly by updated_at.
  */
-export default interface SubprojectUsersHistory {
-  subproject_user_id: string;
+export default interface SubprojectRolesHistory {
+  subproject_role_id: string;
 
   subproject_id: string | null;
 
-  user_id: string | null;
+  project_user_id: string;
 
-  role: UserRolesEnum | null;
+  role: UserRolesEnum;
 
   label: string | null;
 
@@ -26,18 +26,18 @@ export default interface SubprojectUsersHistory {
 }
 
 /**
- * Represents the initializer for the table public.subproject_users_history
- * System-versioned history of subproject_users. Managed by temporal_tables and partitioned yearly by updated_at.
+ * Represents the initializer for the table public.subproject_roles_history
+ * System-versioned history of subproject_roles. Managed by temporal_tables and partitioned yearly by updated_at.
  */
-export interface SubprojectUsersHistoryInitializer {
+export interface SubprojectRolesHistoryInitializer {
   /** Default value: uuidv7() */
-  subproject_user_id?: string;
+  subproject_role_id?: string;
 
   subproject_id?: string | null;
 
-  user_id?: string | null;
+  project_user_id: string;
 
-  role?: UserRolesEnum | null;
+  role: UserRolesEnum;
 
   label?: string | null;
 
@@ -54,17 +54,17 @@ export interface SubprojectUsersHistoryInitializer {
 }
 
 /**
- * Represents the mutator for the table public.subproject_users_history
- * System-versioned history of subproject_users. Managed by temporal_tables and partitioned yearly by updated_at.
+ * Represents the mutator for the table public.subproject_roles_history
+ * System-versioned history of subproject_roles. Managed by temporal_tables and partitioned yearly by updated_at.
  */
-export interface SubprojectUsersHistoryMutator {
-  subproject_user_id?: string;
+export interface SubprojectRolesHistoryMutator {
+  subproject_role_id?: string;
 
   subproject_id?: string | null;
 
-  user_id?: string | null;
+  project_user_id?: string;
 
-  role?: UserRolesEnum | null;
+  role?: UserRolesEnum;
 
   label?: string | null;
 

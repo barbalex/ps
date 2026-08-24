@@ -1,2 +1,0 @@
-export interface users_subproject_users_label_trigger_params {
-}

@@ -1,12 +1,14 @@
 import { useRef, useState } from 'react'
 import { usePGlite } from '@electric-sql/pglite-react'
-import { useSetAtom } from 'jotai'
 import { useIntl } from 'react-intl'
 import { FaPlus } from 'react-icons/fa'
 import * as fluentUiReactComponents from '@fluentui/react-components'
-import { uuidv7 } from '@kripod/uuidv7'
 
-import { addOperationAtom } from '../../store.ts'
+import {
+  createPlaceRole,
+  createProjectUser,
+  createSubprojectRole,
+} from '../../modules/createRows.ts'
 
 const {
   Button,
@@ -21,19 +23,37 @@ const {
   Tooltip,
 } = fluentUiReactComponents
 
+type Scope =
+  | { kind: 'project'; projectId: string }
+  | { kind: 'subproject'; projectId: string; subprojectId: string }
+  | { kind: 'place'; projectId: string; placeId: string }
+
 interface Props {
-  onUserCreated: (userId: string) => void
+  scope: Scope
+  /**
+   * receives the created row id for the scope:
+   * project_user_id (project) / subproject_role_id / place_role_id
+   */
+  onUserCreated: (createdId: string) => void
   disabled?: boolean
 }
 
-export const AddUserButton = ({ onUserCreated, disabled = false }: Props) => {
+/**
+ * Adds a person to the project directory by email and gives them a
+ * 'read-all' role at the given scope. If the email is already in the
+ * directory, only the missing role row is created.
+ */
+export const AddProjectUserButton = ({
+  scope,
+  onUserCreated,
+  disabled = false,
+}: Props) => {
   const [open, setOpen] = useState(false)
   const [email, setEmail] = useState('')
   const [emailError, setEmailError] = useState<string | null>(null)
   const emailRef = useRef<HTMLInputElement>(null)
   const { formatMessage } = useIntl()
   const db = usePGlite()
-  const addOperation = useSetAtom(addOperationAtom)
 
   const onOpen = () => {
     setEmail('')
@@ -48,7 +68,7 @@ export const AddUserButton = ({ onUserCreated, disabled = false }: Props) => {
   }
 
   const onSave = async () => {
-    const trimmedEmail = email.trim()
+    const trimmedEmail = email.trim().toLowerCase()
     if (!trimmedEmail) {
       setEmailError(
         formatMessage({
@@ -60,35 +80,66 @@ export const AddUserButton = ({ onUserCreated, disabled = false }: Props) => {
       return
     }
 
-    const existing = await db.query(
-      `SELECT user_id FROM users WHERE email = $1`,
-      [trimmedEmail],
+    const existing = await db.query<{ project_user_id: string }>(
+      `SELECT project_user_id FROM project_users WHERE project_id = $1 AND email = $2`,
+      [scope.projectId, trimmedEmail],
     )
-    if (existing.rows.length > 0) {
-      setEmail('')
-      setEmailError(
-        formatMessage({
-          id: 'addUser.emailExists',
-          defaultMessage:
-            'Ein Benutzer mit dieser E-Mail-Adresse existiert bereits.',
-        }),
-      )
-      emailRef.current?.focus()
-      return
+    const existingId = existing.rows[0]?.project_user_id
+
+    let projectUserId: string
+    let createdId: string
+    if (existingId) {
+      projectUserId = existingId
+      createdId = existingId
+    } else {
+      projectUserId = await createProjectUser({
+        projectId: scope.projectId,
+        email: trimmedEmail,
+      })
+      if (!projectUserId) return
+      createdId = projectUserId
     }
 
-    const user_id = uuidv7()
-    await db.query(`INSERT INTO users (user_id, email) VALUES ($1, $2)`, [
-      user_id,
-      trimmedEmail,
-    ])
-    addOperation({
-      table: 'users',
-      operation: 'insert',
-      draft: { user_id, email: trimmedEmail },
-    })
+    // role row at the target scope (skip if one exists already)
+    if (scope.kind === 'subproject') {
+      const has = await db.query(
+        `SELECT 1 FROM subproject_roles WHERE subproject_id = $1 AND project_user_id = $2`,
+        [scope.subprojectId, projectUserId],
+      )
+      if (has.rows.length === 0) {
+        createdId = (await createSubprojectRole({
+          subprojectId: scope.subprojectId,
+          projectUserId,
+        }))!
+      } else {
+        const existing = await db.query<{ subproject_role_id: string }>(
+          `SELECT subproject_role_id FROM subproject_roles WHERE subproject_id = $1 AND project_user_id = $2`,
+          [scope.subprojectId, projectUserId],
+        )
+        createdId = existing.rows[0]!.subproject_role_id
+      }
+    }
+    if (scope.kind === 'place') {
+      const has = await db.query(
+        `SELECT 1 FROM place_roles WHERE place_id = $1 AND project_user_id = $2`,
+        [scope.placeId, projectUserId],
+      )
+      if (has.rows.length === 0) {
+        createdId = (await createPlaceRole({
+          placeId: scope.placeId,
+          projectUserId,
+        }))!
+      } else {
+        const existing = await db.query<{ place_role_id: string }>(
+          `SELECT place_role_id FROM place_roles WHERE place_id = $1 AND project_user_id = $2`,
+          [scope.placeId, projectUserId],
+        )
+        createdId = existing.rows[0]!.place_role_id
+      }
+    }
+
     setOpen(false)
-    onUserCreated(user_id)
+    onUserCreated(createdId)
   }
 
   return (

@@ -45,7 +45,7 @@ type NavData = {
   action_reports_count_unfiltered: number
   action_reports_count_filtered: number
   observations_count: number
-  place_users_count: number
+  place_roles_count: number
   files_count_unfiltered: number
   files_count_filtered: number
 }
@@ -113,7 +113,7 @@ export const usePlaceNavData = ({
         action_reports_count_unfiltered AS (SELECT count(*) FROM action_reports WHERE place_id = '${placeId2 ?? placeId}'),
         action_reports_count_filtered AS (SELECT count(*) FROM action_reports WHERE place_id = '${placeId2 ?? placeId}' ${actionReportsIsFiltered ? ` AND ${actionReportsFilterString}` : ''}),
         observations_count AS (SELECT count(*) FROM observations WHERE place_id = '${placeId2 ?? placeId}'),
-        place_users_count AS (SELECT count(*) FROM place_users WHERE place_id = '${placeId2 ?? placeId}'),
+        place_roles_count AS (SELECT count(*) FROM place_roles WHERE place_id = '${placeId2 ?? placeId}'),
         files_count_unfiltered AS (SELECT count(*) FROM files WHERE place_id = '${placeId2 ?? placeId}'),
         files_count_filtered AS (SELECT count(*) FROM files WHERE place_id = '${placeId2 ?? placeId}' ${filesIsFiltered ? ` AND ${filesFilterString}` : ''})
       SELECT
@@ -132,7 +132,7 @@ export const usePlaceNavData = ({
         action_reports_count_unfiltered.count AS action_reports_count_unfiltered,
         action_reports_count_filtered.count AS action_reports_count_filtered,
         observations_count.count AS observations_count,
-        place_users_count.count AS place_users_count,
+        place_roles_count.count AS place_roles_count,
         files_count_unfiltered.count AS files_count_unfiltered,
         files_count_filtered.count AS files_count_filtered
       FROM 
@@ -150,7 +150,7 @@ export const usePlaceNavData = ({
         action_reports_count_unfiltered,
         action_reports_count_filtered,
         observations_count,
-        place_users_count,
+        place_roles_count,
         files_count_unfiltered,
         files_count_filtered
       WHERE 
@@ -300,7 +300,7 @@ export const usePlaceNavData = ({
         id: 'users',
         label: buildNavLabel({
           loading,
-          countFiltered: nav?.place_users_count ?? 0,
+          countFiltered: nav?.place_roles_count ?? 0,
           namePlural: formatMessage({
             id: 'eZ3yEB',
             defaultMessage: 'Benutzer',

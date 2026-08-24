@@ -75,7 +75,7 @@ async function ensureE2eData() {
 
     -- keep the sync small: only the e2e project, not the demo project
     DELETE FROM project_users
-    WHERE user_id = '${userId}' AND project_id = '${DEMO_PROJECT_ID}';
+    WHERE email = '${E2E_EMAIL}' AND project_id = '${DEMO_PROJECT_ID}';
 
     INSERT INTO projects (project_id, name)
     VALUES ('${E2E_PROJECT_ID}', 'e2e_project')
@@ -97,16 +97,26 @@ async function ensureE2eData() {
     VALUES ('${E2E_PLACE_ID}', '${E2E_SUBPROJECT_ID}', 1, 'e2e population')
     ON CONFLICT DO NOTHING;
 
-    INSERT INTO project_users (project_id, user_id, role)
-    VALUES ('${E2E_PROJECT_ID}', '${userId}', 'write-all')
+    INSERT INTO project_users (project_id, email, auth_user_id)
+    VALUES ('${E2E_PROJECT_ID}', '${E2E_EMAIL}', '${userId}')
+    ON CONFLICT (project_id, email) DO NOTHING;
+
+    INSERT INTO project_roles (project_id, project_user_id, role)
+    SELECT '${E2E_PROJECT_ID}', project_user_id, 'write-all'
+    FROM project_users
+    WHERE project_id = '${E2E_PROJECT_ID}' AND email = '${E2E_EMAIL}'
     ON CONFLICT DO NOTHING;
 
-    INSERT INTO subproject_users (subproject_id, user_id, role)
-    VALUES ('${E2E_SUBPROJECT_ID}', '${userId}', 'write-all')
+    INSERT INTO subproject_roles (subproject_id, project_user_id, role)
+    SELECT '${E2E_SUBPROJECT_ID}', project_user_id, 'write-all'
+    FROM project_users
+    WHERE project_id = '${E2E_PROJECT_ID}' AND email = '${E2E_EMAIL}'
     ON CONFLICT DO NOTHING;
 
-    INSERT INTO place_users (place_id, user_id, role)
-    VALUES ('${E2E_PLACE_ID}', '${userId}', 'write-all')
+    INSERT INTO place_roles (place_id, project_user_id, role)
+    SELECT '${E2E_PLACE_ID}', project_user_id, 'write-all'
+    FROM project_users
+    WHERE project_id = '${E2E_PROJECT_ID}' AND email = '${E2E_EMAIL}'
     ON CONFLICT DO NOTHING;
   `)
 }

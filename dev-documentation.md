@@ -297,7 +297,95 @@ The user-facing documentation of this model lives in `docs/docsMd/user-roles_{de
 19. Critical for speed: Write checks, especially when data is imported. Batch imports!
 20. Most critical for speed: Ensure that changing a role does not lead to re-syncing already synced rows other than `..._users` or for users not involved. This rules out the array-column per role approach!
 
-You can now log in at the dev backend as alex.barbalex@gmail.com / test-test1 and see all the seeded data
+You can now log in at the dev backend as test@test.ch / test-test and see all the seeded data (email verification is disabled in dev; accounts older than the 1-hour grace period need `email_verified = true` in the db)
+
+## Target Model For The User-Roles Rebuild (agreed 2026-08-22)
+
+The current model conflates two concepts in the global `users` table: login identity and project collaborators. The rebuild separates them. See also `docs/docsMd/user-roles_{de,en,fr,it}.md` — the user-facing doc must be rewritten after the rebuild.
+
+### Principles
+
+1. Login identity is global. A person logs in once; login emails are globally unique. The `users` table serves auth only (email, email_verified, name) and is never exposed in project UIs or synced to other users' devices beyond their own row.
+2. Collaborator identity is project-scoped. Each project keeps its own directory of people (`project_users`), keyed by email. Emails may overlap across projects; within a project an email identifies exactly one collaborator.
+3. People and roles are separate. `project_users` lists people; `*_roles` tables assign roles at three symmetric scopes (project, subproject, place level 1/2).
+4. Accounts own projects and finance the app. Only the account owner may create projects in it (rules 13, enforced in `enforce_projects_write` and `checkWritePermission`).
+5. Owner roles are set only by triggers (rule 7).
+6. The role enum stays: `('read-specific', 'read-all', 'write-specific', 'write-all', 'design', 'own')`. One role per user per scope, explicit via UNIQUE constraint.
+
+### Schema
+
+```sql
+-- auth only (better-auth user table); NOT referenced by project data anymore
+users (user_id, email UNIQUE, email_verified, name, ...)
+
+-- billing unit; owns projects. email = billing contact
+-- (may default to the owner's auth email)
+accounts (account_id, user_id -> users, email, type, ...)
+
+-- per-project directory of collaborators
+project_users (
+  project_user_id uuid PRIMARY KEY,
+  project_id uuid NOT NULL REFERENCES projects,
+  email text NOT NULL,            -- trimmed, lowercased on write
+  auth_user_id uuid DEFAULT NULL REFERENCES users,  -- stamped on claim (see below)
+  UNIQUE (project_id, email)
+)
+
+-- role assignments: same shape at every scope
+project_roles    (project_role_id    PRIMARY KEY, project_id,    project_user_id, role, UNIQUE (project_user_id, project_id))
+subproject_roles (subproject_role_id PRIMARY KEY, subproject_id, project_user_id, role, UNIQUE (project_user_id, subproject_id))
+place_roles      (place_role_id      PRIMARY KEY, place_id,      project_user_id, role, UNIQUE (project_user_id, place_id))
+
+-- all three role tables:
+--   project_user_id REFERENCES project_users ON DELETE CASCADE
+--   role user_roles_enum NOT NULL
+```
+
+Uuid primary keys everywhere — the optimistic-write/operation-queue/revert machinery keys on row ids; email is a join key, never a primary key.
+
+No `name` column: collaborators are identified and displayed by email (labels are email-based today too); display names for logged-in users come from the auth `users` table. If ever needed, a nullable `name` can be added later (non-breaking).
+
+### Triggers
+
+All guarded with `WHEN (pg_trigger_depth() < 1)` and skipped when `electric.syncing` (as today):
+
+1. `projects` insert owner trigger: insert a `project_users` row with the account owner's auth email (claim it immediately: set `auth_user_id`) plus a `project_roles` row with role `own`.
+2. Email normalization on `project_users` writes: `trim(lower(email))`, so every email comparison (login match, sync shapes) is exact.
+3. Role cascade (replaces items 7/9): setting a general role copies it into the lower `*_roles` tables; setting a `-specific` role removes lower rows; inserting a subproject/place copies roles from the parent scope. Symmetric because all role tables share the same shape.
+4. Label triggers: denormalize `email (role)` labels onto the `*_roles` rows from the directory, so list views don't join. Editing a person's email in the directory refreshes labels everywhere (replaces `users_*_label_trigger`).
+
+### Access resolution (login -> roles)
+
+1. On login (or app start), match the authenticated email against `project_users.email` (normalized). Recommended: stamp `auth_user_id` onto matched directory rows (claim), making the identity link a stored fact instead of a repeated string match. Claiming also survives later email mismatches until re-claimed.
+2. Sync shapes use the same resolution, e.g.:
+   - `project_users`: `WHERE project_id IN (SELECT ... matched for this auth user)` — the auth user's visible projects
+   - `*_roles` / project data: via `project_user_id IN (SELECT project_user_id FROM project_users WHERE auth_user_id = $1)` (or email match pre-claim)
+3. Server-side permission triggers (`12_writePermissionTriggers.sql`) and the client-side `checkWritePermission.ts` resolve `email -> project_user_id -> role` and check the role at the target scope or an ancestor. `projects` INSERT stays account-owner-only.
+
+### App-side consequences
+
+- User pickers inside a project list only that project's `project_users` (directory). "Add user" creates a directory row with just the email — no global `users` row is created for collaborators.
+- The three role forms (project/subproject/place) edit `*_roles` rows; operations queue/revert targets their PKs.
+- The `users` route/list shrinks to account/auth concerns (own user, own accounts).
+- Role options: all six roles remain visible (Owner renders for owner rows); only triggers can set `own`.
+
+### Concept mapping (old -> new)
+
+| current                          | rebuild                                                      |
+| -------------------------------- | ------------------------------------------------------------ |
+| `users` (global, exposed)        | `users` = auth only; `project_users` = per-project directory |
+| `project_users` (user_id + role) | `project_users` (directory) + `project_roles`                |
+| `subproject_users`               | `subproject_roles`                                           |
+| `place_users`                    | `place_roles`                                                |
+| `place_users.label` (from users) | label triggers off `project_users`                           |
+| AddUserButton inserts into users | AddUserButton inserts into project_users                     |
+| login = users.user_id            | login -> claim (`project_users.auth_user_id`)                |
+
+### Open decisions
+
+1. Claim-on-login: stamp `auth_user_id` (recommended) vs pure email matching on every resolution. Decide handling of auth-email changes (re-claim flow).
+2. `accounts.email`: explicit billing-contact column (may differ from the owner's login email) vs derived. Recommended: explicit, defaulting to the owner's email.
+3. Pending-invite state: do directory rows need a state column (invited/active) before the person first logs in?
 
 # 7 Documentation
 

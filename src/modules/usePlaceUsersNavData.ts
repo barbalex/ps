@@ -61,22 +61,22 @@ export const usePlaceUsersNavData = ({
   const sql = isOpen
     ? `
       WITH
-        count_unfiltered AS (SELECT count(*) FROM place_users WHERE place_id = '${placeId2 ?? placeId}'),
-        count_filtered AS (SELECT count(*) FROM place_users WHERE place_id = '${placeId2 ?? placeId}'${isFiltered ? ` AND ${filterString}` : ''})
+        count_unfiltered AS (SELECT count(*) FROM place_roles WHERE place_id = '${placeId2 ?? placeId}'),
+        count_filtered AS (SELECT count(*) FROM place_roles WHERE place_id = '${placeId2 ?? placeId}'${isFiltered ? ` AND ${filterString}` : ''})
       SELECT
-        place_user_id AS id,
+        place_role_id AS id,
         label,
         count_unfiltered.count AS count_unfiltered,
         count_filtered.count AS count_filtered
-      FROM place_users 
+      FROM place_roles 
       , count_unfiltered, count_filtered
       WHERE place_id = '${placeId2 ?? placeId}'
         ${isFiltered ? ` AND ${filterString}` : ''}
       ORDER BY label`
     : `
       WITH
-        count_unfiltered AS (SELECT count(*) FROM place_users WHERE place_id = '${placeId2 ?? placeId}'),
-        count_filtered AS (SELECT count(*) FROM place_users WHERE place_id = '${placeId2 ?? placeId}'${isFiltered ? ` AND ${filterString}` : ''})
+        count_unfiltered AS (SELECT count(*) FROM place_roles WHERE place_id = '${placeId2 ?? placeId}'),
+        count_filtered AS (SELECT count(*) FROM place_roles WHERE place_id = '${placeId2 ?? placeId}'${isFiltered ? ` AND ${filterString}` : ''})
       SELECT
         count_unfiltered.count AS count_unfiltered,
         count_filtered.count AS count_filtered

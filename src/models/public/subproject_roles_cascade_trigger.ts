@@ -1,0 +1,2 @@
+export interface subproject_roles_cascade_trigger_params {
+}

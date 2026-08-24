@@ -1,0 +1,2 @@
+export interface project_users_normalize_email_trigger_params {
+}

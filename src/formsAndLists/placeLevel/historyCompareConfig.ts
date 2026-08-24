@@ -22,7 +22,7 @@ export const preferredOrder = [
   'name_plural_it',
   'observations',
   'place_files',
-  'place_users_in_place',
+  'place_roles_in_place',
   'place_files_in_place',
   'checks',
   'check_quantities',

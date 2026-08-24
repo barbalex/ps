@@ -29,7 +29,7 @@ export const useSubprojectUsersNavData = ({
   const location = useLocation()
   const { formatMessage } = useIntl()
 
-  const filterString = filterStringFromFilter(filter, 'subproject_users')
+  const filterString = filterStringFromFilter(filter, 'subproject_roles')
   const isFiltered = !!filterString
 
   const ownArray = [
@@ -45,21 +45,21 @@ export const useSubprojectUsersNavData = ({
   const sql = isOpen
     ? `
       WITH
-        count_unfiltered AS (SELECT count(*) FROM subproject_users WHERE subproject_id = '${subprojectId}'),
-        count_filtered AS (SELECT count(*) FROM subproject_users WHERE subproject_id = '${subprojectId}' ${isFiltered ? ` AND ${filterString}` : ''})
+        count_unfiltered AS (SELECT count(*) FROM subproject_roles WHERE subproject_id = '${subprojectId}'),
+        count_filtered AS (SELECT count(*) FROM subproject_roles WHERE subproject_id = '${subprojectId}' ${isFiltered ? ` AND ${filterString}` : ''})
       SELECT
-        subproject_user_id AS id,
+        subproject_role_id AS id,
         label,
         count_unfiltered.count AS count_unfiltered,
         count_filtered.count AS count_filtered
-      FROM subproject_users, count_unfiltered, count_filtered
+      FROM subproject_roles, count_unfiltered, count_filtered
       WHERE subproject_id = '${subprojectId}'
         ${isFiltered ? ` AND ${filterString}` : ''}
       ORDER BY label`
     : `
       WITH
-        count_unfiltered AS (SELECT count(*) FROM subproject_users WHERE subproject_id = '${subprojectId}'),
-        count_filtered AS (SELECT count(*) FROM subproject_users WHERE subproject_id = '${subprojectId}' ${isFiltered ? ` AND ${filterString}` : ''})
+        count_unfiltered AS (SELECT count(*) FROM subproject_roles WHERE subproject_id = '${subprojectId}'),
+        count_filtered AS (SELECT count(*) FROM subproject_roles WHERE subproject_id = '${subprojectId}' ${isFiltered ? ` AND ${filterString}` : ''})
       SELECT
         count_unfiltered.count AS count_unfiltered,
         count_filtered.count AS count_filtered

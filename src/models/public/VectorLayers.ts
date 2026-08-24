@@ -13,6 +13,16 @@ export type VectorLayersVectorLayerId = string & { __brand: 'public.vector_layer
 export default interface VectorLayers {
   vector_layer_id: VectorLayersVectorLayerId;
 
+  name: string | null;
+
+  label_de: string | null;
+
+  label_en: string | null;
+
+  label_fr: string | null;
+
+  label_it: string | null;
+
   project_id: ProjectsProjectId;
 
   type: VectorLayerTypesEnum | null;
@@ -53,16 +63,6 @@ export default interface VectorLayers {
   updated_at: Date;
 
   updated_by: string | null;
-
-  name: string | null;
-
-  label_de: string | null;
-
-  label_en: string | null;
-
-  label_fr: string | null;
-
-  label_it: string | null;
 }
 
 /**
@@ -72,6 +72,16 @@ export default interface VectorLayers {
 export interface VectorLayersInitializer {
   /** Default value: uuidv7() */
   vector_layer_id?: VectorLayersVectorLayerId;
+
+  name?: string | null;
+
+  label_de?: string | null;
+
+  label_en?: string | null;
+
+  label_fr?: string | null;
+
+  label_it?: string | null;
 
   project_id: ProjectsProjectId;
 
@@ -117,6 +127,14 @@ export interface VectorLayersInitializer {
   updated_at?: Date;
 
   updated_by?: string | null;
+}
+
+/**
+ * Represents the mutator for the table public.vector_layers
+ * Goal: Bring your own wms layers. Either from wfs or importing GeoJSON. Should only contain metadata, not data fetched from wms or wmts servers (that should only be saved locally on the client).
+ */
+export interface VectorLayersMutator {
+  vector_layer_id?: VectorLayersVectorLayerId;
 
   name?: string | null;
 
@@ -127,14 +145,6 @@ export interface VectorLayersInitializer {
   label_fr?: string | null;
 
   label_it?: string | null;
-}
-
-/**
- * Represents the mutator for the table public.vector_layers
- * Goal: Bring your own wms layers. Either from wfs or importing GeoJSON. Should only contain metadata, not data fetched from wms or wmts servers (that should only be saved locally on the client).
- */
-export interface VectorLayersMutator {
-  vector_layer_id?: VectorLayersVectorLayerId;
 
   project_id?: ProjectsProjectId;
 
@@ -176,14 +186,4 @@ export interface VectorLayersMutator {
   updated_at?: Date;
 
   updated_by?: string | null;
-
-  name?: string | null;
-
-  label_de?: string | null;
-
-  label_en?: string | null;
-
-  label_fr?: string | null;
-
-  label_it?: string | null;
 }

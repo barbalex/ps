@@ -39,7 +39,7 @@ export const SubprojectNode = ({ projectId, nav, level = 4 }) => {
   const showFiles = isDesigning || (project?.files_active_subprojects ?? false)
   const showTaxa = isDesigning || (project?.taxa ?? true)
   const taxaInSubproject = project?.subproject_taxa_in_subproject !== false
-  const usersInSubproject = project?.subproject_users_in_subproject !== false
+  const usersInSubproject = project?.subproject_roles_in_subproject !== false
   const filesInSubproject = project?.subproject_files_in_subproject !== false
   const reportsInSubproject = project?.subproject_reports_in_subproject !== false
   const showTaxaNav = showTaxa && !taxaInSubproject

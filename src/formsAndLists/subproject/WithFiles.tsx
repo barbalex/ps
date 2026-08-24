@@ -21,11 +21,8 @@ import { NotFound } from '../../components/NotFound.tsx'
 import { Section } from '../../components/shared/Section.tsx'
 import { FilterButton } from '../../components/shared/FilterButton.tsx'
 import { getValueFromChange } from '../../modules/getValueFromChange.ts'
-import {
-  createSubprojectTaxon,
-  createSubprojectUser,
-  createSubprojectReport,
-} from '../../modules/createRows.ts'
+import {createSubprojectTaxon, createSubprojectReport} from '../../modules/createRows.ts'
+import { AddProjectUserButton } from '../../components/shared/AddProjectUserButton.tsx'
 import {
   addOperationAtom,
   designingAtom,
@@ -73,7 +70,7 @@ export const SubprojectWithFiles = ({ from }: { from: string }) => {
       projects.taxa,
       projects.files_active_subprojects,
       projects.subproject_taxa_in_subproject,
-      projects.subproject_users_in_subproject,
+      projects.subproject_roles_in_subproject,
       projects.subproject_files_in_subproject,
       projects.subproject_reports_in_subproject
     FROM subprojects
@@ -97,7 +94,7 @@ export const SubprojectWithFiles = ({ from }: { from: string }) => {
     subprojectReportsCountRes?.rows?.[0]?.count ?? 0
 
   const subprojectUsersCountRes = useLiveQuery(
-    `SELECT count(*)::int AS count FROM subproject_users WHERE subproject_id = $1`,
+    `SELECT count(*)::int AS count FROM subproject_roles WHERE subproject_id = $1`,
     [subprojectId],
   )
   const subprojectUsersCount = subprojectUsersCountRes?.rows?.[0]?.count ?? 0
@@ -110,7 +107,7 @@ export const SubprojectWithFiles = ({ from }: { from: string }) => {
 
   const showTaxa = isDesigning || row?.taxa !== false
   const taxaInSubproject = row?.subproject_taxa_in_subproject !== false
-  const usersInSubproject = row?.subproject_users_in_subproject !== false
+  const usersInSubproject = row?.subproject_roles_in_subproject !== false
   const showFiles = isDesigning || row?.files_active_subprojects !== false
   const reportsInSubproject = row?.subproject_reports_in_subproject !== false
 
@@ -151,11 +148,6 @@ export const SubprojectWithFiles = ({ from }: { from: string }) => {
     if (!id) return
     navigate({ to: `${reportsUrl}/${id}/` })
   }
-  const onClickAddSubprojectUser = async () => {
-    const id = await createSubprojectUser({ subprojectId })
-    if (!id) return
-    navigate({ to: `${usersUrl}/${id}/` })
-  }
   const onClickAddSubprojectTaxon = async () => {
     const id = await createSubprojectTaxon({ subprojectId })
     if (!id) return
@@ -192,11 +184,13 @@ export const SubprojectWithFiles = ({ from }: { from: string }) => {
     isDesigning && usersInSubproject && isUsersList ? (
       <>
         <FilterButton isFiltered={subprojectUsersIsFiltered} />
-        <Button
-          size="medium"
-          title={newLabel}
-          icon={<FaPlus />}
-          onClick={onClickAddSubprojectUser}
+        <AddProjectUserButton
+          scope={{
+            kind: 'subproject',
+            projectId,
+            subprojectId,
+          }}
+          onUserCreated={(id) => navigate({ to: `${usersUrl}/${id}/` })}
         />
       </>
     ) : undefined

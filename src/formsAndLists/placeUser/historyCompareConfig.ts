@@ -1,7 +1,7 @@
 export const excludedDisplayFields = new Set(['sys_period', 'created_at'])
 
 export const excludedRestoreFields = new Set([
-  'place_user_id',
+  'place_role_id',
   'place_id',
   'label',
   'sys_period',
@@ -10,4 +10,4 @@ export const excludedRestoreFields = new Set([
   'updated_by',
 ])
 
-export const preferredOrder = ['user_id', 'role']
+export const preferredOrder = ['project_user_id', 'role']

@@ -22,7 +22,7 @@ const tablesAbovePlaces = [
   'goals',
   'observations',
   'subproject_taxa',
-  'subproject_users',
+  'subproject_roles',
   'observation_imports',
   'subproject_files',
   'charts',

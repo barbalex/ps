@@ -97,7 +97,7 @@ create or replace function accounts_label_trigger()
 RETURNS TRIGGER AS $$
 DECLARE
   is_syncing BOOLEAN;
-  email TEXT;
+  _email TEXT;
 BEGIN
   -- Check if electric.syncing is true - defaults to false if not set
   SELECT COALESCE(NULLIF(current_setting('electric.syncing', true), ''), 'false')::boolean INTO is_syncing;
@@ -105,17 +105,17 @@ BEGIN
     RETURN OLD;
   END IF;
 
-  if NEW.user_id is null then
-    email := null;
-  else
-    SELECT users.email INTO email FROM users WHERE users.user_id = NEW.user_id;
-  end if;
+  -- prefer the account's own email (billing contact), fall back to the owner's
+  _email := NEW.email;
+  IF _email IS NULL AND NEW.user_id IS NOT NULL THEN
+    SELECT users.email INTO _email FROM users WHERE users.user_id = NEW.user_id;
+  END IF;
 
   UPDATE accounts set label = 
     CASE
-      WHEN email is null THEN NEW.account_id::text
-      WHEN NEW.type is null THEN email || ' (no type)'
-      ELSE email || ' (' || NEW.type || ')'
+      WHEN _email is null THEN NEW.account_id::text
+      WHEN NEW.type is null THEN _email || ' (no type)'
+      ELSE _email || ' (' || NEW.type || ')'
     END
   WHERE account_id = NEW.account_id;
   RETURN NEW;
@@ -123,7 +123,7 @@ END;
 $$ LANGUAGE plpgsql;
 
 CREATE OR REPLACE TRIGGER accounts_label_trigger
-AFTER INSERT OR UPDATE OF type, user_id ON accounts
+AFTER INSERT OR UPDATE OF type, user_id, email ON accounts
 FOR EACH ROW
 EXECUTE PROCEDURE accounts_label_trigger();
 
@@ -636,83 +636,51 @@ AFTER INSERT OR UPDATE of level, name, data ON places
 FOR EACH ROW
 EXECUTE PROCEDURE places_label_trigger();
 
--- place_users update
-CREATE OR REPLACE FUNCTION place_users_label_trigger()
+-- place_roles label: directory email + role
+CREATE OR REPLACE FUNCTION place_roles_label_trigger()
 RETURNS TRIGGER AS $$
 DECLARE
   is_syncing BOOLEAN;
-  email TEXT;
 BEGIN
-  -- Check if electric.syncing is true - defaults to false if not set
   SELECT COALESCE(NULLIF(current_setting('electric.syncing', true), ''), 'false')::boolean INTO is_syncing;
   IF is_syncing THEN
     RETURN OLD;
   END IF;
 
-  -- ensure query does not return no row
-  IF NEW.user_id IS NULL THEN
-    email := NULL;
-  ELSE
-    SELECT users.email INTO email FROM users WHERE users.user_id = NEW.user_id;
-  END IF;
-
-  UPDATE place_users 
-  SET label = (
-    CASE
-      WHEN email is null THEN NEW.place_user_id::text
-      WHEN NEW.role is null THEN email || ' (no role)' 
-      ELSE email || ' (' || NEW.role || ')'
-    END
-  )
-  WHERE place_user_id = NEW.place_user_id;
+  UPDATE place_roles
+  SET label = coalesce(roles_label(NEW.project_user_id, NEW.role), NEW.place_role_id::text)
+  WHERE place_role_id = NEW.place_role_id;
   RETURN NEW;
 END;
 $$ LANGUAGE plpgsql;
 
-
-CREATE OR REPLACE TRIGGER place_users_label_trigger
-AFTER INSERT OR UPDATE OF user_id, role ON place_users
+CREATE OR REPLACE TRIGGER place_roles_label_trigger
+AFTER INSERT OR UPDATE OF project_user_id, role ON place_roles
 FOR EACH ROW
-EXECUTE PROCEDURE place_users_label_trigger();
+EXECUTE PROCEDURE place_roles_label_trigger();
 
--- project_users.label
-CREATE OR REPLACE FUNCTION project_users_label_trigger()
+-- project_roles label: directory email + role
+CREATE OR REPLACE FUNCTION project_roles_label_trigger()
 RETURNS TRIGGER AS $$
 DECLARE
   is_syncing BOOLEAN;
-  email TEXT;
 BEGIN
-  -- Check if electric.syncing is true - defaults to false if not set
   SELECT COALESCE(NULLIF(current_setting('electric.syncing', true), ''), 'false')::boolean INTO is_syncing;
   IF is_syncing THEN
     RETURN OLD;
   END IF;
 
-  -- ensure query does not return no row
-  IF NEW.user_id IS NULL THEN
-    email := NULL;
-  ELSE
-    SELECT users.email INTO email FROM users WHERE users.user_id = NEW.user_id;
-  END IF;
-
-  UPDATE project_users 
-  set label = (
-    case
-      when email is null then NEW.project_user_id::text
-      when NEW.role is null then email || ' (no role)'
-      else email || ' (' || NEW.role || ')'
-    end
-  )
-  WHERE project_user_id = NEW.project_user_id;
+  UPDATE project_roles
+  SET label = coalesce(roles_label(NEW.project_user_id, NEW.role), NEW.project_role_id::text)
+  WHERE project_role_id = NEW.project_role_id;
   RETURN NEW;
 END;
 $$ LANGUAGE plpgsql;
 
-
-CREATE OR REPLACE TRIGGER project_users_label_trigger
-AFTER INSERT OR UPDATE OF user_id, role ON project_users
+CREATE OR REPLACE TRIGGER project_roles_label_trigger
+AFTER INSERT OR UPDATE OF project_user_id, role ON project_roles
 FOR EACH ROW
-EXECUTE PROCEDURE project_users_label_trigger();
+EXECUTE PROCEDURE project_roles_label_trigger();
 
 -- subproject_taxa.label
 CREATE OR REPLACE FUNCTION subproject_taxon_label_trigger()
@@ -765,43 +733,28 @@ AFTER INSERT OR UPDATE OF taxon_id ON subproject_taxa
 FOR EACH ROW
 EXECUTE PROCEDURE subproject_taxon_label_trigger();
 
--- subproject_users.label
-CREATE OR REPLACE FUNCTION subproject_users_label_trigger()
+-- subproject_roles label: directory email + role
+CREATE OR REPLACE FUNCTION subproject_roles_label_trigger()
 RETURNS TRIGGER AS $$
 DECLARE
   is_syncing BOOLEAN;
-  _email TEXT;
 BEGIN
-  -- Check if electric.syncing is true - defaults to false if not set
   SELECT COALESCE(NULLIF(current_setting('electric.syncing', true), ''), 'false')::boolean INTO is_syncing;
   IF is_syncing THEN
     RETURN OLD;
   END IF;
 
-  IF NEW.user_id IS NULL THEN
-    _email := NULL;
-  ELSE
-    SELECT users.email INTO _email FROM users WHERE users.user_id = NEW.user_id;
-  END IF;
-
-  UPDATE subproject_users 
-  set label = (
-    CASE
-      WHEN NEW.user_id is null THEN NEW.subproject_user_id::text
-      WHEN _email is null THEN NEW.subproject_user_id::text
-      WHEN NEW.role is null THEN _email || ' (no role)'
-      ELSE _email || ' (' || NEW.role || ')'
-    END
-  )
-  WHERE subproject_user_id = NEW.subproject_user_id;
+  UPDATE subproject_roles
+  SET label = coalesce(roles_label(NEW.project_user_id, NEW.role), NEW.subproject_role_id::text)
+  WHERE subproject_role_id = NEW.subproject_role_id;
   RETURN NEW;
 END;
 $$ LANGUAGE plpgsql;
 
-CREATE OR REPLACE TRIGGER subproject_users_label_trigger
-AFTER INSERT OR UPDATE OF user_id, role ON subproject_users
+CREATE OR REPLACE TRIGGER subproject_roles_label_trigger
+AFTER INSERT OR UPDATE OF project_user_id, role ON subproject_roles
 FOR EACH ROW
-EXECUTE PROCEDURE subproject_users_label_trigger();
+EXECUTE PROCEDURE subproject_roles_label_trigger();
 
 -- taxa.label
 CREATE OR REPLACE FUNCTION taxa_label_trigger()
@@ -834,88 +787,34 @@ AFTER INSERT OR UPDATE of taxonomy_id, name ON taxa
 FOR EACH ROW
 EXECUTE PROCEDURE taxa_label_trigger();
 
--- if users.email is changed, update project_users.label
-CREATE OR REPLACE FUNCTION users_project_users_label_trigger()
+-- if a directory email changes, refresh the labels of all its role rows
+CREATE OR REPLACE FUNCTION project_users_email_roles_label_trigger()
 RETURNS TRIGGER AS $$
 DECLARE
   is_syncing BOOLEAN;
-  project_users_table_exists BOOLEAN;
 BEGIN
-  -- Check if electric.syncing is true - defaults to false if not set
   SELECT COALESCE(NULLIF(current_setting('electric.syncing', true), ''), 'false')::boolean INTO is_syncing;
   IF is_syncing THEN
     RETURN OLD;
   END IF;
 
-  -- Check if project_users table exists
-  SELECT EXISTS (
-    SELECT FROM information_schema.tables 
-    WHERE table_schema = 'public' 
-    AND table_name = 'project_users'
-  ) INTO project_users_table_exists;
-
-  IF NOT project_users_table_exists THEN
-    RETURN OLD;
-  END IF;
-
-  UPDATE project_users 
-  set label = (
-    CASE
-      WHEN NEW.email is null THEN NEW.user_id::text
-      WHEN project_users.role is null THEN NEW.email || ' (no role)'
-      ELSE NEW.email || ' (' || project_users.role || ')'
-    END
-  )
-  WHERE user_id = NEW.user_id;
+  UPDATE project_roles
+  SET label = coalesce(roles_label(NEW.project_user_id, project_roles.role), project_roles.project_role_id::text)
+  WHERE project_roles.project_user_id = NEW.project_user_id;
+  UPDATE subproject_roles
+  SET label = coalesce(roles_label(NEW.project_user_id, subproject_roles.role), subproject_roles.subproject_role_id::text)
+  WHERE subproject_roles.project_user_id = NEW.project_user_id;
+  UPDATE place_roles
+  SET label = coalesce(roles_label(NEW.project_user_id, place_roles.role), place_roles.place_role_id::text)
+  WHERE place_roles.project_user_id = NEW.project_user_id;
   RETURN NEW;
 END;
 $$ LANGUAGE plpgsql;
 
-CREATE OR REPLACE TRIGGER users_project_users_label_trigger
-AFTER INSERT OR UPDATE OF email ON users
+CREATE OR REPLACE TRIGGER project_users_email_roles_label_trigger
+AFTER UPDATE OF email, project_user_id ON project_users
 FOR EACH ROW
-EXECUTE PROCEDURE users_project_users_label_trigger();
-
--- if users.email is changed, subproject_users.label needs to be updated
-CREATE OR REPLACE FUNCTION users_subproject_users_label_trigger()
-RETURNS TRIGGER AS $$
-DECLARE
-  is_syncing BOOLEAN;
-  subproject_users_table_exists BOOLEAN;
-BEGIN
-  -- Check if electric.syncing is true - defaults to false if not set
-  SELECT COALESCE(NULLIF(current_setting('electric.syncing', true), ''), 'false')::boolean INTO is_syncing;
-  IF is_syncing THEN
-    RETURN OLD;
-  END IF;
-
-  -- Check if subproject_users table exists
-  SELECT EXISTS (
-    SELECT FROM information_schema.tables 
-    WHERE table_schema = 'public' 
-    AND table_name = 'subproject_users'
-  ) INTO subproject_users_table_exists;
-
-  IF NOT subproject_users_table_exists THEN
-    RETURN OLD;
-  END IF;
-
-  UPDATE subproject_users 
-  set label = (
-    CASE
-      WHEN NEW.email is null THEN NEW.user_id::text
-      ELSE NEW.email || ' (' || coalesce(subproject_users.role::text, 'no role') || ')'
-    END
-  )
-  WHERE user_id = NEW.user_id;
-  RETURN NEW;
-END;
-$$ LANGUAGE plpgsql;
-
-CREATE OR REPLACE TRIGGER users_subproject_users_label_trigger
-AFTER INSERT OR UPDATE OF email ON users
-FOR EACH ROW
-EXECUTE PROCEDURE users_subproject_users_label_trigger();
+EXECUTE PROCEDURE project_users_email_roles_label_trigger();
 
 -- on insert vector_layers if type is in:
 -- places1, places2, actions1, actions2, checks1, checks2, observations_assigned1, observations_assigned2, observations_to_assess, observations_not_to_assign
@@ -1143,24 +1042,65 @@ EXECUTE PROCEDURE qcs_name_update_qc_assignments_label_trigger();
 -- item 9: on insert into subprojects/places, inherit role from parent _users table
 -- items 10+11: guard with WHEN (pg_trigger_depth() < 1) and electric.syncing check
 
--- item 8: on insert into projects, insert 'owner' row into project_users for the account's user
+--------------------------------------------------------------
+-- User roles: directory helpers, owner, cascade and inheritance triggers
+--
+
+-- shared label helper for role rows: directory email + role
+CREATE OR REPLACE FUNCTION roles_label(p_project_user_id uuid, p_role user_roles_enum)
+RETURNS text LANGUAGE sql STABLE AS $$
+  SELECT pu.email || ' (' || p_role::text || ')'
+  FROM project_users pu
+  WHERE pu.project_user_id = p_project_user_id
+$$;
+
+-- normalize directory emails so every comparison (login claim, sync) is exact.
+-- BEFORE trigger, runs during sync too: idempotent (stored emails are normalized)
+CREATE OR REPLACE FUNCTION project_users_normalize_email_trigger()
+RETURNS TRIGGER AS $$
+BEGIN
+  IF NEW.email IS NOT NULL THEN
+    NEW.email := trim(lower(NEW.email));
+  END IF;
+  RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE OR REPLACE TRIGGER project_users_normalize_email_trigger
+BEFORE INSERT OR UPDATE OF email ON project_users
+FOR EACH ROW
+EXECUTE PROCEDURE project_users_normalize_email_trigger();
+
+-- item 8: on insert into projects, add the account owner to the directory
+-- (claimed immediately) and give them the 'own' role
 CREATE OR REPLACE FUNCTION projects_insert_owner_trigger()
 RETURNS TRIGGER AS $$
 DECLARE
   is_syncing BOOLEAN;
   _user_id uuid;
+  _email text;
+  _project_user_id uuid;
 BEGIN
   SELECT COALESCE(NULLIF(current_setting('electric.syncing', true), ''), 'false')::boolean INTO is_syncing;
   IF is_syncing THEN
     RETURN NEW;
   END IF;
 
-  SELECT user_id INTO _user_id FROM accounts WHERE account_id = NEW.account_id;
+  SELECT a.user_id,
+    coalesce(a.email, (SELECT u.email FROM users u WHERE u.user_id = a.user_id))
+  INTO _user_id, _email
+  FROM accounts a
+  WHERE a.account_id = NEW.account_id;
 
-  IF _user_id IS NOT NULL THEN
-    INSERT INTO project_users(project_id, user_id, role)
-    VALUES (NEW.project_id, _user_id, 'own')
-    ON CONFLICT (project_id, user_id) DO UPDATE SET role = 'own';
+  IF _email IS NOT NULL THEN
+    INSERT INTO project_users(project_id, email, auth_user_id)
+    VALUES (NEW.project_id, _email, _user_id)
+    ON CONFLICT (project_id, email) DO UPDATE SET auth_user_id = EXCLUDED.auth_user_id
+    RETURNING project_user_id INTO _project_user_id;
+
+    INSERT INTO project_roles(project_id, project_user_id, role)
+    VALUES (NEW.project_id, _project_user_id, 'own')
+    ON CONFLICT (project_user_id, project_id) DO UPDATE SET role = 'own';
   END IF;
 
   RETURN NEW;
@@ -1173,8 +1113,8 @@ FOR EACH ROW
 WHEN (pg_trigger_depth() < 1)
 EXECUTE PROCEDURE projects_insert_owner_trigger();
 
--- item 7: on insert/update/delete of project_users, cascade to subproject_users AND place_users
-CREATE OR REPLACE FUNCTION project_users_cascade_trigger()
+-- item 7: on insert/update/delete of project_roles, cascade to subproject_roles AND place_roles
+CREATE OR REPLACE FUNCTION project_roles_cascade_trigger()
 RETURNS TRIGGER AS $$
 DECLARE
   is_syncing BOOLEAN;
@@ -1185,13 +1125,13 @@ BEGIN
   END IF;
 
   IF TG_OP = 'DELETE' THEN
-    DELETE FROM subproject_users
-    WHERE user_id = OLD.user_id
+    DELETE FROM subproject_roles
+    WHERE project_user_id = OLD.project_user_id
       AND subproject_id IN (
         SELECT subproject_id FROM subprojects WHERE project_id = OLD.project_id
       );
-    DELETE FROM place_users
-    WHERE user_id = OLD.user_id
+    DELETE FROM place_roles
+    WHERE project_user_id = OLD.project_user_id
       AND place_id IN (
         SELECT p.place_id FROM places p
         INNER JOIN subprojects s ON p.subproject_id = s.subproject_id
@@ -1201,28 +1141,28 @@ BEGIN
   ELSE
     -- Only cascade when role is non-specific (read-all, write-all, design, own)
     IF NEW.role NOT IN ('read-specific', 'write-specific') THEN
-      -- upsert into subproject_users for all subprojects of the project
-      INSERT INTO subproject_users(subproject_id, user_id, role)
-      SELECT subproject_id, NEW.user_id, NEW.role
+      -- upsert into subproject_roles for all subprojects of the project
+      INSERT INTO subproject_roles(subproject_id, project_user_id, role)
+      SELECT subproject_id, NEW.project_user_id, NEW.role
       FROM subprojects
       WHERE project_id = NEW.project_id
-      ON CONFLICT (subproject_id, user_id) DO UPDATE SET role = EXCLUDED.role;
-      -- upsert into place_users for all places of those subprojects
-      INSERT INTO place_users(place_id, user_id, role)
-      SELECT p.place_id, NEW.user_id, NEW.role
+      ON CONFLICT (project_user_id, subproject_id) DO UPDATE SET role = EXCLUDED.role;
+      -- upsert into place_roles for all places of those subprojects
+      INSERT INTO place_roles(place_id, project_user_id, role)
+      SELECT p.place_id, NEW.project_user_id, NEW.role
       FROM places p
       INNER JOIN subprojects s ON p.subproject_id = s.subproject_id
       WHERE s.project_id = NEW.project_id
-      ON CONFLICT (place_id, user_id) DO UPDATE SET role = EXCLUDED.role;
+      ON CONFLICT (project_user_id, place_id) DO UPDATE SET role = EXCLUDED.role;
     ELSE
-      -- role is -specific: remove all lower-level rows for this user under this project
-      DELETE FROM subproject_users
-      WHERE user_id = NEW.user_id
+      -- role is -specific: remove all lower-level rows for this project_user under this project
+      DELETE FROM subproject_roles
+      WHERE project_user_id = NEW.project_user_id
         AND subproject_id IN (
           SELECT subproject_id FROM subprojects WHERE project_id = NEW.project_id
         );
-      DELETE FROM place_users
-      WHERE user_id = NEW.user_id
+      DELETE FROM place_roles
+      WHERE project_user_id = NEW.project_user_id
         AND place_id IN (
           SELECT p.place_id FROM places p
           INNER JOIN subprojects s ON p.subproject_id = s.subproject_id
@@ -1234,14 +1174,14 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql;
 
-CREATE OR REPLACE TRIGGER project_users_cascade_trigger
-AFTER INSERT OR UPDATE OR DELETE ON project_users
+CREATE OR REPLACE TRIGGER project_roles_cascade_trigger
+AFTER INSERT OR UPDATE OR DELETE ON project_roles
 FOR EACH ROW
 WHEN (pg_trigger_depth() < 1)
-EXECUTE PROCEDURE project_users_cascade_trigger();
+EXECUTE PROCEDURE project_roles_cascade_trigger();
 
--- item 7: on insert/update/delete of subproject_users, cascade to place_users
-CREATE OR REPLACE FUNCTION subproject_users_cascade_trigger()
+-- item 7: on insert/update/delete of subproject_roles, cascade to place_roles
+CREATE OR REPLACE FUNCTION subproject_roles_cascade_trigger()
 RETURNS TRIGGER AS $$
 DECLARE
   is_syncing BOOLEAN;
@@ -1252,8 +1192,8 @@ BEGIN
   END IF;
 
   IF TG_OP = 'DELETE' THEN
-    DELETE FROM place_users
-    WHERE user_id = OLD.user_id
+    DELETE FROM place_roles
+    WHERE project_user_id = OLD.project_user_id
       AND place_id IN (
         SELECT place_id FROM places WHERE subproject_id = OLD.subproject_id
       );
@@ -1261,15 +1201,15 @@ BEGIN
   ELSE
     -- Only cascade when role is non-specific (read-all, write-all, design, own)
     IF NEW.role NOT IN ('read-specific', 'write-specific') THEN
-      INSERT INTO place_users(place_id, user_id, role)
-      SELECT place_id, NEW.user_id, NEW.role
+      INSERT INTO place_roles(place_id, project_user_id, role)
+      SELECT place_id, NEW.project_user_id, NEW.role
       FROM places
       WHERE subproject_id = NEW.subproject_id
-      ON CONFLICT (place_id, user_id) DO UPDATE SET role = EXCLUDED.role;
+      ON CONFLICT (project_user_id, place_id) DO UPDATE SET role = EXCLUDED.role;
     ELSE
-      -- role is -specific: remove all lower-level rows for this user under this subproject
-      DELETE FROM place_users
-      WHERE user_id = NEW.user_id
+      -- role is -specific: remove all lower-level rows for this project_user under this subproject
+      DELETE FROM place_roles
+      WHERE project_user_id = NEW.project_user_id
         AND place_id IN (
           SELECT place_id FROM places WHERE subproject_id = NEW.subproject_id
         );
@@ -1279,13 +1219,13 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql;
 
-CREATE OR REPLACE TRIGGER subproject_users_cascade_trigger
-AFTER INSERT OR UPDATE OR DELETE ON subproject_users
+CREATE OR REPLACE TRIGGER subproject_roles_cascade_trigger
+AFTER INSERT OR UPDATE OR DELETE ON subproject_roles
 FOR EACH ROW
 WHEN (pg_trigger_depth() < 1)
-EXECUTE PROCEDURE subproject_users_cascade_trigger();
+EXECUTE PROCEDURE subproject_roles_cascade_trigger();
 
--- item 9: on insert into subprojects, copy roles from project_users into subproject_users
+-- item 9: on insert into subprojects, copy general roles from project_roles into subproject_roles
 CREATE OR REPLACE FUNCTION subprojects_insert_inherit_role_trigger()
 RETURNS TRIGGER AS $$
 DECLARE
@@ -1297,12 +1237,12 @@ BEGIN
   END IF;
 
   -- Only inherit from parent roles that cascade (non-specific)
-  INSERT INTO subproject_users(subproject_id, user_id, role)
-  SELECT NEW.subproject_id, pu.user_id, pu.role
-  FROM project_users pu
-  WHERE pu.project_id = NEW.project_id
-    AND pu.role NOT IN ('read-specific', 'write-specific')
-  ON CONFLICT (subproject_id, user_id) DO NOTHING;
+  INSERT INTO subproject_roles(subproject_id, project_user_id, role)
+  SELECT NEW.subproject_id, pr.project_user_id, pr.role
+  FROM project_roles pr
+  WHERE pr.project_id = NEW.project_id
+    AND pr.role NOT IN ('read-specific', 'write-specific')
+  ON CONFLICT (project_user_id, subproject_id) DO NOTHING;
 
   RETURN NEW;
 END;
@@ -1314,7 +1254,7 @@ FOR EACH ROW
 WHEN (pg_trigger_depth() < 1)
 EXECUTE PROCEDURE subprojects_insert_inherit_role_trigger();
 
--- item 9: on insert into places, copy roles from subproject_users into place_users
+-- item 9: on insert into places, copy general roles from subproject_roles into place_roles
 CREATE OR REPLACE FUNCTION places_insert_inherit_role_trigger()
 RETURNS TRIGGER AS $$
 DECLARE
@@ -1326,12 +1266,12 @@ BEGIN
   END IF;
 
   -- Only inherit from parent roles that cascade (non-specific)
-  INSERT INTO place_users(place_id, user_id, role)
-  SELECT NEW.place_id, su.user_id, su.role
-  FROM subproject_users su
-  WHERE su.subproject_id = NEW.subproject_id
-    AND su.role NOT IN ('read-specific', 'write-specific')
-  ON CONFLICT (place_id, user_id) DO NOTHING;
+  INSERT INTO place_roles(place_id, project_user_id, role)
+  SELECT NEW.place_id, sr.project_user_id, sr.role
+  FROM subproject_roles sr
+  WHERE sr.subproject_id = NEW.subproject_id
+    AND sr.role NOT IN ('read-specific', 'write-specific')
+  ON CONFLICT (project_user_id, place_id) DO NOTHING;
 
   RETURN NEW;
 END;
@@ -1343,9 +1283,9 @@ FOR EACH ROW
 WHEN (pg_trigger_depth() < 1)
 EXECUTE PROCEDURE places_insert_inherit_role_trigger();
 
--- item 5: when a place_users (level 1) role is set to -specific, remove this user's
--- place_users rows for all level-2 children of that place.
-CREATE OR REPLACE FUNCTION place_users_specific_trigger()
+-- item 5: when a place_roles (level 1) role is set to -specific, remove this
+-- project_user's place_roles rows for all level-2 children of that place
+CREATE OR REPLACE FUNCTION place_roles_specific_trigger()
 RETURNS TRIGGER AS $$
 DECLARE
   is_syncing BOOLEAN;
@@ -1364,8 +1304,8 @@ BEGIN
   SELECT level INTO v_level FROM places WHERE place_id = NEW.place_id;
 
   IF v_level = 1 THEN
-    DELETE FROM place_users
-    WHERE user_id = NEW.user_id
+    DELETE FROM place_roles
+    WHERE project_user_id = NEW.project_user_id
       AND place_id IN (
         SELECT place_id FROM places WHERE parent_id = NEW.place_id
       );
@@ -1375,11 +1315,11 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql;
 
-CREATE OR REPLACE TRIGGER place_users_specific_trigger
-AFTER INSERT OR UPDATE OF role ON place_users
+CREATE OR REPLACE TRIGGER place_roles_specific_trigger
+AFTER INSERT OR UPDATE OF role ON place_roles
 FOR EACH ROW
 WHEN (pg_trigger_depth() < 1)
-EXECUTE PROCEDURE place_users_specific_trigger();
+EXECUTE PROCEDURE place_roles_specific_trigger();
 
 --------------------------------------------------------------
 -- Better Auth compatibility helpers

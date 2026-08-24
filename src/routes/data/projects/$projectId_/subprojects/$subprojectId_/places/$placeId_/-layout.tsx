@@ -10,10 +10,10 @@ export const PlaceLayout = () => {
   const { projectId, subprojectId, placeId } = useParams({ strict: false })
   const location = useLocation()
   const res = useLiveQuery(
-    `SELECT place_users_in_place, place_files, place_files_in_place FROM place_levels WHERE project_id = $1 AND level = 1`,
+    `SELECT place_roles_in_place, place_files, place_files_in_place FROM place_levels WHERE project_id = $1 AND level = 1`,
     [projectId],
   )
-  const usersInPlace = res?.rows?.[0]?.place_users_in_place !== false
+  const usersInPlace = res?.rows?.[0]?.place_roles_in_place !== false
   const showFiles = res?.rows?.[0]?.place_files !== false
   const filesInPlace = res?.rows?.[0]?.place_files_in_place !== false
 

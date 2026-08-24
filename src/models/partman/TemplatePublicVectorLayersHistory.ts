@@ -5,7 +5,15 @@ import type { default as public_VectorLayerOwnTablesEnum } from '../public/Vecto
 export default interface TemplatePublicVectorLayersHistory {
   vector_layer_id: string;
 
-  label: string | null;
+  name: string | null;
+
+  label_de: string | null;
+
+  label_en: string | null;
+
+  label_fr: string | null;
+
+  label_it: string | null;
 
   project_id: string;
 
@@ -46,7 +54,15 @@ export default interface TemplatePublicVectorLayersHistory {
 export interface TemplatePublicVectorLayersHistoryInitializer {
   vector_layer_id: string;
 
-  label?: string | null;
+  name?: string | null;
+
+  label_de?: string | null;
+
+  label_en?: string | null;
+
+  label_fr?: string | null;
+
+  label_it?: string | null;
 
   project_id: string;
 
@@ -87,7 +103,15 @@ export interface TemplatePublicVectorLayersHistoryInitializer {
 export interface TemplatePublicVectorLayersHistoryMutator {
   vector_layer_id?: string;
 
-  label?: string | null;
+  name?: string | null;
+
+  label_de?: string | null;
+
+  label_en?: string | null;
+
+  label_fr?: string | null;
+
+  label_it?: string | null;
 
   project_id?: string;
 

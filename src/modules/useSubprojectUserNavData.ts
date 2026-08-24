@@ -29,10 +29,10 @@ export const useSubprojectUserNavData = ({
   const res = useLiveQuery(
     `
       SELECT
-        subproject_user_id AS id,
+        subproject_role_id AS id,
         label
-      FROM subproject_users 
-      WHERE subproject_user_id = $1`,
+      FROM subproject_roles 
+      WHERE subproject_role_id = $1`,
     [subprojectUserId],
   )
 

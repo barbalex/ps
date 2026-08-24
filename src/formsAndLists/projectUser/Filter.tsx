@@ -16,9 +16,9 @@ export const ProjectUserFilter = ({ from }: Props) => {
         <>
           <DropdownField
             label={formatMessage({ id: 'qyI8KV', defaultMessage: 'Benutzer' })}
-            name="user_id"
-            table="users"
-            value={row.user_id ?? ''}
+            name="email"
+            table="project_users"
+            value={row.email ?? ''}
             onChange={onChange}
           />
           <RadioGroupField

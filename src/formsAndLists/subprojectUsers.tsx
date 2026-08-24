@@ -1,6 +1,6 @@
 import { useParams, useNavigate } from '@tanstack/react-router'
 
-import { createSubprojectUser } from '../modules/createRows.ts'
+import { AddProjectUserButton } from '../components/shared/AddProjectUserButton.tsx'
 import { useSubprojectUsersNavData } from '../modules/useSubprojectUsersNavData.ts'
 import { ListHeader } from '../components/ListHeader.tsx'
 import { FilterButton } from '../components/shared/FilterButton.tsx'
@@ -19,9 +19,7 @@ export const SubprojectUsers = ({ hideHeader = false }) => {
   })
   const { navs, label, nameSingular } = navData
 
-  const add = async () => {
-    const id = await createSubprojectUser({ subprojectId })
-    if (!id) return
+  const onUserCreated = (id: string) => {
     navigate({ to: `${usersBaseUrl}/${id}/` })
   }
 
@@ -31,8 +29,19 @@ export const SubprojectUsers = ({ hideHeader = false }) => {
         <ListHeader
           label={label}
           nameSingular={nameSingular}
-          addRow={add}
-          menus={<FilterButton isFiltered={isFiltered} />}
+          menus={
+            <>
+              <AddProjectUserButton
+                scope={{
+                  kind: 'subproject',
+                  projectId,
+                  subprojectId,
+                }}
+                onUserCreated={onUserCreated}
+              />
+              <FilterButton isFiltered={isFiltered} />
+            </>
+          }
         />
       )}
       <div className="list-container">
