@@ -93,6 +93,8 @@ COMMENT ON COLUMN auth_accounts.password IS 'The password of the account. Mainly
 CREATE TABLE IF NOT EXISTS accounts(
   account_id uuid PRIMARY KEY DEFAULT uuidv7(),
   user_id uuid DEFAULT NULL REFERENCES users(user_id) ON DELETE CASCADE ON UPDATE NO action DEFERRABLE INITIALLY DEFERRED,
+  -- billing contact; defaults to the owner's login email
+  email text DEFAULT NULL,
   type text DEFAULT NULL,
   period_start date DEFAULT CURRENT_DATE,
   period_end date DEFAULT NULL,
@@ -416,16 +418,17 @@ COMMENT ON COLUMN subprojects.data IS 'Room for subproject specific data, define
 COMMENT ON TABLE subprojects IS 'Goal: manage subprojects. Will most often be a species that is promoted. Can also be a (class of) biotope(s).';
 
 --------------------------------------------------------------
--- project_users
+-- project_users (per-project collaborator directory) + project_roles
 --
 CREATE TYPE user_roles_enum AS ENUM ('read-specific', 'read-all', 'write-specific', 'write-all', 'design', 'own');
 
 CREATE TABLE IF NOT EXISTS project_users(
   project_user_id uuid PRIMARY KEY DEFAULT uuidv7(),
   project_id uuid DEFAULT NULL REFERENCES projects(project_id) ON DELETE CASCADE ON UPDATE CASCADE DEFERRABLE INITIALLY DEFERRED,
-  user_id uuid DEFAULT NULL REFERENCES users(user_id) ON DELETE CASCADE ON UPDATE CASCADE DEFERRABLE INITIALLY DEFERRED,
-  "role" user_roles_enum DEFAULT NULL,
-  label text DEFAULT NULL,
+  email text NOT NULL,
+  -- stamped when a logged-in user's auth email matches (claim); NULL until then
+  auth_user_id uuid DEFAULT NULL REFERENCES users(user_id) ON DELETE SET NULL ON UPDATE CASCADE DEFERRABLE INITIALLY DEFERRED,
+  label text GENERATED ALWAYS AS (coalesce(nullif(email, ''), project_user_id::text)) STORED,
   sys_period tstzrange DEFAULT NULL,
   created_at timestamptz NOT NULL DEFAULT now(),
   updated_at timestamptz NOT NULL DEFAULT now(),
@@ -433,23 +436,22 @@ CREATE TABLE IF NOT EXISTS project_users(
 );
 
 CREATE INDEX IF NOT EXISTS project_users_project_id_idx ON project_users USING btree(project_id);
-CREATE INDEX IF NOT EXISTS project_users_user_id_idx ON project_users USING btree(user_id);
+CREATE INDEX IF NOT EXISTS project_users_email_idx ON project_users USING btree(email);
+CREATE INDEX IF NOT EXISTS project_users_auth_user_id_idx ON project_users USING btree(auth_user_id);
 CREATE INDEX IF NOT EXISTS project_users_label_idx ON project_users USING btree(label);
 ALTER TABLE project_users
-ADD CONSTRAINT project_users_project_id_user_id_unique UNIQUE (project_id, user_id);
+ADD CONSTRAINT project_users_project_id_email_unique UNIQUE (project_id, email);
 
 
-COMMENT ON COLUMN project_users.role IS 'One of: "read-specific", "read-all", "write-specific", "write-all", "design", "own". Preset: "read-all"';
-COMMENT ON TABLE project_users IS 'A way to give users access to projects (without giving them access to the whole account).';
+COMMENT ON COLUMN project_users.email IS 'Trimmed and lowercased by trigger. Unique within the project; may overlap across projects';
+COMMENT ON COLUMN project_users.auth_user_id IS 'Set when a logged-in user claims this directory row by matching email';
+COMMENT ON TABLE project_users IS 'Per-project directory of collaborators. Emails replace the former global user references. Roles live in project_roles/subproject_roles/place_roles';
 
---------------------------------------------------------------
--- subproject_users
---
-CREATE TABLE IF NOT EXISTS subproject_users(
-  subproject_user_id uuid PRIMARY KEY DEFAULT uuidv7(),
-  subproject_id uuid DEFAULT NULL REFERENCES subprojects(subproject_id) ON DELETE CASCADE ON UPDATE CASCADE DEFERRABLE INITIALLY DEFERRED,
-  user_id uuid DEFAULT NULL REFERENCES users(user_id) ON DELETE CASCADE ON UPDATE CASCADE DEFERRABLE INITIALLY DEFERRED,
-  "role" user_roles_enum DEFAULT NULL,
+CREATE TABLE IF NOT EXISTS project_roles(
+  project_role_id uuid PRIMARY KEY DEFAULT uuidv7(),
+  project_id uuid DEFAULT NULL REFERENCES projects(project_id) ON DELETE CASCADE ON UPDATE CASCADE DEFERRABLE INITIALLY DEFERRED,
+  project_user_id uuid NOT NULL REFERENCES project_users(project_user_id) ON DELETE CASCADE ON UPDATE CASCADE DEFERRABLE INITIALLY DEFERRED,
+  "role" user_roles_enum NOT NULL,
   label text DEFAULT NULL,
   sys_period tstzrange DEFAULT NULL,
   created_at timestamptz NOT NULL DEFAULT now(),
@@ -457,15 +459,42 @@ CREATE TABLE IF NOT EXISTS subproject_users(
   updated_by text DEFAULT NULL
 );
 
-CREATE INDEX IF NOT EXISTS subproject_users_subproject_id_idx ON subproject_users USING btree(subproject_id);
-CREATE INDEX IF NOT EXISTS subproject_users_user_id_idx ON subproject_users USING btree(user_id);
-CREATE INDEX IF NOT EXISTS subproject_users_label_idx ON subproject_users USING btree(label);
-ALTER TABLE subproject_users
-ADD CONSTRAINT subproject_users_subproject_id_user_id_unique UNIQUE (subproject_id, user_id);
+CREATE INDEX IF NOT EXISTS project_roles_project_id_idx ON project_roles USING btree(project_id);
+CREATE INDEX IF NOT EXISTS project_roles_project_user_id_idx ON project_roles USING btree(project_user_id);
+CREATE INDEX IF NOT EXISTS project_roles_label_idx ON project_roles USING btree(label);
+ALTER TABLE project_roles
+ADD CONSTRAINT project_roles_project_user_id_unique UNIQUE (project_user_id, project_id);
 
 
-COMMENT ON COLUMN subproject_users.role IS 'One of: "read-specific", "read-all", "write-specific", "write-all", "design", "own". Preset: "read-all"';
-COMMENT ON TABLE subproject_users IS 'A way to give users access to subprojects (without giving them access to the whole project). TODO: define what data from the project the user can see.';
+COMMENT ON COLUMN project_roles.role IS 'One of: "read-specific", "read-all", "write-specific", "write-all", "design", "own". Only triggers may set "own"';
+COMMENT ON COLUMN project_roles.label IS 'Maintained by trigger: directory email + role';
+COMMENT ON TABLE project_roles IS 'Role assignments at project scope. One role per project_user per scope';
+
+--------------------------------------------------------------
+-- subproject_roles
+--
+CREATE TABLE IF NOT EXISTS subproject_roles(
+  subproject_role_id uuid PRIMARY KEY DEFAULT uuidv7(),
+  subproject_id uuid DEFAULT NULL REFERENCES subprojects(subproject_id) ON DELETE CASCADE ON UPDATE CASCADE DEFERRABLE INITIALLY DEFERRED,
+  project_user_id uuid NOT NULL REFERENCES project_users(project_user_id) ON DELETE CASCADE ON UPDATE CASCADE DEFERRABLE INITIALLY DEFERRED,
+  "role" user_roles_enum NOT NULL,
+  label text DEFAULT NULL,
+  sys_period tstzrange DEFAULT NULL,
+  created_at timestamptz NOT NULL DEFAULT now(),
+  updated_at timestamptz NOT NULL DEFAULT now(),
+  updated_by text DEFAULT NULL
+);
+
+CREATE INDEX IF NOT EXISTS subproject_roles_subproject_id_idx ON subproject_roles USING btree(subproject_id);
+CREATE INDEX IF NOT EXISTS subproject_roles_project_user_id_idx ON subproject_roles USING btree(project_user_id);
+CREATE INDEX IF NOT EXISTS subproject_roles_label_idx ON subproject_roles USING btree(label);
+ALTER TABLE subproject_roles
+ADD CONSTRAINT subproject_roles_project_user_id_unique UNIQUE (project_user_id, subproject_id);
+
+
+COMMENT ON COLUMN subproject_roles.role IS 'One of: "read-specific", "read-all", "write-specific", "write-all", "design", "own". Only triggers may set "own"';
+COMMENT ON COLUMN subproject_roles.label IS 'Maintained by trigger: directory email + role';
+COMMENT ON TABLE subproject_roles IS 'Role assignments at subproject scope. One role per project_user per scope';
 
 --------------------------------------------------------------
 -- taxonomies
@@ -1014,13 +1043,13 @@ CREATE INDEX IF NOT EXISTS user_messages_user_id_idx ON user_messages USING btre
 CREATE INDEX IF NOT EXISTS user_messages_message_id_idx ON user_messages USING btree(message_id);
 
 --------------------------------------------------------------
--- place_users
+-- place_roles
 --
-CREATE TABLE IF NOT EXISTS place_users(
-  place_user_id uuid PRIMARY KEY DEFAULT uuidv7(),
+CREATE TABLE IF NOT EXISTS place_roles(
+  place_role_id uuid PRIMARY KEY DEFAULT uuidv7(),
   place_id uuid DEFAULT NULL REFERENCES places(place_id) ON DELETE CASCADE ON UPDATE CASCADE DEFERRABLE INITIALLY DEFERRED,
-  user_id uuid DEFAULT NULL REFERENCES users(user_id) ON DELETE CASCADE ON UPDATE CASCADE DEFERRABLE INITIALLY DEFERRED,
-  "role" user_roles_enum DEFAULT 'read-all',
+  project_user_id uuid NOT NULL REFERENCES project_users(project_user_id) ON DELETE CASCADE ON UPDATE CASCADE DEFERRABLE INITIALLY DEFERRED,
+  "role" user_roles_enum NOT NULL,
   label text DEFAULT NULL,
   sys_period tstzrange DEFAULT NULL,
   created_at timestamptz NOT NULL DEFAULT now(),
@@ -1028,15 +1057,16 @@ CREATE TABLE IF NOT EXISTS place_users(
   updated_by text DEFAULT NULL
 );
 
-CREATE INDEX IF NOT EXISTS place_users_place_id_idx ON place_users USING btree(place_id);
-CREATE INDEX IF NOT EXISTS place_users_user_id_idx ON place_users USING btree(user_id);
-CREATE INDEX IF NOT EXISTS place_users_label_idx ON place_users USING btree(label);
-ALTER TABLE place_users
-ADD CONSTRAINT place_users_place_id_user_id_unique UNIQUE (place_id, user_id);
+CREATE INDEX IF NOT EXISTS place_roles_place_id_idx ON place_roles USING btree(place_id);
+CREATE INDEX IF NOT EXISTS place_roles_project_user_id_idx ON place_roles USING btree(project_user_id);
+CREATE INDEX IF NOT EXISTS place_roles_label_idx ON place_roles USING btree(label);
+ALTER TABLE place_roles
+ADD CONSTRAINT place_roles_project_user_id_unique UNIQUE (project_user_id, place_id);
 
 
-COMMENT ON TABLE place_users IS 'A way to give users access to places without giving them access to the whole project or subproject.';
-COMMENT ON COLUMN place_users.role IS 'One of: "read-specific", "read-all", "write-specific", "write-all", "design", "own". Preset: "read-all"';
+COMMENT ON TABLE place_roles IS 'Role assignments at place scope. One role per project_user per place';
+COMMENT ON COLUMN place_roles.role IS 'One of: "read-specific", "read-all", "write-specific", "write-all", "design", "own". Only triggers may set "own"';
+COMMENT ON COLUMN place_roles.label IS 'Maintained by trigger: directory email + role';
 
 --------------------------------------------------------------
 -- goals

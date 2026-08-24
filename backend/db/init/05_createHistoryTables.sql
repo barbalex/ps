@@ -1231,100 +1231,148 @@ BEGIN
 END
 $$;
 
---------------------------------------------------------------
--- subproject_users -> subproject_users_history
+-- project_roles -> project_roles_history
 -- Retention: 5 years
 --
-ALTER TABLE subproject_users
+ALTER TABLE project_roles
 ADD COLUMN IF NOT EXISTS sys_period tstzrange;
 
-UPDATE subproject_users
+UPDATE project_roles
 SET sys_period = tstzrange(updated_at, NULL, '[)')
 WHERE sys_period IS NULL;
 
-ALTER TABLE subproject_users
+ALTER TABLE project_roles
 ALTER COLUMN sys_period SET NOT NULL;
 
-COMMENT ON COLUMN subproject_users.sys_period IS 'System period maintained by temporal_tables for auditing and historic queries.';
+COMMENT ON COLUMN project_roles.sys_period IS 'System period maintained by temporal_tables for auditing and historic queries.';
 
-CREATE TABLE IF NOT EXISTS subproject_users_history (
-	LIKE subproject_users INCLUDING DEFAULTS
+CREATE TABLE IF NOT EXISTS project_roles_history (
+	LIKE project_roles INCLUDING DEFAULTS
 ) PARTITION BY RANGE (updated_at);
 
-ALTER TABLE subproject_users_history OWNER TO partman_user;
+ALTER TABLE project_roles_history OWNER TO partman_user;
 
-COMMENT ON TABLE subproject_users_history IS 'System-versioned history of subproject_users. Managed by temporal_tables and partitioned yearly by updated_at.';
-COMMENT ON COLUMN subproject_users_history.sys_period IS 'System period written by temporal_tables. lower(sys_period) is when the row version became current, upper(sys_period) when it stopped being current.';
+COMMENT ON TABLE project_roles_history IS 'System-versioned history of project_roles. Managed by temporal_tables and partitioned yearly by updated_at.';
+COMMENT ON COLUMN project_roles_history.sys_period IS 'System period written by temporal_tables. lower(sys_period) is when the row version became current, upper(sys_period) when it stopped being current.';
 
-CREATE INDEX IF NOT EXISTS subproject_users_history_updated_at_idx
-ON subproject_users_history USING btree (updated_at);
+CREATE INDEX IF NOT EXISTS project_roles_history_updated_at_idx
+ON project_roles_history USING btree (updated_at);
 
-CREATE INDEX IF NOT EXISTS subproject_users_history_subproject_user_id_updated_at_idx
-ON subproject_users_history USING btree (subproject_user_id, updated_at);
+CREATE INDEX IF NOT EXISTS project_roles_history_project_user_id_updated_at_idx
+ON project_roles_history USING btree (project_user_id, updated_at);
 
-CREATE INDEX IF NOT EXISTS subproject_users_history_sys_period_idx
-ON subproject_users_history USING gist (sys_period);
+CREATE INDEX IF NOT EXISTS project_roles_history_sys_period_idx
+ON project_roles_history USING gist (sys_period);
 
 DO $$
 BEGIN
 	IF NOT EXISTS (
 		SELECT 1
 		FROM pg_trigger
-		WHERE tgname = 'versioning_subproject_users_trigger'
-			AND tgrelid = 'subproject_users'::regclass
+		WHERE tgname = 'versioning_project_roles_trigger'
+			AND tgrelid = 'project_roles'::regclass
 	) THEN
-		CREATE TRIGGER versioning_subproject_users_trigger
-		BEFORE INSERT OR UPDATE OR DELETE ON subproject_users
-		FOR EACH ROW EXECUTE PROCEDURE versioning('sys_period', 'subproject_users_history', true);
+		CREATE TRIGGER versioning_project_roles_trigger
+		BEFORE INSERT OR UPDATE OR DELETE ON project_roles
+		FOR EACH ROW EXECUTE PROCEDURE versioning('sys_period', 'project_roles_history', true);
 	END IF;
 END
 $$;
 
 --------------------------------------------------------------
--- place_users -> place_users_history
+-- subproject_roles -> subproject_roles_history
 -- Retention: 5 years
 --
-ALTER TABLE place_users
+ALTER TABLE subproject_roles
 ADD COLUMN IF NOT EXISTS sys_period tstzrange;
 
-UPDATE place_users
+UPDATE subproject_roles
 SET sys_period = tstzrange(updated_at, NULL, '[)')
 WHERE sys_period IS NULL;
 
-ALTER TABLE place_users
+ALTER TABLE subproject_roles
 ALTER COLUMN sys_period SET NOT NULL;
 
-COMMENT ON COLUMN place_users.sys_period IS 'System period maintained by temporal_tables for auditing and historic queries.';
+COMMENT ON COLUMN subproject_roles.sys_period IS 'System period maintained by temporal_tables for auditing and historic queries.';
 
-CREATE TABLE IF NOT EXISTS place_users_history (
-	LIKE place_users INCLUDING DEFAULTS
+CREATE TABLE IF NOT EXISTS subproject_roles_history (
+	LIKE subproject_roles INCLUDING DEFAULTS
 ) PARTITION BY RANGE (updated_at);
 
-ALTER TABLE place_users_history OWNER TO partman_user;
+ALTER TABLE subproject_roles_history OWNER TO partman_user;
 
-COMMENT ON TABLE place_users_history IS 'System-versioned history of place_users. Managed by temporal_tables and partitioned yearly by updated_at.';
-COMMENT ON COLUMN place_users_history.sys_period IS 'System period written by temporal_tables. lower(sys_period) is when the row version became current, upper(sys_period) when it stopped being current.';
+COMMENT ON TABLE subproject_roles_history IS 'System-versioned history of subproject_roles. Managed by temporal_tables and partitioned yearly by updated_at.';
+COMMENT ON COLUMN subproject_roles_history.sys_period IS 'System period written by temporal_tables. lower(sys_period) is when the row version became current, upper(sys_period) when it stopped being current.';
 
-CREATE INDEX IF NOT EXISTS place_users_history_updated_at_idx
-ON place_users_history USING btree (updated_at);
+CREATE INDEX IF NOT EXISTS subproject_roles_history_updated_at_idx
+ON subproject_roles_history USING btree (updated_at);
 
-CREATE INDEX IF NOT EXISTS place_users_history_place_user_id_updated_at_idx
-ON place_users_history USING btree (place_user_id, updated_at);
+CREATE INDEX IF NOT EXISTS subproject_roles_history_subproject_role_id_updated_at_idx
+ON subproject_roles_history USING btree (subproject_role_id, updated_at);
 
-CREATE INDEX IF NOT EXISTS place_users_history_sys_period_idx
-ON place_users_history USING gist (sys_period);
+CREATE INDEX IF NOT EXISTS subproject_roles_history_sys_period_idx
+ON subproject_roles_history USING gist (sys_period);
 
 DO $$
 BEGIN
 	IF NOT EXISTS (
 		SELECT 1
 		FROM pg_trigger
-		WHERE tgname = 'versioning_place_users_trigger'
-			AND tgrelid = 'place_users'::regclass
+		WHERE tgname = 'versioning_subproject_roles_trigger'
+			AND tgrelid = 'subproject_roles'::regclass
 	) THEN
-		CREATE TRIGGER versioning_place_users_trigger
-		BEFORE INSERT OR UPDATE OR DELETE ON place_users
-		FOR EACH ROW EXECUTE PROCEDURE versioning('sys_period', 'place_users_history', true);
+		CREATE TRIGGER versioning_subproject_roles_trigger
+		BEFORE INSERT OR UPDATE OR DELETE ON subproject_roles
+		FOR EACH ROW EXECUTE PROCEDURE versioning('sys_period', 'subproject_roles_history', true);
+	END IF;
+END
+$$;
+
+--------------------------------------------------------------
+-- place_roles -> place_roles_history
+-- Retention: 5 years
+--
+ALTER TABLE place_roles
+ADD COLUMN IF NOT EXISTS sys_period tstzrange;
+
+UPDATE place_roles
+SET sys_period = tstzrange(updated_at, NULL, '[)')
+WHERE sys_period IS NULL;
+
+ALTER TABLE place_roles
+ALTER COLUMN sys_period SET NOT NULL;
+
+COMMENT ON COLUMN place_roles.sys_period IS 'System period maintained by temporal_tables for auditing and historic queries.';
+
+CREATE TABLE IF NOT EXISTS place_roles_history (
+	LIKE place_roles INCLUDING DEFAULTS
+) PARTITION BY RANGE (updated_at);
+
+ALTER TABLE place_roles_history OWNER TO partman_user;
+
+COMMENT ON TABLE place_roles_history IS 'System-versioned history of place_roles. Managed by temporal_tables and partitioned yearly by updated_at.';
+COMMENT ON COLUMN place_roles_history.sys_period IS 'System period written by temporal_tables. lower(sys_period) is when the row version became current, upper(sys_period) when it stopped being current.';
+
+CREATE INDEX IF NOT EXISTS place_roles_history_updated_at_idx
+ON place_roles_history USING btree (updated_at);
+
+CREATE INDEX IF NOT EXISTS place_roles_history_place_role_id_updated_at_idx
+ON place_roles_history USING btree (place_role_id, updated_at);
+
+CREATE INDEX IF NOT EXISTS place_roles_history_sys_period_idx
+ON place_roles_history USING gist (sys_period);
+
+DO $$
+BEGIN
+	IF NOT EXISTS (
+		SELECT 1
+		FROM pg_trigger
+		WHERE tgname = 'versioning_place_roles_trigger'
+			AND tgrelid = 'place_roles'::regclass
+	) THEN
+		CREATE TRIGGER versioning_place_roles_trigger
+		BEFORE INSERT OR UPDATE OR DELETE ON place_roles
+		FOR EACH ROW EXECUTE PROCEDURE versioning('sys_period', 'place_roles_history', true);
 	END IF;
 END
 $$;
@@ -3034,7 +3082,7 @@ WHERE NOT EXISTS (
 );
 
 SELECT partman.create_parent(
-	p_parent_table := 'public.subproject_users_history',
+	p_parent_table := 'public.project_roles_history',
 	p_control := 'updated_at',
 	p_interval := '1 year',
 	p_type := 'range',
@@ -3047,7 +3095,24 @@ SELECT partman.create_parent(
 WHERE NOT EXISTS (
 	SELECT 1
 	FROM partman.part_config
-	WHERE parent_table = 'public.subproject_users_history'
+	WHERE parent_table = 'public.project_roles_history'
+);
+
+SELECT partman.create_parent(
+	p_parent_table := 'public.subproject_roles_history',
+	p_control := 'updated_at',
+	p_interval := '1 year',
+	p_type := 'range',
+	p_premake := 4,
+	p_start_partition := to_char(date_trunc('year', CURRENT_TIMESTAMP), 'YYYY-MM-DD HH24:MI:SS'),
+	p_default_table := true,
+	p_automatic_maintenance := 'on',
+	p_jobmon := false
+)
+WHERE NOT EXISTS (
+	SELECT 1
+	FROM partman.part_config
+	WHERE parent_table = 'public.subproject_roles_history'
 );
 
 SELECT partman.create_parent(
@@ -3068,7 +3133,7 @@ WHERE NOT EXISTS (
 );
 
 SELECT partman.create_parent(
-	p_parent_table := 'public.place_users_history',
+	p_parent_table := 'public.place_roles_history',
 	p_control := 'updated_at',
 	p_interval := '1 year',
 	p_type := 'range',
@@ -3081,7 +3146,7 @@ SELECT partman.create_parent(
 WHERE NOT EXISTS (
 	SELECT 1
 	FROM partman.part_config
-	WHERE parent_table = 'public.place_users_history'
+	WHERE parent_table = 'public.place_roles_history'
 );
 
 SELECT partman.create_parent(
@@ -3605,7 +3670,14 @@ SET jobmon = false,
 	retention = '5 years',
 	retention_keep_table = false,
 	retention_keep_index = false
-WHERE parent_table = 'public.subproject_users_history';
+WHERE parent_table = 'public.project_roles_history';
+
+UPDATE partman.part_config
+SET jobmon = false,
+	retention = '5 years',
+	retention_keep_table = false,
+	retention_keep_index = false
+WHERE parent_table = 'public.subproject_roles_history';
 
 UPDATE partman.part_config
 SET jobmon = false,
@@ -3619,7 +3691,7 @@ SET jobmon = false,
 	retention = '5 years',
 	retention_keep_table = false,
 	retention_keep_index = false
-WHERE parent_table = 'public.place_users_history';
+WHERE parent_table = 'public.place_roles_history';
 
 UPDATE partman.part_config
 SET jobmon = false,

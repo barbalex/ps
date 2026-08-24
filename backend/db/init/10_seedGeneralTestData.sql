@@ -1,7 +1,7 @@
 -- users
 INSERT INTO users(user_id, email, email_verified) values ('018cf95a-d817-7000-92fa-bb3b2ad59dda', 'alex.barbalex@gmail.com', TRUE);
 -- accounts
-INSERT INTO accounts(account_id, user_id, type) values ('018cf958-27e2-7000-90d3-59f024d467be', '018cf95a-d817-7000-92fa-bb3b2ad59dda', 'premium');
+INSERT INTO accounts(account_id, user_id, email, type) values ('018cf958-27e2-7000-90d3-59f024d467be', '018cf95a-d817-7000-92fa-bb3b2ad59dda', 'alex.barbalex@gmail.com', 'premium');
 -- fieldTypes
 INSERT INTO field_types(field_type_id, name, sort, comment)
 VALUES ('018ca19e-7a23-7bf4-8523-ff41e3b60807', 'text', 1, 'Example: text'),

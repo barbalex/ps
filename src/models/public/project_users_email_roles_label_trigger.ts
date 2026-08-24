@@ -1,0 +1,2 @@
+export interface project_users_email_roles_label_trigger_params {
+}

@@ -82,28 +82,9 @@ export const createProject = async (account_id?: string) => {
     draft: data,
   })
 
-  // Mirror what the backend trigger projects_insert_owner_trigger does:
-  // insert the account's owner as 'owner' in project_users so the user
-  // immediately has write access locally. We do NOT queue a sync operation
-  // because the backend trigger handles the project_users insert automatically
-  // on INSERT into projects; and the backend rejects direct inserts with
-  // role='owner' (enforced by enforce_project_users_write).
-  const projectUserData = {
-    project_user_id: uuidv7(),
-    project_id,
-    user_id: userId,
-    role: 'own',
-  }
-  await db.query(
-    `insert into project_users (project_user_id, project_id, user_id, role) values ($1, $2, $3, $4)
-     on conflict (project_id, user_id) do update set role = 'own'`,
-    [projectUserData.project_user_id, project_id, userId, 'own'],
-  )
-  // Note: We intentionally do NOT queue an addOperationAtom for project_users here.
-  // The backend fires projects_insert_owner_trigger AFTER INSERT which creates the
-  // project_users row automatically. Queuing it would cause a 42501 error because
-  // the backend rejects direct inserts with role='owner', which would then revert
-  // our local project_users row and break subsequent write-permission checks.
+  // The local projects_insert_owner_trigger creates the directory row
+  // (claimed) and the 'own' project role automatically — locally and,
+  // after the queued insert syncs, on the server as well.
 
   return project_id
 }
@@ -495,20 +476,42 @@ export const createTaxonomy = async ({ projectId }) => {
   return taxonomy_id
 }
 
-export const createProjectUser = async ({ projectId }) => {
+export const createProjectUser = async ({
+  projectId,
+  email,
+}: {
+  projectId: string
+  email: string
+}) => {
   const db = store.get(pgliteDbAtom)
+  const normalizedEmail = email.trim().toLowerCase()
   const project_user_id = uuidv7()
+
   await db.query(
-    `insert into project_users (project_user_id, project_id, role) values ($1, $2, $3)`,
-    [project_user_id, projectId, 'read-all'],
+    `insert into project_users (project_user_id, project_id, email) values ($1, $2, $3)
+     on conflict (project_id, email) do update set updated_at = now()`,
+    [project_user_id, projectId, normalizedEmail],
   )
 
   store.set(addOperationAtom, {
     table: 'project_users',
     operation: 'insert',
+    draft: { project_user_id, project_id: projectId, email: normalizedEmail },
+  })
+
+  // default role so the person is visible in the project immediately
+  const project_role_id = uuidv7()
+  await db.query(
+    `insert into project_roles (project_role_id, project_id, project_user_id, role) values ($1, $2, $3, $4)`,
+    [project_role_id, projectId, project_user_id, 'read-all'],
+  )
+  store.set(addOperationAtom, {
+    table: 'project_roles',
+    operation: 'insert',
     draft: {
-      project_user_id,
+      project_role_id,
       project_id: projectId,
+      project_user_id,
       role: 'read-all',
     },
   })
@@ -743,48 +746,60 @@ export const createGoalReport = async ({ projectId, goalId }) => {
   return goal_report_id
 }
 
-export const createSubprojectUser = async ({ subprojectId }) => {
+export const createSubprojectRole = async ({
+  subprojectId,
+  projectUserId,
+}: {
+  subprojectId: string
+  projectUserId: string
+}) => {
   const db = store.get(pgliteDbAtom)
-  const subproject_user_id = uuidv7()
-
-  // TODO: these should both be upserts
+  const subproject_role_id = uuidv7()
   await db.query(
-    `insert into subproject_users (subproject_user_id, subproject_id, role) values ($1, $2, $3)`,
-    [subproject_user_id, subprojectId, 'read-all'],
+    `insert into subproject_roles (subproject_role_id, subproject_id, project_user_id, role) values ($1, $2, $3, $4)`,
+    [subproject_role_id, subprojectId, projectUserId, 'read-all'],
   )
 
   store.set(addOperationAtom, {
-    table: 'subproject_users',
+    table: 'subproject_roles',
     operation: 'insert',
     draft: {
-      subproject_user_id,
+      subproject_role_id,
       subproject_id: subprojectId,
+      project_user_id: projectUserId,
       role: 'read-all',
     },
   })
 
-  return subproject_user_id
+  return subproject_role_id
 }
 
-export const createPlaceUser = async ({ placeId }) => {
+export const createPlaceRole = async ({
+  placeId,
+  projectUserId,
+}: {
+  placeId: string
+  projectUserId: string
+}) => {
   const db = store.get(pgliteDbAtom)
-  const place_user_id = uuidv7()
+  const place_role_id = uuidv7()
   await db.query(
-    `insert into place_users (place_user_id, place_id, role) values ($1, $2, $3)`,
-    [place_user_id, placeId, 'read-all'],
+    `insert into place_roles (place_role_id, place_id, project_user_id, role) values ($1, $2, $3, $4)`,
+    [place_role_id, placeId, projectUserId, 'read-all'],
   )
 
   store.set(addOperationAtom, {
-    table: 'place_users',
+    table: 'place_roles',
     operation: 'insert',
     draft: {
-      place_user_id,
+      place_role_id,
       place_id: placeId,
+      project_user_id: projectUserId,
       role: 'read-all',
     },
   })
 
-  return place_user_id
+  return place_role_id
 }
 
 export const createSubprojectTaxon = async ({ subprojectId }) => {

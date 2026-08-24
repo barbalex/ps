@@ -33,10 +33,10 @@ export const usePlaceUserNavData = ({
   const res = useLiveQuery(
     `
       SELECT
-        place_user_id AS id,
+        place_role_id AS id,
         label
-      FROM place_users 
-      WHERE place_user_id = $1`,
+      FROM place_roles 
+      WHERE place_role_id = $1`,
     [placeUserId],
   )
 

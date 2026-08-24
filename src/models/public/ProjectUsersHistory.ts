@@ -1,5 +1,3 @@
-import type { default as UserRolesEnum } from './UserRolesEnum.ts';
-
 /**
  * Represents the table public.project_users_history
  * System-versioned history of project_users. Managed by temporal_tables and partitioned yearly by updated_at.
@@ -9,9 +7,9 @@ export default interface ProjectUsersHistory {
 
   project_id: string | null;
 
-  user_id: string | null;
+  email: string;
 
-  role: UserRolesEnum | null;
+  auth_user_id: string | null;
 
   label: string | null;
 
@@ -35,9 +33,9 @@ export interface ProjectUsersHistoryInitializer {
 
   project_id?: string | null;
 
-  user_id?: string | null;
+  email: string;
 
-  role?: UserRolesEnum | null;
+  auth_user_id?: string | null;
 
   label?: string | null;
 
@@ -62,9 +60,9 @@ export interface ProjectUsersHistoryMutator {
 
   project_id?: string | null;
 
-  user_id?: string | null;
+  email?: string;
 
-  role?: UserRolesEnum | null;
+  auth_user_id?: string | null;
 
   label?: string | null;
 

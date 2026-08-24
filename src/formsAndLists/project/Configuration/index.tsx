@@ -711,14 +711,14 @@ export const Configuration = ({ from }) => {
                 },
                 { subprojectNameSingular },
               )}
-              name="subproject_users_in_subproject"
-              value={row.subproject_users_in_subproject ?? true}
+              name="subproject_roles_in_subproject"
+              value={row.subproject_roles_in_subproject ?? true}
               onChange={onChange}
               validationState={
-                validations?.subproject_users_in_subproject?.state
+                validations?.subproject_roles_in_subproject?.state
               }
               validationMessage={
-                validations?.subproject_users_in_subproject?.message ??
+                validations?.subproject_roles_in_subproject?.message ??
                 altInOwnFormNavMessage
               }
             />

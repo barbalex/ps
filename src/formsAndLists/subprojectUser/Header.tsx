@@ -8,7 +8,7 @@ import { MdMenuBook } from 'react-icons/md'
 
 const { Button } = fluentUiReactComponents
 
-import { createSubprojectUser } from '../../modules/createRows.ts'
+import { AddProjectUserButton } from '../../components/shared/AddProjectUserButton.tsx'
 import { FormHeader } from '../../components/FormHeader/index.tsx'
 import { HistoryToggleButton } from '../../components/shared/HistoryCompare/HistoryToggleButton.tsx'
 import { addOperationAtom, languageAtom } from '../../store.ts'
@@ -42,33 +42,21 @@ export const Header = ({ autoFocusRef }) => {
     subprojectUserIdRef.current = subprojectUserId
   }, [subprojectUserId])
 
-  const addRow = async () => {
-    const id = await createSubprojectUser({ subprojectId })
-    if (!id) return
-    navigate({
-      to: `../${id}`,
-      params: (prev) => ({
-        ...prev,
-        subprojectUserId: id,
-      }),
-    })
-    autoFocusRef?.current?.focus()
-  }
 
   const deleteRow = async () => {
     try {
       const prevRes = await db.query(
-        `SELECT * FROM subproject_users WHERE subproject_user_id = $1`,
+        `SELECT * FROM subproject_roles WHERE subproject_role_id = $1`,
         [subprojectUserId],
       )
       const prev = prevRes?.rows?.[0] ?? {}
       await db.query(
-        `DELETE FROM subproject_users WHERE subproject_user_id = $1`,
+        `DELETE FROM subproject_roles WHERE subproject_role_id = $1`,
         [subprojectUserId],
       )
       addOperation({
-        table: 'subproject_users',
-        rowIdName: 'subproject_user_id',
+        table: 'subproject_roles',
+        rowIdName: 'subproject_role_id',
         rowId: subprojectUserId,
         operation: 'delete',
         prev,
@@ -83,20 +71,20 @@ export const Header = ({ autoFocusRef }) => {
   const toNext = async () => {
     try {
       const res = await db.query(
-        `SELECT subproject_user_id FROM subproject_users WHERE subproject_id = $1 ORDER BY label`,
+        `SELECT subproject_role_id FROM subproject_roles WHERE subproject_id = $1 ORDER BY label`,
         [subprojectId],
       )
       const rows = res?.rows
       const len = rows.length
       const index = rows.findIndex(
-        (p) => p.subproject_user_id === subprojectUserIdRef.current,
+        (p) => p.subproject_role_id === subprojectUserIdRef.current,
       )
       const next = rows[(index + 1) % len]
       navigate({
-        to: `../${next.subproject_user_id}`,
+        to: `../${next.subproject_role_id}`,
         params: (prev) => ({
           ...prev,
-          subprojectUserId: next.subproject_user_id,
+          subprojectUserId: next.subproject_role_id,
         }),
       })
     } catch (error) {
@@ -107,20 +95,20 @@ export const Header = ({ autoFocusRef }) => {
   const toPrevious = async () => {
     try {
       const res = await db.query(
-        `SELECT subproject_user_id FROM subproject_users WHERE subproject_id = $1 ORDER BY label`,
+        `SELECT subproject_role_id FROM subproject_roles WHERE subproject_id = $1 ORDER BY label`,
         [subprojectId],
       )
       const rows = res?.rows
       const len = rows.length
       const index = rows.findIndex(
-        (p) => p.subproject_user_id === subprojectUserIdRef.current,
+        (p) => p.subproject_role_id === subprojectUserIdRef.current,
       )
       const previous = rows[(index + len - 1) % len]
       navigate({
-        to: `../${previous.subproject_user_id}`,
+        to: `../${previous.subproject_role_id}`,
         params: (prev) => ({
           ...prev,
-          subprojectUserId: previous.subproject_user_id,
+          subprojectUserId: previous.subproject_role_id,
         }),
       })
     } catch (error) {
@@ -134,18 +122,28 @@ export const Header = ({ autoFocusRef }) => {
   return (
     <FormHeader
       title={title}
-      addRow={addRow}
       deleteRow={deleteRow}
       toNext={toNext}
       toPrevious={toPrevious}
       tableName="subproject user"
       siblings={
         <>
+          <AddProjectUserButton
+            scope={{
+              kind: 'subproject',
+              projectId,
+              subprojectId,
+            }}
+            onUserCreated={(id) => {
+              navigate({ to: `../${id}` })
+              autoFocusRef?.current?.focus()
+            }}
+          />
           <HistoryToggleButton
             historiesPath={`${basePath}/histories`}
             formPath={basePath}
-            historyTable="subproject_users_history"
-            rowIdField="subproject_user_id"
+            historyTable="subproject_roles_history"
+            rowIdField="subproject_role_id"
             rowId={subprojectUserId}
           />
           <Button

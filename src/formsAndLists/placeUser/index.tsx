@@ -12,9 +12,8 @@ import { Header } from './Header.tsx'
 import { Loading } from '../../components/shared/Loading.tsx'
 import { NotFound } from '../../components/NotFound.tsx'
 import { addOperationAtom } from '../../store.ts'
-import type PlaceUsers from '../../models/public/PlaceUsers.ts'
+import type PlaceRoles from '../../models/public/PlaceRoles.ts'
 import { userRoleOptions } from '../../modules/constants.ts'
-import { AddUserButton } from '../../components/shared/AddUserButton.tsx'
 
 import styles from './index.module.css'
 
@@ -30,6 +29,8 @@ const {
   Button,
 } = fluentUiReactComponents
 
+type Row = PlaceRoles & { email: string | null; project_id: string | null }
+
 export const PlaceUser = ({ from }) => {
   const { placeUserId } = useParams({ from })
   const addOperation = useSetAtom(addOperationAtom)
@@ -43,16 +44,22 @@ export const PlaceUser = ({ from }) => {
 
   const db = usePGlite()
   const res = useLiveQuery(
-    `SELECT * FROM place_users WHERE place_user_id = $1`,
+    `SELECT plr.*, pu.email, sp.project_id
+     FROM place_roles plr
+     JOIN project_users pu ON pu.project_user_id = plr.project_user_id
+     JOIN places pl ON pl.place_id = plr.place_id
+     JOIN subprojects sp ON sp.subproject_id = pl.subproject_id
+     WHERE plr.place_role_id = $1`,
     [placeUserId],
   )
-  const row: PlaceUsers | undefined = res?.rows?.[0]
+  const row: Row | undefined = res?.rows?.[0]
 
+  // the project owner's own directory row: its role is maintained by triggers
   const ownerRes = useLiveQuery(
-    `SELECT a.user_id FROM places pl JOIN subprojects sp ON pl.subproject_id = sp.subproject_id JOIN projects p ON sp.project_id = p.project_id JOIN accounts a ON p.account_id = a.account_id WHERE pl.place_id = $1`,
-    [row?.place_id ?? null],
+    `SELECT 1 FROM project_roles WHERE project_user_id = $1 AND role = 'own'`,
+    [row?.project_user_id ?? null],
   )
-  const isOwner = !!(row?.user_id && ownerRes?.rows?.[0]?.user_id === row.user_id)
+  const isOwner = (ownerRes?.rows?.length ?? 0) > 0
 
   const onChange = async (e, data) => {
     const { name, value } = getValueFromChange(e, data)
@@ -69,7 +76,7 @@ export const PlaceUser = ({ from }) => {
 
     try {
       await db.query(
-        `UPDATE place_users SET ${name} = $1 WHERE place_user_id = $2`,
+        `UPDATE place_roles SET ${name} = $1 WHERE place_role_id = $2`,
         [value, placeUserId],
       )
     } catch (error) {
@@ -80,13 +87,12 @@ export const PlaceUser = ({ from }) => {
       return
     }
     setValidations((prev) => {
-       
       const { [name]: _, ...rest } = prev
       return rest
     })
     addOperation({
-      table: 'place_users',
-      rowIdName: 'place_user_id',
+      table: 'place_roles',
+      rowIdName: 'place_role_id',
       rowId: placeUserId,
       operation: 'update',
       draft: { [name]: value },
@@ -99,7 +105,7 @@ export const PlaceUser = ({ from }) => {
     setPendingRole(null)
     try {
       await db.query(
-        `UPDATE place_users SET role = $1 WHERE place_user_id = $2`,
+        `UPDATE place_roles SET role = $1 WHERE place_role_id = $2`,
         [value, placeUserId],
       )
     } catch (error) {
@@ -110,43 +116,18 @@ export const PlaceUser = ({ from }) => {
       return
     }
     setValidations((prev) => {
-       
       const { role: _, ...rest } = prev
       return rest
     })
-    if (!row.user_id) return
+    if (!row.project_user_id) return
     addOperation({
-      table: 'place_users',
-      rowIdName: 'place_user_id',
+      table: 'place_roles',
+      rowIdName: 'place_role_id',
       rowId: placeUserId,
       operation: 'update',
       draft: { role: value },
       prev: { ...row },
     })
-  }
-
-  const onUserCreated = async (userId: string) => {
-    try {
-      await db.query(
-        `UPDATE place_users SET user_id = $1 WHERE place_user_id = $2`,
-        [userId, placeUserId],
-      )
-    } catch (error) {
-      setValidations((prev) => ({
-        ...prev,
-        user_id: { state: 'error', message: error.message },
-      }))
-      return
-    }
-    addOperation({
-      table: 'place_users',
-      rowIdName: 'place_user_id',
-      rowId: placeUserId,
-      operation: 'update',
-      draft: { user_id: userId },
-      prev: { ...row },
-    })
-    setTimeout(() => roleRef.current?.focus(), 50)
   }
 
   if (!res) return <Loading />
@@ -244,22 +225,16 @@ export const PlaceUser = ({ from }) => {
         </Dialog>
         <DropdownField
           label={formatMessage({ id: 'qyI8KV', defaultMessage: 'Benutzer' })}
-          name="user_id"
-          table="users"
-          where={`user_id NOT IN (SELECT user_id FROM place_users WHERE place_id = '${row.place_id}' AND place_user_id != '${placeUserId}' AND user_id IS NOT NULL)`}
-          value={row.user_id ?? ''}
+          name="project_user_id"
+          table="project_users"
+          where={`project_id = '${row.project_id}' AND project_user_id NOT IN (SELECT project_user_id FROM place_roles WHERE place_id = '${row.place_id}' AND place_role_id != '${placeUserId}')`}
+          value={row.project_user_id ?? ''}
           onChange={onChange}
           disabled={isOwner}
           autoFocus
           ref={autoFocusRef}
-          validationState={validations?.user_id?.state}
-          validationMessage={validations?.user_id?.message}
-          button={
-            <AddUserButton
-              onUserCreated={onUserCreated}
-              disabled={isOwner}
-            />
-          }
+          validationState={validations?.project_user_id?.state}
+          validationMessage={validations?.project_user_id?.message}
         />
         <RadioGroupField
           label={formatMessage({ id: 'Gj0HkM', defaultMessage: 'Rolle' })}
@@ -276,7 +251,7 @@ export const PlaceUser = ({ from }) => {
           )}
           value={row.role ?? ''}
           onChange={onChange}
-          disabled={isOwner || !row.user_id}
+          disabled={isOwner || !row.project_user_id}
           validationState={validations?.role?.state}
           validationMessage={validations?.role?.message}
           ref={roleRef}

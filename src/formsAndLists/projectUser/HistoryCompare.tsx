@@ -95,12 +95,12 @@ export const ProjectUserHistoryCompare = () => {
       <>
       <DropdownField
         label={formatMessage({ id: 'qyI8KV', defaultMessage: 'Benutzer' })}
-        name="user_id"
-        table="users"
-        value={row.user_id ?? ''}
+        name="email"
+        table="project_users"
+        value={row.email ?? ''}
         onChange={onChange}
-        validationState={validations?.user_id?.state}
-        validationMessage={validations?.user_id?.message}
+        validationState={validations?.email?.state}
+        validationMessage={validations?.email?.message}
       />
       <RadioGroupField
         label={formatMessage({ id: 'Gj0HkM', defaultMessage: 'Rolle' })}
@@ -121,12 +121,12 @@ export const ProjectUserHistoryCompare = () => {
     </div>
   )
 
-  const visibleCurrentFields = new Set(['user_id', 'role'])
+  const visibleCurrentFields = new Set(['email', 'role'])
 
   const formatFieldLabel = createHistoryFieldLabelFormatter({
     formatMessage,
     fieldLabelMap: {
-      user_id: { id: 'qyI8KV', defaultMessage: 'Benutzer' },
+      email: { id: 'qyI8KV', defaultMessage: 'Benutzer' },
       role: { id: 'Gj0HkM', defaultMessage: 'Rolle' },
     },
   })

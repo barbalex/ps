@@ -55,7 +55,7 @@ describe('checkWritePermission — project level', () => {
 })
 
 describe('checkWritePermission — designer-only tables', () => {
-  it.each(['project_users', 'export_assignments'])(
+  it.each(['project_users', 'project_roles', 'export_assignments'])(
     'denies a writer on %s',
     async (table) => {
       const res = await check(fixture.ids.writer, table, {
@@ -66,7 +66,7 @@ describe('checkWritePermission — designer-only tables', () => {
     },
   )
 
-  it('allows a designer on project_users', async () => {
+  it('allows a designer on the directory (project_users)', async () => {
     const res = await check(fixture.ids.designer, 'project_users', {
       project_id: fixture.ids.project,
     })
@@ -84,7 +84,7 @@ describe('checkWritePermission — subproject and place level', () => {
     expect(res.userRole).toBe('write-all')
   })
 
-  it('checks only the row\'s own place in place_users — a role on another place does not grant access', async () => {
+  it('checks only the row’s own place in place_roles — a role on another place does not grant access', async () => {
     // stranger has read-specific on otherPlace, not on place
     const res = await check(fixture.ids.stranger, 'actions', {
       place_id: fixture.ids.place,
@@ -141,8 +141,8 @@ describe('checkWritePermission — multi-parent and custom tables', () => {
 })
 
 describe('checkWritePermission — anchor-table inserts (create flows)', () => {
-  // Regression: places used to be checked via place_users by the row's own
-  // (brand-new) place_id, which never has place_users rows — so creating a
+  // Regression: places used to be checked via place_roles by the row's own
+  // (brand-new) place_id, which never has place_roles rows — so creating a
   // place was always denied. The backend (enforce_places_write) governs
   // places by the subproject or its project instead.
   it('allows a project writer to create a level-1 place', async () => {

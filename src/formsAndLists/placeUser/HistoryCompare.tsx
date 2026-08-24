@@ -49,7 +49,7 @@ export const PlaceUserHistoryCompare = ({
   const db = usePGlite()
   const [validations, setValidations] = useState<Record<string, unknown>>({})
 
-  const rowRes = useLiveQuery(`SELECT * FROM place_users WHERE place_user_id = $1`, [
+  const rowRes = useLiveQuery(`SELECT * FROM place_roles WHERE place_role_id = $1`, [
     placeUserId,
   ])
   const row = rowRes?.rows?.[0] as PlaceUsers | undefined
@@ -60,7 +60,7 @@ export const PlaceUserHistoryCompare = ({
 
     try {
       await db.query(
-        `UPDATE place_users SET ${name} = $1 WHERE place_user_id = $2`,
+        `UPDATE place_roles SET ${name} = $1 WHERE place_role_id = $2`,
         [value, placeUserId],
       )
     } catch (error) {
@@ -78,8 +78,8 @@ export const PlaceUserHistoryCompare = ({
     })
 
     addOperation({
-      table: 'place_users',
-      rowIdName: 'place_user_id',
+      table: 'place_roles',
+      rowIdName: 'place_role_id',
       rowId: placeUserId,
       operation: 'update',
       draft: { [name]: value },
@@ -103,12 +103,12 @@ export const PlaceUserHistoryCompare = ({
       <>
       <DropdownField
         label={formatMessage({ id: 'qyI8KV', defaultMessage: 'Benutzer' })}
-        name="user_id"
-        table="users"
-        value={row.user_id ?? ''}
+        name="project_user_id"
+        table="project_users"
+        value={row.project_user_id ?? ''}
         onChange={onChange}
-        validationState={validations?.user_id?.state}
-        validationMessage={validations?.user_id?.message}
+        validationState={validations?.project_user_id?.state}
+        validationMessage={validations?.project_user_id?.message}
       />
       <RadioGroupField
         label={formatMessage({ id: 'Gj0HkM', defaultMessage: 'Rolle' })}
@@ -129,12 +129,12 @@ export const PlaceUserHistoryCompare = ({
     </div>
   )
 
-  const visibleCurrentFields = new Set(['user_id', 'role'])
+  const visibleCurrentFields = new Set(['project_user_id', 'role'])
 
   const formatFieldLabel = createHistoryFieldLabelFormatter({
     formatMessage,
     fieldLabelMap: {
-      user_id: { id: 'qyI8KV', defaultMessage: 'Benutzer' },
+      project_user_id: { id: 'qyI8KV', defaultMessage: 'Benutzer' },
       role: { id: 'Gj0HkM', defaultMessage: 'Rolle' },
     },
   })
@@ -153,8 +153,8 @@ export const PlaceUserHistoryCompare = ({
       formatFieldValue={formatFieldValue}
       row={row}
       historyConfig={{
-        historyTable: 'place_users_history',
-        rowIdField: 'place_user_id',
+        historyTable: 'place_roles_history',
+        rowIdField: 'place_role_id',
         rowId: placeUserId,
         historyPath,
         routeHistoryId: placeUserHistoryId,
@@ -162,8 +162,8 @@ export const PlaceUserHistoryCompare = ({
       }}
       restoreConfig={{
         db,
-        table: 'place_users',
-        rowIdName: 'place_user_id',
+        table: 'place_roles',
+        rowIdName: 'place_role_id',
         rowId: placeUserId,
         excludedRestoreFields,
         addOperation,

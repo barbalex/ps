@@ -18,9 +18,11 @@ export const DesigningButton = ({ from }) => {
 
   const resultProject = useLiveQuery(
     `
-      SELECT pu.role
-      FROM project_users pu
-      WHERE pu.project_id = $1 AND pu.user_id = $2
+      SELECT pr.role
+      FROM project_roles pr
+      JOIN project_users pu ON pu.project_user_id = pr.project_user_id
+      WHERE pr.project_id = $1
+        AND (pu.auth_user_id = $2 OR pu.email = (SELECT email FROM users WHERE user_id = $2))
     `,
     [projectId, userId],
   )

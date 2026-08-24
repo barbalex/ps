@@ -13,6 +13,8 @@ export default interface Accounts {
   /** user that owns the account. null for accounts that are not owned by a user */
   user_id: UsersUserId | null;
 
+  email: string | null;
+
   /** type of account: "free", "basic", "premium"? (TODO: needs to be defined) */
   type: string | null;
 
@@ -45,6 +47,8 @@ export interface AccountsInitializer {
 
   /** user that owns the account. null for accounts that are not owned by a user */
   user_id?: UsersUserId | null;
+
+  email?: string | null;
 
   /** type of account: "free", "basic", "premium"? (TODO: needs to be defined) */
   type?: string | null;
@@ -80,6 +84,8 @@ export interface AccountsMutator {
 
   /** user that owns the account. null for accounts that are not owned by a user */
   user_id?: UsersUserId | null;
+
+  email?: string | null;
 
   /** type of account: "free", "basic", "premium"? (TODO: needs to be defined) */
   type?: string | null;

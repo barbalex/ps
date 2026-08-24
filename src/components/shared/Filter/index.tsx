@@ -59,7 +59,7 @@ const getFilterStrings = ({
       'checks',
       'check_reports',
       'action_reports',
-      'place_users',
+      'place_roles',
     ].includes(tableName)
   ) {
     const placeFilter = { place_id: placeId2 ?? placeId }
@@ -160,11 +160,11 @@ const getTitle = ({
                                 id: 'OzBS9Z',
                                 defaultMessage: 'KBS',
                               })
-                            : tableName === 'subproject_users'
+                            : tableName === 'subproject_roles'
                               ? `${subprojectNameSingular ?? subprojectSingularFallback}-${usersLabel}`
                               : tableName === 'subproject_taxa'
                                 ? `${subprojectNameSingular ?? subprojectSingularFallback}-${taxaLabel}`
-                                : tableName === 'place_users'
+                                : tableName === 'place_roles'
                                   ? `${placeNameSingularForUsers ?? placeFallback}-${usersLabel}`
                                   : tableName === 'taxonomies'
                                     ? formatMessage({
@@ -312,8 +312,8 @@ const getTableName = (urlPath) => {
     const usersIndex = urlPath.lastIndexOf('users')
     const parentCollection = usersIndex > 1 ? urlPath[usersIndex - 2] : null
     if (parentCollection === 'projects') tableName = 'project_users'
-    if (parentCollection === 'subprojects') tableName = 'subproject_users'
-    if (parentCollection === 'places') tableName = 'place_users'
+    if (parentCollection === 'subprojects') tableName = 'subproject_roles'
+    if (parentCollection === 'places') tableName = 'place_roles'
   }
   return tableName
 }
@@ -347,7 +347,7 @@ export const Filter = ({
     placeLevel?.[`name_singular_${language}`] ?? placeLevel?.name_singular_de
   const placeNamePlural = placeLevel?.[`name_plural_${language}`] ?? 'Places'
 
-  // For place_users the owning place level is 2 when placeId2 exists, otherwise 1
+  // For place_roles the owning place level is 2 when placeId2 exists, otherwise 1
   const resPlaceLevelForUsers = useLiveQuery(
     `SELECT * FROM place_levels WHERE project_id = $1 and level = $2 order by label`,
     [projectId, placeId2 ? 2 : 1],

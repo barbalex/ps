@@ -4,6 +4,8 @@ export default interface TemplatePublicAccountsHistory {
 
   user_id: string | null;
 
+  email: string | null;
+
   type: string | null;
 
   period_start: Date | null;
@@ -29,6 +31,8 @@ export interface TemplatePublicAccountsHistoryInitializer {
 
   user_id?: string | null;
 
+  email?: string | null;
+
   type?: string | null;
 
   period_start?: Date | null;
@@ -53,6 +57,8 @@ export interface TemplatePublicAccountsHistoryMutator {
   account_id?: string;
 
   user_id?: string | null;
+
+  email?: string | null;
 
   type?: string | null;
 

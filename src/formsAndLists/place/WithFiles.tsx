@@ -17,7 +17,8 @@ import { PlaceForm as Form } from './Form.tsx'
 import { PlaceUsers } from '../placeUsers.tsx'
 import { Loading } from '../../components/shared/Loading.tsx'
 import { getValueFromChange } from '../../modules/getValueFromChange.ts'
-import { createPlaceUser } from '../../modules/createRows.ts'
+import {} from '../../modules/createRows.ts'
+import { AddProjectUserButton } from '../../components/shared/AddProjectUserButton.tsx'
 import { NotFound } from '../../components/NotFound.tsx'
 import { Section } from '../../components/shared/Section.tsx'
 import { FilterButton } from '../../components/shared/FilterButton.tsx'
@@ -90,15 +91,15 @@ export const PlaceWithFiles = ({ from }: { from: string }) => {
   const namePlural = placeLevels?.[0]?.[`name_plural_${language}`] ?? 'Places'
 
   const placeLevelRes = useLiveQuery(
-    `SELECT place_users_in_place, place_files FROM place_levels WHERE project_id = $1 AND level = $2`,
+    `SELECT place_roles_in_place, place_files FROM place_levels WHERE project_id = $1 AND level = $2`,
     [projectId, placeId2 ? 2 : 1],
   )
   const placeLevel = placeLevelRes?.rows?.[0]
-  const usersInPlace = placeLevel?.place_users_in_place !== false
+  const usersInPlace = placeLevel?.place_roles_in_place !== false
   const showFiles = isDesigning || placeLevel?.place_files !== false
 
   const placeUsersCountRes = useLiveQuery(
-    `SELECT count(*)::int AS count FROM place_users WHERE place_id = $1`,
+    `SELECT count(*)::int AS count FROM place_roles WHERE place_id = $1`,
     [currentPlaceId],
   )
   const placeUsersCount = placeUsersCountRes?.rows?.[0]?.count ?? 0
@@ -127,22 +128,19 @@ export const PlaceWithFiles = ({ from }: { from: string }) => {
   const filesIsFiltered = !!filterStringFromFilter(filesFilter)
   const uploaderCtx = useContext(UploaderContext)
   const uploaderApi = uploaderCtx?.current?.getAPI?.()
-  const onClickAddPlaceUser = async () => {
-    const id = await createPlaceUser({ placeId: currentPlaceId })
-    if (!id) return
-    navigate({ to: `${usersUrl}/${id}/` })
-  }
   const onClickAddFile = () => uploaderApi?.initFlow?.()
 
   const placeUserHeaderActions =
     isDesigning && usersInPlace && isUsersList ? (
       <>
         <FilterButton isFiltered={placeUsersIsFiltered} />
-        <Button
-          size="medium"
-          title={newLabel}
-          icon={<FaPlus />}
-          onClick={onClickAddPlaceUser}
+        <AddProjectUserButton
+          scope={{
+            kind: 'place',
+            projectId,
+            placeId: currentPlaceId,
+          }}
+          onUserCreated={(id) => navigate({ to: `${usersUrl}/${id}/` })}
         />
       </>
     ) : undefined

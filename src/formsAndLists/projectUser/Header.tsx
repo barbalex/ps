@@ -8,7 +8,7 @@ import { MdMenuBook } from 'react-icons/md'
 
 const { Button } = fluentUiReactComponents
 
-import { createProjectUser } from '../../modules/createRows.ts'
+import { AddProjectUserButton } from '../../components/shared/AddProjectUserButton.tsx'
 import { FormHeader } from '../../components/FormHeader/index.tsx'
 import { HistoryToggleButton } from '../../components/shared/HistoryCompare/HistoryToggleButton.tsx'
 import { addOperationAtom } from '../../store.ts'
@@ -31,17 +31,6 @@ export const Header = ({ autoFocusRef }) => {
     projectUserIdRef.current = projectUserId
   }, [projectUserId])
 
-  const addRow = async () => {
-    const id = await createProjectUser({ projectId })
-    navigate({
-      to: `../${id}`,
-      params: (prev) => ({
-        ...prev,
-        projectUserId: id,
-      }),
-    })
-    autoFocusRef?.current?.focus()
-  }
 
   const deleteRow = async () => {
     try {
@@ -121,13 +110,22 @@ export const Header = ({ autoFocusRef }) => {
   return (
     <FormHeader
       title={formatMessage({ id: 'gi+ubY', defaultMessage: 'Projekt-Benutzer' })}
-      addRow={addRow}
       deleteRow={deleteRow}
       toNext={toNext}
       toPrevious={toPrevious}
       tableName="project user"
       siblings={
         <>
+          <AddProjectUserButton
+            scope={{
+              kind: 'project',
+              projectId,
+            }}
+            onUserCreated={(id) => {
+              navigate({ to: `../${id}` })
+              autoFocusRef?.current?.focus()
+            }}
+          />
           <HistoryToggleButton
             historiesPath={`${basePath}/histories`}
             formPath={basePath}

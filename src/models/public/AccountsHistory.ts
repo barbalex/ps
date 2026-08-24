@@ -7,6 +7,8 @@ export default interface AccountsHistory {
 
   user_id: string | null;
 
+  email: string | null;
+
   type: string | null;
 
   period_start: Date | null;
@@ -36,6 +38,8 @@ export interface AccountsHistoryInitializer {
   account_id?: string;
 
   user_id?: string | null;
+
+  email?: string | null;
 
   type?: string | null;
 
@@ -68,6 +72,8 @@ export interface AccountsHistoryMutator {
   account_id?: string;
 
   user_id?: string | null;
+
+  email?: string | null;
 
   type?: string | null;
 

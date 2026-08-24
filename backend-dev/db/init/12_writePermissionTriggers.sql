@@ -3,7 +3,8 @@
 -- Server-side write permission enforcement for PostgREST API operations.
 --
 -- Every INSERT, UPDATE, or DELETE on project-scoped tables via PostgREST is
--- checked against the user's role in project_users / subproject_users / place_users.
+-- checked against the user's role in project_roles / subproject_roles / place_roles
+-- (resolved through the project_users directory).
 --
 -- SELECT operations and ElectricSQL sync (electric.syncing = true) are unaffected.
 --
@@ -13,7 +14,7 @@
 --
 -- Role requirement:
 --   Data tables ..............  write-all, design, or own
---   *_users tables ...........  design or own
+--   project_users/*_roles .. design or own (only triggers set 'own')
 --   projects INSERT ..........  only the owner of the target account
 -- ─────────────────────────────────────────────────────────────────────────────
 
@@ -37,14 +38,25 @@ $$;
 
 -- ─── Write-access helpers ─────────────────────────────────────────────────────
 
+-- Resolves an auth user to their project directory rows: claimed rows
+-- (auth_user_id) plus rows whose email matches the auth user's email
+CREATE OR REPLACE FUNCTION user_project_user_ids(p_user_id uuid)
+RETURNS TABLE (project_user_id uuid)
+LANGUAGE sql STABLE SECURITY DEFINER AS $$
+  SELECT pu.project_user_id
+  FROM project_users pu
+  WHERE pu.auth_user_id = p_user_id
+     OR pu.email = (SELECT u.email FROM users u WHERE u.user_id = p_user_id)
+$$;
+
 -- Returns TRUE when the user has write-all+ on the given project directly.
 CREATE OR REPLACE FUNCTION user_can_write_project(p_project_id uuid, p_user_id uuid)
 RETURNS boolean LANGUAGE sql STABLE SECURITY DEFINER AS $$
   SELECT EXISTS (
-    SELECT 1 FROM project_users
-    WHERE project_id = p_project_id
-      AND user_id    = p_user_id
-      AND role       >= 'write-all'::user_roles_enum
+    SELECT 1 FROM project_roles pr
+    WHERE pr.project_id = p_project_id
+      AND pr.project_user_id IN (SELECT project_user_id FROM user_project_user_ids(p_user_id))
+      AND pr.role >= 'write-all'::user_roles_enum
   )
 $$;
 
@@ -56,10 +68,10 @@ RETURNS boolean LANGUAGE sql STABLE SECURITY DEFINER AS $$
     p_user_id
   )
   OR EXISTS (
-    SELECT 1 FROM subproject_users
-    WHERE subproject_id = p_subproject_id
-      AND user_id       = p_user_id
-      AND role          >= 'write-all'::user_roles_enum
+    SELECT 1 FROM subproject_roles sr
+    WHERE sr.subproject_id = p_subproject_id
+      AND sr.project_user_id IN (SELECT project_user_id FROM user_project_user_ids(p_user_id))
+      AND sr.role >= 'write-all'::user_roles_enum
   )
 $$;
 
@@ -71,10 +83,10 @@ RETURNS boolean LANGUAGE sql STABLE SECURITY DEFINER AS $$
     p_user_id
   )
   OR EXISTS (
-    SELECT 1 FROM place_users
-    WHERE place_id = p_place_id
-      AND user_id  = p_user_id
-      AND role     >= 'write-all'::user_roles_enum
+    SELECT 1 FROM place_roles plr
+    WHERE plr.place_id = p_place_id
+      AND plr.project_user_id IN (SELECT project_user_id FROM user_project_user_ids(p_user_id))
+      AND plr.role >= 'write-all'::user_roles_enum
   )
 $$;
 
@@ -83,10 +95,10 @@ $$;
 CREATE OR REPLACE FUNCTION user_can_manage_project_roles(p_project_id uuid, p_user_id uuid)
 RETURNS boolean LANGUAGE sql STABLE SECURITY DEFINER AS $$
   SELECT EXISTS (
-    SELECT 1 FROM project_users
-    WHERE project_id = p_project_id
-      AND user_id    = p_user_id
-      AND role       >= 'design'::user_roles_enum
+    SELECT 1 FROM project_roles pr
+    WHERE pr.project_id = p_project_id
+      AND pr.project_user_id IN (SELECT project_user_id FROM user_project_user_ids(p_user_id))
+      AND pr.role >= 'design'::user_roles_enum
   )
 $$;
 
@@ -97,10 +109,10 @@ RETURNS boolean LANGUAGE sql STABLE SECURITY DEFINER AS $$
     p_user_id
   )
   OR EXISTS (
-    SELECT 1 FROM subproject_users
-    WHERE subproject_id = p_subproject_id
-      AND user_id       = p_user_id
-      AND role          >= 'design'::user_roles_enum
+    SELECT 1 FROM subproject_roles sr
+    WHERE sr.subproject_id = p_subproject_id
+      AND sr.project_user_id IN (SELECT project_user_id FROM user_project_user_ids(p_user_id))
+      AND sr.role >= 'design'::user_roles_enum
   )
 $$;
 
@@ -111,10 +123,10 @@ RETURNS boolean LANGUAGE sql STABLE SECURITY DEFINER AS $$
     p_user_id
   )
   OR EXISTS (
-    SELECT 1 FROM place_users
-    WHERE place_id = p_place_id
-      AND user_id  = p_user_id
-      AND role     >= 'design'::user_roles_enum
+    SELECT 1 FROM place_roles plr
+    WHERE plr.place_id = p_place_id
+      AND plr.project_user_id IN (SELECT project_user_id FROM user_project_user_ids(p_user_id))
+      AND plr.role >= 'design'::user_roles_enum
   )
 $$;
 
@@ -304,7 +316,7 @@ BEGIN
 END;
 $$;
 
--- For project_users: design or own required.
+-- For the project_users directory: designer+ on the project required.
 CREATE OR REPLACE FUNCTION enforce_project_users_write()
 RETURNS trigger LANGUAGE plpgsql SECURITY DEFINER AS $$
 DECLARE
@@ -324,12 +336,6 @@ BEGIN
 
   v_project_id := CASE WHEN TG_OP = 'DELETE' THEN OLD.project_id ELSE NEW.project_id END;
 
-  IF TG_OP <> 'DELETE' AND NEW.role = 'own'::user_roles_enum THEN
-    RAISE EXCEPTION 'Only triggers may set the owner role'
-      USING ERRCODE = '42501',
-            HINT = 'The owner role is assigned automatically to the user who created a project';
-  END IF;
-
   IF v_project_id IS NOT NULL AND NOT user_can_manage_project_roles(v_project_id, v_user_id) THEN
     RAISE EXCEPTION 'Insufficient permissions: designer or owner role required to manage project members'
       USING ERRCODE = '42501',
@@ -341,8 +347,8 @@ BEGIN
 END;
 $$;
 
--- For subproject_users: design+ on subproject or parent project required.
-CREATE OR REPLACE FUNCTION enforce_subproject_users_write()
+-- For subproject_roles: design+ on subproject or parent project required.
+CREATE OR REPLACE FUNCTION enforce_subproject_roles_write()
 RETURNS trigger LANGUAGE plpgsql SECURITY DEFINER AS $$
 DECLARE
   v_user_id       uuid;
@@ -372,7 +378,7 @@ BEGIN
   THEN
     RAISE EXCEPTION 'Insufficient permissions: designer or owner role required to manage subproject members'
       USING ERRCODE = '42501',
-            DETAIL  = format('table=subproject_users operation=%s subproject_id=%s', TG_OP, v_subproject_id),
+            DETAIL  = format('table=subproject_roles operation=%s subproject_id=%s', TG_OP, v_subproject_id),
             HINT    = 'Contact the project owner to gain designer access';
   END IF;
 
@@ -380,8 +386,8 @@ BEGIN
 END;
 $$;
 
--- For place_users: design+ on place, subproject, or parent project required.
-CREATE OR REPLACE FUNCTION enforce_place_users_write()
+-- For place_roles: design+ on place, subproject, or parent project required.
+CREATE OR REPLACE FUNCTION enforce_place_roles_write()
 RETURNS trigger LANGUAGE plpgsql SECURITY DEFINER AS $$
 DECLARE
   v_user_id  uuid;
@@ -409,7 +415,7 @@ BEGIN
   IF v_place_id IS NOT NULL AND NOT user_can_manage_place_roles(v_place_id, v_user_id) THEN
     RAISE EXCEPTION 'Insufficient permissions: designer or owner role required to manage place members'
       USING ERRCODE = '42501',
-            DETAIL  = format('table=place_users operation=%s place_id=%s', TG_OP, v_place_id),
+            DETAIL  = format('table=place_roles operation=%s place_id=%s', TG_OP, v_place_id),
             HINT    = 'Contact the project owner to gain designer access';
   END IF;
 
@@ -579,12 +585,55 @@ FOR EACH ROW
 WHEN (pg_trigger_depth() < 1)
 EXECUTE FUNCTION enforce_project_write();
 
--- project_users (designer+ required)
+-- project_roles (designer+ required; only triggers set 'own')
+CREATE OR REPLACE FUNCTION enforce_project_roles_write()
+RETURNS trigger LANGUAGE plpgsql SECURITY DEFINER AS $$
+DECLARE
+  v_user_id    uuid;
+  v_project_id uuid;
+BEGIN
+  IF is_electric_sync() THEN
+    RETURN CASE WHEN TG_OP = 'DELETE' THEN OLD ELSE NEW END;
+  END IF;
+
+  v_user_id := get_jwt_user_id();
+  IF v_user_id IS NULL THEN
+    RAISE EXCEPTION 'Authentication required'
+      USING ERRCODE = '42501',
+            HINT = 'A valid session is required to modify data';
+  END IF;
+
+  v_project_id := CASE WHEN TG_OP = 'DELETE' THEN OLD.project_id ELSE NEW.project_id END;
+
+  IF TG_OP <> 'DELETE' AND NEW.role = 'own'::user_roles_enum THEN
+    RAISE EXCEPTION 'Only triggers may set the owner role'
+      USING ERRCODE = '42501',
+            HINT = 'The owner role is assigned automatically to the user who created a project';
+  END IF;
+
+  IF v_project_id IS NOT NULL AND NOT user_can_manage_project_roles(v_project_id, v_user_id) THEN
+    RAISE EXCEPTION 'Insufficient permissions: designer or owner role required to manage project members'
+      USING ERRCODE = '42501',
+            DETAIL  = format('table=project_roles operation=%s project_id=%s', TG_OP, v_project_id),
+            HINT    = 'Contact the project owner to gain designer access';
+  END IF;
+
+  RETURN CASE WHEN TG_OP = 'DELETE' THEN OLD ELSE NEW END;
+END;
+$$;
+
+-- project_users directory (designer+ required)
 CREATE OR REPLACE TRIGGER enforce_project_users_write_trigger
 BEFORE INSERT OR UPDATE OR DELETE ON project_users
 FOR EACH ROW
 WHEN (pg_trigger_depth() < 1)
 EXECUTE FUNCTION enforce_project_users_write();
+
+CREATE OR REPLACE TRIGGER enforce_project_roles_write_trigger
+BEFORE INSERT OR UPDATE OR DELETE ON project_roles
+FOR EACH ROW
+WHEN (pg_trigger_depth() < 1)
+EXECUTE FUNCTION enforce_project_roles_write();
 
 -- subproject-level tables (direct subproject_id FK)
 CREATE OR REPLACE TRIGGER enforce_subproject_write_trigger
@@ -611,12 +660,12 @@ FOR EACH ROW
 WHEN (pg_trigger_depth() < 1)
 EXECUTE FUNCTION enforce_subproject_write();
 
--- subproject_users (designer+ required)
-CREATE OR REPLACE TRIGGER enforce_subproject_users_write_trigger
-BEFORE INSERT OR UPDATE OR DELETE ON subproject_users
+-- subproject_roles (designer+ required)
+CREATE OR REPLACE TRIGGER enforce_subproject_roles_write_trigger
+BEFORE INSERT OR UPDATE OR DELETE ON subproject_roles
 FOR EACH ROW
 WHEN (pg_trigger_depth() < 1)
-EXECUTE FUNCTION enforce_subproject_users_write();
+EXECUTE FUNCTION enforce_subproject_roles_write();
 
 -- places table (uses subproject_id; navigates parent_id for level 2)
 CREATE OR REPLACE TRIGGER enforce_places_write_trigger
@@ -656,12 +705,12 @@ FOR EACH ROW
 WHEN (pg_trigger_depth() < 1)
 EXECUTE FUNCTION enforce_place_write();
 
--- place_users (designer+ required)
-CREATE OR REPLACE TRIGGER enforce_place_users_write_trigger
-BEFORE INSERT OR UPDATE OR DELETE ON place_users
+-- place_roles (designer+ required)
+CREATE OR REPLACE TRIGGER enforce_place_roles_write_trigger
+BEFORE INSERT OR UPDATE OR DELETE ON place_roles
 FOR EACH ROW
 WHEN (pg_trigger_depth() < 1)
-EXECUTE FUNCTION enforce_place_users_write();
+EXECUTE FUNCTION enforce_place_roles_write();
 
 -- multi-level tables: charts, files, qc_assignments
 -- (have project_id, subproject_id, place_id all nullable;

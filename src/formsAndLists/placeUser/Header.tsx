@@ -8,7 +8,7 @@ import { MdMenuBook } from 'react-icons/md'
 
 const { Button } = fluentUiReactComponents
 
-import { createPlaceUser } from '../../modules/createRows.ts'
+import { AddProjectUserButton } from '../../components/shared/AddProjectUserButton.tsx'
 import { FormHeader } from '../../components/FormHeader/index.tsx'
 import { HistoryToggleButton } from '../../components/shared/HistoryCompare/HistoryToggleButton.tsx'
 import { addOperationAtom, languageAtom } from '../../store.ts'
@@ -44,29 +44,20 @@ export const Header = ({ autoFocusRef, from }) => {
     placeUserIdRef.current = placeUserId
   }, [placeUserId])
 
-  const addRow = async () => {
-    const id = await createPlaceUser({ placeId: placeId2 ?? placeId })
-    if (!id) return
-    navigate({
-      to: `../${id}`,
-      params: (prev) => ({ ...prev, placeUserId: id }),
-    })
-    autoFocusRef?.current?.focus()
-  }
 
   const deleteRow = async () => {
     try {
       const prevRes = await db.query(
-        `SELECT * FROM place_users WHERE place_user_id = $1`,
+        `SELECT * FROM place_roles WHERE place_role_id = $1`,
         [placeUserId],
       )
       const prev = prevRes?.rows?.[0] ?? {}
-      await db.query(`DELETE FROM place_users WHERE place_user_id = $1`, [
+      await db.query(`DELETE FROM place_roles WHERE place_role_id = $1`, [
         placeUserId,
       ])
       addOperation({
-        table: 'place_users',
-        rowIdName: 'place_user_id',
+        table: 'place_roles',
+        rowIdName: 'place_role_id',
         rowId: placeUserId,
         operation: 'delete',
         prev,
@@ -80,18 +71,18 @@ export const Header = ({ autoFocusRef, from }) => {
   const toNext = async () => {
     try {
       const res = await db.query(
-        `SELECT place_user_id FROM place_users WHERE place_id = $1 ORDER BY label`,
+        `SELECT place_role_id FROM place_roles WHERE place_id = $1 ORDER BY label`,
         [placeId2 ?? placeId],
       )
       const rows = res?.rows
       const len = rows.length
       const index = rows.findIndex(
-        (p) => p.place_user_id === placeUserIdRef.current,
+        (p) => p.place_role_id === placeUserIdRef.current,
       )
       const next = rows[(index + 1) % len]
       navigate({
-        to: `../${next.place_user_id}`,
-        params: (prev) => ({ ...prev, placeUserId: next.place_user_id }),
+        to: `../${next.place_role_id}`,
+        params: (prev) => ({ ...prev, placeUserId: next.place_role_id }),
       })
     } catch (error) {
       console.error(error)
@@ -101,18 +92,18 @@ export const Header = ({ autoFocusRef, from }) => {
   const toPrevious = async () => {
     try {
       const res = await db.query(
-        `SELECT place_user_id FROM place_users WHERE place_id = $1 ORDER BY label`,
+        `SELECT place_role_id FROM place_roles WHERE place_id = $1 ORDER BY label`,
         [placeId2 ?? placeId],
       )
       const rows = res?.rows
       const len = rows.length
       const index = rows.findIndex(
-        (p) => p.place_user_id === placeUserIdRef.current,
+        (p) => p.place_role_id === placeUserIdRef.current,
       )
       const previous = rows[(index + len - 1) % len]
       navigate({
-        to: `../${previous.place_user_id}`,
-        params: (prev) => ({ ...prev, placeUserId: previous.place_user_id }),
+        to: `../${previous.place_role_id}`,
+        params: (prev) => ({ ...prev, placeUserId: previous.place_role_id }),
       })
     } catch (error) {
       console.error(error)
@@ -125,18 +116,28 @@ export const Header = ({ autoFocusRef, from }) => {
   return (
     <FormHeader
       title={title}
-      addRow={addRow}
       deleteRow={deleteRow}
       toNext={toNext}
       toPrevious={toPrevious}
       tableName="place user"
       siblings={
         <>
+          <AddProjectUserButton
+            scope={{
+              kind: 'place',
+              projectId,
+              placeId: placeId2 ?? placeId,
+            }}
+            onUserCreated={(id) => {
+              navigate({ to: `../${id}` })
+              autoFocusRef?.current?.focus()
+            }}
+          />
           <HistoryToggleButton
             historiesPath={`${basePath}/histories`}
             formPath={basePath}
-            historyTable="place_users_history"
-            rowIdField="place_user_id"
+            historyTable="place_roles_history"
+            rowIdField="place_role_id"
             rowId={placeUserId}
           />
           <Button

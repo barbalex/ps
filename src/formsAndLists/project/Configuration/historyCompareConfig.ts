@@ -59,7 +59,7 @@ export const preferredOrder = [
   'taxa',
   'subproject_taxa_in_subproject',
   'charts',
-  'subproject_users_in_subproject',
+  'subproject_roles_in_subproject',
   'files_active_subprojects',
   'subproject_files_in_subproject',
   'subproject_order_by',

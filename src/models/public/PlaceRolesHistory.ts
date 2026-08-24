@@ -1,17 +1,17 @@
 import type { default as UserRolesEnum } from './UserRolesEnum.ts';
 
 /**
- * Represents the table public.place_users_history
- * System-versioned history of place_users. Managed by temporal_tables and partitioned yearly by updated_at.
+ * Represents the table public.place_roles_history
+ * System-versioned history of place_roles. Managed by temporal_tables and partitioned yearly by updated_at.
  */
-export default interface PlaceUsersHistory {
-  place_user_id: string;
+export default interface PlaceRolesHistory {
+  place_role_id: string;
 
   place_id: string | null;
 
-  user_id: string | null;
+  project_user_id: string;
 
-  role: UserRolesEnum | null;
+  role: UserRolesEnum;
 
   label: string | null;
 
@@ -26,19 +26,18 @@ export default interface PlaceUsersHistory {
 }
 
 /**
- * Represents the initializer for the table public.place_users_history
- * System-versioned history of place_users. Managed by temporal_tables and partitioned yearly by updated_at.
+ * Represents the initializer for the table public.place_roles_history
+ * System-versioned history of place_roles. Managed by temporal_tables and partitioned yearly by updated_at.
  */
-export interface PlaceUsersHistoryInitializer {
+export interface PlaceRolesHistoryInitializer {
   /** Default value: uuidv7() */
-  place_user_id?: string;
+  place_role_id?: string;
 
   place_id?: string | null;
 
-  user_id?: string | null;
+  project_user_id: string;
 
-  /** Default value: 'read-all'::user_roles_enum */
-  role?: UserRolesEnum | null;
+  role: UserRolesEnum;
 
   label?: string | null;
 
@@ -55,17 +54,17 @@ export interface PlaceUsersHistoryInitializer {
 }
 
 /**
- * Represents the mutator for the table public.place_users_history
- * System-versioned history of place_users. Managed by temporal_tables and partitioned yearly by updated_at.
+ * Represents the mutator for the table public.place_roles_history
+ * System-versioned history of place_roles. Managed by temporal_tables and partitioned yearly by updated_at.
  */
-export interface PlaceUsersHistoryMutator {
-  place_user_id?: string;
+export interface PlaceRolesHistoryMutator {
+  place_role_id?: string;
 
   place_id?: string | null;
 
-  user_id?: string | null;
+  project_user_id?: string;
 
-  role?: UserRolesEnum | null;
+  role?: UserRolesEnum;
 
   label?: string | null;
 

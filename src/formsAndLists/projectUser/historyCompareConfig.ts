@@ -10,4 +10,4 @@ export const excludedRestoreFields = new Set([
   'updated_by',
 ])
 
-export const preferredOrder = ['user_id', 'role']
+export const preferredOrder = ['email', 'role']

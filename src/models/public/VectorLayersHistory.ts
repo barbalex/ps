@@ -8,6 +8,16 @@ import type { default as VectorLayerOwnTablesEnum } from './VectorLayerOwnTables
 export default interface VectorLayersHistory {
   vector_layer_id: string;
 
+  name: string | null;
+
+  label_de: string | null;
+
+  label_en: string | null;
+
+  label_fr: string | null;
+
+  label_it: string | null;
+
   project_id: string;
 
   type: VectorLayerTypesEnum | null;
@@ -42,16 +52,6 @@ export default interface VectorLayersHistory {
   updated_at: Date;
 
   updated_by: string | null;
-
-  name: string | null;
-
-  label_de: string | null;
-
-  label_en: string | null;
-
-  label_fr: string | null;
-
-  label_it: string | null;
 }
 
 /**
@@ -61,6 +61,16 @@ export default interface VectorLayersHistory {
 export interface VectorLayersHistoryInitializer {
   /** Default value: uuidv7() */
   vector_layer_id?: string;
+
+  name?: string | null;
+
+  label_de?: string | null;
+
+  label_en?: string | null;
+
+  label_fr?: string | null;
+
+  label_it?: string | null;
 
   project_id: string;
 
@@ -100,6 +110,14 @@ export interface VectorLayersHistoryInitializer {
   updated_at?: Date;
 
   updated_by?: string | null;
+}
+
+/**
+ * Represents the mutator for the table public.vector_layers_history
+ * System-versioned history of vector_layers. Managed by temporal_tables and partitioned yearly by updated_at.
+ */
+export interface VectorLayersHistoryMutator {
+  vector_layer_id?: string;
 
   name?: string | null;
 
@@ -110,14 +128,6 @@ export interface VectorLayersHistoryInitializer {
   label_fr?: string | null;
 
   label_it?: string | null;
-}
-
-/**
- * Represents the mutator for the table public.vector_layers_history
- * System-versioned history of vector_layers. Managed by temporal_tables and partitioned yearly by updated_at.
- */
-export interface VectorLayersHistoryMutator {
-  vector_layer_id?: string;
 
   project_id?: string;
 
@@ -153,14 +163,4 @@ export interface VectorLayersHistoryMutator {
   updated_at?: Date;
 
   updated_by?: string | null;
-
-  name?: string | null;
-
-  label_de?: string | null;
-
-  label_en?: string | null;
-
-  label_fr?: string | null;
-
-  label_it?: string | null;
 }

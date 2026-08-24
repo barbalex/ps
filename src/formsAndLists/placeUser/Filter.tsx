@@ -17,9 +17,9 @@ export const PlaceUserFilter = ({ from, level }: Props) => {
       <>
         <DropdownField
           label={formatMessage({ id: 'qyI8KV', defaultMessage: 'Benutzer' })}
-          name="user_id"
-          table="users"
-          value={row.user_id ?? ""}
+          name="project_user_id"
+          table="project_users"
+          value={row.project_user_id ?? ""}
           onChange={onChange}
         />
         <RadioGroupField

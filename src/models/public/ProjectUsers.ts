@@ -1,23 +1,23 @@
 import type { ProjectsProjectId } from './Projects.ts';
 import type { UsersUserId } from './Users.ts';
-import type { default as UserRolesEnum } from './UserRolesEnum.ts';
 
 /** Identifier type for public.project_users */
 export type ProjectUsersProjectUserId = string & { __brand: 'public.project_users' };
 
 /**
  * Represents the table public.project_users
- * A way to give users access to projects (without giving them access to the whole account).
+ * Per-project directory of collaborators. Emails replace the former global user references. Roles live in project_roles/subproject_roles/place_roles
  */
 export default interface ProjectUsers {
   project_user_id: ProjectUsersProjectUserId;
 
   project_id: ProjectsProjectId | null;
 
-  user_id: UsersUserId | null;
+  /** Trimmed and lowercased by trigger. Unique within the project; may overlap across projects */
+  email: string;
 
-  /** One of: "read-specific", "read-all", "write-specific", "write-all", "design", "own". Preset: "read-all" */
-  role: UserRolesEnum | null;
+  /** Set when a logged-in user claims this directory row by matching email */
+  auth_user_id: UsersUserId | null;
 
   label: string | null;
 
@@ -33,7 +33,7 @@ export default interface ProjectUsers {
 
 /**
  * Represents the initializer for the table public.project_users
- * A way to give users access to projects (without giving them access to the whole account).
+ * Per-project directory of collaborators. Emails replace the former global user references. Roles live in project_roles/subproject_roles/place_roles
  */
 export interface ProjectUsersInitializer {
   /** Default value: uuidv7() */
@@ -41,12 +41,11 @@ export interface ProjectUsersInitializer {
 
   project_id?: ProjectsProjectId | null;
 
-  user_id?: UsersUserId | null;
+  /** Trimmed and lowercased by trigger. Unique within the project; may overlap across projects */
+  email: string;
 
-  /** One of: "read-specific", "read-all", "write-specific", "write-all", "design", "own". Preset: "read-all" */
-  role?: UserRolesEnum | null;
-
-  label?: string | null;
+  /** Set when a logged-in user claims this directory row by matching email */
+  auth_user_id?: UsersUserId | null;
 
   /** System period maintained by temporal_tables for auditing and historic queries. */
   sys_period: string;
@@ -62,19 +61,18 @@ export interface ProjectUsersInitializer {
 
 /**
  * Represents the mutator for the table public.project_users
- * A way to give users access to projects (without giving them access to the whole account).
+ * Per-project directory of collaborators. Emails replace the former global user references. Roles live in project_roles/subproject_roles/place_roles
  */
 export interface ProjectUsersMutator {
   project_user_id?: ProjectUsersProjectUserId;
 
   project_id?: ProjectsProjectId | null;
 
-  user_id?: UsersUserId | null;
+  /** Trimmed and lowercased by trigger. Unique within the project; may overlap across projects */
+  email?: string;
 
-  /** One of: "read-specific", "read-all", "write-specific", "write-all", "design", "own". Preset: "read-all" */
-  role?: UserRolesEnum | null;
-
-  label?: string | null;
+  /** Set when a logged-in user claims this directory row by matching email */
+  auth_user_id?: UsersUserId | null;
 
   /** System period maintained by temporal_tables for auditing and historic queries. */
   sys_period?: string;

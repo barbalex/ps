@@ -42,8 +42,8 @@ type NavData = {
   taxa?: boolean | null
   subproject_taxa_count?: number | null
   subproject_taxa_in_subproject?: boolean | null
-  subproject_users_count?: number | null
-  subproject_users_in_subproject?: boolean | null
+  subproject_roles_count?: number | null
+  subproject_roles_in_subproject?: boolean | null
   subproject_reports_in_subproject?: boolean | null
   files_count_filtered?: number | null
   files_count_unfiltered?: number | null
@@ -95,7 +95,7 @@ export const useSubprojectNavData = ({ projectId, subprojectId }: Props) => {
         observations_to_assess_count AS (SELECT count(*) FROM observations o INNER JOIN observation_imports oi ON o.observation_import_id = oi.observation_import_id WHERE oi.subproject_id = '${subprojectId}' AND o.not_to_assign IS NOT TRUE AND o.place_id IS NULL),
         observations_not_to_assign_count AS (SELECT count(*) FROM observations o INNER JOIN observation_imports oi ON o.observation_import_id = oi.observation_import_id WHERE oi.subproject_id = '${subprojectId}' AND o.not_to_assign IS TRUE AND o.place_id IS NULL),
         subproject_taxa_count AS (SELECT count(*) FROM subproject_taxa WHERE subproject_id = '${subprojectId}'),
-        subproject_users_count AS (SELECT count(*) FROM subproject_users WHERE subproject_id = '${subprojectId}'),
+        subproject_roles_count AS (SELECT count(*) FROM subproject_roles WHERE subproject_id = '${subprojectId}'),
         files_count_unfiltered AS (SELECT count(*) FROM files WHERE subproject_id = '${subprojectId}'),
         files_count_filtered AS (SELECT count(*) FROM files WHERE subproject_id = '${subprojectId}' ${filesIsFiltered ? ` AND ${filesFilterString}` : ''}),
         charts_count AS (SELECT count(*) FROM charts WHERE subproject_id = '${subprojectId}'),
@@ -113,7 +113,7 @@ export const useSubprojectNavData = ({ projectId, subprojectId }: Props) => {
         p.taxa AS taxa,
         p.subproject_taxa_in_subproject AS subproject_taxa_in_subproject,
         p.charts AS charts,
-        p.subproject_users_in_subproject AS subproject_users_in_subproject,
+        p.subproject_roles_in_subproject AS subproject_roles_in_subproject,
         p.subproject_reports_in_subproject AS subproject_reports_in_subproject,
         p.files_active_subprojects AS files_active_subprojects,
         p.subproject_files_in_subproject AS subproject_files_in_subproject,
@@ -128,7 +128,7 @@ export const useSubprojectNavData = ({ projectId, subprojectId }: Props) => {
         observations_to_assess_count.count AS observations_to_assess_count,
         observations_not_to_assign_count.count AS observations_not_to_assign_count,
         subproject_taxa_count.count AS subproject_taxa_count,
-        subproject_users_count.count AS subproject_users_count,
+        subproject_roles_count.count AS subproject_roles_count,
         files_count_unfiltered.count AS files_count_unfiltered,
         files_count_filtered.count AS files_count_filtered,
         charts_count.count AS charts_count,
@@ -150,7 +150,7 @@ export const useSubprojectNavData = ({ projectId, subprojectId }: Props) => {
         observations_to_assess_count,
         observations_not_to_assign_count,
         subproject_taxa_count,
-        subproject_users_count,
+        subproject_roles_count,
         files_count_unfiltered,
         files_count_filtered,
         charts_count,
@@ -354,13 +354,13 @@ export const useSubprojectNavData = ({ projectId, subprojectId }: Props) => {
             },
           ]
         : []),
-      ...(designing && nav?.subproject_users_in_subproject === false
+      ...(designing && nav?.subproject_roles_in_subproject === false
         ? [
             {
               id: 'users',
               label: buildNavLabel({
                 loading,
-                countFiltered: nav?.subproject_users_count ?? 0,
+                countFiltered: nav?.subproject_roles_count ?? 0,
                 namePlural: formatMessage({
                   id: 'eZ3yEB',
                   defaultMessage: 'Benutzer',

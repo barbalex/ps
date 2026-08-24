@@ -201,12 +201,12 @@ export const PlaceLevelForm = ({
               },
               { placeNameSingular },
             )}
-            name="place_users_in_place"
-            value={row.place_users_in_place ?? true}
+            name="place_roles_in_place"
+            value={row.place_roles_in_place ?? true}
             onChange={onChange}
-            validationState={validations?.place_users_in_place?.state}
+            validationState={validations?.place_roles_in_place?.state}
             validationMessage={
-              validations?.place_users_in_place?.message ??
+              validations?.place_roles_in_place?.message ??
               altInOwnFormNavMessage
             }
           />

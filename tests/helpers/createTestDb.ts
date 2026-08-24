@@ -63,9 +63,9 @@ export async function createTestDb(): Promise<TestFixture> {
   }
 
   // Role inheritance happens via triggers at write time:
-  // - inserting subprojects copies general project roles into subproject_users
-  // - inserting places copies general subproject roles into place_users
-  // So writer/designer/outsider end up with lower-level rows automatically;
+  // - inserting subprojects copies general project roles into subproject_roles
+  // - inserting places copies general subproject roles into place_roles
+  // So writer/designer/reader end up with lower-level rows automatically;
   // only role grants that inheritance can't produce are inserted manually.
   await db.exec(`
     INSERT INTO users (user_id, email) VALUES
@@ -76,31 +76,51 @@ export async function createTestDb(): Promise<TestFixture> {
       ('${ids.stranger}', 'stranger@example.com');
 
     -- account owned by writer (for project-creation checks)
-    INSERT INTO accounts (account_id, user_id, type) VALUES
-      ('${ids.account}', '${ids.writer}', 'free');
+    INSERT INTO accounts (account_id, user_id, email, type) VALUES
+      ('${ids.account}', '${ids.writer}', 'writer@example.com', 'free');
 
+    -- project without account: the owner trigger must stay silent
     INSERT INTO projects (project_id, name) VALUES
       ('${ids.project}', 'Test Project');
 
-    INSERT INTO project_users (project_id, user_id, role) VALUES
-      ('${ids.project}', '${ids.reader}', 'read-all'),
-      ('${ids.project}', '${ids.writer}', 'write-all'),
-      ('${ids.project}', '${ids.designer}', 'design');
+    -- the project's collaborator directory (one row per person, by email)
+    INSERT INTO project_users (project_id, email) VALUES
+      ('${ids.project}', 'reader@example.com'),
+      ('${ids.project}', 'writer@example.com'),
+      ('${ids.project}', 'designer@example.com'),
+      ('${ids.project}', 'outsider@example.com'),
+      ('${ids.project}', 'stranger@example.com');
+
+    INSERT INTO project_roles (project_id, project_user_id, role)
+    SELECT '${ids.project}', pu.project_user_id, r.role::user_roles_enum
+    FROM project_users pu
+    JOIN (VALUES
+      ('reader@example.com', 'read-all'),
+      ('writer@example.com', 'write-all'),
+      ('designer@example.com', 'design')
+    ) AS r(email, role) ON r.email = pu.email
+    WHERE pu.project_id = '${ids.project}';
 
     INSERT INTO subprojects (subproject_id, project_id, name) VALUES
       ('${ids.subproject}', '${ids.project}', 'Test Subproject');
 
     -- outsider only has a subproject-level role (general: inherited into places)
-    INSERT INTO subproject_users (subproject_id, user_id, role) VALUES
-      ('${ids.subproject}', '${ids.outsider}', 'read-all');
+    INSERT INTO subproject_roles (subproject_id, project_user_id, role)
+    SELECT '${ids.subproject}', pu.project_user_id, 'read-all'
+    FROM project_users pu
+    WHERE pu.project_id = '${ids.project}'
+      AND pu.email = 'outsider@example.com';
 
     INSERT INTO places (place_id, subproject_id, level) VALUES
       ('${ids.place}', '${ids.subproject}', 1),
       ('${ids.otherPlace}', '${ids.subproject}', 1);
 
     -- stranger only has a role on otherPlace
-    INSERT INTO place_users (place_id, user_id, role) VALUES
-      ('${ids.otherPlace}', '${ids.stranger}', 'read-specific');
+    INSERT INTO place_roles (place_id, project_user_id, role)
+    SELECT '${ids.otherPlace}', pu.project_user_id, 'read-specific'
+    FROM project_users pu
+    WHERE pu.project_id = '${ids.project}'
+      AND pu.email = 'stranger@example.com';
 
     INSERT INTO actions (action_id, place_id) VALUES
       ('${ids.action}', '${ids.place}');

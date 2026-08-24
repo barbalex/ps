@@ -1,6 +1,6 @@
 import { useParams, useNavigate } from "@tanstack/react-router";
 
-import { createPlaceUser } from "../modules/createRows.ts";
+import { AddProjectUserButton } from "../components/shared/AddProjectUserButton.tsx";
 import { usePlaceUsersNavData } from "../modules/usePlaceUsersNavData.ts";
 import { ListHeader } from "../components/ListHeader.tsx";
 import { FilterButton } from "../components/shared/FilterButton.tsx";
@@ -21,10 +21,8 @@ export const PlaceUsers = ({ hideHeader = false }) => {
   });
   const { navs, label, nameSingular } = navData;
 
-  const add = async () => {
-    const id = await createPlaceUser({ placeId: placeId2 ?? placeId });
-    if (!id) return;
-    navigate({ to: `${usersBaseUrl}/${id}/` });
+  const onUserCreated = (id: string) => {
+    navigate({ to: `${usersBaseUrl}/${id}/` })
   };
 
   return (
@@ -33,8 +31,17 @@ export const PlaceUsers = ({ hideHeader = false }) => {
         <ListHeader
           label={label}
           nameSingular={nameSingular}
-          addRow={add}
-          menus={<FilterButton isFiltered={isFiltered} />}
+          menus={<>
+            <AddProjectUserButton
+              scope={{
+                kind: 'place',
+                projectId,
+                placeId: placeId2 ?? placeId,
+              }}
+              onUserCreated={onUserCreated}
+            />
+            <FilterButton isFiltered={isFiltered} />
+          </>}
         />
       )}
       <div className="list-container">

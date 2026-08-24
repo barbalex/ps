@@ -39,7 +39,7 @@ export const SubprojectUserHistoryCompare = () => {
   const [validations, setValidations] = useState<Record<string, unknown>>({})
 
   const rowRes = useLiveQuery(
-    `SELECT * FROM subproject_users WHERE subproject_user_id = $1`,
+    `SELECT * FROM subproject_roles WHERE subproject_role_id = $1`,
     [subprojectUserId],
   )
   const row = rowRes?.rows?.[0] as SubprojectUsers | undefined
@@ -50,7 +50,7 @@ export const SubprojectUserHistoryCompare = () => {
 
     try {
       await db.query(
-        `UPDATE subproject_users SET ${name} = $1 WHERE subproject_user_id = $2`,
+        `UPDATE subproject_roles SET ${name} = $1 WHERE subproject_role_id = $2`,
         [value, subprojectUserId],
       )
     } catch (error) {
@@ -68,8 +68,8 @@ export const SubprojectUserHistoryCompare = () => {
     })
 
     addOperation({
-      table: 'subproject_users',
-      rowIdName: 'subproject_user_id',
+      table: 'subproject_roles',
+      rowIdName: 'subproject_role_id',
       rowId: subprojectUserId,
       operation: 'update',
       draft: { [name]: value },
@@ -93,12 +93,12 @@ export const SubprojectUserHistoryCompare = () => {
       <>
       <DropdownField
         label={formatMessage({ id: 'qyI8KV', defaultMessage: 'Benutzer' })}
-        name="user_id"
-        table="users"
-        value={row.user_id ?? ''}
+        name="project_user_id"
+        table="project_users"
+        value={row.project_user_id ?? ''}
         onChange={onChange}
-        validationState={validations?.user_id?.state}
-        validationMessage={validations?.user_id?.message}
+        validationState={validations?.project_user_id?.state}
+        validationMessage={validations?.project_user_id?.message}
       />
       <RadioGroupField
         label={formatMessage({ id: 'Gj0HkM', defaultMessage: 'Rolle' })}
@@ -119,12 +119,12 @@ export const SubprojectUserHistoryCompare = () => {
     </div>
   )
 
-  const visibleCurrentFields = new Set(['user_id', 'role'])
+  const visibleCurrentFields = new Set(['project_user_id', 'role'])
 
   const formatFieldLabel = createHistoryFieldLabelFormatter({
     formatMessage,
     fieldLabelMap: {
-      user_id: { id: 'qyI8KV', defaultMessage: 'Benutzer' },
+      project_user_id: { id: 'qyI8KV', defaultMessage: 'Benutzer' },
       role: { id: 'Gj0HkM', defaultMessage: 'Rolle' },
     },
   })
@@ -143,8 +143,8 @@ export const SubprojectUserHistoryCompare = () => {
       formatFieldValue={formatFieldValue}
       row={row}
       historyConfig={{
-        historyTable: 'subproject_users_history',
-        rowIdField: 'subproject_user_id',
+        historyTable: 'subproject_roles_history',
+        rowIdField: 'subproject_role_id',
         rowId: subprojectUserId,
         historyPath,
         routeHistoryId: subprojectUserHistoryId,
@@ -152,8 +152,8 @@ export const SubprojectUserHistoryCompare = () => {
       }}
       restoreConfig={{
         db,
-        table: 'subproject_users',
-        rowIdName: 'subproject_user_id',
+        table: 'subproject_roles',
+        rowIdName: 'subproject_role_id',
         rowId: subprojectUserId,
         excludedRestoreFields,
         addOperation,

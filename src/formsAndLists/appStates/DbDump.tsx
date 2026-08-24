@@ -63,11 +63,11 @@ export const DbDump = ({ activeUserId, viewedUserId }: Props) => {
         [activeUserId],
       )
       await db.query(
-        `DELETE FROM subproject_users WHERE user_id IS NULL OR user_id <> $1`,
+        `DELETE FROM subproject_roles WHERE user_id IS NULL OR user_id <> $1`,
         [activeUserId],
       )
       await db.query(
-        `DELETE FROM place_users WHERE user_id IS NULL OR user_id <> $1`,
+        `DELETE FROM place_roles WHERE user_id IS NULL OR user_id <> $1`,
         [activeUserId],
       )
 
