@@ -1,5 +1,5 @@
 import { useRef, useEffect } from 'react'
-import { draggable } from '@atlaskit/pragmatic-drag-and-drop/element/adapter'
+import { draggable } from '@atlaskit/pragmatic-drag-and-drop/adapter/element-adapter'
 import { autoScrollForElements } from '@atlaskit/pragmatic-drag-and-drop-auto-scroll/element'
 import { BsArrowsMove } from 'react-icons/bs'
 import { useIntl } from 'react-intl'

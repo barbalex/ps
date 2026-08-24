@@ -1,8 +1,8 @@
 import { useState, useRef, useContext, useEffect } from 'react'
 import { createPortal } from 'react-dom'
 import { DropIndicator } from '@atlaskit/pragmatic-drag-and-drop-react-drop-indicator/box'
-import { pointerOutsideOfPreview } from '@atlaskit/pragmatic-drag-and-drop/element/pointer-outside-of-preview'
-import { setCustomNativeDragPreview } from '@atlaskit/pragmatic-drag-and-drop/element/set-custom-native-drag-preview'
+import { pointerOutsideOfPreview } from '@atlaskit/pragmatic-drag-and-drop/utils/pointer-outside-of-preview'
+import { setCustomNativeDragPreview } from '@atlaskit/pragmatic-drag-and-drop/utils/set-custom-native-drag-preview'
 import {
   attachClosestEdge,
   type Edge,
@@ -11,8 +11,8 @@ import {
 import {
   draggable,
   dropTargetForElements,
-} from '@atlaskit/pragmatic-drag-and-drop/element/adapter'
-import { combine } from '@atlaskit/pragmatic-drag-and-drop/combine'
+} from '@atlaskit/pragmatic-drag-and-drop/adapter/element-adapter'
+import { combine } from '@atlaskit/pragmatic-drag-and-drop/utils/combine'
 import invariant from 'tiny-invariant'
 
 import { Widget } from './Widget.tsx'
