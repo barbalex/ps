@@ -902,7 +902,7 @@
   "fH8JmQ": "Show files in {subprojectNameSingular}",
   "initDbMsg": "Building local database",
   "initDbHintMsg": "Only needed on first launch",
-  "initDbStepLabel": "Initialising database",
+  "initDbStepLabel": "Initializing database",
   "syncServerStepLabel": "Syncing with server",
   "syncServerMsg": "Syncing with server",
   "syncServerTaskBody": "Initial synchronization is running...",
