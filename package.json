@@ -11,6 +11,7 @@
     "sync-sql": "node scripts/sync-sql.mjs",
     "sync-sql:check": "node scripts/sync-sql.mjs --check",
     "hooks:install": "node scripts/install-git-hooks.mjs",
+    "postinstall": "node scripts/patch-eslint-typescript.mjs",
     "format": "prettier --write .",
     "lint": "eslint . --max-warnings 0",
     "test": "vitest run",
@@ -139,16 +140,24 @@
     "eslint-plugin-react-refresh": "0.5.4",
     "globals": "17.11.0",
     "kanel": "4.0.3",
-    "typescript": "6.0.3",
+    "typescript": "7.0.2",
+    "typescript-v6": "npm:typescript@6.0.3",
     "vite": "8.2.2",
     "vite-plugin-svgr": "5.2.0",
     "vitest": "4.1.11"
   },
   "overrides": {
-    "tabster": "8.8.0"
+    "tabster": "8.8.0",
+    "@typescript-eslint/eslint-plugin": {
+      "typescript": "6.0.3"
+    },
+    "@typescript-eslint/parser": {
+      "typescript": "6.0.3"
+    }
   },
   "devRemarks": {
     "nothing": "now",
-    "tabster": "errors were caused. tabster@8.7.0 bundled its own keyborg@2.6.0 which conflicted with the top-level keyborg@2.14.0 required by @fluentui/react-components — keyborg 2.14 removed getNavigating, so forcing tabster@8.8.0 (which depends on keyborg@^2.14.0) eliminates the nested copy and makes both packages use the same API."
+    "tabster": "errors were caused. tabster@8.7.0 bundled its own keyborg@2.6.0 which conflicted with the top-level keyborg@2.14.0 required by @fluentui/react-components — keyborg 2.14 removed getNavigating, so forcing tabster@8.8.0 (which depends on keyborg@^2.14.0) eliminates the nested copy and makes both packages use the same API.",
+    "typescript-eslint": "typescript@7 (native) ships no JS API, which @typescript-eslint still requires (its peer range caps at <6.1.0), so eslint cannot run on v7 yet. The overrides pin the peer to typescript@6.0.3, and the postinstall script (scripts/patch-eslint-typescript.mjs) copies the aliased typescript-v6 devDependency into @typescript-eslint/parser and @typescript-eslint/eslint-plugin, because npm cannot nest a peer-satisfying typescript copy under root-level packages. Root typescript stays on v7 for tsc. Drop overrides + typescript-v6 + postinstall once typescript-eslint supports v7."
   }
 }
