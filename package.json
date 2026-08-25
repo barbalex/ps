@@ -129,7 +129,7 @@
     "@types/react-dom": "19.2.4",
     "@typescript-eslint/eslint-plugin": "8.67.0",
     "@typescript-eslint/parser": "8.67.0",
-    "@vitejs/plugin-react": "6.0.5",
+    "@vitejs/plugin-react": "6.1.0",
     "babel-plugin-react-compiler": "1.0.0",
     "concurrently": "10.0.5",
     "dotenv": "17.4.2",
@@ -140,7 +140,7 @@
     "globals": "17.11.0",
     "kanel": "4.0.3",
     "typescript": "6.0.3",
-    "vite": "8.2.1",
+    "vite": "8.2.2",
     "vite-plugin-svgr": "5.2.0",
     "vitest": "4.1.11"
   },
