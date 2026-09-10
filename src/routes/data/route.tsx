@@ -38,9 +38,10 @@ export const Route = createFileRoute('/data')({
   notFoundComponent: NotFound,
   // Without a pendingComponent the router suspends this route with a null
   // fallback while beforeLoad runs (auth check + PGlite creation), leaving a
-  // blank screen after login. Show the DB-init screen immediately instead.
+  // blank screen after login. Show the DB-init screen for long loads.
+  // Keep the default pendingMs (1000ms): showing it instantly flickers on
+  // quick redirects (e.g. logged-out / → /data → /auth resolves fast).
   pendingComponent: () => <Initiating forceSqlInitializing />,
-  pendingMs: 0,
   beforeLoad: async ({ location }) => {
     // Start creating PGlite now, parallel with the auth check below; the
     // module and promise caches make repeats free. The detached catch keeps
