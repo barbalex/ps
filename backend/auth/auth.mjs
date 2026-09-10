@@ -22,6 +22,9 @@ const baseURL = {
     'www.xn--arten-frdern-bjb.ch',
   ],
   fallback: AUTH_FALLBACK_BASE_URL,
+  // resolve https even when the internal proxy hop speaks plain http and no
+  // x-forwarded-proto is present
+  protocol: 'https',
 }
 const DEFAULT_CLIENT_ORIGIN = 'http://localhost:5176'
 const PASSKEY_ORIGIN = (
