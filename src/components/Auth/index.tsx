@@ -4,12 +4,14 @@ import { useIntl } from 'react-intl'
 
 import { getSession } from '../../modules/authClient.ts'
 import { ensurePgliteDb } from '../../modules/ensurePgliteDb.ts'
+import { useMarkBootDone } from '../../modules/bootDone.ts'
 import { EmailPassword } from './EmailPassword.tsx'
 import { Sso } from './Sso.tsx'
 import { Passkeys } from './Passkeys.tsx'
 import styles from './Auth.module.css'
 
 export const Auth = () => {
+  useMarkBootDone()
   const { formatMessage } = useIntl()
   const router = useRouter()
   const { redirect: redirectTo, verificationExpired } = useSearch({

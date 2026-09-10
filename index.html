@@ -20,14 +20,18 @@
     <style>
       /* Static app shell: visible from first paint until React mounts and
          replaces #root's content. Covers bundle download on cold caches.
-         The head script below sets data-boot="home" on / (home-page replica:
-         header bar + preloaded hero image + title) and "splash" everywhere
-         else (spinner, handed over to the DB-init screen on /data). */
+         The head script below sets data-boot to "home" on / (home-page
+         replica), "init" on /data (DB-init card, handed over to the
+         Initiating component) and "splash" everywhere else (spinner). */
       #boot-home,
-      #boot-splash {
+      #boot-splash,
+      #boot-init {
         position: fixed;
         inset: 0;
         display: none;
+        /* above app content: the shell lives outside #root and stays
+           visible until the app has committed real content */
+        z-index: 999999;
         /* match the font the app text actually computes to (a reset sheet
            under FluentProvider sets this stack on headings and body text) */
         font-family: system-ui, 'Helvetica Neue', Helvetica, sans-serif;
@@ -38,6 +42,25 @@
       }
       html[data-boot='splash'] #boot-splash {
         display: flex;
+      }
+      html[data-boot='init'] #boot-init {
+        display: flex;
+      }
+      /* the app sets data-boot='done' once real content has committed */
+      html[data-boot='done'] #boot-home,
+      html[data-boot='done'] #boot-splash,
+      html[data-boot='done'] #boot-init {
+        display: none;
+      }
+      /* language variants: only the span matching data-boot-lang shows */
+      .boot-lang span {
+        display: none;
+      }
+      html[data-boot-lang='de'] .boot-lang span[data-lang='de'],
+      html[data-boot-lang='en'] .boot-lang span[data-lang='en'],
+      html[data-boot-lang='fr'] .boot-lang span[data-lang='fr'],
+      html[data-boot-lang='it'] .boot-lang span[data-lang='it'] {
+        display: inline;
       }
       /* home replica, mirroring Layout Header + Home hero styles */
       #boot-home {
@@ -155,7 +178,7 @@
       html[data-boot-lang='it'] #boot-home-title span[data-lang='it'] {
         display: inline;
       }
-      /* spinner variant for app routes, mirroring Initiating screen colors */
+      /* spinner variant for non-data app routes */
       #boot-splash {
         align-items: center;
         justify-content: center;
@@ -186,14 +209,104 @@
         font-weight: 700;
         color: #2e4a2b;
       }
-      #boot-splash-title span {
-        display: none;
+      /* DB-init card on /data, mirroring the Initiating component
+         (Initiating.module.css); step 1 "Preparing" is active until React
+         mounts and takes over with live state */
+      #boot-init {
+        align-items: center;
+        justify-content: center;
+        padding: 24px;
+        background: radial-gradient(
+          circle at top right,
+          #f7fbf5,
+          #f2f7ef 45%,
+          #edf4ea
+        );
+        color: #2f3a2f;
       }
-      html[data-boot-lang='de'] #boot-splash-title span[data-lang='de'],
-      html[data-boot-lang='en'] #boot-splash-title span[data-lang='en'],
-      html[data-boot-lang='fr'] #boot-splash-title span[data-lang='fr'],
-      html[data-boot-lang='it'] #boot-splash-title span[data-lang='it'] {
-        display: inline;
+      #boot-init-card {
+        width: min(520px, 96vw);
+        background: rgba(255, 255, 255, 0.86);
+        border: 1px solid rgba(60, 104, 48, 0.18);
+        border-radius: 14px;
+        padding: 20px 18px;
+        box-shadow: 0 12px 36px rgba(43, 70, 37, 0.12);
+      }
+      #boot-init-title {
+        margin: 0 0 14px 0;
+        font-size: 1.1rem;
+        font-weight: 700;
+        color: #2e4a2b;
+      }
+      #boot-init-subtitle {
+        margin: -8px 0 14px 0;
+        font-size: 0.9rem;
+        color: #4f634b;
+      }
+      #boot-init-steps {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+      }
+      .boot-step {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 10px 12px;
+        border-radius: 10px;
+        border: 1px solid transparent;
+      }
+      .boot-step-number {
+        width: 24px;
+        height: 24px;
+        border-radius: 999px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 0.82rem;
+        font-weight: 700;
+        flex-shrink: 0;
+      }
+      .boot-step-label {
+        font-size: 0.95rem;
+        line-height: 1.25rem;
+        flex: 1;
+      }
+      .boot-step.active {
+        border-color: rgba(64, 133, 49, 0.4);
+        background: rgba(104, 174, 86, 0.15);
+        animation: boot-step-pulse 1.2s ease-in-out infinite;
+      }
+      .boot-step.active .boot-step-number {
+        background: #3f8a30;
+        color: #fff;
+      }
+      .boot-step.pending {
+        border-color: rgba(110, 130, 104, 0.24);
+        background: rgba(255, 255, 255, 0.55);
+      }
+      .boot-step.pending .boot-step-number {
+        background: #d7e0d3;
+        color: #496143;
+      }
+      .boot-step svg {
+        width: 24px;
+        height: 24px;
+        color: #3f8a30;
+        animation: boot-splash-spin 1s linear infinite;
+        margin-left: auto;
+        flex-shrink: 0;
+      }
+      @keyframes boot-step-pulse {
+        0% {
+          box-shadow: 0 0 0 0 rgba(63, 138, 48, 0.12);
+        }
+        70% {
+          box-shadow: 0 0 0 10px rgba(63, 138, 48, 0);
+        }
+        100% {
+          box-shadow: 0 0 0 0 rgba(63, 138, 48, 0);
+        }
       }
       @keyframes boot-splash-spin {
         to {
@@ -205,7 +318,12 @@
       // Runs before first paint; picks the static shell variant and language
       ;(() => {
         const html = document.documentElement
-        html.dataset.boot = location.pathname === '/' ? 'home' : 'splash'
+        html.dataset.boot =
+          location.pathname === '/'
+            ? 'home'
+            : location.pathname.startsWith('/data')
+              ? 'init'
+              : 'splash'
         // jotai's atomWithStorage JSON-encodes values, so the stored
         // language is e.g. '"de"' — parse before validating
         let storedLang
@@ -224,59 +342,133 @@
     </script>
   </head>
   <body>
-    <div id="root">
-      <div id="boot-home" aria-hidden="true">
-        <header id="boot-home-header">
+    <div id="root"></div>
+    <!-- static boot shell: outside #root so React mounting does not
+         destroy it; hidden via html[data-boot=done] once the app has
+         committed real content (see src/modules/bootDone.ts) -->
+
+    <div id="boot-home" aria-hidden="true">
+      <header id="boot-home-header">
+        <span data-lang="de">Arten fördern</span>
+        <span data-lang="en">Promote Species</span>
+        <span data-lang="fr">Promouvoir les espèces</span>
+        <span data-lang="it">Promuovere le specie</span>
+      </header>
+      <div id="boot-home-main">
+        <img
+          id="boot-home-img"
+          src="puls_700.avif"
+          srcset="
+            puls_700.avif   700w,
+            puls_1000.avif 1000w,
+            puls_1400.avif 1400w,
+            puls_1550.avif 1550w
+          "
+          sizes="100vw"
+          fetchpriority="high"
+          alt=""
+        />
+        <div id="boot-home-scroll">
+          <h2 id="boot-home-title">
+            <span data-lang="de"
+              >Naturschutz&shy;fachleute fördern bedrohte Arten und
+              Lebensräume</span
+            >
+            <span data-lang="en"
+              >Nature conservation experts promote endangered species and
+              habitats</span
+            >
+            <span data-lang="fr"
+              >Les expert·e·s en conservation de la nature favorisent les
+              espèces et habitats menacés</span
+            >
+            <span data-lang="it"
+              >Gli esperti di conservazione della natura promuovono specie e
+              habitat minacciati</span
+            >
+          </h2>
+          <div id="boot-home-spacer"></div>
+        </div>
+      </div>
+    </div>
+    <div id="boot-splash" aria-hidden="true">
+      <div id="boot-splash-inner">
+        <div id="boot-splash-spinner"></div>
+        <div id="boot-splash-title" class="boot-lang">
           <span data-lang="de">Arten fördern</span>
           <span data-lang="en">Promote Species</span>
           <span data-lang="fr">Promouvoir les espèces</span>
           <span data-lang="it">Promuovere le specie</span>
-        </header>
-        <div id="boot-home-main">
-          <img
-            id="boot-home-img"
-            src="puls_700.avif"
-            srcset="
-              puls_700.avif   700w,
-              puls_1000.avif 1000w,
-              puls_1400.avif 1400w,
-              puls_1550.avif 1550w
-            "
-            sizes="100vw"
-            fetchpriority="high"
-            alt=""
-          />
-          <div id="boot-home-scroll">
-            <h2 id="boot-home-title">
-              <span data-lang="de"
-                >Naturschutz&shy;fachleute fördern bedrohte Arten und
-                Lebensräume</span
-              >
-              <span data-lang="en"
-                >Nature conservation experts promote endangered species and
-                habitats</span
-              >
-              <span data-lang="fr"
-                >Les expert·e·s en conservation de la nature favorisent les
-                espèces et habitats menacés</span
-              >
-              <span data-lang="it"
-                >Gli esperti di conservazione della natura promuovono specie e
-                habitat minacciati</span
-              >
-            </h2>
-            <div id="boot-home-spacer"></div>
-          </div>
         </div>
       </div>
-      <div id="boot-splash" aria-hidden="true">
-        <div id="boot-splash-inner">
-          <div id="boot-splash-spinner"></div>
-          <div id="boot-splash-title">
-            <span data-lang="de">Arten fördern</span>
-            <span data-lang="en">Promote Species</span>
-            <span data-lang="fr">Promouvoir les espèces</span>
-            <span data-lang="it">Promuovere le specie</span>
+    </div>
+    <div id="boot-init" aria-hidden="true">
+      <div id="boot-init-card">
+        <p id="boot-init-title" class="boot-lang">
+          <span data-lang="de">Baue lokale Datenbank</span>
+          <span data-lang="en">Building local database</span>
+          <span data-lang="fr">Création de la base de données locale</span>
+          <span data-lang="it">Creazione del database locale</span>
+        </p>
+        <p id="boot-init-subtitle" class="boot-lang">
+          <span data-lang="de">Nur beim ersten Start nötig</span>
+          <span data-lang="en">Only needed on first launch</span>
+          <span data-lang="fr">Nécessaire uniquement au premier démarrage</span>
+          <span data-lang="it">Necessario solo al primo avvio</span>
+        </p>
+        <div id="boot-init-steps">
+          <div class="boot-step active">
+            <span class="boot-step-number">1</span>
+            <span class="boot-step-label boot-lang">
+              <span data-lang="de">Vorbereiten</span>
+              <span data-lang="en">Preparing</span>
+              <span data-lang="fr">Préparation</span>
+              <span data-lang="it">Preparazione</span>
+            </span>
+            <svg
+              width="24"
+              height="24"
+              viewBox="0 0 16 16"
+              fill="none"
+              aria-hidden="true"
+            >
+              <circle
+                cx="8"
+                cy="8"
+                r="6.5"
+                stroke="currentColor"
+                stroke-width="1.3"
+                stroke-linecap="round"
+                opacity="0.2"
+              />
+              <circle
+                cx="8"
+                cy="8"
+                r="6.5"
+                stroke="currentColor"
+                stroke-width="1.3"
+                stroke-dasharray="10.2 20.4"
+                stroke-linecap="round"
+              />
+            </svg>
+          </div>
+          <div class="boot-step pending">
+            <span class="boot-step-number">2</span>
+            <span class="boot-step-label boot-lang">
+              <span data-lang="de">Initialisiere Datenbank</span>
+              <span data-lang="en">Initializing database</span>
+              <span data-lang="fr">Initialisation de la base de données</span>
+              <span data-lang="it">Inizializzazione del database</span>
+            </span>
+          </div>
+          <div class="boot-step pending">
+            <span class="boot-step-number">3</span>
+            <span class="boot-step-label boot-lang">
+              <span data-lang="de">Synchronisiere mit dem Server</span>
+              <span data-lang="en">Syncing with server</span>
+              <span data-lang="fr">Synchronisation avec le serveur</span>
+              <span data-lang="it">Sincronizzazione con il server</span>
+            </span>
           </div>
         </div>
       </div>

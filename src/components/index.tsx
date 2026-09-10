@@ -1,11 +1,13 @@
 import { Link } from '@tanstack/react-router'
 import { FormattedMessage, useIntl } from 'react-intl'
 
+import { useMarkBootDone } from '../modules/bootDone.ts'
 import styles from './index.module.css'
 
 const br = <br />
 
 export const Home = () => {
+  useMarkBootDone()
   const intl = useIntl()
 
   return (

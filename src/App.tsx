@@ -19,9 +19,8 @@ import './style.css'
 import styles from './App.module.css'
 
 import { lightTheme } from './modules/theme.ts'
+import { markBootDone } from './modules/bootDone.ts'
 import { store, languageAtom, intlAtom } from './store.ts'
-
-
 
 const IntlSetter = () => {
   const intl = useIntl()
@@ -41,6 +40,12 @@ export const App = () => {
     const baseTitle = titles[language] ?? 'Arten fördern'
     document.title = `${baseTitle} ${appVersion}`
   }, [language])
+
+  // catch-all: hide the static boot shell once any navigation has resolved
+  // and rendered (routes without an explicit useMarkBootDone call)
+  useEffect(() => {
+    return router.subscribe('onResolved', () => markBootDone())
+  }, [])
 
   return (
     <JotaiProvider store={store}>

@@ -1,8 +1,7 @@
-// Shown while a route without its own pendingComponent is loading for
-// longer than the router's default pendingMs (e.g. the first second of a
-// cold /data load). Mirrors the static boot splash in index.html so the
-// handoff is seamless.
-export const DefaultPending = () => (
+import { Initiating } from '../Initiating.tsx'
+import { useMarkBootDone } from '../../modules/bootDone.ts'
+
+const Spinner = () => (
   <div
     style={{
       position: 'fixed',
@@ -29,3 +28,15 @@ export const DefaultPending = () => (
     />
   </div>
 )
+
+// Shown while a route without its own pendingComponent is loading for
+// longer than the router's default pendingMs. On /data the DB-init screen
+// is expected (the static shell already shows it), so keep showing it —
+// elsewhere a neutral spinner mirroring the static boot splash.
+export const DefaultPending = () => {
+  useMarkBootDone()
+  const isDataRoute =
+    typeof window !== 'undefined' &&
+    window.location.pathname.startsWith('/data')
+  return isDataRoute ? <Initiating /> : <Spinner />
+}
