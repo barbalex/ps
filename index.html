@@ -49,12 +49,15 @@
       }
       #boot-home-header {
         display: flex;
-        align-items: center;
+        flex-wrap: nowrap;
+        justify-content: space-between;
         height: 44px;
         padding: 0 10px;
         background: rgba(38, 82, 37, 0.9);
         color: #fff;
         font-size: large;
+        /* the real title is an h1 (default bold) */
+        font-weight: bold;
         white-space: nowrap;
       }
       #boot-home-header span {
@@ -80,17 +83,48 @@
         height: 100%;
         object-fit: cover;
       }
-      #boot-home-title {
-        position: absolute;
-        margin: 0;
+      /* mirrors Home .scrollContainer: the real title lives in an
+         absolutely positioned scroll container with a thin scrollbar —
+         this affects its horizontal centering and the scrollbar itself */
+      #boot-home-scroll {
+        height: 100%;
         width: 100%;
-        box-sizing: border-box;
+        position: absolute;
+        top: 0;
+        overflow-y: auto;
+        scrollbar-width: thin;
+        scrollbar-color: rgba(55, 118, 28, 1) #f2fef3;
+        scrollbar-gutter: stable;
+        color: #000;
+        display: flex;
+        flex-direction: column;
+      }
+      /* the app styles all scrollbars globally (src/style.css) */
+      #boot-home-scroll::-webkit-scrollbar {
+        width: 8px;
+      }
+      #boot-home-scroll::-webkit-scrollbar-thumb {
+        border-radius: 4px;
+        box-shadow: inset 0 0 7px rgba(55, 118, 28, 1);
+        background: rgba(85, 85, 85, 0.05);
+      }
+      #boot-home-scroll::-webkit-scrollbar-corner {
+        background: rgba(0, 0, 0, 0);
+      }
+      /* the real page overflows (cards below), so its scrollbar has a
+         thumb; a tall spacer reproduces that state */
+      #boot-home-spacer {
+        height: 3000px;
+      }
+      /* mirrors Home .pageTitle incl. its breakpoint paddings */
+      #boot-home-title {
+        margin: 0;
         text-align: center;
         font-size: 2em;
         line-height: 1.3em;
         font-weight: 700;
         color: #000;
-        padding: 1.2em 0.8em;
+        padding: 1.2em 0.8em 1em;
         overflow-wrap: break-word;
         word-break: break-word;
         text-shadow:
@@ -98,6 +132,21 @@
           -2px -2px 3px #fff,
           2px -2px 3px #fff,
           -2px 2px 3px #fff;
+      }
+      @media (min-width: 700px) {
+        #boot-home-title {
+          padding: 1.5em 1em 1.2em;
+        }
+      }
+      @media (min-width: 1200px) {
+        #boot-home-title {
+          padding: 2em 1em 1.3em;
+        }
+      }
+      @media (min-width: 1700px) {
+        #boot-home-title {
+          padding: 2.1em 1em 1.4em;
+        }
       }
       #boot-home-title span {
         display: none;
@@ -199,24 +248,27 @@
             fetchpriority="high"
             alt=""
           />
-          <h2 id="boot-home-title">
-            <span data-lang="de"
-              >Naturschutz&shy;fachleute fördern bedrohte Arten und
-              Lebensräume</span
-            >
-            <span data-lang="en"
-              >Nature conservation experts promote endangered species and
-              habitats</span
-            >
-            <span data-lang="fr"
-              >Les expert·e·s en conservation de la nature favorisent les
-              espèces et habitats menacés</span
-            >
-            <span data-lang="it"
-              >Gli esperti di conservazione della natura promuovono specie e
-              habitat minacciati</span
-            >
-          </h2>
+          <div id="boot-home-scroll">
+            <h2 id="boot-home-title">
+              <span data-lang="de"
+                >Naturschutz&shy;fachleute fördern bedrohte Arten und
+                Lebensräume</span
+              >
+              <span data-lang="en"
+                >Nature conservation experts promote endangered species and
+                habitats</span
+              >
+              <span data-lang="fr"
+                >Les expert·e·s en conservation de la nature favorisent les
+                espèces et habitats menacés</span
+              >
+              <span data-lang="it"
+                >Gli esperti di conservazione della natura promuovono specie e
+                habitat minacciati</span
+              >
+            </h2>
+            <div id="boot-home-spacer"></div>
+          </div>
         </div>
       </div>
       <div id="boot-splash" aria-hidden="true">
