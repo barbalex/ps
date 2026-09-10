@@ -6,6 +6,7 @@ import {
 import { type } from 'arktype'
 
 import { AuthAndDb } from '../../components/AuthAndDb.tsx'
+import { Initiating } from '../../components/Initiating.tsx'
 import { NotFound } from '../../components/NotFound.tsx'
 import { getSession } from '../../modules/authClient.ts'
 import { isVerificationGraceExpired } from '../../modules/emailVerificationGrace.ts'
@@ -35,9 +36,20 @@ export const Route = createFileRoute('/data')({
     middlewares: [stripSearchParams(defaultValues)],
   },
   notFoundComponent: NotFound,
+  // Without a pendingComponent the router suspends this route with a null
+  // fallback while beforeLoad runs (auth check + PGlite creation), leaving a
+  // blank screen after login. Show the DB-init screen immediately instead.
+  pendingComponent: () => <Initiating forceSqlInitializing />,
+  pendingMs: 0,
   beforeLoad: async ({ location }) => {
-    // Start loading PGlite now (parallel with auth check); module cache makes repeats free
-    const pgliteModulePromise = import('../../modules/ensurePgliteDb.ts')
+    // Start creating PGlite now, parallel with the auth check below; the
+    // module and promise caches make repeats free. The detached catch keeps
+    // an early redirect below from surfacing an unhandled rejection.
+    const pgliteReady = import('../../modules/ensurePgliteDb.ts').then(
+      ({ ensurePgliteDb }) => ensurePgliteDb(),
+    )
+    pgliteReady.catch(() => undefined)
+
     // 1. ensure user is authenticated
     const sessionVerified = store.get(sessionVerifiedAtom)
 
@@ -72,8 +84,7 @@ export const Route = createFileRoute('/data')({
         const userId = store.get(userIdAtom)
         if (!userId)
           throw redirect({ to: '/auth', search: { redirect: location.href } })
-        const { ensurePgliteDb } = await pgliteModulePromise
-        await ensurePgliteDb()
+        await pgliteReady
         return { navDataFetcher: 'useDataBreadcrumbData' }
       }
 
@@ -110,8 +121,7 @@ export const Route = createFileRoute('/data')({
     }
 
     // 2. Ensure a DB instance exists before protected route components mount
-    const { ensurePgliteDb } = await pgliteModulePromise
-    await ensurePgliteDb()
+    await pgliteReady
 
     return { navDataFetcher: 'useDataBreadcrumbData' }
   },

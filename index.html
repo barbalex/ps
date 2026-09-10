@@ -17,9 +17,59 @@
       name="description"
       content="Naturschutzfachleute fördern bedrohte Arten und Lebensräume. Populationen beschreiben, Ziele definieren, Massnahmen und Kontrollen organisieren, Entwicklung analysieren und berichten."
     />
+    <style>
+      /* Static splash: visible from first paint until React mounts and
+         replaces #root's content. Covers bundle download on cold caches. */
+      #boot-splash {
+        position: fixed;
+        inset: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: radial-gradient(
+          circle at top right,
+          #f7fbf5,
+          #f2f7ef 45%,
+          #edf4ea
+        );
+        color: #2f3a2f;
+        font-family: system-ui, sans-serif;
+      }
+      #boot-splash-inner {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 14px;
+      }
+      #boot-splash-spinner {
+        width: 28px;
+        height: 28px;
+        border-radius: 50%;
+        border: 3px solid rgba(63, 138, 48, 0.25);
+        border-top-color: #3f8a30;
+        animation: boot-splash-spin 1s linear infinite;
+      }
+      #boot-splash-title {
+        font-size: 1.1rem;
+        font-weight: 700;
+        color: #2e4a2b;
+      }
+      @keyframes boot-splash-spin {
+        to {
+          transform: rotate(360deg);
+        }
+      }
+    </style>
   </head>
   <body>
-    <div id="root"></div>
+    <div id="root">
+      <div id="boot-splash" aria-hidden="true">
+        <div id="boot-splash-inner">
+          <div id="boot-splash-spinner"></div>
+          <div id="boot-splash-title">Arten fördern</div>
+        </div>
+      </div>
+    </div>
     <script type="module" src="/src/main.tsx"></script>
   </body>
 </html>
