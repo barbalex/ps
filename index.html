@@ -61,7 +61,10 @@
         display: none;
       }
       @media (min-width: 650px) {
-        #boot-home-header span {
+        html[data-boot-lang='de'] #boot-home-header span[data-lang='de'],
+        html[data-boot-lang='en'] #boot-home-header span[data-lang='en'],
+        html[data-boot-lang='fr'] #boot-home-header span[data-lang='fr'],
+        html[data-boot-lang='it'] #boot-home-header span[data-lang='it'] {
           display: inline;
         }
       }
@@ -136,6 +139,15 @@
         font-weight: 700;
         color: #2e4a2b;
       }
+      #boot-splash-title span {
+        display: none;
+      }
+      html[data-boot-lang='de'] #boot-splash-title span[data-lang='de'],
+      html[data-boot-lang='en'] #boot-splash-title span[data-lang='en'],
+      html[data-boot-lang='fr'] #boot-splash-title span[data-lang='fr'],
+      html[data-boot-lang='it'] #boot-splash-title span[data-lang='it'] {
+        display: inline;
+      }
       @keyframes boot-splash-spin {
         to {
           transform: rotate(360deg);
@@ -167,7 +179,12 @@
   <body>
     <div id="root">
       <div id="boot-home" aria-hidden="true">
-        <header id="boot-home-header"><span>Arten fördern</span></header>
+        <header id="boot-home-header">
+          <span data-lang="de">Arten fördern</span>
+          <span data-lang="en">Promote Species</span>
+          <span data-lang="fr">Promouvoir les espèces</span>
+          <span data-lang="it">Promuovere le specie</span>
+        </header>
         <div id="boot-home-main">
           <img
             id="boot-home-img"
@@ -205,7 +222,12 @@
       <div id="boot-splash" aria-hidden="true">
         <div id="boot-splash-inner">
           <div id="boot-splash-spinner"></div>
-          <div id="boot-splash-title">Arten fördern</div>
+          <div id="boot-splash-title">
+            <span data-lang="de">Arten fördern</span>
+            <span data-lang="en">Promote Species</span>
+            <span data-lang="fr">Promouvoir les espèces</span>
+            <span data-lang="it">Promuovere le specie</span>
+          </div>
         </div>
       </div>
     </div>
