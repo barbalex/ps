@@ -23,6 +23,13 @@ const getProductionAuthBaseUrl = () => {
   if (host.endsWith('promote-species.app')) {
     return 'https://auth.promote-species.app'
   }
+  // arten-fördern.ch: /auth is proxied same-origin by Netlify (_redirects).
+  // The auth server must be same-origin: its session cookie can never cross
+  // the .ch/.app TLD boundary (SameSite) and cross-site cookies are being
+  // phased out anyway.
+  if (host.endsWith('xn--arten-frdern-bjb.ch') || host === 'arten-fördern.ch') {
+    return window.location.origin
+  }
   return 'https://auth.xn--arten-frdern-bjb.app'
 }
 

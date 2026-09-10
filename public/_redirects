@@ -1,1 +1,8 @@
-/*    /index.html   200   
+# Proxy backend endpoints same-origin for arten-fördern.ch (Netlify):
+# auth needs same-origin because session cookies can never cross the
+# .ch/.app TLD boundary (SameSite); PostgREST's CORS only allows .app.
+# The .app frontend keeps calling the API subdomains directly.
+/auth/*  https://auth.xn--arten-frdern-bjb.app/auth/:splat  200
+/api/*   https://api.xn--arten-frdern-bjb.app/:splat        200
+
+/*    /index.html   200

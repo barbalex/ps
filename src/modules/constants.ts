@@ -415,6 +415,13 @@ const isLocalDevHost = () => {
 const isPromoteSpeciesHost = () =>
   window?.location?.hostname?.endsWith('promote-species.app')
 
+// arten-fördern.ch: /api is proxied same-origin by Netlify (_redirects);
+// the PostgREST host only sends CORS headers for .app origins
+const isArtenFoerdernChHost = () => {
+  const host = window?.location?.hostname?.toLowerCase() ?? ''
+  return host.endsWith('xn--arten-frdern-bjb.ch') || host === 'arten-fördern.ch'
+}
+
 export const constants = {
   titleRowHeight: 52,
   mobileViewMaxWidth: 999,
@@ -423,7 +430,9 @@ export const constants = {
       ? `http://localhost:3002`
       : isPromoteSpeciesHost()
         ? 'https://api.promote-species.app'
-        : 'https://api.arten-fördern.app',
+        : isArtenFoerdernChHost()
+          ? `${window.location.origin}/api`
+          : 'https://api.arten-fördern.app',
   // set 3001 to go via caddy, 3000 to go directly to electric backend
   getElectricUri: () =>
     isLocalDevHost()
