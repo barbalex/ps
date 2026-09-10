@@ -6,7 +6,23 @@ import Mailgun from 'mailgun.js'
 import { Pool } from 'pg'
 
 const DATABASE_URL = process.env.DATABASE_URL
-const AUTH_BASE_URL = process.env.BETTER_AUTH_URL?.trim()
+const AUTH_FALLBACK_BASE_URL =
+  process.env.BETTER_AUTH_URL?.trim() || 'https://auth.xn--arten-frdern-bjb.app'
+// Dynamic baseURL: the auth server is reached directly at auth.…app and,
+// proxied same-origin, via arten-fördern.ch (Netlify _redirects). OAuth
+// callbacks must return to the origin the sign-in started from, so the
+// base URL is resolved per request from Host / x-forwarded-host against
+// this allow-list (advanced.trustedProxyHeaders enables the forwarded
+// header, which the Netlify proxy sets).
+const baseURL = {
+  allowedHosts: [
+    'auth.xn--arten-frdern-bjb.app',
+    'auth.promote-species.app',
+    'xn--arten-frdern-bjb.ch',
+    'www.xn--arten-frdern-bjb.ch',
+  ],
+  fallback: AUTH_FALLBACK_BASE_URL,
+}
 const DEFAULT_CLIENT_ORIGIN = 'http://localhost:5176'
 const PASSKEY_ORIGIN = (
   process.env.CLIENT_ORIGIN?.trim() || DEFAULT_CLIENT_ORIGIN
@@ -270,7 +286,7 @@ const sendOtpEmail = async ({ email, otp, type, source }) => {
 export const pool = new Pool({ connectionString: DATABASE_URL })
 
 export const auth = betterAuth({
-  ...(AUTH_BASE_URL ? { baseURL: AUTH_BASE_URL } : {}),
+  baseURL,
   appName: 'Promote Species',
   basePath: '/auth',
   database: pool,
@@ -280,6 +296,9 @@ export const auth = betterAuth({
       generateId: false,
       // experimental: { joins: true },
     },
+    // resolve the per-request baseURL from x-forwarded-host when the
+    // request arrives through the arten-fördern.ch proxy
+    trustedProxyHeaders: true,
   },
   // joins causing error thus uncommented.
   // TODO: test later and consider re-enabling if it can be made to work
