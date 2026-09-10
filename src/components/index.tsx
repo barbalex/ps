@@ -106,6 +106,48 @@ export const Home = () => {
           </div>
           <div className={styles.card}>
             <h3 className={styles.cardTitle}>
+              <FormattedMessage id="wO4TnJ" defaultMessage="Biotope fördern" />
+            </h3>
+            <FormattedMessage
+              id="xP5UoK"
+              defaultMessage="arten-fördern.app kann auch Biotope: beschreiben, Ziele definieren, Massnahmen und Kontrollen organisieren, Entwicklung analysieren und berichten."
+            />
+          </div>
+          <div className={styles.card}>
+            <h3 className={styles.cardTitle}>
+              <FormattedMessage id="iaro8o" defaultMessage="Teamwork" />
+            </h3>
+            <FormattedMessage
+              id="04Jmk6"
+              defaultMessage="Daten werden laufend synchronisiert. Mehrere Mitarbeitende können effizient gleichzeitig arbeiten."
+            />
+          </div>
+          <div className={styles.card}>
+            <h3 className={styles.cardTitle}>
+              <FormattedMessage
+                id="VP9dXS"
+                defaultMessage="Einfaches Onboarding"
+              />
+            </h3>
+            <FormattedMessage
+              id="pTRYGx"
+              defaultMessage="Erfasse neue Mitarbeitende mit ihrer E-Mail. Ergänze diese Person bei allen Arten, in denen sie mitarbeiten soll. Fertig!"
+            />
+          </div>
+          <div className={styles.card}>
+            <h3 className={styles.cardTitle}>
+              <FormattedMessage
+                id="Oy8x+u"
+                defaultMessage="Bring your own device"
+              />
+            </h3>
+            <FormattedMessage
+              id="gjvJCk"
+              defaultMessage="arten-fördern.app funktioniert auf jedem Betriebs&shy;system: Windows, Mac­OS, Linux, Android, iOS..."
+            />
+          </div>
+          <div className={styles.card}>
+            <h3 className={styles.cardTitle}>
               <FormattedMessage id="bC0sCs" defaultMessage="Mobilfähig" />
             </h3>
             <FormattedMessage
@@ -126,6 +168,25 @@ export const Home = () => {
                     <FormattedMessage
                       id="OW3d3V.weiterArbeiten"
                       defaultMessage="weiter arbeiten"
+                    />
+                  </Link>
+                ),
+              }}
+            />
+          </div>
+          <div className={styles.card}>
+            <h3 className={styles.cardTitle}>
+              <FormattedMessage id="SLjrHl" defaultMessage="Zeitmaschine" />
+            </h3>
+            <FormattedMessage
+              id="rEN8QI"
+              defaultMessage="Haben mehrere Mitarbeitende aus versehen offline die gleichen Daten geändert? Das lässt sich einfach korrigieren. {duSiehst}, wer was wann geändert hat."
+              values={{
+                duSiehst: (
+                  <Link to="/docs/histories" target="_blank">
+                    <FormattedMessage
+                      id="rEN8QI.duSiehst"
+                      defaultMessage="Du siehst"
                     />
                   </Link>
                 ),
@@ -164,15 +225,6 @@ export const Home = () => {
           </div>
           <div className={styles.card}>
             <h3 className={styles.cardTitle}>
-              <FormattedMessage id="wO4TnJ" defaultMessage="Biotope fördern" />
-            </h3>
-            <FormattedMessage
-              id="xP5UoK"
-              defaultMessage="arten-fördern.app kann auch Biotope: beschreiben, Ziele definieren, Massnahmen und Kontrollen organisieren, Entwicklung analysieren und berichten."
-            />
-          </div>
-          <div className={styles.card}>
-            <h3 className={styles.cardTitle}>
               <FormattedMessage
                 id="VXoP2c"
                 defaultMessage="Professionelle Konfiguration"
@@ -200,58 +252,6 @@ export const Home = () => {
                       defaultMessage="meiner Naturschutz- und Software-Erfahrung"
                     />
                   </a>
-                ),
-              }}
-            />
-          </div>
-          <div className={styles.card}>
-            <h3 className={styles.cardTitle}>
-              <FormattedMessage
-                id="VP9dXS"
-                defaultMessage="Einfaches Onboarding"
-              />
-            </h3>
-            <FormattedMessage
-              id="pTRYGx"
-              defaultMessage="Erfasse neue Mitarbeitende mit ihrer E-Mail. Ergänze diese Person bei allen Arten, in denen sie mitarbeiten soll. Fertig!"
-            />
-          </div>
-          <div className={styles.card}>
-            <h3 className={styles.cardTitle}>
-              <FormattedMessage
-                id="Oy8x+u"
-                defaultMessage="Bring your own device"
-              />
-            </h3>
-            <FormattedMessage
-              id="gjvJCk"
-              defaultMessage="arten-fördern.app funktioniert auf jedem Betriebs&shy;system: Windows, Mac­OS, Linux, Android, iOS..."
-            />
-          </div>
-          <div className={styles.card}>
-            <h3 className={styles.cardTitle}>
-              <FormattedMessage id="iaro8o" defaultMessage="Teamwork" />
-            </h3>
-            <FormattedMessage
-              id="04Jmk6"
-              defaultMessage="Daten werden laufend synchronisiert. Mehrere Mitarbeitende können effizient gleichzeitig arbeiten."
-            />
-          </div>
-          <div className={styles.card}>
-            <h3 className={styles.cardTitle}>
-              <FormattedMessage id="SLjrHl" defaultMessage="Zeitmaschine" />
-            </h3>
-            <FormattedMessage
-              id="rEN8QI"
-              defaultMessage="Haben mehrere Mitarbeitende aus versehen offline die gleichen Daten geändert? Das lässt sich einfach korrigieren. {duSiehst}, wer was wann geändert hat."
-              values={{
-                duSiehst: (
-                  <Link to="/docs/histories" target="_blank">
-                    <FormattedMessage
-                      id="rEN8QI.duSiehst"
-                      defaultMessage="Du siehst"
-                    />
-                  </Link>
                 ),
               }}
             />
