@@ -18,12 +18,88 @@
       content="Naturschutzfachleute fördern bedrohte Arten und Lebensräume. Populationen beschreiben, Ziele definieren, Massnahmen und Kontrollen organisieren, Entwicklung analysieren und berichten."
     />
     <style>
-      /* Static splash: visible from first paint until React mounts and
-         replaces #root's content. Covers bundle download on cold caches. */
+      /* Static app shell: visible from first paint until React mounts and
+         replaces #root's content. Covers bundle download on cold caches.
+         The head script below sets data-boot="home" on / (home-page replica:
+         header bar + preloaded hero image + title) and "splash" everywhere
+         else (spinner, handed over to the DB-init screen on /data). */
+      #boot-home,
       #boot-splash {
         position: fixed;
         inset: 0;
+        display: none;
+      }
+      html[data-boot='home'] #boot-home {
         display: flex;
+      }
+      html[data-boot='splash'] #boot-splash {
+        display: flex;
+      }
+      /* home replica, mirroring Layout Header + Home hero styles */
+      #boot-home {
+        flex-direction: column;
+        background: #fff;
+      }
+      #boot-home-header {
+        display: flex;
+        align-items: center;
+        height: 44px;
+        padding: 0 10px;
+        background: rgba(38, 82, 37, 0.9);
+        color: #fff;
+        font-size: large;
+        white-space: nowrap;
+      }
+      #boot-home-header span {
+        display: none;
+      }
+      @media (min-width: 650px) {
+        #boot-home-header span {
+          display: inline;
+        }
+      }
+      #boot-home-main {
+        position: relative;
+        flex: 1;
+        overflow: hidden;
+      }
+      #boot-home-img {
+        position: absolute;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+      }
+      #boot-home-title {
+        position: absolute;
+        margin: 0;
+        width: 100%;
+        box-sizing: border-box;
+        text-align: center;
+        font-size: 2em;
+        line-height: 1.3em;
+        font-weight: 700;
+        color: #000;
+        padding: 1.2em 0.8em;
+        overflow-wrap: break-word;
+        word-break: break-word;
+        text-shadow:
+          2px 2px 3px #fff,
+          -2px -2px 3px #fff,
+          2px -2px 3px #fff,
+          -2px 2px 3px #fff;
+      }
+      #boot-home-title span {
+        display: none;
+      }
+      html[data-boot-lang='de'] #boot-home-title span[data-lang='de'],
+      html[data-boot-lang='en'] #boot-home-title span[data-lang='en'],
+      html[data-boot-lang='fr'] #boot-home-title span[data-lang='fr'],
+      html[data-boot-lang='it'] #boot-home-title span[data-lang='it'] {
+        display: inline;
+      }
+      /* spinner variant for app routes, mirroring Initiating screen colors */
+      #boot-splash {
         align-items: center;
         justify-content: center;
         background: radial-gradient(
@@ -60,9 +136,66 @@
         }
       }
     </style>
+    <script>
+      // Runs before first paint; picks the static shell variant and language
+      ;(() => {
+        const html = document.documentElement
+        html.dataset.boot = location.pathname === '/' ? 'home' : 'splash'
+        // jotai's atomWithStorage JSON-encodes values, so the stored
+        // language is e.g. '"de"' — parse before validating
+        let storedLang
+        try {
+          storedLang = JSON.parse(localStorage.getItem('language') ?? 'null')
+        } catch {
+          storedLang = null
+        }
+        let lang = storedLang
+        if (!['de', 'en', 'fr', 'it'].includes(lang))
+          lang = (navigator.language || 'de').slice(0, 2)
+        html.dataset.bootLang = ['de', 'en', 'fr', 'it'].includes(lang)
+          ? lang
+          : 'de'
+      })()
+    </script>
   </head>
   <body>
     <div id="root">
+      <div id="boot-home" aria-hidden="true">
+        <header id="boot-home-header"><span>Arten fördern</span></header>
+        <div id="boot-home-main">
+          <img
+            id="boot-home-img"
+            src="puls_700.avif"
+            srcset="
+              puls_700.avif   700w,
+              puls_1000.avif 1000w,
+              puls_1400.avif 1400w,
+              puls_1550.avif 1550w
+            "
+            sizes="100vw"
+            fetchpriority="high"
+            alt=""
+          />
+          <h2 id="boot-home-title">
+            <span data-lang="de"
+              >Naturschutz&shy;fachleute fördern bedrohte Arten und
+              Lebensräume</span
+            >
+            <span data-lang="en"
+              >Nature conservation experts promote endangered species and
+              habitats</span
+            >
+            <span data-lang="fr"
+              >Les expert·e·s en conservation de la nature favorisent les
+              espèces et habitats menacés</span
+            >
+            <span data-lang="it"
+              >Gli esperti di conservazione della natura promuovono specie e
+              habitat minacciati</span
+            >
+          </h2>
+        </div>
+      </div>
       <div id="boot-splash" aria-hidden="true">
         <div id="boot-splash-inner">
           <div id="boot-splash-spinner"></div>

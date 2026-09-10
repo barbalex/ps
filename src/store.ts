@@ -179,6 +179,10 @@ const _defaultLanguage: Language = SUPPORTED_LANGUAGES.includes(_navLang)
 export const languageAtom = atomWithStorage<Language>(
   'language',
   _defaultLanguage,
+  undefined,
+  // getOnInit: read localStorage synchronously so the very first render
+  // already uses the stored language instead of flashing the default
+  { getOnInit: true },
 )
 export const intlAtom = atom<IntlShape | null>(null)
 
@@ -423,7 +427,10 @@ export const actionReports2FilterAtom = atomWithStorage(
 export const qcsFilterAtom = atomWithStorage('qcsFilterAtom', [])
 export const projectQcsFilterAtom = atomWithStorage('projectQcsFilterAtom', [])
 export const exportsFilterAtom = atomWithStorage('exportsFilterAtom', [])
-export const projectExportsFilterAtom = atomWithStorage('projectExportsFilterAtom', [])
+export const projectExportsFilterAtom = atomWithStorage(
+  'projectExportsFilterAtom',
+  [],
+)
 // TODO: add
 export const filesFilterAtom = atomWithStorage('filesFilterAtom', [])
 // TODO: add more filters
@@ -498,7 +505,12 @@ export const postgrestClientAtom = atom(null)
 // - filter
 // - draft: object with key-value pairs for the operation
 // - prev: object with key-value pairs of previous value for reverting the operation
-export const operationsQueueAtom = atomWithStorage('operationsQueueAtom', [], undefined, { getOnInit: true })
+export const operationsQueueAtom = atomWithStorage(
+  'operationsQueueAtom',
+  [],
+  undefined,
+  { getOnInit: true },
+)
 
 // Inline revert so store.ts doesn't need to import revertOperation.ts (which imports store.ts — circular)
 async function revertOperationInPlace(db, operation) {
