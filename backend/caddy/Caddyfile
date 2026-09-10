@@ -27,6 +27,13 @@ auth.xn--arten-frdern-bjb.app {
   header @auth_arten_origin Vary "Origin"
 
   reverse_proxy * ps_auth:3003 {
+    # Preserve client-supplied X-Forwarded-Host/Proto (set by the Netlify
+    # proxy for arten-fördern.ch) — Caddy would otherwise overwrite them
+    # with its own Host/protocol, breaking the auth server's per-request
+    # base-URL resolution. Empty values remove the header, so direct
+    # requests fall back to Host and https as before.
+    header_up X-Forwarded-Host {http.request.header.X-Forwarded-Host}
+    header_up X-Forwarded-Proto {http.request.header.X-Forwarded-Proto}
     header_down -Access-Control-Allow-Origin
     header_down -Access-Control-Allow-Credentials
     header_down -Vary
