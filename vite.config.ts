@@ -104,32 +104,40 @@ export default defineConfig({
     emptyOutDir: true,
     rollupOptions: {
       output: {
-        manualChunks: (id) => {
-          if (id.includes('react-icons/')) return 'vendor-react-icons'
-          if (id.includes('@fluentui/')) return 'vendor-fluent'
-          if (id.includes('react-intl') || id.includes('@formatjs/'))
-            return 'vendor-intl'
-          if (
-            id.includes('leaflet') ||
-            id.includes('react-leaflet') ||
-            id.includes('@react-leaflet') ||
-            id.includes('proj4') ||
-            id.includes('@turf/') ||
-            id.includes('reproject')
-          )
-            return 'vendor-maps'
-          if (id.includes('recharts')) return 'vendor-charts'
-          if (id.includes('framer-motion')) return 'vendor-motion'
-          if (id.includes('@electric-sql/')) return 'vendor-pglite'
-          if (id.includes('node_modules/@tanstack/')) return 'vendor-tanstack'
-          if (
-            id.includes('node_modules/react/') ||
-            id.includes('node_modules/react-dom/') ||
-            id.includes('node_modules/react-is/') ||
-            id.includes('node_modules/react-error-boundary/') ||
-            id.includes('node_modules/react-transition-group/')
-          )
-            return 'vendor-react'
+        // advancedChunks (rolldown's native mechanism) instead of
+        // manualChunks: manualChunks cannot capture vite's virtual
+        // `\0vite/preload-helper.js` module, so __vitePreload landed inside
+        // vendor-pglite and the entry statically imported the whole ~800KB
+        // PGlite chunk — every page (home included) downloaded it before
+        // mounting. The explicit helper group keeps it in its own tiny chunk.
+        advancedChunks: {
+          groups: [
+            { name: 'vite-preload-helper', test: /vite\/preload-helper/ },
+            {
+              name: 'vendor-react-icons',
+              test: /react-icons\//,
+            },
+            { name: 'vendor-fluent', test: /@fluentui\// },
+            {
+              name: 'vendor-intl',
+              test: /react-intl|@formatjs\//,
+            },
+            {
+              name: 'vendor-maps',
+              test: /leaflet|react-leaflet|@react-leaflet|proj4|@turf\/|reproject/,
+            },
+            { name: 'vendor-charts', test: /recharts/ },
+            { name: 'vendor-motion', test: /framer-motion/ },
+            { name: 'vendor-pglite', test: /@electric-sql\// },
+            {
+              name: 'vendor-tanstack',
+              test: /node_modules\/@tanstack\//,
+            },
+            {
+              name: 'vendor-react',
+              test: /node_modules\/(react|react-dom|react-is|react-error-boundary|react-transition-group)\//,
+            },
+          ],
         },
       },
     },
