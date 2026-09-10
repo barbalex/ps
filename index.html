@@ -28,12 +28,9 @@
         position: fixed;
         inset: 0;
         display: none;
-        /* match the app body font (src/style.css) so swapping in the real
-           page doesn't change typefaces */
-        font-family:
-          system-ui,
-          -apple-system,
-          sans-serif;
+        /* match the font the app text actually computes to (a reset sheet
+           under FluentProvider sets this stack on headings and body text) */
+        font-family: system-ui, 'Helvetica Neue', Helvetica, sans-serif;
         -webkit-font-smoothing: antialiased;
       }
       html[data-boot='home'] #boot-home {
@@ -46,11 +43,15 @@
       #boot-home {
         flex-direction: column;
         background: #fff;
+        /* FluentProvider sets its base font-size to 14px; the app's title
+           (2em) and paddings resolve against that, not the root 16px */
+        font-size: 14px;
       }
       #boot-home-header {
         display: flex;
         flex-wrap: nowrap;
         justify-content: space-between;
+        align-items: center;
         height: 44px;
         padding: 0 10px;
         background: rgba(38, 82, 37, 0.9);
@@ -84,22 +85,21 @@
         object-fit: cover;
       }
       /* mirrors Home .scrollContainer: the real title lives in an
-         absolutely positioned scroll container with a thin scrollbar —
-         this affects its horizontal centering and the scrollbar itself */
+         absolutely positioned scroll container. scrollbar-width/color match
+         the app's global scrollbar styling (src/style.css html rules) —
+         the real page's scrollbar occupies ~10px, which the title's line
+         wrapping depends on, so the shell must overflow to get one too */
       #boot-home-scroll {
-        height: 100%;
-        width: 100%;
         position: absolute;
-        top: 0;
+        inset: 0;
         overflow-y: auto;
-        scrollbar-width: thin;
-        scrollbar-color: rgba(55, 118, 28, 1) #f2fef3;
         scrollbar-gutter: stable;
         color: #000;
         display: flex;
         flex-direction: column;
       }
-      /* the app styles all scrollbars globally (src/style.css) */
+      /* the app's global scrollbar styling (src/style.css) — webkit rules
+         force the classic scrollbar the real page shows */
       #boot-home-scroll::-webkit-scrollbar {
         width: 8px;
       }
@@ -111,8 +111,6 @@
       #boot-home-scroll::-webkit-scrollbar-corner {
         background: rgba(0, 0, 0, 0);
       }
-      /* the real page overflows (cards below), so its scrollbar has a
-         thumb; a tall spacer reproduces that state */
       #boot-home-spacer {
         height: 3000px;
       }
