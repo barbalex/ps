@@ -28,6 +28,13 @@
         position: fixed;
         inset: 0;
         display: none;
+        /* match the app body font (src/style.css) so swapping in the real
+           page doesn't change typefaces */
+        font-family:
+          system-ui,
+          -apple-system,
+          sans-serif;
+        -webkit-font-smoothing: antialiased;
       }
       html[data-boot='home'] #boot-home {
         display: flex;
@@ -109,7 +116,6 @@
           #edf4ea
         );
         color: #2f3a2f;
-        font-family: system-ui, sans-serif;
       }
       #boot-splash-inner {
         display: flex;
