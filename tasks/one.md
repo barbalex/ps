@@ -12,7 +12,7 @@ Better-Auth, possible extensions:
 
 ---
 
----
+lets work on reducing the number of tsc errors to zero
 
 ---
 
