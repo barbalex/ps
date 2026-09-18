@@ -27,11 +27,13 @@ export const TableLayersProvider = () => {
   const db = usePGlite()
   // do not include vector_layers and vector_layer_displays in this query
   // as the effect will run every time these tables change
-  const projectsResult = useLiveQuery(`SELECT project_id FROM projects`)
-  const projects: Projects[] = projectsResult?.rows ?? []
+  const projectsResult = useLiveQuery<Projects.project_id>(
+    `SELECT project_id FROM projects`,
+  )
+  const projects: Projects.project_id[] = projectsResult?.rows ?? []
   const projectIds = (projectsResult?.rows ?? []).map((p) => p.project_id)
 
-  const observationCountResult = useLiveQuery(
+  const observationCountResult = useLiveQuery<{ count: number }>(
     `SELECT COUNT(*) FROM observations`,
   )
   const observationCount: number = observationCountResult?.rows?.[0]?.count ?? 0
@@ -43,7 +45,9 @@ export const TableLayersProvider = () => {
   const pendingVLProjectIds = new Set(
     operationsQueue
       .filter((op) => op.table === 'vector_layers' && op.operation === 'insert')
-      .map((op) => op.draft?.project_id)
+      .map(
+        (op) => (op.draft as Record<string, unknown> | undefined)?.project_id,
+      )
       .filter(Boolean),
   )
 
@@ -93,12 +97,16 @@ export const TableLayersProvider = () => {
               (op) =>
                 op.table === 'vector_layers' &&
                 op.operation === 'insert' &&
-                op.draft?.project_id === projectId,
+                (op.draft as Record<string, unknown> | undefined)
+                  ?.project_id === projectId,
             )
         )
           continue
 
-        const resPL = await db.query(
+        const resPL = await db.query<{
+          level: number | null
+          observations: boolean | null
+        }>(
           `
           SELECT
             level,
@@ -112,7 +120,9 @@ export const TableLayersProvider = () => {
         const placeLevel1 = placeLevels?.find((pl) => pl.level === 1)
         const placeLevel2 = placeLevels?.find((pl) => pl.level === 2)
         if (placeLevel1?.observations && observationCount) {
-          const observationsVectorLayersCount = await db.query(
+          const observationsVectorLayersCount = await db.query<{
+            count: number
+          }>(
             `
           SELECT COUNT(*) 
           FROM vector_layers 
@@ -134,7 +144,9 @@ export const TableLayersProvider = () => {
             })
           }
 
-          const observationsAssignedLinesVectorLayersCount = await db.query(
+          const observationsAssignedLinesVectorLayersCount = await db.query<{
+            count: number
+          }>(
             `
           SELECT COUNT(*) 
           FROM vector_layers 
@@ -161,7 +173,9 @@ export const TableLayersProvider = () => {
 
         // 5.1 observations_to_assess: needed if observations exist
         if (observationCount) {
-          const observationsToAssessVectorLayersCount = await db.query(
+          const observationsToAssessVectorLayersCount = await db.query<{
+            count: number
+          }>(
             `
           SELECT COUNT(*) 
           FROM vector_layers 
@@ -184,7 +198,9 @@ export const TableLayersProvider = () => {
 
         // 6.1 observations_not_to_assign: needed if observations exist
         if (observationCount) {
-          const observationsNotToAssignVectorLayersCount = await db.query(
+          const observationsNotToAssignVectorLayersCount = await db.query<{
+            count: number
+          }>(
             `
           SELECT COUNT(*) 
           FROM vector_layers 
@@ -209,7 +225,9 @@ export const TableLayersProvider = () => {
 
         // 7.1 observations_assigned2 and observations_assigned_lines2 needed if observations exist and placeLevels2 has observations
         if (placeLevel2?.observations && observationCount) {
-          const observationsAssigned2VectorLayersCount = await db.query(
+          const observationsAssigned2VectorLayersCount = await db.query<{
+            count: number
+          }>(
             `
           SELECT COUNT(*) 
           FROM vector_layers 
@@ -231,7 +249,9 @@ export const TableLayersProvider = () => {
             })
           }
 
-          const observationsAssignedLines2VectorLayersCount = await db.query(
+          const observationsAssignedLines2VectorLayersCount = await db.query<{
+            count: number
+          }>(
             `
           SELECT COUNT(*) 
           FROM vector_layers 

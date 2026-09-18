@@ -1,3 +1,4 @@
+import type { ComponentProps, FC } from 'react'
 import { FaMinus } from 'react-icons/fa'
 import * as fluentUiReactComponents from '@fluentui/react-components'
 import { useIntl } from 'react-intl'
@@ -11,15 +12,29 @@ const {
   MenuPopover,
   MenuGroup,
   MenuGroupHeader,
-  Tooltip,
+  Tooltip: TooltipComponent,
 } = fluentUiReactComponents
+
+// Fluent's Tooltip types require a `relationship` prop that is not passed here
+const Tooltip = TooltipComponent as FC<
+  Partial<ComponentProps<typeof TooltipComponent>>
+>
+
+interface Props {
+  deleteRow: () => void
+  deleteLabel?: string | null
+  deleteConfirmLabel?: string | null
+  disabled?: boolean
+  /** accepted for compatibility, not used by Delete itself */
+  tableName?: string
+}
 
 export const Delete = ({
   deleteRow,
   deleteLabel = null,
   deleteConfirmLabel = null,
   disabled = false,
-}) => {
+}: Props) => {
   const { formatMessage } = useIntl()
 
   return (
