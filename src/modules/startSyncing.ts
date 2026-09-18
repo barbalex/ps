@@ -1240,13 +1240,14 @@ export const startSyncing = async (userId: string) => {
 
         if (is409) {
           // 409 = shapes already exist, this is expected on reload or on a
-          // second login after an interrupted first sync. onInitialSync will
-          // not fire in that case, so end the initial-sync phase here;
-          // otherwise the boot UI stays stuck on syncing forever.
+          // second login after an interrupted first sync. Do NOT release the
+          // boot phase here: at this point a shape may still be mid-refetch
+          // (its table cleared, snapshot not yet applied), and mounted live
+          // queries would read the empty table and never be notified of the
+          // refill. InitialSyncManager releases once isUpToDate is true.
           console.log(
             'Electric: Shape already exists (409) - continuing with existing shape',
           )
-          store.set(initialSyncingAtom, false)
           return
         }
 

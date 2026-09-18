@@ -273,23 +273,18 @@ export const languageAtom = atomWithStorage<Language>(
 )
 export const intlAtom = atom<IntlShape | null>(null)
 
-// initialSyncing happens on first app load
-// on first app load liveQueries should not run yet, before initial sync is done
-// on later app loads, data exists locally, so liveQueries can run immediately
-// thus use an atom with storage
-export const initialSyncingAtom = atomWithStorage(
-  'initialSyncingAtom',
-  true,
-  undefined,
-  { getOnInit: true },
-)
-// begins true, is set to false after initialization (or it's not needed)
-export const sqlInitializingAtom = atomWithStorage(
-  'sqlInitializingAtom',
-  true,
-  undefined,
-  { getOnInit: true },
-)
+// initialSyncing gates the boot UI on every page load. It must NOT be
+// persisted: Electric can clear and re-snapshot shape tables at any point
+// while shapes are not yet up-to-date, and live queries get no change
+// notifications for sync writes (the session runs in replica mode, which
+// disables the live extension's notify triggers). A persisted "false" from a
+// previous page load releases the UI into that window, where queries mount,
+// read an empty table once, and then never learn the data came back.
+// Released by InitialSyncManager once this load's sync is up-to-date.
+export const initialSyncingAtom = atom(true)
+// begins true on every page load, is set to false by SqlInitializer once the
+// schema exists / has been healed — also per-load, for the same reason
+export const sqlInitializingAtom = atom(true)
 
 // true only while the local database is being created for the very first
 // time this page load (schema didn't exist yet). Not persisted: on reloads
