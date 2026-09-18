@@ -20,6 +20,8 @@ type packages are now installed as dependencies. can't they be installed as dev-
 
 ---
 
+is-uuid hasn't been updated in years. v7 uuid's are new and used here. would it be better to use uuid.validate from the uuid package instead? https://www.npmjs.com/package/uuid#uuidvalidatestr
+
 ---
 
 ---
