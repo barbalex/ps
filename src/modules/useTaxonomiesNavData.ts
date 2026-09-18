@@ -62,7 +62,7 @@ export const useTaxonomiesNavData = ({ projectId }: Props) => {
 
   const loading = res === undefined
 
-  const navs: NavData[] = res?.rows ?? []
+  const navs = (res?.rows ?? []) as NavData[]
   const urlPath = location.pathname.split('/').filter((p) => p !== '')
   const isInActiveNodeArray = ownArray.every((part, i) => urlPath[i] === part)
   const isActive = isEqual(urlPath, ownArray)

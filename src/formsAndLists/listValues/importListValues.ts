@@ -65,7 +65,7 @@ export const importListValues = async ({
     blankrows: false,
   })
 
-  const db = store.get(pgliteDbAtom)
+  const db = store.get(pgliteDbAtom)!
 
   // Fetch existing values for this list to avoid inserting duplicates
   const existing = await db.query<Record<string, unknown>>(

@@ -8,17 +8,16 @@ import { Loading } from '../../components/shared/Loading.tsx'
 import { Info } from './Info.tsx'
 import '../../form.css'
 
-const from = '/data/projects/$projectId_/crs/'
 
 export const ProjectCrss = () => {
   const navigate = useNavigate()
-  const { projectId } = useParams({ from })
+  const { projectId } = useParams({ strict: false })
 
-  const { loading, navData } = useProjectCrssNavData({ projectId })
+  const { loading, navData } = useProjectCrssNavData({projectId: projectId! })
   const { navs, label, nameSingular } = navData
 
   const add = async () => {
-    const id = await createProjectCrs({ projectId })
+    const id = await createProjectCrs({projectId: projectId! })
     if (!id) return
     navigate({
       to: id,

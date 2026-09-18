@@ -1,11 +1,17 @@
 import { useAtomValue } from 'jotai'
 
-import { WMS } from './WMS.tsx'
+import type LayerPresentations from '../../../../models/public/LayerPresentations.ts'
+import { WMS, type WmsLayerWithServiceInfo } from './WMS.tsx'
 // import { WMTSOffline } from './WMTSOffline'
 import { LocalMap } from './LocalMap.tsx'
 import { showLocalMapAtom } from '../../../../store.ts'
 
-export const WmsLayerComponent = ({ layerPresentation, layer }) => {
+type Props = {
+  layerPresentation: LayerPresentations
+  layer: WmsLayerWithServiceInfo
+}
+
+export const WmsLayerComponent = ({ layerPresentation, layer }: Props) => {
   const showLocalMap = useAtomValue(showLocalMapAtom)
 
   if (layer.type === 'wmts') {

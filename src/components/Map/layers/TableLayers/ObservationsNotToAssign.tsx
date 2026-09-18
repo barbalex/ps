@@ -3,13 +3,17 @@ import { useParams } from '@tanstack/react-router'
 import { useAtomValue } from 'jotai'
 
 import { TableLayer } from './TableLayer.tsx'
+import type { TableLayerProps } from './TableLayer.tsx'
+import type { GeoJsonProperties, GeometryCollection } from 'geojson'
 import { draggableLayersAtom } from '../../../../store.ts'
 import type Observations from '../../../../models/public/Observations.ts'
 
-export const ObservationsNotToAssign = ({ layerPresentation }) => {
+export const ObservationsNotToAssign = ({ layerPresentation }: {
+  layerPresentation: TableLayerProps['layerPresentation']
+}) => {
   const draggableLayers = useAtomValue(draggableLayersAtom)
   const { subprojectId } = useParams({ strict: false })
-  const res = useLiveQuery(
+  const res = useLiveQuery<Observations>(
     `
     SELECT o.observation_id, o.observation_import_id, o.place_id, o.not_to_assign,
       o.comment, o.data, o.id_in_source, ST_AsGeoJSON(o.geometry)::json as geometry,
@@ -28,19 +32,22 @@ export const ObservationsNotToAssign = ({ layerPresentation }) => {
 
   // geometry is stored as PostGIS GeometryCollection; convert to FeatureCollection for display
   // properties need to go into every feature
-  const data = observations.map((p) => {
+  const data = observations.map(
+    (p: Observations & { bbox?: unknown }) => {
     // add p's properties to all features:
     // TODO: make properties more readable for user
     // Idea: use iframe to open form, see TableLayer
      
     const { geometry, bbox, data, ...properties } = p
     const fc = {
-      type: 'FeatureCollection',
-      features: (geometry?.geometries ?? []).map((g) => ({
-        type: 'Feature',
-        geometry: g,
-        properties: {},
-      })),
+      type: 'FeatureCollection' as const,
+      features: ((geometry as GeometryCollection | null)?.geometries ?? []).map(
+        (g) => ({
+          type: 'Feature' as const,
+          geometry: g,
+          properties: {} as GeoJsonProperties,
+        }),
+      ),
     }
     if (!data) return fc
     fc.features.forEach((f) => {
@@ -50,7 +57,7 @@ export const ObservationsNotToAssign = ({ layerPresentation }) => {
         // ensure that properties are not overwritten
         // but also make sure if key is used for styling, it is not changed...
         if (key in properties) {
-          f.properties[`_${key}`] = properties[key]
+          f.properties[`_${key}`] = properties[key as keyof typeof properties]
         }
         f.properties[key] = value
       }
@@ -63,14 +70,14 @@ export const ObservationsNotToAssign = ({ layerPresentation }) => {
   if (!layerPresentation) return null
 
   const layer = layerPresentation.vector_layers
-  const isDraggable = draggableLayers?.includes?.(layer?.name)
+  const isDraggable = draggableLayers?.includes?.(layer?.name as string)
 
   // popups pop on mouseup (=dragend)
   // so they should not be bound when draggable or they will pop on dragend
   // thus adding key={isDraggable} to re-render when draggable changes
   return (
     <TableLayer
-      key={isDraggable}
+      key={isDraggable as unknown as string}
       data={data}
       layerPresentation={layerPresentation}
     />

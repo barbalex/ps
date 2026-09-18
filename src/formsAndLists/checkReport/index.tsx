@@ -3,8 +3,8 @@ import { useLiveQuery } from '@electric-sql/pglite-react'
 
 import { CheckReportList } from './List.tsx'
 
-export const CheckReportIndex = ({ from }) => {
-  const { projectId, placeId2 } = useParams({ from })
+export const CheckReportIndex = ({ from }: { from: string }) => {
+  const { projectId, placeId2 } = useParams({ strict: false })
   const res = useLiveQuery(
     `SELECT check_report_quantities_in_report FROM place_levels WHERE project_id = $1 AND level = $2`,
     [projectId, placeId2 ? 2 : 1],

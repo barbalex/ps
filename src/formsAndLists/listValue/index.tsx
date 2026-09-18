@@ -16,14 +16,15 @@ import type Lists from '../../models/public/Lists.ts'
 
 import '../../form.css'
 
-const from = '/data/projects/$projectId_/lists/$listId_/values/$listValueId/'
 
 export const ListValue = () => {
-  const { listId, listValueId } = useParams({ from })
+  const { listId, listValueId } = useParams({ strict: false })
   const autoFocusRef = useRef<HTMLInputElement>(null)
   const db = usePGlite()
   const addOperation = useSetAtom(addOperationAtom)
-  const [validations, setValidations] = useState({})
+  const [validations, setValidations] = useState<
+    Record<string, { state: 'error'; message: string }>
+  >({})
   const { formatMessage } = useIntl()
 
   const res = useLiveQuery(
@@ -34,9 +35,9 @@ export const ListValue = () => {
     `SELECT value_type FROM lists WHERE list_id = $1`,
     [listId],
   )
-  const row: ListValues | undefined = res?.rows?.[0]
+  const row: ListValues | undefined = res?.rows?.[0] as ListValues | undefined
   const listValueType: Lists['value_type'] | undefined =
-    listRes?.rows?.[0]?.value_type
+    listRes?.rows?.[0]?.value_type as Lists['value_type'] | undefined
 
   const formatDateForInput = (value: unknown) => {
     if (!value) return ''
@@ -52,14 +53,17 @@ export const ListValue = () => {
     return dateValue.toISOString().slice(0, 16)
   }
 
-  const onChange = async (e, data) => {
+  const onChange = async (
+    e: React.ChangeEvent<HTMLInputElement>,
+    data: Parameters<typeof getValueFromChange>[1],
+  ) => {
     const { name, value: valueRaw } = getValueFromChange(e, data)
     const value =
       (name === 'value_date' || name === 'value_datetime') && valueRaw === ''
         ? null
         : valueRaw
     // only change if value has changed: maybe only focus entered and left
-    if (row[name] === value) return
+    if ((row as Record<string, any>)[name] === value) return
 
     try {
       await db.query(
@@ -69,7 +73,7 @@ export const ListValue = () => {
     } catch (error) {
       setValidations((prev) => ({
         ...prev,
-        [name]: { state: 'error', message: error.message },
+        [name]: { state: 'error', message: error instanceof Error ? error.message : String(error) },
       }))
       return
     }
@@ -147,7 +151,9 @@ export const ListValue = () => {
               <TextField
                 label={formatMessage({ id: 'ejuFAr', defaultMessage: 'Wert' })}
                 name={valueField.name}
-                type={valueField.type}
+                type={
+                  valueField.type as 'number' | 'text' | 'date' | 'datetime-local'
+                }
                 value={valueField.value}
                 onChange={onChange}
                 autoFocus

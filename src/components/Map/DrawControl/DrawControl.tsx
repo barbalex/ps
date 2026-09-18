@@ -1,5 +1,5 @@
 import { useEffect, useCallback, useRef } from 'react'
-import 'leaflet'
+import * as L from 'leaflet'
 import 'leaflet-draw'
 import 'leaflet-draw/dist/leaflet.draw.css'
 import { useMap, useMapEvents } from 'react-leaflet'
@@ -76,11 +76,17 @@ L.drawLocal.edit.handlers.edit.tooltip.subtext =
   'Punkte ziehen, um Umriss(e) zu verändern'
 L.drawLocal.edit.handlers.remove.tooltip.text = `zum Löschen auf Umriss klicken, dann auf 'speichern'`
 
+type Props = {
+  editingPlace?: string | false | null
+  editingCheck?: string | false | null
+  editingAction?: string | false | null
+}
+
 export const DrawControlComponent = ({
   editingPlace,
   editingCheck,
   editingAction,
-}) => {
+}: Props) => {
   const map = useMap()
   const drawLayerRef = useRef<L.FeatureGroup | null>(null)
 
@@ -88,7 +94,7 @@ export const DrawControlComponent = ({
   const addOperation = useSetAtom(addOperationAtom)
 
   const onEdit = useCallback(
-    async (featureCollection) => {
+    async (featureCollection: GeoJSON.FeatureCollection | undefined) => {
       const activeId = editingPlace ?? editingCheck ?? editingAction
       const activeIdName = editingPlace
         ? 'place_id'
@@ -105,12 +111,12 @@ export const DrawControlComponent = ({
             ? 'actions'
             : null
 
-      const bbox = getBbox(featureCollection)
+      const bbox = getBbox(featureCollection!)
 
       // Convert FeatureCollection to GeometryCollection for the PostGIS geometry column
       const geometryCollection = {
         type: 'GeometryCollection',
-        geometries: featureCollection.features
+        geometries: featureCollection!.features
           .map((f) => f.geometry)
           .filter(Boolean),
       }
@@ -127,9 +133,9 @@ export const DrawControlComponent = ({
         [JSON.stringify(geometryCollection), bbox, activeId],
       )
       addOperation({
-        table: tableName,
-        rowIdName: activeIdName,
-        rowId: activeId,
+        table: tableName!,
+        rowIdName: activeIdName!,
+        rowId: activeId as string,
         operation: 'update',
         draft: { geometry: geometryCollection, bbox },
         prev: { ...row },
@@ -166,7 +172,9 @@ export const DrawControlComponent = ({
         `SELECT ST_AsGeoJSON(geometry)::json as geometry FROM ${tableName} WHERE ${activeIdName} = $1`,
         [activeId],
       ).then((result) => {
-        const geometry = result?.rows?.[0]?.geometry
+        const geometry = (
+          result?.rows?.[0] as { geometry?: GeoJSON.GeoJsonObject } | undefined
+        )?.geometry
         if (geometry && drawLayer) {
           try {
             L.geoJSON(geometry, {
@@ -184,13 +192,15 @@ export const DrawControlComponent = ({
     }
 
     const drawControlFull = new L.Control.Draw({
+      // leaflet-draw also accepts `true` to enable a handler with defaults,
+      // but Control.DrawOptions only types `false | <HandlerOptions>`
       draw: {
         marker: true,
         polyline: true,
         circle: true,
         circlemarker: false,
         rectangle: { showArea: false },
-      },
+      } as unknown as L.Control.DrawOptions,
       edit: {
         featureGroup: drawLayer,
       },
@@ -225,7 +235,7 @@ export const DrawControlComponent = ({
       map.getContainer().classList.add('leaflet-draw-active'),
     'draw:deletestop': () =>
       map.getContainer().classList.remove('leaflet-draw-active'),
-    'draw:created': (e) => {
+    'draw:created': (e: L.LeafletEvent) => {
       let layer = (e as unknown as L.DrawEvents.Created).layer
       // L.Marker doesn't support setStyle; replace with a circleMarker so
       // the orange edit style (and its revert) works uniformly for all types.
@@ -235,10 +245,12 @@ export const DrawControlComponent = ({
         applyEditingStyle(layer)
       }
       drawLayerRef.current?.addLayer(layer)
-      onEdit(drawLayerRef.current?.toGeoJSON())
+      onEdit(drawLayerRef.current?.toGeoJSON() as GeoJSON.FeatureCollection)
     },
-    'draw:edited': () => onEdit(drawLayerRef.current?.toGeoJSON()),
-    'draw:deleted': () => onEdit(drawLayerRef.current?.toGeoJSON()),
+    'draw:edited': () =>
+      onEdit(drawLayerRef.current?.toGeoJSON() as GeoJSON.FeatureCollection),
+    'draw:deleted': () =>
+      onEdit(drawLayerRef.current?.toGeoJSON() as GeoJSON.FeatureCollection),
   } as L.LeafletEventHandlerFnMap)
 
   return null

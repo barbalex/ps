@@ -8,27 +8,30 @@ type Props = {
   chart: Charts
   subjects: ChartSubjects[]
   subproject_id: string
+  project_id?: string
 }
 
 export const buildData = async ({ chart, subjects, subproject_id }: Props) => {
   if (!subproject_id) return { data: [], years: [] }
-  const db = store.get(pgliteDbAtom)
-  const names = subjects.map((subject) => subject.name)
+  const db = store.get(pgliteDbAtom)!
+  const names = subjects.map((subject) => subject.name) as string[]
 
-  const dataPerSubject = {}
+  const dataPerSubject: Record<string, Record<number, number>> = {}
 
   for (const subject of subjects) {
     switch (subject.calc_method) {
       case 'count_rows': {
         switch (subject.table_name) {
           case 'places': {
-            switch (subject.table_level) {
+            // table_level is a pg enum ('1' | '2'); cast to keep the numeric
+            // case labels untouched
+            switch (subject.table_level as unknown as number) {
               case 1: {
                 const res = await db.query(
                   `SELECT * FROM places WHERE subproject_id = $1 AND parent_id IS NULL`,
                   [subproject_id],
                 )
-                const places: Places[] = res?.rows
+                const places = res?.rows as Places[]
                 countPlacesRows({ dataPerSubject, places, subject })
                 break
               }
@@ -37,7 +40,7 @@ export const buildData = async ({ chart, subjects, subproject_id }: Props) => {
                   `SELECT * FROM places WHERE subproject_id = $1 and parent_id IS NOT NULL`,
                   [subproject_id],
                 )
-                const places: Places[] = res?.rows
+                const places = res?.rows as Places[]
                 countPlacesRows({ dataPerSubject, places, subject })
                 break
               }
@@ -49,47 +52,47 @@ export const buildData = async ({ chart, subjects, subproject_id }: Props) => {
           case 'checks': {
             const resultChecks = await db.query(
               `
-                SELECT checks.date 
-                FROM 
-                  checks inner join places 
-                    on checks.place_id = places.place_id 
+                SELECT checks.date
+                FROM
+                  checks inner join places
+                    on checks.place_id = places.place_id
                 WHERE places.subproject_id = $1
               `,
               [subproject_id],
             )
-            const checks = resultChecks.rows
+            const checks = resultChecks.rows as { date: Date | null }[]
             // use reduce to count checks per year
             const data = checks.reduce((acc, check) => {
-              const year = check.date?.getFullYear?.()
+              const year = check.date?.getFullYear?.() as number
               if (!acc[year]) acc[year] = 0
               acc[year]++
 
               return acc
-            }, {})
-            dataPerSubject[subject.name] = data
+            }, {} as Record<number, number>)
+            dataPerSubject[subject.name as string] = data
             break
           }
           case 'actions': {
             const res = await db.query(
               `
-                SELECT actions.date 
-                FROM 
-                  actions inner join places 
-                    on actions.place_id = places.place_id 
+                SELECT actions.date
+                FROM
+                  actions inner join places
+                    on actions.place_id = places.place_id
                 WHERE places.subproject_id = $1
               `,
               [subproject_id],
             )
-            const actions = res?.rows
+            const actions = res?.rows as { date: Date | null }[]
             // use reduce to count checks per year
             const data = actions.reduce((acc, check) => {
-              const year = check.date?.getFullYear?.()
+              const year = check.date?.getFullYear?.() as number
               if (!acc[year]) acc[year] = 0
               acc[year]++
 
               return acc
-            }, {})
-            dataPerSubject[subject.name] = data
+            }, {} as Record<number, number>)
+            dataPerSubject[subject.name as string] = data
             break
           }
           default:
@@ -110,7 +113,7 @@ export const buildData = async ({ chart, subjects, subproject_id }: Props) => {
     }
   }
 
-  const years = Object.values(dataPerSubject).reduce(
+  const years = Object.values(dataPerSubject).reduce<number[]>(
     (acc, data) => [...acc, ...Object.keys(data).map((k) => +k)],
     [],
   )
@@ -124,8 +127,8 @@ export const buildData = async ({ chart, subjects, subproject_id }: Props) => {
     maxYear = chart.years_until
   }
   let yearRange = Array(maxYear - minYear + 1)
-    .fill()
-    .map((element, i) => minYear + i)
+    .fill(undefined)
+    .map((_element, i) => minYear + i)
   if (chart?.years_last_x) {
     yearRange.splice(0, yearRange.length - chart.years_last_x)
   }
@@ -142,7 +145,9 @@ export const buildData = async ({ chart, subjects, subproject_id }: Props) => {
   }
 
   const data = yearRange.map((year) => {
-    const yearsData = { year }
+    const yearsData: { year: number; [key: string]: number | undefined } = {
+      year,
+    }
     for (const name of names) {
       if (!dataPerSubject[name]?.[year]) continue
       yearsData[name] = dataPerSubject[name]?.[year]

@@ -2,8 +2,15 @@ import { useIntl } from 'react-intl'
 
 import { RadioGroupFromOptions } from '../../components/shared/RadioGroupFromOptions.tsx'
 import { vectorLayerMarkerTypeOptions } from '../../modules/constants.ts'
+import type VectorLayerDisplays from '../../models/public/VectorLayerDisplays.ts'
 
-export const MarkerType = ({ onChange, row }) => {
+export const MarkerType = ({
+  onChange,
+  row,
+}: {
+  onChange: (e: React.ChangeEvent<any>, data?: any) => void
+  row: VectorLayerDisplays | Record<string, any>
+}) => {
   const { formatMessage } = useIntl()
 
   const options = vectorLayerMarkerTypeOptions.map((o) => ({
@@ -17,7 +24,7 @@ export const MarkerType = ({ onChange, row }) => {
       name="marker_type"
       options={options}
       value={row.marker_type ?? ''}
-      onChange={onChange}
+      onChange={(ev) => onChange(ev as React.ChangeEvent<HTMLInputElement>)}
     />
   )
 }

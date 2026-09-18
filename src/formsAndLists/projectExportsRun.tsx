@@ -132,9 +132,9 @@ async function runAndDownload({
   }
 }
 
-export const ProjectExportsRun = ({ from }: { from: string }) => {
-  const { projectId } = useParams({ from })
-  const { navData } = useProjectExportsRunNavData({ projectId })
+export const ProjectExportsRun = ({}: { from: string }) => {
+  const { projectId } = useParams({ strict: false })
+  const { navData } = useProjectExportsRunNavData({projectId: projectId! })
   const { formatMessage } = useIntl()
   const [language] = useAtom(languageAtom)
   const [labelFilter, setLabelFilter] = useAtom(
@@ -235,8 +235,7 @@ export const ProjectExportsRun = ({ from }: { from: string }) => {
         year,
         label: e.label ?? e.exports_id,
         format,
-        projectId,
-        filterByYear: e.filter_by_year,
+        projectId: projectId!,        filterByYear: e.filter_by_year,
         isProjectExport: e.is_project_export,
         baseTable: e.base_table,
         filterString: filterStr || undefined,

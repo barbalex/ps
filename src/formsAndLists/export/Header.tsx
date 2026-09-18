@@ -13,11 +13,13 @@ import { MdMenuBook } from 'react-icons/md'
 
 const { Button } = fluentUiReactComponents
 
-const from = '/data/exports/$exportsId'
-
-export const Header = ({ autoFocusRef }) => {
+export const Header = ({
+  autoFocusRef,
+}: {
+  autoFocusRef?: React.RefObject<HTMLInputElement | null>
+}) => {
   const { formatMessage } = useIntl()
-  const { exportsId } = useParams({ from })
+  const { exportsId } = useParams({ strict: false })
   const navigate = useNavigate()
   const addOperation = useSetAtom(addOperationAtom)
 
@@ -39,7 +41,7 @@ export const Header = ({ autoFocusRef }) => {
   const deleteRow = async () => {
     try {
       const prevRes = await db.query(`SELECT * FROM exports WHERE exports_id = $1`, [exportsId])
-      const prev = prevRes?.rows?.[0] ?? {}
+      const prev = (prevRes?.rows?.[0] ?? {}) as Record<string, unknown>
       await db.query(`DELETE FROM exports WHERE exports_id = $1`, [exportsId])
       addOperation({
         table: 'exports',
@@ -59,7 +61,7 @@ export const Header = ({ autoFocusRef }) => {
       const res = await db.query(
         `SELECT exports_id FROM exports ORDER BY COALESCE(NULLIF(name_de, ''), exports_id::text)`,
       )
-      const rows = res?.rows
+      const rows = res?.rows as { exports_id: string }[]
       const len = rows.length
       const index = rows.findIndex((p) => p.exports_id === exportsIdRef.current)
       const next = rows[(index + 1) % len]
@@ -77,7 +79,7 @@ export const Header = ({ autoFocusRef }) => {
       const res = await db.query(
         `SELECT exports_id FROM exports ORDER BY COALESCE(NULLIF(name_de, ''), exports_id::text)`,
       )
-      const rows = res?.rows
+      const rows = res?.rows as { exports_id: string }[]
       const len = rows.length
       const index = rows.findIndex((p) => p.exports_id === exportsIdRef.current)
       const previous = rows[(index + len - 1) % len]

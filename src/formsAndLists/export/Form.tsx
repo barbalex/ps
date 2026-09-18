@@ -1,4 +1,5 @@
 import { useIntl } from 'react-intl'
+import type { InputProps } from '@fluentui/react-components'
 
 import { TextField } from '../../components/shared/TextField.tsx'
 import { RadioGroupField } from '../../components/shared/RadioGroupField.tsx'
@@ -6,11 +7,22 @@ import { SqlEditorField } from '../../components/shared/SqlEditorField.tsx'
 import { TextArea } from '../../components/shared/TextArea.tsx'
 import { Section } from '../../components/shared/Section.tsx'
 import { SectionDescription } from '../../components/shared/SectionDescription.tsx'
+import type Exports from '../../models/public/Exports.ts'
 
 import '../../form.css'
 
+type InputOnChangeData = Parameters<NonNullable<InputProps['onChange']>>[1]
+
+type Props = {
+  onChange: (e: React.ChangeEvent<HTMLInputElement>, data: InputOnChangeData) => void
+  validations?: Record<string, { state: 'error'; message: string }>
+  row?: Exports
+  autoFocusRef?: React.RefObject<HTMLInputElement | null>
+  from?: string
+}
+
 // this form is rendered from the item view and from the filter
-export const ExportForm = ({ onChange, validations = {}, row, autoFocusRef }) => {
+export const ExportForm = ({ onChange, validations = {}, row, autoFocusRef }: Props) => {
   const { formatMessage } = useIntl()
 
   const paramHint = (() => {
@@ -138,7 +150,9 @@ export const ExportForm = ({ onChange, validations = {}, row, autoFocusRef }) =>
           label={formatMessage({ id: 'export.sql', defaultMessage: 'SQL' })}
           name="sql"
           value={row?.sql ?? ''}
-          onChange={onChange}
+          onChange={
+            onChange as (e: React.ChangeEvent<HTMLInputElement>) => void
+          }
           hint={paramHint}
           validationMessage={validations?.sql?.message}
           validationState={validations?.sql?.state}

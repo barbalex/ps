@@ -1,15 +1,14 @@
 import { useCallback, useEffect, useContext, useRef } from 'react'
 import { useNavigate, useParams, useLocation } from '@tanstack/react-router'
 import { useDebouncedCallback } from 'use-debounce'
-import axios from 'redaxios'
 import { usePGlite } from '@electric-sql/pglite-react'
 import { useBeforeunload } from 'react-beforeunload'
 import { useAtomValue } from 'jotai'
 import { defineLocale } from '@uploadcare/file-uploader'
-import deLocale from '@uploadcare/file-uploader/locales/file-uploader/de'
-import enLocale from '@uploadcare/file-uploader/locales/file-uploader/en'
-import frLocale from '@uploadcare/file-uploader/locales/file-uploader/fr'
-import itLocale from '@uploadcare/file-uploader/locales/file-uploader/it'
+import deLocale from '@uploadcare/file-uploader/locales/file-uploader/de.js'
+import enLocale from '@uploadcare/file-uploader/locales/file-uploader/en.js'
+import frLocale from '@uploadcare/file-uploader/locales/file-uploader/fr.js'
+import itLocale from '@uploadcare/file-uploader/locales/file-uploader/it.js'
 
 // css is needed
 // not using the rest of react-uploader though
@@ -19,7 +18,6 @@ import './uploader.css'
 
 import { createFile } from '../../modules/createRows.ts'
 import { UploaderContext } from '../../UploaderContext.ts'
-import { setShortTermOnlineFromFetchError } from '../../modules/setShortTermOnlineFromFetchError.ts'
 import { languageAtom } from '../../store.ts'
 
 // register locales once at module level so they are available before any
@@ -38,6 +36,34 @@ type UploaderProps = {
   actionId?: string | null
   checkId?: string | null
 }
+
+type FileInput = {
+  projectId?: string | null
+  subprojectId?: string | null
+  placeId?: string | null
+  actionId?: string | null
+  checkId?: string | null
+  name?: string | null
+  size?: number | null
+  mimetype?: string | null
+  url?: string | null
+  uuid?: string | null
+  width?: number | null
+  height?: number | null
+}
+
+// the context carries the ref object itself; UploaderContext is typed as the element
+type UploaderContextRef = {
+  current:
+    | (HTMLElement & {
+        getAPI?: () => {
+          initFlow?: () => void
+          doneFlow?: () => void
+          removeAllFiles?: () => void
+        }
+      })
+    | null
+} | null
 
 export const Uploader = ({
   projectId: projectIdProp,
@@ -65,7 +91,7 @@ export const Uploader = ({
   // const isFile = pathname.endsWith('file')
 
   const db = usePGlite()
-  const uploaderCtx = useContext(UploaderContext)
+  const uploaderCtx = useContext(UploaderContext) as unknown as UploaderContextRef
   const api = uploaderCtx?.current?.getAPI?.()
   const projectId = projectIdProp ?? routeProjectId ?? null
   const subprojectId = subprojectIdProp ?? routeSubprojectId ?? null
@@ -103,7 +129,7 @@ export const Uploader = ({
       `SELECT file_id FROM files WHERE uuid = $1`,
       [event.detail.uuid],
     )
-    const files = resFiles?.rows ?? []
+    const files = (resFiles?.rows ?? []) as { file_id: string }[]
     if (files.length) {
       const existingFileId = files[0]?.file_id
       if (existingFileId) {
@@ -112,7 +138,7 @@ export const Uploader = ({
       return
     }
 
-    const fileInput = {
+    const fileInput: FileInput = {
       name: event.detail.name,
       size: event.detail.size,
       mimetype: event.detail.mimeType,
@@ -149,25 +175,25 @@ export const Uploader = ({
     // - watch file inserts
     // - if file is not an image, create a thumbnail
     // - then update the file with preview_uuid
-    try {
-      await axios({
-        method: 'POST',
-        url: 'https://api.uploadcare.com/convert/document/',
-        data: {
-          paths: [`${event.detail.uuid}/document/-/format/jpeg/-/page/1/`],
-          store: 1,
-        },
-        params,
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Uploadcare.Simple ${YOUR_PUBLIC_KEY}:${YOUR_SECRET_KEY}`,
-          Accept: 'application/vnd.uploadcare-v0.7+json',
-        },
-      })
-    } catch (error) {
-      console.error('Uploader, error when creating thumbnails:', error)
-      setShortTermOnlineFromFetchError(error)
-    }
+    // try {
+    //   await axios({
+    //     method: 'POST',
+    //     url: 'https://api.uploadcare.com/convert/document/',
+    //     data: {
+    //       paths: [`${event.detail.uuid}/document/-/format/jpeg/-/page/1/`],
+    //       store: 1,
+    //     },
+    //     params,
+    //     headers: {
+    //       'Content-Type': 'application/json',
+    //       Authorization: `Uploadcare.Simple ${YOUR_PUBLIC_KEY}:${YOUR_SECRET_KEY}`,
+    //       Accept: 'application/vnd.uploadcare-v0.7+json',
+    //     },
+    //   })
+    // } catch (error) {
+    //   console.error('Uploader, error when creating thumbnails:', error)
+    //   setShortTermOnlineFromFetchError(error)
+    // }
     // works for:
     // - csv > pdf > ?
     // - doc > thumbnail
@@ -198,14 +224,20 @@ export const Uploader = ({
   useBeforeunload(() => {
     console.log('Uploader unmounting, removing event listeners')
     const ctx = uploaderCtx?.current
-    ctx.removeEventListener('file-upload-success', onUploadSuccessDebounced)
-    ctx.removeEventListener('file-upload-failed', onUploadFailed)
+    ctx?.removeEventListener(
+      'file-upload-success',
+      onUploadSuccessDebounced as unknown as EventListener,
+    )
+    ctx?.removeEventListener('file-upload-failed', onUploadFailed as unknown as EventListener)
   })
 
   useEffect(() => {
     const ctx = uploaderCtx?.current
-    ctx.addEventListener('file-upload-success', onUploadSuccessDebounced)
-    ctx.addEventListener('file-upload-failed', onUploadFailed)
+    ctx?.addEventListener(
+      'file-upload-success',
+      onUploadSuccessDebounced as unknown as EventListener,
+    )
+    ctx?.addEventListener('file-upload-failed', onUploadFailed as unknown as EventListener)
   }, [onUploadFailed, onUploadSuccessDebounced, uploaderCtx])
 
   // docs: https://uploadcare.com/docs/file-uploader

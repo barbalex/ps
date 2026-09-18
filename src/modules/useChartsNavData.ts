@@ -62,7 +62,10 @@ export const useChartsNavData = ({
   // needs to work not only works for urlPath, for all opened paths!
   const isOpen = openNodes.some((array) => isEqual(array, ownArray))
 
-  const filterString = filterStringFromFilter(filter)
+  const filterString = filterStringFromFilter(
+    filter as Record<string, unknown> & typeof filter,
+    '',
+  )
   const isFiltered = !!filterString
 
   const sql = `
@@ -94,7 +97,7 @@ export const useChartsNavData = ({
     }
   `
 
-  const res = useLiveQuery(sql)
+  const res = useLiveQuery<NavData[number]>(sql)
 
   const loading = res === undefined
 

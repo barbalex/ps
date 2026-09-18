@@ -162,7 +162,10 @@ export const usePlaceNavData = ({
     `SELECT type FROM projects WHERE project_id = $1`,
     [projectId],
   )
-  const projectType = projectTypeRes?.rows?.[0]?.type
+  const projectType = projectTypeRes?.rows?.[0]?.type as
+    | string
+    | null
+    | undefined
 
   const resPlaceLevel = useLiveQuery(
     `SELECT place_files, place_files_in_place FROM place_levels WHERE project_id = $1 AND level = $2`,
@@ -179,7 +182,7 @@ export const usePlaceNavData = ({
   )
   const fallbackChild = getPlaceFallbackNames(projectType, 2, formatMessage)
 
-  const nav: NavData | undefined = res?.rows?.[0]
+  const nav = res?.rows?.[0] as NavData | undefined
   const nameSingular = nav?.name_singular ?? fallbackCurrent.singular
   const childNamePlural = nav?.child_name_plural ?? fallbackChild.plural
 

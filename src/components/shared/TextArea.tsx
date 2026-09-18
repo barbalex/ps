@@ -2,10 +2,21 @@ import { useState, useEffect } from 'react'
 import * as fluentUiReactComponents from '@fluentui/react-components'
 const { Textarea, Field } = fluentUiReactComponents
 type TextareaProps = React.ComponentProps<typeof Textarea>
+type FieldProps = React.ComponentProps<typeof Field>
 
 import styles from './TextArea.module.css'
 
-export const TextArea = (props: Partial<TextareaProps>) => {
+type Props = Omit<Partial<TextareaProps>, 'onChange' | 'value'> &
+  Pick<FieldProps, 'label' | 'validationMessage' | 'validationState'> & {
+    onChange?: (
+    ev: React.ChangeEvent<any>,
+    data?: any,
+  ) => void
+    value?: string | number
+    button?: React.ReactNode
+  }
+
+export const TextArea = (props: Props) => {
   const {
     label,
     name,
@@ -25,11 +36,18 @@ export const TextArea = (props: Partial<TextareaProps>) => {
     setStateValue(value || value === 0 ? value : '')
   }, [value])
 
-  const onChange = (event) => setStateValue(event.target.value)
+  const onChange = (event: React.ChangeEvent<HTMLTextAreaElement>) =>
+    setStateValue(event.target.value)
 
-  const onKeyPress = (event) => {
+  // consumers pass Fluent's (ev, data) change handlers;
+  // from key events only the event is available
+  const onChangeEvent = onChangeIn as
+    | ((event: React.SyntheticEvent<HTMLTextAreaElement>) => void)
+    | undefined
+
+  const onKeyPress = (event: React.KeyboardEvent<HTMLTextAreaElement>) => {
     if (event.key === 'Enter') {
-      onChangeIn(event)
+      onChangeEvent!(event)
     }
   }
 
@@ -44,10 +62,10 @@ export const TextArea = (props: Partial<TextareaProps>) => {
         <Textarea
           {...props}
           name={name}
-          value={stateValue}
+          value={stateValue as string}
           onChange={onChange}
           onKeyPress={onKeyPress}
-          onBlur={onChangeIn}
+          onBlur={onChangeEvent}
           appearance="outline"
           autoFocus={autoFocus}
           resize="vertical"

@@ -15,6 +15,10 @@ const {
   Tab,
   TabList,
 } = fluentUiReactComponents
+import type {
+  SelectTabData,
+  SelectTabEvent,
+} from '@fluentui/react-components'
 import { BsSquare } from 'react-icons/bs'
 import { MdDeleteOutline } from 'react-icons/md'
 import { useAtom, useSetAtom } from 'jotai'
@@ -29,12 +33,13 @@ import { WmsLayerEditing } from './Editing.tsx'
 import layerStyles from '../index.module.css'
 import styles from './WmsLayer.module.css'
 import type LayerPresentations from '../../../../../models/public/LayerPresentations.ts'
-import type WmsLayerType from '../../../../../models/public/WMSLayers.ts'
+import type WmsLayerType from '../../../../../models/public/WmsLayers.ts'
 
 type TabType = 'overall-displays' | 'config'
 
 type Props = {
   layer: WmsLayerType
+  layerPresentations: LayerPresentations[]
   isLast: boolean
   isOpen: boolean
 }
@@ -60,13 +65,13 @@ export const WmsLayer = ({ layer, isLast, isOpen }: Props) => {
       `SELECT * FROM layer_presentations WHERE wms_layer_id = $1`,
       [layer.wms_layer_id],
     )
-    const presentation: LayerPresentations | undefined = res?.rows?.[0]
+    const presentation = res?.rows?.[0] as LayerPresentations | undefined
     // 2. if not, create one
     if (!presentation) {
       await createLayerPresentation({
         wmsLayerId: layer.wms_layer_id,
         active: true,
-      })
+      } as unknown as Parameters<typeof createLayerPresentation>[0])
     }
     // 3. if yes, update it
     else {
@@ -90,7 +95,8 @@ export const WmsLayer = ({ layer, isLast, isOpen }: Props) => {
     }
   }
 
-  const onTabSelect = (event, data: SelectTabData) => setTab(data.value)
+  const onTabSelect = (_event: SelectTabEvent, data: SelectTabData) =>
+    setTab(data.value as TabType)
 
   const onDelete = () => {
     db.query(`DELETE FROM wms_layers WHERE wms_layer_id = $1`, [

@@ -9,18 +9,17 @@ import { FilterButton } from '../components/shared/FilterButton.tsx'
 import { Loading } from '../components/shared/Loading.tsx'
 import '../form.css'
 
-const from = '/data/projects/$projectId_/taxonomies/'
 
 export const Taxonomies = () => {
-  const { projectId } = useParams({ from })
+  const { projectId } = useParams({ strict: false })
   const navigate = useNavigate()
   const { formatMessage } = useIntl()
 
-  const { loading, navData, isFiltered } = useTaxonomiesNavData({ projectId })
+  const { loading, navData, isFiltered } = useTaxonomiesNavData({projectId: projectId! })
   const { navs, label, nameSingular } = navData
 
   const add = async () => {
-    const id = await createTaxonomy({ projectId })
+    const id = await createTaxonomy({projectId: projectId! })
     if (!id) return
     navigate({
       to: `${id}/taxonomy`,

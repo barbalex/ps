@@ -3,6 +3,7 @@ import { useLiveQuery } from '@electric-sql/pglite-react'
 import { useLocation } from '@tanstack/react-router'
 import { isEqual } from 'es-toolkit'
 import { useIntl } from 'react-intl'
+import type { PrimitiveType } from 'react-intl'
 
 import { filterStringFromFilter } from './filterStringFromFilter.ts'
 import { buildNavLabel } from './buildNavLabel.ts'
@@ -34,6 +35,11 @@ type NavDataClosed = {
   count_unfiltered: number
   count_filtered: number
 }[]
+
+type FormatMessage = (
+  descriptor: { id: string; defaultMessage: string },
+  values?: Record<string, PrimitiveType>,
+) => string
 
 export const useFieldsNavData = ({ projectId, accountId, userId }: Props) => {
   const { formatMessage } = useIntl()
@@ -118,7 +124,7 @@ export const useFieldsNavData = ({ projectId, accountId, userId }: Props) => {
 
   const loading = res === undefined
 
-  const navsRaw: NavDataOpen | NavDataClosed = res?.rows ?? []
+  const navsRaw = (res?.rows ?? []) as NavDataOpen | NavDataClosed
 
   const level1Row = projectId
     ? placeLevelsRes?.rows?.find((r) => r.level === 1)
@@ -128,7 +134,7 @@ export const useFieldsNavData = ({ projectId, accountId, userId }: Props) => {
     : undefined
 
   const tableContext = resolveFieldTableContext({
-    formatMessage,
+    formatMessage: formatMessage as FormatMessage,
     language,
     projectType:
       (projectRes?.rows?.[0]?.type as string | null | undefined) ?? null,
@@ -144,8 +150,8 @@ export const useFieldsNavData = ({ projectId, accountId, userId }: Props) => {
       (level2Row?.name_plural as string | null | undefined) ?? null,
   })
 
-  const tableLabelMap = buildFieldTableLabelMap({
-    formatMessage,
+  const tableLabelMap: Record<string, string> = buildFieldTableLabelMap({
+    formatMessage: formatMessage as FormatMessage,
     language,
     projectType: tableContext.projectType,
     subprojectsLabel: tableContext.subprojectsLabel,

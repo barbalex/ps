@@ -5,6 +5,7 @@ import { TextField } from '../../components/shared/TextField.tsx'
 type Props = {
   from: string
 }
+type OnChange = React.ComponentProps<typeof TextField>['onChange']
 
 export const ObservationImportFilter = ({ from }: Props) => {
   const { formatMessage } = useIntl()
@@ -15,8 +16,8 @@ export const ObservationImportFilter = ({ from }: Props) => {
           <TextField
             label={formatMessage({ id: 'XkV5yZ', defaultMessage: 'Name' })}
             name="name"
-            value={row.name ?? ''}
-            onChange={onChange}
+            value={(row.name as string | null | undefined) ?? ''}
+            onChange={onChange as OnChange}
           />
           <TextField
             label={formatMessage({
@@ -24,8 +25,8 @@ export const ObservationImportFilter = ({ from }: Props) => {
               defaultMessage: 'GBIF-Download-Schlüssel',
             })}
             name="gbif_download_key"
-            value={row.gbif_download_key ?? ''}
-            onChange={onChange}
+            value={(row.gbif_download_key as string | null | undefined) ?? ''}
+            onChange={onChange as OnChange}
           />
         </>
       )}

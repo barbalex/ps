@@ -5,6 +5,32 @@ import { useIntl } from 'react-intl'
 
 import styles from './DropdownField.module.css'
 
+type InputProps = React.ComponentProps<typeof fluentUiReactComponents.Input>
+type InputOnChangeData = Parameters<NonNullable<InputProps['onChange']>>[1]
+
+type Props = {
+  name: string
+  label?: string
+  labelField?: string
+  table: string
+  idField?: string
+  where?: string
+  orderBy?: string
+  value?: unknown
+  onChange: (
+    ev: React.ChangeEvent<HTMLInputElement>,
+    data: InputOnChangeData,
+  ) => void
+  autoFocus?: boolean
+  disabled?: boolean
+  validationMessage?: string
+  validationState?: 'error' | 'warning' | 'success' | 'none'
+  button?: React.ReactNode
+  noDataMessage?: string
+  hideWhenNoData?: boolean
+  ref?: React.Ref<HTMLInputElement>
+}
+
 export const DropdownField = ({
   name,
   label,
@@ -23,14 +49,18 @@ export const DropdownField = ({
   noDataMessage = undefined,
   hideWhenNoData = false,
   ref,
-}) => {
+}: Props) => {
   const { formatMessage } = useIntl()
+  // consumers pass Fluent's (ev, data) change handlers; called here with fake events
+  const onChangeFake = onChange as unknown as (e: {
+    target: { name?: string; value?: string }
+  }) => void
   const res = useLiveQuery(
     `SELECT * FROM ${table}${
       where ? ` WHERE ${where}` : ''
     } order by ${orderBy}`,
   )
-  const rows = res?.rows ?? []
+  const rows = (res?.rows ?? []) as Record<string, string>[]
   const options = rows.map((o) => ({
     text: o[labelField],
     value: o[idField ?? name],
@@ -68,14 +98,14 @@ export const DropdownField = ({
         <Dropdown
           name={name}
           value={selectedOptions?.[0]?.text ?? ''}
-          selectedOptions={selectedOptions}
-          onOptionSelect={(e, data) =>
-            onChange({ target: { name, value: data.optionValue } })
+          selectedOptions={selectedOptions as unknown as string[]}
+          onOptionSelect={(_e: unknown, data: { optionValue?: string }) =>
+            onChangeFake({ target: { name, value: data.optionValue } })
           }
           appearance="underline"
           autoFocus={autoFocus}
           disabled={disabled}
-          ref={ref}
+          ref={ref as unknown as React.Ref<HTMLButtonElement>}
           className={styles.dd}
           clearable
         >

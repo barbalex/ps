@@ -9,7 +9,15 @@ import { FormHeader } from '../../components/FormHeader/index.tsx'
 import { HistoryToggleButton } from '../../components/shared/HistoryCompare/HistoryToggleButton.tsx'
 import { addOperationAtom } from '../../store.ts'
 
-export const Header = ({ projectId, wmsLayerId, autoFocusRef }) => {
+export const Header = ({
+  projectId,
+  wmsLayerId,
+  autoFocusRef,
+}: {
+  projectId?: string
+  wmsLayerId?: string
+  autoFocusRef?: React.RefObject<HTMLInputElement | null>
+}) => {
   const navigate = useNavigate()
   const addOperation = useSetAtom(addOperationAtom)
   const { formatMessage } = useIntl()
@@ -25,7 +33,7 @@ export const Header = ({ projectId, wmsLayerId, autoFocusRef }) => {
   }, [wmsLayerId])
 
   const addRow = async () => {
-    const wmsLayerId = await createWmsLayer({ projectId })
+    const wmsLayerId = await createWmsLayer({ projectId: projectId! })
     navigate({
       to: `../../${wmsLayerId}/wms-layer`,
       params: (prev) => ({ ...prev, wmsLayerId }),
@@ -39,7 +47,7 @@ export const Header = ({ projectId, wmsLayerId, autoFocusRef }) => {
         `SELECT * FROM wms_layers WHERE wms_layer_id = $1`,
         [wmsLayerId],
       )
-      const prev = prevRes?.rows?.[0] ?? {}
+      const prev = (prevRes?.rows?.[0] ?? {}) as Record<string, unknown>
       await db.query(`DELETE FROM wms_layers WHERE wms_layer_id = $1`, [
         wmsLayerId,
       ])
@@ -50,7 +58,7 @@ export const Header = ({ projectId, wmsLayerId, autoFocusRef }) => {
         operation: 'delete',
         prev,
       })
-      navigate({ to: '../..' })
+      navigate({ to: '../..' as '..' })
     } catch (error) {
       console.error('Error deleting wms layer:', error)
     }
@@ -62,7 +70,7 @@ export const Header = ({ projectId, wmsLayerId, autoFocusRef }) => {
         `SELECT wms_layer_id FROM wms_layers WHERE project_id = $1 ORDER BY label`,
         [projectId],
       )
-      const rows = res?.rows
+      const rows = res?.rows as { wms_layer_id: string }[]
       const len = rows.length
       const index = rows.findIndex((p) => p.wms_layer_id === wmsLayerIdRef.current)
       const next = rows[(index + 1) % len]
@@ -81,7 +89,7 @@ export const Header = ({ projectId, wmsLayerId, autoFocusRef }) => {
         `SELECT wms_layer_id FROM wms_layers WHERE project_id = $1 ORDER BY label`,
         [projectId],
       )
-      const rows = res?.rows
+      const rows = res?.rows as { wms_layer_id: string }[]
       const len = rows.length
       const index = rows.findIndex((p) => p.wms_layer_id === wmsLayerIdRef.current)
       const previous = rows[(index + len - 1) % len]

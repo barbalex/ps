@@ -6,6 +6,14 @@ import { removeChildNodes } from '../../modules/tree/removeChildNodes.ts'
 import { addOpenNodes } from '../../modules/tree/addOpenNodes.ts'
 import { useWidgetsForFieldsNavData } from '../../modules/useWidgetsForFieldsNavData.ts'
 
+// mirrors the open rows returned by useWidgetsForFieldsNavData's sql
+type NavData = {
+  id: string
+  label: string
+  count_unfiltered: number
+  count_filtered: number
+}
+
 export const WidgetsForFieldsNode = () => {
   const navigate = useNavigate()
 
@@ -40,7 +48,8 @@ export const WidgetsForFieldsNode = () => {
   }
 
   // only list navs if isOpen AND the first nav has an id
-  const showNavs = isOpen && navs.length > 0 && navs[0].id
+  const openNavs = navs as NavData[]
+  const showNavs = isOpen && navs.length > 0 && openNavs[0].id
 
   return (
     <>
@@ -55,7 +64,7 @@ export const WidgetsForFieldsNode = () => {
         onClickButton={onClickButton}
       />
       {showNavs &&
-        navs.map((nav, i) => (
+        openNavs.map((nav, i) => (
           <WidgetForFieldNode
             key={`${nav.id}-${i}`}
             nav={nav}

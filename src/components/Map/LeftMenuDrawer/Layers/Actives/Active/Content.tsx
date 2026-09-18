@@ -1,4 +1,10 @@
-import { useEffect, useState, useMemo } from 'react'
+import {
+  useEffect,
+  useState,
+  useMemo,
+  type MouseEvent,
+  type RefObject,
+} from 'react'
 import * as fluentUiReactComponents from '@fluentui/react-components'
 const {
   AccordionHeader,
@@ -15,6 +21,10 @@ const {
   TabList,
   Checkbox,
 } = fluentUiReactComponents
+import type {
+  SelectTabData,
+  SelectTabEvent,
+} from '@fluentui/react-components'
 import { BsCheckSquareFill } from 'react-icons/bs'
 import { MdDeleteOutline } from 'react-icons/md'
 import { TbZoomScan, TbTarget } from 'react-icons/tb'
@@ -26,6 +36,7 @@ import { useIntl } from 'react-intl'
 import axios from 'redaxios'
 import proj4 from 'proj4'
 import reproject from 'reproject'
+import type { FeatureCollection } from 'geojson'
 import { bbox } from '@turf/bbox'
 import { buffer } from '@turf/buffer'
 import { featureCollection } from '@turf/helpers'
@@ -54,6 +65,9 @@ import {
   usePlaceLevels,
 } from '../../../../../../modules/vectorLayerLabel.ts'
 import type VectorLayers from '../../../../../../models/public/VectorLayers.ts'
+import type WfsServices from '../../../../../../models/public/WfsServices.ts'
+import type Crs from '../../../../../../models/public/Crs.ts'
+import type { ActiveLayerRow } from '../index.tsx'
 import layerStyles from '../../index.module.css'
 
 import './active.css'
@@ -61,7 +75,26 @@ import styles from './Content.module.css'
 
 type TabType = 'overall-displays' | 'feature-displays' | 'config'
 
-export const Content = ({ layer, isOpen, layerCount, dragHandleRef }) => {
+// row of the place layers query below
+type ActivePlaceLayer = VectorLayers & {
+  name: string
+  name_plural: string | null
+}
+
+// rows of the geometry queries in onClickZoomToFeatures
+type GeomRow = { geometry?: FeatureCollection | null }
+
+export const Content = ({
+  layer,
+  isOpen,
+  layerCount,
+  dragHandleRef,
+}: {
+  layer: ActiveLayerRow
+  isOpen: boolean
+  layerCount: number
+  dragHandleRef: RefObject<HTMLDivElement | null>
+}) => {
   const { formatMessage } = useIntl()
   const [designing] = useAtom(designingAtom)
   const [vectorLayerDisplayId, setVectorLayerDisplayId] = useAtom(
@@ -92,7 +125,7 @@ export const Content = ({ layer, isOpen, layerCount, dragHandleRef }) => {
     : layer.label
 
   // Stable identity key for drag/drop state (same value as in TableLayer)
-  const layerNameForState = layer.name
+  const layerNameForState = layer.name as string
 
   // Check if this is an observation layer
   const tableName = layer.own_table_level
@@ -111,7 +144,7 @@ export const Content = ({ layer, isOpen, layerCount, dragHandleRef }) => {
   const isAssigning = draggableLayers.includes(layerNameForState)
 
   // Query for active place layers
-  const resPlaceLayers = useLiveQuery(
+  const resPlaceLayers = useLiveQuery<ActivePlaceLayer>(
     `
     SELECT 
       vl.*,
@@ -192,7 +225,7 @@ export const Content = ({ layer, isOpen, layerCount, dragHandleRef }) => {
       return addNotification({
         title: 'Layer presentation not found',
         type: 'warning',
-      })
+      } as Parameters<typeof addNotification>[0])
     }
     db.query(
       `UPDATE layer_presentations SET active = false WHERE layer_presentation_id = $1`,
@@ -203,7 +236,7 @@ export const Content = ({ layer, isOpen, layerCount, dragHandleRef }) => {
       `SELECT * FROM layer_presentations WHERE layer_presentation_id = $1`,
       [layer.layer_presentation_id],
     )
-    const prev = lpRes?.rows?.[0] ?? {}
+    const prev = (lpRes?.rows?.[0] ?? {}) as Record<string, unknown>
     // add operation to store on server db
     addOperation({
       table: 'layer_presentations',
@@ -217,7 +250,8 @@ export const Content = ({ layer, isOpen, layerCount, dragHandleRef }) => {
 
   const canDrag = layerCount > 1
 
-  const onTabSelect = (event, data: SelectTabData) => setTab(data.value)
+  const onTabSelect = (_event: SelectTabEvent, data: SelectTabData) =>
+    setTab(data.value as TabType)
 
   const onClickFeatureDisplays = () => setVectorLayerDisplayId(null)
 
@@ -261,7 +295,7 @@ export const Content = ({ layer, isOpen, layerCount, dragHandleRef }) => {
     }
   }
 
-  const onClickAssignButton = (event) => {
+  const onClickAssignButton = (event: MouseEvent) => {
     event.stopPropagation()
 
     // If only one place layer is available, directly start/stop assignment without opening menu
@@ -278,7 +312,7 @@ export const Content = ({ layer, isOpen, layerCount, dragHandleRef }) => {
         // Start assigning with the only available place layer
         setDraggableLayers([...draggableLayers, layerNameForState])
         const newDroppableLayers = [
-          ...new Set([...droppableLayers, placeLayerName]),
+          ...new Set([...droppableLayers, placeLayerName as string]),
         ]
         setDroppableLayers(newDroppableLayers)
       }
@@ -288,7 +322,7 @@ export const Content = ({ layer, isOpen, layerCount, dragHandleRef }) => {
     }
   }
 
-  const onClickStartStopAssigning = (event) => {
+  const onClickStartStopAssigning = (event: MouseEvent) => {
     event.stopPropagation()
 
     if (isAssigning) {
@@ -314,10 +348,10 @@ export const Content = ({ layer, isOpen, layerCount, dragHandleRef }) => {
     setAssignMenuOpen(false)
   }
 
-  const onClickZoomToFeatures = async (event) => {
+  const onClickZoomToFeatures = async (event: MouseEvent) => {
     event.stopPropagation()
     // Get all geometries for this layer
-    let geometries = []
+    let geometries: GeomRow[] = []
 
     if (isVectorLayer) {
       // For vector layers (including table layers)
@@ -335,7 +369,7 @@ export const Content = ({ layer, isOpen, layerCount, dragHandleRef }) => {
            ${level ? `AND p.parent_id IS ${level === 1 ? 'NULL' : 'NOT NULL'}` : ''}`,
           [layer.project_id],
         )
-        geometries = res?.rows ?? []
+        geometries = (res?.rows ?? []) as GeomRow[]
       } else if (tableName?.startsWith('actions')) {
         const level = layer.own_table_level
         const res = await db.query(
@@ -347,7 +381,7 @@ export const Content = ({ layer, isOpen, layerCount, dragHandleRef }) => {
            ${level ? `AND p.parent_id IS ${level === 1 ? 'NULL' : 'NOT NULL'}` : ''}`,
           [layer.project_id],
         )
-        geometries = res?.rows ?? []
+        geometries = (res?.rows ?? []) as GeomRow[]
       } else if (tableName?.startsWith('checks')) {
         const level = layer.own_table_level
         const res = await db.query(
@@ -359,7 +393,7 @@ export const Content = ({ layer, isOpen, layerCount, dragHandleRef }) => {
            ${level ? `AND p.parent_id IS ${level === 1 ? 'NULL' : 'NOT NULL'}` : ''}`,
           [layer.project_id],
         )
-        geometries = res?.rows ?? []
+        geometries = (res?.rows ?? []) as GeomRow[]
       } else if (tableName?.startsWith('observations_assigned')) {
         const level = layer.own_table_level
         const res = await db.query(
@@ -372,7 +406,7 @@ export const Content = ({ layer, isOpen, layerCount, dragHandleRef }) => {
            ${level ? `AND p.parent_id IS ${level === 1 ? 'NULL' : 'NOT NULL'}` : ''}`,
           [layer.project_id],
         )
-        geometries = res?.rows ?? []
+        geometries = (res?.rows ?? []) as GeomRow[]
       } else if (tableName === 'observations_to_assess') {
         const res = await db.query(
           `SELECT o.geometry FROM observations o 
@@ -384,7 +418,7 @@ export const Content = ({ layer, isOpen, layerCount, dragHandleRef }) => {
            AND o.geometry IS NOT NULL`,
           [layer.project_id],
         )
-        geometries = res?.rows ?? []
+        geometries = (res?.rows ?? []) as GeomRow[]
       } else if (tableName === 'observations_not_to_assign') {
         const res = await db.query(
           `SELECT o.geometry FROM observations o 
@@ -396,21 +430,21 @@ export const Content = ({ layer, isOpen, layerCount, dragHandleRef }) => {
            AND o.geometry IS NOT NULL`,
           [layer.project_id],
         )
-        geometries = res?.rows ?? []
+        geometries = (res?.rows ?? []) as GeomRow[]
       } else if (layer.type === 'wfs') {
         // For WFS layers, get from vector_layer_geoms
         const res = await db.query(
           `SELECT geometry FROM vector_layer_geoms WHERE vector_layer_id = $1`,
           [layer.vector_layer_id],
         )
-        geometries = res?.rows ?? []
+        geometries = (res?.rows ?? []) as GeomRow[]
 
         if (!geometries.length) {
           const wfsRes = await db.query(
             `SELECT * FROM wfs_services WHERE wfs_service_id = $1`,
             [layer.wfs_service_id],
           )
-          const wfsService = wfsRes?.rows?.[0]
+          const wfsService = wfsRes?.rows?.[0] as WfsServices | undefined
           if (!wfsService?.url || !layer.wfs_service_layer_name) {
             return addNotification({
               title: 'No geometries found for this layer',
@@ -429,7 +463,7 @@ export const Content = ({ layer, isOpen, layerCount, dragHandleRef }) => {
             `SELECT * FROM crs WHERE code = $1`,
             [wfsDefaultCrsCode],
           )
-          const defaultCrs = defaultCrsRes?.rows?.[0]
+          const defaultCrs = defaultCrsRes?.rows?.[0] as Crs | undefined
 
           let response
           let bboxParam
@@ -484,13 +518,13 @@ export const Content = ({ layer, isOpen, layerCount, dragHandleRef }) => {
             })
           }
 
-          let fc = featureCollection(rawFeatures)
+          let fc: FeatureCollection = featureCollection(rawFeatures)
           if (defaultCrs?.proj4 && wfsDefaultCrsCode !== 'EPSG:4326') {
             fc = reproject.reproject(
               fc,
               defaultCrs.proj4,
               '+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs',
-            )
+            ) as FeatureCollection
           }
           geometries = [{ geometry: fc }]
         }
@@ -500,7 +534,7 @@ export const Content = ({ layer, isOpen, layerCount, dragHandleRef }) => {
           `SELECT geometry FROM vector_layer_geoms WHERE vector_layer_id = $1`,
           [layer.vector_layer_id],
         )
-        geometries = res?.rows ?? []
+        geometries = (res?.rows ?? []) as GeomRow[]
       }
     }
 
@@ -523,7 +557,7 @@ export const Content = ({ layer, isOpen, layerCount, dragHandleRef }) => {
 
     const fc = featureCollection(allFeatures)
     const bufferedFC = buffer(fc, 0.05)
-    const newBbox = bbox(bufferedFC)
+    const newBbox = bbox(bufferedFC!)
     const newBounds = boundsFromBbox(newBbox)
 
     setMapBounds(newBounds)
@@ -578,7 +612,7 @@ export const Content = ({ layer, isOpen, layerCount, dragHandleRef }) => {
             // Multiple place layers: show menu
             <Menu
               open={assignMenuOpen}
-              onOpenChange={(e, data) => setAssignMenuOpen(data.open)}
+              onOpenChange={(_e, data) => setAssignMenuOpen(data.open)}
             >
               <MenuTrigger disableButtonEnhancement>
                 <Button
@@ -710,12 +744,12 @@ export const Content = ({ layer, isOpen, layerCount, dragHandleRef }) => {
             {vectorLayerDisplayId ? (
               <VectorLayerDisplay
                 vectorLayerDisplayId={vectorLayerDisplayId}
-                from={pathname}
+                {...{ from: pathname }}
               />
             ) : (
               <VectorLayerDisplays
                 vectorLayerId={layer.vector_layer_id}
-                from={pathname}
+                {...{ from: pathname }}
               />
             )}
           </>

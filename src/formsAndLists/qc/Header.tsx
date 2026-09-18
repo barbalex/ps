@@ -8,11 +8,13 @@ import { createQc } from '../../modules/createRows.ts'
 import { FormHeader } from '../../components/FormHeader/index.tsx'
 import { addOperationAtom } from '../../store.ts'
 
-const from = '/data/qcs/$qcsId'
-
-export const Header = ({ autoFocusRef }) => {
+export const Header = ({
+  autoFocusRef,
+}: {
+  autoFocusRef?: React.RefObject<HTMLInputElement | null>
+}) => {
   const { formatMessage } = useIntl()
-  const { qcsId } = useParams({ from })
+  const { qcsId } = useParams({ strict: false })
   const navigate = useNavigate()
   const addOperation = useSetAtom(addOperationAtom)
 
@@ -34,7 +36,7 @@ export const Header = ({ autoFocusRef }) => {
       const prevRes = await db.query(`SELECT * FROM qcs WHERE qcs_id = $1`, [
         qcsId,
       ])
-      const prev = prevRes?.rows?.[0] ?? {}
+      const prev = (prevRes?.rows?.[0] ?? {}) as Record<string, unknown>
       await db.query(`DELETE FROM qcs WHERE qcs_id = $1`, [qcsId])
       addOperation({
         table: 'qcs',
@@ -51,10 +53,10 @@ export const Header = ({ autoFocusRef }) => {
 
   const toNext = async () => {
     try {
-      const res = await db.query(
+      const res = await db.query<{ qcs_id: string }>(
         `SELECT qcs_id FROM qcs ORDER BY COALESCE(NULLIF(name_de, ''), qcs_id::text)`,
       )
-      const rows = res?.rows
+      const rows = res?.rows ?? []
       const len = rows.length
       const index = rows.findIndex((p) => p.qcs_id === qcsIdRef.current)
       const next = rows[(index + 1) % len]
@@ -69,10 +71,10 @@ export const Header = ({ autoFocusRef }) => {
 
   const toPrevious = async () => {
     try {
-      const res = await db.query(
+      const res = await db.query<{ qcs_id: string }>(
         `SELECT qcs_id FROM qcs ORDER BY COALESCE(NULLIF(name_de, ''), qcs_id::text)`,
       )
-      const rows = res?.rows
+      const rows = res?.rows ?? []
       const len = rows.length
       const index = rows.findIndex((p) => p.qcs_id === qcsIdRef.current)
       const previous = rows[(index + len - 1) % len]

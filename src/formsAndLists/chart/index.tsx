@@ -5,7 +5,7 @@ import { Chart as ChartComponent } from './Chart/index.tsx'
 
 import '../../form.css'
 
-export const Chart = ({ from }) => {
+export const Chart = ({ from }: { from: string }) => {
   const autoFocusRef = useRef<HTMLInputElement>(null)
 
   return (

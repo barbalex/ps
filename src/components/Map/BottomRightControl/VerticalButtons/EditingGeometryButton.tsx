@@ -80,7 +80,7 @@ export const EditingGeometryButton = () => {
   return (
     <ToolbarToggleButton
       name="edit_geometry"
-      value={isActive}
+      value={isActive as unknown as string}
       onClick={onClick}
       disabled={!isEditable}
       aria-label={isActive ? 'Stop editing geometry' : 'Edit geometry'}

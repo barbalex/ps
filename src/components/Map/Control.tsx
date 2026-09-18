@@ -1,4 +1,6 @@
 import { useRef, useEffect } from 'react'
+import type { ReactNode } from 'react'
+import * as L from 'leaflet'
 
 import styles from './Control.module.css'
 
@@ -10,16 +12,23 @@ const POSITION_CLASSES = {
   topright: 'leaflet-top leaflet-right',
 }
 
-export const Control = ({ children, position, visible = true }) => {
+type Props = {
+  children: ReactNode
+  position?: keyof typeof POSITION_CLASSES
+  visible?: boolean
+}
+
+export const Control = ({ children, position, visible = true }: Props) => {
   const positionClass =
     (position && POSITION_CLASSES[position]) || POSITION_CLASSES.topright
 
   // prevent click propagation on to map
   // https://stackoverflow.com/a/57013052/712005
-  const ref = useRef()
+  const ref = useRef<HTMLDivElement>(null)
   useEffect(() => {
-    L.DomEvent.disableClickPropagation(ref.current)
-    L.DomEvent.disableScrollPropagation(ref.current)
+    // the ref'd div is always mounted when effects run
+    L.DomEvent.disableClickPropagation(ref.current!)
+    L.DomEvent.disableScrollPropagation(ref.current!)
   }, [])
 
   return (

@@ -1,5 +1,13 @@
 import * as fluentUiReactComponents from '@fluentui/react-components'
-const { Button } = fluentUiReactComponents
+const { Button: FluentButton } = fluentUiReactComponents
+// type-only bridge: this Button is passed MUI-style color/edge props,
+// which the runtime ignores; passing them on unchanged
+const Button = FluentButton as unknown as (
+  props: React.ComponentProps<typeof FluentButton> & {
+    color?: string
+    edge?: string
+  },
+) => React.ReactElement
 import { MdClose as CloseIcon } from 'react-icons/md'
 import { useSetAtom, useAtomValue } from 'jotai'
 

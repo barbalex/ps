@@ -11,8 +11,8 @@ import { formatNumber } from '../../modules/formatNumber.ts'
 import { resetObservationMarkerPosition } from '../Map/layers/TableLayers/observationMarkers.ts'
 
 interface Props {
-  place: { place_id: string; label: string; distance: number }
-  observationId: uuid
+  place: { place_id: string; label: string | null; distance: number }
+  observationId: string
 }
 
 export const Item = ({ place, observationId }: Props) => {
@@ -35,7 +35,7 @@ export const Item = ({ place, observationId }: Props) => {
       `SELECT * FROM observations WHERE observation_id = $1`,
       [observationId],
     )
-    const prev = observationRes?.rows?.[0] ?? {}
+    const prev = (observationRes?.rows?.[0] ?? {}) as Record<string, unknown>
     addOperation({
       table: 'observations',
       rowIdName: 'observation_id',

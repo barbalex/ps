@@ -32,7 +32,7 @@ export const useProjectReportDesignsNavData = ({ projectId }: Props) => {
     ORDER BY label`
     : null
 
-  const res = useLiveQuery(sql)
+  const res = useLiveQuery<NavData[number]>(sql as string)
 
   const loading = res === undefined
 

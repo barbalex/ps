@@ -32,7 +32,7 @@ export const SubprojectReportDesignHistoryCompare = () => {
     projectId,
     subprojectReportDesignId,
     subprojectReportDesignHistoryId,
-  } = useParams({ from, strict: false })
+  } = useParams({ strict: false })
 
   const formPath = `/data/projects/${projectId}/subproject-designs/${subprojectReportDesignId}`
   const historyPath = `${formPath}/histories`
@@ -76,7 +76,7 @@ export const SubprojectReportDesignHistoryCompare = () => {
   const formatFieldValue = (
     field: string,
     history: SubprojectReportDesignsHistory,
-  ) => stringifyHistoryValue(history[field])
+  ) => stringifyHistoryValue((history as Record<string, any>)[field])
 
   return (
     <HistoryCompare<SubprojectReportDesignsHistory>

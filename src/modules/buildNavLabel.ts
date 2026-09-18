@@ -9,6 +9,14 @@ export const buildNavLabel = ({
   isFiltered = false,
   isLimited = false,
   limit = 100,
+}: {
+  countUnfiltered?: number
+  countFiltered: number
+  namePlural: string | null
+  loading: boolean
+  isFiltered?: boolean
+  isLimited?: boolean
+  limit?: number
 }) => {
   const intl = store.get(intlAtom)
   const labelFirst = intl

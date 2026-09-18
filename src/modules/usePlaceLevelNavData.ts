@@ -21,7 +21,7 @@ export const usePlaceLevelNavData = ({ projectId, placeLevelId }: Props) => {
   const location = useLocation()
   const { formatMessage } = useIntl()
 
-  const res = useLiveQuery(
+  const res = useLiveQuery<NavData>(
     `
     SELECT
       place_level_id AS id,

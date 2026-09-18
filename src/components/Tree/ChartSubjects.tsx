@@ -25,13 +25,14 @@ export const ChartSubjectsNode = ({
 }: Props) => {
   const navigate = useNavigate()
 
+  // charts can appear without places; the hook's Props over-requires placeId
   const { navData } = useChartSubjectsNavData({
     projectId,
     subprojectId,
     placeId,
     placeId2,
     chartId,
-  })
+  } as Parameters<typeof useChartSubjectsNavData>[0])
   const {
     label,
     parentUrl,

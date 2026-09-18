@@ -7,21 +7,21 @@ const from = '/data/users/$userId_/accounts/$accountId_/project-fields/$fieldId'
 export const Route = createFileRoute('/data/users/$userId_/accounts/$accountId_/project-fields/$fieldId')({
   component: () => <Field from={from} />,
   beforeLoad: ({ params }) => {
-    const userId = params.userId ?? params.userId_
-    const accountId = params.accountId ?? params.accountId_
-    const fieldId = params.fieldId ?? params.fieldId_
+    const userId = params.userId
+    const accountId = params.accountId
+    const fieldId = params.fieldId
     if (!userId || userId === 'undefined') {
       throw redirect({ to: '/data/users' })
     }
     if (!accountId || accountId === 'undefined') {
       throw redirect({
-        to: '/data/users/$userId_/accounts/',
+        to: '/data/users/$userId/accounts',
         params: { userId },
       })
     }
     if (!fieldId || fieldId === 'undefined') {
       throw redirect({
-        to: '/data/users/$userId_/accounts/$accountId_/project-fields/',
+        to: '/data/users/$userId/accounts/$accountId/project-fields',
         params: { userId, accountId },
       })
     }

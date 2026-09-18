@@ -17,22 +17,36 @@ import { Preview } from './Preview.tsx'
 import { Loading } from '../../components/shared/Loading.tsx'
 import { NotFound } from '../../components/NotFound.tsx'
 import { addOperationAtom } from '../../store.ts'
+import type ObservationImports from '../../models/public/ObservationImports.ts'
+import type Observations from '../../models/public/Observations.ts'
 
 import '../../form.css'
 import styles from './index.module.css'
 
-const from =
-  '/data/projects/$projectId_/subprojects/$subprojectId_/observation-imports/$observationImportId/'
+type InputOnChangeData = Parameters<
+  NonNullable<
+    React.ComponentProps<typeof fluentUiReactComponents.Input>['onChange']
+  >
+>[1]
+
+type Validation = {
+  state: 'error'
+  message: string
+}
+
+type OnTabSelect = NonNullable<
+  React.ComponentProps<typeof TabList>['onTabSelect']
+>
 
 export const ObservationImport = () => {
-  const { observationImportId } = useParams({ from })
+  const { observationImportId } = useParams({ strict: false })
   const navigate = useNavigate()
-  const { observationImportTab: tab } = useSearch({ from })
+  const { observationImportTab: tab } = useSearch({ strict: false })
   const addOperation = useSetAtom(addOperationAtom)
   const { formatMessage } = useIntl()
 
   const [showPreview, setShowPreview] = useState(true)
-  const [validations, setValidations] = useState({})
+  const [validations, setValidations] = useState<Record<string, Validation>>({})
   const [coordinatesAutoDetected, setCoordinatesAutoDetected] = useState(false)
 
   const autoFocusRef = useRef<HTMLInputElement>(null)
@@ -43,20 +57,23 @@ export const ObservationImport = () => {
     `SELECT * FROM observation_imports WHERE observation_import_id = $1`,
     [observationImportId],
   )
-  const observationImport = oIResult?.rows?.[0]
+  const observationImport = oIResult?.rows?.[0] as ObservationImports | undefined
 
   const oResult = useLiveQuery(
     `SELECT * FROM observations WHERE observation_import_id = $1`,
     [observationImportId],
   )
-  const observations = useMemo(() => oResult?.rows ?? [], [oResult])
+  const observations = useMemo(
+    () => (oResult?.rows ?? []) as unknown as Observations[],
+    [oResult],
+  )
 
   const observationsWithoutGeometryCountResult = useLiveQuery(
     `SELECT count(*) FROM observations WHERE observation_import_id = $1 AND geometry is null`,
     [observationImportId],
   )
   const observationsWithoutGeometryCount =
-    observationsWithoutGeometryCountResult?.rows?.[0]?.count ?? 0
+    (observationsWithoutGeometryCountResult?.rows?.[0]?.count ?? 0) as number
 
   const observationFields = Object.keys(observations?.[0]?.data ?? {})
 
@@ -71,11 +88,14 @@ export const ObservationImport = () => {
       return
     }
 
-    const detected = detectCoordinateFields(observationFields, observations)
+    const detected = detectCoordinateFields(
+      observationFields,
+      observations as unknown as { data?: Record<string, unknown> }[],
+    )
 
     if (detected.x_coordinate_field || detected.y_coordinate_field) {
       const updates = []
-      const draft = {}
+      const draft: Record<string, unknown> = {}
 
       if (detected.x_coordinate_field) {
         updates.push(`x_coordinate_field = '${detected.x_coordinate_field}'`)
@@ -112,10 +132,17 @@ export const ObservationImport = () => {
     setCoordinatesAutoDetected,
   ])
 
-  const onChange = async (e, data) => {
-    const { name, value } = getValueFromChange(e, data)
+  const onChange = async (
+    e: React.ChangeEvent<HTMLInputElement>,
+    data?: InputOnChangeData,
+  ) => {
+    const { name, value } = getValueFromChange(e, data!)
     // only change if value has changed: maybe only focus entered and left
-    if (observationImport[name] === value) return
+    if (
+      !observationImport ||
+      (observationImport as unknown as Record<string, unknown>)[name] === value
+    )
+      return
 
     try {
       await db.query(
@@ -125,7 +152,7 @@ export const ObservationImport = () => {
     } catch (error) {
       setValidations((prev) => ({
         ...prev,
-        [name]: { state: 'error', message: error.message },
+        [name]: { state: 'error', message: (error as Error).message },
       }))
       return
     }
@@ -160,10 +187,13 @@ export const ObservationImport = () => {
     })
   }
 
-  const onTabSelect = (e, data) =>
-    navigate({ search: { observationImportTab: data.value } })
+  const onTabSelect: OnTabSelect = (_e, data) =>
+    navigate({ search: { observationImportTab: data.value } as never })
 
-  const getTabNumberClassName = (isComplete, isCurrent) =>
+  const getTabNumberClassName = (
+    isComplete: boolean,
+    isCurrent: boolean,
+  ) =>
     `${styles.tabNumber}${isComplete ? ` ${styles.tabNumberComplete}` : isCurrent ? ` ${styles.tabNumberCurrent}` : ''}`
 
   // TODO:

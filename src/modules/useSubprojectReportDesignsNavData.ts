@@ -26,8 +26,13 @@ export const useSubprojectReportDesignsNavData = ({
   const location = useLocation()
   const { formatMessage } = useIntl()
 
-  const res = useLiveQuery(
-    projectId
+  const res = useLiveQuery<{
+    subproject_name_singular: string | null
+    id: string | null
+    label: string | null
+    active: boolean | null
+  }>(
+    (projectId
       ? `
         SELECT
           ${subprojectNameSingularExpr(language, 'p')} AS subproject_name_singular,
@@ -38,7 +43,7 @@ export const useSubprojectReportDesignsNavData = ({
         LEFT JOIN subproject_report_designs srd ON srd.project_id = p.project_id
         WHERE p.project_id = $1
         ORDER BY srd.label`
-      : null,
+      : null) as string,
     projectId ? [projectId] : undefined,
   )
 
@@ -48,7 +53,7 @@ export const useSubprojectReportDesignsNavData = ({
   const subprojectNameSingular = allRows[0]?.subproject_name_singular
   const navs: NavData = allRows
     .filter((row) => row.id !== null)
-    .map(({ id, label, active }) => ({ id, label, active }))
+    .map(({ id, label, active }) => ({ id, label, active })) as NavData
 
   const nameSingular = subprojectNameSingular
     ? `${subprojectNameSingular}-${formatMessage({ id: 'bCEhIj', defaultMessage: 'Bericht Design' })}`

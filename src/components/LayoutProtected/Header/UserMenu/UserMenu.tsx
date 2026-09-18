@@ -1,14 +1,6 @@
 import * as fluentUiReactComponents from '@fluentui/react-components'
-const {
-  Avatar,
-  Button,
-  Menu: FluentMenu,
-  MenuItem,
-  MenuList,
-  MenuPopover,
-  MenuTrigger,
-  Tooltip,
-} = fluentUiReactComponents
+import type { TooltipProps } from '@fluentui/react-components'
+import type { ComponentType } from 'react'
 import { useEffect, useState } from 'react'
 import { FormattedMessage, useIntl } from 'react-intl'
 import { MdFingerprint, MdLock, MdLogout, MdVerifiedUser } from 'react-icons/md'
@@ -19,6 +11,23 @@ import { ChangePasswordDialog } from './ChangePasswordDialog.tsx'
 import { LogoutDialogs } from './LogoutDialogs.tsx'
 import { PasskeyDialog } from './PasskeyDialog.tsx'
 import { TwoFactorDialog } from './TwoFactorDialog.tsx'
+
+const {
+  Avatar,
+  Button,
+  Menu: FluentMenu,
+  MenuItem,
+  MenuList,
+  MenuPopover,
+  MenuTrigger,
+} = fluentUiReactComponents
+
+// Fluent UI's TooltipProps requires `relationship`, but it is optional at runtime
+const Tooltip = fluentUiReactComponents.Tooltip as ComponentType<
+  Omit<TooltipProps, 'relationship'> & {
+    relationship?: TooltipProps['relationship']
+  }
+>
 
 type AuthUser = {
   email?: string

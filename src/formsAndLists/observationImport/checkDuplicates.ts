@@ -51,8 +51,10 @@ export const checkDuplicates = async (
     `
 
     try {
-      const result = await db.query(query, values)
-      const count = parseInt(result?.rows?.[0]?.count || 0)
+      const result = (await db.query(query, values)) as {
+        rows?: { count?: string | number | null }[]
+      } | null
+      const count = parseInt(String(result?.rows?.[0]?.count || 0))
 
       if (count > 0) {
         duplicateCount++

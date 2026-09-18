@@ -25,9 +25,8 @@ import type Units from '../../models/public/Units.ts'
 import type ListValues from '../../models/public/ListValues.ts'
 
 export const CheckQuantityHistoryCompare = ({
-  from,
 }: {
-  from:
+  from?:
     | '/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/checks/$checkId_/quantities/$checkQuantityId_/histories/$checkQuantityHistoryId'
     | '/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/places/$placeId2_/checks/$checkId_/quantities/$checkQuantityId_/histories/$checkQuantityHistoryId'
 }) => {
@@ -41,7 +40,7 @@ export const CheckQuantityHistoryCompare = ({
     checkId,
     checkQuantityId,
     checkQuantityHistoryId,
-  } = useParams({ from, strict: false })
+  } = useParams({ strict: false })
   const checkQuantityPath = placeId2
     ? `/data/projects/${projectId}/subprojects/${subprojectId}/places/${placeId}/places/${placeId2}/checks/${checkId}/quantities/${checkQuantityId}`
     : `/data/projects/${projectId}/subprojects/${subprojectId}/places/${placeId}/checks/${checkId}/quantities/${checkQuantityId}`
@@ -51,7 +50,9 @@ export const CheckQuantityHistoryCompare = ({
   const db = usePGlite()
   const autoFocusRef = useRef<HTMLInputElement>(null)
 
-  const [validations, setValidations] = useState<Record<string, unknown>>({})
+  const [validations, setValidations] = useState<
+    Record<string, { state: 'error'; message: string }>
+  >({})
 
   const rowRes = useLiveQuery(
     `SELECT * FROM check_quantities WHERE check_quantity_id = $1`,
@@ -63,8 +64,10 @@ export const CheckQuantityHistoryCompare = ({
     `SELECT unit_id, name, type, list_id FROM units WHERE project_id = $1 ORDER BY sort, name`,
     [projectId],
   )
-  const units: Pick<Units, 'unit_id' | 'name' | 'type' | 'list_id'>[] =
-    unitsRes?.rows ?? []
+  const units = (unitsRes?.rows ?? []) as Pick<
+    Units,
+    'unit_id' | 'name' | 'type' | 'list_id'
+  >[]
   const unitIds = units.map((u) => u.unit_id)
   const unitLabelMap = Object.fromEntries(
     units.map((u) => [u.unit_id, u.name ?? u.unit_id]),
@@ -75,7 +78,7 @@ export const CheckQuantityHistoryCompare = ({
     `SELECT * FROM list_values WHERE list_id = $1 AND (obsolete IS NULL OR obsolete = false) ORDER BY value_integer, value_numeric, value_text, label`,
     [selectedUnit?.list_id ?? '00000000-0000-0000-0000-000000000000'],
   )
-  const listValues: ListValues[] = listValuesRes?.rows ?? []
+  const listValues = (listValuesRes?.rows ?? []) as unknown as ListValues[]
   const hasListValues = listValues.length > 0
 
   const unitValueField =
@@ -101,9 +104,15 @@ export const CheckQuantityHistoryCompare = ({
     listValueOptions.map((o) => [o.value, o.label]),
   )
 
-  const onChange = async (e, data) => {
-    const { name, value } = getValueFromChange(e, data)
-    if (!row || row[name] === value) return
+  const onChange = async (
+    e: React.ChangeEvent<HTMLInputElement>,
+    data?: object,
+  ) => {
+    const { name, value } = getValueFromChange(
+      e,
+      data as Parameters<typeof getValueFromChange>[1],
+    )
+    if (!row || (row as Record<string, unknown>)[name] === value) return
 
     try {
       await db.query(
@@ -113,7 +122,7 @@ export const CheckQuantityHistoryCompare = ({
     } catch (error) {
       setValidations((prev) => ({
         ...prev,
-        [name]: { state: 'error', message: error.message },
+        [name]: { state: 'error', message: (error as Error).message },
       }))
       return
     }
@@ -156,7 +165,7 @@ export const CheckQuantityHistoryCompare = ({
     } catch (error) {
       setValidations((prev) => ({
         ...prev,
-        [unitValueField]: { state: 'error', message: error.message },
+        [unitValueField]: { state: 'error', message: (error as Error).message },
       }))
       return
     }
@@ -224,18 +233,21 @@ export const CheckQuantityHistoryCompare = ({
               id: 'gRVMng',
               defaultMessage: 'Menge',
             })}
-            name={unitValueField}
+            name={unitValueField ?? undefined}
             list={listValueIds}
             labelMap={listValueLabelMap}
             value={currentListValueStr}
-            onChange={(_e, data) => onListValueChange(data?.value ?? null)}
+            onChange={(
+              _e: unknown,
+              data: { value?: string | null },
+            ) => onListValueChange(data?.value ?? null)}
             layout="horizontal"
-            validationState={validations?.[unitValueField]?.state}
-            validationMessage={validations?.[unitValueField]?.message}
+            validationState={validations?.[unitValueField ?? '']?.state}
+            validationMessage={validations?.[unitValueField ?? '']?.message}
           />
         ) : (
           <DropdownFieldSimpleOptions
-            name={unitValueField}
+            name={unitValueField as string}
             label={formatMessage({
               id: 'gRVMng',
               defaultMessage: 'Menge',
@@ -243,8 +255,8 @@ export const CheckQuantityHistoryCompare = ({
             options={listValueIds}
             value={currentListValueStr}
             onChange={(e) => onListValueChange(e.target.value ?? null)}
-            validationState={validations?.[unitValueField]?.state}
-            validationMessage={validations?.[unitValueField]?.message}
+            validationState={validations?.[unitValueField ?? '']?.state}
+            validationMessage={validations?.[unitValueField ?? '']?.message}
           />
         )
       ) : (
@@ -328,17 +340,20 @@ export const CheckQuantityHistoryCompare = ({
     },
   })
 
-  const formatFieldValue = (field: string, history: CheckQuantitiesHistory) => {
+  const formatFieldValue = (
+    field: string,
+    history: CheckQuantitiesHistory & Record<string, unknown>,
+  ) => {
     if (field === 'unit_id') {
       const unitId = history.unit_id
       if (!unitId) return ''
       return unitLabelMap[unitId] ?? unitId
     }
-    return stringifyHistoryValue(history[field])
+    return stringifyHistoryValue((history as Record<string, unknown>)[field])
   }
 
   return (
-    <HistoryCompare<CheckQuantitiesHistory>
+    <HistoryCompare<CheckQuantitiesHistory & Record<string, unknown>>
       onBack={() => navigate({ to: checkQuantityPath })}
       leftContent={leftContent}
       visibleCurrentFields={visibleCurrentFields}
@@ -361,7 +376,8 @@ export const CheckQuantityHistoryCompare = ({
         rowIdName: 'check_quantity_id',
         rowId: checkQuantityId,
         excludedRestoreFields,
-        addOperation,
+        // the shared component types the operation as plain string
+        addOperation: addOperation as unknown as (...args: unknown[]) => void,
       }}
     />
   )

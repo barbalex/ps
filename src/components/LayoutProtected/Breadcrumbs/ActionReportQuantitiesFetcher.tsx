@@ -5,7 +5,9 @@ import { FetcherReturner } from './FetcherReturner.tsx'
 
 export const ActionReportQuantitiesFetcher = memo(
   ({ params, ...other }: { params: Record<string, string> }) => {
-    const { navData } = useActionReportQuantitiesNavData(params)
+    const { navData } = useActionReportQuantitiesNavData(
+      params as Parameters<typeof useActionReportQuantitiesNavData>[0],
+    )
 
     return (
       <FetcherReturner

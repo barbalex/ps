@@ -6,6 +6,16 @@ import { removeChildNodes } from '../../modules/tree/removeChildNodes.ts'
 import { addOpenNodes } from '../../modules/tree/addOpenNodes.ts'
 import { useFieldsNavData } from '../../modules/useFieldsNavData.ts'
 
+type NavData = {
+  id: string
+  label: string
+  table_name?: string
+  level?: number | null
+  name?: string | null
+  count_unfiltered?: number
+  count_filtered?: number
+}[]
+
 interface Props {
   projectId?: string
   accountId?: string
@@ -46,7 +56,7 @@ export const FieldsNode = ({ projectId, accountId, userId, level }: Props) => {
   }
 
   // only list navs if isOpen AND the first nav has an id
-  const showNavs = isOpen && navs.length > 0 && navs[0].id
+  const showNavs = isOpen && navs.length > 0 && (navs as NavData)[0].id
 
   return (
     <>
@@ -61,7 +71,7 @@ export const FieldsNode = ({ projectId, accountId, userId, level }: Props) => {
         onClickButton={onClickButton}
       />
       {showNavs &&
-        navs.map((nav, i) => (
+        (navs as NavData).map((nav, i) => (
           <FieldNode
             key={`${nav.id}-${i}`}
             nav={nav}

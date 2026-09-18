@@ -2,8 +2,17 @@ import { useIntl } from 'react-intl'
 
 import { RadioGroupFromOptions } from '../../components/shared/RadioGroupFromOptions.tsx'
 import { taxonomyTypeOptions } from '../../modules/constants.ts'
+import type Taxonomies from '../../models/public/Taxonomies.ts'
 
-export const Type = ({ onChange, row, validations = {} }) => {
+export const Type = ({
+  onChange,
+  row,
+  validations = {},
+}: {
+  onChange: (e: React.ChangeEvent<any>, data?: any) => void
+  row: Taxonomies | Record<string, any>
+  validations?: Record<string, { state: 'error'; message: string }>
+}) => {
   const { formatMessage } = useIntl()
 
   const options = taxonomyTypeOptions.map(
@@ -19,7 +28,7 @@ export const Type = ({ onChange, row, validations = {} }) => {
       name="type"
       options={options}
       value={row.type ?? ''}
-      onChange={onChange}
+      onChange={(ev) => onChange(ev as React.ChangeEvent<HTMLInputElement>)}
       validationState={validations?.type?.state}
       validationMessage={validations?.type?.message}
     />

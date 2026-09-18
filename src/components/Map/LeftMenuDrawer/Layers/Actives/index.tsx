@@ -2,6 +2,10 @@ import { useEffect, useState, useCallback } from 'react'
 import { useParams } from '@tanstack/react-router'
 import * as fluentUiReactComponents from '@fluentui/react-components'
 const { Accordion } = fluentUiReactComponents
+import type {
+  AccordionToggleData,
+  AccordionToggleEvent,
+} from '@fluentui/react-components'
 import { monitorForElements } from '@atlaskit/pragmatic-drag-and-drop/adapter/element-adapter'
 import { extractClosestEdge } from '@atlaskit/pragmatic-drag-and-drop-hitbox/closest-edge'
 import { reorder } from '@atlaskit/pragmatic-drag-and-drop/utils/reorder'
@@ -20,11 +24,38 @@ import {
 } from '../../../../shared/DragAndDrop/index.tsx'
 import layersStyles from '../index.module.css'
 import styles from './index.module.css'
+import type WmsLayers from '../../../../../models/public/WmsLayers.ts'
+import type VectorLayers from '../../../../../models/public/VectorLayers.ts'
 import type LayerPresentations from '../../../../../models/public/LayerPresentations.ts'
+
+// rows built by the queries below:
+// all columns of the layer plus info of it's active layer_presentation
+// plus the columns of the other layer type (undefined at runtime)
+type LayerRowCommon = {
+  layer_presentation_id: string
+  layer_presentation_active: boolean
+  label?: string | null
+  name?: string | null
+  type?: VectorLayers['type']
+  own_table?: VectorLayers['own_table']
+  own_table_level?: number | null
+  wfs_service_id?: VectorLayers['wfs_service_id']
+  wfs_service_layer_name?: string | null
+  max_features?: number | null
+  vector_layer_id?: VectorLayers['vector_layer_id']
+  wms_layer_id?: WmsLayers['wms_layer_id']
+  wms_service_id?: WmsLayers['wms_service_id']
+  wms_service_layer_name?: string | null
+}
+export type ActiveWmsLayerRow = WmsLayers &
+  LayerRowCommon & { layer_type: 'wms' }
+export type ActiveVectorLayerRow = VectorLayers &
+  LayerRowCommon & { layer_type: 'vector' }
+export type ActiveLayerRow = ActiveWmsLayerRow | ActiveVectorLayerRow
 
 // what accordion items are open
 // needs to be controlled to prevent opening when layer is deactivated
-const openItemsAtom = atom([])
+const openItemsAtom = atom<string[]>([])
 
 export const ActiveLayers = () => {
   const [mapLayerSorting, setMapLayerSorting] = useAtom(mapLayerSortingAtom)
@@ -50,7 +81,7 @@ export const ActiveLayers = () => {
     WHERE wms_layers.project_id = $1`,
     [projectId],
   )
-  const activeWmsLayers = resWmsLayers?.rows ?? []
+  const activeWmsLayers = (resWmsLayers?.rows ?? []) as unknown as ActiveWmsLayerRow[]
 
   const resVectorLayers = useLiveQuery(
     `
@@ -66,7 +97,7 @@ export const ActiveLayers = () => {
       WHERE vector_layers.project_id = $1`,
     [projectId],
   )
-  const activeVectorLayers = resVectorLayers?.rows ?? []
+  const activeVectorLayers = (resVectorLayers?.rows ?? []) as unknown as ActiveVectorLayerRow[]
 
   // union queries?
   // + faster querying
@@ -176,7 +207,7 @@ export const ActiveLayers = () => {
         const indexOfTarget = activeLayers.findIndex(
           (layer) =>
             layer.layer_presentation_id ===
-            targetData.layer.layer_presentation_id,
+            (targetData.layer as ActiveLayerRow).layer_presentation_id,
         )
         if (indexOfTarget < 0) {
           return
@@ -185,7 +216,7 @@ export const ActiveLayers = () => {
         const closestEdgeOfTarget = extractClosestEdge(targetData)
 
         reorderItem({
-          startIndex: sourceData.index,
+          startIndex: sourceData.index as number,
           indexOfTarget,
           closestEdgeOfTarget,
         })
@@ -202,7 +233,10 @@ export const ActiveLayers = () => {
     getListLength,
   }
 
-  const onToggleItem = (event, { value: layerPresentationId, openItems }) => {
+  const onToggleItem = (
+    _event: AccordionToggleEvent,
+    { value: layerPresentationId, openItems }: AccordionToggleData<string>,
+  ) => {
     // use setTimeout to let the child checkbox set the layers active status
     setTimeout(async () => {
       // fetch layerPresentation's active status
@@ -210,8 +244,9 @@ export const ActiveLayers = () => {
         `SELECT active FROM layer_presentations WHERE layer_presentation_id = $1`,
         [layerPresentationId],
       )
-      const isActive: LayerPresentations['active'] | undefined =
-        res?.rows?.[0]?.active
+      const isActive: LayerPresentations['active'] | undefined = (
+        res?.rows?.[0] as LayerPresentations | undefined
+      )?.active
       if (!isActive) {
         // if not active, remove this item
         const newOpenItems = openItems.filter(

@@ -3,6 +3,7 @@ import { useParams, useNavigate } from '@tanstack/react-router'
 import { usePGlite, useLiveQuery } from '@electric-sql/pglite-react'
 import { useSetAtom } from 'jotai'
 import { useIntl } from 'react-intl'
+import type { InputOnChangeData } from '@fluentui/react-components'
 
 import { ProjectForm } from './Form.tsx'
 import { HistoryCompare } from '../../components/shared/HistoryCompare/index.tsx'
@@ -26,17 +27,16 @@ export const ProjectHistoryCompare = ({
 }) => {
   const { formatMessage } = useIntl()
   const navigate = useNavigate()
-  const { projectId, projectHistoryId } = useParams({
-    from,
-    strict: false,
-  })
+  const { projectId, projectHistoryId } = useParams({ strict: false })
   const projectPath = `/data/projects/${projectId}/project`
   const historyPath = `/data/projects/${projectId}/histories`
   const addOperation = useSetAtom(addOperationAtom)
   const db = usePGlite()
   const autoFocusRef = useRef<HTMLInputElement>(null)
 
-  const [validations, setValidations] = useState<Record<string, unknown>>({})
+  const [validations, setValidations] = useState<
+    Record<string, { state: 'error'; message: string }>
+  >({})
 
   const rowRes = useLiveQuery(`SELECT * FROM projects WHERE project_id = $1`, [
     projectId,
@@ -54,9 +54,12 @@ export const ProjectHistoryCompare = ({
     },
   })
 
-  const onChange = async (e, data) => {
-    const { name, value } = getValueFromChange(e, data)
-    if (!row || row[name] === value) return
+  const onChange = async (
+    e: React.ChangeEvent<HTMLInputElement>,
+    data?: InputOnChangeData,
+  ) => {
+    const { name, value } = getValueFromChange(e, data!)
+    if (!row || (row as Record<string, unknown>)[name] === value) return
 
     try {
       await db.query(`UPDATE projects SET ${name} = $1 WHERE project_id = $2`, [
@@ -66,7 +69,7 @@ export const ProjectHistoryCompare = ({
     } catch (error) {
       setValidations((prev) => ({
         ...prev,
-        [name]: { state: 'error', message: error.message },
+        [name]: { state: 'error', message: (error as Error).message },
       }))
       return
     }
@@ -99,7 +102,7 @@ export const ProjectHistoryCompare = ({
   }
 
   return (
-    <HistoryCompare<ProjectsHistory>
+    <HistoryCompare<ProjectsHistory & Record<string, unknown>>
       onBack={() => navigate({ to: projectPath })}
       leftContent={
         <div className="form-container">

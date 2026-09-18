@@ -26,6 +26,7 @@ import {
   isItemData,
 } from '../../../../shared/DragAndDrop/index.tsx'
 import { DragHandle } from '../../../../shared/DragAndDrop/DragHandle.tsx'
+import type { FieldsWithTypes } from '../../index.tsx'
 
 import styles from './index.module.css'
 
@@ -36,13 +37,36 @@ function useDragAndDropContext() {
   return dragAndDropContext
 }
 
-function getItemData({ field, index, instanceId }) {
+function getItemData({
+  field,
+  index,
+  instanceId,
+}: {
+  field: FieldsWithTypes
+  index: number
+  instanceId: symbol
+}) {
   return {
     [itemKey]: true,
     field,
     index,
     instanceId,
   }
+}
+
+type Props = {
+  field: FieldsWithTypes
+  fieldsCount: number
+  index: number
+  data: Record<string, unknown>
+  table: string
+  jsonFieldName: string
+  id: string
+  orIndex?: number
+  idField: string
+  autoFocus?: boolean
+  ref?: React.Ref<HTMLDivElement>
+  from?: string
 }
 
 // this component focuses on drag and drop
@@ -60,7 +84,7 @@ export const WidgetDragAndDrop = ({
   autoFocus,
   ref,
   from,
-}) => {
+}: Props) => {
   const { registerItem, instanceId } = useDragAndDropContext()
   const [closestEdge, setClosestEdge] = useState<Edge | null>(null)
   const elementRef = useRef<HTMLDivElement>(null)
@@ -122,7 +146,8 @@ export const WidgetDragAndDrop = ({
         },
         onDrag({ self, source }) {
           const isSource =
-            source.data.field.field_id === element.dataset.field_id
+            (source.data.field as FieldsWithTypes | undefined)?.field_id ===
+            element.dataset.field_id
           if (isSource) {
             setClosestEdge(null)
             return
@@ -173,10 +198,15 @@ export const WidgetDragAndDrop = ({
 
   return (
     <>
-      <div value={field.field_id} ref={elementRef} className={styles.container}>
+      {/* value is not a standard div attribute but harmless; keep runtime as-is */}
+      <div
+        {...({ value: field.field_id } as unknown as React.HTMLAttributes<HTMLDivElement>)}
+        ref={elementRef}
+        className={styles.container}
+      >
         {canDrag && <DragHandle ref={dragHandleRef} />}
         <Widget
-          name={field.name}
+          name={field.name!}
           field={field}
           data={data}
           table={table}

@@ -3,6 +3,15 @@ import { createPortal } from 'react-dom'
 import { Item } from './Item.tsx'
 import styles from './index.module.css'
 
+type Props = {
+  scales?: number[]
+  open: boolean
+  boundingRect?: DOMRect
+  width?: number | null
+  close: () => void
+  pixelsInMeterWidth: number
+}
+
 export const Dropdown = ({
   scales = [
     2000, 5000, 10000, 25000, 50000, 100000, 200000, 500000, 1000000, 2500000,
@@ -13,7 +22,7 @@ export const Dropdown = ({
   width,
   close,
   pixelsInMeterWidth,
-}) => {
+}: Props) => {
   if (!open) return null
   if (!boundingRect) return null
 
@@ -40,6 +49,6 @@ export const Dropdown = ({
       ))}
     </div>,
     // insert below root to get all the style configs (font-family etc.)
-    document.getElementById('router-container'),
+    document.getElementById('router-container')!,
   )
 }

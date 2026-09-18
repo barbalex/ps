@@ -1,7 +1,12 @@
 import { useDataBreadcrumbData } from '../../../modules/useDataBreadcrumbData.ts'
 import { FetcherReturner } from './FetcherReturner.tsx'
 
-export const DataFetcher = (params) => {
+type Props = {
+  // passed on by TransitionGroup at runtime
+  in?: boolean
+}
+
+export const DataFetcher = (params: Props) => {
   const { navData } = useDataBreadcrumbData()
 
   return (

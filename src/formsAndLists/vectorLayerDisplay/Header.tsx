@@ -15,6 +15,9 @@ import {
 export const Header = ({
   vectorLayerDisplayId: vectorLayerDisplayIdFromProps,
   autoFocusRef,
+}: {
+  vectorLayerDisplayId?: string
+  autoFocusRef?: React.RefObject<HTMLInputElement | null>
 }) => {
   const addOperation = useSetAtom(addOperationAtom)
   const setMapLayerDrawerVectorLayerDisplayId = useSetAtom(
@@ -38,16 +41,16 @@ export const Header = ({
     `SELECT vector_layer_display_id, vector_layer_id FROM vector_layer_displays WHERE vector_layer_display_id = $1`,
     [vectorLayerDisplayId],
   )
-  const vectorLayerDisplays: {
+  const vectorLayerDisplays = (res?.rows ?? []) as {
     vector_layer_display_id: string
     vector_layer_id: string
-  }[] = res?.rows ?? []
+  }[]
   const vectorLayerId = vectorLayerDisplays?.[0]?.vector_layer_id
 
   const countRes = useLiveQuery(
     `SELECT COUNT(*) as count FROM vector_layer_displays WHERE vector_layer_id = '${vectorLayerId}'`,
   )
-  const rowCount = countRes?.rows?.[0]?.count ?? 2
+  const rowCount = Number(countRes?.rows?.[0]?.count ?? 2)
 
   const navigate = useNavigate()
   const { formatMessage } = useIntl()
@@ -75,7 +78,7 @@ export const Header = ({
         `SELECT * FROM vector_layer_displays WHERE vector_layer_display_id = $1`,
         [vectorLayerDisplayId],
       )
-      const prev = prevRes?.rows?.[0] ?? {}
+      const prev = (prevRes?.rows?.[0] ?? {}) as Record<string, unknown>
       await db.query(
         `DELETE FROM vector_layer_displays WHERE vector_layer_display_id = $1`,
         [vectorLayerDisplayId],
@@ -91,7 +94,7 @@ export const Header = ({
         setMapLayerDrawerVectorLayerDisplayId(null)
         return
       }
-      navigate({ to: '../..' })
+      navigate({ to: '../..' as '..' })
     } catch (error) {
       console.error('Error deleting vector layer display:', error)
     }
@@ -103,7 +106,7 @@ export const Header = ({
         `SELECT vector_layer_display_id FROM vector_layer_displays WHERE vector_layer_id = $1 ORDER BY label`,
         [vectorLayerId],
       )
-      const rows = res?.rows
+      const rows = res?.rows as { vector_layer_display_id: string }[]
       const len = rows.length
       const index = rows.findIndex(
         (p) => p.vector_layer_display_id === vectorLayerDisplayIdRef.current,
@@ -137,7 +140,7 @@ export const Header = ({
         `SELECT vector_layer_display_id FROM vector_layer_displays WHERE vector_layer_id = $1 ORDER BY label`,
         [vectorLayerId],
       )
-      const vectorLayerDisplays = res?.rows
+      const vectorLayerDisplays = res?.rows as { vector_layer_display_id: string }[]
       const len = vectorLayerDisplays.length
       const index = vectorLayerDisplays.findIndex(
         (p) => p.vector_layer_display_id === vectorLayerDisplayIdRef.current,

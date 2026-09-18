@@ -1,5 +1,9 @@
 import * as fluentUiReactComponents from '@fluentui/react-components'
 const { Tab, TabList } = fluentUiReactComponents
+import type {
+  SelectTabEvent,
+  SelectTabData,
+} from '@fluentui/react-components'
 import { useSearch, useNavigate } from '@tanstack/react-router'
 
 import { ErrorBoundary } from '../../shared/ErrorBoundary.tsx'
@@ -8,10 +12,15 @@ import { Legends } from './Legends/index.tsx'
 import styles from './Content.module.css'
 
 export const Content = () => {
-  const navigate = useNavigate()
+  const navigate = useNavigate() as unknown as (options: {
+    search: { leftMapDrawerTab?: unknown }
+  }) => void | Promise<void>
   // TODO: test
-  const { leftMapDrawerTab: tab = 'layers' } = useSearch({ strict: false })
-  const onTabSelect = (event: SelectTabEvent, data: SelectTabData) =>
+  // leftMapDrawerTab is an unvalidated search param (not in any route search schema)
+  const { leftMapDrawerTab: tab = 'layers' } = useSearch({
+    strict: false,
+  }) as { leftMapDrawerTab?: string }
+  const onTabSelect = (_event: SelectTabEvent, data: SelectTabData) =>
     navigate({ search: { leftMapDrawerTab: data.value } })
 
   return (

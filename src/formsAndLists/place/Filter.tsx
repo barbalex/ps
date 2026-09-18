@@ -8,7 +8,12 @@ type Props = {
 export const PlaceFilter = ({ from }: Props) => (
   <Filter from={from}>
     {({ row, onChange, orIndex }) => (
-      <PlaceForm row={row} onChange={onChange} orIndex={orIndex} from={from} />
+      <PlaceForm
+        row={row}
+        onChange={onChange as never}
+        orIndex={orIndex}
+        from={from}
+      />
     )}
   </Filter>
 );

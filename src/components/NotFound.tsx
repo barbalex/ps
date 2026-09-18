@@ -1,11 +1,16 @@
-import * as React from 'react'
 import * as fluentUiReactComponents from '@fluentui/react-components'
 const { Button } = fluentUiReactComponents
 import { Link, useRouter, useCanGoBack } from '@tanstack/react-router'
+import type { NotFoundRouteProps } from '@tanstack/react-router'
 
 import styles from './NotFound.module.css'
 
-export const NotFound = ({ table, id }) => {
+interface Props extends Partial<NotFoundRouteProps> {
+  table?: string
+  id?: string
+}
+
+export const NotFound = ({ table, id }: Props) => {
   const router = useRouter()
   const canGoBack = useCanGoBack()
   const isTableId = table && id
@@ -24,7 +29,7 @@ export const NotFound = ({ table, id }) => {
       <div className={styles.spacer} />
       {canGoBack ?
         <Button onClick={goBack}>Go Back</Button>
-      : <Link to="../">
+      : <Link to={'../' as '..'}>
           <Button>Go One Up</Button>
         </Link>
       }

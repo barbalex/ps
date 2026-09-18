@@ -8,11 +8,13 @@ import { createFieldType } from '../../modules/createRows.ts'
 import { FormHeader } from '../../components/FormHeader/index.tsx'
 import { addOperationAtom } from '../../store.ts'
 
-const from = '/data/field-types/$fieldTypeId'
-
-export const Header = ({ autoFocusRef }) => {
+export const Header = ({
+  autoFocusRef,
+}: {
+  autoFocusRef?: React.RefObject<HTMLInputElement | null>
+}) => {
   const { formatMessage } = useIntl()
-  const { fieldTypeId } = useParams({ from })
+  const { fieldTypeId } = useParams({ strict: false })
   const navigate = useNavigate()
   const addOperation = useSetAtom(addOperationAtom)
 
@@ -26,7 +28,7 @@ export const Header = ({ autoFocusRef }) => {
   }, [fieldTypeId])
 
   const countRes = useLiveQuery('SELECT COUNT(*) as count FROM field_types')
-  const rowCount = countRes?.rows?.[0]?.count ?? 2
+  const rowCount = (countRes?.rows?.[0]?.count ?? 2) as number
 
   const addRow = async () => {
     const id = await createFieldType()
@@ -40,7 +42,7 @@ export const Header = ({ autoFocusRef }) => {
         `SELECT * FROM field_types WHERE field_type_id = $1`,
         [fieldTypeId],
       )
-      const prev = prevRes?.rows?.[0] ?? {}
+      const prev = (prevRes?.rows?.[0] ?? {}) as Record<string, unknown>
       db.query(`DELETE FROM field_types WHERE field_type_id = $1`, [
         fieldTypeId,
       ])
@@ -62,7 +64,7 @@ export const Header = ({ autoFocusRef }) => {
       const res = await db.query(
         `SELECT field_type_id FROM field_types order by label`,
       )
-      const rows = res?.rows
+      const rows = res?.rows as { field_type_id: string }[]
       const len = rows.length
       const index = rows.findIndex(
         (p) => p.field_type_id === fieldTypeIdRef.current,
@@ -82,7 +84,7 @@ export const Header = ({ autoFocusRef }) => {
       const res = await db.query(
         `SELECT field_type_id FROM field_types order by label`,
       )
-      const rows = res?.rows
+      const rows = res?.rows as { field_type_id: string }[]
       const len = rows.length
       const index = rows.findIndex(
         (p) => p.field_type_id === fieldTypeIdRef.current,

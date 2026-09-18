@@ -50,7 +50,8 @@ export const ImportDialog = ({
   const res = useLiveQuery(`SELECT value_type FROM lists WHERE list_id = $1`, [
     listId,
   ])
-  const valueType: string | undefined = res?.rows?.[0]?.value_type
+  const valueType: string | undefined =
+    res?.rows?.[0]?.value_type as string | undefined
 
   const handleFile = (file: File | undefined) => {
     if (!file) return
@@ -59,8 +60,10 @@ export const ImportDialog = ({
   }
 
   const onClickDropZone = () => {
-    fileInputRef.current.click()
-    fileInputRef.current.value = null
+    fileInputRef.current?.click()
+    if (fileInputRef.current) {
+      fileInputRef.current.value = ''
+    }
   }
 
   const onInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {

@@ -15,7 +15,7 @@ import type Units from '../../../models/public/Units.ts'
 import type Charts from '../../../models/public/Charts.ts'
 import type ChartSubjects from '../../../models/public/ChartSubjects.ts'
 
-const toPercent = (decimal) => `${(decimal * 100).toFixed(0)}%`
+const toPercent = (decimal: number) => `${(decimal * 100).toFixed(0)}%`
 
 // const getPercent = (value, total) => {
 //   const ratio = total > 0 ? value / total : 0
@@ -34,7 +34,7 @@ export const SingleChart = ({ chart, subjects, data, synchronized }: Props) => {
   const res = useLiveQuery(`SELECT * FROM units WHERE unit_id = $1`, [
     subjects?.[0]?.value_unit ?? '99999999-9999-9999-9999-999999999999',
   ])
-  const firstSubjectsUnit: Units | undefined = res?.rows?.[0]
+  const firstSubjectsUnit = res?.rows?.[0] as Units | undefined
   if (!chart || !subjects) return null
 
   const unit = firstSubjectsUnit ?? 'Count'
@@ -65,12 +65,12 @@ export const SingleChart = ({ chart, subjects, data, synchronized }: Props) => {
               >
                 <stop
                   offset="5%"
-                  stopColor={subject.fill}
+                  stopColor={subject.fill ?? undefined}
                   stopOpacity={0.8}
                 />
                 <stop
                   offset="95%"
-                  stopColor={subject.fill}
+                  stopColor={subject.fill ?? undefined}
                   stopOpacity={0}
                 />
               </linearGradient>
@@ -83,12 +83,18 @@ export const SingleChart = ({ chart, subjects, data, synchronized }: Props) => {
           interval={0}
           width={40}
           label={{
-            value: unit,
+            value: unit as unknown as string,
             angle: -90,
             position: 'insideLeft',
-            offset: print ? 0 : -15,
+            // print is the window.print function and thus always truthy;
+            // kept as a condition to preserve the original behaviour
+            offset: typeof print === 'function' ? 0 : -15,
           }}
-          tickFormatter={chart.percent ? toPercent : formatNumber}
+          tickFormatter={
+            chart.percent
+              ? toPercent
+              : (formatNumber as (value: unknown, index: number) => string)
+          }
         />
         {subjects.map((subject) => {
           return (
@@ -96,7 +102,7 @@ export const SingleChart = ({ chart, subjects, data, synchronized }: Props) => {
               key={subject.chart_subject_id}
               id={`${subject.chart_subject_id}color`}
               type={subject.type ?? 'monotone'} // or: linear
-              dataKey={subject.name}
+              dataKey={(subject.name ?? undefined) as string}
               stackId={
                 chart.subjects_stacked || chart.percent ? '1' : undefined
               }

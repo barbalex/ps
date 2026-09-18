@@ -10,15 +10,42 @@ import { tableLayerToComponent } from './tableLayerToComponent.ts'
 import { mapLayerSortingAtom } from '../../../store.ts'
 import type LayerPresentations from '../../../models/public/LayerPresentations.ts'
 import type VectorLayers from '../../../models/public/VectorLayers.ts'
+import type VectorLayerDisplays from '../../../models/public/VectorLayerDisplays.ts'
+import type WmsLayers from '../../../models/public/WmsLayers.ts'
 import styles from './Layer.module.css'
 
 const paneBaseIndex = 400 // was: 200. then wfs layers covered lower ones
+
+type Props = {
+  layerPresentationId: string
+  index: number
+}
+
+// Row of the wms_layers query, joined with selected wms_services columns
+type WmsLayerRow = WmsLayers & {
+  wms_services_url: string | null
+  wms_services_image_format: string | null
+  wms_services_version: string | null
+  opacity?: number
+}
+
+// Row of the vector_layers query with aggregated json columns
+type VectorLayerRow = VectorLayers & {
+  label: string | null
+  wfs_services?: {
+    url: string | null
+    version: string | null
+    info_format: string | null
+    default_crs: string | null
+  } | null
+  vector_layer_displays?: VectorLayerDisplays[] | null
+}
 
 // TODO: text
 // layerPresentationId should be uuid for queries. Need to convert
 // TODO: only load layers of active project
 // 99999999-9999-9999-9999-999999999999
-export const Layer = ({ layerPresentationId, index }) => {
+export const Layer = ({ layerPresentationId, index }: Props) => {
   const { projectId = '99999999-9999-9999-9999-999999999999' } = useParams({
     strict: false,
   })
@@ -38,7 +65,7 @@ export const Layer = ({ layerPresentationId, index }) => {
       AND wms_layers.project_id = $2`,
     [layerPresentationId, projectId],
   )
-  const wmsLayer = resWms?.rows?.[0]
+  const wmsLayer = resWms?.rows?.[0] as WmsLayerRow | undefined
 
   const resVector = useLiveQuery(
     `
@@ -81,7 +108,7 @@ export const Layer = ({ layerPresentationId, index }) => {
     GROUP BY vl.vector_layer_id, ws.wfs_service_id`,
     [layerPresentationId, projectId],
   )
-  const vectorLayer: VectorLayers | undefined = resVector?.rows?.[0]
+  const vectorLayer = resVector?.rows?.[0] as VectorLayerRow | undefined
   const isWfsLayer = vectorLayer?.type === 'wfs'
   const isTableLayer = !!vectorLayer?.type && vectorLayer?.type !== 'wfs'
 
@@ -89,7 +116,7 @@ export const Layer = ({ layerPresentationId, index }) => {
     `SELECT * FROM layer_presentations WHERE layer_presentation_id = $1`,
     [layerPresentationId],
   )
-  const layerPresentation: LayerPresentations | undefined = resLP?.rows?.[0]
+  const layerPresentation = resLP?.rows?.[0] as LayerPresentations | undefined
 
   // console.log('Layer', {
   //   layerPresentationId,
@@ -129,7 +156,7 @@ export const Layer = ({ layerPresentationId, index }) => {
     return (
       <Pane
         key={`${layerPresentationId}/${mapLayerSorting.join()}`}
-        name={wmsLayer.label}
+        name={wmsLayer.label as string}
         className={styles.pane}
         style={
           { '--pane-z-index': paneBaseIndex - index } as React.CSSProperties
@@ -168,7 +195,8 @@ export const Layer = ({ layerPresentationId, index }) => {
     const componentKey = vectorLayer.own_table_level
       ? `${vectorLayer.own_table}${vectorLayer.own_table_level}`
       : vectorLayer.own_table
-    const Component = tableLayerToComponent[componentKey]
+    const Component =
+      tableLayerToComponent[componentKey as keyof typeof tableLayerToComponent]
 
     if (!Component) {
       console.warn(

@@ -24,7 +24,7 @@ export const useExportNavData = ({ exportsId }: Props) => {
   const location = useLocation()
   const { formatMessage } = useIntl()
 
-  const res = useLiveQuery(
+  const res = useLiveQuery<NavData>(
     `
     SELECT
       exports_id AS id,

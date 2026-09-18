@@ -1,6 +1,7 @@
 // TODO: not in use
 import { useEffect } from 'react'
 import { useMap } from 'react-leaflet'
+import * as L from 'leaflet'
 import { useAtom, useSetAtom } from 'jotai'
 import { usePGlite } from '@electric-sql/pglite-react'
 
@@ -10,19 +11,43 @@ import {
   addNotificationAtom,
 } from '../../../../store.ts'
 
-export const WMTSOffline = ({ layer }) => {
+type Props = {
+  layer: {
+    id: string
+    label: string
+    wmts_url_template: string
+    grayscale?: boolean | null
+    max_zoom?: number | null
+    min_zoom?: number | null
+    opacity?: number | null
+    layer_presentations?:
+      | {
+          grayscale?: boolean | null
+          min_zoom?: number
+          max_zoom?: number
+          opacity_percent?: number | null
+        }[]
+      | null
+  }
+}
+
+export const WMTSOffline = ({ layer }: Props) => {
   const [showLocalMap, setShowLocalMap] = useAtom(showLocalMapAtom)
   const setLocalMapValues = useSetAtom(localMapValuesAtom)
   const addNotification = useSetAtom(addNotificationAtom)
   const map = useMap()
-  const layerPresentation = layer.layer_presentations?.[0]
+  const layerPresentation = layer.layer_presentations?.[0]!
 
   const db = usePGlite()
 
   console.log('WMTSOffline, layer:', layer)
 
   useEffect(() => {
-    const wmtsLayer = L.tileLayer.offline(layer.wmts_url_template, {
+    const wmtsLayer = (
+      L.tileLayer as unknown as {
+        offline: (url: string, options: L.TileLayerOptions) => L.TileLayer
+      }
+    ).offline(layer.wmts_url_template, {
       maxNativeZoom: 19,
       minZoom: layerPresentation.min_zoom,
       maxZoom: layerPresentation.max_zoom,
@@ -32,8 +57,27 @@ export const WMTSOffline = ({ layer }) => {
         : 0,
     })
     wmtsLayer.addTo(map)
-    const control = L.control.savetiles(wmtsLayer, {
-      confirmSave: (status, saveCallback) => saveCallback(layer.id),
+    const control = (
+      L.control as unknown as {
+        savetiles: (
+          baseLayer: L.TileLayer,
+          options: {
+            confirmSave: (
+              _status: unknown,
+              saveCallback: (layerId: string) => void,
+            ) => void
+          },
+        ) => L.Control & {
+          openDB: () => void
+          saveMap: (options: {
+            layer: Props['layer']
+            map: L.Map
+          }) => void
+          deleteTable: (layerId: string) => void
+        }
+      }
+    ).savetiles(wmtsLayer, {
+      confirmSave: (_status, saveCallback) => saveCallback(layer.id),
     })
     control.addTo(map)
     control.openDB()
@@ -44,15 +88,22 @@ export const WMTSOffline = ({ layer }) => {
       } catch (error) {
         addNotification({
           title: `Fehler beim Speichern der Karten für ${layer.label}`,
-          body: error.message,
+          body: (error as Error).message,
           intent: 'error',
         })
       }
     }
     const del = () => control.deleteTable(layer.id)
 
-    setLocalMapValues({ id: layer.id, save, del })
-    setShowLocalMap({ ...showLocalMap, [layer.id]: { show: true } })
+    setLocalMapValues({
+      id: layer.id,
+      save,
+      del,
+    } as unknown as Record<string, boolean>)
+    setShowLocalMap({
+      ...(showLocalMap as unknown as object),
+      [layer.id]: { show: true },
+    } as unknown as boolean)
 
     return () => {
       map.removeLayer(wmtsLayer)

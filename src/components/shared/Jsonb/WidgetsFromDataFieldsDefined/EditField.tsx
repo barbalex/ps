@@ -7,13 +7,13 @@ import { useIntl } from 'react-intl'
 
 import { designingAtom } from '../../../../store.ts'
 
-export const EditField = ({ fieldId }) => {
+export const EditField = ({ fieldId }: { fieldId: string }) => {
   const [designing] = useAtom(designingAtom)
   const navigate = useNavigate()
   const location = useLocation()
   const { formatMessage } = useIntl()
 
-  const onClick = () => navigate({ search: { editingField: fieldId } })
+  const onClick = () => navigate({ search: { editingField: fieldId } as never })
 
   if (!designing) return null
   if (location.pathname.endsWith('filter')) return null

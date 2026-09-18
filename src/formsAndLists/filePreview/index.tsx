@@ -1,7 +1,7 @@
 import { useRef } from 'react'
 import { useParams } from '@tanstack/react-router'
 import { useResizeDetector } from 'react-resize-detector'
-import DocViewer, { DocViewerRenderers } from '@cyntler/react-doc-viewer'
+import DocViewer from '@cyntler/react-doc-viewer'
 import { useLiveQuery } from '@electric-sql/pglite-react'
 
 import { Header } from '../file/Header.tsx'
@@ -14,12 +14,12 @@ import '../../form.css'
 import '@cyntler/react-doc-viewer/dist/index.css'
 import styles from './index.module.css'
 
-export const FilePreview = ({ from }) => {
-  const { fileId } = useParams({ from })
+export const FilePreview = ({ from }: { from: string }) => {
+  const { fileId } = useParams({ strict: false })
   const previewRef = useRef<HTMLDivElement>(null)
 
   const res = useLiveQuery(`SELECT * FROM files WHERE file_id = $1`, [fileId])
-  const row: Files | undefined = res?.rows?.[0]
+  const row: Files | undefined = res?.rows?.[0] as Files | undefined
 
   const { width, height, ref } = useResizeDetector({
     // handleHeight: false,
@@ -34,8 +34,8 @@ export const FilePreview = ({ from }) => {
     return <NotFound table="File" id={fileId} />
   }
 
-  const isImage = row.mimetype.includes('image')
-  const isPdf = row.mimetype.includes('pdf')
+  const isImage = row.mimetype?.includes('image')
+  const isPdf = row.mimetype?.includes('pdf')
   const isReactDocViewable =
     !isImage &&
     !isPdf &&
@@ -72,9 +72,9 @@ export const FilePreview = ({ from }) => {
         {isImage && row.url && width && (
           <img
             src={`${row.url}-/preview/${Math.floor(width)}x${Math.floor(
-              height,
+              height!,
             )}/-/format/auto/-/quality/smart/`}
-            alt={row.name}
+            alt={row.name ?? undefined}
             width={width}
             height={
               row.width && row.height
@@ -95,14 +95,13 @@ export const FilePreview = ({ from }) => {
         {isReactDocViewable && (
           <div className={styles.object}>
             <DocViewer
-              key={width}
+              key={width ?? 0}
               documents={[
                 {
-                  uri: row.url,
-                  mimeType: row.mimetype,
-                },
+                  uri: row.url!,
+                  mimeType: row.mimetype ?? undefined,
+                } as unknown as never,
               ]}
-              renderers={DocViewerRenderers}
               config={{ header: { disableHeader: true } }}
               className={styles.docViewer}
             />

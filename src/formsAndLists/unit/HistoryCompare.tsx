@@ -25,31 +25,28 @@ import {
 import type Units from '../../models/public/Units.ts'
 import type UnitsHistory from '../../models/public/UnitsHistory.ts'
 
-const from =
-  '/data/projects/$projectId_/units/$unitId_/histories/$unitHistoryId'
-
 export const UnitHistoryCompare = () => {
   const { formatMessage } = useIntl()
   const navigate = useNavigate()
-  const { projectId, unitId, unitHistoryId } = useParams({
-    from,
-    strict: false,
-  })
+  const { projectId, unitId, unitHistoryId } = useParams({ strict: false })
   const unitPath = `/data/projects/${projectId}/units/${unitId}`
   const historyPath = `${unitPath}/histories`
 
   const addOperation = useSetAtom(addOperationAtom)
   const db = usePGlite()
-  const [validations, setValidations] = useState<Record<string, unknown>>({})
+  const [validations, setValidations] = useState<Record<string, { state: 'error'; message: string }>>({})
 
   const rowRes = useLiveQuery(`SELECT * FROM units WHERE unit_id = $1`, [
     unitId,
   ])
   const row = rowRes?.rows?.[0] as Units | undefined
 
-  const onChange = async (e, data) => {
+  const onChange = async (
+    e: React.ChangeEvent<HTMLInputElement>,
+    data: Parameters<typeof getValueFromChange>[1],
+  ) => {
     const { name, value } = getValueFromChange(e, data)
-    if (!row || row[name] === value) return
+    if (!row || (row as Record<string, any>)[name] === value) return
 
     try {
       await db.query(
@@ -59,7 +56,7 @@ export const UnitHistoryCompare = () => {
     } catch (error) {
       setValidations((prev) => ({
         ...prev,
-        [name]: { state: 'error', message: error.message },
+        [name]: { state: 'error', message: error instanceof Error ? error.message : String(error) },
       }))
       return
     }
@@ -170,7 +167,7 @@ export const UnitHistoryCompare = () => {
   })
 
   const formatFieldValue = (field: string, history: UnitsHistory) =>
-    stringifyHistoryValue(history[field])
+    stringifyHistoryValue((history as Record<string, any>)[field])
 
   return (
     <HistoryCompare<UnitsHistory>

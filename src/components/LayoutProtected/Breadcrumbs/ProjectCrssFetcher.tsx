@@ -1,8 +1,14 @@
 import { useProjectCrssNavData } from '../../../modules/useProjectCrssNavData.ts'
 import { FetcherReturner } from './FetcherReturner.tsx'
 
-export const ProjectCrssFetcher = ({ params, ...other }) => {
-  const { navData } = useProjectCrssNavData(params)
+type Props = {
+  params: Parameters<typeof useProjectCrssNavData>[0]
+}
+
+export const ProjectCrssFetcher = ({ params, ...other }: Props) => {
+  const { navData: navDataRaw } = useProjectCrssNavData(params)
+  // navData.id does not exist on NavData; bridge type-only
+  const navData = navDataRaw as typeof navDataRaw & { id?: string }
 
   return (
     <FetcherReturner

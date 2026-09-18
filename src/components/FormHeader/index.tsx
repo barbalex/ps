@@ -1,6 +1,23 @@
+import type { ReactNode } from 'react'
+
 import { FormMenu } from '../FormMenu/index.tsx'
 import { SectionDescription } from '../shared/SectionDescription.tsx'
 import styles from './index.module.css'
+
+interface Props {
+  title?: ReactNode
+  description?: ReactNode
+  addRow?: () => void
+  addRowDisabled?: boolean
+  addRowDisabledReason?: string
+  deleteRow?: () => void
+  toNext?: () => void
+  toPrevious?: () => void
+  toNextDisabled?: boolean
+  toPreviousDisabled?: boolean
+  tableName?: string
+  siblings?: ReactNode
+}
 
 export const FormHeader = ({
   title,
@@ -15,7 +32,7 @@ export const FormHeader = ({
   toPreviousDisabled,
   tableName,
   siblings,
-}) => (
+}: Props) => (
   <>
     <div className="form-header">
       <h1 className={styles.title}>{title}</h1>

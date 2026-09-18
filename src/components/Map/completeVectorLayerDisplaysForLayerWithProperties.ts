@@ -4,11 +4,17 @@
 // adds missing vector_layer_displays
 import { store, pgliteDbAtom } from '../../store.ts'
 
+type Props = {
+  vectorLayerId: string
+  properties: string[]
+}
+
 // TODO: not done, needed?
 export const completeVectorLayerDisplaysForLayerWithProperties = async ({
   vectorLayerId,
-}) => {
-  const db = store.get(pgliteDbAtom)
+}: Props) => {
+  // this is only called after the db has been initialized
+  const db = store.get(pgliteDbAtom)!
   await db.query(
     `SELECT * FROM vector_layer_displays WHERE vector_layer_id = $1`,
     [vectorLayerId],

@@ -34,7 +34,7 @@ export const useProjectCrssNavData = ({ projectId }: Props) => {
 
   const loading = res === undefined
 
-  const navs: NavData = res?.rows ?? []
+  const navs = (res?.rows ?? []) as NavData
   const parentArray = ['data', 'projects', projectId]
   const parentUrl = `/${parentArray.join('/')}`
   const ownArray = [...parentArray, 'crs']

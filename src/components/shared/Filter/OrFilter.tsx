@@ -5,13 +5,19 @@ import { setNewFilterFromOld } from '../../../modules/setNewFilterFromOld.ts'
 
 import '../../../form.css'
 
+export type OrFilterRenderProps = {
+  // row is an object with keys and values
+  row: Record<string, any>
+  onChange: (...args: Parameters<typeof getValueFromChange>) => void
+  orIndex: number
+}
+
 type Props = {
   filterName?: string
-  // filter is an object with keys and values
   orFilters: Record<string, unknown>[]
   orIndex: number
   onFilterChange: (newFilter: Record<string, unknown>[]) => void
-  children: ReactNode
+  children: (renderProps: OrFilterRenderProps) => ReactNode
 }
 
 export const OrFilter = ({
@@ -31,7 +37,10 @@ export const OrFilter = ({
     ),
   )
 
-  const onChange = (e, data) => {
+  const onChange = (
+    e: Parameters<typeof getValueFromChange>[0],
+    data: Parameters<typeof getValueFromChange>[1],
+  ) => {
     const { name, value, targetType } = getValueFromChange(e, data)
     const newFilter = setNewFilterFromOld({
       name,

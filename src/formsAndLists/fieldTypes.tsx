@@ -15,7 +15,8 @@ export const FieldTypes = () => {
   const navigate = useNavigate({ from })
 
   const { loading, navData, isFiltered } = useFieldTypesNavData()
-  const { navs, label, nameSingular } = navData
+  const { label, nameSingular } = navData
+  const navs = navData.navs as { id: string; label: string }[]
 
   const add = async () => {
     const id = await createFieldType()

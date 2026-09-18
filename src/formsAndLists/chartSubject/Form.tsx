@@ -17,17 +17,16 @@ import { addOperationAtom } from '../../store.ts'
 import type ChartSubjects from '../../models/public/ChartSubjects.ts'
 
 interface Props {
-  autoFocusRef: React.RefObject<HTMLInputElement>
+  autoFocusRef: React.RefObject<HTMLInputElement | null>
 }
-
-const from =
-  '/data/projects/$projectId_/subprojects/$subprojectId_/charts/$chartId_/subjects/$chartSubjectId/'
 
 // separate from the route because it is also used inside other forms
 export const ChartSubjectForm = ({ autoFocusRef }: Props) => {
-  const { chartSubjectId } = useParams({ from })
+  const { chartSubjectId } = useParams({ strict: false })
   const addOperation = useSetAtom(addOperationAtom)
-  const [validations, setValidations] = useState({})
+  const [validations, setValidations] = useState<
+    Record<string, { state: 'error'; message: string }>
+  >({})
   const { formatMessage } = useIntl()
 
   const db = usePGlite()
@@ -35,12 +34,18 @@ export const ChartSubjectForm = ({ autoFocusRef }: Props) => {
     `SELECT * FROM chart_subjects WHERE chart_subject_id = $1`,
     [chartSubjectId],
   )
-  const row: ChartSubjects | undefined = res?.rows?.[0]
+  const row = res?.rows?.[0] as ChartSubjects | undefined
 
-  const onChange = async (e, data) => {
-    const { name, value } = getValueFromChange(e, data)
+  const onChange = async (
+    e: React.ChangeEvent<HTMLInputElement>,
+    data?: object,
+  ) => {
+    const { name, value } = getValueFromChange(
+      e,
+      data as Parameters<typeof getValueFromChange>[1],
+    )
     // only change if value has changed: maybe only focus entered and left
-    if (row[name] === value) return
+    if (row?.[name as keyof ChartSubjects] === value) return
 
     try {
       await db.query(
@@ -50,7 +55,7 @@ export const ChartSubjectForm = ({ autoFocusRef }: Props) => {
     } catch (error) {
       setValidations((prev) => ({
         ...prev,
-        [name]: { state: 'error', message: error.message },
+        [name]: { state: 'error', message: (error as Error).message },
       }))
       return
     }
@@ -80,7 +85,7 @@ export const ChartSubjectForm = ({ autoFocusRef }: Props) => {
       <TextField
         label={formatMessage({ id: 'XkV5yZ', defaultMessage: 'Name' })}
         name="name"
-        value={row.name}
+        value={row.name ?? undefined}
         onChange={onChange}
         validationState={validations?.name?.state}
         validationMessage={validations?.name?.message}
@@ -95,7 +100,7 @@ export const ChartSubjectForm = ({ autoFocusRef }: Props) => {
         <TextField
           label={formatMessage({ id: 'bDvYbZ', defaultMessage: 'Filter' })}
           name="table_filter"
-          value={row.table_filter}
+          value={row.table_filter as string | number | undefined}
           onChange={onChange}
           validationState={validations?.table_filter?.state}
           validationMessage={
@@ -114,7 +119,7 @@ export const ChartSubjectForm = ({ autoFocusRef }: Props) => {
             <TextField
               label={formatMessage({ id: 'bDkNqO', defaultMessage: 'Einheit' })}
               name="value_unit"
-              value={row.value_unit}
+              value={row.value_unit ?? undefined}
               type="number"
               onChange={onChange}
               validationState={validations?.value_unit?.state}
@@ -129,7 +134,7 @@ export const ChartSubjectForm = ({ autoFocusRef }: Props) => {
         <TextField
           label={formatMessage({ id: 'bDmPsQ', defaultMessage: 'Sortierung' })}
           name="sort"
-          value={row.sort}
+          value={row.sort ?? undefined}
           type="number"
           onChange={onChange}
           validationState={validations?.sort?.state}
@@ -148,7 +153,7 @@ export const ChartSubjectForm = ({ autoFocusRef }: Props) => {
             defaultMessage: 'Fehlende Daten verbinden',
           })}
           name="connect_nulls"
-          value={row.connect_nulls}
+          value={row.connect_nulls as never}
           onChange={onChange}
           validationState={validations?.connect_nulls?.state}
           validationMessage={
@@ -167,8 +172,8 @@ export const ChartSubjectForm = ({ autoFocusRef }: Props) => {
         <TextField
           label={formatMessage({ id: 'bDrUxV', defaultMessage: 'Linienfarbe' })}
           name="stroke"
-          value={row.stroke}
-          type="color"
+          value={row.stroke ?? undefined}
+          type={'color' as 'text'}
           onChange={onChange}
           validationState={validations?.stroke?.state}
           validationMessage={validations?.stroke?.message}
@@ -179,8 +184,8 @@ export const ChartSubjectForm = ({ autoFocusRef }: Props) => {
             defaultMessage: 'F\u00fcllfarbe',
           })}
           name="fill"
-          value={row.fill}
-          type="color"
+          value={row.fill ?? undefined}
+          type={'color' as 'text'}
           onChange={onChange}
           validationState={validations?.fill?.state}
           validationMessage={validations?.fill?.message}
@@ -191,7 +196,7 @@ export const ChartSubjectForm = ({ autoFocusRef }: Props) => {
             defaultMessage: 'F\u00fcllung mit Verlauf',
           })}
           name="fill_graded"
-          value={row.fill_graded}
+          value={row.fill_graded as never}
           onChange={onChange}
           validationState={validations?.fill_graded?.state}
           validationMessage={

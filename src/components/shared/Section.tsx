@@ -1,8 +1,23 @@
 import { useNavigate, useLocation } from '@tanstack/react-router'
+import type { ReactNode } from 'react'
 import { FaChevronDown } from 'react-icons/fa'
 import { useRef, useState, useEffect } from 'react'
 
 import styles from './Section.module.css'
+
+type Props = {
+  title: ReactNode
+  children: ReactNode
+  onHeaderClick?: () => void
+  onChevronClick?: () => void
+  onNavigate?: () => void
+  isOpen?: boolean
+  titleClassName?: string
+  childrenClassName?: string
+  headerActions?: ReactNode
+  parentUrl?: string
+  listUrl?: string
+}
 
 // need to place children under their own parent
 // because some have position: relative which makes them overlay the section title
@@ -18,7 +33,7 @@ export const Section = ({
   headerActions = undefined,
   parentUrl = undefined,
   listUrl = undefined,
-}) => {
+}: Props) => {
   const navigate = useNavigate()
   const { pathname } = useLocation()
   const sentinelRef = useRef<HTMLDivElement>(null)

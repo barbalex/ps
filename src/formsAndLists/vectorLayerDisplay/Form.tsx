@@ -14,7 +14,7 @@ import type VectorLayerDisplays from '../../models/public/VectorLayerDisplays.ts
 
 type VectorLayerDisplayFormValidations = Record<
   string,
-  { state: string; message: string } | undefined
+  { state: 'error'; message: string } | undefined
 >
 
 type VectorLayerDisplayFormProps = {
@@ -40,7 +40,7 @@ export const VectorLayerDisplayForm = ({
             id: 'Ab5CdE',
             defaultMessage: 'Kreis-Radius in Bild-Punkten',
           })}
-          value={row.circle_marker_radius}
+            value={row.circle_marker_radius ?? undefined}
           onChange={onChange}
           type="number"
           validationMessage={validations?.circle_marker_radius?.message}
@@ -49,14 +49,17 @@ export const VectorLayerDisplayForm = ({
       )}
       {row.marker_type === 'marker' && (
         <>
-          <MarkerSymbolPicker onChange={onChange} value={row.marker_symbol} />
+          <MarkerSymbolPicker
+            onChange={onChange}
+            value={row.marker_symbol ?? undefined}
+          />
           <TextField
             name="marker_size"
             label={formatMessage({
               id: 'Bc6DeF',
               defaultMessage: 'Symbol: Grösse (in Bild-Punkten)',
             })}
-            value={row.marker_size}
+            value={row.marker_size ?? undefined}
             onChange={onChange}
             type="number"
             validationMessage={validations?.marker_size?.message}
@@ -70,8 +73,12 @@ export const VectorLayerDisplayForm = ({
           id: 'Cd7EfG',
           defaultMessage: 'Linien und Punkte: Farbe',
         })}
-        onChange={onChange}
-        color={row.color}
+        onChange={
+          onChange as unknown as (e: {
+            target: { name: string; value: string }
+          }) => void
+        }
+        color={row.color ?? undefined}
         name="color"
       />
       <TextField
@@ -80,7 +87,7 @@ export const VectorLayerDisplayForm = ({
           id: 'De8FgH',
           defaultMessage: 'Linien: Breite (in Bild-Punkten)',
         })}
-        value={row.weight}
+        value={row.weight ?? undefined}
         onChange={onChange}
         type="number"
         validationMessage={validations?.weight?.message}
@@ -94,7 +101,7 @@ export const VectorLayerDisplayForm = ({
           id: 'Gh1IjK',
           defaultMessage: 'Linien: Dash-Array',
         })}
-        value={row.dash_array}
+        value={row.dash_array ?? undefined}
         onChange={onChange}
         validationMessage={validations?.dash_array?.message}
         validationState={validations?.dash_array?.state}
@@ -105,7 +112,7 @@ export const VectorLayerDisplayForm = ({
           id: 'Hi2JkL',
           defaultMessage: 'Linien: Dash-Offset',
         })}
-        value={row.dash_offset}
+        value={row.dash_offset ?? undefined}
         onChange={onChange}
         validationMessage={validations?.dash_offset?.message}
         validationState={validations?.dash_offset?.state}
@@ -139,8 +146,12 @@ export const VectorLayerDisplayForm = ({
           defaultMessage: 'Füllung: Farbe',
         })}
         name="fill_color"
-        onChange={onChange}
-        color={row.fill_color}
+        onChange={
+          onChange as unknown as (e: {
+            target: { name: string; value: string }
+          }) => void
+        }
+        color={row.fill_color ?? undefined}
       />
       <SliderFieldWithInput
         label={formatMessage({

@@ -7,9 +7,9 @@ import { useParams } from '@tanstack/react-router'
 
 import { designingAtom, userIdAtom } from '../../store.ts'
 
-export const DesigningButton = ({ from }) => {
+export const DesigningButton = (_props: { from: string }) => {
   const [designingMap, setDesigningMap] = useAtom(designingAtom)
-  const { projectId } = useParams({ from })
+  const { projectId } = useParams({ strict: false }) as { projectId: string }
   const designing = designingMap[projectId] ?? false
   const userId = useAtomValue(userIdAtom)
 
@@ -37,6 +37,7 @@ export const DesigningButton = ({ from }) => {
       content={
         designing ? 'Designing this project. Click to stop' : 'Start designing'
       }
+      relationship="label"
     >
       <ToggleButton
         checked={designing}

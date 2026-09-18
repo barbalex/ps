@@ -6,6 +6,15 @@ import { useObservationsNavData } from '../modules/useObservationsNavData.ts'
 
 import '../form.css'
 
+type Props = {
+  projectId: string
+  subprojectId: string
+  placeId?: string
+  placeId2?: string
+  isToAssess?: boolean
+  isNotToAssign?: boolean
+}
+
 export const Observations = ({
   projectId,
   subprojectId,
@@ -13,7 +22,7 @@ export const Observations = ({
   placeId2,
   isToAssess = false,
   isNotToAssign = false,
-}) => {
+}: Props) => {
   const { loading, navData, isFiltered } = useObservationsNavData({
     projectId,
     subprojectId,

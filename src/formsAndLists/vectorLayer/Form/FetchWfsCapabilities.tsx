@@ -9,8 +9,11 @@ import {
   addOperationAtom,
   addNotificationAtom,
   updateNotificationAtom,
+  type AppNotification,
 } from '../../../store.ts'
 import { getWfsCapabilitiesData } from './getWfsCapabilitiesData.ts'
+import type VectorLayers from '../../../models/public/VectorLayers.ts'
+import type WfsServices from '../../../models/public/WfsServices.ts'
 import styles from './FetchWfsCapabilities.module.css'
 
 export const FetchWfsCapabilities = ({
@@ -18,6 +21,11 @@ export const FetchWfsCapabilities = ({
   url,
   fetching,
   setFetching,
+}: {
+  vectorLayer: VectorLayers
+  url: string
+  fetching: boolean
+  setFetching: (fetching: boolean) => void
 }) => {
   const db = usePGlite()
   const addOperation = useSetAtom(addOperationAtom)
@@ -29,7 +37,7 @@ export const FetchWfsCapabilities = ({
     `SELECT count(*) FROM wfs_service_layers WHERE wfs_service_id = $1`,
     [vectorLayer.wfs_service_id],
   )
-  const wfsServiceLayersCount: number = res?.rows?.[0]?.count ?? 0
+  const wfsServiceLayersCount = (res?.rows?.[0]?.count ?? 0) as number
 
   const onFetchCapabilities = async () => {
     const urlTrimmed = url?.trim?.()
@@ -40,8 +48,8 @@ export const FetchWfsCapabilities = ({
     const eSRes = await db.query(`SELECT * FROM wfs_services WHERE url = $1`, [
       urlTrimmed,
     ])
-    const existingService = eSRes?.rows?.[0]
-    let service
+    const existingService = eSRes?.rows?.[0] as WfsServices | undefined
+    let service: WfsServices
     if (existingService) {
       // 2. if so, update it
       service = { ...existingService }
@@ -52,7 +60,9 @@ export const FetchWfsCapabilities = ({
       )
       addOperation({
         table: 'wfs_service_layers',
-        filter: { wfs_service_id: service.wfs_service_id },
+        filter: {
+          wfs_service_id: service.wfs_service_id,
+        } as never,
         operation: 'delete',
       })
 
@@ -89,16 +99,16 @@ export const FetchWfsCapabilities = ({
         operation: 'update',
         draft: { wfs_service_id: serviceData.wfs_service_id },
       })
-      service = { ...serviceData }
+      service = { ...serviceData } as WfsServices
     }
 
     // show loading indicator
     setFetching(true)
-    const notificationId = await addNotification({
+    const notificationId = (await addNotification({
       title: `Loading capabilities for ${urlTrimmed}`,
       intent: 'info',
       paused: true,
-    })
+    })) as string
 
     // fetch capabilities
     try {
@@ -106,12 +116,12 @@ export const FetchWfsCapabilities = ({
     } catch (error) {
       console.error(
         'hello WmsBaseUrl, onBlur, error getting capabilities data:',
-        error?.message ?? error,
+        (error as Error)?.message ?? error,
       )
       // surface error to user
       await addNotification({
         title: `Error loading capabilities for ${urlTrimmed}`,
-        body: error?.message ?? error,
+        body: ((error as Error)?.message ?? error) as string,
         intent: 'error',
         paused: false,
       })
@@ -124,7 +134,7 @@ export const FetchWfsCapabilities = ({
         intent: 'success',
         paused: false,
         timeout: 500,
-      },
+      } as Partial<AppNotification>,
     })
   }
 

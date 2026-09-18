@@ -9,7 +9,7 @@ import { FormHeader } from '../../components/FormHeader/index.tsx'
 import { HistoryToggleButton } from '../../components/shared/HistoryCompare/HistoryToggleButton.tsx'
 import { addOperationAtom } from '../../store.ts'
 
-export const Header = ({ autoFocusRef, from }) => {
+export const Header = ({ autoFocusRef }: { autoFocusRef?: React.RefObject<HTMLInputElement | null>; from?: string }) => {
   const {
     projectId,
     subprojectId,
@@ -17,7 +17,7 @@ export const Header = ({ autoFocusRef, from }) => {
     placeId2,
     actionReportId,
     actionReportQuantityId,
-  } = useParams({ from })
+  } = useParams({ strict: false })
   const navigate = useNavigate()
   const basePath = placeId2
     ? `/data/projects/${projectId}/subprojects/${subprojectId}/places/${placeId}/places/${placeId2}/action-reports/${actionReportId}/quantities/${actionReportQuantityId}`
@@ -36,10 +36,10 @@ export const Header = ({ autoFocusRef, from }) => {
     `SELECT COUNT(*) as count FROM action_report_quantities WHERE place_action_report_id = $1`,
     [actionReportId],
   )
-  const rowCount = countRes?.rows?.[0]?.count ?? 2
+  const rowCount = Number(countRes?.rows?.[0]?.count ?? 2)
 
   const addRow = async () => {
-    const id = await createActionReportQuantity({ actionReportId })
+    const id = await createActionReportQuantity({actionReportId: actionReportId! })
     if (!id) return
     navigate({
       to: `../${id}`,
@@ -54,7 +54,7 @@ export const Header = ({ autoFocusRef, from }) => {
         'SELECT * FROM action_report_quantities WHERE place_action_report_quantity_id = $1',
         [actionReportQuantityId],
       )
-      const prev = prevRes?.rows?.[0] ?? {}
+      const prev = (prevRes?.rows?.[0] ?? {}) as Record<string, unknown>
       await db.query(
         'DELETE FROM action_report_quantities WHERE place_action_report_quantity_id = $1',
         [actionReportQuantityId],
@@ -74,7 +74,9 @@ export const Header = ({ autoFocusRef, from }) => {
 
   const toNext = async () => {
     try {
-      const res = await db.query(
+      const res = await db.query<{
+        place_action_report_quantity_id: string
+      }>(
         'SELECT place_action_report_quantity_id FROM action_report_quantities WHERE place_action_report_id = $1 ORDER BY label',
         [actionReportId],
       )
@@ -103,7 +105,9 @@ export const Header = ({ autoFocusRef, from }) => {
 
   const toPrevious = async () => {
     try {
-      const res = await db.query(
+      const res = await db.query<{
+        place_action_report_quantity_id: string
+      }>(
         'SELECT place_action_report_quantity_id FROM action_report_quantities WHERE place_action_report_id = $1 ORDER BY label',
         [actionReportId],
       )

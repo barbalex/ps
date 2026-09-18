@@ -45,9 +45,13 @@ type UnifiedQcItem = {
   source: 'qcs' | 'project_qcs'
 }
 
-export const ProjectQcAssignments = ({ from }) => {
-  const { projectId } = useParams({ from })
-  const { navData } = useProjectQcAssignmentsNavData({ projectId })
+type Props = {
+  from: '/data/projects/$projectId_/qc-assignments/'
+}
+
+export const ProjectQcAssignments = ({}: Props) => {
+  const { projectId } = useParams({ strict: false })
+  const { navData } = useProjectQcAssignmentsNavData({projectId: projectId! })
   const { formatMessage } = useIntl()
   const [language] = useAtom(languageAtom)
   const addOperation = useSetAtom(addOperationAtom)
@@ -56,27 +60,27 @@ export const ProjectQcAssignments = ({ from }) => {
   const [searchTerm, setSearchTerm] = useState('')
 
   // Load all project-level QCS that have SQL
-  const qcsRes = useLiveQuery(
+  const qcsRes = useLiveQuery<QcRow>(
     `SELECT qcs_id, COALESCE(NULLIF(name_${language}, ''), name_de) AS label
      FROM qcs WHERE level = 'project' AND sql IS NOT NULL AND sql != '' ORDER BY label`,
   )
 
   // Load active assignments for this project
-  const activeRes = useLiveQuery(
+  const activeRes = useLiveQuery<ActiveEntry>(
     `SELECT qc_assignment_id, qc_id FROM qc_assignments
      WHERE project_id = $1 AND subproject_id IS NULL`,
     [projectId],
   )
 
   // Load project-specific QCs for this project at project level that have SQL
-  const projectQcsRes = useLiveQuery(
+  const projectQcsRes = useLiveQuery<ProjectQcRow>(
     `SELECT project_qc_id, COALESCE(NULLIF(name_${language}, ''), name_de) AS label
      FROM project_qcs WHERE project_id = $1 AND level = 'project' AND sql IS NOT NULL AND sql != '' ORDER BY label`,
     [projectId],
   )
 
   // Load active project_qcs assignments for this project
-  const activeProjectQcRes = useLiveQuery(
+  const activeProjectQcRes = useLiveQuery<ActiveProjectQcEntry>(
     `SELECT project_qc_assignment_id, project_qc_id FROM project_qc_assignments
      WHERE project_id = $1 AND subproject_id IS NULL`,
     [projectId],
@@ -152,8 +156,11 @@ export const ProjectQcAssignments = ({ from }) => {
           console.error('Error removing project QC:', error)
         }
       } else {
-        await createProjectQcAssignments({ projectId, qcId: item.id })
-      }
+        await createProjectQcAssignments({
+          projectId: projectId!,
+          qcId: item.id,
+        })
+     }
     } else {
       if (activeProjectQcIds.has(item.id)) {
         const entry = activeProjectQcEntries.find(
@@ -191,8 +198,11 @@ export const ProjectQcAssignments = ({ from }) => {
   const activateAll = async () => {
     for (const item of filteredItems.filter((i) => !isActive(i))) {
       if (item.source === 'qcs') {
-        await createProjectQcAssignments({ projectId, qcId: item.id })
-      } else {
+        await createProjectQcAssignments({
+          projectId: projectId!,
+          qcId: item.id,
+        })
+     } else {
         await createProjectQcAssignmentsForProjectQc({
           projectId,
           projectQcId: item.id,

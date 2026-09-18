@@ -11,6 +11,14 @@ interface Props {
   level?: number
 }
 
+// mirrors the open rows returned by useWmsServicesNavData's sql
+type NavData = {
+  id: string
+  label: string
+  count_unfiltered?: number
+  count_filtered?: number
+}
+
 export const WmsServicesNode = ({ projectId, level = 3 }: Props) => {
   const navigate = useNavigate()
 
@@ -38,7 +46,8 @@ export const WmsServicesNode = ({ projectId, level = 3 }: Props) => {
     addOpenNodes({ nodes: [ownArray] })
   }
 
-  const showNavs = isOpen && navs.length > 0 && navs[0].id
+  const openNavs = navs as NavData[]
+  const showNavs = isOpen && navs.length > 0 && openNavs[0].id
 
   return (
     <>
@@ -53,7 +62,7 @@ export const WmsServicesNode = ({ projectId, level = 3 }: Props) => {
         onClickButton={onClickButton}
       />
       {showNavs &&
-        navs.map((nav, i) => (
+        openNavs.map((nav, i) => (
           <WmsServiceNode
             key={`${nav.id}-${i}`}
             projectId={projectId}

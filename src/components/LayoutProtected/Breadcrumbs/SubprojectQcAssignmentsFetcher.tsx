@@ -1,12 +1,16 @@
 import { useSubprojectQcAssignmentsNavData } from '../../../modules/useSubprojectQcAssignmentsNavData.ts'
 import { FetcherReturner } from './FetcherReturner.tsx'
 
-export const SubprojectQcAssignmentsFetcher = ({ params, ...other }) => {
+type Props = {
+  params: Parameters<typeof useSubprojectQcAssignmentsNavData>[0]
+}
+
+export const SubprojectQcAssignmentsFetcher = ({ params, ...other }: Props) => {
   const { navData } = useSubprojectQcAssignmentsNavData(params)
 
   return (
     <FetcherReturner
-      key={`${navData?.id ?? navData?.ownUrl}`}
+      key={`${(navData as { id?: string } | undefined)?.id ?? navData?.ownUrl}`}
       navData={navData}
       {...other}
     />

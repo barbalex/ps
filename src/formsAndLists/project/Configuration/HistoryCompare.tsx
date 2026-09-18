@@ -21,18 +21,12 @@ import {
 
 import type ProjectsHistory from '../../../models/public/ProjectsHistory.ts'
 
-const from =
-  '/data/projects/$projectId_/configuration/histories/$projectConfigurationHistoryId'
-
 const configFrom = '/data/projects/$projectId_/configuration'
 
 export const ProjectConfigurationHistoryCompare = () => {
   const { formatMessage, locale } = useIntl()
   const navigate = useNavigate()
-  const { projectId, projectConfigurationHistoryId } = useParams({
-    from,
-    strict: false,
-  })
+  const { projectId, projectConfigurationHistoryId } = useParams({ strict: false })
 
   const formPath = `/data/projects/${projectId}/configuration`
   const historyPath = `${formPath}/histories`
@@ -287,7 +281,10 @@ export const ProjectConfigurationHistoryCompare = () => {
     'action_reports_default_unit_id',
   ])
 
-  const formatFieldValue = (field: string, history: ProjectsHistory) => {
+  const formatFieldValue = (
+    field: string,
+    history: ProjectsHistory & Record<string, unknown>,
+  ) => {
     if (field === 'type') {
       const value = history[field]
       if (typeof value === 'string') {
@@ -300,11 +297,11 @@ export const ProjectConfigurationHistoryCompare = () => {
         return unitLabelMap[value] ?? value
       }
     }
-    return stringifyHistoryValue(history[field])
+    return stringifyHistoryValue((history as Record<string, unknown>)[field])
   }
 
   return (
-    <HistoryCompare<ProjectsHistory>
+    <HistoryCompare<ProjectsHistory & Record<string, unknown>>
       onBack={() => navigate({ to: formPath })}
       leftContent={leftContent}
       visibleCurrentFields={new Set(preferredOrder)}

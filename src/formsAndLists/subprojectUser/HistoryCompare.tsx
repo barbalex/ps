@@ -20,33 +20,33 @@ import {
   preferredOrder,
 } from './historyCompareConfig.ts'
 
-import type SubprojectUsers from '../../models/public/SubprojectUsers.ts'
-import type SubprojectUsersHistory from '../../models/public/SubprojectUsersHistory.ts'
-
-const from =
-  '/data/projects/$projectId_/subprojects/$subprojectId_/users/$subprojectUserId_/histories/$subprojectUserHistoryId'
+import type SubprojectRoles from '../../models/public/SubprojectRoles.ts'
+import type SubprojectRolesHistory from '../../models/public/SubprojectRolesHistory.ts'
 
 export const SubprojectUserHistoryCompare = () => {
   const { formatMessage } = useIntl()
   const navigate = useNavigate()
   const { projectId, subprojectId, subprojectUserId, subprojectUserHistoryId } =
-    useParams({ from, strict: false })
+    useParams({ strict: false })
   const subprojectUserPath = `/data/projects/${projectId}/subprojects/${subprojectId}/users/${subprojectUserId}`
   const historyPath = `${subprojectUserPath}/histories`
 
   const addOperation = useSetAtom(addOperationAtom)
   const db = usePGlite()
-  const [validations, setValidations] = useState<Record<string, unknown>>({})
+  const [validations, setValidations] = useState<Record<string, { state: 'error'; message: string }>>({})
 
   const rowRes = useLiveQuery(
     `SELECT * FROM subproject_roles WHERE subproject_role_id = $1`,
     [subprojectUserId],
   )
-  const row = rowRes?.rows?.[0] as SubprojectUsers | undefined
+  const row = rowRes?.rows?.[0] as SubprojectRoles | undefined
 
-  const onChange = async (e, data) => {
+  const onChange = async (
+    e: React.ChangeEvent<HTMLInputElement>,
+    data: Parameters<typeof getValueFromChange>[1],
+  ) => {
     const { name, value } = getValueFromChange(e, data)
-    if (!row || row[name] === value) return
+    if (!row || (row as unknown as Record<string, unknown>)[name] === value) return
 
     try {
       await db.query(
@@ -56,7 +56,7 @@ export const SubprojectUserHistoryCompare = () => {
     } catch (error) {
       setValidations((prev) => ({
         ...prev,
-        [name]: { state: 'error', message: error.message },
+        [name]: { state: 'error', message: error instanceof Error ? error.message : String(error) },
       }))
       return
     }
@@ -129,11 +129,11 @@ export const SubprojectUserHistoryCompare = () => {
     },
   })
 
-  const formatFieldValue = (field: string, history: SubprojectUsersHistory) =>
-    stringifyHistoryValue(history[field])
+  const formatFieldValue = (field: string, history: SubprojectRolesHistory) =>
+    stringifyHistoryValue((history as unknown as Record<string, unknown>)[field])
 
   return (
-    <HistoryCompare<SubprojectUsersHistory>
+    <HistoryCompare<SubprojectRolesHistory>
       onBack={() => navigate({ to: subprojectUserPath })}
       leftContent={leftContent}
       visibleCurrentFields={visibleCurrentFields}

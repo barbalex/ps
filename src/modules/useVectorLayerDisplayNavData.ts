@@ -26,7 +26,7 @@ export const useVectorLayerDisplayNavData = ({
   const location = useLocation()
   const { formatMessage } = useIntl()
 
-  const res = useLiveQuery(
+  const res = useLiveQuery<NavData>(
     `
       SELECT
         vector_layer_display_id AS id,

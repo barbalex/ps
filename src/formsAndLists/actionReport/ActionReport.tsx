@@ -14,12 +14,14 @@ import type ActionReports from '../../models/public/ActionReports.ts'
 
 import '../../form.css'
 
-export const ActionReport = ({ from }) => {
-  const { actionReportId } = useParams({ from })
+export const ActionReport = ({ from }: { from: string }) => {
+  const { actionReportId } = useParams({ strict: false })
   const addOperation = useSetAtom(addOperationAtom)
   const { formatMessage } = useIntl()
 
-  const [validations, setValidations] = useState({})
+  const [validations, setValidations] = useState<
+    Record<string, { state: 'error'; message: string }>
+  >({})
 
   const autoFocusRef = useRef<HTMLInputElement>(null)
 
@@ -28,11 +30,14 @@ export const ActionReport = ({ from }) => {
     `SELECT * FROM action_reports WHERE place_action_report_id = $1`,
     [actionReportId],
   )
-  const row: ActionReports | undefined = res?.rows?.[0]
+  const row = res?.rows?.[0] as ActionReports | undefined
 
-  const onChange = async (e, data) => {
+  const onChange = async (
+    e: React.ChangeEvent<HTMLInputElement>,
+    data: Parameters<typeof getValueFromChange>[1],
+  ) => {
     const { name, value } = getValueFromChange(e, data)
-    if (row[name] === value) return
+    if ((row as Record<string, any>)[name] === value) return
 
     try {
       await db.query(
@@ -42,7 +47,7 @@ export const ActionReport = ({ from }) => {
     } catch (error) {
       setValidations((prev) => ({
         ...prev,
-        [name]: { state: 'error', message: error.message },
+        [name]: { state: 'error', message: error instanceof Error ? error.message : String(error) },
       }))
       return
     }

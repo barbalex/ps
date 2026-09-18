@@ -3,12 +3,19 @@ import * as fluentUiReactComponents from '@fluentui/react-components'
 const { makeStyles, Input, Body1, Field } = fluentUiReactComponents
 import { useIntl } from 'react-intl'
 type InputProps = React.ComponentProps<typeof Input>
+type FieldProps = React.ComponentProps<typeof Field>
 
 const useStyles = makeStyles({
   body: { color: 'grey' },
 })
 
-export const TextFieldInactive = (props: InputProps) => {
+type Props = Omit<InputProps, 'value'> &
+  Pick<FieldProps, 'validationMessage' | 'validationState'> & {
+    label?: string
+    value?: string | number
+  }
+
+export const TextFieldInactive = (props: Props) => {
   const styles = useStyles()
   const { formatMessage } = useIntl()
 
@@ -26,7 +33,7 @@ export const TextFieldInactive = (props: InputProps) => {
       <Input
         appearance="underline"
         {...props}
-        value={props.value ?? ''}
+        value={(props.value ?? '') as string}
         onChange={(e) => {
           if (!changed && e.target.value !== props.value) {
             setChanged(true)

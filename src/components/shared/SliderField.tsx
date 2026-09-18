@@ -1,11 +1,18 @@
 import * as fluentUiReactComponents from '@fluentui/react-components'
 const { Field, Slider, Label } = fluentUiReactComponents
-type InputProps = React.ComponentProps<typeof fluentUiReactComponents.Input>
+type SliderProps = React.ComponentProps<typeof Slider>
+type FieldProps = React.ComponentProps<typeof Field>
 import { useDebouncedCallback } from 'use-debounce'
 
 import styles from './SliderField.module.css'
 
-export const SliderField = (props: InputProps) => {
+type Props = Pick<SliderProps, 'min' | 'max' | 'step' | 'onChange'> &
+  Pick<FieldProps, 'label' | 'validationMessage' | 'validationState'> & {
+    name: string
+    value?: number | string
+  }
+
+export const SliderField = (props: Props) => {
   const {
     label,
     name,
@@ -20,7 +27,7 @@ export const SliderField = (props: InputProps) => {
 
   // need to debounce changes when sliding or slider will not render correctly
   // do not use a small value or if slid slowly the user will loose the drag
-  const onChangeSliderDebounced = useDebouncedCallback(onChange, 300)
+  const onChangeSliderDebounced = useDebouncedCallback(onChange!, 300)
 
   return (
     <Field
@@ -36,7 +43,7 @@ export const SliderField = (props: InputProps) => {
           min={min}
           max={max}
           step={step ?? undefined}
-          defaultValue={value}
+          defaultValue={value as number | undefined}
           onChange={onChangeSliderDebounced}
           className={styles.slider}
         />

@@ -13,12 +13,17 @@ type NavData = {
   layers_count_unfiltered: number
 }
 
-export const useWfsServiceNavData = ({ projectId, wfsServiceId }) => {
+type Props = {
+  projectId: string
+  wfsServiceId: string
+}
+
+export const useWfsServiceNavData = ({ projectId, wfsServiceId }: Props) => {
   const [openNodes] = useAtom(treeOpenNodesAtom)
   const location = useLocation()
   const { formatMessage } = useIntl()
 
-  const res = useLiveQuery(
+  const res = useLiveQuery<NavData>(
     `
     WITH
       layers_count AS (SELECT COUNT(*) AS count FROM wfs_service_layers WHERE wfs_service_id = '${wfsServiceId}')
@@ -73,6 +78,7 @@ export const useWfsServiceNavData = ({ projectId, wfsServiceId }) => {
         label: buildNavLabel({
           loading,
           countFiltered: nav?.layers_count_unfiltered ?? 0,
+          countUnfiltered: nav?.layers_count_unfiltered ?? 0,
           namePlural: formatMessage({ id: 'SmuSBE', defaultMessage: 'Ebenen' }),
         }),
       },

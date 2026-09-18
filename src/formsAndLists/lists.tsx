@@ -8,17 +8,17 @@ import { FilterButton } from '../components/shared/FilterButton.tsx'
 import { Loading } from '../components/shared/Loading.tsx'
 import '../form.css'
 
-const from = '/data/projects/$projectId_/lists/'
 
 export const Lists = () => {
-  const { projectId } = useParams({ from })
+  const { projectId } = useParams({ strict: false })
   const navigate = useNavigate()
 
-  const { loading, navData, isFiltered } = useListsNavData({ projectId })
-  const { navs, label, nameSingular } = navData
+  const { loading, navData, isFiltered } = useListsNavData({projectId: projectId! })
+  const { label, nameSingular } = navData
+  const navs = navData.navs as { id: string; label: string }[]
 
   const add = async () => {
-    const id = await createList({ projectId })
+    const id = await createList({projectId: projectId! })
     if (!id) return
     navigate({
       to: `${id}/list`,

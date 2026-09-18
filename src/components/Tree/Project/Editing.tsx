@@ -1,18 +1,28 @@
 import { MdEdit, MdEditOff } from 'react-icons/md'
 import * as fluentUiReactComponents from '@fluentui/react-components'
-const { Button, Tooltip } = fluentUiReactComponents
+const { Button, Tooltip: TooltipComponent } = fluentUiReactComponents
 import { useAtom, useAtomValue } from 'jotai'
 import { useLiveQuery } from '@electric-sql/pglite-react'
+import type { ComponentProps, FC, MouseEvent } from 'react'
 
 import { designingAtom, userIdAtom } from '../../../store.ts'
 import styles from './Editing.module.css'
 
-export const Editing = ({ projectId }) => {
+// Fluent's Tooltip types require a `relationship` prop that is not passed here
+const Tooltip = TooltipComponent as FC<
+  Partial<ComponentProps<typeof TooltipComponent>>
+>
+
+type Props = {
+  projectId: string
+}
+
+export const Editing = ({ projectId }: Props) => {
   const [designingMap, setDesigningMap] = useAtom(designingAtom)
   const designing = designingMap[projectId] ?? false
   const userId = useAtomValue(userIdAtom)
 
-  const onClick = (e) => {
+  const onClick = (e: MouseEvent<HTMLButtonElement>) => {
     e.stopPropagation()
     setDesigningMap((prev) => ({ ...prev, [projectId]: !prev[projectId] }))
   }

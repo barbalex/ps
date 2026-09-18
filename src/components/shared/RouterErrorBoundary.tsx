@@ -4,7 +4,7 @@ const { Button } = fluentUiReactComponents
 import styles from './RouterErrorBoundary.module.css'
 
 const onReload = () => {
-  window.location.reload(true)
+  window.location.reload()
 }
 
 interface Props {

@@ -14,8 +14,7 @@ export const ProjectUsers = ({ hideHeader = false }) => {
   const usersBaseUrl = `/data/projects/${projectId}/users`
 
   const { loading, navData, isFiltered } = useProjectUsersNavData({
-    projectId,
-  })
+    projectId: projectId!,  })
   const { navs, label, nameSingular } = navData
 
   const onUserCreated = (id: string) => {
@@ -31,7 +30,7 @@ export const ProjectUsers = ({ hideHeader = false }) => {
           menus={
             <>
               <AddProjectUserButton
-                scope={{ kind: 'project', projectId }}
+                scope={{ kind: 'project', projectId: projectId! }}
                 onUserCreated={onUserCreated}
               />
               <FilterButton isFiltered={isFiltered} />

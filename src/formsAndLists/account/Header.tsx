@@ -12,11 +12,13 @@ import { FormHeader } from '../../components/FormHeader/index.tsx'
 import { addOperationAtom, confirmDeleteAccountAtom } from '../../store.ts'
 import type Accounts from '../../models/public/Accounts.ts'
 
-const from = '/data/users/$userId_/accounts/$accountId_'
-
-export const Header = ({ autoFocusRef }) => {
+export const Header = ({
+  autoFocusRef,
+}: {
+  autoFocusRef?: React.RefObject<HTMLInputElement | null>
+}) => {
   const { formatMessage } = useIntl()
-  const { userId, accountId } = useParams({ from })
+  const { userId, accountId } = useParams({ strict: false })
   const navigate = useNavigate()
   const addOperation = useSetAtom(addOperationAtom)
   const setConfirmDeleteAccount = useSetAtom(confirmDeleteAccountAtom)
@@ -34,11 +36,14 @@ export const Header = ({ autoFocusRef }) => {
     'SELECT COUNT(*) as count FROM accounts WHERE user_id = $1',
     [userId],
   )
-  const rowCount = countRes?.rows?.[0]?.count ?? 2
+  const rowCount = (countRes?.rows?.[0]?.count ?? 2) as number
 
   const addRow = async () => {
-    const res = await createAccount({ userId })
-    const accountId: Accounts['account_id'] | undefined = res?.rows?.[0]
+    const res = (await createAccount({ userId: userId! })) as unknown as {
+      rows?: { account_id?: Accounts['account_id'] }[]
+    }
+    const accountId: Accounts['account_id'] | undefined =
+      res?.rows?.[0]?.account_id
     if (!accountId) return
     navigate({ to: `../${accountId}` })
     autoFocusRef?.current?.focus()
@@ -46,15 +51,15 @@ export const Header = ({ autoFocusRef }) => {
 
   const deleteRow = () => {
     setConfirmDeleteAccount({
-      accountId,
-      userId,
+      accountId: accountId!,
+      userId: userId!,
       onConfirm: async () => {
         try {
           const prevRes = await db.query(
             `SELECT * FROM accounts WHERE account_id = $1 AND user_id = $2`,
             [accountId, userId],
           )
-          const prev = prevRes?.rows?.[0] ?? {}
+          const prev = (prevRes?.rows?.[0] ?? {}) as Record<string, unknown>
           await db.query(`DELETE FROM accounts WHERE account_id = $1 AND user_id = $2`, [
             accountId,
             userId,
@@ -80,7 +85,7 @@ export const Header = ({ autoFocusRef }) => {
         `SELECT account_id FROM accounts WHERE user_id = $1 order by label`,
         [userId],
       )
-      const rows = res?.rows
+      const rows = res?.rows as { account_id: string }[]
       const len = rows.length
       const index = rows.findIndex((p) => p.account_id === accountIdRef.current)
       const next = rows[(index + 1) % len]
@@ -96,7 +101,7 @@ export const Header = ({ autoFocusRef }) => {
         `SELECT account_id FROM accounts WHERE user_id = $1 order by label`,
         [userId],
       )
-      const rows = res?.rows
+      const rows = res?.rows as { account_id: string }[]
       const len = rows.length
       const index = rows.findIndex((p) => p.account_id === accountIdRef.current)
       const previous = rows[(index + len - 1) % len]

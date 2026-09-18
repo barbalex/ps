@@ -5,6 +5,7 @@ import { useSetAtom } from 'jotai'
 import { useIntl } from 'react-intl'
 
 import { ActionForm } from './Form.tsx'
+import type { Validations } from './Form.tsx'
 import { HistoryCompare } from '../../components/shared/HistoryCompare/index.tsx'
 import { createHistoryFieldLabelFormatter } from '../../components/shared/HistoryCompare/utils.ts'
 import { Loading } from '../../components/shared/Loading.tsx'
@@ -29,10 +30,7 @@ export const ActionHistoryCompare = ({
   const { formatMessage } = useIntl()
   const navigate = useNavigate()
   const { projectId, subprojectId, placeId, placeId2, actionId, actionHistoryId } =
-    useParams({
-      from,
-      strict: false,
-    })
+    useParams({ strict: false })
 
   const actionPath = placeId2
     ? `/data/projects/${projectId}/subprojects/${subprojectId}/places/${placeId}/places/${placeId2}/actions/${actionId}/action`
@@ -46,7 +44,7 @@ export const ActionHistoryCompare = ({
   const db = usePGlite()
   const autoFocusRef = useRef<HTMLInputElement>(null)
 
-  const [validations, setValidations] = useState<Record<string, unknown>>({})
+  const [validations, setValidations] = useState<Validations>({})
 
   const rowRes = useLiveQuery(`SELECT * FROM actions WHERE action_id = $1`, [
     actionId,
@@ -67,9 +65,12 @@ export const ActionHistoryCompare = ({
     },
   })
 
-  const onChange = async (e, data) => {
+  const onChange = async (
+    e: React.ChangeEvent<HTMLInputElement>,
+    data: Parameters<typeof getValueFromChange>[1],
+  ) => {
     const { name, value } = getValueFromChange(e, data)
-    if (!row || row[name] === value) return
+    if (!row || (row as Record<string, unknown>)[name] === value) return
 
     try {
       await db.query(`UPDATE actions SET ${name} = $1 WHERE action_id = $2`, [
@@ -79,7 +80,7 @@ export const ActionHistoryCompare = ({
     } catch (error) {
       setValidations((prev) => ({
         ...prev,
-        [name]: { state: 'error', message: error.message },
+        [name]: { state: 'error', message: (error as Error).message },
       }))
       return
     }
@@ -112,7 +113,7 @@ export const ActionHistoryCompare = ({
   }
 
   return (
-    <HistoryCompare<ActionsHistory>
+    <HistoryCompare<ActionsHistory & Record<string, unknown>>
       onBack={() => navigate({ to: actionPath })}
       leftContent={
         <div className="form-container">

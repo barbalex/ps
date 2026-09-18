@@ -1,8 +1,24 @@
 import { useState } from 'react'
 import * as fluentUiReactComponents from '@fluentui/react-components'
 const { Input, Field } = fluentUiReactComponents
+type InputProps = React.ComponentProps<typeof Input>
+type InputOnChangeData = Parameters<NonNullable<InputProps['onChange']>>[1]
+type FieldProps = React.ComponentProps<typeof Field>
 
 import styles from './TimeFields.module.css'
+
+type Props = {
+  label?: string
+  name: string
+  value?: string
+  autoFocus?: boolean
+  ref?: InputProps['ref']
+  onChange: (e: React.ChangeEvent<HTMLInputElement>) => void
+  button?: React.ReactNode
+  // accepted for consistency with other fields but not used
+  validationMessage?: FieldProps['validationMessage']
+  validationState?: FieldProps['validationState']
+}
 
 export const TimeFields = ({
   label,
@@ -12,38 +28,48 @@ export const TimeFields = ({
   ref,
   onChange,
   button,
-}) => {
+}: Props) => {
   const valArray = (value ?? '').split(':')
   const [hours, setHours] = useState(valArray[0] ?? '')
   const [minutes, setMinutes] = useState(valArray[1] ?? '')
 
   const [hoursValidationState, hoursValidationMessage] =
     hours !== ''
-      ? ['none', '']
+      ? (['none', ''] as const)
       : minutes === ''
-        ? ['none', '']
-        : ['warning', 'must be set']
+        ? (['none', ''] as const)
+        : (['warning', 'must be set'] as const)
 
   const [minutesValidationState, minutesValidationMessage] =
     minutes !== ''
-      ? ['none', '']
+      ? (['none', ''] as const)
       : hours === ''
-        ? ['none', '']
-        : ['warning', 'must be set']
+        ? (['none', ''] as const)
+        : (['warning', 'must be set'] as const)
 
-  const onChangeHours = (ev, data) => {
+  const onChangeHours = (
+    _ev: React.ChangeEvent<HTMLInputElement>,
+    data: InputOnChangeData,
+  ) => {
     const newHours = data.value
     setHours(newHours)
     if (minutes) {
-      onChange({ target: { name, value: `${newHours}:${minutes}` } })
+      onChange({
+        target: { name, value: `${newHours}:${minutes}` },
+      } as unknown as React.ChangeEvent<HTMLInputElement>)
     }
   }
 
-  const onChangeMinutes = (ev, data) => {
+  const onChangeMinutes = (
+    _ev: React.ChangeEvent<HTMLInputElement>,
+    data: InputOnChangeData,
+  ) => {
     const newMinutes = data.value
     setMinutes(newMinutes)
     if (hours) {
-      onChange({ target: { name, value: `${hours}:${newMinutes}` } })
+      onChange({
+        target: { name, value: `${hours}:${newMinutes}` },
+      } as unknown as React.ChangeEvent<HTMLInputElement>)
     }
   }
 

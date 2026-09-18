@@ -86,7 +86,7 @@ export const useCheckReportsNavData = ({
         count_filtered.count AS count_filtered
       FROM count_unfiltered, count_filtered
     `
-  const res = useLiveQuery(sql)
+  const res = useLiveQuery<NavDataOpen[number]>(sql)
 
   const loading = res === undefined
 

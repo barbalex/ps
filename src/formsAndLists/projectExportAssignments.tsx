@@ -45,9 +45,13 @@ type UnifiedExportItem = {
   source: 'exports' | 'project_exports'
 }
 
-export const ProjectExportAssignments = ({ from }) => {
-  const { projectId } = useParams({ from })
-  const { navData } = useProjectExportAssignmentsNavData({ projectId })
+type Props = {
+  from: '/data/projects/$projectId_/export-assignments/'
+}
+
+export const ProjectExportAssignments = ({}: Props) => {
+  const { projectId } = useParams({ strict: false })
+  const { navData } = useProjectExportAssignmentsNavData({projectId: projectId! })
   const { formatMessage } = useIntl()
   const [language] = useAtom(languageAtom)
   const addOperation = useSetAtom(addOperationAtom)
@@ -56,27 +60,27 @@ export const ProjectExportAssignments = ({ from }) => {
   const [searchTerm, setSearchTerm] = useState('')
 
   // Load all project-level exports that have SQL
-  const exportsRes = useLiveQuery(
+  const exportsRes = useLiveQuery<ExportRow>(
     `SELECT exports_id, COALESCE(NULLIF(name_${language}, ''), name_de) AS label
      FROM exports WHERE level = 'project' AND sql IS NOT NULL AND sql != '' ORDER BY label`,
   )
 
   // Load active assignments for this project
-  const activeRes = useLiveQuery(
+  const activeRes = useLiveQuery<ActiveEntry>(
     `SELECT export_assignment_id, exports_id FROM export_assignments
      WHERE project_id = $1 AND subproject_id IS NULL`,
     [projectId],
   )
 
   // Load project-specific exports for this project at project level that have SQL
-  const projectExportsRes = useLiveQuery(
+  const projectExportsRes = useLiveQuery<ProjectExportRow>(
     `SELECT project_exports_id, COALESCE(NULLIF(name_${language}, ''), name_de) AS label
      FROM project_exports WHERE project_id = $1 AND level = 'project' AND sql IS NOT NULL AND sql != '' ORDER BY label`,
     [projectId],
   )
 
   // Load active project_exports assignments for this project
-  const activeProjectExportRes = useLiveQuery(
+  const activeProjectExportRes = useLiveQuery<ActiveProjectExportEntry>(
     `SELECT project_export_assignment_id, project_exports_id FROM project_export_assignments
      WHERE project_id = $1 AND subproject_id IS NULL`,
     [projectId],
@@ -151,8 +155,11 @@ export const ProjectExportAssignments = ({ from }) => {
           console.error('Error removing project export:', error)
         }
       } else {
-        await createProjectExportAssignment({ projectId, exportsId: item.id })
-      }
+        await createProjectExportAssignment({
+          projectId: projectId!,
+          exportsId: item.id,
+        })
+     }
     } else {
       if (activeProjectExportsIds.has(item.id)) {
         const entry = activeProjectExportEntries.find(
@@ -190,8 +197,11 @@ export const ProjectExportAssignments = ({ from }) => {
   const activateAll = async () => {
     for (const item of filteredItems.filter((i) => !isActive(i))) {
       if (item.source === 'exports') {
-        await createProjectExportAssignment({ projectId, exportsId: item.id })
-      } else {
+        await createProjectExportAssignment({
+          projectId: projectId!,
+          exportsId: item.id,
+        })
+     } else {
         await createProjectExportAssignmentForProjectExport({
           projectId,
           projectExportsId: item.id,

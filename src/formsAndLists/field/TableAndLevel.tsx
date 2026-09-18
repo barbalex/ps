@@ -5,8 +5,29 @@ import { useAtom } from 'jotai'
 import { useIntl } from 'react-intl'
 
 import { languageAtom } from '../../store.ts'
+import type Fields from '../../models/public/Fields.ts'
 
 const { Dropdown, Field, Option } = fluentUiReactComponents
+
+type InputProps = React.ComponentProps<typeof fluentUiReactComponents.Input>
+type InputOnChangeData = Parameters<NonNullable<InputProps['onChange']>>[1]
+type DropdownOnSelectData = Parameters<
+  NonNullable<React.ComponentProps<typeof Dropdown>['onOptionSelect']>
+>[1]
+
+type Props = {
+  projectId?: string
+  onChange: (
+    e: React.ChangeEvent<HTMLInputElement>,
+    data?: InputOnChangeData,
+  ) => void
+  row: Record<string, unknown>
+  validations?: Record<
+    string,
+    { state: 'error' | 'warning' | 'success' | 'none'; message: string } | undefined
+  >
+  autoFocusRef?: React.RefObject<HTMLInputElement | null>
+}
 
 type Opt = { id: string; table_name: string; level: number | null }
 
@@ -56,11 +77,12 @@ export const TableAndLevel = ({
   row,
   validations,
   autoFocusRef,
-}) => {
+}: Props) => {
   const { formatMessage } = useIntl()
   const tableLabel = formatMessage({ id: 'Tb8kLm', defaultMessage: 'Tabelle' })
   const [language] = useAtom(languageAtom)
   const isFirstRender = useIsFirstRender()
+  const fieldsRow = row as unknown as Fields
 
   // Always call hooks unconditionally; use WHERE false when not in project context
   const projectRes = useLiveQuery(
@@ -80,20 +102,20 @@ export const TableAndLevel = ({
 
   if (!projectId) {
     // Account context: only the 'projects' table is available
-    const combinedValue = row.table_name === 'projects' ? 'projects' : ''
-    const handleChange = (_e, data) => {
+    const combinedValue = fieldsRow.table_name === 'projects' ? 'projects' : ''
+    const handleChange = (_e: unknown, data: DropdownOnSelectData) => {
       const val = data.optionValue ?? null
       onChange(
         {
           target: { name: 'table_name', type: 'radio' },
         } as React.ChangeEvent<HTMLInputElement>,
-        { value: val },
+        { value: val } as InputOnChangeData,
       )
       onChange(
         {
           target: { name: 'level', type: 'radio' },
         } as React.ChangeEvent<HTMLInputElement>,
-        { value: null },
+        { value: null } as unknown as InputOnChangeData,
       )
     }
     return (
@@ -108,7 +130,7 @@ export const TableAndLevel = ({
           selectedOptions={combinedValue ? [combinedValue] : []}
           onOptionSelect={handleChange}
           appearance="underline"
-          ref={autoFocusRef}
+          ref={autoFocusRef as unknown as React.Ref<HTMLButtonElement>}
           clearable
         >
           <Option value="projects">
@@ -225,13 +247,13 @@ export const TableAndLevel = ({
     }),
   }
 
-  const combinedValue = row.table_name
-    ? row.level != null && placeScopedTables.has(row.table_name)
-      ? `${row.table_name}_${row.level}`
-      : row.table_name
+  const combinedValue = fieldsRow.table_name
+    ? fieldsRow.level != null && placeScopedTables.has(fieldsRow.table_name)
+      ? `${fieldsRow.table_name}_${fieldsRow.level}`
+      : fieldsRow.table_name
     : ''
 
-  const handleChange = (_e, data) => {
+  const handleChange = (_e: unknown, data: DropdownOnSelectData) => {
     const opt = data.optionValue
       ? (opts.find((o) => o.id === data.optionValue) ?? null)
       : null
@@ -239,13 +261,13 @@ export const TableAndLevel = ({
       {
         target: { name: 'table_name', type: 'radio' },
       } as React.ChangeEvent<HTMLInputElement>,
-      { value: opt?.table_name ?? null },
+      { value: opt?.table_name ?? null } as unknown as InputOnChangeData,
     )
     onChange(
       {
         target: { name: 'level', type: 'radio' },
       } as React.ChangeEvent<HTMLInputElement>,
-      { value: opt?.level != null ? String(opt.level) : null },
+      { value: opt?.level != null ? String(opt.level) : null } as unknown as InputOnChangeData,
     )
   }
 
@@ -266,7 +288,7 @@ export const TableAndLevel = ({
         selectedOptions={combinedValue ? [combinedValue] : []}
         onOptionSelect={handleChange}
         appearance="underline"
-        ref={autoFocusRef}
+        ref={autoFocusRef as unknown as React.Ref<HTMLButtonElement>}
         clearable
       >
         {opts.map((o) => (

@@ -1,7 +1,25 @@
 import * as fluentUiReactComponents from '@fluentui/react-components'
 const { Checkbox } = fluentUiReactComponents
+import type { CheckboxOnChangeData } from '@fluentui/react-components'
 
 import styles from './CheckboxField.module.css'
+
+type Props = {
+  label?: string
+  name?: string
+  value?: boolean | null | string
+  onChange?: (
+    ev: React.ChangeEvent<any>,
+    data?: any,
+  ) => void
+  autoFocus?: boolean
+  size?: 'medium' | 'large'
+  indeterminate?: boolean
+  button?: React.ReactNode
+  ref?: React.Ref<HTMLInputElement>
+  validationMessage?: React.ReactNode
+  validationState?: 'error' | 'warning' | 'success' | 'none'
+}
 
 export const CheckboxField = ({
   label = '(no label provided)',
@@ -13,8 +31,18 @@ export const CheckboxField = ({
   indeterminate = false,
   button,
   ref,
-}) => {
-  const onChange = (e, { checked }) => {
+}: Props) => {
+  // consumers pass Fluent's (ev, data) change handlers;
+  // called here with the computed checked value
+  const onChangeOut = onChangeIn as unknown as (
+    ev: React.ChangeEvent<HTMLInputElement>,
+    data: { checked: 'mixed' | boolean | null },
+  ) => void
+
+  const onChange = (
+    e: React.ChangeEvent<HTMLInputElement>,
+    { checked }: CheckboxOnChangeData,
+  ) => {
     // if was true, set null
     // if was false, set true
     // if was null, set false
@@ -26,7 +54,7 @@ export const CheckboxField = ({
           : value === false
             ? true
             : false
-    onChangeIn(e, { checked: newValue })
+    onChangeOut(e, { checked: newValue })
   }
 
   const checked =
@@ -37,7 +65,7 @@ export const CheckboxField = ({
       <Checkbox
         label={label}
         name={name}
-        checked={checked}
+        checked={checked as 'mixed' | boolean | undefined}
         onChange={onChange}
         autoFocus={autoFocus}
         ref={ref}

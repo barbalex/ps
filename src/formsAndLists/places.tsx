@@ -10,9 +10,25 @@ import { usePlacesNavData } from '../modules/usePlacesNavData.ts'
 
 import '../form.css'
 
-export const Places = ({ from }) => {
+type Props = {
+  from:
+    | '/data/projects/$projectId_/subprojects/$subprojectId_/places/'
+    | '/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/places/'
+}
+
+// mirrors the open-state row shape selected in usePlacesNavData
+type NavDataOpen = {
+  id: string
+  label: string | null
+}[]
+
+export const Places = ({ from }: Props) => {
   const navigate = useNavigate()
-  const { projectId, subprojectId, placeId } = useParams({ from })
+  const { projectId, subprojectId, placeId } = useParams({ strict: false }) as {
+    projectId: string
+    subprojectId: string
+    placeId?: string
+  }
 
   const { loading, navData, isFiltered } = usePlacesNavData({
     projectId,
@@ -64,7 +80,7 @@ export const Places = ({ from }) => {
       <div className="list-container">
         {loading ?
           <Loading />
-        : navs.map(({ id, label }) => (
+        : (navs as NavDataOpen).map(({ id, label }) => (
             <Row
               key={id}
               to={id}

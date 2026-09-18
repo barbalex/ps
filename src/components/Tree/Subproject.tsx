@@ -24,7 +24,23 @@ import { treeOpenNodesAtom, designingAtom, languageAtom } from '../../store.ts'
 import { getSubprojectNameSingular } from '../../modules/subprojectNameCols.ts'
 import type Projects from '../../models/public/Projects.ts'
 
-export const SubprojectNode = ({ projectId, nav, level = 4 }) => {
+type NavData = {
+  id: string
+  label: string
+}
+
+// subproject_roles_in_subproject exists in the db but not (yet) in the generated Projects model
+type ProjectData = Projects & {
+  subproject_roles_in_subproject?: boolean | null
+} & Record<string, unknown>
+
+interface Props {
+  projectId: string
+  nav: NavData
+  level?: number
+}
+
+export const SubprojectNode = ({ projectId, nav, level = 4 }: Props) => {
   const [openNodes] = useAtom(treeOpenNodesAtom)
   const [isDesigning] = useAtom(designingAtom)
   const [language] = useAtom(languageAtom)
@@ -32,10 +48,11 @@ export const SubprojectNode = ({ projectId, nav, level = 4 }) => {
   const navigate = useNavigate()
 
   // need project to know whether to show files
-  const res = useLiveQuery(`SELECT * FROM projects WHERE project_id = $1`, [
-    projectId,
-  ])
-  const project: Projects | undefined = res?.rows?.[0]
+  const res = useLiveQuery<ProjectData>(
+    `SELECT * FROM projects WHERE project_id = $1`,
+    [projectId],
+  )
+  const project: ProjectData | undefined = res?.rows?.[0]
   const showFiles = isDesigning || (project?.files_active_subprojects ?? false)
   const showTaxa = isDesigning || (project?.taxa ?? true)
   const taxaInSubproject = project?.subproject_taxa_in_subproject !== false

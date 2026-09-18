@@ -1,10 +1,13 @@
 import { useParams, useNavigate } from '@tanstack/react-router'
 import { TbZoomScan } from 'react-icons/tb'
 import * as fluentUiReactComponents from '@fluentui/react-components'
-const { Button, Tooltip } = fluentUiReactComponents
+import type { TooltipProps } from '@fluentui/react-components'
+import type { ComponentType } from 'react'
+const { Button } = fluentUiReactComponents
 import { bbox } from '@turf/bbox'
 
 import { buffer } from '@turf/buffer'
+import type { GeoJSON } from 'geojson'
 import { useAtom, useSetAtom } from 'jotai'
 import { usePGlite } from '@electric-sql/pglite-react'
 import { useRef, useEffect } from 'react'
@@ -28,8 +31,15 @@ import {
 
 import type Places from '../../models/public/Places.ts'
 
+// Fluent UI's TooltipProps requires `relationship`, but it is optional at runtime
+const Tooltip = fluentUiReactComponents.Tooltip as ComponentType<
+  Omit<TooltipProps, 'relationship'> & {
+    relationship?: TooltipProps['relationship']
+  }
+>
+
 interface Props {
-  autoFocusRef: React.RefObject<HTMLInputElement>
+  autoFocusRef?: React.RefObject<HTMLInputElement | null>
   from: string
   nameSingular: string
   namePlural: string
@@ -52,7 +62,7 @@ export const Header = ({ autoFocusRef, from, nameSingular }: Props) => {
   const addOperation = useSetAtom(addOperationAtom)
   const addNotification = useSetAtom(addNotificationAtom)
   const navigate = useNavigate()
-  const { projectId, subprojectId, placeId, placeId2 } = useParams({ from })
+  const { projectId, subprojectId, placeId, placeId2 } = useParams({ strict: false })
 
   const db = usePGlite()
   const basePath = placeId2
@@ -67,16 +77,16 @@ export const Header = ({ autoFocusRef, from, nameSingular }: Props) => {
   }, [placeId, placeId2])
 
   const addRow = async () => {
-    const resPlace = await createPlace({
-      projectId,
-      subprojectId,
-      parentId: placeId2 ? placeId : null,
+    const resPlace = (await createPlace({
+      projectId: projectId!,
+      subprojectId: subprojectId!,
+      parentId: placeId2 ? placeId! : null,
       level: placeId2 ? 2 : 1,
-    })
-    const place = resPlace.rows?.[0]
+    })) as unknown as { rows?: { place_id: string }[] }
+    const place = resPlace.rows?.[0] as { place_id: string } | undefined
 
     await createVectorLayer({
-      projectId,
+      projectId: projectId!,
       type: 'own',
       ownTable: 'places',
       ownTableLevel: placeId2 ? 2 : 1,
@@ -86,11 +96,11 @@ export const Header = ({ autoFocusRef, from, nameSingular }: Props) => {
     const idName = placeId2 ? 'placeId2' : 'placeId'
     navigate({
       to: isForm
-        ? `../../${place.place_id}/place`
-        : `../${place.place_id}/place`,
+        ? `../../${place!.place_id}/place`
+        : `../${place!.place_id}/place`,
       params: (prev) => ({
         ...prev,
-        [idName]: place.place_id,
+        [idName]: place!.place_id,
       }),
     })
     autoFocusRef?.current?.focus()
@@ -102,7 +112,7 @@ export const Header = ({ autoFocusRef, from, nameSingular }: Props) => {
         `SELECT * FROM places WHERE place_id = $1`,
         [placeId2 ?? placeId],
       )
-      const prev = prevRes?.rows?.[0] ?? {}
+      const prev = (prevRes?.rows?.[0] ?? {}) as Record<string, unknown>
       await db.query(`DELETE FROM places WHERE place_id = $1`, [
         placeId2 ?? placeId,
       ])
@@ -113,7 +123,7 @@ export const Header = ({ autoFocusRef, from, nameSingular }: Props) => {
         operation: 'delete',
         prev,
       })
-      navigate({ to: isForm ? `../..` : `..` })
+      navigate({ to: isForm ? ('../..' as '..') : '..' })
     } catch (error) {
       console.error(error)
     }
@@ -132,7 +142,7 @@ export const Header = ({ autoFocusRef, from, nameSingular }: Props) => {
       `,
         [subprojectId],
       )
-      const placeIds: { place_id: string }[] = res?.rows ?? []
+      const placeIds = (res?.rows ?? []) as { place_id: string }[]
       const len = placeIds.length
       const index = placeIds.findIndex((p) => p.place_id === placeIdRef.current)
       const next = placeIds[(index + 1) % len]
@@ -162,7 +172,7 @@ export const Header = ({ autoFocusRef, from, nameSingular }: Props) => {
       `,
         [subprojectId],
       )
-      const placeIds: { place_id: string }[] = res?.rows ?? []
+      const placeIds = (res?.rows ?? []) as { place_id: string }[]
       const len = placeIds.length
       const index = placeIds.findIndex((p) => p.place_id === placeIdRef.current)
       const previous = placeIds[(index + len - 1) % len]
@@ -200,7 +210,9 @@ export const Header = ({ autoFocusRef, from, nameSingular }: Props) => {
       `SELECT ST_AsGeoJSON(geometry)::json as geometry FROM places WHERE place_id = $1`,
       [placeId2 ?? placeId],
     )
-    const geometry: Places['geometry'] | undefined = res?.rows?.[0]?.geometry
+    const geometry: Places['geometry'] | undefined = (
+      res?.rows?.[0] as { geometry?: Places['geometry'] } | undefined
+    )?.geometry
     if (
       !geometry ||
       (geometry as { geometries?: unknown[] }).geometries?.length === 0
@@ -224,7 +236,14 @@ export const Header = ({ autoFocusRef, from, nameSingular }: Props) => {
       LIMIT 1`,
       [projectId, level],
     )
-    const layerRow = layerRes?.rows?.[0]
+    const layerRow = layerRes?.rows?.[0] as
+      | {
+          vl_vector_layer_id: string
+          layer_presentation_id: string
+          active: boolean | null
+          [key: string]: unknown
+        }
+      | undefined
     const vectorLayerId: string | undefined = layerRow?.vl_vector_layer_id
     let lpId: string | undefined = layerRow?.layer_presentation_id
     if (!lpId && vectorLayerId) {
@@ -240,7 +259,7 @@ export const Header = ({ autoFocusRef, from, nameSingular }: Props) => {
         rowId: lpId,
         operation: 'update',
         draft: { active: true },
-        prev: { ...layerRow },
+        prev: { ...(layerRow ?? {}) },
       })
     }
     if (lpId && !mapLayerSorting.includes(lpId)) {
@@ -248,8 +267,8 @@ export const Header = ({ autoFocusRef, from, nameSingular }: Props) => {
     }
 
     // 3. zoom to place
-    const buffered = buffer(geometry, 0.05)
-    const newBbox = bbox(buffered)
+    const buffered = buffer(geometry as GeoJSON, 0.05)
+    const newBbox = bbox(buffered!)
     const bounds = boundsFromBbox(newBbox)
     if (!bounds) return alertNoGeometry()
     setMapBounds(bounds)

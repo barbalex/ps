@@ -17,7 +17,13 @@ import styles from './AddField.module.css'
 // 4. which is:
 //    - a title and the necessary part of the field form
 //    - a search param in the url: editingField=fieldId
-export const AddField = ({ tableName, level }) => {
+type Props = {
+  tableName: string
+  level?: number
+  from?: string
+}
+
+export const AddField = ({ tableName, level }: Props) => {
   const [designing] = useAtom(designingAtom)
   const { projectId } = useParams({ strict: false })
   const navigate = useNavigate()
@@ -30,11 +36,14 @@ export const AddField = ({ tableName, level }) => {
 
   const addRow = async () => {
     const isAccountTable = accountTables.includes(tableName)
-    const newFieldParams = { table_name: tableName, level }
+    const newFieldParams: Parameters<typeof createField>[0] = {
+      table_name: tableName,
+      level,
+    }
     if (!isAccountTable) newFieldParams.projectId = projectId
     const id = await createField(newFieldParams)
     // TODO:
-    navigate({ search: { editingField: id } })
+    navigate({ search: { editingField: id } as never })
   }
 
   if (!designing) return null

@@ -24,8 +24,13 @@ import type ActionQuantitiesHistory from '../../models/public/ActionQuantitiesHi
 import type Units from '../../models/public/Units.ts'
 import type ListValues from '../../models/public/ListValues.ts'
 
+type Validations = Record<
+  string,
+  | { state: 'error' | 'warning' | 'success' | 'none'; message: string }
+  | undefined
+>
+
 export const ActionQuantityHistoryCompare = ({
-  from,
 }: {
   from:
     | '/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/actions/$actionId_/quantities/$actionQuantityId_/histories/$actionQuantityHistoryId'
@@ -43,7 +48,7 @@ export const ActionQuantityHistoryCompare = ({
     actionId,
     actionQuantityId,
     actionQuantityHistoryId,
-  } = useParams({ from, strict: false })
+  } = useParams({ strict: false })
   const actionQuantityPath = placeId2
     ? `/data/projects/${projectId}/subprojects/${subprojectId}/places/${placeId}/places/${placeId2}/actions/${actionId}/quantities/${actionQuantityId}`
     : `/data/projects/${projectId}/subprojects/${subprojectId}/places/${placeId}/actions/${actionId}/quantities/${actionQuantityId}`
@@ -53,7 +58,7 @@ export const ActionQuantityHistoryCompare = ({
   const db = usePGlite()
   const autoFocusRef = useRef<HTMLInputElement>(null)
 
-  const [validations, setValidations] = useState<Record<string, unknown>>({})
+  const [validations, setValidations] = useState<Validations>({})
 
   const rowRes = useLiveQuery(
     `SELECT * FROM action_quantities WHERE action_quantity_id = $1`,
@@ -65,8 +70,10 @@ export const ActionQuantityHistoryCompare = ({
     `SELECT unit_id, name, type, list_id FROM units WHERE project_id = $1 ORDER BY sort, name`,
     [projectId],
   )
-  const units: Pick<Units, 'unit_id' | 'name' | 'type' | 'list_id'>[] =
-    unitsRes?.rows ?? []
+  const units = (unitsRes?.rows ?? []) as Pick<
+    Units,
+    'unit_id' | 'name' | 'type' | 'list_id'
+  >[]
   const unitIds = units.map((u) => u.unit_id)
   const unitLabelMap = Object.fromEntries(
     units.map((u) => [u.unit_id, u.name ?? u.unit_id]),
@@ -77,7 +84,7 @@ export const ActionQuantityHistoryCompare = ({
     `SELECT * FROM list_values WHERE list_id = $1 AND (obsolete IS NULL OR obsolete = false) ORDER BY value_integer, value_numeric, value_text, label`,
     [selectedUnit?.list_id ?? '00000000-0000-0000-0000-000000000000'],
   )
-  const listValues: ListValues[] = listValuesRes?.rows ?? []
+  const listValues = (listValuesRes?.rows ?? []) as unknown as ListValues[]
   const hasListValues = listValues.length > 0
 
   const unitValueField =
@@ -103,9 +110,12 @@ export const ActionQuantityHistoryCompare = ({
     listValueOptions.map((o) => [o.value, o.label]),
   )
 
-  const onChange = async (e, data) => {
+  const onChange = async (
+    e: React.ChangeEvent<HTMLInputElement>,
+    data: Parameters<typeof getValueFromChange>[1],
+  ) => {
     const { name, value } = getValueFromChange(e, data)
-    if (!row || row[name] === value) return
+    if (!row || (row as Record<string, unknown>)[name] === value) return
 
     try {
       await db.query(
@@ -115,7 +125,7 @@ export const ActionQuantityHistoryCompare = ({
     } catch (error) {
       setValidations((prev) => ({
         ...prev,
-        [name]: { state: 'error', message: error.message },
+        [name]: { state: 'error', message: (error as Error).message },
       }))
       return
     }
@@ -158,7 +168,7 @@ export const ActionQuantityHistoryCompare = ({
     } catch (error) {
       setValidations((prev) => ({
         ...prev,
-        [unitValueField]: { state: 'error', message: error.message },
+        [unitValueField]: { state: 'error', message: (error as Error).message },
       }))
       return
     }
@@ -226,24 +236,27 @@ export const ActionQuantityHistoryCompare = ({
           listValues.length <= 5 ? (
             <RadioGroupField
               label={quantityLabel}
-              name={unitValueField}
+              name={unitValueField ?? undefined}
               list={listValueIds}
               labelMap={listValueLabelMap}
               value={currentListValueStr}
-              onChange={(_e, data) => onListValueChange(data?.value ?? null)}
+              onChange={(
+                _e: unknown,
+                data: { value?: string | null },
+              ) => onListValueChange(data?.value ?? null)}
               layout="horizontal"
-              validationState={validations?.[unitValueField]?.state}
-              validationMessage={validations?.[unitValueField]?.message}
+              validationState={validations?.[unitValueField!]?.state}
+              validationMessage={validations?.[unitValueField!]?.message}
             />
           ) : (
             <DropdownFieldSimpleOptions
-              name={unitValueField}
+              name={unitValueField!}
               label={quantityLabel}
               options={listValueIds}
               value={currentListValueStr}
               onChange={(e) => onListValueChange(e.target.value ?? null)}
-              validationState={validations?.[unitValueField]?.state}
-              validationMessage={validations?.[unitValueField]?.message}
+              validationState={validations?.[unitValueField!]?.state}
+              validationMessage={validations?.[unitValueField!]?.message}
             />
           )
         ) : (
@@ -322,18 +335,18 @@ export const ActionQuantityHistoryCompare = ({
 
   const formatFieldValue = (
     field: string,
-    history: ActionQuantitiesHistory,
+    history: ActionQuantitiesHistory & Record<string, unknown>,
   ) => {
     if (field === 'unit_id') {
       const unitId = history.unit_id
       if (!unitId) return ''
       return unitLabelMap[unitId] ?? unitId
     }
-    return stringifyHistoryValue(history[field])
+    return stringifyHistoryValue((history as Record<string, unknown>)[field])
   }
 
   return (
-    <HistoryCompare<ActionQuantitiesHistory>
+    <HistoryCompare<ActionQuantitiesHistory & Record<string, unknown>>
       onBack={() => navigate({ to: actionQuantityPath })}
       leftContent={leftContent}
       visibleCurrentFields={visibleCurrentFields}

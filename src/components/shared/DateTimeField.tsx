@@ -6,6 +6,26 @@ import { useIntl } from 'react-intl'
 
 import styles from './DateTimeField.module.css'
 
+type InputProps = React.ComponentProps<typeof Input>
+type InputOnChangeData = Parameters<NonNullable<InputProps['onChange']>>[1]
+type DatePickerProps = React.ComponentProps<typeof DatePicker>
+type DatePickerOnChange = NonNullable<DatePickerProps['onChange']>
+
+type Props = {
+  label?: string
+  name?: string
+  value?: Date | null | ''
+  autoFocus?: boolean
+  ref?: React.Ref<HTMLInputElement>
+  onChange: (
+    ev: React.ChangeEvent<HTMLInputElement>,
+    data: InputOnChangeData,
+  ) => void
+  button?: React.ReactNode
+  validationMessage?: React.ReactNode
+  validationState?: 'error' | 'warning' | 'success' | 'none'
+}
+
 export const DateTimeField = ({
   label,
   name,
@@ -14,7 +34,11 @@ export const DateTimeField = ({
   ref,
   onChange,
   button,
-}) => {
+}: Props) => {
+  // consumers pass Fluent's (ev, data) change handlers; called here with fake events
+  const onChangeFake = onChange as unknown as (e: {
+    target: { name?: string; value: Date | null }
+  }) => void
   const { formatMessage } = useIntl()
   const mustBeSetMessage = formatMessage({
     id: 'dtFieldMustBeSet',
@@ -36,35 +60,54 @@ export const DateTimeField = ({
     id: 'dtFieldMinutes',
     defaultMessage: 'Minuten',
   })
-  const [years, setYears] = useState(value?.getFullYear?.() ?? '')
-  const [months, setMonths] = useState(value?.getMonth?.() ?? '')
-  const [days, setDays] = useState(value?.getDate?.() ?? '')
-  const [hours, setHours] = useState(value?.getHours?.() ?? '')
-  const [minutes, setMinutes] = useState(value?.getMinutes?.() ?? '')
+  const [years, setYears] = useState(
+    (value as Date | undefined)?.getFullYear?.() ?? '',
+  )
+  const [months, setMonths] = useState(
+    (value as Date | undefined)?.getMonth?.() ?? '',
+  )
+  const [days, setDays] = useState(
+    (value as Date | undefined)?.getDate?.() ?? '',
+  )
+  const [hours, setHours] = useState(
+    (value as Date | undefined)?.getHours?.() ?? '',
+  )
+  const [minutes, setMinutes] = useState(
+    (value as Date | undefined)?.getMinutes?.() ?? '',
+  )
 
-  const [dateValidationState, dateValidationMessage] =
+  const [dateValidationState, dateValidationMessage]: [
+    'none' | 'warning',
+    string,
+  ] =
     !value && hours === '' && minutes === ''
       ? ['none', '']
       : years !== ''
         ? ['none', '']
         : ['warning', mustBeSetMessage]
 
-  const [hoursValidationState, hoursValidationMessage] =
+  const [hoursValidationState, hoursValidationMessage]: [
+    'none' | 'warning',
+    string,
+  ] =
     !value && years === '' && minutes === ''
       ? ['none', '']
       : hours !== ''
         ? ['none', '']
         : ['warning', mustBeSetMessage]
 
-  const [minutesValidationState, minutesValidationMessage] =
+  const [minutesValidationState, minutesValidationMessage]: [
+    'none' | 'warning',
+    string,
+  ] =
     !value && years === '' && hours === ''
       ? ['none', '']
       : minutes !== ''
         ? ['none', '']
         : ['warning', mustBeSetMessage]
 
-  const onChangeDate = (ev) => {
-    const newDate = ev?.target.value
+  const onChangeDate = (ev: { target?: { name?: string; value?: Date | null } }) => {
+    const newDate = ev?.target?.value
     const newYear = newDate?.getFullYear?.() ?? ''
     const newMonth = newDate?.getMonth?.() ?? ''
     const newDay = newDate?.getDate?.() ?? ''
@@ -73,51 +116,51 @@ export const DateTimeField = ({
     setDays(newDay)
     if (newDate) {
       const newDateTimeValue = new Date(
-        newYear,
-        newMonth,
-        newDay,
-        hours ?? 0,
-        minutes ?? 0,
+        newYear as number,
+        newMonth as number,
+        newDay as number,
+        (hours ?? 0) as number,
+        (minutes ?? 0) as number,
       )
-      onChange({ target: { name, value: newDateTimeValue } })
+      onChangeFake({ target: { name, value: newDateTimeValue } })
     } else {
       if (!newDate && hours && minutes) {
-        onChange({ target: { name, value: null } })
+        onChangeFake({ target: { name, value: null } })
       }
     }
   }
 
-  const onChangeHours = (ev, data) => {
+  const onChangeHours = (_ev: unknown, data: { value?: string }) => {
     const newHours = data.value ? +data.value : ''
     setHours(newHours)
     if (years && months && days && newHours && minutes) {
       const newDateTimeValue = new Date(
-        years,
-        months - 1,
-        days,
-        newHours,
-        minutes,
+        years as number,
+        (months as number) - 1,
+        days as number,
+        newHours as number,
+        minutes as number,
       )
-      onChange({ target: { name, value: newDateTimeValue } })
+      onChangeFake({ target: { name, value: newDateTimeValue } })
     } else if (!years && !months && !days && !newHours && !minutes) {
-      onChange({ target: { name, value: null } })
+      onChangeFake({ target: { name, value: null } })
     }
   }
 
-  const onChangeMinutes = (ev, data) => {
+  const onChangeMinutes = (_ev: unknown, data: { value?: string }) => {
     const newMinutes = data.value
-    setMinutes(newMinutes)
+    setMinutes(newMinutes as string | number)
     if (years && months && days && hours && newMinutes) {
       const newDateTimeValue = new Date(
-        years,
-        months - 1,
-        days,
-        hours,
-        newMinutes,
+        years as number,
+        (months as number) - 1,
+        days as number,
+        hours as number,
+        newMinutes as unknown as number,
       )
-      onChange({ target: { name, value: newDateTimeValue } })
+      onChangeFake({ target: { name, value: newDateTimeValue } })
     } else if (!years && !months && !days && !hours && !newMinutes) {
-      onChange({ target: { name, value: null } })
+      onChangeFake({ target: { name, value: null } })
     }
   }
 
@@ -134,9 +177,11 @@ export const DateTimeField = ({
               placeholder={datePlaceholder}
               name={name}
               value={
-                years && months && days ? new Date(years, months, days) : null
+                years && months && days
+                  ? new Date(years as number, months as number, days as number)
+                  : null
               }
-              onChange={onChangeDate}
+              onChange={onChangeDate as unknown as DatePickerOnChange}
               onSelectDate={(date) =>
                 onChangeDate({ target: { name, value: date } })
               }
@@ -154,7 +199,7 @@ export const DateTimeField = ({
             validationState={hoursValidationState}
           >
             <Input
-              value={hours}
+              value={hours as string}
               type="number"
               min={0}
               max={23}
@@ -168,7 +213,7 @@ export const DateTimeField = ({
             validationState={minutesValidationState}
           >
             <Input
-              value={minutes}
+              value={minutes as string}
               type="number"
               min={0}
               max={59}

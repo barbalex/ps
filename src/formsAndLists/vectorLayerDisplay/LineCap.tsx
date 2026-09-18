@@ -2,8 +2,15 @@ import { useIntl } from 'react-intl'
 
 import { RadioGroupFromOptions } from '../../components/shared/RadioGroupFromOptions.tsx'
 import { vectorLayerLineCapOptions } from '../../modules/constants.ts'
+import type VectorLayerDisplays from '../../models/public/VectorLayerDisplays.ts'
 
-export const LineCap = ({ onChange, row }) => {
+export const LineCap = ({
+  onChange,
+  row,
+}: {
+  onChange: (e: React.ChangeEvent<any>, data?: any) => void
+  row: VectorLayerDisplays | Record<string, any>
+}) => {
   const { formatMessage } = useIntl()
 
   const options = vectorLayerLineCapOptions.map((o) => ({
@@ -20,7 +27,7 @@ export const LineCap = ({ onChange, row }) => {
       name="line_cap"
       options={options}
       value={row.line_cap ?? ''}
-      onChange={onChange}
+      onChange={(ev) => onChange(ev as React.ChangeEvent<HTMLInputElement>)}
     />
   )
 }

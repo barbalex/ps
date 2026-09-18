@@ -1,4 +1,5 @@
 import axios from 'redaxios'
+import type { Options } from 'redaxios'
 
 import { constants } from './constants.ts'
 
@@ -14,7 +15,7 @@ export const isOnline = async () => {
 
   let res
   try {
-    res = await axios.head(postgrestUri, { timeout })
+    res = await axios.head(postgrestUri, { timeout } as Options)
   } catch {
     // error can also be caused by timeout or net::ERR_CONNECTION_REFUSED
     return false

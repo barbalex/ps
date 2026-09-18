@@ -24,21 +24,18 @@ import {
 import type WmsServiceLayers from '../../models/public/WmsServiceLayers.ts'
 import type WmsServiceLayersHistory from '../../models/public/WmsServiceLayersHistory.ts'
 
-const from =
-  '/data/projects/$projectId_/wms-services/$wmsServiceId_/layers/$wmsServiceLayerId_/histories/$wmsServiceLayerHistoryId'
-
 export const WmsServiceLayerHistoryCompare = () => {
   const { formatMessage } = useIntl()
   const navigate = useNavigate()
   const { projectId, wmsServiceId, wmsServiceLayerId, wmsServiceLayerHistoryId } =
-    useParams({ from, strict: false })
+    useParams({ strict: false })
 
   const formPath = `/data/projects/${projectId}/wms-services/${wmsServiceId}/layers/${wmsServiceLayerId}`
   const historyPath = `${formPath}/histories`
 
   const db = usePGlite()
   const addOperation = useSetAtom(addOperationAtom)
-  const [validations, setValidations] = useState<Record<string, unknown>>({})
+  const [validations, setValidations] = useState<Record<string, { state: 'error'; message: string }>>({})
 
   const rowRes = useLiveQuery(
     `SELECT * FROM wms_service_layers WHERE wms_service_layer_id = $1`,
@@ -46,9 +43,12 @@ export const WmsServiceLayerHistoryCompare = () => {
   )
   const row = rowRes?.rows?.[0] as WmsServiceLayers | undefined
 
-  const onChange = async (e, data) => {
+  const onChange = async (
+    e: React.ChangeEvent<HTMLInputElement>,
+    data: Parameters<typeof getValueFromChange>[1],
+  ) => {
     const { name, value } = getValueFromChange(e, data)
-    if (!row || row[name] === value) return
+    if (!row || (row as Record<string, any>)[name] === value) return
 
     try {
       await db.query(
@@ -58,7 +58,7 @@ export const WmsServiceLayerHistoryCompare = () => {
     } catch (error) {
       setValidations((prev) => ({
         ...prev,
-        [name]: { state: 'error', message: error.message },
+        [name]: { state: 'error', message: error instanceof Error ? error.message : String(error) },
       }))
       return
     }
@@ -98,7 +98,7 @@ export const WmsServiceLayerHistoryCompare = () => {
         validations={
           validations as Record<
             string,
-            { state: string; message: string } | undefined
+            { state: 'error'; message: string } | undefined
           >
         }
       />
@@ -116,7 +116,7 @@ export const WmsServiceLayerHistoryCompare = () => {
   })
 
   const formatFieldValue = (field: string, history: WmsServiceLayersHistory) =>
-    stringifyHistoryValue(history[field])
+    stringifyHistoryValue((history as Record<string, any>)[field])
 
   return (
     <HistoryCompare<WmsServiceLayersHistory>

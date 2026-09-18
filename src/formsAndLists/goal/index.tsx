@@ -13,21 +13,26 @@ import type Goals from '../../models/public/Goals.ts'
 
 import '../../form.css'
 
-export const Goal = ({ from }) => {
-  const { goalId } = useParams({ from })
+export const Goal = ({ from }: { from: string }) => {
+  const { goalId } = useParams({ strict: false })
   const addOperation = useSetAtom(addOperationAtom)
-  const [validations, setValidations] = useState({})
+  const [validations, setValidations] = useState<
+    Record<string, { state: 'error'; message: string }>
+  >({})
 
   const autoFocusRef = useRef<HTMLInputElement>(null)
 
   const db = usePGlite()
   const res = useLiveQuery(`SELECT * FROM goals WHERE goal_id = $1`, [goalId])
-  const row: Goals | undefined = res?.rows?.[0]
+  const row = res?.rows?.[0] as Goals | undefined
 
-  const onChange = async (e, data) => {
+  const onChange = async (
+    e: React.ChangeEvent<HTMLInputElement>,
+    data: Parameters<typeof getValueFromChange>[1],
+  ) => {
     const { name, value } = getValueFromChange(e, data)
     // only change if value has changed: maybe only focus entered and left
-    if (row[name] === value) return
+    if ((row as Record<string, any>)[name] === value) return
 
     try {
       await db.query(`UPDATE goals SET ${name} = $1 WHERE goal_id = $2`, [
@@ -37,7 +42,7 @@ export const Goal = ({ from }) => {
     } catch (error) {
       setValidations((prev) => ({
         ...prev,
-        [name]: { state: 'error', message: error.message },
+        [name]: { state: 'error', message: error instanceof Error ? error.message : String(error) },
       }))
       return
     }
@@ -58,7 +63,7 @@ export const Goal = ({ from }) => {
 
   return (
     <div className="form-outer-container">
-      <Header autoFocusRef={autoFocusRef} from={from} />
+      <Header autoFocusRef={autoFocusRef} />
       <div className="form-container">
         {!res ?
           <Loading />

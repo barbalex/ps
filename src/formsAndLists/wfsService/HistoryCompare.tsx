@@ -23,23 +23,17 @@ import {
 import type WfsServices from '../../models/public/WfsServices.ts'
 import type WfsServicesHistory from '../../models/public/WfsServicesHistory.ts'
 
-const from =
-  '/data/projects/$projectId_/wfs-services/$wfsServiceId_/histories/$wfsServiceHistoryId'
-
 export const WfsServiceHistoryCompare = () => {
   const { formatMessage } = useIntl()
   const navigate = useNavigate()
-  const { projectId, wfsServiceId, wfsServiceHistoryId } = useParams({
-    from,
-    strict: false,
-  })
+  const { projectId, wfsServiceId, wfsServiceHistoryId } = useParams({ strict: false })
   const wfsServicePath = `/data/projects/${projectId}/wfs-services/${wfsServiceId}/wfs-service`
   const historyPath = `/data/projects/${projectId}/wfs-services/${wfsServiceId}/histories`
 
   const addOperation = useSetAtom(addOperationAtom)
   const db = usePGlite()
   const autoFocusRef = useRef<HTMLInputElement>(null)
-  const [validations, setValidations] = useState<Record<string, unknown>>({})
+  const [validations, setValidations] = useState<Record<string, { state: 'error'; message: string }>>({})
 
   const rowRes = useLiveQuery(
     `SELECT * FROM wfs_services WHERE wfs_service_id = $1`,
@@ -47,9 +41,12 @@ export const WfsServiceHistoryCompare = () => {
   )
   const row = rowRes?.rows?.[0] as WfsServices | undefined
 
-  const onChange = async (e, data) => {
+  const onChange = async (
+    e: React.ChangeEvent<HTMLInputElement>,
+    data: Parameters<typeof getValueFromChange>[1],
+  ) => {
     const { name, value } = getValueFromChange(e, data)
-    if (!row || row[name] === value) return
+    if (!row || (row as Record<string, any>)[name] === value) return
 
     try {
       await db.query(
@@ -59,7 +56,7 @@ export const WfsServiceHistoryCompare = () => {
     } catch (error) {
       setValidations((prev) => ({
         ...prev,
-        [name]: { state: 'error', message: error.message },
+        [name]: { state: 'error', message: error instanceof Error ? error.message : String(error) },
       }))
       return
     }
@@ -97,10 +94,7 @@ export const WfsServiceHistoryCompare = () => {
         row={row}
         onChange={onChange}
         validations={
-          validations as Record<
-            string,
-            { state: string; message: string } | undefined
-          >
+          validations as Record<string, { state: 'error'; message: string }>
         }
         autoFocusRef={autoFocusRef}
       />
@@ -119,7 +113,7 @@ export const WfsServiceHistoryCompare = () => {
   })
 
   const formatFieldValue = (field: string, history: WfsServicesHistory) =>
-    stringifyHistoryValue(history[field])
+    stringifyHistoryValue((history as Record<string, any>)[field])
 
   return (
     <HistoryCompare<WfsServicesHistory>

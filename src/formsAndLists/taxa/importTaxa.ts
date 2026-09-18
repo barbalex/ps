@@ -39,7 +39,7 @@ export const importTaxa = async ({
     blankrows: false,
   })
 
-  const db = store.get(pgliteDbAtom)
+  const db = store.get(pgliteDbAtom)!
 
   // Fetch existing names for this taxonomy to avoid duplicates
   const existing = await db.query<{ name: string }>(
@@ -145,7 +145,10 @@ export const importTaxa = async ({
 
     backgroundTasks.complete(taskId)
   } catch (error) {
-    backgroundTasks.error(taskId, error?.message ?? 'Import failed')
+    backgroundTasks.error(
+      taskId,
+      (error as Error)?.message ?? 'Import failed',
+    )
     throw error
   }
 }

@@ -1,17 +1,46 @@
 import { usePGlite, useLiveQuery } from '@electric-sql/pglite-react'
 import { useSetAtom } from 'jotai'
+import type { ComponentProps, FC } from 'react'
 
 import { ErrorBoundary } from '../../../shared/ErrorBoundary.tsx'
 import { SliderField } from '../../../shared/SliderField.tsx'
-import { SwitchField } from '../../../shared/SwitchField.tsx'
+import { SwitchField as SwitchFieldBase } from '../../../shared/SwitchField.tsx'
 import { TextField } from '../../../shared/TextField.tsx'
 import { getValueFromChange } from '../../../../modules/getValueFromChange.ts'
-import { Loading } from '../../../shared/Loading.tsx'
-import { addOperationAtom, addNotificationAtom } from '../../../../store.ts'
+import { Loading as LoadingBase } from '../../../shared/Loading.tsx'
+import {
+  addOperationAtom,
+  addNotificationAtom,
+  type AppNotification,
+} from '../../../../store.ts'
 import styles from './LayerPresentationForm.module.css'
 import type LayerPresentations from '../../../../models/public/LayerPresentations.ts'
 
-export const LayerPresentationForm = ({ layer }) => {
+// SwitchField's props unintentionally intersect fluent's Switch `value`
+// (string | readonly string[]) with its own `value?: boolean | null`,
+// which accepts no boolean at all — bridge to the intended boolean usage
+const SwitchField = SwitchFieldBase as unknown as FC<
+  Omit<ComponentProps<typeof SwitchFieldBase>, 'value'> & {
+    value?: boolean | null
+  }
+>
+
+// Loading's props are not typed upstream — declare the (all optional) shape
+// used by the bare `<Loading />` here
+const Loading = LoadingBase as unknown as FC<{
+  label?: React.ReactNode
+  alignLeft?: boolean
+  size?: string
+}>
+
+type Props = {
+  layer: {
+    layer_presentation_id?: string
+    wms_layer_id?: string | null
+  }
+}
+
+export const LayerPresentationForm = ({ layer }: Props) => {
   const db = usePGlite()
   const addOperation = useSetAtom(addOperationAtom)
   const addNotification = useSetAtom(addNotificationAtom)
@@ -21,19 +50,30 @@ export const LayerPresentationForm = ({ layer }) => {
     [layer.layer_presentation_id],
   )
 
-  const row: LayerPresentations | undefined = res?.rows?.[0]
+  const row: LayerPresentations | undefined = res?.rows?.[0] as
+    | LayerPresentations
+    | undefined
 
-  const onChange = (e, data) => {
+  // the same handler is passed to SliderField, SwitchField and TextField,
+  // whose fluent onChange payloads differ (value: string | number / checked)
+  const onChange = (
+    e: React.ChangeEvent<HTMLInputElement>,
+    data?: { value?: unknown; checked?: unknown },
+  ) => {
     if (!row?.layer_presentation_id) {
       // if no presentation exists, create notification
       addNotification({
         title: 'Layer presentation not found',
         type: 'warning',
-      })
+        // 'type' is not part of AppNotification (kept for behavior parity)
+      } as Partial<Omit<AppNotification, 'id' | 'time'>>)
     }
-    const { name, value } = getValueFromChange(e, data)
+    const { name, value } = getValueFromChange(
+      e,
+      data as Parameters<typeof getValueFromChange>[1],
+    )
     // only change if value has changed: maybe only focus entered and left
-    if (row[name] === value) return
+    if (row![name as keyof LayerPresentations] === value) return
 
     db.query(
       `UPDATE layer_presentations SET ${name} = $1 WHERE layer_presentation_id = $2`,
@@ -62,7 +102,7 @@ export const LayerPresentationForm = ({ layer }) => {
           name="opacity_percent"
           min={0}
           max={100}
-          value={row.opacity_percent}
+          value={row.opacity_percent as number}
           onChange={onChange}
         />
         {layer.wms_layer_id && (

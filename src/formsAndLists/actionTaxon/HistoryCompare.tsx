@@ -25,7 +25,6 @@ import type ActionTaxaHistory from '../../models/public/ActionTaxaHistory.ts'
 import type Units from '../../models/public/Units.ts'
 
 export const ActionTaxonHistoryCompare = ({
-  from,
 }: {
   from:
     | '/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/actions/$actionId_/taxa/$actionTaxonId_/histories/$actionTaxonHistoryId'
@@ -42,7 +41,7 @@ export const ActionTaxonHistoryCompare = ({
     subprojectId,
     placeId,
     placeId2,
-  } = useParams({ from, strict: false })
+  } = useParams({ strict: false })
   const actionTaxonPath = placeId2
     ? `/data/projects/${projectId}/subprojects/${subprojectId}/places/${placeId}/places/${placeId2}/actions/${actionId}/taxa/${actionTaxonId}`
     : `/data/projects/${projectId}/subprojects/${subprojectId}/places/${placeId}/actions/${actionId}/taxa/${actionTaxonId}`
@@ -52,7 +51,7 @@ export const ActionTaxonHistoryCompare = ({
   const db = usePGlite()
   const autoFocusRef = useRef<HTMLInputElement>(null)
 
-  const [validations, setValidations] = useState<Record<string, unknown>>({})
+  const [validations, setValidations] = useState<Record<string, { state: 'error'; message: string }>>({})
 
   const rowRes = useLiveQuery(
     `WITH at AS (
@@ -78,9 +77,12 @@ export const ActionTaxonHistoryCompare = ({
   )
   const selectedUnit = units.find((u) => u.unit_id === row?.unit_id)
 
-  const onChange = async (e, data) => {
+  const onChange = async (
+    e: React.ChangeEvent<HTMLInputElement>,
+    data: Parameters<typeof getValueFromChange>[1],
+  ) => {
     const { name, value } = getValueFromChange(e, data)
-    if (!row || row[name] === value) return
+    if (!row || (row as Record<string, any>)[name] === value) return
 
     try {
       await db.query(
@@ -90,7 +92,7 @@ export const ActionTaxonHistoryCompare = ({
     } catch (error) {
       setValidations((prev) => ({
         ...prev,
-        [name]: { state: 'error', message: error.message },
+        [name]: { state: 'error', message: error instanceof Error ? error.message : String(error) },
       }))
       return
     }
@@ -219,7 +221,7 @@ export const ActionTaxonHistoryCompare = ({
       if (!unitId) return ''
       return unitLabelMap[unitId] ?? unitId
     }
-    return stringifyHistoryValue(history[field])
+    return stringifyHistoryValue((history as Record<string, any>)[field])
   }
 
   const visibleCurrentFields = new Set([

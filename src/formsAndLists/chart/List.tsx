@@ -6,14 +6,12 @@ import { Row } from '../../components/shared/Row.tsx'
 import { Header } from './Header.tsx'
 import { NotFound } from '../../components/NotFound.tsx'
 
-export const ChartList = ({ from }) => {
-  const { projectId, subprojectId, chartId } = useParams({
-    from,
-  })
+export const ChartList = ({ from }: { from: string }) => {
+  const { projectId, subprojectId, chartId } = useParams({ strict: false })
   const { loading, navData } = useChartNavData({
-    projectId,
-    subprojectId,
-    chartId,
+    projectId: projectId!,
+    subprojectId: subprojectId!,
+    chartId: chartId!,
   })
   const { navs, notFound } = navData
 

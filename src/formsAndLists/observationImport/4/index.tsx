@@ -1,34 +1,51 @@
 import { useParams } from '@tanstack/react-router'
 import { useLiveQuery } from '@electric-sql/pglite-react'
 import { useIntl } from 'react-intl'
+import * as fluentUiReactComponents from '@fluentui/react-components'
 
 import { DropdownFieldSimpleOptions } from '../../../components/shared/DropdownFieldSimpleOptions.tsx'
 import { DropdownFieldOptions } from '../../../components/shared/DropdownFieldOptions.tsx'
+import type ObservationImports from '../../../models/public/ObservationImports.ts'
 
-const from =
-  '/data/projects/$projectId_/subprojects/$subprojectId_/observation-imports/$observationImportId/'
+type InputOnChangeData = Parameters<
+  NonNullable<
+    React.ComponentProps<typeof fluentUiReactComponents.Input>['onChange']
+  >
+>[1]
 
-export const Four = ({ observationImport, observationFields, onChange }) => {
-  const { observationImportId, subprojectId } = useParams({ from })
+export const Four = ({
+  observationImport,
+  observationFields,
+  onChange,
+}: {
+  observationImport: ObservationImports
+  observationFields: string[]
+  onChange: (
+    e: React.ChangeEvent<HTMLInputElement>,
+    data: InputOnChangeData,
+  ) => Promise<void>
+  validations?: Record<string, { state: 'error'; message: string }>
+}) => {
+  const { observationImportId, subprojectId } = useParams({ strict: false })
   const { formatMessage } = useIntl()
 
   const res = useLiveQuery(
-    `SELECT 
+    `SELECT
         observation_import_id,
-        label, 
-        observation_import_id AS value 
-      FROM observation_imports 
-      WHERE 
-        observation_import_id <> $1 
-        AND subproject_id = $2 
+        label,
+        observation_import_id AS value
+      FROM observation_imports
+      WHERE
+        observation_import_id <> $1
+        AND subproject_id = $2
       ORDER BY label`,
     [observationImportId, subprojectId],
   )
-  const observationImportOptions: {
+  const observationImportOptions = (res?.rows ?? []) as {
     observation_import_id: string
     label: string
     value: string
-  }[] = res?.rows ?? []
+  }[]
 
   // TODO: move previous import operation to a separate component
   return (

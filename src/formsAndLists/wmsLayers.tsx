@@ -8,17 +8,17 @@ import { Loading } from '../components/shared/Loading.tsx'
 import { useWmsLayersNavData } from '../modules/useWmsLayersNavData.ts'
 import '../form.css'
 
-const from = '/data/projects/$projectId_/wms-layers/'
 
 export const WmsLayers = () => {
-  const { projectId } = useParams({ from })
+  const { projectId } = useParams({ strict: false })
   const navigate = useNavigate()
 
-  const { loading, navData, isFiltered } = useWmsLayersNavData({ projectId })
-  const { navs, label, nameSingular } = navData
+  const { loading, navData, isFiltered } = useWmsLayersNavData({projectId: projectId! })
+  const { label, nameSingular } = navData
+  const navs = navData.navs as { id: string; label: string | null }[]
 
   const add = async () => {
-    const wmsLayerId = await createWmsLayer({ projectId })
+    const wmsLayerId = await createWmsLayer({projectId: projectId! })
     if (!wmsLayerId) return
     await navigate({
       to: `/data/projects/${projectId}/wms-layers/${wmsLayerId}/wms-layer`,

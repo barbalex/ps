@@ -15,7 +15,7 @@ export const TreeOpenNodesSetter = () => {
     const nodes = urlPath.reduce((acc, _, i) => {
       const node = urlPath.slice(0, i + 1)
       return [...acc, node]
-    }, [])
+    }, [] as string[][])
 
     // addOpenNodes ensures only missing nodes are added
     addOpenNodes({ nodes })

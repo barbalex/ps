@@ -44,7 +44,7 @@ export const EmailVerificationBanner = () => {
 
   const deadlineMs = useMemo(() => getVerificationDeadlineMs(user), [user])
   const isUnverified = Boolean(user && !user.emailVerified && deadlineMs)
-  const remainingMs = (deadlineMs ?? 0) - now
+  const remainingMs = (deadlineMs ?? 0) - (now ?? 0)
 
   useEffect(() => {
     if (!isUnverified) {

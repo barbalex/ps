@@ -1,9 +1,15 @@
 import * as fluentUiReactComponents from '@fluentui/react-components'
 const { Field } = fluentUiReactComponents
 type InputProps = React.ComponentProps<typeof fluentUiReactComponents.Input>
+type FieldProps = React.ComponentProps<typeof Field>
 import { IMaskInput } from 'react-imask'
 
-export const TimeFieldMasked = (props: InputProps) => {
+type Props = Omit<InputProps, 'onChange'> &
+  Pick<FieldProps, 'label' | 'validationMessage' | 'validationState'> & {
+    onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void
+  }
+
+export const TimeFieldMasked = (props: Props) => {
   const {
     name,
     label,
@@ -29,7 +35,9 @@ export const TimeFieldMasked = (props: InputProps) => {
         onAccept={(value) => {
           if (value.includes('_')) return
           console.log('onAccept', { value })
-          onChange({ target: { name, value } })
+          onChange!({
+            target: { name, value },
+          } as unknown as React.ChangeEvent<HTMLInputElement>)
         }}
         type="text"
       />

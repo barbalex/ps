@@ -13,10 +13,9 @@ import { MdMenuBook } from 'react-icons/md'
 
 const { Button } = fluentUiReactComponents
 
-const from = '/data/projects/$projectId_/exports/$projectExportsId/'
 
-export const Header = ({ autoFocusRef }) => {
-  const { projectId, projectExportsId } = useParams({ from })
+export const Header = ({ autoFocusRef }: { autoFocusRef?: React.RefObject<HTMLInputElement | null> }) => {
+  const { projectId, projectExportsId } = useParams({ strict: false })
   const navigate = useNavigate()
   const addOperation = useSetAtom(addOperationAtom)
   const { formatMessage } = useIntl()
@@ -31,7 +30,7 @@ export const Header = ({ autoFocusRef }) => {
   const basePath = `/data/projects/${projectId}/exports/${projectExportsId}`
 
   const addRow = async () => {
-    const id = await createProjectExport({ projectId })
+    const id = await createProjectExport({projectId: projectId! })
     if (!id) return
     navigate({
       to: `../${id}`,
@@ -46,7 +45,7 @@ export const Header = ({ autoFocusRef }) => {
         `SELECT * FROM project_exports WHERE project_exports_id = $1`,
         [projectExportsId],
       )
-      const prev = prevRes?.rows?.[0] ?? {}
+      const prev = (prevRes?.rows?.[0] ?? {}) as Record<string, unknown>
       await db.query(`DELETE FROM project_exports WHERE project_exports_id = $1`, [projectExportsId])
       addOperation({
         table: 'project_exports',
@@ -70,7 +69,7 @@ export const Header = ({ autoFocusRef }) => {
          ORDER BY COALESCE(NULLIF(name_de, ''), project_exports_id::text)`,
         [projectId],
       )
-      const rows = res?.rows ?? []
+      const rows = (res?.rows ?? []) as { project_exports_id: string }[]
       const len = rows.length
       if (!len) return
       const index = rows.findIndex(
@@ -95,7 +94,7 @@ export const Header = ({ autoFocusRef }) => {
          ORDER BY COALESCE(NULLIF(name_de, ''), project_exports_id::text)`,
         [projectId],
       )
-      const rows = res?.rows ?? []
+      const rows = (res?.rows ?? []) as { project_exports_id: string }[]
       const len = rows.length
       if (!len) return
       const index = rows.findIndex(

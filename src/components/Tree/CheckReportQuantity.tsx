@@ -3,6 +3,21 @@ import { isEqual } from 'es-toolkit'
 
 import { Node } from './Node.tsx'
 
+type NavData = {
+  id: string
+  label: string
+}
+
+type Props = {
+  projectId: string
+  subprojectId: string
+  placeId: string
+  placeId2?: string
+  checkReportId: string
+  nav: NavData
+  level?: number
+}
+
 export const CheckReportQuantityNode = ({
   projectId,
   subprojectId,
@@ -11,7 +26,7 @@ export const CheckReportQuantityNode = ({
   checkReportId,
   nav,
   level = 10,
-}) => {
+}: Props) => {
   const location = useLocation()
 
   const urlPath = location.pathname.split('/').filter((p) => p !== '')

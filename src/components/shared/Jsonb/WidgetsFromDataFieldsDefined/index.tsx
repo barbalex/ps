@@ -16,6 +16,20 @@ import {
   isItemData,
 } from '../../../shared/DragAndDrop/index.tsx'
 import { addOperationAtom } from '../../../../store.ts'
+import type { FieldsWithTypes } from '../index.tsx'
+
+type Props = {
+  fields: FieldsWithTypes[]
+  data: Record<string, unknown>
+  table: string
+  jsonFieldName: string
+  idField: string
+  id: string
+  orIndex?: number
+  autoFocus?: boolean
+  ref?: React.Ref<HTMLDivElement>
+  from?: string
+}
 
 // TODO: Uncaught (in promise) error: invalid input syntax for type uuid: ""
 export const WidgetsFromDataFieldsDefined = ({
@@ -29,7 +43,7 @@ export const WidgetsFromDataFieldsDefined = ({
   autoFocus,
   ref,
   from,
-}) => {
+}: Props) => {
   const addOperation = useSetAtom(addOperationAtom)
 
   const db = usePGlite()
@@ -71,7 +85,7 @@ export const WidgetsFromDataFieldsDefined = ({
         `SELECT * FROM field_sorts WHERE project_id = $1 AND table_name = $2`,
         [projectId, table],
       )
-      const prev = prevRes?.rows?.[0] ?? {}
+      const prev = (prevRes?.rows?.[0] ?? {}) as Record<string, unknown>
       try {
         db.query(
           `
@@ -90,7 +104,7 @@ export const WidgetsFromDataFieldsDefined = ({
       addOperation({
         table: 'field_sorts',
         rowIdName: 'field_sort_id',
-        rowId: prev?.field_sort_id ?? uuidv7(),
+        rowId: (prev?.field_sort_id as string | undefined) ?? uuidv7(),
         operation: 'upsert',
         draft: {
           project_id: projectId,
@@ -121,7 +135,8 @@ export const WidgetsFromDataFieldsDefined = ({
         }
 
         const indexOfTarget = fields.findIndex(
-          (field) => field.field_id === targetData.field.field_id,
+          (field) =>
+            field.field_id === (targetData.field as FieldsWithTypes).field_id,
         )
         if (indexOfTarget < 0) {
           return
@@ -130,7 +145,7 @@ export const WidgetsFromDataFieldsDefined = ({
         const closestEdgeOfTarget = extractClosestEdge(targetData)
 
         reorderItem({
-          startIndex: sourceData.index,
+          startIndex: sourceData.index as number,
           indexOfTarget,
           closestEdgeOfTarget,
         })

@@ -13,7 +13,17 @@ import {
 // TODO:
 // maybe generalize this component for all geometry editing
 // and move it to the shared folder
-export const EditingGeometry = ({ row, table }) => {
+type Props = {
+  row: {
+    place_id?: string
+    action_id?: string
+    check_id?: string
+    geometry?: unknown
+  }
+  table: string
+}
+
+export const EditingGeometry = ({ row, table }: Props) => {
   const { formatMessage } = useIntl()
   const [editingPlaceGeometry, setEditingPlaceGeometry] = useAtom(
     editingPlaceGeometryAtom,
@@ -26,7 +36,10 @@ export const EditingGeometry = ({ row, table }) => {
   )
   const [tabs, setTabs] = useAtom(tabsAtom)
 
-  const onChange = async (e, data) => {
+  const onChange = async (
+    _e: unknown,
+    data: { checked?: boolean | null },
+  ) => {
     // 1. if checked, show map if not already shown
     if (data.checked) {
       if (!tabs.includes('map')) {
@@ -36,13 +49,19 @@ export const EditingGeometry = ({ row, table }) => {
     // 2. update the editing state
     switch (table) {
       case 'places':
-        setEditingPlaceGeometry(data.checked ? row.place_id : null)
+        setEditingPlaceGeometry(
+          (data.checked ? row.place_id : null) as string | null,
+        )
         break
       case 'checks':
-        setEditingCheckGeometry(data.checked ? row.check_id : null)
+        setEditingCheckGeometry(
+          (data.checked ? row.check_id : null) as string | null,
+        )
         break
       case 'actions':
-        setEditingActionGeometry(data.checked ? row.action_id : null)
+        setEditingActionGeometry(
+          (data.checked ? row.action_id : null) as string | null,
+        )
         break
     }
   }

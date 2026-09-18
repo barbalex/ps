@@ -20,11 +20,10 @@ import {
   preferredOrder,
 } from './historyCompareConfig.ts'
 
-import type PlaceUsers from '../../models/public/PlaceUsers.ts'
-import type PlaceUsersHistory from '../../models/public/PlaceUsersHistory.ts'
+import type PlaceRoles from '../../models/public/PlaceRoles.ts'
+import type PlaceRolesHistory from '../../models/public/PlaceRolesHistory.ts'
 
 export const PlaceUserHistoryCompare = ({
-  from,
 }: {
   from:
     | '/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/users/$placeUserId_/histories/$placeUserHistoryId'
@@ -39,7 +38,7 @@ export const PlaceUserHistoryCompare = ({
     placeId2,
     placeUserId,
     placeUserHistoryId,
-  } = useParams({ from, strict: false })
+  } = useParams({ strict: false })
   const placeUserPath = placeId2
     ? `/data/projects/${projectId}/subprojects/${subprojectId}/places/${placeId}/places/${placeId2}/users/${placeUserId}`
     : `/data/projects/${projectId}/subprojects/${subprojectId}/places/${placeId}/users/${placeUserId}`
@@ -47,16 +46,19 @@ export const PlaceUserHistoryCompare = ({
 
   const addOperation = useSetAtom(addOperationAtom)
   const db = usePGlite()
-  const [validations, setValidations] = useState<Record<string, unknown>>({})
+  const [validations, setValidations] = useState<Record<string, { state: 'error'; message: string }>>({})
 
   const rowRes = useLiveQuery(`SELECT * FROM place_roles WHERE place_role_id = $1`, [
     placeUserId,
   ])
-  const row = rowRes?.rows?.[0] as PlaceUsers | undefined
+  const row = rowRes?.rows?.[0] as PlaceRoles | undefined
 
-  const onChange = async (e, data) => {
+  const onChange = async (
+    e: React.ChangeEvent<HTMLInputElement>,
+    data: Parameters<typeof getValueFromChange>[1],
+  ) => {
     const { name, value } = getValueFromChange(e, data)
-    if (!row || row[name] === value) return
+    if (!row || (row as unknown as Record<string, unknown>)[name] === value) return
 
     try {
       await db.query(
@@ -66,7 +68,7 @@ export const PlaceUserHistoryCompare = ({
     } catch (error) {
       setValidations((prev) => ({
         ...prev,
-        [name]: { state: 'error', message: error.message },
+        [name]: { state: 'error', message: error instanceof Error ? error.message : String(error) },
       }))
       return
     }
@@ -139,11 +141,11 @@ export const PlaceUserHistoryCompare = ({
     },
   })
 
-  const formatFieldValue = (field: string, history: PlaceUsersHistory) =>
-    stringifyHistoryValue(history[field])
+  const formatFieldValue = (field: string, history: PlaceRolesHistory) =>
+    stringifyHistoryValue((history as unknown as Record<string, unknown>)[field])
 
   return (
-    <HistoryCompare<PlaceUsersHistory>
+    <HistoryCompare<PlaceRolesHistory>
       onBack={() => navigate({ to: placeUserPath })}
       leftContent={leftContent}
       visibleCurrentFields={visibleCurrentFields}

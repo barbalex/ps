@@ -18,6 +18,7 @@ import {
 } from './historyCompareConfig.ts'
 
 import type ChecksHistory from '../../models/public/ChecksHistory.ts'
+import type Checks from '../../models/public/Checks.ts'
 
 export const CheckHistoryCompare = ({
   from,
@@ -29,10 +30,7 @@ export const CheckHistoryCompare = ({
   const { formatMessage } = useIntl()
   const navigate = useNavigate()
   const { projectId, subprojectId, placeId, placeId2, checkId, checkHistoryId } =
-    useParams({
-      from,
-      strict: false,
-    })
+    useParams({ strict: false })
 
   const checkPath = placeId2
     ? `/data/projects/${projectId}/subprojects/${subprojectId}/places/${placeId}/places/${placeId2}/checks/${checkId}/check`
@@ -46,7 +44,9 @@ export const CheckHistoryCompare = ({
   const db = usePGlite()
   const autoFocusRef = useRef<HTMLInputElement>(null)
 
-  const [validations, setValidations] = useState<Record<string, unknown>>({})
+  const [validations, setValidations] = useState<
+    Record<string, { state: 'error'; message: string }>
+  >({})
 
   const rowRes = useLiveQuery(`SELECT * FROM checks WHERE check_id = $1`, [
     checkId,
@@ -67,9 +67,15 @@ export const CheckHistoryCompare = ({
     },
   })
 
-  const onChange = async (e, data) => {
-    const { name, value } = getValueFromChange(e, data)
-    if (!row || row[name] === value) return
+  const onChange = async (
+    e: React.ChangeEvent<HTMLInputElement>,
+    data?: object,
+  ) => {
+    const { name, value } = getValueFromChange(
+      e,
+      data as Parameters<typeof getValueFromChange>[1],
+    )
+    if (!row || (row as Record<string, unknown>)[name] === value) return
 
     try {
       await db.query(`UPDATE checks SET ${name} = $1 WHERE check_id = $2`, [
@@ -79,7 +85,7 @@ export const CheckHistoryCompare = ({
     } catch (error) {
       setValidations((prev) => ({
         ...prev,
-        [name]: { state: 'error', message: error.message },
+        [name]: { state: 'error', message: (error as Error).message },
       }))
       return
     }
@@ -112,12 +118,12 @@ export const CheckHistoryCompare = ({
   }
 
   return (
-    <HistoryCompare<ChecksHistory>
+    <HistoryCompare<ChecksHistory & Record<string, unknown>>
       onBack={() => navigate({ to: checkPath })}
       leftContent={
         <div className="form-container">
           <CheckForm
-            row={row}
+            row={row as unknown as Checks}
             onChange={onChange}
             validations={validations}
             autoFocusRef={autoFocusRef}
@@ -144,7 +150,8 @@ export const CheckHistoryCompare = ({
         rowIdName: 'check_id',
         rowId: checkId,
         excludedRestoreFields,
-        addOperation,
+        // the shared component types the operation as plain string
+        addOperation: addOperation as unknown as (...args: unknown[]) => void,
       }}
     />
   )

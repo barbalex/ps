@@ -1,6 +1,7 @@
 import * as fluentUiReactComponents from '@fluentui/react-components'
-const { Button, Tooltip } = fluentUiReactComponents
+import type { TooltipProps } from '@fluentui/react-components'
 import { useEffect } from 'react'
+import type { ComponentType, MouseEvent, ReactNode } from 'react'
 import { MdLogin, MdHome, MdMenuBook } from 'react-icons/md'
 import { useNavigate, useLocation } from '@tanstack/react-router'
 import { useAtom } from 'jotai'
@@ -20,8 +21,26 @@ import styles from './Menu.module.css'
 import { UserMenu } from './UserMenu/index.tsx'
 import { Tabs } from './Tabs.tsx'
 import { LanguageChooser } from '../../shared/LanguageChooser.tsx'
-import { MenuBar } from '../../MenuBar/index.tsx'
+import { MenuBar as MenuBarWithRequiredProps } from '../../MenuBar/index.tsx'
 import { signOut, useSession } from '../../../modules/authClient.ts'
+
+const { Button } = fluentUiReactComponents
+
+// Fluent UI's TooltipProps requires `relationship`, but it is optional at runtime
+const Tooltip = fluentUiReactComponents.Tooltip as ComponentType<
+  Omit<TooltipProps, 'relationship'> & {
+    relationship?: TooltipProps['relationship']
+  }
+>
+
+// MenuBar's remaining props (rerenderer, titleComponent, titleComponentWidth)
+// are only needed for the files menu, not for this header usage
+const MenuBar = MenuBarWithRequiredProps as ComponentType<{
+  addMargin?: boolean
+  showBorder?: boolean
+  grow?: boolean
+  children?: ReactNode
+}>
 
 const MOBILE_TAB_PRIORITY = ['data', 'map', 'tree'] as const
 
@@ -64,7 +83,10 @@ export const Menu = () => {
     }
   }, [enforceMobileNavigation, isMobileView, setTabs, tabs])
 
-  const onChangeTabs = (_e, { checkedItems }) => {
+  const onChangeTabs = (
+    _e: unknown,
+    { checkedItems }: { checkedItems: string[] },
+  ) => {
     const nextTabs = checkedItems as string[]
     if (!isMobileView) {
       setTabs(nextTabs)
@@ -86,7 +108,7 @@ export const Menu = () => {
 
   const onClickEnter = () => navigate({ to: '/data/projects' })
 
-  const onClickMapView = (e) => {
+  const onClickMapView = (e: MouseEvent) => {
     // prevent toggling map tab
     e.stopPropagation()
 

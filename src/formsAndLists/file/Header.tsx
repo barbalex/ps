@@ -13,8 +13,16 @@ import { UploaderContext } from '../../UploaderContext.ts'
 import { FullscreenControl } from './FullscreenControl.tsx'
 import { HistoryToggleButton } from '../../components/shared/HistoryCompare/HistoryToggleButton.tsx'
 import { addOperationAtom } from '../../store.ts'
+import type Files from '../../models/public/Files.ts'
 
-export const Header = ({ row, previewRef, from }) => {
+export const Header = ({
+  row,
+  previewRef,
+}: {
+  row?: Files
+  previewRef?: React.RefObject<HTMLElement | null>
+  from?: string
+}) => {
   const {
     projectId,
     subprojectId,
@@ -23,7 +31,7 @@ export const Header = ({ row, previewRef, from }) => {
     actionId,
     checkId,
     fileId,
-  } = useParams({ from })
+  } = useParams({ strict: false })
   const navigate = useNavigate()
   const { pathname } = useLocation()
   const isPreview = pathname.endsWith('preview')
@@ -58,17 +66,20 @@ export const Header = ({ row, previewRef, from }) => {
 
   // TODO: if is preview, add preview to the url
 
-  const uploaderCtx = useContext(UploaderContext)
+  // the context carries the ref object itself; UploaderContext is typed as the element
+  const uploaderCtx = useContext(UploaderContext) as unknown as {
+    current?: { getAPI?: () => { initFlow?: () => void } } | null
+  } | null
   const api = uploaderCtx?.current?.getAPI?.()
 
-  const addRow = () => api.initFlow()
+  const addRow = () => api?.initFlow?.()
 
   const deleteRow = async () => {
     try {
       const prevRes = await db.query(`SELECT * FROM files WHERE file_id = $1`, [
         fileId,
       ])
-      const prev = prevRes?.rows?.[0] ?? {}
+      const prev = (prevRes?.rows?.[0] ?? {}) as Record<string, unknown>
       db.query(`DELETE FROM files WHERE file_id = $1`, [fileId])
       addOperation({
         table: 'file',
@@ -115,7 +126,7 @@ export const Header = ({ row, previewRef, from }) => {
       ${hFilterField ? `WHERE ${hFilterField} = '${hFilterValue}'` : ''} 
       ORDER BY label`,
       )
-      const fileIds: { file_id: string }[] = res?.rows ?? []
+      const fileIds = (res?.rows ?? []) as { file_id: string }[]
       const len = fileIds.length
       const index = fileIds.findIndex((p) => p.file_id === fileIdRef.current)
       const next = fileIds[(index + 1) % len]
@@ -139,7 +150,7 @@ export const Header = ({ row, previewRef, from }) => {
       ${hFilterField ? `WHERE ${hFilterField} = '${hFilterValue}'` : ''} 
       ORDER BY label`,
       )
-      const fileIds: { file_id: string }[] = res?.rows ?? []
+      const fileIds = (res?.rows ?? []) as { file_id: string }[]
       const len = fileIds.length
       const index = fileIds.findIndex((p) => p.file_id === fileIdRef.current)
       const previous = fileIds[(index + len - 1) % len]

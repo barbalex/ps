@@ -32,7 +32,7 @@ export const useChartSubjectNavData = ({
   const [openNodes] = useAtom(treeOpenNodesAtom)
   const location = useLocation()
 
-  const res = useLiveQuery(
+  const res = useLiveQuery<NavData>(
     `
       SELECT
         chart_subject_id as id,

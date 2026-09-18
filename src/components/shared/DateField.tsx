@@ -7,6 +7,25 @@ import { useIntl } from 'react-intl'
 
 import styles from './DateField.module.css'
 
+type InputProps = React.ComponentProps<typeof fluentUiReactComponents.Input>
+type InputOnChangeData = Parameters<NonNullable<InputProps['onChange']>>[1]
+type FieldProps = React.ComponentProps<typeof Field>
+
+type Props = {
+  label?: string
+  value?: unknown
+  name?: string
+  onChange: (
+    ev: React.ChangeEvent<HTMLInputElement>,
+    data: InputOnChangeData,
+  ) => void
+  validationMessage?: FieldProps['validationMessage']
+  validationState?: 'error' | 'warning' | 'success' | 'none'
+  autoFocus?: boolean
+  ref?: React.Ref<HTMLInputElement>
+  button?: React.ReactNode
+}
+
 const toDateOnlyString = (date: Date): string => {
   const year = date.getFullYear()
   const month = String(date.getMonth() + 1).padStart(2, '0')
@@ -57,7 +76,11 @@ export const DateField = ({
   autoFocus,
   ref,
   button,
-}) => {
+}: Props) => {
+  // consumers pass Fluent's (ev, data) change handlers; called here with fake events
+  const onChangeFake = onChange as unknown as (e: {
+    target: { name?: string; value: string | null; type?: string }
+  }) => void
   // console.log('DateField', { value, label, name })
   const { formatMessage, locale } = useIntl()
 
@@ -136,10 +159,10 @@ export const DateField = ({
             defaultMessage: 'Datum wählen oder tippen...',
           })}
           name={name}
-          value={value}
+          value={value as Date | null | undefined}
           onChange={onChange}
           onSelectDate={(date) =>
-            onChange({
+            onChangeFake({
               target: {
                 name,
                 value: date ? toDateOnlyString(date) : null,

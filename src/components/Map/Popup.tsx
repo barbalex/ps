@@ -1,12 +1,23 @@
+import type { ReactNode } from 'react'
 import Linkify from 'linkify-react'
 
 import styles from './Popup.module.css'
+
+type LayerData = {
+  label: string | null
+  properties: [key: string, value: ReactNode][]
+}
+
+type Props = {
+  layersData: LayerData[]
+  mapSize?: { x?: number; y?: number }
+}
 
 export const Popup = ({
   layersData,
   mapSize = {},
   // src
-}) => {
+}: Props) => {
   // if (src) {
   //   return (
   //     <iframe

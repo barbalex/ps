@@ -5,7 +5,11 @@ export const setOpenNodes = async ({
   nodes = [],
   treeOpenNodes,
   setTreeOpenNodes,
-}): void => {
+}: {
+  nodes?: string[][]
+  treeOpenNodes: string[][]
+  setTreeOpenNodes: (nodes: string[][]) => void
+}): Promise<void> => {
   // ensure contained arrays are unique
   const newNodes = [...new Set(nodes)]
   // ensure only not yet open nodes are added

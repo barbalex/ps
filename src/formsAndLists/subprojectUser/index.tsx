@@ -29,17 +29,16 @@ const {
   Button,
 } = fluentUiReactComponents
 
-const from =
-  '/data/projects/$projectId_/subprojects/$subprojectId_/users/$subprojectUserId/'
-
 type Row = SubprojectRoles & { email: string | null; project_id: string | null }
 
 export const SubprojectUser = () => {
-  const { subprojectUserId } = useParams({ from })
+  const { subprojectUserId } = useParams({ strict: false })
   const addOperation = useSetAtom(addOperationAtom)
   const { formatMessage } = useIntl()
 
-  const [validations, setValidations] = useState({})
+  const [validations, setValidations] = useState<
+    Record<string, { state: 'error'; message: string }>
+  >({})
   const [pendingRole, setPendingRole] = useState<string | null>(null)
 
   const autoFocusRef = useRef<HTMLInputElement>(null)
@@ -54,7 +53,7 @@ export const SubprojectUser = () => {
      WHERE sr.subproject_role_id = $1`,
     [subprojectUserId],
   )
-  const row: Row | undefined = res?.rows?.[0]
+  const row = res?.rows?.[0] as unknown as Row | undefined
 
   // the project owner's own directory row: its role is maintained by triggers
   const ownerRes = useLiveQuery(
@@ -63,10 +62,13 @@ export const SubprojectUser = () => {
   )
   const isOwner = (ownerRes?.rows?.length ?? 0) > 0
 
-  const onChange = async (e, data) => {
+  const onChange = async (
+    e: React.ChangeEvent<HTMLInputElement>,
+    data: Parameters<typeof getValueFromChange>[1],
+  ) => {
     const { name, value } = getValueFromChange(e, data)
     // only change if value has changed: maybe only focus entered and left
-    if (row[name] === value) return
+    if ((row as Record<string, any>)[name] === value) return
 
     if (
       name === 'role' &&
@@ -84,7 +86,7 @@ export const SubprojectUser = () => {
     } catch (error) {
       setValidations((prev) => ({
         ...prev,
-        [name]: { state: 'error', message: error.message },
+        [name]: { state: 'error', message: error instanceof Error ? error.message : String(error) },
       }))
       return
     }
@@ -113,7 +115,7 @@ export const SubprojectUser = () => {
     } catch (error) {
       setValidations((prev) => ({
         ...prev,
-        role: { state: 'error', message: error.message },
+        role: { state: 'error', message: error instanceof Error ? error.message : String(error) },
       }))
       return
     }
@@ -121,7 +123,7 @@ export const SubprojectUser = () => {
       const { role: _, ...rest } = prev
       return rest
     })
-    if (!row.project_user_id) return
+    if (!row!.project_user_id) return
     addOperation({
       table: 'subproject_roles',
       rowIdName: 'subproject_role_id',
@@ -153,7 +155,7 @@ export const SubprojectUser = () => {
 
   return (
     <div className="form-outer-container">
-      <Header autoFocusRef={autoFocusRef} from={from} />
+      <Header autoFocusRef={autoFocusRef} />
       <div className="form-container">
         {isOwner && (
           <p className={styles.ownerNotice}>

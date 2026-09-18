@@ -3,6 +3,7 @@ import { useParams, useNavigate } from '@tanstack/react-router'
 import { usePGlite, useLiveQuery } from '@electric-sql/pglite-react'
 import { useSetAtom } from 'jotai'
 import { useIntl } from 'react-intl'
+import type { InputProps } from '@fluentui/react-components'
 
 import { ExportForm } from './Form.tsx'
 import { HistoryCompare } from '../../components/shared/HistoryCompare/index.tsx'
@@ -23,31 +24,36 @@ import {
 import type Exports from '../../models/public/Exports.ts'
 import type ExportsHistory from '../../models/public/ExportsHistory.ts'
 
-const from =
-  '/data/exports/$exportsId_/histories/$exportsHistoryId'
+type InputOnChangeData = Parameters<NonNullable<InputProps['onChange']>>[1]
+
+type HistoryRow = ExportsHistory & Record<string, unknown>
 
 export const ExportHistoryCompare = () => {
   const { formatMessage } = useIntl()
   const navigate = useNavigate()
-  const { exportsId, exportsHistoryId } = useParams({
-    from,
-    strict: false,
-  })
+  const { exportsId, exportsHistoryId } = useParams({ strict: false })
   const exportPath = `/data/exports/${exportsId}`
   const historyPath = `${exportPath}/histories`
 
   const addOperation = useSetAtom(addOperationAtom)
   const db = usePGlite()
   const autoFocusRef = useRef<HTMLInputElement>(null)
-  const [validations, setValidations] = useState({})
+  const [validations, setValidations] = useState<
+    Record<string, { state: 'error'; message: string }>
+  >({})
 
   const rowRes = useLiveQuery(
     `SELECT * FROM exports WHERE exports_id = $1`,
     [exportsId],
   )
-  const row = rowRes?.rows?.[0] as Exports | undefined
+  const row = rowRes?.rows?.[0] as
+    | (Exports & Record<string, unknown>)
+    | undefined
 
-  const onChange = async (e, data) => {
+  const onChange = async (
+    e: React.ChangeEvent<HTMLInputElement>,
+    data: InputOnChangeData,
+  ) => {
     const { name, value } = getValueFromChange(e, data)
     if (row?.[name] === value) return
 
@@ -59,7 +65,7 @@ export const ExportHistoryCompare = () => {
     } catch (error) {
       setValidations((prev) => ({
         ...prev,
-        [name]: { state: 'error', message: error.message },
+        [name]: { state: 'error', message: (error as Error).message },
       }))
       return
     }
@@ -128,11 +134,11 @@ export const ExportHistoryCompare = () => {
     },
   })
 
-  const formatFieldValue = (field: string, history: ExportsHistory) =>
-    stringifyHistoryValue(history[field])
+  const formatFieldValue = (field: string, history: HistoryRow) =>
+    stringifyHistoryValue((history as Record<string, unknown>)[field])
 
   return (
-    <HistoryCompare<ExportsHistory>
+    <HistoryCompare<HistoryRow>
       onBack={() => navigate({ to: exportPath })}
       leftContent={leftContent}
       visibleCurrentFields={visibleCurrentFields}

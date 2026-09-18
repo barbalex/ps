@@ -1,6 +1,7 @@
 import { useState, useEffect, useMemo } from 'react'
 import * as fluentUiReactComponents from '@fluentui/react-components'
 const { Combobox, Field, Option } = fluentUiReactComponents
+import type { OptionOnSelectData } from '@fluentui/react-components'
 import { useLiveQuery } from '@electric-sql/pglite-react'
 import { useIntl } from 'react-intl'
 
@@ -10,12 +11,26 @@ import { buffer } from '@turf/buffer'
 import { convex } from '@turf/convex'
 import { polygonToLine } from '@turf/polygon-to-line'
 import { point } from '@turf/helpers'
+import type { AllGeoJSON } from '@turf/helpers'
+import type { Feature, GeoJSON, LineString } from 'geojson'
 
 interface PlaceWithDistance {
   place_id: string
   label: string
   distance: number | null
   geometry: unknown
+}
+
+type LooseGeometry = {
+  type: string
+  coordinates?: unknown
+  geometries?: LooseGeometry[] | null
+}
+
+type PlaceRow = {
+  place_id: string
+  label: string
+  geometry: LooseGeometry
 }
 
 export const PlaceComboboxWithDistance = ({
@@ -26,6 +41,14 @@ export const PlaceComboboxWithDistance = ({
   ref,
   validationState,
   validationMessage,
+}: {
+  observationId: string | undefined
+  value: string
+  onChange: (e: any, data?: any) => void
+  autoFocus?: boolean
+  ref?: React.Ref<HTMLInputElement>
+  validationState?: 'error' | 'none' | 'success' | 'warning'
+  validationMessage?: string
 }) => {
   const [filter, setFilter] = useState('')
   const { formatMessage } = useIntl()
@@ -35,13 +58,18 @@ export const PlaceComboboxWithDistance = ({
     `SELECT ST_AsGeoJSON(geometry)::json as geometry FROM observations WHERE observation_id = $1`,
     [observationId],
   )
-  const observation = observationRes?.rows?.[0]
+  const observation = observationRes?.rows?.[0] as
+    | { geometry: LooseGeometry | null }
+    | undefined
 
   // Get all places
   const placesRes = useLiveQuery(
     `SELECT place_id, label, ST_AsGeoJSON(geometry)::json as geometry FROM places WHERE geometry IS NOT NULL ORDER BY label`,
   )
-  const places = useMemo(() => placesRes?.rows ?? [], [placesRes])
+  const places = useMemo(
+    () => (placesRes?.rows ?? []) as PlaceRow[],
+    [placesRes],
+  )
 
   // Calculate distances and sort
   const placesWithDistance: PlaceWithDistance[] = useMemo(() => {
@@ -61,14 +89,14 @@ export const PlaceComboboxWithDistance = ({
 
       // Handle different geometry types for observation
       if (occGeometry.type === 'Point') {
-        occPoint = point(occGeometry.coordinates)
+        occPoint = point(occGeometry.coordinates as number[])
       } else if (
         occGeometry.type === 'GeometryCollection' &&
-        occGeometry.geometries?.length > 0
+        (occGeometry.geometries?.length ?? 0) > 0
       ) {
-        const firstGeom = occGeometry.geometries[0]
+        const firstGeom = occGeometry.geometries![0]
         if (firstGeom?.type === 'Point') {
-          occPoint = point(firstGeom.coordinates)
+          occPoint = point(firstGeom.coordinates as number[])
         }
       } else if (occGeometry.coordinates) {
         // Try to extract first coordinate
@@ -93,28 +121,30 @@ export const PlaceComboboxWithDistance = ({
 
         try {
           // Buffer and convex the place geometry to handle various geometry types
-          const bufferedGeometry = buffer(place.geometry, 0.000001)
-          const convexedGeometry = convex(bufferedGeometry)
+          const bufferedGeometry = buffer(place.geometry as GeoJSON, 0.000001)
+          const convexedGeometry = convex(bufferedGeometry as AllGeoJSON)
 
           if (convexedGeometry) {
             const hullLine = polygonToLine(convexedGeometry)
             // Calculate distance in kilometers, convert to meters
-            dist = pointToLineDistance(occPoint, hullLine) * 1000
+            dist =
+              pointToLineDistance(occPoint, hullLine as Feature<LineString>) *
+              1000
           }
         } catch {
           // If error, try simple point-to-point distance
           try {
             if (place.geometry?.type === 'Point') {
               dist =
-                distance(occPoint, point(place.geometry.coordinates)) * 1000
+                distance(occPoint, point(place.geometry.coordinates as number[])) * 1000
             } else if (
               place.geometry?.type === 'GeometryCollection' &&
-              place.geometry.geometries?.length > 0
+              (place.geometry.geometries?.length ?? 0) > 0
             ) {
-              const firstGeom = place.geometry.geometries[0]
+              const firstGeom = place.geometry.geometries![0]
               if (firstGeom?.type === 'Point') {
                 dist =
-                  distance(occPoint, point(firstGeom.coordinates)) *
+                  distance(occPoint, point(firstGeom.coordinates as number[])) *
                   1000
               }
             }
@@ -168,12 +198,12 @@ export const PlaceComboboxWithDistance = ({
     setFilter(displayValue)
   }, [displayValue])
 
-  const onInput = (event) => {
-    const inputFilter = event.target.value
+  const onInput = (event: React.FormEvent<HTMLInputElement>) => {
+    const inputFilter = (event.target as HTMLInputElement).value
     setFilter(inputFilter)
   }
 
-  const onOptionSelect = (e, data) => {
+  const onOptionSelect = (_e: unknown, data: OptionOnSelectData) => {
     if (!data.optionValue || data.optionValue === '0') {
       setFilter('')
       onChange({ target: { name: 'place_id', value: null } })
@@ -218,8 +248,7 @@ export const PlaceComboboxWithDistance = ({
                 : ''
             return (
               <Option key={place.place_id} value={place.place_id}>
-                {place.label}
-                {distanceText}
+                {`${place.label}${distanceText}`}
               </Option>
             )
           })

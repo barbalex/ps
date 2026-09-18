@@ -12,8 +12,8 @@ import '../../form.css'
 
 type Props = {
   row: PlaceLevels
-  onChange: (e: React.ChangeEvent<unknown>, data?: unknown) => Promise<void>
-  validations?: Record<string, { state: string; message: string }>
+  onChange: (e: React.ChangeEvent<any>, data?: any) => void
+  validations?: Record<string, { state: 'error'; message: string }>
   autoFocusRef?: React.Ref<HTMLInputElement>
 }
 
@@ -40,13 +40,17 @@ export const PlaceLevelForm = ({
 
   const lang = locale.split('-')[0]
   const placeNameSingular =
-    row?.[`name_singular_${lang}`] ?? row?.name_singular_de ?? 'Ort'
+    (row as Record<string, any>)?.[`name_singular_${lang}`] ??
+    row?.name_singular_de ??
+    'Ort'
   const placeName =
-    row?.[`name_plural_${lang}`] ?? row?.name_plural_de ?? 'Orte'
+    (row as Record<string, any>)?.[`name_plural_${lang}`] ??
+    row?.name_plural_de ??
+    'Orte'
 
   return (
     <>
-      <SectionDescription marginTop={-10}>
+      <SectionDescription>
         {formatMessage({
           id: 'pR0UwN',
           defaultMessage:
@@ -56,9 +60,9 @@ export const PlaceLevelForm = ({
       <RadioGroupField
         label={formatMessage({ id: 'Lv9nRx', defaultMessage: 'Stufe' })}
         name="level"
-        list={[1, 2]}
+        list={[1, 2] as unknown as string[]}
         layout="horizontal"
-        value={row.level ?? ''}
+        value={(row.level ?? '') as unknown as string}
         onChange={onChange}
         validationState={validations?.level?.state}
         validationMessage={validations?.level?.message}
@@ -202,7 +206,7 @@ export const PlaceLevelForm = ({
               { placeNameSingular },
             )}
             name="place_roles_in_place"
-            value={row.place_roles_in_place ?? true}
+            value={(row as Record<string, any>).place_roles_in_place ?? true}
             onChange={onChange}
             validationState={validations?.place_roles_in_place?.state}
             validationMessage={

@@ -26,17 +26,14 @@ export const SubprojectHistoryCompare = ({
 }) => {
   const { formatMessage } = useIntl()
   const navigate = useNavigate()
-  const { projectId, subprojectId, subprojectHistoryId } = useParams({
-    from,
-    strict: false,
-  })
+  const { projectId, subprojectId, subprojectHistoryId } = useParams({ strict: false })
   const subprojectPath = `/data/projects/${projectId}/subprojects/${subprojectId}/subproject`
   const historyPath = `/data/projects/${projectId}/subprojects/${subprojectId}/histories`
   const addOperation = useSetAtom(addOperationAtom)
   const db = usePGlite()
   const autoFocusRef = useRef<HTMLInputElement>(null)
 
-  const [validations, setValidations] = useState<Record<string, unknown>>({})
+  const [validations, setValidations] = useState<Record<string, { state: 'error'; message: string }>>({})
 
   const rowRes = useLiveQuery(
     `SELECT * FROM subprojects WHERE subproject_id = $1`,
@@ -56,9 +53,12 @@ export const SubprojectHistoryCompare = ({
     },
   })
 
-  const onChange = async (e, data) => {
+  const onChange = async (
+    e: React.ChangeEvent<HTMLInputElement>,
+    data: Parameters<typeof getValueFromChange>[1],
+  ) => {
     const { name, value } = getValueFromChange(e, data)
-    if (!row || row[name] === value) return
+    if (!row || (row as Record<string, unknown>)[name] === value) return
 
     try {
       await db.query(
@@ -68,7 +68,7 @@ export const SubprojectHistoryCompare = ({
     } catch (error) {
       setValidations((prev) => ({
         ...prev,
-        [name]: { state: 'error', message: error.message },
+        [name]: { state: 'error', message: error instanceof Error ? error.message : String(error) },
       }))
       return
     }

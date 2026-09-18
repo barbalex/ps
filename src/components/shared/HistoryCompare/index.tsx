@@ -11,6 +11,7 @@ import { useHistoryRecords } from './useHistoryRecords.ts'
 import { getDiffFields, getDisplayFields } from './utils.ts'
 import { HistoryValueList, HistoryValueListScroller } from './ValueList.tsx'
 import { onlineAtom } from '../../../store.ts'
+import type { QueuedOperation } from '../../../store.ts'
 
 import styles from './index.module.css'
 
@@ -20,14 +21,7 @@ interface DbLike {
   query(sql: string, params?: unknown[]): Promise<unknown>
 }
 
-type AddOperation = (params: {
-  table: string
-  rowIdName: string
-  rowId: string | undefined
-  operation: string
-  draft: Record<string, unknown>
-  prev: Record<string, unknown>
-}) => void
+type AddOperation = (params: Omit<QueuedOperation, 'id' | 'time'>) => void
 
 type HistoryConfig = {
   historyTable: string
@@ -35,7 +29,7 @@ type HistoryConfig = {
   rowId: string | undefined
   historyPath: string
   routeHistoryId: string | undefined
-  currentRow: Record<string, unknown> | undefined
+  currentRow: Record<string, any> | undefined
 }
 
 type RestoreConfig = {
@@ -47,7 +41,7 @@ type RestoreConfig = {
   addOperation: AddOperation
 }
 
-type HistoryCompareProps<THistory extends Record<string, unknown>> = {
+type HistoryCompareProps<THistory extends Record<string, any>> = {
   onBack: () => void
   leftContent: ReactNode
   leftHistories?: THistory[]
@@ -62,12 +56,12 @@ type HistoryCompareProps<THistory extends Record<string, unknown>> = {
   differentFields?: string[]
   formatFieldLabel: (field: string) => ReactNode
   formatFieldValue?: (field: string, history: THistory) => ReactNode
-  row: Record<string, unknown> | undefined
+  row: Record<string, any> | undefined
   historyConfig: HistoryConfig
   restoreConfig: RestoreConfig
 }
 
-export function HistoryCompare<THistory extends Record<string, unknown>>({
+export function HistoryCompare<THistory extends Record<string, any>>({
   onBack,
   leftContent,
   leftHistories,
@@ -137,7 +131,9 @@ export function HistoryCompare<THistory extends Record<string, unknown>>({
     selectedHistory,
     diffFields,
     excludedRestoreFields: restoreConfig.excludedRestoreFields,
-    addOperation: restoreConfig.addOperation,
+    addOperation: restoreConfig.addOperation as unknown as Parameters<
+      typeof createRestoreDiffValuesHandler
+    >[0]['addOperation'],
   })
 
   const resolveFieldValue = (field: string, history: THistory) => {

@@ -26,7 +26,7 @@ export const useSubprojectReportNavData = ({
   const location = useLocation()
   const { formatMessage } = useIntl()
 
-  const res = useLiveQuery(
+  const res = useLiveQuery<NavData>(
     `
       SELECT
         subproject_report_id AS id,

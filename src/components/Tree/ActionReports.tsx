@@ -6,13 +6,28 @@ import { removeChildNodes } from '../../modules/tree/removeChildNodes.ts'
 import { addOpenNodes } from '../../modules/tree/addOpenNodes.ts'
 import { useActionReportsNavData } from '../../modules/useActionReportsNavData.ts'
 
+type NavData = {
+  id: string
+  label: string
+  count_unfiltered?: number
+  count_filtered?: number
+}[]
+
+type Props = {
+  projectId: string
+  subprojectId: string
+  placeId: string
+  placeId2?: string
+  level?: number
+}
+
 export const ActionReportsNode = ({
   projectId,
   subprojectId,
   placeId,
   placeId2,
   level = 7,
-}) => {
+}: Props) => {
   const navigate = useNavigate()
 
   const { navData } = useActionReportsNavData({
@@ -47,7 +62,8 @@ export const ActionReportsNode = ({
   }
 
   // only list navs if isOpen AND the first nav has an id
-  const showNavs = isOpen && navs.length > 0 && navs[0].id
+  // ids only exist (and are only used) when the node is open
+  const showNavs = isOpen && navs.length > 0 && (navs as NavData)[0].id
 
   return (
     <>
@@ -62,7 +78,7 @@ export const ActionReportsNode = ({
         onClickButton={onClickButton}
       />
       {showNavs &&
-        navs.map((nav, i) => (
+        (navs as NavData).map((nav, i) => (
           <ActionReportNode
             key={`${nav.id}-${i}`}
             projectId={projectId}

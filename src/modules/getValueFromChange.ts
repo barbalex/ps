@@ -7,19 +7,22 @@ type InputOnChangeData = Parameters<
 
 export const getValueFromChange = (
   e: React.ChangeEvent<HTMLInputElement>,
-  data: InputOnChangeData,
+  data?: InputOnChangeData,
 ) => {
   const name = e.target.name
   const targetType = e.target.type
 
   switch (targetType) {
     case 'checkbox':
-      return { value: data?.checked, name, targetType }
+      return { value: (data as { checked?: boolean })?.checked, name, targetType }
     case 'radio': {
       if (data?.value === null) return { value: null, name, targetType }
       // numbers need to be converted to numbers
       return {
-        value: !isNaN(data?.value) ? parseFloat(data?.value) : data?.value,
+        value:
+          !isNaN(data?.value as unknown as number)
+            ? parseFloat(data?.value as string)
+            : data?.value,
         name,
         targetType,
       }

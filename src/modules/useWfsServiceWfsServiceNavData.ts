@@ -32,7 +32,7 @@ export const useWfsServiceWfsServiceNavData = ({
         wfs_services
       WHERE 
         wfs_services.wfs_service_id = '${wfsServiceId}'`
-  const res = useLiveQuery(sql)
+  const res = useLiveQuery<NavData>(sql)
   const loading = res === undefined
 
   const nav: NavData | undefined = res?.rows?.[0]

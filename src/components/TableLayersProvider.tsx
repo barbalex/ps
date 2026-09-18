@@ -27,10 +27,12 @@ export const TableLayersProvider = () => {
   const db = usePGlite()
   // do not include vector_layers and vector_layer_displays in this query
   // as the effect will run every time these tables change
-  const projectsResult = useLiveQuery<Projects.project_id>(
+  const projectsResult = useLiveQuery<{ project_id: Projects['project_id'] }>(
     `SELECT project_id FROM projects`,
   )
-  const projects: Projects.project_id[] = projectsResult?.rows ?? []
+  const projects: Projects['project_id'][] = (projectsResult?.rows ?? []).map(
+    (p) => p.project_id,
+  )
   const projectIds = (projectsResult?.rows ?? []).map((p) => p.project_id)
 
   const observationCountResult = useLiveQuery<{ count: number }>(

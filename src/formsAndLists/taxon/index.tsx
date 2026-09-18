@@ -14,24 +14,28 @@ import type Taxa from '../../models/public/Taxa.ts'
 
 import '../../form.css'
 
-const from = '/data/projects/$projectId_/taxonomies/$taxonomyId_/taxa/$taxonId/'
 
 export const Taxon = () => {
-  const { taxonId } = useParams({ from })
+  const { taxonId } = useParams({ strict: false })
   const addOperation = useSetAtom(addOperationAtom)
-  const [validations, setValidations] = useState({})
+  const [validations, setValidations] = useState<
+    Record<string, { state: 'error'; message: string }>
+  >({})
   const { formatMessage } = useIntl()
 
   const autoFocusRef = useRef<HTMLInputElement>(null)
 
   const db = usePGlite()
   const res = useLiveQuery(`SELECT * FROM taxa WHERE taxon_id = $1`, [taxonId])
-  const row: Taxa | undefined = res?.rows?.[0]
+  const row: Taxa | undefined = res?.rows?.[0] as Taxa | undefined
 
-  const onChange = async (e, data) => {
+  const onChange = async (
+    e: React.ChangeEvent<HTMLInputElement>,
+    data: Parameters<typeof getValueFromChange>[1],
+  ) => {
     const { name, value } = getValueFromChange(e, data)
     // only change if value has changed: maybe only focus entered and left
-    if (row[name] === value) return
+    if ((row as Record<string, any>)[name] === value) return
 
     try {
       await db.query(`UPDATE taxa SET ${name} = $1 WHERE taxon_id = $2`, [
@@ -41,7 +45,7 @@ export const Taxon = () => {
     } catch (error) {
       setValidations((prev) => ({
         ...prev,
-        [name]: { state: 'error', message: error.message },
+        [name]: { state: 'error', message: error instanceof Error ? error.message : String(error) },
       }))
       return
     }

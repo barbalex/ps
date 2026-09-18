@@ -29,7 +29,10 @@ export const useSubprojectUsersNavData = ({
   const location = useLocation()
   const { formatMessage } = useIntl()
 
-  const filterString = filterStringFromFilter(filter, 'subproject_roles')
+  const filterString = filterStringFromFilter(
+    filter as Record<string, unknown> & typeof filter,
+    'subproject_roles',
+  )
   const isFiltered = !!filterString
 
   const ownArray = [
@@ -65,7 +68,7 @@ export const useSubprojectUsersNavData = ({
         count_filtered.count AS count_filtered
       FROM count_unfiltered, count_filtered`
 
-  const res = useLiveQuery(sql)
+  const res = useLiveQuery<NavData>(sql)
 
   const loading = res === undefined
 

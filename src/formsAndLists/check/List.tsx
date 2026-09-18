@@ -6,16 +6,14 @@ import { Row } from '../../components/shared/Row.tsx'
 import { Header } from './Header.tsx'
 import { NotFound } from '../../components/NotFound.tsx'
 
-export const CheckList = ({ from }) => {
-  const { projectId, subprojectId, placeId, placeId2, checkId } = useParams({
-    from,
-  })
+export const CheckList = ({ from }: { from: string }) => {
+  const { projectId, subprojectId, placeId, placeId2, checkId } = useParams({ strict: false })
   const { loading, navData } = useCheckNavData({
-    projectId,
-    subprojectId,
-    placeId,
+    projectId: projectId!,
+    subprojectId: subprojectId!,
+    placeId: placeId!,
     placeId2,
-    checkId,
+    checkId: checkId!,
   })
   const { navs, notFound } = navData
 

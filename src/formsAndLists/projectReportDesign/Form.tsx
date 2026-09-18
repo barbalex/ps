@@ -18,10 +18,31 @@ import type ProjectReportDesigns from '../../models/public/ProjectReportDesigns.
 
 import '@puckeditor/core/puck.css'
 
-export const Form = ({ autoFocusRef, from }) => {
-  const { projectReportDesignId } = useParams({ from })
+type DesignRow = {
+  project_report_design_id: string
+  project_id: string
+  name: string | null
+  design: any
+  active: boolean | null
+  subproject_name_singular: string | null
+  fields: { name: string; field_label: string | null }[] | null
+  charts: {
+    chart_id: string
+    name: string | null
+    label: string | null
+    subjects_single: boolean | null
+  }[] | null
+  report_data: Record<string, unknown> | null
+  has_active_subproject_design: boolean | null
+  [key: string]: unknown
+}
+
+export const Form = ({ autoFocusRef }: { autoFocusRef?: React.RefObject<HTMLInputElement | null>; from?: string }) => {
+  const { projectReportDesignId } = useParams({ strict: false })
   const addOperation = useSetAtom(addOperationAtom)
-  const [validations, setValidations] = useState({})
+  const [validations, setValidations] = useState<
+    Record<string, { state: 'error'; message: string }>
+  >({})
   const { formatMessage } = useIntl()
   const [language] = useAtom(languageAtom)
 
@@ -58,17 +79,17 @@ export const Form = ({ autoFocusRef, from }) => {
     WHERE project_report_design_id = $1`,
     [projectReportDesignId],
   )
-  const row: ProjectReportDesigns | undefined = res?.rows?.[0]
+  const row = res?.rows?.[0] as DesignRow | undefined
   const fields = row?.fields ?? []
   const charts = row?.charts ?? []
-  const reportData = row?.report_data ?? {}
+  const reportData = row?.report_data ?? ({} as Record<string, unknown>)
   const hasActiveSubprojectDesign = row?.has_active_subproject_design ?? false
   const subprojectNameSingular = row?.subproject_name_singular
     ? `${row.subproject_name_singular}-${formatMessage({ id: 'bCAdEf', defaultMessage: 'Berichte' })}`
     : formatMessage({ id: 'bC1tUv', defaultMessage: 'Subprojekt-Berichte' })
 
   // Build Puck config from fields with actual data
-  const components = {}
+  const components: Record<string, any> = {}
   const categories = {
     fields: {
       title: formatMessage({ id: 'bC8AbC', defaultMessage: 'Felder' }),
@@ -117,7 +138,7 @@ export const Form = ({ autoFocusRef, from }) => {
       defaultProps: {
         value: fieldValue,
       },
-      render: ({ value }) => {
+      render: ({ value }: { value: string }) => {
         return (
           <div className={styles.fieldWrapper}>
             <TextField
@@ -161,20 +182,23 @@ export const Form = ({ autoFocusRef, from }) => {
 
   const config: Config = { components, categories }
 
-  const onActiveChange = async (e, data) => {
+  const onActiveChange = async (
+    e: React.ChangeEvent<HTMLInputElement>,
+    data: Parameters<typeof getValueFromChange>[1],
+  ) => {
     const { value } = getValueFromChange(e, data)
-    if (row.active === value) return
+    if (row!.active === value) return
 
     try {
       if (value === true) {
         // Deactivate all other designs for this project first, then activate this one
         const prevActive = await db.query<ProjectReportDesigns>(
           `SELECT * FROM project_report_designs WHERE project_id = $1 AND project_report_design_id <> $2 AND active = TRUE`,
-          [row.project_id, projectReportDesignId],
+          [row!.project_id, projectReportDesignId],
         )
         await db.query(
           `UPDATE project_report_designs SET active = FALSE WHERE project_id = $1 AND project_report_design_id <> $2`,
-          [row.project_id, projectReportDesignId],
+          [row!.project_id, projectReportDesignId],
         )
         for (const prevRow of prevActive.rows) {
           addOperation({
@@ -194,7 +218,7 @@ export const Form = ({ autoFocusRef, from }) => {
     } catch (error) {
       setValidations((prev) => ({
         ...prev,
-        active: { state: 'error', message: error.message },
+        active: { state: 'error', message: error instanceof Error ? error.message : String(error) },
       }))
       return
     }
@@ -206,17 +230,20 @@ export const Form = ({ autoFocusRef, from }) => {
     addOperation({
       table: 'project_report_designs',
       rowIdName: 'project_report_design_id',
-      rowId: row.project_report_design_id,
+      rowId: row!.project_report_design_id,
       operation: 'update',
       draft: { active: value },
       prev: { ...row },
     })
   }
 
-  const onChange = async (e, data) => {
+  const onChange = async (
+    e: React.ChangeEvent<HTMLInputElement>,
+    data: Parameters<typeof getValueFromChange>[1],
+  ) => {
     const { name, value } = getValueFromChange(e, data)
     // only change if value has changed: maybe only focus entered and left
-    if (row[name] === value) return
+    if ((row as Record<string, any>)[name] === value) return
 
     try {
       await db.query(
@@ -226,7 +253,7 @@ export const Form = ({ autoFocusRef, from }) => {
     } catch (error) {
       setValidations((prev) => ({
         ...prev,
-        [name]: { state: 'error', message: error.message },
+        [name]: { state: 'error', message: error instanceof Error ? error.message : String(error) },
       }))
       return
     }
@@ -238,14 +265,14 @@ export const Form = ({ autoFocusRef, from }) => {
     addOperation({
       table: 'project_report_designs',
       rowIdName: 'project_report_design_id',
-      rowId: row.project_report_design_id,
+      rowId: row!.project_report_design_id,
       operation: 'update',
       draft: { [name]: value },
       prev: { ...row },
     })
   }
 
-  const onPuckChange = async (data) => {
+  const onPuckChange = async (data: any) => {
     try {
       await db.query(
         `UPDATE project_report_designs SET design = $1 WHERE project_report_design_id = $2`,
@@ -254,7 +281,7 @@ export const Form = ({ autoFocusRef, from }) => {
       addOperation({
         table: 'project_report_designs',
         rowIdName: 'project_report_design_id',
-        rowId: row.project_report_design_id,
+        rowId: row!.project_report_design_id,
         operation: 'update',
         draft: { design: data },
         prev: { ...row },

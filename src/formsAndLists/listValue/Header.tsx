@@ -9,7 +9,7 @@ import { FormHeader } from '../../components/FormHeader/index.tsx'
 import { HistoryToggleButton } from '../../components/shared/HistoryCompare/HistoryToggleButton.tsx'
 import { addOperationAtom } from '../../store.ts'
 
-export const Header = ({ autoFocusRef }) => {
+export const Header = ({ autoFocusRef }: { autoFocusRef?: React.RefObject<HTMLInputElement | null> }) => {
   const { projectId, listId, listValueId } = useParams({ strict: false })
   const navigate = useNavigate()
   const addOperation = useSetAtom(addOperationAtom)
@@ -27,10 +27,10 @@ export const Header = ({ autoFocusRef }) => {
   const countRes = useLiveQuery(
     `SELECT COUNT(*) as count FROM list_values WHERE list_id = '${listId}'`,
   )
-  const rowCount = countRes?.rows?.[0]?.count ?? 2
+  const rowCount = Number(countRes?.rows?.[0]?.count ?? 2)
 
   const addRow = async () => {
-    const id = await createListValue({ listId })
+    const id = await createListValue({ listId: listId! })
     console.log('New list value id:', id)
     if (!id) return
     navigate({
@@ -46,7 +46,7 @@ export const Header = ({ autoFocusRef }) => {
         `SELECT * FROM list_values WHERE list_value_id = $1`,
         [listValueId],
       )
-      const prev = prevRes?.rows?.[0] ?? {}
+      const prev = (prevRes?.rows?.[0] ?? {}) as Record<string, unknown>
       await db.query(`DELETE FROM list_values WHERE list_value_id = $1`, [
         listValueId,
       ])
@@ -69,7 +69,7 @@ export const Header = ({ autoFocusRef }) => {
         `SELECT list_value_id FROM list_values WHERE list_id = $1 ORDER BY label`,
         [listId],
       )
-      const listValues = res?.rows
+      const listValues = res?.rows as { list_value_id: string }[]
       const len = listValues.length
       const index = listValues.findIndex(
         (p) => p.list_value_id === listValueIdRef.current,
@@ -90,7 +90,7 @@ export const Header = ({ autoFocusRef }) => {
         `SELECT list_value_id FROM list_values WHERE list_id = $1 ORDER BY label`,
         [listId],
       )
-      const listValues = res?.rows
+      const listValues = res?.rows as { list_value_id: string }[]
       const len = listValues.length
       const index = listValues.findIndex(
         (p) => p.list_value_id === listValueIdRef.current,

@@ -9,7 +9,9 @@ import styles from './ColorPicker.module.css'
 
 interface Props {
   color?: string
-  onBlur: () => void
+  id?: string
+  onChange: (e: { target: { name: string; value: string } }) => void
+  onBlur?: () => void
   label: string
   name: string
   disabled?: boolean
@@ -41,7 +43,8 @@ export const ColorPicker = ({
     onChangeDebounced(fakeEvent)
   }
 
-  const onChangeInput = (e) => setVal(e.target.value)
+  const onChangeInput = (e: React.ChangeEvent<HTMLInputElement>) =>
+    setVal(e.target.value)
 
   const onBlurControl = () => {
     const fakeEvent = {

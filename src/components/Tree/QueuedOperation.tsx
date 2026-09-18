@@ -3,7 +3,16 @@ import { isEqual } from 'es-toolkit'
 
 import { Node } from './Node.tsx'
 
-export const QueuedOperationNode = ({ nav }) => {
+type NavData = {
+  id: string
+  label: string
+}
+
+interface Props {
+  nav: NavData
+}
+
+export const QueuedOperationNode = ({ nav }: Props) => {
   const location = useLocation()
 
   const urlPath = location.pathname.split('/').filter((p) => p !== '')

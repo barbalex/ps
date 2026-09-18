@@ -5,6 +5,23 @@ import dayjs from 'dayjs'
 // import { format } from "@formkit/tempo"
 import styles from './TimeField.module.css'
 
+type TimePickerProps = React.ComponentProps<typeof TimePicker>
+type TimeStringValidationResult = ReturnType<
+  NonNullable<TimePickerProps['parseTimeStringToDate']>
+>
+type FieldProps = React.ComponentProps<typeof Field>
+
+type Props = {
+  label?: string
+  value?: string
+  name: string
+  onChange: (e: React.ChangeEvent<HTMLInputElement>) => void
+  validationMessage?: FieldProps['validationMessage']
+  validationState?: FieldProps['validationState']
+  autoFocus?: boolean
+  button?: React.ReactNode
+}
+
 export const TimeField = ({
   label,
   value,
@@ -14,7 +31,7 @@ export const TimeField = ({
   validationState,
   autoFocus,
   button,
-}) => {
+}: Props) => {
   const selectedTime = value ? new Date(`2020-01-01T${value}:00Z`) : null
   console.log('TimeField', {
     value,
@@ -43,13 +60,17 @@ export const TimeField = ({
             const timeString = date ? dayjs(date).format('HH:mm') : ''
             console.log('onTimeChange', { ev, data, date, timeString })
             // if (ev.type === 'blur') return
-            onChange({ target: { name, value: timeString } })
+            onChange({
+              target: { name, value: timeString },
+            } as unknown as React.ChangeEvent<HTMLInputElement>)
           }}
           formatDateToTimeString={(date) =>
             !date ? '' : dayjs(date).format('HH:mm')
           }
           parseTimeStringToDate={(timeString) =>
-            !timeString ? '' : new Date(`2020-01-01T${timeString}:00Z`)
+            (!timeString
+              ? ''
+              : new Date(`2020-01-01T${timeString}:00Z`)) as unknown as TimeStringValidationResult
           }
           autoFocus={autoFocus}
           appearance="underline"

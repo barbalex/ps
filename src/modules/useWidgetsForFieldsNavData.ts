@@ -60,7 +60,7 @@ export const useWidgetsForFieldsNavData = () => {
         count_filtered.count AS count_filtered
       FROM count_unfiltered, count_filtered
     `
-  const res = useLiveQuery(sql)
+  const res = useLiveQuery<NavDataOpen>(sql)
 
   const loading = res === undefined
 

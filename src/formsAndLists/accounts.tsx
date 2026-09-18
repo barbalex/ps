@@ -16,7 +16,7 @@ export const Accounts = ({ hideHeader = false }: { hideHeader?: boolean } = {}) 
   const { navs, label, nameSingular } = navData
 
   const add = async () => {
-    const id = await createAccount({ userId })
+    const id = await createAccount({ userId: userId! })
     if (!id) return
     navigate({ to: `/data/users/${userId}/accounts/${id}` })
   }

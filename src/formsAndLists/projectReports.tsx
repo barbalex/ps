@@ -13,12 +13,12 @@ export const ProjectReports = ({ hideHeader }: { hideHeader?: boolean }) => {
   const navigate = useNavigate()
 
   const { loading, navData, isFiltered } = useProjectReportsNavData({
-    projectId,
-  })
-  const { navs, label, nameSingular } = navData
+    projectId: projectId!,  })
+  const { navs: navsIn, label, nameSingular } = navData
+  const navs = navsIn as { id: string; label: string | null }[]
 
   const add = async () => {
-    const id = await createProjectReport({ projectId })
+    const id = await createProjectReport({projectId: projectId! })
     if (!id) return
     navigate({
       to: id,

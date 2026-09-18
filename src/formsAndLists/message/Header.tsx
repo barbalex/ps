@@ -6,10 +6,9 @@ import { createMessage } from '../../modules/createRows.ts'
 import { FormHeader } from '../../components/FormHeader/index.tsx'
 import { addOperationAtom } from '../../store.ts'
 
-const from = '/data/messages/$messageId'
 
 export const Header = () => {
-  const { messageId } = useParams({ from })
+  const { messageId } = useParams({ strict: false })
   const navigate = useNavigate()
   const addOperation = useSetAtom(addOperationAtom)
 
@@ -30,7 +29,7 @@ export const Header = () => {
         `SELECT * FROM messages WHERE message_id = $1`,
         [messageId],
       )
-      const prev = prevRes?.rows?.[0] ?? {}
+      const prev = (prevRes?.rows?.[0] ?? {}) as Record<string, unknown>
       db.query(`DELETE FROM messages WHERE message_id = $1`, [messageId])
       addOperation({
         table: 'messages',

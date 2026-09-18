@@ -2,6 +2,7 @@ import { useRef, useState } from 'react'
 import { useSetAtom } from 'jotai'
 import { usePGlite, useLiveQuery } from '@electric-sql/pglite-react'
 import { useParams } from '@tanstack/react-router'
+import type { InputOnChangeData } from '@fluentui/react-components'
 
 import { Header } from './Header.tsx'
 import { ProjectForm } from './Form.tsx'
@@ -13,24 +14,29 @@ import type Projects from '../../models/public/Projects.ts'
 
 import '../../form.css'
 
-export const Project = ({ from }) => {
+export const Project = ({ from }: { from: string }) => {
   const addOperation = useSetAtom(addOperationAtom)
   const autoFocusRef = useRef<HTMLInputElement>(null)
-  const { projectId } = useParams({ from })
+  const { projectId } = useParams({ strict: false })
 
-  const [validations, setValidations] = useState({})
+  const [validations, setValidations] = useState<
+    Record<string, { state: 'error'; message: string }>
+  >({})
 
   const db = usePGlite()
 
   const res = useLiveQuery(`SELECT * FROM projects WHERE project_id = $1`, [
     projectId,
   ])
-  const row: Projects | undefined = res?.rows?.[0]
+  const row = res?.rows?.[0] as Projects | undefined
 
-  const onChange = async (e, data) => {
-    const { name, value } = getValueFromChange(e, data)
+  const onChange = async (
+    e: React.ChangeEvent<HTMLInputElement>,
+    data?: InputOnChangeData,
+  ) => {
+    const { name, value } = getValueFromChange(e, data!)
     // only change if value has changed: maybe only focus entered and left
-    if (row[name] === value) return
+    if (row?.[name as keyof Projects] === value) return
 
     try {
       await db.query(`UPDATE projects SET ${name} = $1 WHERE project_id = $2`, [
@@ -40,7 +46,7 @@ export const Project = ({ from }) => {
     } catch (error) {
       setValidations((prev) => ({
         ...prev,
-        [name]: { state: 'error', message: error.message },
+        [name]: { state: 'error', message: (error as Error).message },
       }))
       return
     }
@@ -79,7 +85,7 @@ export const Project = ({ from }) => {
           <ProjectForm
             onChange={onChange}
             validations={validations}
-            row={row}
+            row={row as unknown as Record<string, unknown>}
             from={from}
             autoFocusRef={autoFocusRef}
           />

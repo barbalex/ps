@@ -1,19 +1,30 @@
 import { getCapabilities } from '../../../modules/getCapabilities.ts'
 import { createWfsServiceLayer } from '../../../modules/createRows.ts'
 import { addOperationAtom, store, pgliteDbAtom } from '../../../store.ts'
+import type VectorLayers from '../../../models/public/VectorLayers.ts'
+import type WfsServices from '../../../models/public/WfsServices.ts'
 
-export const getWfsCapabilitiesData = async ({ vectorLayer, service }) => {
+// loosely typed structure of the parsed capabilities xml
+type CapabilitiesNode = { [key: string]: CapabilitiesNode }
+
+export const getWfsCapabilitiesData = async ({
+  vectorLayer,
+  service,
+}: {
+  vectorLayer: VectorLayers
+  service: WfsServices
+}) => {
   const db = store.get(pgliteDbAtom)
   if (!vectorLayer) throw new Error('vector layer is required')
   if (!service.url) throw new Error('wfs service url is required')
   if (!db) throw new Error('db is required')
 
-  const serviceData = {}
+  const serviceData: Record<string, unknown> = {}
 
-  const capabilitiesData = await getCapabilities({
+  const capabilitiesData = (await getCapabilities({
     url: service?.url,
     service: 'WFS',
-  })
+  })) as { HTML?: { BODY?: Record<string, CapabilitiesNode> } } | undefined
 
   if (!capabilitiesData) return undefined
 
@@ -25,16 +36,19 @@ export const getWfsCapabilitiesData = async ({ vectorLayer, service }) => {
   }
 
   // 2. info formats
-  const operations =
-    capabilities?.['OWS:OPERATIONSMETADATA']?.['OWS:OPERATION'] ?? []
+  const operations = (capabilities?.['OWS:OPERATIONSMETADATA']?.[
+    'OWS:OPERATION'
+  ] ?? []) as CapabilitiesNode[]
   const getFeatureOperation = operations.find(
-    (o) => o?.['@attributes']?.name === 'GetFeature',
+    (o) =>
+      (o?.['@attributes']?.name as unknown as string | undefined) ===
+      'GetFeature',
   )
-  const infoFormats = (
-    getFeatureOperation?.['OWS:PARAMETER']?.['OWS:ALLOWEDVALUES']?.[
-      'OWS:VALUE'
-    ] ?? []
-  ).map((v) => v?.['#text'])
+  const infoFormats = ((getFeatureOperation?.['OWS:PARAMETER']?.[
+    'OWS:ALLOWEDVALUES'
+  ]?.['OWS:VALUE'] ?? []) as CapabilitiesNode[]).map(
+    (v) => v?.['#text'] as unknown as string | undefined,
+  )
 
   // also accept gml
   // example: https://maps.zh.ch/wfs/VeloparkieranlagenZHWFS
@@ -47,16 +61,17 @@ export const getWfsCapabilitiesData = async ({ vectorLayer, service }) => {
 
   const preferredInfoFormat =
     acceptableInfoFormats.filter((v) =>
-      v.toLowerCase().includes('geojson'),
+      v?.toLowerCase().includes('geojson'),
     )[0] ??
     acceptableInfoFormats.filter((v) =>
-      v.toLowerCase().includes('application/json'),
+      v?.toLowerCase().includes('application/json'),
     )[0] ??
     acceptableInfoFormats[0]
   serviceData.info_format = preferredInfoFormat
 
   // 3. layers
-  let layers = capabilities?.FEATURETYPELIST?.FEATURETYPE ?? []
+  let layers = (capabilities?.FEATURETYPELIST?.FEATURETYPE ??
+    []) as CapabilitiesNode[]
   // console.log('getWfsCapabilitiesData, layers:', layers)
   // this value can be array OR object!!!
   if (!Array.isArray(layers)) layers = [layers]
@@ -89,12 +104,19 @@ export const getWfsCapabilitiesData = async ({ vectorLayer, service }) => {
 
   const acceptableLayers = layers
     // accept only layers with crs EPSG:4326
-    .filter((l) => l.OTHERCRS?.map((o) => o?.['#text']?.includes('EPSG:4326')))
+    .filter((l) =>
+      (l.OTHERCRS as unknown as CapabilitiesNode[] | undefined)?.map((o) =>
+        (o?.['#text'] as unknown as string | undefined)?.includes('EPSG:4326'),
+      ),
+    )
     // accept only layers with acceptable info formats
     .filter((l) =>
       preferredInfoFormat
-        ? l.OUTPUTFORMATS?.FORMAT?.map((f) =>
-            acceptableInfoFormats.includes(f?.['#text']),
+        ? (l.OUTPUTFORMATS?.FORMAT as unknown as CapabilitiesNode[] | undefined)?.map(
+            (f) =>
+              acceptableInfoFormats.includes(
+                f?.['#text'] as unknown as string,
+              ),
           )
         : true,
     )
@@ -102,8 +124,8 @@ export const getWfsCapabilitiesData = async ({ vectorLayer, service }) => {
   for (const l of acceptableLayers) {
     await createWfsServiceLayer({
       wfsServiceId: service.wfs_service_id,
-      name: l.NAME?.['#text'],
-      label: l.TITLE?.['#text'],
+      name: l.NAME?.['#text'] as unknown as string,
+      label: l.TITLE?.['#text'] as unknown as string,
     })
   }
 

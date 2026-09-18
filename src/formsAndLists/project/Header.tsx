@@ -11,7 +11,7 @@ import { addOperationAtom } from '../../store.ts'
 import { useAddProject } from '../../modules/useAddProject.ts'
 
 interface Props {
-  autoFocusRef: React.RefObject<HTMLInputElement>
+  autoFocusRef?: React.RefObject<HTMLInputElement | null>
   from: string
   // label is passed in from List
   label?: string
@@ -23,13 +23,13 @@ export const Header = ({ autoFocusRef, from, label }: Props) => {
   const isForm =
     from === '/data/projects/$projectId_/project' ||
     from === '/data/projects/$projectId_'
-  const { projectId } = useParams({ from })
+  const { projectId } = useParams({ strict: false })
   const basePath = `/data/projects/${projectId}`
   const navigate = useNavigate()
   const addOperation = useSetAtom(addOperationAtom)
 
   const countRes = useLiveQuery(`SELECT COUNT(*) as count FROM projects`)
-  const rowCount = countRes?.rows?.[0]?.count ?? 2
+  const rowCount = (countRes?.rows?.[0]?.count as number | undefined) ?? 2
 
   const db = usePGlite()
 
@@ -54,7 +54,7 @@ export const Header = ({ autoFocusRef, from, label }: Props) => {
         `SELECT * FROM projects WHERE project_id = $1`,
         [projectId],
       )
-      const prev = prevRes?.rows?.[0] ?? {}
+      const prev = (prevRes?.rows?.[0] ?? {}) as Record<string, unknown>
       await db.query(`DELETE FROM projects WHERE project_id = $1`, [projectId])
       addOperation({
         table: 'projects',
@@ -63,7 +63,7 @@ export const Header = ({ autoFocusRef, from, label }: Props) => {
         operation: 'delete',
         prev,
       })
-      navigate({ to: isForm ? `../../..` : `../..` })
+      navigate({ to: isForm ? ('../../..' as '..') : ('../..' as '..') })
     } catch (error) {
       console.error(error)
     }
@@ -71,7 +71,7 @@ export const Header = ({ autoFocusRef, from, label }: Props) => {
 
   const toNext = async () => {
     try {
-      const res = await db.query(
+      const res = await db.query<{ project_id: string }>(
         `SELECT project_id FROM projects order by label`,
       )
       const rows = res?.rows
@@ -91,7 +91,7 @@ export const Header = ({ autoFocusRef, from, label }: Props) => {
 
   const toPrevious = async () => {
     try {
-      const res = await db.query(
+      const res = await db.query<{ project_id: string }>(
         `SELECT project_id FROM projects order by label`,
       )
       const rows = res?.rows

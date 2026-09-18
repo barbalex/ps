@@ -12,13 +12,23 @@ import { SectionDescription } from '../../components/shared/SectionDescription.t
 import { languageAtom } from '../../store.ts'
 import { subprojectNameSingularExpr } from '../../modules/subprojectNameCols.ts'
 
+import type ProjectQcs from '../../models/public/ProjectQcs.ts'
+
 import '../../form.css'
+
+type Props = {
+  onChange: (e: React.ChangeEvent<any>, data?: any) => void
+  validations?: Record<string, { state: 'error'; message: string }>
+  row: Record<string, any> | ProjectQcs
+  autoFocusRef?: React.RefObject<HTMLInputElement | null>
+  from?: string
+}
 
 export const ProjectQcForm = ({
   onChange,
   row,
   autoFocusRef,
-}) => {
+}: Props) => {
   const { formatMessage } = useIntl()
   const [language] = useAtom(languageAtom)
   const { projectId } = useParams({ strict: false })
@@ -28,7 +38,9 @@ export const ProjectQcForm = ({
     [projectId ?? null],
   )
   const subprojectNameSingular =
-    resSubprojectName?.rows?.[0]?.subproject_name_singular
+    resSubprojectName?.rows?.[0]?.subproject_name_singular as
+      | string
+      | undefined
 
   const paramHint = (() => {
     const parts: string[] = []
@@ -202,7 +214,6 @@ export const ProjectQcForm = ({
           name="sql"
           value={row?.sql ?? ''}
           onChange={onChange}
-          height={220}
           hint={paramHint}
         />
       </Section>

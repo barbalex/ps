@@ -8,8 +8,8 @@ import { Loading } from '../components/shared/Loading.tsx'
 import { useFieldsNavData } from '../modules/useFieldsNavData.ts'
 import '../form.css'
 
-export const Fields = ({ from, hideHeader = false, projectId: projectIdProp }) => {
-  const params = useParams({ strict: false, from }) as Record<string, string | undefined>
+export const Fields = ({ hideHeader = false, projectId: projectIdProp }: { from: string; hideHeader?: boolean; projectId?: string }) => {
+  const params = useParams({ strict: false }) as Record<string, string | undefined>
   const projectId = projectIdProp ?? params.projectId ?? params.projectId_
   const userId = params.userId ?? params.userId_
   const accountId = params.accountId ?? params.accountId_
@@ -23,7 +23,14 @@ export const Fields = ({ from, hideHeader = false, projectId: projectIdProp }) =
     accountId,
     userId,
   })
-  const { navs, label, nameSingular } = navData
+  const { label, nameSingular } = navData
+  const navs = navData.navs as {
+    id: string
+    label: string
+    table_name?: string | null
+    level?: number | null
+    name?: string | null
+  }[]
 
   const add = async () => {
     if (!projectId && !accountId) return

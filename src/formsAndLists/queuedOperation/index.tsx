@@ -11,11 +11,9 @@ import { idFieldFromTable } from '../../modules/idFieldFromTable.ts'
 import styles from './index.module.css'
 import '../../form.css'
 
-const from = '/data/queued-operations/$queuedOperationId'
-
 export const QueuedOperation = () => {
   const { formatMessage } = useIntl()
-  const { queuedOperationId } = useParams({ from })
+  const { queuedOperationId } = useParams({ strict: false })
   const operationsQueue = useAtomValue(operationsQueueAtom)
 
   const qo = operationsQueue.find((o) => o.id === queuedOperationId)
@@ -26,17 +24,21 @@ export const QueuedOperation = () => {
 
   const { time, table, operation, rowIdName, rowId, filter, draft, prev } = qo
 
-  const displayId =
+  const draftRecord = draft as Record<string, unknown> | undefined
+  const prevRecord = prev as Record<string, unknown> | undefined
+  const displayId = (
     rowId ??
-    draft?.[rowIdName] ??
-    prev?.[rowIdName] ??
-    draft?.[idFieldFromTable(table)] ??
-    prev?.[idFieldFromTable(table)]
+    draftRecord?.[rowIdName as string] ??
+    prevRecord?.[rowIdName as string] ??
+    draftRecord?.[idFieldFromTable(table)] ??
+    prevRecord?.[idFieldFromTable(table)]
+  ) as string | number | undefined
 
   const prevWithOnlyDraftKeys: Record<string, unknown> = {}
   if (prev && draft) {
     Object.keys(draft).forEach((key) => {
-      if (key in prev) prevWithOnlyDraftKeys[key] = prev[key]
+      if (key in prev)
+        prevWithOnlyDraftKeys[key] = (prev as Record<string, unknown>)[key]
     })
   }
 

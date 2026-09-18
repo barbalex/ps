@@ -8,17 +8,18 @@ import { FilterButton } from '../components/shared/FilterButton.tsx'
 import { Loading } from '../components/shared/Loading.tsx'
 import '../form.css'
 
-export const Units = ({ hideHeader = false, projectId: projectIdProp }) => {
+export const Units = ({ hideHeader = false, projectId: projectIdProp }: { hideHeader?: boolean; projectId?: string }) => {
   const { projectId: routeProjectId } = useParams({ strict: false })
   const projectId = projectIdProp ?? routeProjectId
   const navigate = useNavigate()
   const unitsBaseUrl = `/data/projects/${projectId}/units`
 
-  const { loading, navData, isFiltered } = useUnitsNavData({ projectId })
-  const { navs, label, nameSingular } = navData
+  const { loading, navData, isFiltered } = useUnitsNavData({projectId: projectId! })
+  const { label, nameSingular } = navData
+  const navs = navData.navs as { id: string; label: string }[]
 
   const add = async () => {
-    const id = await createUnit({ projectId })
+    const id = await createUnit({projectId: projectId! })
     if (!id) return
     navigate({ to: `${unitsBaseUrl}/${id}/` })
   }

@@ -18,7 +18,7 @@ export const setLabels = async ({
   labelCreation,
   observationImportId,
 }: Props) => {
-  const db = store.get(pgliteDbAtom)
+  const db = store.get(pgliteDbAtom)!
   const intl = store.get(intlAtom)
   const taskId = `set-labels-${observationImportId}`
 
@@ -30,7 +30,7 @@ export const setLabels = async ({
     `SELECT * FROM observations WHERE observation_import_id = $1`,
     [observationImportId],
   )
-  const observations: Observations[] = res?.rows ?? []
+  const observations = (res?.rows ?? []) as Observations[]
 
   // Register background task
   backgroundTasks.add(
@@ -57,7 +57,11 @@ export const setLabels = async ({
             return element.value || ''
           }
           // type === 'field'
-          return observation.data?.[element.value] || ''
+          return (
+            (observation.data as Record<string, unknown> | null)?.[
+              element.value
+            ] || ''
+          )
         })
         const label = labelParts.join('')
 
@@ -85,7 +89,7 @@ export const setLabels = async ({
 
     backgroundTasks.complete(taskId)
   } catch (error) {
-    backgroundTasks.error(taskId, error.message)
+    backgroundTasks.error(taskId, (error as Error).message)
     throw error
   }
 }

@@ -9,10 +9,9 @@ import { FormHeader } from '../../components/FormHeader/index.tsx'
 import { HistoryToggleButton } from '../../components/shared/HistoryCompare/HistoryToggleButton.tsx'
 import { addOperationAtom } from '../../store.ts'
 
-const from = '/data/projects/$projectId_/crs/$projectCrsId/'
 
-export const Header = ({ autoFocusRef }) => {
-  const { projectId, projectCrsId } = useParams({ from })
+export const Header = ({ autoFocusRef }: { autoFocusRef?: React.RefObject<HTMLInputElement | null> }) => {
+  const { projectId, projectCrsId } = useParams({ strict: false })
   const basePath = `/data/projects/${projectId}/crs/${projectCrsId}`
   const navigate = useNavigate()
   const addOperation = useSetAtom(addOperationAtom)
@@ -30,10 +29,10 @@ export const Header = ({ autoFocusRef }) => {
   const countRes = useLiveQuery(
     `SELECT COUNT(*) as count FROM project_crs WHERE project_id = '${projectId}'`,
   )
-  const rowCount = countRes?.rows?.[0]?.count ?? 2
+  const rowCount = Number(countRes?.rows?.[0]?.count ?? 2)
 
   const addRow = async () => {
-    const id = await createProjectCrs({ projectId })
+    const id = await createProjectCrs({projectId: projectId! })
     if (!id) return
     navigate({
       to: `../${id}`,
@@ -48,7 +47,7 @@ export const Header = ({ autoFocusRef }) => {
         `SELECT * FROM project_crs WHERE project_crs_id = $1`,
         [projectId],
       )
-      const prev = prevRes?.rows?.[0] ?? {}
+      const prev = (prevRes?.rows?.[0] ?? {}) as Record<string, unknown>
       db.query(`DELETE FROM project_crs WHERE project_crs_id = $1`, [
         projectCrsId,
       ])
@@ -71,7 +70,7 @@ export const Header = ({ autoFocusRef }) => {
         `SELECT project_crs_id FROM project_crs WHERE project_id = $1 ORDER BY label`,
         [projectId],
       )
-      const projectCrs = res?.rows
+      const projectCrs = res?.rows as { project_crs_id: string }[]
       const len = projectCrs.length
       const index = projectCrs.findIndex(
         (p) => p.project_crs_id === projectCrsIdRef.current,
@@ -92,7 +91,7 @@ export const Header = ({ autoFocusRef }) => {
         `SELECT project_crs_id FROM project_crs WHERE project_id = $1 ORDER BY label`,
         [projectId],
       )
-      const projectCrs = res?.rows
+      const projectCrs = res?.rows as { project_crs_id: string }[]
       const len = projectCrs.length
       const index = projectCrs.findIndex(
         (p) => p.project_crs_id === projectCrsIdRef.current,

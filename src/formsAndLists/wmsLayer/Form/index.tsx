@@ -6,11 +6,23 @@ import { DropdownField } from '../../../components/shared/DropdownField.tsx'
 // import { RadioGroupField } from '../../components/shared/RadioGroupField.tsx'
 import { LayersDropdown } from './LayersDropdown.tsx'
 import { CreateWmsService } from './CreateWmsService/index.tsx'
+import type WmsLayers from '../../../models/public/WmsLayers.ts'
 
 import '../../../form.css'
 
 // this form is rendered from a parent or outlet
-export const WmsLayerForm = ({ onChange, validations = {}, row, isFilter }) => {
+export const WmsLayerForm = ({
+  onChange,
+  validations = {},
+  row,
+  isFilter,
+}: {
+  onChange: (e: React.ChangeEvent<any>, data?: any) => void
+  validations?: Record<string, { state: 'error'; message: string }>
+  row: WmsLayers | Record<string, any>
+  isFilter?: boolean
+  autoFocusRef?: React.Ref<HTMLInputElement>
+}) => {
   // TODO: implement later
   const isOffline = false
   const { formatMessage } = useIntl()
@@ -46,10 +58,10 @@ export const WmsLayerForm = ({ onChange, validations = {}, row, isFilter }) => {
         })}
         hideWhenNoData={true}
       />
-      <CreateWmsService wmsLayer={row} />
+      <CreateWmsService wmsLayer={row as WmsLayers} />
       {(row?.wms_service_id || isFilter) && (
         <LayersDropdown
-          wmsLayer={row}
+          wmsLayer={row as WmsLayers}
           validationMessage={
             row.wms_service_layer_name
               ? ''

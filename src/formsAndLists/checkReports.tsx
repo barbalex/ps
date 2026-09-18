@@ -8,22 +8,22 @@ import { Loading } from '../components/shared/Loading.tsx'
 import { useCheckReportsNavData } from '../modules/useCheckReportsNavData.ts'
 import '../form.css'
 
-export const CheckReports = ({ from }) => {
-  const { projectId, subprojectId, placeId, placeId2 } = useParams({ from })
+export const CheckReports = ({ }: { from?: string }) => {
+  const { projectId, subprojectId, placeId, placeId2 } = useParams({ strict: false })
   const navigate = useNavigate()
 
   const { loading, navData, isFiltered } = useCheckReportsNavData({
-    projectId,
-    subprojectId,
-    placeId,
+    projectId: projectId!,
+    subprojectId: subprojectId!,
+    placeId: placeId!,
     placeId2,
   })
   const { navs, label, nameSingular } = navData
 
   const add = async () => {
     const id = await createCheckReport({
-      projectId,
-      placeId: placeId2 ?? placeId,
+      projectId: projectId!,
+      placeId: placeId2 ?? placeId!,
     })
     if (!id) return
     navigate({

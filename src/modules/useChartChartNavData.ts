@@ -36,7 +36,7 @@ export const useChartChartNavData = ({
         charts
       WHERE 
         charts.chart_id = '${chartId}'`
-  const res = useLiveQuery(sql)
+  const res = useLiveQuery<NavData>(sql)
   const loading = res === undefined
 
   const nav: NavData | undefined = res?.rows?.[0]

@@ -41,7 +41,7 @@ export const FileHistoryCompare = ({
     checkId,
     fileId,
     fileHistoryId,
-  } = useParams({ from, strict: false })
+  } = useParams({ strict: false })
   const filePath = actionId
     ? placeId2
       ? `/data/projects/${projectId}/subprojects/${subprojectId}/places/${placeId}/places/${placeId2}/actions/${actionId}/files/${fileId}`
@@ -103,7 +103,7 @@ export const FileHistoryCompare = ({
   })
 
   const formatFieldValue = (field: string, history: FilesHistory) =>
-    stringifyHistoryValue(history[field])
+    stringifyHistoryValue((history as Record<string, any>)[field])
 
   return (
     <HistoryCompare<FilesHistory>

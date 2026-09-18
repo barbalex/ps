@@ -40,7 +40,7 @@ export const useSubprojectQcsRunNavData = ({
   const ownUrl = `/${ownArray.join('/')}`
   const isOpen = openNodes.some((array) => isEqual(array, ownArray))
 
-  const res = useLiveQuery(
+  const res = useLiveQuery<{ count: number }>(
     `SELECT count(*) AS count FROM qc_assignments qa JOIN qcs q ON q.qcs_id = qa.qc_id WHERE qa.subproject_id = $1 AND q.level = 'subproject'`,
     [subprojectId],
   )

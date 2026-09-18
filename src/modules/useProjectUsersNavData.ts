@@ -62,7 +62,7 @@ export const useProjectUsersNavData = ({ projectId }: Props) => {
 
   const loading = res === undefined
 
-  const navs: NavData = res?.rows ?? []
+  const navs = (res?.rows ?? []) as NavData
   const countUnfiltered = navs[0]?.count_unfiltered ?? 0
   const countFiltered = navs[0]?.count_filtered ?? 0
   const urlPath = location.pathname.split('/').filter((p) => p !== '')

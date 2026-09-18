@@ -9,10 +9,9 @@ import { FormHeader } from '../../components/FormHeader/index.tsx'
 import { HistoryToggleButton } from '../../components/shared/HistoryCompare/HistoryToggleButton.tsx'
 import { addOperationAtom } from '../../store.ts'
 
-const from = '/data/projects/$projectId_/taxonomies/$taxonomyId_/taxa/$taxonId/'
 
-export const Header = ({ autoFocusRef }) => {
-  const { taxonomyId, taxonId, projectId } = useParams({ from })
+export const Header = ({ autoFocusRef }: { autoFocusRef?: React.RefObject<HTMLInputElement | null> }) => {
+  const { taxonomyId, taxonId, projectId } = useParams({ strict: false })
   const basePath = `/data/projects/${projectId}/taxonomies/${taxonomyId}/taxa/${taxonId}`
   const navigate = useNavigate()
   const addOperation = useSetAtom(addOperationAtom)
@@ -28,7 +27,7 @@ export const Header = ({ autoFocusRef }) => {
   }, [taxonId])
 
   const addRow = async () => {
-    const id = await createTaxon({ taxonomyId })
+    const id = await createTaxon({taxonomyId: taxonomyId! })
     if (!id) return
     navigate({
       to: `../${id}`,
@@ -42,7 +41,7 @@ export const Header = ({ autoFocusRef }) => {
       const prevRes = await db.query(`SELECT * FROM taxa WHERE taxon_id = $1`, [
         taxonId,
       ])
-      const prev = prevRes?.rows?.[0] ?? {}
+      const prev = (prevRes?.rows?.[0] ?? {}) as Record<string, unknown>
       await db.query(`DELETE FROM taxa WHERE taxon_id = $1`, [taxonId])
       addOperation({
         table: 'taxa',
@@ -64,7 +63,7 @@ export const Header = ({ autoFocusRef }) => {
         `SELECT taxon_id FROM taxa WHERE taxonomy_id = $1 ORDER BY label`,
         [taxonomyId],
       )
-      const taxa = res?.rows
+      const taxa = res?.rows as { taxon_id: string }[]
       const len = taxa.length
       const index = taxa.findIndex((p) => p.taxon_id === taxonIdRef.current)
       const next = taxa[(index + 1) % len]
@@ -83,7 +82,7 @@ export const Header = ({ autoFocusRef }) => {
         `SELECT taxon_id FROM taxa WHERE taxonomy_id = $1 ORDER BY label`,
         [taxonomyId],
       )
-      const taxa = res?.rows
+      const taxa = res?.rows as { taxon_id: string }[]
       const len = taxa.length
       const index = taxa.findIndex((p) => p.taxon_id === taxonIdRef.current)
       const previous = taxa[(index + len - 1) % len]

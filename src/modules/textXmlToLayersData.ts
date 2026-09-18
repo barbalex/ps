@@ -11,7 +11,12 @@ import { xmlToJson } from './xmlToJson.ts'
 export const textXmlToLayersData = (xml: Document) => {
   const obj = xmlToJson(xml)
   // extract layers
-  const output = obj?.['ogr:FeatureCollection']?.['gml:featureMember']
+  const featureCollection = obj?.['ogr:FeatureCollection'] as
+    | Record<string, unknown>
+    | undefined
+  const output = featureCollection?.['gml:featureMember'] as
+    | Record<string, unknown>
+    | undefined
   const layersLabelValueArray = Object.entries(output ?? {}).filter(([key]) =>
     key.toLowerCase().startsWith('ogr:'),
   )
@@ -20,7 +25,13 @@ export const textXmlToLayersData = (xml: Document) => {
     const properties = Object.entries(value ?? {})
       .filter(([key]) => key.toLowerCase().startsWith('ogr:'))
       .filter(([key]) => key !== 'ogr:geometryProperty')
-      .map(([key, value]) => [key.replace('ogr:', ''), value?.['#text']])
+      .map(
+        ([key, value]) =>
+          [
+            key.replace('ogr:', ''),
+            (value as Record<string, unknown>)?.['#text'],
+          ] as [string, unknown],
+      )
 
     return { label: label.replace('ogr:', ''), properties }
   })

@@ -31,8 +31,8 @@ export const ImportDialog = ({ open, onClose, onFileSelected }: Props) => {
   }
 
   const onClickDropZone = () => {
-    fileInputRef.current.click()
-    fileInputRef.current.value = null
+    fileInputRef.current!.click()
+    fileInputRef.current!.value = null as unknown as string
   }
 
   const onInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {

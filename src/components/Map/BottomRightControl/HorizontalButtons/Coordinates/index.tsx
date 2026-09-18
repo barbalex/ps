@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { useMap, useMapEvent } from 'react-leaflet'
+import type { Map as LeafletMap, LatLng } from 'leaflet'
 import { useParams } from '@tanstack/react-router'
 import { useLiveQuery } from '@electric-sql/pglite-react'
 
@@ -17,6 +18,11 @@ const getCoordinates = ({
   center,
   projectMapPresentationCrs,
   projectCrs,
+}: {
+  map?: LeafletMap | null
+  center?: LatLng | null
+  projectMapPresentationCrs?: string | null
+  projectCrs: ProjectCrs[]
 }) => {
   if (!map) return null
   if (!center) return null
@@ -26,7 +32,7 @@ const getCoordinates = ({
     projectMapPresentationCrs,
     crs: projectCrs.find((cr) => cr.code === projectMapPresentationCrs),
   })
-  return { x: round(x), y: round(y) }
+  return { x: round(x!), y: round(y!) }
 }
 
 export const CoordinatesControl = () => {
@@ -37,21 +43,20 @@ export const CoordinatesControl = () => {
     strict: false,
   })
 
-  const resProject = useLiveQuery(
+  const resProject = useLiveQuery<Projects>(
     `SELECT project_id, map_presentation_crs FROM projects WHERE project_id = $1`,
     [projectId],
   )
   const project: Projects | undefined = resProject?.rows?.[0]
   const projectMapPresentationCrs = project?.map_presentation_crs
 
-  const resProjectCrs = useLiveQuery(
+  const resProjectCrs = useLiveQuery<ProjectCrs>(
     `SELECT project_crs_id, code, proj4 FROM project_crs WHERE project_id = $1`,
     [projectId],
   )
   const projectCrs: ProjectCrs[] = resProjectCrs?.rows ?? []
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const [renderCount, setRenderCount] = useState(0)
+  const [, setRenderCount] = useState(0)
   const rerender = () => setRenderCount((prev) => prev + 1)
 
   const coordinates = getCoordinates({
@@ -66,7 +71,7 @@ export const CoordinatesControl = () => {
   return (
     <div className={styles.container}>
       <Inputs
-        coordinates={coordinates}
+        coordinates={coordinates!}
         projectMapPresentationCrs={projectMapPresentationCrs}
       />
       <ToggleMapCenter />

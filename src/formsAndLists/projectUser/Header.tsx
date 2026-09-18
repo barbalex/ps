@@ -13,10 +13,9 @@ import { FormHeader } from '../../components/FormHeader/index.tsx'
 import { HistoryToggleButton } from '../../components/shared/HistoryCompare/HistoryToggleButton.tsx'
 import { addOperationAtom } from '../../store.ts'
 
-const from = '/data/projects/$projectId_/users/$projectUserId/'
 
-export const Header = ({ autoFocusRef }) => {
-  const { projectId, projectUserId } = useParams({ from })
+export const Header = ({ autoFocusRef }: { autoFocusRef?: React.RefObject<HTMLInputElement | null> }) => {
+  const { projectId, projectUserId } = useParams({ strict: false })
   const navigate = useNavigate()
   const addOperation = useSetAtom(addOperationAtom)
   const { formatMessage } = useIntl()
@@ -38,7 +37,7 @@ export const Header = ({ autoFocusRef }) => {
         `SELECT * FROM project_users WHERE project_user_id = $1`,
         [projectUserId],
       )
-      const prev = prevRes?.rows?.[0] ?? {}
+      const prev = (prevRes?.rows?.[0] ?? {}) as Record<string, unknown>
       await db.query(`DELETE FROM project_users WHERE project_user_id = $1`, [
         projectUserId,
       ])
@@ -62,7 +61,7 @@ export const Header = ({ autoFocusRef }) => {
         `SELECT project_user_id FROM project_users WHERE project_id = $1 ORDER BY label`,
         [projectId],
       )
-      const projectUsers = res?.rows
+      const projectUsers = res?.rows as { project_user_id: string }[]
       const len = projectUsers.length
       const index = projectUsers.findIndex(
         (p) => p.project_user_id === projectUserIdRef.current,
@@ -86,7 +85,7 @@ export const Header = ({ autoFocusRef }) => {
         `SELECT project_user_id FROM project_users WHERE project_id = $1 ORDER BY label`,
         [projectId],
       )
-      const projectUsers = res?.rows
+      const projectUsers = res?.rows as { project_user_id: string }[]
       const len = projectUsers.length
       const index = projectUsers.findIndex(
         (p) => p.project_user_id === projectUserIdRef.current,
@@ -119,8 +118,7 @@ export const Header = ({ autoFocusRef }) => {
           <AddProjectUserButton
             scope={{
               kind: 'project',
-              projectId,
-            }}
+              projectId: projectId!,            }}
             onUserCreated={(id) => {
               navigate({ to: `../${id}` })
               autoFocusRef?.current?.focus()

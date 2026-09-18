@@ -3,6 +3,7 @@ import { Outlet } from '@tanstack/react-router'
 import { useAtomValue } from 'jotai'
 import { useBeforeunload } from 'react-beforeunload'
 import { PGliteProvider } from '@electric-sql/pglite-react'
+import type { PGliteWithLive } from '@electric-sql/pglite/live'
 
 import { SqlInitializer } from './SqlInitializer.tsx'
 import { InitialSyncManager } from './InitialSyncManager.tsx'
@@ -21,7 +22,9 @@ export const AuthAndDb = () => {
   const pgliteDb = useAtomValue(pgliteDbAtom)
   const sqlInitializing = useAtomValue(sqlInitializingAtom)
   const initialSyncing = useAtomValue(initialSyncingAtom)
-  const syncObject = useAtomValue(syncObjectAtom)
+  const syncObject = useAtomValue(syncObjectAtom) as
+    | { unsubscribe?: () => void }
+    | null
 
   // unsubscribe from sync when page unloads
   useBeforeunload(() => {
@@ -35,7 +38,7 @@ export const AuthAndDb = () => {
   if (!pgliteDb) return <Initiating />
 
   return (
-    <PGliteProvider db={pgliteDb}>
+    <PGliteProvider db={pgliteDb as unknown as PGliteWithLive}>
       {isInDialog ? (
         <Outlet />
       ) : (

@@ -1,5 +1,12 @@
 import { useParams } from '@tanstack/react-router'
 import { useMapEvent, useMap } from 'react-leaflet/hooks'
+import type {
+  Map as LeafletMap,
+  LatLng,
+  LatLngBounds,
+  Layer,
+  LeafletMouseEvent,
+} from 'leaflet'
 import proj4 from 'proj4'
 import { useSetAtom, useAtomValue } from 'jotai'
 import { usePGlite } from '@electric-sql/pglite-react'
@@ -14,6 +21,36 @@ import {
   vectorLayersFilterAtom,
   languageAtom,
 } from '../../../store.ts'
+import type { MapInfo } from '../../../store.ts'
+import type WfsServices from '../../../models/public/WfsServices.ts'
+import type Crs from '../../../models/public/Crs.ts'
+import type VectorLayers from '../../../models/public/VectorLayers.ts'
+
+// set at runtime when an observation is being dragged on the map
+type MapWithDragState = LeafletMap & { _isDraggingObservation?: boolean }
+
+// runtime shape of the table layers created for place/check/action features:
+// a leaflet Layer extended with custom fields for click detection and labels
+type ClickableLayer = Layer & {
+  _isInternal?: boolean
+  _clickableCircle?: {
+    getLatLng?: () => LatLng
+    options: { radius?: number }
+  }
+  feature?: GeoJSON.Feature
+  vectorLayerLabel?: string | null
+  getBounds?: () => LatLngBounds
+  getLatLng?: () => LatLng
+}
+
+// rows of the wms_layers/layer_presentations/wms_services join below
+type WmsLayerRow = {
+  wms_service_layer_name: string | null
+  label: string | null
+  info_format: string | null
+  version: string | null
+  url: string
+}
 
 export const ClickListener = () => {
   const setMapInfo = useSetAtom(mapInfoAtom)
@@ -27,13 +64,13 @@ export const ClickListener = () => {
   const map = useMap()
   const db = usePGlite()
 
-  const onClick = async (event) => {
+  const onClick = async (event: LeafletMouseEvent) => {
     // console.log('ClickListener, click event:', { event, projectId })
     // vector layers are defined on projects
     if (projectId === '99999999-9999-9999-9999-999999999999') return
 
     // Don't process clicks during or immediately after dragging an observation
-    if (map._isDraggingObservation) return
+    if ((map as MapWithDragState)._isDraggingObservation) return
 
     // Don't process clicks when a geometry is being drawn/edited on the map
     if (map.getContainer().classList.contains('leaflet-draw-active')) return
@@ -42,12 +79,17 @@ export const ClickListener = () => {
     const zoom = map.getZoom()
     const mapSize = map.getSize()
     const bounds = map.getBounds()
+    // leaflet keeps the corners in private _southWest/_northEast fields
+    const boundsCorners = bounds as unknown as {
+      _southWest: LatLng
+      _northEast: LatLng
+    }
 
-    const mapInfo = { lat, lng, zoom, layers: [] }
+    const mapInfo: MapInfo = { lat, lng, zoom, layers: [] }
 
     // Check for features from table layers at the click location
     // Leaflet provides clicked layers via event.target
-    const clickedLayers = []
+    const clickedLayers: ClickableLayer[] = []
     // Buffer grows exponentially at lower zoom levels to make clicking features easier
     // Base fraction is larger and scales with zoom distance from max zoom
     const bufferFraction = 0.0001
@@ -56,7 +98,7 @@ export const ClickListener = () => {
     const buffer = bufferFraction * Math.pow(2, zoomDistance * 0.5)
     const bufferMeters = buffer * 111000
 
-    map.eachLayer((layer) => {
+    map.eachLayer((layer: ClickableLayer) => {
       // Skip internal layers (markers that are part of layer groups)
       if (layer._isInternal) return
 
@@ -100,13 +142,13 @@ export const ClickListener = () => {
             !key.endsWith('_label'),
         )
 
-        const sortRank = (key) => {
+        const sortRank = (key: string) => {
           if (key.startsWith('observation_')) return 1
           if (key.startsWith('place_')) return 2
           return 3
         }
 
-        const labelFirstRank = (key) => {
+        const labelFirstRank = (key: string) => {
           if (key.endsWith('_label')) return 1
           if (key.endsWith('_id')) return 3
           return 2
@@ -120,7 +162,7 @@ export const ClickListener = () => {
             if (labelDiff !== 0) return labelDiff
             return a.localeCompare(b)
           })
-          .map(([key, value]) => {
+          .map(([key, value]): [string, unknown] => {
             if (value instanceof Date) {
               return [key, value.toISOString()]
             }
@@ -197,7 +239,7 @@ export const ClickListener = () => {
       `,
       [projectId],
     )
-    const wmsLayers = resWmsLayers?.rows ?? []
+    const wmsLayers = (resWmsLayers?.rows ?? []) as WmsLayerRow[]
 
     // loop through wms layers and get infos
     for await (const layer of wmsLayers) {
@@ -221,7 +263,7 @@ export const ClickListener = () => {
         y: Math.round(event.containerPoint.y),
         width: mapSize.x,
         height: mapSize.y,
-        bbox: `${bounds._southWest.lat},${bounds._southWest.lng},${bounds._northEast.lat},${bounds._northEast.lng}`,
+        bbox: `${boundsCorners._southWest.lat},${boundsCorners._southWest.lng},${boundsCorners._northEast.lat},${boundsCorners._northEast.lng}`,
       }
       const requestData = await fetchData({
         url,
@@ -232,7 +274,8 @@ export const ClickListener = () => {
         const beforeLength = mapInfo.layers.length
         layersDataFromRequestData({
           layersData: mapInfo.layers,
-          requestData,
+          // GetFeatureInfo responses are text payloads (gml/xml/json/plain)
+          requestData: requestData as string,
           infoFormat: info_format,
         })
         // Set the label for all newly added layers
@@ -256,7 +299,8 @@ export const ClickListener = () => {
       `,
       [projectId],
     )
-    const activeVectorLayers = resActiveVectorLayers?.rows ?? []
+    const activeVectorLayers = (resActiveVectorLayers?.rows ??
+      []) as VectorLayers[]
     // need to buffer for points and polygons or it will be too hard to get their info
     // (buffer already calculated above for click detection)
 
@@ -266,28 +310,30 @@ export const ClickListener = () => {
         `SELECT * FROM wfs_services WHERE wfs_service_id = $1`,
         [layer.wfs_service_id],
       )
-      const wfsService = await res?.rows?.[0]
+      const wfsService = await (res?.rows?.[0] as WfsServices | undefined)
       if (!wfsService) continue
       // default_crs is of the form: "urn:ogc:def:crs:EPSG::4326"
       // extract the relevant parts for db.crs.code:
       const wfsDefaultCrsArray = wfsService.default_crs?.split(':').slice(-3)
       const wfsDefaultCrsCode = [
-        wfsDefaultCrsArray[0],
-        wfsDefaultCrsArray[2],
+        wfsDefaultCrsArray![0],
+        wfsDefaultCrsArray![2],
       ].join(':')
       const defaultCrsRes = await db.query(
         `SELECT * FROM crs WHERE code = $1`,
         [wfsDefaultCrsCode],
       )
-      const defaultCrs = defaultCrsRes?.rows?.[0]
-      const [x, y] = proj4('EPSG:4326', defaultCrs?.proj4, [
-        lng - buffer,
-        lat - buffer,
-      ])
-      const [x2, y2] = proj4('EPSG:4326', defaultCrs?.proj4, [
-        lng + buffer,
-        lat + buffer,
-      ])
+      const defaultCrs = defaultCrsRes?.rows?.[0] as Crs | undefined
+      const [x, y] = proj4(
+        'EPSG:4326',
+        defaultCrs?.proj4 as string,
+        [lng - buffer, lat - buffer],
+      )
+      const [x2, y2] = proj4(
+        'EPSG:4326',
+        defaultCrs?.proj4 as string,
+        [lng + buffer, lat + buffer],
+      )
       const params = {
         service: 'WFS',
         request: 'GetFeature',
@@ -300,8 +346,10 @@ export const ClickListener = () => {
         // cql_filter: `INTERSECTS(geom, POINT (${lng} ${lat}))`, // did not work
       }
       const layerLabel = getVectorLayerLabel(layer, language, undefined)
-      const requestData = await fetchData({
-        url: wfsService.url,
+      const requestData = await fetchData<{
+        features: GeoJSON.Feature[]
+      }>({
+        url: wfsService.url!,
         params,
         layerLabel,
       })
@@ -313,7 +361,7 @@ export const ClickListener = () => {
       if (requestData) {
         layersDataFromRequestData({
           layersData: mapInfo.layers,
-          requestData: features,
+          requestData: features!,
           infoFormat: 'labelPropertiesArray',
         })
       }

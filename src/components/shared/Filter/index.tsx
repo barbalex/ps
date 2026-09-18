@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, type ReactNode, type ComponentProps } from 'react'
 import { useLiveQuery } from '@electric-sql/pglite-react'
 import { useIntl } from 'react-intl'
 import * as fluentUiReactComponents from '@fluentui/react-components'
@@ -10,7 +10,8 @@ import { useAtom } from 'jotai'
 import { FilterHeader } from './Header.tsx'
 import * as stores from '../../../store.ts'
 import { projectsFilterAtom, languageAtom } from '../../../store.ts'
-import { OrFilter } from './OrFilter.tsx'
+import type { TableRowFilter } from '../../../store.ts'
+import { OrFilter, type OrFilterRenderProps } from './OrFilter.tsx'
 import { filterAtomNameFromTableAndLevel } from '../../../modules/filterAtomNameFromTableAndLevel.ts'
 import { orFilterToSql } from '../../../modules/orFilterToSql.ts'
 import { filterStringFromFilter } from '../../../modules/filterStringFromFilter.ts'
@@ -22,6 +23,15 @@ import {
   subprojectNamePluralExpr,
 } from '../../../modules/subprojectNameCols.ts'
 
+type GetFilterStringsProps = {
+  filter: TableRowFilter[]
+  placeId: string | null
+  placeId2: string | null
+  projectId: string | null
+  subprojectId: string | null
+  tableName: string
+}
+
 const getFilterStrings = ({
   filter,
   placeId,
@@ -29,7 +39,7 @@ const getFilterStrings = ({
   projectId,
   subprojectId,
   tableName,
-}) => {
+}: GetFilterStringsProps) => {
   let workingFilter = (filter ?? []).map((orFilter) => ({ ...orFilter }))
 
   if (tableName === 'users') {
@@ -88,16 +98,26 @@ const getFilterStrings = ({
   }
   const whereFilteredString = filterStringFromFilter(workingFilter)
   const whereUnfilteredString = whereUnfiltered
-    ? orFilterToSql(whereUnfiltered)
+    ? orFilterToSql(whereUnfiltered, '')
     : ''
 
   return { whereUnfilteredString, whereFilteredString }
 }
 
-const normalizeId = (value) => {
+const normalizeId = (value: string | undefined) => {
   if (typeof value !== 'string') return value ?? null
   const trimmed = value.trim()
   return trimmed === '' ? null : trimmed
+}
+
+type GetTitleProps = {
+  tableName: string
+  placeNameSingular?: string | null
+  placeNamePlural: string
+  placeNameSingularForUsers?: string | null
+  subprojectNameSingular?: string | null
+  subprojectNamePlural?: string | null
+  formatMessage: ReturnType<typeof useIntl>['formatMessage']
 }
 
 const getTitle = ({
@@ -108,7 +128,7 @@ const getTitle = ({
   subprojectNameSingular,
   subprojectNamePlural,
   formatMessage,
-}) => {
+}: GetTitleProps) => {
   const subprojectSingularFallback = formatMessage({
     id: 'gxCh0c',
     defaultMessage: 'Teilprojekt',
@@ -290,7 +310,7 @@ const getTitle = ({
 }
 
 // this used to be always 'thing/things_id/reports/report_id/quantities/quantity_id'. But now we also have 'thing/things_id/check-reports/report_id/quantities/quantity_id'. And soon we will have 'thing/things_id/action-reports/report_id/quantities/quantity_id'
-const getTableName = (urlPath) => {
+const getTableName = (urlPath: string[]) => {
   // reading these values from the url path
   // if this fails in some situations, we can pass these as props
   let tableName = urlPath[urlPath.length - 2].replaceAll('-', '_')
@@ -318,14 +338,26 @@ const getTableName = (urlPath) => {
   return tableName
 }
 
+type Props = {
+  level?: number
+  from: string
+  children: (renderProps: OrFilterRenderProps) => ReactNode
+  tableNameOverride?: string
+  filterAtomNameOverride?: string
+}
+
 export const Filter = ({
   level,
   from,
   children,
   tableNameOverride,
   filterAtomNameOverride,
-}) => {
-  const params = useParams({ from })
+}: Props) => {
+  // from is a route id string; the literal union is too large to name here
+  const params = useParams({ from: from as never }) as Record<
+    string,
+    string | undefined
+  >
   const { formatMessage } = useIntl()
   const orLabel = formatMessage({ id: 'fEE5fF', defaultMessage: 'Oder' })
   const [language] = useAtom(languageAtom)
@@ -342,7 +374,7 @@ export const Filter = ({
     `SELECT * FROM place_levels WHERE project_id = $1 and level = $2 order by label`,
     [projectId, placeId ? 2 : 1],
   )
-  const placeLevel: PlaceLevels = resPlaceLevel?.rows?.[0]
+  const placeLevel = resPlaceLevel?.rows?.[0] as PlaceLevels | undefined
   const placeNameSingular =
     placeLevel?.[`name_singular_${language}`] ?? placeLevel?.name_singular_de
   const placeNamePlural = placeLevel?.[`name_plural_${language}`] ?? 'Places'
@@ -352,19 +384,22 @@ export const Filter = ({
     `SELECT * FROM place_levels WHERE project_id = $1 and level = $2 order by label`,
     [projectId, placeId2 ? 2 : 1],
   )
-  const placeLevelForUsers: PlaceLevels = resPlaceLevelForUsers?.rows?.[0]
+  const placeLevelForUsers = resPlaceLevelForUsers?.rows?.[0] as
+    | PlaceLevels
+    | undefined
   const placeNameSingularForUsers =
     placeLevelForUsers?.[`name_singular_${language}`] ??
-    placeLevelForUsers?.name_singular
+    (placeLevelForUsers as { name_singular?: string } | undefined)
+      ?.name_singular
 
   const resSubprojectName = useLiveQuery(
     `SELECT ${subprojectNameSingularExpr(language)} AS subproject_name_singular, ${subprojectNamePluralExpr(language)} AS subproject_name_plural FROM projects WHERE project_id = $1`,
     [projectId],
   )
-  const subprojectNameSingular =
-    resSubprojectName?.rows?.[0]?.subproject_name_singular
-  const subprojectNamePlural =
-    resSubprojectName?.rows?.[0]?.subproject_name_plural
+  const subprojectNameSingular = resSubprojectName?.rows?.[0]
+    ?.subproject_name_singular as string | undefined
+  const subprojectNamePlural = resSubprojectName?.rows?.[0]
+    ?.subproject_name_plural as string | undefined
 
   const title = getTitle({
     tableName,
@@ -385,15 +420,20 @@ export const Filter = ({
       level,
     })
   // ensure atom exists - got errors when it didn't
+  // lookup atoms by name; every entry is a filter atom like projectsFilterAtom
+  const filterAtoms = stores as unknown as Record<
+    string,
+    typeof projectsFilterAtom
+  >
   // Re-derive filterAtomName if resolution failed (e.g. places without level prop)
   const resolvedFilterAtomName =
-    stores[filterAtomName] != null
+    filterAtoms[filterAtomName] != null
       ? filterAtomName
       : filterAtomNameFromTableAndLevel({
           table: tableName,
           level: placeId ? 2 : 1,
         })
-  const filterAtom = stores[resolvedFilterAtomName] ?? projectsFilterAtom
+  const filterAtom = filterAtoms[resolvedFilterAtomName] ?? projectsFilterAtom
   const [filter, setFilter] = useAtom(filterAtom)
   const virtualTabValue = filter.length + 1
   const isActiveVirtualTab = activeTab > filter.length
@@ -406,7 +446,10 @@ export const Filter = ({
     isActiveVirtualTab || activeRealFilterHasPersistedValue
   const selectedTabValue = isActiveVirtualTab ? 'add' : activeTab
 
-  const onTabSelect = (e, data) => {
+  const onTabSelect: ComponentProps<typeof TabList>['onTabSelect'] = (
+    _e,
+    data,
+  ) => {
     if (data.value === 'add') {
       setActiveTab(virtualTabValue)
       return
@@ -414,7 +457,7 @@ export const Filter = ({
     setActiveTab(Number(data.value))
   }
 
-  const removeOrFilter = (indexToRemove) => {
+  const removeOrFilter = (indexToRemove: number) => {
     if (indexToRemove < 0) return
     if (filter.length <= 1) return
 
@@ -493,7 +536,7 @@ export const Filter = ({
         onTabSelect={onTabSelect}
         className={styles.tabList}
       >
-        {filter.map((f, i) => {
+        {filter.map((_f, i) => {
           const label =
             i === filter.length - 1 && filter.length > 1
               ? orLabel

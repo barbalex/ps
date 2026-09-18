@@ -8,7 +8,11 @@ type Props = {
 export const FieldFilter = ({ from }: Props) => (
   <Filter from={from}>
     {({ row, onChange }) => (
-      <FieldForm row={row} onChange={onChange} from={from} />
+      <FieldForm
+        row={row}
+        onChange={(e, data) => onChange(e, data!)}
+        from={from}
+      />
     )}
   </Filter>
 );

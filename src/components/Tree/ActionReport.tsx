@@ -10,6 +10,15 @@ import { removeChildNodes } from '../../modules/tree/removeChildNodes.ts'
 import { addOpenNodes } from '../../modules/tree/addOpenNodes.ts'
 import { treeOpenNodesAtom, designingAtom } from '../../store.ts'
 
+type Props = {
+  projectId: string
+  subprojectId: string
+  placeId: string
+  placeId2?: string
+  nav: { id: string; label: string }
+  level?: number
+}
+
 export const ActionReportNode = ({
   projectId,
   subprojectId,
@@ -17,7 +26,7 @@ export const ActionReportNode = ({
   placeId2,
   nav,
   level = 8,
-}) => {
+}: Props) => {
   const [openNodes] = useAtom(treeOpenNodesAtom)
   const [isDesigning] = useAtom(designingAtom)
   const location = useLocation()

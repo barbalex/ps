@@ -3,6 +3,7 @@ import { useParams, useNavigate } from '@tanstack/react-router'
 import { usePGlite, useLiveQuery } from '@electric-sql/pglite-react'
 import { useSetAtom } from 'jotai'
 import { useIntl } from 'react-intl'
+import type { InputOnChangeData } from '@fluentui/react-components'
 
 import { FieldForm } from './Form.tsx'
 import { HistoryCompare } from '../../components/shared/HistoryCompare/index.tsx'
@@ -23,6 +24,8 @@ import {
 import type Fields from '../../models/public/Fields.ts'
 import type FieldsHistory from '../../models/public/FieldsHistory.ts'
 
+type HistoryRow = FieldsHistory & Record<string, unknown>
+
 export const FieldHistoryCompare = ({
   from,
 }: {
@@ -32,10 +35,7 @@ export const FieldHistoryCompare = ({
 }) => {
   const { formatMessage } = useIntl()
   const navigate = useNavigate()
-  const { projectId, userId, accountId, fieldId, fieldHistoryId } = useParams({
-    from,
-    strict: false,
-  })
+  const { projectId, userId, accountId, fieldId, fieldHistoryId } = useParams({ strict: false })
   const fieldPath = projectId
     ? `/data/projects/${projectId}/fields/${fieldId}`
     : `/data/users/${userId}/accounts/${accountId}/project-fields/${fieldId}`
@@ -44,16 +44,23 @@ export const FieldHistoryCompare = ({
   const addOperation = useSetAtom(addOperationAtom)
   const db = usePGlite()
   const autoFocusRef = useRef<HTMLInputElement>(null)
-  const [validations, setValidations] = useState<Record<string, unknown>>({})
+  const [validations, setValidations] = useState<
+    Record<string, { state: 'error'; message: string }>
+  >({})
 
   const rowRes = useLiveQuery(`SELECT * FROM fields WHERE field_id = $1`, [
     fieldId,
   ])
-  const row = rowRes?.rows?.[0] as Fields | undefined
+  const row = rowRes?.rows?.[0] as
+    | (Fields & Record<string, unknown>)
+    | undefined
 
-  const onChange = async (e, data) => {
-    const { name, value } = getValueFromChange(e, data)
-    if (!row || row[name] === value) return
+  const onChange = async (
+    e: React.ChangeEvent<HTMLInputElement>,
+    data?: InputOnChangeData,
+  ) => {
+    const { name, value } = getValueFromChange(e, data!)
+    if (!row || (row as Record<string, unknown>)[name] === value) return
 
     try {
       await db.query(`UPDATE fields SET ${name} = $1 WHERE field_id = $2`, [
@@ -63,7 +70,7 @@ export const FieldHistoryCompare = ({
     } catch (error) {
       setValidations((prev) => ({
         ...prev,
-        [name]: { state: 'error', message: error.message },
+        [name]: { state: 'error', message: (error as Error).message },
       }))
       return
     }
@@ -120,7 +127,7 @@ export const FieldHistoryCompare = ({
     },
   })
 
-  const formatFieldValue = createHistoryFieldValueFormatter<FieldsHistory>({
+  const formatFieldValue = createHistoryFieldValueFormatter<HistoryRow>({
     formatMessage,
     fieldValueMap: {
       obsolete: {
@@ -133,7 +140,7 @@ export const FieldHistoryCompare = ({
   })
 
   return (
-    <HistoryCompare<FieldsHistory>
+    <HistoryCompare<HistoryRow>
       onBack={() => navigate({ to: fieldPath })}
       leftContent={
         <div className="form-container">

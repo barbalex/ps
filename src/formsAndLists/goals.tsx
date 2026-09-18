@@ -8,21 +8,21 @@ import { FilterButton } from '../components/shared/FilterButton.tsx'
 import { Loading } from '../components/shared/Loading.tsx'
 import '../form.css'
 
-const from = '/data/projects/$projectId_/subprojects/$subprojectId_/goals/'
 
 export const Goals = () => {
-  const { projectId, subprojectId } = useParams({ from })
+  const { projectId, subprojectId } = useParams({ strict: false })
   const navigate = useNavigate()
 
   const { loading, navData, isFiltered } = useGoalsNavData({
-    projectId,
-    subprojectId,
-  })
+    projectId: projectId!,    subprojectId: subprojectId!,  })
   const { navs, label, nameSingular } = navData
 
   const add = async () => {
-    const id = await createGoal({ projectId, subprojectId })
-    if (!id) return
+    const id = await createGoal({
+      projectId: projectId!,
+      subprojectId: subprojectId!,
+    })
+   if (!id) return
     navigate({
       to: id,
       params: (prev) => ({ ...prev, goalId: id }),
@@ -40,13 +40,15 @@ export const Goals = () => {
       <div className="list-container">
         {loading ?
           <Loading />
-        : navs.map(({ id, label }) => (
-            <Row
-              key={id}
-              label={label ?? id}
-              to={id}
-            />
-          ))
+        : (navs as { id: string; label: string | null }[]).map(
+            ({ id, label }) => (
+              <Row
+                key={id}
+                label={label ?? id}
+                to={id}
+              />
+            ),
+          )
         }
       </div>
     </div>

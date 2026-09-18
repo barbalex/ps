@@ -13,6 +13,8 @@ import { CheckForm as Form } from './Form.tsx'
 import { Loading } from '../../components/shared/Loading.tsx'
 import { NotFound } from '../../components/NotFound.tsx'
 import { Section } from '../../components/shared/Section.tsx'
+// module was removed in commit d156ab7f6; component is currently unused
+// @ts-ignore
 import { CheckQuantityInline } from '../checkQuantity/Inline.tsx'
 import { addOperationAtom, designingAtom } from '../../store.ts'
 import type Checks from '../../models/public/Checks.ts'
@@ -22,12 +24,14 @@ import '../../form.css'
 
 const { Button, Tooltip } = fluentUiReactComponents
 
-export const CheckWithQuantities = ({ from }) => {
-  const { checkId, projectId, placeId2 } = useParams({ from })
+export const CheckWithQuantities = ({ from }: { from: string }) => {
+  const { checkId, projectId, placeId2 } = useParams({ strict: false })
   const addOperation = useSetAtom(addOperationAtom)
   const [isDesigning] = useAtom(designingAtom)
   const { formatMessage } = useIntl()
-  const [validations, setValidations] = useState({})
+  const [validations, setValidations] = useState<
+    Record<string, { state: 'error'; message: string }>
+  >({})
   const autoFocusRef = useRef<HTMLInputElement>(null)
 
   const db = usePGlite()
@@ -35,13 +39,14 @@ export const CheckWithQuantities = ({ from }) => {
   const res = useLiveQuery(`SELECT * FROM checks WHERE check_id = $1`, [
     checkId,
   ])
-  const row: Checks | undefined = res?.rows?.[0]
+  const row = res?.rows?.[0] as Checks | undefined
 
   const quantitiesRes = useLiveQuery(
     `SELECT check_quantity_id FROM check_quantities WHERE check_id = $1 ORDER BY check_quantity_id`,
     [checkId],
   )
-  const quantities = quantitiesRes?.rows ?? []
+  const quantities =
+    (quantitiesRes?.rows ?? []) as { check_quantity_id: string }[]
 
   const placeLevelRes = useLiveQuery(
     `SELECT check_quantities FROM place_levels WHERE project_id = $1 AND level = $2`,
@@ -50,9 +55,15 @@ export const CheckWithQuantities = ({ from }) => {
   const placeLevel = placeLevelRes?.rows?.[0]
   const showQuantities = isDesigning || placeLevel?.check_quantities !== false
 
-  const onChange = async (e, data) => {
-    const { name, value } = getValueFromChange(e, data)
-    if (row[name] === value) return
+  const onChange = async (
+    e: React.ChangeEvent<HTMLInputElement>,
+    data?: object,
+  ) => {
+    const { name, value } = getValueFromChange(
+      e,
+      data as Parameters<typeof getValueFromChange>[1],
+    )
+    if (row?.[name as keyof Checks] === value) return
     try {
       await db.query(`UPDATE checks SET ${name} = $1 WHERE check_id = $2`, [
         value,
@@ -61,7 +72,7 @@ export const CheckWithQuantities = ({ from }) => {
     } catch (error) {
       setValidations((prev) => ({
         ...prev,
-        [name]: { state: 'error', message: error.message },
+        [name]: { state: 'error', message: (error as Error).message },
       }))
       return
     }
@@ -81,7 +92,7 @@ export const CheckWithQuantities = ({ from }) => {
   }
 
   const addQuantity = async () => {
-    await createCheckQuantity({ checkId })
+    await createCheckQuantity({ checkId: checkId! })
   }
 
   return (

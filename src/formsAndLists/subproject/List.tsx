@@ -10,20 +10,19 @@ import { NotFound } from '../../components/NotFound.tsx'
 import { languageAtom } from '../../store.ts'
 import { subprojectNameSingularExpr } from '../../modules/subprojectNameCols.ts'
 
-export const SubprojectList = ({ from }) => {
-  const { projectId, subprojectId } = useParams({ from })
+export const SubprojectList = ({ from }: { from: string }) => {
+  const { projectId, subprojectId } = useParams({ strict: false })
   const [language] = useAtom(languageAtom)
   const { loading, navData } = useSubprojectNavData({
-    projectId,
-    subprojectId,
-  })
+    projectId: projectId!,    subprojectId: subprojectId!,  })
   const { navs, notFound } = navData
 
   const projectRes = useLiveQuery(
     `SELECT ${subprojectNameSingularExpr(language)} AS subproject_name_singular FROM projects WHERE project_id = $1`,
     [projectId],
   )
-  const nameSingular = projectRes?.rows?.[0]?.subproject_name_singular
+  const nameSingular =
+    projectRes?.rows?.[0]?.subproject_name_singular as string | undefined
 
   if (notFound) {
     return <NotFound table="Subproject" id={subprojectId} />

@@ -28,7 +28,19 @@ type Props = {
   forBreadcrumb?: boolean
 }
 
-const getNavData = ({ res, isOpen, loading, isFiltered, formatMessage }) => {
+const getNavData = ({
+  res,
+  isOpen,
+  loading,
+  isFiltered,
+  formatMessage,
+}: {
+  res?: { rows?: NavDataOpen | NavDataClosed }
+  isOpen: boolean
+  loading: boolean
+  isFiltered: boolean
+  formatMessage: ReturnType<typeof useIntl>['formatMessage']
+}) => {
   const navs: NavDataOpen | NavDataClosed = res?.rows ?? []
   const countUnfiltered = navs[0]?.count_unfiltered ?? 0
   const countFiltered = navs[0]?.count_filtered ?? 0
@@ -102,7 +114,7 @@ export const useProjectsNavData = (params?: Props) => {
       FROM count_unfiltered, count_filtered
     `
   // TODO: this only returns once - never with the answer of the query!!!!
-  const res = useLiveQuery(sql)
+  const res = useLiveQuery<NavDataOpen[number]>(sql)
 
   const loading = res === undefined
 

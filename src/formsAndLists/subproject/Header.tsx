@@ -8,10 +8,18 @@ import { FormHeader } from '../../components/FormHeader/index.tsx'
 import { HistoryToggleButton } from '../../components/shared/HistoryCompare/HistoryToggleButton.tsx'
 import { addOperationAtom } from '../../store.ts'
 
-export const Header = ({ autoFocusRef, nameSingular = 'Subproject', from }) => {
+export const Header = ({
+  autoFocusRef,
+  nameSingular = 'Subproject',
+  from,
+}: {
+  autoFocusRef?: React.RefObject<HTMLInputElement | null>
+  nameSingular?: string
+  from: string
+}) => {
   const isForm =
     from === '/data/projects/$projectId_/subprojects/$subprojectId_/subproject'
-  const { projectId, subprojectId } = useParams({ from })
+  const { projectId, subprojectId } = useParams({ strict: false })
   const navigate = useNavigate()
   const addOperation = useSetAtom(addOperationAtom)
 
@@ -28,12 +36,12 @@ export const Header = ({ autoFocusRef, nameSingular = 'Subproject', from }) => {
   const countRes = useLiveQuery(
     `SELECT COUNT(*) as count FROM subprojects WHERE project_id = '${projectId}'`,
   )
-  const rowCount = countRes?.rows?.[0]?.count ?? 2
+  const rowCount = Number(countRes?.rows?.[0]?.count ?? 2)
 
   const nameSingularLower = nameSingular?.toLowerCase?.()
 
   const addRow = async () => {
-    const subprojectId = await createSubproject({ projectId })
+    const subprojectId = await createSubproject({ projectId: projectId! })
     navigate({
       to:
         isForm ?
@@ -53,7 +61,7 @@ export const Header = ({ autoFocusRef, nameSingular = 'Subproject', from }) => {
         `SELECT * FROM subprojects WHERE subproject_id = $1`,
         [subprojectId],
       )
-      const prev = prevRes?.rows?.[0] ?? {}
+      const prev = (prevRes?.rows?.[0] ?? {}) as Record<string, unknown>
       await db.query(`DELETE FROM subprojects WHERE subproject_id = $1`, [
         subprojectId,
       ])
@@ -64,7 +72,7 @@ export const Header = ({ autoFocusRef, nameSingular = 'Subproject', from }) => {
         operation: 'delete',
         prev,
       })
-      navigate({ to: isForm ? `../..` : `..` })
+      navigate({ to: isForm ? ('../..' as '..') : '..' })
     } catch (error) {
       console.error('Error deleting subproject:', error)
       // Could add a toast notification here
@@ -77,7 +85,7 @@ export const Header = ({ autoFocusRef, nameSingular = 'Subproject', from }) => {
         `SELECT subproject_id FROM subprojects WHERE project_id = $1 order by label`,
         [projectId],
       )
-      const rows = res?.rows
+      const rows = res?.rows as { subproject_id: string }[]
       const len = rows.length
       const index = rows.findIndex(
         (p) => p.subproject_id === subprojectIdRef.current,
@@ -104,7 +112,7 @@ export const Header = ({ autoFocusRef, nameSingular = 'Subproject', from }) => {
         `SELECT subproject_id FROM subprojects WHERE project_id = $1 order by label`,
         [projectId],
       )
-      const rows = res?.rows
+      const rows = res?.rows as { subproject_id: string }[]
       const len = rows.length
       const index = rows.findIndex(
         (p) => p.subproject_id === subprojectIdRef.current,

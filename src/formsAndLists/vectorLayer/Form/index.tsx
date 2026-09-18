@@ -1,4 +1,5 @@
 import { useIntl } from 'react-intl'
+import * as fluentUiReactComponents from '@fluentui/react-components'
 
 import { vectorLayerTypeOptions } from '../../../modules/constants.ts'
 import { TextFieldInactive } from '../../../components/shared/TextFieldInactive.tsx'
@@ -11,8 +12,26 @@ import { DropdownField } from '../../../components/shared/DropdownField.tsx'
 import { RadioGroupField } from '../../../components/shared/RadioGroupField.tsx'
 import { Property } from './Property.tsx'
 import { CreateWfsService } from './CreateWfsService.tsx'
+import type VectorLayers from '../../../models/public/VectorLayers.ts'
 
 import '../../../form.css'
+
+type InputOnChangeData = Parameters<
+  NonNullable<
+    React.ComponentProps<typeof fluentUiReactComponents.Input>['onChange']
+  >
+>[1]
+
+type Props = {
+  onChange: (
+    e: React.ChangeEvent<HTMLInputElement>,
+    data?: InputOnChangeData,
+  ) => void | Promise<void>
+  validations?: Record<string, { state: 'error'; message: string }>
+  row: VectorLayers
+  isFilter?: boolean
+  from?: string
+}
 
 const vectorLayerTypes = vectorLayerTypeOptions
   .filter((o) => ['wfs', 'upload', 'own'].includes(o.value))
@@ -26,7 +45,7 @@ export const VectorLayerForm = ({
   row,
   isFilter,
   from,
-}) => {
+}: Props) => {
   const { formatMessage } = useIntl()
   const nameLabel = formatMessage({ id: 'XkV5yZ', defaultMessage: 'Name' })
   const designationLabel = formatMessage({
@@ -198,7 +217,7 @@ export const VectorLayerForm = ({
               defaultMessage: 'Anzahl Objekte',
             })}
             name="feature_count"
-            value={row.feature_count}
+            value={row.feature_count ?? undefined}
           />
           <TextFieldInactive
             label={formatMessage({
@@ -206,7 +225,7 @@ export const VectorLayerForm = ({
               defaultMessage: 'Anzahl Punkte',
             })}
             name="point_count"
-            value={row.point_count}
+            value={row.point_count ?? undefined}
           />
           <TextFieldInactive
             label={formatMessage({
@@ -214,7 +233,7 @@ export const VectorLayerForm = ({
               defaultMessage: 'Anzahl Linien',
             })}
             name="line_count"
-            value={row.line_count}
+            value={row.line_count ?? undefined}
           />
           <TextFieldInactive
             label={formatMessage({
@@ -222,7 +241,7 @@ export const VectorLayerForm = ({
               defaultMessage: 'Anzahl Polygone',
             })}
             name="polygon_count"
-            value={row.polygon_count}
+            value={row.polygon_count ?? undefined}
           />
         </>
       )}

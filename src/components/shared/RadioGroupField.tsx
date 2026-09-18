@@ -3,7 +3,29 @@ const { Field, RadioGroup, Radio } = fluentUiReactComponents
 
 import { Loading } from './Loading.tsx'
 
-export const RadioGroupField = (props) => {
+type FieldProps = React.ComponentProps<typeof Field>
+
+type Props = {
+  name?: string
+  label?: string
+  list?: string[]
+  isLoading?: boolean
+  value?: string | null
+  onChange: (
+    ev: React.ChangeEvent<HTMLInputElement>,
+    data?: any,
+  ) => void
+  validationMessage?: FieldProps['validationMessage']
+  validationState?: 'error' | 'warning' | 'success' | 'none'
+  autoFocus?: boolean
+  disabled?: boolean
+  replaceUnderscoreInLabel?: boolean
+  labelMap?: Record<string, string>
+  layout?: 'vertical' | 'horizontal'
+  ref?: React.Ref<HTMLInputElement>
+}
+
+export const RadioGroupField = (props: Props) => {
   const {
     name,
     label,
@@ -21,11 +43,11 @@ export const RadioGroupField = (props) => {
     ref,
   } = props
 
-  const onClick = (e) => {
-    const valueChoosen = e.target.value
+  const onClick = (e: React.MouseEvent<HTMLElement>) => {
+    const valueChoosen = (e.target as HTMLInputElement).value
     // if valueChoosen equals value, set value to null
     // else set value to valueChoosen
-    onChangePassed(e, {
+    onChangePassed(e as unknown as React.ChangeEvent<HTMLInputElement>, {
       value: valueChoosen === value ? null : valueChoosen,
     })
   }
@@ -39,8 +61,7 @@ export const RadioGroupField = (props) => {
       <RadioGroup
         layout={layout}
         name={name}
-        value={value}
-        appearance="underline"
+        value={value ?? undefined}
         disabled={disabled}
       >
         {isLoading ? (

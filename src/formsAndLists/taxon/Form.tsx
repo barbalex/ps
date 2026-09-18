@@ -7,8 +7,8 @@ import '../../form.css'
 
 type Props = {
   row: Taxa
-  onChange: (e: React.ChangeEvent<unknown>, data?: unknown) => Promise<void>
-  validations?: Record<string, { state: string; message: string }>
+  onChange: (e: React.ChangeEvent<any>, data?: any) => void
+  validations?: Record<string, { state: 'error'; message: string }>
   autoFocusRef?: React.Ref<HTMLInputElement>
 }
 

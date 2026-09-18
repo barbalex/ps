@@ -16,18 +16,19 @@ import { jsonbDataFromRow } from '../../modules/jsonbDataFromRow.ts'
 import styles from './Print.module.css'
 import { buildData } from '../chart/Chart/buildData/index.ts'
 import { SingleChart } from '../chart/Chart/Chart.tsx'
-import type SubprojectReports from '../../models/public/SubprojectReports.ts'
 
 import '../../form.css'
 import '@puckeditor/core/puck.css'
 
-export const SubprojectReportPrint = ({ from }) => {
-  const { subprojectReportId, projectId, subprojectId } = useParams({ from })
+export const SubprojectReportPrint = ({ from }: { from: string }) => {
+  const { subprojectReportId, projectId, subprojectId } = useParams({ strict: false })
   const addOperation = useSetAtom(addOperationAtom)
   const { formatMessage } = useIntl()
   const [language] = useAtom(languageAtom)
-  const [validations, setValidations] = useState({})
-  const [chartDataMap, setChartDataMap] = useState({})
+  const [validations, setValidations] = useState<
+    Record<string, { state: 'error'; message: string }>
+  >({})
+  const [chartDataMap, setChartDataMap] = useState<Record<string, any>>({})
 
   const db = usePGlite()
 
@@ -58,7 +59,7 @@ export const SubprojectReportPrint = ({ from }) => {
     WHERE subproject_report_id = $1`,
     [subprojectReportId],
   )
-  const row: SubprojectReports = res?.rows?.[0] ?? {}
+  const row = (res?.rows?.[0] ?? {}) as Record<string, any>
   const subprojectNameSingular = row?.subproject_name_singular as
     | string
     | undefined
@@ -74,14 +75,13 @@ export const SubprojectReportPrint = ({ from }) => {
     if (!parsedCharts.length) return
 
     const buildAllChartData = async () => {
-      const dataMap = {}
+      const dataMap: Record<string, unknown> = {}
       for (const chart of parsedCharts) {
         if (!chart.subjects || !chart.subjects.length) continue
         const data = await buildData({
           chart,
           subjects: chart.subjects,
-          subproject_id: subprojectId,
-          project_id: projectId,
+          subproject_id: (subprojectId)!,          project_id: projectId,
         })
         dataMap[chart.chart_id] = data
       }
@@ -92,8 +92,8 @@ export const SubprojectReportPrint = ({ from }) => {
   }, [chartsJson, subprojectId, projectId])
 
   // Build Puck config from fields with actual data
-  const components = {}
-  fields.forEach((field) => {
+  const components: Record<string, any> = {}
+  fields.forEach((field: any) => {
     const componentName = `${field.name}Field`
 
     components[componentName] = {
@@ -107,7 +107,7 @@ export const SubprojectReportPrint = ({ from }) => {
       },
       render: () => {
         // Always read from the current report's jsonbData, not from the saved design value
-        const fieldValue = jsonbData[field.name] ?? ''
+        const fieldValue = (jsonbData[field.name] ?? '') as string
         return (
           <div className={styles.fieldWrapper}>
             <TextField
@@ -123,7 +123,7 @@ export const SubprojectReportPrint = ({ from }) => {
   })
 
   // Add chart components
-  charts.forEach((chart) => {
+  charts.forEach((chart: any) => {
     const componentName = `chart_${chart.chart_id}`
 
     components[componentName] = {
@@ -136,7 +136,7 @@ export const SubprojectReportPrint = ({ from }) => {
           <div className={styles.fieldWrapper}>
             <div className={styles.chartTitle}>{chart.name}</div>
             {chart.subjects_single === true ? (
-              chart.subjects?.map((subject) => (
+              chart.subjects?.map((subject: any) => (
                 <SingleChart
                   key={subject.chart_subject_id}
                   chart={chart}
@@ -160,9 +160,12 @@ export const SubprojectReportPrint = ({ from }) => {
 
   const config = { components }
 
-  const onChange = async (e, data) => {
+  const onChange = async (
+    e: React.ChangeEvent<HTMLInputElement>,
+    data: Parameters<typeof getValueFromChange>[1],
+  ) => {
     const { name, value } = getValueFromChange(e, data)
-    if (row[name] === value) return
+    if ((row as Record<string, any>)[name] === value) return
 
     try {
       await db.query(
@@ -172,7 +175,7 @@ export const SubprojectReportPrint = ({ from }) => {
     } catch (error) {
       setValidations((prev) => ({
         ...prev,
-        [name]: { state: 'error', message: error.message },
+        [name]: { state: 'error', message: error instanceof Error ? error.message : String(error) },
       }))
       return
     }

@@ -12,7 +12,7 @@ export const BackgroundTasks = () => {
   const { formatMessage } = useIntl()
 
   useEffect(() => {
-    const unsubscribe = backgroundTasks.subscribe(() => {
+    const unsubscribe: () => void = backgroundTasks.subscribe(() => {
       setTasks(backgroundTasks.getAll())
     })
     return unsubscribe

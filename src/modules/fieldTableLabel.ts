@@ -1,4 +1,6 @@
-type FormatMessage = (descriptor: { id: string; defaultMessage: string }, values?: Record<string, unknown>) => string
+import type { PrimitiveType } from 'react-intl'
+
+type FormatMessage = (descriptor: { id: string; defaultMessage: string }, values?: Record<string, PrimitiveType>) => string
 
 type BuildFieldTableLabelMapParams = {
   formatMessage: FormatMessage

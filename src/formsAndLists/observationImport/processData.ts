@@ -1,5 +1,6 @@
 import { read, utils, set_cptable } from '@e965/xlsx'
 import * as cptable from '@e965/xlsx/dist/cpexcel.full.mjs'
+import type { PGliteWithLive } from '@electric-sql/pglite/live'
 import { chunkArrayWithMinSize } from '../../modules/chunkArrayWithMinSize.ts'
 import { createObservation } from '../../modules/createRows.ts'
 import { addOperationAtom, store, intlAtom } from '../../store.ts'
@@ -8,11 +9,18 @@ import { checkDuplicates } from './checkDuplicates.ts'
 
 set_cptable(cptable)
 
+export type ProcessDataResult = { success: boolean; message: string }
+
 // Helper function to insert observations
-const insertObservations = async (data, additionalData, db, resolve) => {
+const insertObservations = async (
+  data: Record<string, unknown>[],
+  additionalData: Record<string, unknown>,
+  db: { query: (sql: string, params?: unknown[]) => Promise<unknown> },
+  resolve: (value: ProcessDataResult) => void,
+) => {
   const observations = data.map((dat) =>
     createObservation({
-      observationImportId: additionalData.observation_import_id,
+      observationImportId: additionalData.observation_import_id as string,
       data: dat,
     }),
   )
@@ -66,7 +74,7 @@ const insertObservations = async (data, additionalData, db, resolve) => {
         ) ?? `${observations.length} Beobachtungen importiert`,
     })
   } catch (error) {
-    backgroundTasks.error(taskId, error.message)
+    backgroundTasks.error(taskId, (error as Error).message)
     throw error
   }
 }
@@ -76,7 +84,17 @@ export const processData = async ({
   additionalData,
   db,
   onDuplicatesFound,
-}) => {
+}: {
+  file?: File | undefined
+  additionalData: Record<string, unknown>
+  db: PGliteWithLive
+  onDuplicatesFound: (
+    duplicateCount: number,
+    totalCount: number,
+    continueCallback: () => void | Promise<void>,
+    cancelCallback: () => void,
+  ) => void
+}): Promise<ProcessDataResult> => {
   if (!file) return { success: false, message: 'No file selected' }
 
   // console.log('processData', { file, additionalData, db })
@@ -84,7 +102,7 @@ export const processData = async ({
   // this function is passed to the UploadButton component
   // it should process the content of the file
 
-  return new Promise((resolve, reject) => {
+  return new Promise<ProcessDataResult>((resolve, reject) => {
     const reader = new FileReader()
 
     reader.onload = async () => {
@@ -98,8 +116,9 @@ export const processData = async ({
           }),
           sheetName = workbook.SheetNames[0],
           worksheet = workbook.Sheets[sheetName]
-        const data = utils.sheet_to_json(worksheet).map((d) => {
-           
+        const data = utils.sheet_to_json<Record<string, unknown>>(
+          worksheet,
+        ).map((d) => {
           const { __rowNum__, ...rest } = d
           return rest
         })

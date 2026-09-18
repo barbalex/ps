@@ -17,10 +17,12 @@ import type Units from '../../models/public/Units.ts'
 
 import '../../form.css'
 
-export const CheckTaxon = ({ from }) => {
-  const { checkTaxonId, projectId } = useParams({ from })
+export const CheckTaxon = ({ from }: { from: string }) => {
+  const { checkTaxonId, projectId } = useParams({ strict: false })
   const addOperation = useSetAtom(addOperationAtom)
-  const [validations, setValidations] = useState({})
+  const [validations, setValidations] = useState<
+    Record<string, { state: 'error'; message: string }>
+  >({})
   const { formatMessage } = useIntl()
   const quantityLabel = formatMessage({ id: 'gRVMng', defaultMessage: 'Menge' })
 
@@ -53,10 +55,16 @@ export const CheckTaxon = ({ from }) => {
 
   // console.log('CheckTaxon', { row, results })
 
-  const onChange = async (e, data) => {
-    const { name, value } = getValueFromChange(e, data)
+  const onChange = async (
+    e: React.ChangeEvent<HTMLInputElement>,
+    data?: object,
+  ) => {
+    const { name, value } = getValueFromChange(
+      e,
+      data as Parameters<typeof getValueFromChange>[1],
+    )
     // only change if value has changed: maybe only focus entered and left
-    if (row[name] === value) return
+    if (row?.[name as keyof CheckTaxa] === value) return
 
     try {
       await db.query(
@@ -66,7 +74,7 @@ export const CheckTaxon = ({ from }) => {
     } catch (error) {
       setValidations((prev) => ({
         ...prev,
-        [name]: { state: 'error', message: error.message },
+        [name]: { state: 'error', message: (error as Error).message },
       }))
       return
     }

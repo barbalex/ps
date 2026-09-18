@@ -32,13 +32,24 @@ import type Users from '../../models/public/Users.ts'
 const from = '/data/users/$userId_/accounts/$accountId_'
 const { Button } = fluentUiReactComponents
 
+type InputOnChangeData = Parameters<
+  NonNullable<
+    React.ComponentProps<typeof fluentUiReactComponents.Input>['onChange']
+  >
+>[1]
+
+type Validation = {
+  state: 'error'
+  message: string
+}
+
 export const Account = () => {
-  const { userId, accountId } = useParams({ from })
+  const { userId, accountId } = useParams({ strict: false })
   const location = useLocation()
   const navigate = useNavigate()
   const addOperation = useSetAtom(addOperationAtom)
   const [fieldsFilter] = useAtom(fieldsFilterAtom)
-  const [validations, setValidations] = useState({})
+  const [validations, setValidations] = useState<Record<string, Validation>>({})
 
   const autoFocusRef = useRef<HTMLInputElement>(null)
   const { formatMessage } = useIntl()
@@ -48,14 +59,15 @@ export const Account = () => {
     `SELECT * FROM accounts WHERE account_id = $1 AND user_id = $2`,
     [accountId, userId],
   )
-  const row: Accounts | undefined = res?.rows?.[0]
+  const row = res?.rows?.[0] as Accounts | undefined
 
   const userRes = useLiveQuery(
     `SELECT project_fields_in_account FROM users WHERE user_id = $1`,
     [userId],
   )
-  const userRow: Pick<Users, 'project_fields_in_account'> | undefined =
-    userRes?.rows?.[0]
+  const userRow = userRes?.rows?.[0] as
+    | Pick<Users, 'project_fields_in_account'>
+    | undefined
 
   const fieldsCountRes = useLiveQuery(
     `SELECT count(*)::int AS count FROM fields WHERE account_id = $1 AND project_id IS NULL`,
@@ -91,15 +103,22 @@ export const Account = () => {
       </>
     ) : undefined
 
-  const onChange = async (e, data) => {
+  const onChange = async (
+    e: React.ChangeEvent<HTMLInputElement>,
+    data: InputOnChangeData,
+  ) => {
     const { name, value } = getValueFromChange(e, data)
     // only change if value has changed: maybe only focus entered and left
-    if (row[name] === value) return
+    if (!row || (row as Record<string, any>)[name] === value) return
 
     // Validate period dates
     if (name === 'period_start' || name === 'period_end') {
-      const startDate = name === 'period_start' ? value : row.period_start
-      const endDate = name === 'period_end' ? value : row.period_end
+      const startDate = (name === 'period_start' ? value : row.period_start) as
+        | string
+        | null
+      const endDate = (name === 'period_end' ? value : row.period_end) as
+        | string
+        | null
 
       if (startDate && endDate && new Date(endDate) <= new Date(startDate)) {
         setValidations((prev) => ({
@@ -131,7 +150,7 @@ export const Account = () => {
     } catch (error) {
       setValidations((prev) => ({
         ...prev,
-        [name]: { state: 'error', message: error.message },
+        [name]: { state: 'error', message: (error as Error).message },
       }))
       return
     }

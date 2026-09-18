@@ -6,6 +6,16 @@ import { removeChildNodes } from '../../modules/tree/removeChildNodes.ts'
 import { addOpenNodes } from '../../modules/tree/addOpenNodes.ts'
 import { usePlacesNavData } from '../../modules/usePlacesNavData.ts'
 
+// mirrors the open-state row shape selected in usePlacesNavData
+type NavDataOpen = {
+  id: string
+  label: string | null
+  count_unfiltered: number
+  count_filtered: number
+  name_singular: string
+  name_plural: string
+}
+
 interface Props {
   projectId: string
   subprojectId: string
@@ -56,8 +66,11 @@ export const PlacesNode = ({
     addOpenNodes({ nodes: [ownArray] })
   }
 
+  // when open, navs are selected with place_id AS id (see usePlacesNavData)
+  const openNavs = navs as NavDataOpen[]
+
   // only list navs if isOpen AND the first nav has an id
-  const showNavs = isOpen && navs.length > 0 && navs[0].id
+  const showNavs = isOpen && openNavs.length > 0 && openNavs[0].id
 
   return (
     <>
@@ -72,7 +85,7 @@ export const PlacesNode = ({
         onClickButton={onClickButton}
       />
       {showNavs &&
-        navs.map((nav, i) => (
+        openNavs.map((nav, i) => (
           <PlaceNode
             key={`${nav.id}-${i}`}
             projectId={projectId}

@@ -55,7 +55,7 @@ export const useActionNavData = ({
   const res = useLiveQuery(sql)
   const loading = res === undefined
 
-  const nav: NavData | undefined = res?.rows?.[0]
+  const nav = res?.rows?.[0] as NavData | undefined
 
   const resPlaceLevel = useLiveQuery(
     `SELECT action_quantities, action_quantities_in_action, action_taxa, action_taxa_in_action, action_files, action_files_in_action FROM place_levels WHERE project_id = $1 AND level = $2`,

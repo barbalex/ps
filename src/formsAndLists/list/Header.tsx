@@ -9,7 +9,14 @@ import { FormHeader } from '../../components/FormHeader/index.tsx'
 import { HistoryToggleButton } from '../../components/shared/HistoryCompare/HistoryToggleButton.tsx'
 import { addOperationAtom } from '../../store.ts'
 
-export const Header = ({ autoFocusRef, from: _from }) => {
+export const Header = ({
+  autoFocusRef,
+  from: _from,
+}: {
+  autoFocusRef?: React.RefObject<HTMLInputElement | null>
+  from?: string
+  label?: string
+}) => {
   const { projectId, listId } = useParams({ strict: false })
   const location = useLocation()
   const isForm = /\/lists\/[^/]+\/(list|values(\/|$))/.test(location.pathname)
@@ -31,10 +38,10 @@ export const Header = ({ autoFocusRef, from: _from }) => {
   const countRes = useLiveQuery(
     `SELECT COUNT(*) as count FROM lists WHERE project_id = '${projectId}'`,
   )
-  const rowCount = countRes?.rows?.[0]?.count ?? 2
+  const rowCount = Number(countRes?.rows?.[0]?.count ?? 2)
 
   const addRow = async () => {
-    const id = await createList({ projectId })
+    const id = await createList({projectId: projectId! })
     if (!id) return
     navigate({
       to: isForm ? `../../${id}/list` : `../${id}/list`,
@@ -48,7 +55,7 @@ export const Header = ({ autoFocusRef, from: _from }) => {
       const prevRes = await db.query(`SELECT * FROM lists WHERE list_id = $1`, [
         listId,
       ])
-      const prev = prevRes?.rows?.[0] ?? {}
+      const prev = (prevRes?.rows?.[0] ?? {}) as Record<string, unknown>
       db.query(`DELETE FROM lists WHERE list_id = $1`, [listId])
       addOperation({
         table: 'lists',
@@ -57,7 +64,7 @@ export const Header = ({ autoFocusRef, from: _from }) => {
         operation: 'delete',
         prev,
       })
-      navigate({ to: isForm ? `../..` : `..` })
+      navigate({ to: isForm ? ('../..' as '..') : '..' })
     } catch (error) {
       console.error(error)
     }
@@ -69,7 +76,7 @@ export const Header = ({ autoFocusRef, from: _from }) => {
         `SELECT list_id FROM lists WHERE project_id = $1 ORDER BY label`,
         [projectId],
       )
-      const lists = res?.rows
+      const lists = res?.rows as { list_id: string }[]
       const len = lists.length
       const index = lists.findIndex((p) => p.list_id === listIdRef.current)
       const next = lists[(index + 1) % len]
@@ -88,7 +95,7 @@ export const Header = ({ autoFocusRef, from: _from }) => {
         `SELECT list_id FROM lists WHERE project_id = $1 ORDER BY label`,
         [projectId],
       )
-      const lists = res?.rows
+      const lists = res?.rows as { list_id: string }[]
       const len = lists.length
       const index = lists.findIndex((p) => p.list_id === listIdRef.current)
       const previous = lists[(index + len - 1) % len]

@@ -2,6 +2,8 @@ import { useState } from 'react'
 import { useIntl } from 'react-intl'
 import { TextField } from '../../components/shared/TextField.tsx'
 import { FetchWfsCapabilities } from '../vectorLayer/Form/FetchWfsCapabilities.tsx'
+import type VectorLayers from '../../models/public/VectorLayers.ts'
+import type WfsServices from '../../models/public/WfsServices.ts'
 import styles from './Form.module.css'
 
 import '../../form.css'
@@ -11,6 +13,11 @@ export const WfsServiceForm = ({
   validations,
   row,
   autoFocusRef,
+}: {
+  onChange: (e: React.ChangeEvent<any>, data?: any) => void
+  validations?: Record<string, { state: 'error'; message: string }>
+  row: WfsServices | Record<string, any>
+  autoFocusRef?: React.Ref<HTMLInputElement>
 }) => {
   const [fetching, setFetching] = useState(false)
   const { formatMessage } = useIntl()
@@ -36,7 +43,7 @@ export const WfsServiceForm = ({
       />
       <div className={styles.fetchWrapper}>
         <FetchWfsCapabilities
-          vectorLayer={vectorLayerForFetch}
+          vectorLayer={vectorLayerForFetch as unknown as VectorLayers}
           url={row.url}
           fetching={fetching}
           setFetching={setFetching}

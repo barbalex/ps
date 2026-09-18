@@ -24,7 +24,7 @@ export const useVectorLayerDisplayVectorLayerDisplayNavData = ({
   const [openNodes] = useAtom(treeOpenNodesAtom)
   const { formatMessage } = useIntl()
 
-  const res = useLiveQuery(
+  const res = useLiveQuery<NavData>(
     `SELECT vector_layer_display_id AS id, label FROM vector_layer_displays WHERE vector_layer_display_id = $1`,
     [vectorLayerDisplayId],
   )

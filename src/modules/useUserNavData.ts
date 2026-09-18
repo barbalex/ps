@@ -36,7 +36,7 @@ export const useUserNavData = ({ userId }: Props) => {
   )
   const loading = res === undefined
 
-  const nav: NavData | undefined = res?.rows?.[0]
+  const nav = res?.rows?.[0] as NavData | undefined
   const urlPath = location.pathname.split('/').filter((p) => p !== '')
 
   // needs to work not only works for urlPath, for all opened paths!

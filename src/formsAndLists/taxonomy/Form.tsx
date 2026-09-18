@@ -11,8 +11,8 @@ import '../../form.css'
 
 type Props = {
   row: Taxonomies
-  onChange: (e: React.ChangeEvent<unknown>, data?: unknown) => Promise<void>
-  validations?: Record<string, { state: string; message: string }>
+  onChange: (e: React.ChangeEvent<any>, data?: any) => void
+  validations?: Record<string, { state: 'error'; message: string }>
   autoFocusRef?: React.Ref<HTMLInputElement>
   projectId: string
 }
@@ -70,7 +70,7 @@ export const TaxonomyForm = ({
         table="taxonomies"
         idField="taxonomy_id"
         id={row.taxonomy_id}
-        data={row.data ?? {}}
+        data={(row.data ?? {}) as Record<string, unknown>}
       />
       <SwitchField
         label={formatMessage({ id: 'Ob2kQz', defaultMessage: 'Obsolet' })}

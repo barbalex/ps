@@ -6,6 +6,13 @@ import { removeChildNodes } from '../../modules/tree/removeChildNodes.ts'
 import { addOpenNodes } from '../../modules/tree/addOpenNodes.ts'
 import { useProjectReportsNavData } from '../../modules/useProjectReportsNavData.ts'
 
+type NavData = {
+  id: string
+  label: string
+  count_unfiltered?: number
+  count_filtered?: number
+}[]
+
 interface Props {
   projectId: string
   level?: number
@@ -41,7 +48,7 @@ export const ProjectReportsNode = ({ projectId, level = 3 }: Props) => {
   }
 
   // only list navs if isOpen AND the first nav has an id
-  const showNavs = isOpen && navs.length > 0 && navs[0].id
+  const showNavs = isOpen && navs.length > 0 && (navs as NavData)[0].id
 
   return (
     <>
@@ -56,7 +63,7 @@ export const ProjectReportsNode = ({ projectId, level = 3 }: Props) => {
         onClickButton={onClickButton}
       />
       {showNavs &&
-        navs.map((nav, i) => (
+        (navs as NavData).map((nav, i) => (
           <ProjectReportNode
             key={`${nav.id}-${i}`}
             projectId={projectId}

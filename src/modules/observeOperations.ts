@@ -1,4 +1,6 @@
 import { observe } from 'jotai-effect'
+import type { Effect } from 'jotai-effect'
+import type { Getter } from 'jotai/vanilla'
 
 import {
   operationsQueueAtom,
@@ -19,7 +21,10 @@ import { invalidatePostgrestToken } from './fetchPostgrestToken.ts'
 let isProcessing = false
 
 export const observeOperations = () =>
-  observe(async (get) => {
+  observe(
+    // observe's Effect type is synchronous; this async effect is
+    // fire-and-forget at runtime (a returned Promise is never a Cleanup)
+    (async (get: Getter & { peek: Getter }) => {
     // Guard: if a network send is already in-flight, skip this trigger.
     // Without this, rapid queue changes (e.g. "activate all") cause the same
     // oldest operation to be sent multiple times before it is removed, producing 409s.
@@ -54,13 +59,20 @@ export const observeOperations = () =>
       // Release the lock BEFORE any queue mutation so the observer can pick up
       // the next operation immediately when removeOperation fires.
       isProcessing = false
-      if (error?.code === '23505') {
+      // postgrest-js errors carry code/message/hint/details
+      const err = error as {
+        code?: string
+        message?: string
+        hint?: string
+        details?: string
+      }
+      if (err?.code === '23505') {
         // duplicate key value violates unique constraint
         // The row is already present on server, so this operation is effectively done.
         return removeOperation(firstOperation)
       }
 
-      if (error?.message?.includes('Update matched 0 rows')) {
+      if (err?.message?.includes('Update matched 0 rows')) {
         // The row no longer exists on the server (e.g. deleted by another user).
         // Drop the update — there is nothing to update.
         console.warn(
@@ -72,10 +84,10 @@ export const observeOperations = () =>
 
       console.error('observeOperations, error executing operation:', error)
       // TODO: surface
-      const lcMessage = error.message?.toLowerCase?.()
+      const lcMessage = err.message?.toLowerCase?.()
       // if auth error: get new auth token
       // TODO: ensure if clause is correct
-      if (lcMessage.includes('jwt')) {
+      if (lcMessage?.includes('jwt')) {
         // Token is invalid or expired — clear the cache so the next retry fetches a fresh one
         invalidatePostgrestToken()
         console.log(
@@ -87,12 +99,12 @@ export const observeOperations = () =>
           body: 'Please log out and log back in to continue syncing your changes.',
         })
       } else if (
-        error?.code === '42501' ||
-        lcMessage.includes('permission denied') ||
-        lcMessage.includes('insufficient privilege')
+        err?.code === '42501' ||
+        lcMessage?.includes('permission denied') ||
+        lcMessage?.includes('insufficient privilege')
       ) {
         // Server rejected the write due to insufficient role — revert optimistic change
-        const hint = error?.hint ?? error?.details ?? ''
+        const hint = err?.hint ?? err?.details ?? ''
         const hintText = hint ? ` ${hint}` : ''
         store.set(addNotificationAtom, {
           intent: 'error',
@@ -101,7 +113,7 @@ export const observeOperations = () =>
         })
         await revertOperation(firstOperation)
         return removeOperation(firstOperation)
-      } else if (lcMessage.includes('uniqueness violation')) {
+      } else if (lcMessage?.includes('uniqueness violation')) {
         console.log(
           'There is a conflict with exact same changes - ingoring the error thrown',
         )
@@ -112,7 +124,7 @@ export const observeOperations = () =>
         })
 
         return revertOperation(firstOperation)
-      } else if (error?.code === '22P02') {
+      } else if (err?.code === '22P02') {
         // Malformed value (e.g. a null id serialized into a filter).
         // This operation can never succeed — drop it so it doesn't block
         // the queue. The local change stays; the user should redo the edit.
@@ -137,4 +149,6 @@ export const observeOperations = () =>
     isProcessing = false
     // if successful: return remove operation
     return removeOperation(firstOperation)
-  }, store)
+    }) as unknown as Effect,
+    store,
+  )

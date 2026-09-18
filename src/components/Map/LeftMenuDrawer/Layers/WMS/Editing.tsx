@@ -1,20 +1,25 @@
 import { usePGlite } from '@electric-sql/pglite-react'
 import { useSetAtom } from 'jotai'
+import type { ComponentType } from 'react'
 
 import { ErrorBoundary } from '../../../../shared/ErrorBoundary.tsx'
 import { getValueFromChange } from '../../../../../modules/getValueFromChange.ts'
-import { WmsLayerForm } from '../../../../../formsAndLists/wmsLayer/Form/index.tsx'
+import { WmsLayerForm as WmsLayerFormUntyped } from '../../../../../formsAndLists/wmsLayer/Form/index.tsx'
 import { addOperationAtom } from '../../../../../store.ts'
+import type WmsLayers from '../../../../../models/public/WmsLayers.ts'
 import styles from './Editing.module.css'
 
-export const WmsLayerEditing = ({ layer: row }) => {
+export const WmsLayerEditing = ({ layer: row }: { layer: WmsLayers }) => {
   const db = usePGlite()
   const addOperation = useSetAtom(addOperationAtom)
 
-  const onChange = async (e, data) => {
+  const onChange = async (
+    e: Parameters<typeof getValueFromChange>[0],
+    data: Parameters<typeof getValueFromChange>[1],
+  ) => {
     const { name, value } = getValueFromChange(e, data)
     // only change if value has changed: maybe only focus entered and left
-    if (row[name] === value) return
+    if ((row as unknown as Record<string, unknown>)[name] === value) return
 
     try {
       await db.query(
@@ -34,6 +39,12 @@ export const WmsLayerEditing = ({ layer: row }) => {
       prev: { ...row },
     })
   }
+
+  // WmsLayerForm's props are not typed yet
+  const WmsLayerForm = WmsLayerFormUntyped as unknown as ComponentType<{
+    onChange: typeof onChange
+    row: WmsLayers
+  }>
 
   return (
     <ErrorBoundary>

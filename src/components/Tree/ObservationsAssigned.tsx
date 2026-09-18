@@ -6,13 +6,21 @@ import { removeChildNodes } from '../../modules/tree/removeChildNodes.ts'
 import { addOpenNodes } from '../../modules/tree/addOpenNodes.ts'
 import { useObservationsNavData } from '../../modules/useObservationsNavData.ts'
 
+type Props = {
+  projectId: string
+  subprojectId: string
+  placeId: string
+  placeId2?: string
+  level?: number
+}
+
 export const ObservationsAssignedNode = ({
   projectId,
   subprojectId,
   placeId,
   placeId2,
   level = 7,
-}) => {
+}: Props) => {
   const navigate = useNavigate()
 
   const { navData } = useObservationsNavData({

@@ -1,6 +1,12 @@
 import styles from './Resizer.module.css'
 
-export const Resizer = ({ startResizing, isResizing }) => (
+export const Resizer = ({
+  startResizing,
+  isResizing,
+}: {
+  startResizing: () => void
+  isResizing: boolean
+}) => (
   <div
     className={`${styles.resizer}${isResizing ? ` ${styles.resizerActive}` : ''}`}
     onMouseDown={startResizing}

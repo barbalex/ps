@@ -6,10 +6,13 @@ import { Row } from '../../components/shared/Row.tsx'
 import { Header } from './Header.tsx'
 import { NotFound } from '../../components/NotFound.tsx'
 
-export const TaxonomyList = ({ from }) => {
-  const { projectId, taxonomyId } = useParams({ from })
-  const { loading, navData } = useTaxonomyNavData({ projectId, taxonomyId })
-  const { navs, label, notFound } = navData
+export const TaxonomyList = ({ from }: { from: string }) => {
+  const { projectId, taxonomyId } = useParams({ strict: false })
+  const { loading, navData } = useTaxonomyNavData({
+    projectId: projectId!,
+    taxonomyId: taxonomyId!,
+  })
+ const { navs, label, notFound } = navData
 
   if (notFound) {
     return (

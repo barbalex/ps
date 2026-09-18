@@ -1,3 +1,5 @@
+import type { ReactNode } from 'react'
+
 import { FormMenu } from './FormMenu/index.tsx'
 import { SectionDescription } from './shared/SectionDescription.tsx'
 import styles from './ListHeader.module.css'
@@ -13,7 +15,7 @@ interface Props {
   deleteRowDisabled?: boolean
   deleteLabel?: string
   deleteConfirmLabel?: string
-  menus?: unknown[]
+  menus?: ReactNode
   info?: unknown
   hideTitle?: boolean
 }

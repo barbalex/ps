@@ -2,12 +2,22 @@
 /* eslint-disable */
 export const isMobilePhone = (): boolean => {
   let check = false
-  const a = navigator.userAgent || navigator.vendor || window.opera
+  const a = (navigator.userAgent ||
+    navigator.vendor ||
+    (window as { opera?: string }).opera) as string
 
   // https://stackoverflow.com/a/11381730/712005
   // navigator.userAgentData.mobile
-  if ('userAgentData' in navigator && 'mobile' in navigator.userAgentData) {
-    check = navigator.userAgentData.mobile
+  // userAgentData is not part of the DOM types yet
+  const navigatorWithUserAgentData = navigator as Navigator & {
+    userAgentData?: { mobile?: boolean }
+  }
+  if (
+    'userAgentData' in navigator &&
+    'mobile' in (navigatorWithUserAgentData.userAgentData as object)
+  ) {
+    check = (navigatorWithUserAgentData.userAgentData as { mobile: boolean })
+      .mobile
   } else if (
     // userAgentData not supported
     // https://caniuse.com/mdn-api_navigator_useragentdata

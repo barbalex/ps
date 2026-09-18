@@ -1,12 +1,20 @@
+import * as L from 'leaflet'
 import { MapContainer, Rectangle } from 'react-leaflet'
 
+import type VectorLayerDisplays from '../../../../../models/public/VectorLayerDisplays.ts'
 import { vectorLayerDisplayToProperties } from '../../../../../modules/vectorLayerDisplayToProperties.ts'
 import './display.css'
 import styles from './Display.module.css'
 
 // idea: use a leaflet map to display: a rectangle, line and point
 // build map and pass geometries as data attribute to GeoJSON, using vectorLayerDisplayToProperties as in TableLayer.tsx
-export const Display = ({ display, layerPresentation }) => (
+export const Display = ({
+  display,
+  layerPresentation,
+}: {
+  display: VectorLayerDisplays
+  layerPresentation?: { opacity_percent?: number | null } | null
+}) => (
   <div className={styles.container}>
     {/* if a display_property_value exists, display it */}
     <MapContainer

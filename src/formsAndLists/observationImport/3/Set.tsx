@@ -7,6 +7,7 @@ import { useIntl } from 'react-intl'
 
 import { setLabels } from './setLabels.ts'
 import { formatNumber } from '../../../modules/formatNumber.ts'
+import type { LabelElement } from '../../../components/shared/LabelCreator/index.tsx'
 import styles from './Set.module.css'
 import type ObservationImports from '../../../models/public/ObservationImports.ts'
 import type Observations from '../../../models/public/Observations.ts'
@@ -23,7 +24,7 @@ export const Set = ({ observationImport }: Props) => {
     `SELECT * FROM observations WHERE observation_import_id = $1`,
     [observationImport?.observation_import_id],
   )
-  const observations: Observations[] = res?.rows ?? []
+  const observations = (res?.rows ?? []) as unknown as Observations[]
 
   const observationsWithoutLabel = observations.filter((o) => !o.label)
   const toSetCount = observationsWithoutLabel?.length ?? 0
@@ -32,7 +33,7 @@ export const Set = ({ observationImport }: Props) => {
     setSettingLabels(true)
     // Don't await - let it run in background
     setLabels({
-      labelCreation: observationImport.label_creation,
+      labelCreation: observationImport.label_creation as LabelElement[],
       observationImportId: observationImport.observation_import_id,
     }).finally(() => {
       setSettingLabels(false)
@@ -65,7 +66,7 @@ export const Set = ({ observationImport }: Props) => {
             id: 'lBlAlS',
             defaultMessage: 'Alle {count} Beobachtungen haben Beschriftungen',
           },
-          { count: formatNumber(observations.length) },
+          { count: formatNumber(observations.length) as string },
         )}
       </div>
     )
@@ -85,14 +86,14 @@ export const Set = ({ observationImport }: Props) => {
                 defaultMessage:
                   'Beschriftungen von {count} Beobachtungen werden gesetzt',
               },
-              { count: formatNumber(toSetCount) },
+              { count: formatNumber(toSetCount) as string },
             )
           : formatMessage(
               {
                 id: 'lBlSet',
                 defaultMessage: '{count} Beobachtungen beschriften',
               },
-              { count: formatNumber(toSetCount) },
+              { count: formatNumber(toSetCount) as string },
             )}
       </Button>
     </div>

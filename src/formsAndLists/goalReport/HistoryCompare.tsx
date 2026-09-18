@@ -27,7 +27,7 @@ export const GoalReportHistoryCompare = () => {
   const { formatMessage } = useIntl()
   const navigate = useNavigate()
   const { projectId, subprojectId, goalId, goalReportId, goalReportHistoryId } =
-    useParams({ from, strict: false })
+    useParams({ strict: false })
   const goalReportPath = `/data/projects/${projectId}/subprojects/${subprojectId}/goals/${goalId}/reports/${goalReportId}`
   const historyPath = `${goalReportPath}/histories`
 
@@ -68,7 +68,7 @@ export const GoalReportHistoryCompare = () => {
             table="goal_reports"
             idField="goal_report_id"
             id={row.goal_report_id}
-            data={row.data ?? {}}
+            data={(row.data ?? {}) as Record<string, unknown>}
             autoFocus
             ref={autoFocusRef}
             from={from}
@@ -79,14 +79,14 @@ export const GoalReportHistoryCompare = () => {
       excludedDisplayFields={excludedDisplayFields}
       preferredOrder={preferredOrder}
       formatFieldLabel={formatFieldLabel}
-      row={row as Record<string, unknown>}
+      row={row as unknown as Record<string, unknown>}
       historyConfig={{
         historyTable: 'goal_reports_history',
         rowIdField: 'goal_report_id',
         rowId: goalReportId,
         historyPath,
         routeHistoryId: goalReportHistoryId,
-        currentRow: row as Record<string, unknown>,
+        currentRow: row as unknown as Record<string, unknown>,
       }}
       restoreConfig={{
         db,

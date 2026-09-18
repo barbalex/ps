@@ -6,6 +6,21 @@ import { jsonbDataFromRow } from '../../modules/jsonbDataFromRow.ts'
 
 import '../../form.css'
 
+type Validations = Record<
+  string,
+  | { state: 'error' | 'warning' | 'success' | 'none'; message: string }
+  | undefined
+>
+
+type Props = {
+  onChange: (e: React.ChangeEvent<any>, data?: any) => void
+  validations?: Validations
+  row: Record<string, any>
+  orIndex?: number
+  from: string
+  autoFocusRef?: React.RefObject<HTMLInputElement | null>
+}
+
 // this form is rendered from a parent or outlet
 export const GoalForm = ({
   onChange,
@@ -14,7 +29,7 @@ export const GoalForm = ({
   orIndex,
   from,
   autoFocusRef,
-}) => {
+}: Props) => {
   const { formatMessage } = useIntl()
   // need to extract the jsonb data from the row
   // as inside filters it's name is a path

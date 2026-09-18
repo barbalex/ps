@@ -7,6 +7,7 @@
 import { usePGlite, useLiveQuery } from '@electric-sql/pglite-react'
 import { useLocation, useParams } from '@tanstack/react-router'
 import { useSetAtom } from 'jotai'
+import type { Atom, WritableAtom } from 'jotai'
 
 import { getValueFromChange } from '../../../modules/getValueFromChange.ts'
 import { TextField } from '../TextField.tsx'
@@ -20,7 +21,7 @@ import type Fields from '../../../models/public/Fields.ts'
 import type FieldTypes from '../../../models/public/FieldTypes.ts'
 import type WidgetTypes from '../../../models/public/WidgetTypes.ts'
 
-type FieldsWithTypes = Fields & {
+export type FieldsWithTypes = Fields & {
   field_type: FieldTypes['name']
   widget_type: WidgetTypes['name']
 }
@@ -34,7 +35,7 @@ interface Props {
   data: Record<string, unknown>
   autoFocus?: boolean
   ref?: React.Ref<HTMLDivElement>
-  from: string
+  from?: string
 }
 
 // and focus the name field on first render?
@@ -75,20 +76,26 @@ export const Jsonb = ({
       ORDER BY t.ord`
   const params = table === 'places' ? [table, placeId2 ? 2 : 1] : [table]
   const res = useLiveQuery(sql, params)
-  const fields: FieldsWithTypes[] = res?.rows ?? []
+  const fields = (res?.rows ?? []) as unknown as FieldsWithTypes[]
 
   // TODO: return if value has not changed
-  const onChange = async (e, dataReturned) => {
+  const onChange = async (
+    e: Parameters<typeof getValueFromChange>[0],
+    dataReturned: Parameters<typeof getValueFromChange>[1],
+    _removed?: boolean,
+  ) => {
     const { name, value } = getValueFromChange(e, dataReturned)
     if (data[name] === value) return
-    const isDate = value instanceof Date
+    // date widgets return a Date object even though it is not in the union
+    const valueAsObject = value as unknown as Date | null | undefined
+    const isDate = valueAsObject instanceof Date
     const val = { ...data }
     if (value === undefined) {
       // need to remove the key from the json object
       delete val[name]
     } else {
       // in json need to save date as iso string
-      val[name] = isDate ? value.toISOString() : value
+      val[name] = isDate ? valueAsObject.toISOString() : value
     }
 
     const isFilter = location.pathname.endsWith('filter')
@@ -105,11 +112,15 @@ export const Jsonb = ({
         table,
         level,
       })
-      const activeFilter = store.get(filterAtom)
+      // filterAtom is an atom name string; bridge it to the atom types jotai expects
+      const activeFilter = store.get(filterAtom as unknown as Atom<string>)
       const newFilter = `${
         activeFilter.length ? `${activeFilter} AND ` : ''
       }${jsonFieldName}->>'${name}' = '${val[name]}'`
-      store.set(filterAtom, newFilter)
+      store.set(
+        filterAtom as unknown as WritableAtom<string, [string], void>,
+        newFilter,
+      )
 
       return
     }
@@ -117,7 +128,7 @@ export const Jsonb = ({
       `SELECT * FROM ${table} WHERE ${idField} = $1`,
       [id],
     )
-    const prev = prevRes?.rows?.[0] ?? {}
+    const prev = (prevRes?.rows?.[0] ?? {}) as Record<string, unknown>
     try {
       await db.query(
         `UPDATE ${table} SET ${jsonFieldName} = $1 WHERE ${idField} = $2`,
@@ -167,11 +178,13 @@ export const Jsonb = ({
           label={dataKey}
           name={dataKey}
           value={
-            data?.[dataKey]?.toLocaleDateString?.() ?? data?.[dataKey] ?? ''
+            (data?.[dataKey] as Date | undefined)?.toLocaleDateString?.() ??
+            (data?.[dataKey] as string | number | undefined) ??
+            ''
           }
           onChange={(e, dataReturned) => {
             // if value was removed, remove the key also
-            onChange(e, dataReturned, true)
+            onChange(e, dataReturned!, true)
           }}
           // if isHistory, don't warn about undefined fields
           validationState={isHistory ? undefined : 'warning'}

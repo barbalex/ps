@@ -1,14 +1,18 @@
 import { Fragment } from 'react'
+import type { ReactNode } from 'react'
+import type { Geometry } from 'geojson'
 import Linkify from 'linkify-react'
 import { useNavigate } from '@tanstack/react-router'
 import { useAtom, useSetAtom } from 'jotai'
 import { usePGlite } from '@electric-sql/pglite-react'
 import { bbox } from '@turf/bbox'
 import { buffer } from '@turf/buffer'
+import type { AllGeoJSON } from '@turf/helpers'
 import * as fluentUiReactComponents from '@fluentui/react-components'
 import { MdOpenInNew, MdEdit, MdEditOff } from 'react-icons/md'
 import { TbZoomScan } from 'react-icons/tb'
 
+import type { MapInfoLayer } from '../../../../store.ts'
 import {
   mapBoundsAtom,
   tabsAtom,
@@ -21,7 +25,17 @@ import styles from './Layer.module.css'
 
 const { Button } = fluentUiReactComponents
 
-export const Layer = ({ layerData }) => {
+type Props = {
+  layerData: MapInfoLayer & {
+    properties?: [string, unknown][]
+    html?: string
+    json?: unknown
+    text?: string
+    projectId?: string
+  }
+}
+
+export const Layer = ({ layerData }: Props) => {
   const {
     label,
     featureLabel,
@@ -59,8 +73,8 @@ export const Layer = ({ layerData }) => {
         navigate({
           to: '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/places/$placeId2/place',
           params: {
-            projectId,
-            subprojectId: ownSubprojectId,
+            projectId: projectId!,
+            subprojectId: ownSubprojectId!,
             placeId: ownParentId,
             placeId2: ownId,
           },
@@ -68,7 +82,11 @@ export const Layer = ({ layerData }) => {
       } else {
         navigate({
           to: '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/place',
-          params: { projectId, subprojectId: ownSubprojectId, placeId: ownId },
+          params: {
+            projectId: projectId!,
+            subprojectId: ownSubprojectId!,
+            placeId: ownId,
+          },
         })
       }
     } else {
@@ -76,17 +94,19 @@ export const Layer = ({ layerData }) => {
         `SELECT subproject_id, parent_id FROM places WHERE place_id = $1`,
         [ownPlaceId],
       )
-      const place = placeRes?.rows?.[0]
+      const place = placeRes?.rows?.[0] as
+        | { subproject_id: string; parent_id: string | null }
+        | undefined
       if (!place) return
       if (ownTable === 'check') {
         if (place.parent_id) {
           navigate({
             to: '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/places/$placeId2/checks/$checkId/check',
             params: {
-              projectId,
+              projectId: projectId!,
               subprojectId: place.subproject_id,
               placeId: place.parent_id,
-              placeId2: ownPlaceId,
+              placeId2: ownPlaceId!,
               checkId: ownId,
             },
           })
@@ -94,9 +114,9 @@ export const Layer = ({ layerData }) => {
           navigate({
             to: '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/checks/$checkId/check',
             params: {
-              projectId,
+              projectId: projectId!,
               subprojectId: place.subproject_id,
-              placeId: ownPlaceId,
+              placeId: ownPlaceId!,
               checkId: ownId,
             },
           })
@@ -106,10 +126,10 @@ export const Layer = ({ layerData }) => {
           navigate({
             to: '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/places/$placeId2/actions/$actionId/action',
             params: {
-              projectId,
+              projectId: projectId!,
               subprojectId: place.subproject_id,
               placeId: place.parent_id,
-              placeId2: ownPlaceId,
+              placeId2: ownPlaceId!,
               actionId: ownId,
             },
           })
@@ -117,9 +137,9 @@ export const Layer = ({ layerData }) => {
           navigate({
             to: '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/actions/$actionId/action',
             params: {
-              projectId,
+              projectId: projectId!,
               subprojectId: place.subproject_id,
-              placeId: ownPlaceId,
+              placeId: ownPlaceId!,
               actionId: ownId,
             },
           })
@@ -130,25 +150,28 @@ export const Layer = ({ layerData }) => {
 
   const onZoomTo = async () => {
     if (!ownTable || !ownId) return
-    let geometry
+    let geometry: Geometry | undefined
     if (ownTable === 'place') {
       const res = await db.query(
         `SELECT ST_AsGeoJSON(geometry)::json as geometry FROM places WHERE place_id = $1`,
         [ownId],
       )
-      geometry = res?.rows?.[0]?.geometry
+      geometry = (res?.rows?.[0] as { geometry: Geometry } | undefined)
+        ?.geometry
     } else if (ownTable === 'check') {
       const res = await db.query(
         `SELECT ST_AsGeoJSON(geometry)::json as geometry FROM checks WHERE check_id = $1`,
         [ownId],
       )
-      geometry = res?.rows?.[0]?.geometry
+      geometry = (res?.rows?.[0] as { geometry: Geometry } | undefined)
+        ?.geometry
     } else if (ownTable === 'action') {
       const res = await db.query(
         `SELECT ST_AsGeoJSON(geometry)::json as geometry FROM actions WHERE action_id = $1`,
         [ownId],
       )
-      geometry = res?.rows?.[0]?.geometry
+      geometry = (res?.rows?.[0] as { geometry: Geometry } | undefined)
+        ?.geometry
     }
     if (
       !geometry ||
@@ -156,7 +179,7 @@ export const Layer = ({ layerData }) => {
     )
       return
     if (!tabs.includes('map')) setTabs([...tabs, 'map'])
-    const buffered = buffer(geometry, 0.05)
+    const buffered = buffer(geometry, 0.05) as AllGeoJSON
     const newBbox = bbox(buffered)
     const bounds = boundsFromBbox(newBbox)
     if (!bounds) return
@@ -306,7 +329,7 @@ export const Layer = ({ layerData }) => {
               </div>
               <Linkify options={{ target: '_blank' }}>
                 <div className={`${styles.text}${rowClassName ? ` ${rowClassName}` : ''}`}>
-                  {value}
+                  {value as ReactNode}
                 </div>
               </Linkify>
             </Fragment>

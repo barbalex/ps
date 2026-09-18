@@ -22,7 +22,7 @@ export const useSubprojectReportDesignNavData = ({
   const [openNodes] = useAtom(treeOpenNodesAtom)
   const location = useLocation()
 
-  const res = useLiveQuery(
+  const res = useLiveQuery<NavData>(
     `
     SELECT
       subproject_report_design_id AS id,

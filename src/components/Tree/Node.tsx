@@ -11,13 +11,14 @@ import styles from './Node.module.css'
 interface Props {
   isInActiveNodeArray: boolean
   isActive: boolean
-  isOpen: boolean
+  isOpen?: boolean
   level: number
   label: string | React.ReactNode
-  id: string
-  childrenCount: number
+  id?: string
+  childrenCount?: number
   to: string
-  onClickButton: () => void
+  toParams?: Record<string, string>
+  onClickButton?: () => void
   sibling?: React.ReactNode
 }
 

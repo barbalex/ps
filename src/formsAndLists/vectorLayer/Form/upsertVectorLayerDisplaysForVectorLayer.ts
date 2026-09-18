@@ -1,14 +1,21 @@
 import { createVectorLayerDisplay } from '../../../modules/createRows.ts'
 import { addOperationAtom, store, pgliteDbAtom } from '../../../store.ts'
 
+import type VectorLayers from '../../../models/public/VectorLayers.ts'
 import type VectorLayerDisplays from '../../../models/public/VectorLayerDisplays.ts'
+import type Fields from '../../../models/public/Fields.ts'
+import type ListValues from '../../../models/public/ListValues.ts'
 
 export const upsertVectorLayerDisplaysForVectorLayer = async ({
   vectorLayer,
+}: {
+  vectorLayer: VectorLayers
 }) => {
-  const db = store.get(pgliteDbAtom)
+  const db = store.get(pgliteDbAtom)!
   if (!vectorLayer) {
-    throw new Error(`vector_layer_id ${vectorLayer.vector_layer_id} not found`)
+    throw new Error(
+      `vector_layer_id ${(vectorLayer as VectorLayers).vector_layer_id} not found`,
+    )
   }
   if (!vectorLayer.type) {
     throw new Error(
@@ -32,15 +39,16 @@ export const upsertVectorLayerDisplaysForVectorLayer = async ({
     `SELECT name FROM fields WHERE table_name = $1 AND level = $2 AND project_id = $3`,
     [table, level, projectId],
   )
-  const fields = resFields.rows
+  const fields = resFields.rows as { name: string }[]
   const fieldNames = fields.map((f) => f.name)
-  const propertyIsInData = fieldNames.includes(displayByProperty)
+  const propertyIsInData = fieldNames.includes(displayByProperty!)
 
   const existingVLDRes = await db.query(
     `SELECT * FROM vector_layer_displays WHERE vector_layer_id = $1`,
     [vectorLayer.vector_layer_id],
   )
-  const existingVectorLayerDisplays = existingVLDRes?.rows ?? []
+  const existingVectorLayerDisplays =
+    (existingVLDRes?.rows ?? []) as VectorLayerDisplays[]
 
   if (!displayByProperty) {
     const firstExistingVectorLayerDisplay = existingVectorLayerDisplays?.[0]
@@ -69,7 +77,7 @@ export const upsertVectorLayerDisplaysForVectorLayer = async ({
   }
 
   if (
-    !properties.includes(displayByProperty) &&
+    !(properties as string[]).includes(displayByProperty) &&
     existingVectorLayerDisplays.length
   ) {
     // remove all displays before creating new ones
@@ -95,7 +103,7 @@ export const upsertVectorLayerDisplaysForVectorLayer = async ({
     `SELECT * FROM fields WHERE name = $1 AND table_name = $2 AND level = $3 AND project_id = $4`,
     [displayByProperty, table, level, projectId],
   )
-  const field = fieldRes?.rows?.[0]
+  const field = fieldRes?.rows?.[0] as Fields | undefined
 
   if (!field) {
     throw new Error(
@@ -117,25 +125,32 @@ export const upsertVectorLayerDisplaysForVectorLayer = async ({
       `SELECT * FROM list_values WHERE list_id = $1`,
       [field.list_id],
     )
-    const listValues = lVRes?.rows ?? []
+    const listValues = (lVRes?.rows ?? []) as ListValues[]
     if (!listValues.length) {
       throw new Error(`list_id ${field.list_id} has no values`)
     }
     // remove all displays not in list
     const toDeleteRes = await db.query(
       `SELECT vector_layer_display_id FROM vector_layer_displays WHERE vector_layer_id = $1 AND display_property_value NOT IN (${listValues
-        .map((v) => v.value)
-        .map((v, i) => `$${i + 2}`)
+        .map((v) => (v as Record<string, any>).value)
+        .map((_v, i) => `$${i + 2}`)
         .join(', ')})`,
-      [vectorLayer.vector_layer_id, ...listValues.map((v) => v.value)],
+      [
+        vectorLayer.vector_layer_id,
+        ...listValues.map((v) => (v as Record<string, any>).value),
+      ],
     )
-    const toDeleteVectorLayerDisplayIds = toDeleteRes?.rows ?? []
+    const toDeleteVectorLayerDisplayIds = (toDeleteRes?.rows ??
+      []) as { vector_layer_display_id: string }[]
     await db.query(
       `DELETE FROM vector_layer_displays WHERE vector_layer_id = $1 AND display_property_value NOT IN (${listValues
-        .map((v) => v.value)
-        .map((v, i) => `$${i + 2}`)
+        .map((v) => (v as Record<string, any>).value)
+        .map((_v, i) => `$${i + 2}`)
         .join(', ')})`,
-      [vectorLayer.vector_layer_id, ...listValues.map((v) => v.value)],
+      [
+        vectorLayer.vector_layer_id,
+        ...listValues.map((v) => (v as Record<string, any>).value),
+      ],
     )
     store.set(addOperationAtom, {
       table: 'vector_layer_displays',
@@ -153,7 +168,8 @@ export const upsertVectorLayerDisplaysForVectorLayer = async ({
       `SELECT vector_layer_display_id FROM vector_layer_displays WHERE vector_layer_id = $1 AND display_property_value IS NULL`,
       [vectorLayer.vector_layer_id],
     )
-    const toDeleteNullVectorLayerDisplayIds = toDeleteNullRes?.rows ?? []
+    const toDeleteNullVectorLayerDisplayIds = (toDeleteNullRes?.rows ??
+      []) as { vector_layer_display_id: string }[]
     await db.query(
       `DELETE FROM vector_layer_displays WHERE vector_layer_id = $1 AND display_property_value IS NULL`,
       [vectorLayer.vector_layer_id],
@@ -173,16 +189,18 @@ export const upsertVectorLayerDisplaysForVectorLayer = async ({
     for (const listValue of listValues) {
       const res = await db.query(
         `SELECT * FROM vector_layer_displays WHERE vector_layer_id = $1 AND display_property_value = $2`,
-        [vectorLayer.vector_layer_id, listValue.value],
+        [vectorLayer.vector_layer_id, (listValue as Record<string, any>).value],
       )
-      const existingVectorLayerDisplay: VectorLayerDisplays | undefined =
-        res?.rows?.[0]
+      const existingVectorLayerDisplay = res?.rows?.[0] as
+        | VectorLayerDisplays
+        | undefined
       // leave existing VLD unchanged
       if (existingVectorLayerDisplay) return
 
       await createVectorLayerDisplay({
         vectorLayerId: vectorLayer.vector_layer_id,
-        displayPropertyValue: listValue.value,
+        displayPropertyValue: (listValue as Record<string, any>)
+          .value as string | null,
       })
     }
     return
@@ -255,11 +273,11 @@ export const upsertVectorLayerDisplaysForVectorLayer = async ({
   // SOLUTION: Use the properties array to check if the field is in there? If not, query the table directly
   // ISSUE 2: How to query by properties in the data property? Depends on the db and library used.
   // SOLUTION: Either use raw sql
-  let tableRows
-  const sql = sqlByTable[table]
+  let tableRows: Record<string, unknown>[] | undefined
+  const sql = sqlByTable[table!]
   try {
     const res = await db.query(sql)
-    tableRows = res?.rows
+    tableRows = res?.rows as Record<string, unknown>[]
   } catch (error) {
     console.error(
       'upsertVectorLayerDisplaysForVectorLayer, error fetching table rows',
@@ -272,19 +290,20 @@ export const upsertVectorLayerDisplaysForVectorLayer = async ({
   }
   const distinctValues = tableRows?.map((row) => row?.[displayByProperty])
 
-  for (const value of distinctValues) {
+  for (const value of distinctValues ?? []) {
     const res = await db.query(
       `SELECT * FROM vector_layer_displays WHERE vector_layer_id = $1 AND display_property_value = $2`,
       [vectorLayer.vector_layer_id, value ?? null],
     )
-    const existingVectorLayerDisplay: VectorLayerDisplays | undefined =
-      res?.rows?.[0]
+    const existingVectorLayerDisplay = res?.rows?.[0] as
+      | VectorLayerDisplays
+      | undefined
     // leave existing VLD unchanged
     if (existingVectorLayerDisplay) continue
 
     await createVectorLayerDisplay({
       vectorLayerId: vectorLayer.vector_layer_id,
-      displayPropertyValue: value,
+      displayPropertyValue: value as string | null,
     })
   }
 

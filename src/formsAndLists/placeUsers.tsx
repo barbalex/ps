@@ -14,9 +14,9 @@ export const PlaceUsers = ({ hideHeader = false }) => {
   const usersBaseUrl = `/data/projects/${projectId}/subprojects/${subprojectId}/places/${placeId}${placeId2 ? `/places/${placeId2}` : ''}/users`;
 
   const { loading, navData, isFiltered } = usePlaceUsersNavData({
-    projectId,
-    subprojectId,
-    placeId,
+    projectId: projectId!,
+    subprojectId: subprojectId!,
+    placeId: placeId!,
     placeId2,
   });
   const { navs, label, nameSingular } = navData;
@@ -35,8 +35,8 @@ export const PlaceUsers = ({ hideHeader = false }) => {
             <AddProjectUserButton
               scope={{
                 kind: 'place',
-                projectId,
-                placeId: placeId2 ?? placeId,
+                projectId: projectId!,
+                placeId: placeId2 ?? placeId!,
               }}
               onUserCreated={onUserCreated}
             />

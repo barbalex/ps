@@ -5,13 +5,31 @@ import { pointToLineDistance } from '@turf/point-to-line-distance'
 import { distance } from '@turf/distance'
 import { buffer } from '@turf/buffer'
 import { point, points } from '@turf/helpers'
+import type { AllGeoJSON } from '@turf/helpers'
+import type { Map, LatLng } from 'leaflet'
+import type {
+  Feature,
+  FeatureCollection,
+  Geometry,
+  LineString,
+  Point,
+  Polygon,
+} from 'geojson'
 
 import {
   addOperationAtom,
   store,
   pgliteDbAtom,
 } from '../../../../store.ts'
+import type { PlacesToAssignObservationTo } from '../../../../store.ts'
 import { resetObservationMarkerPosition } from './observationMarkers.ts'
+
+// Row of the places query with the geometry serialized as GeoJSON
+type PlaceRow = {
+  place_id: string
+  label: string | null
+  geometry: Geometry
+}
 
 export const assignToNearestDroppable = async ({
   latLng,
@@ -20,15 +38,22 @@ export const assignToNearestDroppable = async ({
   droppableLayers,
   confirmAssigningToSingleTarget,
   setPlacesToAssignObservationTo,
+}: {
+  latLng: LatLng
+  observationId: string
+  map: Map
+  droppableLayers: string[]
+  confirmAssigningToSingleTarget: boolean
+  setPlacesToAssignObservationTo: (value: PlacesToAssignObservationTo) => void
 }) => {
-  const db = store.get(pgliteDbAtom)
-  let latLngPoint
+  const db = store.get(pgliteDbAtom)!
+  let latLngPoint: Feature<Point> | undefined
   try {
     latLngPoint = point([latLng.lng, latLng.lat])
   } catch (error) {
     console.log('hello assignToNearestDroppable', { error })
   }
-  let latLngPoints
+  let latLngPoints: FeatureCollection<Point> | undefined
   try {
     latLngPoints = points([[latLng.lng, latLng.lat]])
   } catch (error) {
@@ -55,7 +80,7 @@ export const assignToNearestDroppable = async ({
   const placesRes = await db.query(
     `SELECT *, ST_AsGeoJSON(geometry)::json as geometry FROM places WHERE ${whereClause}`,
   )
-  const places = placesRes?.rows ?? []
+  const places = (placesRes?.rows ?? []) as PlaceRow[]
 
   // 2. get the nearest feature
 
@@ -64,7 +89,7 @@ export const assignToNearestDroppable = async ({
 
   // 2.2 find out if the latLng is inside a feature: https://turfjs.org/docs/#pointsWithinPolygon
   //     Because of featureCollection, use the convex hull: https://turfjs.org/docs/#convex
-  const idsOfPlacesContainingLatLng = []
+  const idsOfPlacesContainingLatLng: string[] = []
   for (const place of places) {
     // console.log(
     //   'hello assignToNearestDroppable distance 1, place label:',
@@ -78,24 +103,27 @@ export const assignToNearestDroppable = async ({
     // so buffer the geometry by a small value first
     let bufferedGeometry
     try {
-      bufferedGeometry = buffer(place.geometry, 0.000001)
+      bufferedGeometry = buffer(place.geometry, 0.000001) as AllGeoJSON
     } catch (error) {
       console.log('hello assignToNearestDroppable 3', { error })
     }
     let convexedGeometry
     try {
-      convexedGeometry = convex(bufferedGeometry)
+      convexedGeometry = convex(bufferedGeometry as AllGeoJSON)
     } catch (error) {
       console.log('hello assignToNearestDroppable 5', { error })
     }
     let pointsWithin
     try {
-      pointsWithin = pointsWithinPolygon(latLngPoints, convexedGeometry)
+      pointsWithin = pointsWithinPolygon(
+        latLngPoints!,
+        convexedGeometry as Feature<Polygon>,
+      )
     } catch (error) {
       // an error occurs if geometry is not polygon, so ignore
       console.log('hello assignToNearestDroppable 6', { error })
     }
-    const isInside = pointsWithin?.features?.length > 0
+    const isInside = (pointsWithin?.features?.length ?? 0) > 0
     // if isInside, assign, then return
     if (!isInside) continue
     idsOfPlacesContainingLatLng.push(place.place_id)
@@ -121,30 +149,33 @@ export const assignToNearestDroppable = async ({
 
     let bufferedGeometry
     try {
-      bufferedGeometry = buffer(place.geometry, 0.000001)
+      bufferedGeometry = buffer(place.geometry, 0.000001) as AllGeoJSON
     } catch (error) {
       console.log('hello assignToNearestDroppable 8', { error })
     }
     let convexedGeometry
     try {
-      convexedGeometry = convex(bufferedGeometry)
+      convexedGeometry = convex(bufferedGeometry as AllGeoJSON)
     } catch (error) {
       console.log('hello assignToNearestDroppable 10', { error })
     }
     let hullLine
     try {
-      hullLine = polygonToLine(convexedGeometry)
+      hullLine = polygonToLine(convexedGeometry as Feature<Polygon>)
     } catch (error) {
       console.log('hello assignToNearestDroppable distance 12', { error })
     }
     let distance
     try {
-      distance = pointToLineDistance(latLngPoint, hullLine)
+      distance = pointToLineDistance(
+        latLngPoint!,
+        hullLine as Feature<LineString>,
+      )
     } catch (error) {
       console.log('hello assignToNearestDroppable distance 14', { error })
     }
     return { place_id: place.place_id, distance }
-  })
+  }) as { place_id: string; distance: number }[]
   // get width of map in kilometres
   const mapBounds = map.getBounds()
   const mapNorthEast = mapBounds.getNorthEast()
@@ -181,7 +212,9 @@ export const assignToNearestDroppable = async ({
     `SELECT place_id FROM observations WHERE observation_id = $1`,
     [observationId],
   )
-  const currentPlaceId = observationRes?.rows?.[0]?.place_id
+  const currentPlaceId = (observationRes?.rows?.[0] as
+    | { place_id: string | null }
+    | undefined)?.place_id as string | null
 
   if (!placeIdsWithMinDistancesSortedByDistance.length) {
     // Show dialog to inform user no place found within 20px
@@ -211,7 +244,7 @@ export const assignToNearestDroppable = async ({
       `SELECT * FROM observations WHERE observation_id = $1`,
       [observationId],
     )
-    const prev = observationRes?.rows?.[0] ?? {}
+    const prev = (observationRes?.rows?.[0] ?? {}) as Record<string, unknown>
     store.set(addOperationAtom, {
       table: 'observations',
       rowIdName: 'observation_id',
@@ -233,7 +266,8 @@ export const assignToNearestDroppable = async ({
     latLng,
     places: placeIdsWithMinDistancesSortedByDistance.map((p) => ({
       ...p,
-      label: places.find((place) => place.place_id === p.place_id)?.label,
+      label: places.find((place) => place.place_id === p.place_id)
+        ?.label as string | null,
     })),
     current_place_id: currentPlaceId,
   }

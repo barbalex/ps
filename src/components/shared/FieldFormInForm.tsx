@@ -17,9 +17,10 @@ import { useIntl } from 'react-intl'
 
 import { FieldFormFetchingOwnData } from '../../formsAndLists/field/FormFetchingOwnData.tsx'
 import { addOperationAtom } from '../../store.ts'
+import type Fields from '../../models/public/Fields.ts'
 import styles from './FieldFormInForm.module.css'
 
-export const FieldFormInForm = ({ field }) => {
+export const FieldFormInForm = ({ field }: { field: Fields }) => {
   const navigate = useNavigate()
   const db = usePGlite()
   const addOperation = useSetAtom(addOperationAtom)
@@ -34,11 +35,11 @@ export const FieldFormInForm = ({ field }) => {
       operation: 'delete',
       prev: { ...field },
     })
-    navigate({ search: { editingField: undefined } })
+    navigate({ search: { editingField: undefined } as never })
   }
 
   const onClickStopEditing = () =>
-    navigate({ search: { editingField: undefined } })
+    navigate({ search: { editingField: undefined } as never })
 
   const fieldLabel = field.field_label ?? field.name ?? ''
 
@@ -68,7 +69,11 @@ export const FieldFormInForm = ({ field }) => {
           />
         </div>
       </div>
-      <FieldFormFetchingOwnData fieldId={field.field_id} isInForm={true} />
+      <FieldFormFetchingOwnData
+        {...({ fieldId: field.field_id, isInForm: true } as React.ComponentProps<
+          typeof FieldFormFetchingOwnData
+        >)}
+      />
     </div>
   )
 }

@@ -35,14 +35,14 @@ export const FileForm = ({
 
   const content = (
     <div className="form-container">
-      {(row.mimetype.includes('image') || row.mimetype.includes('pdf')) &&
+      {(row.mimetype?.includes('image') || row.mimetype?.includes('pdf')) &&
         row.url &&
         width && (
           <img
             src={`${row.url}-/resize/${Math.floor(
               width,
             )}x/-/format/auto/-/quality/smart/`}
-            alt={row.name}
+            alt={row.name ?? undefined}
           />
         )}
       <TextFieldInactive
@@ -74,8 +74,8 @@ export const FileForm = ({
         table="files"
         idField="file_id"
         id={row.file_id}
-        data={row.data ?? {}}
-        from={from}
+        data={(row.data ?? {}) as Record<string, unknown>}
+        from={from!}
       />
     </div>
   )
@@ -89,8 +89,8 @@ export const FileForm = ({
   )
 }
 
-export const File = ({ from }) => {
-  const { fileId } = useParams({ from })
+export const File = ({ from }: { from?: string }) => {
+  const { fileId } = useParams({ strict: false })
 
   const res = useLiveQuery(
     `
@@ -99,7 +99,7 @@ export const File = ({ from }) => {
     WHERE file_id = $1`,
     [fileId],
   )
-  const row: File | undefined = res?.rows?.[0]
+  const row: File | undefined = res?.rows?.[0] as File | undefined
 
   if (!res) return <Loading />
 
@@ -117,7 +117,7 @@ export const File = ({ from }) => {
         checkId={row.check_id}
       />
       <Header from={from} />
-      <FileForm row={row} from={from} withContainer={false} />
+      <FileForm row={row} from={from!} withContainer={false} />
     </div>
   )
 }

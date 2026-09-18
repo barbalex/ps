@@ -6,9 +6,21 @@ import { Label } from './Label.tsx'
 import './style.css'
 import styles from './index.module.css'
 
-export const Crumb = ({ navData, in: inProp }) => {
-  const outerContainerRef = useRef(null)
-  const labelRef = useRef(null)
+type NavData = {
+  id?: string
+  label?: string
+  labelShort?: string
+  ownUrl?: string
+}
+
+type Props = {
+  navData: NavData
+  in?: boolean
+}
+
+export const Crumb = ({ navData, in: inProp }: Props) => {
+  const outerContainerRef = useRef<HTMLDivElement>(null)
+  const labelRef = useRef<HTMLDivElement>(null)
 
   // don't add tooltip on mobile as longpress opens menu
   return (

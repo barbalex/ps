@@ -15,6 +15,10 @@ const {
   Tab,
   TabList,
 } = fluentUiReactComponents
+import type {
+  SelectTabData,
+  SelectTabEvent,
+} from '@fluentui/react-components'
 import { BsSquare } from 'react-icons/bs'
 import { MdDeleteOutline } from 'react-icons/md'
 import { useAtom, useSetAtom } from 'jotai'
@@ -32,18 +36,28 @@ import { VectorLayerEditing } from './Editing.tsx'
 import { LayerPresentationForm } from '../LayerPresentationForm.tsx'
 import { VectorLayerDisplays } from '../../../../../formsAndLists/vectorLayerDisplays.tsx'
 import { VectorLayerDisplay } from '../../../../../formsAndLists/vectorLayerDisplay/index.tsx'
+import type VectorLayers from '../../../../../models/public/VectorLayers.ts'
 import layerStyles from '../index.module.css'
 import styles from './VectorLayer.module.css'
 
-// type Props = {
-//   layer: VectorLayer
-//   isLast: number
-//   isOpen: boolean
-// }
+export type VectorLayerRow = VectorLayers & {
+  label: string
+  layer_presentations?: { layer_presentation_id: string; active: boolean }[]
+  // passed to LayerPresentationForm (undefined for layers without presentation)
+  layer_presentation_id?: string
+}
 
 type TabType = 'overall-displays' | 'feature-displays' | 'config'
 
-export const VectorLayer = ({ layer, isLast, isOpen }) => {
+export const VectorLayer = ({
+  layer,
+  isLast,
+  isOpen,
+}: {
+  layer: VectorLayerRow
+  isLast: boolean
+  isOpen: boolean
+}) => {
   const { formatMessage } = useIntl()
   const [designing] = useAtom(designingAtom)
   const addOperation = useSetAtom(addOperationAtom)
@@ -66,7 +80,7 @@ export const VectorLayer = ({ layer, isLast, isOpen }) => {
       await createLayerPresentation({
         vectorLayerId: layer.vector_layer_id,
         active: true,
-      })
+      } as unknown as Parameters<typeof createLayerPresentation>[0])
     } else {
       db.query(
         `UPDATE layer_presentations SET active = TRUE WHERE layer_presentation_id = $1`,
@@ -84,7 +98,8 @@ export const VectorLayer = ({ layer, isLast, isOpen }) => {
     }
   }
 
-  const onTabSelect = (event, data: SelectTabData) => setTab(data.value)
+  const onTabSelect = (_event: SelectTabEvent, data: SelectTabData) =>
+    setTab(data.value as TabType)
 
   const onClickFeatureDisplays = () => setVectorLayerDisplayId(null)
 

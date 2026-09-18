@@ -15,22 +15,19 @@ import { ImportDialog } from './taxa/ImportDialog.tsx'
 import { importTaxa } from './taxa/importTaxa.ts'
 import '../form.css'
 
-const from = '/data/projects/$projectId_/taxonomies/$taxonomyId_/taxa/'
 
 export const Taxa = () => {
-  const { projectId, taxonomyId } = useParams({ from })
+  const { projectId, taxonomyId } = useParams({ strict: false })
   const navigate = useNavigate()
   const { formatMessage } = useIntl()
   const [importDialogOpen, setImportDialogOpen] = useState(false)
 
   const { loading, navData } = useTaxaNavData({
-    projectId,
-    taxonomyId,
-  })
+    projectId: projectId!,    taxonomyId: taxonomyId!,  })
   const { navs, label, nameSingular } = navData
 
   const add = async () => {
-    const id = await createTaxon({ taxonomyId })
+    const id = await createTaxon({taxonomyId: taxonomyId! })
     if (!id) return
     navigate({
       to: id,
@@ -39,7 +36,7 @@ export const Taxa = () => {
   }
 
   const deleteAllTaxa = async () => {
-    const db = store.get(pgliteDbAtom)
+    const db = store.get(pgliteDbAtom)!
     await db.query(`DELETE FROM taxa WHERE taxonomy_id = $1`, [taxonomyId])
     store.set(addOperationAtom, {
       table: 'taxa',
@@ -49,7 +46,7 @@ export const Taxa = () => {
   }
 
   const onFileSelected = (file: File) => {
-    importTaxa({ file, taxonomyId })
+    importTaxa({ file, taxonomyId: taxonomyId! })
   }
 
   const importButton = (

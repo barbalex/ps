@@ -23,20 +23,17 @@ import {
 import type VectorLayerDisplays from '../../models/public/VectorLayerDisplays.ts'
 import type VectorLayerDisplaysHistory from '../../models/public/VectorLayerDisplaysHistory.ts'
 
-const from =
-  '/data/projects/$projectId_/vector-layers/$vectorLayerId_/displays/$vectorLayerDisplayId_/histories/$vectorLayerDisplayHistoryId'
-
 export const VectorLayerDisplayHistoryCompare = () => {
   const { formatMessage } = useIntl()
   const navigate = useNavigate()
   const { projectId, vectorLayerId, vectorLayerDisplayId, vectorLayerDisplayHistoryId } =
-    useParams({ from, strict: false })
+    useParams({ strict: false })
   const displayPath = `/data/projects/${projectId}/vector-layers/${vectorLayerId}/displays/${vectorLayerDisplayId}/vector-layer-display`
   const historyPath = `/data/projects/${projectId}/vector-layers/${vectorLayerId}/displays/${vectorLayerDisplayId}/histories`
 
   const addOperation = useSetAtom(addOperationAtom)
   const db = usePGlite()
-  const [validations, setValidations] = useState<Record<string, unknown>>({})
+  const [validations, setValidations] = useState<Record<string, { state: 'error'; message: string }>>({})
 
   const rowRes = useLiveQuery(
     `SELECT * FROM vector_layer_displays WHERE vector_layer_display_id = $1`,
@@ -44,9 +41,9 @@ export const VectorLayerDisplayHistoryCompare = () => {
   )
   const row = rowRes?.rows?.[0] as VectorLayerDisplays | undefined
 
-  const onChange = async (e, data) => {
+  const onChange = async (e: React.ChangeEvent<HTMLInputElement>, data?: any) => {
     const { name, value } = getValueFromChange(e, data)
-    if (!row || row[name] === value) return
+    if (!row || (row as Record<string, any>)[name] === value) return
 
     try {
       await db.query(
@@ -56,7 +53,7 @@ export const VectorLayerDisplayHistoryCompare = () => {
     } catch (error) {
       setValidations((prev) => ({
         ...prev,
-        [name]: { state: 'error', message: error.message },
+        [name]: { state: 'error', message: error instanceof Error ? error.message : String(error) },
       }))
       return
     }
@@ -96,7 +93,7 @@ export const VectorLayerDisplayHistoryCompare = () => {
         validations={
           validations as Record<
             string,
-            { state: string; message: string } | undefined
+            { state: 'error'; message: string } | undefined
           >
         }
       />
@@ -146,7 +143,7 @@ export const VectorLayerDisplayHistoryCompare = () => {
   const formatFieldValue = (
     field: string,
     history: VectorLayerDisplaysHistory,
-  ) => stringifyHistoryValue(history[field])
+  ) => stringifyHistoryValue((history as Record<string, any>)[field])
 
   return (
     <HistoryCompare<VectorLayerDisplaysHistory>

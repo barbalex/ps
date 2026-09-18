@@ -1,3 +1,4 @@
+/// <reference types="vite-plugin-svgr/client" />
 import { useParams, useNavigate } from '@tanstack/react-router'
 import TreasureMapLine from '../../images/treasure-map-line.svg?react'
 import TreasureMapLinePulsating from '../../images/treasure-map-line-pulsating.svg?react'
@@ -21,10 +22,19 @@ import {
   languageAtom,
 } from '../../store.ts'
 import type LayerPresentations from '../../models/public/LayerPresentations.ts'
+import type VectorLayers from '../../models/public/VectorLayers.ts'
 
 // type props
 
-export const Header = ({ autoFocusRef, row, from }) => {
+export const Header = ({
+  autoFocusRef,
+  row,
+  from,
+}: {
+  autoFocusRef?: React.RefObject<HTMLInputElement | null>
+  row: VectorLayers
+  from?: string
+}) => {
   const isForm =
     from ===
     '/data/projects/$projectId_/vector-layers/$vectorLayerId_/vector-layer'
@@ -32,7 +42,7 @@ export const Header = ({ autoFocusRef, row, from }) => {
   const [tabs, setTabs] = useAtom(tabsAtom)
   const [draggableLayers, setDraggableLayers] = useAtom(draggableLayersAtom)
   const addOperation = useSetAtom(addOperationAtom)
-  const { projectId, vectorLayerId } = useParams({ from })
+  const { projectId, vectorLayerId } = useParams({ strict: false })
   const navigate = useNavigate()
   const { formatMessage } = useIntl()
   const [language] = useAtom(languageAtom)
@@ -65,12 +75,12 @@ export const Header = ({ autoFocusRef, row, from }) => {
 
   // Stable identity key for drag/drop state (matches the layer's `name`)
   const layerNameForState = row.name
-  const isDraggable = draggableLayers.includes(layerNameForState)
+  const isDraggable = draggableLayers.includes(layerNameForState as string)
 
   const onClickToggleAssign = () => {
     const newDraggableLayers = isDraggable
-      ? draggableLayers?.filter((layer) => layer !== layerNameForState)
-      : [...draggableLayers, layerNameForState]
+      ? (draggableLayers?.filter((layer) => layer !== layerNameForState) ?? [])
+      : [...(draggableLayers ?? []), layerNameForState as string]
     setDraggableLayers(newDraggableLayers)
   }
 
@@ -85,16 +95,17 @@ export const Header = ({ autoFocusRef, row, from }) => {
       `SELECT * FROM layer_presentations WHERE vector_layer_id = $1`,
       [row.vector_layer_id],
     )
-    const layerPresentation: LayerPresentations | undefined = res?.rows?.[0]
-    if (!layerPresentation.active) {
+    const layerPresentation: LayerPresentations | undefined =
+      res?.rows?.[0] as LayerPresentations | undefined
+    if (!layerPresentation!.active) {
       db.query(
         `UPDATE layer_presentations SET active = true WHERE layer_presentation_id = $1`,
-        [layerPresentation.layer_presentation_id],
+        [layerPresentation!.layer_presentation_id],
       )
       addOperation({
         table: 'layer_presentations',
         rowIdName: 'layer_presentation_id',
-        rowId: layerPresentation.layer_presentation_id,
+        rowId: layerPresentation!.layer_presentation_id,
         operation: 'update',
         draft: { active: true },
         prev: { ...layerPresentation },
@@ -126,8 +137,7 @@ export const Header = ({ autoFocusRef, row, from }) => {
 
   const addRow = async () => {
     const vectorLayerId = await createVectorLayer({
-      projectId,
-      type: 'wfs',
+      projectId: projectId!,      type: 'wfs',
     })
     navigate({
       to: isForm
@@ -146,7 +156,7 @@ export const Header = ({ autoFocusRef, row, from }) => {
       await db.query(`DELETE FROM vector_layers WHERE vector_layer_id = $1`, [
         vectorLayerId,
       ])
-      navigate({ to: isForm ? `../..` : `..` })
+      navigate({ to: isForm ? ('../..' as '..') : '..' })
     } catch (error) {
       console.error('Error deleting vector layer:', error)
     }
@@ -158,7 +168,7 @@ export const Header = ({ autoFocusRef, row, from }) => {
         `SELECT vector_layer_id FROM vector_layers WHERE project_id = $1 order by name`,
         [projectId],
       )
-      const rows = res?.rows
+      const rows = res?.rows as { vector_layer_id: string }[]
       const len = rows.length
       const index = rows.findIndex(
         (p) => p.vector_layer_id === vectorLayerIdRef.current,
@@ -184,7 +194,7 @@ export const Header = ({ autoFocusRef, row, from }) => {
         `SELECT vector_layer_id FROM vector_layers WHERE project_id = $1 order by name`,
         [projectId],
       )
-      const rows = res?.rows
+      const rows = res?.rows as { vector_layer_id: string }[]
       const len = rows.length
       const index = rows.findIndex(
         (p) => p.vector_layer_id === vectorLayerIdRef.current,

@@ -8,6 +8,15 @@ import { removeChildNodes } from '../../../modules/tree/removeChildNodes.ts'
 import { addOpenNodes } from '../../../modules/tree/addOpenNodes.ts'
 import { treeOpenNodesAtom } from '../../../store.ts'
 
+type Props = {
+  projectId: string
+  subprojectId: string
+  placeId: string
+  placeId2?: string
+  nav: { id: string; label: string | null }
+  level: number
+}
+
 export const PlaceNode = ({
   projectId,
   subprojectId,
@@ -15,7 +24,7 @@ export const PlaceNode = ({
   placeId2,
   nav,
   level,
-}) => {
+}: Props) => {
   const [openNodes] = useAtom(treeOpenNodesAtom)
   const location = useLocation()
   const navigate = useNavigate()

@@ -1,6 +1,10 @@
 import { useParams } from '@tanstack/react-router'
 import * as fluentUiReactComponents from '@fluentui/react-components'
 const { Button, Accordion } = fluentUiReactComponents
+import type {
+  AccordionToggleData,
+  AccordionToggleEvent,
+} from '@fluentui/react-components'
 import { FaPlus } from 'react-icons/fa'
 import { useAtom, atom } from 'jotai'
 import { usePGlite, useLiveQuery } from '@electric-sql/pglite-react'
@@ -9,12 +13,12 @@ import { ErrorBoundary } from '../../../../shared/ErrorBoundary.tsx'
 import { WmsLayer } from './WmsLayer.tsx'
 import { createWmsLayer } from '../../../../../modules/createRows.ts'
 import layerStyles from '../index.module.css'
-import type WMSLayers from '../../../../models/public/WMSLayers.ts'
-import type LayerPresentations from '../../../../models/public/LayerPresentations.ts'
+import type WmsLayersModel from '../../../../../models/public/WmsLayers.ts'
+import type LayerPresentations from '../../../../../models/public/LayerPresentations.ts'
 
 // what accordion items are open
 // needs to be controlled to prevent opening when layer is deactivated
-const openItemsAtom = atom([])
+const openItemsAtom = atom<string[]>([])
 
 export const WmsLayers = () => {
   const [openItems, setOpenItems] = useAtom(openItemsAtom)
@@ -26,17 +30,17 @@ export const WmsLayers = () => {
   // 1. list all layers (own, wms, vector)
 
   // TODO: optimize query
-  const resWmsLayers = useLiveQuery(
+  const resWmsLayers = useLiveQuery<WmsLayersModel>(
     `
     SELECT * FROM wms_layers
     WHERE project_id = $1
     ORDER BY label`,
     [projectId],
   )
-  const wmsLayers: WMSLayers[] = resWmsLayers?.rows ?? []
+  const wmsLayers: WmsLayersModel[] = resWmsLayers?.rows ?? []
 
   // fetch all layer_presentations for the vector layers
-  const resLP = useLiveQuery(
+  const resLP = useLiveQuery<LayerPresentations>(
     `
     SELECT lp.* 
     FROM layer_presentations lp
@@ -58,7 +62,10 @@ export const WmsLayers = () => {
     setOpenItems((prev) => [...prev, wmsLayerId])
   }
 
-  const onToggleItem = (event, { value: wmsLayerId, openItems }) => {
+  const onToggleItem = (
+    _event: AccordionToggleEvent,
+    { value: wmsLayerId, openItems }: AccordionToggleData<string>,
+  ) => {
     // use setTimeout to let the child checkbox set the layers active status
     setTimeout(async () => {
       // fetch layerPresentation's active status
@@ -66,8 +73,9 @@ export const WmsLayers = () => {
         `SELECT active FROM layer_presentations WHERE wms_layer_id = $1`,
         [wmsLayerId],
       )
-      const isActive: LayerPresentations['active'] | undefined =
-        res?.rows?.[0]?.active
+      const isActive: LayerPresentations['active'] | undefined = (
+        res?.rows?.[0] as LayerPresentations | undefined
+      )?.active
       if (isActive) {
         // if not active, remove this item
         const newOpenItems = openItems.filter((id) => id !== wmsLayerId)

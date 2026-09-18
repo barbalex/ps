@@ -12,17 +12,22 @@ import { Options } from './options.tsx'
 import { addOperationAtom, postgrestClientAtom } from '../../../store.ts'
 import type Crs from '../../../models/public/Crs.ts'
 
-const from = '/data/projects/$projectId_/crs/$projectCrsId/'
 
-export const ComboboxFilteringOptions = ({ autoFocus, ref }) => {
+export const ComboboxFilteringOptions = ({
+  autoFocus,
+  ref,
+}: {
+  autoFocus?: boolean
+  ref?: React.Ref<HTMLInputElement>
+}) => {
   const db = usePGlite()
-  const { projectCrsId } = useParams({ from })
+  const { projectCrsId } = useParams({ strict: false })
   const addOperation = useSetAtom(addOperationAtom)
   const postgrestClient = useAtomValue(postgrestClientAtom)
   const { formatMessage } = useIntl()
 
   const [filter, setFilter] = useState('')
-  const [crs, setCrs] = useState([])
+  const [crs, setCrs] = useState<Crs[]>([])
 
   const fetchData = useCallback(async () => {
     if (!postgrestClient) return
@@ -31,7 +36,7 @@ export const ComboboxFilteringOptions = ({ autoFocus, ref }) => {
       .select('crs_id, code, name, proj4')
       .or(`code.ilike.%${filter}%,name.ilike.%${filter}%`)
       .limit(100)
-    const crs: Crs[] = res?.data ?? []
+    const crs = (res?.data ?? []) as Crs[]
     setCrs(crs)
   }, [postgrestClient, filter])
 
@@ -44,9 +49,13 @@ export const ComboboxFilteringOptions = ({ autoFocus, ref }) => {
     fetchDataDebounced()
   }, [fetchDataDebounced, filter])
 
-  const onInput = (event) => setFilter(event.target.value)
+  const onInput: React.ComponentProps<typeof Combobox>['onInput'] = (event) =>
+    setFilter((event.target as HTMLInputElement).value)
 
-  const onOptionSelect = async (e, data) => {
+  const onOptionSelect = async (
+    _e: unknown,
+    data: { optionValue: number | string | undefined },
+  ) => {
     if (data.optionValue === 0) return setFilter('') // No options found
     // find the option in the crsData
     const selectedOption = crs.find((o) => o.code === data.optionValue)

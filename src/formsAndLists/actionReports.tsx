@@ -8,23 +8,18 @@ import { Loading } from '../components/shared/Loading.tsx'
 import { useActionReportsNavData } from '../modules/useActionReportsNavData.ts'
 import '../form.css'
 
-export const ActionReports = ({ from }) => {
-  const { projectId, subprojectId, placeId, placeId2 } = useParams({ from })
+export const ActionReports = ({}: { from: string }) => {
+  const { projectId, subprojectId, placeId, placeId2 } = useParams({ strict: false })
   const navigate = useNavigate()
 
   const { loading, navData, isFiltered } = useActionReportsNavData({
-    projectId,
-    subprojectId,
-    placeId,
-    placeId2,
+    projectId: projectId!,    subprojectId: subprojectId!,    placeId: placeId!,    placeId2,
   })
   const { navs, label, nameSingular } = navData
 
   const add = async () => {
     const id = await createActionReport({
-      projectId,
-      placeId: placeId2 ?? placeId,
-    })
+      projectId: projectId!,      placeId: (placeId2 ?? placeId)!,    })
     if (!id) return
     navigate({
       to: id,
@@ -44,9 +39,11 @@ export const ActionReports = ({ from }) => {
         {loading ? (
           <Loading />
         ) : (
-          navs.map(({ id, label }) => (
-            <Row key={id} to={id} label={label ?? id} />
-          ))
+          (navs as { id: string; label: string | null }[]).map(
+            ({ id, label }) => (
+              <Row key={id} to={id} label={label ?? id} />
+            ),
+          )
         )}
       </div>
     </div>

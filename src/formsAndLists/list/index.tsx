@@ -14,21 +14,26 @@ import type Lists from '../../models/public/Lists.ts'
 
 import '../../form.css'
 
-export const List = ({ from }) => {
-  const { listId } = useParams({ from })
+export const List = ({ from }: { from: string }) => {
+  const { listId } = useParams({ strict: false })
   const autoFocusRef = useRef<HTMLInputElement>(null)
   const db = usePGlite()
   const addOperation = useSetAtom(addOperationAtom)
-  const [validations, setValidations] = useState({})
+  const [validations, setValidations] = useState<
+    Record<string, { state: 'error'; message: string }>
+  >({})
   const { formatMessage } = useIntl()
 
   const res = useLiveQuery(`SELECT * FROM lists WHERE list_id = $1`, [listId])
-  const row: Lists | undefined = res?.rows?.[0]
+  const row: Lists | undefined = res?.rows?.[0] as Lists | undefined
 
-  const onChange = async (e, data) => {
+  const onChange = async (
+    e: React.ChangeEvent<HTMLInputElement>,
+    data: Parameters<typeof getValueFromChange>[1],
+  ) => {
     const { name, value } = getValueFromChange(e, data)
     // only change if value has changed: maybe only focus entered and left
-    if (row[name] === value) return
+    if ((row as Record<string, any>)[name] === value) return
 
     try {
       await db.query(`UPDATE lists SET ${name} = $1 WHERE list_id = $2`, [
@@ -38,7 +43,7 @@ export const List = ({ from }) => {
     } catch (error) {
       setValidations((prev) => ({
         ...prev,
-        [name]: { state: 'error', message: error.message },
+        [name]: { state: 'error', message: error instanceof Error ? error.message : String(error) },
       }))
       return
     }

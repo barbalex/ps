@@ -4,7 +4,14 @@ import { useState, useEffect } from 'react'
 import { AnyFetcher } from './AnyFetcher.tsx'
 
 // pass on TransitionGroup's props
-export const AnyFetcherImporter = ({ fetcherName, params, ...other }) => {
+export const AnyFetcherImporter = ({
+  fetcherName,
+  params,
+  ...other
+}: {
+  fetcherName: string
+  params: Record<string, string>
+}) => {
   const [fetcherModule, setFetcherModule] = useState(null)
 
   useEffect(() => {

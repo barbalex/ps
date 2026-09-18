@@ -5,7 +5,10 @@ import { observeOperations } from '../modules/observeOperations.ts'
 import { operationsRetryTickAtom, store } from '../store.ts'
 
 export const OperationsObserver = () => {
-  const unobserveRef = useRef({ current: null as null | (() => void) })
+  // typed as a plain cleanup ref; the initial value is kept as-is
+  const unobserveRef = useRef({ current: null as null | (() => void) }) as unknown as {
+    current: null | (() => void)
+  }
 
   useBeforeunload(() => {
     // console.log('OperationsObserver stopping observation of operations')

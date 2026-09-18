@@ -45,7 +45,10 @@ export const useSubprojectReportsNavData = ({
   const isOpen = openNodes.some((array) => isEqual(array, ownArray))
 
   const [filter] = useAtom(subprojectReportsFilterAtom)
-  const filterString = filterStringFromFilter(filter)
+  const filterString = filterStringFromFilter(
+    filter as Record<string, unknown> & typeof filter,
+    '',
+  )
   const isFiltered = !!filterString
 
   const sql = isOpen
@@ -77,7 +80,7 @@ export const useSubprojectReportsNavData = ({
 
   const loading = res === undefined
 
-  const navs: NavDataOpen[] | NavDataClosed[] = res?.rows ?? []
+  const navs = (res?.rows ?? []) as NavDataOpen[] | NavDataClosed[]
   const countUnfiltered = navs[0]?.count_unfiltered ?? 0
   const countFiltered = navs[0]?.count_filtered ?? 0
 

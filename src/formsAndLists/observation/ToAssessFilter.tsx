@@ -15,8 +15,10 @@ export const ObservationToAssessFilter = ({ from }: Props) => (
       <TextField
         label="Raw data contains"
         name="data"
-        value={row.data ?? ''}
-        onChange={onChange}
+        value={(row.data as string) ?? ''}
+        onChange={
+          onChange as React.ComponentProps<typeof TextField>['onChange']
+        }
       />
     )}
   </Filter>

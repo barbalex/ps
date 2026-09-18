@@ -18,6 +18,8 @@ interface Props {
   from: string
 }
 
+type TagGroupProps = React.ComponentProps<typeof TagGroup>
+
 export const FieldList = ({
   name,
   label,
@@ -39,11 +41,11 @@ export const FieldList = ({
       ORDER BY table_name, label`,
     [projectId, fieldsTable],
   )
-  const fieldNames: { name: string }[] = res?.rows ?? []
+  const fieldNames = (res?.rows ?? []) as { name: string }[]
   const options = fieldNames.map(({ name }) => name)
   const unusedOptions = options.filter((o) => !valueArray.includes(o))
 
-  const removeItem = async (e, { value }) => {
+  const removeItem: TagGroupProps['onDismiss'] = async (_e, { value }) => {
     const idField = idFieldFromTable(table)
     const data = valueArray.filter((v) => v !== value)
     // TODO: test
@@ -51,7 +53,7 @@ export const FieldList = ({
       `SELECT * FROM ${table} WHERE ${idField} = $1`,
       [id],
     )
-    const prev = prevRes?.rows?.[0] || {}
+    const prev = (prevRes?.rows?.[0] || {}) as Record<string, unknown>
     db.query(
       `UPDATE ${table} SET data = jsonb_set(data, '{${name}}', $1) WHERE ${idField} = $2`,
       [data, id],
@@ -63,7 +65,7 @@ export const FieldList = ({
       operation: 'update',
       draft: {
         data: {
-          ...(prev.data || {}),
+          ...((prev.data as Record<string, unknown>) || {}),
           [name]: valueArray.filter((v) => v !== value),
         },
       },
@@ -71,7 +73,13 @@ export const FieldList = ({
     })
   }
 
-  const onChange = async ({ value, previousValue }) => {
+  const onChange = async ({
+    value,
+    previousValue,
+  }: {
+    value?: string
+    previousValue?: string
+  }) => {
     let val = [...valueArray]
     if (!value) {
       // need to remove the key from the json object
@@ -90,7 +98,7 @@ export const FieldList = ({
       `SELECT * FROM ${table} WHERE ${idField} = $1`,
       [id],
     )
-    const prev = prevRes?.rows?.[0] ?? {}
+    const prev = (prevRes?.rows?.[0] ?? {}) as Record<string, unknown>
     db.query(
       `UPDATE ${table} SET data = jsonb_set(data, '{${name}}', $1) WHERE ${idField} = $2`,
       [val, id],
@@ -102,7 +110,7 @@ export const FieldList = ({
       operation: 'update',
       draft: {
         data: {
-          ...(prev.data || {}),
+          ...((prev.data as Record<string, unknown>) || {}),
           [name]: val,
         },
       },

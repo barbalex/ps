@@ -31,12 +31,14 @@ const {
 
 type Row = PlaceRoles & { email: string | null; project_id: string | null }
 
-export const PlaceUser = ({ from }) => {
-  const { placeUserId } = useParams({ from })
+export const PlaceUser = ({ from }: { from: string }) => {
+  const { placeUserId } = useParams({ strict: false })
   const addOperation = useSetAtom(addOperationAtom)
   const { formatMessage } = useIntl()
 
-  const [validations, setValidations] = useState({})
+  const [validations, setValidations] = useState<
+    Record<string, { state: 'error'; message: string }>
+  >({})
   const [pendingRole, setPendingRole] = useState<string | null>(null)
 
   const autoFocusRef = useRef<HTMLInputElement>(null)
@@ -52,7 +54,7 @@ export const PlaceUser = ({ from }) => {
      WHERE plr.place_role_id = $1`,
     [placeUserId],
   )
-  const row: Row | undefined = res?.rows?.[0]
+  const row: Row | undefined = res?.rows?.[0] as Row | undefined
 
   // the project owner's own directory row: its role is maintained by triggers
   const ownerRes = useLiveQuery(
@@ -61,10 +63,13 @@ export const PlaceUser = ({ from }) => {
   )
   const isOwner = (ownerRes?.rows?.length ?? 0) > 0
 
-  const onChange = async (e, data) => {
+  const onChange = async (
+    e: React.ChangeEvent<HTMLInputElement>,
+    data: Parameters<typeof getValueFromChange>[1],
+  ) => {
     const { name, value } = getValueFromChange(e, data)
     // only change if value has changed: maybe only focus entered and left
-    if (row[name] === value) return
+    if ((row as Record<string, any>)[name] === value) return
 
     if (
       name === 'role' &&
@@ -82,7 +87,7 @@ export const PlaceUser = ({ from }) => {
     } catch (error) {
       setValidations((prev) => ({
         ...prev,
-        [name]: { state: 'error', message: error.message },
+        [name]: { state: 'error', message: error instanceof Error ? error.message : String(error) },
       }))
       return
     }
@@ -111,7 +116,7 @@ export const PlaceUser = ({ from }) => {
     } catch (error) {
       setValidations((prev) => ({
         ...prev,
-        role: { state: 'error', message: error.message },
+        role: { state: 'error', message: error instanceof Error ? error.message : String(error) },
       }))
       return
     }
@@ -119,7 +124,7 @@ export const PlaceUser = ({ from }) => {
       const { role: _, ...rest } = prev
       return rest
     })
-    if (!row.project_user_id) return
+    if (!row?.project_user_id) return
     addOperation({
       table: 'place_roles',
       rowIdName: 'place_role_id',

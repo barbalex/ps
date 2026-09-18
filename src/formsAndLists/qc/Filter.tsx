@@ -7,8 +7,6 @@ type Props = {
 
 export const QcFilter = ({ from }: Props) => (
   <Filter from={from}>
-    {({ row, onChange }) => (
-      <QcForm row={row} onChange={onChange} from={from} />
-    )}
+    {({ row, onChange }) => <QcForm row={row} onChange={onChange} />}
   </Filter>
 )

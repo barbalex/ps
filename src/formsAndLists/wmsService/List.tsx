@@ -6,10 +6,13 @@ import { Row } from '../../components/shared/Row.tsx'
 import { Header } from './Header.tsx'
 import { NotFound } from '../../components/NotFound.tsx'
 
-export const WmsServiceList = ({ from }) => {
-  const { projectId, wmsServiceId } = useParams({ from })
-  const { loading, navData } = useWmsServiceNavData({ projectId, wmsServiceId })
-  const { navs, label, notFound } = navData
+export const WmsServiceList = ({ from }: { from: string }) => {
+  const { projectId, wmsServiceId } = useParams({ strict: false })
+  const { loading, navData } = useWmsServiceNavData({
+    projectId: projectId!,
+    wmsServiceId: wmsServiceId!,
+  })
+ const { navs, label, notFound } = navData
 
   if (notFound) {
     return (

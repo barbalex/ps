@@ -13,12 +13,17 @@ type NavData = {
   layers_count_unfiltered: number
 }
 
-export const useWmsServiceNavData = ({ projectId, wmsServiceId }) => {
+type Props = {
+  projectId: string
+  wmsServiceId: string
+}
+
+export const useWmsServiceNavData = ({ projectId, wmsServiceId }: Props) => {
   const [openNodes] = useAtom(treeOpenNodesAtom)
   const location = useLocation()
   const { formatMessage } = useIntl()
 
-  const res = useLiveQuery(
+  const res = useLiveQuery<NavData>(
     `
     WITH
       layers_count AS (SELECT COUNT(*) AS count FROM wms_service_layers WHERE wms_service_id = '${wmsServiceId}')
@@ -73,6 +78,7 @@ export const useWmsServiceNavData = ({ projectId, wmsServiceId }) => {
         label: buildNavLabel({
           loading,
           countFiltered: nav?.layers_count_unfiltered ?? 0,
+          countUnfiltered: nav?.layers_count_unfiltered ?? 0,
           namePlural: formatMessage({ id: 'SmuSBE', defaultMessage: 'Ebenen' }),
         }),
       },

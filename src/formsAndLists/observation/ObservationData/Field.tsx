@@ -6,13 +6,27 @@ import styles from './Field.module.css'
 
 const ItemTypes = { CARD: 'card' }
 
-export const Field = ({ label, value, index, moveField }) => {
-  const ref = useRef(null)
-  const [{ handlerId }, drop] = useDrop({
+export const Field = ({
+  label,
+  value,
+  index,
+  moveField,
+}: {
+  label: string
+  value: unknown
+  index: number
+  moveField: (dragIndex: number, hoverIndex: number) => void
+}) => {
+  const ref = useRef<HTMLDivElement>(null)
+  const [{ handlerId }, drop] = useDrop<
+    { index: number },
+    unknown,
+    { handlerId: string | number | null }
+  >({
     accept: ItemTypes.CARD,
     collect(monitor) {
       return {
-        handlerId: monitor.getHandlerId(),
+        handlerId: monitor.getHandlerId() as string | number | null,
       }
     },
     hover(item, monitor) {
@@ -31,7 +45,7 @@ export const Field = ({ label, value, index, moveField }) => {
       // Determine mouse position
       const clientOffset = monitor.getClientOffset()
       // Get pixels to the top
-      const hoverClientY = clientOffset.y - hoverBoundingRect.top
+      const hoverClientY = clientOffset!.y - hoverBoundingRect.top
       // Only perform the move when the mouse has crossed half of the items height
       // When dragging downwards, only move when the cursor is below 50%
       // When dragging upwards, only move when the cursor is above 50%
@@ -69,7 +83,9 @@ export const Field = ({ label, value, index, moveField }) => {
     >
       <div className={styles.label}>{label}</div>
       <div className={styles.value}>
-        <Linkify options={{ target: '_blank' }}>{value}</Linkify>
+        <Linkify options={{ target: '_blank' }}>
+          {value as React.ReactNode}
+        </Linkify>
       </div>
     </div>
   )

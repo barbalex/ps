@@ -2,17 +2,27 @@ import { uuidv7 } from '@kripod/uuidv7'
 
 import { addOperationAtom, store, pgliteDbAtom, userIdAtom } from '../store.ts'
 import { projectTypeNames } from './projectTypeNames.ts'
+import type WfsServices from '../models/public/WfsServices.ts'
 
 // TODO: run insert query?
-const getPresetData = async ({ projectId = null, table }) => {
-  const db = store.get(pgliteDbAtom)
-  const fieldsWithPresetsResult = await db.query(
+const getPresetData = async ({
+  projectId = null,
+  table,
+}: {
+  projectId?: string | null
+  table: string
+}) => {
+  const db = store.get(pgliteDbAtom)!
+  const fieldsWithPresetsResult = await db.query<{
+    name: string
+    preset: unknown
+  }>(
     `select * from fields where project_id = $1 and table_name = $2 and preset is not null`,
     [projectId, table],
   )
   const fieldsWithPresets = fieldsWithPresetsResult?.rows ?? []
   // TODO: include field_type to set correct data type
-  const data = {}
+  const data: Record<string, unknown> = {}
   fieldsWithPresets.forEach((field) => {
     data[field.name] = field.preset
   })
@@ -21,12 +31,12 @@ const getPresetData = async ({ projectId = null, table }) => {
 }
 
 export const createProject = async (account_id?: string) => {
-  const db = store.get(pgliteDbAtom)
+  const db = store.get(pgliteDbAtom)!
   const userId = store.get(userIdAtom)
 
   let resolvedAccountId = account_id
   if (!resolvedAccountId) {
-    const accountRes = await db.query(
+    const accountRes = await db.query<{ account_id: string }>(
       `SELECT account_id FROM accounts WHERE user_id = $1 LIMIT 1`,
       [userId],
     )
@@ -89,8 +99,12 @@ export const createProject = async (account_id?: string) => {
   return project_id
 }
 
-export const createSubproject = async ({ projectId }) => {
-  const db = store.get(pgliteDbAtom)
+export const createSubproject = async ({
+  projectId,
+}: {
+  projectId: string
+}) => {
+  const db = store.get(pgliteDbAtom)!
   // find fields with preset values on the data column
   const presetData = await getPresetData({
     projectId,
@@ -136,8 +150,21 @@ export const createFile = async ({
   uuid = null,
   width = null,
   height = null,
+}: {
+  projectId?: string | null
+  subprojectId?: string | null
+  placeId?: string | null
+  actionId?: string | null
+  checkId?: string | null
+  name?: string | null
+  size?: number | null
+  mimetype?: string | null
+  url?: string | null
+  uuid?: string | null
+  width?: number | null
+  height?: number | null
 }) => {
-  const db = store.get(pgliteDbAtom)
+  const db = store.get(pgliteDbAtom)!
   // find fields with preset values on the data column
   const presetData = await getPresetData({ table: 'files' })
 
@@ -184,8 +211,13 @@ export const createPlace = async ({
   subprojectId,
   parentId,
   level,
+}: {
+  projectId: string
+  subprojectId: string
+  parentId: string | null
+  level: number
 }) => {
-  const db = store.get(pgliteDbAtom)
+  const db = store.get(pgliteDbAtom)!
   // find fields with preset values on the data column
   const presetData = await getPresetData({
     projectId,
@@ -223,7 +255,7 @@ export const createPlace = async ({
 
 export const createWidgetForField = async () => {
   const widget_for_field_id = uuidv7()
-  const db = store.get(pgliteDbAtom)
+  const db = store.get(pgliteDbAtom)!
   await db.query(
     `insert into widgets_for_fields (widget_for_field_id) values ($1)`,
     [widget_for_field_id],
@@ -240,7 +272,7 @@ export const createWidgetForField = async () => {
 
 export const createWidgetType = async () => {
   const widget_type_id = uuidv7()
-  const db = store.get(pgliteDbAtom)
+  const db = store.get(pgliteDbAtom)!
   await db.query(
     `insert into widget_types (widget_type_id, needs_list, sort) values ($1, $2, $3)`,
     [widget_type_id, false, 0],
@@ -257,7 +289,7 @@ export const createWidgetType = async () => {
 
 export const createFieldType = async () => {
   const field_type_id = uuidv7()
-  const db = store.get(pgliteDbAtom)
+  const db = store.get(pgliteDbAtom)!
   await db.query(
     `insert into field_types (field_type_id, sort) values ($1, $2) returning field_type_id`,
     [field_type_id, 0],
@@ -277,7 +309,7 @@ export const createAccount = async ({ userId }: { userId: string }) => {
     throw new Error('Cannot create account without userId')
   }
   const account_id = uuidv7()
-  const db = store.get(pgliteDbAtom)
+  const db = store.get(pgliteDbAtom)!
   await db.query(
     `insert into accounts (account_id, user_id, type) values ($1, $2, $3)`,
     [account_id, userId, 'free'],
@@ -299,7 +331,7 @@ export const createAccount = async ({ userId }: { userId: string }) => {
 // users creates the db row to ensure creating the app_state too
 export const createUser = async () => {
   const user_id = uuidv7()
-  const db = store.get(pgliteDbAtom)
+  const db = store.get(pgliteDbAtom)!
 
   await db.query(`INSERT INTO users (user_id) VALUES ($1)`, [user_id])
 
@@ -312,9 +344,13 @@ export const createUser = async () => {
   return user_id
 }
 
-export const createProjectCrs = async ({ projectId }) => {
+export const createProjectCrs = async ({
+  projectId,
+}: {
+  projectId: string
+}) => {
   const project_crs_id = uuidv7()
-  const db = store.get(pgliteDbAtom)
+  const db = store.get(pgliteDbAtom)!
   await db.query(
     `insert into project_crs (project_crs_id, project_id) values ($1, $2)`,
     [project_crs_id, projectId],
@@ -329,9 +365,9 @@ export const createProjectCrs = async ({ projectId }) => {
   return project_crs_id
 }
 
-export const createProjectQc = async ({ projectId }) => {
+export const createProjectQc = async ({ projectId }: { projectId: string }) => {
   const project_qc_id = uuidv7()
-  const db = store.get(pgliteDbAtom)
+  const db = store.get(pgliteDbAtom)!
   await db.query(
     `insert into project_qcs (project_qc_id, project_id) values ($1, $2)`,
     [project_qc_id, projectId],
@@ -351,8 +387,13 @@ export const createField = async ({
   accountId = null,
   table_name = null,
   level = null,
+}: {
+  projectId?: string | null
+  accountId?: string | null
+  table_name?: string | null
+  level?: number | null
 }) => {
-  const db = store.get(pgliteDbAtom)
+  const db = store.get(pgliteDbAtom)!
   const field_id = uuidv7()
   const resolvedTableName = accountId && !table_name ? 'projects' : table_name
   await db.query(
@@ -385,9 +426,13 @@ export const createField = async ({
   return field_id
 }
 
-export const createUnit = async ({ projectId }) => {
+export const createUnit = async ({
+  projectId,
+}: {
+  projectId: string
+}) => {
   const unit_id = uuidv7()
-  const db = store.get(pgliteDbAtom)
+  const db = store.get(pgliteDbAtom)!
   await db.query(
     `INSERT INTO units (unit_id, project_id, summable, sort, type) VALUES ($1, $2, $3, $4, $5)`,
     [unit_id, projectId, false, 0, 'integer'],
@@ -408,8 +453,14 @@ export const createUnit = async ({ projectId }) => {
   return unit_id
 }
 
-export const createList = async ({ projectId, name = null }) => {
-  const db = store.get(pgliteDbAtom)
+export const createList = async ({
+  projectId,
+  name = null,
+}: {
+  projectId: string
+  name?: string | null
+}) => {
+  const db = store.get(pgliteDbAtom)!
   // find fields with preset values on the data column
   const presetData = await getPresetData({ projectId, table: 'lists' })
 
@@ -441,8 +492,12 @@ export const createList = async ({ projectId, name = null }) => {
   return list_id
 }
 
-export const createTaxonomy = async ({ projectId }) => {
-  const db = store.get(pgliteDbAtom)
+export const createTaxonomy = async ({
+  projectId,
+}: {
+  projectId: string
+}) => {
+  const db = store.get(pgliteDbAtom)!
   // find fields with preset values on the data column
   const presetData = await getPresetData({
     projectId,
@@ -483,7 +538,7 @@ export const createProjectUser = async ({
   projectId: string
   email: string
 }) => {
-  const db = store.get(pgliteDbAtom)
+  const db = store.get(pgliteDbAtom)!
   const normalizedEmail = email.trim().toLowerCase()
   const project_user_id = uuidv7()
 
@@ -519,8 +574,12 @@ export const createProjectUser = async ({
   return project_user_id
 }
 
-export const createProjectReport = async ({ projectId }) => {
-  const db = store.get(pgliteDbAtom)
+export const createProjectReport = async ({
+  projectId,
+}: {
+  projectId: string
+}) => {
+  const db = store.get(pgliteDbAtom)!
   // find fields with preset values on the data column
   const presetData = await getPresetData({
     projectId,
@@ -554,8 +613,12 @@ export const createProjectReport = async ({ projectId }) => {
   return project_report_id
 }
 
-export const createPlaceLevel = async ({ project_id }) => {
-  const db = store.get(pgliteDbAtom)
+export const createPlaceLevel = async ({
+  project_id,
+}: {
+  project_id: string
+}) => {
+  const db = store.get(pgliteDbAtom)!
   const place_level_id = uuidv7()
   await db.query(
     `insert into place_levels (place_level_id, project_id, level, check_reports, check_report_quantities, check_report_quantities_in_report, action_reports, action_report_quantities, action_report_quantities_in_report, actions, action_quantities, action_quantities_in_action, checks, check_quantities, check_quantities_in_check, check_taxa, check_taxa_in_check, observations, place_users_in_place, place_files, place_files_in_place, action_files, check_files, check_files_in_check) values ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, $20, $21, $22, $23, $24)`,
@@ -621,8 +684,12 @@ export const createPlaceLevel = async ({ project_id }) => {
   return place_level_id
 }
 
-export const createTaxon = async ({ taxonomyId }) => {
-  const db = store.get(pgliteDbAtom)
+export const createTaxon = async ({
+  taxonomyId,
+}: {
+  taxonomyId: string
+}) => {
+  const db = store.get(pgliteDbAtom)!
   const taxon_id = uuidv7()
   await db.query(`insert into taxa (taxon_id, taxonomy_id) values ($1, $2)`, [
     taxon_id,
@@ -638,8 +705,8 @@ export const createTaxon = async ({ taxonomyId }) => {
   return taxon_id
 }
 
-export const createListValue = async ({ listId }) => {
-  const db = store.get(pgliteDbAtom)
+export const createListValue = async ({ listId }: { listId: string }) => {
+  const db = store.get(pgliteDbAtom)!
   const list_value_id = uuidv7()
   await db.query(
     `
@@ -661,8 +728,14 @@ export const createListValue = async ({ listId }) => {
   return list_value_id
 }
 
-export const createGoal = async ({ projectId, subprojectId }) => {
-  const db = store.get(pgliteDbAtom)
+export const createGoal = async ({
+  projectId,
+  subprojectId,
+}: {
+  projectId: string
+  subprojectId: string
+}) => {
+  const db = store.get(pgliteDbAtom)!
   // find fields with preset values on the data column
   const presetData = await getPresetData({
     projectId,
@@ -697,8 +770,14 @@ export const createGoal = async ({ projectId, subprojectId }) => {
   return goal_id
 }
 
-export const createGoalReport = async ({ projectId, goalId }) => {
-  const db = store.get(pgliteDbAtom)
+export const createGoalReport = async ({
+  projectId,
+  goalId,
+}: {
+  projectId: string
+  goalId: string
+}) => {
+  const db = store.get(pgliteDbAtom)!
   // find fields with preset values on the data column
   const presetData = await getPresetData({
     projectId,
@@ -753,7 +832,7 @@ export const createSubprojectRole = async ({
   subprojectId: string
   projectUserId: string
 }) => {
-  const db = store.get(pgliteDbAtom)
+  const db = store.get(pgliteDbAtom)!
   const subproject_role_id = uuidv7()
   await db.query(
     `insert into subproject_roles (subproject_role_id, subproject_id, project_user_id, role) values ($1, $2, $3, $4)`,
@@ -781,7 +860,7 @@ export const createPlaceRole = async ({
   placeId: string
   projectUserId: string
 }) => {
-  const db = store.get(pgliteDbAtom)
+  const db = store.get(pgliteDbAtom)!
   const place_role_id = uuidv7()
   await db.query(
     `insert into place_roles (place_role_id, place_id, project_user_id, role) values ($1, $2, $3, $4)`,
@@ -802,8 +881,12 @@ export const createPlaceRole = async ({
   return place_role_id
 }
 
-export const createSubprojectTaxon = async ({ subprojectId }) => {
-  const db = store.get(pgliteDbAtom)
+export const createSubprojectTaxon = async ({
+  subprojectId,
+}: {
+  subprojectId: string
+}) => {
+  const db = store.get(pgliteDbAtom)!
   const subproject_taxon_id = uuidv7()
   await db.query(
     `insert into subproject_taxa (subproject_taxon_id, subproject_id) values ($1, $2)`,
@@ -822,8 +905,14 @@ export const createSubprojectTaxon = async ({ subprojectId }) => {
   return subproject_taxon_id
 }
 
-export const createSubprojectReport = async ({ projectId, subprojectId }) => {
-  const db = store.get(pgliteDbAtom)
+export const createSubprojectReport = async ({
+  projectId,
+  subprojectId,
+}: {
+  projectId: string
+  subprojectId: string
+}) => {
+  const db = store.get(pgliteDbAtom)!
   // find fields with preset values on the data column
   const presetData = await getPresetData({
     projectId,
@@ -857,8 +946,14 @@ export const createSubprojectReport = async ({ projectId, subprojectId }) => {
   return subproject_report_id
 }
 
-export const createCheck = async ({ projectId, placeId }) => {
-  const db = store.get(pgliteDbAtom)
+export const createCheck = async ({
+  projectId,
+  placeId,
+}: {
+  projectId: string
+  placeId: string
+}) => {
+  const db = store.get(pgliteDbAtom)!
   // find fields with preset values on the data column
   const presetData = await getPresetData({
     projectId,
@@ -892,8 +987,12 @@ export const createCheck = async ({ projectId, placeId }) => {
   return check_id
 }
 
-export const createCheckQuantity = async ({ checkId }) => {
-  const db = store.get(pgliteDbAtom)
+export const createCheckQuantity = async ({
+  checkId,
+}: {
+  checkId: string
+}) => {
+  const db = store.get(pgliteDbAtom)!
 
   // inherit the project's default unit if set
   const projectRes = await db.query<{ checks_default_unit_id: string | null }>(
@@ -932,8 +1031,12 @@ export const createCheckQuantity = async ({ checkId }) => {
   return check_quantity_id
 }
 
-export const createCheckTaxon = async ({ checkId }) => {
-  const db = store.get(pgliteDbAtom)
+export const createCheckTaxon = async ({
+  checkId,
+}: {
+  checkId: string
+}) => {
+  const db = store.get(pgliteDbAtom)!
 
   // inherit the project's default unit if set
   const projectRes = await db.query<{
@@ -974,8 +1077,12 @@ export const createCheckTaxon = async ({ checkId }) => {
   return check_taxon_id
 }
 
-export const createActionTaxon = async ({ actionId }) => {
-  const db = store.get(pgliteDbAtom)
+export const createActionTaxon = async ({
+  actionId,
+}: {
+  actionId: string
+}) => {
+  const db = store.get(pgliteDbAtom)!
 
   // inherit the project's default unit if set
   const projectRes = await db.query<{
@@ -1017,8 +1124,14 @@ export const createActionTaxon = async ({ actionId }) => {
   return action_taxon_id
 }
 
-export const createAction = async ({ projectId, placeId }) => {
-  const db = store.get(pgliteDbAtom)
+export const createAction = async ({
+  projectId,
+  placeId,
+}: {
+  projectId: string
+  placeId: string
+}) => {
+  const db = store.get(pgliteDbAtom)!
   // find fields with preset values on the data column
   const presetData = await getPresetData({ projectId, table: 'actions' })
 
@@ -1050,8 +1163,14 @@ export const createAction = async ({ projectId, placeId }) => {
   return action_id
 }
 
-export const createActionQuantity = async ({ actionId, projectId }) => {
-  const db = store.get(pgliteDbAtom)
+export const createActionQuantity = async ({
+  actionId,
+  projectId,
+}: {
+  actionId: string
+  projectId: string
+}) => {
+  const db = store.get(pgliteDbAtom)!
 
   // inherit the project's default unit if set
   let defaultUnitId: string | null = null
@@ -1089,8 +1208,14 @@ export const createActionQuantity = async ({ actionId, projectId }) => {
   return action_quantity_id
 }
 
-export const createCheckReport = async ({ projectId, placeId }) => {
-  const db = store.get(pgliteDbAtom)
+export const createCheckReport = async ({
+  projectId,
+  placeId,
+}: {
+  projectId: string
+  placeId: string
+}) => {
+  const db = store.get(pgliteDbAtom)!
   // find fields with preset values on the data column
   const presetData = await getPresetData({
     projectId,
@@ -1124,8 +1249,12 @@ export const createCheckReport = async ({ projectId, placeId }) => {
   return place_check_report_id
 }
 
-export const createCheckReportQuantity = async ({ checkReportId }) => {
-  const db = store.get(pgliteDbAtom)
+export const createCheckReportQuantity = async ({
+  checkReportId,
+}: {
+  checkReportId: string
+}) => {
+  const db = store.get(pgliteDbAtom)!
 
   // inherit the project's default unit if set
   const projectRes = await db.query<{
@@ -1167,8 +1296,14 @@ export const createCheckReportQuantity = async ({ checkReportId }) => {
   return place_check_report_quantity_id
 }
 
-export const createActionReport = async ({ projectId, placeId }) => {
-  const db = store.get(pgliteDbAtom)
+export const createActionReport = async ({
+  projectId,
+  placeId,
+}: {
+  projectId: string
+  placeId: string
+}) => {
+  const db = store.get(pgliteDbAtom)!
   // find fields with preset values on the data column
   const presetData = await getPresetData({
     projectId,
@@ -1202,8 +1337,12 @@ export const createActionReport = async ({ projectId, placeId }) => {
   return place_action_report_id
 }
 
-export const createActionReportQuantity = async ({ actionReportId }) => {
-  const db = store.get(pgliteDbAtom)
+export const createActionReportQuantity = async ({
+  actionReportId,
+}: {
+  actionReportId: string
+}) => {
+  const db = store.get(pgliteDbAtom)!
 
   // inherit the project's default unit if set
   const projectRes = await db.query<{
@@ -1246,7 +1385,7 @@ export const createActionReportQuantity = async ({ actionReportId }) => {
 }
 
 export const createMessage = async () => {
-  const db = store.get(pgliteDbAtom)
+  const db = store.get(pgliteDbAtom)!
   const message_id = uuidv7()
   const date = new Date()
 
@@ -1267,8 +1406,12 @@ export const createMessage = async () => {
   return message_id
 }
 
-export const createWmsLayer = async ({ projectId }) => {
-  const db = store.get(pgliteDbAtom)
+export const createWmsLayer = async ({
+  projectId,
+}: {
+  projectId: string
+}) => {
+  const db = store.get(pgliteDbAtom)!
   const wms_layer_id = uuidv7()
   await db.query(
     `INSERT INTO wms_layers (wms_layer_id, project_id) VALUES ($1, $2)`,
@@ -1295,13 +1438,21 @@ export const createVectorLayer = async ({
   name = null,
   maxFeatures = 1000,
   skipOperationQueue = false, // system-managed layers shouldn't sync back to server
+}: {
+  projectId: string
+  type?: string | null
+  ownTable?: string | null
+  ownTableLevel?: number | null
+  name?: string | null
+  maxFeatures?: number
+  skipOperationQueue?: boolean
 }) => {
-  const db = store.get(pgliteDbAtom)
+  const db = store.get(pgliteDbAtom)!
 
   // First check if vector_layer already exists (e.g., from sync).
   // Dedup by name — a NULL name never matches (NULL = NULL is not true), so
   // unnamed wfs/upload layers are always inserted.
-  const existing = await db.query(
+  const existing = await db.query<{ vector_layer_id: string }>(
     `select * from vector_layers
      where project_id = $1 and name = $2`,
     [projectId, name],
@@ -1356,10 +1507,17 @@ export const createWfsService = async ({
   info_formats = null,
   info_format = null,
   default_crs = null,
+}: {
+  projectId?: string | null
+  url?: string | null
+  version?: string | null
+  info_formats?: string[] | null
+  info_format?: string | null
+  default_crs?: string | null
 }) => {
-  const db = store.get(pgliteDbAtom)
+  const db = store.get(pgliteDbAtom)!
   const wfs_service_id = uuidv7()
-  const res = await db.query(
+  const res = await db.query<WfsServices>(
     `insert into wfs_services (wfs_service_id, project_id, version, url, info_formats, info_format, default_crs) values ($1, $2, $3, $4, $5, $6, $7) returning *`,
     [
       wfs_service_id,
@@ -1394,8 +1552,12 @@ export const createWfsServiceLayer = async ({
   wfsServiceId,
   name = null,
   label = null,
+}: {
+  wfsServiceId: string
+  name?: string | null
+  label?: string | null
 }) => {
-  const db = store.get(pgliteDbAtom)
+  const db = store.get(pgliteDbAtom)!
   const wfs_service_layer_id = uuidv7()
   await db.query(
     `insert into wfs_service_layers (wfs_service_layer_id, wfs_service_id, name, label) values ($1, $2, $3, $4)`,
@@ -1419,8 +1581,11 @@ export const createWfsServiceLayer = async ({
 export const createVectorLayerDisplay = async ({
   vectorLayerId = null,
   displayPropertyValue = null,
+}: {
+  vectorLayerId?: string | null
+  displayPropertyValue?: string | null
 }) => {
-  const db = store.get(pgliteDbAtom)
+  const db = store.get(pgliteDbAtom)!
   const vector_layer_display_id = uuidv7()
   await db.query(
     `
@@ -1478,20 +1643,26 @@ export const createLayerPresentation = async ({
   active = false,
   transparent = false,
   skipOperationQueue = false, // system-managed table layers shouldn't sync back to server
-}) => {
-  const db = store.get(pgliteDbAtom)
+}: {
+  vectorLayerId?: string | null
+  wmsLayerId?: string | null
+  active?: boolean
+  transparent?: boolean
+  skipOperationQueue?: boolean
+} = {}) => {
+  const db = store.get(pgliteDbAtom)!
   const layer_presentation_id = uuidv7()
 
   // Resolve project_id from the referenced layer table
   let projectId: string | null = null
   if (vectorLayerId) {
-    const res = await db.query(
+    const res = await db.query<{ project_id: string }>(
       `SELECT project_id FROM vector_layers WHERE vector_layer_id = $1`,
       [vectorLayerId],
     )
     projectId = res?.rows?.[0]?.project_id ?? null
   } else if (wmsLayerId) {
-    const res = await db.query(
+    const res = await db.query<{ project_id: string }>(
       `SELECT project_id FROM wms_layers WHERE wms_layer_id = $1`,
       [wmsLayerId],
     )
@@ -1550,8 +1721,17 @@ export const createWmsService = async ({
   info_formats = null,
   info_format = null,
   default_crs = null,
+}: {
+  projectId?: string | null
+  url?: string | null
+  image_formats?: string[] | null
+  image_format?: string | null
+  version?: string | null
+  info_formats?: string[] | null
+  info_format?: string | null
+  default_crs?: string | null
 }) => {
-  const db = store.get(pgliteDbAtom)
+  const db = store.get(pgliteDbAtom)!
   const wms_service_id = uuidv7()
   await db.query(
     `INSERT INTO wms_services (wms_service_id, project_id, version, url, image_formats, image_format, info_formats, info_format, default_crs) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)`,
@@ -1595,8 +1775,15 @@ export const createWmsServiceLayer = async ({
   queryable = null,
   legend_url = null,
   legend_image = null,
+}: {
+  wmsServiceId: string
+  name?: string | null
+  label?: string | null
+  queryable?: boolean | null
+  legend_url?: string | null
+  legend_image?: string | null
 }) => {
-  const db = store.get(pgliteDbAtom)
+  const db = store.get(pgliteDbAtom)!
   const wms_service_layer_id = uuidv7()
   await db.query(
     `INSERT INTO wms_service_layers (wms_service_layer_id, wms_service_id, name, label, queryable, legend_url, legend_image) VALUES ($1, $2, $3, $4, $5, $6, $7)`,
@@ -1632,8 +1819,12 @@ export const createChart = async ({
   projectId = null,
   subprojectId = null,
   placeId = null,
+}: {
+  projectId?: string | null
+  subprojectId?: string | null
+  placeId?: string | null
 }) => {
-  const db = store.get(pgliteDbAtom)
+  const db = store.get(pgliteDbAtom)!
   const chart_id = uuidv7()
   await db.query(
     `INSERT INTO charts (chart_id, project_id, subproject_id, place_id) VALUES ($1, $2, $3, $4)`,
@@ -1654,8 +1845,12 @@ export const createChart = async ({
   return chart_id
 }
 
-export const createSubprojectReportDesign = async ({ projectId }) => {
-  const db = store.get(pgliteDbAtom)
+export const createSubprojectReportDesign = async ({
+  projectId,
+}: {
+  projectId: string
+}) => {
+  const db = store.get(pgliteDbAtom)!
   const subproject_report_design_id = uuidv7()
 
   // If no subproject_report_design in this project is active yet, set it active
@@ -1684,8 +1879,12 @@ export const createSubprojectReportDesign = async ({ projectId }) => {
   return subproject_report_design_id
 }
 
-export const createProjectReportDesign = async ({ projectId }) => {
-  const db = store.get(pgliteDbAtom)
+export const createProjectReportDesign = async ({
+  projectId,
+}: {
+  projectId: string
+}) => {
+  const db = store.get(pgliteDbAtom)!
   const project_report_design_id = uuidv7()
 
   // If no project_report_design in this project is active yet, set it active
@@ -1714,8 +1913,12 @@ export const createProjectReportDesign = async ({ projectId }) => {
   return project_report_design_id
 }
 
-export const createChartSubject = async ({ chartId }) => {
-  const db = store.get(pgliteDbAtom)
+export const createChartSubject = async ({
+  chartId,
+}: {
+  chartId: string
+}) => {
+  const db = store.get(pgliteDbAtom)!
   const chart_subject_id = uuidv7()
 
   await db.query(
@@ -1740,8 +1943,12 @@ export const createChartSubject = async ({ chartId }) => {
   return chart_subject_id
 }
 
-export const createObservationImport = async ({ subprojectId }) => {
-  const db = store.get(pgliteDbAtom)
+export const createObservationImport = async ({
+  subprojectId,
+}: {
+  subprojectId: string
+}) => {
+  const db = store.get(pgliteDbAtom)!
   const observation_import_id = uuidv7()
   const date = new Date()
 
@@ -1774,14 +1981,20 @@ export const createObservationImport = async ({ subprojectId }) => {
 }
 
 // no insert as this data is inserted in bulk
-export const createObservation = ({ observationImportId, data = null }) => ({
+export const createObservation = ({
+  observationImportId,
+  data = null,
+}: {
+  observationImportId: string
+  data?: Record<string, unknown> | null
+}) => ({
   observation_id: uuidv7(),
   observation_import_id: observationImportId,
   data,
 })
 
 export const createQc = async () => {
-  const db = store.get(pgliteDbAtom)
+  const db = store.get(pgliteDbAtom)!
   const qcs_id = uuidv7()
   await db.query(`insert into qcs (qcs_id) values ($1)`, [qcs_id])
 
@@ -1794,8 +2007,14 @@ export const createQc = async () => {
   return qcs_id
 }
 
-export const createSubprojectQc = async ({ subprojectId, qcId }) => {
-  const db = store.get(pgliteDbAtom)
+export const createSubprojectQc = async ({
+  subprojectId,
+  qcId,
+}: {
+  subprojectId: string
+  qcId: string
+}) => {
+  const db = store.get(pgliteDbAtom)!
   const qc_assignment_id = uuidv7()
   await db.query(
     `insert into qc_assignments (qc_assignment_id, subproject_id, qc_id) values ($1, $2, $3)`,
@@ -1811,8 +2030,12 @@ export const createSubprojectQc = async ({ subprojectId, qcId }) => {
   return qc_assignment_id
 }
 
-export const createRootQcAssignments = async ({ qcId }) => {
-  const db = store.get(pgliteDbAtom)
+export const createRootQcAssignments = async ({
+  qcId,
+}: {
+  qcId: string
+}) => {
+  const db = store.get(pgliteDbAtom)!
   const qc_assignment_id = uuidv7()
   await db.query(
     `insert into qc_assignments (qc_assignment_id, qc_id) values ($1, $2)`,
@@ -1828,8 +2051,14 @@ export const createRootQcAssignments = async ({ qcId }) => {
   return qc_assignment_id
 }
 
-export const createProjectQcAssignments = async ({ projectId, qcId }) => {
-  const db = store.get(pgliteDbAtom)
+export const createProjectQcAssignments = async ({
+  projectId,
+  qcId,
+}: {
+  projectId: string
+  qcId: string
+}) => {
+  const db = store.get(pgliteDbAtom)!
   const qc_assignment_id = uuidv7()
   await db.query(
     `insert into qc_assignments (qc_assignment_id, project_id, qc_id) values ($1, $2, $3)`,
@@ -1854,7 +2083,7 @@ export const createProjectQcAssignmentsForProjectQc = async ({
   subprojectId?: string
   projectQcId: string
 }) => {
-  const db = store.get(pgliteDbAtom)
+  const db = store.get(pgliteDbAtom)!
   const project_qc_assignment_id = uuidv7()
   await db.query(
     `insert into project_qc_assignments (project_qc_assignment_id, project_id, subproject_id, project_qc_id) values ($1, $2, $3, $4)`,
@@ -1881,7 +2110,7 @@ export const createProjectQcAssignmentsForProjectQc = async ({
 }
 
 export const createRootExportAssignment = async ({ exportsId }: { exportsId: string }) => {
-  const db = store.get(pgliteDbAtom)
+  const db = store.get(pgliteDbAtom)!
   const export_assignment_id = uuidv7()
   await db.query(
     `insert into export_assignments (export_assignment_id, exports_id) values ($1, $2)`,
@@ -1898,7 +2127,7 @@ export const createRootExportAssignment = async ({ exportsId }: { exportsId: str
 }
 
 export const createProjectExportAssignment = async ({ projectId, exportsId }: { projectId: string; exportsId: string }) => {
-  const db = store.get(pgliteDbAtom)
+  const db = store.get(pgliteDbAtom)!
   const export_assignment_id = uuidv7()
   await db.query(
     `insert into export_assignments (export_assignment_id, project_id, exports_id) values ($1, $2, $3)`,
@@ -1915,7 +2144,7 @@ export const createProjectExportAssignment = async ({ projectId, exportsId }: { 
 }
 
 export const createSubprojectExportAssignment = async ({ subprojectId, exportsId }: { subprojectId: string; exportsId: string }) => {
-  const db = store.get(pgliteDbAtom)
+  const db = store.get(pgliteDbAtom)!
   const export_assignment_id = uuidv7()
   await db.query(
     `insert into export_assignments (export_assignment_id, subproject_id, exports_id) values ($1, $2, $3)`,
@@ -1940,7 +2169,7 @@ export const createProjectExportAssignmentForProjectExport = async ({
   subprojectId?: string
   projectExportsId: string
 }) => {
-  const db = store.get(pgliteDbAtom)
+  const db = store.get(pgliteDbAtom)!
   const project_export_assignment_id = uuidv7()
   await db.query(
     `insert into project_export_assignments (project_export_assignment_id, project_id, subproject_id, project_exports_id) values ($1, $2, $3, $4)`,
@@ -1967,7 +2196,7 @@ export const createProjectExportAssignmentForProjectExport = async ({
 }
 
 export const createExport = async () => {
-  const db = store.get(pgliteDbAtom)
+  const db = store.get(pgliteDbAtom)!
   const exports_id = uuidv7()
   await db.query(`insert into exports (exports_id) values ($1)`, [exports_id])
 
@@ -1981,7 +2210,7 @@ export const createExport = async () => {
 }
 
 export const createProjectExport = async ({ projectId }: { projectId: string }) => {
-  const db = store.get(pgliteDbAtom)
+  const db = store.get(pgliteDbAtom)!
   const project_exports_id = uuidv7()
   await db.query(
     `insert into project_exports (project_exports_id, project_id) values ($1, $2)`,

@@ -15,7 +15,8 @@ export const WidgetsForFields = () => {
   const navigate = useNavigate({ from })
 
   const { loading, navData, isFiltered } = useWidgetsForFieldsNavData()
-  const { navs, label, nameSingular } = navData
+  const { label, nameSingular } = navData
+  const navs = navData.navs as { id: string; label: string | null }[]
 
   const add = async () => {
     const widgetForFieldId = await createWidgetForField()

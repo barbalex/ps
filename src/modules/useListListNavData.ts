@@ -27,7 +27,7 @@ export const useListListNavData = ({ projectId, listId }: Props) => {
         lists
       WHERE 
         lists.list_id = '${listId}'`
-  const res = useLiveQuery(sql)
+  const res = useLiveQuery<NavData>(sql)
   const loading = res === undefined
 
   const nav: NavData | undefined = res?.rows?.[0]

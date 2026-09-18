@@ -10,11 +10,10 @@ const { Button } = fluentUiReactComponents
 
 import { createUser } from '../../modules/createRows.ts'
 import { FormHeader } from '../../components/FormHeader/index.tsx'
-import { userIdAtom, addOperationAtom } from '../../store.ts'
+import { addOperationAtom } from '../../store.ts'
 
-export const Header = ({ autoFocusRef }) => {
+export const Header = ({ autoFocusRef }: { autoFocusRef?: React.RefObject<HTMLInputElement | null> }) => {
   const { formatMessage } = useIntl()
-  const setUserId = useSetAtom(userIdAtom)
   const { userId } = useParams({ strict: false })
   const navigate = useNavigate()
   const addOperation = useSetAtom(addOperationAtom)
@@ -29,7 +28,7 @@ export const Header = ({ autoFocusRef }) => {
   }, [userId])
 
   const addRow = async () => {
-    const id = await createUser({ setUserId })
+    const id = await createUser()
     if (!id) return
 
     navigate({ to: `../${id}` })
@@ -41,7 +40,7 @@ export const Header = ({ autoFocusRef }) => {
       const prevRes = await db.query(`SELECT * FROM users WHERE user_id = $1`, [
         userId,
       ])
-      const prev = prevRes?.rows?.[0] ?? {}
+      const prev = (prevRes?.rows?.[0] ?? {}) as Record<string, unknown>
       const sql = `DELETE FROM users WHERE user_id = $1`
       await db.query(sql, [userId])
       addOperation({
@@ -61,7 +60,7 @@ export const Header = ({ autoFocusRef }) => {
   const toNext = async () => {
     try {
       const res = await db.query(`SELECT user_id FROM users order by label`)
-      const rows = res?.rows
+      const rows = res?.rows as { user_id: string }[]
       const len = rows.length
       const index = rows.findIndex((p) => p.user_id === userIdRef.current)
       const next = rows[(index + 1) % len]
@@ -74,7 +73,7 @@ export const Header = ({ autoFocusRef }) => {
   const toPrevious = async () => {
     try {
       const res = await db.query(`SELECT user_id FROM users order by label`)
-      const rows = res?.rows
+      const rows = res?.rows as { user_id: string }[]
       const len = rows.length
       const index = rows.findIndex((p) => p.user_id === userIdRef.current)
       const previous = rows[(index + len - 1) % len]

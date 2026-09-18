@@ -1,3 +1,9 @@
+import type { PGlite, Transaction } from '@electric-sql/pglite'
+import type {
+  SyncShapesToTablesOptions,
+  SyncShapesToTablesResult,
+} from '@electric-sql/pglite-sync'
+
 import {
   store,
   initialSyncingAtom,
@@ -7,6 +13,18 @@ import {
 } from '../store.ts'
 import { constants } from './constants.ts'
 import { fetchPostgrestToken } from './fetchPostgrestToken.ts'
+
+// pglite-worker.ts registers electricSync() under the `electric` namespace;
+// store.ts types the db atom as plain PGlite, so the namespace is re-declared here.
+type ElectricDb = PGlite & {
+  electric: {
+    syncShapesToTables: (
+      options: SyncShapesToTablesOptions & {
+        onMustRefetch?: (tx: Transaction) => void
+      },
+    ) => Promise<SyncShapesToTablesResult>
+  }
+}
 
 const url = constants.getElectricUri()
 
@@ -40,7 +58,8 @@ export const startSyncing = async (userId: string) => {
   // Fetch the PostgREST JWT so Caddy's forward_auth gate on the Electric
   // endpoint accepts the shape requests.
   const electricToken = await fetchPostgrestToken()
-  const authHeaders = electricToken
+  // typed so the empty branch stays assignable to Electric's headers record
+  const authHeaders: Record<string, string> = electricToken
     ? { Authorization: `Bearer ${electricToken}` }
     : {}
 
@@ -571,7 +590,8 @@ export const startSyncing = async (userId: string) => {
             params: { '1': userId },
           },
         },
-        mapColumns: (change: unknown) => {
+        // change.value is the change row (see MapColumnsFn in @electric-sql/pglite-sync)
+        mapColumns: (change: { value: Record<string, unknown> }) => {
           return {
             goal_report_id: change.value.goal_report_id,
             goal_id: change.value.goal_id,
@@ -1205,7 +1225,7 @@ export const startSyncing = async (userId: string) => {
       ]),
     )
 
-    const sync = await db.electric.syncShapesToTables({
+    const sync = await (db as ElectricDb).electric.syncShapesToTables({
       shapes,
       key: 'ps-sync', // Persistent key for live updates across reloads
       // Removed initialInsertMethod - let Electric use default for live updates

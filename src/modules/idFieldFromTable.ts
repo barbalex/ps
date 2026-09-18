@@ -1,5 +1,7 @@
-export const idFieldFromTable = (table): string => {
-  if (!table) return undefined
+export const idFieldFromTable = (table?: string | null): string => {
+  // TODO: this returns undefined for falsy table despite the declared
+  // return type; kept as-is to not change behaviour
+  if (!table) return undefined as unknown as string
 
   // TODO: this causes the warning:
   // Warning: Encountered two children with the same key, `/data/projects/018cfcf7-6424-7000-a100-851c5cc2c878/crs/undefined`. Keys should be unique...

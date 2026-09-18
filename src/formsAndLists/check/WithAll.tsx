@@ -47,7 +47,9 @@ export const CheckWithAll = ({
   const addOperation = useSetAtom(addOperationAtom)
   const [isDesigning] = useAtom(designingAtom)
   const { formatMessage } = useIntl()
-  const [validations, setValidations] = useState({})
+  const [validations, setValidations] = useState<
+    Record<string, { state: 'error'; message: string }>
+  >({})
   const autoFocusRef = useRef<HTMLInputElement>(null)
   const navigate = useNavigate()
   const location = useLocation()
@@ -57,7 +59,7 @@ export const CheckWithAll = ({
   const res = useLiveQuery(`SELECT * FROM checks WHERE check_id = $1`, [
     checkId,
   ])
-  const row: Checks | undefined = res?.rows?.[0]
+  const row = res?.rows?.[0] as Checks | undefined
 
   const quantitiesCountRes = useLiveQuery(
     `SELECT count(*)::int AS count FROM check_quantities WHERE check_id = $1`,
@@ -98,7 +100,10 @@ export const CheckWithAll = ({
 
   const [filesFilter] = useAtom(filesFilterAtom)
   const filesIsFiltered = !!filterStringFromFilter(filesFilter)
-  const uploaderCtx = useContext(UploaderContext)
+  // the context actually holds a ref to the uploader API
+  const uploaderCtx = useContext(UploaderContext) as unknown as
+    | { current?: { getAPI?: () => { initFlow?: () => void } } | null }
+    | null
   const uploaderApi = uploaderCtx?.current?.getAPI?.()
   const onClickAddFile = () => uploaderApi?.initFlow?.()
 
@@ -134,9 +139,15 @@ export const CheckWithAll = ({
   const taxaUrl = `${checkBaseUrl}/taxa`
   const checkUrl = isAllInline ? checkBaseUrl : `${checkBaseUrl}/check`
 
-  const onChange = async (e, data) => {
-    const { name, value } = getValueFromChange(e, data)
-    if (row[name] === value) return
+  const onChange = async (
+    e: React.ChangeEvent<HTMLInputElement>,
+    data?: object,
+  ) => {
+    const { name, value } = getValueFromChange(
+      e,
+      data as Parameters<typeof getValueFromChange>[1],
+    )
+    if (row?.[name as keyof Checks] === value) return
     try {
       await db.query(`UPDATE checks SET ${name} = $1 WHERE check_id = $2`, [
         value,
@@ -145,7 +156,7 @@ export const CheckWithAll = ({
     } catch (error) {
       setValidations((prev) => ({
         ...prev,
-        [name]: { state: 'error', message: error.message },
+        [name]: { state: 'error', message: (error as Error).message },
       }))
       return
     }
@@ -165,7 +176,7 @@ export const CheckWithAll = ({
   }
 
   const addQuantity = async () => {
-    const id = await createCheckQuantity({ checkId })
+    const id = await createCheckQuantity({ checkId: checkId! })
     if (!id) return
     navigate({ to: `${quantitiesUrl}/${id}` })
   }
@@ -184,7 +195,7 @@ export const CheckWithAll = ({
     ) : undefined
 
   const addTaxon = async () => {
-    const id = await createCheckTaxon({ checkId })
+    const id = await createCheckTaxon({ checkId: checkId! })
     if (!id) return
     navigate({ to: `${taxaUrl}/${id}` })
   }

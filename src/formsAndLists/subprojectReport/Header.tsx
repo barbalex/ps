@@ -17,10 +17,8 @@ import { HistoryToggleButton } from '../../components/shared/HistoryCompare/Hist
 import { addOperationAtom, languageAtom } from '../../store.ts'
 import { subprojectNameSingularExpr } from '../../modules/subprojectNameCols.ts'
 
-export const Header = ({ autoFocusRef, from }) => {
-  const { projectId, subprojectId, subprojectReportId } = useParams({
-    from,
-  })
+export const Header = ({ autoFocusRef }: { autoFocusRef?: React.RefObject<HTMLInputElement | null>; from?: string }) => {
+  const { projectId, subprojectId, subprojectReportId } = useParams({ strict: false })
   const navigate = useNavigate()
   const location = useLocation()
   const addOperation = useSetAtom(addOperationAtom)
@@ -46,7 +44,7 @@ export const Header = ({ autoFocusRef, from }) => {
   )
   const subprojectNameSingular =
     combinedRes?.rows?.[0]?.subproject_name_singular
-  const rowCount = combinedRes?.rows?.[0]?.count ?? 2
+  const rowCount = Number(combinedRes?.rows?.[0]?.count ?? 2)
   const basePath = `/data/projects/${projectId}/subprojects/${subprojectId}/reports/${subprojectReportId}`
 
   const isPrintView = location.pathname.endsWith('/print')
@@ -54,8 +52,8 @@ export const Header = ({ autoFocusRef, from }) => {
   const onClickPdf = () => {
     navigate({
       to: './print',
-      params: (prev) => prev,
-    })
+      params: (prev: any) => prev,
+    } as unknown as Parameters<typeof navigate>[0])
   }
 
   const onClickPrint = () => {
@@ -65,13 +63,16 @@ export const Header = ({ autoFocusRef, from }) => {
   const onClickBack = () => {
     navigate({
       to: '..',
-      params: (prev) => prev,
+      params: (prev: any) => prev,
     })
   }
 
   const addRow = async () => {
-    const id = await createSubprojectReport({ projectId, subprojectId })
-    if (!id) return
+    const id = await createSubprojectReport({
+      projectId: projectId!,
+      subprojectId: subprojectId!,
+    })
+   if (!id) return
     navigate({
       to: `../${id}`,
       params: (prev) => ({
@@ -88,7 +89,7 @@ export const Header = ({ autoFocusRef, from }) => {
         `SELECT * FROM subproject_reports WHERE subproject_report_id = $1`,
         [subprojectReportId],
       )
-      const prev = prevRes?.rows?.[0] ?? {}
+      const prev = (prevRes?.rows?.[0] ?? {}) as Record<string, unknown>
       await db.query(
         `DELETE FROM subproject_reports WHERE subproject_report_id = $1`,
         [subprojectReportId],
@@ -113,7 +114,7 @@ export const Header = ({ autoFocusRef, from }) => {
         `SELECT subproject_report_id FROM subproject_reports WHERE subproject_id = $1 ORDER BY label`,
         [subprojectId],
       )
-      const subprojectReports = res?.rows
+      const subprojectReports = res?.rows as { subproject_report_id: string }[]
       const len = subprojectReports.length
       const index = subprojectReports.findIndex(
         (p) => p.subproject_report_id === subprojectReportIdRef.current,
@@ -137,7 +138,7 @@ export const Header = ({ autoFocusRef, from }) => {
         `SELECT subproject_report_id FROM subproject_reports WHERE subproject_id = $1 ORDER BY label`,
         [subprojectId],
       )
-      const subprojectReports = res?.rows
+      const subprojectReports = res?.rows as { subproject_report_id: string }[]
       const len = subprojectReports.length
       const index = subprojectReports.findIndex(
         (p) => p.subproject_report_id === subprojectReportIdRef.current,

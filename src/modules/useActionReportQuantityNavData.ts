@@ -32,7 +32,7 @@ export const useActionReportQuantityNavData = ({
   const [openNodes] = useAtom(treeOpenNodesAtom)
   const location = useLocation()
 
-  const res = useLiveQuery(
+  const res = useLiveQuery<NavData>(
     `
       SELECT
         place_action_report_quantity_id as id,

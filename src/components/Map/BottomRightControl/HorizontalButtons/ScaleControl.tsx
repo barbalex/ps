@@ -5,7 +5,7 @@ import styles from './ScaleControl.module.css'
 
 const maxWidth = 110
 
-const getRoundNum = (num) => {
+const getRoundNum = (num: number) => {
   const pow10 = Math.pow(10, `${Math.floor(num)}`.length - 1)
   let d = num / pow10
 
@@ -21,7 +21,8 @@ export const ScaleControl = () => {
   const [width, setWidth] = useState(0)
 
   const update = useCallback(() => {
-    if (!map.getSize().y > 0) return
+    // (!y > 0) coerces the boolean to a number at runtime — keep as is
+    if ((!map.getSize().y as unknown as number) > 0) return
 
     const y = map.getSize().y / 2
     const maxMeters = map.distance(

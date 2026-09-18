@@ -9,11 +9,9 @@ import { FormHeader } from '../../components/FormHeader/index.tsx'
 import { operationsQueueAtom, removeOperationAtom } from '../../store.ts'
 import { revertOperation } from '../../modules/revertOperation.ts'
 
-const from = '/data/queued-operations/$queuedOperationId'
-
 export const Header = () => {
   const { formatMessage } = useIntl()
-  const { queuedOperationId } = useParams({ from })
+  const { queuedOperationId } = useParams({ strict: false })
   const navigate = useNavigate()
   const operationsQueue = useAtomValue(operationsQueueAtom)
   const removeOperation = useSetAtom(removeOperationAtom)
@@ -25,7 +23,7 @@ export const Header = () => {
   const onClickRevert = async () => {
     if (!qo) return
     await revertOperation(qo)
-    removeOperation(queuedOperationId)
+    removeOperation(queuedOperationId as string)
     navigate({ to: '/data/queued-operations' })
   }
 
@@ -47,6 +45,7 @@ export const Header = () => {
       {canNavigate && (
         <Tooltip
           content={formatMessage({ id: 'Wn2kTv', defaultMessage: 'vorherig' })}
+          relationship="label"
         >
           <Button
             size="medium"
@@ -60,6 +59,7 @@ export const Header = () => {
           id: 'qoRevertBtn',
           defaultMessage: 'widerrufen',
         })}
+        relationship="label"
       >
         <Button
           size="medium"
@@ -74,6 +74,7 @@ export const Header = () => {
       {canNavigate && (
         <Tooltip
           content={formatMessage({ id: 'Xm4pLq', defaultMessage: 'nächst' })}
+          relationship="label"
         >
           <Button
             size="medium"

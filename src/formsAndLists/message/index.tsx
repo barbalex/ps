@@ -14,23 +14,27 @@ import type Messages from '../../models/public/Messages.ts'
 
 import '../../form.css'
 
-const from = '/data/messages/$messageId'
 
 export const Message = () => {
-  const { messageId } = useParams({ from })
+  const { messageId } = useParams({ strict: false })
   const addOperation = useSetAtom(addOperationAtom)
-  const [validations, setValidations] = useState({})
+  const [validations, setValidations] = useState<
+    Record<string, { state: 'error'; message: string }>
+  >({})
 
   const db = usePGlite()
   const res = useLiveQuery(`SELECT * FROM messages WHERE message_id = $1`, [
     messageId,
   ])
-  const row: Messages | undefined = res?.rows?.[0]
+  const row = res?.rows?.[0] as Messages | undefined
 
-  const onChange = async (e, data) => {
+  const onChange = async (
+    e: React.ChangeEvent<HTMLInputElement>,
+    data: Parameters<typeof getValueFromChange>[1],
+  ) => {
     const { name, value } = getValueFromChange(e, data)
     // only change if value has changed: maybe only focus entered and left
-    if (row[name] === value) return
+    if ((row as Record<string, any>)[name] === value) return
 
     try {
       await db.query(`UPDATE messages SET ${name} = $1 WHERE message_id = $2`, [
@@ -40,7 +44,7 @@ export const Message = () => {
     } catch (error) {
       setValidations((prev) => ({
         ...prev,
-        [name]: { state: 'error', message: error.message },
+        [name]: { state: 'error', message: error instanceof Error ? error.message : String(error) },
       }))
       return
     }

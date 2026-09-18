@@ -10,8 +10,24 @@ import {
   cloneElement,
 } from 'react'
 import * as fluentUiReactComponents from '@fluentui/react-components'
-const { Button, Menu, MenuPopover, MenuTrigger, MenuList, Tooltip } =
-  fluentUiReactComponents
+const {
+  Button,
+  Menu: FluentMenu,
+  MenuPopover,
+  MenuTrigger,
+  MenuList,
+  Tooltip: FluentTooltip,
+} = fluentUiReactComponents
+// Menu is passed a className and Tooltip omits the (a11y) relationship prop.
+// Both are type-only bridges; the runtime props are passed on unchanged.
+const Menu = FluentMenu as unknown as (
+  props: React.ComponentProps<typeof FluentMenu> & { className?: string },
+) => React.ReactElement
+const Tooltip = FluentTooltip as unknown as (
+  props: Omit<React.ComponentProps<typeof FluentTooltip>, 'relationship'> & {
+    relationship?: React.ComponentProps<typeof FluentTooltip>['relationship']
+  },
+) => React.ReactElement
 import { FaBars } from 'react-icons/fa6'
 import { useDebouncedCallback } from 'use-debounce'
 import { useBeforeunload } from 'react-beforeunload'
@@ -23,6 +39,30 @@ import styles from './index.module.css'
 export const buttonWidth = 32
 const buttonGap = 5
 const moreButtonReservedWidth = buttonWidth + buttonGap
+
+// a child of the MenuBar: a button-like element that may pass a width
+type MenuChild = React.ReactElement<{
+  width?: number
+  inmenu?: string
+}>
+
+type Props = {
+  children: React.ReactNode
+  // enable the parent to force rerenders
+  rerenderer?: React.ReactNode
+  // files pass in titleComponent and its width
+  titleComponent?: React.ReactNode
+  titleComponentWidth?: number
+  // top menu bar has no margin between menus, others do
+  // and that needs to be compensated for
+  addMargin?: boolean
+  // top header should not draw separator borders around menu bar
+  showBorder?: boolean
+  // top header should not force menu bar to grow and push sibling controls away
+  grow?: boolean
+  // begin collapsing slightly before touching neighboring title/content
+  collapseOffset?: number
+}
 
 // possible improvement:
 // add refs in here to measure their widths
@@ -42,20 +82,20 @@ export const MenuBar = ({
   grow = true,
   // begin collapsing slightly before touching neighboring title/content
   collapseOffset = 0,
-}) => {
+}: Props) => {
   const isTopHeaderVariant = !showBorder && !grow
 
-  const flattenChildren = useCallback((nodes) => {
-    const flattened = []
+  const flattenChildren = useCallback((nodes: React.ReactNode) => {
+    const flattened: MenuChild[] = []
 
-    const walk = (input) => {
+    const walk = (input: React.ReactNode) => {
       for (const child of Children.toArray(input)) {
         if (!child) continue
         if (isValidElement(child) && child.type === Fragment) {
-          walk(child.props.children)
+          walk((child.props as { children?: React.ReactNode }).children)
           continue
         }
-        flattened.push(child)
+        flattened.push(child as MenuChild)
       }
     }
 
@@ -64,7 +104,7 @@ export const MenuBar = ({
   }, [])
 
   const getChildBaseWidth = useCallback(
-    (child) =>
+    (child: MenuChild) =>
       child.props.width
         ? addMargin
           ? child.props.width + 12
@@ -86,37 +126,40 @@ export const MenuBar = ({
     )
   }, [visibleChildren.length, widths])
 
-  const outerContainerRef = useRef(null)
+  const outerContainerRef = useRef<HTMLDivElement | null>(null)
   const outerContainerWidth = outerContainerRef.current?.clientWidth
   const previousMeasurementTimeRef = useRef(0)
 
-  const [buttons, setButtons] = useState([])
-  const [menus, setMenus] = useState([])
+  const [buttons, setButtons] = useState<MenuChild[]>([])
+  const [menus, setMenus] = useState<MenuChild[]>([])
 
-  const setLayout = useCallback((nextButtons, nextMenus) => {
-    // We clone children into two different render contexts (inline buttons and overflow menu).
-    // Prefixing keys keeps identities stable across moves and avoids duplicate-key warnings.
-    setButtons(
-      nextButtons.map((child, index) =>
-        cloneElement(child, {
-          key: `button-${index}-${child.key ?? 'nokey'}`,
-        }),
-      ),
-    )
-    setMenus(
-      nextMenus.map((child, index) =>
-        cloneElement(child, {
-          key: `menu-${index}-${child.key ?? 'nokey'}`,
-          inmenu: 'true',
-        }),
-      ),
-    )
-  }, [])
+  const setLayout = useCallback(
+    (nextButtons: MenuChild[], nextMenus: MenuChild[]) => {
+      // We clone children into two different render contexts (inline buttons and overflow menu).
+      // Prefixing keys keeps identities stable across moves and avoids duplicate-key warnings.
+      setButtons(
+        nextButtons.map((child, index) =>
+          cloneElement(child, {
+            key: `button-${index}-${child.key ?? 'nokey'}`,
+          }),
+        ),
+      )
+      setMenus(
+        nextMenus.map((child, index) =>
+          cloneElement(child, {
+            key: `menu-${index}-${child.key ?? 'nokey'}`,
+            inmenu: 'true',
+          }),
+        ),
+      )
+    },
+    [],
+  )
 
   const splitChildren = useCallback(
-    (availableWidth) => {
-      const nextButtons = []
-      const nextMenus = []
+    (availableWidth: number) => {
+      const nextButtons: MenuChild[] = []
+      const nextMenus: MenuChild[] = []
       let widthSum = 0
 
       for (const child of visibleChildren) {
@@ -174,7 +217,9 @@ export const MenuBar = ({
 
       // Keep at least two actions in the overflow menu so the hamburger is meaningful.
       const adjustedButtons = nextButtons.slice(0, -1)
-      const adjustedMenus = [nextButtons.at(-1), ...nextMenus].filter(Boolean)
+      const adjustedMenus = [nextButtons.at(-1), ...nextMenus].filter(
+        Boolean,
+      ) as MenuChild[]
       setLayout(adjustedButtons, adjustedMenus)
       return
     }
@@ -227,7 +272,7 @@ export const MenuBar = ({
           // this is the reason for not using react-resize-detector
           previousMeasurementTimeRef.current = currentTime
           const percentageChanged = Math.abs(
-            ((width - previousWidthRef.current) / width) * 100,
+            ((width - previousWidthRef.current!) / width) * 100,
           )
           const shouldCheckOverflow = Math.abs(percentageChanged) > 1
           if (!shouldCheckOverflow) {
@@ -248,7 +293,7 @@ export const MenuBar = ({
     observer.disconnect()
   })
 
-  const previousWidthRef = useRef(null)
+  const previousWidthRef = useRef<number | null>(null)
   useEffect(() => {
     if (!outerContainerRef.current) {
       // console.log('MenuBar.useEffect, no containerRef')

@@ -2,8 +2,15 @@ import { useIntl } from 'react-intl'
 
 import { RadioGroupFromOptions } from '../../components/shared/RadioGroupFromOptions.tsx'
 import { vectorLayerLineJoinOptions } from '../../modules/constants.ts'
+import type VectorLayerDisplays from '../../models/public/VectorLayerDisplays.ts'
 
-export const LineJoin = ({ onChange, row }) => {
+export const LineJoin = ({
+  onChange,
+  row,
+}: {
+  onChange: (e: React.ChangeEvent<any>, data?: any) => void
+  row: VectorLayerDisplays | Record<string, any>
+}) => {
   const { formatMessage } = useIntl()
 
   const options = vectorLayerLineJoinOptions.map((o) => ({
@@ -17,7 +24,7 @@ export const LineJoin = ({ onChange, row }) => {
       name="line_join"
       options={options}
       value={row.line_join ?? ''}
-      onChange={onChange}
+      onChange={(ev) => onChange(ev as React.ChangeEvent<HTMLInputElement>)}
     />
   )
 }

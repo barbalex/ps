@@ -11,8 +11,25 @@ import {
 } from '../../../../modules/vectorLayerLabel.ts'
 import { Container } from './Container.tsx'
 import styles from './index.module.css'
-import type WMSLayers from '../../../../models/public/WMSLayers.ts'
+import type WmsLayers from '../../../../models/public/WmsLayers.ts'
 import type VectorLayers from '../../../../models/public/VectorLayers.ts'
+
+// aggregated presentation properties built in the queries below
+type LayerPresentationJson = {
+  layer_presentation_id: string
+  active: boolean
+  opacity_percent: number | null
+  max_zoom: number | null
+  min_zoom: number | null
+  transparent: boolean
+  grayscale: boolean
+}
+type ActiveWmsLayer = WmsLayers & {
+  layer_presentations?: LayerPresentationJson[]
+}
+type ActiveVectorLayer = VectorLayers & {
+  layer_presentations?: LayerPresentationJson[]
+}
 
 export const Legends = () => {
   const [mapLayerSorting] = useAtom(mapLayerSortingAtom)
@@ -43,7 +60,7 @@ export const Legends = () => {
     GROUP BY wl.wms_layer_id
   `,
   )
-  const activeWmsLayers: WMSLayers[] = resWmsLayers?.rows ?? []
+  const activeWmsLayers = (resWmsLayers?.rows ?? []) as unknown as ActiveWmsLayer[]
 
   // same for vector layers
   const resVectorLayers = useLiveQuery(
@@ -69,9 +86,11 @@ export const Legends = () => {
     GROUP BY vl.vector_layer_id
   `,
   )
-  const activeVectorLayers = (resVectorLayers?.rows ?? []).map((l) => ({
+  const activeVectorLayers = (
+    (resVectorLayers?.rows ?? []) as unknown as ActiveVectorLayer[]
+  ).map((l) => ({
     ...l,
-    label: getVectorLayerLabel(l as VectorLayers, language, placeLevels),
+    label: getVectorLayerLabel(l, language, placeLevels),
   }))
 
   // sort by mapLayerSorting
@@ -94,13 +113,16 @@ export const Legends = () => {
 
         return (
           <Container
-            key={layer.wms_layer_id ?? layer.vector_layer_id}
+            key={
+              (layer as ActiveWmsLayer).wms_layer_id ??
+              (layer as ActiveVectorLayer).vector_layer_id
+            }
             layer={layer}
             isLast={index === activeLayers.length - 1}
           >
             {isVectorLayer ?
-              <VectorLegend layer={layer} />
-            : <WmsLegend layer={layer} />}
+              <VectorLegend layer={layer as ActiveVectorLayer} />
+            : <WmsLegend layer={layer as ActiveWmsLayer} />}
           </Container>
         )
       })

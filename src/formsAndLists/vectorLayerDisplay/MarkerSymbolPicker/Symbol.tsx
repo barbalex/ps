@@ -1,13 +1,12 @@
-import { ReactElement } from 'react'
-import * as fluentUiReactComponents from '@fluentui/react-components'
-type InputProps = React.ComponentProps<typeof fluentUiReactComponents.Input>
-
 import styles from './Symbol.module.css'
 
 interface Props {
-  Component: ReactElement
+  Component: React.ComponentType<{
+    className?: string
+    onClick?: React.MouseEventHandler
+  }>
   name: string
-  onChange: InputProps['onChange']
+  onChange: (e: React.ChangeEvent<any>, data?: any) => void
   active: boolean
 }
 
@@ -22,7 +21,7 @@ export const MarkerSymbol = ({ Component, name, onChange, active }: Props) => {
         name: 'marker_symbol',
         value: name,
       },
-    })
+    } as unknown as React.ChangeEvent<any>)
 
   return (
     <Component

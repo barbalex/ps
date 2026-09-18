@@ -16,8 +16,8 @@ import { FormHeader } from '../../components/FormHeader/index.tsx'
 import { HistoryToggleButton } from '../../components/shared/HistoryCompare/HistoryToggleButton.tsx'
 import { addOperationAtom } from '../../store.ts'
 
-export const Header = ({ autoFocusRef, from }) => {
-  const { projectId, projectReportId } = useParams({ from })
+export const Header = ({ autoFocusRef }: { autoFocusRef?: React.RefObject<HTMLInputElement | null>; from?: string }) => {
+  const { projectId, projectReportId } = useParams({ strict: false })
   const basePath = `/data/projects/${projectId}/reports/${projectReportId}`
   const navigate = useNavigate()
   const location = useLocation()
@@ -29,15 +29,15 @@ export const Header = ({ autoFocusRef, from }) => {
   const onClickPdf = () =>
     navigate({
       to: './print',
-      params: (prev) => prev,
-    })
+      params: (prev: any) => prev,
+    } as unknown as Parameters<typeof navigate>[0])
 
   const onClickPrint = () => window.print()
 
   const onClickBack = () =>
     navigate({
       to: '..',
-      params: (prev) => prev,
+      params: (prev: any) => prev,
     })
 
   const db = usePGlite()
@@ -52,10 +52,10 @@ export const Header = ({ autoFocusRef, from }) => {
   const countRes = useLiveQuery(
     `SELECT COUNT(*) as count FROM project_reports WHERE project_id = '${projectId}'`,
   )
-  const rowCount = countRes?.rows?.[0]?.count ?? 2
+  const rowCount = Number(countRes?.rows?.[0]?.count ?? 2)
 
   const addRow = async () => {
-    const id = await createProjectReport({ projectId })
+    const id = await createProjectReport({projectId: projectId! })
     if (!id) return
     navigate({
       to: `../${id}`,
@@ -73,7 +73,7 @@ export const Header = ({ autoFocusRef, from }) => {
         `SELECT * FROM project_reports WHERE project_report_id = $1`,
         [projectReportId],
       )
-      const prev = prevRes?.rows?.[0] ?? {}
+      const prev = (prevRes?.rows?.[0] ?? {}) as Record<string, unknown>
       await db.query(
         `DELETE FROM project_reports WHERE project_report_id = $1`,
         [projectReportId],
@@ -98,7 +98,7 @@ export const Header = ({ autoFocusRef, from }) => {
         `SELECT project_report_id FROM project_reports WHERE project_id = $1 ORDER BY label`,
         [projectId],
       )
-      const rows = res?.rows
+      const rows = res?.rows as { project_report_id: string }[]
       const len = rows.length
       const index = rows.findIndex(
         (p) => p.project_report_id === projectReportIdRef.current,
@@ -122,7 +122,7 @@ export const Header = ({ autoFocusRef, from }) => {
         `SELECT project_report_id FROM project_reports WHERE project_id = $1 ORDER BY label`,
         [projectId],
       )
-      const rows = res?.rows
+      const rows = res?.rows as { project_report_id: string }[]
       const len = rows.length
       const index = rows.findIndex(
         (p) => p.project_report_id === projectReportIdRef.current,

@@ -22,7 +22,7 @@ export const useMessagesNavData = () => {
   const location = useLocation()
   const { formatMessage } = useIntl()
 
-  const res = useLiveQuery(
+  const res = useLiveQuery<NavData[number]>(
     `
     SELECT message_id AS id, TO_CHAR(date, 'YYYY.MM.DD HH24:MI:SS') AS label
     FROM messages 

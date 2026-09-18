@@ -29,7 +29,13 @@ const tablesAbovePlaces = [
   'project_qcs',
 ]
 
-export const filterAtomNameFromTableAndLevel = ({ table, level }) => {
+export const filterAtomNameFromTableAndLevel = ({
+  table,
+  level,
+}: {
+  table: string
+  level?: number
+}) => {
   const tableIsAbovePlaces = tablesAbovePlaces.includes(table)
   const useLevel = level && !tableIsAbovePlaces
   const atomName = `${snakeToCamel(table)}${

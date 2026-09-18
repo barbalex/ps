@@ -6,11 +6,17 @@ import { useIntl } from 'react-intl'
 
 import styles from './FilterButton.module.css'
 
-export const FilterButton = ({ isFiltered = false }) => {
+type Props = {
+  isFiltered?: boolean
+}
+
+export const FilterButton = ({ isFiltered = false }: Props) => {
   const navigate = useNavigate()
   const { formatMessage } = useIntl()
 
-  const onClick = () => navigate({ to: './filter' })
+  // './filter' is a runtime-relative route not part of the typed route union
+  const onClick = () =>
+    navigate({ to: './filter' } as unknown as Parameters<typeof navigate>[0])
 
   return (
     <ToggleButton

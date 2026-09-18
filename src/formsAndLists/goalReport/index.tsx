@@ -10,8 +10,8 @@ import type GoalReports from '../../models/public/GoalReports.ts'
 
 import '../../form.css'
 
-export const GoalReport = ({ from }) => {
-  const { goalReportId } = useParams({ from })
+export const GoalReport = ({ from }: { from: string }) => {
+  const { goalReportId } = useParams({ strict: false })
 
   const autoFocusRef = useRef<HTMLInputElement>(null)
 
@@ -19,7 +19,7 @@ export const GoalReport = ({ from }) => {
     `SELECT * FROM goal_reports WHERE goal_report_id = $1`,
     [goalReportId],
   )
-  const row: GoalReports | undefined = res?.rows?.[0]
+  const row = res?.rows?.[0] as GoalReports | undefined
 
   if (!res) return <Loading />
 
@@ -35,7 +35,7 @@ export const GoalReport = ({ from }) => {
           table="goal_reports"
           idField="goal_report_id"
           id={row.goal_report_id}
-          data={row.data ?? {}}
+          data={(row.data ?? {}) as Record<string, unknown>}
           autoFocus
           ref={autoFocusRef}
           from={from}

@@ -14,7 +14,7 @@ export const InitialSyncManager = () => {
     if (sqlInitializing) return
 
     const run = async () => {
-      const projectExistsResult = await db.query(
+      const projectExistsResult = await db.query<{ exists: boolean }>(
         `SELECT EXISTS (SELECT 1 FROM projects LIMIT 1)`,
       )
       const projectExists = projectExistsResult?.rows?.[0]?.exists ?? false

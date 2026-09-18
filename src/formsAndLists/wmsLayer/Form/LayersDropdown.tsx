@@ -1,5 +1,6 @@
 import * as fluentUiReactComponents from '@fluentui/react-components'
 const { Dropdown, Field, Option } = fluentUiReactComponents
+import type { OptionOnSelectData } from '@fluentui/react-components'
 import axios from 'redaxios'
 import { usePGlite, useLiveQuery } from '@electric-sql/pglite-react'
 import { useIntl } from 'react-intl'
@@ -19,7 +20,7 @@ type Props = {
 
 type ResData = Pick<
   WmsServiceLayers,
-  'wms_service_layer_id' | 'name' | 'label'
+  'wms_service_layer_id' | 'name' | 'label' | 'legend_url'
 >[]
 
 export const LayersDropdown = ({ wmsLayer, validationMessage }: Props) => {
@@ -42,7 +43,7 @@ export const LayersDropdown = ({ wmsLayer, validationMessage }: Props) => {
       label`,
     [wmsLayer.wms_service_id],
   )
-  const wmsServiceLayers: ResData = res?.rows ?? []
+  const wmsServiceLayers = (res?.rows ?? []) as ResData
 
   const options = wmsServiceLayers.map(({ name, label }) => ({
     value: name,
@@ -52,7 +53,7 @@ export const LayersDropdown = ({ wmsLayer, validationMessage }: Props) => {
     (option) => option.value === wmsLayer.wms_service_layer_name,
   )
 
-  const onOptionSelect = async (e, data) => {
+  const onOptionSelect = async (_e: unknown, data: OptionOnSelectData) => {
     try {
       db.query(
         `UPDATE wms_layers SET wms_service_layer_name = $1, label = $2 WHERE wms_layer_id = $3`,
@@ -154,16 +155,16 @@ export const LayersDropdown = ({ wmsLayer, validationMessage }: Props) => {
     >
       <Dropdown
         name="wms_service_layer_name"
-        value={selectedOptions?.[0]?.label ?? null}
-        selectedOptions={selectedOptions}
+        value={(selectedOptions?.[0]?.label ?? null) as string | undefined}
+        selectedOptions={selectedOptions as unknown as string[]}
         onOptionSelect={onOptionSelect}
         appearance="underline"
         clearable
       >
         {options.map((option) => {
           return (
-            <Option key={option.value} value={option.value}>
-              {option.label}
+            <Option key={option.value ?? option.label ?? ''} value={option.value!}>
+              {option.label ?? ''}
             </Option>
           )
         })}

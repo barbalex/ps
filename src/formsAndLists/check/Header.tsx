@@ -5,6 +5,7 @@ import * as fluentUiReactComponents from '@fluentui/react-components'
 const { Button } = fluentUiReactComponents
 import { bbox } from '@turf/bbox'
 import { buffer } from '@turf/buffer'
+import type { AllGeoJSON } from '@turf/helpers'
 import { useAtom, useSetAtom } from 'jotai'
 import { usePGlite, useLiveQuery } from '@electric-sql/pglite-react'
 import { useRef, useEffect } from 'react'
@@ -25,7 +26,15 @@ import {
 } from '../../store.ts'
 import type Checks from '../../models/public/Checks.ts'
 
-export const Header = ({ autoFocusRef, from, allInline = false }) => {
+export const Header = ({
+  autoFocusRef,
+  from,
+  allInline = false,
+}: {
+  autoFocusRef?: React.RefObject<HTMLInputElement | null>
+  from: string
+  allInline?: boolean
+}) => {
   const isForm =
     from ===
       '/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/checks/$checkId_/check' ||
@@ -58,12 +67,12 @@ export const Header = ({ autoFocusRef, from, allInline = false }) => {
   const countRes = useLiveQuery(
     `SELECT COUNT(*) as count FROM checks WHERE place_id = '${placeId2 ?? placeId}'`,
   )
-  const rowCount = countRes?.rows?.[0]?.count ?? 2
+  const rowCount = (countRes?.rows?.[0]?.count as number) ?? 2
 
   const addRow = async () => {
     const id = await createCheck({
-      projectId,
-      placeId: placeId2 ?? placeId,
+      projectId: projectId!,
+      placeId: placeId2 ?? placeId!,
     })
     if (!id) return
     navigate({
@@ -85,7 +94,7 @@ export const Header = ({ autoFocusRef, from, allInline = false }) => {
         `SELECT * FROM checks WHERE check_id = $1`,
         [checkId],
       )
-      const prev = prevRes?.rows?.[0] ?? {}
+      const prev = (prevRes?.rows?.[0] ?? {}) as Record<string, unknown>
       await db.query(`DELETE FROM checks WHERE check_id = $1`, [checkId])
       addOperation({
         table: 'checks',
@@ -94,7 +103,7 @@ export const Header = ({ autoFocusRef, from, allInline = false }) => {
         operation: 'delete',
         prev,
       })
-      navigate({ to: isForm ? `../..` : `..` })
+      navigate({ to: isForm ? ('../..' as '..') : '..' })
     } catch (error) {
       console.error('Error deleting check:', error)
     }
@@ -106,7 +115,7 @@ export const Header = ({ autoFocusRef, from, allInline = false }) => {
         `SELECT check_id FROM checks WHERE place_id = $1 ORDER BY label`,
         [placeId2 ?? placeId],
       )
-      const checks = res?.rows
+      const checks = res?.rows as { check_id: string }[]
       const len = checks.length
       const index = checks.findIndex((p) => p.check_id === checkIdRef.current)
       const next = checks[(index + 1) % len]
@@ -131,7 +140,7 @@ export const Header = ({ autoFocusRef, from, allInline = false }) => {
         `SELECT check_id FROM checks WHERE place_id = $1 ORDER BY label`,
         [placeId2 ?? placeId],
       )
-      const checks = res?.rows
+      const checks = res?.rows as { check_id: string }[]
       const len = checks.length
       const index = checks.findIndex((p) => p.check_id === checkIdRef.current)
       const previous = checks[(index + len - 1) % len]
@@ -166,7 +175,7 @@ export const Header = ({ autoFocusRef, from, allInline = false }) => {
       `SELECT *, ST_AsGeoJSON(geometry)::json as geometry FROM checks WHERE check_id = $1`,
       [checkId],
     )
-    const check: Checks | undefined = res?.rows?.[0]
+    const check = res?.rows?.[0] as Checks | undefined
     const geometry = check?.geometry
     if (
       !geometry ||
@@ -188,11 +197,20 @@ export const Header = ({ autoFocusRef, from, allInline = false }) => {
       LIMIT 1`,
       [projectId, level],
     )
-    const layerRow = layerRes?.rows?.[0]
+    const layerRow = layerRes?.rows?.[0] as
+      | {
+          vl_vector_layer_id?: string
+          layer_presentation_id?: string
+          active?: boolean
+        }
+      | undefined
     const vectorLayerId: string | undefined = layerRow?.vl_vector_layer_id
     let lpId: string | undefined = layerRow?.layer_presentation_id
     if (!lpId && vectorLayerId) {
-      lpId = await createLayerPresentation({ vectorLayerId, active: true })
+      lpId = await createLayerPresentation({
+        vectorLayerId: vectorLayerId as never,
+        active: true,
+      })
     } else if (lpId && !layerRow?.active) {
       await db.query(
         `UPDATE layer_presentations SET active = true WHERE layer_presentation_id = $1`,
@@ -212,8 +230,8 @@ export const Header = ({ autoFocusRef, from, allInline = false }) => {
     }
 
     // 3. zoom to check
-    const buffered = buffer(geometry, 0.05)
-    const newBbox = bbox(buffered)
+    const buffered = buffer(geometry as AllGeoJSON, 0.05)
+    const newBbox = bbox(buffered!)
     const bounds = boundsFromBbox(newBbox)
     if (!bounds) return alertNoGeometry()
     setMapBounds(bounds)

@@ -31,7 +31,7 @@ export const useChartSubjectsNavData = ({
   const [openNodes] = useAtom(treeOpenNodesAtom)
   const location = useLocation()
 
-  const res = useLiveQuery(
+  const res = useLiveQuery<NavData[number]>(
     `
       SELECT
         chart_subject_id as id,
@@ -73,6 +73,7 @@ export const useChartSubjectsNavData = ({
     ownUrl,
     label: buildNavLabel({
       countFiltered: navs.length,
+      countUnfiltered: navs.length,
       namePlural: formatMessage({ id: 'gzT26p', defaultMessage: 'Themen' }),
       loading,
     }),

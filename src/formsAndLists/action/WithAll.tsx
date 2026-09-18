@@ -18,6 +18,7 @@ import {
 } from '../../modules/createRows.ts'
 import { Header } from './Header.tsx'
 import { ActionForm as Form } from './Form.tsx'
+import type { Validations } from './Form.tsx'
 import { Loading } from '../../components/shared/Loading.tsx'
 import { NotFound } from '../../components/NotFound.tsx'
 import { Section } from '../../components/shared/Section.tsx'
@@ -30,6 +31,7 @@ import { FilterButton } from '../../components/shared/FilterButton.tsx'
 import { UploaderContext } from '../../UploaderContext.ts'
 import { filterStringFromFilter } from '../../modules/filterStringFromFilter.ts'
 import type Actions from '../../models/public/Actions.ts'
+import type { InputOnChangeData } from '@fluentui/react-components'
 import styles from './WithAll.module.css'
 
 import '../../form.css'
@@ -49,7 +51,7 @@ export const ActionWithAll = ({
   const addOperation = useSetAtom(addOperationAtom)
   const [isDesigning] = useAtom(designingAtom)
   const { formatMessage } = useIntl()
-  const [validations, setValidations] = useState({})
+  const [validations, setValidations] = useState<Validations>({})
   const autoFocusRef = useRef<HTMLInputElement>(null)
   const navigate = useNavigate()
   const location = useLocation()
@@ -59,7 +61,7 @@ export const ActionWithAll = ({
   const res = useLiveQuery(`SELECT * FROM actions WHERE action_id = $1`, [
     actionId,
   ])
-  const row: Actions | undefined = res?.rows?.[0]
+  const row = res?.rows?.[0] as Actions | undefined
 
   const quantitiesCountRes = useLiveQuery(
     `SELECT count(*)::int AS count FROM action_quantities WHERE action_id = $1`,
@@ -99,9 +101,12 @@ export const ActionWithAll = ({
   )
   const filesCount = filesCountRes?.rows?.[0]?.count ?? 0
 
-  const onChange = async (e, data) => {
+  const onChange = async (
+    e: React.ChangeEvent<HTMLInputElement>,
+    data?: InputOnChangeData,
+  ) => {
     const { name, value } = getValueFromChange(e, data)
-    if (row[name] === value) return
+    if (!row || (row as Record<string, any>)[name] === value) return
     try {
       await db.query(`UPDATE actions SET ${name} = $1 WHERE action_id = $2`, [
         value,
@@ -110,7 +115,7 @@ export const ActionWithAll = ({
     } catch (error) {
       setValidations((prev) => ({
         ...prev,
-        [name]: { state: 'error', message: error.message },
+        [name]: { state: 'error', message: (error as Error).message },
       }))
       return
     }
@@ -147,7 +152,9 @@ export const ActionWithAll = ({
 
   const [filesFilter] = useAtom(filesFilterAtom)
   const filesIsFiltered = !!filterStringFromFilter(filesFilter)
-  const uploaderCtx = useContext(UploaderContext)
+  const uploaderCtx = useContext(UploaderContext) as {
+    current?: { getAPI?: () => { initFlow?: () => void } | null } | null
+  } | null
   const uploaderApi = uploaderCtx?.current?.getAPI?.()
   const onClickAddFile = () => uploaderApi?.initFlow?.()
 
@@ -169,7 +176,10 @@ export const ActionWithAll = ({
   const isTaxaList = /\/taxa\/?$/.test(location.pathname)
 
   const addQuantity = async () => {
-    const id = await createActionQuantity({ actionId, projectId })
+    const id = await createActionQuantity({
+      actionId: actionId!,
+      projectId: projectId!,
+    })
     if (!id) return
     navigate({ to: `${quantitiesUrl}/${id}` })
   }
@@ -188,7 +198,7 @@ export const ActionWithAll = ({
     ) : undefined
 
   const addTaxon = async () => {
-    const id = await createActionTaxon({ actionId })
+    const id = await createActionTaxon({ actionId: actionId! })
     if (!id) return
     navigate({ to: `${taxaUrl}/${id}` })
   }
@@ -217,7 +227,7 @@ export const ActionWithAll = ({
             <Form
               onChange={onChange}
               validations={validations}
-              row={row}
+              row={row as unknown as Record<string, unknown>}
               autoFocusRef={autoFocusRef}
               from={from}
             />

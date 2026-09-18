@@ -9,9 +9,9 @@ import { FormHeader } from '../../components/FormHeader/index.tsx'
 import { HistoryToggleButton } from '../../components/shared/HistoryCompare/HistoryToggleButton.tsx'
 import { addOperationAtom } from '../../store.ts'
 
-export const Header = ({ autoFocusRef, from = undefined }) => {
+export const Header = ({ autoFocusRef }: { autoFocusRef?: React.RefObject<HTMLInputElement | null>; from?: string }) => {
   const { projectId, subprojectId, placeId, placeId2, actionId, actionTaxonId } =
-    useParams({ from })
+    useParams({ strict: false })
   const navigate = useNavigate()
   const addOperation = useSetAtom(addOperationAtom)
   const { formatMessage } = useIntl()
@@ -31,10 +31,10 @@ export const Header = ({ autoFocusRef, from = undefined }) => {
   const countRes = useLiveQuery(
     `SELECT COUNT(*) as count FROM action_taxa WHERE action_id = '${actionId}'`,
   )
-  const rowCount = countRes?.rows?.[0]?.count ?? 2
+  const rowCount = Number(countRes?.rows?.[0]?.count ?? 2)
 
   const addRow = async () => {
-    const id = await createActionTaxon({ actionId })
+    const id = await createActionTaxon({actionId: actionId! })
     if (!id) return
     navigate({
       to: `../${id}`,
@@ -49,7 +49,7 @@ export const Header = ({ autoFocusRef, from = undefined }) => {
         'SELECT * FROM action_taxa WHERE action_taxon_id = $1',
         [actionTaxonId],
       )
-      const prev = prevRes?.rows?.[0] ?? {}
+      const prev = (prevRes?.rows?.[0] ?? {}) as Record<string, unknown>
       await db.query('DELETE FROM action_taxa WHERE action_taxon_id = $1', [
         actionTaxonId,
       ])
@@ -72,7 +72,7 @@ export const Header = ({ autoFocusRef, from = undefined }) => {
         'SELECT action_taxon_id FROM action_taxa WHERE action_id = $1 ORDER BY label',
         [actionId],
       )
-      const actionTaxa = res?.rows
+      const actionTaxa = res?.rows as { action_taxon_id: string }[]
       const len = actionTaxa.length
       const index = actionTaxa.findIndex(
         (p) => p.action_taxon_id === actionTaxonIdRef.current,
@@ -93,7 +93,7 @@ export const Header = ({ autoFocusRef, from = undefined }) => {
         'SELECT action_taxon_id FROM action_taxa WHERE action_id = $1 ORDER BY label',
         [actionId],
       )
-      const actionTaxa = res?.rows
+      const actionTaxa = res?.rows as { action_taxon_id: string }[]
       const len = actionTaxa.length
       const index = actionTaxa.findIndex(
         (p) => p.action_taxon_id === actionTaxonIdRef.current,

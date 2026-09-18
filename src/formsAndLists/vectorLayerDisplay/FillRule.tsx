@@ -2,8 +2,15 @@ import { useIntl } from 'react-intl'
 
 import { RadioGroupFromOptions } from '../../components/shared/RadioGroupFromOptions.tsx'
 import { vectorLayerFillRuleOptions } from '../../modules/constants.ts'
+import type VectorLayerDisplays from '../../models/public/VectorLayerDisplays.ts'
 
-export const FillRule = ({ onChange, row }) => {
+export const FillRule = ({
+  onChange,
+  row,
+}: {
+  onChange: (e: React.ChangeEvent<any>, data?: any) => void
+  row: VectorLayerDisplays | Record<string, any>
+}) => {
   const { formatMessage } = useIntl()
 
   const options = vectorLayerFillRuleOptions.map((o) => ({
@@ -21,7 +28,7 @@ export const FillRule = ({ onChange, row }) => {
       name="fill_rule"
       options={options}
       value={row.fill_rule ?? ''}
-      onChange={onChange}
+      onChange={(ev) => onChange(ev as React.ChangeEvent<HTMLInputElement>)}
     />
   )
 }

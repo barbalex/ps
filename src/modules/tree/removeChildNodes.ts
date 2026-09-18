@@ -4,20 +4,24 @@ import { isStartOf } from './isStartOf.ts'
 import { treeOpenNodesAtom, store } from '../../store.ts'
 
 interface Props {
-  nodes: string[]
-  isRoot: boolean
+  node?: string[]
+  isRoot?: boolean
 }
 
 export const removeChildNodes = async ({
   node = [],
   isRoot = false,
-}: Props): void => {
+}: Props): Promise<void> => {
   store.set(treeOpenNodesAtom, (openNodes) => {
     // remove all nodes that are children of the node
     const newNodes = openNodes.filter((openNode) => {
       if (isRoot) {
         // if is root, need to remove root as well
-        return !isStartOf({ node, otherNode: openNode })
+        // isStartOf's params are untyped (inferred as never[]), hence the assertion
+        return !isStartOf({
+          node,
+          otherNode: openNode,
+        } as unknown as Parameters<typeof isStartOf>[0])
       }
       // check if openNode is a child of node i.e. if it starts with node
       return !isEqual(openNode.slice(0, node.length), node)

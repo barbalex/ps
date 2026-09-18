@@ -5,11 +5,10 @@ import { useIntl } from 'react-intl'
 import { FormHeader } from '../../components/FormHeader/index.tsx'
 import { HistoryToggleButton } from '../../components/shared/HistoryCompare/HistoryToggleButton.tsx'
 
-const from = '/data/projects/$projectId_/wms-services/$wmsServiceId_/layers/$wmsServiceLayerId/'
 
 export const Header = () => {
   const { formatMessage } = useIntl()
-  const { projectId, wmsServiceId, wmsServiceLayerId } = useParams({ from })
+  const { projectId, wmsServiceId, wmsServiceLayerId } = useParams({ strict: false })
   const navigate = useNavigate()
   const basePath = `/data/projects/${projectId}/wms-services/${wmsServiceId}/layers/${wmsServiceLayerId}`
 
@@ -17,7 +16,7 @@ export const Header = () => {
     `SELECT COUNT(*) as count FROM wms_service_layers WHERE wms_service_id = $1`,
     [wmsServiceId],
   )
-  const rowCount = countRes?.rows?.[0]?.count ?? 2
+  const rowCount = Number(countRes?.rows?.[0]?.count ?? 2)
 
   const res = useLiveQuery(
     `
@@ -27,7 +26,7 @@ export const Header = () => {
     `,
     [wmsServiceId],
   )
-  const rows = res?.rows ?? []
+  const rows = (res?.rows ?? []) as { wms_service_layer_id: string }[]
   const len = rows.length
   const ownIndex = rows.findIndex((row) => row.wms_service_layer_id === wmsServiceLayerId)
 

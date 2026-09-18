@@ -959,7 +959,9 @@ export const EmailPassword = ({
                   className={styles.inlineTextLink}
                   onClick={() => onSwitchTwoFactorMethod('otp')}
                   disabled={
-                    isTwoFactorLoading || isLoading || twoFactorMethod === 'otp'
+                    isTwoFactorLoading ||
+                    isLoading ||
+                    (twoFactorMethod as string) === 'otp'
                   }
                 >
                   {formatMessage({

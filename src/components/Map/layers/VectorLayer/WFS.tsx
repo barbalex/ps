@@ -3,6 +3,7 @@
  */
 import { useEffect, useState, useCallback, useRef } from 'react'
 import { GeoJSON, useMap, useMapEvents } from 'react-leaflet'
+import * as L from 'leaflet'
 import axios from 'redaxios'
 import XMLViewer from 'react-xml-viewer'
 import { MdClose } from 'react-icons/md'
@@ -12,6 +13,11 @@ import proj4 from 'proj4'
 import reproject from 'reproject'
 import { usePGlite } from '@electric-sql/pglite-react'
 import { useSetAtom } from 'jotai'
+
+import type Crs from '../../../../models/public/Crs.ts'
+import type LayerPresentations from '../../../../models/public/LayerPresentations.ts'
+import type VectorLayers from '../../../../models/public/VectorLayers.ts'
+import type VectorLayerDisplays from '../../../../models/public/VectorLayerDisplays.ts'
 
 import * as fluentUiReactComponents from '@fluentui/react-components'
 const {
@@ -37,16 +43,22 @@ const xmlTheme = {
   attributeValueColor: '#2ECC40',
 }
 
-const bboxFromBounds = ({ bounds, defaultCrs }) => {
+const bboxFromBounds = ({
+  bounds,
+  defaultCrs,
+}: {
+  bounds: L.LatLngBounds
+  defaultCrs?: Crs | undefined
+}) => {
   const ne = bounds.getNorthEast()
   const sw = bounds.getSouthWest()
   const usesDefaultCrs = !!defaultCrs && defaultCrs.code !== 'EPSG:4326'
 
   const [swX, swY] = usesDefaultCrs
-    ? proj4('EPSG:4326', defaultCrs?.proj4, [sw.lng, sw.lat])
+    ? proj4('EPSG:4326', defaultCrs?.proj4!, [sw.lng, sw.lat])
     : [sw.lng, sw.lat]
   const [neX, neY] = usesDefaultCrs
-    ? proj4('EPSG:4326', defaultCrs?.proj4, [ne.lng, ne.lat])
+    ? proj4('EPSG:4326', defaultCrs?.proj4!, [ne.lng, ne.lat])
     : [ne.lng, ne.lat]
 
   const minX = Math.min(swX, neX)
@@ -60,16 +72,32 @@ const bboxFromBounds = ({ bounds, defaultCrs }) => {
   return `${minX - padX},${minY - padY},${maxX + padX},${maxY + padY}`
 }
 
-export const WFS = ({ layer, layerPresentation }) => {
+type WfsService = {
+  url: string
+  version: string | null
+  info_format: string | null
+  default_crs: string | null
+}
+
+type Props = {
+  layer: VectorLayers & {
+    label?: string | null
+    wfs_services?: WfsService
+    vector_layer_displays?: VectorLayerDisplays[] | null
+  }
+  layerPresentation: LayerPresentations
+}
+
+export const WFS = ({ layer, layerPresentation }: Props) => {
   const addNotification = useSetAtom(addNotificationAtom)
   const removeNotification = useSetAtom(removeNotificationAtom)
 
   const db = usePGlite()
-  const [error, setError] = useState()
-  const notificationIds = useRef([])
+  const [error, setError] = useState<string | null | undefined>(undefined)
+  const notificationIds = useRef<string[]>([])
 
   const display = layer.vector_layer_displays?.[0]
-  const wfsService = layer.wfs_services
+  const wfsService = layer.wfs_services!
 
   const removeNotifs = useCallback(() => {
     for (const id of notificationIds.current) {
@@ -90,21 +118,23 @@ export const WFS = ({ layer, layerPresentation }) => {
   const [zoom, setZoom] = useState(map.getZoom())
   const [lastBbox, setLastBbox] = useState<string | null>(null)
 
-  const [data, setData] = useState()
+  const [data, setData] = useState<GeoJSON.FeatureCollection | null | undefined>(
+    undefined,
+  )
   const fetchData = useCallback(
     async () => {
       const resCrs = await db.query(`SELECT * FROM crs WHERE code = $1`, [
         wfsDefaultCrsCode,
       ])
-      const defaultCrs = resCrs?.rows?.[0]
+      const defaultCrs = resCrs?.rows?.[0] as Crs | undefined
       removeNotifs()
       const bbox = bboxFromBounds({ bounds: map.getBounds(), defaultCrs })
       setLastBbox(bbox)
-      const notificationId = await addNotification({
+      const notificationId = (await addNotification({
         title: `Lade Vektor-Karte '${layer.label}'...`,
         intent: 'info',
         timeout: 100000,
-      })
+      } as Parameters<typeof addNotification>[0])) as string
       notificationIds.current = [notificationId, ...notificationIds.current]
       let res
       const outputFormat = wfsService.info_format
@@ -130,20 +160,28 @@ export const WFS = ({ layer, layerPresentation }) => {
           params,
         })
       } catch (error) {
+        const fetchError = error as {
+          message?: string
+          url?: string
+          status?: number
+          statusText?: string
+          data?: string | null
+          type?: string
+        }
         setShortTermOnlineFromFetchError(error)
         removeNotification(notificationId)
         console.error('VectorLayerWFS, error:', {
-          url: error?.url,
+          url: fetchError.url,
           error,
-          status: error?.status,
-          statusText: error?.statusText,
-          data: error?.data,
-          type: error?.type,
+          status: fetchError.status,
+          statusText: fetchError.statusText,
+          data: fetchError.data,
+          type: fetchError.type,
         })
-        setError(error.data)
+        setError(fetchError.data)
         return addNotification({
           title: `Fehler beim Laden der Geometrien für ${layer.label}`,
-          body: error.message,
+          body: fetchError.message,
           intent: 'error',
         })
       }
@@ -156,7 +194,11 @@ export const WFS = ({ layer, layerPresentation }) => {
       //   defaultCrs,
       //   wfsDefaultCrsCode,
       // })
-      const sourceData = res?.data
+      const sourceData = res?.data as
+        | (GeoJSON.FeatureCollection & {
+            crs?: { properties?: { name?: string } } | null
+          })
+        | undefined
       const dataToProject = sourceData?.features ? sourceData : null
       const responseCrsName = sourceData?.crs?.properties?.name
       const responseEpsg = responseCrsName?.includes('EPSG')
@@ -166,7 +208,8 @@ export const WFS = ({ layer, layerPresentation }) => {
       const sourceCrsRes = sourceCrsCode
         ? await db.query(`SELECT * FROM crs WHERE code = $1`, [sourceCrsCode])
         : null
-      const sourceCrs = sourceCrsRes?.rows?.[0] ?? defaultCrs
+      const sourceCrs =
+        (sourceCrsRes?.rows?.[0] as Crs | undefined) ?? defaultCrs
 
       const reprojectedData =
         dataToProject && sourceCrs?.proj4 && sourceCrsCode !== 'EPSG:4326'
@@ -177,7 +220,9 @@ export const WFS = ({ layer, layerPresentation }) => {
             )
           : dataToProject
 
-      setData(reprojectedData ?? sourceData ?? null)
+      setData(
+        (reprojectedData ?? sourceData ?? null) as GeoJSON.FeatureCollection | null,
+      )
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [
@@ -211,13 +256,13 @@ export const WFS = ({ layer, layerPresentation }) => {
   // include only if zoom between min_zoom and max_zoom
   if (
     layerPresentation.min_zoom !== undefined &&
-    zoom < layerPresentation.min_zoom
+    zoom < layerPresentation.min_zoom!
   ) {
     return null
   }
   if (
     layerPresentation.max_zoom !== undefined &&
-    zoom > layerPresentation.max_zoom
+    zoom > layerPresentation.max_zoom!
   ) {
     return null
   }
@@ -264,7 +309,8 @@ export const WFS = ({ layer, layerPresentation }) => {
         )}`}
         data={data}
         onEachFeature={(feature, geoLayer) => {
-          geoLayer.vectorLayerLabel = layer.label || 'WFS Layer'
+          ;(geoLayer as L.Layer & { vectorLayerLabel?: string })
+            .vectorLayerLabel = layer.label || 'WFS Layer'
           feature.properties = feature.properties ?? {}
           feature.properties.label = 'Feature'
         }}
@@ -272,15 +318,17 @@ export const WFS = ({ layer, layerPresentation }) => {
           vectorLayerDisplay: display,
           presentation: layerPresentation,
         })}
-        pointToLayer={(geoJsonPoint, latlng) => {
+        pointToLayer={(_geoJsonPoint, latlng) => {
           if (display.marker_type === 'circle') {
             return L.circleMarker(latlng, {
-              ...display,
+              ...(display as unknown as L.CircleMarkerOptions),
               radius: display.circle_marker_radius ?? 8,
             })
           }
 
-          const IconComponent = icons[display?.marker_symbol]
+          const IconComponent = icons[
+            display.marker_symbol as keyof typeof icons
+          ]
           const markerIconStyle = {
             '--marker-color': display.color ?? '#cc756b',
             '--marker-size': `${display.marker_size ?? 16}px`,
@@ -306,7 +354,7 @@ export const WFS = ({ layer, layerPresentation }) => {
             <DialogTitle>Error fetching data for vector layer</DialogTitle>
             <DialogContent className={styles.dialogContent}>
               <div className={styles.xmlViewer}>
-                <XMLViewer xml={error} theme={xmlTheme} />
+                <XMLViewer xml={error as string} theme={xmlTheme} />
               </div>
             </DialogContent>
             <DialogActions>

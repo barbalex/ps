@@ -35,13 +35,13 @@ export const RootQcs = () => {
   const [searchTerm, setSearchTerm] = useState('')
 
   // Load all root-level QCS
-  const qcsRes = useLiveQuery(
+  const qcsRes = useLiveQuery<QcRow>(
     `SELECT qcs_id, COALESCE(NULLIF(name_${language}, ''), name_de) AS label
      FROM qcs WHERE level = 'root' ORDER BY label`,
   )
 
   // Load active assignments for root level (no project_id, no subproject_id)
-  const activeRes = useLiveQuery(
+  const activeRes = useLiveQuery<ActiveEntry>(
     `SELECT qc_assignment_id, qc_id FROM qc_assignments
      WHERE project_id IS NULL AND subproject_id IS NULL`,
   )

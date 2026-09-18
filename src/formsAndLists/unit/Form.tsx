@@ -5,11 +5,22 @@ import { RadioGroupField } from '../../components/shared/RadioGroupField.tsx'
 import { SwitchField } from '../../components/shared/SwitchField.tsx'
 import { DropdownField } from '../../components/shared/DropdownField.tsx'
 import { unitTypeOptions } from '../../modules/constants.ts'
+import type Units from '../../models/public/Units.ts'
 
 import '../../form.css'
 
 // this form is rendered from a parent or outlet
-export const UnitForm = ({ onChange, row, autoFocusRef, validations = {} }) => {
+export const UnitForm = ({
+  onChange,
+  row,
+  autoFocusRef,
+  validations = {},
+}: {
+  onChange: (e: React.ChangeEvent<any>, data?: any) => void
+  row: Units | Record<string, any>
+  autoFocusRef?: React.Ref<HTMLInputElement>
+  validations?: Record<string, { state: 'error'; message: string }>
+}) => {
   const { formatMessage } = useIntl()
 
   const unitTypeLabelMap = Object.fromEntries(

@@ -22,7 +22,7 @@ export const useTaxaNavData = ({ projectId, taxonomyId }: Props) => {
   const location = useLocation()
   const { formatMessage } = useIntl()
 
-  const res = useLiveQuery(
+  const res = useLiveQuery<NavData>(
     `
       SELECT
         taxon_id AS id,

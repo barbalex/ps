@@ -1,9 +1,10 @@
 import { useState, useRef } from 'react'
 import { GeoJSON, useMapEvent, useMapEvents, useMap } from 'react-leaflet'
-import { Map } from '@types/leaflet'
+import * as L from 'leaflet'
 import * as ReactDOMServer from 'react-dom/server'
 import * as icons from 'react-icons/md'
 import { useAtomValue, useSetAtom } from 'jotai'
+import type { Feature, FeatureCollection, GeoJsonObject } from 'geojson'
 
 import { vectorLayerDisplayToProperties } from '../../../../modules/vectorLayerDisplayToProperties.ts'
 import { useVectorLayerLabel } from '../../../../modules/vectorLayerLabel.ts'
@@ -16,9 +17,54 @@ import {
   placesToAssignObservationToAtom,
 } from '../../../../store.ts'
 import { observationMarkers } from './observationMarkers.ts'
+import type LayerPresentations from '../../../../models/public/LayerPresentations.ts'
+import type VectorLayers from '../../../../models/public/VectorLayers.ts'
+import type VectorLayerDisplays from '../../../../models/public/VectorLayerDisplays.ts'
 import styles from './TableLayer.module.css'
 
-export const TableLayer = ({ data, layerPresentation, activeId = null, activeIdField = null }) => {
+export type TableLayerVectorLayer = VectorLayers & {
+  label: string | null
+  vector_layer_displays?: VectorLayerDisplays[] | null
+}
+
+export type TableLayerProps = {
+  data: FeatureCollection[]
+  layerPresentation: LayerPresentations & {
+    vector_layers: TableLayerVectorLayer
+  }
+  activeId?: string | null
+  activeIdField?: string | null
+}
+
+// Leaflet's Map with the flag used to suppress click handling during drags
+type MapWithDragState = L.Map & { _isDraggingObservation?: boolean }
+
+// Leaflet layers carrying internal marker metadata used for hit detection
+type CircleMarkerWithMeta = L.CircleMarker & {
+  vectorLayerLabel?: string
+  _isInternal?: boolean
+  _justDragged?: boolean
+}
+
+type MarkerWithMeta = L.Marker & {
+  _justDragged?: boolean
+}
+
+type LayerGroupWithMeta = L.LayerGroup & {
+  vectorLayerLabel?: string
+  _clickableCircle?: L.CircleMarker
+}
+
+type LayerWithMeta = L.Layer & {
+  vectorLayerLabel?: string
+}
+
+export const TableLayer = ({
+  data,
+  layerPresentation,
+  activeId = null,
+  activeIdField = null,
+}: TableLayerProps) => {
   const confirmAssigningToSingleTarget = useAtomValue(
     confirmAssigningToSingleTargetAtom,
   )
@@ -35,25 +81,27 @@ export const TableLayer = ({ data, layerPresentation, activeId = null, activeIdF
   const label = useVectorLayerLabel(layer, layer?.project_id)
   const layerNameForState = layer?.name
 
-  const isDraggable = draggableLayers.includes(layerNameForState)
+  const isDraggable = draggableLayers.includes(layerNameForState as string)
 
   // adapt to multiple vector_layer_displays
   const vectorLayerDisplays = layer.vector_layer_displays
   const firstDisplay = vectorLayerDisplays?.[0]
 
-  const displayFromFeature = (feature) => {
+  const displayFromFeature = (
+    feature: Feature | undefined,
+  ): VectorLayerDisplays => {
     // display_by_property is _not_ under the data property
     // as passing the data object to feature.properties lead to errors
     const displayToUse = (vectorLayerDisplays ?? []).find(
       (vld) =>
         vld.display_property_value ===
-        feature.properties?.[layer?.display_by_property],
+        feature?.properties?.[layer?.display_by_property as string],
     )
 
-    return displayToUse ?? firstDisplay
+    return (displayToUse ?? firstDisplay) as VectorLayerDisplays
   }
 
-  const map: Map = useMap()
+  const map = useMap() as MapWithDragState
   const [zoom, setZoom] = useState(map.getZoom())
   useMapEvent('zoomend', () => setZoom(map.getZoom()))
 
@@ -74,12 +122,12 @@ export const TableLayer = ({ data, layerPresentation, activeId = null, activeIdF
   // include only if zoom between min_zoom and max_zoom
   if (
     layerPresentation.min_zoom !== undefined &&
-    zoom < layerPresentation.min_zoom
+    zoom < (layerPresentation.min_zoom as number)
   )
     return null
   if (
     layerPresentation.max_zoom !== undefined &&
-    zoom > layerPresentation.max_zoom
+    zoom > (layerPresentation.max_zoom as number)
   )
     return null
   if (!data?.length) return null
@@ -101,7 +149,7 @@ export const TableLayer = ({ data, layerPresentation, activeId = null, activeIdF
     <ErrorBoundary layer={layer}>
       <GeoJSON
         key={`${dataKey}/${JSON.stringify(firstDisplay)}/${activeId ?? ''}`}
-        data={data}
+        data={data as unknown as GeoJsonObject}
         // style by properties, use a function that receives the feature: https://stackoverflow.com/a/66106512/712005
         style={(feature) => {
           // need to choose display to pass in
@@ -138,7 +186,7 @@ export const TableLayer = ({ data, layerPresentation, activeId = null, activeIdF
               ...(isDraggable
                 ? { className: 'draggable-hitbox' }
                 : { className: 'clickable-hitbox' }),
-            })
+            }) as CircleMarkerWithMeta
             // Store vector layer label on clickableCircle too
             clickableCircle.vectorLayerLabel = label
             // Mark as internal layer to skip in click detection
@@ -156,13 +204,16 @@ export const TableLayer = ({ data, layerPresentation, activeId = null, activeIdF
               interactive: false,
               bubblingMouseEvents: false,
               className: 'non-interactive-visual',
-            })
+            } as L.CircleMarkerOptions) as CircleMarkerWithMeta
             // Mark as internal layer
             visualCircle._isInternal = true
 
-            const marker = L.layerGroup([clickableCircle, visualCircle])
+            const marker = L.layerGroup([
+              clickableCircle,
+              visualCircle,
+            ]) as LayerGroupWithMeta
             // Copy feature to the group AND to clickableCircle for popup binding
-            marker.feature = feature
+            ;(marker as unknown as { feature?: Feature }).feature = feature
             clickableCircle.feature = feature
             // Store vector layer label for grouping in info panel
             marker.vectorLayerLabel = label
@@ -175,13 +226,13 @@ export const TableLayer = ({ data, layerPresentation, activeId = null, activeIdF
 
               // extract trackCursor as a function so this specific
               // drag can be cancelled by clearing draggingRef
-              const trackCursor = (e) => {
+              const trackCursor = (e: L.LeafletMouseEvent) => {
                 clickableCircle.setLatLng(e.latlng)
                 visualCircle.setLatLng(e.latlng)
               }
 
               // Define mouseup handler; registered via component-level useMapEvents
-              const handleMouseUp = (e) => {
+              const handleMouseUp = (e: L.LeafletMouseEvent) => {
                 map.dragging.enable()
                 draggingRef.current = null
 
@@ -195,8 +246,8 @@ export const TableLayer = ({ data, layerPresentation, activeId = null, activeIdF
                   return
                 }
                 // Stop propagation to prevent click event from opening info sidebar
-                L.DomEvent.stopPropagation(e)
-                L.DomEvent.preventDefault(e)
+                L.DomEvent.stopPropagation(e as unknown as Event)
+                L.DomEvent.preventDefault(e as unknown as Event)
 
                 // Set a flag to ignore the next click event
                 clickableCircle._justDragged = true
@@ -239,8 +290,8 @@ export const TableLayer = ({ data, layerPresentation, activeId = null, activeIdF
               // Prevent click event immediately after drag
               clickableCircle.on('click', function (e) {
                 if (clickableCircle._justDragged) {
-                  L.DomEvent.stopPropagation(e)
-                  L.DomEvent.preventDefault(e)
+                  L.DomEvent.stopPropagation(e as unknown as Event)
+                  L.DomEvent.preventDefault(e as unknown as Event)
                   return false
                 }
               })
@@ -249,7 +300,8 @@ export const TableLayer = ({ data, layerPresentation, activeId = null, activeIdF
             return marker
           }
 
-          const IconComponent = icons[displayToUse.marker_symbol]
+          const IconComponent =
+            icons[displayToUse.marker_symbol as keyof typeof icons]
 
           const markerSize = displayToUse.marker_size ?? 16
           const clickRadius = Math.max(markerSize / 2 + 5, 10)
@@ -263,7 +315,7 @@ export const TableLayer = ({ data, layerPresentation, activeId = null, activeIdF
             ...(isDraggable
               ? { className: 'draggable-hitbox' }
               : { className: 'clickable-hitbox' }),
-          })
+          }) as CircleMarkerWithMeta
           clickableCircle.vectorLayerLabel = label
           clickableCircle._isInternal = true
 
@@ -272,7 +324,7 @@ export const TableLayer = ({ data, layerPresentation, activeId = null, activeIdF
             '--marker-size': `${markerSize}px`,
           } as React.CSSProperties
 
-          const marker = IconComponent
+          const marker = (IconComponent
             ? L.marker(latlng, {
                 icon: L.divIcon({
                   // Keep runtime values as CSS variables while moving declarations to CSS module.
@@ -294,10 +346,13 @@ export const TableLayer = ({ data, layerPresentation, activeId = null, activeIdF
             : L.marker(latlng, {
                 draggable: isDraggable,
                 ...(isDraggable ? { className: 'draggable' } : {}),
-              })
+              })) as MarkerWithMeta
 
-          const group = L.layerGroup([clickableCircle, marker])
-          group.feature = feature
+          const group = L.layerGroup([
+            clickableCircle,
+            marker,
+          ]) as LayerGroupWithMeta
+          ;(group as unknown as { feature?: Feature }).feature = feature
           clickableCircle.feature = feature
           marker.feature = feature
           group.vectorLayerLabel = label
@@ -323,8 +378,8 @@ export const TableLayer = ({ data, layerPresentation, activeId = null, activeIdF
             marker.on('dragend', (e) => {
               const position = marker.getLatLng()
               // Prevent click event from firing after drag
-              L.DomEvent.stopPropagation(e)
-              L.DomEvent.preventDefault(e)
+              L.DomEvent.stopPropagation(e as unknown as Event)
+              L.DomEvent.preventDefault(e as unknown as Event)
               // Set a flag to ignore the next click event
               marker._justDragged = true
               clickableCircle._justDragged = true
@@ -338,7 +393,7 @@ export const TableLayer = ({ data, layerPresentation, activeId = null, activeIdF
               }, 150)
               assignToNearestDroppable({
                 latLng: position,
-                observationId: marker.feature.properties?.observation_id,
+                observationId: marker.feature!.properties?.observation_id,
                 map,
                 droppableLayers,
                 confirmAssigningToSingleTarget,
@@ -349,8 +404,8 @@ export const TableLayer = ({ data, layerPresentation, activeId = null, activeIdF
             // Prevent click event immediately after drag
             marker.on('click', (e) => {
               if (marker._justDragged) {
-                L.DomEvent.stopPropagation(e)
-                L.DomEvent.preventDefault(e)
+                L.DomEvent.stopPropagation(e as unknown as Event)
+                L.DomEvent.preventDefault(e as unknown as Event)
                 return false
               }
             })
@@ -358,8 +413,8 @@ export const TableLayer = ({ data, layerPresentation, activeId = null, activeIdF
             // Also prevent click on the clickable circle after drag
             clickableCircle.on('click', (e) => {
               if (clickableCircle._justDragged) {
-                L.DomEvent.stopPropagation(e)
-                L.DomEvent.preventDefault(e)
+                L.DomEvent.stopPropagation(e as unknown as Event)
+                L.DomEvent.preventDefault(e as unknown as Event)
                 return false
               }
             })
@@ -370,7 +425,7 @@ export const TableLayer = ({ data, layerPresentation, activeId = null, activeIdF
         onEachFeature={(feature, geoLayer) => {
           if (!feature) return
           if (geoLayer) {
-            geoLayer.vectorLayerLabel = label
+            ;(geoLayer as LayerWithMeta).vectorLayerLabel = label
           }
           // Table layer data is shown in the Info sidebar via ClickListener
           // so we don't bind popups here

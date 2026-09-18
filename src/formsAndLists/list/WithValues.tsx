@@ -30,7 +30,9 @@ export const ListWithValues = ({ from }: { from: string }) => {
   const { projectId, listId } = useParams({ strict: false })
   const addOperation = useSetAtom(addOperationAtom)
   const { formatMessage } = useIntl()
-  const [validations, setValidations] = useState({})
+  const [validations, setValidations] = useState<
+    Record<string, { state: 'error'; message: string }>
+  >({})
   const [importDialogOpen, setImportDialogOpen] = useState(false)
 
   const autoFocusRef = useRef<HTMLInputElement>(null)
@@ -39,7 +41,7 @@ export const ListWithValues = ({ from }: { from: string }) => {
 
   const db = usePGlite()
   const res = useLiveQuery(`SELECT * FROM lists WHERE list_id = $1`, [listId])
-  const row: Lists | undefined = res?.rows?.[0]
+  const row: Lists | undefined = res?.rows?.[0] as Lists | undefined
 
   const projectRes = useLiveQuery(
     `SELECT list_values_in_list FROM projects WHERE project_id = $1`,
@@ -59,13 +61,13 @@ export const ListWithValues = ({ from }: { from: string }) => {
   const isListValuesList = /\/values\/?$/.test(location.pathname)
 
   const onClickAddListValue = async () => {
-    const id = await createListValue({ listId })
+    const id = await createListValue({listId: listId! })
     if (!id) return
     navigate({ to: `${valuesUrl}/${id}/` })
   }
 
   const deleteAllValues = async () => {
-    const db = store.get(pgliteDbAtom)
+    const db = store.get(pgliteDbAtom)!
     await db.query(`DELETE FROM list_values WHERE list_id = $1`, [listId])
     store.set(addOperationAtom, {
       table: 'list_values',
@@ -77,7 +79,7 @@ export const ListWithValues = ({ from }: { from: string }) => {
   const onClickImport = () => setImportDialogOpen(true)
 
   const onImportFileSelected = (file: File, valueType: string | undefined) => {
-    importListValues({ file, listId, valueType })
+    importListValues({ file, listId: listId!, valueType })
   }
 
   const importButton = (
@@ -117,10 +119,13 @@ export const ListWithValues = ({ from }: { from: string }) => {
       </>
     ) : undefined
 
-  const onChange = async (e, data) => {
+  const onChange = async (
+    e: React.ChangeEvent<HTMLInputElement>,
+    data: Parameters<typeof getValueFromChange>[1],
+  ) => {
     const { name, value } = getValueFromChange(e, data)
     // only change if value has changed: maybe only focus entered and left
-    if (row[name] === value) return
+    if ((row as Record<string, any>)[name] === value) return
 
     try {
       await db.query(`UPDATE lists SET ${name} = $1 WHERE list_id = $2`, [
@@ -130,7 +135,7 @@ export const ListWithValues = ({ from }: { from: string }) => {
     } catch (error) {
       setValidations((prev) => ({
         ...prev,
-        [name]: { state: 'error', message: error.message },
+        [name]: { state: 'error', message: error instanceof Error ? error.message : String(error) },
       }))
       return
     }
@@ -164,7 +169,7 @@ export const ListWithValues = ({ from }: { from: string }) => {
     <div className="form-outer-container">
       <ImportDialog
         open={importDialogOpen}
-        listId={listId}
+        listId={listId!}
         onClose={() => setImportDialogOpen(false)}
         onFileSelected={onImportFileSelected}
       />

@@ -10,23 +10,18 @@ import { Loading } from '../components/shared/Loading.tsx'
 
 import '../form.css'
 
-export const Checks = ({ from }) => {
-  const { projectId, subprojectId, placeId, placeId2 } = useParams({ from })
+export const Checks = ({ from }: { from: string }) => {
+  const { projectId, subprojectId, placeId, placeId2 } = useParams({ strict: false })
   const navigate = useNavigate()
 
   const { loading, navData, isFiltered } = useChecksNavData({
-    projectId,
-    subprojectId,
-    placeId,
-    placeId2,
+    projectId: projectId!,    subprojectId: subprojectId!,    placeId: placeId!,    placeId2,
   })
   const { navs, label, nameSingular } = navData
 
   const add = async () => {
     const id = await createCheck({
-      projectId,
-      placeId: placeId2 ?? placeId,
-    })
+      projectId: projectId!,      placeId: (placeId2 ?? placeId)!,    })
     if (!id) return
     navigate({
       to: id,

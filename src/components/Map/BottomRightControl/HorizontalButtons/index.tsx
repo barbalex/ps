@@ -1,4 +1,5 @@
 import { useRef, useEffect } from 'react'
+import * as L from 'leaflet'
 
 import { ScaleSwitchControl } from './ScaleSwitchControl/index.tsx'
 import { ScaleControl } from './ScaleControl.tsx'
@@ -9,10 +10,10 @@ import styles from './index.module.css'
 export const HorizontalButtons = () => {
   // prevent click propagation on to map
   // https://stackoverflow.com/a/57013052/712005
-  const ref = useRef()
+  const ref = useRef<HTMLDivElement>(null)
   useEffect(() => {
-    L.DomEvent.disableClickPropagation(ref.current)
-    L.DomEvent.disableScrollPropagation(ref.current)
+    L.DomEvent.disableClickPropagation(ref.current!)
+    L.DomEvent.disableScrollPropagation(ref.current!)
   }, [])
 
   return (

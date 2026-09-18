@@ -12,12 +12,12 @@ import { addOperationAtom } from '../../store.ts'
 
 import '../../form.css'
 
-const from = '/data/qcs/$qcsId'
-
 export const Qc = () => {
-  const { qcsId } = useParams({ from })
+  const { qcsId } = useParams({ strict: false })
   const addOperation = useSetAtom(addOperationAtom)
-  const [validations, setValidations] = useState({})
+  const [validations, setValidations] = useState<
+    Record<string, { state: 'error'; message: string }>
+  >({})
 
   const autoFocusRef = useRef<HTMLInputElement>(null)
 
@@ -25,9 +25,12 @@ export const Qc = () => {
   const res = useLiveQuery(`SELECT * FROM qcs WHERE qcs_id = $1`, [qcsId])
   const row = res?.rows?.[0]
 
-  const onChange = async (e, data) => {
+  const onChange = async (
+    e: Parameters<typeof getValueFromChange>[0],
+    data: Parameters<typeof getValueFromChange>[1],
+  ) => {
     const { name, value } = getValueFromChange(e, data)
-    if (row[name] === value) return
+    if (row?.[name] === value) return
 
     const sql = `UPDATE qcs SET ${name} = $1 WHERE qcs_id = $2`
     try {
@@ -35,7 +38,7 @@ export const Qc = () => {
     } catch (error) {
       setValidations((prev) => ({
         ...prev,
-        [name]: { state: 'error', message: error.message },
+        [name]: { state: 'error', message: (error as Error).message },
       }))
       return
     }

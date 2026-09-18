@@ -13,17 +13,12 @@ export const GoalReports = ({ hideHeader = false }) => {
   const reportsBaseUrl = `/data/projects/${projectId}/subprojects/${subprojectId}/goals/${goalId}/reports`
 
   const { loading, navData } = useGoalReportsNavData({
-    projectId,
-    subprojectId,
-    goalId,
-  })
+    projectId: projectId!,    subprojectId: subprojectId!,    goalId: goalId!,  })
   const { navs, label, nameSingular } = navData
 
   const add = async () => {
     const id = await createGoalReport({
-      projectId,
-      goalId,
-    })
+      projectId: projectId!,      goalId: goalId!,    })
 
     if (!id) return
 

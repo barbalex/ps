@@ -9,9 +9,7 @@ import { languageAtom } from '../../store.ts'
 import { subprojectNamePluralExpr } from '../../modules/subprojectNameCols.ts'
 import { getPlaceFallbackNames } from '../../modules/placeNameFallback.ts'
 import { projectTypeNames } from '../../modules/projectTypeNames.ts'
-
-const from =
-  '/data/projects/$projectId_/subprojects/$subprojectId_/charts/$chartId_/subjects/$chartSubjectId/'
+import type ChartSubjects from '../../models/public/ChartSubjects.ts'
 
 type Option = {
   id: string
@@ -19,10 +17,28 @@ type Option = {
   table_level: string | null
 }
 
-export const Table = ({ onChange, row, ref, validations }) => {
+export const Table = ({
+  onChange,
+  row,
+  ref,
+  validations,
+}: {
+  onChange: (e: React.ChangeEvent<HTMLInputElement>, data?: object) => void
+  row: ChartSubjects
+  ref?: React.Ref<HTMLInputElement>
+  validations: Record<
+    string,
+    { state?: 'error' | 'warning' | 'success' | 'none'; message?: string }
+  >
+}) => {
   const { formatMessage } = useIntl()
   const [language] = useAtom(languageAtom)
-  const { projectId_ } = useParams({ from })
+  // projectId_ is not a registered param name; kept as-is to preserve behavior
+  const params = useParams({ strict: false }) as Record<
+    string,
+    string | undefined
+  >
+  const projectId_ = params.projectId_
   const isFirstRender = useIsFirstRender()
 
   const projectRes = useLiveQuery(
@@ -43,7 +59,12 @@ export const Table = ({ onChange, row, ref, validations }) => {
   const projectType = projectRes?.rows[0]?.type
   const subprojectsLabel =
     (projectRes?.rows[0]?.name_plural as string | null | undefined) ??
-    projectTypeNames[projectType ?? 'species']?.[
+    (
+      projectTypeNames[(projectType ?? 'species') as string] as Record<
+        string,
+        string
+      >
+    )?.[
       language !== 'de'
         ? `subproject_name_plural_${language}`
         : 'subproject_name_plural'
@@ -53,12 +74,12 @@ export const Table = ({ onChange, row, ref, validations }) => {
   const level1Row = placeLevelsRes?.rows?.find((r) => r.level === 1)
   const level2Row = placeLevelsRes?.rows?.find((r) => r.level === 2)
   const fallback1 = getPlaceFallbackNames(
-    projectType ?? 'species',
+    (projectType ?? 'species') as string,
     1,
     formatMessage,
   )
   const fallback2 = getPlaceFallbackNames(
-    projectType ?? 'species',
+    (projectType ?? 'species') as string,
     2,
     formatMessage,
   )

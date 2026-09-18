@@ -26,13 +26,15 @@ import '../../form.css'
 
 const { Button } = fluentUiReactComponents
 
-export const ActionReportWithQuantities = ({ from }) => {
+export const ActionReportWithQuantities = ({ from }: { from: string }) => {
   const { actionReportId, projectId, placeId, placeId2, subprojectId } =
     useParams({ strict: false })
   const addOperation = useSetAtom(addOperationAtom)
   const [isDesigning] = useAtom(designingAtom)
   const { formatMessage } = useIntl()
-  const [validations, setValidations] = useState({})
+  const [validations, setValidations] = useState<
+    Record<string, { state: 'error'; message: string }>
+  >({})
   const autoFocusRef = useRef<HTMLInputElement>(null)
   const navigate = useNavigate()
   const location = useLocation()
@@ -43,7 +45,7 @@ export const ActionReportWithQuantities = ({ from }) => {
     `SELECT * FROM action_reports WHERE place_action_report_id = $1`,
     [actionReportId],
   )
-  const row: ActionReports | undefined = res?.rows?.[0]
+  const row = res?.rows?.[0] as ActionReports | undefined
 
   const quantitiesCountRes = useLiveQuery(
     `SELECT count(*)::int AS count FROM action_report_quantities WHERE place_action_report_id = $1`,
@@ -59,9 +61,12 @@ export const ActionReportWithQuantities = ({ from }) => {
   const showQuantities =
     isDesigning || placeLevel?.action_report_quantities !== false
 
-  const onChange = async (e, data) => {
+  const onChange = async (
+    e: React.ChangeEvent<HTMLInputElement>,
+    data?: Parameters<typeof getValueFromChange>[1],
+  ) => {
     const { name, value } = getValueFromChange(e, data)
-    if (row[name] === value) return
+    if ((row as Record<string, any>)[name] === value) return
     try {
       await db.query(
         `UPDATE action_reports SET ${name} = $1 WHERE place_action_report_id = $2`,
@@ -70,7 +75,7 @@ export const ActionReportWithQuantities = ({ from }) => {
     } catch (error) {
       setValidations((prev) => ({
         ...prev,
-        [name]: { state: 'error', message: error.message },
+        [name]: { state: 'error', message: error instanceof Error ? error.message : String(error) },
       }))
       return
     }
@@ -98,7 +103,7 @@ export const ActionReportWithQuantities = ({ from }) => {
   const quantitiesUrl = `${actionReportBaseUrl}/quantities`
 
   const addQuantity = async () => {
-    const id = await createActionReportQuantity({ actionReportId })
+    const id = await createActionReportQuantity({actionReportId: actionReportId! })
     if (!id) return
     navigate({ to: `${quantitiesUrl}/${id}` })
   }

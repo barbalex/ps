@@ -37,7 +37,7 @@ export const useQcNavData = ({ qcsId }: Props) => {
 
   const loading = res === undefined
 
-  const nav: NavData | undefined = res?.rows?.[0]
+  const nav = res?.rows?.[0] as NavData | undefined
 
   const ownArray = [...parentArray, qcsId]
   const ownUrl = `/${ownArray.join('/')}`

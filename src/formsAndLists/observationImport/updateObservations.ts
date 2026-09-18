@@ -1,17 +1,38 @@
 import { read, utils, set_cptable } from '@e965/xlsx'
 import * as cptable from '@e965/xlsx/dist/cpexcel.full.mjs'
-import { point, Point, featureCollection } from '@turf/helpers'
+import { point, featureCollection } from '@turf/helpers'
 import proj4 from 'proj4'
 import axios from 'redaxios'
+import type { PGliteWithLive } from '@electric-sql/pglite/live'
 import { createObservation } from '../../modules/createRows.ts'
-import { addOperationAtom, store, intlAtom } from '../../store.ts'
+import {
+  addOperationAtom,
+  store,
+  intlAtom,
+  type QueuedOperation,
+} from '../../store.ts'
 import { setShortTermOnlineFromFetchError } from '../../modules/setShortTermOnlineFromFetchError.ts'
 import { backgroundTasks } from '../../modules/backgroundTasks.ts'
+import type ObservationImports from '../../models/public/ObservationImports.ts'
 
 set_cptable(cptable)
 
+type ProcessDataResult = { success: boolean; message: string }
+
+type ExistingObservation = {
+  observation_id: string
+  data: Record<string, unknown>
+  place_id: string | null
+  not_to_assign: boolean | null
+  comment: string | null
+}
+
 // Helper to calculate geometry from observation data
-const calculateGeometry = (observationData, observationImport, _proj4Setup) => {
+const calculateGeometry = (
+  observationData: Record<string, unknown>,
+  observationImport: ObservationImports,
+  _proj4Setup: boolean,
+) => {
   if (
     !observationImport.x_coordinate_field ||
     !observationImport.y_coordinate_field
@@ -29,8 +50,12 @@ const calculateGeometry = (observationData, observationImport, _proj4Setup) => {
   }
 
   try {
-    const position = proj4(observationImport.crs, 'EPSG:4326', coordinates)
-    const myPoint: Point = point(position.reverse())
+    const position = proj4(
+      observationImport.crs as string,
+      'EPSG:4326',
+      coordinates as number[],
+    )
+    const myPoint = point(position.reverse())
     return featureCollection([myPoint])
   } catch (error) {
     console.error('Error calculating geometry:', error)
@@ -39,7 +64,10 @@ const calculateGeometry = (observationData, observationImport, _proj4Setup) => {
 }
 
 // Helper to calculate label from observation data
-const calculateLabel = (observationData, labelCreation) => {
+const calculateLabel = (
+  observationData: Record<string, unknown>,
+  labelCreation: unknown,
+) => {
   if (
     !labelCreation ||
     !Array.isArray(labelCreation) ||
@@ -59,7 +87,7 @@ const calculateLabel = (observationData, labelCreation) => {
 }
 
 // Setup proj4 for coordinate transformations
-const setupProj4 = async (observationImport) => {
+const setupProj4 = async (observationImport: ObservationImports) => {
   if (!observationImport.crs || observationImport.crs === 'EPSG:4326') {
     return true // No transformation needed
   }
@@ -88,10 +116,18 @@ const setupProj4 = async (observationImport) => {
 /**
  * Handles "replace" operation: deletes all existing observations and creates new ones
  */
-export const replaceObservations = async ({ file, observationImport, db }) => {
+export const replaceObservations = async ({
+  file,
+  observationImport,
+  db,
+}: {
+  file?: File | undefined
+  observationImport: ObservationImports
+  db: PGliteWithLive
+}): Promise<ProcessDataResult> => {
   if (!file) return { success: false, message: 'No file selected' }
 
-  return new Promise((resolve, reject) => {
+  return new Promise<ProcessDataResult>((resolve, reject) => {
     const reader = new FileReader()
 
     reader.onload = async () => {
@@ -108,7 +144,9 @@ export const replaceObservations = async ({ file, observationImport, db }) => {
           }),
           sheetName = workbook.SheetNames[0],
           worksheet = workbook.Sheets[sheetName]
-        const data = utils.sheet_to_json(worksheet).map((d) => {
+        const data = utils.sheet_to_json<Record<string, unknown>>(
+          worksheet,
+        ).map((d) => {
           const { __rowNum__, ...rest } = d
           return rest
         })
@@ -141,11 +179,11 @@ export const replaceObservations = async ({ file, observationImport, db }) => {
         let processed = 0
         for (const occ of observations) {
           const idInSource = observationImport.id_field
-            ? occ.data[observationImport.id_field]
+            ? occ.data?.[observationImport.id_field]
             : null
-          const geometry = calculateGeometry(occ.data, observationImport, true)
+          const geometry = calculateGeometry(occ.data!, observationImport, true)
           const label = calculateLabel(
-            occ.data,
+            occ.data!,
             observationImport.label_creation,
           )
 
@@ -174,7 +212,7 @@ export const replaceObservations = async ({ file, observationImport, db }) => {
           where: {
             observation_import_id: observationImport.observation_import_id,
           },
-        })
+        } as unknown as Omit<QueuedOperation, 'id' | 'time'>)
         store.set(addOperationAtom, {
           table: 'observations',
           operation: 'insertMany',
@@ -191,7 +229,7 @@ export const replaceObservations = async ({ file, observationImport, db }) => {
             ) ?? `${observations.length} Beobachtungen ersetzt`,
         })
       } catch (error) {
-        if (taskStarted) backgroundTasks.error(taskId, error.message)
+        if (taskStarted) backgroundTasks.error(taskId, (error as Error).message)
         reject(error)
       }
     }
@@ -209,13 +247,17 @@ export const updateAndExtendObservations = async ({
   file,
   observationImport,
   db,
-}) => {
+}: {
+  file?: File | undefined
+  observationImport: ObservationImports
+  db: PGliteWithLive
+}): Promise<ProcessDataResult> => {
   if (!file) return { success: false, message: 'No file selected' }
   if (!observationImport.id_field) {
     return { success: false, message: 'ID field not set' }
   }
 
-  return new Promise((resolve, reject) => {
+  return new Promise<ProcessDataResult>((resolve, reject) => {
     const reader = new FileReader()
 
     reader.onload = async () => {
@@ -232,7 +274,9 @@ export const updateAndExtendObservations = async ({
           }),
           sheetName = workbook.SheetNames[0],
           worksheet = workbook.Sheets[sheetName]
-        const data = utils.sheet_to_json(worksheet).map((d) => {
+        const data = utils.sheet_to_json<Record<string, unknown>>(
+          worksheet,
+        ).map((d) => {
           const { __rowNum__, ...rest } = d
           return rest
         })
@@ -245,21 +289,22 @@ export const updateAndExtendObservations = async ({
           `SELECT observation_id, data, place_id, not_to_assign, comment FROM observations WHERE observation_import_id = $1`,
           [observationImport.observation_import_id],
         )
-        const existingObservations = existingResult?.rows || []
+        const existingObservations = (existingResult?.rows ||
+          []) as ExistingObservation[]
 
         // Build map of existing observations by id_in_source
-        const existingMap = new Map()
+        const existingMap = new Map<string, ExistingObservation>()
         for (const occ of existingObservations) {
-          const idInSource = occ.data[observationImport.id_field]
+          const idInSource = occ.data[observationImport.id_field!]
           if (idInSource) {
             existingMap.set(String(idInSource), occ)
           }
         }
 
         // Build map of new data by id_field
-        const newDataMap = new Map()
+        const newDataMap = new Map<string, Record<string, unknown>>()
         for (const row of data) {
-          const idValue = row[observationImport.id_field]
+          const idValue = row[observationImport.id_field!]
           if (idValue) {
             newDataMap.set(String(idValue), row)
           }
@@ -383,7 +428,7 @@ export const updateAndExtendObservations = async ({
             ) ?? `Aktualisiert: ${updatedCount}, hinzugefügt: ${addedCount}, entfernt: ${removedCount}`,
         })
       } catch (error) {
-        if (taskStarted) backgroundTasks.error(taskId, error.message)
+        if (taskStarted) backgroundTasks.error(taskId, (error as Error).message)
         reject(error)
       }
     }
@@ -393,3 +438,4 @@ export const updateAndExtendObservations = async ({
     reader.readAsArrayBuffer(file)
   })
 }
+

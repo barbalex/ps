@@ -7,11 +7,14 @@ import { Row } from '../../components/shared/Row.tsx'
 import { Header } from './Header.tsx'
 import { NotFound } from '../../components/NotFound.tsx'
 
-export const ListList = ({ from }) => {
-  const { projectId, listId } = useParams({ from })
+export const ListList = ({ from }: { from: string }) => {
+  const { projectId, listId } = useParams({ strict: false })
   const { formatMessage } = useIntl()
-  const { loading, navData } = useListNavData({ projectId, listId })
-  const { navs, label, notFound } = navData
+  const { loading, navData } = useListNavData({
+    projectId: projectId!,
+    listId: listId!,
+  })
+ const { navs, label, notFound } = navData
 
   if (notFound) {
     return (

@@ -9,7 +9,17 @@ import { FormHeader } from '../../components/FormHeader/index.tsx'
 import { HistoryToggleButton } from '../../components/shared/HistoryCompare/HistoryToggleButton.tsx'
 import { designingAtom, addOperationAtom } from '../../store.ts'
 
-const getFilter = ({ placeId, placeId2, projectId, subprojectId }) => {
+const getFilter = ({
+  placeId,
+  placeId2,
+  projectId,
+  subprojectId,
+}: {
+  placeId?: string
+  placeId2?: string
+  projectId?: string
+  subprojectId?: string
+}) => {
   let filterField
   let filterValue
   if (placeId2) {
@@ -28,7 +38,13 @@ const getFilter = ({ placeId, placeId2, projectId, subprojectId }) => {
   return { filterField, filterValue }
 }
 
-export const Header = ({ autoFocusRef, from }) => {
+export const Header = ({
+  autoFocusRef,
+  from,
+}: {
+  autoFocusRef?: React.RefObject<HTMLInputElement | null>
+  from: string
+}) => {
   const { formatMessage } = useIntl()
   const isDetailView =
     from ===
@@ -38,9 +54,7 @@ export const Header = ({ autoFocusRef, from }) => {
   const subRoute = from.endsWith('/settings') ? 'settings' : 'chart'
   const [designing] = useAtom(designingAtom)
   const addOperation = useSetAtom(addOperationAtom)
-  const { projectId, subprojectId, placeId, placeId2, chartId } = useParams({
-    from,
-  })
+  const { projectId, subprojectId, placeId, placeId2, chartId } = useParams({ strict: false })
   const basePath = `/data/projects/${projectId}/subprojects/${subprojectId}/charts/${chartId}`
   const navigate = useNavigate()
 
@@ -75,7 +89,7 @@ export const Header = ({ autoFocusRef, from }) => {
     const prevRes = await db.query(`SELECT * FROM charts WHERE chart_id = $1`, [
       chartId,
     ])
-    const prev = prevRes?.rows?.[0] ?? {}
+    const prev = (prevRes?.rows?.[0] ?? {}) as Record<string, unknown>
     await db.query(`delete from charts where chart_id = $1`, [chartId])
     addOperation({
       table: 'charts',
@@ -84,7 +98,7 @@ export const Header = ({ autoFocusRef, from }) => {
       operation: 'delete',
       prev,
     })
-    navigate({ to: isDetailView ? `../..` : `..` })
+    navigate({ to: isDetailView ? ('../..' as '..') : '..' })
   }
 
   const { filterField, filterValue } = getFilter({
@@ -97,14 +111,14 @@ export const Header = ({ autoFocusRef, from }) => {
   const countRes = useLiveQuery(
     `SELECT COUNT(*) as count FROM charts WHERE ${filterField} = '${filterValue}'`,
   )
-  const rowCount = countRes?.rows?.[0]?.count ?? 2
+  const rowCount = (countRes?.rows?.[0]?.count as number) ?? 2
 
   const toNext = async () => {
     const res = await db.query(
       `select chart_id from charts where ${filterField} = $1 order by label`,
       [filterValue],
     )
-    const rows = res?.rows
+    const rows = res?.rows as { chart_id: string }[]
     const len = rows.length
     const index = rows.findIndex((p) => p.chart_id === chartIdRef.current)
     const next = rows[(index + 1) % len]
@@ -121,7 +135,7 @@ export const Header = ({ autoFocusRef, from }) => {
       `select chart_id from charts where ${filterField} = $1 order by label`,
       [filterValue],
     )
-    const rows = res?.rows
+    const rows = res?.rows as { chart_id: string }[]
     const len = rows.length
     const index = rows.findIndex((p) => p.chart_id === chartIdRef.current)
     const previous = rows[(index + len - 1) % len]

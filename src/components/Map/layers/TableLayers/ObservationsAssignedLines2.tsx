@@ -2,10 +2,22 @@ import { useParams } from '@tanstack/react-router'
 import { useLiveQuery } from '@electric-sql/pglite-react'
 import { bbox } from '@turf/bbox'
 import { featureCollection, lineString } from '@turf/helpers'
+import type { AllGeoJSON } from '@turf/helpers'
+import type { Geometry } from 'geojson'
 
 import { TableLayer } from './TableLayer.tsx'
+import type { TableLayerProps } from './TableLayer.tsx'
 
-const getGeometryCenter = (geometry) => {
+type AssignmentRow = {
+  observation_id: string
+  observation_label: string | null
+  observation_geometry: Geometry | null
+  place_id: string
+  place_label: string | null
+  place_geometry: Geometry | null
+}
+
+const getGeometryCenter = (geometry: AllGeoJSON | null | undefined) => {
   if (!geometry) return null
   try {
     const [minX, minY, maxX, maxY] = bbox(geometry)
@@ -16,7 +28,11 @@ const getGeometryCenter = (geometry) => {
   }
 }
 
-export const ObservationsAssignedLines2 = ({ layerPresentation }) => {
+export const ObservationsAssignedLines2 = ({
+  layerPresentation,
+}: {
+  layerPresentation: TableLayerProps['layerPresentation']
+}) => {
   const { subprojectId } = useParams({ strict: false })
 
   const res = useLiveQuery(
@@ -39,7 +55,7 @@ export const ObservationsAssignedLines2 = ({ layerPresentation }) => {
   `,
     [subprojectId],
   )
-  const rows = res?.rows ?? []
+  const rows = (res?.rows ?? []) as AssignmentRow[]
 
   const data = rows.flatMap((row) => {
     const observationCenter = getGeometryCenter(row.observation_geometry)

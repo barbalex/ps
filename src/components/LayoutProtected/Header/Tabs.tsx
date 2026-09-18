@@ -1,11 +1,42 @@
 import * as fluentUiReactComponents from '@fluentui/react-components'
-const { Toolbar, ToolbarToggleButton, Tooltip } = fluentUiReactComponents
+import type {
+  ToolbarToggleButtonProps,
+  TooltipProps,
+} from '@fluentui/react-components'
+import type { ComponentType, MouseEvent } from 'react'
 import { FormattedMessage, useIntl } from 'react-intl'
 import { TbArrowsMaximize, TbArrowsMinimize } from 'react-icons/tb'
 
 import styles from './Menu.module.css'
 
-const buildToggleClass = ({ prevIsActive, nextIsActive, selfIsActive }) => {
+const { Toolbar } = fluentUiReactComponents
+
+// Fluent UI's TooltipProps requires `relationship`, but it is optional at runtime
+const Tooltip = fluentUiReactComponents.Tooltip as ComponentType<
+  Omit<TooltipProps, 'relationship'> & {
+    relationship?: TooltipProps['relationship']
+  }
+>
+
+// ToolbarToggleButtonProps has no `iconPosition`, but it is passed through to
+// the rendered button at runtime
+const ToolbarToggleButton = fluentUiReactComponents.ToolbarToggleButton as ComponentType<
+  ToolbarToggleButtonProps & {
+    iconPosition?: 'before' | 'after'
+  }
+>
+
+type ToggleClassProps = {
+  prevIsActive: boolean
+  nextIsActive: boolean
+  selfIsActive: boolean
+}
+
+const buildToggleClass = ({
+  prevIsActive,
+  nextIsActive,
+  selfIsActive,
+}: ToggleClassProps) => {
   if (!selfIsActive) {
     return styles.toggleInactive
   }
@@ -27,7 +58,7 @@ type Props = {
   isHome: boolean
   mapIsMaximized: boolean
   onChangeTabs: (_e: unknown, data: { checkedItems: string[] }) => void
-  onClickMapView: (event: unknown) => void
+  onClickMapView: (event: MouseEvent) => void
 }
 
 export const Tabs = ({

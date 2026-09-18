@@ -16,13 +16,24 @@ import type PlaceLevels from '../../../models/public/PlaceLevels.ts'
 import { languageAtom, designingAtom } from '../../../store.ts'
 
 // TODO: add charts?
+type Props = {
+  projectId: string
+  subprojectId: string
+  placeId: string
+  placeId2?: string
+  level: number
+}
+
+// place_roles_in_place exists in the db schema but not in the generated model
+type PlaceLevel = PlaceLevels & { place_roles_in_place?: boolean | null }
+
 export const PlaceChildren = ({
   projectId,
   subprojectId,
   placeId,
   placeId2,
   level,
-}) => {
+}: Props) => {
   // const level = placeId2 ? 8 : 6
   const [language] = useAtom(languageAtom)
   const [isDesigning] = useAtom(designingAtom)
@@ -32,7 +43,7 @@ export const PlaceChildren = ({
     `SELECT * FROM place_levels WHERE project_id = $1 AND level = $2`,
     [projectId, placeId2 ? 2 : 1],
   )
-  const placeLevel: PlaceLevels = resPlaceLevels?.rows?.[0]
+  const placeLevel = resPlaceLevels?.rows?.[0] as unknown as PlaceLevel | undefined
 
   // need place_level to know whether to show files
   const usersInPlace = placeLevel?.place_roles_in_place !== false

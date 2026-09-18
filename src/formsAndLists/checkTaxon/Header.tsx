@@ -9,9 +9,14 @@ import { FormHeader } from '../../components/FormHeader/index.tsx'
 import { HistoryToggleButton } from '../../components/shared/HistoryCompare/HistoryToggleButton.tsx'
 import { addOperationAtom } from '../../store.ts'
 
-export const Header = ({ autoFocusRef, from }) => {
+export const Header = ({
+  autoFocusRef,
+}: {
+  autoFocusRef?: React.RefObject<HTMLInputElement | null>
+  from?: string
+}) => {
   const { projectId, subprojectId, placeId, placeId2, checkId, checkTaxonId } =
-    useParams({ from })
+    useParams({ strict: false })
   const navigate = useNavigate()
   const addOperation = useSetAtom(addOperationAtom)
   const { formatMessage } = useIntl()
@@ -35,10 +40,10 @@ export const Header = ({ autoFocusRef, from }) => {
   const countRes = useLiveQuery(
     `SELECT COUNT(*) as count FROM check_taxa WHERE check_id = '${checkId}'`,
   )
-  const rowCount = countRes?.rows?.[0]?.count ?? 2
+  const rowCount = (countRes?.rows?.[0]?.count as number) ?? 2
 
   const addRow = async () => {
-    const id = await createCheckTaxon({ checkId })
+    const id = await createCheckTaxon({ checkId: checkId! })
     if (!id) return
     navigate({
       to: `../${id}`,
@@ -53,7 +58,7 @@ export const Header = ({ autoFocusRef, from }) => {
         'SELECT * FROM check_taxa WHERE check_taxon_id = $1',
         [checkTaxonId],
       )
-      const prev = prevRes?.rows?.[0] ?? {}
+      const prev = (prevRes?.rows?.[0] ?? {}) as Record<string, unknown>
       await db.query('DELETE FROM check_taxa WHERE check_taxon_id = $1', [
         checkTaxonId,
       ])
@@ -76,7 +81,7 @@ export const Header = ({ autoFocusRef, from }) => {
         'SELECT check_taxon_id FROM check_taxa WHERE check_id = $1 ORDER BY label',
         [checkId],
       )
-      const checkTaxa = res?.rows
+      const checkTaxa = res?.rows as { check_taxon_id: string }[]
       const len = checkTaxa.length
       const index = checkTaxa.findIndex(
         (p) => p.check_taxon_id === checkTaxonIdRef.current,
@@ -97,7 +102,7 @@ export const Header = ({ autoFocusRef, from }) => {
         'SELECT check_taxon_id FROM check_taxa WHERE check_id = $1 ORDER BY label',
         [checkId],
       )
-      const checkTaxa = res?.rows
+      const checkTaxa = res?.rows as { check_taxon_id: string }[]
       const len = checkTaxa.length
       const index = checkTaxa.findIndex(
         (p) => p.check_taxon_id === checkTaxonIdRef.current,

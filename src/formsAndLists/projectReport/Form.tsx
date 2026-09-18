@@ -3,7 +3,18 @@ import { TextField } from '../../components/shared/TextField.tsx'
 import { Jsonb } from '../../components/shared/Jsonb/index.tsx'
 import { jsonbDataFromRow } from '../../modules/jsonbDataFromRow.ts'
 
+import type ProjectReports from '../../models/public/ProjectReports.ts'
+
 import '../../form.css'
+
+type Props = {
+  onChange: (e: React.ChangeEvent<any>, data?: any) => void
+  row: Record<string, any> | ProjectReports
+  orIndex?: number
+  from: string
+  autoFocusRef?: React.RefObject<HTMLInputElement | null>
+  validations?: Record<string, { state: 'error'; message: string }>
+}
 
 // this form is rendered from a parent or outlet
 export const ProjectReportForm = ({
@@ -13,12 +24,12 @@ export const ProjectReportForm = ({
   from,
   autoFocusRef,
   validations = {},
-}) => {
+}: Props) => {
   const { formatMessage } = useIntl()
   // need to extract the jsonb data from the row
   // as inside filters it's name is a path
   // instead of it being inside of the data field
-  const jsonbData = jsonbDataFromRow(row)
+  const jsonbData = jsonbDataFromRow(row as Record<string, unknown>)
 
   return (
     <>
@@ -39,7 +50,7 @@ export const ProjectReportForm = ({
         orIndex={orIndex}
         from={from}
         autoFocus
-        ref={autoFocusRef}
+        ref={autoFocusRef as unknown as React.Ref<HTMLDivElement>}
       />
     </>
   )

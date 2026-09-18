@@ -28,9 +28,9 @@ export const AccountNode = ({ nav, level = 2, userId }: Props) => {
   const parentUrl = userId ? `/data/users/${userId}/accounts` : '/data/users'
 
   const res = useLiveQuery(
-    userId
+    (userId
       ? `SELECT project_fields_in_account FROM users WHERE user_id = $1`
-      : null,
+      : null) as string,
     userId ? [userId] : [],
   )
   const showFieldsNav = res?.rows?.[0]?.project_fields_in_account === false

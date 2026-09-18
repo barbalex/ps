@@ -14,12 +14,14 @@ import type CheckReports from '../../models/public/CheckReports.ts'
 
 import '../../form.css'
 
-export const CheckReport = ({ from }) => {
-  const { checkReportId } = useParams({ from })
+export const CheckReport = ({ from }: { from: string }) => {
+  const { checkReportId } = useParams({ strict: false })
   const addOperation = useSetAtom(addOperationAtom)
   const { formatMessage } = useIntl()
 
-  const [validations, setValidations] = useState({})
+  const [validations, setValidations] = useState<
+    Record<string, { state: 'error'; message: string }>
+  >({})
 
   const autoFocusRef = useRef<HTMLInputElement>(null)
 
@@ -28,13 +30,19 @@ export const CheckReport = ({ from }) => {
     `SELECT * FROM check_reports WHERE place_check_report_id = $1`,
     [checkReportId],
   )
-  const row: CheckReports | undefined = res?.rows?.[0]
+  const row = res?.rows?.[0] as CheckReports | undefined
   console.log('CheckReport', { checkReportId, row, res })
 
-  const onChange = async (e, data) => {
-    const { name, value } = getValueFromChange(e, data)
+  const onChange = async (
+    e: React.ChangeEvent<HTMLInputElement>,
+    data?: object,
+  ) => {
+    const { name, value } = getValueFromChange(
+      e,
+      data as Parameters<typeof getValueFromChange>[1],
+    )
     // only change if value has changed: maybe only focus entered and left
-    if (row[name] === value) return
+    if (row?.[name as keyof CheckReports] === value) return
 
     try {
       await db.query(
@@ -44,7 +52,7 @@ export const CheckReport = ({ from }) => {
     } catch (error) {
       setValidations((prev) => ({
         ...prev,
-        [name]: { state: 'error', message: error.message },
+        [name]: { state: 'error', message: (error as Error).message },
       }))
       return
     }

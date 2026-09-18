@@ -48,7 +48,10 @@ export const useSubprojectsNavData = ({ projectId }: Props) => {
 
   const [filter] = useAtom(subprojectsFilterAtom)
   const [language] = useAtom(languageAtom)
-  const filterString = filterStringFromFilter(filter)
+  const filterString = filterStringFromFilter(
+    filter as Record<string, unknown> & typeof filter,
+    '',
+  )
   const isFiltered = !!filterString
 
   const sql = isOpen
@@ -93,7 +96,7 @@ export const useSubprojectsNavData = ({ projectId }: Props) => {
   const isInActiveNodeArray = ownArray.every((part, i) => urlPath[i] === part)
   const isActive = isEqual(urlPath, ownArray)
 
-  const navs: NavDataOpen[] | NavDataClosed[] = res?.rows ?? []
+  const navs = (res?.rows ?? []) as NavDataOpen[] | NavDataClosed[]
   const countUnfiltered = navs[0]?.count_unfiltered ?? 0
   const countFiltered = navs[0]?.count_filtered ?? 0
 

@@ -1,5 +1,6 @@
 import { useEffect, useRef, useCallback } from 'react'
 import { useMap, useMapEvents } from 'react-leaflet'
+import type { LatLngTuple, ZoomPanOptions } from 'leaflet'
 import { useAtomValue, useSetAtom } from 'jotai'
 
 import {
@@ -68,7 +69,12 @@ export const BoundsListener = () => {
       if (storedCenter && storedZoom) {
         try {
           // Force the view regardless of current state
-          map.setView(storedCenter, storedZoom, { animate: false, reset: true })
+          // `reset` is a valid leaflet setView option but missing from ZoomPanOptions
+          map.setView(
+            storedCenter as LatLngTuple,
+            storedZoom,
+            { animate: false, reset: true } as ZoomPanOptions,
+          )
 
           // Retry if zoom didn't stick (seems to happen on initial load)
           setTimeout(() => {

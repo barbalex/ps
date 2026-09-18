@@ -44,6 +44,12 @@ const { Button } = fluentUiReactComponents
 
 type SubprojectWithProjectInfo = Subprojects & {
   subproject_name_singular: Projects['subproject_name_singular']
+  taxa: boolean | null
+  files_active_subprojects: boolean | null
+  subproject_taxa_in_subproject: boolean | null
+  subproject_roles_in_subproject: boolean | null
+  subproject_files_in_subproject: boolean | null
+  subproject_reports_in_subproject: boolean | null
 }
 
 export const SubprojectWithFiles = ({ from }: { from: string }) => {
@@ -56,7 +62,9 @@ export const SubprojectWithFiles = ({ from }: { from: string }) => {
   const [filesFilter] = useAtom(filesFilterAtom)
   const { formatMessage } = useIntl()
   const newLabel = formatMessage({ id: 'Yt5rMs', defaultMessage: 'neu' })
-  const [validations, setValidations] = useState({})
+  const [validations, setValidations] = useState<
+    Record<string, { state: 'error'; message: string }>
+  >({})
 
   const autoFocusRef = useRef<HTMLInputElement>(null)
   const navigate = useNavigate()
@@ -78,7 +86,8 @@ export const SubprojectWithFiles = ({ from }: { from: string }) => {
     WHERE subproject_id = $1`,
     [subprojectId],
   )
-  const row: SubprojectWithProjectInfo | undefined = res?.rows?.[0]
+  const row =
+    res?.rows?.[0] as unknown as SubprojectWithProjectInfo | undefined
 
   const filesCountRes = useLiveQuery(
     `SELECT count(*)::int AS count FROM files WHERE subproject_id = $1`,
@@ -141,15 +150,26 @@ export const SubprojectWithFiles = ({ from }: { from: string }) => {
     subprojectUsersFilter,
   )
   const filesIsFiltered = !!filterStringFromFilter(filesFilter)
-  const uploaderCtx = useContext(UploaderContext)
+  const uploaderCtx = useContext(UploaderContext) as unknown as {
+    current?:
+      | (HTMLElement & {
+          getAPI?: () => {
+            initFlow?: () => void
+          }
+        })
+      | null
+  }
   const uploaderApi = uploaderCtx?.current?.getAPI?.()
   const onClickAddSubprojectReport = async () => {
-    const id = await createSubprojectReport({ projectId, subprojectId })
-    if (!id) return
+    const id = await createSubprojectReport({
+      projectId: projectId!,
+      subprojectId: subprojectId!,
+    })
+   if (!id) return
     navigate({ to: `${reportsUrl}/${id}/` })
   }
   const onClickAddSubprojectTaxon = async () => {
-    const id = await createSubprojectTaxon({ subprojectId })
+    const id = await createSubprojectTaxon({subprojectId: subprojectId! })
     if (!id) return
     navigate({ to: `${taxaUrl}/${id}/` })
   }
@@ -187,9 +207,7 @@ export const SubprojectWithFiles = ({ from }: { from: string }) => {
         <AddProjectUserButton
           scope={{
             kind: 'subproject',
-            projectId,
-            subprojectId,
-          }}
+            projectId: projectId!,            subprojectId: subprojectId!,          }}
           onUserCreated={(id) => navigate({ to: `${usersUrl}/${id}/` })}
         />
       </>
@@ -208,9 +226,12 @@ export const SubprojectWithFiles = ({ from }: { from: string }) => {
       </>
     ) : undefined
 
-  const onChange = async (e, data) => {
+  const onChange = async (
+    e: React.ChangeEvent<HTMLInputElement>,
+    data: Parameters<typeof getValueFromChange>[1],
+  ) => {
     const { name, value } = getValueFromChange(e, data)
-    if (row[name] === value) return
+    if ((row as Record<string, any>)[name] === value) return
 
     try {
       await db.query(
@@ -220,7 +241,7 @@ export const SubprojectWithFiles = ({ from }: { from: string }) => {
     } catch (error) {
       setValidations((prev) => ({
         ...prev,
-        [name]: { state: 'error', message: error.message },
+        [name]: { state: 'error', message: error instanceof Error ? error.message : String(error) },
       }))
       return
     }
@@ -249,13 +270,13 @@ export const SubprojectWithFiles = ({ from }: { from: string }) => {
     <div className="form-outer-container">
       <Header
         autoFocusRef={autoFocusRef}
-        nameSingular={row?.subproject_name_singular}
+        nameSingular={row?.subproject_name_singular as string | undefined}
         from={from}
       />
       <div className="form-container" role="tabpanel" aria-labelledby="form">
         <Form
           onChange={onChange}
-          row={row}
+          row={row as unknown as Record<string, any>}
           autoFocusRef={autoFocusRef}
           from={from}
           validations={validations}

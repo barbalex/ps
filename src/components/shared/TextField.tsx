@@ -2,8 +2,22 @@ import { useState, useEffect } from 'react'
 import * as fluentUiReactComponents from '@fluentui/react-components'
 const { Input, Field } = fluentUiReactComponents
 type InputProps = React.ComponentProps<typeof Input>
+type FieldProps = React.ComponentProps<typeof Field>
 
 import styles from './TextField.module.css'
+
+type Props = Omit<InputProps, 'onChange' | 'value'> &
+  Pick<
+    FieldProps,
+    'label' | 'hint' | 'validationMessage' | 'validationState'
+  > & {
+    onChange?: (
+    ev: React.ChangeEvent<any>,
+    data?: any,
+  ) => void
+    value?: string | number
+    button?: React.ReactNode
+  }
 
 export const TextField = ({
   label,
@@ -21,7 +35,7 @@ export const TextField = ({
   ref,
   tabIndex,
   readOnly,
-}: InputProps) => {
+}: Props) => {
   const [stateValue, setStateValue] = useState(
     value || value === 0 ? value : '',
   )
@@ -30,18 +44,27 @@ export const TextField = ({
     setStateValue(value || value === 0 ? value : '')
   }, [value])
 
-  const onChange = (event) => setStateValue(event.target.value)
+  const onChange = (event: React.ChangeEvent<HTMLInputElement>) =>
+    setStateValue(event.target.value)
 
-  const onKeyPress = (event) => {
+  // consumers pass Fluent's (ev, data) change handlers;
+  // from key events only the event is available
+  const onChangeEvent = onChangeIn as
+    | ((event: React.SyntheticEvent<HTMLInputElement>) => void)
+    | undefined
+
+  const onKeyPress = (event: React.KeyboardEvent<HTMLInputElement>) => {
     if (event.key === 'Enter') {
-      onChangeIn(event)
+      onChangeEvent!(event)
     }
   }
 
-  const onKeyUp = (event) => {
-    const inFilterForm = !!event?.target?.closest?.('.form-container.filter')
+  const onKeyUp = (event: React.KeyboardEvent<HTMLInputElement>) => {
+    const inFilterForm = !!(event.target as HTMLElement | null)?.closest?.(
+      '.form-container.filter',
+    )
     if (inFilterForm) {
-      onChangeIn(event)
+      onChangeEvent!(event)
     }
   }
 
@@ -56,7 +79,7 @@ export const TextField = ({
       <div className={styles.row}>
         <Input
           name={name}
-          value={stateValue}
+          value={stateValue as string}
           type={type}
           placeholder={placeholder}
           appearance="underline"
@@ -65,7 +88,7 @@ export const TextField = ({
           onChange={onChange}
           onKeyPress={onKeyPress}
           onKeyUp={onKeyUp}
-          onBlur={onChangeIn}
+          onBlur={onChangeEvent}
           disabled={disabled}
           className={styles.input}
           tabIndex={tabIndex}

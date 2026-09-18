@@ -24,7 +24,7 @@ export const useWmsLayerWmsLayerNavData = ({
   const location = useLocation()
   const { formatMessage } = useIntl()
 
-  const res = useLiveQuery(
+  const res = useLiveQuery<NavData>(
     `
       SELECT
         wms_layer_id AS id,

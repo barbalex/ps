@@ -12,6 +12,12 @@ type Props = {
   goalReportId_: string
 }
 
+// TODO: pre-existing bug: these are used in parentArray below but never
+// destructured from Props. Declared ambient so typing changes no runtime.
+declare const projectId_: string | undefined
+declare const subprojectId_: string | undefined
+declare const goalId_: string | undefined
+
 export const useGoalReportReportNavData = ({
   goalReportId_,
 }: Props) => {

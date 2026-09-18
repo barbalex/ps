@@ -75,7 +75,7 @@ export const useAccountsNavData = ({ userId }: Props = {}) => {
         count_filtered.count AS count_filtered
       FROM count_unfiltered, count_filtered
     `
-  const res = useLiveQuery(sql)
+  const res = useLiveQuery<NavData[number]>(sql)
   const loading = res === undefined
 
   const navs: NavData = res?.rows ?? []

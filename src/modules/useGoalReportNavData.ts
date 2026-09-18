@@ -26,7 +26,7 @@ export const useGoalReportNavData = ({
   const [openNodes] = useAtom(treeOpenNodesAtom)
   const { formatMessage } = useIntl()
 
-  const res = useLiveQuery(
+  const res = useLiveQuery<NavData>(
     `
       SELECT
         goal_report_id AS id,

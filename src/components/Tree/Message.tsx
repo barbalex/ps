@@ -3,7 +3,17 @@ import { isEqual } from 'es-toolkit'
 
 import { Node } from './Node.tsx'
 
-export const MessageNode = ({ nav, level = 2 }) => {
+type NavData = {
+  id: string
+  label: string
+}
+
+interface Props {
+  nav: NavData
+  level?: number
+}
+
+export const MessageNode = ({ nav, level = 2 }: Props) => {
   const location = useLocation()
 
   const urlPath = location.pathname.split('/').filter((p) => p !== '')

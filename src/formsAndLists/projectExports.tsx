@@ -14,18 +14,17 @@ import '../form.css'
 
 const { Button } = fluentUiReactComponents
 
-const from = '/data/projects/$projectId_/exports/'
 
 export const ProjectExports = () => {
-  const { projectId } = useParams({ from })
+  const { projectId } = useParams({ strict: false })
   const navigate = useNavigate()
   const { formatMessage } = useIntl()
 
-  const { loading, navData, isFiltered } = useProjectExportsNavData({ projectId })
+  const { loading, navData, isFiltered } = useProjectExportsNavData({projectId: projectId! })
   const { navs, label, nameSingular } = navData
 
   const add = async () => {
-    const id = await createProjectExport({ projectId })
+    const id = await createProjectExport({projectId: projectId! })
     if (!id) return
     navigate({ to: `${id}/` })
   }

@@ -25,7 +25,7 @@ export const useVectorLayerDisplaysNavData = ({
   const location = useLocation()
   const { formatMessage } = useIntl()
 
-  const res = useLiveQuery(
+  const res = useLiveQuery<NavData>(
     `
       SELECT
         vector_layer_display_id AS id,
@@ -65,6 +65,7 @@ export const useVectorLayerDisplaysNavData = ({
     ownUrl,
     label: buildNavLabel({
       countFiltered: navs.length,
+      countUnfiltered: navs.length,
       namePlural: formatMessage({ id: 'yM1M0B', defaultMessage: 'Anzeigen' }),
       loading,
     }),

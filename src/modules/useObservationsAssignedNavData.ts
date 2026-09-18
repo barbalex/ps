@@ -5,6 +5,11 @@ export const useObservationsAssignedNavData = ({
   subprojectId,
   placeId,
   placeId2,
+}: {
+  projectId: string
+  subprojectId: string
+  placeId?: string
+  placeId2?: string
 }) =>
   useObservationsNavData({
     projectId,

@@ -3,6 +3,21 @@ import { isEqual } from 'es-toolkit'
 
 import { Node } from './Node.tsx'
 
+type NavData = {
+  id: string
+  label: string
+}
+
+type Props = {
+  projectId?: string
+  subprojectId?: string
+  placeId?: string
+  placeId2?: string
+  chartId: string
+  nav: NavData
+  level?: number
+}
+
 // not using memo because: "Component is not a function"
 export const ChartSubjectNode = ({
   projectId,
@@ -12,7 +27,7 @@ export const ChartSubjectNode = ({
   chartId,
   nav,
   level = 2,
-}) => {
+}: Props) => {
   const location = useLocation()
 
   const urlPath = location.pathname.split('/').filter((p) => p !== '')

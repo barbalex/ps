@@ -34,7 +34,7 @@ export const useProjectQcNavData = ({ projectId, projectQcId }: Props) => {
   )
 
   const loading = res === undefined
-  const nav: NavData | undefined = res?.rows?.[0]
+  const nav = res?.rows?.[0] as NavData | undefined
 
   const parentArray = ['data', 'projects', projectId, 'qcs']
   const ownArray = [...parentArray, projectQcId]

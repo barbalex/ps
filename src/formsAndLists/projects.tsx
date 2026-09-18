@@ -13,12 +13,13 @@ export const Projects = () => {
   const navigate = useNavigate()
 
   const { loading, navData, isFiltered } = useProjectsNavData()
-  const { navs, label, nameSingular } = navData
+  const { navs: navsIn, label, nameSingular } = navData
+  const navs = navsIn as { id: string; label: string }[]
 
   const add = useAddProject((project_id) => {
     navigate({
-      to: `/data/projects/$project_id/project`,
-      params: { project_id },
+      to: '/data/projects/$projectId/project',
+      params: { projectId: project_id },
     })
   })
 

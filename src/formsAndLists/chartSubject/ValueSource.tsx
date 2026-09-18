@@ -2,8 +2,20 @@ import { useIntl } from 'react-intl'
 
 import { RadioGroupField } from '../../components/shared/RadioGroupField.tsx'
 import { chartSubjectCalcMethodOptions } from '../../modules/constants.ts'
+import type ChartSubjects from '../../models/public/ChartSubjects.ts'
 
-export const ValueSource = ({ onChange, row, validations }) => {
+export const ValueSource = ({
+  onChange,
+  row,
+  validations,
+}: {
+  onChange: (e: React.ChangeEvent<HTMLInputElement>, data?: object) => void
+  row: ChartSubjects
+  validations: Record<
+    string,
+    { state?: 'error' | 'warning' | 'success' | 'none'; message?: string }
+  >
+}) => {
   const { formatMessage } = useIntl()
 
   const list = chartSubjectCalcMethodOptions.map((o) => o.value)

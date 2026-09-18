@@ -42,7 +42,8 @@ export const orFilterToSql = (
       return `${columnDescriptor}::boolean IS ${value}`
     }
     // correctly cast numbers
-    if (!isNaN(value)) {
+    // isNaN coerces its argument, matching the runtime behavior for unknown values
+    if (!isNaN(value as number)) {
       return `${columnDescriptor}::numeric = ${value}`
     }
     // catch all others

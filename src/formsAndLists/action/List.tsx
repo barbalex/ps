@@ -6,16 +6,14 @@ import { Row } from '../../components/shared/Row.tsx'
 import { Header } from './Header.tsx'
 import { NotFound } from '../../components/NotFound.tsx'
 
-export const ActionList = ({ from }) => {
-  const { projectId, subprojectId, placeId, placeId2, actionId } = useParams({
-    from,
-  })
+export const ActionList = ({ from }: { from: string }) => {
+  const { projectId, subprojectId, placeId, placeId2, actionId } = useParams({ strict: false })
   const { loading, navData } = useActionNavData({
-    projectId,
-    subprojectId,
-    placeId,
+    projectId: projectId!,
+    subprojectId: subprojectId!,
+    placeId: placeId!,
     placeId2,
-    actionId,
+    actionId: actionId!,
   })
   const { navs, notFound } = navData
 

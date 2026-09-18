@@ -5,11 +5,13 @@ import { useIntl } from 'react-intl'
 
 import { FetchWmsCapabilities } from './FetchWmsCapabilities.tsx'
 import { isValidUrl } from '../../../../modules/isValidUrl.ts'
+import type WmsLayers from '../../../../models/public/WmsLayers.ts'
 import styles from './index.module.css'
 
-export const CreateWmsService = ({ wmsLayer }) => {
+export const CreateWmsService = ({ wmsLayer }: { wmsLayer: WmsLayers }) => {
   const [url, setUrl] = useState('')
-  const onChange = (e) => setUrl(e.target.value)
+  const onChange = (e: React.ChangeEvent<HTMLInputElement>) =>
+    setUrl(e.target.value)
   const { formatMessage } = useIntl()
 
   const [fetching, setFetching] = useState(false)
@@ -25,8 +27,7 @@ export const CreateWmsService = ({ wmsLayer }) => {
       <div className={styles.row}>
         <Field
           label="URL"
-          value={url}
-          onChange={onChange}
+          {...({ value: url, onChange } as Record<string, unknown>)}
           validationMessage={urlIsInvalid ? formatMessage({ id: 'Hg6IjK', defaultMessage: 'Ungültige URL' }) : ''}
           validationState={urlIsInvalid ? 'warning' : 'none'}
           hint={

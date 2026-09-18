@@ -19,12 +19,14 @@ import type ListValues from '../../models/public/ListValues.ts'
 
 import '../../form.css'
 
-export const CheckQuantity = ({ from }) => {
-  const { checkQuantityId, projectId } = useParams({ from })
+export const CheckQuantity = ({ from }: { from: string }) => {
+  const { checkQuantityId, projectId } = useParams({ strict: false })
   const addOperation = useSetAtom(addOperationAtom)
   const { formatMessage } = useIntl()
   const quantityLabel = formatMessage({ id: 'gRVMng', defaultMessage: 'Menge' })
-  const [validations, setValidations] = useState({})
+  const [validations, setValidations] = useState<
+    Record<string, { state: 'error'; message: string }>
+  >({})
 
   const autoFocusRef = useRef<HTMLInputElement>(null)
 
@@ -33,14 +35,16 @@ export const CheckQuantity = ({ from }) => {
     `SELECT * FROM check_quantities WHERE check_quantity_id = $1`,
     [checkQuantityId],
   )
-  const row: CheckQuantities | undefined = res?.rows?.[0]
+  const row = res?.rows?.[0] as CheckQuantities | undefined
 
   const unitsRes = useLiveQuery(
     `SELECT unit_id, name, type, list_id FROM units WHERE project_id = $1 ORDER BY sort, name`,
     [projectId],
   )
-  const units: Pick<Units, 'unit_id' | 'name' | 'type' | 'list_id'>[] =
-    unitsRes?.rows ?? []
+  const units = (unitsRes?.rows ?? []) as Pick<
+    Units,
+    'unit_id' | 'name' | 'type' | 'list_id'
+  >[]
   const unitIds = units.map((u) => u.unit_id)
   const unitLabelMap = Object.fromEntries(
     units.map((u) => [u.unit_id, u.name ?? u.unit_id]),
@@ -51,7 +55,7 @@ export const CheckQuantity = ({ from }) => {
     `SELECT * FROM list_values WHERE list_id = $1 AND (obsolete IS NULL OR obsolete = false) ORDER BY value_integer, value_numeric, value_text, label`,
     [selectedUnit?.list_id ?? '00000000-0000-0000-0000-000000000000'],
   )
-  const listValues: ListValues[] = listValuesRes?.rows ?? []
+  const listValues = (listValuesRes?.rows ?? []) as unknown as ListValues[]
   const hasListValues = listValues.length > 0
 
   const unitValueField =
@@ -79,10 +83,16 @@ export const CheckQuantity = ({ from }) => {
 
   // console.log('CheckQuantity', { row, results })
 
-  const onChange = async (e, data) => {
-    const { name, value } = getValueFromChange(e, data)
+  const onChange = async (
+    e: React.ChangeEvent<HTMLInputElement>,
+    data?: object,
+  ) => {
+    const { name, value } = getValueFromChange(
+      e,
+      data as Parameters<typeof getValueFromChange>[1],
+    )
     // only change if value has changed: maybe only focus entered and left
-    if (row[name] === value) return
+    if (row?.[name as keyof CheckQuantities] === value) return
 
     try {
       await db.query(
@@ -92,7 +102,7 @@ export const CheckQuantity = ({ from }) => {
     } catch (error) {
       setValidations((prev) => ({
         ...prev,
-        [name]: { state: 'error', message: error.message },
+        [name]: { state: 'error', message: (error as Error).message },
       }))
       return
     }
@@ -121,7 +131,7 @@ export const CheckQuantity = ({ from }) => {
           : selectedUnit?.type === 'numeric'
             ? parseFloat(valueStr)
             : valueStr
-    if (row[unitValueField] === typedValue) return
+    if (row?.[unitValueField] === typedValue) return
     try {
       await db.query(
         `UPDATE check_quantities SET ${unitValueField} = $1 WHERE check_quantity_id = $2`,
@@ -130,7 +140,7 @@ export const CheckQuantity = ({ from }) => {
     } catch (error) {
       setValidations((prev) => ({
         ...prev,
-        [unitValueField]: { state: 'error', message: error.message },
+        [unitValueField]: { state: 'error', message: (error as Error).message },
       }))
       return
     }
@@ -187,7 +197,7 @@ export const CheckQuantity = ({ from }) => {
               listValues.length <= 5 ? (
                 <RadioGroupField
                   label={quantityLabel}
-                  name={unitValueField}
+                  name={unitValueField ?? undefined}
                   list={listValueIds}
                   labelMap={listValueLabelMap}
                   value={currentListValueStr}
@@ -195,18 +205,18 @@ export const CheckQuantity = ({ from }) => {
                     onListValueChange(data?.value ?? null)
                   }
                   layout="horizontal"
-                  validationState={validations?.[unitValueField]?.state}
-                  validationMessage={validations?.[unitValueField]?.message}
+                  validationState={validations?.[unitValueField ?? '']?.state}
+                  validationMessage={validations?.[unitValueField ?? '']?.message}
                 />
               ) : (
                 <DropdownFieldSimpleOptions
-                  name={unitValueField}
+                  name={unitValueField as string}
                   label={quantityLabel}
                   options={listValueIds}
                   value={currentListValueStr}
                   onChange={(e) => onListValueChange(e.target.value ?? null)}
-                  validationState={validations?.[unitValueField]?.state}
-                  validationMessage={validations?.[unitValueField]?.message}
+                  validationState={validations?.[unitValueField ?? '']?.state}
+                  validationMessage={validations?.[unitValueField ?? '']?.message}
                 />
               )
             ) : (

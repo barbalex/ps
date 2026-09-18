@@ -8,14 +8,14 @@ import { Loading } from '../components/shared/Loading.tsx'
 import { useWfsServicesNavData } from '../modules/useWfsServicesNavData.ts'
 import '../form.css'
 
-const from = '/data/projects/$projectId_/wfs-services/'
 
 export const WfsServices = () => {
-  const { projectId } = useParams({ from })
+  const { projectId } = useParams({ strict: false })
   const navigate = useNavigate()
 
-  const { loading, navData, isFiltered } = useWfsServicesNavData({ projectId })
-  const { navs, label } = navData
+  const { loading, navData, isFiltered } = useWfsServicesNavData({projectId: projectId! })
+  const { label } = navData
+  const navs = navData.navs as { id: string; label: string | null }[]
 
   const add = async () => {
     const data = await createWfsService({ projectId })

@@ -29,7 +29,10 @@ export const useSubprojectTaxaNavData = ({
   const location = useLocation()
   const { formatMessage } = useIntl()
 
-  const filterString = filterStringFromFilter(filter)
+  const filterString = filterStringFromFilter(
+    filter as Record<string, unknown> & typeof filter,
+    '',
+  )
   const isFiltered = !!filterString
 
   const parentArray = [
@@ -69,7 +72,7 @@ export const useSubprojectTaxaNavData = ({
         count_filtered.count AS count_filtered
       FROM count_unfiltered, count_filtered`
 
-  const res = useLiveQuery(sql)
+  const res = useLiveQuery<NavData>(sql)
 
   const loading = res === undefined
 

@@ -10,7 +10,13 @@ import { addOpenNodes } from '../../modules/tree/addOpenNodes.ts'
 import { removeChildNodes } from '../../modules/tree/removeChildNodes.ts'
 import { treeOpenNodesAtom } from '../../store.ts'
 
-export const VectorLayerNode = ({ projectId, nav, level = 4 }) => {
+type Props = {
+  projectId: string
+  nav: { id: string; label: string }
+  level?: number
+}
+
+export const VectorLayerNode = ({ projectId, nav, level = 4 }: Props) => {
   const { formatMessage } = useIntl()
   const [openNodes] = useAtom(treeOpenNodesAtom)
   const location = useLocation()

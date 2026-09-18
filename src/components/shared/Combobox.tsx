@@ -2,6 +2,16 @@ import { useState } from 'react'
 import * as fluentUiReactComponents from '@fluentui/react-components'
 const { Combobox: ComboboxComponent, Option, Field } = fluentUiReactComponents
 
+type Props = {
+  name?: string
+  label?: string
+  options: string[]
+  value?: string
+  onChange: (e: { target: { name?: string; value?: string | number } }) => void
+  autoFocus?: boolean
+  ref?: React.Ref<HTMLInputElement>
+}
+
 export const Combobox = ({
   name,
   label,
@@ -10,15 +20,18 @@ export const Combobox = ({
   onChange,
   autoFocus,
   ref,
-}) => {
+}: Props) => {
   const [filter, setFilter] = useState(value ?? '')
 
-  const onInput = (event) => {
-    const filter = event.target.value
+  const onInput = (event: React.FormEvent<HTMLInputElement>) => {
+    const filter = (event.target as HTMLInputElement).value
     setFilter(filter)
   }
 
-  const onOptionSelect = (e, data) => {
+  const onOptionSelect = (
+    _e: unknown,
+    data: { optionValue?: string | number },
+  ) => {
     if (data.optionValue === 0) return setFilter('') // No options found
     onChange({ target: { name, value: data.optionValue } })
   }

@@ -7,23 +7,17 @@ import { Row } from '../components/shared/Row.tsx'
 import { Loading } from '../components/shared/Loading.tsx'
 import '../form.css'
 
-export const ActionTaxa = ({ from, hideTitle = false }) => {
-  const { projectId, subprojectId, placeId, placeId2, actionId } = useParams({
-    from,
-  })
+export const ActionTaxa = ({ hideTitle = false }: { from: string; hideTitle?: boolean }) => {
+  const { projectId, subprojectId, placeId, placeId2, actionId } = useParams({ strict: false })
   const navigate = useNavigate()
 
   const { loading, navData } = useActionTaxaNavData({
-    projectId,
-    subprojectId,
-    placeId,
-    placeId2,
-    actionId,
-  })
+    projectId: projectId!,    subprojectId: subprojectId!,    placeId: placeId!,    placeId2,
+    actionId: actionId!,  })
   const { navs, label, nameSingular } = navData
 
   const add = async () => {
-    const id = await createActionTaxon({ actionId })
+    const id = await createActionTaxon({actionId: actionId! })
     if (!id) return
     navigate({
       to: id,

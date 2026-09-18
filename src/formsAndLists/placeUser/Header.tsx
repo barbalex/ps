@@ -13,10 +13,10 @@ import { FormHeader } from '../../components/FormHeader/index.tsx'
 import { HistoryToggleButton } from '../../components/shared/HistoryCompare/HistoryToggleButton.tsx'
 import { addOperationAtom, languageAtom } from '../../store.ts'
 
-export const Header = ({ autoFocusRef, from }) => {
+export const Header = ({ autoFocusRef }: { autoFocusRef?: React.RefObject<HTMLInputElement | null>; from?: string }) => {
   const { formatMessage } = useIntl()
   const { projectId, subprojectId, placeId, placeId2, placeUserId } =
-    useParams({ from })
+    useParams({ strict: false })
   const navigate = useNavigate()
   const addOperation = useSetAtom(addOperationAtom)
   const [language] = useAtom(languageAtom)
@@ -51,7 +51,7 @@ export const Header = ({ autoFocusRef, from }) => {
         `SELECT * FROM place_roles WHERE place_role_id = $1`,
         [placeUserId],
       )
-      const prev = prevRes?.rows?.[0] ?? {}
+      const prev = (prevRes?.rows?.[0] ?? {}) as Record<string, unknown>
       await db.query(`DELETE FROM place_roles WHERE place_role_id = $1`, [
         placeUserId,
       ])
@@ -74,7 +74,7 @@ export const Header = ({ autoFocusRef, from }) => {
         `SELECT place_role_id FROM place_roles WHERE place_id = $1 ORDER BY label`,
         [placeId2 ?? placeId],
       )
-      const rows = res?.rows
+      const rows = res?.rows as { place_role_id: string }[]
       const len = rows.length
       const index = rows.findIndex(
         (p) => p.place_role_id === placeUserIdRef.current,
@@ -95,7 +95,7 @@ export const Header = ({ autoFocusRef, from }) => {
         `SELECT place_role_id FROM place_roles WHERE place_id = $1 ORDER BY label`,
         [placeId2 ?? placeId],
       )
-      const rows = res?.rows
+      const rows = res?.rows as { place_role_id: string }[]
       const len = rows.length
       const index = rows.findIndex(
         (p) => p.place_role_id === placeUserIdRef.current,
@@ -125,9 +125,7 @@ export const Header = ({ autoFocusRef, from }) => {
           <AddProjectUserButton
             scope={{
               kind: 'place',
-              projectId,
-              placeId: placeId2 ?? placeId,
-            }}
+              projectId: projectId!,              placeId: (placeId2 ?? placeId)!,            }}
             onUserCreated={(id) => {
               navigate({ to: `../${id}` })
               autoFocusRef?.current?.focus()

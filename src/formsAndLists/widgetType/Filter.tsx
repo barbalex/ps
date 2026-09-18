@@ -7,8 +7,6 @@ type Props = {
 
 export const WidgetTypeFilter = ({ from }: Props) => (
   <Filter from={from}>
-    {({ row, onChange }) => (
-      <WidgetTypeForm row={row} onChange={onChange} from={from} />
-    )}
+    {({ row, onChange }) => <WidgetTypeForm row={row} onChange={onChange} />}
   </Filter>
 );

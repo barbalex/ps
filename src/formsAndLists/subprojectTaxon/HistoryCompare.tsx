@@ -23,9 +23,6 @@ import type SubprojectTaxaHistory from '../../models/public/SubprojectTaxaHistor
 
 const taxaInclude = { taxonomies: true }
 
-const from =
-  '/data/projects/$projectId_/subprojects/$subprojectId_/taxa/$subprojectTaxonId_/histories/$subprojectTaxonHistoryId'
-
 export const SubprojectTaxonHistoryCompare = () => {
   const { formatMessage } = useIntl()
   const taxonFieldLabel = { id: 'OSk4zO', defaultMessage: 'Taxon' } as const
@@ -35,13 +32,13 @@ export const SubprojectTaxonHistoryCompare = () => {
     subprojectId,
     subprojectTaxonId,
     subprojectTaxonHistoryId,
-  } = useParams({ from, strict: false })
+  } = useParams({ strict: false })
   const subprojectTaxonPath = `/data/projects/${projectId}/subprojects/${subprojectId}/taxa/${subprojectTaxonId}`
   const historyPath = `${subprojectTaxonPath}/histories`
 
   const addOperation = useSetAtom(addOperationAtom)
   const db = usePGlite()
-  const [validations, setValidations] = useState<Record<string, unknown>>({})
+  const [validations, setValidations] = useState<Record<string, { state: 'error'; message: string }>>({})
 
   const rowRes = useLiveQuery(
     `SELECT * FROM subproject_taxa WHERE subproject_taxon_id = $1`,
@@ -49,9 +46,12 @@ export const SubprojectTaxonHistoryCompare = () => {
   )
   const row = rowRes?.rows?.[0] as SubprojectTaxa | undefined
 
-  const onChange = async (e, data) => {
+  const onChange = async (
+    e: React.ChangeEvent<HTMLInputElement>,
+    data: Parameters<typeof getValueFromChange>[1],
+  ) => {
     const { name, value } = getValueFromChange(e, data)
-    if (!row || row[name] === value) return
+    if (!row || (row as Record<string, any>)[name] === value) return
 
     try {
       await db.query(
@@ -61,7 +61,7 @@ export const SubprojectTaxonHistoryCompare = () => {
     } catch (error) {
       setValidations((prev) => ({
         ...prev,
-        [name]: { state: 'error', message: error.message },
+        [name]: { state: 'error', message: error instanceof Error ? error.message : String(error) },
       }))
       return
     }
@@ -98,7 +98,7 @@ export const SubprojectTaxonHistoryCompare = () => {
         table="taxa"
         include={taxaInclude}
         value={row.taxon_id ?? ''}
-        onChange={onChange}
+        onChange={(e) => onChange(e, undefined)}
         validationState={validations?.taxon_id?.state}
         validationMessage={validations?.taxon_id?.message}
       />
@@ -115,7 +115,7 @@ export const SubprojectTaxonHistoryCompare = () => {
   })
 
   const formatFieldValue = (field: string, history: SubprojectTaxaHistory) =>
-    stringifyHistoryValue(history[field])
+    stringifyHistoryValue((history as Record<string, any>)[field])
 
   return (
     <HistoryCompare<SubprojectTaxaHistory>

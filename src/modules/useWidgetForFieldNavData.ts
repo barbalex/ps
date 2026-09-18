@@ -25,7 +25,7 @@ export const useWidgetForFieldNavData = ({ widgetForFieldId }: Props) => {
 
   // needs to work not only works for urlPath, for all opened paths!
 
-  const res = useLiveQuery(
+  const res = useLiveQuery<NavData>(
     `
       SELECT
         widget_for_field_id AS id,

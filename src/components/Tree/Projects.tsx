@@ -6,6 +6,13 @@ import { removeChildNodes } from '../../modules/tree/removeChildNodes.ts'
 import { addOpenNodes } from '../../modules/tree/addOpenNodes.ts'
 import { useProjectsNavData } from '../../modules/useProjectsNavData.ts'
 
+type NavData = {
+  id: string
+  label: string
+  count_unfiltered?: number
+  count_filtered?: number
+}[]
+
 export const ProjectsNode = () => {
   const navigate = useNavigate()
 
@@ -41,7 +48,7 @@ export const ProjectsNode = () => {
   }
 
   // only list navs if isOpen AND the first nav has an id
-  const showNavs = isOpen && navs.length > 0 && navs[0].id
+  const showNavs = isOpen && navs.length > 0 && (navs as NavData)[0].id
 
   return (
     <>
@@ -58,7 +65,7 @@ export const ProjectsNode = () => {
         sibling={undefined}
       />
       {showNavs &&
-        navs.map((nav, i) => (
+        (navs as NavData).map((nav, i) => (
           <ProjectNode
             key={`${nav.id}-${i}`}
             nav={nav}

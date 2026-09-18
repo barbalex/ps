@@ -2,12 +2,23 @@ import { useIntl } from 'react-intl'
 
 import { TextField } from '../../components/shared/TextField.tsx'
 import { SwitchField } from '../../components/shared/SwitchField.tsx'
+import type WidgetTypes from '../../models/public/WidgetTypes.ts'
 
 import '../../form.css'
 
 // this form is rendered from a parent or outlet
 // TODO: get working from filter
-export const WidgetTypeForm = ({ onChange, validations = {}, row, autoFocusRef }) => {
+export const WidgetTypeForm = ({
+  onChange,
+  validations = {},
+  row,
+  autoFocusRef,
+}: {
+  onChange: (e: React.ChangeEvent<any>, data?: any) => void
+  validations?: Record<string, { state: 'error'; message: string }>
+  row: WidgetTypes | Record<string, any>
+  autoFocusRef?: React.Ref<HTMLInputElement>
+}) => {
   const { formatMessage } = useIntl()
 
   return (

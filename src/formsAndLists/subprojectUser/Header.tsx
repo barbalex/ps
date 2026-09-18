@@ -14,11 +14,8 @@ import { HistoryToggleButton } from '../../components/shared/HistoryCompare/Hist
 import { addOperationAtom, languageAtom } from '../../store.ts'
 import { subprojectNameSingularExpr } from '../../modules/subprojectNameCols.ts'
 
-const from =
-  '/data/projects/$projectId_/subprojects/$subprojectId_/users/$subprojectUserId/'
-
-export const Header = ({ autoFocusRef }) => {
-  const { projectId, subprojectId, subprojectUserId } = useParams({ from })
+export const Header = ({ autoFocusRef }: { autoFocusRef?: React.RefObject<HTMLInputElement | null> }) => {
+  const { projectId, subprojectId, subprojectUserId } = useParams({ strict: false })
   const navigate = useNavigate()
   const addOperation = useSetAtom(addOperationAtom)
   const { formatMessage } = useIntl()
@@ -42,14 +39,13 @@ export const Header = ({ autoFocusRef }) => {
     subprojectUserIdRef.current = subprojectUserId
   }, [subprojectUserId])
 
-
   const deleteRow = async () => {
     try {
       const prevRes = await db.query(
         `SELECT * FROM subproject_roles WHERE subproject_role_id = $1`,
         [subprojectUserId],
       )
-      const prev = prevRes?.rows?.[0] ?? {}
+      const prev = (prevRes?.rows?.[0] ?? {}) as Record<string, unknown>
       await db.query(
         `DELETE FROM subproject_roles WHERE subproject_role_id = $1`,
         [subprojectUserId],
@@ -74,7 +70,7 @@ export const Header = ({ autoFocusRef }) => {
         `SELECT subproject_role_id FROM subproject_roles WHERE subproject_id = $1 ORDER BY label`,
         [subprojectId],
       )
-      const rows = res?.rows
+      const rows = res?.rows as { subproject_role_id: string }[]
       const len = rows.length
       const index = rows.findIndex(
         (p) => p.subproject_role_id === subprojectUserIdRef.current,
@@ -98,7 +94,7 @@ export const Header = ({ autoFocusRef }) => {
         `SELECT subproject_role_id FROM subproject_roles WHERE subproject_id = $1 ORDER BY label`,
         [subprojectId],
       )
-      const rows = res?.rows
+      const rows = res?.rows as { subproject_role_id: string }[]
       const len = rows.length
       const index = rows.findIndex(
         (p) => p.subproject_role_id === subprojectUserIdRef.current,
@@ -131,9 +127,7 @@ export const Header = ({ autoFocusRef }) => {
           <AddProjectUserButton
             scope={{
               kind: 'subproject',
-              projectId,
-              subprojectId,
-            }}
+              projectId: projectId!,              subprojectId: subprojectId!,            }}
             onUserCreated={(id) => {
               navigate({ to: `../${id}` })
               autoFocusRef?.current?.focus()

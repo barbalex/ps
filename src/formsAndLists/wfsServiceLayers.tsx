@@ -7,20 +7,17 @@ import { useWfsServiceLayersNavData } from '../modules/useWfsServiceLayersNavDat
 
 import '../form.css'
 
-const from = '/data/projects/$projectId_/wfs-services/$wfsServiceId_/layers/'
 
 export const WfsServiceLayers = () => {
-  const { projectId, wfsServiceId } = useParams({ from })
+  const { projectId, wfsServiceId } = useParams({ strict: false })
 
   const { loading, navData } = useWfsServiceLayersNavData({
-    projectId,
-    wfsServiceId,
-  })
+    projectId: projectId!,    wfsServiceId: wfsServiceId!,  })
   const { navs, label } = navData
 
   return (
     <div className="list-view">
-      <ListHeader label={label} />
+      <ListHeader label={label} nameSingular="WFS-Dienst-Ebene" />
       <div className="list-container">
         {loading ?
           <Loading />

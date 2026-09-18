@@ -1,4 +1,5 @@
 import { useRef } from 'react'
+import type { ReactNode } from 'react'
 import { useParams, useNavigate } from '@tanstack/react-router'
 import { usePGlite, useLiveQuery } from '@electric-sql/pglite-react'
 import { useSetAtom } from 'jotai'
@@ -29,10 +30,7 @@ const from =
 export const ChartHistoryCompare = () => {
   const { formatMessage } = useIntl()
   const navigate = useNavigate()
-  const { projectId, subprojectId, chartId, chartHistoryId } = useParams({
-    from,
-    strict: false,
-  })
+  const { projectId, subprojectId, chartId, chartHistoryId } = useParams({ strict: false })
 
   const formPath = `/data/projects/${projectId}/subprojects/${subprojectId}/charts/${chartId}/settings`
   const historyPath = `/data/projects/${projectId}/subprojects/${subprojectId}/charts/${chartId}/histories`
@@ -89,19 +87,22 @@ export const ChartHistoryCompare = () => {
     ]),
   )
 
-  const formatFieldValue = (field: string, history: ChartsHistory) => {
+  const formatFieldValue = (
+    field: string,
+    history: ChartsHistory & Record<string, unknown>,
+  ) => {
     if (field === 'chart_type') {
       const value = history[field]
       if (value !== null && value !== undefined) {
-        return chartTypeLabelMap[String(value)] ?? value
+        return (chartTypeLabelMap[String(value)] ?? value) as ReactNode
       }
       return value
     }
-    return stringifyHistoryValue(history[field])
+    return stringifyHistoryValue((history as Record<string, unknown>)[field])
   }
 
   return (
-    <HistoryCompare<ChartsHistory>
+    <HistoryCompare<ChartsHistory & Record<string, unknown>>
       onBack={() => navigate({ to: formPath })}
       leftContent={leftContent}
       visibleCurrentFields={new Set(preferredOrder)}
@@ -109,14 +110,14 @@ export const ChartHistoryCompare = () => {
       preferredOrder={preferredOrder}
       formatFieldLabel={formatFieldLabel}
       formatFieldValue={formatFieldValue}
-      row={row}
+      row={row as Charts & Record<string, unknown>}
       historyConfig={{
         historyTable: 'charts_history',
         rowIdField: 'chart_id',
         rowId: chartId,
         historyPath,
         routeHistoryId: chartHistoryId,
-        currentRow: row,
+        currentRow: row as Charts & Record<string, unknown>,
       }}
       restoreConfig={{
         db,
@@ -124,7 +125,8 @@ export const ChartHistoryCompare = () => {
         rowIdName: 'chart_id',
         rowId: chartId,
         excludedRestoreFields,
-        addOperation,
+        // the shared component types the operation as plain string
+        addOperation: addOperation as unknown as (...args: unknown[]) => void,
       }}
     />
   )

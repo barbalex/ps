@@ -6,12 +6,29 @@ import { SqlEditorField } from '../../components/shared/SqlEditorField.tsx'
 import { SwitchField } from '../../components/shared/SwitchField.tsx'
 import { Section } from '../../components/shared/Section.tsx'
 import { SectionDescription } from '../../components/shared/SectionDescription.tsx'
+import { getValueFromChange } from '../../modules/getValueFromChange.ts'
 
 import '../../form.css'
 
+type Props = {
+  onChange: (...args: Parameters<typeof getValueFromChange>) => void
+  validations?: Record<
+    string,
+    { state?: 'error' | 'warning' | 'success' | 'none'; message?: string }
+  >
+  row?: Record<string, unknown>
+  autoFocusRef?: React.Ref<HTMLInputElement>
+}
+
 // this form is rendered from the item view and from the filter
-export const QcForm = ({ onChange, validations = {}, row, autoFocusRef }) => {
+export const QcForm = ({ onChange, validations = {}, row, autoFocusRef }: Props) => {
   const { formatMessage } = useIntl()
+  // the change handlers of the field components have slightly different
+  // signatures; all of them receive (event, data)
+  const onChangeField = onChange as unknown as (
+    ev: React.ChangeEvent<HTMLInputElement>,
+    data?: unknown,
+  ) => void
 
   // Build the parameter hint based on which level flags are set
   const paramHint = (() => {
@@ -94,8 +111,8 @@ export const QcForm = ({ onChange, validations = {}, row, autoFocusRef }) => {
             defaultMessage: 'Deutsch',
           })}
           name="name_de"
-          value={row?.name_de ?? ''}
-          onChange={onChange}
+          value={(row?.name_de ?? '') as string}
+          onChange={onChangeField}
           autoFocus
           ref={autoFocusRef}
         />
@@ -105,8 +122,8 @@ export const QcForm = ({ onChange, validations = {}, row, autoFocusRef }) => {
             defaultMessage: 'Englisch',
           })}
           name="name_en"
-          value={row?.name_en ?? ''}
-          onChange={onChange}
+          value={(row?.name_en ?? '') as string}
+          onChange={onChangeField}
         />
         <TextField
           label={formatMessage({
@@ -114,8 +131,8 @@ export const QcForm = ({ onChange, validations = {}, row, autoFocusRef }) => {
             defaultMessage: 'Französisch',
           })}
           name="name_fr"
-          value={row?.name_fr ?? ''}
-          onChange={onChange}
+          value={(row?.name_fr ?? '') as string}
+          onChange={onChangeField}
         />
         <TextField
           label={formatMessage({
@@ -123,8 +140,8 @@ export const QcForm = ({ onChange, validations = {}, row, autoFocusRef }) => {
             defaultMessage: 'Italienisch',
           })}
           name="name_it"
-          value={row?.name_it ?? ''}
-          onChange={onChange}
+          value={(row?.name_it ?? '') as string}
+          onChange={onChangeField}
         />
       </Section>
       <Section
@@ -144,8 +161,8 @@ export const QcForm = ({ onChange, validations = {}, row, autoFocusRef }) => {
           })}
           name="level"
           list={['root', 'project', 'subproject']}
-          value={row?.level ?? null}
-          onChange={onChange}
+          value={(row?.level ?? null) as string | null}
+          onChange={onChangeField}
           labelMap={{
             root: formatMessage({ id: 'qc.level.root', defaultMessage: 'Root' }),
             project: formatMessage({ id: 'qc.level.project', defaultMessage: 'Projekt' }),
@@ -158,8 +175,8 @@ export const QcForm = ({ onChange, validations = {}, row, autoFocusRef }) => {
             defaultMessage: 'Nach Jahr filtern',
           })}
           name="filter_by_year"
-          value={row?.filter_by_year}
-          onChange={onChange}
+          value={row?.filter_by_year as boolean | null | undefined}
+          onChange={onChangeField}
           hint={formatMessage({
             id: 'qc.filterByYearHint',
             defaultMessage:
@@ -180,8 +197,8 @@ export const QcForm = ({ onChange, validations = {}, row, autoFocusRef }) => {
         <SqlEditorField
           label={formatMessage({ id: 'qc.sql', defaultMessage: 'SQL' })}
           name="sql"
-          value={row?.sql ?? ''}
-          onChange={onChange}
+          value={(row?.sql ?? '') as string}
+          onChange={onChangeField}
           hint={paramHint}
           validationMessage={validations?.sql?.message}
           validationState={validations?.sql?.state}

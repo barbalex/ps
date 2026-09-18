@@ -6,6 +6,24 @@ import { Loading } from './Loading.tsx'
 import styles from './RadioGroupFromList.module.css'
 import type ListValues from '../../models/public/ListValues.ts'
 
+type FieldProps = React.ComponentProps<typeof Field>
+
+type Props = {
+  name: string
+  label?: string
+  list_id: string
+  value: string
+  onChange: (
+    ev: React.ChangeEvent<HTMLInputElement>,
+    data?: { value?: string | null },
+  ) => void
+  validationMessage?: FieldProps['validationMessage']
+  validationState?: 'error' | 'warning' | 'success' | 'none'
+  autoFocus?: boolean
+  ref?: React.Ref<HTMLInputElement>
+  button?: React.ReactNode
+}
+
 export const RadioGroupFromList = ({
   name,
   label,
@@ -17,17 +35,20 @@ export const RadioGroupFromList = ({
   autoFocus,
   ref,
   button,
-}) => {
+}: Props) => {
   const res = useLiveQuery(`SELECT * FROM list_values WHERE list_id = $1`, [
     list_id,
   ])
-  const listValues: ListValues[] = res?.rows ?? []
+  // rows are read with a `.value` property that does not exist as a column
+  const listValues = (res?.rows ?? []) as unknown as (ListValues & {
+    value?: string
+  })[]
 
-  const onClick = (e) => {
-    const valueChoosen = e.target.value
+  const onClick = (e: React.MouseEvent<HTMLElement>) => {
+    const valueChoosen = (e.target as HTMLInputElement).value
     // if valueChoosen equals rowValue, set rowValue to null
     // else set rowValue to valueChoosen
-    onChangePassed(e, {
+    onChangePassed(e as unknown as React.ChangeEvent<HTMLInputElement>, {
       value: valueChoosen === rowValue ? null : valueChoosen,
     })
   }
@@ -43,9 +64,8 @@ export const RadioGroupFromList = ({
           layout="horizontal"
           name={name}
           value={rowValue}
-          appearance="underline"
           autoFocus={autoFocus}
-          ref={ref}
+          ref={ref as unknown as React.Ref<HTMLDivElement>}
         >
           {res === undefined ? (
             <Loading />

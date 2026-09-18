@@ -14,25 +14,28 @@ import type WfsServiceLayers from '../../models/public/WfsServiceLayers.ts'
 
 import '../../form.css'
 
-const from =
-  '/data/projects/$projectId_/wfs-services/$wfsServiceId_/layers/$wfsServiceLayerId/'
-
 export const WfsServiceLayer = () => {
-  const { wfsServiceLayerId } = useParams({ from })
+  const { wfsServiceLayerId } = useParams({ strict: false })
   const { formatMessage } = useIntl()
   const db = usePGlite()
   const addOperation = useSetAtom(addOperationAtom)
-  const [validations, setValidations] = useState({})
+  const [validations, setValidations] = useState<
+    Record<string, { state: 'error'; message: string }>
+  >({})
 
   const res = useLiveQuery(
     `SELECT * FROM wfs_service_layers WHERE wfs_service_layer_id = $1`,
     [wfsServiceLayerId],
   )
-  const row: WfsServiceLayers | undefined = res?.rows?.[0]
+  const row: WfsServiceLayers | undefined =
+    res?.rows?.[0] as WfsServiceLayers | undefined
 
-  const onChange = async (e, data) => {
+  const onChange = async (
+    e: React.ChangeEvent<HTMLInputElement>,
+    data: Parameters<typeof getValueFromChange>[1],
+  ) => {
     const { name, value } = getValueFromChange(e, data)
-    if (!row || row[name] === value) return
+    if (!row || (row as Record<string, any>)[name] === value) return
 
     try {
       await db.query(
@@ -42,7 +45,7 @@ export const WfsServiceLayer = () => {
     } catch (error) {
       setValidations((prev) => ({
         ...prev,
-        [name]: { state: 'error', message: error.message },
+        [name]: { state: 'error', message: error instanceof Error ? error.message : String(error) },
       }))
       return
     }

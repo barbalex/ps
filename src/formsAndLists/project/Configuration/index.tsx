@@ -26,8 +26,8 @@ import { projectTypeNames } from '../../../modules/projectTypeNames.ts'
 import type Projects from '../../../models/public/Projects.ts'
 import type Units from '../../../models/public/Units.ts'
 
-export const Configuration = ({ from }) => {
-  const { projectId } = useParams({ from })
+export const Configuration = ({ from }: { from: string }) => {
+  const { projectId } = useParams({ strict: false })
   const addOperation = useSetAtom(addOperationAtom)
   const { formatMessage, locale } = useIntl()
   const filesLabel = formatMessage({ id: 'aB1CdE', defaultMessage: 'Dateien' })
@@ -40,20 +40,25 @@ export const Configuration = ({ from }) => {
     defaultMessage:
       'Alternative: In eigenem Formular anzeigen, mit eigenem Ordner im Navigationsbaum',
   })
-  const [validations, setValidations] = useState({})
+  const [validations, setValidations] = useState<
+    Record<string, { state: 'error'; message: string }>
+  >({})
 
   const db = usePGlite()
 
   const res = useLiveQuery(`SELECT * FROM projects WHERE project_id = $1`, [
     projectId,
   ])
-  const row: Projects | undefined = res?.rows?.[0]
+  const row = res?.rows?.[0] as Projects | undefined
 
   const unitsRes = useLiveQuery(
     `SELECT unit_id, name FROM units WHERE project_id = $1 ORDER BY sort, name`,
     [projectId],
   )
-  const units: Pick<Units, 'unit_id' | 'name'>[] = unitsRes?.rows ?? []
+  const units = (unitsRes?.rows ?? []) as Pick<
+    Units,
+    'unit_id' | 'name'
+  >[]
   const unitIds = units.map((u) => u.unit_id)
   const unitLabelMap = Object.fromEntries(
     units.map((u) => [u.unit_id, u.name ?? u.unit_id]),
@@ -61,21 +66,24 @@ export const Configuration = ({ from }) => {
 
   const lang = locale.split('-')[0]
   const subprojectName =
-    row?.[`subproject_name_plural_${lang}`] ??
+    (row as Record<string, any>)?.[`subproject_name_plural_${lang}`] ??
     row?.subproject_name_plural ??
     'Arten'
   const subprojectNameSingular =
-    row?.[`subproject_name_singular_${lang}`] ??
+    (row as Record<string, any>)?.[`subproject_name_singular_${lang}`] ??
     row?.subproject_name_singular ??
     'Teilprojekt'
 
-  const onChange = async (e, data) => {
+  const onChange = async (
+    e: React.ChangeEvent<HTMLInputElement>,
+    data: Parameters<typeof getValueFromChange>[1],
+  ) => {
     const { name, value } = getValueFromChange(e, data)
     // only change if value has changed: maybe only focus entered and left
-    if (row[name] === value) return
+    if ((row as Record<string, any>)[name] === value) return
 
     if (name === 'type') {
-      const names = projectTypeNames[value] ?? {}
+      const names = projectTypeNames[value as string] ?? {}
       const allData = { type: value, ...names }
       const setClauses = Object.keys(allData)
         .map((col, i) => `${col} = $${i + 1}`)
@@ -88,7 +96,7 @@ export const Configuration = ({ from }) => {
       } catch (error) {
         setValidations((prev) => ({
           ...prev,
-          [name]: { state: 'error', message: error.message },
+          [name]: { state: 'error', message: error instanceof Error ? error.message : String(error) },
         }))
         return
       }
@@ -111,7 +119,7 @@ export const Configuration = ({ from }) => {
     } catch (error) {
       setValidations((prev) => ({
         ...prev,
-        [name]: { state: 'error', message: error.message },
+        [name]: { state: 'error', message: error instanceof Error ? error.message : String(error) },
       }))
       return
     }
@@ -139,7 +147,7 @@ export const Configuration = ({ from }) => {
     return (
       <NotFound
         table={formatMessage({ id: 'fz2AhZ', defaultMessage: 'Projekt' })}
-        id={projectId}
+        id={projectId!}
       />
     )
   }
@@ -712,7 +720,11 @@ export const Configuration = ({ from }) => {
                 { subprojectNameSingular },
               )}
               name="subproject_roles_in_subproject"
-              value={row.subproject_roles_in_subproject ?? true}
+              value={
+                (row as Projects & {
+                  subproject_roles_in_subproject?: boolean | null
+                }).subproject_roles_in_subproject ?? true
+              }
               onChange={onChange}
               validationState={
                 validations?.subproject_roles_in_subproject?.state
@@ -782,8 +794,6 @@ export const Configuration = ({ from }) => {
             onChange={onChange}
             extraFieldNames={['id']}
             from={from}
-            validationState={validations?.goal_reports_label_by?.state}
-            validationMessage={validations?.goal_reports_label_by?.message}
           />
           <LabelBy
             label={formatMessage({
@@ -796,8 +806,6 @@ export const Configuration = ({ from }) => {
             onChange={onChange}
             extraFieldNames={['id', 'level']}
             from={from}
-            validationState={validations?.places_label_by?.state}
-            validationMessage={validations?.places_label_by?.message}
           />
           <FieldList
             label={formatMessage({
@@ -807,8 +815,8 @@ export const Configuration = ({ from }) => {
             name="places_order_by"
             table="projects"
             fieldsTable="places"
-            id={projectId}
-            valueArray={row.places_order_by ?? []}
+            id={projectId!}
+            valueArray={(row.places_order_by as unknown as string[]) ?? []}
             from={from}
           />
           <TextFieldInactive

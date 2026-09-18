@@ -1,8 +1,14 @@
 import { useCheckQuantitiesNavData } from '../../../modules/useCheckQuantitiesNavData.ts'
 import { FetcherReturner } from './FetcherReturner.tsx'
 
-export const CheckQuantitiesFetcher = ({ params, ...other }) => {
-  const { navData } = useCheckQuantitiesNavData(params)
+type Props = {
+  params: Parameters<typeof useCheckQuantitiesNavData>[0]
+}
+
+export const CheckQuantitiesFetcher = ({ params, ...other }: Props) => {
+  const { navData: navDataRaw } = useCheckQuantitiesNavData(params)
+  // navData.id does not exist on NavData; bridge type-only
+  const navData = navDataRaw as typeof navDataRaw & { id?: string }
 
   return (
     <FetcherReturner

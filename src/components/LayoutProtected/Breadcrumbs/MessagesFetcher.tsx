@@ -1,12 +1,19 @@
 import { useMessagesNavData } from '../../../modules/useMessagesNavData.ts'
 import { FetcherReturner } from './FetcherReturner.tsx'
 
-export const MessagesFetcher = ({ params, ...other }) => {
-  const { navData } = useMessagesNavData(params)
+type Props = {
+  params?: Record<string, string>
+}
+
+export const MessagesFetcher = ({ params, ...other }: Props) => {
+  // useMessagesNavData takes no params; the passed value is ignored at runtime
+  const { navData } = (useMessagesNavData as (
+    params?: Record<string, string>,
+  ) => ReturnType<typeof useMessagesNavData>)(params)
 
   return (
     <FetcherReturner
-      key={`${navData?.id ?? navData?.ownUrl}`}
+      key={`${(navData as { id?: string })?.id ?? navData?.ownUrl}`}
       navData={navData}
       {...other}
     />

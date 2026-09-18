@@ -5,10 +5,15 @@ import { epsgTo4326 } from '../../../../../modules/epsgTo4326.ts'
 import { formatCoordinate } from '../../../../../modules/roundCoordinates.ts'
 import styles from './Inputs.module.css'
 
+type Props = {
+  coordinates: { x?: number | null; y?: number | null }
+  projectMapPresentationCrs?: string | null
+}
+
 export const Inputs = ({
   coordinates: coordsIn,
   projectMapPresentationCrs,
-}) => {
+}: Props) => {
   const map = useMap()
 
   const [coordinates, setCoordinates] = useState(coordsIn)
@@ -18,7 +23,7 @@ export const Inputs = ({
     setCoordinates(coordsIn)
   }, [coordsIn])
 
-  const onChange = (e) => {
+  const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const name = e.target.name
     const value = parseFloat(e.target.value)
     const newCoordinates = { ...coordinates, [name]: value }
@@ -32,14 +37,14 @@ export const Inputs = ({
       y: coordinates.y,
       projectMapPresentationCrs,
     })
-    map.setView([x, y])
+    map.setView([x!, y!])
   }
 
-  const onKeyDown = (e) => {
+  const onKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === 'Enter') {
       onBlur()
       // unfocus input
-      e.target.blur()
+      ;(e.target as HTMLInputElement).blur()
     }
   }
 

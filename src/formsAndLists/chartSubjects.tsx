@@ -8,24 +8,19 @@ import { useChartSubjectsNavData } from '../modules/useChartSubjectsNavData.ts'
 
 import '../form.css'
 
-const from =
-  '/data/projects/$projectId_/subprojects/$subprojectId_/charts/$chartId_/subjects/'
-
 export const ChartSubjects = () => {
-  const { projectId, subprojectId, chartId } = useParams({
-    from,
-  })
+  const { projectId, subprojectId, chartId } = useParams({ strict: false })
   const navigate = useNavigate()
 
   const { loading, navData } = useChartSubjectsNavData({
-    projectId,
-    subprojectId,
-    chartId,
-  })
+    projectId: projectId!,
+    subprojectId: subprojectId!,
+    chartId: chartId!,
+  } as Parameters<typeof useChartSubjectsNavData>[0])
   const { navs, label, nameSingular } = navData
 
   const add = async () => {
-    const id = await createChartSubject({ chartId })
+    const id = await createChartSubject({ chartId: chartId! })
     if (!id) return
     navigate({
       to: id,

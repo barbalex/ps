@@ -6,14 +6,13 @@ import { Loading } from '../../components/shared/Loading.tsx'
 import { Row } from '../../components/shared/Row.tsx'
 import { Header } from './Header.tsx'
 import { NotFound } from '../../components/NotFound.tsx'
+import type VectorLayers from '../../models/public/VectorLayers.ts'
 
-export const VectorLayerList = ({ from }) => {
-  const { projectId, vectorLayerId } = useParams({ from })
+export const VectorLayerList = ({ from }: { from: string }) => {
+  const { projectId, vectorLayerId } = useParams({ strict: false })
   const { formatMessage } = useIntl()
   const { loading, navData } = useVectorLayerNavData({
-    projectId,
-    vectorLayerId,
-  })
+    projectId: projectId!,    vectorLayerId: vectorLayerId!,  })
   const { navs, label, name, notFound } = navData
 
   if (notFound) {
@@ -29,7 +28,9 @@ export const VectorLayerList = ({ from }) => {
     <div className="list-view">
       <Header
         from={from}
-        row={{ label, name, vector_layer_id: vectorLayerId }}
+        row={
+          { label, name, vector_layer_id: vectorLayerId } as unknown as VectorLayers
+        }
       />
       <div className="list-container">
         {loading ?

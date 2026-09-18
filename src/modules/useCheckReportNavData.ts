@@ -44,7 +44,7 @@ export const useCheckReportNavData = ({
         check_report_quantities_count
       WHERE 
         check_reports.place_check_report_id = '${checkReportId}'`
-  const res = useLiveQuery(sql)
+  const res = useLiveQuery<NavData>(sql)
   const loading = res === undefined
 
   const nav: NavData | undefined = res?.rows?.[0]

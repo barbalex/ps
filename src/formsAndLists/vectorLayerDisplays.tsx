@@ -12,7 +12,13 @@ import '../form.css'
 
 // this form can be used from the router or inside the left map drawer
 // map drawer passes the vectorLayerId as a prop
-export const VectorLayerDisplays = ({ vectorLayerId: vectorLayerIdIn, hideHeader = false }) => {
+export const VectorLayerDisplays = ({
+  vectorLayerId: vectorLayerIdIn,
+  hideHeader = false,
+}: {
+  vectorLayerId?: string
+  hideHeader?: boolean
+}) => {
   const setVectorLayerDisplayId = useSetAtom(mapDrawerVectorLayerDisplayAtom)
   const calledFromMapDrawer = vectorLayerIdIn !== undefined
   const params = useParams({ strict: false })
@@ -22,8 +28,8 @@ export const VectorLayerDisplays = ({ vectorLayerId: vectorLayerIdIn, hideHeader
   const navigate = useNavigate()
 
   const { loading, navData } = useVectorLayerDisplaysNavData({
-    projectId,
-    vectorLayerId,
+    projectId: projectId!,
+    vectorLayerId: vectorLayerId!,
   })
   const { navs, label, nameSingular } = navData
 
@@ -45,7 +51,7 @@ export const VectorLayerDisplays = ({ vectorLayerId: vectorLayerIdIn, hideHeader
     })
   }
 
-  const onClickRow = (id) => {
+  const onClickRow = (id: string) => {
     if (vectorLayerId) {
       setVectorLayerDisplayId(id)
       return

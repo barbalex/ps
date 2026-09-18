@@ -6,6 +6,15 @@ import { removeChildNodes } from '../../modules/tree/removeChildNodes.ts'
 import { addOpenNodes } from '../../modules/tree/addOpenNodes.ts'
 import { useCheckQuantitiesNavData } from '../../modules/useCheckQuantitiesNavData.ts'
 
+type Props = {
+  projectId: string
+  subprojectId: string
+  placeId: string
+  placeId2?: string
+  checkId: string
+  level?: number
+}
+
 export const CheckQuantitiesNode = ({
   projectId,
   subprojectId,
@@ -13,7 +22,7 @@ export const CheckQuantitiesNode = ({
   placeId2,
   checkId,
   level = 9,
-}) => {
+}: Props) => {
   const navigate = useNavigate()
 
   const { navData } = useCheckQuantitiesNavData({

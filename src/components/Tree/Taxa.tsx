@@ -8,7 +8,7 @@ import { useTaxaNavData } from '../../modules/useTaxaNavData.ts'
 
 interface Props {
   projectId: string
-  taxonomy_id: string
+  taxonomyId: string
   level?: number
 }
 

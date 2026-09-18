@@ -13,7 +13,12 @@ type NavData = {
   taxa_count_unfiltered: number
 }
 
-export const useTaxonomyNavData = ({ projectId, taxonomyId }) => {
+type Props = {
+  projectId: string
+  taxonomyId: string
+}
+
+export const useTaxonomyNavData = ({ projectId, taxonomyId }: Props) => {
   const [openNodes] = useAtom(treeOpenNodesAtom)
   const location = useLocation()
   const { formatMessage } = useIntl()
@@ -34,7 +39,7 @@ export const useTaxonomyNavData = ({ projectId, taxonomyId }) => {
   )
 
   const loading = res === undefined
-  const nav: NavData | undefined = res?.rows?.[0]
+  const nav = res?.rows?.[0] as NavData | undefined
 
   const parentArray = ['data', 'projects', projectId, 'taxonomies']
   const parentUrl = `/${parentArray.join('/')}`

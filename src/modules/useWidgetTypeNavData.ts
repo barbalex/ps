@@ -36,7 +36,7 @@ export const useWidgetTypeNavData = ({ widgetTypeId }: Props) => {
 
   const loading = res === undefined
 
-  const nav: NavData | undefined = res?.rows?.[0]
+  const nav = res?.rows?.[0] as NavData | undefined
 
   const ownArray = [...parentArray, widgetTypeId]
   const ownUrl = `/${ownArray.join('/')}`

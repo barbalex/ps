@@ -1,12 +1,19 @@
 import { useVectorLayerNavData } from '../../../modules/useVectorLayerNavData.ts'
 import { FetcherReturner } from './FetcherReturner.tsx'
 
-export const VectorLayerFetcher = ({ params, ...other }) => {
+type Props = {
+  params: {
+    projectId: string
+    vectorLayerId: string
+  }
+}
+
+export const VectorLayerFetcher = ({ params, ...other }: Props) => {
   const { navData } = useVectorLayerNavData(params)
 
   return (
     <FetcherReturner
-      key={`${navData?.id ?? navData?.ownUrl}`}
+      key={`${(navData as { id?: string; ownUrl: string })?.id ?? navData?.ownUrl}`}
       navData={navData}
       {...other}
     />

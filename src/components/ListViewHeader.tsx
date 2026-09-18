@@ -1,4 +1,5 @@
 // seems not in use
+import type { ReactNode } from 'react'
 import { useLiveQuery } from '@electric-sql/pglite-react'
 
 import { FormMenu } from './FormMenu/index.tsx'
@@ -11,7 +12,8 @@ interface Props {
   addRow?: () => void
   isFiltered: boolean
   countFiltered: number
-  menus?: unknown[]
+  isLoading?: boolean
+  menus?: ReactNode
   info?: unknown
 }
 

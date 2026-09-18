@@ -35,13 +35,13 @@ export const RootExports = () => {
   const [searchTerm, setSearchTerm] = useState('')
 
   // Load all root-level exports
-  const exportsRes = useLiveQuery(
+  const exportsRes = useLiveQuery<ExportRow>(
     `SELECT exports_id, COALESCE(NULLIF(name_${language}, ''), name_de) AS label
      FROM exports WHERE level = 'root' ORDER BY label`,
   )
 
   // Load active assignments for root level (no project_id, no subproject_id)
-  const activeRes = useLiveQuery(
+  const activeRes = useLiveQuery<ActiveEntry>(
     `SELECT export_assignment_id, exports_id FROM export_assignments
      WHERE project_id IS NULL AND subproject_id IS NULL`,
   )

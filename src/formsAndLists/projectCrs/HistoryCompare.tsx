@@ -22,16 +22,10 @@ import {
 import type ProjectCrs from '../../models/public/ProjectCrs.ts'
 import type ProjectCrsHistory from '../../models/public/ProjectCrsHistory.ts'
 
-const from =
-  '/data/projects/$projectId_/crs/$projectCrsId_/histories/$projectCrsHistoryId'
-
 export const ProjectCrsHistoryCompare = () => {
   const { formatMessage } = useIntl()
   const navigate = useNavigate()
-  const { projectId, projectCrsId, projectCrsHistoryId } = useParams({
-    from,
-    strict: false,
-  })
+  const { projectId, projectCrsId, projectCrsHistoryId } = useParams({ strict: false })
   const projectCrsPath = `/data/projects/${projectId}/crs/${projectCrsId}`
   const historyPath = `${projectCrsPath}/histories`
 
@@ -74,7 +68,7 @@ export const ProjectCrsHistoryCompare = () => {
   })
 
   const formatFieldValue = (field: string, history: ProjectCrsHistory) =>
-    stringifyHistoryValue(history[field])
+    stringifyHistoryValue((history as Record<string, any>)[field])
 
   return (
     <HistoryCompare<ProjectCrsHistory>

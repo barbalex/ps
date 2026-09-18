@@ -23,23 +23,17 @@ import {
 import type Taxonomies from '../../models/public/Taxonomies.ts'
 import type TaxonomiesHistory from '../../models/public/TaxonomiesHistory.ts'
 
-const from =
-  '/data/projects/$projectId_/taxonomies/$taxonomyId_/histories/$taxonomyHistoryId'
-
 export const TaxonomyHistoryCompare = () => {
   const { formatMessage } = useIntl()
   const navigate = useNavigate()
-  const { projectId, taxonomyId, taxonomyHistoryId } = useParams({
-    from,
-    strict: false,
-  })
+  const { projectId, taxonomyId, taxonomyHistoryId } = useParams({ strict: false })
   const taxonomyPath = `/data/projects/${projectId}/taxonomies/${taxonomyId}/taxonomy`
   const historyPath = `/data/projects/${projectId}/taxonomies/${taxonomyId}/histories`
 
   const addOperation = useSetAtom(addOperationAtom)
   const db = usePGlite()
   const autoFocusRef = useRef<HTMLInputElement>(null)
-  const [validations, setValidations] = useState<Record<string, unknown>>({})
+  const [validations, setValidations] = useState<Record<string, { state: 'error'; message: string }>>({})
 
   const rowRes = useLiveQuery(
     `SELECT * FROM taxonomies WHERE taxonomy_id = $1`,
@@ -47,9 +41,12 @@ export const TaxonomyHistoryCompare = () => {
   )
   const row = rowRes?.rows?.[0] as Taxonomies | undefined
 
-  const onChange = async (e, data) => {
+  const onChange = async (
+    e: React.ChangeEvent<HTMLInputElement>,
+    data: Parameters<typeof getValueFromChange>[1],
+  ) => {
     const { name, value } = getValueFromChange(e, data)
-    if (!row || row[name] === value) return
+    if (!row || (row as Record<string, any>)[name] === value) return
 
     try {
       await db.query(
@@ -59,7 +56,7 @@ export const TaxonomyHistoryCompare = () => {
     } catch (error) {
       setValidations((prev) => ({
         ...prev,
-        [name]: { state: 'error', message: error.message },
+        [name]: { state: 'error', message: error instanceof Error ? error.message : String(error) },
       }))
       return
     }
@@ -96,9 +93,9 @@ export const TaxonomyHistoryCompare = () => {
       <TaxonomyForm
         row={row}
         onChange={onChange}
-        validations={validations as Record<string, { state: string; message: string }>}
+        validations={validations as Record<string, { state: 'error'; message: string }>}
         autoFocusRef={autoFocusRef}
-        projectId={projectId}
+        projectId={projectId!}
       />
     </div>
   )
@@ -123,7 +120,7 @@ export const TaxonomyHistoryCompare = () => {
   })
 
   const formatFieldValue = (field: string, history: TaxonomiesHistory) =>
-    stringifyHistoryValue(history[field])
+    stringifyHistoryValue((history as Record<string, any>)[field])
 
   return (
     <HistoryCompare<TaxonomiesHistory>

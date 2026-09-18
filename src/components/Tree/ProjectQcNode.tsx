@@ -3,7 +3,13 @@ import { isEqual } from 'es-toolkit'
 
 import { Node } from './Node.tsx'
 
-export const ProjectQcNode = ({ projectId, nav, level = 4 }) => {
+type Props = {
+  projectId: string
+  nav: { id: string; label: string | null }
+  level?: number
+}
+
+export const ProjectQcNode = ({ projectId, nav, level = 4 }: Props) => {
   const location = useLocation()
 
   const urlPath = location.pathname.split('/').filter((p) => p !== '')

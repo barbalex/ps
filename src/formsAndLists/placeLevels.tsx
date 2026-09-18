@@ -8,18 +8,17 @@ import { Row } from '../components/shared/Row.tsx'
 import { Loading } from '../components/shared/Loading.tsx'
 import '../form.css'
 
-const from = '/data/projects/$projectId_/place-levels/'
 
 export const PlaceLevels = () => {
-  const { projectId } = useParams({ from })
+  const { projectId } = useParams({ strict: false })
   const navigate = useNavigate()
   const { formatMessage } = useIntl()
 
-  const { loading, navData } = usePlaceLevelsNavData({ projectId })
+  const { loading, navData } = usePlaceLevelsNavData({projectId: projectId! })
   const { navs, label, nameSingular } = navData
 
   const add = async () => {
-    const id = await createPlaceLevel({ project_id: projectId })
+    const id = await createPlaceLevel({ project_id: projectId! })
     console.log('created place level with id', id)
     if (!id) return
     navigate({

@@ -2,7 +2,22 @@ import * as fluentUiReactComponents from '@fluentui/react-components'
 const { Field, RadioGroup, Radio } = fluentUiReactComponents
 import { useResizeDetector } from 'react-resize-detector'
 
-export const RadioGroupFromOptions = (props) => {
+type FieldProps = React.ComponentProps<typeof Field>
+
+type Props = {
+  name?: string
+  label?: string
+  options?: { label?: string; value?: string }[]
+  value?: string | null
+  onChange: (ev: { target: { name?: string; value?: string | null } }) => void
+  validationMessage?: FieldProps['validationMessage']
+  validationState?: 'error' | 'warning' | 'success' | 'none'
+  autoFocus?: boolean
+  disabled?: boolean
+  ref?: React.Ref<HTMLInputElement>
+}
+
+export const RadioGroupFromOptions = (props: Props) => {
   const {
     name,
     label,
@@ -29,7 +44,7 @@ export const RadioGroupFromOptions = (props) => {
   // TODO: enable nulling when clicking on the selected radio
   // as in other RadioGroup components
   // do this when this component is actually used (not used now)
-  const onChange = (e, data) => {
+  const onChange = (_e: unknown, data: { value?: string | null }) => {
     const fakeEvent = {
       target: { name, value: data.value },
     }
@@ -46,9 +61,8 @@ export const RadioGroupFromOptions = (props) => {
       <RadioGroup
         layout={verticalLayout ? 'vertical' : 'horizontal'}
         name={name}
-        value={value}
+        value={value ?? undefined}
         onChange={onChange}
-        appearance="underline"
         disabled={disabled}
       >
         {options.map((val, index) => (

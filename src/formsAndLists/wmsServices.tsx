@@ -8,14 +8,14 @@ import { Loading } from "../components/shared/Loading.tsx";
 import { useWmsServicesNavData } from "../modules/useWmsServicesNavData.ts";
 import "../form.css";
 
-const from = "/data/projects/$projectId_/wms-services/";
 
 export const WmsServices = () => {
-  const { projectId } = useParams({ from });
+  const { projectId } = useParams({ strict: false });
   const navigate = useNavigate();
 
-  const { loading, navData, isFiltered } = useWmsServicesNavData({ projectId });
-  const { navs, label } = navData;
+  const { loading, navData, isFiltered } = useWmsServicesNavData({projectId: projectId! })
+  const { label } = navData;
+  const navs = navData.navs as { id: string; label: string | null }[];
 
   const add = async () => {
     const id = await createWmsService({ projectId });

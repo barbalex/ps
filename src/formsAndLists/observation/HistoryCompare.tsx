@@ -25,6 +25,11 @@ import {
 import type Observations from '../../models/public/Observations.ts'
 import type ObservationsHistory from '../../models/public/ObservationsHistory.ts'
 
+type Validation = {
+  state: 'error'
+  message: string
+}
+
 export const ObservationHistoryCompare = ({
   from,
 }: {
@@ -43,7 +48,7 @@ export const ObservationHistoryCompare = ({
     placeId2,
     observationId,
     observationHistoryId,
-  } = useParams({ from, strict: false })
+  } = useParams({ strict: false })
   const base = `/data/projects/${projectId}/subprojects/${subprojectId}`
   const observationPath = from.includes('observations-to-assess')
     ? `${base}/observations-to-assess/${observationId}`
@@ -56,7 +61,7 @@ export const ObservationHistoryCompare = ({
 
   const addOperation = useSetAtom(addOperationAtom)
   const db = usePGlite()
-  const [validations, setValidations] = useState<Record<string, unknown>>({})
+  const [validations, setValidations] = useState<Record<string, Validation>>({})
 
   const rowRes = useLiveQuery(
     `SELECT * FROM observations WHERE observation_id = $1`,
@@ -64,9 +69,15 @@ export const ObservationHistoryCompare = ({
   )
   const row = rowRes?.rows?.[0] as Observations | undefined
 
-  const onChange = async (e, data) => {
-    const { name, value } = getValueFromChange(e, data)
-    if (!row || row[name] === value) return
+  const onChange = async (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
+    data?: Record<string, unknown>,
+  ) => {
+    const { name, value } = getValueFromChange(
+      e as React.ChangeEvent<HTMLInputElement>,
+      (data ?? {}) as Parameters<typeof getValueFromChange>[1],
+    )
+    if (!row || (row as Record<string, any>)[name] === value) return
 
     try {
       await db.query(
@@ -76,7 +87,7 @@ export const ObservationHistoryCompare = ({
     } catch (error) {
       setValidations((prev) => ({
         ...prev,
-        [name]: { state: 'error', message: error.message },
+        [name]: { state: 'error', message: (error as Error).message },
       }))
       return
     }
@@ -117,7 +128,7 @@ export const ObservationHistoryCompare = ({
             defaultMessage: 'Nicht zuzuordnen',
           })}
           name="not_to_assign"
-          value={row.not_to_assign}
+          value={row.not_to_assign as never}
           onChange={onChange}
           validationState={validations?.not_to_assign?.state}
           validationMessage={validations?.not_to_assign?.message}
@@ -153,10 +164,10 @@ export const ObservationHistoryCompare = ({
   })
 
   const formatFieldValue = (field: string, history: ObservationsHistory) =>
-    stringifyHistoryValue(history[field])
+    stringifyHistoryValue((history as Record<string, any>)[field])
 
   return (
-    <HistoryCompare<ObservationsHistory>
+    <HistoryCompare<ObservationsHistory & Record<string, unknown>>
       onBack={() => navigate({ to: observationPath })}
       leftContent={leftContent}
       visibleCurrentFields={visibleCurrentFields}
@@ -164,14 +175,14 @@ export const ObservationHistoryCompare = ({
       preferredOrder={preferredOrder}
       formatFieldLabel={formatFieldLabel}
       formatFieldValue={formatFieldValue}
-      row={row}
+      row={row as unknown as Record<string, unknown> | undefined}
       historyConfig={{
         historyTable: 'observations_history',
         rowIdField: 'observation_id',
         rowId: observationId,
         historyPath,
         routeHistoryId: observationHistoryId,
-        currentRow: row,
+        currentRow: row as unknown as Record<string, unknown> | undefined,
       }}
       restoreConfig={{
         db,
@@ -179,7 +190,7 @@ export const ObservationHistoryCompare = ({
         rowIdName: 'observation_id',
         rowId: observationId,
         excludedRestoreFields,
-        addOperation,
+        addOperation: addOperation as never,
       }}
     />
   )

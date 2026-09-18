@@ -1,5 +1,9 @@
 // https://www.30secondsofcode.org/js/s/split-array-into-chunks/
-export const chunkArrayWithMinSize = (arr, chunkSize, minChunkSize = 0) => {
+export const chunkArrayWithMinSize = <T>(
+  arr: T[],
+  chunkSize: number,
+  minChunkSize = 0,
+) => {
   const remainder = arr.length % chunkSize
   const isLastChunkTooSmall = remainder < minChunkSize
   const totalChunks = isLastChunkTooSmall

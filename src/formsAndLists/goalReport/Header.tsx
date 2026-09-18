@@ -10,8 +10,8 @@ import { FormHeader } from '../../components/FormHeader/index.tsx'
 import { HistoryToggleButton } from '../../components/shared/HistoryCompare/HistoryToggleButton.tsx'
 import { addOperationAtom } from '../../store.ts'
 
-export const Header = ({ autoFocusRef, from }) => {
-  const { projectId, subprojectId, goalId, goalReportId } = useParams({ from })
+export const Header = ({ autoFocusRef }: { autoFocusRef?: React.RefObject<HTMLInputElement | null>; from?: string }) => {
+  const { projectId, subprojectId, goalId, goalReportId } = useParams({ strict: false })
   const navigate = useNavigate()
   const addOperation = useSetAtom(addOperationAtom)
 
@@ -28,9 +28,7 @@ export const Header = ({ autoFocusRef, from }) => {
 
   const addRow = async () => {
     const id = await createGoalReport({
-      projectId,
-      goalId,
-    })
+      projectId: projectId!,      goalId: goalId!,    })
     navigate({
       to: `../${id}`,
       params: (prev) => ({ ...prev, goalReportId: id }),
@@ -44,7 +42,7 @@ export const Header = ({ autoFocusRef, from }) => {
         `SELECT * FROM goal_reports WHERE goal_report_id = $1`,
         [goalReportId],
       )
-      const prev = prevRes?.rows?.[0] ?? {}
+      const prev = (prevRes?.rows?.[0] ?? {}) as Record<string, unknown>
       db.query(`DELETE FROM goal_reports WHERE goal_report_id = $1`, [
         goalReportId,
       ])
@@ -67,7 +65,7 @@ export const Header = ({ autoFocusRef, from }) => {
         `SELECT goal_report_id FROM goal_reports WHERE goal_id = $1 ORDER BY label`,
         [goalId],
       )
-      const goalReports = res?.rows
+      const goalReports = res?.rows as { goal_report_id: string }[]
       const len = goalReports.length
       const index = goalReports.findIndex(
         (p) => p.goal_report_id === goalReportIdRef.current,
@@ -88,7 +86,7 @@ export const Header = ({ autoFocusRef, from }) => {
         `SELECT goal_report_id FROM goal_reports WHERE goal_id = $1 ORDER BY label`,
         [goalId],
       )
-      const goalReports = res?.rows
+      const goalReports = res?.rows as { goal_report_id: string }[]
       const len = goalReports.length
       const index = goalReports.findIndex(
         (p) => p.goal_report_id === goalReportIdRef.current,

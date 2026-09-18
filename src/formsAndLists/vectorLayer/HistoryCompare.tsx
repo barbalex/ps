@@ -29,16 +29,13 @@ const from =
 export const VectorLayerHistoryCompare = () => {
   const { formatMessage } = useIntl()
   const navigate = useNavigate()
-  const { projectId, vectorLayerId, vectorLayerHistoryId } = useParams({
-    from,
-    strict: false,
-  })
+  const { projectId, vectorLayerId, vectorLayerHistoryId } = useParams({ strict: false })
   const vectorLayerPath = `/data/projects/${projectId}/vector-layers/${vectorLayerId}/vector-layer`
   const historyPath = `/data/projects/${projectId}/vector-layers/${vectorLayerId}/histories`
 
   const addOperation = useSetAtom(addOperationAtom)
   const db = usePGlite()
-  const [validations, setValidations] = useState<Record<string, unknown>>({})
+  const [validations, setValidations] = useState<Record<string, { state: 'error'; message: string }>>({})
 
   const rowRes = useLiveQuery(
     `SELECT * FROM vector_layers WHERE vector_layer_id = $1`,
@@ -46,9 +43,12 @@ export const VectorLayerHistoryCompare = () => {
   )
   const row = rowRes?.rows?.[0] as VectorLayers | undefined
 
-  const onChange = async (e, data) => {
+  const onChange = async (
+    e: React.ChangeEvent<HTMLInputElement>,
+    data: Parameters<typeof getValueFromChange>[1],
+  ) => {
     const { name, value } = getValueFromChange(e, data)
-    if (!row || row[name] === value) return
+    if (!row || (row as Record<string, any>)[name] === value) return
 
     try {
       await db.query(
@@ -58,7 +58,7 @@ export const VectorLayerHistoryCompare = () => {
     } catch (error) {
       setValidations((prev) => ({
         ...prev,
-        [name]: { state: 'error', message: error.message },
+        [name]: { state: 'error', message: error instanceof Error ? error.message : String(error) },
       }))
       return
     }
@@ -95,7 +95,7 @@ export const VectorLayerHistoryCompare = () => {
       <VectorLayerForm
         row={row}
         onChange={onChange}
-        validations={validations as Record<string, { state: string; message: string }>}
+        validations={validations as Record<string, { state: 'error'; message: string }>}
         from={from}
       />
     </div>
@@ -135,7 +135,7 @@ export const VectorLayerHistoryCompare = () => {
   })
 
   const formatFieldValue = (field: string, history: VectorLayersHistory) =>
-    stringifyHistoryValue(history[field])
+    stringifyHistoryValue((history as Record<string, any>)[field])
 
   return (
     <HistoryCompare<VectorLayersHistory>

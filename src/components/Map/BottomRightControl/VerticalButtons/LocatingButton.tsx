@@ -13,7 +13,7 @@ export const LocatingButton = () => {
   return (
     <ToolbarToggleButton
       name="locate"
-      value={mapIsLocating}
+      value={mapIsLocating as unknown as string}
       onClick={onClickLocate}
       aria-label={mapIsLocating ? 'Stop locating' : 'Locate'}
       title={mapIsLocating ? 'Stop locating' : 'Locate'}

@@ -5,6 +5,22 @@ import { FieldFormInForm } from '../../FieldFormInForm.tsx'
 import { WidgetDragAndDrop } from './Widget/index.tsx'
 import { Widget } from './Widget/Widget.tsx'
 import { designingAtom } from '../../../../store.ts'
+import type { FieldsWithTypes } from '../index.tsx'
+
+type Props = {
+  field: FieldsWithTypes
+  fieldsCount: number
+  index: number
+  data: Record<string, unknown>
+  table: string
+  jsonFieldName: string
+  id: string
+  orIndex?: number
+  idField: string
+  autoFocus?: boolean
+  ref?: React.Ref<HTMLDivElement>
+  from?: string
+}
 
 // this component decides whether to show the form or the widget
 export const Field = ({
@@ -20,8 +36,11 @@ export const Field = ({
   autoFocus,
   ref,
   from,
-}) => {
-  const { editingField } = useSearch({ from })
+}: Props) => {
+  // from is a route id string; the literal union is too large to name here
+  const { editingField } = useSearch({ from: from as never }) as {
+    editingField?: string
+  }
   const [designing] = useAtom(designingAtom)
 
   if (editingField === field.field_id) {
@@ -41,7 +60,7 @@ export const Field = ({
     return (
       <Widget
         key={key}
-        name={field.name}
+        name={field.name!}
         field={field}
         data={data}
         table={table}
@@ -59,7 +78,6 @@ export const Field = ({
   return (
     <WidgetDragAndDrop
       key={key}
-      name={field.name}
       field={field}
       fieldsCount={fieldsCount}
       index={index}

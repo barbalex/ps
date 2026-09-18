@@ -3,7 +3,12 @@ import { isEqual } from 'es-toolkit'
 
 import { Node } from './Node.tsx'
 
-export const WidgetTypeNode = ({ nav, level = 2 }) => {
+type Props = {
+  nav: { id: string; label: string }
+  level?: number
+}
+
+export const WidgetTypeNode = ({ nav, level = 2 }: Props) => {
   const location = useLocation()
 
   const urlPath = location.pathname.split('/').filter((p) => p !== '')

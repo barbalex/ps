@@ -5,7 +5,11 @@ export const removeOpenNodes = async ({
   nodes = [],
   treeOpenNodes,
   setTreeOpenNodes,
-}): void => {
+}: {
+  nodes?: string[][]
+  treeOpenNodes: string[][]
+  setTreeOpenNodes: (nodes: string[][]) => void
+}): Promise<void> => {
   const newNodes = treeOpenNodes.filter((node) => !isEqual(node, nodes))
 
   return setTreeOpenNodes(newNodes)

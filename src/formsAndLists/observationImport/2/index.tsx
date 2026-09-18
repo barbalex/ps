@@ -1,9 +1,29 @@
 import { useIntl } from 'react-intl'
+import * as fluentUiReactComponents from '@fluentui/react-components'
 import { DropdownFieldSimpleOptions } from '../../../components/shared/DropdownFieldSimpleOptions.tsx'
 import { Crs } from './Crs.tsx'
 import { Set } from './Set.tsx'
 import { GeometryMethod } from './GeometryMethod.tsx'
+import type ObservationImports from '../../../models/public/ObservationImports.ts'
 import styles from './index.module.css'
+
+type InputOnChangeData = Parameters<
+  NonNullable<
+    React.ComponentProps<typeof fluentUiReactComponents.Input>['onChange']
+  >
+>[1]
+
+type Props = {
+  observationImport: ObservationImports
+  observationFields: string[]
+  onChange: (
+    e: React.ChangeEvent<HTMLInputElement>,
+    data: InputOnChangeData,
+  ) => Promise<void>
+  validations?: Record<string, { state: 'error'; message: string }>
+  coordinatesAutoDetected: boolean
+  observationsWithoutGeometryCount: number
+}
 
 export const Two = ({
   observationImport,
@@ -12,7 +32,7 @@ export const Two = ({
   validations,
   coordinatesAutoDetected,
   observationsWithoutGeometryCount,
-}) => {
+}: Props) => {
   const { formatMessage } = useIntl()
 
   return (

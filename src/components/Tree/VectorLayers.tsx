@@ -11,6 +11,14 @@ interface Props {
   level?: number
 }
 
+// mirrors the open rows returned by useVectorLayersNavData's sql
+type NavData = {
+  id: string
+  label: string
+  count_unfiltered: number
+  count_filtered: number
+}
+
 export const VectorLayersNode = ({ projectId, level = 3 }: Props) => {
   const navigate = useNavigate()
 
@@ -41,7 +49,8 @@ export const VectorLayersNode = ({ projectId, level = 3 }: Props) => {
   }
 
   // only list navs if isOpen AND the first nav has an id
-  const showNavs = isOpen && navs.length > 0 && navs[0].id
+  const openNavs = navs as NavData[]
+  const showNavs = isOpen && navs.length > 0 && openNavs[0].id
 
   return (
     <>
@@ -56,7 +65,7 @@ export const VectorLayersNode = ({ projectId, level = 3 }: Props) => {
         onClickButton={onClickButton}
       />
       {showNavs &&
-        navs.map((nav, i) => (
+        openNavs.map((nav, i) => (
           <VectorLayerNode
             key={`${nav.id}-${i}`}
             projectId={projectId}

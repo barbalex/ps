@@ -159,10 +159,13 @@ function QcCard({
   )
 }
 
-export const SubprojectQcsRun = ({ from }: { from: string }) => {
-  const { projectId, subprojectId } = useParams({ from })
-  const { navData } = useSubprojectQcsRunNavData({ projectId, subprojectId })
-  const { formatMessage } = useIntl()
+export const SubprojectQcsRun = ({}: { from: string }) => {
+  const { projectId, subprojectId } = useParams({ strict: false })
+  const { navData } = useSubprojectQcsRunNavData({
+    projectId: projectId!,
+    subprojectId: subprojectId!,
+  })
+ const { formatMessage } = useIntl()
   const [language] = useAtom(languageAtom)
   const [onlyWithResults, setOnlyWithResults] = useAtom(
     qcsRunOnlyWithResultsAtom,
@@ -294,7 +297,7 @@ export const SubprojectQcsRun = ({ from }: { from: string }) => {
             <QcCard
               key={qc.qcs_id}
               qc={qc}
-              subprojectId={subprojectId}
+              subprojectId={subprojectId!}
               year={year}
               labelFilter={labelFilter}
               onlyWithResults={onlyWithResults}

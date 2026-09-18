@@ -6,10 +6,13 @@ import { Row } from '../../components/shared/Row.tsx'
 import { Header } from './Header.tsx'
 import { NotFound } from '../../components/NotFound.tsx'
 
-export const WfsServiceList = ({ from }) => {
-  const { projectId, wfsServiceId } = useParams({ from })
-  const { loading, navData } = useWfsServiceNavData({ projectId, wfsServiceId })
-  const { navs, label, notFound } = navData
+export const WfsServiceList = ({ from }: { from: string }) => {
+  const { projectId, wfsServiceId } = useParams({ strict: false })
+  const { loading, navData } = useWfsServiceNavData({
+    projectId: projectId!,
+    wfsServiceId: wfsServiceId!,
+  })
+ const { navs, label, notFound } = navData
 
   if (notFound) {
     return (

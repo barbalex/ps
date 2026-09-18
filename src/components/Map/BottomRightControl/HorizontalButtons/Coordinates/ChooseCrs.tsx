@@ -1,6 +1,10 @@
 import * as fluentUiReactComponents from '@fluentui/react-components'
 const { Button, Menu, MenuTrigger, MenuList, MenuPopover, MenuItemRadio } =
   fluentUiReactComponents
+import type {
+  MenuCheckedValueChangeEvent,
+  MenuCheckedValueChangeData,
+} from '@fluentui/react-components'
 import { BsGlobe2 } from 'react-icons/bs'
 import { useParams } from '@tanstack/react-router'
 import { usePGlite, useLiveQuery } from '@electric-sql/pglite-react'
@@ -24,13 +28,13 @@ export const ChooseCrs = () => {
     defaultMessage: 'KBS auswählen (Koordinaten-Bezugs-System)',
   })
 
-  const resProjectCrs = useLiveQuery(
+  const resProjectCrs = useLiveQuery<ProjectCrs>(
     `SELECT * FROM project_crs WHERE project_id = $1`,
     [projectId],
   )
   const projectCrs: ProjectCrs[] = resProjectCrs?.rows ?? []
   // fetch project.map_presentation_crs to show the active one
-  const resProject = useLiveQuery(
+  const resProject = useLiveQuery<Projects>(
     `SELECT project_id, map_presentation_crs, updated_at, updated_by FROM projects WHERE project_id = $1`,
     [projectId],
   )
@@ -39,7 +43,10 @@ export const ChooseCrs = () => {
     ? { map_presentation_crs: [project.map_presentation_crs] }
     : { map_presentation_crs: [] }
 
-  const onChange = (e, { checkedItems }) => {
+  const onChange = (
+    _e: MenuCheckedValueChangeEvent,
+    { checkedItems }: MenuCheckedValueChangeData,
+  ) => {
     // set projects.map_presentation_crs
     db.query(
       `UPDATE projects SET map_presentation_crs = $1 WHERE project_id = $2`,
@@ -79,7 +86,7 @@ export const ChooseCrs = () => {
               key={cr.project_crs_id}
               name="map_presentation_crs"
               secondaryContent={cr.name}
-              value={cr.code}
+              value={cr.code!}
             >
               {cr.code}
             </MenuItemRadio>

@@ -12,15 +12,13 @@ const MapContainer = lazy(() =>
   import('../Map/index.tsx').then((m) => ({ default: m.MapContainer })),
 )
 
-const from = '/data'
-
 export const Main = () => {
   const mapMaximized = useAtomValue(mapMaximizedAtom)
   const tabs = useAtomValue(tabsAtom)
 
   // onlyForm is a query parameter that allows the user to view a form without the rest of the app
   // used for popups inside the map
-  const { onlyForm } = useSearch({ from })
+  const { onlyForm } = useSearch({ strict: false })
 
   const mapMaximizedAndVisible = (mapMaximized && tabs.includes('map')) ?? false
 

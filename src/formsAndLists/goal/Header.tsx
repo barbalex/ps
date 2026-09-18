@@ -9,7 +9,7 @@ import { FormHeader } from '../../components/FormHeader/index.tsx'
 import { HistoryToggleButton } from '../../components/shared/HistoryCompare/HistoryToggleButton.tsx'
 import { addOperationAtom } from '../../store.ts'
 
-export const Header = ({ autoFocusRef }) => {
+export const Header = ({ autoFocusRef }: { autoFocusRef?: React.RefObject<HTMLInputElement | null> }) => {
   const { projectId, subprojectId, goalId } = useParams({ strict: false })
   const navigate = useNavigate()
   const addOperation = useSetAtom(addOperationAtom)
@@ -28,7 +28,7 @@ export const Header = ({ autoFocusRef }) => {
     `SELECT COUNT(*) as count FROM goals WHERE subproject_id = $1`,
     [subprojectId ?? null],
   )
-  const rowCount = countRes?.rows?.[0]?.count ?? 2
+  const rowCount = Number(countRes?.rows?.[0]?.count ?? 2)
   const settingsRes = useLiveQuery(
     `SELECT p.goal_reports_in_goal
       FROM goals g
@@ -42,8 +42,11 @@ export const Header = ({ autoFocusRef }) => {
   const formPath = goalReportsInGoal ? goalBasePath : `${goalBasePath}/goal`
 
   const addRow = async () => {
-    const id = await createGoal({ projectId, subprojectId })
-    if (!id) return
+    const id = await createGoal({
+      projectId: projectId!,
+      subprojectId: subprojectId!,
+    })
+   if (!id) return
     navigate({
       to: goalReportsInGoal
         ? `/data/projects/${projectId}/subprojects/${subprojectId}/goals/${id}`
@@ -57,7 +60,7 @@ export const Header = ({ autoFocusRef }) => {
       const prevRes = await db.query(`SELECT * FROM goals WHERE goal_id = $1`, [
         goalId,
       ])
-      const prev = prevRes?.rows?.[0] ?? {}
+      const prev = (prevRes?.rows?.[0] ?? {}) as Record<string, unknown>
       await db.query(`DELETE FROM goals WHERE goal_id = $1`, [goalId])
       addOperation({
         table: 'goals',
@@ -78,7 +81,7 @@ export const Header = ({ autoFocusRef }) => {
         `Select goal_id from goals where subproject_id = $1 ORDER BY label`,
         [subprojectId],
       )
-      const goals = res?.rows
+      const goals = res?.rows as { goal_id: string }[]
       const len = goals.length
       const index = goals.findIndex((p) => p.goal_id === goalIdRef.current)
       const next = goals[(index + 1) % len]
@@ -98,7 +101,7 @@ export const Header = ({ autoFocusRef }) => {
         `Select goal_id from goals where subproject_id = $1 ORDER BY label`,
         [subprojectId],
       )
-      const goals = res?.rows
+      const goals = res?.rows as { goal_id: string }[]
       const len = goals.length
       const index = goals.findIndex((p) => p.goal_id === goalIdRef.current)
       const previous = goals[(index + len - 1) % len]

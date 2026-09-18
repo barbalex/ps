@@ -1,8 +1,14 @@
 import { useCheckTaxonNavData } from '../../../modules/useCheckTaxonNavData.ts'
 import { FetcherReturner } from './FetcherReturner.tsx'
 
-export const CheckTaxonFetcher = ({ params, ...other }) => {
-  const { navData } = useCheckTaxonNavData(params)
+type Props = {
+  params: Parameters<typeof useCheckTaxonNavData>[0]
+}
+
+export const CheckTaxonFetcher = ({ params, ...other }: Props) => {
+  const { navData: navDataRaw } = useCheckTaxonNavData(params)
+  // navData.id does not exist on NavData; bridge type-only
+  const navData = navDataRaw as typeof navDataRaw & { id?: string }
 
   return (
     <FetcherReturner

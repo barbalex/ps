@@ -21,9 +21,11 @@ interface Props {
 
 export const WmsService = ({ from }: Props) => {
   const { formatMessage } = useIntl()
-  const { wmsServiceId } = useParams({ from })
+  const { wmsServiceId } = useParams({ strict: false })
   const addOperation = useSetAtom(addOperationAtom)
-  const [validations, setValidations] = useState({})
+  const [validations, setValidations] = useState<
+    Record<string, { state: 'error'; message: string }>
+  >({})
   const autoFocusRef = useRef<HTMLInputElement>(null)
 
   const db = usePGlite()
@@ -32,12 +34,15 @@ export const WmsService = ({ from }: Props) => {
     `SELECT * FROM wms_services WHERE wms_service_id = $1`,
     [wmsServiceId],
   )
-  const row: WmsServices | undefined = res?.rows?.[0]
+  const row: WmsServices | undefined = res?.rows?.[0] as WmsServices | undefined
 
-  const onChange = async (e, data) => {
+  const onChange = async (
+    e: React.ChangeEvent<HTMLInputElement>,
+    data: Parameters<typeof getValueFromChange>[1],
+  ) => {
     const { name, value } = getValueFromChange(e, data)
     // only change if value has changed: maybe only focus entered and left
-    if (row[name] === value) return
+    if ((row as Record<string, any>)[name] === value) return
 
     try {
       await db.query(
@@ -47,7 +52,7 @@ export const WmsService = ({ from }: Props) => {
     } catch (error) {
       setValidations((prev) => ({
         ...prev,
-        [name]: { state: 'error', message: error.message },
+        [name]: { state: 'error', message: error instanceof Error ? error.message : String(error) },
       }))
       return
     }

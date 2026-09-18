@@ -27,7 +27,7 @@ export const useGoalReportsNavData = ({
   const location = useLocation()
   const { formatMessage } = useIntl()
 
-  const res = useLiveQuery(
+  const res = useLiveQuery<NavData[number]>(
     `
       SELECT 
         goal_report_id AS id, 

@@ -45,12 +45,14 @@ type UnifiedExportItem = {
   source: 'exports' | 'project_exports'
 }
 
-export const SubprojectExportAssignments = ({ from }) => {
-  const { projectId, subprojectId } = useParams({ from })
+type Props = {
+  from: '/data/projects/$projectId_/subprojects/$subprojectId_/export-assignments/'
+}
+
+export const SubprojectExportAssignments = ({}: Props) => {
+  const { projectId, subprojectId } = useParams({ strict: false })
   const { navData } = useSubprojectExportAssignmentsNavData({
-    projectId,
-    subprojectId,
-  })
+    projectId: projectId!,    subprojectId: subprojectId!,  })
   const { formatMessage } = useIntl()
   const [language] = useAtom(languageAtom)
   const addOperation = useSetAtom(addOperationAtom)
@@ -59,27 +61,27 @@ export const SubprojectExportAssignments = ({ from }) => {
   const [searchTerm, setSearchTerm] = useState('')
 
   // Load all subproject-level exports that have SQL
-  const exportsRes = useLiveQuery(
+  const exportsRes = useLiveQuery<ExportRow>(
     `SELECT exports_id, COALESCE(NULLIF(name_${language}, ''), name_de) AS label
      FROM exports WHERE level = 'subproject' AND sql IS NOT NULL AND sql != '' ORDER BY label`,
   )
 
   // Load active export_assignments for this subproject
-  const activeRes = useLiveQuery(
+  const activeRes = useLiveQuery<ActiveEntry>(
     `SELECT export_assignment_id, exports_id FROM export_assignments
      WHERE subproject_id = $1`,
     [subprojectId],
   )
 
   // Load project-specific exports for this project at subproject level that have SQL
-  const projectExportsRes = useLiveQuery(
+  const projectExportsRes = useLiveQuery<ProjectExportRow>(
     `SELECT project_exports_id, COALESCE(NULLIF(name_${language}, ''), name_de) AS label
      FROM project_exports WHERE project_id = $1 AND level = 'subproject' AND sql IS NOT NULL AND sql != '' ORDER BY label`,
     [projectId],
   )
 
   // Load active project_export_assignments for this subproject
-  const activeProjectExportRes = useLiveQuery(
+  const activeProjectExportRes = useLiveQuery<ActiveProjectExportEntry>(
     `SELECT project_export_assignment_id, project_exports_id FROM project_export_assignments
      WHERE subproject_id = $1`,
     [subprojectId],
@@ -154,8 +156,7 @@ export const SubprojectExportAssignments = ({ from }) => {
         }
       } else {
         await createSubprojectExportAssignment({
-          subprojectId,
-          exportsId: item.id,
+          subprojectId: subprojectId!,          exportsId: item.id,
         })
       }
     } else {
@@ -196,8 +197,7 @@ export const SubprojectExportAssignments = ({ from }) => {
     for (const item of filteredItems.filter((i) => !isActive(i))) {
       if (item.source === 'exports') {
         await createSubprojectExportAssignment({
-          subprojectId,
-          exportsId: item.id,
+          subprojectId: subprojectId!,          exportsId: item.id,
         })
       } else {
         await createProjectExportAssignmentForProjectExport({

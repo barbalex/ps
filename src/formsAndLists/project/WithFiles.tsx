@@ -9,6 +9,7 @@ import { usePGlite, useLiveQuery } from '@electric-sql/pglite-react'
 import { useAtom, useSetAtom } from 'jotai'
 import { useIntl } from 'react-intl'
 import * as fluentUiReactComponents from '@fluentui/react-components'
+import type { InputOnChangeData } from '@fluentui/react-components'
 import { FaPlus } from 'react-icons/fa'
 
 import { Header } from './Header.tsx'
@@ -44,7 +45,7 @@ import '../../form.css'
 const { Button } = fluentUiReactComponents
 
 export const ProjectWithFiles = ({ from }: { from: string }) => {
-  const { projectId } = useParams({ strict: false })
+  const { projectId } = useParams({ strict: false }) as { projectId: string }
   const addOperation = useSetAtom(addOperationAtom)
   const [designingMap] = useAtom(designingAtom)
   const isDesigning = designingMap[projectId] ?? false
@@ -55,7 +56,9 @@ export const ProjectWithFiles = ({ from }: { from: string }) => {
   const [filesFilter] = useAtom(filesFilterAtom)
   const { formatMessage } = useIntl()
   const newLabel = formatMessage({ id: 'Yt5rMs', defaultMessage: 'neu' })
-  const [validations, setValidations] = useState({})
+  const [validations, setValidations] = useState<
+    Record<string, { state: 'error'; message: string }>
+  >({})
 
   const autoFocusRef = useRef<HTMLInputElement>(null)
   const navigate = useNavigate()
@@ -65,7 +68,7 @@ export const ProjectWithFiles = ({ from }: { from: string }) => {
   const res = useLiveQuery(`SELECT * FROM projects WHERE project_id = $1`, [
     projectId,
   ])
-  const row: Projects | undefined = res?.rows?.[0]
+  const row = res?.rows?.[0] as Projects | undefined
 
   const filesCountRes = useLiveQuery(
     `SELECT count(*)::int AS count FROM files WHERE project_id = $1`,
@@ -139,7 +142,11 @@ export const ProjectWithFiles = ({ from }: { from: string }) => {
   const fieldsIsFiltered = !!filterStringFromFilter(fieldsFilter)
   const filesIsFiltered = !!filterStringFromFilter(filesFilter)
   const uploaderCtx = useContext(UploaderContext)
-  const uploaderApi = uploaderCtx?.current?.getAPI?.()
+  const uploaderApi = (
+    uploaderCtx as unknown as {
+      current?: { getAPI?: () => { initFlow?: () => void } }
+    } | null
+  )?.current?.getAPI?.()
   const onClickAddProjectReport = async () => {
     const id = await createProjectReport({ projectId })
     if (!id) return
@@ -220,9 +227,12 @@ export const ProjectWithFiles = ({ from }: { from: string }) => {
       </>
     ) : undefined
 
-  const onChange = async (e, data) => {
-    const { name, value } = getValueFromChange(e, data)
-    if (row[name] === value) return
+  const onChange = async (
+    e: React.ChangeEvent<HTMLInputElement>,
+    data?: InputOnChangeData,
+  ) => {
+    const { name, value } = getValueFromChange(e, data!)
+    if (row?.[name as keyof Projects] === value) return
 
     try {
       await db.query(`UPDATE projects SET ${name} = $1 WHERE project_id = $2`, [
@@ -232,7 +242,7 @@ export const ProjectWithFiles = ({ from }: { from: string }) => {
     } catch (error) {
       setValidations((prev) => ({
         ...prev,
-        [name]: { state: 'error', message: error.message },
+        [name]: { state: 'error', message: (error as Error).message },
       }))
       return
     }
@@ -264,7 +274,7 @@ export const ProjectWithFiles = ({ from }: { from: string }) => {
         <Form
           onChange={onChange}
           validations={validations}
-          row={row}
+          row={row as unknown as Record<string, unknown>}
           from={from}
           autoFocusRef={autoFocusRef}
         />
@@ -280,7 +290,15 @@ export const ProjectWithFiles = ({ from }: { from: string }) => {
           >
             {isFilesOpen &&
               (isFilesList ? (
-                <Files projectId={projectId} hideTitle />
+                <Files
+                  projectId={projectId}
+                  hideTitle
+                  subprojectId={undefined}
+                  placeId={undefined}
+                  placeId2={undefined}
+                  actionId={undefined}
+                  checkId={undefined}
+                />
               ) : (
                 <Outlet />
               ))}
@@ -348,7 +366,11 @@ export const ProjectWithFiles = ({ from }: { from: string }) => {
           >
             {isFieldsOpen &&
               (isFieldsList ? (
-                <Fields projectId={projectId} hideHeader />
+                <Fields
+                  projectId={projectId}
+                  from={from}
+                  hideHeader
+                />
               ) : (
                 <Outlet />
               ))}

@@ -9,6 +9,7 @@ import { buildNavLabel } from './buildNavLabel.ts'
 import { getVectorLayerLabel } from './vectorLayerLabel.ts'
 import { vectorLayersFilterAtom, treeOpenNodesAtom, languageAtom } from '../store.ts'
 import type VectorLayers from '../models/public/VectorLayers.ts'
+import type PlaceLevels from '../models/public/PlaceLevels.ts'
 
 type Props = {
   projectId: string
@@ -78,7 +79,7 @@ export const useVectorLayersNavData = ({ projectId }: Props) => {
     `SELECT * FROM place_levels WHERE project_id = $1`,
     [projectId],
   )
-  const placeLevels = placeLevelsRes?.rows ?? []
+  const placeLevels = (placeLevelsRes?.rows ?? []) as unknown as PlaceLevels[]
 
   const loading = res === undefined
 

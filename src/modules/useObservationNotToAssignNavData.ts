@@ -6,6 +6,12 @@ export const useObservationNotToAssignNavData = ({
   placeId,
   placeId2,
   observationId,
+}: {
+  projectId: string
+  subprojectId: string
+  placeId?: string
+  placeId2?: string
+  observationId: string
 }) =>
   useObservationNavData({
     projectId,

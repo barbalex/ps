@@ -9,9 +9,14 @@ import { FormHeader } from '../../components/FormHeader/index.tsx'
 import { HistoryToggleButton } from '../../components/shared/HistoryCompare/HistoryToggleButton.tsx'
 import { addOperationAtom } from '../../store.ts'
 
-export const Header = ({ autoFocusRef, from }) => {
+export const Header = ({
+  autoFocusRef,
+}: {
+  autoFocusRef?: React.RefObject<HTMLInputElement | null>
+  from?: string
+}) => {
   const { formatMessage } = useIntl()
-  const { projectId, userId, accountId, fieldId } = useParams({ from })
+  const { projectId, userId, accountId, fieldId } = useParams({ strict: false })
   const navigate = useNavigate()
   const addOperation = useSetAtom(addOperationAtom)
   const basePath = projectId
@@ -34,7 +39,7 @@ export const Header = ({ autoFocusRef, from }) => {
   const countRes = useLiveQuery(
     `SELECT COUNT(*) as count FROM fields WHERE ${whereScope}`,
   )
-  const rowCount = countRes?.rows?.[0]?.count ?? 2
+  const rowCount = (countRes?.rows?.[0]?.count ?? 2) as number
 
   const addRow = async () => {
     const id = await createField({ projectId, accountId })
@@ -51,7 +56,7 @@ export const Header = ({ autoFocusRef, from }) => {
         `SELECT * FROM fields WHERE field_id = $1`,
         [fieldId],
       )
-      const prev = prevRes?.rows?.[0] ?? {}
+      const prev = (prevRes?.rows?.[0] ?? {}) as Record<string, unknown>
       await db.query(`DELETE FROM fields WHERE field_id = $1`, [fieldId])
       addOperation({
         table: 'fields',
@@ -73,7 +78,7 @@ export const Header = ({ autoFocusRef, from }) => {
       FROM fields 
       WHERE ${whereScope}
       ORDER BY label`)
-      const rows = res?.rows
+      const rows = res?.rows as { field_id: string }[]
       const len = rows.length
       const index = rows.findIndex((p) => p.field_id === fieldIdRef.current)
       const next = rows[(index + 1) % len]
@@ -95,7 +100,7 @@ export const Header = ({ autoFocusRef, from }) => {
       WHERE ${whereScope}
       ORDER BY label`,
       )
-      const rows = res?.rows
+      const rows = res?.rows as { field_id: string }[]
       const len = rows.length
       const index = rows.findIndex((p) => p.field_id === fieldIdRef.current)
       const previous = rows[(index + len - 1) % len]

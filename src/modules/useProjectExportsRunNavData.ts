@@ -28,7 +28,7 @@ export const useProjectExportsRunNavData = ({ projectId }: Props) => {
   const ownUrl = `/${ownArray.join('/')}`
   const isOpen = openNodes.some((array) => isEqual(array, ownArray))
 
-  const res = useLiveQuery(
+  const res = useLiveQuery<{ count: number }>(
     `SELECT count(*) AS count
      FROM export_assignments ea
      JOIN exports e ON e.exports_id = ea.exports_id

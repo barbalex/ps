@@ -13,10 +13,12 @@ import type SubprojectReports from '../../models/public/SubprojectReports.ts'
 
 import '../../form.css'
 
-export const SubprojectReport = ({ from }) => {
-  const { subprojectReportId } = useParams({ from })
+export const SubprojectReport = ({ from }: { from: string }) => {
+  const { subprojectReportId } = useParams({ strict: false })
   const addOperation = useSetAtom(addOperationAtom)
-  const [validations, setValidations] = useState({})
+  const [validations, setValidations] = useState<
+    Record<string, { state: 'error'; message: string }>
+  >({})
 
   const autoFocusRef = useRef<HTMLInputElement>(null)
 
@@ -25,12 +27,15 @@ export const SubprojectReport = ({ from }) => {
     `SELECT * FROM subproject_reports WHERE subproject_report_id = $1`,
     [subprojectReportId],
   )
-  const row: SubprojectReports | undefined = res?.rows?.[0]
+  const row = res?.rows?.[0] as SubprojectReports | undefined
 
-  const onChange = async (e, data) => {
+  const onChange = async (
+    e: React.ChangeEvent<HTMLInputElement>,
+    data: Parameters<typeof getValueFromChange>[1],
+  ) => {
     const { name, value } = getValueFromChange(e, data)
     // only change if value has changed: maybe only focus entered and left
-    if (row[name] === value) return
+    if ((row as Record<string, any>)[name] === value) return
 
     try {
       await db.query(
@@ -40,7 +45,7 @@ export const SubprojectReport = ({ from }) => {
     } catch (error) {
       setValidations((prev) => ({
         ...prev,
-        [name]: { state: 'error', message: error.message },
+        [name]: { state: 'error', message: error instanceof Error ? error.message : String(error) },
       }))
       return
     }

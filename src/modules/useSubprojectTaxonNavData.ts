@@ -26,7 +26,7 @@ export const useSubprojectTaxonNavData = ({
   const location = useLocation()
   const { formatMessage } = useIntl()
 
-  const res = useLiveQuery(
+  const res = useLiveQuery<NavData>(
     `
       SELECT
         subproject_taxon_id AS id,

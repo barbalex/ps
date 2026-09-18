@@ -15,27 +15,35 @@ import { addOperationAtom } from '../../store.ts'
 import type Charts from '../../models/public/Charts.ts'
 
 interface Props {
-  autoFocusRef: React.RefObject<HTMLInputElement>
+  autoFocusRef: React.RefObject<HTMLInputElement | null>
   from: string
 }
 
 // separate from the route because it is also used inside other forms
-export const Form = ({ autoFocusRef, from }: Props) => {
-  const { chartId } = useParams({ from })
+export const Form = ({ autoFocusRef }: Props) => {
+  const { chartId } = useParams({ strict: false })
   const addOperation = useSetAtom(addOperationAtom)
-  const [validations, setValidations] = useState({})
+  const [validations, setValidations] = useState<
+    Record<string, { state: 'error'; message: string }>
+  >({})
   const { formatMessage } = useIntl()
 
   const db = usePGlite()
   const res = useLiveQuery(`SELECT * FROM charts WHERE chart_id = $1`, [
     chartId,
   ])
-  const row: Charts | undefined = res?.rows?.[0]
+  const row = res?.rows?.[0] as Charts | undefined
 
-  const onChange = async (e, data) => {
-    const { name, value } = getValueFromChange(e, data)
+  const onChange = async (
+    e: React.ChangeEvent<HTMLInputElement>,
+    data?: object,
+  ) => {
+    const { name, value } = getValueFromChange(
+      e,
+      data as Parameters<typeof getValueFromChange>[1],
+    )
     // only change if value has changed: maybe only focus entered and left
-    if (row[name] === value) return
+    if (row?.[name as keyof Charts] === value) return
 
     try {
       await db.query(`UPDATE charts set ${name} = $1 WHERE chart_id = $2`, [
@@ -45,7 +53,7 @@ export const Form = ({ autoFocusRef, from }: Props) => {
     } catch (error) {
       setValidations((prev) => ({
         ...prev,
-        [name]: { state: 'error', message: error.message },
+        [name]: { state: 'error', message: (error as Error).message },
       }))
       return
     }
@@ -289,7 +297,7 @@ export const Form = ({ autoFocusRef, from }: Props) => {
         <TextField
           label={formatMessage({ id: 'XkV5yZ', defaultMessage: 'Name' })}
           name="name"
-          value={row.name}
+          value={row.name ?? undefined}
           onChange={onChange}
           validationState={validations?.name?.state}
           validationMessage={validations?.name?.message}
@@ -302,7 +310,7 @@ export const Form = ({ autoFocusRef, from }: Props) => {
             defaultMessage: 'Aktuelles Jahr',
           })}
           name="years_current"
-          value={row.years_current ?? false}
+          value={(row.years_current ?? false) as never}
           onChange={onChange}
           validationState={validations?.years_current?.state}
           validationMessage={
@@ -319,7 +327,7 @@ export const Form = ({ autoFocusRef, from }: Props) => {
             defaultMessage: 'Vorheriges Jahr',
           })}
           name="years_previous"
-          value={row.years_previous ?? false}
+          value={(row.years_previous ?? false) as never}
           onChange={onChange}
           validationState={validations?.years_previous?.state}
           validationMessage={
@@ -336,7 +344,7 @@ export const Form = ({ autoFocusRef, from }: Props) => {
             defaultMessage: 'Bestimmtes Jahr',
           })}
           name="years_specific"
-          value={row.years_specific}
+          value={row.years_specific ?? undefined}
           type="number"
           onChange={onChange}
           validationState={validations?.years_specific?.state}
@@ -355,7 +363,7 @@ export const Form = ({ autoFocusRef, from }: Props) => {
             defaultMessage: 'Letzte X Jahre',
           })}
           name="years_last_x"
-          value={row.years_last_x}
+          value={row.years_last_x ?? undefined}
           type="number"
           onChange={onChange}
           validationState={validations?.years_last_x?.state}
@@ -371,7 +379,7 @@ export const Form = ({ autoFocusRef, from }: Props) => {
         <TextField
           label={formatMessage({ id: 'bCRuWx', defaultMessage: 'Seit' })}
           name="years_since"
-          value={row.years_since}
+          value={row.years_since ?? undefined}
           type="number"
           onChange={onChange}
           validationState={validations?.years_since?.state}
@@ -387,7 +395,7 @@ export const Form = ({ autoFocusRef, from }: Props) => {
         <TextField
           label={formatMessage({ id: 'bCTwYz', defaultMessage: 'Bis' })}
           name="years_until"
-          value={row.years_until}
+          value={row.years_until ?? undefined}
           type="number"
           onChange={onChange}
           validationState={validations?.years_until?.state}
@@ -408,7 +416,7 @@ export const Form = ({ autoFocusRef, from }: Props) => {
             defaultMessage: 'Subjekte stapeln?',
           })}
           name="subjects_stacked"
-          value={row.subjects_stacked}
+          value={row.subjects_stacked as never}
           onChange={onChange}
           validationState={validations?.subjects_stacked?.state}
           validationMessage={
@@ -426,7 +434,7 @@ export const Form = ({ autoFocusRef, from }: Props) => {
             defaultMessage: 'Subjekte in separaten Diagrammen darstellen?',
           })}
           name="subjects_single"
-          value={row.subjects_single}
+          value={row.subjects_single as never}
           onChange={onChange}
           validationState={validations?.subjects_single?.state}
           validationMessage={
@@ -445,7 +453,7 @@ export const Form = ({ autoFocusRef, from }: Props) => {
               'Bei mehreren Subjekten: Anteil als Prozent anzeigen?',
           })}
           name="percent"
-          value={row.percent}
+          value={row.percent as never}
           onChange={onChange}
           validationState={validations?.percent?.state}
           validationMessage={

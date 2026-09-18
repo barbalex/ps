@@ -10,28 +10,32 @@ import styles from './index.module.css'
 import type Charts from '../../../models/public/Charts.ts'
 import type ChartSubjects from '../../../models/public/ChartSubjects.ts'
 
-export const Chart = ({ from }) => {
-  const { projectId, subprojectId, chartId } = useParams({ from })
+export const Chart = ({ }: { from?: string }) => {
+  const { projectId, subprojectId, chartId } = useParams({ strict: false })
 
   const db = usePGlite()
 
   const result = useLiveQuery(
-    `SELECT 
+    `SELECT
       c.*,
-      (SELECT json_agg(cs ORDER BY cs.sort, cs.name) 
-       FROM chart_subjects cs 
+      (SELECT json_agg(cs ORDER BY cs.sort, cs.name)
+       FROM chart_subjects cs
        WHERE cs.chart_id = c.chart_id) as subjects
-    FROM charts c 
+    FROM charts c
     WHERE c.chart_id = $1`,
     [chartId],
   )
-  const chart: Charts = result?.rows?.[0]
+  const chart = result?.rows?.[0] as Charts | undefined
   const subjects: ChartSubjects[] = useMemo(
-    () => chart?.subjects ?? [],
+    () =>
+      (chart as { subjects?: ChartSubjects[] } | undefined)?.subjects ?? [],
     [chart],
   )
 
-  const [data, setData] = useState({ data: [], names: [] })
+  const [data, setData] = useState<{
+    data: { year: number; [key: string]: number | undefined }[]
+    years: number[]
+  }>({ data: [], years: [] })
 
   useEffect(() => {
     if (!subjects) return
@@ -42,7 +46,7 @@ export const Chart = ({ from }) => {
       const data = await buildData({
         chart,
         subjects,
-        subproject_id: subprojectId,
+        subproject_id: subprojectId!,
         project_id: projectId,
       })
       setData(data)

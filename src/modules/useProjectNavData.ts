@@ -28,24 +28,6 @@ type Props = {
   forBreadcrumb?: boolean
 }
 
-type NavData = {
-  id: string
-  label: string | null
-  wms_layers?: boolean | null
-  vector_layers?: boolean | null
-  project_reports?: boolean | null
-  subproject_reports?: boolean | null
-  goals?: boolean | null
-  occurrences?: boolean | null
-  taxa?: boolean | null
-  charts?: boolean | null
-  files_active_projects?: boolean | null
-  project_files_in_project?: boolean | null
-  project_users_in_project?: boolean | null
-  units_in_project?: boolean | null
-  fields_in_project?: boolean | null
-}
-
 type NavDataNotForBreadcrumb = {
   id: string
   label: string | null
@@ -82,36 +64,7 @@ type NavDataNotForBreadcrumb = {
   exports_run_count?: number
 }
 
-type NavDataNotForBreadcrumbDesigning = {
-  id: string
-  label: string | null
-  wms_layers?: boolean | null
-  vector_layers?: boolean | null
-  project_reports?: boolean | null
-  subproject_reports?: boolean | null
-  goals?: boolean | null
-  occurrences?: boolean | null
-  taxa?: boolean | null
-  charts?: boolean | null
-  files_active_projects?: boolean | null
-  project_files_in_project?: boolean | null
-  project_users_in_project?: boolean | null
-  units_in_project?: boolean | null
-  fields_in_project?: boolean | null
-  subprojects_count_unfiltered?: number
-  subprojects_count_filtered?: number
-  subprojects_name_singular?: string | null
-  subprojects_name_plural?: string | null
-  project_reports_count_unfiltered?: number
-  project_reports_count_filtered?: number
-  wms_services_count_unfiltered?: number
-  wms_layers_count_unfiltered?: number
-  wms_layers_count_filtered?: number
-  wfs_services_count_unfiltered?: number
-  vector_layers_count_unfiltered?: number
-  vector_layers_count_filtered?: number
-  files_count_unfiltered?: number
-  files_count_filtered?: number
+type NavDataNotForBreadcrumbDesigning = NavDataNotForBreadcrumb & {
   project_users_count_unfiltered?: number
   lists_count_unfiltered?: number
   lists_count_filtered?: number
@@ -126,10 +79,6 @@ type NavDataNotForBreadcrumbDesigning = {
   fields_count_filtered?: number
   subproject_report_designs_count?: number
   project_report_designs_count?: number
-  qc_assignments_count?: number
-  qcs_run_count?: number
-  export_assignments_count?: number
-  exports_run_count?: number
 }
 
 export const useProjectNavData = ({
@@ -320,10 +269,7 @@ export const useProjectNavData = ({
       WHERE projects.project_id = '${projectId}'`,
   )
   const loading = res === undefined
-  const nav:
-    | NavData
-    | NavDataNotForBreadcrumb
-    | NavDataNotForBreadcrumbDesigning = res?.rows?.[0]
+  const nav = res?.rows?.[0] as NavDataNotForBreadcrumbDesigning | undefined
 
   const parentArray = ['data', 'projects']
   const parentUrl = `/${parentArray.join('/')}`

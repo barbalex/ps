@@ -6,6 +6,13 @@ import { removeChildNodes } from '../../modules/tree/removeChildNodes.ts'
 import { addOpenNodes } from '../../modules/tree/addOpenNodes.ts'
 import { useExportsNavData } from '../../modules/useExportsNavData.ts'
 
+type NavData = {
+  id: string
+  label: string
+  count_unfiltered: number
+  count_filtered: number
+}[]
+
 export const ExportsNode = () => {
   const navigate = useNavigate()
 
@@ -37,7 +44,7 @@ export const ExportsNode = () => {
     addOpenNodes({ nodes: [ownArray] })
   }
 
-  const showNavs = isOpen && navs.length > 0 && navs[0].id
+  const showNavs = isOpen && navs.length > 0 && (navs as NavData)[0].id
 
   return (
     <>
@@ -52,7 +59,9 @@ export const ExportsNode = () => {
         onClickButton={onClickButton}
       />
       {showNavs &&
-        navs.map((nav, i) => <ExportNode key={`${nav.id}-${i}`} nav={nav} />)}
+        (navs as NavData).map((nav, i) => (
+          <ExportNode key={`${nav.id}-${i}`} nav={nav} />
+        ))}
     </>
   )
 }

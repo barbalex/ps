@@ -26,21 +26,22 @@ const propertiesEqual = (stored: unknown, computed: string[]): boolean => {
 }
 
 export const OwnVectorLayerPropertiesProvider = () => {
-  const { project_id = '99999999-9999-9999-9999-999999999999' } = useParams({
+  // the '/data' route itself defines no params; project_id is bridged for typing
+  const { project_id = '99999999-9999-9999-999999999999' } = useParams({
     from: '/data',
-  })
+  }) as { project_id?: string }
   const db = usePGlite()
   const addOperation = useSetAtom(addOperationAtom)
 
   // get vector_layers
-  const resVL = useLiveQuery(
+  const resVL = useLiveQuery<VectorLayers>(
     `SELECT * FROM vector_layers WHERE project_id = $1 and type = 'own'`,
     [project_id],
   )
   const vectorLayers: VectorLayers[] = useMemo(() => resVL?.rows ?? [], [resVL])
 
   // places level 1
-  const resPlaces1Fields = useLiveQuery(
+  const resPlaces1Fields = useLiveQuery<{ field_id: string; name: string }>(
     `SELECT field_id, name FROM fields WHERE table_name = 'places' AND level = 1 AND project_id = $1`,
     [project_id],
   )
@@ -50,7 +51,7 @@ export const OwnVectorLayerPropertiesProvider = () => {
   )
 
   // places level 2
-  const resPlaces2Fields = useLiveQuery(
+  const resPlaces2Fields = useLiveQuery<{ field_id: string; name: string }>(
     `SELECT field_id, name FROM fields WHERE table_name = 'places' AND level = 2 AND project_id = $1`,
     [project_id],
   )
@@ -60,7 +61,7 @@ export const OwnVectorLayerPropertiesProvider = () => {
   )
 
   // actions level 1
-  const resActions1Fields = useLiveQuery(
+  const resActions1Fields = useLiveQuery<{ field_id: string; name: string }>(
     `SELECT field_id, name FROM fields WHERE table_name = 'actions' AND level = 1 AND project_id = $1`,
     [project_id],
   )
@@ -70,7 +71,7 @@ export const OwnVectorLayerPropertiesProvider = () => {
   )
 
   // actions level 2
-  const resActions2Fields = useLiveQuery(
+  const resActions2Fields = useLiveQuery<{ field_id: string; name: string }>(
     `SELECT field_id, name FROM fields WHERE table_name = 'actions' AND level = 2 AND project_id = $1`,
     [project_id],
   )
@@ -80,7 +81,7 @@ export const OwnVectorLayerPropertiesProvider = () => {
   )
 
   // checks level 1
-  const resChecks1Fields = useLiveQuery(
+  const resChecks1Fields = useLiveQuery<{ field_id: string; name: string }>(
     `SELECT field_id, name FROM fields WHERE table_name = 'checks' AND level = 1 AND project_id = $1`,
     [project_id],
   )
@@ -90,7 +91,7 @@ export const OwnVectorLayerPropertiesProvider = () => {
   )
 
   // checks level 2
-  const resChecks2Fields = useLiveQuery(
+  const resChecks2Fields = useLiveQuery<{ field_id: string; name: string }>(
     `SELECT field_id, name FROM fields WHERE table_name = 'checks' AND level = 2 AND project_id = $1`,
     [project_id],
   )
@@ -102,7 +103,10 @@ export const OwnVectorLayerPropertiesProvider = () => {
   // observations-assigned
   // TODO: how to distinguish assigned, to assess and not to assign? place_id or not_to_assign are on observations, not fields...
   // TODO: level 1/2 i.e. query where place_id has level 1/2
-  const resObservationsAssignedFields = useLiveQuery(
+  const resObservationsAssignedFields = useLiveQuery<{
+    field_id: string
+    name: string
+  }>(
     `SELECT field_id, name FROM fields WHERE table_name = 'observations' AND project_id = $1-- AND place_id IS NOT NULL`,
     [project_id],
   )
@@ -117,7 +121,10 @@ export const OwnVectorLayerPropertiesProvider = () => {
   )
 
   // observations-to-assess
-  const resObservationsToAssessFields = useLiveQuery(
+  const resObservationsToAssessFields = useLiveQuery<{
+    field_id: string
+    name: string
+  }>(
     `SELECT field_id, name FROM fields WHERE table_name = 'observations' AND project_id = $1-- AND place_id IS NULL AND not_to_assign IS NOT TRUE`,
     [project_id],
   )
@@ -127,7 +134,10 @@ export const OwnVectorLayerPropertiesProvider = () => {
   )
 
   // observations-not-to-assign
-  const resObservationsNotToAssignFields = useLiveQuery(
+  const resObservationsNotToAssignFields = useLiveQuery<{
+    field_id: string
+    name: string
+  }>(
     `SELECT field_id, name FROM fields WHERE table_name = 'observations' AND project_id = $1-- AND place_id IS NULL AND not_to_assign IS TRUE`,
     [project_id],
   )

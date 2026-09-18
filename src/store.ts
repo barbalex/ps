@@ -1,6 +1,9 @@
 import { createStore, atom } from 'jotai'
 import { atomWithStorage } from 'jotai/utils'
 import type { IntlShape } from 'react-intl'
+import type { PGlite } from '@electric-sql/pglite'
+import type { PostgrestClient } from '@supabase/postgrest-js'
+import type { LatLngBoundsExpression } from 'leaflet'
 import { constants } from './modules/constants.ts'
 import { uuidv7 } from '@kripod/uuidv7'
 import { checkWritePermission } from './modules/checkWritePermission.ts'
@@ -8,6 +11,89 @@ import { inferPkColumn } from './modules/inferPkColumn.ts'
 // import { atom } from 'jotai'
 
 export const store = createStore()
+
+// queued write operations, sent to the server by observeOperations
+export type OperationKind =
+  | 'update'
+  | 'upsert'
+  | 'upsertMany'
+  | 'insert'
+  | 'insertMany'
+  | 'delete'
+  | 'deleteAll'
+
+export interface OperationFilter {
+  function: 'eq' | 'neq' | 'in'
+  column: string
+  value: unknown
+}
+
+export interface QueuedOperation {
+  id: string
+  time: string
+  table: string
+  operation: OperationKind
+  rowIdName?: string
+  rowId?: string | number
+  filter?: OperationFilter
+  // multiple AND conditions
+  filters?: OperationFilter[]
+  column?: string
+  newValue?: unknown
+  draft?: Record<string, unknown> | Record<string, unknown>[]
+  prev?: Record<string, unknown>
+}
+
+export interface AppNotification {
+  id: string
+  time: number
+  duration: number
+  intent: 'success' | 'error' | 'warning' | 'info'
+  dismissable: boolean
+  allDismissable: boolean
+  title?: string
+  body?: string
+  paused?: boolean
+  progress?: number
+}
+
+export interface ViewportBounds {
+  swLat: number
+  swLng: number
+  neLat: number
+  neLng: number
+}
+
+export interface MapInfoLayer {
+  label: string
+  featureLabel?: string
+  properties: [string, unknown][]
+  ownTable?: 'place' | 'check' | 'action'
+  ownId?: string
+  ownPlaceId?: string
+  ownSubprojectId?: string
+  ownParentId?: string
+}
+
+export interface MapInfo {
+  lat: number
+  lng: number
+  zoom: number
+  layers: MapInfoLayer[]
+}
+
+export interface PlaceToAssign {
+  place_id: string
+  label: string | null
+  distance: number
+}
+
+export interface PlacesToAssignObservationTo {
+  observation_id: string
+  latLng: { lat: number; lng: number }
+  places: PlaceToAssign[]
+  current_place_id: string | null
+}
 
 // nav stuff
 
@@ -17,7 +103,7 @@ export const enforceDesktopNavigationAtom = atomWithStorage(
 )
 export const writeEnforceDesktopNavigationAtom = atom(
   (get) => get(enforceDesktopNavigationAtom),
-  (get, set, enforce) => {
+  (_get, set, enforce) => {
     if (enforce) {
       set(enforceDesktopNavigationAtom, true)
       set(enforceMobileNavigationAtom, false)
@@ -36,7 +122,7 @@ export const enforceMobileNavigationAtom = atomWithStorage(
 )
 export const writeEnforceMobileNavigationAtom = atom(
   (get) => get(enforceMobileNavigationAtom),
-  (get, set, enforce) => {
+  (_get, set, enforce) => {
     if (enforce) {
       set(enforceMobileNavigationAtom, true)
       set(enforceDesktopNavigationAtom, false)
@@ -52,7 +138,7 @@ export const writeEnforceMobileNavigationAtom = atom(
 export const isDesktopViewAtom = atomWithStorage('isDesktopView', false)
 export const setDesktopViewAtom = atom(
   (get) => get(isDesktopViewAtom),
-  (get, set, width) => {
+  (get, set, width: number) => {
     const isDesktopView = get(isDesktopViewAtom)
     const mobileEnforced = get(enforceMobileNavigationAtom)
     const desktopEnforced = get(enforceDesktopNavigationAtom)
@@ -125,6 +211,7 @@ export const designingAtom = atomWithStorage<Record<string, boolean>>(
   { getOnInit: true },
 )
 export const tabsAtom = atomWithStorage('tabsAtom', ['tree', 'data'])
+export type TableRowFilter = Record<string, unknown>
 export const qcsRunOnlyWithResultsAtom = atomWithStorage(
   'qcsRunOnlyWithResults',
   false,
@@ -218,7 +305,7 @@ export const seenWfsServiceKeysAtom = atomWithStorage<string[]>(
 
 export const setSqlInitializingFalseAfterTimeoutAtom = atom(
   null,
-  (get, set) => {
+  (_get, set) => {
     setTimeout(() => {
       set(sqlInitializingAtom, false)
     }, 200)
@@ -228,18 +315,21 @@ export const setSqlInitializingFalseAfterTimeoutAtom = atom(
 export const mapMaximizedAtom = atomWithStorage('mapMaximizedAtom', false)
 // bounds are used for setting the map view to a specific area. They are set as an object with keys: swLat, swLng, neLat, neLng
 // This is a command atom - not persisted because once fitBounds is applied, the result is saved via mapCenterAtom/mapZoomAtom
-export const mapBoundsAtom = atom(null)
+export const mapBoundsAtom = atom<LatLngBoundsExpression | null>(null)
 // is used for:
 // - Making WFS requests with bbox parameters to fetch features within the visible map area
 // - Any spatial queries that need to know what's currently visible
-export const mapViewportBoundsAtom = atom(null)
+export const mapViewportBoundsAtom = atom<ViewportBounds | null>(null)
 // center and zoom are used to set the map view to a specific center and zoom level. They are set as [lat, lng] and number respectively
 export const mapCenterAtom = atomWithStorage('mapCenter', [47.4, 8.65])
 export const mapZoomAtom = atomWithStorage('mapZoom', 13)
 
 // map of id (layer.id, key) and show boolean
 export const showLocalMapAtom = atomWithStorage('showLocalMapAtom', false)
-export const localMapValuesAtom = atomWithStorage('localMapValuesAtom', {})
+export const localMapValuesAtom = atomWithStorage<Record<string, boolean>>(
+  'localMapValuesAtom',
+  {},
+)
 export const mapHideUiAtom = atomWithStorage('mapHideUiAtom', false)
 export const mapLocateAtom = atomWithStorage('mapLocateAtom', false)
 // TODO:
@@ -254,30 +344,30 @@ export const mapLocateAtom = atomWithStorage('mapLocateAtom', false)
 // mapInfoAtom is reset when user closes info window, so memory is not wasted
 // the info drawer filters all the objects with correct lat, lng and zoom and shows them
 // Information presented, when user clicks on a map. Array of: {label, properties} where properties is an array of [key, value]
-export const mapInfoAtom = atomWithStorage('mapInfoAtom', null)
+export const mapInfoAtom = atomWithStorage<MapInfo | null>('mapInfoAtom', null)
 export const mapShowCenterAtom = atomWithStorage('mapShowCenterAtom', false)
 // The order of layers in the map. An array of layer_presentation_ids
-export const mapLayerSortingAtom = atomWithStorage('mapLayerSortingAtom', [])
-export const mapDrawerVectorLayerDisplayAtom = atomWithStorage(
+export const mapLayerSortingAtom = atomWithStorage<string[]>(
+  'mapLayerSortingAtom',
+  [],
+)
+export const mapDrawerVectorLayerDisplayAtom = atomWithStorage<string | null>(
   'mapDrawerVectorLayerDisplayAtom',
   null,
 )
 
 // The id of the place whose geometry is currently being edited
-export const editingPlaceGeometryAtom = atomWithStorage(
-  'editingPlaceGeometryAtom',
-  false,
-)
+export const editingPlaceGeometryAtom = atomWithStorage<
+  string | null | false
+>('editingPlaceGeometryAtom', false)
 // The id of the check whose geometry is currently being edited
-export const editingCheckGeometryAtom = atomWithStorage(
-  'editingCheckGeometryAtom',
-  false,
-)
+export const editingCheckGeometryAtom = atomWithStorage<
+  string | null | false
+>('editingCheckGeometryAtom', false)
 // The id of the action whose geometry is currently being edited
-export const editingActionGeometryAtom = atomWithStorage(
-  'editingActionGeometryAtom',
-  false,
-)
+export const editingActionGeometryAtom = atomWithStorage<
+  string | null | false
+>('editingActionGeometryAtom', false)
 // True when any geometry is being edited on the map
 export const drawingOnMapAtom = atom(
   (get) =>
@@ -286,19 +376,26 @@ export const drawingOnMapAtom = atom(
     !!get(editingActionGeometryAtom),
 )
 // The layers that are currently draggable. Any of: observations-to-assess, observations-not-to-assign, observations-assigned-1, observations-assigned-2
-export const draggableLayersAtom = atomWithStorage('draggableLayersAtom', [])
+export const draggableLayersAtom = atomWithStorage<string[]>(
+  'draggableLayersAtom',
+  [],
+)
 // The layers that are currently droppable (any of: places_1, places_2). Array of layer names in the same format as draggableLayersAtom
-export const droppableLayersAtom = atomWithStorage('droppableLayersAtom', [])
+export const droppableLayersAtom = atomWithStorage<string[]>(
+  'droppableLayersAtom',
+  [],
+)
 // Whether to show a dialog to confirm assigning an observation to a single target. Preset: true
 export const confirmAssigningToSingleTargetAtom = atomWithStorage(
   'confirmAssigningToSingleTargetAtom',
   true,
 )
 // If multiple places are close to the dropped location, the user can choose one of them. This state opens a dialog. Field contains: Object with: observation_id, latLng (where marker was dropped, used only for finding nearby places), places (array with: place_id, label, distance), current_place_id (the observation's current assignment, if any)
-export const placesToAssignObservationToAtom = atomWithStorage(
-  'placesToAssignObservationToAtom',
-  null,
-)
+export const placesToAssignObservationToAtom =
+  atomWithStorage<PlacesToAssignObservationTo | null>(
+    'placesToAssignObservationToAtom',
+    null,
+  )
 // When user has multiple accounts and creates a project, this atom holds the accounts to choose from
 // and the callback to invoke once an account is selected. Uses plain atom (not atomWithStorage)
 // because functions cannot be serialized.
@@ -314,11 +411,15 @@ export const confirmDeleteAccountAtom = atom<{
   onConfirm: () => void
 } | null>(null)
 // The order of fields in the observation form. User can change it by drag and drop
-export const observationFieldsSortedAtom = atomWithStorage(
+export const observationFieldsSortedAtom = atomWithStorage<string[]>(
   'observationFieldsSortedAtom',
   [],
 )
-export const treeOpenNodesAtom = atomWithStorage('treeOpenNodesAtom', [])
+// open tree nodes are node paths, e.g. [['projects', 'project-1'], ['projects', 'project-1', 'goals']]
+export const treeOpenNodesAtom = atomWithStorage<string[][]>(
+  'treeOpenNodesAtom',
+  [],
+)
 // table filters
 // Using array of or-filters
 // Of objects with keys and value. why? because needs to be shown in the forms
@@ -327,112 +428,112 @@ export const projectsFilterAtom = atomWithStorage<Record<string, unknown>[]>(
   'projectsFilterAtom',
   [],
 )
-export const fieldsFilterAtom = atomWithStorage('fieldsFilterAtom', [])
-export const fieldTypesFilterAtom = atomWithStorage('fieldTypesFilterAtom', [])
-export const accountsFilterAtom = atomWithStorage('accountsFilterAtom', [])
-export const crsFilterAtom = atomWithStorage('crsFilterAtom', [])
-export const widgetTypesFilterAtom = atomWithStorage(
+export const fieldsFilterAtom = atomWithStorage<TableRowFilter[]>('fieldsFilterAtom', [])
+export const fieldTypesFilterAtom = atomWithStorage<TableRowFilter[]>('fieldTypesFilterAtom', [])
+export const accountsFilterAtom = atomWithStorage<TableRowFilter[]>('accountsFilterAtom', [])
+export const crsFilterAtom = atomWithStorage<TableRowFilter[]>('crsFilterAtom', [])
+export const widgetTypesFilterAtom = atomWithStorage<TableRowFilter[]>(
   'widgetTypesFilterAtom',
   [],
 )
-export const widgetsForFieldsFilterAtom = atomWithStorage(
+export const widgetsForFieldsFilterAtom = atomWithStorage<TableRowFilter[]>(
   'widgetsForFieldsFilterAtom',
   [],
 )
-export const projectReportsFilterAtom = atomWithStorage(
+export const projectReportsFilterAtom = atomWithStorage<TableRowFilter[]>(
   'projectReportsFilterAtom',
   [],
 )
-export const projectUsersFilterAtom = atomWithStorage(
+export const projectUsersFilterAtom = atomWithStorage<TableRowFilter[]>(
   'projectUsersFilterAtom',
   [],
 )
-export const wmsLayersFilterAtom = atomWithStorage('wmsLayersFilterAtom', [])
-export const wmsServicesFilterAtom = atomWithStorage(
+export const wmsLayersFilterAtom = atomWithStorage<TableRowFilter[]>('wmsLayersFilterAtom', [])
+export const wmsServicesFilterAtom = atomWithStorage<TableRowFilter[]>(
   'wmsServicesFilterAtom',
   [],
 )
-export const wfsServicesFilterAtom = atomWithStorage(
+export const wfsServicesFilterAtom = atomWithStorage<TableRowFilter[]>(
   'wfsServicesFilterAtom',
   [],
 )
-export const vectorLayersFilterAtom = atomWithStorage(
+export const vectorLayersFilterAtom = atomWithStorage<TableRowFilter[]>(
   'vectorLayersFilterAtom',
   [],
 )
-export const listsFilterAtom = atomWithStorage('listsFilterAtom', [])
-export const taxonomiesFilterAtom = atomWithStorage('taxonomiesFilterAtom', [])
-export const unitsFilterAtom = atomWithStorage('unitsFilterAtom', [])
-export const subprojectsFilterAtom = atomWithStorage(
+export const listsFilterAtom = atomWithStorage<TableRowFilter[]>('listsFilterAtom', [])
+export const taxonomiesFilterAtom = atomWithStorage<TableRowFilter[]>('taxonomiesFilterAtom', [])
+export const unitsFilterAtom = atomWithStorage<TableRowFilter[]>('unitsFilterAtom', [])
+export const subprojectsFilterAtom = atomWithStorage<TableRowFilter[]>(
   'subprojectsFilterAtom',
   [],
 )
-export const subprojectReportsFilterAtom = atomWithStorage(
+export const subprojectReportsFilterAtom = atomWithStorage<TableRowFilter[]>(
   'subprojectReportsFilterAtom',
   [],
 )
-export const subprojectUsersFilterAtom = atomWithStorage(
+export const subprojectUsersFilterAtom = atomWithStorage<TableRowFilter[]>(
   'subprojectUsersFilterAtom',
   [],
 )
-export const subprojectTaxaFilterAtom = atomWithStorage(
+export const subprojectTaxaFilterAtom = atomWithStorage<TableRowFilter[]>(
   'subprojectTaxaFilterAtom',
   [],
 )
-export const chartsFilterAtom = atomWithStorage('chartsFilterAtom', [])
-export const observationImportsFilterAtom = atomWithStorage(
+export const chartsFilterAtom = atomWithStorage<TableRowFilter[]>('chartsFilterAtom', [])
+export const observationImportsFilterAtom = atomWithStorage<TableRowFilter[]>(
   'observationImportsFilterAtom',
   [],
 )
-export const observationsToAssessFilterAtom = atomWithStorage(
+export const observationsToAssessFilterAtom = atomWithStorage<TableRowFilter[]>(
   'observationsToAssessFilterAtom',
   [],
 )
-export const observationsNotToAssignFilterAtom = atomWithStorage(
+export const observationsNotToAssignFilterAtom = atomWithStorage<TableRowFilter[]>(
   'observationsNotToAssignFilterAtom',
   [],
 )
-export const goalsFilterAtom = atomWithStorage('goalsFilterAtom', [])
-export const usersFilterAtom = atomWithStorage('usersFilterAtom', [])
-export const places1FilterAtom = atomWithStorage('places1FilterAtom', [])
-export const places2FilterAtom = atomWithStorage('places2FilterAtom', [])
-export const checks1FilterAtom = atomWithStorage('checks1FilterAtom', [])
-export const checks2FilterAtom = atomWithStorage('checks2FilterAtom', [])
-export const placeUsers1FilterAtom = atomWithStorage(
+export const goalsFilterAtom = atomWithStorage<TableRowFilter[]>('goalsFilterAtom', [])
+export const usersFilterAtom = atomWithStorage<TableRowFilter[]>('usersFilterAtom', [])
+export const places1FilterAtom = atomWithStorage<TableRowFilter[]>('places1FilterAtom', [])
+export const places2FilterAtom = atomWithStorage<TableRowFilter[]>('places2FilterAtom', [])
+export const checks1FilterAtom = atomWithStorage<TableRowFilter[]>('checks1FilterAtom', [])
+export const checks2FilterAtom = atomWithStorage<TableRowFilter[]>('checks2FilterAtom', [])
+export const placeUsers1FilterAtom = atomWithStorage<TableRowFilter[]>(
   'placeUsers1FilterAtom',
   [],
 )
-export const placeUsers2FilterAtom = atomWithStorage(
+export const placeUsers2FilterAtom = atomWithStorage<TableRowFilter[]>(
   'placeUsers2FilterAtom',
   [],
 )
-export const actions1FilterAtom = atomWithStorage('actions1FilterAtom', [])
-export const actions2FilterAtom = atomWithStorage('actions2FilterAtom', [])
-export const checkReports1FilterAtom = atomWithStorage(
+export const actions1FilterAtom = atomWithStorage<TableRowFilter[]>('actions1FilterAtom', [])
+export const actions2FilterAtom = atomWithStorage<TableRowFilter[]>('actions2FilterAtom', [])
+export const checkReports1FilterAtom = atomWithStorage<TableRowFilter[]>(
   'checkReports1FilterAtom',
   [],
 )
-export const checkReports2FilterAtom = atomWithStorage(
+export const checkReports2FilterAtom = atomWithStorage<TableRowFilter[]>(
   'checkReports2FilterAtom',
   [],
 )
-export const actionReports1FilterAtom = atomWithStorage(
+export const actionReports1FilterAtom = atomWithStorage<TableRowFilter[]>(
   'actionReports1FilterAtom',
   [],
 )
-export const actionReports2FilterAtom = atomWithStorage(
+export const actionReports2FilterAtom = atomWithStorage<TableRowFilter[]>(
   'actionReports2FilterAtom',
   [],
 )
-export const qcsFilterAtom = atomWithStorage('qcsFilterAtom', [])
-export const projectQcsFilterAtom = atomWithStorage('projectQcsFilterAtom', [])
-export const exportsFilterAtom = atomWithStorage('exportsFilterAtom', [])
-export const projectExportsFilterAtom = atomWithStorage(
+export const qcsFilterAtom = atomWithStorage<TableRowFilter[]>('qcsFilterAtom', [])
+export const projectQcsFilterAtom = atomWithStorage<TableRowFilter[]>('projectQcsFilterAtom', [])
+export const exportsFilterAtom = atomWithStorage<TableRowFilter[]>('exportsFilterAtom', [])
+export const projectExportsFilterAtom = atomWithStorage<TableRowFilter[]>(
   'projectExportsFilterAtom',
   [],
 )
 // TODO: add
-export const filesFilterAtom = atomWithStorage('filesFilterAtom', [])
+export const filesFilterAtom = atomWithStorage<TableRowFilter[]>('filesFilterAtom', [])
 // TODO: add more filters
 // filter_vector_layer_displays
 // filter_subproject_chart_subjects
@@ -493,7 +594,7 @@ export const filterAtoms = {
 }
 
 // postgrestClient
-export const postgrestClientAtom = atom(null)
+export const postgrestClientAtom = atom<PostgrestClient | null>(null)
 
 // an array of objects with keys:
 // - id: set by addOperationAtom
@@ -505,7 +606,7 @@ export const postgrestClientAtom = atom(null)
 // - filter
 // - draft: object with key-value pairs for the operation
 // - prev: object with key-value pairs of previous value for reverting the operation
-export const operationsQueueAtom = atomWithStorage(
+export const operationsQueueAtom = atomWithStorage<QueuedOperation[]>(
   'operationsQueueAtom',
   [],
   undefined,
@@ -513,14 +614,18 @@ export const operationsQueueAtom = atomWithStorage(
 )
 
 // Inline revert so store.ts doesn't need to import revertOperation.ts (which imports store.ts — circular)
-async function revertOperationInPlace(db, operation) {
+async function revertOperationInPlace(db: PGlite, operation: QueuedOperation) {
   const { table, rowIdName, rowId, operation: op, draft, prev } = operation
+  // draft is only an array for *Many operations, which never reach the revert
+  // paths below; both branches work with the object shape
+  const draftObj = draft as Record<string, unknown>
+  const prevObj = prev as Record<string, unknown>
   if (op === 'delete') return
   if (op === 'insert') {
     // rowIdName/rowId may not be set on insert operations from createRows.ts;
     // infer the PK column from the table name following the codebase convention.
-    const pkColumn = rowIdName ?? inferPkColumn(table, draft)
-    const pkValue = rowId ?? (pkColumn ? draft?.[pkColumn] : undefined)
+    const pkColumn = rowIdName ?? inferPkColumn(table, draftObj)
+    const pkValue = rowId ?? (pkColumn ? draftObj?.[pkColumn] : undefined)
     if (!pkColumn || pkValue == null) {
       console.error(
         `revertOperationInPlace: cannot determine PK for insert revert on ${table}`,
@@ -539,15 +644,15 @@ async function revertOperationInPlace(db, operation) {
   }
   try {
     let valuesSql = ''
-    Object.keys(draft).forEach((key, index) => {
+    Object.keys(draftObj).forEach((key, index) => {
       valuesSql += `${key} = $${index + 1},`
     })
-    const draftKeysLength = Object.keys(draft).length
+    const draftKeysLength = Object.keys(draftObj).length
     const isUsersTable = table === 'users'
     const args = [
-      ...Object.keys(draft).map((key) => prev[key]),
-      prev.updated_at,
-      ...(isUsersTable ? [] : [prev.updated_by]),
+      ...Object.keys(draftObj).map((key) => prevObj[key]),
+      prevObj.updated_at,
+      ...(isUsersTable ? [] : [prevObj.updated_by]),
       rowId,
     ]
     await db.query(
@@ -562,13 +667,16 @@ async function revertOperationInPlace(db, operation) {
   }
 }
 export const addOperationAtom = atom(
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  (get) => null,
-  async (get, set, opDraft) => {
+  (_get) => null,
+  async (
+    get,
+    set,
+    opDraft: Omit<QueuedOperation, 'id' | 'time'>,
+  ) => {
     const db = get(pgliteDbAtom)
     const userId = get(userIdAtom)
 
-    const operation = {
+    const operation: QueuedOperation = {
       id: uuidv7(),
       time: new Date().toISOString(),
       ...opDraft,
@@ -604,9 +712,8 @@ export const addOperationAtom = atom(
   },
 )
 export const removeOperationAtom = atom(
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  (get) => null,
-  (get, set, id) => {
+  (_get) => null,
+  (get, set, id: string) => {
     const opQueue = get(operationsQueueAtom)
     set(
       operationsQueueAtom,
@@ -623,7 +730,7 @@ export const shortTermOnlineAtom = atom(true)
 // and that missed atom change would otherwise leave the queue stalled
 export const operationsRetryTickAtom = atom(0)
 
-export const pgliteDbAtom = atom(null)
+export const pgliteDbAtom = atom<PGlite | null>(null)
 
 // an array of objects with keys:
 // - id
@@ -638,11 +745,10 @@ export const pgliteDbAtom = atom(null)
 // - actionLabel?
 // - actionName?
 // - actionArgument?
-export const notificationsAtom = atom([])
+export const notificationsAtom = atom<AppNotification[]>([])
 export const updateNotificationAtom = atom(
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  (get) => null,
-  (get, set, { id, draft }) => {
+  (_get) => null,
+  (get, set, { id, draft }: { id: string; draft: Partial<AppNotification> }) => {
     const notifications = get(notificationsAtom)
     const notification = notifications.splice(
       notifications.findIndex((n) => n.id === id),
@@ -657,9 +763,8 @@ export const updateNotificationAtom = atom(
   },
 )
 export const removeNotificationAtom = atom(
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  (get) => null,
-  (get, set, id) => {
+  (_get) => null,
+  (get, set, id: string) => {
     const notifications = get(notificationsAtom)
     set(
       notificationsAtom,
@@ -668,9 +773,12 @@ export const removeNotificationAtom = atom(
   },
 )
 export const addNotificationAtom = atom(
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  (get) => null,
-  (get, set, draft) => {
+  (_get) => null,
+  (
+    get,
+    set,
+    draft: Partial<Omit<AppNotification, 'id' | 'time'>> & { id?: string },
+  ) => {
     const notifications = get(notificationsAtom)
     // do not stack same messages
     const notificationsWithSameMessage = notifications.filter(
@@ -683,7 +791,7 @@ export const addNotificationAtom = atom(
     }
 
     const id = draft.id ?? uuidv7()
-    const notification = {
+    const notification: AppNotification = {
       // set default values
       id,
       time: Date.now(),

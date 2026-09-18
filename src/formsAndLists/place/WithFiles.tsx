@@ -47,14 +47,16 @@ export const PlaceWithFiles = ({ from }: { from: string }) => {
   const addOperation = useSetAtom(addOperationAtom)
   const [language] = useAtom(languageAtom)
   const [designingMap] = useAtom(designingAtom)
-  const isDesigning = designingMap[projectId] ?? false
+  const isDesigning = designingMap[projectId!] ?? false
   const [placeUsersFilter] = useAtom(
     placeId2 ? placeUsers2FilterAtom : placeUsers1FilterAtom,
   )
   const [filesFilter] = useAtom(filesFilterAtom)
   const { formatMessage } = useIntl()
   const newLabel = formatMessage({ id: 'Yt5rMs', defaultMessage: 'neu' })
-  const [validations, setValidations] = useState({})
+  const [validations, setValidations] = useState<
+    Record<string, { state: 'error'; message: string }>
+  >({})
 
   const autoFocusRef = useRef<HTMLInputElement>(null)
   const navigate = useNavigate()
@@ -71,7 +73,7 @@ export const PlaceWithFiles = ({ from }: { from: string }) => {
     WHERE place_id = $1`,
     [currentPlaceId],
   )
-  const row: Places | undefined = res?.rows?.[0]
+  const row: Places | undefined = res?.rows?.[0] as Places | undefined
 
   const nameRes = useLiveQuery(
     `
@@ -87,8 +89,11 @@ export const PlaceWithFiles = ({ from }: { from: string }) => {
   )
   const placeLevels = nameRes?.rows ?? []
   const nameSingular =
-    placeLevels?.[0]?.[`name_singular_${language}`] ?? 'Place'
-  const namePlural = placeLevels?.[0]?.[`name_plural_${language}`] ?? 'Places'
+    (placeLevels?.[0]?.[`name_singular_${language}`] as string | undefined) ??
+    'Place'
+  const namePlural =
+    (placeLevels?.[0]?.[`name_plural_${language}`] as string | undefined) ??
+    'Places'
 
   const placeLevelRes = useLiveQuery(
     `SELECT place_roles_in_place, place_files FROM place_levels WHERE project_id = $1 AND level = $2`,
@@ -126,7 +131,15 @@ export const PlaceWithFiles = ({ from }: { from: string }) => {
 
   const placeUsersIsFiltered = !!filterStringFromFilter(placeUsersFilter)
   const filesIsFiltered = !!filterStringFromFilter(filesFilter)
-  const uploaderCtx = useContext(UploaderContext)
+  const uploaderCtx = useContext(UploaderContext) as unknown as {
+    current?:
+      | (HTMLElement & {
+          getAPI?: () => {
+            initFlow?: () => void
+          }
+        })
+      | null
+  }
   const uploaderApi = uploaderCtx?.current?.getAPI?.()
   const onClickAddFile = () => uploaderApi?.initFlow?.()
 
@@ -137,9 +150,7 @@ export const PlaceWithFiles = ({ from }: { from: string }) => {
         <AddProjectUserButton
           scope={{
             kind: 'place',
-            projectId,
-            placeId: currentPlaceId,
-          }}
+            projectId: projectId!,            placeId: (currentPlaceId)!,          }}
           onUserCreated={(id) => navigate({ to: `${usersUrl}/${id}/` })}
         />
       </>
@@ -158,9 +169,12 @@ export const PlaceWithFiles = ({ from }: { from: string }) => {
       </>
     ) : undefined
 
-  const onChange = async (e, data) => {
+  const onChange = async (
+    e: React.ChangeEvent<HTMLInputElement>,
+    data: Parameters<typeof getValueFromChange>[1],
+  ) => {
     const { name, value } = getValueFromChange(e, data)
-    if (row[name] === value) return
+    if ((row as Record<string, any>)[name] === value) return
 
     try {
       await db.query(`UPDATE places SET ${name} = $1 WHERE place_id = $2`, [
@@ -170,7 +184,7 @@ export const PlaceWithFiles = ({ from }: { from: string }) => {
     } catch (error) {
       setValidations((prev) => ({
         ...prev,
-        [name]: { state: 'error', message: error.message },
+        [name]: { state: 'error', message: error instanceof Error ? error.message : String(error) },
       }))
       return
     }
@@ -198,7 +212,7 @@ export const PlaceWithFiles = ({ from }: { from: string }) => {
   if (onlyForm) {
     return (
       <Form
-        row={row}
+        row={row as unknown as Record<string, unknown>}
         onChange={onChange}
         validations={validations}
         autoFocusRef={autoFocusRef}
@@ -217,7 +231,7 @@ export const PlaceWithFiles = ({ from }: { from: string }) => {
       />
       <div className="form-container">
         <Form
-          row={row}
+          row={row as unknown as Record<string, unknown>}
           onChange={onChange}
           validations={validations}
           autoFocusRef={autoFocusRef}
@@ -236,7 +250,7 @@ export const PlaceWithFiles = ({ from }: { from: string }) => {
           >
             {isUsersOpen &&
               (isUsersList ? (
-                <PlaceUsers from={from} hideHeader />
+                <PlaceUsers hideHeader />
               ) : (
                 <Outlet />
               ))}

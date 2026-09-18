@@ -3,6 +3,15 @@ import { useIntl } from 'react-intl'
 import { TextField } from '../../components/shared/TextField.tsx'
 import { Jsonb } from '../../components/shared/Jsonb/index.tsx'
 
+type Props = {
+  onChange: (e: React.ChangeEvent<any>, data?: any) => void
+  row: Record<string, any>
+  orIndex?: number
+  from: string
+  autoFocusRef?: React.RefObject<HTMLInputElement | null>
+  validations?: Record<string, { state: 'error'; message: string }>
+}
+
 export const SubprojectForm = ({
   onChange,
   row,
@@ -10,7 +19,7 @@ export const SubprojectForm = ({
   from,
   autoFocusRef,
   validations = {},
-}) => {
+}: Props) => {
   const { formatMessage } = useIntl()
 
   return (

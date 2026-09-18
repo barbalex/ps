@@ -11,7 +11,9 @@ import { Resizer } from './Resizer.tsx'
 import { mapHideUiAtom } from '../../../store.ts'
 import styles from './index.module.css'
 
-export const LeftMenuDrawer = ({ isNarrow }) => {
+type Props = { isNarrow: boolean }
+
+export const LeftMenuDrawer = ({ isNarrow }: Props) => {
   const mapHideUi = useAtomValue(mapHideUiAtom)
 
   const {
@@ -26,14 +28,14 @@ export const LeftMenuDrawer = ({ isNarrow }) => {
   const [size, setSize] = useState(isNarrow ? 500 : 380)
   // when width falls below 40, set sidebarSize to 5
   useEffect(() => {
-    if ((isNarrow && ownHeight <= 40) || (!isNarrow && ownWidth <= 40)) {
+    if ((isNarrow && ownHeight! <= 40) || (!isNarrow && ownWidth! <= 40)) {
       const id = requestAnimationFrame(() => setSize(5))
       return () => cancelAnimationFrame(id)
     }
   }, [isNarrow, ownHeight, ownWidth])
 
   const isOpen = size > 40
-  const toggleOpen = (e) => {
+  const toggleOpen = (e: React.MouseEvent) => {
     e.stopPropagation()
     const newValue = isOpen ? 5 : isNarrow ? 500 : 380
     setSize(newValue)
@@ -56,7 +58,7 @@ export const LeftMenuDrawer = ({ isNarrow }) => {
   }, [])
 
   const resize = useCallback(
-    ({ clientX, clientY }) => {
+    ({ clientX, clientY }: MouseEvent) => {
       if (!isResizing) return
       if (!sidebarRef.current) return
 

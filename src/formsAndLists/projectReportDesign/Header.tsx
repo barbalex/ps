@@ -9,9 +9,9 @@ import { FormHeader } from '../../components/FormHeader/index.tsx'
 import { HistoryToggleButton } from '../../components/shared/HistoryCompare/HistoryToggleButton.tsx'
 import { addOperationAtom } from '../../store.ts'
 
-export const Header = ({ autoFocusRef, from }) => {
+export const Header = ({ autoFocusRef }: { autoFocusRef?: React.RefObject<HTMLInputElement | null>; from?: string }) => {
   const addOperation = useSetAtom(addOperationAtom)
-  const { projectId, projectReportDesignId } = useParams({ from })
+  const { projectId, projectReportDesignId } = useParams({ strict: false })
   const basePath = `/data/projects/${projectId}/designs/${projectReportDesignId}`
   const navigate = useNavigate()
   const { formatMessage } = useIntl()
@@ -27,8 +27,7 @@ export const Header = ({ autoFocusRef, from }) => {
 
   const addRow = async () => {
     const project_report_design_id = await createProjectReportDesign({
-      projectId,
-    })
+      projectId: projectId!,    })
     if (!project_report_design_id) return
     navigate({
       to: `../${project_report_design_id}`,
@@ -41,7 +40,7 @@ export const Header = ({ autoFocusRef, from }) => {
       `SELECT * FROM project_report_designs WHERE project_report_design_id = $1`,
       [projectReportDesignId],
     )
-    const prev = prevRes?.rows?.[0] ?? {}
+    const prev = (prevRes?.rows?.[0] ?? {}) as Record<string, unknown>
     await db.query(
       `DELETE FROM project_report_designs WHERE project_report_design_id = $1`,
       [projectReportDesignId],
@@ -67,7 +66,7 @@ export const Header = ({ autoFocusRef, from }) => {
         `,
         [projectId],
       )
-      const designs = res?.rows
+      const designs = res?.rows as { project_report_design_id: string }[]
       const len = designs.length
       const index = designs.findIndex(
         (d) => d.project_report_design_id === projectReportDesignIdRef.current,
@@ -94,7 +93,7 @@ export const Header = ({ autoFocusRef, from }) => {
         `,
         [projectId],
       )
-      const designs = res?.rows
+      const designs = res?.rows as { project_report_design_id: string }[]
       const len = designs.length
       const index = designs.findIndex(
         (d) => d.project_report_design_id === projectReportDesignIdRef.current,

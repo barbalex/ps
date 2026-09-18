@@ -26,7 +26,7 @@ export const useProjectProjectNavData = ({ projectId }: Props) => {
         projects
       WHERE 
         projects.project_id = '${projectId}'`
-  const res = useLiveQuery(sql)
+  const res = useLiveQuery<NavData>(sql)
   const loading = res === undefined
 
   const nav: NavData | undefined = res?.rows?.[0]

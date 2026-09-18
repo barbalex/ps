@@ -10,7 +10,7 @@ export const ProjectFilter = ({ from }: Props) => (
     {({ row, onChange, orIndex }) => (
       <ProjectForm
         row={row}
-        onChange={onChange}
+        onChange={(e, data) => onChange(e, data!)}
         orIndex={orIndex}
         from={from}
       />

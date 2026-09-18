@@ -1,13 +1,23 @@
 import { useRef, useEffect } from 'react'
+import type { ComponentProps, FC } from 'react'
 import * as fluentUiReactComponents from '@fluentui/react-components'
-const { Toolbar, ToolbarButton } = fluentUiReactComponents
+const { Toolbar } = fluentUiReactComponents
 import { FaMinus, FaPlus } from 'react-icons/fa'
+import * as L from 'leaflet'
 import { useMap } from 'react-leaflet'
 import { useIntl } from 'react-intl'
 
 import { LocatingButton } from './LocatingButton.tsx'
 import { EditingGeometryButton } from './EditingGeometryButton.tsx'
 import styles from './index.module.css'
+
+// ToolbarButtonProps omits 'size', but the underlying button accepts it —
+// bridge the type locally to keep passing it through.
+const ToolbarButton = fluentUiReactComponents.ToolbarButton as unknown as FC<
+  ComponentProps<typeof fluentUiReactComponents.ToolbarButton> & {
+    size?: string
+  }
+>
 
 export const VerticalButtons = () => {
   const { formatMessage } = useIntl()
@@ -27,10 +37,10 @@ export const VerticalButtons = () => {
 
   // prevent click propagation on to map
   // https://stackoverflow.com/a/57013052/712005
-  const ref = useRef()
+  const ref = useRef<HTMLDivElement>(null)
   useEffect(() => {
-    L.DomEvent.disableClickPropagation(ref.current)
-    L.DomEvent.disableScrollPropagation(ref.current)
+    L.DomEvent.disableClickPropagation(ref.current!)
+    L.DomEvent.disableScrollPropagation(ref.current!)
   }, [])
 
   // TODO: add: zoom to project bounds

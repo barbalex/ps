@@ -65,21 +65,32 @@ export const useSubprojectNavData = ({ projectId, subprojectId }: Props) => {
   const [placesFilter] = useAtom(places1FilterAtom)
   const [language] = useAtom(languageAtom)
 
-  const placesFilterString = filterStringFromFilter(placesFilter)
+  const placesFilterString = filterStringFromFilter(
+    placesFilter as Record<string, unknown> & typeof placesFilter,
+    '',
+  )
   const placesIsFiltered = !!placesFilterString
 
   const [subprojectReportsFilter] = useAtom(subprojectReportsFilterAtom)
   const subprojectReportsFilterString = filterStringFromFilter(
-    subprojectReportsFilter,
+    subprojectReportsFilter as Record<string, unknown> &
+      typeof subprojectReportsFilter,
+    '',
   )
   const subprojectReportsIsFiltered = !!subprojectReportsFilterString
 
   const [goalsFilter] = useAtom(goalsFilterAtom)
-  const goalsFilterString = filterStringFromFilter(goalsFilter)
+  const goalsFilterString = filterStringFromFilter(
+    goalsFilter as Record<string, unknown> & typeof goalsFilter,
+    '',
+  )
   const goalsIsFiltered = !!goalsFilterString
 
   const [filesFilter] = useAtom(filesFilterAtom)
-  const filesFilterString = filterStringFromFilter(filesFilter)
+  const filesFilterString = filterStringFromFilter(
+    filesFilter as Record<string, unknown> & typeof filesFilter,
+    '',
+  )
   const filesIsFiltered = !!filesFilterString
 
   const sql = `
@@ -160,11 +171,11 @@ export const useSubprojectNavData = ({ projectId, subprojectId }: Props) => {
         subproject_exports_run_count
       WHERE sp.subproject_id = '${subprojectId}'`
 
-  const res = useLiveQuery(sql)
+  const res = useLiveQuery<NavData>(sql)
   const loading = res === undefined
   const nav: NavData | undefined = res?.rows?.[0]
 
-  const projectTypeRes = useLiveQuery(
+  const projectTypeRes = useLiveQuery<{ type: string | null }>(
     `SELECT type FROM projects WHERE project_id = $1`,
     [projectId],
   )
@@ -260,6 +271,7 @@ export const useSubprojectNavData = ({ projectId, subprojectId }: Props) => {
               label: buildNavLabel({
                 loading,
                 countFiltered: nav?.observation_imports_count ?? 0,
+                countUnfiltered: nav?.observation_imports_count ?? 0,
                 namePlural: formatMessage({
                   id: 'C7apNr',
                   defaultMessage: 'Beobachtungs-Importe',
@@ -271,6 +283,7 @@ export const useSubprojectNavData = ({ projectId, subprojectId }: Props) => {
               label: buildNavLabel({
                 loading,
                 countFiltered: nav?.observations_to_assess_count ?? 0,
+                countUnfiltered: nav?.observations_to_assess_count ?? 0,
                 namePlural: formatMessage({
                   id: 'BEylmv',
                   defaultMessage: 'Beobachtungen zu beurteilen',
@@ -282,6 +295,7 @@ export const useSubprojectNavData = ({ projectId, subprojectId }: Props) => {
               label: buildNavLabel({
                 loading,
                 countFiltered: nav?.observations_not_to_assign_count ?? 0,
+                countUnfiltered: nav?.observations_not_to_assign_count ?? 0,
                 namePlural: formatMessage({
                   id: 'slC/ul',
                   defaultMessage: 'Beobachtungen nicht zuzuordnen',
@@ -298,6 +312,7 @@ export const useSubprojectNavData = ({ projectId, subprojectId }: Props) => {
               label: buildNavLabel({
                 loading,
                 countFiltered: nav?.subproject_taxa_count ?? 0,
+                countUnfiltered: nav?.subproject_taxa_count ?? 0,
                 namePlural: formatMessage({
                   id: '7sVbg1',
                   defaultMessage: 'Taxa',
@@ -311,6 +326,7 @@ export const useSubprojectNavData = ({ projectId, subprojectId }: Props) => {
         label: buildNavLabel({
           loading,
           countFiltered: nav?.subproject_qc_assignments_count ?? 0,
+          countUnfiltered: nav?.subproject_qc_assignments_count ?? 0,
           namePlural: formatMessage({
             id: 'subprojectQcs.title',
             defaultMessage: 'Qualitätskontrollen: wählen',
@@ -322,6 +338,7 @@ export const useSubprojectNavData = ({ projectId, subprojectId }: Props) => {
         label: buildNavLabel({
           loading,
           countFiltered: nav?.subproject_qcs_run_count ?? 0,
+          countUnfiltered: nav?.subproject_qcs_run_count ?? 0,
           namePlural: formatMessage({
             id: 'subprojectQcsRun.title',
             defaultMessage: 'Qualitätskontrollen: ausführen',
@@ -335,6 +352,7 @@ export const useSubprojectNavData = ({ projectId, subprojectId }: Props) => {
               label: buildNavLabel({
                 loading,
                 countFiltered: nav?.subproject_export_assignments_count ?? 0,
+                countUnfiltered: nav?.subproject_export_assignments_count ?? 0,
                 namePlural: formatMessage({
                   id: 'subprojectExports.title',
                   defaultMessage: 'Exporte: wählen',
@@ -346,6 +364,7 @@ export const useSubprojectNavData = ({ projectId, subprojectId }: Props) => {
               label: buildNavLabel({
                 loading,
                 countFiltered: nav?.subproject_exports_run_count ?? 0,
+                countUnfiltered: nav?.subproject_exports_run_count ?? 0,
                 namePlural: formatMessage({
                   id: 'subprojectExportsRun.title',
                   defaultMessage: 'Exporte: ausführen',
@@ -361,6 +380,7 @@ export const useSubprojectNavData = ({ projectId, subprojectId }: Props) => {
               label: buildNavLabel({
                 loading,
                 countFiltered: nav?.subproject_roles_count ?? 0,
+                countUnfiltered: nav?.subproject_roles_count ?? 0,
                 namePlural: formatMessage({
                   id: 'eZ3yEB',
                   defaultMessage: 'Benutzer',
@@ -394,6 +414,7 @@ export const useSubprojectNavData = ({ projectId, subprojectId }: Props) => {
               label: buildNavLabel({
                 loading,
                 countFiltered: nav?.charts_count ?? 0,
+                countUnfiltered: nav?.charts_count ?? 0,
                 namePlural: formatMessage({
                   id: 'ZPEO8P',
                   defaultMessage: 'Diagramme',

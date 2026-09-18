@@ -2,6 +2,7 @@ import { useRef, useEffect } from 'react'
 import * as fluentUiReactComponents from '@fluentui/react-components'
 const { Switch } = fluentUiReactComponents
 import { useAtom } from 'jotai'
+import * as L from 'leaflet'
 
 import { mapHideUiAtom } from '../../../store.ts'
 import styles from './UiButton.module.css'
@@ -12,10 +13,10 @@ export const UiButton = () => {
 
   // prevent click propagation on to map
   // https://stackoverflow.com/a/57013052/712005
-  const ref = useRef()
+  const ref = useRef<HTMLDivElement>(null)
   useEffect(() => {
-    L.DomEvent.disableClickPropagation(ref.current)
-    L.DomEvent.disableScrollPropagation(ref.current)
+    L.DomEvent.disableClickPropagation(ref.current!)
+    L.DomEvent.disableScrollPropagation(ref.current!)
   }, [])
 
   const onChange = () => setHideMapUi(!hideMapUi)

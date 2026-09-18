@@ -110,9 +110,10 @@ export const getVectorLayerLabel = (
 
 /** Loads the place_levels for a project (single shared query for label lookup). */
 export const usePlaceLevels = (projectId?: string): PlaceLevels[] => {
-  const res = useLiveQuery(`SELECT * FROM place_levels WHERE project_id = $1`, [
-    projectId,
-  ])
+  const res = useLiveQuery<PlaceLevels>(
+    `SELECT * FROM place_levels WHERE project_id = $1`,
+    [projectId],
+  )
   return res?.rows ?? []
 }
 

@@ -1,5 +1,9 @@
 import * as fluentUiReactComponents from '@fluentui/react-components'
-const { Button, Tooltip, CounterBadge } = fluentUiReactComponents
+import type {
+  CounterBadgeProps,
+  TooltipProps,
+} from '@fluentui/react-components'
+import type { ComponentType } from 'react'
 import {
   useNavigate,
   useLocation,
@@ -16,7 +20,28 @@ import styles from './Online.module.css'
 
 import { onlineAtom, operationsQueueAtom } from '../../../store.ts'
 
-export const Online = () => {
+const { Button } = fluentUiReactComponents
+
+// Fluent UI's TooltipProps requires `relationship`, but it is optional at runtime
+const Tooltip = fluentUiReactComponents.Tooltip as ComponentType<
+  Omit<TooltipProps, 'relationship'> & {
+    relationship?: TooltipProps['relationship']
+  }
+>
+
+// CounterBadgeProps restricts `appearance` to 'filled' | 'ghost',
+// but 'outline' is applied as a css class at runtime
+const CounterBadge = fluentUiReactComponents.CounterBadge as ComponentType<
+  Omit<CounterBadgeProps, 'appearance'> & { appearance?: string }
+>
+
+type Props = {
+  // width is passed by the header menu to align this button with its
+  // siblings, the value itself is not used
+  width?: number
+}
+
+export const Online = (_props: Props) => {
   const { formatMessage } = useIntl()
   const navigate = useNavigate()
   const { pathname } = useLocation()
@@ -48,7 +73,9 @@ export const Online = () => {
     pathname === '/data/queued-operations'
       ? canGoBack
         ? history.go(-1)
-        : navigate({ to: '/data/' })
+        : // type-only: '/data/' is not part of the generated route union
+          // but resolves to the /data route at runtime
+          navigate({ to: '/data/' as never })
       : navigate({ to: '/data/queued-operations' })
   }
 

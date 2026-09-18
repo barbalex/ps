@@ -9,15 +9,16 @@ import { HistoryToggleButton } from '../../components/shared/HistoryCompare/Hist
 import { addOperationAtom } from '../../store.ts'
 
 interface Props {
-  autoFocusRef: React.RefObject<HTMLInputElement>
+  autoFocusRef?: React.RefObject<HTMLInputElement | null>
   from: string
+  label?: string
 }
 
 export const Header = ({ autoFocusRef, from }: Props) => {
   const isForm =
     from ===
     '/data/projects/$projectId_/wfs-services/$wfsServiceId_/wfs-service'
-  const { projectId, wfsServiceId } = useParams({ from })
+  const { projectId, wfsServiceId } = useParams({ strict: false })
   const basePath = `/data/projects/${projectId}/wfs-services/${wfsServiceId}`
   const navigate = useNavigate()
   const addOperation = useSetAtom(addOperationAtom)
@@ -27,7 +28,7 @@ export const Header = ({ autoFocusRef, from }: Props) => {
   const countRes = useLiveQuery(
     `SELECT COUNT(*) as count FROM wfs_services WHERE project_id = '${projectId}'`,
   )
-  const rowCount = countRes?.rows?.[0]?.count ?? 2
+  const rowCount = Number(countRes?.rows?.[0]?.count ?? 2)
 
   const res = useLiveQuery(
     `
@@ -37,7 +38,7 @@ export const Header = ({ autoFocusRef, from }: Props) => {
     `,
     [projectId],
   )
-  const rows = res?.rows ?? []
+  const rows = (res?.rows ?? []) as { wfs_service_id: string }[]
   const len = rows.length
   const ownIndex = rows.findIndex((row) => row.wfs_service_id === wfsServiceId)
 
@@ -58,7 +59,7 @@ export const Header = ({ autoFocusRef, from }: Props) => {
         `SELECT * FROM wfs_services WHERE wfs_service_id = $1`,
         [wfsServiceId],
       )
-      const prev = prevRes?.rows?.[0] ?? {}
+      const prev = (prevRes?.rows?.[0] ?? {}) as Record<string, unknown>
       await db.query(`DELETE FROM wfs_services WHERE wfs_service_id = $1`, [
         wfsServiceId,
       ])
@@ -69,7 +70,7 @@ export const Header = ({ autoFocusRef, from }: Props) => {
         operation: 'delete',
         prev,
       })
-      navigate({ to: isForm ? `../..` : `..` })
+      navigate({ to: isForm ? ('../..' as '..') : '..' })
     } catch (error) {
       console.error(error)
     }

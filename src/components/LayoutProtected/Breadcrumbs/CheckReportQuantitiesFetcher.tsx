@@ -4,7 +4,12 @@ import { useCheckReportQuantitiesNavData } from '../../../modules/useCheckReport
 import { FetcherReturner } from './FetcherReturner.tsx'
 
 export const CheckReportQuantitiesFetcher = memo(
-  ({ params, ...other }: { params: Record<string, string> }) => {
+  ({
+    params,
+    ...other
+  }: {
+    params: Parameters<typeof useCheckReportQuantitiesNavData>[0]
+  }) => {
     const { navData } = useCheckReportQuantitiesNavData(params)
 
     return (

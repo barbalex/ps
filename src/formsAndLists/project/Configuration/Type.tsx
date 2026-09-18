@@ -2,8 +2,17 @@ import { useIntl } from 'react-intl'
 
 import { RadioGroupFromOptions } from '../../../components/shared/RadioGroupFromOptions.tsx'
 import { projectTypeOptions } from '../../../modules/constants.ts'
+import type Projects from '../../../models/public/Projects.ts'
 
-export const Type = ({ onChange, validations, row }) => {
+export const Type = ({
+  onChange,
+  validations,
+  row,
+}: {
+  onChange: (e: React.ChangeEvent<any>, data?: any) => void
+  validations: Record<string, { state: 'error'; message: string }>
+  row: Projects
+}) => {
   const { formatMessage } = useIntl()
 
   const options = projectTypeOptions.map(
@@ -19,7 +28,7 @@ export const Type = ({ onChange, validations, row }) => {
       name="type"
       options={options}
       value={row.type ?? ''}
-      onChange={onChange}
+      onChange={(ev) => onChange(ev as React.ChangeEvent<HTMLInputElement>)}
       validationState={validations?.type?.state}
       validationMessage={
         validations?.type?.message ??

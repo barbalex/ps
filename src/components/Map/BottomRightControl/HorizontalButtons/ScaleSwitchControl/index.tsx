@@ -7,7 +7,7 @@ import { formatNumber } from '../../../../../modules/formatNumber.ts'
 import styles from './index.module.css'
 
 // Returns width of map in meters on specified latitude
-const getMapWidthForLanInMeters = (currentLan) =>
+const getMapWidthForLanInMeters = (currentLan: number) =>
   6378137 * 2 * Math.PI * Math.cos((currentLan * Math.PI) / 180)
 
 export const ScaleSwitchControl = () => {
@@ -37,7 +37,8 @@ export const ScaleSwitchControl = () => {
     const centerLat = bounds.getCenter().lat
     const mapWidth = getMapWidthForLanInMeters(centerLat)
     const ratio =
-      (pixelsInMeterWidth * mapWidth) / map.options.crs.scale(map.getZoom())
+      (pixelsInMeterWidth * mapWidth) /
+      map.options.crs!.scale(map.getZoom())
     const scale = Math.round(ratio / 1000) * 1000
     setScale(scale)
   }

@@ -6,6 +6,13 @@ import { removeChildNodes } from '../../modules/tree/removeChildNodes.ts'
 import { addOpenNodes } from '../../modules/tree/addOpenNodes.ts'
 import { useGoalsNavData } from '../../modules/useGoalsNavData.ts'
 
+type NavData = {
+  id: string
+  label: string
+  count_unfiltered?: number
+  count_filtered?: number
+}[]
+
 interface Props {
   projectId: string
   subprojectId: string
@@ -42,7 +49,7 @@ export const GoalsNode = ({ projectId, subprojectId, level = 5 }: Props) => {
   }
 
   // only list navs if isOpen AND the first nav has an id
-  const showNavs = isOpen && navs.length > 0 && navs[0].id
+  const showNavs = isOpen && navs.length > 0 && (navs as NavData)[0].id
 
   return (
     <>
@@ -57,7 +64,7 @@ export const GoalsNode = ({ projectId, subprojectId, level = 5 }: Props) => {
         onClickButton={onClickButton}
       />
       {showNavs &&
-        navs.map((nav, i) => (
+        (navs as NavData).map((nav, i) => (
           <GoalNode
             key={`${nav.id}-${i}`}
             projectId={projectId}

@@ -3,6 +3,16 @@ import { isEqual } from 'es-toolkit'
 
 import { Node } from './Node.tsx'
 
+type Props = {
+  projectId: string
+  subprojectId: string
+  placeId: string
+  placeId2?: string
+  actionId: string
+  nav: { id: string; label: string }
+  level?: number
+}
+
 export const ActionQuantityNode = ({
   projectId,
   subprojectId,
@@ -11,7 +21,7 @@ export const ActionQuantityNode = ({
   actionId,
   nav,
   level = 10,
-}) => {
+}: Props) => {
   const location = useLocation()
 
   const urlPath = location.pathname.split('/').filter((p) => p !== '')

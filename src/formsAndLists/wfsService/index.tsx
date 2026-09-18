@@ -19,9 +19,11 @@ interface Props {
 }
 
 export const WfsService = ({ from }: Props) => {
-  const { wfsServiceId } = useParams({ from })
+  const { wfsServiceId } = useParams({ strict: false })
   const addOperation = useSetAtom(addOperationAtom)
-  const [validations, setValidations] = useState({})
+  const [validations, setValidations] = useState<
+    Record<string, { state: 'error'; message: string }>
+  >({})
   const autoFocusRef = useRef<HTMLInputElement>(null)
   const { formatMessage } = useIntl()
 
@@ -31,12 +33,15 @@ export const WfsService = ({ from }: Props) => {
     `SELECT * FROM wfs_services WHERE wfs_service_id = $1`,
     [wfsServiceId],
   )
-  const row: WfsServices | undefined = res?.rows?.[0]
+  const row: WfsServices | undefined = res?.rows?.[0] as WfsServices | undefined
 
-  const onChange = async (e, data) => {
+  const onChange = async (
+    e: React.ChangeEvent<HTMLInputElement>,
+    data: Parameters<typeof getValueFromChange>[1],
+  ) => {
     const { name, value } = getValueFromChange(e, data)
     // only change if value has changed: maybe only focus entered and left
-    if (row[name] === value) return
+    if ((row as Record<string, any>)[name] === value) return
 
     try {
       await db.query(
@@ -46,7 +51,7 @@ export const WfsService = ({ from }: Props) => {
     } catch (error) {
       setValidations((prev) => ({
         ...prev,
-        [name]: { state: 'error', message: error.message },
+        [name]: { state: 'error', message: error instanceof Error ? error.message : String(error) },
       }))
       return
     }

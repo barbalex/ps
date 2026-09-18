@@ -29,8 +29,6 @@ const {
   Input,
 } = fluentUiReactComponents
 
-const from = '/data/projects/$projectId_/users/$projectUserId/'
-
 type Row = {
   project_user_id: string
   project_id: string | null
@@ -41,9 +39,11 @@ type Row = {
 }
 
 export const ProjectUser = () => {
-  const { projectUserId } = useParams({ from })
+  const { projectUserId } = useParams({ strict: false })
   const addOperation = useSetAtom(addOperationAtom)
-  const [validations, setValidations] = useState({})
+  const [validations, setValidations] = useState<
+    Record<string, { state: 'error'; message: string }>
+  >({})
   const [pendingRole, setPendingRole] = useState<string | null>(null)
   const { formatMessage } = useIntl()
 
@@ -58,15 +58,18 @@ export const ProjectUser = () => {
      WHERE pu.project_user_id = $1`,
     [projectUserId],
   )
-  const row: Row | undefined = res?.rows?.[0]
+  const row = res?.rows?.[0] as Row | undefined
 
   // the owner row is created by trigger and must not be edited
   const isOwner = row?.role === 'own'
 
-  const onChange = async (e, data) => {
+  const onChange = async (
+    e: React.ChangeEvent<HTMLInputElement>,
+    data: Parameters<typeof getValueFromChange>[1],
+  ) => {
     const { name, value } = getValueFromChange(e, data)
     // only change if value has changed: maybe only focus entered and left
-    if (row[name] === value) return
+    if ((row as Record<string, unknown>)[name] === value) return
 
     if (
       name === 'role' &&
@@ -79,7 +82,7 @@ export const ProjectUser = () => {
     // email edits write the directory; role edits write project_roles
     const table = name === 'role' ? 'project_roles' : 'project_users'
     const rowIdName = name === 'role' ? 'project_role_id' : 'project_user_id'
-    const rowId = name === 'role' ? row.project_role_id : projectUserId
+    const rowId = name === 'role' ? row!.project_role_id : projectUserId
     if (!rowId) return
 
     try {
@@ -90,7 +93,7 @@ export const ProjectUser = () => {
     } catch (error) {
       setValidations((prev) => ({
         ...prev,
-        [name]: { state: 'error', message: error.message },
+        [name]: { state: 'error', message: error instanceof Error ? error.message : String(error) },
       }))
       return
     }
@@ -111,16 +114,16 @@ export const ProjectUser = () => {
   const onConfirmRole = async () => {
     const value = pendingRole!
     setPendingRole(null)
-    if (!row.project_role_id) return
+    if (!row!.project_role_id) return
     try {
       await db.query(
         `UPDATE project_roles SET role = $1 WHERE project_role_id = $2`,
-        [value, row.project_role_id],
+        [value, row!.project_role_id],
       )
     } catch (error) {
       setValidations((prev) => ({
         ...prev,
-        role: { state: 'error', message: error.message },
+        role: { state: 'error', message: error instanceof Error ? error.message : String(error) },
       }))
       return
     }
@@ -131,7 +134,7 @@ export const ProjectUser = () => {
     addOperation({
       table: 'project_roles',
       rowIdName: 'project_role_id',
-      rowId: row.project_role_id,
+      rowId: row!.project_role_id,
       operation: 'update',
       draft: { role: value },
       prev: { ...row },
@@ -167,7 +170,7 @@ export const ProjectUser = () => {
 
   return (
     <div className="form-outer-container">
-      <Header autoFocusRef={autoFocusRef} from={from} />
+      <Header autoFocusRef={autoFocusRef} />
       <div className="form-container">
         {isOwner && (
           <p className={styles.ownerNotice}>

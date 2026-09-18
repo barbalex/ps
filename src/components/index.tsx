@@ -166,7 +166,7 @@ export const Home = () => {
               defaultMessage="Du bist offline? Einfach {weiterArbeiten}. Wieder online, werden deine Daten synchronisiert."
               values={{
                 weiterArbeiten: (
-                  <Link to="/docs/offline" target="_blank">
+                  <Link to={'/docs/offline' as '/docs'} target="_blank">
                     <FormattedMessage
                       id="OW3d3V.weiterArbeiten"
                       defaultMessage="weiter arbeiten"
@@ -185,7 +185,7 @@ export const Home = () => {
               defaultMessage="Haben mehrere Mitarbeitende aus versehen offline die gleichen Daten geändert? Das lässt sich einfach korrigieren. {duSiehst}, wer was wann geändert hat."
               values={{
                 duSiehst: (
-                  <Link to="/docs/histories" target="_blank">
+                  <Link to={'/docs/histories' as '/docs'} target="_blank">
                     <FormattedMessage
                       id="rEN8QI.duSiehst"
                       defaultMessage="Du siehst"
@@ -207,7 +207,7 @@ export const Home = () => {
               defaultMessage="Du kannst arten-fördern.app deinen eigenen Bedürfnissen {anpassen}. Vermisst du eine Funktion? {link}"
               values={{
                 anpassen: (
-                  <Link to="/docs/configuration" target="_blank">
+                  <Link to={'/docs/configuration' as '/docs'} target="_blank">
                     <FormattedMessage
                       id="2hj7nH.anpassen"
                       defaultMessage="anpassen"
@@ -215,7 +215,7 @@ export const Home = () => {
                   </Link>
                 ),
                 link: (
-                  <Link to="/docs/issues" target="_blank">
+                  <Link to={'/docs/issues' as '/docs'} target="_blank">
                     <FormattedMessage
                       id="OogWmh"
                       defaultMessage="Ich bin interessiert!"
@@ -237,7 +237,7 @@ export const Home = () => {
               defaultMessage="Ich helfe dir gerne bei der {erstKonfiguration}, damit dein Team möglichst effizient arbeitet. Profitiere von {link}."
               values={{
                 erstKonfiguration: (
-                  <Link to="/docs/configuration" target="_blank">
+                  <Link to={'/docs/configuration' as '/docs'} target="_blank">
                     <FormattedMessage
                       id="HsHmZy.erstKonfiguration"
                       defaultMessage="Erst-Konfiguration"
@@ -270,7 +270,7 @@ export const Home = () => {
               defaultMessage="Alle {deineDaten} werden auf dein Gerät synchronisiert. Du kannst sie jederzeit exportieren."
               values={{
                 deineDaten: (
-                  <Link to="/docs/privacy-policy" target="_blank">
+                  <Link to={'/docs/privacy-policy' as '/docs'} target="_blank">
                     <FormattedMessage
                       id="9LbkBJ.deineDaten"
                       defaultMessage="deine Daten"
@@ -293,7 +293,7 @@ export const Home = () => {
               values={{
                 br,
                 zahlt: (
-                  <Link to="/docs/pricing" target="_blank">
+                  <Link to={'/docs/pricing' as '/docs'} target="_blank">
                     <FormattedMessage
                       id="9ZCq87.zahlt"
                       defaultMessage="zahlt"
@@ -343,7 +343,7 @@ export const Home = () => {
               defaultMessage="Du darfst gerne reinschauen, testen und mir deine Eindrücke und Wünsche {link}."
               values={{
                 link: (
-                  <Link to="/docs/issues" target="_blank">
+                  <Link to={'/docs/issues' as '/docs'} target="_blank">
                     <FormattedMessage id="9KB+sP" defaultMessage="mitteilen" />
                   </Link>
                 ),

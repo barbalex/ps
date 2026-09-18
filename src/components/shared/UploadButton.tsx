@@ -6,7 +6,18 @@ import { useIntl } from 'react-intl'
 
 import styles from './UploadButton.module.css'
 
-export const UploadButton = ({ processData, additionalData = {} }) => {
+type Props = {
+  processData: (args: {
+    file?: File | undefined
+    additionalData: Record<string, unknown>
+    db: ReturnType<typeof usePGlite>
+  }) => Promise<unknown> | unknown
+  additionalData?: Record<string, unknown>
+}
+
+type ProcessDataResult = { success?: boolean; message?: string }
+
+export const UploadButton = ({ processData, additionalData = {} }: Props) => {
   const uploadInputRef = useRef<HTMLInputElement>(null)
   const [isDragging, setIsDragging] = useState(false)
   const [successMessage, setSuccessMessage] = useState<string | null>(null)
@@ -36,35 +47,39 @@ export const UploadButton = ({ processData, additionalData = {} }) => {
     const file = e.target.files?.[0]
     setErrorMessage(null)
     try {
-      const result = await processData({ file, additionalData, db })
+      const result = (await processData({
+        file,
+        additionalData,
+        db,
+      })) as ProcessDataResult | null | undefined
       if (result?.success) {
         setSuccessMessage(result.message || uploadSuccessMessage)
       }
     } catch (error) {
-      setErrorMessage(error.message || unexpectedErrorMessage)
+      setErrorMessage((error as Error).message || unexpectedErrorMessage)
     }
   }
 
   const onClickUploadButton = () => {
-    uploadInputRef.current.click()
+    uploadInputRef.current!.click()
     // need to set the value to null to allow uploading more files
-    uploadInputRef.current.value = null
+    uploadInputRef.current!.value = null as unknown as string
   }
 
-  const onDragEnter = (e) => {
+  const onDragEnter = (e: React.DragEvent) => {
     e.stopPropagation()
     e.preventDefault()
     setIsDragging(true)
   }
 
-  const onDragLeave = (e) => {
+  const onDragLeave = (e: React.DragEvent) => {
     e.stopPropagation()
     e.preventDefault()
     setIsDragging(false)
   }
 
   // onDragOver is needed to prevent the browser from asking the user to save file as
-  const onDragOver = (e) => {
+  const onDragOver = (e: React.DragEvent) => {
     e.stopPropagation()
     e.preventDefault()
   }
@@ -77,12 +92,16 @@ export const UploadButton = ({ processData, additionalData = {} }) => {
     const dt = e.dataTransfer
     const file = dt.files?.[0]
     try {
-      const result = await processData({ file, additionalData, db })
+      const result = (await processData({
+        file,
+        additionalData,
+        db,
+      })) as ProcessDataResult | null | undefined
       if (result?.success) {
         setSuccessMessage(result.message || uploadSuccessMessage)
       }
     } catch (error) {
-      setErrorMessage(error.message || unexpectedErrorMessage)
+      setErrorMessage((error as Error).message || unexpectedErrorMessage)
     }
   }
 
@@ -102,7 +121,8 @@ export const UploadButton = ({ processData, additionalData = {} }) => {
       validationState={errorMessage ? 'error' : 'none'}
     >
       <input
-        label="Upload"
+        // label is not a valid attribute for input but is passed through unchanged
+        {...({ label: 'Upload' } as Record<string, string>)}
         type="file"
         onChange={onUpload}
         accept=".csv, .tsv, .xlsx, .xls, .ods, .txt"

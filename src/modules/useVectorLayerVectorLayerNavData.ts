@@ -30,7 +30,7 @@ export const useVectorLayerVectorLayerNavData = ({
         vector_layers
       WHERE 
         vector_layers.vector_layer_id = '${vectorLayerId}'`
-  const res = useLiveQuery(sql)
+  const res = useLiveQuery<NavData>(sql)
   const loading = res === undefined
 
   const nav: NavData | undefined = res?.rows?.[0]

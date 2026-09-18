@@ -32,7 +32,7 @@ export const useWmsServiceWmsServiceNavData = ({
         wms_services
       WHERE 
         wms_services.wms_service_id = '${wmsServiceId}'`
-  const res = useLiveQuery(sql)
+  const res = useLiveQuery<NavData>(sql)
   const loading = res === undefined
 
   const nav: NavData | undefined = res?.rows?.[0]

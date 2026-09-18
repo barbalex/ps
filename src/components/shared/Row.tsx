@@ -3,6 +3,16 @@ import { useRef, useState } from 'react'
 
 import styles from './Row.module.css'
 
+type Props = {
+  label: string
+  to: string
+  onClick?: () => void
+  imgSrc?: string
+  lastHasImages?: boolean
+  onDelete?: () => void
+  isActive?: boolean
+}
+
 export const Row = ({
   label,
   to,
@@ -11,7 +21,7 @@ export const Row = ({
   lastHasImages = false,
   onDelete,
   isActive = false,
-}) => {
+}: Props) => {
   const navigate = useNavigate()
   const [swipeOffset, setSwipeOffset] = useState(0)
   const [showConfirm, setShowConfirm] = useState(false)

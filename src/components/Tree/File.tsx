@@ -3,6 +3,22 @@ import { isEqual } from 'es-toolkit'
 
 import { Node } from './Node.tsx'
 
+type NavData = {
+  id: string
+  label: string
+}
+
+interface Props {
+  projectId?: string
+  subprojectId?: string
+  placeId?: string
+  placeId2?: string
+  checkId?: string
+  actionId?: string
+  nav: NavData
+  level?: number
+}
+
 export const FileNode = ({
   projectId,
   subprojectId,
@@ -12,7 +28,7 @@ export const FileNode = ({
   actionId,
   nav,
   level = 2,
-}) => {
+}: Props) => {
   const location = useLocation()
 
   const isPreview = location.pathname.endsWith('/preview')

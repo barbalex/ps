@@ -18,7 +18,7 @@ export const useRootExportsNavData = () => {
   const ownUrl = `/${ownArray.join('/')}`
   const isOpen = openNodes.some((array) => isEqual(array, ownArray))
 
-  const res = useLiveQuery(
+  const res = useLiveQuery<{ count: number }>(
     `SELECT count(*) AS count
      FROM export_assignments
      WHERE project_id IS NULL AND subproject_id IS NULL`,

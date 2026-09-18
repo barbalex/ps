@@ -10,9 +10,9 @@ import { HistoryToggleButton } from '../../components/shared/HistoryCompare/Hist
 import { addOperationAtom, languageAtom } from '../../store.ts'
 import { subprojectNameSingularExpr } from '../../modules/subprojectNameCols.ts'
 
-export const Header = ({ autoFocusRef, from }) => {
+export const Header = ({ autoFocusRef }: { autoFocusRef?: React.RefObject<HTMLInputElement | null>; from?: string }) => {
   const addOperation = useSetAtom(addOperationAtom)
-  const { projectId, subprojectReportDesignId } = useParams({ from })
+  const { projectId, subprojectReportDesignId } = useParams({ strict: false })
   const basePath = `/data/projects/${projectId}/subproject-designs/${subprojectReportDesignId}`
   const navigate = useNavigate()
   const { formatMessage } = useIntl()
@@ -41,12 +41,11 @@ export const Header = ({ autoFocusRef, from }) => {
   const countRes = useLiveQuery(
     `SELECT COUNT(*) as count FROM subproject_report_designs WHERE project_id = '${projectId}'`,
   )
-  const rowCount = countRes?.rows?.[0]?.count ?? 2
+  const rowCount = Number(countRes?.rows?.[0]?.count ?? 2)
 
   const addRow = async () => {
     const subproject_report_design_id = await createSubprojectReportDesign({
-      projectId,
-    })
+      projectId: projectId!,    })
     if (!subproject_report_design_id) return
     navigate({
       to: `../${subproject_report_design_id}`,
@@ -59,7 +58,7 @@ export const Header = ({ autoFocusRef, from }) => {
       `SELECT * FROM subproject_report_designs WHERE subproject_report_design_id = $1`,
       [subprojectReportDesignId],
     )
-    const prev = prevRes?.rows?.[0] ?? {}
+    const prev = (prevRes?.rows?.[0] ?? {}) as Record<string, unknown>
     await db.query(
       `DELETE FROM subproject_report_designs WHERE subproject_report_design_id = $1`,
       [subprojectReportDesignId],
@@ -85,7 +84,7 @@ export const Header = ({ autoFocusRef, from }) => {
         `,
         [projectId],
       )
-      const designs = res?.rows
+      const designs = res?.rows as { subproject_report_design_id: string }[]
       const len = designs.length
       const index = designs.findIndex(
         (d) =>
@@ -113,7 +112,7 @@ export const Header = ({ autoFocusRef, from }) => {
         `,
         [projectId],
       )
-      const designs = res?.rows
+      const designs = res?.rows as { subproject_report_design_id: string }[]
       const len = designs.length
       const index = designs.findIndex(
         (d) =>

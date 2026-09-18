@@ -108,18 +108,23 @@ export const usePlacesNavData = ({
     `SELECT type FROM projects WHERE project_id = $1`,
     [projectId],
   )
-  const projectType = projectTypeRes?.rows?.[0]?.type
+  const projectType = projectTypeRes?.rows?.[0]?.type as
+    | string
+    | null
+    | undefined
   const level = placeId ? 2 : 1
   const fallbackNames = getPlaceFallbackNames(projectType, level, formatMessage)
 
   const loading = res === undefined
 
   const nameSingular =
-    res?.rows?.[0]?.name_singular ?? fallbackNames.singular
+    (res?.rows?.[0]?.name_singular as string | undefined) ??
+    fallbackNames.singular
   const namePlural =
-    res?.rows?.[0]?.name_plural ?? fallbackNames.plural
+    (res?.rows?.[0]?.name_plural as string | undefined) ??
+    fallbackNames.plural
 
-  const navs: NavDataOpen[] | NavDataClosed[] = res?.rows ?? []
+  const navs = (res?.rows ?? []) as NavDataOpen[] | NavDataClosed[]
   const countUnfiltered = navs[0]?.count_unfiltered ?? 0
   const countFiltered = navs[0]?.count_filtered ?? 0
 

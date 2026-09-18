@@ -5,6 +5,7 @@ import { useLiveQuery } from '@electric-sql/pglite-react'
 
 import { languageAtom } from '../../store.ts'
 import { RadioGroupField } from '../../components/shared/RadioGroupField.tsx'
+import type ChartSubjects from '../../models/public/ChartSubjects.ts'
 
 /**
  * Renders a radio-group of the selectable fields for the chosen chart-subject
@@ -29,7 +30,7 @@ import { RadioGroupField } from '../../components/shared/RadioGroupField.tsx'
 
 // Message descriptors for all field labels, grouped by table.
 // Reuses existing IDs where the same concept already has a translation.
-const fieldMessages = {
+const fieldMessages: Record<string, { id: string; defaultMessage: string }> = {
   // subprojects
   name: { id: 'XkV5yZ', defaultMessage: 'Name' },
   start_year: { id: 'bEkKpP', defaultMessage: 'Startjahr' },
@@ -66,7 +67,18 @@ const fieldsByTable: Record<string, string[]> = {
   action_quantities: ['unit_id', 'quantity_integer', 'quantity_numeric', 'quantity_text'],
 }
 
-export const Field = ({ onChange, row, validations }) => {
+export const Field = ({
+  onChange,
+  row,
+  validations,
+}: {
+  onChange: (e: React.ChangeEvent<HTMLInputElement>, data?: object) => void
+  row: ChartSubjects
+  validations: Record<
+    string,
+    { state?: 'error' | 'warning' | 'success' | 'none'; message?: string }
+  >
+}) => {
   const { formatMessage } = useIntl()
   const [language] = useAtom(languageAtom)
   const { projectId } = useParams({ strict: false })
@@ -75,8 +87,9 @@ export const Field = ({ onChange, row, validations }) => {
     `SELECT name_singular_${language} FROM place_levels WHERE project_id = $1 AND level = $2`,
     [projectId, Number(row?.table_level ?? 1)],
   )
-  const nameSingular =
-    nameRes?.rows?.[0]?.[`name_singular_${language}`] ?? 'Population'
+  const nameSingular = (nameRes?.rows?.[0]?.[
+    `name_singular_${language}`
+  ] ?? 'Population') as string
 
   const fields = row.table_name ? (fieldsByTable[row.table_name] ?? []) : []
 

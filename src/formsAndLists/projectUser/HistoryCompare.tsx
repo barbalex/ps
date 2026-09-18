@@ -23,22 +23,16 @@ import {
 import type ProjectUsers from '../../models/public/ProjectUsers.ts'
 import type ProjectUsersHistory from '../../models/public/ProjectUsersHistory.ts'
 
-const from =
-  '/data/projects/$projectId_/users/$projectUserId_/histories/$projectUserHistoryId'
-
 export const ProjectUserHistoryCompare = () => {
   const { formatMessage } = useIntl()
   const navigate = useNavigate()
-  const { projectId, projectUserId, projectUserHistoryId } = useParams({
-    from,
-    strict: false,
-  })
+  const { projectId, projectUserId, projectUserHistoryId } = useParams({ strict: false })
   const projectUserPath = `/data/projects/${projectId}/users/${projectUserId}`
   const historyPath = `${projectUserPath}/histories`
 
   const addOperation = useSetAtom(addOperationAtom)
   const db = usePGlite()
-  const [validations, setValidations] = useState<Record<string, unknown>>({})
+  const [validations, setValidations] = useState<Record<string, { state: 'error'; message: string }>>({})
 
   const rowRes = useLiveQuery(
     `SELECT * FROM project_users WHERE project_user_id = $1`,
@@ -46,9 +40,12 @@ export const ProjectUserHistoryCompare = () => {
   )
   const row = rowRes?.rows?.[0] as ProjectUsers | undefined
 
-  const onChange = async (e, data) => {
+  const onChange = async (
+    e: React.ChangeEvent<HTMLInputElement>,
+    data: Parameters<typeof getValueFromChange>[1],
+  ) => {
     const { name, value } = getValueFromChange(e, data)
-    if (!row || row[name] === value) return
+    if (!row || (row as Record<string, any>)[name] === value) return
 
     try {
       await db.query(
@@ -58,7 +55,7 @@ export const ProjectUserHistoryCompare = () => {
     } catch (error) {
       setValidations((prev) => ({
         ...prev,
-        [name]: { state: 'error', message: error.message },
+        [name]: { state: 'error', message: error instanceof Error ? error.message : String(error) },
       }))
       return
     }
@@ -112,7 +109,7 @@ export const ProjectUserHistoryCompare = () => {
             formatMessage({ id: o.labelId, defaultMessage: o.defaultMessage }),
           ]),
         )}
-        value={row.role ?? ''}
+        value={(row as Record<string, any>).role ?? ''}
         onChange={onChange}
         validationState={validations?.role?.state}
         validationMessage={validations?.role?.message}
@@ -132,7 +129,7 @@ export const ProjectUserHistoryCompare = () => {
   })
 
   const formatFieldValue = (field: string, history: ProjectUsersHistory) =>
-    stringifyHistoryValue(history[field])
+    stringifyHistoryValue((history as Record<string, any>)[field])
 
   return (
     <HistoryCompare<ProjectUsersHistory>

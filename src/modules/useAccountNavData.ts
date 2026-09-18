@@ -41,7 +41,7 @@ export const useAccountNavData = ({ accountId, userId }: Props) => {
     : ['data', 'accounts']
   const parentUrl = `/${parentArray.join('/')}`
 
-  const nav: AccountNavData | undefined = res?.rows?.[0]
+  const nav = res?.rows?.[0] as AccountNavData | undefined
   const urlPath = location.pathname.split('/').filter((p) => p !== '')
   const ownArray = [...parentArray, nav?.id]
   const ownUrl = `/${ownArray.join('/')}`

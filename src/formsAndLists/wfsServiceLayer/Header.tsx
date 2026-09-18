@@ -5,11 +5,8 @@ import { useIntl } from 'react-intl'
 import { FormHeader } from '../../components/FormHeader/index.tsx'
 import { HistoryToggleButton } from '../../components/shared/HistoryCompare/HistoryToggleButton.tsx'
 
-const from =
-  '/data/projects/$projectId_/wfs-services/$wfsServiceId_/layers/$wfsServiceLayerId/'
-
 export const Header = () => {
-  const { projectId, wfsServiceId, wfsServiceLayerId } = useParams({ from })
+  const { projectId, wfsServiceId, wfsServiceLayerId } = useParams({ strict: false })
   const navigate = useNavigate()
   const { formatMessage } = useIntl()
   const basePath = `/data/projects/${projectId}/wfs-services/${wfsServiceId}/layers/${wfsServiceLayerId}`
@@ -18,7 +15,7 @@ export const Header = () => {
     `SELECT COUNT(*) as count FROM wfs_service_layers WHERE wfs_service_id = $1`,
     [wfsServiceId],
   )
-  const rowCount = countRes?.rows?.[0]?.count ?? 2
+  const rowCount = Number(countRes?.rows?.[0]?.count ?? 2)
 
   const res = useLiveQuery(
     `
@@ -28,7 +25,7 @@ export const Header = () => {
     `,
     [wfsServiceId],
   )
-  const rows = res?.rows ?? []
+  const rows = (res?.rows ?? []) as { wfs_service_layer_id: string }[]
   const len = rows.length
   const ownIndex = rows.findIndex(
     (row) => row.wfs_service_layer_id === wfsServiceLayerId,

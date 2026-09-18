@@ -66,7 +66,7 @@ export const useProjectExportsNavData = ({ projectId }: Props) => {
 
   const loading = res === undefined
 
-  const navs: NavData = res?.rows ?? []
+  const navs = (res?.rows ?? []) as NavData
   const countUnfiltered = (navs[0]?.count_unfiltered as number) ?? 0
   const countFiltered = (navs[0]?.count_filtered as number) ?? 0
 

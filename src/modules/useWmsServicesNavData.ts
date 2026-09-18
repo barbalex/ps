@@ -33,7 +33,10 @@ export const useWmsServicesNavData = ({ projectId }: Props) => {
   const parentArray = ['data', 'projects', projectId]
   const ownArray = [...parentArray, 'wms-services']
   const isOpen = openNodes.some((array) => isEqual(array, ownArray))
-  const filterString = filterStringFromFilter(filter)
+  const filterString = filterStringFromFilter(
+    filter as Record<string, unknown> & typeof filter,
+    '',
+  )
   const isFiltered = !!filterString
 
   const sql = isOpen
@@ -65,7 +68,7 @@ export const useWmsServicesNavData = ({ projectId }: Props) => {
 
   const loading = res === undefined
 
-  const navs: NavDataOpen | NavDataClosed = res?.rows ?? []
+  const navs = (res?.rows ?? []) as NavDataOpen | NavDataClosed
   const countUnfiltered = navs[0]?.count_unfiltered ?? 0
   const countFiltered = navs[0]?.count_filtered ?? 0
 

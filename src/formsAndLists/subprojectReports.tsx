@@ -15,14 +15,16 @@ export const SubprojectReports = ({ hideHeader = false }) => {
   const reportsBaseUrl = `/data/projects/${projectId}/subprojects/${subprojectId}/reports`
 
   const { loading, navData, isFiltered } = useSubprojectReportsNavData({
-    projectId,
-    subprojectId,
-  })
-  const { navs, label, nameSingular } = navData
+    projectId: projectId!,    subprojectId: subprojectId!,  })
+  const { navs: navsIn, label, nameSingular } = navData
+  const navs = navsIn as { id: string; label: string | null }[]
 
   const add = async () => {
-    const id = await createSubprojectReport({ projectId, subprojectId })
-    if (!id) return
+    const id = await createSubprojectReport({
+      projectId: projectId!,
+      subprojectId: subprojectId!,
+    })
+   if (!id) return
     navigate({ to: `${reportsBaseUrl}/${id}/` })
   }
 

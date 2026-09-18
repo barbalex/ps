@@ -6,8 +6,8 @@ import { FieldFormFetchingOwnData } from './FormFetchingOwnData.tsx'
 
 import '../../form.css'
 
-export const Field = ({ from }) => {
-  const { fieldId } = useParams({ from })
+export const Field = ({ from }: { from: string }) => {
+  const { fieldId } = useParams({ strict: false })
 
   const autoFocusRef = useRef<HTMLInputElement>(null)
 

@@ -25,7 +25,6 @@ import type CheckTaxaHistory from '../../models/public/CheckTaxaHistory.ts'
 import type Units from '../../models/public/Units.ts'
 
 export const CheckTaxonHistoryCompare = ({
-  from,
 }: {
   from:
     | '/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/checks/$checkId_/taxa/$checkTaxonId_/histories/$checkTaxonHistoryId'
@@ -44,7 +43,7 @@ export const CheckTaxonHistoryCompare = ({
     subprojectId,
     placeId,
     placeId2,
-  } = useParams({ from, strict: false })
+  } = useParams({ strict: false })
   const checkTaxonPath = placeId2
     ? `/data/projects/${projectId}/subprojects/${subprojectId}/places/${placeId}/places/${placeId2}/checks/${checkId}/taxa/${checkTaxonId}`
     : `/data/projects/${projectId}/subprojects/${subprojectId}/places/${placeId}/checks/${checkId}/taxa/${checkTaxonId}`
@@ -54,7 +53,7 @@ export const CheckTaxonHistoryCompare = ({
   const db = usePGlite()
   const autoFocusRef = useRef<HTMLInputElement>(null)
 
-  const [validations, setValidations] = useState<Record<string, unknown>>({})
+  const [validations, setValidations] = useState<Record<string, { state: 'error'; message: string }>>({})
 
   const rowRes = useLiveQuery(
     `WITH ct AS (
@@ -80,9 +79,12 @@ export const CheckTaxonHistoryCompare = ({
   )
   const selectedUnit = units.find((u) => u.unit_id === row?.unit_id)
 
-  const onChange = async (e, data) => {
+  const onChange = async (
+    e: React.ChangeEvent<HTMLInputElement>,
+    data: Parameters<typeof getValueFromChange>[1],
+  ) => {
     const { name, value } = getValueFromChange(e, data)
-    if (!row || row[name] === value) return
+    if (!row || (row as Record<string, any>)[name] === value) return
 
     try {
       await db.query(
@@ -92,7 +94,7 @@ export const CheckTaxonHistoryCompare = ({
     } catch (error) {
       setValidations((prev) => ({
         ...prev,
-        [name]: { state: 'error', message: error.message },
+        [name]: { state: 'error', message: error instanceof Error ? error.message : String(error) },
       }))
       return
     }
@@ -223,7 +225,7 @@ export const CheckTaxonHistoryCompare = ({
       if (!unitId) return ''
       return unitLabelMap[unitId] ?? unitId
     }
-    return stringifyHistoryValue(history[field])
+    return stringifyHistoryValue((history as Record<string, any>)[field])
   }
 
   const visibleCurrentFields = new Set([

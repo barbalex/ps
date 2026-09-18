@@ -3,6 +3,7 @@ import { useState, useCallback } from 'react'
 import * as fluentUiReactComponents from '@fluentui/react-components'
 const { Button } = fluentUiReactComponents
 import { useIntl } from 'react-intl'
+import type { PGliteWithLive } from '@electric-sql/pglite/live'
 
 import { TextField } from '../../components/shared/TextField.tsx'
 import { TextArea } from '../../components/shared/TextArea.tsx'
@@ -15,7 +16,27 @@ import {
 import { DuplicateWarningDialog } from './DuplicateWarningDialog.tsx'
 import { ResultDialog } from './ResultDialog.tsx'
 import { formatNumber } from '../../modules/formatNumber.ts'
+import type ObservationImports from '../../models/public/ObservationImports.ts'
+import type Observations from '../../models/public/Observations.ts'
 import styles from './1.module.css'
+
+type InputOnChangeData = Parameters<
+  NonNullable<
+    React.ComponentProps<typeof fluentUiReactComponents.Input>['onChange']
+  >
+>[1]
+
+type Props = {
+  observationImport: ObservationImports
+  observations: Observations[]
+  onChange: (
+    e: React.ChangeEvent<HTMLInputElement>,
+    data?: InputOnChangeData,
+  ) => void | Promise<void>
+  validations?: Record<string, { state: 'error'; message: string }>
+  autoFocusRef?: React.Ref<HTMLInputElement>
+  db: PGliteWithLive
+}
 
 export const One = ({
   observationImport,
@@ -24,7 +45,7 @@ export const One = ({
   validations,
   autoFocusRef,
   db,
-}) => {
+}: Props) => {
   const { formatMessage } = useIntl()
   const replaceLabel = formatMessage({
     id: 'rP0bTn',
@@ -44,17 +65,25 @@ export const One = ({
   const [isProcessing, setIsProcessing] = useState(false)
 
   const wrappedProcessData = useCallback(
-    async ({ file, additionalData, db }) => {
+    async ({
+      file,
+      additionalData,
+      db,
+    }: {
+      file?: File | undefined
+      additionalData: Record<string, unknown>
+      db: PGliteWithLive
+    }) => {
       return new Promise((resolve, reject) => {
         processData({
           file,
           additionalData,
           db,
           onDuplicatesFound: (
-            duplicateCount,
-            totalCount,
-            continueCallback,
-            cancelCallback,
+            duplicateCount: number,
+            totalCount: number,
+            continueCallback: () => void | Promise<void>,
+            cancelCallback: () => void,
           ) => {
             setDuplicateDialogData({
               duplicateCount,
@@ -123,7 +152,7 @@ export const One = ({
           defaultMessage: 'Ersetzen fehlgeschlagen',
         }),
         message:
-          error.message ||
+          (error as Error).message ||
           formatMessage({
             id: 'anUnEx',
             defaultMessage: 'Ein Fehler ist aufgetreten',
@@ -180,7 +209,7 @@ export const One = ({
           defaultMessage: 'Aktualisierung fehlgeschlagen',
         }),
         message:
-          error.message ||
+          (error as Error).message ||
           formatMessage({
             id: 'anUnEx',
             defaultMessage: 'Ein Fehler ist aufgetreten',
@@ -196,7 +225,7 @@ export const One = ({
       <TextField
         label={formatMessage({ id: 'XkV5yZ', defaultMessage: 'Name' })}
         name="name"
-        type="name"
+        type={'name' as 'text'}
         value={observationImport.name ?? ''}
         onChange={onChange}
         autoFocus
@@ -279,7 +308,7 @@ export const One = ({
                 id: 'oImprt',
                 defaultMessage: '{count} Beobachtungen importiert',
               },
-              { count: formatNumber(observations.length) },
+              { count: formatNumber(observations.length) as string },
             )}
           </div>
         )

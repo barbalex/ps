@@ -30,7 +30,7 @@ export const useTaxonomyTaxonomyNavData = ({
         taxonomies
       WHERE 
         taxonomies.taxonomy_id = '${taxonomyId}'`
-  const res = useLiveQuery(sql)
+  const res = useLiveQuery<NavData>(sql)
   const loading = res === undefined
 
   const nav: NavData | undefined = res?.rows?.[0]

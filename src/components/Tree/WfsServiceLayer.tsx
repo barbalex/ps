@@ -3,7 +3,19 @@ import { isEqual } from 'es-toolkit'
 
 import { Node } from './Node.tsx'
 
-export const WfsServiceLayerNode = ({ projectId, wfsServiceId, nav, level = 6 }) => {
+type Props = {
+  projectId: string
+  wfsServiceId: string
+  nav: { id: string; label: string }
+  level?: number
+}
+
+export const WfsServiceLayerNode = ({
+  projectId,
+  wfsServiceId,
+  nav,
+  level = 6,
+}: Props) => {
   const location = useLocation()
   const urlPath = location.pathname.split('/').filter((p) => p !== '')
   const ownArray = ['data', 'projects', projectId, 'wfs-services', wfsServiceId, 'layers', nav.id]

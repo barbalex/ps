@@ -8,6 +8,7 @@ import { treeOpenNodesAtom, languageAtom } from '../store.ts'
 import { buildNavLabel } from './buildNavLabel.ts'
 import { getVectorLayerLabel } from './vectorLayerLabel.ts'
 import type VectorLayers from '../models/public/VectorLayers.ts'
+import type PlaceLevels from '../models/public/PlaceLevels.ts'
 
 type Props = {
   projectId: string
@@ -16,6 +17,7 @@ type Props = {
 
 type NavData = {
   id: string
+  name: string | null
   label: string | null
   vector_layer_displays_count_unfiltered: number
 }
@@ -51,11 +53,11 @@ export const useVectorLayerNavData = ({ projectId, vectorLayerId }: Props) => {
     `SELECT * FROM place_levels WHERE project_id = $1`,
     [projectId],
   )
-  const placeLevels = placeLevelsRes?.rows ?? []
+  const placeLevels = (placeLevelsRes?.rows ?? []) as unknown as PlaceLevels[]
 
   const loading = res === undefined
 
-  const nav: NavData | undefined = res?.rows?.[0]
+  const nav = res?.rows?.[0] as NavData | undefined
 
   const parentArray = ['data', 'projects', projectId, 'vector-layers']
   const parentUrl = `/${parentArray.join('/')}`

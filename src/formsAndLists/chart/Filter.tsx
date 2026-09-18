@@ -20,12 +20,18 @@ export const ChartFilter = ({ from }: Props) => {
 
   return (
     <Filter from={from}>
-      {({ row, onChange }) => (
+      {({
+        row,
+        onChange,
+      }: {
+        row: Record<string, unknown>
+        onChange: (e: React.ChangeEvent<HTMLInputElement>, data?: any) => void
+      }) => (
         <>
           <TextField
             label={formatMessage({ id: 'XkV5yZ', defaultMessage: 'Name' })}
             name="name"
-            value={row.name ?? ''}
+            value={(row.name ?? '') as string}
             onChange={onChange}
           />
           <RadioGroupField
@@ -36,7 +42,7 @@ export const ChartFilter = ({ from }: Props) => {
             name="chart_type"
             list={list}
             labelMap={labelMap}
-            value={row.chart_type ?? ''}
+            value={(row.chart_type ?? '') as string}
             onChange={onChange}
           />
         </>

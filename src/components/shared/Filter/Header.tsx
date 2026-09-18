@@ -7,10 +7,11 @@ import { useIntl } from 'react-intl'
 
 import globalStyles from '../../../styles.module.css'
 import styles from './index.module.css'
+import { projectsFilterAtom } from '../../../store.ts'
 
 type Props = {
   title: string
-  filterAtom: unknown
+  filterAtom: typeof projectsFilterAtom
 }
 
 export const FilterHeader = ({ title = 'Filter', filterAtom }: Props) => {

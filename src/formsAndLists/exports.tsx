@@ -21,7 +21,8 @@ export const Exports = () => {
   const { formatMessage } = useIntl()
 
   const { navData, loading, isFiltered } = useExportsNavData()
-  const { navs, label, nameSingular } = navData
+  const { label, nameSingular } = navData
+  const navs = navData.navs as { id: string; label: string }[]
 
   const add = async () => {
     const exportsId = await createExport()

@@ -13,9 +13,12 @@ import {
   postgrestClientAtom,
   operationsQueueAtom,
   store,
+  type AppNotification,
 } from '../../../../store.ts'
 import { fetchPostgrestToken } from '../../../../modules/fetchPostgrestToken.ts'
 import { getWmsCapabilitiesData } from './getWmsCapabilitiesData.ts'
+import type WmsLayers from '../../../../models/public/WmsLayers.ts'
+import type WmsServices from '../../../../models/public/WmsServices.ts'
 import styles from './FetchWmsCapabilities.module.css'
 
 export const FetchWmsCapabilities = ({
@@ -23,6 +26,11 @@ export const FetchWmsCapabilities = ({
   url,
   fetching,
   setFetching,
+}: {
+  wmsLayer: WmsLayers
+  url?: string | null
+  fetching?: boolean
+  setFetching: (value: boolean) => void
 }) => {
   const { formatMessage } = useIntl()
   const db = usePGlite()
@@ -35,13 +43,13 @@ export const FetchWmsCapabilities = ({
     `SELECT count(*) FROM wms_service_layers WHERE wms_service_id = $1`,
     [wmsLayer.wms_service_id],
   )
-  const wmsServiceLayersCount: number = res?.rows?.[0]?.count ?? 0
+  const wmsServiceLayersCount: number = Number(res?.rows?.[0]?.count ?? 0)
 
   const onFetchCapabilities = async () => {
     const urlTrimmed = url?.trim?.()
     if (!urlTrimmed) return
 
-    let service
+    let service: WmsServices | { wms_service_id: string; url: string } | undefined
 
     // If wmsLayer has a wms_service_id, use that service directly
     if (wmsLayer.wms_service_id) {
@@ -49,7 +57,7 @@ export const FetchWmsCapabilities = ({
         `SELECT * FROM wms_services WHERE wms_service_id = $1`,
         [wmsLayer.wms_service_id],
       )
-      service = resService.rows?.[0]
+      service = resService.rows?.[0] as WmsServices | undefined
       if (service) {
         // Reset service metadata to ensure clean refetch
         await db.query(
@@ -76,7 +84,7 @@ export const FetchWmsCapabilities = ({
             info_format: null,
             default_crs: null,
           },
-          prev: service,
+          prev: service as unknown as Record<string, unknown>,
         })
         // Remove existing layers - first remove ANY pending operations for this service's layers
         // Get the layer IDs that currently exist
@@ -84,9 +92,9 @@ export const FetchWmsCapabilities = ({
           `SELECT wms_service_layer_id FROM wms_service_layers WHERE wms_service_id = $1`,
           [service.wms_service_id],
         )
-        const layerIds = layersToDelete.rows.map(
-          (row) => row.wms_service_layer_id,
-        )
+        const layerIds = (
+          layersToDelete.rows as { wms_service_layer_id: string }[]
+        ).map((row) => row.wms_service_layer_id)
 
         // Remove ALL operations for wms_service_layers that reference this service
         // This includes operations for layers that might not exist anymore
@@ -96,9 +104,13 @@ export const FetchWmsCapabilities = ({
           // Remove insertMany operations for this table entirely
           if (op.operation === 'insertMany') return false
           // Remove if it references one of the existing layers
-          if (layerIds.includes(op.rowId)) return false
+          if (layerIds.includes(op.rowId as string)) return false
           // Also remove if the draft references this service
-          if (op.draft?.wms_service_id === service.wms_service_id) return false
+          if (
+            (op.draft as Record<string, unknown> | undefined)?.wms_service_id ===
+            service?.wms_service_id
+          )
+            return false
           return true
         })
         const removedCount = operations.length - filteredOperations.length
@@ -140,7 +152,7 @@ export const FetchWmsCapabilities = ({
         `SELECT * FROM wms_services WHERE url = $1`,
         [urlTrimmed],
       )
-      const existingService = resES.rows?.[0]
+      const existingService = resES.rows?.[0] as WmsServices | undefined
 
       if (existingService) {
         // 2. if so, update it
@@ -151,9 +163,9 @@ export const FetchWmsCapabilities = ({
           `SELECT wms_service_layer_id FROM wms_service_layers WHERE wms_service_id = $1`,
           [service.wms_service_id],
         )
-        const layerIds = layersToDelete.rows.map(
-          (row) => row.wms_service_layer_id,
-        )
+        const layerIds = (
+          layersToDelete.rows as { wms_service_layer_id: string }[]
+        ).map((row) => row.wms_service_layer_id)
 
         // Remove ALL operations for wms_service_layers that reference this service
         const operations = store.get(operationsQueueAtom)
@@ -162,9 +174,13 @@ export const FetchWmsCapabilities = ({
           // Remove insertMany operations for this table entirely
           if (op.operation === 'insertMany') return false
           // Remove if it references one of the existing layers
-          if (layerIds.includes(op.rowId)) return false
+          if (layerIds.includes(op.rowId as string)) return false
           // Also remove if the draft references this service
-          if (op.draft?.wms_service_id === service.wms_service_id) return false
+          if (
+            (op.draft as Record<string, unknown> | undefined)?.wms_service_id ===
+            service?.wms_service_id
+          )
+            return false
           return true
         })
         const removedCount = operations.length - filteredOperations.length
@@ -253,19 +269,19 @@ export const FetchWmsCapabilities = ({
     try {
       await getWmsCapabilitiesData({
         wmsLayer,
-        service,
+        service: service as WmsServices,
       })
     } catch (error) {
       console.error(
         'hello WmsBaseUrl, onBlur, error getting capabilities data:',
-        error?.message ?? error,
+        (error as Error)?.message ?? error,
       )
       // surface error to user
       updateNotification({
-        id: notificationId,
+        id: notificationId as string,
         draft: {
           title: `Error loading capabilities for ${urlTrimmed}`,
-          body: error?.message ?? error,
+          body: ((error as Error)?.message ?? error) as string,
           intent: 'error',
           paused: false,
         },
@@ -273,13 +289,13 @@ export const FetchWmsCapabilities = ({
     }
     setFetching(false)
     updateNotification({
-      id: notificationId,
+      id: notificationId as string,
       draft: {
         title: `Loaded capabilities for ${urlTrimmed}`,
         intent: 'success',
         paused: false,
         timeout: 500,
-      },
+      } as Partial<AppNotification>,
     })
   }
 

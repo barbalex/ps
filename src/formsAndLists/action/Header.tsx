@@ -4,6 +4,7 @@ import * as fluentUiReactComponents from '@fluentui/react-components'
 const { Button } = fluentUiReactComponents
 import { bbox } from '@turf/bbox'
 import { buffer } from '@turf/buffer'
+import type { GeoJSON } from 'geojson'
 import { useAtom, useSetAtom } from 'jotai'
 import { usePGlite, useLiveQuery } from '@electric-sql/pglite-react'
 import { useRef, useEffect } from 'react'
@@ -21,7 +22,15 @@ import {
   mapLayerSortingAtom,
 } from '../../store.ts'
 
-export const Header = ({ autoFocusRef, from, allInline = false }) => {
+export const Header = ({
+  autoFocusRef,
+  from,
+  allInline = false,
+}: {
+  autoFocusRef?: React.RefObject<HTMLInputElement | null>
+  from: string
+  allInline?: boolean
+}) => {
   const { formatMessage } = useIntl()
   const isForm =
     from ===
@@ -34,9 +43,7 @@ export const Header = ({ autoFocusRef, from, allInline = false }) => {
   const addOperation = useSetAtom(addOperationAtom)
   const addNotification = useSetAtom(addNotificationAtom)
 
-  const { projectId, subprojectId, placeId, placeId2, actionId } = useParams({
-    from,
-  })
+  const { projectId, subprojectId, placeId, placeId2, actionId } = useParams({ strict: false })
   const basePath = placeId2
     ? `/data/projects/${projectId}/subprojects/${subprojectId}/places/${placeId}/places/${placeId2}/actions/${actionId}`
     : `/data/projects/${projectId}/subprojects/${subprojectId}/places/${placeId}/actions/${actionId}`
@@ -54,21 +61,21 @@ export const Header = ({ autoFocusRef, from, allInline = false }) => {
   const countRes = useLiveQuery(
     `SELECT COUNT(*) as count FROM actions WHERE place_id = '${placeId2 ?? placeId}'`,
   )
-  const rowCount = countRes?.rows?.[0]?.count ?? 2
+  const rowCount = (countRes?.rows?.[0]?.count as number | undefined) ?? 2
 
   const geometryRes = useLiveQuery(
     `SELECT ST_AsGeoJSON(geometry)::json as geometry FROM actions WHERE action_id = $1`,
     [actionId],
   )
-  const geometry = geometryRes?.rows?.[0]?.geometry
+  const geometry = geometryRes?.rows?.[0]?.geometry as GeoJSON | undefined
   const hasGeometry =
     !!geometry &&
-    (geometry as { geometries?: unknown[] }).geometries?.length > 0
+    ((geometry as { geometries?: unknown[] }).geometries?.length ?? 0) > 0
 
   const addRow = async () => {
     const id = await createAction({
-      projectId,
-      placeId: placeId2 ?? placeId,
+      projectId: projectId!,
+      placeId: placeId2 ?? placeId!,
     })
     if (!id) return
     navigate({
@@ -90,7 +97,7 @@ export const Header = ({ autoFocusRef, from, allInline = false }) => {
         'SELECT * FROM actions WHERE action_id = $1',
         [actionId],
       )
-      const prev = prevRes?.rows?.[0] ?? {}
+      const prev = (prevRes?.rows?.[0] ?? {}) as Record<string, unknown>
       await db.query('DELETE FROM actions WHERE action_id = $1', [actionId])
       addOperation({
         table: 'actions',
@@ -99,7 +106,7 @@ export const Header = ({ autoFocusRef, from, allInline = false }) => {
         operation: 'delete',
         prev,
       })
-      navigate({ to: isForm ? `../..` : `..` })
+      navigate({ to: isForm ? ('../..' as '..') : '..' })
     } catch (error) {
       console.error('Error deleting action:', error)
     }
@@ -107,7 +114,7 @@ export const Header = ({ autoFocusRef, from, allInline = false }) => {
 
   const toNext = async () => {
     try {
-      const res = await db.query(
+      const res = await db.query<{ action_id: string }>(
         'SELECT action_id FROM actions WHERE place_id = $1 ORDER BY label',
         [placeId2 ?? placeId],
       )
@@ -128,7 +135,7 @@ export const Header = ({ autoFocusRef, from, allInline = false }) => {
 
   const toPrevious = async () => {
     try {
-      const res = await db.query(
+      const res = await db.query<{ action_id: string }>(
         'SELECT action_id FROM actions WHERE place_id = $1 ORDER BY label',
         [placeId2 ?? placeId],
       )
@@ -170,7 +177,11 @@ export const Header = ({ autoFocusRef, from, allInline = false }) => {
 
     // 2. activate layer if not active
     const level = placeId2 ? 2 : 1
-    const layerRes = await db.query(
+    const layerRes = await db.query<{
+      vl_vector_layer_id: string | null
+      layer_presentation_id: string | null
+      active: boolean | null
+    }>(
       `SELECT vl.vector_layer_id AS vl_vector_layer_id, lp.*
       FROM vector_layers vl
         LEFT JOIN layer_presentations lp ON lp.vector_layer_id = vl.vector_layer_id
@@ -180,10 +191,13 @@ export const Header = ({ autoFocusRef, from, allInline = false }) => {
       [projectId, level],
     )
     const layerRow = layerRes?.rows?.[0]
-    const vectorLayerId: string | undefined = layerRow?.vl_vector_layer_id
-    let lpId: string | undefined = layerRow?.layer_presentation_id
+    const vectorLayerId = layerRow?.vl_vector_layer_id
+    let lpId = layerRow?.layer_presentation_id
     if (!lpId && vectorLayerId) {
-      lpId = await createLayerPresentation({ vectorLayerId, active: true })
+      lpId = await createLayerPresentation({
+        vectorLayerId: vectorLayerId as never,
+        active: true,
+      })
     } else if (lpId && !layerRow?.active) {
       await db.query(
         `UPDATE layer_presentations SET active = true WHERE layer_presentation_id = $1`,
@@ -203,8 +217,8 @@ export const Header = ({ autoFocusRef, from, allInline = false }) => {
     }
 
     // 3. zoom to action
-    const buffered = buffer(geometry, 0.05)
-    const newBbox = bbox(buffered)
+    const buffered = buffer(geometry!, 0.05)
+    const newBbox = bbox(buffered!)
     const bounds = boundsFromBbox(newBbox)
     if (!bounds) return alertNoGeometry()
     setMapBounds(bounds)

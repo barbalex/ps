@@ -27,10 +27,7 @@ export const PlaceHistoryCompare = ({
   const { formatMessage } = useIntl()
   const navigate = useNavigate()
   const { projectId, subprojectId, placeId, placeId2, placeHistoryId } =
-    useParams({
-      from,
-      strict: false,
-    })
+    useParams({ strict: false })
   const currentPlaceId = placeId2 ?? placeId
   const placePath = placeId2
     ? `/data/projects/${projectId}/subprojects/${subprojectId}/places/${placeId}/places/${placeId2}/place`
@@ -44,7 +41,7 @@ export const PlaceHistoryCompare = ({
   const db = usePGlite()
   const autoFocusRef = useRef<HTMLInputElement>(null)
 
-  const [validations, setValidations] = useState<Record<string, unknown>>({})
+  const [validations, setValidations] = useState<Record<string, { state: 'error'; message: string }>>({})
 
   const rowRes = useLiveQuery(`SELECT * FROM places WHERE place_id = $1`, [
     currentPlaceId,
@@ -57,7 +54,7 @@ export const PlaceHistoryCompare = ({
     [projectId, levelForLabel],
   )
   const nameSingular =
-    nameRes?.rows?.[0]?.[`name_singular_${language}`] ??
+    (nameRes?.rows?.[0]?.[`name_singular_${language}`] as string | undefined) ??
     `Place Level ${levelForLabel}`
 
   const visibleCurrentFields = new Set([
@@ -92,9 +89,12 @@ export const PlaceHistoryCompare = ({
     },
   })
 
-  const onChange = async (e, data) => {
+  const onChange = async (
+    e: React.ChangeEvent<HTMLInputElement>,
+    data: Parameters<typeof getValueFromChange>[1],
+  ) => {
     const { name, value } = getValueFromChange(e, data)
-    if (!row || row[name] === value) return
+    if (!row || (row as Record<string, unknown>)[name] === value) return
 
     try {
       await db.query(`UPDATE places SET ${name} = $1 WHERE place_id = $2`, [
@@ -104,7 +104,7 @@ export const PlaceHistoryCompare = ({
     } catch (error) {
       setValidations((prev) => ({
         ...prev,
-        [name]: { state: 'error', message: error.message },
+        [name]: { state: 'error', message: error instanceof Error ? error.message : String(error) },
       }))
       return
     }

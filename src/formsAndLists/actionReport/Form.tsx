@@ -5,6 +5,21 @@ import { jsonbDataFromRow } from '../../modules/jsonbDataFromRow.ts'
 
 import '../../form.css'
 
+type Validations = Record<
+  string,
+  | { state: 'error' | 'warning' | 'success' | 'none'; message: string }
+  | undefined
+>
+
+type Props = {
+  onChange: (e: React.ChangeEvent<any>, data?: any) => void
+  validations?: Validations
+  row: Record<string, any>
+  orIndex?: number
+  from: string
+  autoFocusRef?: React.RefObject<HTMLInputElement | null>
+}
+
 // this form is rendered from a parent or outlet
 export const ActionReportForm = ({
   onChange,
@@ -13,7 +28,7 @@ export const ActionReportForm = ({
   orIndex,
   from,
   autoFocusRef,
-}) => {
+}: Props) => {
   const { formatMessage } = useIntl()
   const jsonbData = jsonbDataFromRow(row)
 
@@ -36,7 +51,7 @@ export const ActionReportForm = ({
         orIndex={orIndex}
         from={from}
         autoFocus
-        ref={autoFocusRef}
+        ref={autoFocusRef as unknown as React.Ref<HTMLDivElement>}
       />
     </>
   )

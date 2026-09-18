@@ -13,10 +13,12 @@ import type Checks from '../../models/public/Checks.ts'
 
 import '../../form.css'
 
-export const Check = ({ from }) => {
-  const { checkId } = useParams({ from })
+export const Check = ({ from }: { from: string }) => {
+  const { checkId } = useParams({ strict: false })
   const addOperation = useSetAtom(addOperationAtom)
-  const [validations, setValidations] = useState({})
+  const [validations, setValidations] = useState<
+    Record<string, { state: 'error'; message: string }>
+  >({})
 
   const autoFocusRef = useRef<HTMLInputElement>(null)
 
@@ -24,12 +26,18 @@ export const Check = ({ from }) => {
   const res = useLiveQuery(`SELECT * FROM checks WHERE check_id = $1`, [
     checkId,
   ])
-  const row: Checks | undefined = res?.rows?.[0]
+  const row = res?.rows?.[0] as Checks | undefined
 
-  const onChange = async (e, data) => {
-    const { name, value } = getValueFromChange(e, data)
+  const onChange = async (
+    e: React.ChangeEvent<HTMLInputElement>,
+    data?: object,
+  ) => {
+    const { name, value } = getValueFromChange(
+      e,
+      data as Parameters<typeof getValueFromChange>[1],
+    )
     // only change if value has changed: maybe only focus entered and left
-    if (row[name] === value) return
+    if (row?.[name as keyof Checks] === value) return
 
     try {
       await db.query(`UPDATE checks SET ${name} = $1 WHERE check_id = $2`, [
@@ -39,7 +47,7 @@ export const Check = ({ from }) => {
     } catch (error) {
       setValidations((prev) => ({
         ...prev,
-        [name]: { state: 'error', message: error.message },
+        [name]: { state: 'error', message: (error as Error).message },
       }))
       return
     }

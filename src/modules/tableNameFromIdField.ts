@@ -1,5 +1,15 @@
 // TODO: seems this is not used for anything useful
-export const tableNameFromIdField = async ({ idField, db }): string => {
+export const tableNameFromIdField = async ({
+  idField,
+  db,
+}: {
+  idField: string
+  db: {
+    rawQuery: (options: {
+      sql: string
+    }) => Promise<{ name?: string; pk?: number }[]>
+  }
+}): Promise<string> => {
   const tables = await db.rawQuery({ sql: `PRAGMA table_list` })
   const tableNames = tables.map((row) => row.name)
   const allTableInfos = []

@@ -1,6 +1,16 @@
+import type { ReactNode } from 'react'
 import { FaChevronDown } from 'react-icons/fa'
 
 import styles from './SectionLevel2.module.css'
+
+type Props = {
+  title: ReactNode
+  children: ReactNode
+  onHeaderClick?: () => void
+  onNavigate?: () => void
+  isOpen?: boolean
+  headerActions?: ReactNode
+}
 
 export const SectionLevel2 = ({
   title,
@@ -9,7 +19,7 @@ export const SectionLevel2 = ({
   onNavigate = undefined,
   isOpen = undefined,
   headerActions = undefined,
-}) => (
+}: Props) => (
   <section>
     <h3
       className={`${styles.title}${onHeaderClick || onNavigate ? ` ${styles.titleClickable}` : ''}`}

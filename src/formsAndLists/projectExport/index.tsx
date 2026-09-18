@@ -12,13 +12,14 @@ import { addOperationAtom } from '../../store.ts'
 
 import '../../form.css'
 
-const from = '/data/projects/$projectId_/exports/$projectExportsId/'
 
 export const ProjectExport = () => {
-  const { projectExportsId } = useParams({ from })
+  const { projectExportsId } = useParams({ strict: false })
   const db = usePGlite()
   const addOperation = useSetAtom(addOperationAtom)
-  const [validations, setValidations] = useState({})
+  const [validations, setValidations] = useState<
+    Record<string, { state: 'error'; message: string }>
+  >({})
 
   const autoFocusRef = useRef<HTMLInputElement>(null)
 
@@ -28,7 +29,10 @@ export const ProjectExport = () => {
   )
   const row = res?.rows?.[0]
 
-  const onChange = async (e, data) => {
+  const onChange = async (
+    e: React.ChangeEvent<HTMLInputElement>,
+    data: Parameters<typeof getValueFromChange>[1],
+  ) => {
     const { name, value } = getValueFromChange(e, data)
     if (row?.[name] === value) return
 
@@ -40,7 +44,7 @@ export const ProjectExport = () => {
     } catch (error) {
       setValidations((prev) => ({
         ...prev,
-        [name]: { state: 'error', message: error.message },
+        [name]: { state: 'error', message: error instanceof Error ? error.message : String(error) },
       }))
       return
     }

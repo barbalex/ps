@@ -23,7 +23,7 @@ export const useMessageNavData = ({ messageId }: Props) => {
   const location = useLocation()
   const { formatMessage } = useIntl()
 
-  const res = useLiveQuery(
+  const res = useLiveQuery<NavData>(
     `
     SELECT message_id AS id, TO_CHAR(date, 'YYYY.MM.DD HH24:MI:SS') AS label 
     FROM messages 

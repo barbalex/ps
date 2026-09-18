@@ -9,7 +9,12 @@ import { FormHeader } from '../../components/FormHeader/index.tsx'
 import { HistoryToggleButton } from '../../components/shared/HistoryCompare/HistoryToggleButton.tsx'
 import { addOperationAtom } from '../../store.ts'
 
-export const Header = ({ autoFocusRef, from }) => {
+export const Header = ({
+  autoFocusRef,
+}: {
+  autoFocusRef?: React.RefObject<HTMLInputElement | null>
+  from?: string
+}) => {
   const {
     projectId,
     subprojectId,
@@ -17,7 +22,7 @@ export const Header = ({ autoFocusRef, from }) => {
     placeId2,
     checkReportId,
     checkReportQuantityId,
-  } = useParams({ from })
+  } = useParams({ strict: false })
   const navigate = useNavigate()
   const addOperation = useSetAtom(addOperationAtom)
   const { formatMessage } = useIntl()
@@ -35,10 +40,10 @@ export const Header = ({ autoFocusRef, from }) => {
   const countRes = useLiveQuery(
     `SELECT COUNT(*) as count FROM check_report_quantities WHERE place_check_report_id = '${checkReportId}'`,
   )
-  const rowCount = countRes?.rows?.[0]?.count ?? 2
+  const rowCount = (countRes?.rows?.[0]?.count as number) ?? 2
 
   const addRow = async () => {
-    const id = await createCheckReportQuantity({ checkReportId })
+    const id = await createCheckReportQuantity({ checkReportId: checkReportId! })
     if (!id) return
     navigate({
       to: `../${id}`,
@@ -53,7 +58,7 @@ export const Header = ({ autoFocusRef, from }) => {
         'SELECT * FROM check_report_quantities WHERE place_check_report_quantity_id = $1',
         [checkReportQuantityId],
       )
-      const prev = prevRes?.rows?.[0] ?? {}
+      const prev = (prevRes?.rows?.[0] ?? {}) as Record<string, unknown>
       await db.query(
         'DELETE FROM check_report_quantities WHERE place_check_report_quantity_id = $1',
         [checkReportQuantityId],
@@ -77,7 +82,9 @@ export const Header = ({ autoFocusRef, from }) => {
         'SELECT place_check_report_quantity_id FROM check_report_quantities WHERE place_check_report_id = $1 ORDER BY label',
         [checkReportId],
       )
-      const quantities = res?.rows
+      const quantities = res?.rows as {
+        place_check_report_quantity_id: string
+      }[]
       const len = quantities.length
       const index = quantities.findIndex(
         (p) => p.place_check_report_quantity_id === checkReportQuantityIdRef.current,
@@ -101,7 +108,9 @@ export const Header = ({ autoFocusRef, from }) => {
         'SELECT place_check_report_quantity_id FROM check_report_quantities WHERE place_check_report_id = $1 ORDER BY label',
         [checkReportId],
       )
-      const quantities = res?.rows
+      const quantities = res?.rows as {
+        place_check_report_quantity_id: string
+      }[]
       const len = quantities.length
       const index = quantities.findIndex(
         (p) => p.place_check_report_quantity_id === checkReportQuantityIdRef.current,

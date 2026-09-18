@@ -29,17 +29,14 @@ const from =
 export const ProjectReportHistoryCompare = () => {
   const { formatMessage } = useIntl()
   const navigate = useNavigate()
-  const { projectId, projectReportId, projectReportHistoryId } = useParams({
-    from,
-    strict: false,
-  })
+  const { projectId, projectReportId, projectReportHistoryId } = useParams({ strict: false })
 
   const formPath = `/data/projects/${projectId}/reports/${projectReportId}`
   const historyPath = `${formPath}/histories`
 
   const db = usePGlite()
   const addOperation = useSetAtom(addOperationAtom)
-  const [validations, setValidations] = useState<Record<string, unknown>>({})
+  const [validations, setValidations] = useState<Record<string, { state: 'error'; message: string }>>({})
 
   const rowRes = useLiveQuery(
     `SELECT * FROM project_reports WHERE project_report_id = $1`,
@@ -47,9 +44,12 @@ export const ProjectReportHistoryCompare = () => {
   )
   const row = rowRes?.rows?.[0] as ProjectReports | undefined
 
-  const onChange = async (e, data) => {
+  const onChange = async (
+    e: React.ChangeEvent<HTMLInputElement>,
+    data: Parameters<typeof getValueFromChange>[1],
+  ) => {
     const { name, value } = getValueFromChange(e, data)
-    if (!row || row[name] === value) return
+    if (!row || (row as Record<string, any>)[name] === value) return
 
     try {
       await db.query(
@@ -59,7 +59,7 @@ export const ProjectReportHistoryCompare = () => {
     } catch (error) {
       setValidations((prev) => ({
         ...prev,
-        [name]: { state: 'error', message: error.message },
+        [name]: { state: 'error', message: error instanceof Error ? error.message : String(error) },
       }))
       return
     }
@@ -100,10 +100,7 @@ export const ProjectReportHistoryCompare = () => {
         row={row}
         onChange={onChange}
         validations={
-          validations as Record<
-            string,
-            { state: string; message: string } | undefined
-          >
+          validations as Record<string, { state: 'error'; message: string }>
         }
         from={from}
       />
@@ -118,7 +115,7 @@ export const ProjectReportHistoryCompare = () => {
   })
 
   const formatFieldValue = (field: string, history: ProjectReportsHistory) =>
-    stringifyHistoryValue(history[field])
+    stringifyHistoryValue((history as Record<string, any>)[field])
 
   return (
     <HistoryCompare<ProjectReportsHistory>

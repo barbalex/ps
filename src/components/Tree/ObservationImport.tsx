@@ -3,12 +3,24 @@ import { isEqual } from 'es-toolkit'
 
 import { Node } from './Node.tsx'
 
+type NavData = {
+  id: string
+  label: string
+}
+
+interface Props {
+  projectId: string
+  subprojectId: string
+  nav: NavData
+  level?: number
+}
+
 export const ObservationImportNode = ({
   projectId,
   subprojectId,
   nav,
   level = 6,
-}) => {
+}: Props) => {
   const location = useLocation()
 
   const urlPath = location.pathname.split('/').filter((p) => p !== '')

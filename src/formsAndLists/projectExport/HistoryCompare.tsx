@@ -23,23 +23,19 @@ import {
 import type ProjectExports from '../../models/public/ProjectExports.ts'
 import type ProjectExportsHistory from '../../models/public/ProjectExportsHistory.ts'
 
-const from =
-  '/data/projects/$projectId_/exports/$projectExportsId_/histories/$projectExportsHistoryId'
-
 export const ProjectExportHistoryCompare = () => {
   const { formatMessage } = useIntl()
   const navigate = useNavigate()
-  const { projectId, projectExportsId, projectExportsHistoryId } = useParams({
-    from,
-    strict: false,
-  })
+  const { projectId, projectExportsId, projectExportsHistoryId } = useParams({ strict: false })
   const projectExportPath = `/data/projects/${projectId}/exports/${projectExportsId}`
   const historyPath = `${projectExportPath}/histories`
 
   const addOperation = useSetAtom(addOperationAtom)
   const db = usePGlite()
   const autoFocusRef = useRef<HTMLInputElement>(null)
-  const [validations, setValidations] = useState({})
+  const [validations, setValidations] = useState<
+    Record<string, { state: 'error'; message: string }>
+  >({})
 
   const rowRes = useLiveQuery(
     `SELECT * FROM project_exports WHERE project_exports_id = $1`,
@@ -47,9 +43,12 @@ export const ProjectExportHistoryCompare = () => {
   )
   const row = rowRes?.rows?.[0] as ProjectExports | undefined
 
-  const onChange = async (e, data) => {
+  const onChange = async (
+    e: React.ChangeEvent<HTMLInputElement>,
+    data: Parameters<typeof getValueFromChange>[1],
+  ) => {
     const { name, value } = getValueFromChange(e, data)
-    if (row?.[name] === value) return
+    if ((row as Record<string, any>)?.[name] === value) return
 
     try {
       await db.query(
@@ -59,7 +58,7 @@ export const ProjectExportHistoryCompare = () => {
     } catch (error) {
       setValidations((prev) => ({
         ...prev,
-        [name]: { state: 'error', message: error.message },
+        [name]: { state: 'error', message: error instanceof Error ? error.message : String(error) },
       }))
       return
     }
@@ -129,7 +128,7 @@ export const ProjectExportHistoryCompare = () => {
   })
 
   const formatFieldValue = (field: string, history: ProjectExportsHistory) =>
-    stringifyHistoryValue(history[field])
+    stringifyHistoryValue((history as Record<string, any>)[field])
 
   return (
     <HistoryCompare<ProjectExportsHistory>

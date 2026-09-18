@@ -1,6 +1,7 @@
 import { useIntl } from 'react-intl'
 
 import { DropdownField } from '../../components/shared/DropdownField.tsx'
+import type WidgetsForFields from '../../models/public/WidgetsForFields.ts'
 
 import '../../form.css'
 
@@ -9,6 +10,12 @@ export const WidgetForFieldForm = ({
   validations = {},
   row,
   autoFocusRef,
+}: {
+  onChange: (e: React.ChangeEvent<any>, data?: any) => void
+  validations?: Record<string, { state: 'error'; message: string }>
+  row: WidgetsForFields | Record<string, any>
+  autoFocusRef?: React.Ref<HTMLInputElement>
+  from?: string
 }) => {
   const { formatMessage } = useIntl()
 

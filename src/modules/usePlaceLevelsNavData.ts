@@ -21,7 +21,7 @@ export const usePlaceLevelsNavData = ({ projectId }: Props) => {
   const location = useLocation()
   const { formatMessage } = useIntl()
 
-  const res = useLiveQuery(
+  const res = useLiveQuery<NavData[number]>(
     `
     SELECT
       place_level_id AS id,
@@ -55,6 +55,7 @@ export const usePlaceLevelsNavData = ({ projectId }: Props) => {
     ownUrl,
     label: buildNavLabel({
       countFiltered: navs.length,
+      countUnfiltered: navs.length,
       namePlural: formatMessage({
         id: 'aYuCCc',
         defaultMessage: 'Ort-Stufen',

@@ -22,7 +22,7 @@ export const useProjectQcAssignmentsNavData = ({ projectId }: Props) => {
   const ownUrl = `/${ownArray.join('/')}`
   const isOpen = openNodes.some((array) => isEqual(array, ownArray))
 
-  const res = useLiveQuery(
+  const res = useLiveQuery<{ count: number }>(
     `SELECT count(*) AS count FROM (
        SELECT qa.qc_assignment_id
        FROM qc_assignments qa

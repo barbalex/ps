@@ -6,13 +6,21 @@ import { removeChildNodes } from '../../modules/tree/removeChildNodes.ts'
 import { addOpenNodes } from '../../modules/tree/addOpenNodes.ts'
 import { usePlaceUsersNavData } from '../../modules/usePlaceUsersNavData.ts'
 
+type Props = {
+  projectId: string
+  subprojectId: string
+  placeId: string
+  placeId2?: string
+  level?: number
+}
+
 export const PlaceUsersNode = ({
   projectId,
   subprojectId,
   placeId,
   placeId2,
   level = 7,
-}) => {
+}: Props) => {
   const navigate = useNavigate()
 
   const { navData } = usePlaceUsersNavData({
@@ -64,7 +72,7 @@ export const PlaceUsersNode = ({
       {showNavs &&
         navs.map((nav, i) => (
           <PlaceUserNode
-            key={`${nav.place_id}-${i}`}
+            key={`${(nav as { id: string; place_id?: string }).place_id}-${i}`}
             projectId={projectId}
             subprojectId={subprojectId}
             placeId={placeId}

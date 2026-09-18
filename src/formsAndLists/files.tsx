@@ -22,6 +22,14 @@ export const Files = ({
   actionId,
   checkId,
   hideTitle = false,
+}: {
+  projectId?: string
+  subprojectId?: string
+  placeId?: string
+  placeId2?: string
+  actionId?: string
+  checkId?: string
+  hideTitle?: boolean
 }) => {
   const { loading, navData, isFiltered } = useFilesNavData({
     projectId,
@@ -33,7 +41,15 @@ export const Files = ({
   })
   const { navs, label, nameSingular } = navData
 
-  const uploaderCtx = useContext(UploaderContext)
+  const uploaderCtx = useContext(UploaderContext) as unknown as {
+    current?:
+      | (HTMLElement & {
+          getAPI?: () => {
+            initFlow?: () => void
+          }
+        })
+      | null
+  }
   const { formatMessage } = useIntl()
   const api = uploaderCtx?.current?.getAPI?.()
   const onClickAdd = () => api?.initFlow?.()

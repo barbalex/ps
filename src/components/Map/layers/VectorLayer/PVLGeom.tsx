@@ -1,10 +1,13 @@
 import { useEffect, useState, useRef, useCallback } from 'react'
+import type { ReactNode } from 'react'
 import { GeoJSON, useMapEvent, useMap } from 'react-leaflet'
+import * as L from 'leaflet'
 import * as ReactDOMServer from 'react-dom/server'
 import { useDebouncedCallback } from 'use-debounce'
 import * as icons from 'react-icons/md'
 import { usePGlite } from '@electric-sql/pglite-react'
 import { useSetAtom } from 'jotai'
+import type { GeoJsonObject } from 'geojson'
 
 import { vectorLayerDisplayToProperties } from '../../../../modules/vectorLayerDisplayToProperties.ts'
 import { Popup } from '../../Popup.tsx'
@@ -14,18 +17,54 @@ import {
   removeNotificationAtom,
 } from '../../../../store.ts'
 import styles from './PVLGeom.module.css'
+import type LayerPresentations from '../../../../models/public/LayerPresentations.ts'
+import type VectorLayers from '../../../../models/public/VectorLayers.ts'
 
 // const bboxBuffer = 0.01
 
-export const PVLGeom = ({ layer, display }) => {
+// Shape of the vector layer as historically passed here: a vector_layers row
+// joined with its layer_presentations (and short-lived convenience fields)
+type PVLGeomLayer = Partial<VectorLayers> & {
+  id?: string
+  label: string | null
+  active?: boolean | null
+  layer_presentations?: LayerPresentations[] | null
+}
+
+type PVLGeomDisplay = {
+  marker_type?: string | null
+  marker_symbol?: string | null
+  marker_size?: number | null
+  color?: string | null
+  circle_marker_radius?: number | null
+  opacity_percent?: number | null
+}
+
+type Props = {
+  layer: PVLGeomLayer
+  display?: PVLGeomDisplay | null
+}
+
+// LatLngBounds with the internal corner properties read by the query below
+type LatLngBoundsWithInternals = L.LatLngBounds & {
+  _southWest: L.LatLng
+  _northEast: L.LatLng
+}
+
+type VectorLayerGeomRow = {
+  geometry: GeoJsonObject
+  properties: unknown
+}
+
+export const PVLGeom = ({ layer, display }: Props) => {
   const db = usePGlite()
-  const layerPresentation = layer.layer_presentations?.[0]
+  const layerPresentation = layer.layer_presentations?.[0]!
   const addNotification = useSetAtom(addNotificationAtom)
   const removeNotification = useSetAtom(removeNotificationAtom)
 
-  const [data, setData] = useState()
+  const [data, setData] = useState<GeoJsonObject[]>()
 
-  const notificationIds = useRef([])
+  const notificationIds = useRef<string[]>([])
 
   const removeNotifs = useCallback(async () => {
     for (const notificationId of notificationIds.current) {
@@ -39,13 +78,16 @@ export const PVLGeom = ({ layer, display }) => {
   const [zoom, setZoom] = useState<number>(map.getZoom())
 
   const fetchData = useCallback(
-    async ({ bounds }) => {
+    async ({ bounds }: { bounds: LatLngBoundsWithInternals }) => {
       removeNotifs()
       const notificationId = addNotification({
         title: `Lade Vektor-Karte '${layer.label}'...`,
         intent: 'info',
       })
-      notificationIds.current = [notificationId, ...notificationIds.current]
+      notificationIds.current = [
+        notificationId as string,
+        ...notificationIds.current,
+      ]
 
       const resVectorLayerGeoms = await db.query(
         `
@@ -70,12 +112,13 @@ export const PVLGeom = ({ layer, display }) => {
           layer.max_features ?? 1000,
         ],
       )
-      const vectorLayerGeoms = resVectorLayerGeoms?.rows ?? []
+      const vectorLayerGeoms = (resVectorLayerGeoms?.rows ??
+        []) as VectorLayerGeomRow[]
 
       const data = vectorLayerGeoms.map((pvlGeom) => ({
         ...pvlGeom.geometry,
         properties: pvlGeom.properties,
-      }))
+      })) as GeoJsonObject[]
       removeNotifs()
 
       setData(data)
@@ -93,12 +136,12 @@ export const PVLGeom = ({ layer, display }) => {
   )
   const fetchDataDebounced = useDebouncedCallback(fetchData, 600)
 
-  useMapEvent('dragend zoomend', () => {
-    fetchDataDebounced({ bounds: map.getBounds() })
+  useMapEvent('dragend zoomend' as 'zoomend', () => {
+    fetchDataDebounced({ bounds: map.getBounds() as LatLngBoundsWithInternals })
   })
 
   useEffect(() => {
-    fetchDataDebounced({ bounds: map.getBounds() })
+    fetchDataDebounced({ bounds: map.getBounds() as LatLngBoundsWithInternals })
   }, [fetchDataDebounced, map])
 
   useEffect(() => {
@@ -115,12 +158,12 @@ export const PVLGeom = ({ layer, display }) => {
   // include only if zoom between min_zoom and max_zoom
   if (
     layerPresentation.min_zoom !== undefined &&
-    zoom < layerPresentation.min_zoom
+    zoom < (layerPresentation.min_zoom as number)
   )
     return null
   if (
     layerPresentation.max_zoom !== undefined &&
-    zoom > layerPresentation.max_zoom
+    zoom > (layerPresentation.max_zoom as number)
   )
     return null
 
@@ -152,15 +195,17 @@ export const PVLGeom = ({ layer, display }) => {
   const mapSize = map.getSize()
 
   return (
-    <ErrorBoundary layer={layer}>
+    <ErrorBoundary layer={layer as { label: string | null }}>
       <GeoJSON
         key={`${layer.id}/${display.marker_symbol}/${display?.marker_size}/${
           display?.color
         }/${display?.opacity_percent}/${display?.marker_type}/${
           data?.length ?? 0
         }`}
-        data={data}
-        opacity={display.opacity_percent ? display.opacity_percent / 100 : 0}
+        data={data as unknown as GeoJsonObject}
+        {...{
+          opacity: display.opacity_percent ? display.opacity_percent / 100 : 0,
+        }}
         style={vectorLayerDisplayToProperties({
           vectorLayerDisplay: display,
           presentation: layer.layer_presentations?.[0],
@@ -169,7 +214,9 @@ export const PVLGeom = ({ layer, display }) => {
           const layersData = [
             {
               label: layer.label,
-              properties: Object.entries(feature?.properties ?? {}),
+              properties: Object.entries(
+                feature?.properties ?? {},
+              ) as [string, ReactNode][],
             },
           ]
           const popupContent = ReactDOMServer.renderToString(
@@ -180,21 +227,25 @@ export const PVLGeom = ({ layer, display }) => {
           )
           _layer.bindPopup(popupContent)
         }}
-        pointToLayer={(geoJsonPoint, latlng) => {
+        pointToLayer={(_geoJsonPoint, latlng) => {
           // TODO: add font-weight setting
           if (display.marker_type === 'circle') {
             return L.circleMarker(latlng, {
               ...display,
               radius: display.circle_marker_radius ?? 8,
-            })
+            } as L.CircleMarkerOptions)
           }
-          const Component = icons[display.marker_symbol] ?? icons.MdPlace
+          const Component =
+            icons[display.marker_symbol as keyof typeof icons] ??
+            icons.MdPlace
           const markerIconStyle = {
             '--marker-size': `${display?.marker_size ?? 16}px`,
             ...(display?.color ? { '--marker-color': display.color } : {}),
           } as React.CSSProperties
           return L.marker(latlng, {
-            icon: new L.divIcon({
+            icon: new (L.divIcon as unknown as new (
+              options?: L.DivIconOptions,
+            ) => L.DivIcon)({
               html: ReactDOMServer.renderToString(
                 <Component
                   className={`${styles.markerIcon} ${styles.markerIconSized}`}

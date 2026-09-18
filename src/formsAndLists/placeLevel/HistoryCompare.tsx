@@ -23,23 +23,17 @@ import {
 import type PlaceLevels from '../../models/public/PlaceLevels.ts'
 import type PlaceLevelsHistory from '../../models/public/PlaceLevelsHistory.ts'
 
-const from =
-  '/data/projects/$projectId_/place-levels/$placeLevelId_/histories/$placeLevelHistoryId'
-
 export const PlaceLevelHistoryCompare = () => {
   const { formatMessage } = useIntl()
   const navigate = useNavigate()
-  const { projectId, placeLevelId, placeLevelHistoryId } = useParams({
-    from,
-    strict: false,
-  })
+  const { projectId, placeLevelId, placeLevelHistoryId } = useParams({ strict: false })
   const placeLevelPath = `/data/projects/${projectId}/place-levels/${placeLevelId}`
   const historyPath = `${placeLevelPath}/histories`
 
   const addOperation = useSetAtom(addOperationAtom)
   const db = usePGlite()
   const autoFocusRef = useRef<HTMLInputElement>(null)
-  const [validations, setValidations] = useState<Record<string, unknown>>({})
+  const [validations, setValidations] = useState<Record<string, { state: 'error'; message: string }>>({})
 
   const rowRes = useLiveQuery(
     `SELECT * FROM place_levels WHERE place_level_id = $1`,
@@ -47,9 +41,12 @@ export const PlaceLevelHistoryCompare = () => {
   )
   const row = rowRes?.rows?.[0] as PlaceLevels | undefined
 
-  const onChange = async (e, data) => {
+  const onChange = async (
+    e: React.ChangeEvent<HTMLInputElement>,
+    data: Parameters<typeof getValueFromChange>[1],
+  ) => {
     const { name, value } = getValueFromChange(e, data)
-    if (!row || row[name] === value) return
+    if (!row || (row as Record<string, any>)[name] === value) return
 
     try {
       await db.query(
@@ -59,7 +56,7 @@ export const PlaceLevelHistoryCompare = () => {
     } catch (error) {
       setValidations((prev) => ({
         ...prev,
-        [name]: { state: 'error', message: error.message },
+        [name]: { state: 'error', message: error instanceof Error ? error.message : String(error) },
       }))
       return
     }
@@ -97,7 +94,7 @@ export const PlaceLevelHistoryCompare = () => {
       <PlaceLevelForm
         row={row}
         onChange={onChange}
-        validations={validations as Record<string, { state: string; message: string }>}
+        validations={validations as Record<string, { state: 'error'; message: string }>}
         autoFocusRef={autoFocusRef}
       />
     </div>
@@ -179,7 +176,7 @@ export const PlaceLevelHistoryCompare = () => {
   })
 
   const formatFieldValue = (field: string, history: PlaceLevelsHistory) =>
-    stringifyHistoryValue(history[field])
+    stringifyHistoryValue((history as Record<string, any>)[field])
 
   return (
     <HistoryCompare<PlaceLevelsHistory>

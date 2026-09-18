@@ -20,11 +20,19 @@ export const AutoFetchCapabilities = () => {
   const [seenWfsKeys, setSeenWfsKeys] = useAtom(seenWfsServiceKeysAtom)
   const inFlightRef = useRef(new Set<string>())
 
-  const wmsRes = useLiveQuery(
+  const wmsRes = useLiveQuery<{
+    wms_service_id: string
+    url: string | null
+    project_id: string
+  }>(
     `SELECT wms_service_id, url, project_id FROM wms_services`,
     [],
   )
-  const wfsRes = useLiveQuery(
+  const wfsRes = useLiveQuery<{
+    wfs_service_id: string
+    url: string | null
+    project_id: string
+  }>(
     `SELECT wfs_service_id, url, project_id FROM wfs_services`,
     [],
   )
@@ -66,7 +74,7 @@ export const AutoFetchCapabilities = () => {
 
         inFlightRef.current.add(inFlightKey)
         try {
-          const res = await db.query(
+          const res = await db.query<{ count: number | string }>(
             `SELECT count(*) AS count FROM wms_service_layers WHERE wms_service_id = $1`,
             [service.wms_service_id],
           )
@@ -79,7 +87,7 @@ export const AutoFetchCapabilities = () => {
                 project_id: service.project_id,
               },
               service: { ...service, url },
-            })
+            } as unknown as Parameters<typeof getWmsCapabilitiesData>[0])
           }
           seenToAdd.push(key)
           progress += 1
@@ -153,7 +161,7 @@ export const AutoFetchCapabilities = () => {
 
         inFlightRef.current.add(inFlightKey)
         try {
-          const res = await db.query(
+          const res = await db.query<{ count: number | string }>(
             `SELECT count(*) AS count FROM wfs_service_layers WHERE wfs_service_id = $1`,
             [service.wfs_service_id],
           )
@@ -167,7 +175,7 @@ export const AutoFetchCapabilities = () => {
                 wfs_service_layer_name: null,
               },
               service: { ...service, url },
-            })
+            } as unknown as Parameters<typeof getWfsCapabilitiesData>[0])
           }
           seenToAdd.push(key)
           progress += 1

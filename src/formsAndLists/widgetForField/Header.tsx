@@ -8,11 +8,10 @@ import { createWidgetForField } from '../../modules/createRows.ts'
 import { FormHeader } from '../../components/FormHeader/index.tsx'
 import { addOperationAtom } from '../../store.ts'
 
-const from = '/data/widgets-for-fields/$widgetForFieldId'
 
-export const Header = ({ autoFocusRef }) => {
+export const Header = ({ autoFocusRef }: { autoFocusRef?: React.RefObject<HTMLInputElement | null> }) => {
   const { formatMessage } = useIntl()
-  const { widgetForFieldId } = useParams({ from })
+  const { widgetForFieldId } = useParams({ strict: false })
   const navigate = useNavigate()
   const addOperation = useSetAtom(addOperationAtom)
 
@@ -28,7 +27,7 @@ export const Header = ({ autoFocusRef }) => {
   const countRes = useLiveQuery(
     'SELECT COUNT(*) as count FROM widgets_for_fields',
   )
-  const rowCount = countRes?.rows?.[0]?.count ?? 2
+  const rowCount = Number(countRes?.rows?.[0]?.count ?? 2)
 
   const addRow = async () => {
     const widgetForFieldId = await createWidgetForField()
@@ -42,7 +41,7 @@ export const Header = ({ autoFocusRef }) => {
         `SELECT * FROM widgets_for_fields WHERE widget_for_field_id = $1`,
         [widgetForFieldId],
       )
-      const prev = prevRes?.rows?.[0] ?? {}
+      const prev = (prevRes?.rows?.[0] ?? {}) as Record<string, unknown>
       const sql = `DELETE FROM widgets_for_fields WHERE widget_for_field_id = $1`
       await db.query(sql, [widgetForFieldId])
       addOperation({
@@ -63,7 +62,7 @@ export const Header = ({ autoFocusRef }) => {
       const res = await db.query(
         `SELECT widget_for_field_id FROM widgets_for_fields ORDER BY label`,
       )
-      const rows = res?.rows
+      const rows = res?.rows as { widget_for_field_id: string }[]
       const len = rows.length
       const index = rows.findIndex(
         (p) => p.widget_for_field_id === widgetForFieldIdRef.current,
@@ -86,7 +85,7 @@ export const Header = ({ autoFocusRef }) => {
       const res = await db.query(
         `SELECT widget_for_field_id FROM widgets_for_fields ORDER BY label`,
       )
-      const rows = res?.rows
+      const rows = res?.rows as { widget_for_field_id: string }[]
       const len = rows.length
       const index = rows.findIndex(
         (p) => p.widget_for_field_id === widgetForFieldIdRef.current,

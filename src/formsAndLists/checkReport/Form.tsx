@@ -2,6 +2,7 @@ import { useIntl } from 'react-intl'
 import { TextField } from '../../components/shared/TextField.tsx'
 import { Jsonb } from '../../components/shared/Jsonb/index.tsx'
 import { jsonbDataFromRow } from '../../modules/jsonbDataFromRow.ts'
+import type CheckReports from '../../models/public/CheckReports.ts'
 
 import '../../form.css'
 
@@ -13,12 +14,23 @@ export const CheckReportForm = ({
   orIndex,
   from,
   autoFocusRef,
+}: {
+  onChange: (e: React.ChangeEvent<any>, data?: any) => void
+  validations?: Record<
+    string,
+    | { state?: 'error' | 'warning' | 'success' | 'none'; message?: string }
+    | undefined
+  >
+  row: CheckReports
+  orIndex?: number
+  from?: string
+  autoFocusRef?: React.RefObject<HTMLInputElement | null>
 }) => {
   const { formatMessage } = useIntl()
   // need to extract the jsonb data from the row
   // as inside filters it's name is a path
   // instead of it being inside of the data field
-  const jsonbData = jsonbDataFromRow(row)
+  const jsonbData = jsonbDataFromRow(row as unknown as Record<string, unknown>)
 
   return (
     <>
@@ -37,9 +49,9 @@ export const CheckReportForm = ({
         id={row.place_check_report_id}
         data={jsonbData}
         orIndex={orIndex}
-        from={from}
+        from={from ?? ''}
         autoFocus
-        ref={autoFocusRef}
+        ref={autoFocusRef as unknown as React.Ref<HTMLDivElement>}
       />
     </>
   )

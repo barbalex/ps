@@ -27,6 +27,7 @@ import {
   isItemData,
 } from '../../../../../shared/DragAndDrop/index.tsx'
 import { Content } from './Content.tsx'
+import type { ActiveLayerRow } from '../index.tsx'
 
 import './active.css'
 import styles from './index.module.css'
@@ -38,7 +39,15 @@ function useDragAndDropContext() {
   return dragAndDropContext
 }
 
-function getItemData({ layer, index, instanceId }) {
+function getItemData({
+  layer,
+  index,
+  instanceId,
+}: {
+  layer: ActiveLayerRow
+  index: number
+  instanceId: symbol
+}) {
   return {
     [itemKey]: true,
     layer,
@@ -47,7 +56,19 @@ function getItemData({ layer, index, instanceId }) {
   }
 }
 
-export const ActiveLayer = ({ layer, index, isLast, isOpen, layerCount }) => {
+export const ActiveLayer = ({
+  layer,
+  index,
+  isLast,
+  isOpen,
+  layerCount,
+}: {
+  layer: ActiveLayerRow
+  index: number
+  isLast: boolean
+  isOpen: boolean
+  layerCount: number
+}) => {
   const { registerItem, instanceId } = useDragAndDropContext()
   const [closestEdge, setClosestEdge] = useState<Edge | null>(null)
   const elementRef = useRef<HTMLDivElement>(null)
@@ -109,8 +130,8 @@ export const ActiveLayer = ({ layer, index, isLast, isOpen, layerCount }) => {
         },
         onDrag({ self, source }) {
           const isSource =
-            source.data.layer.layer_presentation_id ===
-            element.dataset.presentationId
+            (source.data.layer as ActiveLayerRow)
+              .layer_presentation_id === element.dataset.presentationId
           if (isSource) {
             setClosestEdge(null)
             return

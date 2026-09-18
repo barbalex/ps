@@ -5,11 +5,13 @@ import { useIntl } from 'react-intl'
 
 import { FetchWfsCapabilities } from './FetchWfsCapabilities.tsx'
 import { isValidUrl } from '../../../modules/isValidUrl.ts'
+import type VectorLayers from '../../../models/public/VectorLayers.ts'
 import styles from './CreateWfsService.module.css'
 
-export const CreateWfsService = ({ vectorLayer }) => {
+export const CreateWfsService = ({ vectorLayer }: { vectorLayer: VectorLayers }) => {
   const [url, setUrl] = useState('')
-  const onChange = (e) => setUrl(e.target.value)
+  const onChange = (e: React.ChangeEvent<HTMLInputElement>) =>
+    setUrl(e.target.value)
   const [fetching, setFetching] = useState(false)
   const { formatMessage } = useIntl()
   // TODO: when fetching ends, set focus to LayerDropdown
@@ -29,8 +31,7 @@ export const CreateWfsService = ({ vectorLayer }) => {
       <div className={styles.row}>
         <Field
           label={formatMessage({ id: 'Yb8ZcE', defaultMessage: 'URL' })}
-          value={url}
-          onChange={onChange}
+          {...({ value: url, onChange } as Record<string, unknown>)}
           validationMessage={
             urlIsInvalid
               ? formatMessage({ id: 'Zc9AdF', defaultMessage: 'Ungültige URL' })

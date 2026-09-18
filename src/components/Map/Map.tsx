@@ -1,7 +1,9 @@
 import { useRef } from 'react'
+import type { ComponentType } from 'react'
 import 'leaflet'
 import 'proj4'
 import 'proj4leaflet'
+import type { LatLngTuple, Map as LeafletMap } from 'leaflet'
 import { MapContainer } from 'react-leaflet'
 import { useResizeDetector } from 'react-resize-detector'
 import { useAtomValue } from 'jotai'
@@ -14,7 +16,7 @@ import { LocationMarker } from './LocationMarker.tsx'
 import { DrawControl } from './DrawControl/index.tsx'
 import { BoundsListener } from './BoundsListener.tsx'
 // import { Control } from './Control.tsx'
-import { BottomRightControl } from './BottomRightControl/index.tsx'
+import { BottomRightControl as BottomRightControlWithProps } from './BottomRightControl/index.tsx'
 import { ClickListener } from './ClickListener/index.tsx'
 import { ErrorBoundary } from '../shared/ErrorBoundary.tsx'
 import { InfoMarker } from './RightMenuDrawer/Marker.tsx'
@@ -28,6 +30,13 @@ import {
 } from '../../store.ts'
 import styles from './Map.module.css'
 
+// BottomRightControl receives position/visible props at runtime
+// but does not use them (yet?)
+const BottomRightControl = BottomRightControlWithProps as ComponentType<{
+  position: string
+  visible: boolean
+}>
+
 export const Map = () => {
   const mapShowCenter = useAtomValue(mapShowCenterAtom)
   const mapIsLocating = useAtomValue(mapLocateAtom)
@@ -35,7 +44,7 @@ export const Map = () => {
   const initialCenter = useAtomValue(mapCenterAtom)
   const initialZoom = useAtomValue(mapZoomAtom)
 
-  const mapRef = useRef()
+  const mapRef = useRef<LeafletMap | null>(null)
 
   const redrawMap = () => mapRef.current?.invalidateSize()
 
@@ -73,7 +82,7 @@ export const Map = () => {
           // maxZoom={22}
           // minZoom={0}
           // bounds={bounds}
-          center={initialCenter}
+          center={initialCenter as LatLngTuple}
           zoom={initialZoom}
           ref={mapRef}
         >

@@ -16,7 +16,7 @@ interface Props {
 }
 
 export const Set = ({ observationImport }: Props) => {
-  const [notification, setNotification] = useState()
+  const [notification, setNotification] = useState<string | undefined>()
   const [settingGeometries, setSettingGeometries] = useState(false)
   const { formatMessage } = useIntl()
 
@@ -24,7 +24,7 @@ export const Set = ({ observationImport }: Props) => {
     `SELECT * FROM observations WHERE observation_import_id = $1`,
     [observationImport?.observation_import_id],
   )
-  const observations: Observations[] = res?.rows ?? []
+  const observations = (res?.rows ?? []) as unknown as Observations[]
 
   const observationsWithoutGeometry = observations.filter((o) => !o.geometry)
 
@@ -44,7 +44,7 @@ export const Set = ({ observationImport }: Props) => {
     return (
       <div className={styles.allSet}>
         <MdDone className={styles.doneIcon} />
-        {formatMessage({ id: 'sGAlSt', defaultMessage: 'Alle {count} Geometrien der Beobachtungen sind gesetzt' }, { count: formatNumber(observations.length) })}
+        {formatMessage({ id: 'sGAlSt', defaultMessage: 'Alle {count} Geometrien der Beobachtungen sind gesetzt' }, { count: formatNumber(observations.length) as string })}
       </div>
     )
   }
@@ -57,8 +57,8 @@ export const Set = ({ observationImport }: Props) => {
         className={styles.setButton}
       >
         {settingGeometries
-          ? formatMessage({ id: 'sCdStg', defaultMessage: 'Koordinaten von {count} Beobachtungen werden gesetzt' }, { count: formatNumber(toSetCount) })
-          : formatMessage({ id: 'sCdSet', defaultMessage: 'Koordinaten von {count} Beobachtungen setzen' }, { count: formatNumber(toSetCount) })}
+          ? formatMessage({ id: 'sCdStg', defaultMessage: 'Koordinaten von {count} Beobachtungen werden gesetzt' }, { count: formatNumber(toSetCount) as string })
+          : formatMessage({ id: 'sCdSet', defaultMessage: 'Koordinaten von {count} Beobachtungen setzen' }, { count: formatNumber(toSetCount) as string })}
       </Button>
       {notification && (
         <div className={styles.notification}>{notification}</div>

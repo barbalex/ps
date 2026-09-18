@@ -1,4 +1,8 @@
-export function ErrorPage({ error }) {
+export function ErrorPage({
+  error,
+}: {
+  error: { statusText?: string; message?: string }
+}) {
   console.error('Error caught by ErrorPage:', error)
 
   return (

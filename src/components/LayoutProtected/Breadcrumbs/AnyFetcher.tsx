@@ -2,7 +2,20 @@
 import { FetcherReturner } from './FetcherReturner.tsx'
 
 // pass on TransitionGroup's props
-export const AnyFetcher = ({ fetcherModule, params, ...other }) => {
+export const AnyFetcher = ({
+  fetcherModule,
+  params,
+  ...other
+}: {
+  fetcherModule: (params: Record<string, string>) => {
+    navData: {
+      id?: string
+      label?: string
+      ownUrl: string
+    }
+  }
+  params: Record<string, string>
+}) => {
   // need to pass in params
   // If not: When navigating up the tree while transitioning out lower levels,
   // those bookmark components will not have their params anymore and error

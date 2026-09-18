@@ -20,16 +20,10 @@ import {
 import type Lists from '../../models/public/Lists.ts'
 import type ListsHistory from '../../models/public/ListsHistory.ts'
 
-const from =
-  '/data/projects/$projectId_/lists/$listId_/histories/$listHistoryId'
-
 export const ListHistoryCompare = () => {
   const { formatMessage } = useIntl()
   const navigate = useNavigate()
-  const { projectId, listId, listHistoryId } = useParams({
-    from,
-    strict: false,
-  })
+  const { projectId, listId, listHistoryId } = useParams({ strict: false })
   const listPath = `/data/projects/${projectId}/lists/${listId}/list`
   const historyPath = `/data/projects/${projectId}/lists/${listId}/histories`
   const addOperation = useSetAtom(addOperationAtom)
@@ -37,7 +31,7 @@ export const ListHistoryCompare = () => {
   const autoFocusRef = useRef<HTMLInputElement>(null)
 
   const [validations, setValidations] = useState<
-    Record<string, { state: string; message: string }>
+    Record<string, { state: 'error'; message: string }>
   >({})
 
   const rowRes = useLiveQuery(`SELECT * FROM lists WHERE list_id = $1`, [
@@ -62,9 +56,12 @@ export const ListHistoryCompare = () => {
     },
   })
 
-  const onChange = async (e, data) => {
+  const onChange = async (
+    e: React.ChangeEvent<HTMLInputElement>,
+    data: Parameters<typeof getValueFromChange>[1],
+  ) => {
     const { name, value } = getValueFromChange(e, data)
-    if (!row || row[name] === value) return
+    if (!row || (row as Record<string, any>)[name] === value) return
 
     try {
       await db.query(`UPDATE lists SET ${name} = $1 WHERE list_id = $2`, [
@@ -74,7 +71,7 @@ export const ListHistoryCompare = () => {
     } catch (error) {
       setValidations((prev) => ({
         ...prev,
-        [name]: { state: 'error', message: error.message },
+        [name]: { state: 'error', message: error instanceof Error ? error.message : String(error) },
       }))
       return
     }

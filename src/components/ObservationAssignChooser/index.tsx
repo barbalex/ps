@@ -54,7 +54,7 @@ export const ObservationAssignChooser = () => {
       `SELECT * FROM observations WHERE observation_id = $1`,
       [observationId],
     )
-    const prev = observationRes?.rows?.[0] ?? {}
+    const prev = (observationRes?.rows?.[0] ?? {}) as Record<string, unknown>
     addOperation({
       table: 'observations',
       rowIdName: 'observation_id',

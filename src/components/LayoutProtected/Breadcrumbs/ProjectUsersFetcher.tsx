@@ -1,12 +1,16 @@
 import { useProjectUsersNavData } from '../../../modules/useProjectUsersNavData.ts'
 import { FetcherReturner } from './FetcherReturner.tsx'
 
-export const ProjectUsersFetcher = ({ params, ...other }) => {
+type Props = {
+  params: Parameters<typeof useProjectUsersNavData>[0]
+}
+
+export const ProjectUsersFetcher = ({ params, ...other }: Props) => {
   const { navData } = useProjectUsersNavData(params)
 
   return (
     <FetcherReturner
-      key={`${navData?.id ?? navData?.ownUrl}`}
+      key={`${(navData as { id?: string })?.id ?? navData?.ownUrl}`}
       navData={navData}
       {...other}
     />

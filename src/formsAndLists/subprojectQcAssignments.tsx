@@ -42,10 +42,13 @@ type UnifiedQcItem = {
   source: 'qcs' | 'project_qcs'
 }
 
-export const SubprojectQcAssignments = ({ from }) => {
-  const { projectId, subprojectId } = useParams({ from })
-  const { navData } = useSubprojectQcAssignmentsNavData({ projectId, subprojectId })
-  const { formatMessage } = useIntl()
+export const SubprojectQcAssignments = ({}: { from: string }) => {
+  const { projectId, subprojectId } = useParams({ strict: false })
+  const { navData } = useSubprojectQcAssignmentsNavData({
+    projectId: projectId!,
+    subprojectId: subprojectId!,
+  })
+ const { formatMessage } = useIntl()
   const [language] = useAtom(languageAtom)
   const addOperation = useSetAtom(addOperationAtom)
   const db = usePGlite()
@@ -86,12 +89,12 @@ export const SubprojectQcAssignments = ({ from }) => {
 
   if (loading) return <Loading />
 
-  const allQcs: QcRow[] = qcsRes?.rows ?? []
-  const activeEntries: ActiveEntry[] = activeRes?.rows ?? []
+  const allQcs = (qcsRes?.rows ?? []) as QcRow[]
+  const activeEntries = (activeRes?.rows ?? []) as ActiveEntry[]
   const activeQcIds = new Set(activeEntries.map((r) => r.qc_id))
 
-  const allProjectQcs: ProjectQcRow[] = projectQcsRes?.rows ?? []
-  const activeProjectQcEntries: ActiveProjectQcEntry[] = activeProjectQcRes?.rows ?? []
+  const allProjectQcs = (projectQcsRes?.rows ?? []) as ProjectQcRow[]
+  const activeProjectQcEntries = (activeProjectQcRes?.rows ?? []) as ActiveProjectQcEntry[]
   const activeProjectQcIds = new Set(activeProjectQcEntries.map((r) => r.project_qc_id))
 
   // Merge both lists into a unified sorted list
@@ -137,8 +140,11 @@ export const SubprojectQcAssignments = ({ from }) => {
           console.error('Error removing subproject QC:', error)
         }
       } else {
-        await createSubprojectQc({ subprojectId, qcId: item.id })
-      }
+        await createSubprojectQc({
+          subprojectId: subprojectId!,
+          qcId: item.id,
+        })
+     }
     } else {
       if (activeProjectQcIds.has(item.id)) {
         const entry = activeProjectQcEntries.find((e) => e.project_qc_id === item.id)
@@ -171,8 +177,11 @@ export const SubprojectQcAssignments = ({ from }) => {
   const activateAll = async () => {
     for (const item of filteredItems.filter((i) => !isActive(i))) {
       if (item.source === 'qcs') {
-        await createSubprojectQc({ subprojectId, qcId: item.id })
-      } else {
+        await createSubprojectQc({
+          subprojectId: subprojectId!,
+          qcId: item.id,
+        })
+     } else {
         await createProjectQcAssignmentsForProjectQc({ subprojectId, projectQcId: item.id })
       }
     }

@@ -6,14 +6,10 @@ import { Row } from '../../components/shared/Row.tsx'
 import { Header } from './Header.tsx'
 import { NotFound } from '../../components/NotFound.tsx'
 
-export const GoalReportList = ({ from }) => {
-  const { projectId, subprojectId, goalId, goalReportId } = useParams({ from })
+export const GoalReportList = ({ from }: { from: string }) => {
+  const { projectId, subprojectId, goalId, goalReportId } = useParams({ strict: false })
   const { loading, navData } = useGoalReportNavData({
-    projectId,
-    subprojectId,
-    goalId,
-    goalReportId,
-  })
+    projectId: projectId!,    subprojectId: subprojectId!,    goalId: goalId!,    goalReportId: goalReportId!,  })
   const { navs, notFound } = navData
 
   if (notFound) {
@@ -31,10 +27,10 @@ export const GoalReportList = ({ from }) => {
       <div className="list-container">
         {loading ?
           <Loading />
-        : navs.map((nav) => (
+        : (navs as { id: string; label: string | null }[]).map((nav) => (
             <Row
               key={nav.id}
-              label={nav.label}
+              label={nav.label as string}
               to={nav.id}
             />
           ))

@@ -9,21 +9,18 @@ import { Loading } from '../components/shared/Loading.tsx'
 
 import '../form.css'
 
-const from =
-  '/data/projects/$projectId_/subprojects/$subprojectId_/observation-imports/'
-
 export const ObservationImports = () => {
   const navigate = useNavigate()
-  const { projectId, subprojectId } = useParams({ from })
+  const { projectId, subprojectId } = useParams({ strict: false })
 
   const { loading, navData, isFiltered } = useObservationImportsNavData({
-    projectId,
-    subprojectId,
+    projectId: projectId!,
+    subprojectId: subprojectId!,
   })
   const { navs, label, nameSingular } = navData
 
   const add = async () => {
-    const id = await createObservationImport({ subprojectId })
+    const id = await createObservationImport({ subprojectId: subprojectId! })
     if (!id) return
     navigate({
       to: id,

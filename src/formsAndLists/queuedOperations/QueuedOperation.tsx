@@ -6,12 +6,19 @@ import { useSetAtom } from 'jotai'
 import { useIntl } from 'react-intl'
 
 import { removeOperationAtom } from '../../store.ts'
+import type { QueuedOperation as QueuedOperationRow } from '../../store.ts'
 import { revertOperation } from '../../modules/revertOperation.ts'
 import { idFieldFromTable } from '../../modules/idFieldFromTable.ts'
 
 import styles from './QueuedOperation.module.css'
 
-export const QueuedOperation = ({ qo, index }) => {
+export const QueuedOperation = ({
+  qo,
+  index,
+}: {
+  qo: QueuedOperationRow
+  index: number
+}) => {
   const { formatMessage } = useIntl()
   const removeOperation = useSetAtom(removeOperationAtom)
   const { id, time, table, rowIdName, rowId, operation, filter, draft, prev } =
@@ -27,14 +34,27 @@ export const QueuedOperation = ({ qo, index }) => {
   const valueClass =
     index === 0 ? `${styles.value} ${styles.firstValue}` : styles.value
 
-  const prevWithOnlyTheKeysContainedInDraft = {}
+  const draftRecord = draft as Record<string, unknown> | undefined
+  const prevRecord = prev as Record<string, unknown> | undefined
+  const prevWithOnlyTheKeysContainedInDraft: Record<string, unknown> = {}
   if (prev && draft) {
     Object.keys(draft).forEach((key) => {
       if (key in prev) {
-        prevWithOnlyTheKeysContainedInDraft[key] = prev[key]
+        prevWithOnlyTheKeysContainedInDraft[key] = (prev as Record<
+          string,
+          unknown
+        >)[key]
       }
     })
   }
+
+  const displayId = (
+    rowId ??
+    draftRecord?.[rowIdName as string] ??
+    prevRecord?.[rowIdName as string] ??
+    draftRecord?.[idFieldFromTable(table)] ??
+    prevRecord?.[idFieldFromTable(table)]
+  ) as string | number | undefined
 
   // operation, filter, draft, prev
   return (
@@ -44,11 +64,7 @@ export const QueuedOperation = ({ qo, index }) => {
       >{`${dayjs(time).format('YYYY.MM.DD HH:mm:ss')}`}</div>
       <div className={valueClass}>{table}</div>
       <div className={valueClass}>
-        {rowId ??
-          draft?.[rowIdName] ??
-          prev?.[rowIdName] ??
-          draft?.[idFieldFromTable(table)] ??
-          prev?.[idFieldFromTable(table)] ??
+        {displayId ??
           formatMessage({ id: 'qoEmptyValue', defaultMessage: '(leer)' })}
       </div>
       <div className={valueClass}>

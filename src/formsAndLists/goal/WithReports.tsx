@@ -27,11 +27,13 @@ import '../../form.css'
 
 const { Button } = fluentUiReactComponents
 
-export const GoalWithReports = ({ from }) => {
+export const GoalWithReports = ({ from }: { from: string }) => {
   const { projectId, subprojectId, goalId } = useParams({ strict: false })
   const addOperation = useSetAtom(addOperationAtom)
   const { formatMessage } = useIntl()
-  const [validations, setValidations] = useState({})
+  const [validations, setValidations] = useState<
+    Record<string, { state: 'error'; message: string }>
+  >({})
 
   const autoFocusRef = useRef<HTMLInputElement>(null)
   const navigate = useNavigate()
@@ -39,7 +41,7 @@ export const GoalWithReports = ({ from }) => {
 
   const db = usePGlite()
   const res = useLiveQuery(`SELECT * FROM goals WHERE goal_id = $1`, [goalId])
-  const row: Goals | undefined = res?.rows?.[0]
+  const row = res?.rows?.[0] as Goals | undefined
 
   const settingsRes = useLiveQuery(
     `SELECT p.goal_reports_in_goal
@@ -67,8 +69,11 @@ export const GoalWithReports = ({ from }) => {
   const isReportsList = /\/reports\/?$/.test(location.pathname)
 
   const onClickAddGoalReport = async () => {
-    const id = await createGoalReport({ projectId, goalId })
-    if (!id) return
+    const id = await createGoalReport({
+      projectId: projectId!,
+      goalId: goalId!,
+    })
+   if (!id) return
     navigate({ to: `${reportsUrl}/${id}/` })
   }
 
@@ -82,9 +87,12 @@ export const GoalWithReports = ({ from }) => {
       />
     ) : undefined
 
-  const onChange = async (e, data) => {
+  const onChange = async (
+    e: React.ChangeEvent<HTMLInputElement>,
+    data: Parameters<typeof getValueFromChange>[1],
+  ) => {
     const { name, value } = getValueFromChange(e, data)
-    if (row[name] === value) return
+    if ((row as Record<string, any>)[name] === value) return
 
     try {
       await db.query(`UPDATE goals SET ${name} = $1 WHERE goal_id = $2`, [
@@ -94,7 +102,7 @@ export const GoalWithReports = ({ from }) => {
     } catch (error) {
       setValidations((prev) => ({
         ...prev,
-        [name]: { state: 'error', message: error.message },
+        [name]: { state: 'error', message: error instanceof Error ? error.message : String(error) },
       }))
       return
     }
@@ -121,7 +129,7 @@ export const GoalWithReports = ({ from }) => {
 
   return (
     <div className="form-outer-container">
-      <Header autoFocusRef={autoFocusRef} from={from} />
+      <Header autoFocusRef={autoFocusRef} />
       <div className="form-container">
         <Form
           onChange={onChange}

@@ -12,20 +12,17 @@ import { HistoryToggleButton } from '../../components/shared/HistoryCompare/Hist
 import { addOperationAtom } from '../../store.ts'
 
 interface Props {
-  autoFocusRef: React.RefObject<HTMLInputElement>
+  autoFocusRef?: React.RefObject<HTMLInputElement | null>
   showPreview: boolean
   setShowPreview: React.Dispatch<React.SetStateAction<boolean>>
 }
-
-const from =
-  '/data/projects/$projectId_/subprojects/$subprojectId_/observation-imports/$observationImportId/'
 
 export const Header = ({
   autoFocusRef,
   showPreview,
   setShowPreview,
 }: Props) => {
-  const { projectId, subprojectId, observationImportId } = useParams({ from })
+  const { projectId, subprojectId, observationImportId } = useParams({ strict: false })
   const navigate = useNavigate()
   const addOperation = useSetAtom(addOperationAtom)
   const { formatMessage } = useIntl()
@@ -42,12 +39,12 @@ export const Header = ({
   const countRes = useLiveQuery(
     'SELECT COUNT(*) as count FROM observation_imports',
   )
-  const rowCount = countRes?.rows?.[0]?.count ?? 2
+  const rowCount = (countRes?.rows?.[0]?.count ?? 2) as number
 
   const onClickPreview = () => setShowPreview(!showPreview)
 
   const addRow = async () => {
-    const id = await createObservationImport({ subprojectId })
+    const id = await createObservationImport({ subprojectId: subprojectId! })
     if (!id) return
     navigate({
       to: `../${id}`,
@@ -85,7 +82,7 @@ export const Header = ({
       const res = await db.query(
         `SELECT observation_import_id FROM observation_imports order by label`,
       )
-      const rows = res?.rows
+      const rows = res?.rows as { observation_import_id: string }[]
       const len = rows.length
       const index = rows.findIndex(
         (p) => p.observation_import_id === observationImportIdRef.current,
@@ -108,7 +105,7 @@ export const Header = ({
       const res = await db.query(
         `SELECT observation_import_id FROM observation_imports order by label`,
       )
-      const rows = res?.rows
+      const rows = res?.rows as { observation_import_id: string }[]
       const len = rows.length
       const index = rows.findIndex(
         (p) => p.observation_import_id === observationImportIdRef.current,

@@ -8,17 +8,17 @@ import { Loading } from '../components/shared/Loading.tsx'
 import { useSubprojectsNavData } from '../modules/useSubprojectsNavData.ts'
 import '../form.css'
 
-const from = '/data/projects/$projectId_/subprojects/'
 
 export const Subprojects = () => {
-  const { projectId } = useParams({ from })
+  const { projectId } = useParams({ strict: false })
   const navigate = useNavigate()
 
-  const { loading, navData, isFiltered } = useSubprojectsNavData({ projectId })
-  const { navs, label, nameSingular } = navData
+  const { loading, navData, isFiltered } = useSubprojectsNavData({projectId: projectId! })
+  const { navs: navsIn, label, nameSingular } = navData
+  const navs = navsIn as { id: string; label: string | null }[]
 
   const add = async () => {
-    const subprojectId = await createSubproject({ projectId })
+    const subprojectId = await createSubproject({projectId: projectId! })
     if (!subprojectId) return
     navigate({
       to: `${subprojectId}/subproject`,

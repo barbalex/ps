@@ -66,6 +66,8 @@
     "@turf/point-to-line-distance": "7.4.0",
     "@turf/points-within-polygon": "7.4.0",
     "@turf/polygon-to-line": "7.4.0",
+    "@types/react-beforeunload": "2.1.5",
+    "@types/react-transition-group": "4.4.12",
     "@uidotdev/usehooks": "2.4.1",
     "@uiw/react-codemirror": "4.25.11",
     "@uploadcare/file-uploader": "1.33.2",

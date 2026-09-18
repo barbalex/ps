@@ -31,7 +31,7 @@ export const useCheckTaxaNavData = ({
   const [openNodes] = useAtom(treeOpenNodesAtom)
   const location = useLocation()
 
-  const res = useLiveQuery(
+  const res = useLiveQuery<NavData[number]>(
     `
       SELECT
         check_taxon_id as id,

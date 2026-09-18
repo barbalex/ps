@@ -1,12 +1,16 @@
 import { useProjectReportDesignNavData } from '../../../modules/useProjectReportDesignNavData.ts'
 import { FetcherReturner } from './FetcherReturner.tsx'
 
-export const ProjectReportDesignFetcher = ({ params, ...other }) => {
+type Props = {
+  params: Parameters<typeof useProjectReportDesignNavData>[0]
+}
+
+export const ProjectReportDesignFetcher = ({ params, ...other }: Props) => {
   const { navData } = useProjectReportDesignNavData(params)
 
   return (
     <FetcherReturner
-      key={`${navData?.id ?? navData?.ownUrl}`}
+      key={`${(navData as { id?: string })?.id ?? navData?.ownUrl}`}
       navData={navData}
       {...other}
     />

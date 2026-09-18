@@ -9,6 +9,22 @@ import { removeChildNodes } from '../../modules/tree/removeChildNodes.ts'
 import { addOpenNodes } from '../../modules/tree/addOpenNodes.ts'
 import { designingAtom, treeOpenNodesAtom } from '../../store.ts'
 
+type NavData = {
+  id: string
+  label: string
+  count_unfiltered?: number
+  count_filtered?: number
+}
+
+type Props = {
+  projectId?: string
+  subprojectId?: string
+  placeId?: string
+  placeId2?: string
+  nav: NavData
+  level?: number
+}
+
 export const ChartNode = ({
   projectId,
   subprojectId,
@@ -16,7 +32,7 @@ export const ChartNode = ({
   placeId2,
   nav,
   level = 2,
-}) => {
+}: Props) => {
   const [openNodes] = useAtom(treeOpenNodesAtom)
   const [designing] = useAtom(designingAtom)
   const { formatMessage } = useIntl()

@@ -8,8 +8,8 @@ import { NotFound } from '../../components/NotFound.tsx'
 
 // const from = '/data/projects/$projectId/'
 
-export const ProjectList = ({ from }) => {
-  const { projectId } = useParams({ from })
+export const ProjectList = ({ from }: { from: string }) => {
+  const { projectId } = useParams({ strict: false }) as { projectId: string }
   const { loading, navData } = useProjectNavData({ projectId })
   const { navs, label, notFound } = navData
 

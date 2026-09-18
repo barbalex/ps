@@ -15,7 +15,8 @@ export const WidgetTypes = () => {
   const navigate = useNavigate({ from })
 
   const { navData, loading, isFiltered } = useWidgetTypesNavData()
-  const { navs, label, nameSingular } = navData
+  const { label, nameSingular } = navData
+  const navs = navData.navs as { id: string; label: string | null }[]
 
   const add = async () => {
     const widgetTypeId = await createWidgetType()

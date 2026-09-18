@@ -8,10 +8,25 @@ import { TextArea } from '../../components/shared/TextArea.tsx'
 import { Section } from '../../components/shared/Section.tsx'
 import { SectionDescription } from '../../components/shared/SectionDescription.tsx'
 
+import type ProjectExports from '../../models/public/ProjectExports.ts'
+
 import '../../form.css'
 
+type Props = {
+  onChange: (e: React.ChangeEvent<any>, data?: any) => void
+  validations?: Record<string, { state: 'error'; message: string }>
+  row: Record<string, any> | ProjectExports
+  autoFocusRef?: React.RefObject<HTMLInputElement | null>
+  from?: string
+}
+
 // this form is rendered from the item view and from the filter
-export const ProjectExportForm = ({ onChange, validations = {}, row, autoFocusRef }) => {
+export const ProjectExportForm = ({
+  onChange,
+  validations = {},
+  row,
+  autoFocusRef,
+}: Props) => {
   const { formatMessage } = useIntl()
 
   const paramHint = (() => {

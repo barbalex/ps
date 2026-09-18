@@ -35,7 +35,7 @@ export const useFileNavData = ({
   const { formatMessage } = useIntl()
   const isPreview = location.pathname.endsWith('/preview')
 
-  const res = useLiveQuery(
+  const res = useLiveQuery<NavData>(
     `
       SELECT
         file_id AS id,

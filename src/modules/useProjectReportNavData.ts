@@ -38,7 +38,7 @@ export const useProjectReportNavData = ({
 
   const loading = res === undefined
 
-  const nav: NavData | undefined = res?.rows?.[0]
+  const nav = res?.rows?.[0] as NavData | undefined
 
   const parentArray = ['data', 'projects', projectId, 'reports']
   const ownArray = [...parentArray, projectReportId]

@@ -22,11 +22,14 @@ export const ListValues = ({ hideHeader = false }: { hideHeader?: boolean }) => 
   const { formatMessage } = useIntl()
   const [importDialogOpen, setImportDialogOpen] = useState(false)
 
-  const { loading, navData } = useListValuesNavData({ projectId, listId })
-  const { navs, label, nameSingular } = navData
+  const { loading, navData } = useListValuesNavData({
+    projectId: projectId!,
+    listId: listId!,
+  })
+ const { navs, label, nameSingular } = navData
 
   const add = async () => {
-    const id = await createListValue({ listId })
+    const id = await createListValue({listId: listId! })
     if (!id) return
     navigate({
       to: id,
@@ -37,11 +40,11 @@ export const ListValues = ({ hideHeader = false }: { hideHeader?: boolean }) => 
   const onClickImport = () => setImportDialogOpen(true)
 
   const onImportFileSelected = (file: File, valueType: string | undefined) => {
-    importListValues({ file, listId, valueType })
+    importListValues({ file, listId: listId!, valueType })
   }
 
   const deleteAllValues = async () => {
-    const db = store.get(pgliteDbAtom)
+    const db = store.get(pgliteDbAtom)!
     await db.query(`DELETE FROM list_values WHERE list_id = $1`, [listId])
     store.set(addOperationAtom, {
       table: 'list_values',
@@ -66,7 +69,7 @@ export const ListValues = ({ hideHeader = false }: { hideHeader?: boolean }) => 
     <div className="list-view">
       <ImportDialog
         open={importDialogOpen}
-        listId={listId}
+        listId={listId!}
         onClose={() => setImportDialogOpen(false)}
         onFileSelected={onImportFileSelected}
       />

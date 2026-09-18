@@ -1,8 +1,23 @@
+import type { Ref, RefObject } from 'react'
 import { Link, useLocation } from '@tanstack/react-router'
 
 // import { toggleNodeSymbol } from '../../Projekte/TreeContainer/Tree/toggleNodeSymbol.js'
 
-export const Label = ({ navData, outerContainerRef, labelClassName, ref }) => {
+type NavData = {
+  id?: string
+  label?: string
+  labelShort?: string
+  ownUrl?: string
+}
+
+type Props = {
+  navData: NavData
+  outerContainerRef: RefObject<HTMLDivElement | null>
+  labelClassName?: string
+  ref?: Ref<HTMLDivElement>
+}
+
+export const Label = ({ navData, outerContainerRef, labelClassName, ref }: Props) => {
   const { pathname } = useLocation()
 
   // issue: relative paths are not working!!!???
@@ -10,7 +25,7 @@ export const Label = ({ navData, outerContainerRef, labelClassName, ref }) => {
   const pathnameDecoded = decodeURIComponent(pathname)
   const pathnameWithoutLastSlash = pathnameDecoded.replace(/\/$/, '')
   const linksToSomewhereElse = !pathnameWithoutLastSlash.endsWith(
-    navData.ownUrl,
+    navData.ownUrl!,
   )
   // console.log('Crumb.Label', {
   //   linksToSomewhereElse,
@@ -45,11 +60,10 @@ export const Label = ({ navData, outerContainerRef, labelClassName, ref }) => {
 
   const label = linksToSomewhereElse ? (
     <Link
-      className="crumb-label-link"
-      to={navData.ownUrl}
-      onClick={onClick}
-      ref={ref}
       className={`crumb-label-link ${labelClassName ?? ''}`}
+      to={navData.ownUrl!}
+      onClick={onClick}
+      ref={ref as Ref<HTMLAnchorElement>}
     >
       {navData.labelShort ?? navData.label}
     </Link>

@@ -26,7 +26,7 @@ export const useWfsServiceLayerNavData = ({
   const location = useLocation()
   const { formatMessage } = useIntl()
 
-  const res = useLiveQuery(
+  const res = useLiveQuery<NavData>(
     `
       SELECT
         wfs_service_layer_id AS id,

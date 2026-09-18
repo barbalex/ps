@@ -8,11 +8,10 @@ import { createWidgetType } from '../../modules/createRows.ts'
 import { FormHeader } from '../../components/FormHeader/index.tsx'
 import { addOperationAtom } from '../../store.ts'
 
-const from = '/data/widget-types/$widgetTypeId'
 
-export const Header = ({ autoFocusRef }) => {
+export const Header = ({ autoFocusRef }: { autoFocusRef?: React.RefObject<HTMLInputElement | null> }) => {
   const { formatMessage } = useIntl()
-  const { widgetTypeId } = useParams({ from })
+  const { widgetTypeId } = useParams({ strict: false })
   const navigate = useNavigate()
   const addOperation = useSetAtom(addOperationAtom)
 
@@ -37,7 +36,7 @@ export const Header = ({ autoFocusRef }) => {
         `SELECT * FROM widget_types WHERE widget_type_id = $1`,
         [widgetTypeId],
       )
-      const prev = prevRes?.rows?.[0] ?? {}
+      const prev = (prevRes?.rows?.[0] ?? {}) as Record<string, unknown>
       const sql = `DELETE FROM widget_types WHERE widget_type_id = $1`
       await db.query(sql, [widgetTypeId])
       addOperation({
@@ -58,7 +57,7 @@ export const Header = ({ autoFocusRef }) => {
       const res = await db.query(
         `SELECT widget_type_id FROM widget_types order by label`,
       )
-      const rows = res?.rows
+      const rows = res?.rows as { widget_type_id: string }[]
       const len = rows.length
       const index = rows.findIndex((p) => p.widget_type_id === widgetTypeIdRef.current)
       const next = rows[(index + 1) % len]
@@ -76,7 +75,7 @@ export const Header = ({ autoFocusRef }) => {
       const res = await db.query(
         `SELECT widget_type_id FROM widget_types order by label`,
       )
-      const rows = res?.rows
+      const rows = res?.rows as { widget_type_id: string }[]
       const len = rows.length
       const index = rows.findIndex((p) => p.widget_type_id === widgetTypeIdRef.current)
       const previous = rows[(index + len - 1) % len]

@@ -1,7 +1,14 @@
 import { useIntl } from 'react-intl'
+import type Observations from '../../models/public/Observations.ts'
 import styles from './Preview.module.css'
 
-export const Preview = ({ observations, observationFields }) => {
+export const Preview = ({
+  observations,
+  observationFields,
+}: {
+  observations: Observations[]
+  observationFields: string[]
+}) => {
   const { formatMessage } = useIntl()
   if (!observations) {
     return <div className={styles.emptyContainer}>{formatMessage({ id: 'lPrW0d', defaultMessage: 'Vorschau wird geladen...' })}</div>
@@ -32,7 +39,9 @@ export const Preview = ({ observations, observationFields }) => {
             <tr key={o.observation_id}>
               {observationFieldsWithLabel.map((f, i) => (
                 <td key={f} className={styles.bodyCell}>
-                  {f === 'label' && i === 0 ? o.label : o.data[f]}
+                  {f === 'label' && i === 0
+                    ? o.label
+                    : ((o.data as Record<string, unknown>)[f] as React.ReactNode)}
                 </td>
               ))}
             </tr>

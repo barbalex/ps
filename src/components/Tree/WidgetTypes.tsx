@@ -5,6 +5,15 @@ import { WidgetTypeNode } from './WidgetType.tsx'
 import { addOpenNodes } from '../../modules/tree/addOpenNodes.ts'
 import { removeChildNodes } from '../../modules/tree/removeChildNodes.ts'
 import { useWidgetTypesNavData } from '../../modules/useWidgetTypesNavData.ts'
+
+// mirrors the open rows returned by useWidgetTypesNavData's sql
+type NavData = {
+  id: string
+  label: string
+  count_unfiltered: number
+  count_filtered: number
+}
+
 export const WidgetTypesNode = () => {
   const navigate = useNavigate()
 
@@ -39,7 +48,8 @@ export const WidgetTypesNode = () => {
   }
 
   // only list navs if isOpen AND the first nav has an id
-  const showNavs = isOpen && navs.length > 0 && navs[0].id
+  const openNavs = navs as NavData[]
+  const showNavs = isOpen && navs.length > 0 && openNavs[0].id
 
   return (
     <>
@@ -54,7 +64,7 @@ export const WidgetTypesNode = () => {
         onClickButton={onClickButton}
       />
       {showNavs &&
-        navs.map((nav, i) => (
+        openNavs.map((nav, i) => (
           <WidgetTypeNode
             key={`${nav.id}-${i}`}
             nav={nav}

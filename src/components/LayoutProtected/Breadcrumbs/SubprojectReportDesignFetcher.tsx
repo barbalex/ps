@@ -1,12 +1,16 @@
 import { useSubprojectReportDesignNavData } from '../../../modules/useSubprojectReportDesignNavData.ts'
 import { FetcherReturner } from './FetcherReturner.tsx'
 
-export const SubprojectReportDesignFetcher = ({ params, ...other }) => {
+type Props = {
+  params: Parameters<typeof useSubprojectReportDesignNavData>[0]
+}
+
+export const SubprojectReportDesignFetcher = ({ params, ...other }: Props) => {
   const { navData } = useSubprojectReportDesignNavData(params)
 
   return (
     <FetcherReturner
-      key={`${navData?.id ?? navData?.ownUrl}`}
+      key={`${(navData as { id?: string } | undefined)?.id ?? navData?.ownUrl}`}
       navData={navData}
       {...other}
     />

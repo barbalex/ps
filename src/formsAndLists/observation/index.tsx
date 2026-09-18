@@ -17,11 +17,16 @@ import type Observations from '../../models/public/Observations.ts'
 
 import '../../form.css'
 
-export const Observation = ({ from }) => {
-  const { projectId, subprojectId, observationId } = useParams({ from })
+type Validation = {
+  state: 'error'
+  message: string
+}
+
+export const Observation = ({ from }: { from: string }) => {
+  const { projectId, subprojectId, observationId } = useParams({ strict: false })
   const navigate = useNavigate()
   const addOperation = useSetAtom(addOperationAtom)
-  const [validations, setValidations] = useState({})
+  const [validations, setValidations] = useState<Record<string, Validation>>({})
   const { formatMessage } = useIntl()
 
   const autoFocusRef = useRef<HTMLInputElement>(null)
@@ -32,14 +37,20 @@ export const Observation = ({ from }) => {
     `SELECT * FROM observations WHERE observation_id = $1`,
     [observationId],
   )
-  const row: Observations | undefined = res?.rows?.[0]
+  const row = res?.rows?.[0] as Observations | undefined
 
   // console.log('Observation, row:', row)
 
-  const onChange = async (e, eData) => {
-    const { name, value } = getValueFromChange(e, eData)
+  const onChange = async (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
+    eData?: Record<string, unknown>,
+  ) => {
+    const { name, value } = getValueFromChange(
+      e as React.ChangeEvent<HTMLInputElement>,
+      (eData ?? {}) as Parameters<typeof getValueFromChange>[1],
+    )
     // only change if value has changed: maybe only focus entered and left
-    if (row[name] === value) return
+    if (!row || (row as Record<string, any>)[name] === value) return
 
     // Issue: for not_to_assign, the value needs to be null instead of false
     // because querying for null or false with electric-sql does not work
@@ -66,7 +77,7 @@ export const Observation = ({ from }) => {
     } catch (error) {
       setValidations((prev) => ({
         ...prev,
-        [name]: { state: 'error', message: error.message },
+        [name]: { state: 'error', message: (error as Error).message },
       }))
       return
     }
@@ -86,18 +97,18 @@ export const Observation = ({ from }) => {
     // ensure that the combinations of not-to-assign and place_id make sense
     if (name === 'not_to_assign' && value) {
       navigate(
-        `/data/projects/${projectId}/subprojects/${subprojectId}/observations-not-to-assign/${observationId}`,
+        `/data/projects/${projectId}/subprojects/${subprojectId}/observations-not-to-assign/${observationId}` as never,
       )
     }
     if (name === 'not_to_assign' && !value) {
       navigate(
-        `/data/projects/${projectId}/subprojects/${subprojectId}/observations-to-assess/${observationId}`,
+        `/data/projects/${projectId}/subprojects/${subprojectId}/observations-to-assess/${observationId}` as never,
       )
     }
     if (name === 'place_id' && !value) {
       // navigate to the subproject's observations-to-assess list
       navigate(
-        `/data/projects/${projectId}/subprojects/${subprojectId}/observations-to-assess/${observationId}`,
+        `/data/projects/${projectId}/subprojects/${subprojectId}/observations-to-assess/${observationId}` as never,
       )
     }
     if (name === 'place_id' && value) {
@@ -107,11 +118,13 @@ export const Observation = ({ from }) => {
         `SELECT parent_id FROM places WHERE place_id = $1`,
         [value],
       )
-      const parentPlaceId = res?.rows?.[0]?.parent_id
+      const parentPlaceId = (res?.rows?.[0] as
+        | { parent_id: string | null }
+        | undefined)?.parent_id
       const url = parentPlaceId
         ? `/data/projects/${projectId}/subprojects/${subprojectId}/places/${parentPlaceId}/places/${value}/observations/${observationId}`
         : `/data/projects/${projectId}/subprojects/${subprojectId}/places/${value}/observations/${observationId}`
-      navigate(url)
+      navigate(url as never)
     }
   }
 
@@ -130,7 +143,7 @@ export const Observation = ({ from }) => {
         <SwitchField
           label={formatMessage({ id: 'obs0Nta', defaultMessage: 'Nicht zuzuordnen' })}
           name="not_to_assign"
-          value={row.not_to_assign}
+          value={row.not_to_assign as never}
           onChange={onChange}
           validationState={validations?.not_to_assign?.state}
           validationMessage={validations?.not_to_assign?.message}

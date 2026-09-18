@@ -1,4 +1,7 @@
 import { createContext } from 'react'
+import type { Edge } from '@atlaskit/pragmatic-drag-and-drop-hitbox/closest-edge'
+
+import type { ItemEntry } from '../../../../shared/DragAndDrop/index.tsx'
 
 type CleanupFn = () => void
 type DragAndDropContextValue = {

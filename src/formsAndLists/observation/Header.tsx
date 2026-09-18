@@ -6,9 +6,14 @@ import { useIntl } from 'react-intl'
 import { FormHeader } from '../../components/FormHeader/index.tsx'
 import { HistoryToggleButton } from '../../components/shared/HistoryCompare/HistoryToggleButton.tsx'
 
-export const Header = ({ from }) => {
+export const Header = ({
+  from,
+}: {
+  from: string
+  autoFocusRef?: React.RefObject<HTMLInputElement | null>
+}) => {
   const { projectId, subprojectId, placeId, placeId2, observationId } =
-    useParams({ from })
+    useParams({ strict: false })
   const navigate = useNavigate()
   const { formatMessage } = useIntl()
   const base = `/data/projects/${projectId}/subprojects/${subprojectId}`
@@ -35,7 +40,7 @@ export const Header = ({ from }) => {
         'SELECT observation_id FROM observations WHERE place_id = $1 ORDER BY label',
         [placeId2 ?? placeId],
       )
-      const observations = res?.rows
+      const observations = res?.rows as { observation_id: string }[]
       const len = observations.length
       const index = observations.findIndex(
         (p) => p.observation_id === observationIdRef.current,
@@ -56,7 +61,7 @@ export const Header = ({ from }) => {
         'SELECT observation_id FROM observations WHERE place_id = $1 ORDER BY label',
         [placeId2 ?? placeId],
       )
-      const observations = res?.rows
+      const observations = res?.rows as { observation_id: string }[]
       const len = observations.length
       const index = observations.findIndex(
         (p) => p.observation_id === observationIdRef.current,

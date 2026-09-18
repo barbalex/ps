@@ -2,6 +2,8 @@ import { useState } from 'react'
 import { useIntl } from 'react-intl'
 import { TextField } from '../../components/shared/TextField.tsx'
 import { FetchWmsCapabilities } from '../wmsLayer/Form/CreateWmsService/FetchWmsCapabilities.tsx'
+import type WmsLayers from '../../models/public/WmsLayers.ts'
+import type WmsServices from '../../models/public/WmsServices.ts'
 import styles from './Form.module.css'
 
 import '../../form.css'
@@ -11,6 +13,11 @@ export const WmsServiceForm = ({
   validations,
   row,
   autoFocusRef,
+}: {
+  onChange: (e: React.ChangeEvent<any>, data?: any) => void
+  validations?: Record<string, { state: 'error'; message: string }>
+  row: WmsServices | Record<string, any>
+  autoFocusRef?: React.Ref<HTMLInputElement>
 }) => {
   const { formatMessage } = useIntl()
   const [fetching, setFetching] = useState(false)
@@ -36,7 +43,7 @@ export const WmsServiceForm = ({
       />
       <div className={styles.fetchWrapper}>
         <FetchWmsCapabilities
-          wmsLayer={wmsLayerForFetch}
+          wmsLayer={wmsLayerForFetch as unknown as WmsLayers}
           url={row.url}
           fetching={fetching}
           setFetching={setFetching}

@@ -8,19 +8,18 @@ import { Loading } from '../components/shared/Loading.tsx'
 import { useVectorLayersNavData } from '../modules/useVectorLayersNavData.ts'
 import '../form.css'
 
-const from = '/data/projects/$projectId_/vector-layers/'
 
 export const VectorLayers = () => {
-  const { projectId } = useParams({ from })
+  const { projectId } = useParams({ strict: false })
   const navigate = useNavigate()
 
-  const { loading, navData, isFiltered } = useVectorLayersNavData({ projectId })
-  const { navs, label, nameSingular } = navData
+  const { loading, navData, isFiltered } = useVectorLayersNavData({ projectId: projectId! })
+  const { label, nameSingular } = navData
+  const navs = navData.navs as unknown as { id: string; label: string | null }[]
 
   const add = async () => {
     const vectorLayerId = await createVectorLayer({
-      projectId,
-      type: 'wfs',
+      projectId: projectId!,      type: 'wfs',
     })
     if (!vectorLayerId) return
     navigate({

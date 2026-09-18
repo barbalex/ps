@@ -9,11 +9,8 @@ import { FormHeader } from '../../components/FormHeader/index.tsx'
 import { HistoryToggleButton } from '../../components/shared/HistoryCompare/HistoryToggleButton.tsx'
 import { addOperationAtom } from '../../store.ts'
 
-const from =
-  '/data/projects/$projectId_/subprojects/$subprojectId_/taxa/$subprojectTaxonId/'
-
-export const Header = ({ autoFocusRef }) => {
-  const { subprojectId, subprojectTaxonId, projectId } = useParams({ from })
+export const Header = ({ autoFocusRef }: { autoFocusRef?: React.RefObject<HTMLInputElement | null> }) => {
+  const { subprojectId, subprojectTaxonId, projectId } = useParams({ strict: false })
   const navigate = useNavigate()
   const addOperation = useSetAtom(addOperationAtom)
   const { formatMessage } = useIntl()
@@ -32,11 +29,11 @@ export const Header = ({ autoFocusRef }) => {
     `SELECT COUNT(*) as count FROM subproject_taxa WHERE subproject_id = $1`,
     [subprojectId],
   )
-  const rowCount = countRes?.rows?.[0]?.count ?? 2
+  const rowCount = Number(countRes?.rows?.[0]?.count ?? 2)
   const toDisabled = rowCount <= 1
 
   const addRow = async () => {
-    const id = await createSubprojectTaxon({ subprojectId })
+    const id = await createSubprojectTaxon({subprojectId: subprojectId! })
     if (!id) return
     navigate({
       to: `../${id}`,
@@ -54,7 +51,7 @@ export const Header = ({ autoFocusRef }) => {
         `SELECT * FROM subproject_taxa WHERE subproject_taxon_id = $1`,
         [subprojectTaxonId],
       )
-      const prev = prevRes?.rows?.[0] ?? {}
+      const prev = (prevRes?.rows?.[0] ?? {}) as Record<string, unknown>
       await db.query(
         `DELETE FROM subproject_taxa WHERE subproject_taxon_id = $1`,
         [subprojectTaxonId],
@@ -79,7 +76,7 @@ export const Header = ({ autoFocusRef }) => {
         `SELECT subproject_taxon_id FROM subproject_taxa WHERE subproject_id = $1 ORDER BY label`,
         [subprojectId],
       )
-      const subprojectTaxa = res?.rows
+      const subprojectTaxa = res?.rows as { subproject_taxon_id: string }[]
       const len = subprojectTaxa.length
       const index = subprojectTaxa.findIndex(
         (p) => p.subproject_taxon_id === subprojectTaxonIdRef.current,
@@ -103,7 +100,7 @@ export const Header = ({ autoFocusRef }) => {
         `SELECT subproject_taxon_id FROM subproject_taxa WHERE subproject_id = $1 ORDER BY label`,
         [subprojectId],
       )
-      const subprojectTaxa = res?.rows
+      const subprojectTaxa = res?.rows as { subproject_taxon_id: string }[]
       const len = subprojectTaxa.length
       const index = subprojectTaxa.findIndex(
         (p) => p.subproject_taxon_id === subprojectTaxonIdRef.current,

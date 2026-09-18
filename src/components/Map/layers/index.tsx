@@ -22,7 +22,7 @@ export const Layers = () => {
         `SELECT COUNT(wms_layer_id) FROM layer_presentations where layer_presentation_id = ANY($1)`,
         [mapLayerSorting],
       )
-      const wmsLayersCount = res.rows[0].count
+      const wmsLayersCount = (res.rows[0] as { count: number }).count
       // if no wms layer is present, add osm
       if (
         !wmsLayersCount &&

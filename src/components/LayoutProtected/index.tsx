@@ -27,12 +27,50 @@ import { OperationsObserver } from '../OperationsObserver.tsx'
 import { AutoFetchCapabilities } from '../AutoFetchCapabilities.tsx'
 import { mapMaximizedAtom } from '../../store.ts'
 
-const from = '/data'
 const tanstackQueryClient = new QueryClient()
+
+// JSX typings for the Uploadcare web components (defined via UC.defineComponents above)
+declare module 'react' {
+  namespace JSX {
+    interface IntrinsicElements {
+      'uc-config': DetailedHTMLProps<
+        HTMLAttributes<HTMLElement>,
+        HTMLElement
+      > & {
+        'ctx-name'?: string
+        'locale-name'?: string
+        pubkey?: string
+        maxLocalFileSizeBytes?: string
+        multiple?: string
+        sourceList?: string
+        useCloudImageEditor?: string
+      }
+      'uc-upload-ctx-provider': DetailedHTMLProps<
+        HTMLAttributes<HTMLElement>,
+        HTMLElement
+      > & {
+        'ctx-name'?: string
+      }
+      'uc-file-uploader-regular': DetailedHTMLProps<
+        HTMLAttributes<HTMLElement>,
+        HTMLElement
+      > & {
+        'ctx-name'?: string
+        'css-src'?: string
+      }
+      'uc-data-input': DetailedHTMLProps<
+        HTMLAttributes<HTMLElement>,
+        HTMLElement
+      > & {
+        'ctx-name'?: string
+      }
+    }
+  }
+}
 
 // memoizing this component creates error
 export const LayoutProtected = () => {
-  const uploaderRef = createRef<HTMLElement | null>(null)
+  const uploaderRef = createRef<HTMLElement>()
   const mapIsMaximized = useAtomValue(mapMaximizedAtom)
 
   useEffect(() => {
@@ -41,14 +79,15 @@ export const LayoutProtected = () => {
 
   // onlyForm is a query parameter that allows the user to view a form without the rest of the app
   // used for popups inside the map
-  const { onlyForm } = useSearch({ from })
+  const { onlyForm } = useSearch({ strict: false })
 
   // Breadcrumbs are not protected because:
   // - they are not (very) sensitive
   // - ui remains more consistent when logging in
   return (
     <QueryClientProvider client={tanstackQueryClient}>
-      <UploaderContext.Provider value={uploaderRef}>
+      {/* the context carries the ref object itself; UploaderContext is typed as the element */}
+      <UploaderContext.Provider value={uploaderRef as unknown as HTMLElement}>
         <uc-config
           ctx-name="uploadcare-uploader"
           pubkey="db67c21b6d9964e195b8"

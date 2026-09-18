@@ -4,9 +4,21 @@ import { usePGlite } from '@electric-sql/pglite-react'
 import { useSetAtom } from 'jotai'
 
 import { DropdownField } from './DropdownField.tsx'
+import type { MultiSelectOption } from './DropdownField.tsx'
 import { idFieldFromTable } from '../../../modules/idFieldFromTable.ts'
 import { addOperationAtom } from '../../../store.ts'
 import styles from './index.module.css'
+
+type Props = {
+  name: string
+  label?: string
+  table: string
+  options: MultiSelectOption[]
+  id: string
+  valueArray?: MultiSelectOption[]
+  validationMessage?: string
+  afterChange?: (val: MultiSelectOption[]) => void
+}
 
 export const MultiSelect = ({
   name,
@@ -17,7 +29,7 @@ export const MultiSelect = ({
   valueArray = [],
   validationMessage,
   afterChange,
-}) => {
+}: Props) => {
   const addOperation = useSetAtom(addOperationAtom)
   const optionValues = options.map((o) => o.value)
   const valueArrayValues = valueArray.map((v) => v.value)
@@ -26,14 +38,17 @@ export const MultiSelect = ({
     (o) => !valueArrayValues.includes(o.value),
   )
 
-  const removeItem = async (e, { value }) => {
+  const removeItem = async (
+    _e: unknown,
+    { value }: { value?: string | null },
+  ) => {
     const idField = idFieldFromTable(table)
     // TODO: test if this works
     const prevRes = await db.query(
       `SELECT * FROM ${table} WHERE ${idField} = $1`,
       [id],
     )
-    const prev = prevRes?.rows?.[0] ?? {}
+    const prev = (prevRes?.rows?.[0] ?? {}) as Record<string, unknown>
     db.query(`UPDATE ${table} SET ${name} = $1 WHERE ${idField} = $2`, [
       valueArray.filter((v) => v.value !== value),
       id,
@@ -50,19 +65,25 @@ export const MultiSelect = ({
     })
   }
 
-  const onChange = async ({ value, previousValue }) => {
+  const onChange = async ({
+    value,
+    previousValue,
+  }: {
+    value?: string
+    previousValue?: { value?: string }
+  }) => {
     const option = options.find((o) => o.value === value)
     let val = [...valueArray]
     if (!value) {
       // need to remove the key from the json object
-      val = val.filter((v) => v.value !== previousValue.value)
+      val = val.filter((v) => v.value !== previousValue!.value)
     } else {
       // replace the previous value with the new value
-      const index = val.findIndex((v) => v.value === previousValue.value)
+      const index = val.findIndex((v) => v.value === previousValue!.value)
       if (index !== -1) {
-        val[index] = option
+        val[index] = option as MultiSelectOption
       } else {
-        val.push(option)
+        val.push(option as MultiSelectOption)
       }
     }
     const idField = idFieldFromTable(table)
@@ -70,7 +91,7 @@ export const MultiSelect = ({
       `SELECT * FROM ${table} WHERE ${idField} = $1`,
       [id],
     )
-    const prev = prevRes?.rows?.[0]
+    const prev = prevRes?.rows?.[0] as Record<string, unknown> | undefined
     await db.query(`UPDATE ${table} SET ${name} = $1 WHERE ${idField} = $2`, [
       val,
       id,
@@ -103,14 +124,14 @@ export const MultiSelect = ({
             key={value.value}
             dismissible
             dismissIcon={{ 'aria-label': 'remove' }}
-            value={value.value}
+            value={value.value as string}
             secondaryText={
               !optionValues.includes(value.value)
                 ? 'not found in options'
                 : undefined
             }
           >
-            {value.label}
+            {value.label as string}
           </Tag>
         ))}
         {unusedOptions.length > 0 && (

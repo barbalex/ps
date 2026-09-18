@@ -7,8 +7,12 @@ import '../../form.css'
 
 type WfsServiceLayerFormProps = {
   row: WfsServiceLayers
-  onChange: (e: React.ChangeEvent<HTMLInputElement>, data: unknown) => void
-  validations?: Record<string, { state?: string; message?: string } | undefined>
+  onChange: (e: React.ChangeEvent<any>, data?: any) => void
+  validations?: Record<
+    string,
+    | { state?: 'error' | 'warning' | 'success' | 'none'; message?: string }
+    | undefined
+  >
 }
 
 export const WfsServiceLayerForm = ({

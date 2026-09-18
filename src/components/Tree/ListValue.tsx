@@ -3,7 +3,24 @@ import { isEqual } from 'es-toolkit'
 
 import { Node } from './Node.tsx'
 
-export const ListValueNode = ({ projectId, listId, listValue, level = 6 }) => {
+type NavData = {
+  id: string
+  label: string
+}
+
+interface Props {
+  projectId: string
+  listId: string
+  listValue: NavData
+  level?: number
+}
+
+export const ListValueNode = ({
+  projectId,
+  listId,
+  listValue,
+  level = 6,
+}: Props) => {
   const location = useLocation()
 
   const urlPath = location.pathname.split('/').filter((p) => p !== '')

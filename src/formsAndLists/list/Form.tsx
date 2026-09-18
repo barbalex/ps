@@ -11,11 +11,12 @@ import type Lists from '../../models/public/Lists.ts'
 import '../../form.css'
 
 type Props = {
-  onChange: (e: React.ChangeEvent<unknown>, data?: unknown) => Promise<void>
-  validations?: Record<string, { state: string; message: string }>
+  onChange: (e: React.ChangeEvent<any>, data?: any) => void
+  validations?: Record<string, { state: 'error'; message: string }>
   row: Lists
   orIndex?: number
   autoFocusRef?: React.Ref<HTMLInputElement>
+  from?: string
 }
 
 // this form is rendered from a parent or outlet
@@ -25,6 +26,7 @@ export const ListForm = ({
   row,
   orIndex,
   autoFocusRef,
+  from,
 }: Props) => {
   const { formatMessage } = useIntl()
   const listValueTypes = listValueTypeOptions.map((o) => o.value)
@@ -32,7 +34,7 @@ export const ListForm = ({
   // need to extract the jsonb data from the row
   // as inside filters it's name is a path
   // instead of it being inside of the data field
-  const jsonbData = jsonbDataFromRow(row)
+  const jsonbData = jsonbDataFromRow(row as unknown as Record<string, unknown>)
 
   return (
     <>
@@ -62,6 +64,7 @@ export const ListForm = ({
         id={row.list_id}
         data={jsonbData}
         orIndex={orIndex}
+        from={from!}
       />
       <SwitchField
         label={formatMessage({ id: 'Ob2kQz', defaultMessage: 'Obsolet' })}

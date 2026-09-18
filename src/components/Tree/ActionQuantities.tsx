@@ -5,6 +5,15 @@ import { removeChildNodes } from '../../modules/tree/removeChildNodes.ts'
 import { addOpenNodes } from '../../modules/tree/addOpenNodes.ts'
 import { useActionQuantitiesNavData } from '../../modules/useActionQuantitiesNavData.ts'
 
+type Props = {
+  projectId: string
+  subprojectId: string
+  placeId: string
+  placeId2?: string
+  actionId: string
+  level?: number
+}
+
 export const ActionQuantitiesNode = ({
   projectId,
   subprojectId,
@@ -12,7 +21,7 @@ export const ActionQuantitiesNode = ({
   placeId2,
   actionId,
   level = 9,
-}) => {
+}: Props) => {
   const navigate = useNavigate()
 
   const { navData } = useActionQuantitiesNavData({

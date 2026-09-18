@@ -7,24 +7,18 @@ import { Row } from '../components/shared/Row.tsx'
 import { Loading } from '../components/shared/Loading.tsx'
 import '../form.css'
 
-export const ActionReportQuantities = ({ from, hideTitle = false }) => {
+export const ActionReportQuantities = ({ hideTitle = false }: { from: string; hideTitle?: boolean }) => {
   const { projectId, subprojectId, placeId, placeId2, actionReportId } =
-    useParams({
-      from,
-    })
+    useParams({ strict: false })
   const navigate = useNavigate()
 
   const { loading, navData } = useActionReportQuantitiesNavData({
-    projectId,
-    subprojectId,
-    placeId,
-    placeId2,
-    actionReportId,
-  })
+    projectId: projectId!,    subprojectId: subprojectId!,    placeId: placeId!,    placeId2,
+    actionReportId: actionReportId!,  })
   const { navs, label, nameSingular } = navData
 
   const add = async () => {
-    const id = await createActionReportQuantity({ actionReportId })
+    const id = await createActionReportQuantity({actionReportId: actionReportId! })
     if (!id) return
     navigate({
       to: id,

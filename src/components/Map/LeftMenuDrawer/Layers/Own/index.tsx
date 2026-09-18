@@ -1,20 +1,25 @@
 import { useParams } from '@tanstack/react-router'
 import * as fluentUiReactComponents from '@fluentui/react-components'
 const { Accordion } = fluentUiReactComponents
+import type {
+  AccordionToggleData,
+  AccordionToggleEvent,
+} from '@fluentui/react-components'
 import { useAtom, atom } from 'jotai'
 import { usePGlite, useLiveQuery } from '@electric-sql/pglite-react'
 
 import { ErrorBoundary } from '../../../../shared/ErrorBoundary.tsx'
-import { OwnLayer } from './OwnLayer.tsx'
+import { OwnLayer, type OwnLayerRow } from './OwnLayer.tsx'
 import { getVectorLayerLabel } from '../../../../../modules/vectorLayerLabel.ts'
 import { languageAtom } from '../../../../../store.ts'
 import layerStyles from '../index.module.css'
-import type VectorLayers from '../../../../models/public/VectorLayers.ts'
+import type VectorLayers from '../../../../../models/public/VectorLayers.ts'
 import type LayerPresentations from '../../../../../models/public/LayerPresentations.ts'
+import type PlaceLevels from '../../../../../models/public/PlaceLevels.ts'
 
 // what accordion items are open
 // needs to be controlled to prevent opening when layer is deactivated
-const openItemsAtom = atom([])
+const openItemsAtom = atom<string[]>([])
 
 export const OwnLayers = () => {
   const [openItems, setOpenItems] = useAtom(openItemsAtom)
@@ -59,18 +64,23 @@ export const OwnLayers = () => {
   `,
     [projectId],
   )
-  const placeLevelsRes = useLiveQuery(
+  const placeLevelsRes = useLiveQuery<PlaceLevels>(
     `SELECT * FROM place_levels WHERE project_id = $1`,
     [projectId],
   )
   const placeLevels = placeLevelsRes?.rows ?? []
   // Attach the derived display label so children can render layer.label
-  const ownVectorLayers = (res?.rows ?? []).map((l) => ({
-    ...l,
-    label: getVectorLayerLabel(l as VectorLayers, language, placeLevels),
-  }))
+  const ownVectorLayers = ((res?.rows ?? []) as unknown as OwnLayerRow[]).map(
+    (l) => ({
+      ...l,
+      label: getVectorLayerLabel(l as VectorLayers, language, placeLevels),
+    }),
+  )
 
-  const onToggleItem = (event, { value: vectorLayerId, openItems }) => {
+  const onToggleItem = (
+    _event: AccordionToggleEvent,
+    { value: vectorLayerId, openItems }: AccordionToggleData<string>,
+  ) => {
     // use setTimeout to let the child checkbox set the layers active status
     setTimeout(async () => {
       // fetch layerPresentation's active status
@@ -78,7 +88,9 @@ export const OwnLayers = () => {
         `SELECT active FROM layer_presentations WHERE vector_layer_id = $1`,
         [vectorLayerId],
       )
-      const isActive: LayerPresentations['active'] = res?.rows?.[0]?.active
+      const isActive: LayerPresentations['active'] | undefined = (
+        res?.rows?.[0] as LayerPresentations | undefined
+      )?.active
       if (isActive) {
         // if not active, remove this item
         const newOpenItems = openItems.filter((id) => id !== vectorLayerId)

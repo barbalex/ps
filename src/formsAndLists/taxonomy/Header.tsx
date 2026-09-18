@@ -9,10 +9,10 @@ import { FormHeader } from '../../components/FormHeader/index.tsx'
 import { HistoryToggleButton } from '../../components/shared/HistoryCompare/HistoryToggleButton.tsx'
 import { addOperationAtom } from '../../store.ts'
 
-export const Header = ({ autoFocusRef, from }) => {
+export const Header = ({ autoFocusRef, from }: { autoFocusRef?: React.RefObject<HTMLInputElement | null>; from?: string; label?: string }) => {
   const isForm =
     from === '/data/projects/$projectId_/taxonomies/$taxonomyId_/taxonomy'
-  const { projectId, taxonomyId } = useParams({ from })
+  const { projectId, taxonomyId } = useParams({ strict: false })
   const basePath = `/data/projects/${projectId}/taxonomies/${taxonomyId}`
   const navigate = useNavigate()
   const addOperation = useSetAtom(addOperationAtom)
@@ -28,7 +28,7 @@ export const Header = ({ autoFocusRef, from }) => {
   }, [taxonomyId])
 
   const addRow = async () => {
-    const id = await createTaxonomy({ projectId })
+    const id = await createTaxonomy({projectId: projectId! })
     if (!id) return
     navigate({
       to: isForm ? `../../${id}/taxonomy` : `../${id}/taxonomy`,
@@ -43,7 +43,7 @@ export const Header = ({ autoFocusRef, from }) => {
         `SELECT * FROM taxonomies WHERE taxonomy_id = $1`,
         [taxonomyId],
       )
-      const prev = prevRes?.rows?.[0] ?? {}
+      const prev = (prevRes?.rows?.[0] ?? {}) as Record<string, unknown>
       await db.query(`DELETE FROM taxonomies WHERE taxonomy_id = $1`, [
         taxonomyId,
       ])
@@ -54,7 +54,7 @@ export const Header = ({ autoFocusRef, from }) => {
         operation: 'delete',
         prev,
       })
-      navigate({ to: isForm ? `../..` : `..` })
+      navigate({ to: isForm ? ('../..' as '..') : '..' })
     } catch (error) {
       console.error('Error deleting taxonomy:', error)
       // Could add a toast notification here
@@ -67,7 +67,7 @@ export const Header = ({ autoFocusRef, from }) => {
         `SELECT taxonomy_id FROM taxonomies WHERE project_id = $1 ORDER BY label`,
         [projectId],
       )
-      const taxonomies = res?.rows
+      const taxonomies = res?.rows as { taxonomy_id: string }[]
       const len = taxonomies.length
       const index = taxonomies.findIndex((p) => p.taxonomy_id === taxonomyIdRef.current)
       const next = taxonomies[(index + 1) % len]
@@ -88,7 +88,7 @@ export const Header = ({ autoFocusRef, from }) => {
         `SELECT taxonomy_id FROM taxonomies WHERE project_id = $1 ORDER BY label`,
         [projectId],
       )
-      const taxonomies = res?.rows
+      const taxonomies = res?.rows as { taxonomy_id: string }[]
       const len = taxonomies.length
       const index = taxonomies.findIndex((p) => p.taxonomy_id === taxonomyIdRef.current)
       const previous = taxonomies[(index + len - 1) % len]

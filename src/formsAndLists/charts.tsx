@@ -9,16 +9,14 @@ import { Loading } from '../components/shared/Loading.tsx'
 
 import '../form.css'
 
-const from = '/data/projects/$projectId_/subprojects/$subprojectId_/charts/'
-
 export const Charts = () => {
-  const { projectId, subprojectId, placeId, placeId2 } = useParams({ from })
+  const { projectId, subprojectId, placeId, placeId2 } = useParams({ strict: false })
   const navigate = useNavigate()
 
   const { loading, navData, isFiltered } = useChartsNavData({
-    projectId,
-    subprojectId,
-    placeId,
+    projectId: projectId!,
+    subprojectId: subprojectId!,
+    placeId: placeId!,
     placeId2,
   })
   const { navs, label, nameSingular } = navData

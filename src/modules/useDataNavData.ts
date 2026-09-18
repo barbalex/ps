@@ -16,6 +16,7 @@ import { buildNavLabel } from './buildNavLabel.ts'
 import { filterStringFromFilter } from './filterStringFromFilter.ts'
 
 type NavDataUnfiltered = {
+  id?: string
   projects_count_unfiltered: number
   projects_count_filtered: number
   users_count_unfiltered: number
@@ -23,11 +24,7 @@ type NavDataUnfiltered = {
   messages_count_unfiltered: number
 }
 
-type NavDataFiltered = {
-  projects_count_unfiltered: number
-  projects_count_filtered: number
-  users_count_unfiltered: number
-  accounts_count_unfiltered: number
+type NavDataFiltered = NavDataUnfiltered & {
   qcs_count_unfiltered?: number
   root_qcs_count_unfiltered?: number
   exports_count_unfiltered?: number
@@ -38,7 +35,6 @@ type NavDataFiltered = {
   widget_types_count_filtered?: number
   widgets_for_fields_count_unfiltered?: number
   widgets_for_fields_count_filtered?: number
-  messages_count_unfiltered: number
 }
 
 export const useDataNavData = () => {
@@ -138,7 +134,7 @@ export const useDataNavData = () => {
       `,
   )
   const loading = res === undefined
-  const row: NavDataFiltered | NavDataUnfiltered | undefined = res?.rows?.[0]
+  const row = res?.rows?.[0] as NavDataFiltered | undefined
 
   const parentArray = ['data']
   const parentUrl = `/${parentArray.join('/')}`

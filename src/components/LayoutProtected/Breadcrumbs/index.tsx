@@ -25,15 +25,21 @@ const getEffectiveParams = (
   )
 }
 
+// routes set `navDataFetcher` in beforeLoad context, but the match context
+// union does not expose it, so bridge it with a type-only assertion
+type NavDataContext = {
+  navDataFetcher: string
+}
+
 // this component extracts matches
 export const Breadcrumbs = () => {
   const intl = useIntl()
   const unfilteredMatches = useMatches()
   const navDataMatches = unfilteredMatches
-    .filter((match) => !!match.context?.navDataFetcher)
+    .filter((match) => !!(match.context as NavDataContext | undefined)?.navDataFetcher)
     .map((match) => ({
       routeId: match.routeId,
-      fetcherName: match.context.navDataFetcher,
+      fetcherName: (match.context as NavDataContext).navDataFetcher,
       params: getEffectiveParams(match.routeId, match.params),
     }))
     .reverse()

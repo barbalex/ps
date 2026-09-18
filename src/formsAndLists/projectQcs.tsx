@@ -18,15 +18,14 @@ import { subprojectNameSingularExpr } from '../modules/subprojectNameCols.ts'
 
 import '../form.css'
 
-const from = '/data/projects/$projectId_/qcs/'
 
 export const ProjectQcs = () => {
-  const { projectId } = useParams({ from })
+  const { projectId } = useParams({ strict: false })
   const navigate = useNavigate()
   const [language] = useAtom(languageAtom)
   const { formatMessage } = useIntl()
 
-  const { loading, navData, isFiltered } = useProjectQcsNavData({ projectId })
+  const { loading, navData, isFiltered } = useProjectQcsNavData({projectId: projectId! })
   const { navs, label, nameSingular } = navData
 
   const projectRes = useLiveQuery(
@@ -48,7 +47,7 @@ export const ProjectQcs = () => {
   )
 
   const add = async () => {
-    const id = await createProjectQc({ projectId })
+    const id = await createProjectQc({projectId: projectId! })
     if (!id) return
     navigate({ to: `${id}/` })
   }

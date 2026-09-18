@@ -83,7 +83,7 @@ export const usePlaceUsersNavData = ({
       FROM count_unfiltered, count_filtered
     `
 
-  const res = useLiveQuery(sql)
+  const res = useLiveQuery<NavData[number]>(sql)
 
   const loading = res === undefined
 

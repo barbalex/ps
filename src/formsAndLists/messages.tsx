@@ -30,7 +30,7 @@ export const Messages = () => {
         {loading ? (
           <Loading />
         ) : (
-          navs.map(({ id, date }) => (
+          (navs as { id: string; date?: Date | null }[]).map(({ id, date }) => (
             <Row key={id} to={id} label={date?.toISOString?.() ?? id} />
           ))
         )}

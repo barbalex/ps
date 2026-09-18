@@ -1,9 +1,17 @@
+import type { TableRowFilter } from '../store.ts'
+
 export const setNewFilterFromOld = ({
   name,
   value,
   orFilters,
   orIndex,
   targetType,
+}: {
+  name: string
+  value: unknown
+  orFilters: TableRowFilter[]
+  orIndex: number
+  targetType: string
 }) => {
   const useValueUnchanged =
     ['text', 'email', 'boolean', 'date'].includes(targetType) ||
@@ -19,8 +27,8 @@ export const setNewFilterFromOld = ({
         ? { $eq: value }
         : useValueUnchanged
           ? value
-          : !isNaN(value)
-            ? parseFloat(value)
+          : !isNaN(value as number)
+            ? parseFloat(value as string)
             : value
     newOrFilter[name] = coercedValue
   } else {
@@ -40,7 +48,7 @@ export const setNewFilterFromOld = ({
         : // replace the existing or filter
           orFilters.map((f, i) => (i === orIndex ? newOrFilter : f))
       : // remove the existing or filter
-        orFilters.filter((f, i) => i !== orIndex)
+        orFilters.filter((_f, i) => i !== orIndex)
   // console.log('setNewFilterFromOld 5', { newFilterWithEmptys })
   const newFilterWithoutEmptys = newFilterWithEmptys.filter(
     (f) => Object.keys(f).length > 0,

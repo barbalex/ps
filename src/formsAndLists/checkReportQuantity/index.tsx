@@ -18,12 +18,14 @@ import type ListValues from '../../models/public/ListValues.ts'
 
 import '../../form.css'
 
-export const CheckReportQuantity = ({ from }) => {
-  const { checkReportQuantityId, projectId } = useParams({ from })
+export const CheckReportQuantity = ({ from }: { from: string }) => {
+  const { checkReportQuantityId, projectId } = useParams({ strict: false })
   const addOperation = useSetAtom(addOperationAtom)
   const { formatMessage } = useIntl()
   const quantityLabel = formatMessage({ id: 'gRVMng', defaultMessage: 'Menge' })
-  const [validations, setValidations] = useState({})
+  const [validations, setValidations] = useState<
+    Record<string, { state: 'error'; message: string }>
+  >({})
 
   const autoFocusRef = useRef<HTMLInputElement>(null)
 
@@ -32,14 +34,16 @@ export const CheckReportQuantity = ({ from }) => {
     `SELECT * FROM check_report_quantities WHERE place_check_report_quantity_id = $1`,
     [checkReportQuantityId],
   )
-  const row: CheckReportQuantities | undefined = res?.rows?.[0]
+  const row = res?.rows?.[0] as CheckReportQuantities | undefined
 
   const unitsRes = useLiveQuery(
     `SELECT unit_id, name, type, list_id FROM units WHERE project_id = $1 ORDER BY sort, name`,
     [projectId],
   )
-  const units: Pick<Units, 'unit_id' | 'name' | 'type' | 'list_id'>[] =
-    unitsRes?.rows ?? []
+  const units = (unitsRes?.rows ?? []) as Pick<
+    Units,
+    'unit_id' | 'name' | 'type' | 'list_id'
+  >[]
   const unitIds = units.map((u) => u.unit_id)
   const unitLabelMap = Object.fromEntries(
     units.map((u) => [u.unit_id, u.name ?? u.unit_id]),
@@ -50,7 +54,7 @@ export const CheckReportQuantity = ({ from }) => {
     `SELECT * FROM list_values WHERE list_id = $1 AND (obsolete IS NULL OR obsolete = false) ORDER BY value_integer, value_numeric, value_text, label`,
     [selectedUnit?.list_id ?? '00000000-0000-0000-0000-000000000000'],
   )
-  const listValues: ListValues[] = listValuesRes?.rows ?? []
+  const listValues = (listValuesRes?.rows ?? []) as unknown as ListValues[]
   const hasListValues = listValues.length > 0
 
   const unitValueField =
@@ -76,9 +80,15 @@ export const CheckReportQuantity = ({ from }) => {
     listValueOptions.map((o) => [o.value, o.label]),
   )
 
-  const onChange = async (e, data) => {
-    const { name, value } = getValueFromChange(e, data)
-    if (row[name] === value) return
+  const onChange = async (
+    e: React.ChangeEvent<HTMLInputElement>,
+    data?: object,
+  ) => {
+    const { name, value } = getValueFromChange(
+      e,
+      data as Parameters<typeof getValueFromChange>[1],
+    )
+    if (row?.[name as keyof CheckReportQuantities] === value) return
 
     try {
       await db.query(
@@ -88,7 +98,7 @@ export const CheckReportQuantity = ({ from }) => {
     } catch (error) {
       setValidations((prev) => ({
         ...prev,
-        [name]: { state: 'error', message: error.message },
+        [name]: { state: 'error', message: (error as Error).message },
       }))
       return
     }
@@ -117,7 +127,7 @@ export const CheckReportQuantity = ({ from }) => {
           : selectedUnit?.type === 'numeric'
             ? parseFloat(valueStr)
             : valueStr
-    if (row[unitValueField] === typedValue) return
+    if (row?.[unitValueField] === typedValue) return
     try {
       await db.query(
         `UPDATE check_report_quantities SET ${unitValueField} = $1 WHERE place_check_report_quantity_id = $2`,
@@ -126,7 +136,7 @@ export const CheckReportQuantity = ({ from }) => {
     } catch (error) {
       setValidations((prev) => ({
         ...prev,
-        [unitValueField]: { state: 'error', message: error.message },
+        [unitValueField]: { state: 'error', message: (error as Error).message },
       }))
       return
     }
@@ -186,26 +196,27 @@ export const CheckReportQuantity = ({ from }) => {
                     id: 'gRVMng',
                     defaultMessage: 'Menge',
                   })}
-                  name={unitValueField}
+                  name={unitValueField ?? undefined}
                   list={listValueIds}
                   labelMap={listValueLabelMap}
                   value={currentListValueStr}
-                  onChange={(_e, data) =>
-                    onListValueChange(data?.value ?? null)
-                  }
+                  onChange={(
+                    _e: unknown,
+                    data: { value?: string | null },
+                  ) => onListValueChange(data?.value ?? null)}
                   layout="horizontal"
-                  validationState={validations?.[unitValueField]?.state}
-                  validationMessage={validations?.[unitValueField]?.message}
+                  validationState={validations?.[unitValueField ?? '']?.state}
+                  validationMessage={validations?.[unitValueField ?? '']?.message}
                 />
               ) : (
                 <DropdownFieldSimpleOptions
-                  name={unitValueField}
+                  name={unitValueField as string}
                   label={quantityLabel}
                   options={listValueIds}
                   value={currentListValueStr}
                   onChange={(e) => onListValueChange(e.target.value ?? null)}
-                  validationState={validations?.[unitValueField]?.state}
-                  validationMessage={validations?.[unitValueField]?.message}
+                  validationState={validations?.[unitValueField ?? '']?.state}
+                  validationMessage={validations?.[unitValueField ?? '']?.message}
                 />
               )
             ) : (

@@ -23,6 +23,8 @@ export const Qcs = () => {
 
   const { navData, loading, isFiltered } = useQcsNavData()
   const { navs, label, nameSingular } = navData
+  // navs only carry id/label when the tree node is open
+  const openNavs = navs as unknown as { id: string; label: string }[]
 
   const add = async () => {
     const qcsId = await createQc()
@@ -58,7 +60,7 @@ export const Qcs = () => {
         {loading ? (
           <Loading />
         ) : (
-          navs.map(({ id, label }) => (
+          openNavs.map(({ id, label }) => (
             <Row key={id} label={label ?? id} to={id} />
           ))
         )}

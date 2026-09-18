@@ -5,32 +5,47 @@ import { useSetAtom } from 'jotai'
 import { useIntl } from 'react-intl'
 
 import { addOperationAtom } from '../../../store.ts'
+import type VectorLayers from '../../../models/public/VectorLayers.ts'
 
-export const LayersDropdown = ({ vectorLayer, validationMessage }) => {
+type OnOptionSelect = NonNullable<
+  React.ComponentProps<typeof Dropdown>['onOptionSelect']
+>
+
+export const LayersDropdown = ({
+  vectorLayer,
+  validationMessage,
+}: {
+  vectorLayer: VectorLayers
+  validationMessage?: React.ComponentProps<
+    typeof fluentUiReactComponents.Field
+  >['validationMessage']
+}) => {
   const db = usePGlite()
   const addOperation = useSetAtom(addOperationAtom)
   const { formatMessage } = useIntl()
 
   const res = useLiveQuery(
     `
-    SELECT 
-      wfs_service_layer_id, 
-      name, 
-      label 
-    FROM wfs_service_layers 
-    WHERE wfs_service_id = $1 
+    SELECT
+      wfs_service_layer_id,
+      name,
+      label
+    FROM wfs_service_layers
+    WHERE wfs_service_id = $1
     ORDER BY label`,
     [vectorLayer.wfs_service_id],
   )
-  const options = (res?.rows ?? []).map(({ name, label }) => ({
-    value: name,
-    label,
-  }))
+  const options = ((res?.rows ?? []) as { name: string; label: string }[]).map(
+    ({ name, label }) => ({
+      value: name,
+      label,
+    }),
+  )
   const selectedOptions = options.filter(
     (option) => option.value === vectorLayer.wfs_service_layer_name,
   )
 
-  const onOptionSelect = async (e, data) => {
+  const onOptionSelect: OnOptionSelect = async (_e, data) => {
     await db.query(
       `UPDATE vector_layers SET wfs_service_layer_name = $1, name = $2, label_de = $3 WHERE vector_layer_id = $4`,
       [data.optionValue, data.optionValue, data.optionText, vectorLayer.vector_layer_id],
@@ -63,7 +78,7 @@ export const LayersDropdown = ({ vectorLayer, validationMessage }) => {
       <Dropdown
         name="wfs_service_layer_name"
         value={selectedOptions?.[0]?.label ?? ''}
-        selectedOptions={selectedOptions}
+        selectedOptions={selectedOptions as unknown as string[]}
         onOptionSelect={onOptionSelect}
         appearance="underline"
         clearable

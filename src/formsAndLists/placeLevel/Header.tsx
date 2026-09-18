@@ -13,10 +13,9 @@ interface Props {
   autoFocusRef: React.RefObject<HTMLInputElement>
 }
 
-const from = '/data/projects/$projectId_/place-levels/$placeLevelId/'
 
 export const Header = ({ autoFocusRef }: Props) => {
-  const { projectId, placeLevelId } = useParams({ from })
+  const { projectId, placeLevelId } = useParams({ strict: false })
   const basePath = `/data/projects/${projectId}/place-levels/${placeLevelId}`
   const navigate = useNavigate()
   const addOperation = useSetAtom(addOperationAtom)
@@ -37,7 +36,7 @@ export const Header = ({ autoFocusRef }: Props) => {
   }, [placeLevelId])
 
   const addRow = async () => {
-    const id = await createPlaceLevel({ project_id: projectId })
+    const id = await createPlaceLevel({ project_id: projectId! })
     if (!id) return
     navigate({
       to: `../${id}`,
@@ -52,7 +51,7 @@ export const Header = ({ autoFocusRef }: Props) => {
         `SELECT * FROM place_levels WHERE place_level_id = $1`,
         [placeLevelId],
       )
-      const prev = prevRes?.rows?.[0] ?? {}
+      const prev = (prevRes?.rows?.[0] ?? {}) as Record<string, unknown>
       await db.query(`DELETE FROM place_levels WHERE place_level_id = $1`, [
         placeLevelId,
       ])
@@ -75,7 +74,7 @@ export const Header = ({ autoFocusRef }: Props) => {
         `SELECT place_level_id FROM place_levels WHERE project_id = $1 ORDER BY label`,
         [projectId],
       )
-      const placeLevels = res?.rows
+      const placeLevels = res?.rows as { place_level_id: string }[]
       const len = placeLevels.length
       const index = placeLevels.findIndex(
         (p) => p.place_level_id === placeLevelId,
@@ -96,7 +95,7 @@ export const Header = ({ autoFocusRef }: Props) => {
         `SELECT place_level_id FROM place_levels WHERE project_id = $1 ORDER BY label`,
         [projectId],
       )
-      const placeLevels = res?.rows
+      const placeLevels = res?.rows as { place_level_id: string }[]
       const len = placeLevels.length
       const index = placeLevels.findIndex(
         (p) => p.place_level_id === placeLevelId,

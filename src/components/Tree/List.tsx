@@ -10,7 +10,18 @@ import { removeChildNodes } from '../../modules/tree/removeChildNodes.ts'
 import { addOpenNodes } from '../../modules/tree/addOpenNodes.ts'
 import { treeOpenNodesAtom } from '../../store.ts'
 
-export const ListNode = ({ projectId, nav, level = 4 }) => {
+type NavData = {
+  id: string
+  label: string
+}
+
+interface Props {
+  projectId: string
+  nav: NavData
+  level?: number
+}
+
+export const ListNode = ({ projectId, nav, level = 4 }: Props) => {
   const [openNodes] = useAtom(treeOpenNodesAtom)
   const location = useLocation()
   const navigate = useNavigate()

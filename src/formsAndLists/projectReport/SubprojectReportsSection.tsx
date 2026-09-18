@@ -5,6 +5,7 @@ import { Render } from '@puckeditor/core'
 import { TextField } from '../../components/shared/TextField.tsx'
 import { buildData } from '../chart/Chart/buildData/index.ts'
 import { SingleChart } from '../chart/Chart/Chart.tsx'
+import type Charts from '../../models/public/Charts.ts'
 import styles from './SubprojectReportsSection.module.css'
 
 import '@puckeditor/core/puck.css'
@@ -50,7 +51,7 @@ const SubprojectReportItem = ({
   )
 
   const report = res?.rows?.[0]
-  const charts = report?.charts ?? []
+  const charts = (report?.charts ?? []) as Record<string, any>[]
   const design = report?.design
   const jsonbData = (report?.data as Record<string, unknown>) ?? {}
   const chartsJson = JSON.stringify(charts)
@@ -86,7 +87,7 @@ const SubprojectReportItem = ({
   }
 
   // Build Puck config from field definitions and chart data
-  const components: Record<string, unknown> = {}
+  const components: Record<string, any> = {}
 
   fields.forEach((field) => {
     const componentName = `${field.name}Field`
@@ -116,20 +117,23 @@ const SubprojectReportItem = ({
       fields: {},
       defaultProps: {},
       render: () => {
-        const data = (chartDataMap[chart.chart_id] as {
+        const data = (chartDataMap[chart.chart_id] ?? {
+          data: [],
+          names: [],
+        }) as unknown as {
           data: unknown[]
-          names: string[]
-        }) ?? { data: [], names: [] }
+          years: number[]
+        }
         return (
           <div className={styles.chartWrapper}>
             <div className={styles.chartTitle}>
               {chart.name}
             </div>
             {chart.subjects_single === true ? (
-              chart.subjects?.map((subject) => (
+              chart.subjects?.map((subject: any) => (
                 <SingleChart
                   key={subject.chart_subject_id}
-                  chart={chart}
+                  chart={chart as unknown as Charts}
                   subjects={[subject]}
                   data={data}
                   synchronized={true}
@@ -137,7 +141,7 @@ const SubprojectReportItem = ({
               ))
             ) : (
               <SingleChart
-                chart={chart}
+                chart={chart as unknown as Charts}
                 subjects={chart.subjects ?? []}
                 data={data}
               />
@@ -201,7 +205,11 @@ export const SubprojectReportsSection = ({
     [projectId],
   )
 
-  const subprojects = res?.rows ?? []
+  const subprojects = (res?.rows ?? []) as {
+    subproject_id: string
+    subproject_name: string | null
+    fields: FieldDef[] | null
+  }[]
 
   if (!res) {
     return <div className={styles.loading}>Loading subproject reports...</div>

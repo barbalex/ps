@@ -23,14 +23,17 @@ export const MarkerSymbolPicker = ({ onChange, value }: Props) => {
       <Label label="Symbol" />
       <div className={styles.symbolContainer}>
         {wantedIconKeys.map((key) => {
-          const Component = icons[key]
+          const Component = (icons as Record<
+            string,
+            React.ComponentType<any>
+          >)[key]
 
           return (
             <MarkerSymbol
               key={key}
               Component={Component}
               name={key}
-              onChange={onChange}
+              onChange={onChange!}
               active={value === key}
             />
           )

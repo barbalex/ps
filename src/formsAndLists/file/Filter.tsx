@@ -15,8 +15,8 @@ export const FileFilter = ({ from }: Props) => {
         <TextField
           label={formatMessage({ id: 'Fl3jPw', defaultMessage: 'Bezeichnung' })}
           name="label"
-          value={row.label ?? ''}
-          onChange={onChange}
+          value={(row.label ?? '') as string}
+          onChange={(e, data) => onChange(e, data!)}
         />
       )}
     </Filter>

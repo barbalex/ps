@@ -10,8 +10,9 @@ export const SqlInitializer = () => {
 
   useEffect(() => {
     const run = async () => {
-      // 1. initialize pgLite db
-      const resultProjectsTableExists = await db.query(
+      try {
+        // 1. initialize pgLite db
+        const resultProjectsTableExists = await db.query<{ exists: boolean }>(
         `
           SELECT EXISTS (
             SELECT FROM pg_tables
@@ -22,7 +23,9 @@ export const SqlInitializer = () => {
       )
       const projectsTableExists = resultProjectsTableExists?.rows?.[0]?.exists
 
-      const resultLayerPresentationsTableExists = await db.query(
+      const resultLayerPresentationsTableExists = await db.query<{
+        exists: boolean
+      }>(
         `
           SELECT EXISTS (
             SELECT FROM pg_tables
@@ -478,8 +481,13 @@ export const SqlInitializer = () => {
       }
 
       setSqlInitializing(false)
+      } catch (error) {
+        // A rejected query or a failed sql-file import must never leave the
+        // app stuck on the "Initializing database" step forever.
+        console.error('SqlInitializer failed:', error)
+        setSqlInitializing(false)
+      }
     }
-
     run()
   }, [db, setSqlInitializing])
 

@@ -1,4 +1,6 @@
-type HistoryRowLike = Record<string, unknown>
+import type { PrimitiveType } from 'react-intl'
+
+type HistoryRowLike = Record<string, any>
 
 type GetDiffFieldsArgs<TRow extends HistoryRowLike> = {
   row: TRow | undefined
@@ -19,7 +21,7 @@ type GetDisplayFieldsArgs<TRow extends HistoryRowLike> = {
 type HistoryFieldLabel = {
   id: string
   defaultMessage: string
-  values?: Record<string, unknown>
+  values?: Record<string, PrimitiveType>
 }
 
 type HistoryFieldLabelMap = Record<string, HistoryFieldLabel>
@@ -61,7 +63,7 @@ type HistoryFieldValueMap<TRow extends HistoryRowLike> = Record<
 
 type FormatMessage = (
   descriptor: { id: string; defaultMessage: string },
-  values?: Record<string, unknown>,
+  values?: Record<string, PrimitiveType>,
 ) => string
 
 export const stringifyHistoryValue = (value: unknown) => {

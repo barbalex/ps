@@ -29,7 +29,7 @@ export const ProjectReportDesignHistoryCompare = () => {
   const { formatMessage } = useIntl()
   const navigate = useNavigate()
   const { projectId, projectReportDesignId, projectReportDesignHistoryId } =
-    useParams({ from, strict: false })
+    useParams({ strict: false })
 
   const formPath = `/data/projects/${projectId}/designs/${projectReportDesignId}`
   const historyPath = `${formPath}/histories`
@@ -73,7 +73,7 @@ export const ProjectReportDesignHistoryCompare = () => {
   const formatFieldValue = (
     field: string,
     history: ProjectReportDesignsHistory,
-  ) => stringifyHistoryValue(history[field])
+  ) => stringifyHistoryValue((history as Record<string, any>)[field])
 
   return (
     <HistoryCompare<ProjectReportDesignsHistory>

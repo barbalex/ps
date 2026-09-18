@@ -81,7 +81,7 @@ export const useObservationsNavData = ({
   // needs to work not only works for urlPath, for all opened paths!
   const isOpen = openNodes.some((array) => isEqual(array, ownArray))
 
-  const res = useLiveQuery(
+  const res = useLiveQuery<NavData[number]>(
     isOpen
       ? `
     WITH

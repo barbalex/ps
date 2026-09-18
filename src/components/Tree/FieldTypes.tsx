@@ -5,6 +5,14 @@ import { FieldTypeNode } from './FieldType.tsx'
 import { addOpenNodes } from '../../modules/tree/addOpenNodes.ts'
 import { removeChildNodes } from '../../modules/tree/removeChildNodes.ts'
 import { useFieldTypesNavData } from '../../modules/useFieldTypesNavData.ts'
+
+type NavData = {
+  id: string
+  label: string
+  count_unfiltered?: number
+  count_filtered?: number
+}[]
+
 export const FieldTypesNode = () => {
   const navigate = useNavigate()
 
@@ -39,7 +47,7 @@ export const FieldTypesNode = () => {
   }
 
   // only list navs if isOpen AND the first nav has an id
-  const showNavs = isOpen && navs.length > 0 && navs[0].id
+  const showNavs = isOpen && navs.length > 0 && (navs as NavData)[0].id
 
   return (
     <>
@@ -54,7 +62,7 @@ export const FieldTypesNode = () => {
         onClickButton={onClickButton}
       />
       {showNavs &&
-        navs.map((nav, i) => (
+        (navs as NavData).map((nav, i) => (
           <FieldTypeNode
             key={`${nav.id}-${i}`}
             nav={nav}

@@ -13,6 +13,22 @@ import { useIntl } from 'react-intl'
 
 import { treeOpenNodesAtom, designingAtom } from '../../store.ts'
 
+type NavData = {
+  id: string
+  label: string
+  count_unfiltered?: number
+  count_filtered?: number
+}
+
+type Props = {
+  projectId: string
+  subprojectId: string
+  placeId: string
+  placeId2?: string
+  nav: NavData
+  level?: number
+}
+
 export const CheckNode = ({
   projectId,
   subprojectId,
@@ -20,7 +36,7 @@ export const CheckNode = ({
   placeId2,
   nav,
   level = 8,
-}) => {
+}: Props) => {
   const [openNodes] = useAtom(treeOpenNodesAtom)
   const [isDesigning] = useAtom(designingAtom)
   const location = useLocation()

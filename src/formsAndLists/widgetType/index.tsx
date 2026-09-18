@@ -14,12 +14,13 @@ import type WidgetTypes from '../../models/public/WidgetTypes.ts'
 
 import '../../form.css'
 
-const from = '/data/widget-types/$widgetTypeId'
 
 export const WidgetType = () => {
-  const { widgetTypeId } = useParams({ from })
+  const { widgetTypeId } = useParams({ strict: false })
   const addOperation = useSetAtom(addOperationAtom)
-  const [validations, setValidations] = useState({})
+  const [validations, setValidations] = useState<
+    Record<string, { state: 'error'; message: string }>
+  >({})
 
   const autoFocusRef = useRef<HTMLInputElement>(null)
 
@@ -28,12 +29,15 @@ export const WidgetType = () => {
     `SELECT * FROM widget_types WHERE widget_type_id = $1`,
     [widgetTypeId],
   )
-  const row: WidgetTypes | undefined = res?.rows?.[0]
+  const row: WidgetTypes | undefined = res?.rows?.[0] as WidgetTypes | undefined
 
-  const onChange = async (e, data) => {
+  const onChange = async (
+    e: React.ChangeEvent<HTMLInputElement>,
+    data: Parameters<typeof getValueFromChange>[1],
+  ) => {
     const { name, value } = getValueFromChange(e, data)
     // only change if value has changed: maybe only focus entered and left
-    if (row[name] === value) return
+    if ((row as Record<string, any>)[name] === value) return
 
     const sql = `UPDATE widget_types SET ${name} = $1 WHERE widget_type_id = $2`
     try {
@@ -41,7 +45,7 @@ export const WidgetType = () => {
     } catch (error) {
       setValidations((prev) => ({
         ...prev,
-        [name]: { state: 'error', message: error.message },
+        [name]: { state: 'error', message: error instanceof Error ? error.message : String(error) },
       }))
       return
     }

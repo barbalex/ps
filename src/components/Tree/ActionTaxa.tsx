@@ -6,6 +6,15 @@ import { removeChildNodes } from '../../modules/tree/removeChildNodes.ts'
 import { addOpenNodes } from '../../modules/tree/addOpenNodes.ts'
 import { useActionTaxaNavData } from '../../modules/useActionTaxaNavData.ts'
 
+type Props = {
+  projectId: string
+  subprojectId: string
+  placeId: string
+  placeId2?: string
+  actionId: string
+  level?: number
+}
+
 export const ActionTaxaNode = ({
   projectId,
   subprojectId,
@@ -13,7 +22,7 @@ export const ActionTaxaNode = ({
   placeId2,
   actionId,
   level = 9,
-}) => {
+}: Props) => {
   const navigate = useNavigate()
 
   const { navData } = useActionTaxaNavData({

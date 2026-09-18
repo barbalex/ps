@@ -2,8 +2,21 @@ import { useIntl } from 'react-intl'
 
 import { RadioGroupField } from '../../components/shared/RadioGroupField.tsx'
 import { chartTypeOptions } from '../../modules/constants.ts'
+import type Charts from '../../models/public/Charts.ts'
 
-export const ChartType = ({ onChange, validations, row, ref }) => {
+type ValidationEntry = {
+  state?: 'error' | 'warning' | 'success' | 'none'
+  message?: string
+}
+
+type Props = {
+  onChange: (e: React.ChangeEvent<HTMLInputElement>, data?: object) => void
+  validations: Record<string, ValidationEntry>
+  row: Charts
+  ref?: React.Ref<HTMLInputElement>
+}
+
+export const ChartType = ({ onChange, validations, row, ref }: Props) => {
   const { formatMessage } = useIntl()
 
   const list = chartTypeOptions.map((o) => o.value)

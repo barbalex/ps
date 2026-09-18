@@ -1,20 +1,39 @@
 import { useState } from 'react'
 import axios from 'redaxios'
 import { useIntl } from 'react-intl'
+import * as fluentUiReactComponents from '@fluentui/react-components'
 
 import { TextField } from '../../../components/shared/TextField.tsx'
 import { setShortTermOnlineFromFetchError } from '../../../modules/setShortTermOnlineFromFetchError.ts'
+import type ObservationImports from '../../../models/public/ObservationImports.ts'
+import type Observations from '../../../models/public/Observations.ts'
 import styles from './Crs.module.css'
+
+type InputOnChangeData = Parameters<
+  NonNullable<
+    React.ComponentProps<typeof fluentUiReactComponents.Input>['onChange']
+  >
+>[1]
 
 export const Crs = ({
   observationImport,
   onChange: onChangePassed,
   validations,
+}: {
+  observationImport: ObservationImports
+  onChange: (
+    e: React.ChangeEvent<HTMLInputElement>,
+    data: InputOnChangeData,
+  ) => Promise<void>
+  validations?: Record<string, { state: 'error'; message: string }>
 }) => {
-  const [notification, setNotification] = useState()
+  const [notification, setNotification] = useState<string | undefined>()
   const { formatMessage } = useIntl()
 
-  const onChange: TextField['props']['onChange'] = (e, data) => {
+  const onChange: React.ComponentProps<typeof TextField>['onChange'] = (
+    e,
+    data,
+  ) => {
     onChangePassed(e, data)
     setNotification(undefined)
   }
@@ -33,7 +52,7 @@ export const Crs = ({
     } catch (error) {
       setShortTermOnlineFromFetchError(error)
       console.error('observationImport 2, onBlurCrs, resp error:', error)
-      if (error.status === 404) {
+      if ((error as { status?: number })?.status === 404) {
         // Tell user that the crs is not found
         return setNotification(
           formatMessage(
@@ -50,7 +69,9 @@ export const Crs = ({
     const defs = resp?.data
     if (!defs) return
 
-    const observations = observationImport?.observations ?? []
+    const observations: Observations[] = (
+      observationImport as unknown as { observations?: Observations[] }
+    )?.observations ?? []
 
     if (!observations.length) {
       return setNotification(

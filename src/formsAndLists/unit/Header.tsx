@@ -9,10 +9,9 @@ import { FormHeader } from '../../components/FormHeader/index.tsx'
 import { HistoryToggleButton } from '../../components/shared/HistoryCompare/HistoryToggleButton.tsx'
 import { addOperationAtom } from '../../store.ts'
 
-const from = '/data/projects/$projectId_/units/$unitId/'
 
-export const Header = ({ autoFocusRef }) => {
-  const { projectId, unitId } = useParams({ from })
+export const Header = ({ autoFocusRef }: { autoFocusRef?: React.RefObject<HTMLInputElement | null> }) => {
+  const { projectId, unitId } = useParams({ strict: false })
   const navigate = useNavigate()
   const addOperation = useSetAtom(addOperationAtom)
   const { formatMessage } = useIntl()
@@ -29,10 +28,10 @@ export const Header = ({ autoFocusRef }) => {
   const countRes = useLiveQuery(
     `SELECT COUNT(*) as count FROM units WHERE project_id = '${projectId}'`,
   )
-  const rowCount = countRes?.rows?.[0]?.count ?? 2
+  const rowCount = Number(countRes?.rows?.[0]?.count ?? 2)
 
   const addRow = async () => {
-    const id = await createUnit({ projectId })
+    const id = await createUnit({projectId: projectId! })
     if (!id) return
     navigate({
       to: `../${id}`,
@@ -46,7 +45,7 @@ export const Header = ({ autoFocusRef }) => {
       const prevRes = await db.query(`SELECT * FROM units WHERE unit_id = $1`, [
         unitId,
       ])
-      const prev = prevRes?.rows?.[0] ?? {}
+      const prev = (prevRes?.rows?.[0] ?? {}) as Record<string, unknown>
       await db.query(`DELETE FROM units WHERE unit_id = $1`, [unitId])
       addOperation({
         table: 'units',
@@ -68,7 +67,7 @@ export const Header = ({ autoFocusRef }) => {
         `SELECT unit_id FROM units WHERE project_id = $1 ORDER BY label`,
         [projectId],
       )
-      const units = res?.rows
+      const units = res?.rows as { unit_id: string }[]
       const len = units.length
       const index = units.findIndex((p) => p.unit_id === unitIdRef.current)
       const next = units[(index + 1) % len]
@@ -87,7 +86,7 @@ export const Header = ({ autoFocusRef }) => {
         `SELECT unit_id FROM units WHERE project_id = $1 ORDER BY label`,
         [projectId],
       )
-      const units = res?.rows
+      const units = res?.rows as { unit_id: string }[]
       const len = units.length
       const index = units.findIndex((p) => p.unit_id === unitIdRef.current)
       const previous = units[(index + len - 1) % len]

@@ -24,14 +24,15 @@ type ProjectCrsWithPresentation = ProjectCrs & {
   project_map_presentation_crs: Projects['map_presentation_crs']
 }
 
-const from = '/data/projects/$projectId_/crs/$projectCrsId/'
 
 // this form is rendered from a parent or outlet
-export const ProjectCrsForm = ({ autoFocusRef }) => {
-  const { projectCrsId, projectId } = useParams({ from, strict: false })
+export const ProjectCrsForm = ({ autoFocusRef }: { autoFocusRef?: React.RefObject<HTMLInputElement | null> }) => {
+  const { projectCrsId, projectId } = useParams({ strict: false })
   const addOperation = useSetAtom(addOperationAtom)
 
-  const [validations, setValidations] = useState({})
+  const [validations, setValidations] = useState<
+    Record<string, { state: 'error'; message: string }>
+  >({})
   const { formatMessage } = useIntl()
 
   const db = usePGlite()
@@ -45,12 +46,15 @@ export const ProjectCrsForm = ({ autoFocusRef }) => {
       WHERE project_crs_id = $1`,
     [projectCrsId],
   )
-  const row: ProjectCrsWithPresentation | undefined = res?.rows?.[0]
+  const row = res?.rows?.[0] as ProjectCrsWithPresentation | undefined
 
-  const onChange = async (e, data) => {
+  const onChange = async (
+    e: React.ChangeEvent<HTMLInputElement>,
+    data: Parameters<typeof getValueFromChange>[1],
+  ) => {
     const { name, value } = getValueFromChange(e, data)
     // only change if value has changed: maybe only focus entered and left
-    if (row?.[name] === value) return
+    if ((row as Record<string, any>)?.[name] === value) return
 
     try {
       await db.query(
@@ -60,7 +64,7 @@ export const ProjectCrsForm = ({ autoFocusRef }) => {
     } catch (error) {
       setValidations((prev) => ({
         ...prev,
-        [name]: { state: 'error', message: error.message },
+        [name]: { state: 'error', message: error instanceof Error ? error.message : String(error) },
       }))
       return
     }
@@ -79,22 +83,25 @@ export const ProjectCrsForm = ({ autoFocusRef }) => {
     })
   }
 
-  const onChangeMapPresentation = async (e, data) => {
+  const onChangeMapPresentation = async (
+    _e: React.ChangeEvent<HTMLInputElement>,
+    data: Parameters<typeof getValueFromChange>[1],
+  ) => {
     const prevRes = await db.query(
       `SELECT * FROM projects WHERE project_id = $1`,
       [projectId],
     )
-    const prev = prevRes.rows?.[0] ?? {}
+    const prev = (prevRes.rows?.[0] ?? {}) as Record<string, unknown>
 
     try {
       await db.query(
         `UPDATE projects SET map_presentation_crs = $1 WHERE project_id = $2`,
-        [data?.checked ? row?.code : null, projectId],
+        [(data as { checked?: boolean })?.checked ? row?.code : null, projectId],
       )
     } catch (error) {
       setValidations((prev) => ({
         ...prev,
-        map_presentation_crs: { state: 'error', message: error.message },
+        map_presentation_crs: { state: 'error', message: error instanceof Error ? error.message : String(error) },
       }))
       return
     }
@@ -109,7 +116,9 @@ export const ProjectCrsForm = ({ autoFocusRef }) => {
       rowId: projectId,
       operation: 'update',
       draft: {
-        map_presentation_crs: data?.checked ? row?.code : null,
+        map_presentation_crs: (data as { checked?: boolean })?.checked
+          ? row?.code
+          : null,
       },
       prev,
     })
@@ -139,7 +148,7 @@ export const ProjectCrsForm = ({ autoFocusRef }) => {
       <TextField
         label={formatMessage({ id: 'Fz4gCh', defaultMessage: 'Code' })}
         name="code"
-        type="code"
+        type={'code' as never}
         value={row.code ?? ''}
         onChange={onChange}
         validationState={validations?.code?.state}
@@ -148,7 +157,7 @@ export const ProjectCrsForm = ({ autoFocusRef }) => {
       <TextField
         label={formatMessage({ id: 'XkV5yZ', defaultMessage: 'Name' })}
         name="name"
-        type="name"
+        type={'name' as never}
         value={row.name ?? ''}
         onChange={onChange}
         validationState={validations?.name?.state}
@@ -157,7 +166,6 @@ export const ProjectCrsForm = ({ autoFocusRef }) => {
       <TextArea
         label={formatMessage({ id: 'Gv5hDi', defaultMessage: 'Proj4-Wert' })}
         name="proj4"
-        type="proj4"
         value={row.proj4 ?? ''}
         onChange={onChange}
         validationState={validations?.proj4?.state}

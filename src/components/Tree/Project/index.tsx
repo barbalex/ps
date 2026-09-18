@@ -35,7 +35,12 @@ import { Editing } from './Editing.tsx'
 
 const parentArray = ['data', 'projects']
 
-export const ProjectNode = ({ nav, level = 2 }) => {
+type Props = {
+  nav: { id: string; label: string }
+  level?: number
+}
+
+export const ProjectNode = ({ nav, level = 2 }: Props) => {
   const [openNodes] = useAtom(treeOpenNodesAtom)
   const [designingMap] = useAtom(designingAtom)
   const designing = designingMap[nav.id] ?? false

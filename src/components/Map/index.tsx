@@ -16,7 +16,9 @@ export const MapContainer = () => {
     refreshRate: 100,
     refreshOptions: { leading: false, trailing: true },
   })
-  const isNarrow = containerWidth < 700
+  // width is undefined before the first resize event;
+  // undefined < 700 evaluates to false, same as before
+  const isNarrow = (containerWidth as number) < 700
 
   return (
     <div

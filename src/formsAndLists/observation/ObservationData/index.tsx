@@ -16,16 +16,16 @@ import { observationFieldsSortedAtom } from '../../../store.ts'
 import styles from './index.module.css'
 import type Observations from '../../../models/public/Observations.ts'
 
-export const OccurenceData = ({ from }) => {
+export const OccurenceData = (_props: { from: string }) => {
   const [observationFieldsSorted, setObservationFieldsSorted] = useAtom(
     observationFieldsSortedAtom,
   )
-  const { observationId } = useParams({ from })
+  const { observationId } = useParams({ strict: false })
   const { formatMessage } = useIntl()
 
   const sortedBeobFields = observationFieldsSorted.slice()
 
-  const sortFn = (a, b) => {
+  const sortFn = (a: [string, unknown], b: [string, unknown]) => {
     const keyA = a[0]
     const keyB = b[0]
     const indexOfA = sortedBeobFields.indexOf(keyA)
@@ -48,17 +48,17 @@ export const OccurenceData = ({ from }) => {
     `SELECT * FROM observations WHERE observation_id = $1`,
     [observationId],
   )
-  const observation: Observations | undefined = res?.rows?.[0]
+  const observation = res?.rows?.[0] as Observations | undefined
 
   const rowData = observation?.data ?? {}
-  const fields = Object.entries(rowData)
+  const fields = Object.entries(rowData as Record<string, unknown>)
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    .filter(([key, value]) => exists(value))
+    .filter(([_key, value]) => exists(value))
     .sort(sortFn)
   const keys = fields.map((f) => f[0])
 
   const setSortedBeobFields = useCallback(
-    (newArray) => setObservationFieldsSorted(newArray),
+    (newArray: string[]) => setObservationFieldsSorted(newArray),
     [setObservationFieldsSorted],
   )
 
@@ -75,7 +75,7 @@ export const OccurenceData = ({ from }) => {
     setSortedBeobFields([...sortedBeobFields, ...additionalKeys])
   }, [keys, setSortedBeobFields, sortedBeobFields])
 
-  const moveField = (dragIndex, hoverIndex) => {
+  const moveField = (dragIndex: number, hoverIndex: number) => {
     // get item from keys
     const itemBeingDragged = keys[dragIndex]
     const itemBeingHovered = keys[hoverIndex]
@@ -93,7 +93,7 @@ export const OccurenceData = ({ from }) => {
     setSortedBeobFields(newArray)
   }
 
-  const renderField = (field, index) => (
+  const renderField = (field: [string, unknown], index: number) => (
     <Field
       key={field[0]}
       label={field[0]}
@@ -113,7 +113,7 @@ export const OccurenceData = ({ from }) => {
   return (
     <ErrorBoundary>
       <div>
-        <Section title={formatMessage({ id: 'obs0Raw', defaultMessage: 'Rohdaten' })} />
+        <Section title={formatMessage({ id: 'obs0Raw', defaultMessage: 'Rohdaten' })}>{null}</Section>
         <p className={styles.explainer}>{formatMessage({ id: 'obs0Dnd', defaultMessage: 'Felder per Drag-and-Drop sortieren' })}</p>
         <div className={styles.outerContainer}>
           <div className={styles.container}>

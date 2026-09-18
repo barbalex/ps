@@ -1,6 +1,6 @@
 import isUuid from 'is-uuid'
 
-export const getLastIdFromUrl = (url: string[]) => {
+export const getLastIdFromUrl = (url: string[]): string | undefined => {
   if (!url) return undefined
   if (url.length === 0) return undefined
   const last = url.at(-1)

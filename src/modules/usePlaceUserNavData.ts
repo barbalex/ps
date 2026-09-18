@@ -30,7 +30,7 @@ export const usePlaceUserNavData = ({
   const location = useLocation()
   const { formatMessage } = useIntl()
 
-  const res = useLiveQuery(
+  const res = useLiveQuery<NavData>(
     `
       SELECT
         place_role_id AS id,

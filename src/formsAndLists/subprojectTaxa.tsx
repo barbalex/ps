@@ -15,8 +15,8 @@ import { subprojectNameSingularExpr } from '../modules/subprojectNameCols.ts'
 import styles from './subprojectTaxa.module.css'
 import '../form.css'
 
-export const SubprojectTaxa = ({ from, hideHeader = false }) => {
-  const { projectId, subprojectId } = useParams({ strict: false, from })
+export const SubprojectTaxa = ({ from, hideHeader = false }: { from: string; hideHeader?: boolean }) => {
+  const { projectId, subprojectId } = useParams({ strict: false })
   const navigate = useNavigate()
   const { formatMessage } = useIntl()
   const [language] = useAtom(languageAtom)
@@ -27,12 +27,11 @@ export const SubprojectTaxa = ({ from, hideHeader = false }) => {
     [projectId],
   )
   const subprojectNameSingular =
-    projectRes?.rows?.[0]?.subproject_name_singular ?? ''
+    (projectRes?.rows?.[0]?.subproject_name_singular as string | undefined) ??
+    ''
 
   const { loading, navData, isFiltered } = useSubprojectTaxaNavData({
-    projectId,
-    subprojectId,
-  })
+    projectId: projectId!,    subprojectId: subprojectId!,  })
   const { navs, label, nameSingular } = navData
   const canFilter =
     !hideHeader &&
@@ -47,7 +46,7 @@ export const SubprojectTaxa = ({ from, hideHeader = false }) => {
   )
 
   const add = async () => {
-    const id = await createSubprojectTaxon({ subprojectId })
+    const id = await createSubprojectTaxon({subprojectId: subprojectId! })
     if (!id) return
     navigate({ to: `${taxaBaseUrl}/${id}/` })
   }

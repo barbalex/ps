@@ -5,6 +5,25 @@ import { useLiveQuery } from '@electric-sql/pglite-react'
 
 import { FilteringComboboxOptions } from './options.tsx'
 
+type ComboboxProps = React.ComponentProps<typeof Combobox>
+type FieldProps = React.ComponentProps<typeof Field>
+
+type Props = {
+  name: string
+  label?: string
+  table: string
+  // defaults to name, used for cases where the id field is not the same as the name field (?)
+  idField?: string
+  value?: string
+  onChange: (e: React.ChangeEvent<HTMLInputElement>) => void
+  autoFocus?: boolean
+  ref?: ComboboxProps['ref']
+  // accepted for consistency with other fields but not used
+  include?: unknown
+  validationMessage?: FieldProps['validationMessage']
+  validationState?: FieldProps['validationState']
+}
+
 export const ComboboxFilteringForTable = ({
   name,
   label,
@@ -14,13 +33,13 @@ export const ComboboxFilteringForTable = ({
   onChange,
   autoFocus,
   ref,
-}) => {
+}: Props) => {
   const [filter, setFilter] = useState('')
   const [debouncedFilter, setDebouncedFilter] = useState('')
 
   const res = useLiveQuery(
     `
-      SELECT * FROM ${table} 
+      SELECT * FROM ${table}
       ${value ? `WHERE ${idField ?? name} = '${value}'` : ''}
       ORDER BY label`,
   )
@@ -28,8 +47,8 @@ export const ComboboxFilteringForTable = ({
   const selectedOptions = useMemo(
     () =>
       results.map((o) => ({
-        text: o.label,
-        value: o[idField ?? name],
+        text: o.label as string,
+        value: o[idField ?? name] as string,
       })),
     [idField, name, results],
   )
@@ -48,14 +67,19 @@ export const ComboboxFilteringForTable = ({
     return () => clearTimeout(timer)
   }, [filter])
 
-  const onInput = (event) => {
-    const filter = event.target.value
+  const onInput = (event: React.FormEvent<HTMLInputElement>) => {
+    const filter = (event.target as HTMLInputElement).value
     setFilter(filter)
   }
 
-  const onOptionSelect = (e, data) => {
-    if (data.optionValue === 0) return setFilter('') // No options found
-    onChange({ target: { name, value: data.optionValue } })
+  const onOptionSelect: NonNullable<ComboboxProps['onOptionSelect']> = (
+    _e,
+    data,
+  ) => {
+    if ((data.optionValue as string | number) === 0) return setFilter('') // No options found
+    onChange({
+      target: { name, value: data.optionValue },
+    } as unknown as React.ChangeEvent<HTMLInputElement>)
   }
 
   // console.log('FilteringCombobox', {
@@ -75,7 +99,7 @@ export const ComboboxFilteringForTable = ({
       <Combobox
         name={name}
         value={filter}
-        selectedOptions={selectedOptions}
+        selectedOptions={selectedOptions as unknown as string[]}
         onOptionSelect={onOptionSelect}
         onInput={onInput}
         appearance="underline"

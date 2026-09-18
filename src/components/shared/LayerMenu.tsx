@@ -22,7 +22,18 @@ import {
 } from '../../store.ts'
 import type LayerPresentations from '../../models/public/LayerPresentations.ts'
 
-export const LayerMenu = ({ table, level, placeNamePlural, from }) => {
+type Props = {
+  table: string
+  level: number
+  placeNamePlural?: string | null
+  // accepted for compatibility but not used
+  from?: string
+}
+
+// geometries from PostGIS may be plain geometries or GeometryCollections
+type GeometryWithParts = GeoJSON.Geometry & { geometries?: GeoJSON.Geometry[] }
+
+export const LayerMenu = ({ table, level, placeNamePlural }: Props) => {
   const setMapBounds = useSetAtom(mapBoundsAtom)
   const addOperation = useSetAtom(addOperationAtom)
   const addNotification = useSetAtom(addNotificationAtom)
@@ -42,7 +53,7 @@ export const LayerMenu = ({ table, level, placeNamePlural, from }) => {
     ? formatMessage(tableLabelMessages[table])
     : table
 
-  const { projectId, subprojectId } = useParams({ from })
+  const { projectId, subprojectId } = useParams({ strict: false })
 
   const db = usePGlite()
 
@@ -56,13 +67,18 @@ export const LayerMenu = ({ table, level, placeNamePlural, from }) => {
     [projectId, table, level],
   )
   const row = res?.rows?.[0]
-  const vectorLayerId: string | undefined = row?.vl_vector_layer_id
+  const vectorLayerId: string | undefined =
+    row?.vl_vector_layer_id as string | undefined
   const layerPresentation: LayerPresentations | undefined =
-    row?.layer_presentation_id ? row : undefined
+    row?.layer_presentation_id
+      ? (row as unknown as LayerPresentations)
+      : undefined
 
   const showLayer = layerPresentation?.active ?? false
   const onClickShowLayer = async () => {
-    const lpId = layerPresentation?.layer_presentation_id
+    const lpId = layerPresentation?.layer_presentation_id as
+      | string
+      | undefined
     if (showLayer) {
       // deactivate
       db.query(
@@ -86,7 +102,10 @@ export const LayerMenu = ({ table, level, placeNamePlural, from }) => {
     }
     let newLpId = lpId
     if (!newLpId && vectorLayerId) {
-      newLpId = await createLayerPresentation({ vectorLayerId, active: true })
+      newLpId = await createLayerPresentation({
+        vectorLayerId: vectorLayerId as never,
+        active: true,
+      })
     } else if (newLpId) {
       db.query(
         `UPDATE layer_presentations SET active = TRUE WHERE layer_presentation_id = $1`,
@@ -113,7 +132,10 @@ export const LayerMenu = ({ table, level, placeNamePlural, from }) => {
     // activate layer if not already active
     let lpId: string | undefined = layerPresentation?.layer_presentation_id
     if (!lpId && vectorLayerId) {
-      lpId = await createLayerPresentation({ vectorLayerId, active: true })
+      lpId = await createLayerPresentation({
+        vectorLayerId: vectorLayerId as never,
+        active: true,
+      })
     } else if (lpId && !showLayer) {
       db.query(
         `UPDATE layer_presentations SET active = true WHERE layer_presentation_id = $1`,
@@ -134,46 +156,52 @@ export const LayerMenu = ({ table, level, placeNamePlural, from }) => {
     // get all geometries from layer
     // first get all places with level
     // then get all actions/checks/observations with place_id
-    let geometries = []
-    const placesResult = await db.query(
+    let geometries: GeometryWithParts[] = []
+    const placesResult = await db.query<{
+      place_id: string
+      geometry: GeometryWithParts
+    }>(
       `SELECT place_id, ST_AsGeoJSON(geometry)::json as geometry FROM places WHERE subproject_id = $1 AND level = $2`,
       [subprojectId, level],
     )
-    const places = placesResult?.rows
+    const places = placesResult?.rows ?? []
     if (table === 'places') {
       geometries = places.map((place) => place.geometry)
     } else if (table === 'actions') {
-      const res = await db.query(
+      const res = await db.query<{ action_id: string; geometry: GeometryWithParts }>(
         `SELECT action_id, ST_AsGeoJSON(geometry)::json as geometry FROM actions WHERE place_id = ANY($1)`,
         [places.map((place) => place.place_id)],
       )
-      const actions = res?.rows
+      const actions = res?.rows ?? []
       geometries = actions.map((action) => action.geometry)
     } else if (table === 'checks') {
-      const res = await db.query(
+      const res = await db.query<{ check_id: string; geometry: GeometryWithParts }>(
         `SELECT check_id, ST_AsGeoJSON(geometry)::json as geometry FROM checks WHERE place_id = ANY($1)`,
         [places.map((place) => place.place_id)],
       )
-      const checks = res?.rows
+      const checks = res?.rows ?? []
       geometries = checks.map((check) => check.geometry)
     } else if (table === 'observations') {
-      const res = await db.query(
+      const res = await db.query<{
+        observation_id: string
+        geometry: GeometryWithParts
+      }>(
         `SELECT observation_id, ST_AsGeoJSON(geometry)::json as geometry FROM observations WHERE place_id = ANY($1)`,
         [places.map((place) => place.place_id)],
       )
-      const observations = res?.rows
+      const observations = res?.rows ?? []
       geometries = observations.map((o) => o.geometry)
     }
     // geometries are stored as GeometryCollection (PostGIS type)
     // collect all individual geometries into a flat Feature array for bbox calculation
-    const features = []
+    const features: GeoJSON.Feature[] = []
     for (const geometry of geometries) {
       if (geometry?.geometries) {
         for (const g of geometry.geometries) {
           features.push({ type: 'Feature', geometry: g, properties: {} })
         }
       } else if (geometry) {
-        features.push(geometry)
+        features.push(geometry as unknown as GeoJSON.Feature)
       }
     }
     if (!features.length) {
@@ -193,7 +221,7 @@ export const LayerMenu = ({ table, level, placeNamePlural, from }) => {
     const fC = featureCollection(features)
     const bufferedFC = buffer(fC, 0.05)
 
-    const newBbox = bbox(bufferedFC)
+    const newBbox = bbox(bufferedFC as GeoJSON.FeatureCollection)
     const newBounds = boundsFromBbox(newBbox)
 
     setMapBounds(newBounds)

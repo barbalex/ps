@@ -15,6 +15,11 @@ import { jsonbDataFromRow } from '../../modules/jsonbDataFromRow.ts'
 
 import '../../form.css'
 
+type Validation = {
+  state: 'error'
+  message: string
+}
+
 export const PlaceForm = ({
   onChange,
   validations,
@@ -23,9 +28,17 @@ export const PlaceForm = ({
   from,
   autoFocusRef,
   withContainer = true,
+}: {
+  onChange: (e: React.ChangeEvent<any>, data?: any) => void
+  validations?: Record<string, Validation>
+  row: Record<string, unknown>
+  orIndex?: number
+  from: string
+  autoFocusRef?: React.RefObject<HTMLInputElement | null>
+  withContainer?: boolean
 }) => {
   const { formatMessage } = useIntl()
-  const { subprojectId, projectId, placeId2 } = useParams({ from })
+  const { subprojectId, projectId, placeId2 } = useParams({ strict: false })
   const { pathname } = useLocation()
   const isFilter = pathname.endsWith('filter')
   const [designing] = useAtom(designingAtom)
@@ -37,7 +50,8 @@ export const PlaceForm = ({
     [projectId, level],
   )
   const nameSingular =
-    nameRes?.rows?.[0]?.[`name_singular_${language}`] ?? 'Population'
+    (nameRes?.rows?.[0]?.[`name_singular_${language}`] as string | undefined) ??
+    'Population'
 
   // need to extract the jsonb data from the row
   // as inside filters it's name is a path
@@ -53,8 +67,8 @@ export const PlaceForm = ({
         <RadioGroupField
           label={formatMessage({ id: 'bDeHkI', defaultMessage: 'Stufe' })}
           name="level"
-          list={[1, 2]}
-          value={row.level ?? ''}
+          list={[1, 2] as unknown as string[]}
+          value={(row.level ?? '') as unknown as string}
           onChange={onChange}
           validationState={validations?.level?.state}
           validationMessage={validations?.level?.message}
@@ -66,7 +80,7 @@ export const PlaceForm = ({
           defaultMessage: 'Name',
         })}
         name="name"
-        value={row.name}
+        value={row.name as string | number | undefined}
         onChange={onChange}
         autoFocus
         ref={autoFocusRef}
@@ -82,7 +96,7 @@ export const PlaceForm = ({
           { nameSingular },
         )}
         name="since"
-        value={row.since}
+        value={row.since as string | number | undefined}
         type="number"
         onChange={onChange}
         validationState={validations?.since?.state}
@@ -98,7 +112,7 @@ export const PlaceForm = ({
           { nameSingular },
         )}
         name="until"
-        value={row.until}
+        value={row.until as string | number | undefined}
         type="number"
         onChange={onChange}
         validationState={validations?.until?.state}
@@ -129,7 +143,7 @@ export const PlaceForm = ({
       <Jsonb
         table="places"
         idField="place_id"
-        id={row.place_id}
+        id={row.place_id as string}
         data={jsonbData}
         orIndex={orIndex}
         from={from}
@@ -140,12 +154,15 @@ export const PlaceForm = ({
           defaultMessage: 'Relevant für Berichte',
         })}
         name="relevant_for_reports"
-        value={row.relevant_for_reports}
+        value={row.relevant_for_reports as never}
         onChange={onChange}
         validationState={validations?.relevant_for_reports?.state}
         validationMessage={validations?.relevant_for_reports?.message}
       />
-      <EditingGeometry row={row} table="places" />
+      <EditingGeometry
+        row={row as Parameters<typeof EditingGeometry>[0]['row']}
+        table="places"
+      />
     </>
   )
 

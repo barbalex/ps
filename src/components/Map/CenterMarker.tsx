@@ -1,5 +1,6 @@
 import { useState, useCallback } from 'react'
 import { Marker, Popup, useMap, useMapEvent } from 'react-leaflet'
+import * as L from 'leaflet'
 import { MdCenterFocusWeak } from 'react-icons/md'
 import * as ReactDOMServer from 'react-dom/server'
 

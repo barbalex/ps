@@ -40,7 +40,7 @@ export const useListNavData = ({ projectId, listId }: Props) => {
 
   const loading = res === undefined
 
-  const nav: NavData | undefined = res?.rows?.[0]
+  const nav = res?.rows?.[0] as NavData | undefined
 
   const parentArray = ['data', 'projects', projectId, 'lists']
   const parentUrl = `/${parentArray.join('/')}`

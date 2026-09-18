@@ -3,7 +3,19 @@ import { isEqual } from 'es-toolkit'
 
 import { Node } from './Node.tsx'
 
-export const TaxonNode = ({ projectId, taxonomyId, nav, level = 6 }) => {
+type Props = {
+  projectId: string
+  taxonomyId: string
+  nav: { id: string; label: string }
+  level?: number
+}
+
+export const TaxonNode = ({
+  projectId,
+  taxonomyId,
+  nav,
+  level = 6,
+}: Props) => {
   const location = useLocation()
 
   const urlPath = location.pathname.split('/').filter((p) => p !== '')

@@ -54,7 +54,7 @@ export const Passkeys = ({ onLoggedIn }: PasskeysProps) => {
             result.data &&
             typeof result.data === 'object' &&
             'error' in result.data &&
-            result.data.error?.message) ||
+            (result.data.error as { message?: string })?.message) ||
           formatMessage({
             id: 'authPasskeyFailed',
             defaultMessage:

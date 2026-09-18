@@ -20,8 +20,9 @@ import {
 import type ObservationImports from '../../models/public/ObservationImports.ts'
 import type ObservationImportsHistory from '../../models/public/ObservationImportsHistory.ts'
 
-const from =
-  '/data/projects/$projectId_/subprojects/$subprojectId_/observation-imports/$observationImportId_/histories/$observationImportHistoryId'
+// the shared HistoryCompare requires rows to be indexable
+type ObservationImportsHistoryRow = ObservationImportsHistory &
+  Record<string, unknown>
 
 export const ObservationImportHistoryCompare = () => {
   const { formatMessage } = useIntl()
@@ -31,10 +32,7 @@ export const ObservationImportHistoryCompare = () => {
     subprojectId,
     observationImportId,
     observationImportHistoryId,
-  } = useParams({
-    from,
-    strict: false,
-  })
+  } = useParams({ strict: false })
 
   const formPath = `/data/projects/${projectId}/subprojects/${subprojectId}/observation-imports/${observationImportId}`
   const historyPath = `${formPath}/histories`
@@ -113,7 +111,7 @@ export const ObservationImportHistoryCompare = () => {
   })
 
   const formatFieldValue =
-    createHistoryFieldValueFormatter<ObservationImportsHistory>({
+    createHistoryFieldValueFormatter<ObservationImportsHistoryRow>({
       formatMessage,
       fieldValueMap: {
         geometry_method: {
@@ -139,7 +137,7 @@ export const ObservationImportHistoryCompare = () => {
       visibleCurrentFields.has(field) && !excludedDisplayFields.has(field),
   )
 
-  const rowLikeHistory = row as ObservationImportsHistory
+  const rowLikeHistory = row as unknown as ObservationImportsHistoryRow
   const leftDisplayFields = [
     ...displayFields,
     'updated_at',
@@ -165,7 +163,7 @@ export const ObservationImportHistoryCompare = () => {
     }))
 
   return (
-    <HistoryCompare<ObservationImportsHistory>
+    <HistoryCompare<ObservationImportsHistoryRow>
       onBack={() => navigate({ to: formPath })}
       leftContent={null}
       leftHistories={[rowLikeHistory]}
@@ -175,14 +173,14 @@ export const ObservationImportHistoryCompare = () => {
       preferredOrder={preferredOrder}
       formatFieldLabel={formatFieldLabel}
       formatFieldValue={formatFieldValue}
-      row={row}
+      row={row as unknown as Record<string, unknown> | undefined}
       historyConfig={{
         historyTable: 'observation_imports_history',
         rowIdField: 'observation_import_id',
         rowId: observationImportId,
         historyPath,
         routeHistoryId: observationImportHistoryId,
-        currentRow: row,
+        currentRow: row as unknown as Record<string, unknown> | undefined,
       }}
       restoreConfig={{
         db,
@@ -190,7 +188,7 @@ export const ObservationImportHistoryCompare = () => {
         rowIdName: 'observation_import_id',
         rowId: observationImportId,
         excludedRestoreFields,
-        addOperation,
+        addOperation: addOperation as never,
       }}
     />
   )

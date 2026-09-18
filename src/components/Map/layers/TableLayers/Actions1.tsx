@@ -2,15 +2,17 @@ import { useLiveQuery } from '@electric-sql/pglite-react'
 import { useLocation } from '@tanstack/react-router'
 
 import { TableLayer } from './TableLayer.tsx'
+import type { TableLayerProps } from './TableLayer.tsx'
+import type { GeoJsonProperties, GeometryCollection } from 'geojson'
 import type Actions from '../../../../models/public/Actions.ts'
 
-export const Actions1 = ({ layerPresentation }) => {
+export const Actions1 = ({ layerPresentation }: { layerPresentation: TableLayerProps['layerPresentation'] }) => {
   const { pathname } = useLocation()
   const pathParts = pathname.split('/')
   const actionsIdx = pathParts.indexOf('actions')
   const actionId = actionsIdx !== -1 ? pathParts[actionsIdx + 1] : undefined
   // TODO: query only inside current map bounds using places.bbox
-  const resActions = useLiveQuery(
+  const resActions = useLiveQuery<Actions>(
     `
     SELECT actions.action_id, actions.place_id, actions.date, actions.data,
       ST_AsGeoJSON(actions.geometry)::json as geometry, actions.bbox, actions.relevant_for_reports,
@@ -34,12 +36,14 @@ export const Actions1 = ({ layerPresentation }) => {
      
     const { geometry, bbox, data, ...properties } = p
     const fc = {
-      type: 'FeatureCollection',
-      features: (geometry?.geometries ?? []).map((g) => ({
-        type: 'Feature',
-        geometry: g,
-        properties: {},
-      })),
+      type: 'FeatureCollection' as const,
+      features: ((geometry as GeometryCollection | null)?.geometries ?? []).map(
+        (g) => ({
+          type: 'Feature' as const,
+          geometry: g,
+          properties: {} as GeoJsonProperties,
+        }),
+      ),
     }
     fc.features.forEach((f) => {
       f.properties = properties ?? {}
@@ -49,7 +53,7 @@ export const Actions1 = ({ layerPresentation }) => {
         // ensure that properties are not overwritten
         // but also make sure if key is used for styling, it is not changed...
         if (key in properties) {
-          f.properties[`_${key}`] = properties[key]
+          f.properties[`_${key}`] = properties[key as keyof typeof properties]
         }
         f.properties[key] = value
         }

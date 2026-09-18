@@ -22,7 +22,7 @@ export const setGeometries = async ({
   observationImport,
   setNotification,
 }: Props) => {
-  const db = store.get(pgliteDbAtom)
+  const db = store.get(pgliteDbAtom)!
   const intl = store.get(intlAtom)
   const taskId = `set-geometries-${observationImport.observation_import_id}`
 
@@ -36,7 +36,7 @@ export const setGeometries = async ({
   } catch (error) {
     setShortTermOnlineFromFetchError(error)
     console.error('observationImport 2, onBlurCrs, resp error:', error)
-    if (error.status === 404) {
+    if ((error as { status?: number })?.status === 404) {
       // Tell user that the crs is not found
       return setNotification(
         `No definitions were found for crs '${observationImport.crs}'`,
@@ -48,15 +48,15 @@ export const setGeometries = async ({
 
   proj4.defs([
     ['EPSG:4326', '+proj=longlat +datum=WGS84 +no_defs +type=crs'],
-    [observationImport.crs, defs],
-  ])
+    [observationImport.crs as string, defs],
+  ] as [string, string][])
 
   // const observations = observationImport?.observations ?? []
   const res = await db.query(
     `SELECT * FROM observations WHERE observation_import_id = $1 AND geometry IS NULL`,
     [observationImport?.observation_import_id],
   )
-  const observationsWithoutGeometry: Observations[] = res?.rows
+  const observationsWithoutGeometry = res?.rows as Observations[]
 
   // Register background task
   backgroundTasks.add(
@@ -77,11 +77,16 @@ export const setGeometries = async ({
       const batch = observationsWithoutGeometry.slice(i, i + batchSize)
 
       for (const o of batch) {
+        const data = o.data as Record<string, unknown>
         const coordinates = [
-          o.data[observationImport?.x_coordinate_field],
-          o.data[observationImport?.y_coordinate_field],
+          data[observationImport?.x_coordinate_field as string],
+          data[observationImport?.y_coordinate_field as string],
         ]
-        const position = proj4(observationImport.crs, 'EPSG:4326', coordinates)
+        const position = proj4(
+          observationImport.crs as string,
+          'EPSG:4326',
+          coordinates as number[],
+        )
         // TODO: why is reversing needed? is it a bug?
         const geometry = {
           type: 'GeometryCollection',
@@ -110,7 +115,7 @@ export const setGeometries = async ({
 
     backgroundTasks.complete(taskId)
   } catch (error) {
-    backgroundTasks.error(taskId, error.message)
+    backgroundTasks.error(taskId, (error as Error).message)
     throw error
   }
 }

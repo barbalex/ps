@@ -1,7 +1,17 @@
 // import { useLiveQuery } from '@electric-sql/pglite-react'
 
+import type LayerPresentations from '../../../../models/public/LayerPresentations.ts'
+import type VectorLayers from '../../../../models/public/VectorLayers.ts'
 import { WFS } from './WFS.tsx'
-import { PVLGeom } from './PVLGeom.tsx'
+import { PVLGeom as PVLGeomBase } from './PVLGeom.tsx'
+
+type Props = {
+  layer: VectorLayers
+  layerPresentation: LayerPresentations
+}
+
+// type-only bridge: this is the only call site and it passes no display
+const PVLGeom = PVLGeomBase as unknown as (props: { layer: VectorLayers }) => React.ReactElement
 
 /**
  * This component chooses whether to render
@@ -9,7 +19,7 @@ import { PVLGeom } from './PVLGeom.tsx'
  */
 
 // [vite] TypeError: Cannot read properties of undefined (reading 'ReactCurrentDispatcher')
-export const VectorLayerChooser = ({ layer, layerPresentation }) => {
+export const VectorLayerChooser = ({ layer, layerPresentation }: Props) => {
   // const res = useLiveQuery(
   //   `SELECT * FROM vector_layer_geoms WHERE vector_layer_id = $1`,
   //   [layer.vector_layer_id],

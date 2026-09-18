@@ -5,7 +5,7 @@ import { NotFound } from '../../../../../../../../../../../components/NotFound.t
 
 export const Route = createFileRoute('/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/places/$placeId2_/users/')({
   component: () => (
-    <PlaceUsers from="/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/places/$placeId2_/users/" />
+    <PlaceUsers />
   ),
   notFoundComponent: NotFound,
 })

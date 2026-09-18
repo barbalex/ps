@@ -11,7 +11,11 @@ import {
   postgrestClientAtom,
 } from '../../../store.ts'
 
-const { Button, Tooltip } = fluentUiReactComponents
+const { Button } = fluentUiReactComponents
+// Tooltip's types require a relationship prop; this usage passes none at runtime
+const Tooltip = fluentUiReactComponents.Tooltip as React.ComponentType<
+  Omit<React.ComponentProps<typeof fluentUiReactComponents.Tooltip>, 'relationship'>
+>
 
 type HistoryToggleButtonProps = {
   historiesPath: string

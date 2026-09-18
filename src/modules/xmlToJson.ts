@@ -8,23 +8,27 @@
  * - layer title
  * - properties
  */
-export const xmlToJson = (xml: Document): object => {
+export const xmlToJson = (xml: Node): Record<string, unknown> => {
   // Create the return object
-  let obj = {}
+  let obj: Record<string, unknown> = {}
 
   if (xml.nodeType == 1) {
     // element
     // do attributes
-    if (xml.attributes.length > 0) {
+    const attributes = (xml as Element).attributes
+    if (attributes.length > 0) {
       obj['@attributes'] = {}
-      for (let j = 0; j < xml.attributes.length; j++) {
-        const attribute = xml.attributes.item(j)
-        obj['@attributes'][attribute.nodeName] = attribute.nodeValue
+      for (let j = 0; j < attributes.length; j++) {
+        const attribute = attributes.item(j)!
+        ;(obj['@attributes'] as Record<string, unknown>)[
+          attribute.nodeName
+        ] = attribute.nodeValue
       }
     }
   } else if (xml.nodeType == 3) {
     // text
-    obj = xml.nodeValue
+    // text nodes never have children, so obj is only read as an object below
+    obj = xml.nodeValue as unknown as Record<string, unknown>
   }
 
   // do children
@@ -35,16 +39,15 @@ export const xmlToJson = (xml: Document): object => {
       if (typeof obj[nodeName] == 'undefined') {
         obj[nodeName] = xmlToJson(item)
       } else {
-        if (typeof obj[nodeName].push == 'undefined') {
+        if (typeof (obj[nodeName] as { push?: unknown }).push == 'undefined') {
           const old = obj[nodeName]
           obj[nodeName] = []
-          obj[nodeName].push(old)
+          ;(obj[nodeName] as unknown[]).push(old)
         }
-        obj[nodeName].push(xmlToJson(item))
+        ;(obj[nodeName] as unknown[]).push(xmlToJson(item))
       }
     }
   }
 
   return obj
 }
-

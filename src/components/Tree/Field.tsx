@@ -3,13 +3,26 @@ import { isEqual } from 'es-toolkit'
 
 import { Node } from './Node.tsx'
 
+type NavData = {
+  id: string
+  label: string
+}
+
+interface Props {
+  projectId?: string
+  accountId?: string
+  userId?: string
+  nav: NavData
+  level?: number
+}
+
 export const FieldNode = ({
   projectId,
   accountId,
   userId,
   nav,
   level: levelProp,
-}) => {
+}: Props) => {
   const level: number = levelProp ?? (projectId || accountId ? 4 : 2)
   const location = useLocation()
 

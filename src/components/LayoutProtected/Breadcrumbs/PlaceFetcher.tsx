@@ -1,8 +1,14 @@
 import { usePlaceNavData } from '../../../modules/usePlaceNavData.ts'
 import { FetcherReturner } from './FetcherReturner.tsx'
 
-export const PlaceFetcher = ({ params, ...other }) => {
-  const { navData } = usePlaceNavData(params)
+type Props = {
+  params: Parameters<typeof usePlaceNavData>[0]
+}
+
+export const PlaceFetcher = ({ params, ...other }: Props) => {
+  const { navData: navDataRaw } = usePlaceNavData(params)
+  // navData.id does not exist on NavData; bridge type-only
+  const navData = navDataRaw as typeof navDataRaw & { id?: string }
 
   return (
     <FetcherReturner

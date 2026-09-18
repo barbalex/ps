@@ -9,7 +9,7 @@ import { mapInfoAtom } from '../../../store.ts'
 
 import styles from './index.module.css'
 
-export const RightMenuDrawer = ({ isNarrow }) => {
+export const RightMenuDrawer = ({ isNarrow }: { isNarrow: boolean }) => {
   const [mapInfo] = useAtom(mapInfoAtom)
 
   const animationFrame = useRef<number>(0)
@@ -22,7 +22,7 @@ export const RightMenuDrawer = ({ isNarrow }) => {
   const [sidebarSize, setSidebarSize] = useState(isNarrow ? 500 : 320)
 
   const resize = useCallback(
-    ({ clientX, clientY }) => {
+    ({ clientX, clientY }: { clientX: number; clientY: number }) => {
       if (!isResizing) return
       if (!sidebarRef.current) return
 

@@ -8,21 +8,18 @@ import { Loading } from '../components/shared/Loading.tsx'
 
 import '../form.css'
 
-const from = '/data/projects/$projectId_/subproject-designs/'
 
 export const SubprojectReportDesigns = () => {
-  const { projectId } = useParams({ from })
+  const { projectId } = useParams({ strict: false })
   const navigate = useNavigate()
 
   const { loading, navData } = useSubprojectReportDesignsNavData({
-    projectId,
-  })
+    projectId: projectId!,  })
   const { navs, label, nameSingular } = navData
 
   const add = async () => {
     const subproject_report_design_id = await createSubprojectReportDesign({
-      projectId,
-    })
+      projectId: projectId!,    })
     if (!subproject_report_design_id) return
 
     navigate({

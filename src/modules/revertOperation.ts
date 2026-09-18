@@ -1,14 +1,21 @@
 import { removeOperation } from './removeOperation.ts'
 import { store, pgliteDbAtom } from '../store.ts'
+import type { QueuedOperation } from '../store.ts'
 import { inferPkColumn } from './inferPkColumn.ts'
 
 // reverts an optimistic operation (change in PGlite) after writing to the server fails
-export const revertOperation = async (o) => {
+export const revertOperation = async (o: QueuedOperation) => {
   if (!o) return
 
-  const { table, rowIdName, rowId, operation, draft, prev } = o
+  // draft is only an array for *Many operations, which never reach the revert
+  // paths below; both branches work with the object shape (see revertOperationInPlace)
+  const { table, rowIdName, rowId, operation, draft, prev } = o as QueuedOperation & {
+    draft: Record<string, unknown>
+    prev: Record<string, unknown>
+  }
 
-  const pgliteDb = store.get(pgliteDbAtom)
+  // reverting only happens after the app has initialized the db
+  const pgliteDb = store.get(pgliteDbAtom)!
 
   // syncing re-introduces the deleted row
   if (operation === 'delete') return
@@ -82,5 +89,7 @@ export const revertOperation = async (o) => {
     )
   }
 
-  return removeOperation(operation)
+  // pre-existing behavior: passes the operation kind (a string), on which
+  // removeOperation's id filter no-ops; kept as-is to avoid a runtime change
+  return removeOperation(operation as unknown as QueuedOperation)
 }

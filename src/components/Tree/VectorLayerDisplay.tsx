@@ -6,7 +6,7 @@ import { Node } from './Node.tsx'
 interface Props {
   projectId: string
   vectorLayerId: string
-  vectorLayerDisplay: Record<string, unknown>
+  nav: { id: string; label: string }
   level?: number
 }
 

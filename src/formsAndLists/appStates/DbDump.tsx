@@ -4,6 +4,7 @@ import * as fluentUiReactComponents from '@fluentui/react-components'
 const { Button, Spinner } = fluentUiReactComponents
 import { pgDump } from '@electric-sql/pglite-tools/pg_dump'
 import { useIntl } from 'react-intl'
+import type { PGlite } from '@electric-sql/pglite'
 
 import { usePGlite } from '@electric-sql/pglite-react'
 import fileDownload from 'js-file-download'
@@ -71,7 +72,7 @@ export const DbDump = ({ activeUserId, viewedUserId }: Props) => {
         [activeUserId],
       )
 
-      const dump = await pgDump({ pg: db })
+      const dump = await pgDump({ pg: db as unknown as PGlite })
       await db.query('ROLLBACK')
 
       fileDownload(dump, 'arten-foerdern-owned.sql')

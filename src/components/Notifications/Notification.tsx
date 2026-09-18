@@ -19,7 +19,19 @@ const colorMap = {
   warning: 'orange',
 }
 
-export const Notification = ({ notification }) => {
+type Props = {
+  notification: {
+    id: string
+    title?: string
+    body?: string
+    intent: 'success' | 'error' | 'warning' | 'info'
+    timeout?: number
+    paused?: boolean | null
+    progress_percent?: number
+  }
+}
+
+export const Notification = ({ notification }: Props) => {
   const {
     id,
     title,
@@ -34,7 +46,7 @@ export const Notification = ({ notification }) => {
   const onClickClose = () => removeNotification(id)
 
   useEffect(() => {
-    let timeoutId
+    let timeoutId: ReturnType<typeof setTimeout> | undefined
     if (progress_percent === 100 || paused === false) {
       timeoutId = setTimeout(() => removeNotification(id), 500)
       return () => clearTimeout(timeoutId)

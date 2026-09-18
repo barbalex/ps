@@ -9,7 +9,12 @@ import { HistoryToggleButton } from '../../components/shared/HistoryCompare/Hist
 import { addOperationAtom } from '../../store.ts'
 import { useIntl } from 'react-intl'
 
-export const Header = ({ autoFocusRef, from }) => {
+export const Header = ({
+  autoFocusRef,
+}: {
+  autoFocusRef?: React.RefObject<HTMLInputElement | null>
+  from?: string
+}) => {
   const {
     projectId,
     subprojectId,
@@ -17,7 +22,7 @@ export const Header = ({ autoFocusRef, from }) => {
     placeId2,
     checkId,
     checkQuantityId,
-  } = useParams({ from })
+  } = useParams({ strict: false })
   const navigate = useNavigate()
   const addOperation = useSetAtom(addOperationAtom)
   const { formatMessage } = useIntl()
@@ -38,10 +43,10 @@ export const Header = ({ autoFocusRef, from }) => {
   const countRes = useLiveQuery(
     `SELECT COUNT(*) as count FROM check_quantities WHERE check_id = '${checkId}'`,
   )
-  const rowCount = countRes?.rows?.[0]?.count ?? 2
+  const rowCount = (countRes?.rows?.[0]?.count as number) ?? 2
 
   const addRow = async () => {
-    const id = await createCheckQuantity({ checkId })
+    const id = await createCheckQuantity({ checkId: checkId! })
     if (!id) return
     navigate({
       to: `../${id}`,
@@ -56,7 +61,7 @@ export const Header = ({ autoFocusRef, from }) => {
         'SELECT * FROM check_quantities WHERE check_quantity_id = $1',
         [checkQuantityId],
       )
-      const prev = prevRes?.rows?.[0] ?? {}
+      const prev = (prevRes?.rows?.[0] ?? {}) as Record<string, unknown>
       await db.query(
         'DELETE FROM check_quantities WHERE check_quantity_id = $1',
         [checkQuantityId],
@@ -80,7 +85,7 @@ export const Header = ({ autoFocusRef, from }) => {
         'SELECT check_quantity_id FROM check_quantities WHERE check_id = $1 ORDER BY label',
         [checkId],
       )
-      const checkQuantities = res?.rows
+      const checkQuantities = res?.rows as { check_quantity_id: string }[]
       const len = checkQuantities.length
       const index = checkQuantities.findIndex(
         (p) => p.check_quantity_id === checkQuantityIdRef.current,
@@ -104,7 +109,7 @@ export const Header = ({ autoFocusRef, from }) => {
         'SELECT check_quantity_id FROM check_quantities WHERE check_id = $1 ORDER BY label',
         [checkId],
       )
-      const checkQuantities = res?.rows
+      const checkQuantities = res?.rows as { check_quantity_id: string }[]
       const len = checkQuantities.length
       const index = checkQuantities.findIndex(
         (p) => p.check_quantity_id === checkQuantityIdRef.current,

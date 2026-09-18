@@ -5,6 +5,11 @@ export const epsgFrom4326 = ({
   y: yPassed,
   projectMapPresentationCrs,
   crs,
+}: {
+  x?: number | null
+  y?: number | null
+  projectMapPresentationCrs?: string | null
+  crs?: { code?: string | null; proj4?: string | null } | null
 }) => {
   if (!Number.isFinite(xPassed) || !Number.isFinite(yPassed)) {
     return [xPassed, yPassed]
@@ -18,8 +23,8 @@ export const epsgFrom4326 = ({
   crs.code && crs.proj4 && proj4.defs(crs.code, crs.proj4)
 
   const [x, y] = proj4('EPSG:4326', projectMapPresentationCrs, [
-    +xPassed,
-    +yPassed,
+    +xPassed!,
+    +yPassed!,
   ])
 
   return [x, y]

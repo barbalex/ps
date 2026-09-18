@@ -9,13 +9,11 @@ import { Row } from '../../components/shared/Row.tsx'
 import { Header } from './Header.tsx'
 import { NotFound } from '../../components/NotFound.tsx'
 
-export const PlaceList = ({ from }) => {
-  const { projectId, subprojectId, placeId, placeId2 } = useParams({ from })
+export const PlaceList = ({ from }: { from: string }) => {
+  const { projectId, subprojectId, placeId, placeId2 } = useParams({ strict: false })
   const [language] = useAtom(languageAtom)
   const { loading, navData } = usePlaceNavData({
-    projectId,
-    subprojectId,
-    placeId,
+    projectId: projectId!,    subprojectId: subprojectId!,    placeId,
     placeId2,
   })
   const { navs, notFound, nameSingular } = navData
@@ -25,8 +23,11 @@ export const PlaceList = ({ from }) => {
     [projectId, placeId2 ? 2 : 1],
   )
   const nameSingularFromLevel =
-    nameRes?.rows?.[0]?.[`name_singular_${language}`] ?? nameSingular
-  const namePlural = nameRes?.rows?.[0]?.[`name_plural_${language}`] ?? 'Places'
+    (nameRes?.rows?.[0]?.[`name_singular_${language}`] as string | undefined) ??
+    nameSingular
+  const namePlural =
+    (nameRes?.rows?.[0]?.[`name_plural_${language}`] as string | undefined) ??
+    'Places'
 
   if (notFound) {
     return (

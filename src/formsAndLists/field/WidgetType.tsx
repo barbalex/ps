@@ -1,13 +1,28 @@
+import type { InputOnChangeData } from '@fluentui/react-components'
+
 import { DropdownField } from '../../components/shared/DropdownField.tsx'
 
 import '../../form.css'
+
+type Props = {
+  onChange: (
+    e: React.ChangeEvent<HTMLInputElement>,
+    data?: InputOnChangeData,
+  ) => void
+  validations?: Record<
+    string,
+    { state: 'error' | 'warning' | 'success' | 'none'; message: string } | undefined
+  >
+  field_type_id?: string | null
+  value?: unknown
+}
 
 export const WidgetType = ({
   onChange,
   validations = {},
   field_type_id = '',
   value,
-}) => {
+}: Props) => {
   const normalizedFieldTypeId =
     typeof field_type_id === 'string' ? field_type_id.trim() : field_type_id
 

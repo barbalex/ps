@@ -9,10 +9,9 @@ import { FormHeader } from '../../components/FormHeader/index.tsx'
 import { HistoryToggleButton } from '../../components/shared/HistoryCompare/HistoryToggleButton.tsx'
 import { addOperationAtom } from '../../store.ts'
 
-const from = '/data/projects/$projectId_/qcs/$projectQcId/'
 
-export const Header = ({ autoFocusRef }) => {
-  const { projectId, projectQcId } = useParams({ from })
+export const Header = ({ autoFocusRef }: { autoFocusRef?: React.RefObject<HTMLInputElement | null> }) => {
+  const { projectId, projectQcId } = useParams({ strict: false })
   const basePath = `/data/projects/${projectId}/qcs/${projectQcId}`
   const navigate = useNavigate()
   const addOperation = useSetAtom(addOperationAtom)
@@ -23,7 +22,7 @@ export const Header = ({ autoFocusRef }) => {
   const countRes = useLiveQuery(
     `SELECT COUNT(*) as count FROM project_qcs WHERE project_id = '${projectId}'`,
   )
-  const rowCount = countRes?.rows?.[0]?.count ?? 2
+  const rowCount = Number(countRes?.rows?.[0]?.count ?? 2)
 
   const projectQcIdRef = useRef(projectQcId)
   useEffect(() => {
@@ -31,7 +30,7 @@ export const Header = ({ autoFocusRef }) => {
   }, [projectQcId])
 
   const addRow = async () => {
-    const id = await createProjectQc({ projectId })
+    const id = await createProjectQc({projectId: projectId! })
     if (!id) return
     navigate({
       to: `../${id}`,
@@ -46,7 +45,7 @@ export const Header = ({ autoFocusRef }) => {
         `SELECT * FROM project_qcs WHERE project_qc_id = $1`,
         [projectQcId],
       )
-      const prev = prevRes?.rows?.[0] ?? {}
+      const prev = (prevRes?.rows?.[0] ?? {}) as Record<string, unknown>
       await db.query(`DELETE FROM project_qcs WHERE project_qc_id = $1`, [
         projectQcId,
       ])
@@ -72,7 +71,7 @@ export const Header = ({ autoFocusRef }) => {
          ORDER BY COALESCE(NULLIF(name_de, ''), project_qc_id)`,
         [projectId],
       )
-      const rows = res?.rows ?? []
+      const rows = (res?.rows ?? []) as { project_qc_id: string }[]
       const len = rows.length
       if (!len) return
       const index = rows.findIndex((p) => p.project_qc_id === projectQcIdRef.current)
@@ -95,7 +94,7 @@ export const Header = ({ autoFocusRef }) => {
          ORDER BY COALESCE(NULLIF(name_de, ''), project_qc_id)`,
         [projectId],
       )
-      const rows = res?.rows ?? []
+      const rows = (res?.rows ?? []) as { project_qc_id: string }[]
       const len = rows.length
       if (!len) return
       const index = rows.findIndex((p) => p.project_qc_id === projectQcIdRef.current)

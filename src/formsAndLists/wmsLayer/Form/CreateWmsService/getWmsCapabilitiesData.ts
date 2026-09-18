@@ -2,25 +2,60 @@ import { uuidv7 } from '@kripod/uuidv7'
 
 import { getCapabilities } from '../../../../modules/getCapabilities.ts'
 import { addOperationAtom, store, pgliteDbAtom } from '../../../../store.ts'
+import type WmsLayers from '../../../../models/public/WmsLayers.ts'
+import type WmsServices from '../../../../models/public/WmsServices.ts'
 
-export const getWmsCapabilitiesData = async ({ wmsLayer, service }) => {
+type CapabilitiesLayer = {
+  Name?: string | null
+  Title?: string | null
+  queryable?: boolean
+  CRS?: string[]
+  Style?: { LegendURL?: { OnlineResource?: string }[] }[]
+}
+
+type Capabilities = {
+  version?: string
+  Capability?: {
+    Request?: {
+      GetMap?: { Format?: string[] }
+      GetFeatureInfo?: { Format?: string[] }
+    }
+    Layer?: { Layer?: CapabilitiesLayer[] }
+  }
+}
+
+type ServiceData = {
+  image_formats?: string[]
+  image_format?: string
+  version?: string
+  info_formats?: string[] | null
+  info_format?: string
+}
+
+export const getWmsCapabilitiesData = async ({
+  wmsLayer,
+  service,
+}: {
+  wmsLayer?: WmsLayers | null
+  service: WmsServices
+}) => {
   if (!service?.url) {
     return console.warn(
       'getWmsCapabilitiesData: returning due to missing service.url',
     )
   }
 
-  const db = store.get(pgliteDbAtom)
-  const serviceData = {}
+  const db = store.get(pgliteDbAtom)!
+  const serviceData: ServiceData = {}
 
-  const capabilities = await getCapabilities({
+  const capabilities = (await getCapabilities({
     url: service.url,
     service: 'WMS',
-  })
+  })) as Capabilities | undefined
 
   if (!capabilities) return undefined
 
-  const imageFormats = capabilities?.Capability?.Request?.GetMap?.Format.filter(
+  const imageFormats = capabilities?.Capability?.Request?.GetMap?.Format!.filter(
     (v) => v.toLowerCase().includes('image'),
   )
   serviceData.image_formats = imageFormats
@@ -91,7 +126,7 @@ export const getWmsCapabilitiesData = async ({ wmsLayer, service }) => {
   }
   // let user choose from layers
   // only layers with crs EPSG:4326
-  const layers = (capabilities?.Capability?.Layer?.Layer ?? []).filter((v) =>
+  const layers = ((capabilities?.Capability?.Layer?.Layer ?? []) as CapabilitiesLayer[]).filter((v) =>
     v?.CRS?.includes('EPSG:4326'),
   )
 

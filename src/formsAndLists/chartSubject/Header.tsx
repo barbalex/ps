@@ -8,16 +8,17 @@ import { createChartSubject } from '../../modules/createRows.ts'
 import { FormHeader } from '../../components/FormHeader/index.tsx'
 import { designingAtom, addOperationAtom } from '../../store.ts'
 
-const from =
-  '/data/projects/$projectId_/subprojects/$subprojectId_/charts/$chartId_/subjects/$chartSubjectId/'
-
 // TODO: if not editing, hide add and remove buttons
-export const Header = ({ autoFocusRef }) => {
+export const Header = ({
+  autoFocusRef,
+}: {
+  autoFocusRef?: React.RefObject<HTMLInputElement | null>
+}) => {
   const { formatMessage } = useIntl()
   const [designing] = useAtom(designingAtom)
   const addOperation = useSetAtom(addOperationAtom)
 
-  const { chartId, chartSubjectId } = useParams({ from })
+  const { chartId, chartSubjectId } = useParams({ strict: false })
   const navigate = useNavigate()
 
   const db = usePGlite()
@@ -32,10 +33,10 @@ export const Header = ({ autoFocusRef }) => {
   const countRes = useLiveQuery(
     `SELECT COUNT(*) as count FROM chart_subjects WHERE chart_id = '${chartId}'`,
   )
-  const rowCount = countRes?.rows?.[0]?.count ?? 2
+  const rowCount = (countRes?.rows?.[0]?.count as number) ?? 2
 
   const addRow = async () => {
-    const id = await createChartSubject({ chartId })
+    const id = await createChartSubject({ chartId: chartId! })
     if (!id) return
     navigate({
       to: `../${id}`,
@@ -49,7 +50,7 @@ export const Header = ({ autoFocusRef }) => {
       `SELECT * FROM chart_subjects WHERE chart_subject_id = $1`,
       [chartSubjectId],
     )
-    const prev = prevRes?.rows?.[0] ?? {}
+    const prev = (prevRes?.rows?.[0] ?? {}) as Record<string, unknown>
     db.query(`DELETE FROM chart_subjects WHERE chart_subject_id = $1`, [
       chartSubjectId,
     ])
@@ -68,7 +69,7 @@ export const Header = ({ autoFocusRef }) => {
       `SELECT chart_subject_id FROM chart_subjects WHERE chart_id = $1 order by label`,
       [chartId],
     )
-    const rows = res?.rows
+    const rows = res?.rows as { chart_subject_id: string }[]
     const len = rows.length
     const index = rows.findIndex(
       (p) => p.chart_subject_id === chartSubjectIdRef.current,
@@ -85,7 +86,7 @@ export const Header = ({ autoFocusRef }) => {
       `SELECT chart_subject_id FROM chart_subjects WHERE chart_id = $1 order by label`,
       [chartId],
     )
-    const rows = res?.rows
+    const rows = res?.rows as { chart_subject_id: string }[]
     const len = rows.length
     const index = rows.findIndex(
       (p) => p.chart_subject_id === chartSubjectIdRef.current,

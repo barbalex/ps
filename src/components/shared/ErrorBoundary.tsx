@@ -1,17 +1,18 @@
-import { ErrorBoundary as ErrorBoundaryComponent } from 'react-error-boundary'
+import {
+  ErrorBoundary as ErrorBoundaryComponent,
+  type FallbackProps,
+} from 'react-error-boundary'
 import * as fluentUiReactComponents from '@fluentui/react-components'
 const { Button } = fluentUiReactComponents
 
 import styles from './ErrorBoundary.module.css'
 
 const onReload = () => {
-  window.location.reload(true)
+  window.location.reload()
 }
 
-interface Props {
-  error: Error
-  componentStack: string
-  resetErrorBoundary: () => void
+interface Props extends FallbackProps {
+  componentStack?: string
 }
 
 const ErrorFallback = ({
@@ -21,7 +22,7 @@ const ErrorFallback = ({
 }: Props) => (
   <div className={styles.container}>
     <p>Sorry, ein Fehler ist aufgetreten:</p>
-    <pre className={styles.preWrapping}>{error.message}</pre>
+    <pre className={styles.preWrapping}>{(error as Error).message}</pre>
     <details className={styles.details}>
       <summary className={styles.summary}>Mehr Informationen</summary>
       <pre className={styles.pre}>{componentStack}</pre>
@@ -39,7 +40,7 @@ const ErrorFallback = ({
   </div>
 )
 
-export const ErrorBoundary = ({ children }) => (
+export const ErrorBoundary = ({ children }: { children?: React.ReactNode }) => (
   <ErrorBoundaryComponent FallbackComponent={ErrorFallback} onReset={onReload}>
     {children}
   </ErrorBoundaryComponent>

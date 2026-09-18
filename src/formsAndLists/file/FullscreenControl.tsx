@@ -8,7 +8,11 @@ import { useSetAtom } from 'jotai'
 
 import { addNotificationAtom } from '../../store.ts'
 
-export const FullscreenControl = ({ previewRef }) => {
+export const FullscreenControl = ({
+  previewRef,
+}: {
+  previewRef?: React.RefObject<HTMLElement | null>
+}) => {
   const addNotification = useSetAtom(addNotificationAtom)
 
   if (!screenfull.isEnabled) {
@@ -24,7 +28,11 @@ export const FullscreenControl = ({ previewRef }) => {
   return <FullscreenController previewRef={previewRef} />
 }
 
-const FullscreenController = ({ previewRef }) => {
+const FullscreenController = ({
+  previewRef,
+}: {
+  previewRef?: React.RefObject<HTMLElement | null>
+}) => {
   const [isFullscreen, setIsFullscreen] = useState(false)
   const onFullscreenChange = useCallback(
     () => setIsFullscreen(screenfull.isFullscreen),
@@ -37,7 +45,7 @@ const FullscreenController = ({ previewRef }) => {
   }, [onFullscreenChange])
 
   const onClick = () => {
-    screenfull.isEnabled && screenfull.toggle(previewRef.current)
+    screenfull.isEnabled && screenfull.toggle(previewRef?.current ?? undefined)
   }
 
   return (

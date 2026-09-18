@@ -4,12 +4,13 @@ import {
   addNotificationAtom,
   userEmailAtom,
 } from '../store.ts'
+import type { QueuedOperation } from '../store.ts'
 import {
   fetchPostgrestToken,
   invalidatePostgrestToken,
 } from './fetchPostgrestToken.ts'
 
-export const executeOperation = async (o) => {
+export const executeOperation = async (o: QueuedOperation) => {
   if (!o) return
 
   const username = store.get(userEmailAtom) ?? 'unknown'
@@ -94,7 +95,8 @@ export const executeOperation = async (o) => {
     // build base query
     const baseQueryFunction = withAuth(
       postgrestClient.from(table).update({
-        [column]: newValue,
+        // update operations always set column/newValue together
+        [column as string]: newValue,
         ...draft,
         updated_at: time,
         // if table = users, do not set updated_by (does not exist)
@@ -113,7 +115,7 @@ export const executeOperation = async (o) => {
       queryFunction = filters.reduce((q, f) => {
         if (f.function === 'eq') return q.eq(f.column, f.value)
         if (f.function === 'neq') return q.neq(f.column, f.value)
-        if (f.function === 'in') return q.in(f.column, f.value)
+        if (f.function === 'in') return q.in(f.column, f.value as readonly unknown[])
         return q
       }, baseQueryFunction)
     } else if (filter?.function === 'eq') {
@@ -121,7 +123,10 @@ export const executeOperation = async (o) => {
     } else if (filter?.function === 'neq') {
       queryFunction = baseQueryFunction.neq(filter.column, filter.value)
     } else if (filter?.function === 'in') {
-      queryFunction = baseQueryFunction.in(filter.column, filter.value)
+      queryFunction = baseQueryFunction.in(
+        filter.column,
+        filter.value as readonly unknown[],
+      )
     } else {
       queryFunction = baseQueryFunction
     }
@@ -185,7 +190,8 @@ export const executeOperation = async (o) => {
   if (operation === 'insertMany') {
     const { error } = await withAuth(
       postgrestClient.from(table).insert(
-        draft.map((d) => ({
+        // draft is only an array for insertMany operations
+        (draft as Record<string, unknown>[]).map((d) => ({
           ...d,
           created_at: time,
           updated_at: time,
@@ -209,7 +215,10 @@ export const executeOperation = async (o) => {
           : filter?.function === 'neq'
             ? baseQueryFunction.neq(filter.column, filter.value)
             : filter?.function === 'in'
-              ? baseQueryFunction.in(filter.column, filter.value)
+              ? baseQueryFunction.in(
+                  filter.column,
+                  filter.value as readonly unknown[],
+                )
               : baseQueryFunction
     const { error } = await queryFunction
 

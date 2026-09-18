@@ -2,6 +2,7 @@ import { useRef, useState } from 'react'
 import { useParams } from '@tanstack/react-router'
 import { usePGlite, useLiveQuery } from '@electric-sql/pglite-react'
 import { useSetAtom } from 'jotai'
+import type { InputProps } from '@fluentui/react-components'
 
 import { getValueFromChange } from '../../modules/getValueFromChange.ts'
 import { Header } from './Header.tsx'
@@ -9,25 +10,31 @@ import { Loading } from '../../components/shared/Loading.tsx'
 import { ExportForm as Form } from './Form.tsx'
 import { NotFound } from '../../components/NotFound.tsx'
 import { addOperationAtom } from '../../store.ts'
+import type Exports from '../../models/public/Exports.ts'
 
 import '../../form.css'
 
-const from = '/data/exports/$exportsId'
+type InputOnChangeData = Parameters<NonNullable<InputProps['onChange']>>[1]
 
 export const Export = () => {
-  const { exportsId } = useParams({ from })
+  const { exportsId } = useParams({ strict: false })
   const addOperation = useSetAtom(addOperationAtom)
-  const [validations, setValidations] = useState({})
+  const [validations, setValidations] = useState<
+    Record<string, { state: 'error'; message: string }>
+  >({})
 
   const autoFocusRef = useRef<HTMLInputElement>(null)
 
   const db = usePGlite()
   const res = useLiveQuery(`SELECT * FROM exports WHERE exports_id = $1`, [exportsId])
-  const row = res?.rows?.[0]
+  const row = res?.rows?.[0] as Exports | undefined
 
-  const onChange = async (e, data) => {
+  const onChange = async (
+    e: React.ChangeEvent<HTMLInputElement>,
+    data: InputOnChangeData,
+  ) => {
     const { name, value } = getValueFromChange(e, data)
-    if (row[name] === value) return
+    if (!row || (row as Record<string, any>)[name] === value) return
 
     const sql = `UPDATE exports SET ${name} = $1 WHERE exports_id = $2`
     try {
@@ -35,7 +42,7 @@ export const Export = () => {
     } catch (error) {
       setValidations((prev) => ({
         ...prev,
-        [name]: { state: 'error', message: error.message },
+        [name]: { state: 'error', message: (error as Error).message },
       }))
       return
     }
