@@ -150,7 +150,7 @@ export default interface Projects {
   subproject_taxa_in_subproject: boolean | null;
 
   /** Render subproject users inside the subproject form? Preset: true */
-  subproject_users_in_subproject: boolean | null;
+  subproject_roles_in_subproject: boolean | null;
 
   /** Render files inside the subproject form? Preset: true */
   subproject_files_in_subproject: boolean | null;
@@ -384,7 +384,7 @@ export interface ProjectsInitializer {
    * Render subproject users inside the subproject form? Preset: true
    * Default value: true
    */
-  subproject_users_in_subproject?: boolean | null;
+  subproject_roles_in_subproject?: boolean | null;
 
   /**
    * Render files inside the subproject form? Preset: true
@@ -552,7 +552,7 @@ export interface ProjectsMutator {
   subproject_taxa_in_subproject?: boolean | null;
 
   /** Render subproject users inside the subproject form? Preset: true */
-  subproject_users_in_subproject?: boolean | null;
+  subproject_roles_in_subproject?: boolean | null;
 
   /** Render files inside the subproject form? Preset: true */
   subproject_files_in_subproject?: boolean | null;

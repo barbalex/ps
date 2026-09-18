@@ -228,7 +228,7 @@ CREATE TABLE IF NOT EXISTS projects(
   vlds_in_vector_layer boolean DEFAULT TRUE,
   files_active_subprojects boolean DEFAULT TRUE,
   subproject_taxa_in_subproject boolean DEFAULT TRUE,
-  subproject_users_in_subproject boolean DEFAULT TRUE,
+  subproject_roles_in_subproject boolean DEFAULT TRUE,
   subproject_files_in_subproject boolean DEFAULT TRUE,
   map_presentation_crs text DEFAULT NULL,
   sys_period tstzrange DEFAULT NULL,
@@ -293,7 +293,7 @@ COMMENT ON COLUMN projects.list_values_in_list IS 'Render list values inside the
 COMMENT ON COLUMN projects.vlds_in_vector_layer IS 'Render vector layer displays inside the vector layer form? Preset: true';
 COMMENT ON COLUMN projects.files_active_subprojects IS 'Whether files are used in table subprojects. Preset: true';
 COMMENT ON COLUMN projects.subproject_taxa_in_subproject IS 'Render subproject taxa inside the subproject form? Preset: true';
-COMMENT ON COLUMN projects.subproject_users_in_subproject IS 'Render subproject users inside the subproject form? Preset: true';
+COMMENT ON COLUMN projects.subproject_roles_in_subproject IS 'Render subproject users inside the subproject form? Preset: true';
 COMMENT ON COLUMN projects.subproject_files_in_subproject IS 'Render files inside the subproject form? Preset: true';
 COMMENT ON COLUMN projects.map_presentation_crs IS 'Coordinate Reference System for presentation of map. Preset: "EPSG:4326"';
 COMMENT ON TABLE projects IS 'Goal: manage projects';
@@ -330,7 +330,7 @@ CREATE TABLE IF NOT EXISTS place_levels(
   check_taxa boolean DEFAULT TRUE,
   check_taxa_in_check boolean DEFAULT TRUE,
   observations boolean DEFAULT TRUE,
-  place_users_in_place boolean DEFAULT TRUE,
+  place_roles_in_place boolean DEFAULT TRUE,
   place_files boolean DEFAULT TRUE,
   place_files_in_place boolean DEFAULT TRUE,
   action_files boolean DEFAULT TRUE,
@@ -379,7 +379,7 @@ COMMENT ON COLUMN place_levels.check_quantities IS 'Are check values used? Prese
 COMMENT ON COLUMN place_levels.check_quantities_in_check IS 'Show check quantities inside the check form instead of a separate route? Preset: true';
 COMMENT ON COLUMN place_levels.check_taxa IS 'Are check taxa used? Preset: true';
 COMMENT ON COLUMN place_levels.observations IS 'Are observations used? Preset: true';
-COMMENT ON COLUMN place_levels.place_users_in_place IS 'Render place users inside the place form? Preset: true';
+COMMENT ON COLUMN place_levels.place_roles_in_place IS 'Render place users inside the place form? Preset: true';
 COMMENT ON COLUMN place_levels.place_files IS 'Are files used for places on this level? Preset: false';
 COMMENT ON COLUMN place_levels.place_files_in_place IS 'Render files inside the place form? Preset: true';
 COMMENT ON COLUMN place_levels.action_files IS 'Are files used for actions on this level? Preset: false';

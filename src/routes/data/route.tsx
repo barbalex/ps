@@ -7,6 +7,7 @@ import { type } from 'arktype'
 
 import { AuthAndDb } from '../../components/AuthAndDb.tsx'
 import { Initiating } from '../../components/Initiating.tsx'
+import { bootTrace } from '../../modules/bootTrace.ts'
 import { NotFound } from '../../components/NotFound.tsx'
 import { getSession } from '../../modules/authClient.ts'
 import { isVerificationGraceExpired } from '../../modules/emailVerificationGrace.ts'
@@ -38,11 +39,14 @@ export const Route = createFileRoute('/data')({
   notFoundComponent: NotFound,
   // Without a pendingComponent the router suspends this route with a null
   // fallback while beforeLoad runs (auth check + PGlite creation), leaving a
-  // blank screen after login. Show the DB-init screen for long loads.
-  // Keep the default pendingMs (1000ms): showing it instantly flickers on
-  // quick redirects (e.g. logged-out / → /data → /auth resolves fast).
+  // blank screen after login. The pending UI is a plain spinner now, so a
+  // short delay is enough to avoid flicker on quick redirects
+  // (e.g. logged-out / → /data → /auth resolves fast) while covering the
+  // boot gap.
+  pendingMs: 300,
   pendingComponent: () => <Initiating />,
   beforeLoad: async ({ location }) => {
+    bootTrace('beforeLoad start')
     // Start creating PGlite now, parallel with the auth check below; the
     // module and promise caches make repeats free. The detached catch keeps
     // an early redirect below from surfacing an unhandled rejection.
@@ -60,10 +64,17 @@ export const Route = createFileRoute('/data')({
       if (!userId)
         throw redirect({ to: '/auth', search: { redirect: location.href } })
     } else {
-      // First navigation this page-load: verify session with the auth server once
+      // First navigation this page-load: verify session with the auth server
+      // once. Guard with a timeout: a hanging auth server would otherwise
+      // leave the route (and its pending spinner) unresolved forever.
       let result: Awaited<ReturnType<typeof getSession>> | undefined
       try {
-        result = await getSession({ query: { disableCookieCache: true } })
+        result = await Promise.race([
+          getSession({ query: { disableCookieCache: true } }),
+          new Promise<undefined>((resolve) =>
+            setTimeout(() => resolve(undefined), 10_000),
+          ),
+        ])
       } catch {
         // betterFetch threw (e.g. CORS / connection refused)
       }
@@ -123,6 +134,7 @@ export const Route = createFileRoute('/data')({
 
     // 2. Ensure a DB instance exists before protected route components mount
     await pgliteReady
+    bootTrace('beforeLoad done')
 
     return { navDataFetcher: 'useDataBreadcrumbData' }
   },

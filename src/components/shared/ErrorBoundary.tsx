@@ -2,11 +2,11 @@ import {
   ErrorBoundary as ErrorBoundaryComponent,
   type FallbackProps,
 } from 'react-error-boundary'
-import * as fluentUiReactComponents from '@fluentui/react-components'
-const { Button } = fluentUiReactComponents
 
 import styles from './ErrorBoundary.module.css'
 
+// This fallback renders outside any provider (it is mounted above App in
+// main.tsx), so it must not depend on Fluent or any other context.
 const onReload = () => {
   window.location.reload()
 }
@@ -28,14 +28,12 @@ const ErrorFallback = ({
       <pre className={styles.pre}>{componentStack}</pre>
     </details>
     <div className={styles.buttonContainer}>
-      <Button appearance="primary" onClick={onReload}>
-        neu starten
-      </Button>
+      <button style={{ padding: '6px 16px' }} onClick={onReload}>neu starten</button>
     </div>
     <div className={styles.buttonContainer}>
-      <Button appearance="secondary" onClick={resetErrorBoundary}>
+      <button style={{ padding: '6px 16px' }} onClick={resetErrorBoundary}>
         Cache leeren und neu starten (neue Anmeldung nötig)
-      </Button>
+      </button>
     </div>
   </div>
 )

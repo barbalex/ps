@@ -179,7 +179,7 @@ export const startSyncing = async (userId: string) => {
               'check_files',
               'check_files_in_check',
               'observations',
-              'place_users_in_place',
+              'place_roles_in_place',
               'place_files_in_place',
               'created_at',
               'updated_at',
@@ -1239,10 +1239,14 @@ export const startSyncing = async (userId: string) => {
         const is409 = errorStr.includes('409') || errorStr.includes('Conflict')
 
         if (is409) {
-          // 409 = shapes already exist, this is expected on reload
+          // 409 = shapes already exist, this is expected on reload or on a
+          // second login after an interrupted first sync. onInitialSync will
+          // not fire in that case, so end the initial-sync phase here;
+          // otherwise the boot UI stays stuck on syncing forever.
           console.log(
             'Electric: Shape already exists (409) - continuing with existing shape',
           )
+          store.set(initialSyncingAtom, false)
           return
         }
 

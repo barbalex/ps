@@ -2,6 +2,7 @@ import { useAtomValue } from 'jotai'
 import { useIntl } from 'react-intl'
 
 import {
+  firstRunDbInitAtom,
   initialSyncingAtom,
   pgliteDbAtom,
   sqlInitializingAtom,
@@ -9,11 +10,11 @@ import {
 import { useMarkBootDone } from '../modules/bootDone.ts'
 import styles from './Initiating.module.css'
 
-const Spinner = () => (
+const Spinner = ({ className }: { className?: string }) => (
   <svg
-    className={styles.spinner}
-    width="24"
-    height="24"
+    className={className ?? styles.spinner}
+    width="48"
+    height="48"
     viewBox="0 0 16 16"
     fill="none"
     aria-hidden="true"
@@ -64,16 +65,54 @@ export const Initiating = () => {
   const pgliteDb = useAtomValue(pgliteDbAtom)
   const sqlInitializing = useAtomValue(sqlInitializingAtom)
   const initialSyncing = useAtomValue(initialSyncingAtom)
+  const firstRunDbInit = useAtomValue(firstRunDbInitAtom)
 
-  // Keep the loading UI visible until local DB initialization and initial
-  // server sync are complete.
-  if (pgliteDb && !sqlInitializing && !initialSyncing) return null
+  // While the boot is still pending, always show a spinner. This component
+  // is also used as the router's pendingComponent (while beforeLoad checks
+  // auth and opens the database), where returning null would produce a
+  // blank screen. When it is used inside AuthAndDb, the flags flipping to
+  // false unmounts it in the same render, so the spinner is never seen there.
+  if (pgliteDb && !sqlInitializing && !initialSyncing) {
+    return (
+      <div className={styles.container}>
+        <Spinner className={styles.spinnerAlone} />
+      </div>
+    )
+  }
 
-  // phase 1 "Preparing": app boot, auth check and PGlite instantiation
-  const prepDone = !!pgliteDb
-  // phase 2 "Initializing": creating/checking the local schema
-  const initDone = prepDone && !sqlInitializing
-  // phase 3 "Syncing": initial sync with the server
+  // The "Building local database" card only makes sense when the database
+  // is actually being created for the first time this page load. On reloads
+  // of an existing database (or with stale persisted init flags) show a
+  // plain spinner instead.
+  if (!pgliteDb || !firstRunDbInit) {
+    return (
+      <div className={styles.container}>
+        <Spinner className={styles.spinnerAlone} />
+        {import.meta.env.DEV && (
+          <div
+            data-boot-flags
+            style={{
+              position: 'fixed',
+              bottom: 8,
+              left: 8,
+              font: '11px monospace',
+              background: '#ff0',
+              padding: '2px 6px',
+              zIndex: 99998,
+            }}
+          >
+            db={String(!!pgliteDb)} sql={String(sqlInitializing)} sync=
+            {String(initialSyncing)} firstRun={String(firstRunDbInit)}
+          </div>
+        )}
+      </div>
+    )
+  }
+
+  // the card only renders with the database open, so the boot phase is
+  // already done: show the two phases that involve actual work
+  const initDone = !sqlInitializing
+  // phase "Syncing": initial sync with the server
   const syncActive = initDone && initialSyncing
 
   const stepState = (done: boolean, active: boolean) =>
@@ -95,34 +134,21 @@ export const Initiating = () => {
           })}
         </p>
         <div className={styles.steps}>
-          <div className={`${styles.step} ${stepState(prepDone, !prepDone)}`}>
+          <div className={`${styles.step} ${stepState(initDone, !initDone)}`}>
             <span className={styles.stepNumber}>1</span>
-            <span className={styles.stepLabel}>
-              {formatMessage({
-                id: 'prepDbStepLabel',
-                defaultMessage: 'Vorbereiten',
-              })}
-            </span>
-            {!prepDone && <Spinner />}
-            {prepDone && <DoneIcon />}
-          </div>
-          <div
-            className={`${styles.step} ${stepState(initDone, prepDone && !initDone)}`}
-          >
-            <span className={styles.stepNumber}>2</span>
             <span className={styles.stepLabel}>
               {formatMessage({
                 id: 'initDbStepLabel',
                 defaultMessage: 'Initialisiere Datenbank',
               })}
             </span>
-            {prepDone && !initDone && <Spinner />}
+            {!initDone && <Spinner />}
             {initDone && <DoneIcon />}
           </div>
           <div
             className={`${styles.step} ${stepState(!syncActive && initDone, syncActive)}`}
           >
-            <span className={styles.stepNumber}>3</span>
+            <span className={styles.stepNumber}>2</span>
             <span className={styles.stepLabel}>
               {formatMessage({
                 id: 'syncServerStepLabel',

@@ -107,7 +107,7 @@ export default interface ProjectsHistory {
 
   subproject_taxa_in_subproject: boolean | null;
 
-  subproject_users_in_subproject: boolean | null;
+  subproject_roles_in_subproject: boolean | null;
 
   subproject_files_in_subproject: boolean | null;
 
@@ -255,7 +255,7 @@ export interface ProjectsHistoryInitializer {
   subproject_taxa_in_subproject?: boolean | null;
 
   /** Default value: true */
-  subproject_users_in_subproject?: boolean | null;
+  subproject_roles_in_subproject?: boolean | null;
 
   /** Default value: true */
   subproject_files_in_subproject?: boolean | null;
@@ -381,7 +381,7 @@ export interface ProjectsHistoryMutator {
 
   subproject_taxa_in_subproject?: boolean | null;
 
-  subproject_users_in_subproject?: boolean | null;
+  subproject_roles_in_subproject?: boolean | null;
 
   subproject_files_in_subproject?: boolean | null;
 

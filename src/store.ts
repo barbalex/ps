@@ -291,6 +291,12 @@ export const sqlInitializingAtom = atomWithStorage(
   { getOnInit: true },
 )
 
+// true only while the local database is being created for the very first
+// time this page load (schema didn't exist yet). Not persisted: on reloads
+// of an existing database the boot UI stays a plain spinner instead of the
+// "Building local database" card.
+export const firstRunDbInitAtom = atom(false)
+
 // stores the sync object returned from startSyncing() so we can unsubscribe on unload
 export const syncObjectAtom = atom<unknown>(null)
 

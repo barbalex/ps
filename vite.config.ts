@@ -26,9 +26,12 @@ export default defineConfig({
       routeFileIgnorePrefix: '-',
     }),
     react(),
-    babel({
-      presets: [reactCompilerPreset()],
-    }),
+    // React Compiler only for builds: the babel pass is the heaviest
+    // per-module transform and saturates the dev pipeline on full-graph
+    // reloads (module requests then hang forever).
+    ...(process.env.NODE_ENV === 'production'
+      ? [babel({ presets: [reactCompilerPreset()] })]
+      : []),
     formatjs({
       idInterpolationPattern: '[sha512:contenthash:base64:6]',
       ast: true,

@@ -18,3 +18,7 @@ declare module '@tanstack/react-router' {
     router: typeof router
   }
 }
+
+if (import.meta.env.DEV) {
+  ;(window as unknown as { __router__?: unknown }).__router__ = router
+}

@@ -70,7 +70,7 @@ export const createProject = async (account_id?: string) => {
     goal_reports_in_goal: true,
     subproject_reports_in_subproject: true,
     subproject_taxa_in_subproject: true,
-    subproject_users_in_subproject: true,
+    subproject_roles_in_subproject: true,
     subproject_files_in_subproject: true,
 
     ...presetData,
@@ -621,7 +621,7 @@ export const createPlaceLevel = async ({
   const db = store.get(pgliteDbAtom)!
   const place_level_id = uuidv7()
   await db.query(
-    `insert into place_levels (place_level_id, project_id, level, check_reports, check_report_quantities, check_report_quantities_in_report, action_reports, action_report_quantities, action_report_quantities_in_report, actions, action_quantities, action_quantities_in_action, checks, check_quantities, check_quantities_in_check, check_taxa, check_taxa_in_check, observations, place_users_in_place, place_files, place_files_in_place, action_files, check_files, check_files_in_check) values ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, $20, $21, $22, $23, $24)`,
+    `insert into place_levels (place_level_id, project_id, level, check_reports, check_report_quantities, check_report_quantities_in_report, action_reports, action_report_quantities, action_report_quantities_in_report, actions, action_quantities, action_quantities_in_action, checks, check_quantities, check_quantities_in_check, check_taxa, check_taxa_in_check, observations, place_roles_in_place, place_files, place_files_in_place, action_files, check_files, check_files_in_check) values ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, $20, $21, $22, $23, $24)`,
     [
       place_level_id,
       project_id,
@@ -672,7 +672,7 @@ export const createPlaceLevel = async ({
       check_taxa: true,
       check_taxa_in_check: true,
       observations: true,
-      place_users_in_place: true,
+      place_roles_in_place: true,
       place_files: true,
       place_files_in_place: true,
       action_files: true,

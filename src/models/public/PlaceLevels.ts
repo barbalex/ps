@@ -87,7 +87,7 @@ export default interface PlaceLevels {
   observations: boolean | null;
 
   /** Render place users inside the place form? Preset: true */
-  place_users_in_place: boolean | null;
+  place_roles_in_place: boolean | null;
 
   /** Are files used for places on this level? Preset: false */
   place_files: boolean | null;
@@ -253,7 +253,7 @@ export interface PlaceLevelsInitializer {
    * Render place users inside the place form? Preset: true
    * Default value: true
    */
-  place_users_in_place?: boolean | null;
+  place_roles_in_place?: boolean | null;
 
   /**
    * Are files used for places on this level? Preset: false
@@ -387,7 +387,7 @@ export interface PlaceLevelsMutator {
   observations?: boolean | null;
 
   /** Render place users inside the place form? Preset: true */
-  place_users_in_place?: boolean | null;
+  place_roles_in_place?: boolean | null;
 
   /** Are files used for places on this level? Preset: false */
   place_files?: boolean | null;

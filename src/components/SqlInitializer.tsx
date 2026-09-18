@@ -2,14 +2,17 @@ import { useEffect } from 'react'
 import { usePGlite } from '@electric-sql/pglite-react'
 import { useSetAtom } from 'jotai'
 
-import { sqlInitializingAtom } from '../store.ts'
+import { firstRunDbInitAtom, sqlInitializingAtom } from '../store.ts'
+import { bootTrace } from '../modules/bootTrace.ts'
 
 export const SqlInitializer = () => {
   const db = usePGlite()
   const setSqlInitializing = useSetAtom(sqlInitializingAtom)
+  const setFirstRunDbInit = useSetAtom(firstRunDbInitAtom)
 
   useEffect(() => {
     const run = async () => {
+      bootTrace('SqlInitializer start')
       try {
         // 1. initialize pgLite db
         const resultProjectsTableExists = await db.query<{ exists: boolean }>(
@@ -60,6 +63,47 @@ export const SqlInitializer = () => {
       if (projectsTableExists) {
         try {
           await db.exec(`
+            -- the users→roles rename (2026-08) missed these flag columns;
+            -- heal local databases created before the schema caught up
+            DO $$
+            BEGIN
+              IF EXISTS (
+                SELECT 1 FROM information_schema.columns
+                WHERE table_schema = 'public' AND table_name = 'projects'
+                  AND column_name = 'subproject_users_in_subproject'
+              ) AND NOT EXISTS (
+                SELECT 1 FROM information_schema.columns
+                WHERE table_schema = 'public' AND table_name = 'projects'
+                  AND column_name = 'subproject_roles_in_subproject'
+              ) THEN
+                ALTER TABLE projects RENAME COLUMN subproject_users_in_subproject TO subproject_roles_in_subproject;
+              END IF;
+              IF EXISTS (
+                SELECT 1 FROM information_schema.columns
+                WHERE table_schema = 'public' AND table_name = 'place_levels'
+                  AND column_name = 'place_users_in_place'
+              ) AND NOT EXISTS (
+                SELECT 1 FROM information_schema.columns
+                WHERE table_schema = 'public' AND table_name = 'place_levels'
+                  AND column_name = 'place_roles_in_place'
+              ) THEN
+                ALTER TABLE place_levels RENAME COLUMN place_users_in_place TO place_roles_in_place;
+              END IF;
+              IF EXISTS (
+                SELECT 1 FROM information_schema.columns
+                WHERE table_schema = 'public' AND table_name = 'projects_history'
+                  AND column_name = 'subproject_users_in_subproject'
+              ) THEN
+                ALTER TABLE projects_history RENAME COLUMN subproject_users_in_subproject TO subproject_roles_in_subproject;
+              END IF;
+              IF EXISTS (
+                SELECT 1 FROM information_schema.columns
+                WHERE table_schema = 'public' AND table_name = 'place_levels_history'
+                  AND column_name = 'place_users_in_place'
+              ) THEN
+                ALTER TABLE place_levels_history RENAME COLUMN place_users_in_place TO place_roles_in_place;
+              END IF;
+            END $$;
             ALTER TABLE IF EXISTS auth_sessions ADD COLUMN IF NOT EXISTS sys_period tstzrange DEFAULT NULL;
             ALTER TABLE IF EXISTS auth_accounts ADD COLUMN IF NOT EXISTS sys_period tstzrange DEFAULT NULL;
             ALTER TABLE IF EXISTS auth_accounts DROP CONSTRAINT IF EXISTS auth_accounts_user_id_fkey;
@@ -428,11 +472,13 @@ export const SqlInitializer = () => {
           )
         }
 
+        bootTrace('SqlInitializer done (existing db)')
         setSqlInitializing(false)
         return
       }
 
       // need to create functions, tables and triggers
+      setFirstRunDbInit(true)
       const immutableDateSql = (await import(`../sql/immutableDate.sql?raw`))
         .default
       try {
@@ -480,11 +526,13 @@ export const SqlInitializer = () => {
         )
       }
 
-      setSqlInitializing(false)
+        bootTrace('SqlInitializer done')
+        setSqlInitializing(false)
       } catch (error) {
         // A rejected query or a failed sql-file import must never leave the
         // app stuck on the "Initializing database" step forever.
         console.error('SqlInitializer failed:', error)
+        bootTrace('SqlInitializer FAILED (caught)')
         setSqlInitializing(false)
       }
     }

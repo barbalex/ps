@@ -7,6 +7,7 @@ import {
   initialSyncingAtom,
   onlineAtom,
   sqlInitializingAtom,
+  store,
   syncObjectAtom,
   updateNotificationAtom,
 } from '../store.ts'
@@ -115,6 +116,11 @@ export const Syncer = () => {
           })
           syncNotificationIdRef.current = null
         }
+        // If syncing can't even start, unblock the boot UI so the error
+        // notification above is actually visible instead of an eternal
+        // spinner. Data is not synced in this state, but the app is usable
+        // and the queue will retry once a connection is available.
+        store.set(initialSyncingAtom, false)
       })
   }, [
     formatMessage,

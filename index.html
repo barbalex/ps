@@ -197,17 +197,15 @@
         gap: 14px;
       }
       #boot-splash-spinner {
-        width: 28px;
-        height: 28px;
+        width: 48px;
+        height: 48px;
         border-radius: 50%;
         border: 3px solid rgba(63, 138, 48, 0.25);
         border-top-color: #3f8a30;
         animation: boot-splash-spin 1s linear infinite;
       }
       #boot-splash-title {
-        font-size: 1.1rem;
-        font-weight: 700;
-        color: #2e4a2b;
+        display: none;
       }
       /* DB-init card on /data, mirroring the Initiating component
          (Initiating.module.css); step 1 "Preparing" is active until React
@@ -319,11 +317,7 @@
       ;(() => {
         const html = document.documentElement
         html.dataset.boot =
-          location.pathname === '/'
-            ? 'home'
-            : location.pathname.startsWith('/data')
-              ? 'init'
-              : 'splash'
+          location.pathname === '/' ? 'home' : 'splash'
         // jotai's atomWithStorage JSON-encodes values, so the stored
         // language is e.g. '"de"' — parse before validating
         let storedLang

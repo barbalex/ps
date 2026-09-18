@@ -118,6 +118,15 @@
   flex-shrink: 0;
 }
 
+/* standalone spinner (not inside a step row): .spinner's margin-left: auto
+   would push it to the screen's right edge inside the flex container */
+.spinnerAlone {
+  width: 48px;
+  height: 48px;
+  color: #3f8a30;
+  animation: spin 1s linear infinite;
+}
+
 @keyframes pulse {
   0% {
     box-shadow: 0 0 0 0 rgba(63, 138, 48, 0.12);

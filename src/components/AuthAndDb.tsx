@@ -17,8 +17,10 @@ import {
   initialSyncingAtom,
 } from '../store.ts'
 import { DialogModeContext } from './QcsResultDialog/DialogModeContext.ts'
+import { bootTrace } from '../modules/bootTrace.ts'
 
 export const AuthAndDb = () => {
+  bootTrace('AuthAndDb mount')
   const pgliteDb = useAtomValue(pgliteDbAtom)
   const sqlInitializing = useAtomValue(sqlInitializingAtom)
   const initialSyncing = useAtomValue(initialSyncingAtom)
