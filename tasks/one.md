@@ -12,9 +12,11 @@ Better-Auth, possible extensions:
 
 ---
 
-lets work on reducing the number of tsc errors to zero
+doing: lets work on reducing the number of tsc errors to zero
 
 ---
+
+type packages are now installed as dependencies. can't they be installed as dev-dependencies instead?
 
 ---
 
