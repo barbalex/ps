@@ -27,7 +27,9 @@ const propertiesEqual = (stored: unknown, computed: string[]): boolean => {
 
 export const OwnVectorLayerPropertiesProvider = () => {
   // the '/data' route itself defines no params; project_id is bridged for typing
-  const { project_id = '99999999-9999-9999-999999999999' } = useParams({
+  // sentinel must be a VALID uuid (see Layers/Own etc.): queries against uuid
+  // columns reject malformed input instead of matching nothing
+  const { project_id = '99999999-9999-9999-9999-999999999999' } = useParams({
     from: '/data',
   }) as { project_id?: string }
   const db = usePGlite()
