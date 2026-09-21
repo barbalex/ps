@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-// Regenerates backend/db/init/11_seedApfloraTaxonomies.sql from seed-data/apflora/*.csv.
+// Regenerates backend/db/init/11a_seedApfloraTaxonomies.sql from seed-data/apflora/*.csv.
 // Run from the project root: node backend/db/generate_apflora_seed_sql.mjs
 
 import { readFileSync, writeFileSync, existsSync } from 'fs'
@@ -28,7 +28,7 @@ const sqlPath = join(
   'backend',
   'db',
   'init',
-  '11_seedApfloraTaxonomies.sql',
+  '11a_seedApfloraTaxonomies.sql',
 )
 
 function parseCSV(text, delimiter = ';') {

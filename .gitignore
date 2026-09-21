@@ -17,3 +17,9 @@ et -e
 # playwright
 test-results/
 playwright-report/
+
+# apflora example data: unpublished apf2 data, local-only.
+# Requires the apf2 repo/dump; regenerate via npm run apflora:extract && npm run apflora:generate
+seed-data/apflora/apf2-example.json
+backend/db/init/11b_seedApfloraExampleData.sql
+backend-dev/db/init/11b_seedApfloraExampleData.sql

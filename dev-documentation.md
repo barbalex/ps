@@ -120,7 +120,7 @@ node backend/db/generate_apflora_seed_sql.mjs
 
 This rewrites:
 
-- `backend/db/init/11_seedApfloraTaxonomies.sql`
+- `backend/db/init/11a_seedApfloraTaxonomies.sql`
 
 3. Run `npm run sync-sql`.
 4. Commit changes.
@@ -135,8 +135,69 @@ If commit fails on SQL sync check:
 
 - `backend/db/init/09_seedQcs.sql`
   Regenerate with: `node backend/db/generate_qcs_sql.mjs`
-- `backend/db/init/11_seedApfloraTaxonomies.sql`
+- `backend/db/init/11a_seedApfloraTaxonomies.sql`
   Regenerate with: `node backend/db/generate_apflora_seed_sql.mjs`
+- `backend/db/init/11b_seedApfloraExampleData.sql`
+  Regenerate with: `npm run apflora:generate`
+
+## Apflora Example Data Import
+
+Goal: real apflora.ch example data in the dev backend, to explore editing,
+presentation and analysis and to find missing features compared to apf2.
+
+Imported per repeatable command (source: local pg_dump of the apf2 backend-dev
+database, default `../apf2/backend-dev/db/apflora.backup`, override with
+`APF2_DUMP`):
+
+- project `apflora`, owned by the demo account (as with the demo project)
+- subprojects: Abies alba, Aldrovanda vesiculosa, Pulsatilla vulgaris
+- place levels: 1 = Populationen (apf2: `pop`), 2 = Teil-Populationen (apf2: `tpop`)
+- checks on level 2 (apf2: `tpopkontr`, without Freiwilligen-Kontrollen;
+  Ausgangszustand included), with counts as `check_taxa` (apf2: `tpopkontrzaehl`)
+- not imported: Beobachtungen, Massnahmen, Berichte, Freiwilligen-Kontrollen
+
+Pipeline (run from the repo root):
+
+```bash
+npm run apflora:extract    # apf2 dump -> seed-data/apflora/apf2-example.json
+npm run apflora:generate   # JSON -> backend/db/init/11b_seedApfloraExampleData.sql
+npm run sync-sql
+cd backend-dev && docker compose down -v && docker compose up -d --build
+```
+
+The extracted JSON and the generated SQL file are **local-only** (gitignored):
+they contain unpublished apf2 data, and the apf2 repo/dump is expected to exist
+whenever the import is (re)run. All generated ids are deterministic
+(md5-derived, uuidv7-shaped), making the seed idempotent (`ON CONFLICT DO
+NOTHING`); row-count asserts at the end of the file fail init loudly if
+anything is missing. Clones without these files simply seed without the
+apflora example project.
+
+The file must run after `11a_seedApfloraTaxonomies.sql` (it links into the
+seeded DB-TAXREF (2017) taxa) and before `12_writePermissionTriggers.sql`
+(which rejects non-JWT writes). Note: the docker entrypoint sorts init files
+with `en_US.utf8` collation, where underscores are ignored in comparisons —
+that is why the files are numbered `11a`/`11b` rather than sharing an `11_`
+prefix.
+
+## Known Gaps Found While Importing (ps vs apf2)
+
+Potential missing features, surfaced by mapping apf2 data into ps:
+
+1. **Counting method lost**: apf2 `tpopkontrzaehl.methode` (geschätzt/gezählt)
+   has no counterpart on `check_taxa` / `check_quantities`.
+2. **Subset counts double-count**: apf2 einheiten like "davon blühende
+   Pflanzen" are subsets of "Pflanzen total". ps units are flat — summing
+   `check_taxa` per check mixes totals with subsets.
+3. **No person directory**: apf2 links `adresse` records (Bearbeiter,
+   EK-Kontrolleur). ps fields are free text — no consistency or autocomplete.
+4. **No control planning**: apf2 `ekfrequenz` (interval in years + start year +
+   abweichend) drives "fällige Kontrollen". ps has no equivalent; only the
+   start year/flag were imported as fields.
+5. **`field_sorts` has no level column**, but `fields` for `places` exist per
+   level — one sort order per table is shared across levels.
+6. **apf2 keeps `jahr` and `datum` separately**; ps checks only have `date`
+   (checks with only a year were seeded with January 1st of that year).
 
 ## Files Involved
 

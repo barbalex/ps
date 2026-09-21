@@ -25,6 +25,11 @@ const frontendMappings = [
 
 const backendDbMappings = [
   ['generate_apflora_seed_sql.mjs', 'generate_apflora_seed_sql.mjs'],
+  ['extract_apflora_example.mjs', 'extract_apflora_example.mjs'],
+  [
+    'generate_apflora_example_sql.mjs',
+    'generate_apflora_example_sql.mjs',
+  ],
   ['generate_qcs_sql.mjs', 'generate_qcs_sql.mjs'],
   ['generate_exports_sql.mjs', 'generate_exports_sql.mjs'],
   ['test_history_tables.sql', 'test_history_tables.sql'],
