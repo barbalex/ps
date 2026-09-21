@@ -417,9 +417,16 @@ export const observationFieldsSortedAtom = atomWithStorage<string[]>(
   [],
 )
 // open tree nodes are node paths, e.g. [['projects', 'project-1'], ['projects', 'project-1', 'goals']]
+// getOnInit reads localStorage synchronously so the very first render already
+// sees the persisted nodes: jotai's useAtomValueRaw captures the initial value
+// at first render and only subscribes in an effect, so the async hydration
+// write from atomWithStorage's onMount is missed by components that subscribe
+// after it (e.g. the tree, which mounts after Breadcrumbs in the same commit)
 export const treeOpenNodesAtom = atomWithStorage<string[][]>(
   'treeOpenNodesAtom',
   [],
+  undefined,
+  { getOnInit: true },
 )
 // table filters
 // Using array of or-filters

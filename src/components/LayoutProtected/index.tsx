@@ -117,10 +117,16 @@ export const LayoutProtected = () => {
         <IsDesktopViewSetter />
         <ApiDetector />
         <AppAdminDetector />
-        <TreeOpenNodesSetter />
         <AutoFetchCapabilities />
         <OperationsObserver />
         <Main />
+        {/* TreeOpenNodesSetter must come after Main: jotai's useAtomValueRaw
+            subscribes in an effect and misses store writes that happen between
+            a component's first render and its subscribe. If this component's
+            effect (which adds the url path to treeOpenNodesAtom) ran before
+            the tree inside Main subscribed, the tree would never learn the
+            nodes were opened and render collapsed */}
+        <TreeOpenNodesSetter />
         <BackgroundTasks />
       </UploaderContext.Provider>
     </QueryClientProvider>

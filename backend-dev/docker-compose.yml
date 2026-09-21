@@ -60,6 +60,13 @@ services:
     ports:
       - 3000:3000
     restart: always
+    # Electric stores shape logs and handles under /app/persistent
+    # (ELECTRIC_STORAGE=FAST_FILE, ELECTRIC_PERSISTENT_STATE=FILE by default).
+    # Without a volume every container recreation loses all shape handles, so
+    # every browser must re-sync its full data (~60s for the example projects)
+    # after each `docker compose up` or stack restart
+    volumes:
+      - electric_state:/app/persistent
     depends_on:
       db:
         condition: service_healthy
@@ -136,6 +143,7 @@ services:
 volumes:
   # gbif_data:
   pg_data:
+  electric_state:
 networks:
   network:
     driver: bridge
