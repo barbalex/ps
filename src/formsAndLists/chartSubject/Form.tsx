@@ -6,6 +6,7 @@ import { useIntl } from 'react-intl'
 
 import { TextField } from '../../components/shared/TextField.tsx'
 import { SwitchField } from '../../components/shared/SwitchField.tsx'
+import { DropdownFieldOptions } from '../../components/shared/DropdownFieldOptions.tsx'
 import { getValueFromChange } from '../../modules/getValueFromChange.ts'
 import { Section } from '../../components/shared/Section.tsx'
 import { Loading } from '../../components/shared/Loading.tsx'
@@ -35,6 +36,13 @@ export const ChartSubjectForm = ({ autoFocusRef }: Props) => {
     [chartSubjectId],
   )
   const row = res?.rows?.[0] as ChartSubjects | undefined
+
+  // units to filter summed quantities by (e.g. "Triebe total")
+  const unitsRes = useLiveQuery(`SELECT unit_id, name FROM units ORDER BY name`)
+  const unitOptions = (unitsRes?.rows ?? []).map((unit) => ({
+    value: unit.unit_id as string,
+    label: unit.name as string,
+  }))
 
   const onChange = async (
     e: React.ChangeEvent<HTMLInputElement>,
@@ -114,18 +122,28 @@ export const ChartSubjectForm = ({ autoFocusRef }: Props) => {
         />
         <ValueSource onChange={onChange} row={row} validations={validations} />
         {row.calc_method && row.calc_method !== 'count_rows' && (
-          <>
-            <Field onChange={onChange} row={row} validations={validations} />
-            <TextField
-              label={formatMessage({ id: 'bDkNqO', defaultMessage: 'Einheit' })}
-              name="value_unit"
-              value={row.value_unit ?? undefined}
-              type="number"
-              onChange={onChange}
-              validationState={validations?.value_unit?.state}
-              validationMessage={validations?.value_unit?.message}
-            />
-          </>
+          <Field onChange={onChange} row={row} validations={validations} />
+        )}
+        {row.calc_method === 'sum_values_of_field' && (
+          <DropdownFieldOptions
+            label={formatMessage({
+              id: 'bDkNqO',
+              defaultMessage: 'Einheit',
+            })}
+            name="value_unit"
+            options={unitOptions}
+            value={row.value_unit ?? undefined}
+            onChange={onChange}
+            validationState={validations?.value_unit?.state}
+            validationMessage={
+              validations?.value_unit?.message ??
+              formatMessage({
+                id: 'bEzZaA',
+                defaultMessage:
+                  'Nur Mengen dieser Einheit werden summiert. Bei mehreren Einheiten: Leerer Wert summiert alle',
+              })
+            }
+          />
         )}
       </Section>
       <Section

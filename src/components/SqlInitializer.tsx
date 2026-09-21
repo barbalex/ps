@@ -105,6 +105,11 @@ export const SqlInitializer = () => {
               END IF;
             END $$;
             ALTER TABLE IF EXISTS auth_sessions ADD COLUMN IF NOT EXISTS sys_period tstzrange DEFAULT NULL;
+            -- chart subject tables gained the taxa quantity tables (2026-09);
+            -- heal local databases created before the schema caught up.
+            -- NB: ADD VALUE has no "IF EXISTS" form for the type itself
+            ALTER TYPE chart_subject_table_names_enum ADD VALUE IF NOT EXISTS 'check_taxa' BEFORE 'actions';
+            ALTER TYPE chart_subject_table_names_enum ADD VALUE IF NOT EXISTS 'action_taxa' AFTER 'action_quantities';
             ALTER TABLE IF EXISTS auth_accounts ADD COLUMN IF NOT EXISTS sys_period tstzrange DEFAULT NULL;
             ALTER TABLE IF EXISTS auth_accounts DROP CONSTRAINT IF EXISTS auth_accounts_user_id_fkey;
             ALTER TABLE IF EXISTS auth_accounts

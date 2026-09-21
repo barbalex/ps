@@ -15,6 +15,7 @@ import { subprojectNameSingularExpr } from '../../modules/subprojectNameCols.ts'
 import { jsonbDataFromRow } from '../../modules/jsonbDataFromRow.ts'
 import styles from './Print.module.css'
 import { buildData } from '../chart/Chart/buildData/index.ts'
+import { groupSeriesBySubject } from '../chart/Chart/buildData/index.ts'
 import { SingleChart } from '../chart/Chart/Chart.tsx'
 
 import '../../form.css'
@@ -81,7 +82,9 @@ export const SubprojectReportPrint = ({ from }: { from: string }) => {
         const data = await buildData({
           chart,
           subjects: chart.subjects,
-          subproject_id: (subprojectId)!,          project_id: projectId,
+          subproject_id: (subprojectId)!,
+          project_id: projectId,
+          db,
         })
         dataMap[chart.chart_id] = data
       }
@@ -131,25 +134,25 @@ export const SubprojectReportPrint = ({ from }: { from: string }) => {
       fields: {},
       defaultProps: {},
       render: () => {
-        const data = chartDataMap[chart.chart_id] ?? { data: [], names: [] }
+        const data = chartDataMap[chart.chart_id] ?? { data: [], years: [], series: [] }
         return (
           <div className={styles.fieldWrapper}>
             <div className={styles.chartTitle}>{chart.name}</div>
             {chart.subjects_single === true ? (
-              chart.subjects?.map((subject: any) => (
+              groupSeriesBySubject(data.series ?? []).map((series) => (
                 <SingleChart
-                  key={subject.chart_subject_id}
+                  key={series[0]?.subject.chart_subject_id}
                   chart={chart}
-                  subjects={[subject]}
-                  data={data}
+                  series={series}
+                  data={data.data}
                   synchronized={true}
                 />
               ))
             ) : (
               <SingleChart
                 chart={chart}
-                subjects={chart.subjects ?? []}
-                data={data}
+                series={data.series ?? []}
+                data={data.data}
               />
             )}
           </div>

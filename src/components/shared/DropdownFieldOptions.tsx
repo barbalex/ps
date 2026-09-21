@@ -49,7 +49,11 @@ export const DropdownFieldOptions = ({
     >
       <Dropdown
         name={name}
-        value={selectedOptions?.[0]?.value ?? ''}
+        value={
+          (selectedOptions?.[0]?.label as string) ??
+          selectedOptions?.[0]?.value ??
+          ''
+        }
         selectedOptions={selectedOptions as unknown as string[]}
         onOptionSelect={onChangeOption}
         appearance="underline"

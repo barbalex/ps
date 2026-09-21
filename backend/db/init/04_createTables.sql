@@ -1849,7 +1849,7 @@ COMMENT ON COLUMN charts.years_until IS 'If has value: the chart shows data unti
 -- chart_subjects
 --
 CREATE TYPE chart_subject_table_names_enum AS ENUM (
-  'subprojects', 'places', 'checks', 'check_quantities', 'actions', 'action_quantities'
+  'subprojects', 'places', 'checks', 'check_quantities', 'check_taxa', 'actions', 'action_quantities', 'action_taxa'
 );
 
 CREATE TYPE chart_subject_table_levels_enum AS ENUM ('1', '2');
@@ -1868,7 +1868,7 @@ CREATE TABLE IF NOT EXISTS chart_subjects(
   table_filter jsonb DEFAULT NULL, -- save a filter that is applied to the table
   calc_method chart_subject_calc_methods_enum DEFAULT NULL, --how to source the value
   field text DEFAULT NULL, -- field to be used for calc_method
-  value_unit uuid DEFAULT NULL REFERENCES units(unit_id) ON DELETE CASCADE ON UPDATE CASCADE DEFERRABLE INITIALLY DEFERRED, -- needed for action_quantities, check_quantities
+  value_unit uuid DEFAULT NULL REFERENCES units(unit_id) ON DELETE CASCADE ON UPDATE CASCADE DEFERRABLE INITIALLY DEFERRED, -- needed for check_quantities, check_taxa, action_quantities, action_taxa
   name text DEFAULT NULL,
   label text DEFAULT NULL,
   type chart_subject_types_enum DEFAULT NULL, -- not used

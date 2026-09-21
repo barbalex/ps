@@ -1,9 +1,11 @@
 import { useState, useEffect } from 'react'
-import { useLiveQuery } from '@electric-sql/pglite-react'
+import { usePGlite, useLiveQuery } from '@electric-sql/pglite-react'
 import { Render } from '@puckeditor/core'
 
 import { TextField } from '../../components/shared/TextField.tsx'
 import { buildData } from '../chart/Chart/buildData/index.ts'
+import { groupSeriesBySubject } from '../chart/Chart/buildData/index.ts'
+import type { ChartData, ChartSeries } from '../chart/Chart/buildData/index.ts'
 import { SingleChart } from '../chart/Chart/Chart.tsx'
 import type Charts from '../../models/public/Charts.ts'
 import styles from './SubprojectReportsSection.module.css'
@@ -28,6 +30,7 @@ const SubprojectReportItem = ({
   fields,
 }: SubprojectReportItemProps) => {
   const [chartDataMap, setChartDataMap] = useState<Record<string, unknown>>({})
+  const db = usePGlite()
 
   const res = useLiveQuery(
     `SELECT
@@ -68,6 +71,7 @@ const SubprojectReportItem = ({
           chart,
           subjects: chart.subjects,
           subproject_id: subprojectId,
+          db,
         })
         dataMap[chart.chart_id] = data
       }
@@ -119,10 +123,12 @@ const SubprojectReportItem = ({
       render: () => {
         const data = (chartDataMap[chart.chart_id] ?? {
           data: [],
-          names: [],
+          years: [],
+          series: [],
         }) as unknown as {
-          data: unknown[]
+          data: ChartData['data']
           years: number[]
+          series: ChartSeries[]
         }
         return (
           <div className={styles.chartWrapper}>
@@ -130,20 +136,20 @@ const SubprojectReportItem = ({
               {chart.name}
             </div>
             {chart.subjects_single === true ? (
-              chart.subjects?.map((subject: any) => (
+              groupSeriesBySubject(data.series ?? []).map((series) => (
                 <SingleChart
-                  key={subject.chart_subject_id}
+                  key={series[0]?.subject.chart_subject_id}
                   chart={chart as unknown as Charts}
-                  subjects={[subject]}
-                  data={data}
+                  series={series}
+                  data={data.data}
                   synchronized={true}
                 />
               ))
             ) : (
               <SingleChart
                 chart={chart as unknown as Charts}
-                subjects={chart.subjects ?? []}
-                data={data}
+                series={data.series ?? []}
+                data={data.data}
               />
             )}
           </div>

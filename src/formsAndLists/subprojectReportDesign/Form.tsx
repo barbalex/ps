@@ -12,9 +12,9 @@ import { NotFound } from '../../components/NotFound.tsx'
 import { getValueFromChange } from '../../modules/getValueFromChange.ts'
 import { addOperationAtom, languageAtom } from '../../store.ts'
 import { buildData } from '../chart/Chart/buildData/index.ts'
+import { groupSeriesBySubject } from '../chart/Chart/buildData/index.ts'
 import { SingleChart } from '../chart/Chart/Chart.tsx'
 import type Charts from '../../models/public/Charts.ts'
-import type ChartSubjects from '../../models/public/ChartSubjects.ts'
 import styles from './Form.module.css'
 
 import type SubprojectReportDesigns from '../../models/public/SubprojectReportDesigns.ts'
@@ -97,6 +97,7 @@ export const Form = ({ autoFocusRef }: { autoFocusRef?: React.RefObject<HTMLInpu
           subjects: chart.subjects,
           project_id: projectId,
           subproject_id: undefined as unknown as string,
+          db,
         })
         dataMap[chart.chart_id] = data
       }
@@ -158,27 +159,27 @@ export const Form = ({ autoFocusRef }: { autoFocusRef?: React.RefObject<HTMLInpu
       fields: {},
       defaultProps: {},
       render: () => {
-        const data = chartDataMap[chart.chart_id] ?? { data: [], names: [] }
+        const data = chartDataMap[chart.chart_id] ?? { data: [], years: [], series: [] }
         return (
           <div className={styles.chartWrapper}>
             <div className={styles.chartTitle}>
               {chart.label}
             </div>
             {chart.subjects_single === true ? (
-              chart.subjects?.map((subject) => (
+              groupSeriesBySubject(data.series ?? []).map((series) => (
                 <SingleChart
-                  key={subject.chart_subject_id}
+                  key={series[0]?.subject.chart_subject_id}
                   chart={chart as unknown as Charts}
-                  subjects={[subject] as unknown as ChartSubjects[]}
-                  data={data}
+                  series={series}
+                  data={data.data}
                   synchronized={true}
                 />
               ))
             ) : (
               <SingleChart
                 chart={chart as unknown as Charts}
-                subjects={(chart.subjects ?? []) as unknown as ChartSubjects[]}
-                data={data}
+                series={data.series ?? []}
+                data={data.data}
               />
             )}
           </div>

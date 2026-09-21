@@ -13,19 +13,11 @@ import type ChartSubjects from '../../models/public/ChartSubjects.ts'
  * dedicated form component, translated to the app language, so users see
  * familiar names.
  *
- * Tables available: subprojects, places, checks, check_quantities, actions,
- * action_quantities (matching chart_subject_table_names seed data).
- *
- * Excluded fields per table (never useful as a chart aggregation key):
- *   - the table's primary key (…_id)
- *   - account_id
- *   - geometry, bbox
- *   - label            (generated/computed column)
- *   - created_at, updated_at, updated_by
- *   - implicit parent FK columns (e.g. place_id, action_id, subproject_id,
- *     project_id) that only identify the parent row and are not displayed
- *     as standalone inputs in the form
- *   - data             (jsonb blob – not a single aggregatable column)
+ * Which fields are offered depends on the calculation method:
+ * - count_rows_by_distinct_field_values: the keys present in the table's
+ *   `data` jsonb (e.g. the status of a place) — one series is built per value
+ * - sum_values_of_field: the numeric quantity columns of the quantity tables
+ * - otherwise: the table's regular columns
  */
 
 // Message descriptors for all field labels, grouped by table.
@@ -51,7 +43,7 @@ const fieldMessages: Record<string, { id: string; defaultMessage: string }> = {
     id: 'bEpPuU',
     defaultMessage: 'Relevant für Berichte',
   },
-  // check_quantities / action_quantities
+  // check_quantities / check_taxa / action_quantities / action_taxa
   unit_id: { id: 'bDkNqO', defaultMessage: 'Einheit' },
   quantity_integer: { id: 'bEqQvV', defaultMessage: 'Wert (ganzzahlig)' },
   quantity_numeric: { id: 'bErRwW', defaultMessage: 'Wert (numerisch)' },
@@ -63,25 +55,74 @@ const fieldsByTable: Record<string, string[]> = {
   places: ['level', 'parent_id', 'since', 'until'],
   checks: ['date', 'relevant_for_reports'],
   check_quantities: ['unit_id', 'quantity_integer', 'quantity_numeric', 'quantity_text'],
+  check_taxa: ['unit_id', 'quantity_integer', 'quantity_numeric', 'quantity_text'],
   actions: ['date', 'relevant_for_reports'],
   action_quantities: ['unit_id', 'quantity_integer', 'quantity_numeric', 'quantity_text'],
+  action_taxa: ['unit_id', 'quantity_integer', 'quantity_numeric', 'quantity_text'],
 }
 
-export const Field = ({
-  onChange,
-  row,
-  validations,
-}: {
+// tables whose regular columns can serve as a sum source
+const sumFields = ['quantity_integer', 'quantity_numeric']
+
+const levelFilter = (tableLevel: string | null | undefined, alias: string) =>
+  tableLevel === '1'
+    ? `${alias}.parent_id IS NULL`
+    : tableLevel === '2'
+      ? `${alias}.parent_id IS NOT NULL`
+      : 'TRUE'
+
+type FieldProps = {
   onChange: (e: React.ChangeEvent<HTMLInputElement>, data?: object) => void
   row: ChartSubjects
   validations: Record<
-    string,
-    { state?: 'error' | 'warning' | 'success' | 'none'; message?: string }
+    string, { state?: 'error' | 'warning' | 'success' | 'none'; message?: string }
   >
-}) => {
+}
+
+/** offers the keys that exist in the table's data jsonb within the subproject */
+const DataKeysField = ({ onChange, row, validations }: FieldProps) => {
+  const { formatMessage } = useIntl()
+  const { subprojectId } = useParams({ strict: false })
+
+  const query =
+    row.table_name === 'places' ?
+      `SELECT DISTINCT k AS key
+       FROM places t, jsonb_object_keys(t.data) k
+       WHERE t.subproject_id = $1 AND ${levelFilter(row.table_level, 't')}
+       ORDER BY 1`
+    : `SELECT DISTINCT k AS key
+       FROM ${row.table_name} t
+         INNER JOIN places p ON t.place_id = p.place_id, jsonb_object_keys(t.data) k
+       WHERE p.subproject_id = $1 AND ${levelFilter(row.table_level, 'p')}
+       ORDER BY 1`
+
+  const res = useLiveQuery(query, [subprojectId])
+  const fields = (res?.rows?.map((r) => r.key) ?? []) as string[]
+
+  if (!fields.length) return null
+
+  return (
+    <RadioGroupField
+      label={formatMessage({
+        id: 'bEyYzZ',
+        defaultMessage: 'Feld, dessen Werte die Serien bilden',
+      })}
+      name="field"
+      list={fields}
+      value={row.field ?? ''}
+      onChange={onChange}
+      labelMap={Object.fromEntries(fields.map((key) => [key, key]))}
+      validationState={validations?.field?.state}
+      validationMessage={validations?.field?.message}
+    />
+  )
+}
+
+export const Field = ({ onChange, row, validations }: FieldProps) => {
   const { formatMessage } = useIntl()
   const [language] = useAtom(languageAtom)
-  const { projectId } = useParams({ strict: false })
+  const params = useParams({ strict: false }) as Record<string, string | undefined>
+  const projectId = params.projectId ?? params.projectId_
 
   const nameRes = useLiveQuery(
     `SELECT name_singular_${language} FROM place_levels WHERE project_id = $1 AND level = $2`,
@@ -91,7 +132,26 @@ export const Field = ({
     `name_singular_${language}`
   ] ?? 'Population') as string
 
-  const fields = row.table_name ? (fieldsByTable[row.table_name] ?? []) : []
+  if (row?.calc_method === 'count_rows_by_distinct_field_values') {
+    const isRowTable =
+      row.table_name === 'places' ||
+      row.table_name === 'checks' ||
+      row.table_name === 'actions'
+    // no data keys to group by on other tables
+    return isRowTable ?
+        <DataKeysField
+          onChange={onChange}
+          row={row}
+          validations={validations}
+        />
+      : null
+  }
+
+  const fields =
+    row?.calc_method === 'sum_values_of_field' ?
+      sumFields
+    : row.table_name ? (fieldsByTable[row.table_name] ?? [])
+    : []
 
   // Nothing to show if the table has no recognized fields
   if (!fields.length) return null
@@ -99,7 +159,9 @@ export const Field = ({
   const labelMap = Object.fromEntries(
     fields.map((key) => [
       key,
-      formatMessage(fieldMessages[key], { nameSingular }),
+      key in fieldMessages ?
+        formatMessage(fieldMessages[key], { nameSingular })
+      : key,
     ]),
   )
 

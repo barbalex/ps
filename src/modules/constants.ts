@@ -77,16 +77,28 @@ export const chartSubjectTableNameOptions: {
     sort: 4,
   },
   {
+    value: 'check_taxa',
+    labelId: 'bEvVwW',
+    defaultMessage: 'Kontroll-Taxa',
+    sort: 5,
+  },
+  {
     value: 'actions',
     labelId: 'bDSWXY',
     defaultMessage: 'Massnahmen',
-    sort: 5,
+    sort: 6,
   },
   {
     value: 'action_quantities',
     labelId: 'bDTXYZ',
     defaultMessage: 'Massnahmen-Mengen',
-    sort: 6,
+    sort: 7,
+  },
+  {
+    value: 'action_taxa',
+    labelId: 'bEwWxX',
+    defaultMessage: 'Massnahmen-Taxa',
+    sort: 8,
   },
 ]
 
