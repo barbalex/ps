@@ -9,6 +9,7 @@
 //   tpop                 -> places level 2 (Teil-Populationen)
 //   tpopkontr (EK + Ausgangszustand) -> checks, apf2 columns -> checks.data (fields)
 //   tpopkontrzaehl       -> check_taxa (taxon resolved via DB-TAXREF (2017) taxa)
+//   tpopmassn            -> actions, apf2 columns -> actions.data (fields)
 // Taxa are NOT imported: 11a_seedApfloraTaxonomies.sql already seeds
 // DB-TAXREF (2017); this file links into it by id_in_source (taxid).
 //
@@ -109,6 +110,8 @@ const listDefs = [
   ['apbearbstand', 'Bearbeitungsstand', 'apBearbstand', null],
   ['apumsetzung', 'Umsetzung', 'apUmsetzung', null],
   ['apbergrund', 'AP-Bericht relevant: Grund', 'apberRelevantGrund', null],
+  ['massntyp', 'Massnahmen: Typ', 'massnTyp', null],
+  ['zaehleinheit', 'Zaehleinheit', 'einheit', null],
 ]
 const listId = (key) => derivedId('list', key)
 const listValueId = (key, value) => derivedId('list_value', `${key}:${value}`)
@@ -168,6 +171,26 @@ const fieldDefs = [
   ['checks', 2, 'gefaehrdung', 'Gefährdung', 'text', 'textarea', null],
   ['checks', 2, 'apber_nicht_relevant', 'Für AP-Bericht nicht relevant', 'boolean', 'jesNo', null],
   ['checks', 2, 'apber_nicht_relevant_grund', 'Grund: für AP-Bericht nicht relevant', 'text', 'text', null],
+  // tpopmassn -> actions level 2
+  ['actions', 2, 'typ', 'Typ', 'text', 'optionsMany', 'massntyp'],
+  ['actions', 2, 'beschreibung', 'Beschreibung', 'text', 'textarea', null],
+  ['actions', 2, 'bearbeiter', 'Bearbeiter/in', 'text', 'text', null],
+  ['actions', 2, 'flaeche', 'Fläche (m²)', 'decimal', 'text', null],
+  ['actions', 2, 'plan_vorhanden', 'Plan vorhanden', 'boolean', 'jesNo', null],
+  ['actions', 2, 'plan_bezeichnung', 'Plan: Bezeichnung', 'text', 'text', null],
+  ['actions', 2, 'markierung', 'Markierung', 'text', 'text', null],
+  ['actions', 2, 'anz_pflanzen', 'Anzahl Pflanzen', 'integer', 'text', null],
+  ['actions', 2, 'anz_triebe', 'Anzahl Triebe', 'integer', 'text', null],
+  ['actions', 2, 'anz_pflanzstellen', 'Anzahl Pflanzstellen', 'integer', 'text', null],
+  ['actions', 2, 'zieleinheit_anzahl', 'Zieleinheit: Anzahl', 'integer', 'text', null],
+  ['actions', 2, 'zieleinheit_einheit', 'Zieleinheit: Einheit', 'text', 'optionsMany', 'zaehleinheit'],
+  ['actions', 2, 'von_anzahl_individuen', 'Anzahl Individuen (Herkunft)', 'integer', 'text', null],
+  ['actions', 2, 'herkunft_pop', 'Herkunft: Population', 'text', 'text', null],
+  ['actions', 2, 'wirtspflanze', 'Wirtspflanze', 'text', 'text', null],
+  ['actions', 2, 'sammeldatum', 'Sammeldatum', 'text', 'text', null],
+  ['actions', 2, 'form', 'Form', 'text', 'text', null],
+  ['actions', 2, 'pflanzanordnung', 'Pflanzanordnung', 'text', 'text', null],
+  ['actions', 2, 'bemerkungen', 'Bemerkungen', 'text', 'textarea', null],
   // pop -> places level 1
   ['places', 1, 'status', 'Status', 'text', 'optionsFew', 'popstatus'],
   ['places', 1, 'status_unklar', 'Status unklar', 'boolean', 'jesNo', null],
@@ -219,6 +242,7 @@ const place1Id = (popId) => derivedId('place1', popId)
 const place2Id = (tpopId) => derivedId('place2', tpopId)
 const checkId = (kontrId) => derivedId('check', kontrId)
 const checkTaxonId = (zaehlId) => derivedId('check_taxon', zaehlId)
+const actionId = (massnId) => derivedId('action', massnId)
 const subprojectId = (apId) => derivedId('subproject', apId)
 
 // apf2 pop/tpop label convention: nr + name/flurname
@@ -238,6 +262,7 @@ const buildData = (entries) => {
 const places1 = []
 const places2 = []
 const checks = []
+const actions = []
 const checkTaxaByArt = new Map() // art index -> rows
 
 data.arts.forEach((art, artIndex) => {
@@ -294,6 +319,37 @@ data.arts.forEach((art, artIndex) => {
           ['bemerkungen', tpop.bemerkungen],
         ]),
       })
+      for (const massn of tpop.massnahmen) {
+        // same convention as checks: year-only rows get January 1st
+        const date =
+          massn.datum ?? (massn.jahr !== null ? `${massn.jahr}-01-01` : null)
+        actions.push({
+          id: actionId(massn.id),
+          place: place2Id(tpop.id),
+          date,
+          data: buildData([
+            ['typ', werteText('massnTyp', massn.typ)],
+            ['beschreibung', massn.beschreibung],
+            ['bearbeiter', adressName(massn.bearbeiter)],
+            ['flaeche', massn.flaeche],
+            ['plan_vorhanden', massn.plan_vorhanden],
+            ['plan_bezeichnung', massn.plan_bezeichnung],
+            ['markierung', massn.markierung],
+            ['anz_pflanzen', massn.anz_pflanzen],
+            ['anz_triebe', massn.anz_triebe],
+            ['anz_pflanzstellen', massn.anz_pflanzstellen],
+            ['zieleinheit_anzahl', massn.zieleinheit_anzahl],
+            ['zieleinheit_einheit', werteText('einheit', massn.zieleinheit_einheit)],
+            ['von_anzahl_individuen', massn.von_anzahl_individuen],
+            ['herkunft_pop', massn.herkunft_pop],
+            ['wirtspflanze', massn.wirtspflanze],
+            ['sammeldatum', massn.sammeldatum],
+            ['form', massn.form],
+            ['pflanzanordnung', massn.pflanzanordnung],
+            ['bemerkungen', massn.bemerkungen],
+          ]),
+        })
+      }
       for (const kontr of tpop.kontrollen) {
         // apf2 has rows with only jahr; keep them with a deterministic date
         const date = kontr.datum ?? `${kontr.jahr}-01-01`
@@ -365,7 +421,11 @@ for (const art of data.arts) {
     (s, p) => s + p.tpops.reduce((ss, t) => ss + t.kontrollen.length, 0),
     0,
   )
-  emit(`--   ${art.taxonomie.artname}: ${popCount} Populationen, ${tpopCount} Teil-Populationen, ${kontrCount} Kontrollen`)
+  const massnCount = art.pops.reduce(
+    (s, p) => s + p.tpops.reduce((ss, t) => ss + t.massnahmen.length, 0),
+    0,
+  )
+  emit(`--   ${art.taxonomie.artname}: ${popCount} Populationen, ${tpopCount} Teil-Populationen, ${kontrCount} Kontrollen, ${massnCount} Massnahmen`)
 }
 emit('BEGIN;')
 
@@ -512,6 +572,12 @@ emitChunked('checks (apf2: tpopkontr, without Freiwilligen-Kontrollen)', {
   pk: 'check_id',
 }, checks.map((c) => [q(c.id), q(c.place), q(c.date), jsonbOrNull(c.data)]))
 
+emitChunked('actions (apf2: tpopmassn)', {
+  table: 'actions',
+  cols: ['action_id', 'place_id', 'date', 'data'],
+  pk: 'action_id',
+}, actions.map((a) => [q(a.id), q(a.place), qOrNull(a.date), jsonbOrNull(a.data)]))
+
 // check_taxa need the taxon id, resolved per art through the seeded taxonomy
 const checkTaxaCount = [...checkTaxaByArt.values()].reduce((s, r) => s + r.length, 0)
 emit(`-- check taxa (apf2: tpopkontrzaehl) (${checkTaxaCount} rows)`)
@@ -548,6 +614,10 @@ emit(`  SELECT count(*) INTO got FROM checks c JOIN places p USING (place_id) WH
 emit(`  IF got <> ${checks.length} THEN`)
 emit(`    RAISE EXCEPTION 'apflora seed: expected % checks, got %', ${checks.length}, got;`)
 emit(`  END IF;`)
+emit(`  SELECT count(*) INTO got FROM actions a JOIN places p USING (place_id) WHERE p.subproject_id IN (SELECT subproject_id FROM subprojects WHERE project_id = ${q(PROJECT_ID)});`)
+emit(`  IF got <> ${actions.length} THEN`)
+emit(`    RAISE EXCEPTION 'apflora seed: expected % actions, got %', ${actions.length}, got;`)
+emit(`  END IF;`)
 emit(`  SELECT count(*) INTO got FROM check_taxa ct JOIN checks c USING (check_id) JOIN places p USING (place_id) WHERE p.subproject_id IN (SELECT subproject_id FROM subprojects WHERE project_id = ${q(PROJECT_ID)});`)
 emit(`  IF got <> ${checkTaxaCount} THEN`)
 emit(`    RAISE EXCEPTION 'apflora seed: expected % check_taxa, got %', ${checkTaxaCount}, got;`)
@@ -564,5 +634,5 @@ emit('')
 writeFileSync(sqlPath, out.join('\n'))
 console.log(`Written: ${sqlPath}`)
 console.log(
-  `Rows: ${places1.length} places L1, ${places2.length} places L2, ${checks.length} checks, ${checkTaxaCount} check_taxa, ${fieldDefs.length} fields`,
+  `Rows: ${places1.length} places L1, ${places2.length} places L2, ${checks.length} checks, ${actions.length} actions, ${checkTaxaCount} check_taxa, ${fieldDefs.length} fields`,
 )

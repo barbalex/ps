@@ -164,6 +164,7 @@ const werteTables = {
   idbiotuebereinst: 'tpopkontr_idbiotuebereinst_werte',
   einheit: 'tpopkontrzaehl_einheit_werte',
   methode: 'tpopkontrzaehl_methode_werte',
+  massnTyp: 'tpopmassn_typ_werte',
   popStatus: 'pop_status_werte',
   apberRelevantGrund: 'tpop_apberrelevant_grund_werte',
   apBearbstand: 'ap_bearbstand_werte',
@@ -184,8 +185,40 @@ const popAll = readTable('pop')
 const tpopAll = readTable('tpop')
 const kontrAll = readTable('tpopkontr')
 const zaehlAll = readTable('tpopkontrzaehl')
+const massnAll = readTable('tpopmassn')
 
 const neededAdresseIds = new Set()
+
+const massnByTpop = new Map()
+for (const m of massnAll) {
+  if (m.bearbeiter) neededAdresseIds.add(m.bearbeiter)
+  const list = massnByTpop.get(m.tpop_id) ?? []
+  list.push({
+    id: m.id,
+    typ: asInt(m.typ),
+    beschreibung: m.beschreibung,
+    jahr: asInt(m.jahr),
+    datum: m.datum,
+    bearbeiter: m.bearbeiter,
+    bemerkungen: m.bemerkungen,
+    plan_vorhanden: asBool(m.plan_vorhanden),
+    plan_bezeichnung: m.plan_bezeichnung,
+    flaeche: asFloat(m.flaeche),
+    markierung: m.markierung,
+    anz_triebe: asInt(m.anz_triebe),
+    anz_pflanzen: asInt(m.anz_pflanzen),
+    anz_pflanzstellen: asInt(m.anz_pflanzstellen),
+    zieleinheit_einheit: asInt(m.zieleinheit_einheit),
+    zieleinheit_anzahl: asInt(m.zieleinheit_anzahl),
+    wirtspflanze: m.wirtspflanze,
+    herkunft_pop: m.herkunft_pop,
+    sammeldatum: m.sammeldatum,
+    von_anzahl_individuen: asInt(m.von_anzahl_individuen),
+    form: m.form,
+    pflanzanordnung: m.pflanzanordnung,
+  })
+  massnByTpop.set(m.tpop_id, list)
+}
 
 const zaehlByKontr = new Map()
 for (const z of zaehlAll) {
@@ -290,6 +323,7 @@ for (const t of tpopAll) {
     ekf_kontrolleur: t.ekf_kontrolleur,
     bemerkungen: t.bemerkungen,
     kontrollen: kontrByTpop.get(t.id) ?? [],
+    massnahmen: massnByTpop.get(t.id) ?? [],
   })
   tpopByPop.set(t.pop_id, list)
 }
@@ -325,7 +359,13 @@ for (const artname of ARTNAMES) {
     (sum, p) => sum + p.tpops.reduce((s, t) => s + t.kontrollen.length, 0),
     0,
   )
-  console.log(`${artname}: ${pops.length} pops, ${tpopCount} tpops, ${kontrCount} kontrollen`)
+  const massnCount = pops.reduce(
+    (sum, p) => sum + p.tpops.reduce((s, t) => s + t.massnahmen.length, 0),
+    0,
+  )
+  console.log(
+    `${artname}: ${pops.length} pops, ${tpopCount} tpops, ${kontrCount} kontrollen, ${massnCount} massnahmen`,
+  )
   data.arts.push({
     taxonomie: {
       id: tax.id,

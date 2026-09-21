@@ -154,7 +154,9 @@ database, default `../apf2/backend-dev/db/apflora.backup`, override with
 - place levels: 1 = Populationen (apf2: `pop`), 2 = Teil-Populationen (apf2: `tpop`)
 - checks on level 2 (apf2: `tpopkontr`, without Freiwilligen-Kontrollen;
   Ausgangszustand included), with counts as `check_taxa` (apf2: `tpopkontrzaehl`)
-- not imported: Beobachtungen, Massnahmen, Berichte, Freiwilligen-Kontrollen
+- actions on level 2 (apf2: `tpopmassn`; apf2's inline count columns like
+  `anz_pflanzen` are kept as plain fields, not mapped to `action_taxa`)
+- not imported: Beobachtungen, Berichte, Freiwilligen-Kontrollen
 
 Pipeline (run from the repo root):
 
@@ -196,8 +198,12 @@ Potential missing features, surfaced by mapping apf2 data into ps:
    start year/flag were imported as fields.
 5. **`field_sorts` has no level column**, but `fields` for `places` exist per
    level — one sort order per table is shared across levels.
-6. **apf2 keeps `jahr` and `datum` separately**; ps checks only have `date`
-   (checks with only a year were seeded with January 1st of that year).
+6. **apf2 keeps `jahr` and `datum` separately**; ps checks/actions only have
+   `date` (rows with only a year were seeded with January 1st of that year).
+7. **Massnahmen counts are inline in apf2** (`anz_pflanzen`, `anz_triebe`,
+   `zieleinheit_*` as columns) while ps offers `action_quantities`/`action_taxa`
+   — the import keeps them as plain fields because the unit semantics
+   ("Pflanzen total" vs. planted plants) don't map 1:1.
 
 ## Files Involved
 
