@@ -1150,18 +1150,18 @@ export const startSyncing = async (userId: string) => {
         },
         table: 'qc_assignments',
         primaryKey: ['qc_assignment_id'],
-        project_qcs: {
-          shape: {
-            url,
-            params: {
-              table: 'project_qcs',
-              where: `project_id IN (${projectIdsOfUser})`,
-              params: { '1': userId },
-            },
+      },
+      project_qcs: {
+        shape: {
+          url,
+          params: {
+            table: 'project_qcs',
+            where: `project_id IN (${projectIdsOfUser})`,
+            params: { '1': userId },
           },
-          table: 'project_qcs',
-          primaryKey: ['project_qc_id'],
         },
+        table: 'project_qcs',
+        primaryKey: ['project_qc_id'],
       },
       exports: {
         shape: {
@@ -1184,30 +1184,30 @@ export const startSyncing = async (userId: string) => {
         },
         table: 'export_assignments',
         primaryKey: ['export_assignment_id'],
-        project_exports: {
-          shape: {
-            url,
-            params: {
-              table: 'project_exports',
-              where: `project_id IN (${projectIdsOfUser})`,
-              params: { '1': userId },
-            },
+      },
+      project_exports: {
+        shape: {
+          url,
+          params: {
+            table: 'project_exports',
+            where: `project_id IN (${projectIdsOfUser})`,
+            params: { '1': userId },
           },
-          table: 'project_exports',
-          primaryKey: ['project_exports_id'],
         },
-        project_export_assignments: {
-          shape: {
-            url,
-            params: {
-              table: 'project_export_assignments',
-              where: `project_id IN (${projectIdsOfUser})`,
-              params: { '1': userId },
-            },
+        table: 'project_exports',
+        primaryKey: ['project_exports_id'],
+      },
+      project_export_assignments: {
+        shape: {
+          url,
+          params: {
+            table: 'project_export_assignments',
+            where: `project_id IN (${projectIdsOfUser})`,
+            params: { '1': userId },
           },
-          table: 'project_export_assignments',
-          primaryKey: ['project_export_assignment_id'],
         },
+        table: 'project_export_assignments',
+        primaryKey: ['project_export_assignment_id'],
       },
     }
 
