@@ -1,19 +1,6 @@
 // Ambient declarations for untyped CommonJS dependencies.
 // API surface limited to what this app uses.
 
-declare module 'is-uuid' {
-  const isUuid: {
-    v1: (uuid: string) => boolean
-    v2: (uuid: string) => boolean
-    v3: (uuid: string) => boolean
-    v4: (uuid: string) => boolean
-    v5: (uuid: string) => boolean
-    nil: (uuid: string) => boolean
-    anyNonNil: (value: unknown) => boolean
-  }
-  export default isUuid
-}
-
 declare module 'reproject' {
   import type { GeoJSON } from 'geojson'
 

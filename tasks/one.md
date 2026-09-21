@@ -27,7 +27,7 @@ is-uuid hasn't been updated in years. v7 uuid's are new and used here. would it 
 
 ---
 
-o.k., so now that I can log in then see the correct ui, I tried to reload. I am now seeing an endless spinner again
+
 
 ---
 

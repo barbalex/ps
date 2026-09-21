@@ -1,4 +1,4 @@
-import isUuid from 'is-uuid'
+import { validate as isUuid } from 'uuid'
 
 export const orFilterToSql = (
   orFilter: Record<string, unknown>,
@@ -25,7 +25,7 @@ export const orFilterToSql = (
         return `${columnDescriptor}::text = '${eqVal}'`
       }
     }
-    if (isUuid.anyNonNil(value)) {
+    if (typeof value === 'string' && isUuid(value)) {
       return `${columnDescriptor}::uuid = '${value}'`
     }
     // cast text and filter with ilike
