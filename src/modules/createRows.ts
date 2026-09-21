@@ -1,4 +1,4 @@
-import { uuidv7 } from '@kripod/uuidv7'
+import { v7 as uuidv7 } from 'uuid'
 
 import { addOperationAtom, store, pgliteDbAtom, userIdAtom } from '../store.ts'
 import { projectTypeNames } from './projectTypeNames.ts'

@@ -3,7 +3,7 @@ import { monitorForElements } from '@atlaskit/pragmatic-drag-and-drop/adapter/el
 import { extractClosestEdge } from '@atlaskit/pragmatic-drag-and-drop-hitbox/closest-edge'
 import { getReorderDestinationIndex } from '@atlaskit/pragmatic-drag-and-drop-hitbox/util/get-reorder-destination-index'
 import { reorder } from '@atlaskit/pragmatic-drag-and-drop/utils/reorder'
-import { uuidv7 } from '@kripod/uuidv7'
+import { v7 as uuidv7 } from 'uuid'
 import { isEqual } from 'es-toolkit'
 
 import { FieldList } from './FieldList.tsx'

@@ -1,4 +1,4 @@
-import { uuidv7 } from '@kripod/uuidv7'
+import { v7 as uuidv7 } from 'uuid'
 
 import { getCapabilities } from '../../../../modules/getCapabilities.ts'
 import { addOperationAtom, store, pgliteDbAtom } from '../../../../store.ts'

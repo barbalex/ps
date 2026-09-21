@@ -6,7 +6,7 @@ import { getReorderDestinationIndex } from '@atlaskit/pragmatic-drag-and-drop-hi
 import { usePGlite } from '@electric-sql/pglite-react'
 import { useParams } from '@tanstack/react-router'
 import { useSetAtom } from 'jotai'
-import { uuidv7 } from '@kripod/uuidv7'
+import { v7 as uuidv7 } from 'uuid'
 
 import { Field } from './Field.tsx'
 import { DragAndDropContext } from './DragAndDropContext.ts'

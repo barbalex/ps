@@ -1,5 +1,5 @@
 import * as XLSX from '@e965/xlsx'
-import { uuidv7 } from '@kripod/uuidv7'
+import { v7 as uuidv7 } from 'uuid'
 
 import { addOperationAtom, store, pgliteDbAtom } from '../../store.ts'
 
