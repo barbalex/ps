@@ -12,6 +12,8 @@ import { designingAtom, treeOpenNodesAtom } from '../../store.ts'
 type NavData = {
   id: string
   label: string
+  /** whether the chart is a template for all subprojects of the project */
+  for_subprojects?: boolean
   count_unfiltered?: number
   count_filtered?: number
 }
@@ -60,6 +62,10 @@ export const ChartNode = ({
   const isInActiveNodeArray = ownArray.every((part, i) => urlPath[i] === part)
   const isActive = isEqual(urlPath, ownArray)
 
+  // templates are edited on the project: within a subproject the chart
+  // itself is all that remains — it renders at the node's own url
+  const isTemplateInSubproject = !!nav.for_subprojects && !!subprojectId
+
   const onClickButton = () => {
     if (isOpen) {
       removeChildNodes({ node: ownArray })
@@ -82,27 +88,12 @@ export const ChartNode = ({
         isOpen={isOpen}
         isInActiveNodeArray={isInActiveNodeArray}
         isActive={isActive}
-        childrenCount={2}
+        childrenCount={isTemplateInSubproject ? 0 : 2}
         to={ownUrl}
         onClickButton={onClickButton}
       />
-      {isOpen && (
+      {isOpen && !isTemplateInSubproject && (
         <>
-          {/* the chart preview needs a subproject or place as data context;
-              project-level templates get their context from the subproject
-              they are opened in */}
-          {(subprojectId || placeId) && (
-            <Node
-              label={formatMessage({ id: 'vMlktr', defaultMessage: 'Diagramm' })}
-              level={level + 1}
-              isInActiveNodeArray={
-                ownArray.every((part, i) => urlPath[i] === part) &&
-                urlPath[ownArray.length] === 'chart'
-              }
-              isActive={isEqual(urlPath, [...ownArray, 'chart'])}
-              to={`${ownUrl}/chart`}
-            />
-          )}
           {designing && (
             <Node
               label={formatMessage({

@@ -155,7 +155,7 @@ test.describe('charts from apflora demo data', () => {
     const base = `/data/projects/${PROJECT_ID}/subprojects/${SUBPROJECT_ID}/charts`
 
     // 1. two lines: existing and checked subpopulations per year
-    await page.goto(`${base}/${CHART_TPOPS}/chart`)
+    await page.goto(`${base}/${CHART_TPOPS}`)
     await expect(page.locator('.recharts-wrapper svg').first()).toBeVisible({
       timeout: 60_000,
     })
@@ -165,7 +165,7 @@ test.describe('charts from apflora demo data', () => {
     )
 
     // 2. one stacked series per status value
-    await page.goto(`${base}/${CHART_STATUS}/chart`)
+    await page.goto(`${base}/${CHART_STATUS}`)
     await expect(page.locator('.recharts-wrapper svg').first()).toBeVisible({
       timeout: 60_000,
     })
@@ -181,7 +181,7 @@ test.describe('charts from apflora demo data', () => {
     ).toBeVisible()
 
     // 3. one stacked series per population with counted shoots
-    await page.goto(`${base}/${CHART_TRIEBE}/chart`)
+    await page.goto(`${base}/${CHART_TRIEBE}`)
     await expect(page.locator('.recharts-wrapper svg').first()).toBeVisible({
       timeout: 60_000,
     })
@@ -209,7 +209,7 @@ test.describe('charts from apflora demo data', () => {
     ).toBeVisible()
 
     // ...and compute against that art's data when opened there
-    await page.goto(`${otherArtBase}/${CHART_STATUS}/chart`)
+    await page.goto(`${otherArtBase}/${CHART_STATUS}`)
     await expect(page.locator('.recharts-wrapper svg').first()).toBeVisible({
       timeout: 60_000,
     })

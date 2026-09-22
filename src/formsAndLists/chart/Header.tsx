@@ -46,13 +46,9 @@ export const Header = ({
   from: string
 }) => {
   const { formatMessage } = useIntl()
-  const isDetailView =
-    from ===
-      '/data/projects/$projectId_/subprojects/$subprojectId_/charts/$chartId_/chart' ||
-    from ===
-      '/data/projects/$projectId_/subprojects/$subprojectId_/charts/$chartId_/settings' ||
-    from === '/data/projects/$projectId_/charts/$chartId_/settings'
-  const subRoute = from.endsWith('/settings') ? 'settings' : 'chart'
+  // only the settings page is a detail view — the chart itself renders at
+  // the chart node's own url
+  const isDetailView = from.endsWith('/settings')
   const [designing] = useAtom(designingAtom)
   const addOperation = useSetAtom(addOperationAtom)
   const { projectId, subprojectId, placeId, placeId2, chartId } = useParams({ strict: false })
@@ -90,9 +86,7 @@ export const Header = ({
             }
     const chart_id = await createChart(idToAdd)
     navigate({
-      to: isDetailView
-        ? `../../${chart_id}/${subRoute}`
-        : `../${chart_id}/settings`,
+      to: isDetailView ? `../../${chart_id}/settings` : `../${chart_id}`,
       params: (prev) => ({ ...prev, chartId: chart_id }),
     })
     autoFocusRef?.current?.focus()
@@ -137,7 +131,7 @@ export const Header = ({
     const next = rows[(index + 1) % len]
     navigate({
       to: isDetailView
-        ? `../../${next.chart_id}/${subRoute}`
+        ? `../../${next.chart_id}/settings`
         : `../${next.chart_id}`,
       params: (prev) => ({ ...prev, chartId: next.chart_id }),
     })
@@ -154,7 +148,7 @@ export const Header = ({
     const previous = rows[(index + len - 1) % len]
     navigate({
       to: isDetailView
-        ? `../../${previous.chart_id}/${subRoute}`
+        ? `../../${previous.chart_id}/settings`
         : `../${previous.chart_id}`,
       params: (prev) => ({ ...prev, chartId: previous.chart_id }),
     })
@@ -171,7 +165,7 @@ export const Header = ({
       toPreviousDisabled={rowCount <= 1}
       tableName="chart"
       siblings={
-        subRoute === 'settings' ? (
+        isDetailView ? (
           <HistoryToggleButton
             historiesPath={`${basePath}/histories`}
             formPath={`${basePath}/settings`}

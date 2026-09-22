@@ -26,6 +26,8 @@ type Props = {
 type NavData = {
   id: string
   label: string
+  /** whether the chart is a template for all subprojects of the project */
+  for_subprojects?: boolean
   count_unfiltered?: number
   count_filtered?: number
 }[]
@@ -106,6 +108,7 @@ export const useChartsNavData = ({
       SELECT
         chart_id as id,
         label,
+        for_subprojects,
         count_unfiltered.count AS count_unfiltered,
         count_filtered.count AS count_filtered
       FROM charts, count_unfiltered, count_filtered

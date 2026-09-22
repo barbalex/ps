@@ -72,15 +72,6 @@ export const useChartNavData = ({ projectId, subprojectId, chartId, section }: P
     label,
     notFound,
     navs: [
-      // the chart preview needs a subproject as data context
-      ...(subprojectId
-        ? [
-            {
-              id: 'chart',
-              label: formatMessage({ id: 'vMlktr', defaultMessage: 'Diagramm' }),
-            },
-          ]
-        : []),
       {
         id: 'subjects',
         label: buildNavLabel({

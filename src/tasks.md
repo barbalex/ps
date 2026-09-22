@@ -14,8 +14,6 @@ Better-Auth, possible extensions:
 
 ---
 
-we should be able to define charts on the project level (charts table has project_id, no subproject_id). these will be used in all subprojects i.e. they are not charts describing a project but rather charts that inside this project will be used to describe all subprojects. I guess we will need to add a column for this sake in the charts table. these charts will later be able to be integrated into subproject_reports.
-
 ---
 
 ---
