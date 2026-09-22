@@ -80,7 +80,11 @@ export const startSyncing = async (userId: string) => {
               'created_at',
               'updated_at',
             ],
-            where: `user_id = $1`,
+            // own user row plus the users behind every synced account
+            // (project owners) and every member of the user's projects —
+            // project_users.auth_user_id references them; the local foreign
+            // keys need the referenced rows to sync
+            where: `user_id = $1 OR user_id IN (SELECT user_id FROM accounts WHERE account_id IN (SELECT account_id FROM projects WHERE project_id IN (${projectIdsOfUser}))) OR user_id IN (SELECT auth_user_id FROM project_users WHERE project_id IN (${projectIdsOfUser}))`,
             params: { '1': userId },
           },
         },
@@ -116,7 +120,12 @@ export const startSyncing = async (userId: string) => {
           url,
           params: {
             table: 'accounts',
-            where: `user_id = $1`,
+            // own account plus the accounts of every project the user can
+            // see: projects reference their owner's account, and the local
+            // database enforces foreign keys (deferred, checked when the
+            // apply transaction commits) — a parent row that never syncs
+            // would poison the whole sync
+            where: `user_id = $1 OR account_id IN (SELECT account_id FROM projects WHERE project_id IN (${projectIdsOfUser}))`,
             params: { '1': userId },
           },
         },
@@ -282,7 +291,7 @@ export const startSyncing = async (userId: string) => {
               'updated_at',
               'updated_by',
             ],
-            where: `project_id IN (${projectIdsOfUser})`,
+            where: `project_id IN (${projectIdsOfUser}) OR taxonomy_id IN (SELECT taxonomy_id FROM taxa WHERE taxon_id IN (SELECT taxon_id FROM subproject_taxa WHERE subproject_id IN (${subprojectIdsOfUser})))`,
             params: { '1': userId },
           },
         },
@@ -294,7 +303,10 @@ export const startSyncing = async (userId: string) => {
           url,
           params: {
             table: 'taxa',
-            where: `taxonomy_id IN (SELECT taxonomy_id FROM taxonomies WHERE project_id IN (${projectIdsOfUser}))`,
+            // taxa of the user's taxonomies plus every taxon referenced by
+            // synced subproject/check/action taxa rows — the local foreign
+            // keys need the referenced rows to sync
+            where: `taxonomy_id IN (SELECT taxonomy_id FROM taxonomies WHERE project_id IN (${projectIdsOfUser})) OR taxon_id IN (SELECT taxon_id FROM subproject_taxa WHERE subproject_id IN (${subprojectIdsOfUser}))`,
             params: { '1': userId },
           },
         },

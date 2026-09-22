@@ -23,7 +23,10 @@ WHERE name IN ('DB-TAXREF (2017)');
 WITH inserted_taxonomies AS (
   INSERT INTO taxonomies(project_id, name, type)
   VALUES
-  ('018cfcf7-6424-7000-a100-851c5cc2c878', 'DB-TAXREF (2017)', 'species')
+  -- the apflora project owns its taxonomy: its subproject_taxa reference
+  -- these taxa, and every local browser enforces the foreign keys, so the
+  -- referenced rows must be inside the project's own referential closure
+  ('0195a101-0000-7000-8000-000000000001', 'DB-TAXREF (2017)', 'species')
   RETURNING taxonomy_id, name
 )
 INSERT INTO taxa(taxonomy_id, name, id_in_source)
