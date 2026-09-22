@@ -105,6 +105,12 @@ export const SqlInitializer = () => {
               END IF;
             END $$;
             ALTER TABLE IF EXISTS auth_sessions ADD COLUMN IF NOT EXISTS sys_period tstzrange DEFAULT NULL;
+            -- charts gained the project-level template flag (2026-09);
+            -- heal local databases created before the schema caught up.
+            -- charts_history is created via LIKE charts, so it needs the
+            -- column too or the versioning trigger breaks on chart updates
+            ALTER TABLE IF EXISTS charts ADD COLUMN IF NOT EXISTS for_subprojects boolean NOT NULL DEFAULT FALSE;
+            ALTER TABLE IF EXISTS charts_history ADD COLUMN IF NOT EXISTS for_subprojects boolean NOT NULL DEFAULT FALSE;
             -- chart subject tables gained the taxa quantity tables (2026-09);
             -- heal local databases created before the schema caught up.
             -- NB: ADD VALUE has no "IF EXISTS" form for the type itself

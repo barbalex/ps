@@ -50,12 +50,17 @@ export const Header = ({
     from ===
       '/data/projects/$projectId_/subprojects/$subprojectId_/charts/$chartId_/chart' ||
     from ===
-      '/data/projects/$projectId_/subprojects/$subprojectId_/charts/$chartId_/settings'
+      '/data/projects/$projectId_/subprojects/$subprojectId_/charts/$chartId_/settings' ||
+    from === '/data/projects/$projectId_/charts/$chartId_/settings'
   const subRoute = from.endsWith('/settings') ? 'settings' : 'chart'
   const [designing] = useAtom(designingAtom)
   const addOperation = useSetAtom(addOperationAtom)
   const { projectId, subprojectId, placeId, placeId2, chartId } = useParams({ strict: false })
-  const basePath = `/data/projects/${projectId}/subprojects/${subprojectId}/charts/${chartId}`
+  // charts live under a subproject (or place) or directly on the project as
+  // templates for all its subprojects
+  const basePath = subprojectId
+    ? `/data/projects/${projectId}/subprojects/${subprojectId}/charts/${chartId}`
+    : `/data/projects/${projectId}/charts/${chartId}`
   const navigate = useNavigate()
 
   const db = usePGlite()

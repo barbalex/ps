@@ -65,7 +65,7 @@ export const Form = ({ autoFocusRef }: { autoFocusRef?: React.RefObject<HTMLInpu
            FROM chart_subjects cs 
            WHERE cs.chart_id = c.chart_id) as subjects
         FROM charts c
-        WHERE c.project_id = srd.project_id
+        WHERE (c.for_subprojects AND c.subproject_id IS NULL AND c.project_id = srd.project_id)
            OR c.subproject_id IN (SELECT subproject_id FROM subprojects WHERE project_id = srd.project_id)
         ORDER BY c.name
       ) c) as charts,

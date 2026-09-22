@@ -1083,6 +1083,7 @@ export const startSyncing = async (userId: string) => {
               'subjects_stacked',
               'subjects_single',
               'percent',
+              'for_subprojects',
               'created_at',
               'updated_at',
               'updated_by',

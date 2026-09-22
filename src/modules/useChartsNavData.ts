@@ -10,8 +10,8 @@ import { chartsFilterAtom, treeOpenNodesAtom } from '../store.ts'
 
 type Props = {
   projectId: string
-  subprojectId: string
-  placeId: string
+  subprojectId?: string
+  placeId?: string
   placeId2?: string
 }
 
@@ -33,21 +33,14 @@ export const useChartsNavData = ({
   const [filter] = useAtom(chartsFilterAtom)
   const location = useLocation()
 
-  let hKey
-  let hValue
-  if (placeId2) {
-    hKey = 'place_id'
-    hValue = placeId2
-  } else if (placeId) {
-    hKey = 'place_id'
-    hValue = placeId
-  } else if (subprojectId) {
-    hKey = 'subproject_id'
-    hValue = subprojectId
-  } else if (projectId) {
-    hKey = 'project_id'
-    hValue = projectId
-  }
+  // within a subproject, the project's chart templates (for_subprojects)
+  // appear alongside the subproject's own charts
+  const whereClause =
+    placeId2 || placeId ?
+      `charts.place_id = '${placeId2 ?? placeId}'`
+    : subprojectId ?
+      `(charts.subproject_id = '${subprojectId}' OR (charts.for_subprojects AND charts.project_id = '${projectId}' AND charts.subproject_id IS NULL))`
+    : `charts.project_id = '${projectId}'`
 
   const parentArray = [
     'data',
@@ -73,22 +66,22 @@ export const useChartsNavData = ({
       isOpen
         ? `
       WITH
-        count_unfiltered AS (SELECT count(*) FROM charts WHERE ${hKey} = '${hValue}'),
-        count_filtered AS (SELECT count(*) FROM charts WHERE ${hKey} = '${hValue}' ${isFiltered ? ` AND ${filterString}` : ''})
+        count_unfiltered AS (SELECT count(*) FROM charts WHERE ${whereClause}),
+        count_filtered AS (SELECT count(*) FROM charts WHERE ${whereClause} ${isFiltered ? ` AND ${filterString}` : ''})
       SELECT
         chart_id as id,
         label,
         count_unfiltered.count AS count_unfiltered,
         count_filtered.count AS count_filtered
       FROM charts, count_unfiltered, count_filtered
-      WHERE ${hKey} = '${hValue}'
+      WHERE ${whereClause}
       ${isFiltered ? ` AND ${filterString}` : ''}
       ORDER BY label
     `
         : `
       WITH
-        count_unfiltered AS (SELECT count(*) FROM charts WHERE ${hKey} = '${hValue}'),
-        count_filtered AS (SELECT count(*) FROM charts WHERE ${hKey} = '${hValue}' ${isFiltered ? ` AND ${filterString}` : ''})
+        count_unfiltered AS (SELECT count(*) FROM charts WHERE ${whereClause}),
+        count_filtered AS (SELECT count(*) FROM charts WHERE ${whereClause} ${isFiltered ? ` AND ${filterString}` : ''})
       SELECT
         count_unfiltered.count AS count_unfiltered,
         count_filtered.count AS count_filtered

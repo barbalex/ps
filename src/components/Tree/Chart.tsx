@@ -85,16 +85,21 @@ export const ChartNode = ({
       />
       {isOpen && (
         <>
-          <Node
-            label={formatMessage({ id: 'vMlktr', defaultMessage: 'Diagramm' })}
-            level={level + 1}
-            isInActiveNodeArray={
-              ownArray.every((part, i) => urlPath[i] === part) &&
-              urlPath[ownArray.length] === 'chart'
-            }
-            isActive={isEqual(urlPath, [...ownArray, 'chart'])}
-            to={`${ownUrl}/chart`}
-          />
+          {/* the chart preview needs a subproject or place as data context;
+              project-level templates get their context from the subproject
+              they are opened in */}
+          {(subprojectId || placeId) && (
+            <Node
+              label={formatMessage({ id: 'vMlktr', defaultMessage: 'Diagramm' })}
+              level={level + 1}
+              isInActiveNodeArray={
+                ownArray.every((part, i) => urlPath[i] === part) &&
+                urlPath[ownArray.length] === 'chart'
+              }
+              isActive={isEqual(urlPath, [...ownArray, 'chart'])}
+              to={`${ownUrl}/chart`}
+            />
+          )}
           {designing && (
             <Node
               label={formatMessage({

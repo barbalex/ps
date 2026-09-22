@@ -31,4 +31,5 @@ export const preferredOrder = [
   'subjects_stacked',
   'subjects_single',
   'percent',
+  'for_subprojects',
 ]

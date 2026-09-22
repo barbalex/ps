@@ -79,24 +79,41 @@ type FieldProps = {
   >
 }
 
-/** offers the keys that exist in the table's data jsonb within the subproject */
+/**
+ * Offers the keys that exist in the table's data jsonb. Within a subproject
+ * only that subproject's keys are offered; on a project-level chart subject
+ * (template) the keys of all the project's subprojects are offered.
+ */
 const DataKeysField = ({ onChange, row, validations }: FieldProps) => {
   const { formatMessage } = useIntl()
-  const { subprojectId } = useParams({ strict: false })
+  const { subprojectId, projectId } = useParams({ strict: false })
+
+  // the scope the keys are collected from
+  const scope = subprojectId
+    ? { column: 'subproject_id', value: subprojectId }
+    : projectId
+      ? {
+          column: 'subproject_id',
+          value: `(SELECT subproject_id FROM subprojects WHERE project_id = '${projectId}')`,
+        }
+      : null
 
   const query =
-    row.table_name === 'places' ?
+    scope && row.table_name === 'places' ?
       `SELECT DISTINCT k AS key
        FROM places t, jsonb_object_keys(t.data) k
-       WHERE t.subproject_id = $1 AND ${levelFilter(row.table_level, 't')}
+       WHERE t.${scope.column} = ${scope.value} AND ${levelFilter(row.table_level, 't')}
        ORDER BY 1`
-    : `SELECT DISTINCT k AS key
+    : scope ?
+      `SELECT DISTINCT k AS key
        FROM ${row.table_name} t
          INNER JOIN places p ON t.place_id = p.place_id, jsonb_object_keys(t.data) k
-       WHERE p.subproject_id = $1 AND ${levelFilter(row.table_level, 'p')}
+       WHERE p.${scope.column} = ${scope.value} AND ${levelFilter(row.table_level, 'p')}
        ORDER BY 1`
+    : undefined
 
-  const res = useLiveQuery(query, [subprojectId])
+  // useLiveQuery requires a query string; without a scope there is nothing to offer
+  const res = useLiveQuery(query ?? 'SELECT NULL AS key WHERE FALSE')
   const fields = (res?.rows?.map((r) => r.key) ?? []) as string[]
 
   if (!fields.length) return null

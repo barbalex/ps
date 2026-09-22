@@ -423,6 +423,8 @@
   "bEwWxX": "{place}-Action taxa",
   "bEyYzZ": "Field whose values form the series",
   "bEzZaA": "Only quantities of this unit are summed. If left empty: all units",
+  "bFaAbB": "Applies to all subprojects?",
+  "bFbBcC": "If enabled, the chart is available in every subproject of the project, computed against the data of the respective subproject",
   "gRVMgi": "Quantity (integer)",
   "gRVMnu": "Quantity (numeric)",
   "gRVMtx": "Quantity (text)",

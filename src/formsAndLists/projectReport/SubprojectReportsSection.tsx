@@ -45,6 +45,9 @@ const SubprojectReportItem = ({
            WHERE cs.chart_id = c.chart_id) as subjects
         FROM charts c
         WHERE c.subproject_id = sr.subproject_id
+          -- project-level chart templates compute against this subproject
+          OR (c.for_subprojects AND c.subproject_id IS NULL
+              AND c.project_id = (SELECT project_id FROM subprojects WHERE subproject_id = sr.subproject_id))
         ORDER BY c.name
       ) c) as charts
     FROM subproject_reports sr

@@ -465,6 +465,27 @@ export const Form = ({ autoFocusRef }: Props) => {
             })
           }
         />
+        {/* templates are project-level charts offered in every subproject */}
+        {!row.subproject_id && !row.place_id && (
+          <SwitchField
+            label={formatMessage({
+              id: 'bFaAbB',
+              defaultMessage: 'Gilt für alle Teilprojekte?',
+            })}
+            name="for_subprojects"
+            value={row.for_subprojects as never}
+            onChange={onChange}
+            validationState={validations?.for_subprojects?.state}
+            validationMessage={
+              validations.for_subprojects?.message ??
+              formatMessage({
+                id: 'bFbBcC',
+                defaultMessage:
+                  'Wenn aktiviert, steht das Diagramm in jedem Teilprojekt des Projekts zur Verfügung und wird dort mit den Daten des jeweiligen Teilprojekts berechnet',
+              })
+            }
+          />
+        )}
       </Section>
     </div>
   )

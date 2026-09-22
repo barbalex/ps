@@ -7,6 +7,7 @@ import { useIntl } from 'react-intl'
 import { Node } from '../Node.tsx'
 import { ProjectDesignNode } from '../ProjectDesign.tsx'
 import { SubprojectsNode } from '../Subprojects.tsx'
+import { ChartsNode } from '../Charts.tsx'
 import { ProjectReportsNode } from '../ProjectReports.tsx'
 import { WmsServicesNode } from '../WmsServices.tsx'
 import { WfsServicesNode } from '../WfsServices.tsx'
@@ -56,7 +57,7 @@ export const ProjectNode = ({ nav, level = 2 }: Props) => {
 
   // TODO: Check if user is account owner for this project (auth not yet implemented, assume yes if project exists)
   const resultProject = useLiveQuery(
-    `SELECT project_id, wms_layers, vector_layers, project_reports, files_active_projects, project_users_in_project, project_files_in_project, units_in_project, fields_in_project, project_reports_in_project FROM projects WHERE project_id = $1`,
+    `SELECT project_id, wms_layers, vector_layers, project_reports, files_active_projects, project_users_in_project, project_files_in_project, units_in_project, fields_in_project, project_reports_in_project, charts FROM projects WHERE project_id = $1`,
     [nav.id],
   )
   const project = resultProject?.rows?.[0]
@@ -67,6 +68,7 @@ export const ProjectNode = ({ nav, level = 2 }: Props) => {
   const showWmsNodes = designing || (project?.wms_layers ?? false)
   const showVectorNodes = designing || (project?.vector_layers ?? false)
   const showProjectReports = designing || (project?.project_reports ?? true)
+  const showCharts = designing || (project?.charts ?? true)
   const showFiles = designing || (project?.files_active_projects ?? false)
   const usersInProject = project?.project_users_in_project !== false
   const filesInProject = project?.project_files_in_project === true
@@ -126,6 +128,12 @@ export const ProjectNode = ({ nav, level = 2 }: Props) => {
             <ProjectDesignNode projectId={nav.id} level={level + 1} />
           )}
           <SubprojectsNode projectId={nav.id} />
+          {showCharts && (
+            <ChartsNode
+              projectId={nav.id}
+              level={3}
+            />
+          )}
           {showDesigningNodes && (
             <SubprojectReportDesignsNode projectId={nav.id} level={3} />
           )}

@@ -1824,6 +1824,7 @@ CREATE TABLE IF NOT EXISTS charts(
   subjects_stacked boolean DEFAULT FALSE,
   subjects_single boolean DEFAULT FALSE,
   percent boolean DEFAULT FALSE,
+  for_subprojects boolean NOT NULL DEFAULT FALSE,
   label text GENERATED ALWAYS AS (COALESCE(NULLIF(name, ''), chart_id::text)) STORED,
   sys_period tstzrange DEFAULT NULL,
   created_at timestamptz NOT NULL DEFAULT now(),
@@ -1838,6 +1839,8 @@ CREATE INDEX IF NOT EXISTS charts_place_id_idx ON charts USING btree(place_id);
 CREATE INDEX IF NOT EXISTS charts_label_idx ON charts USING btree(label);
 
 COMMENT ON TABLE charts IS 'Charts for projects, subprojects or places.';
+COMMENT ON COLUMN charts.percent IS 'If has value: multiple subjects are shown as percentage instead of absolute values';
+COMMENT ON COLUMN charts.for_subprojects IS 'Project-level charts with this flag are templates: they are offered in every subproject of the project (and its subproject reports), always computed against the subproject they are viewed in';
 COMMENT ON COLUMN charts.years_current IS 'If has value: the chart shows only data of the current year';
 COMMENT ON COLUMN charts.years_previous IS 'If has value: the chart shows data of the previous year';
 COMMENT ON COLUMN charts.years_specific IS 'If has value: the chart shows data of the specific year';

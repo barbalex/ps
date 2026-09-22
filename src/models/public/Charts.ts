@@ -47,6 +47,12 @@ export default interface Charts {
 
   percent: boolean | null;
 
+  /**
+   * Project-level charts with this flag are templates: they are offered in every subproject of the project (and its subproject reports), always computed against the subproject they are viewed in
+   * Default value: false
+   */
+  for_subprojects: boolean;
+
   label: string | null;
 
   /** System period maintained by temporal_tables for auditing and historic queries. */
@@ -111,6 +117,12 @@ export interface ChartsInitializer {
   /** Default value: false */
   percent?: boolean | null;
 
+  /**
+   * Project-level charts with this flag are templates: they are offered in every subproject of the project (and its subproject reports), always computed against the subproject they are viewed in
+   * Default value: false
+   */
+  for_subprojects?: boolean;
+
   /** System period maintained by temporal_tables for auditing and historic queries. */
   sys_period: string;
 
@@ -163,6 +175,12 @@ export interface ChartsMutator {
   subjects_single?: boolean | null;
 
   percent?: boolean | null;
+
+  /**
+   * Project-level charts with this flag are templates: they are offered in every subproject of the project (and its subproject reports), always computed against the subproject they are viewed in
+   * Default value: false
+   */
+  for_subprojects?: boolean;
 
   /** System period maintained by temporal_tables for auditing and historic queries. */
   sys_period?: string;

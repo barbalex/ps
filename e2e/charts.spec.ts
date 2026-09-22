@@ -16,6 +16,7 @@ const E2E_PASSWORD = process.env.E2E_PASSWORD ?? 'e2e-test-password-123'
 
 const PROJECT_ID = '0195a101-0000-7000-8000-000000000001'
 const SUBPROJECT_ID = '12496da4-f3ce-79b9-87cf-c6e85bb6722c' // Aldrovanda
+const OTHER_SUBPROJECT_ID = '4eddea03-b64a-755b-885c-5f173c7aba8f' // Pulsatilla
 const UNIT_TRIEBE_TOTAL = '935432b9-fc64-7118-8167-06f985ea181f'
 
 const CHART_TPOPS = 'a1000000-0000-4000-8000-000000000001'
@@ -92,14 +93,14 @@ ON CONFLICT DO NOTHING;
 INSERT INTO place_roles (place_id, project_user_id, role)
 SELECT p.place_id, pu.project_user_id, 'read-all'
 FROM project_users pu
-JOIN places p ON p.subproject_id = '${SUBPROJECT_ID}'
+JOIN places p ON p.subproject_id IN ('${SUBPROJECT_ID}', '${OTHER_SUBPROJECT_ID}')
 WHERE pu.project_id = '${PROJECT_ID}' AND pu.email = '${E2E_EMAIL}'
 ON CONFLICT DO NOTHING;
 
-INSERT INTO charts (chart_id, project_id, subproject_id, name, years_since, subjects_stacked) VALUES
-  ('${CHART_TPOPS}', '${PROJECT_ID}', '${SUBPROJECT_ID}', '(kontrollierte) Teil-Populationen', 2014, false),
-  ('${CHART_STATUS}', '${PROJECT_ID}', '${SUBPROJECT_ID}', 'Populationen nach Status', 2014, true),
-  ('${CHART_TRIEBE}', '${PROJECT_ID}', '${SUBPROJECT_ID}', '"Triebe total" nach Populationen', 2014, true)
+INSERT INTO charts (chart_id, project_id, name, years_since, subjects_stacked, for_subprojects) VALUES
+  ('${CHART_TPOPS}', '${PROJECT_ID}', '(kontrollierte) Teil-Populationen', 2014, false, true),
+  ('${CHART_STATUS}', '${PROJECT_ID}', 'Populationen nach Status', 2014, true, true),
+  ('${CHART_TRIEBE}', '${PROJECT_ID}', '"Triebe total" nach Populationen', 2014, true, true)
 ON CONFLICT (chart_id) DO NOTHING;
 
 INSERT INTO chart_subjects (chart_subject_id, chart_id, table_name, table_level, calc_method, field, value_unit, name, sort, fill_graded) VALUES
@@ -194,5 +195,28 @@ test.describe('charts from apflora demo data', () => {
         .locator('.recharts-legend-item-text', { hasText: 'Hänsiried' })
         .first(),
     ).toBeVisible()
+
+    // 4. the templates are project-level: another art offers them too
+    const otherArtBase = `/data/projects/${PROJECT_ID}/subprojects/4eddea03-b64a-755b-885c-5f173c7aba8f/charts`
+    await page.goto(otherArtBase)
+    // scoped to the list: the open nav tree shows the same chart names too
+    const otherList = page.locator('.list-container')
+    await expect(
+      otherList.getByText('Populationen nach Status'),
+    ).toBeVisible({ timeout: 30_000 })
+    await expect(
+      otherList.getByText('"Triebe total" nach Populationen'),
+    ).toBeVisible()
+
+    // ...and compute against that art's data when opened there
+    await page.goto(`${otherArtBase}/${CHART_STATUS}/chart`)
+    await expect(page.locator('.recharts-wrapper svg').first()).toBeVisible({
+      timeout: 60_000,
+    })
+    await expect(
+      page.locator('.recharts-legend-item-text', {
+        hasText: 'angesiedelt, aktuell',
+      }),
+    ).toBeVisible({ timeout: 30_000 })
   })
 })

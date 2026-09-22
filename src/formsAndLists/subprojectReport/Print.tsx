@@ -45,11 +45,14 @@ export const SubprojectReportPrint = ({ from }: { from: string }) => {
       ) f) as fields,
       (SELECT json_agg(c) FROM (
         SELECT c.chart_id, c.name, c.subjects_single,
-          (SELECT json_agg(cs ORDER BY cs.sort, cs.name) 
-           FROM chart_subjects cs 
+          (SELECT json_agg(cs ORDER BY cs.sort, cs.name)
+           FROM chart_subjects cs
            WHERE cs.chart_id = c.chart_id) as subjects
         FROM charts c
         WHERE c.subproject_id = sr.subproject_id
+          -- project-level chart templates compute against this subproject
+          OR (c.for_subprojects AND c.subproject_id IS NULL
+              AND c.project_id = (SELECT project_id FROM subprojects WHERE subproject_id = sr.subproject_id))
         ORDER BY c.name
       ) c) as charts,
       (SELECT design FROM subproject_report_designs 

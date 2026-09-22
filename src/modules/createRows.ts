@@ -1826,9 +1826,12 @@ export const createChart = async ({
 }) => {
   const db = store.get(pgliteDbAtom)!
   const chart_id = uuidv7()
+  // a chart created directly on the project is a template offered in every
+  // subproject of the project
+  const forSubprojects = !!projectId && !subprojectId && !placeId
   await db.query(
-    `INSERT INTO charts (chart_id, project_id, subproject_id, place_id) VALUES ($1, $2, $3, $4)`,
-    [chart_id, projectId, subprojectId, placeId],
+    `INSERT INTO charts (chart_id, project_id, subproject_id, place_id, for_subprojects) VALUES ($1, $2, $3, $4, $5)`,
+    [chart_id, projectId, subprojectId, placeId, forSubprojects],
   )
 
   store.set(addOperationAtom, {
@@ -1839,6 +1842,7 @@ export const createChart = async ({
       project_id: projectId,
       subproject_id: subprojectId,
       place_id: placeId,
+      for_subprojects: forSubprojects,
     },
   })
 

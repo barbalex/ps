@@ -7,7 +7,7 @@ import { treeOpenNodesAtom } from '../store.ts'
 
 type Props = {
   projectId: string
-  subprojectId: string
+  subprojectId?: string
   placeId?: string
   placeId2?: string
   chartId: string
@@ -45,8 +45,7 @@ export const useChartSettingsNavData = ({
     'data',
     'projects',
     projectId,
-    'subprojects',
-    subprojectId,
+    ...(subprojectId ? ['subprojects', subprojectId] : []),
     ...(placeId ? ['places', placeId] : []),
     ...(placeId2 ? ['places', placeId2] : []),
     'charts',

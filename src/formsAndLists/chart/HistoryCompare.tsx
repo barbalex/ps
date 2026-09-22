@@ -26,14 +26,20 @@ import type ChartsHistory from '../../models/public/ChartsHistory.ts'
 
 const from =
   '/data/projects/$projectId_/subprojects/$subprojectId_/charts/$chartId_/histories/$chartHistoryId'
+const fromProject =
+  '/data/projects/$projectId_/charts/$chartId_/histories/$chartHistoryId'
 
 export const ChartHistoryCompare = () => {
   const { formatMessage } = useIntl()
   const navigate = useNavigate()
   const { projectId, subprojectId, chartId, chartHistoryId } = useParams({ strict: false })
 
-  const formPath = `/data/projects/${projectId}/subprojects/${subprojectId}/charts/${chartId}/settings`
-  const historyPath = `/data/projects/${projectId}/subprojects/${subprojectId}/charts/${chartId}/histories`
+  // charts live under a subproject or directly on the project (templates)
+  const chartBase = subprojectId
+    ? `/data/projects/${projectId}/subprojects/${subprojectId}/charts/${chartId}`
+    : `/data/projects/${projectId}/charts/${chartId}`
+  const formPath = `${chartBase}/settings`
+  const historyPath = `${chartBase}/histories`
 
   const db = usePGlite()
   const addOperation = useSetAtom(addOperationAtom)
@@ -55,7 +61,12 @@ export const ChartHistoryCompare = () => {
     )
   }
 
-  const leftContent = <Form autoFocusRef={autoFocusRef} from={from} />
+  const leftContent = (
+    <Form
+      autoFocusRef={autoFocusRef}
+      from={subprojectId ? from : fromProject}
+    />
+  )
 
   const formatFieldLabel = createHistoryFieldLabelFormatter({
     formatMessage,
@@ -76,6 +87,10 @@ export const ChartHistoryCompare = () => {
       percent: {
         id: 'bCZcDf',
         defaultMessage: 'Bei mehreren Subjekten: Anteil als Prozent anzeigen?',
+      },
+      for_subprojects: {
+        id: 'bFaAbB',
+        defaultMessage: 'Gilt für alle Teilprojekte?',
       },
     },
   })

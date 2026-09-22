@@ -48,6 +48,8 @@ export const ProjectReportPrint = ({ from }: { from: string }) => {
            WHERE cs.chart_id = c.chart_id) as subjects
         FROM charts c
         WHERE c.project_id = pr.project_id
+          -- subproject templates describe subprojects, not the project
+          AND NOT c.for_subprojects
         ORDER BY c.name
       ) c) as charts,
       (SELECT design FROM project_report_designs 
