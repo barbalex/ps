@@ -134,6 +134,15 @@ export const ProjectNode = ({ nav, level = 2 }: Props) => {
               level={3}
             />
           )}
+          {/* chart templates for all subprojects: design-time configuration */}
+          {designing && (
+            <ChartsNode
+              projectId={nav.id}
+              forSubprojects
+              section="subproject-charts"
+              level={3}
+            />
+          )}
           {showDesigningNodes && (
             <SubprojectReportDesignsNode projectId={nav.id} level={3} />
           )}

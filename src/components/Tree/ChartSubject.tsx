@@ -15,6 +15,8 @@ type Props = {
   placeId2?: string
   chartId: string
   nav: NavData
+  /** url segment of the charts section — the project level has two of them */
+  section?: 'charts' | 'subproject-charts'
   level?: number
 }
 
@@ -26,6 +28,7 @@ export const ChartSubjectNode = ({
   placeId2,
   chartId,
   nav,
+  section,
   level = 2,
 }: Props) => {
   const location = useLocation()
@@ -37,7 +40,7 @@ export const ChartSubjectNode = ({
     ...(subprojectId ? ['subprojects', subprojectId] : []),
     ...(placeId ? ['places', placeId] : []),
     ...(placeId2 ? ['places', placeId2] : []),
-    'charts',
+    section ?? 'charts',
     chartId,
     'subjects',
     nav.id,

@@ -9,5 +9,9 @@ export const Route = createRootRoute({
   notFoundComponent: NotFoundRoot,
   // notFoundComponent: () => <Outlet />,
   // notFoundMode: 'root',
-  errorComponent: ErrorPage,
+  errorComponent: (props) => (
+    <ErrorPage
+      error={props.error as { statusText?: string; message?: string }}
+    />
+  ),
 })

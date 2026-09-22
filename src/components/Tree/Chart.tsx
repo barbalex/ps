@@ -17,11 +17,13 @@ type NavData = {
 }
 
 type Props = {
-  projectId?: string
+  projectId: string
   subprojectId?: string
   placeId?: string
   placeId2?: string
   nav: NavData
+  /** url segment of the charts section — the project level has two of them */
+  section?: 'charts' | 'subproject-charts'
   level?: number
 }
 
@@ -31,6 +33,7 @@ export const ChartNode = ({
   placeId,
   placeId2,
   nav,
+  section,
   level = 2,
 }: Props) => {
   const [openNodes] = useAtom(treeOpenNodesAtom)
@@ -46,7 +49,7 @@ export const ChartNode = ({
     ...(subprojectId ? ['subprojects', subprojectId] : []),
     ...(placeId ? ['places', placeId] : []),
     ...(placeId2 ? ['places', placeId2] : []),
-    'charts',
+    section ?? 'charts',
   ]
   const parentUrl = `/${parentArray.join('/')}`
   const ownArray = [...parentArray, nav.id]
@@ -121,6 +124,7 @@ export const ChartNode = ({
             placeId={placeId}
             placeId2={placeId2}
             chartId={nav.id}
+            section={section}
             level={level + 1}
           />
         </>

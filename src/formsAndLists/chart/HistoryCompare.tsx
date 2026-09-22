@@ -1,6 +1,6 @@
 import { useRef } from 'react'
 import type { ReactNode } from 'react'
-import { useParams, useNavigate } from '@tanstack/react-router'
+import { useParams, useNavigate, useLocation } from '@tanstack/react-router'
 import { usePGlite, useLiveQuery } from '@electric-sql/pglite-react'
 import { useSetAtom } from 'jotai'
 import { useIntl } from 'react-intl'
@@ -32,12 +32,17 @@ const fromProject =
 export const ChartHistoryCompare = () => {
   const { formatMessage } = useIntl()
   const navigate = useNavigate()
+  const { pathname } = useLocation()
   const { projectId, subprojectId, chartId, chartHistoryId } = useParams({ strict: false })
 
-  // charts live under a subproject or directly on the project (templates)
+  // charts live under a subproject or on the project itself, in one of its
+  // two sections: charts or charts for subprojects (templates)
+  const chartsSegment = pathname.includes('/subproject-charts/')
+    ? 'subproject-charts'
+    : 'charts'
   const chartBase = subprojectId
     ? `/data/projects/${projectId}/subprojects/${subprojectId}/charts/${chartId}`
-    : `/data/projects/${projectId}/charts/${chartId}`
+    : `/data/projects/${projectId}/${chartsSegment}/${chartId}`
   const formPath = `${chartBase}/settings`
   const historyPath = `${chartBase}/histories`
 

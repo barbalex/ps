@@ -425,6 +425,8 @@
   "bEzZaA": "Seules les quantités de cette unité sont additionnées. Vide : toutes les unités",
   "bFaAbB": "S'applique à tous les sous-projets ?",
   "bFbBcC": "Si activé, le diagramme est disponible dans chaque sous-projet du projet, calculé avec les données du sous-projet respectif",
+  "bFcCdD": "Diagrammes {subprojects}",
+  "bFdDeE": "Diagramme {subprojects}",
   "bEtTyY": "Paramètres",
   "jcW44N": "Entrer",
   "jgOqxt": "Widgets",

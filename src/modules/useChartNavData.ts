@@ -10,6 +10,8 @@ type Props = {
   projectId: string
   subprojectId?: string
   chartId: string
+  /** url segment of the charts section — the project level has two of them */
+  section?: 'charts' | 'subproject-charts'
 }
 
 type NavData = {
@@ -18,11 +20,7 @@ type NavData = {
   chart_subjects_count: number
 }
 
-export const useChartNavData = ({
-  projectId,
-  subprojectId,
-  chartId,
-}: Props) => {
+export const useChartNavData = ({ projectId, subprojectId, chartId, section }: Props) => {
   const { formatMessage } = useIntl()
   const [openNodes] = useAtom(treeOpenNodesAtom)
 
@@ -47,7 +45,7 @@ export const useChartNavData = ({
     'projects',
     projectId,
     ...(subprojectId ? ['subprojects', subprojectId] : []),
-    'charts',
+    section ?? 'charts',
   ]
   const parentUrl = `/${parentArray.join('/')}`
   const ownArray = [...parentArray, nav?.id]

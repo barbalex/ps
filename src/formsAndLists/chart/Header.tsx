@@ -56,11 +56,14 @@ export const Header = ({
   const [designing] = useAtom(designingAtom)
   const addOperation = useSetAtom(addOperationAtom)
   const { projectId, subprojectId, placeId, placeId2, chartId } = useParams({ strict: false })
-  // charts live under a subproject (or place) or directly on the project as
-  // templates for all its subprojects
+  // charts live under a subproject (or place) or on the project itself, in
+  // one of its two sections: charts or charts for subprojects (templates)
+  const chartsSegment = from.includes('subproject-charts')
+    ? 'subproject-charts'
+    : 'charts'
   const basePath = subprojectId
     ? `/data/projects/${projectId}/subprojects/${subprojectId}/charts/${chartId}`
-    : `/data/projects/${projectId}/charts/${chartId}`
+    : `/data/projects/${projectId}/${chartsSegment}/${chartId}`
   const navigate = useNavigate()
 
   const db = usePGlite()
@@ -79,7 +82,12 @@ export const Header = ({
         ? { placeId }
         : subprojectId
           ? { subprojectId }
-          : { projectId }
+          : {
+              projectId,
+              // charts created on the project belong to the section they are
+              // created in: templates or the project's own charts
+              forSubprojects: from.includes('subproject-charts'),
+            }
     const chart_id = await createChart(idToAdd)
     navigate({
       to: isDetailView

@@ -11,6 +11,10 @@ interface Props {
   subprojectId?: string
   placeId?: string
   placeId2?: string
+  /** project-level only: the section holds the templates for all subprojects */
+  forSubprojects?: boolean
+  /** url segment of the charts section — the project level has two of them */
+  section?: 'charts' | 'subproject-charts'
   level: number
 }
 
@@ -19,6 +23,8 @@ export const ChartsNode = ({
   subprojectId,
   placeId,
   placeId2,
+  forSubprojects,
+  section,
   level,
 }: Props) => {
   const navigate = useNavigate()
@@ -28,6 +34,8 @@ export const ChartsNode = ({
     subprojectId,
     placeId,
     placeId2,
+    forSubprojects,
+    section,
   })
   const {
     label,
@@ -78,6 +86,7 @@ export const ChartsNode = ({
             placeId={placeId}
             placeId2={placeId2}
             nav={nav}
+            section={section}
             level={level + 1}
           />
         ))}

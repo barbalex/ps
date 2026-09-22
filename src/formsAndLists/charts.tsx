@@ -9,15 +9,25 @@ import { Loading } from '../components/shared/Loading.tsx'
 
 import '../form.css'
 
-export const Charts = () => {
+export const Charts = ({
+  forSubprojects,
+  section,
+}: {
+  /** project-level only: the section holds the templates for all subprojects */
+  forSubprojects?: boolean
+  /** url segment of the charts section — the project level has two of them */
+  section?: 'charts' | 'subproject-charts'
+} = {}) => {
   const { projectId, subprojectId, placeId, placeId2 } = useParams({ strict: false })
   const navigate = useNavigate()
 
   const { loading, navData, isFiltered } = useChartsNavData({
     projectId: projectId!,
-    subprojectId: subprojectId!,
-    placeId: placeId!,
+    subprojectId,
+    placeId,
     placeId2,
+    forSubprojects,
+    section,
   })
   const { navs, label, nameSingular } = navData
 
@@ -26,7 +36,12 @@ export const Charts = () => {
       placeId2 ? { placeId: placeId2 }
       : placeId ? { placeId }
       : subprojectId ? { subprojectId }
-      : { projectId }
+      : {
+          projectId,
+          // a chart created on the project itself belongs to the section it
+          // is created in: templates or the project's own charts
+          forSubprojects: forSubprojects ?? false,
+        }
     const chart_id = await createChart(idToAdd)
     if (!chart_id) return
 
@@ -36,8 +51,6 @@ export const Charts = () => {
     })
   }
 
-  // TODO: get uploader css locally if it should be possible to upload charts
-  // offline to sqlite
   return (
     <div className="list-view">
       <ListHeader

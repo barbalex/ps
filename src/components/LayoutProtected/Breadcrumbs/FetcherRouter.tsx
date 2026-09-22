@@ -80,6 +80,11 @@ import { ChartChartFetcher } from './ChartChartFetcher.tsx'
 import { ChartSettingsFetcher } from './ChartSettingsFetcher.tsx'
 import { ChartSubjectsFetcher } from './ChartSubjectsFetcher.tsx'
 import { ChartSubjectFetcher } from './ChartSubjectFetcher.tsx'
+import { SubprojectChartsFetcher } from './SubprojectChartsFetcher.tsx'
+import { SubprojectChartFetcher } from './SubprojectChartFetcher.tsx'
+import { SubprojectChartSettingsFetcher } from './SubprojectChartSettingsFetcher.tsx'
+import { SubprojectChartSubjectsFetcher } from './SubprojectChartSubjectsFetcher.tsx'
+import { SubprojectChartSubjectFetcher } from './SubprojectChartSubjectFetcher.tsx'
 import { SubprojectReportDesignsFetcher } from './SubprojectReportDesignsFetcher.tsx'
 import { SubprojectReportDesignFetcher } from './SubprojectReportDesignFetcher.tsx'
 import { ProjectReportDesignsFetcher } from './ProjectReportDesignsFetcher.tsx'
@@ -535,12 +540,11 @@ export const FetcherRouter = ({ fetcherName, params, ...other }: Props) => {
       return <SubprojectUserFetcher params={paramsExact} {...other} />
     }
     case 'useChartsNavData': {
-      if (!params.projectId || !params.subprojectId) return null
+      if (!params.projectId) return null
       return <ChartsFetcher params={paramsExact} {...other} />
     }
     case 'useChartNavData': {
-      if (!params.projectId || !params.subprojectId || !params.chartId)
-        return null
+      if (!params.projectId || !params.chartId) return null
       return <ChartFetcher params={paramsExact} {...other} />
     }
     case 'useChartChartNavData': {
@@ -549,19 +553,32 @@ export const FetcherRouter = ({ fetcherName, params, ...other }: Props) => {
       return <ChartChartFetcher params={paramsExact} {...other} />
     }
     case 'useChartSettingsNavData': {
-      if (!params.projectId || !params.subprojectId || !params.chartId)
-        return null
+      if (!params.projectId || !params.chartId) return null
       return <ChartSettingsFetcher params={paramsExact} {...other} />
     }
     case 'useChartSubjectsNavData': {
-      if (
-        !params.projectId ||
-        !params.subprojectId ||
-        !params.placeId ||
-        !params.chartId
-      )
-        return null
+      if (!params.projectId || !params.chartId) return null
       return <ChartSubjectsFetcher params={paramsExact} {...other} />
+    }
+    case 'useSubprojectChartsNavData': {
+      if (!params.projectId) return null
+      return <SubprojectChartsFetcher params={paramsExact} {...other} />
+    }
+    case 'useSubprojectChartNavData': {
+      if (!params.projectId || !params.chartId) return null
+      return <SubprojectChartFetcher params={paramsExact} {...other} />
+    }
+    case 'useSubprojectChartSettingsNavData': {
+      if (!params.projectId || !params.chartId) return null
+      return <SubprojectChartSettingsFetcher params={paramsExact} {...other} />
+    }
+    case 'useSubprojectChartSubjectsNavData': {
+      if (!params.projectId || !params.chartId) return null
+      return <SubprojectChartSubjectsFetcher params={paramsExact} {...other} />
+    }
+    case 'useSubprojectChartSubjectNavData': {
+      if (!params.chartId || !params.chartSubjectId) return null
+      return <SubprojectChartSubjectFetcher params={paramsExact} {...other} />
     }
     case 'useSubprojectReportDesignsNavData': {
       if (!params.projectId) return null

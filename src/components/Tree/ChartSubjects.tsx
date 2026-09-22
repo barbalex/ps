@@ -7,11 +7,13 @@ import { addOpenNodes } from '../../modules/tree/addOpenNodes.ts'
 import { useChartSubjectsNavData } from '../../modules/useChartSubjectsNavData.ts'
 
 interface Props {
-  projectId?: string
+  projectId: string
   subprojectId?: string
   placeId?: string
   placeId2?: string
   chartId: string
+  /** url segment of the charts section — the project level has two of them */
+  section?: 'charts' | 'subproject-charts'
   level: number
 }
 
@@ -21,18 +23,19 @@ export const ChartSubjectsNode = ({
   placeId,
   placeId2,
   chartId,
+  section,
   level,
 }: Props) => {
   const navigate = useNavigate()
 
-  // charts can appear without places; the hook's Props over-requires placeId
   const { navData } = useChartSubjectsNavData({
     projectId,
     subprojectId,
     placeId,
     placeId2,
     chartId,
-  } as Parameters<typeof useChartSubjectsNavData>[0])
+    section,
+  })
   const {
     label,
     parentUrl,
@@ -83,6 +86,7 @@ export const ChartSubjectsNode = ({
             placeId2={placeId2}
             chartId={chartId}
             nav={nav}
+            section={section}
             level={level + 1}
           />
         ))}
