@@ -449,6 +449,20 @@ html {
     display: block !important;
   }
 
+  /* unclamp the split-view chain so long reports print on multiple pages
+     instead of being clipped to the viewport */
+  .split-view,
+  .split-view-container,
+  .split-view-view,
+  .allotment-data,
+  [class*='allotmentWrapper'],
+  [class*='routerContainer'],
+  [class*='_container_'] {
+    height: auto !important;
+    max-height: none !important;
+    overflow: visible !important;
+  }
+
   .form-outer-container {
     padding: 0 !important;
     margin: 0 !important;
