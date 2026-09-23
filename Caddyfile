@@ -9,9 +9,14 @@
 # via chrome://settings/certificates → Authorities → Import
 # This is only for development; in production, Caddy would handle HTTPS directly and proxy to the backend over HTTP
 localhost:3001 {
-	header Access-Control-Allow-Origin *
-	header Access-Control-Allow-Methods "GET, OPTIONS"
-	header Access-Control-Allow-Headers *
+	# '?' = set only if not already present: the forward_auth endpoint
+	# (better-auth) sets its own reflected CORS headers on 401s, and a
+	# second Access-Control-Allow-Origin here makes browsers reject the
+	# response outright (CORS "multiple values") — turning a proper 401
+	# into an opaque network error that stalls the sync
+	header ?Access-Control-Allow-Origin *
+	header ?Access-Control-Allow-Methods "GET, OPTIONS"
+	header ?Access-Control-Allow-Headers *
 
 	@options method OPTIONS
 	respond @options 204
