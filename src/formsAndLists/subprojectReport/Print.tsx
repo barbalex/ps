@@ -54,10 +54,12 @@ export const SubprojectReportPrint = ({ from }: { from: string }) => {
               AND c.project_id = (SELECT project_id FROM subprojects WHERE subproject_id = sr.subproject_id))
         ORDER BY c.name
       ) c) as charts,
-      (SELECT design FROM subproject_report_designs 
+      (SELECT design FROM subproject_report_designs
+       WHERE subproject_report_design_id = sr.subproject_report_design_id) as design,
+      (SELECT design FROM subproject_report_designs
        WHERE project_id = (SELECT project_id FROM subprojects WHERE subproject_id = sr.subproject_id)
        AND active = true
-       LIMIT 1) as design
+       LIMIT 1) as active_design
     FROM subproject_reports sr
     WHERE subproject_report_id = $1`,
     [subprojectReportId],
@@ -67,7 +69,7 @@ export const SubprojectReportPrint = ({ from }: { from: string }) => {
     | string
     | undefined
   const jsonbData = jsonbDataFromRow(row)
-  const design = row?.design
+  const design = row?.design ?? row?.active_design
   const fields = row?.fields ?? []
   const charts = row?.charts ?? []
   const chartsJson = JSON.stringify(charts)

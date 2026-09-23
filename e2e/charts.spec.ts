@@ -84,10 +84,13 @@ WHERE project_id = '${PROJECT_ID}' AND email = '${E2E_EMAIL}'
 ON CONFLICT DO NOTHING;
 
 INSERT INTO subproject_roles (subproject_id, project_user_id, role)
-SELECT '${SUBPROJECT_ID}', project_user_id, 'read-all'
+SELECT '${SUBPROJECT_ID}', project_user_id, 'write-all'
 FROM project_users
 WHERE project_id = '${PROJECT_ID}' AND email = '${E2E_EMAIL}'
 ON CONFLICT DO NOTHING;
+UPDATE subproject_roles SET role = 'write-all'
+WHERE subproject_id = '${SUBPROJECT_ID}'
+  AND project_user_id IN (SELECT project_user_id FROM project_users WHERE email = '${E2E_EMAIL}');
 
 -- the places shape only streams places the user has a place_roles row for
 INSERT INTO place_roles (place_id, project_user_id, role)

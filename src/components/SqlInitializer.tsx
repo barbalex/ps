@@ -110,6 +110,8 @@ export const SqlInitializer = () => {
             -- charts_history is created via LIKE charts, so it needs the
             -- column too or the versioning trigger breaks on chart updates
             ALTER TABLE IF EXISTS charts ADD COLUMN IF NOT EXISTS for_subprojects boolean NOT NULL DEFAULT FALSE;
+            -- reports can point at the design they were created with (2026-09)
+            ALTER TABLE IF EXISTS subproject_reports ADD COLUMN IF NOT EXISTS subproject_report_design_id uuid DEFAULT NULL;
             ALTER TABLE IF EXISTS charts_history ADD COLUMN IF NOT EXISTS for_subprojects boolean NOT NULL DEFAULT FALSE;
             -- chart subject tables gained the taxa quantity tables (2026-09);
             -- heal local databases created before the schema caught up.

@@ -40,8 +40,10 @@ const SubprojectReportItem = ({
     `SELECT
       sr.*,
       (SELECT design FROM subproject_report_designs
+       WHERE subproject_report_design_id = sr.subproject_report_design_id) as design,
+      (SELECT design FROM subproject_report_designs
        WHERE project_id = (SELECT project_id FROM subprojects WHERE subproject_id = sr.subproject_id) AND active = true
-       LIMIT 1) as design,
+       LIMIT 1) as active_design,
       (SELECT json_agg(c) FROM (
         SELECT c.chart_id, c.name, c.subjects_single,
           (SELECT json_agg(cs ORDER BY cs.sort, cs.name)
@@ -62,7 +64,7 @@ const SubprojectReportItem = ({
 
   const report = res?.rows?.[0]
   const charts = (report?.charts ?? []) as Record<string, any>[]
-  const design = report?.design
+  const design = report?.design ?? report?.active_design
   const jsonbData = (report?.data as Record<string, unknown>) ?? {}
   const chartsJson = JSON.stringify(charts)
 

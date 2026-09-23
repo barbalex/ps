@@ -1122,6 +1122,7 @@ COMMENT ON COLUMN goal_reports.data IS 'Room for goal report specific data, defi
 CREATE TABLE IF NOT EXISTS subproject_reports(
   subproject_report_id uuid PRIMARY KEY DEFAULT uuidv7(),
   subproject_id uuid DEFAULT NULL REFERENCES subprojects(subproject_id) ON DELETE CASCADE ON UPDATE CASCADE DEFERRABLE INITIALLY DEFERRED,
+  subproject_report_design_id uuid DEFAULT NULL, -- FK added after subproject_report_designs exists
   year integer DEFAULT DATE_PART('year', now()::date),
   data jsonb DEFAULT NULL,
   label text GENERATED ALWAYS AS (coalesce(year::text, subproject_report_id::text)) STORED,
@@ -1155,6 +1156,19 @@ CREATE TABLE IF NOT EXISTS subproject_report_designs(
   updated_by text DEFAULT NULL,
   CONSTRAINT unique_subproject_report_design_name UNIQUE NULLS NOT DISTINCT(project_id, name)
 );
+-- reports point at the design they were created with (the designs table is
+-- created after subproject_reports, so the FK is added here)
+DO $$
+BEGIN
+  IF NOT EXISTS (
+    SELECT 1 FROM pg_constraint WHERE conname = 'subproject_reports_subproject_report_design_id_fkey'
+  ) THEN
+    ALTER TABLE subproject_reports
+      ADD CONSTRAINT subproject_reports_subproject_report_design_id_fkey
+      FOREIGN KEY (subproject_report_design_id) REFERENCES subproject_report_designs(subproject_report_design_id)
+      ON DELETE SET NULL ON UPDATE CASCADE DEFERRABLE INITIALLY DEFERRED;
+  END IF;
+END $$;
 
 CREATE INDEX IF NOT EXISTS subproject_report_designs_project_id_idx ON subproject_report_designs USING btree(project_id);
 CREATE INDEX IF NOT EXISTS subproject_report_designs_label_idx ON subproject_report_designs USING btree(label);

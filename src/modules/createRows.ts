@@ -919,10 +919,22 @@ export const createSubprojectReport = async ({
     table: 'subproject_reports',
   })
 
+  // start the report on the project's active design (chooseable on the form)
+  const activeDesignRes = await db.query(
+    `SELECT subproject_report_design_id FROM subproject_report_designs
+     WHERE project_id = $1 AND active = true
+     LIMIT 1`,
+    [projectId],
+  )
+  const activeDesignId = (activeDesignRes?.rows?.[0] as
+    | { subproject_report_design_id: string }
+    | undefined)?.subproject_report_design_id
+
   const subproject_report_id = uuidv7()
   const data = {
     subproject_report_id,
     subproject_id: subprojectId,
+    subproject_report_design_id: activeDesignId ?? null,
     year: new Date().getFullYear(),
     ...presetData,
   }

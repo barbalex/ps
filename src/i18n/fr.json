@@ -427,6 +427,8 @@
   "bFbBcC": "Si activé, le diagramme est disponible dans chaque sous-projet du projet, calculé avec les données du sous-projet respectif",
   "bFcCdD": "Diagrammes {subprojects}",
   "bFdDeE": "Diagramme {subprojects}",
+  "bGfDeF": "Design du rapport",
+  "bGgEfG": "Design avec lequel le rapport est imprimé. Par défaut : le design actif",
   "bEtTyY": "Paramètres",
   "jcW44N": "Entrer",
   "jgOqxt": "Widgets",

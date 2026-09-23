@@ -427,6 +427,8 @@
   "bFbBcC": "If enabled, the chart is available in every subproject of the project, computed against the data of the respective subproject",
   "bFcCdD": "{subprojects} charts",
   "bFdDeE": "{subprojects} chart",
+  "bGfDeF": "Report design",
+  "bGgEfG": "Design the report is printed with. Default: the active design",
   "gRVMgi": "Quantity (integer)",
   "gRVMnu": "Quantity (numeric)",
   "gRVMtx": "Quantity (text)",
