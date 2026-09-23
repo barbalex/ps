@@ -19,6 +19,7 @@ import { groupSeriesBySubject } from '../chart/Chart/buildData/index.ts'
 import { SingleChart } from '../chart/Chart/Chart.tsx'
 import {
   SubprojectReportContext,
+  WrappingTextField,
   buildDataComponents,
 } from './reportComponents.tsx'
 
@@ -123,11 +124,9 @@ export const SubprojectReportPrint = ({ from }: { from: string }) => {
         const fieldValue = (jsonbData[field.name] ?? '') as string
         return (
           <div className={styles.fieldWrapper}>
-            <TextField
+            <WrappingTextField
               label={field.field_label || field.name}
-              name={field.name}
               value={fieldValue}
-              readOnly
             />
           </div>
         )

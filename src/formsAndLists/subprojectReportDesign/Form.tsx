@@ -16,6 +16,7 @@ import { groupSeriesBySubject } from '../chart/Chart/buildData/index.ts'
 import { SingleChart } from '../chart/Chart/Chart.tsx'
 import {
   SubprojectReportContext,
+  WrappingTextField,
   buildDataComponents,
 } from '../subprojectReport/reportComponents.tsx'
 import type Charts from '../../models/public/Charts.ts'
@@ -151,11 +152,9 @@ export const Form = ({ autoFocusRef }: { autoFocusRef?: React.RefObject<HTMLInpu
       render: ({ value }: { value: string }) => {
         return (
           <div className={styles.fieldWrapper}>
-            <TextField
+            <WrappingTextField
               label={field.field_label || field.name}
-              name={field.name}
               value={value}
-              readOnly
             />
           </div>
         )

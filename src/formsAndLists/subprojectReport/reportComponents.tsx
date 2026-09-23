@@ -12,6 +12,24 @@ import styles from './reportComponents.module.css'
  * They are used both in the design editor (preview) and the report print.
  */
 
+/**
+ * Read-only report field that wraps its (possibly long) text — unlike an
+ * input, which clips to one line. Used for report fields in print and
+ * design preview.
+ */
+export const WrappingTextField = ({
+  label,
+  value,
+}: {
+  label?: string
+  value?: string
+}) => (
+  <div className={styles.wrappingField}>
+    <div className={styles.wrappingFieldLabel}>{label}</div>
+    <div className={styles.wrappingFieldValue}>{value}</div>
+  </div>
+)
+
 export type SubprojectReportContextValue = {
   projectId?: string
   subprojectId?: string
@@ -25,13 +43,6 @@ export const useSubprojectReportContext = () =>
   useContext(SubprojectReportContext)
 
 type Counts = { pop: number; tpop: number }
-
-const emptyCounts: Counts = { pop: 0, tpop: 0 }
-
-const addCounts = (acc: Counts, level: number | null, n: number) => {
-  if (level === 1) acc.pop += n
-  else if (level === 2) acc.tpop += n
-}
 
 /** box the report tables live in — kept together when printing */
 const TableShell = ({
@@ -92,71 +103,143 @@ const TitleBlock = ({ author, showDate }: { author?: string; showDate?: boolean 
   )
 }
 
-const GrundmengenTable = ({ title }: { title?: string }) => {
-  const { subprojectId } = useSubprojectReportContext()
+// apflora status codes, derived from the status text:
+// 100 ursprünglich aktuell, 101 ursprünglich erloschen,
+// 200 angesiedelt aktuell, 201 Ansaatversuch,
+// 202 angesiedelt erloschen, 300 potentieller Wuchs-/Ansiedlungsort
+const statusCode = (status: string | null | undefined): number | null => {
+  const s = (status ?? '').toLowerCase()
+  if (s.startsWith('potentieller')) return 300
+  if (s.includes('ansaatversuch')) return 201
+  const urspruenglich = s.startsWith('ursprünglich')
+  const erloschen = s.includes('erloschen')
+  const aktuell = s.includes('aktuell')
+  if (urspruenglich && aktuell) return 100
+  if (urspruenglich && erloschen) return 101
+  if (aktuell) return 200
+  if (erloschen) return 202
+  return null
+}
+
+type PlaceRow = {
+  place_id: string
+  parent_id: string | null
+  level: number | null
+  since: number | null
+  status: string | null
+  relevant: boolean
+}
+
+/**
+ * All places of the art with the fields the report tables classify by.
+ * Mirrors apf2's jber_abc: known-since (bekannt_seit) must be within the
+ * report year, tpops must be relevant for reports (apber_relevant), and a
+ * population only counts if it has at least one relevant tpop.
+ */
+const usePlaceRows = (subprojectId?: string) => {
   const res = useLiveQuery(
-    `SELECT level, COALESCE(data ->> 'status', '') AS status, count(*)::int AS n
+    `SELECT place_id, parent_id, level, since, data ->> 'status' AS status,
+       COALESCE(relevant_for_reports, TRUE) AS relevant
      FROM places
-     WHERE subproject_id = $1
-     GROUP BY 1, 2`,
+     WHERE subproject_id = $1`,
     [subprojectId ?? null],
   )
+  return (res?.rows ?? []) as unknown as PlaceRow[]
+}
+
+const useStartYear = (subprojectId?: string) => {
+  const res = useLiveQuery(
+    `SELECT start_year FROM subprojects WHERE subproject_id = $1`,
+    [subprojectId ?? null],
+  )
+  return (res?.rows?.[0] as { start_year: number | null } | undefined)
+    ?.start_year ?? null
+}
+
+const GrundmengenTable = ({ title }: { title?: string }) => {
+  const { subprojectId, year } = useSubprojectReportContext()
+  const rows = usePlaceRows(subprojectId)
+  const startYear = useStartYear(subprojectId)
   if (!subprojectId) return <NoContext label={title ?? 'Grundmengen'} />
 
-  const rows = (res?.rows ?? []) as {
-    level: number | null
-    status: string
-    n: number
-  }[]
+  const jahr = year ?? new Date().getFullYear()
 
-  const classify = (test: (status: string) => boolean): Counts => {
-    const acc = { ...emptyCounts }
-    for (const row of rows) {
-      if (test(row.status)) addCounts(acc, row.level, row.n)
-    }
-    return acc
-  }
+  // tpops relevant for the report and known in the report year
+  const relevantTpops = rows.filter(
+    (r) => r.level === 2 && r.relevant && (r.since ?? Infinity) <= jahr,
+  )
+  // populations with at least one relevant tpop, known in the report year
+  const relevantPopIds = new Set(
+    relevantTpops.map((r) => r.parent_id).filter(Boolean) as string[],
+  )
+  const knownPops = rows.filter(
+    (r) =>
+      r.level === 1 &&
+      relevantPopIds.has(r.place_id) &&
+      (r.since ?? Infinity) <= jahr,
+  )
+  // a place qualifies for pop counting per its own (pop) status,
+  // for tpop counting per its own (tpop) status and its pop not being potential
+  const popStatus = (code: number) =>
+    knownPops.filter((r) => statusCode(r.status) === code)
+  const tpopStatus = (code: number, extra?: (r: PlaceRow) => boolean) =>
+    relevantTpops.filter((r) => {
+      const pop = rows.find((p) => p.place_id === r.parent_id)
+      return (
+        statusCode(r.status) === code &&
+        (pop ? (statusCode(pop.status) ?? 0) < 300 : true) &&
+        (!extra || extra(r))
+      )
+    })
 
-  const isKnown = (s: string) =>
-    s !== '' &&
-    !s.toLowerCase().startsWith('potentieller') &&
-    !s.toLowerCase().includes('ansaatversuch')
-  const bekannt = classify(isKnown)
-  const aktuell = classify((s) => isKnown(s) && s.includes('aktuell'))
-  const ursprAktuell = classify(
-    (s) => s.includes('aktuell') && s.startsWith('ursprünglich'),
-  )
-  const angesiedeltAktuell = classify(
-    (s) => s.includes('aktuell') && s.startsWith('angesiedelt'),
-  )
-  const erloschen = classify((s) => isKnown(s) && s.includes('erloschen'))
-  const ursprErloschen = classify(
-    (s) => s.includes('erloschen') && s.startsWith('ursprünglich'),
-  )
-  const angesiedeltErloschen = classify(
-    (s) => s.includes('erloschen') && s.startsWith('angesiedelt'),
-  )
-  const ansaatversuche = classify((s) =>
-    s.toLowerCase().includes('ansaatversuch'),
-  )
-  const potentielle = classify((s) =>
-    s.toLowerCase().startsWith('potentieller'),
-  )
+  const popByCode = (code: number) => popStatus(code).length
+  const tpopByCode = (code: number, extra?: (r: PlaceRow) => boolean) =>
+    tpopStatus(code, extra).length
 
-  const tableRows: { label: string; counts: Counts; indent?: number }[] = [
-    { label: 'Anzahl bekannt', counts: bekannt },
-    { label: 'aktuell', counts: aktuell, indent: 1 },
-    { label: 'davon: ursprünglich', counts: ursprAktuell, indent: 2 },
-    { label: 'angesiedelt', counts: angesiedeltAktuell, indent: 2 },
-    { label: 'erloschen', counts: erloschen, indent: 1 },
-    {
-      label: 'davon: ursprünglich (autochthon)',
-      counts: ursprErloschen,
-      indent: 2,
-    },
-    { label: 'angesiedelt', counts: angesiedeltErloschen, indent: 2 },
-    { label: 'Ansaatversuche', counts: ansaatversuche },
-    { label: 'potentielle Wuchs-/Ansiedlungsorte', counts: potentielle },
+  const beforeAp = (r: PlaceRow) =>
+    startYear != null && (r.since ?? -Infinity) < startYear
+  const sinceAp = (r: PlaceRow) =>
+    startYear == null || (r.since ?? -Infinity) >= startYear
+
+  // a3: aktuell, davon ursprünglich
+  const a3Pop = popByCode(100)
+  const a3Tpop = tpopByCode(100)
+  // a4: angesiedelt vor Beginn AP
+  const a4Pop = popStatus(200).filter(beforeAp).length
+  const a4Tpop = tpopStatus(200, beforeAp).length
+  // a5: angesiedelt nach Beginn AP
+  const a5Pop = popStatus(200).filter(sinceAp).length
+  const a5Tpop = tpopStatus(200, sinceAp).length
+  // a7: erloschen, zuvor autochthon oder vor AP angesiedelt
+  const a7Pop = [
+    ...popStatus(101),
+    ...popStatus(202).filter(beforeAp),
+  ].length
+  const a7Tpop = [
+    ...tpopStatus(101),
+    ...tpopStatus(202, beforeAp),
+  ].length
+  // a8: erloschen, nach Beginn AP angesiedelt
+  const a8Pop = popStatus(202).filter(sinceAp).length
+  const a8Tpop = tpopStatus(202, sinceAp).length
+  // a9: Ansaatversuche
+  const a9Pop = popByCode(201)
+  const a9Tpop = tpopByCode(201)
+
+  const a1 = { pop: a3Pop + a4Pop + a5Pop + a7Pop + a8Pop + a9Pop, tpop: a3Tpop + a4Tpop + a5Tpop + a7Tpop + a8Tpop + a9Tpop }
+  const a2 = { pop: a3Pop + a4Pop + a5Pop, tpop: a3Tpop + a4Tpop + a5Tpop }
+  const a6 = { pop: a7Pop + a8Pop, tpop: a7Tpop + a8Tpop }
+
+  const tableRows: { label: string; counts: Counts; indent?: number; bold?: boolean }[] = [
+    { label: 'Anzahl bekannt', counts: a1 },
+    { label: 'aktuell', counts: a2, indent: 1, bold: true },
+    { label: 'davon: ursprünglich', counts: { pop: a3Pop, tpop: a3Tpop }, indent: 2 },
+    { label: 'angesiedelt (vor Beginn AP)', counts: { pop: a4Pop, tpop: a4Tpop }, indent: 2 },
+    { label: 'angesiedelt (nach Beginn AP)', counts: { pop: a5Pop, tpop: a5Tpop }, indent: 2 },
+    { label: 'erloschen (nach 1950):', counts: a6, indent: 1, bold: true },
+    { label: 'davon: zuvor autochthon oder vor AP angesiedelt', counts: { pop: a7Pop, tpop: a7Tpop }, indent: 2 },
+    { label: 'nach Beginn Aktionsplan angesiedelt', counts: { pop: a8Pop, tpop: a8Tpop }, indent: 2 },
+    { label: 'Ansaatversuche:', counts: { pop: a9Pop, tpop: a9Tpop } },
   ]
 
   return (
@@ -164,7 +247,7 @@ const GrundmengenTable = ({ title }: { title?: string }) => {
       <table className={styles.table}>
         <thead>
           <tr>
-            <th>{''}</th>
+            <th>{jahr}</th>
             <th>Pop</th>
             <th>TPop</th>
           </tr>
@@ -173,7 +256,10 @@ const GrundmengenTable = ({ title }: { title?: string }) => {
           {tableRows.map((row, i) => (
             <tr key={`${i}-${row.label}`}>
               <td
-                style={{ paddingLeft: `${(row.indent ?? 0) * 16}px` }}
+                style={{
+                  paddingLeft: `${(row.indent ?? 0) * 16}px`,
+                  fontWeight: row.bold ? 600 : undefined,
+                }}
               >
                 {row.label}
               </td>
@@ -195,48 +281,67 @@ const DevelopmentTable = ({
   sinceYear?: number | null
 }) => {
   const { subprojectId, year } = useSubprojectReportContext()
-  const startYearRes = useLiveQuery(
-    `SELECT start_year FROM subprojects WHERE subproject_id = $1`,
-    [subprojectId ?? null],
-  )
-  const startYear =
-    sinceYearProp ??
-    ((startYearRes?.rows?.[0] as { start_year: number | null } | undefined)
-      ?.start_year ??
-      null)
-
+  const places = usePlaceRows(subprojectId)
+  const startYear = useStartYear(subprojectId)
   const res = useLiveQuery(
-    `SELECT p.level, p.place_id, extract(year from c.date)::int AS year
+    `SELECT c.place_id, extract(year from c.date)::int AS year
      FROM checks c
        INNER JOIN places p ON c.place_id = p.place_id
-     WHERE p.subproject_id = $1`,
+     WHERE p.subproject_id = $1 AND c.data ->> 'entwicklung' IS NOT NULL`,
     [subprojectId ?? null],
   )
   if (!subprojectId) return <NoContext label={title ?? 'Bestandesentwicklung'} />
 
-  const reportYear = year ?? new Date().getFullYear()
-  const rows = (res?.rows ?? []) as {
-    level: number | null
-    place_id: string
-    year: number
-  }[]
+  const jahr = year ?? new Date().getFullYear()
+  const rows = (res?.rows ?? []) as { place_id: string; year: number }[]
 
-  const inYear = { ...emptyCounts }
-  const inRange = { ...emptyCounts }
-  const seenYear = new Set<string>()
-  const seenRange = new Set<string>()
+  // only relevant tpops known in the report year are counted; their
+  // populations with at least one such tpop
+  const relevantTpops = places.filter(
+    (r) => r.level === 2 && r.relevant && (r.since ?? Infinity) <= jahr,
+  )
+  const relevantPopIds = new Set(
+    relevantTpops.map((r) => r.parent_id).filter(Boolean) as string[],
+  )
+  const placeById = new Map(places.map((r) => [r.place_id, r]))
+
+  const inYear = { pop: 0, tpop: 0 }
+  const inRange = { pop: 0, tpop: 0 }
+  const firstYear: number | null = rows.length
+    ? Math.min(...rows.map((r) => r.year))
+    : null
+  const since = sinceYearProp ?? startYear
+  const seenYearTpops = new Set<string>()
+  const seenYearPops = new Set<string>()
+  const seenRangeTpops = new Set<string>()
+  const seenRangePops = new Set<string>()
   for (const row of rows) {
-    const inRangeYear =
-      !startYear || (row.year >= startYear && row.year <= reportYear)
-    if (row.year === reportYear && !seenYear.has(row.place_id)) {
-      seenYear.add(row.place_id)
-      addCounts(inYear, row.level, 1)
+    const place = placeById.get(row.place_id)
+    if (!place || !place.relevant) continue
+    if ((place.since ?? Infinity) > jahr) continue
+    const popId = place.parent_id
+    if (row.year === jahr) {
+      if (!seenYearTpops.has(row.place_id)) {
+        seenYearTpops.add(row.place_id)
+        inYear.tpop++
+      }
+      if (popId && !seenYearPops.has(popId)) {
+        seenYearPops.add(popId)
+        inYear.pop++
+      }
     }
-    if (inRangeYear && !seenRange.has(row.place_id)) {
-      seenRange.add(row.place_id)
-      addCounts(inRange, row.level, 1)
+    if ((since == null || (row.year >= since && row.year <= jahr))) {
+      if (!seenRangeTpops.has(row.place_id)) {
+        seenRangeTpops.add(row.place_id)
+        inRange.tpop++
+      }
+      if (popId && !seenRangePops.has(popId)) {
+        seenRangePops.add(popId)
+        inRange.pop++
+      }
     }
   }
+  void relevantPopIds
 
   return (
     <TableShell title={title}>
@@ -244,12 +349,10 @@ const DevelopmentTable = ({
         <thead>
           <tr>
             <th>{''}</th>
-            <th>Pop {reportYear}</th>
-            <th>TPop {reportYear}</th>
-            <th>
-              Pop seit {startYear ?? '…'}
-            </th>
-            <th>TPop seit {startYear ?? '…'}</th>
+            <th>Pop {jahr}</th>
+            <th>TPop {jahr}</th>
+            <th>Pop seit {since ?? firstYear ?? '…'}</th>
+            <th>TPop seit {since ?? firstYear ?? '…'}</th>
           </tr>
         </thead>
         <tbody>
@@ -274,25 +377,17 @@ const ActionsSummaryTable = ({
   sinceYear?: number | null
 }) => {
   const { subprojectId, year } = useSubprojectReportContext()
-  const startYearRes = useLiveQuery(
-    `SELECT start_year FROM subprojects WHERE subproject_id = $1`,
-    [subprojectId ?? null],
-  )
-  const startYear =
-    sinceYearProp ??
-    ((startYearRes?.rows?.[0] as { start_year: number | null } | undefined)
-      ?.start_year ??
-      null)
-
+  const places = usePlaceRows(subprojectId)
+  const startYear = useStartYear(subprojectId)
   const actionsRes = useLiveQuery(
-    `SELECT p.level, p.place_id, extract(year from a.date)::int AS year
+    `SELECT a.place_id, extract(year from a.date)::int AS year
      FROM actions a
        INNER JOIN places p ON a.place_id = p.place_id
-     WHERE p.subproject_id = $1`,
+     WHERE p.subproject_id = $1 AND a.data ->> 'typ' IS NOT NULL`,
     [subprojectId ?? null],
   )
   const checksRes = useLiveQuery(
-    `SELECT p.place_id, extract(year from c.date)::int AS year, c.date,
+    `SELECT c.place_id, c.date, extract(year from c.date)::int AS year,
         c.data ->> 'erfolgsbeurteilung' AS assessment
      FROM checks c
        INNER JOIN places p ON c.place_id = p.place_id
@@ -302,9 +397,8 @@ const ActionsSummaryTable = ({
   )
   if (!subprojectId) return <NoContext label={title ?? 'Zwischenbilanz'} />
 
-  const reportYear = year ?? new Date().getFullYear()
+  const jahr = year ?? new Date().getFullYear()
   const actionRows = (actionsRes?.rows ?? []) as {
-    level: number | null
     place_id: string
     year: number
   }[]
@@ -314,86 +408,103 @@ const ActionsSummaryTable = ({
     assessment: string
   }[]
 
-  const withActionsYear = { ...emptyCounts }
-  const withActionsRange = { ...emptyCounts }
-  const seenYear = new Set<string>()
-  const seenRange = new Set<string>()
-  for (const row of actionRows) {
-    if (row.year === reportYear && !seenYear.has(row.place_id)) {
-      seenYear.add(row.place_id)
-      addCounts(withActionsYear, row.level, 1)
+  const relevantTpops = places.filter(
+    (r) => r.level === 2 && r.relevant && (r.since ?? Infinity) <= jahr,
+  )
+  const relevantPopIds = new Set(
+    relevantTpops.map((r) => r.parent_id).filter(Boolean) as string[],
+  )
+  const placeById = new Map(places.map((r) => [r.place_id, r]))
+
+  const countPlaces = (placeIds: Set<string>) => {
+    let pop = 0
+    let tpop = 0
+    for (const id of placeIds) {
+      const place = placeById.get(id)
+      if (!place || !place.relevant) continue
+      if ((place.since ?? Infinity) > jahr) continue
+      if (place.level === 2) {
+        tpop++
+        if (place.parent_id && relevantPopIds.has(place.parent_id)) {
+          // pop counted once below via set
+        }
+      }
     }
-    const inRange =
-      !startYear || (row.year >= startYear && row.year <= reportYear)
-    if (inRange && !seenRange.has(row.place_id)) {
-      seenRange.add(row.place_id)
-      addCounts(withActionsRange, row.level, 1)
+    const popIds = new Set<string>()
+    for (const id of placeIds) {
+      const place = placeById.get(id)
+      if (place?.level === 2 && place.parent_id && relevantPopIds.has(place.parent_id)) {
+        popIds.add(place.parent_id)
+      }
     }
+    pop = popIds.size
+    return { pop, tpop }
   }
 
-  // of the places with actions: those controlled, grouped by the assessment
-  // of their latest assessed check
+  // places with actions in the report year / since start
+  const withActionsYear = new Set<string>()
+  const withActionsRange = new Set<string>()
+  let firstMassn: number | null = actionRows.length
+    ? Math.min(...actionRows.map((r) => r.year))
+    : null
+  for (const row of actionRows) {
+    if (row.year === jahr) withActionsYear.add(row.place_id)
+    withActionsRange.add(row.place_id)
+  }
+  const c1L = countPlaces(withActionsYear)
+  const c1R = countPlaces(withActionsRange)
+
+  // of those (since): controlled = latest assessed check per place
   const latestAssessment = new Map<string, string>()
-  const controlled = new Set<string>()
-  const controlledLevels = new Map<string, number | null>()
   for (const row of checkRows) {
-    const inRange = !startYear || (row.year >= startYear && row.year <= reportYear)
-    if (inRange && seenRange.has(row.place_id)) {
-      controlled.add(row.place_id)
-      if (!controlledLevels.has(row.place_id)) {
-        controlledLevels.set(
-          row.place_id,
-          actionRows.find((a) => a.place_id === row.place_id)?.level ?? null,
-        )
-      }
+    if (withActionsRange.has(row.place_id) && row.year <= jahr) {
       latestAssessment.set(row.place_id, row.assessment)
     }
   }
-  const controlledCounts = { ...emptyCounts }
-  for (const level of controlledLevels.values()) {
-    addCounts(controlledCounts, level, 1)
-  }
+  const c2R = countPlaces(new Set(latestAssessment.keys()))
 
-  const classifyAssessment = (test: (a: string) => boolean): Counts => {
-    const acc = { ...emptyCounts }
-    for (const [placeId, assessment] of latestAssessment) {
-      if (test(assessment)) {
-        addCounts(acc, controlledLevels.get(placeId) ?? null, 1)
-      }
-    }
-    return acc
-  }
-  const sehrErfolgreich = classifyAssessment((a) =>
-    a.toLowerCase().includes('sehr erfolgreich'),
+  const classifyAssessment = (test: (a: string) => boolean) =>
+    countPlaces(
+      new Set(
+        [...latestAssessment.entries()]
+          .filter(([, a]) => test(a.toLowerCase()))
+          .map(([id]) => id),
+      ),
+    )
+  const sehr = classifyAssessment((a) => a.includes('sehr erfolgreich'))
+  const nicht = classifyAssessment(
+    (a) => a.includes('nicht erfolgreich') || a.includes('kein erfolg'),
   )
+  const weniger = classifyAssessment(
+    (a) => a.includes('wenig erfolgreich') || a.includes('weniger erfolgreich'),
+  )
+  const unsicher = classifyAssessment((a) => a.includes('unsicher'))
   const erfolgreich = classifyAssessment(
     (a) =>
-      a.toLowerCase().includes('erfolgreich') &&
-      !a.toLowerCase().includes('sehr ') &&
-      !a.toLowerCase().includes('weniger ') &&
-      !a.toLowerCase().includes('nicht '),
-  )
-  const wenigerErfolgreich = classifyAssessment((a) =>
-    a.toLowerCase().includes('weniger erfolgreich'),
-  )
-  const nichtErfolgreich = classifyAssessment((a) =>
-    a.toLowerCase().includes('nicht erfolgreich'),
-  )
-  const unsicher = classifyAssessment((a) =>
-    a.toLowerCase().includes('unsicher'),
+      a.includes('erfolgreich') &&
+      !a.includes('sehr ') &&
+      !a.includes('wenig') &&
+      !a.includes('weniger') &&
+      !a.includes('nicht '),
   )
 
-  const tableRows: { label: string; year?: Counts; range?: Counts; indent?: number }[] = [
+  const since = sinceYearProp ?? startYear
+  const tableRows: {
+    label: string
+    year?: Counts
+    range?: Counts
+    indent?: number
+  }[] = [
     {
       label: 'Anzahl Populationen/Teilpopulationen mit Massnahmen',
-      year: withActionsYear,
-      range: withActionsRange,
+      year: c1L,
+      range: c1R,
     },
-    { label: 'kontrolliert', range: controlledCounts, indent: 1 },
-    { label: 'davon: sehr erfolgreich', range: sehrErfolgreich, indent: 2 },
+    { label: 'kontrolliert', range: c2R, indent: 1 },
+    { label: 'davon: sehr erfolgreich', range: sehr, indent: 2 },
     { label: 'erfolgreich', range: erfolgreich, indent: 2 },
-    { label: 'weniger erfolgreich', range: wenigerErfolgreich, indent: 2 },
-    { label: 'nicht erfolgreich', range: nichtErfolgreich, indent: 2 },
+    { label: 'weniger erfolgreich', range: weniger, indent: 2 },
+    { label: 'nicht erfolgreich', range: nicht, indent: 2 },
     { label: 'mit unsicherer Wirkung', range: unsicher, indent: 2 },
   ]
 
@@ -403,10 +514,10 @@ const ActionsSummaryTable = ({
         <thead>
           <tr>
             <th>{''}</th>
-            <th>Pop {reportYear}</th>
-            <th>TPop {reportYear}</th>
-            <th>Pop seit {startYear ?? '…'}</th>
-            <th>TPop seit {startYear ?? '…'}</th>
+            <th>Pop {jahr}</th>
+            <th>TPop {jahr}</th>
+            <th>Pop seit {since ?? firstMassn ?? '…'}</th>
+            <th>TPop seit {since ?? firstMassn ?? '…'}</th>
           </tr>
         </thead>
         <tbody>

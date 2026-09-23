@@ -2,13 +2,13 @@ import { useState, useEffect } from 'react'
 import { usePGlite, useLiveQuery } from '@electric-sql/pglite-react'
 import { Render } from '@puckeditor/core'
 
-import { TextField } from '../../components/shared/TextField.tsx'
 import { buildData } from '../chart/Chart/buildData/index.ts'
 import { groupSeriesBySubject } from '../chart/Chart/buildData/index.ts'
 import type { ChartData, ChartSeries } from '../chart/Chart/buildData/index.ts'
 import { SingleChart } from '../chart/Chart/Chart.tsx'
 import {
   SubprojectReportContext,
+  WrappingTextField,
   buildDataComponents,
 } from '../subprojectReport/reportComponents.tsx'
 import type Charts from '../../models/public/Charts.ts'
@@ -112,11 +112,9 @@ const SubprojectReportItem = ({
         const fieldValue = (jsonbData[field.name] as string) ?? ''
         return (
           <div className={styles.fieldWrapper}>
-            <TextField
+            <WrappingTextField
               label={field.field_label || field.name}
-              name={field.name}
               value={fieldValue}
-              readOnly
             />
           </div>
         )
@@ -190,12 +188,10 @@ const SubprojectReportItem = ({
         const value = (jsonbData[field.name] as string) ?? ''
         if (!value) return null
         return (
-          <TextField
+          <WrappingTextField
             key={field.name}
             label={field.field_label || field.name}
-            name={field.name}
             value={value}
-            readOnly
           />
         )
       })}

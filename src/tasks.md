@@ -40,6 +40,8 @@ Also noted in passing: Electric 401 responses through Caddy get doubled CORS hea
 
 ---
 
+the art-report has 4 text fields. apflora has in the same form 14. I noticed this because in the report
+
 ---
 
 ---
