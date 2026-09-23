@@ -1,0 +1,73 @@
+.shell {
+  margin: 12px 0;
+  page-break-inside: avoid;
+}
+
+.title {
+  font-weight: bold;
+  margin-bottom: 4px;
+}
+
+.heading {
+  font-size: 1.1em;
+  font-weight: bold;
+  margin: 20px 0 8px;
+  page-break-after: avoid;
+}
+
+.titleBlock {
+  margin-bottom: 16px;
+  page-break-inside: avoid;
+}
+
+.titleMain {
+  font-size: 1.4em;
+  margin: 0 0 4px;
+}
+
+.titleMeta {
+  color: #444;
+}
+
+.noContext {
+  border: 1px dashed #999;
+  color: #777;
+  padding: 8px;
+  margin: 8px 0;
+}
+
+.table {
+  border-collapse: collapse;
+  width: 100%;
+  font-size: 0.9em;
+}
+
+.table th,
+.table td {
+  border: 1px solid #666;
+  padding: 3px 6px;
+  text-align: left;
+  vertical-align: top;
+}
+
+.table thead {
+  display: table-header-group;
+}
+
+.table tr {
+  page-break-inside: avoid;
+}
+
+.number {
+  text-align: right !important;
+  font-variant-numeric: tabular-nums;
+}
+
+.nowrap {
+  white-space: nowrap;
+}
+
+.assessment {
+  color: #444;
+  margin-top: 2px;
+}

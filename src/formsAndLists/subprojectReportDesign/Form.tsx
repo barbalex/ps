@@ -14,6 +14,10 @@ import { addOperationAtom, languageAtom } from '../../store.ts'
 import { buildData } from '../chart/Chart/buildData/index.ts'
 import { groupSeriesBySubject } from '../chart/Chart/buildData/index.ts'
 import { SingleChart } from '../chart/Chart/Chart.tsx'
+import {
+  SubprojectReportContext,
+  buildDataComponents,
+} from '../subprojectReport/reportComponents.tsx'
 import type Charts from '../../models/public/Charts.ts'
 import styles from './Form.module.css'
 
@@ -118,6 +122,16 @@ export const Form = ({ autoFocusRef }: { autoFocusRef?: React.RefObject<HTMLInpu
       title: formatMessage({ id: 'bC9BcD', defaultMessage: 'Diagramme' }),
       components: [] as string[],
     },
+    dataBlocks: {
+      title: formatMessage({ id: 'bGeHcI', defaultMessage: 'Bausteine' }),
+      components: [] as string[],
+    },
+  }
+
+  // data-driven building blocks (tables, title, headings)
+  for (const [name, component] of Object.entries(buildDataComponents())) {
+    components[name] = component
+    categories.dataBlocks.components.push(name)
   }
 
   fields.forEach((field) => {
@@ -190,6 +204,20 @@ export const Form = ({ autoFocusRef }: { autoFocusRef?: React.RefObject<HTMLInpu
   })
 
   const config: Config = { components, categories }
+
+  // preview context: the project's first art and its latest report year
+  const previewRes = useLiveQuery(
+    `SELECT
+      (SELECT subproject_id FROM subprojects WHERE project_id = $1 ORDER BY name LIMIT 1) AS subproject_id,
+      (SELECT max(year) FROM subproject_reports sr
+        WHERE sr.subproject_id IN (SELECT subproject_id FROM subprojects WHERE project_id = $1)) AS year`,
+    [row?.project_id],
+  )
+  const previewContext = {
+    projectId: row?.project_id,
+    subprojectId: (previewRes?.rows?.[0] as { subproject_id?: string } | undefined)?.subproject_id,
+    year: (previewRes?.rows?.[0] as { year?: number | null } | undefined)?.year ?? null,
+  }
 
   const onActiveChange = async (
     e: React.ChangeEvent<HTMLInputElement>,
@@ -334,12 +362,29 @@ export const Form = ({ autoFocusRef }: { autoFocusRef?: React.RefObject<HTMLInpu
           formatMessage({ id: 'bB9OrS', defaultMessage: 'Es kann immer nur ein Design aktiv sein' })
         }
       />
-      {(fields.length > 0 || charts.length > 0) && (
+      <SubprojectReportContext.Provider value={previewContext}>
         <Puck
           key={language}
           config={config}
-          data={row.design ?? { content: [] }}
+          data={
+            row.design?.content ?
+              {
+                ...row.design,
+                // puck needs stable per-item ids
+                content: row.design.content.map(
+                  (item: Record<string, any>, i: number) => ({
+                    ...item,
+                    id: item.id ?? `${item.type}-${i}`,
+                  }),
+                ),
+              }
+            : { content: [] }
+          }
           onChange={onPuckChange}
+          // without this, Puck renders the preview inside an iframe, which
+          // cuts it off from the app's React contexts (PGlite, report
+          // context) — the data-driven building blocks could not query
+          iframe={{ enabled: false }}
         >
           <div className={styles.editorLayout}>
             <div className={styles.editorSidebar}>
@@ -348,19 +393,14 @@ export const Form = ({ autoFocusRef }: { autoFocusRef?: React.RefObject<HTMLInpu
             <div className={styles.editorPreview}>
               {(!row.design?.content || row.design.content.length === 0) && (
                 <div className={styles.emptyPreview}>
-                  {formatMessage({ id: 'bCCfGh', defaultMessage: 'Felder und Diagramme in das Design ziehen' })}
+                  {formatMessage({ id: 'bCCfGh', defaultMessage: 'Bausteine, Felder und Diagramme in das Design ziehen' })}
                 </div>
               )}
               <Puck.Preview />
             </div>
           </div>
         </Puck>
-      )}
-      {fields.length === 0 && charts.length === 0 && (
-        <div className={styles.emptyState}>
-          {formatMessage({ id: 'bCDgHi', defaultMessage: 'Keine Felder oder Diagramme gefunden. Bitte zuerst Felder oder Diagramme hinzufügen.' })}
-        </div>
-      )}
+      </SubprojectReportContext.Provider>
     </div>
   )
 }

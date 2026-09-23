@@ -17,6 +17,10 @@ import styles from './Print.module.css'
 import { buildData } from '../chart/Chart/buildData/index.ts'
 import { groupSeriesBySubject } from '../chart/Chart/buildData/index.ts'
 import { SingleChart } from '../chart/Chart/Chart.tsx'
+import {
+  SubprojectReportContext,
+  buildDataComponents,
+} from './reportComponents.tsx'
 
 import '../../form.css'
 import '@puckeditor/core/puck.css'
@@ -98,7 +102,10 @@ export const SubprojectReportPrint = ({ from }: { from: string }) => {
   }, [chartsJson, subprojectId, projectId])
 
   // Build Puck config from fields with actual data
-  const components: Record<string, any> = {}
+  const components: Record<string, any> = Object.assign(
+    {},
+    buildDataComponents(),
+  )
   fields.forEach((field: any) => {
     const componentName = `${field.name}Field`
 
@@ -223,9 +230,15 @@ export const SubprojectReportPrint = ({ from }: { from: string }) => {
             validationMessage={validations?.year?.message}
           />
         </div>
-        {design && fields.length > 0 && (
-          <Render config={config} data={design} />
-        )}
+        <SubprojectReportContext.Provider
+          value={{
+            projectId: row.project_id,
+            subprojectId: row.subproject_id,
+            year: row.year,
+          }}
+        >
+          {design && fields.length > 0 && <Render config={config} data={design} />}
+        </SubprojectReportContext.Provider>
         {(!design || fields.length === 0) && (
           <div>
             {formatMessage(

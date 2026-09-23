@@ -7,6 +7,10 @@ import { buildData } from '../chart/Chart/buildData/index.ts'
 import { groupSeriesBySubject } from '../chart/Chart/buildData/index.ts'
 import type { ChartData, ChartSeries } from '../chart/Chart/buildData/index.ts'
 import { SingleChart } from '../chart/Chart/Chart.tsx'
+import {
+  SubprojectReportContext,
+  buildDataComponents,
+} from '../subprojectReport/reportComponents.tsx'
 import type Charts from '../../models/public/Charts.ts'
 import styles from './SubprojectReportsSection.module.css'
 
@@ -94,7 +98,10 @@ const SubprojectReportItem = ({
   }
 
   // Build Puck config from field definitions and chart data
-  const components: Record<string, any> = {}
+  const components: Record<string, any> = Object.assign(
+    {},
+    buildDataComponents(),
+  )
 
   fields.forEach((field) => {
     const componentName = `${field.name}Field`
@@ -164,7 +171,16 @@ const SubprojectReportItem = ({
   const config = { components }
 
   if (design) {
-    return <Render config={config} data={design} />
+    return (
+      <SubprojectReportContext.Provider
+        value={{
+          subprojectId,
+          year,
+        }}
+      >
+        <Render config={config} data={design} />
+      </SubprojectReportContext.Provider>
+    )
   }
 
   // Fallback: render fields directly when no design is configured
