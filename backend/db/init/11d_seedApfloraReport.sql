@@ -14,7 +14,6 @@ DELETE FROM fields
 WHERE project_id = '0195a101-0000-7000-8000-000000000001'
   AND table_name = 'subproject_reports';
 INSERT INTO fields (field_id, project_id, table_name, field_type_id, widget_type_id, name, field_label) VALUES
-  ('c1000000-0000-4000-8000-00000000f001', '0195a101-0000-7000-8000-000000000001', 'subproject_reports', '018ca19e-7a23-7bf4-8523-ff41e3b60807', '018ca1a1-0868-7f1e-80aa-119fa3932538', 'bemerkungen', 'Bemerkungen'),
   ('c1000000-0000-4000-8000-00000000f011', '0195a101-0000-7000-8000-000000000001', 'subproject_reports', '018ca19e-7a23-7bf4-8523-ff41e3b60807', '018ca1a1-0868-7f1e-80aa-119fa3932538', 'biotope_neue', 'Bemerkungen / Folgerungen für nächstes Jahr: neue Biotope'),
   ('c1000000-0000-4000-8000-00000000f012', '0195a101-0000-7000-8000-000000000001', 'subproject_reports', '018ca19e-7a23-7bf4-8523-ff41e3b60807', '018ca1a1-0868-7f1e-80aa-119fa3932538', 'biotope_optimieren', 'Bemerkungen / Folgerungen für nächstes Jahr: Optimierung Biotope'),
   ('c1000000-0000-4000-8000-00000000f002', '0195a101-0000-7000-8000-000000000001', 'subproject_reports', '018ca19e-7a23-7bf4-8523-ff41e3b60807', '018ca1a1-0868-7f1e-80aa-119fa3932538', 'vergleich_ausfuehrung_planung', 'Vergleich Ausführung/Planung'),
@@ -56,10 +55,6 @@ INSERT INTO subproject_report_designs (subproject_report_design_id, project_id, 
         "author": "Agnes Schärer",
         "showDate": true
       }
-    },
-    {
-      "type": "bemerkungenField",
-      "props": {}
     },
     {
       "type": "Heading",
@@ -132,6 +127,10 @@ INSERT INTO subproject_report_designs (subproject_report_design_id, project_id, 
       "props": {}
     },
     {
+      "type": "MassnahmenList",
+      "props": { "title": "Massnahmen im Berichtsjahr:" }
+    },
+    {
       "type": "Heading",
       "props": {
         "text": "D. Einschätzung der Wirkung des AP insgesamt auf die Art"
@@ -185,7 +184,6 @@ WHERE subproject_id = '12496da4-f3ce-79b9-87cf-c6e85bb6722c'
 INSERT INTO subproject_reports (subproject_report_id, subproject_id, year, data) VALUES
   ('c4000000-0000-4000-8000-00000000b001', '12496da4-f3ce-79b9-87cf-c6e85bb6722c', 2025,
   '{
-  "bemerkungen": "Die Population im Mädlestenweiher ist erstmals seit Jahren stark zurückgegangen, vermutlich wegen Karpfen und/oder Biberaktivität. In Austausch mit dem NBA wird nach Möglichkeiten gesucht, die Situation zu verbessern. Solche Massnahmen müssen von einer regelmässigen Bestandeskontrolle begleitet sein. Bei der Pflege von Kleingewässern mit Aldrovanda während der Vegetationszeit müssen alle Beteiligten über das Vorkommen der Art informiert sein. Beispielsweise besteht bei Frühschnitten der Ufervegetation oder Schilfbekämpfung mittels Unterwasserschnitt die Gefahr, dass die Triebe zusammen mit dem Schnittgut herausgerechnet werden.",
   "biotope_neue": "Geeignete Gewässer sind nach wie vor Mangelware und werden teilweise durch seltene Utricularia-Arten besiedelt, sodass dort i.d.R. von einer Ansiedlung von Aldrovanda abgesehen wird (auch wenn der negative Effekt nicht belegt ist). Neu eröffnete oder abgetiefte Moorgewässer sollten für Ansiedlungen genutzt werden können, in Absprache mit den Utricularia-AV. Ganz \"leere\" Gewässer scheinen jedoch nicht ideal; während mehrerer Jahre nachpflanzen, da \"Wintersterblichkeit\" und Zufallseffekte vermutlich gross. Auch oligotrophe Gewässer ausserhalb von Mooren können geeignet sein.",
   "biotope_optimieren": "Eine \"alte\" Population im Kt. ZH, in der die Art Jahrzehnte mit tausenden Individuen vorkam, ist 2023 zusammengebrochen, vermutlich wegen Karpfen und/oder Biberaktivität. In Austausch mit dem NBA wird nach Möglichkeiten gesucht, die Situation zu verbessern.",
   "vergleich_ausfuehrung_planung": "Die Überprüfung der Meldung vom Albis und die Begleitung in Maschwanden wurden bereits 2024 abgeschlossen. Am Mädlestenweiher war bisher keine zusätzliche Begehung notwendig, da erst die Rahmenbedingungen geklärt werden mussten. Die restlichen Arbeiten gemäss Offerte konnten durchgeführt werden.",

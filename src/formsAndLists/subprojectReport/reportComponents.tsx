@@ -257,7 +257,7 @@ const GrundmengenTable = ({ title }: { title?: string }) => {
             <tr key={`${i}-${row.label}`}>
               <td
                 style={{
-                  paddingLeft: `${(row.indent ?? 0) * 16}px`,
+                  paddingLeft: `calc(6px + ${(row.indent ?? 0) * 16}px)`,
                   fontWeight: row.bold ? 600 : undefined,
                 }}
               >
@@ -523,7 +523,9 @@ const ActionsSummaryTable = ({
         <tbody>
           {tableRows.map((row, i) => (
             <tr key={`${i}-${row.label}`}>
-              <td style={{ paddingLeft: `${(row.indent ?? 0) * 16}px` }}>
+              <td
+                style={{ paddingLeft: `calc(6px + ${(row.indent ?? 0) * 16}px)` }}
+              >
                 {row.label}
               </td>
               <td className={styles.number}>{row.year?.pop ?? ''}</td>
@@ -583,6 +585,65 @@ const GoalsTable = ({ title }: { title?: string }) => {
                   </div>
                 : null}
               </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </TableShell>
+  )
+}
+
+// ---------------------------------------------------------------------------
+
+const MassnahmenList = ({ title }: { title?: string }) => {
+  const { subprojectId, year } = useSubprojectReportContext()
+  const reportYear = year ?? new Date().getFullYear()
+  const res = useLiveQuery(
+    `SELECT
+       COALESCE(NULLIF(pp.label, ''), pp.name) AS pop_label,
+       COALESCE(NULLIF(p.label, ''), p.name) AS tpop_label,
+       to_char(a.date, 'DD.MM.YYYY') AS date,
+       a.data ->> 'typ' AS typ,
+       a.data ->> 'beschreibung' AS beschreibung
+     FROM actions a
+       INNER JOIN places p ON a.place_id = p.place_id
+       LEFT JOIN places pp ON pp.place_id = p.parent_id
+     WHERE p.subproject_id = $1 AND extract(year from a.date) = $2
+     ORDER BY pop_label, tpop_label, a.date`,
+    [subprojectId ?? null, reportYear],
+  )
+
+  const rows = (res?.rows ?? []) as {
+    pop_label: string | null
+    tpop_label: string | null
+    date: string | null
+    typ: string | null
+    beschreibung: string | null
+  }[]
+
+  // like apf2: the section is omitted when there are no actions in the year
+  if (!rows.length) return null
+
+  return (
+    <TableShell title={title}>
+      <table className={styles.table}>
+        <thead>
+          <tr>
+            <th>Population</th>
+            <th>Teil-Population</th>
+            <th>Datum</th>
+            <th>Typ</th>
+            <th>Massnahme</th>
+          </tr>
+        </thead>
+        <tbody>
+          {rows.map((row, i) => (
+            <tr key={i}>
+              <td className={styles.nowrap}>{row.pop_label}</td>
+              <td>{row.tpop_label}</td>
+              <td className={styles.nowrap}>{row.date}</td>
+              <td>{row.typ}</td>
+              <td>{row.beschreibung}</td>
             </tr>
           ))}
         </tbody>
@@ -654,5 +715,13 @@ export const buildDataComponents = (): Config['components'] => ({
     },
     defaultProps: { title: 'Ziele im Berichtsjahr' },
     render: ({ title }) => <GoalsTable title={title} />,
+  },
+  MassnahmenList: {
+    label: 'Liste: Massnahmen im Berichtsjahr',
+    fields: {
+      title: { type: 'text' },
+    },
+    defaultProps: { title: 'Massnahmen im Berichtsjahr:' },
+    render: ({ title }) => <MassnahmenList title={title} />,
   },
 })

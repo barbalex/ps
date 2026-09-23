@@ -1,16 +1,14 @@
-import { useState, useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { useParams } from '@tanstack/react-router'
 import { usePGlite, useLiveQuery } from '@electric-sql/pglite-react'
-import { useSetAtom, useAtom } from 'jotai'
+import { useAtom } from 'jotai'
 import { Render } from '@puckeditor/core'
 import { useIntl } from 'react-intl'
 
 import { Header } from './Header.tsx'
 import { Loading } from '../../components/shared/Loading.tsx'
 import { NotFound } from '../../components/NotFound.tsx'
-import { TextField } from '../../components/shared/TextField.tsx'
-import { getValueFromChange } from '../../modules/getValueFromChange.ts'
-import { addOperationAtom, languageAtom } from '../../store.ts'
+import { languageAtom } from '../../store.ts'
 import { subprojectNameSingularExpr } from '../../modules/subprojectNameCols.ts'
 import { jsonbDataFromRow } from '../../modules/jsonbDataFromRow.ts'
 import styles from './Print.module.css'
@@ -28,12 +26,8 @@ import '@puckeditor/core/puck.css'
 
 export const SubprojectReportPrint = ({ from }: { from: string }) => {
   const { subprojectReportId, projectId, subprojectId } = useParams({ strict: false })
-  const addOperation = useSetAtom(addOperationAtom)
   const { formatMessage } = useIntl()
   const [language] = useAtom(languageAtom)
-  const [validations, setValidations] = useState<
-    Record<string, { state: 'error'; message: string }>
-  >({})
   const [chartDataMap, setChartDataMap] = useState<Record<string, any>>({})
 
   const db = usePGlite()
@@ -174,40 +168,6 @@ export const SubprojectReportPrint = ({ from }: { from: string }) => {
 
   const config = { components }
 
-  const onChange = async (
-    e: React.ChangeEvent<HTMLInputElement>,
-    data: Parameters<typeof getValueFromChange>[1],
-  ) => {
-    const { name, value } = getValueFromChange(e, data)
-    if ((row as Record<string, any>)[name] === value) return
-
-    try {
-      await db.query(
-        `UPDATE subproject_reports SET ${name} = $1 WHERE subproject_report_id = $2`,
-        [value, subprojectReportId],
-      )
-    } catch (error) {
-      setValidations((prev) => ({
-        ...prev,
-        [name]: { state: 'error', message: error instanceof Error ? error.message : String(error) },
-      }))
-      return
-    }
-    setValidations((prev) => {
-       
-      const { [name]: _, ...rest } = prev
-      return rest
-    })
-    addOperation({
-      table: 'subproject_reports',
-      rowIdName: 'subproject_report_id',
-      rowId: subprojectReportId,
-      operation: 'update',
-      draft: { [name]: value },
-      prev: { ...row },
-    })
-  }
-
   if (!res) return <Loading />
 
   if (!row) {
@@ -220,17 +180,6 @@ export const SubprojectReportPrint = ({ from }: { from: string }) => {
         <Header from={from} />
       </div>
       <div className="form-container">
-        <div className="print-hide">
-          <TextField
-            label={formatMessage({ id: 'bB4FgH', defaultMessage: 'Jahr' })}
-            name="year"
-            type="number"
-            value={row.year ?? ''}
-            onChange={onChange}
-            validationState={validations?.year?.state}
-            validationMessage={validations?.year?.message}
-          />
-        </div>
         <SubprojectReportContext.Provider
           value={{
             projectId: row.project_id,
