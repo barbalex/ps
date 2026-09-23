@@ -122,6 +122,8 @@ export const SubprojectReportPrint = ({ from }: { from: string }) => {
       render: () => {
         // Always read from the current report's jsonbData, not from the saved design value
         const fieldValue = (jsonbData[field.name] ?? '') as string
+        // like apf2: empty fields are omitted from the printed report
+        if (!fieldValue) return null
         return (
           <div className={styles.fieldWrapper}>
             <WrappingTextField
