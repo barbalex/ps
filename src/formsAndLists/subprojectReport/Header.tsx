@@ -36,7 +36,7 @@ export const Header = ({ autoFocusRef }: { autoFocusRef?: React.RefObject<HTMLIn
 
   const combinedRes = useLiveQuery(
     `SELECT
-      p.${subprojectNameSingularExpr(language)} AS subproject_name_singular,
+      ${subprojectNameSingularExpr(language, 'p')} AS subproject_name_singular,
       (SELECT COUNT(*) FROM subproject_reports WHERE subproject_id = $1) AS count
     FROM projects p
     WHERE p.project_id = $2`,
