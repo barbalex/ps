@@ -22,8 +22,6 @@ Better-Auth, possible extensions:
 
 ---
 
-the chart 'kontrollierte Teil-Populationen' should - as all apflora charts - only include the years for which histories exist (plus the current, if that year was choosen for the report)
-
 ---
 
 chart 'Populationen nach Status' shuld draw the different values cummulating/stacking. Thus the total height shows the total number of Populationen. Same for 'Triebe Total nach Populationen'
