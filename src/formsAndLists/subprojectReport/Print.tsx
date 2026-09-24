@@ -11,6 +11,7 @@ import { NotFound } from '../../components/NotFound.tsx'
 import { languageAtom } from '../../store.ts'
 import { subprojectNameSingularExpr } from '../../modules/subprojectNameCols.ts'
 import { jsonbDataFromRow } from '../../modules/jsonbDataFromRow.ts'
+import { normalizePuckDesign } from '../../modules/normalizePuckDesign.ts'
 import styles from './Print.module.css'
 import { buildData } from '../chart/Chart/buildData/index.ts'
 import { groupSeriesBySubject } from '../chart/Chart/buildData/index.ts'
@@ -189,7 +190,9 @@ export const SubprojectReportPrint = ({ from }: { from: string }) => {
             year: row.year,
           }}
         >
-          {design && fields.length > 0 && <Render config={config} data={design} />}
+          {design && fields.length > 0 && (
+            <Render config={config} data={normalizePuckDesign(design)} />
+          )}
         </SubprojectReportContext.Provider>
         {(!design || fields.length === 0) && (
           <div>

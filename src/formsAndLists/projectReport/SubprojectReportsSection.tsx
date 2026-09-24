@@ -12,6 +12,7 @@ import {
   buildDataComponents,
 } from '../subprojectReport/reportComponents.tsx'
 import type Charts from '../../models/public/Charts.ts'
+import { normalizePuckDesign } from '../../modules/normalizePuckDesign.ts'
 import styles from './SubprojectReportsSection.module.css'
 
 import '@puckeditor/core/puck.css'
@@ -178,7 +179,7 @@ const SubprojectReportItem = ({
           year,
         }}
       >
-        <Render config={config} data={design} />
+        <Render config={config} data={normalizePuckDesign(design)} />
       </SubprojectReportContext.Provider>
     )
   }

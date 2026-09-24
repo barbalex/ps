@@ -10,6 +10,7 @@ import { SwitchField } from '../../components/shared/SwitchField.tsx'
 import { Loading } from '../../components/shared/Loading.tsx'
 import { NotFound } from '../../components/NotFound.tsx'
 import { getValueFromChange } from '../../modules/getValueFromChange.ts'
+import { normalizePuckDesign } from '../../modules/normalizePuckDesign.ts'
 import { addOperationAtom, languageAtom } from '../../store.ts'
 import { subprojectNameSingularExpr } from '../../modules/subprojectNameCols.ts'
 import styles from './Form.module.css'
@@ -327,7 +328,7 @@ export const Form = ({ autoFocusRef }: { autoFocusRef?: React.RefObject<HTMLInpu
         <Puck
           key={language}
           config={config}
-          data={row.design ?? { content: [] }}
+          data={normalizePuckDesign(row.design ?? { content: [] })}
           onChange={onPuckChange}
         >
           <div className={styles.editorLayout}>

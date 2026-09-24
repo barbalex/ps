@@ -10,6 +10,7 @@ import { SwitchField } from '../../components/shared/SwitchField.tsx'
 import { Loading } from '../../components/shared/Loading.tsx'
 import { NotFound } from '../../components/NotFound.tsx'
 import { getValueFromChange } from '../../modules/getValueFromChange.ts'
+import { normalizePuckDesign } from '../../modules/normalizePuckDesign.ts'
 import { addOperationAtom, languageAtom } from '../../store.ts'
 import { buildData } from '../chart/Chart/buildData/index.ts'
 import { groupSeriesBySubject } from '../chart/Chart/buildData/index.ts'
@@ -365,20 +366,7 @@ export const Form = ({ autoFocusRef }: { autoFocusRef?: React.RefObject<HTMLInpu
         <Puck
           key={language}
           config={config}
-          data={
-            row.design?.content ?
-              {
-                ...row.design,
-                // puck needs stable per-item ids
-                content: row.design.content.map(
-                  (item: Record<string, any>, i: number) => ({
-                    ...item,
-                    id: item.id ?? `${item.type}-${i}`,
-                  }),
-                ),
-              }
-            : { content: [] }
-          }
+          data={normalizePuckDesign(row.design ?? { content: [] })}
           onChange={onPuckChange}
           // without this, Puck renders the preview inside an iframe, which
           // cuts it off from the app's React contexts (PGlite, report

@@ -52,6 +52,7 @@ INSERT INTO subproject_report_designs (subproject_report_design_id, project_id, 
     {
       "type": "TitleBlock",
       "props": {
+        "id": "TitleBlock-0",
         "author": "Agnes Schärer",
         "showDate": true
       }
@@ -59,116 +60,157 @@ INSERT INTO subproject_report_designs (subproject_report_design_id, project_id, 
     {
       "type": "Heading",
       "props": {
+        "id": "Heading-1",
         "text": "A. Grundmengen"
       }
     },
     {
       "type": "GrundmengenTable",
       "props": {
+        "id": "GrundmengenTable-2",
         "title": ""
       }
     },
     {
       "type": "biotope_neueField",
-      "props": {}
+      "props": {
+        "id": "biotope_neueField-3"
+      }
     },
     {
       "type": "Heading",
       "props": {
+        "id": "Heading-4",
         "text": "B. Bestandesentwicklung"
       }
     },
     {
       "type": "DevelopmentTable",
       "props": {
+        "id": "DevelopmentTable-5",
         "title": "",
         "sinceYear": null
       }
     },
     {
       "type": "chart_a1000000-0000-4000-8000-000000000001",
-      "props": {}
+      "props": {
+        "id": "chart_a1000000-0000-4000-8000-000000000001-6"
+      }
     },
     {
       "type": "chart_a2000000-0000-4000-8000-000000000002",
-      "props": {}
+      "props": {
+        "id": "chart_a2000000-0000-4000-8000-000000000002-7"
+      }
     },
     {
       "type": "chart_a3000000-0000-4000-8000-000000000003",
-      "props": {}
+      "props": {
+        "id": "chart_a3000000-0000-4000-8000-000000000003-8"
+      }
     },
     {
       "type": "biotope_optimierenField",
-      "props": {}
+      "props": {
+        "id": "biotope_optimierenField-9"
+      }
     },
     {
       "type": "Heading",
       "props": {
+        "id": "Heading-10",
         "text": "C. Zwischenbilanz zur Wirkung von Massnahmen"
       }
     },
     {
       "type": "ActionsSummaryTable",
       "props": {
+        "id": "ActionsSummaryTable-11",
         "title": "",
         "sinceYear": null
       }
     },
     {
       "type": "vergleich_ausfuehrung_planungField",
-      "props": {}
+      "props": {
+        "id": "vergleich_ausfuehrung_planungField-12"
+      }
     },
     {
       "type": "massnahmen_optimierenField",
-      "props": {}
+      "props": {
+        "id": "massnahmen_optimierenField-13"
+      }
     },
     {
       "type": "massnahmen_ap_bearbField",
-      "props": {}
+      "props": {
+        "id": "massnahmen_ap_bearbField-14"
+      }
     },
     {
       "type": "MassnahmenList",
-      "props": { "title": "Massnahmen im Berichtsjahr:" }
+      "props": {
+        "id": "MassnahmenList-15",
+        "title": "Massnahmen im Berichtsjahr:"
+      }
     },
     {
       "type": "Heading",
       "props": {
+        "id": "Heading-16",
         "text": "D. Einschätzung der Wirkung des AP insgesamt auf die Art"
       }
     },
     {
       "type": "vergleich_vorjahr_gesamtzielField",
-      "props": {}
+      "props": {
+        "id": "vergleich_vorjahr_gesamtzielField-17"
+      }
     },
     {
       "type": "GoalsTable",
       "props": {
+        "id": "GoalsTable-18",
         "title": "Ziele im Berichtsjahr"
       }
     },
     {
       "type": "beurteilungsskalaField",
-      "props": {}
+      "props": {
+        "id": "beurteilungsskalaField-19"
+      }
     },
     {
       "type": "beurteilungField",
-      "props": {}
+      "props": {
+        "id": "beurteilungField-20"
+      }
     },
     {
       "type": "wirkung_auf_artField",
-      "props": {}
+      "props": {
+        "id": "wirkung_auf_artField-21"
+      }
     },
     {
       "type": "apber_analyseField",
-      "props": {}
+      "props": {
+        "id": "apber_analyseField-22"
+      }
     },
     {
       "type": "konsequenzen_umsetzungField",
-      "props": {}
+      "props": {
+        "id": "konsequenzen_umsetzungField-23"
+      }
     },
     {
       "type": "konsequenzen_erfolgskontrolleField",
-      "props": {}
+      "props": {
+        "id": "konsequenzen_erfolgskontrolleField-24"
+      }
     }
   ],
   "root": {

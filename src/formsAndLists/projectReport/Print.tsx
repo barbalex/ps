@@ -12,6 +12,7 @@ import { TextField } from '../../components/shared/TextField.tsx'
 import { getValueFromChange } from '../../modules/getValueFromChange.ts'
 import { addOperationAtom } from '../../store.ts'
 import { jsonbDataFromRow } from '../../modules/jsonbDataFromRow.ts'
+import { normalizePuckDesign } from '../../modules/normalizePuckDesign.ts'
 import { buildData } from '../chart/Chart/buildData/index.ts'
 import { groupSeriesBySubject } from '../chart/Chart/buildData/index.ts'
 import { SingleChart } from '../chart/Chart/Chart.tsx'
@@ -229,7 +230,7 @@ export const ProjectReportPrint = ({ from }: { from: string }) => {
             validationMessage={validations?.year?.message}
           />
         </div>
-        {design && <Render config={config} data={design} />}
+        {design && <Render config={config} data={normalizePuckDesign(design)} />}
         {!design && <div>{formatMessage({ id: 'bB6JkL', defaultMessage: 'Kein Berichts-Design für dieses Projekt gefunden.' })}</div>}
       </div>
     </div>
