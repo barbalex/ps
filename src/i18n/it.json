@@ -1121,5 +1121,8 @@
   "export.baseTable": "Tabella di base",
   "export.baseTable.hint": "Nome della tabella principale su cui si basa questa query (es. projects, subprojects, places). Viene usato per applicare il filtro corrente dell'app.",
   "projectExport.baseTable": "Tabella di base",
-  "projectExport.baseTable.hint": "Nome della tabella principale su cui si basa questa query (es. projects, subprojects, places). Viene usato per applicare il filtro corrente dell'app."
+  "projectExport.baseTable.hint": "Nome della tabella principale su cui si basa questa query (es. projects, subprojects, places). Viene usato per applicare il filtro corrente dell'app.",
+  "bGeHcI": "Blocchi",
+  "bPuckPanelDelete": "Elimina",
+  "bPuckPanelHint": "Fai clic su un blocco dell'anteprima per modificarlo"
 }

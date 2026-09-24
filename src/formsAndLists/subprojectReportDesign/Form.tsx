@@ -8,6 +8,9 @@ import { Puck, Config } from '@puckeditor/core'
 import { TextField } from '../../components/shared/TextField.tsx'
 import { SwitchField } from '../../components/shared/SwitchField.tsx'
 import { Loading } from '../../components/shared/Loading.tsx'
+import { DesignEditorLayout } from '../../components/shared/DesignEditorLayout.tsx'
+import { PuckDrawerItem } from '../../components/shared/PuckDrawerItem.tsx'
+import { PuckCheckboxField } from '../../components/shared/PuckCheckboxField.tsx'
 import { NotFound } from '../../components/NotFound.tsx'
 import { getValueFromChange } from '../../modules/getValueFromChange.ts'
 import { normalizePuckDesign } from '../../modules/normalizePuckDesign.ts'
@@ -372,20 +375,24 @@ export const Form = ({ autoFocusRef }: { autoFocusRef?: React.RefObject<HTMLInpu
           // cuts it off from the app's React contexts (PGlite, report
           // context) — the data-driven building blocks could not query
           iframe={{ enabled: false }}
+          overrides={{
+            drawerItem: PuckDrawerItem,
+            fieldTypes: { checkbox: PuckCheckboxField },
+          }}
         >
-          <div className={styles.editorLayout}>
-            <div className={styles.editorSidebar}>
-              <Puck.Components />
-            </div>
-            <div className={styles.editorPreview}>
-              {(!row.design?.content || row.design.content.length === 0) && (
-                <div className={styles.emptyPreview}>
-                  {formatMessage({ id: 'bCCfGh', defaultMessage: 'Bausteine, Felder und Diagramme in das Design ziehen' })}
-                </div>
-              )}
-              <Puck.Preview />
-            </div>
-          </div>
+          <DesignEditorLayout
+            sidebar={<Puck.Components />}
+            preview={
+              <>
+                {(!row.design?.content || row.design.content.length === 0) && (
+                  <div className={styles.emptyPreview}>
+                    {formatMessage({ id: 'bCCfGh', defaultMessage: 'Bausteine, Felder und Diagramme in das Design ziehen' })}
+                  </div>
+                )}
+                <Puck.Preview />
+              </>
+            }
+          />
         </Puck>
       </SubprojectReportContext.Provider>
     </div>

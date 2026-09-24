@@ -38,8 +38,10 @@ how to create:
 
 - enable configuration of virtual tables on the project
 - enable/disable them just like the real ones (checks, check-reports, actions...)
-- 
+-
 
 ---
+
+light and dark mode
 
 ---

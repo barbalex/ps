@@ -1,0 +1,49 @@
+.layout {
+  height: 100%;
+  display: flex;
+  align-items: stretch;
+}
+
+.sidebar {
+  width: 25%;
+  flex-shrink: 0;
+  min-width: 0;
+  padding-right: 4px;
+  overflow: auto;
+  scrollbar-width: thin;
+}
+
+.splitter {
+  position: relative;
+  flex-shrink: 0;
+  width: 13px;
+  margin: 0 -2px;
+  cursor: col-resize;
+  touch-action: none;
+}
+
+.splitter::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 6px;
+  width: 1px;
+  background: #eee;
+}
+
+.splitter:hover::after,
+.splitter:active::after {
+  background: #999;
+  width: 2px;
+}
+
+.preview {
+  position: relative;
+  min-height: 0;
+  min-width: 0;
+  flex-grow: 1;
+  padding-left: 8px;
+  overflow: auto;
+  scrollbar-width: thin;
+}

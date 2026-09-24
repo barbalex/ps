@@ -1,0 +1,45 @@
+.panel {
+  width: 280px;
+  flex-shrink: 0;
+  border-left: 1px solid #eee;
+  padding-left: 12px;
+  overflow: auto;
+  scrollbar-width: thin;
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 4px 0 8px;
+  border-bottom: 1px solid #eee;
+  margin-bottom: 8px;
+}
+
+.title {
+  font-weight: 600;
+  overflow-wrap: anywhere;
+}
+
+.removeButton {
+  flex-shrink: 0;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  background: #fff;
+  padding: 2px 8px;
+  cursor: pointer;
+  font-size: 0.85em;
+}
+
+.removeButton:hover {
+  border-color: #c53030;
+  background: #fff5f5;
+  color: #c53030;
+}
+
+.emptyState {
+  color: #999;
+  font-size: 0.9em;
+  padding-top: 16px;
+}

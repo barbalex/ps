@@ -25,20 +25,6 @@
   font-style: italic;
 }
 
-.editorLayout {
-  height: 100%;
-  display: flex;
-  align-items: stretch;
-  gap: 16px;
-}
-
-.editorSidebar {
-  border-right: 1px solid #eee;
-  padding-right: 8px;
-  overflow: auto;
-  scrollbar-width: thin;
-}
-
 .warning {
   padding: 6px 8px;
   margin-bottom: 4px;
@@ -47,14 +33,6 @@
   border-radius: 4px;
   font-size: 0.82em;
   color: #5d4037;
-}
-
-.editorPreview {
-  position: relative;
-  min-height: 0;
-  overflow: auto;
-  scrollbar-width: thin;
-  flex-grow: 1;
 }
 
 .emptyPreview {

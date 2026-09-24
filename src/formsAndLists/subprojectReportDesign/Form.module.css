@@ -12,28 +12,6 @@
   margin-bottom: 8px;
 }
 
-.editorLayout {
-  height: 100%;
-  display: flex;
-  align-items: stretch;
-  gap: 16px;
-}
-
-.editorSidebar {
-  border-right: 1px solid #eee;
-  padding-right: 8px;
-  overflow: auto;
-  scrollbar-width: thin;
-}
-
-.editorPreview {
-  position: relative;
-  min-height: 0;
-  overflow: auto;
-  scrollbar-width: thin;
-  flex-grow: 1;
-}
-
 .emptyPreview {
   position: absolute;
   top: 0;

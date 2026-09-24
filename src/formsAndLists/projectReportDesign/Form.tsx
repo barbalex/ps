@@ -8,6 +8,9 @@ import { Puck, Config } from '@puckeditor/core'
 import { TextField } from '../../components/shared/TextField.tsx'
 import { SwitchField } from '../../components/shared/SwitchField.tsx'
 import { Loading } from '../../components/shared/Loading.tsx'
+import { DesignEditorLayout } from '../../components/shared/DesignEditorLayout.tsx'
+import { PuckDrawerItem } from '../../components/shared/PuckDrawerItem.tsx'
+import { PuckCheckboxField } from '../../components/shared/PuckCheckboxField.tsx'
 import { NotFound } from '../../components/NotFound.tsx'
 import { getValueFromChange } from '../../modules/getValueFromChange.ts'
 import { normalizePuckDesign } from '../../modules/normalizePuckDesign.ts'
@@ -330,51 +333,59 @@ export const Form = ({ autoFocusRef }: { autoFocusRef?: React.RefObject<HTMLInpu
           config={config}
           data={normalizePuckDesign(row.design ?? { content: [] })}
           onChange={onPuckChange}
+          overrides={{
+            drawerItem: PuckDrawerItem,
+            fieldTypes: { checkbox: PuckCheckboxField },
+          }}
         >
-          <div className={styles.editorLayout}>
-            <div className={styles.editorSidebar}>
-              {fields.length === 0 && (
-                <div className={styles.warning}>
-                  {formatMessage({
-                    id: 'bC4wXy',
-                    defaultMessage:
-                      'Noch keine Felder — zuerst Felder zu diesem Projekt hinzufügen.',
-                  })}
-                </div>
-              )}
-              {charts.length === 0 && (
-                <div className={styles.warning}>
-                  {formatMessage({
-                    id: 'bC5xYz',
-                    defaultMessage:
-                      'Noch keine Diagramme — zuerst Diagramme zu diesem Projekt hinzufügen.',
-                  })}
-                </div>
-              )}
-              {!hasActiveSubprojectDesign && (
-                <div className={styles.warning}>
-                  {formatMessage({
-                    id: 'bC6yZa',
-                    defaultMessage:
-                      "Kein aktives Subprojekt-Bericht-Design — der Block 'Subprojekt-Berichte' wird leer sein.",
-                  })}
-                </div>
-              )}
-              <Puck.Components />
-            </div>
-            <div className={styles.editorPreview}>
-              {(!row.design?.content || row.design.content.length === 0) && (
-                <div className={styles.emptyPreview}>
-                  {formatMessage({
-                    id: 'bC7zaB',
-                    defaultMessage:
-                      'Felder, Diagramme und Subprojekt-Berichte in das Design ziehen',
-                  })}
-                </div>
-              )}
-              <Puck.Preview />
-            </div>
-          </div>
+          <DesignEditorLayout
+            sidebar={
+              <>
+                {fields.length === 0 && (
+                  <div className={styles.warning}>
+                    {formatMessage({
+                      id: 'bC4wXy',
+                      defaultMessage:
+                        'Noch keine Felder — zuerst Felder zu diesem Projekt hinzufügen.',
+                    })}
+                  </div>
+                )}
+                {charts.length === 0 && (
+                  <div className={styles.warning}>
+                    {formatMessage({
+                      id: 'bC5xYz',
+                      defaultMessage:
+                        'Noch keine Diagramme — zuerst Diagramme zu diesem Projekt hinzufügen.',
+                    })}
+                  </div>
+                )}
+                {!hasActiveSubprojectDesign && (
+                  <div className={styles.warning}>
+                    {formatMessage({
+                      id: 'bC6yZa',
+                      defaultMessage:
+                        "Kein aktives Subprojekt-Bericht-Design — der Block 'Subprojekt-Berichte' wird leer sein.",
+                    })}
+                  </div>
+                )}
+                <Puck.Components />
+              </>
+            }
+            preview={
+              <>
+                {(!row.design?.content || row.design.content.length === 0) && (
+                  <div className={styles.emptyPreview}>
+                    {formatMessage({
+                      id: 'bC7zaB',
+                      defaultMessage:
+                        'Felder, Diagramme und Subprojekt-Berichte in das Design ziehen',
+                    })}
+                  </div>
+                )}
+                <Puck.Preview />
+              </>
+            }
+          />
         </Puck>
       }
     </div>
