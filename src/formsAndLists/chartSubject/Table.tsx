@@ -99,6 +99,7 @@ export const Table = ({
     { id: 'subprojects', table_name: 'subprojects', table_level: null },
     { id: 'places_1', table_name: 'places', table_level: '1' },
     { id: 'checks_1', table_name: 'checks', table_level: '1' },
+    { id: 'check_reports_1', table_name: 'check_reports', table_level: '1' },
     { id: 'check_quantities_1', table_name: 'check_quantities', table_level: '1' },
     { id: 'check_taxa_1', table_name: 'check_taxa', table_level: '1' },
     { id: 'actions_1', table_name: 'actions', table_level: '1' },
@@ -106,6 +107,7 @@ export const Table = ({
     { id: 'action_taxa_1', table_name: 'action_taxa', table_level: '1' },
     { id: 'places_2', table_name: 'places', table_level: '2' },
     { id: 'checks_2', table_name: 'checks', table_level: '2' },
+    { id: 'check_reports_2', table_name: 'check_reports', table_level: '2' },
     { id: 'check_quantities_2', table_name: 'check_quantities', table_level: '2' },
     { id: 'check_taxa_2', table_name: 'check_taxa', table_level: '2' },
     { id: 'actions_2', table_name: 'actions', table_level: '2' },
@@ -118,6 +120,10 @@ export const Table = ({
     places_1: plural1,
     checks_1: formatMessage(
       { id: 'bEgGlL', defaultMessage: '{place}-Kontrollen' },
+      { place: singular1 },
+    ),
+    check_reports_1: formatMessage(
+      { id: 'bExXyY', defaultMessage: '{place}-Berichte' },
       { place: singular1 },
     ),
     check_quantities_1: formatMessage(
@@ -143,6 +149,10 @@ export const Table = ({
     places_2: plural2,
     checks_2: formatMessage(
       { id: 'bEgGlL', defaultMessage: '{place}-Kontrollen' },
+      { place: singular2 },
+    ),
+    check_reports_2: formatMessage(
+      { id: 'bExXyY', defaultMessage: '{place}-Berichte' },
       { place: singular2 },
     ),
     check_quantities_2: formatMessage(

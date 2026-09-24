@@ -124,6 +124,7 @@ export const Form = ({ autoFocusRef }: { autoFocusRef?: React.RefObject<HTMLInpu
           subproject_id: (previewSubprojectId ?? undefined) as string,
           db,
           placesVersions: versions?.places,
+          subprojectsVersions: versions?.subprojects,
           reportYear: previewYear,
         })
         dataMap[chart.chart_id] = data

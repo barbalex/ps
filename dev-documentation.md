@@ -262,7 +262,19 @@ historization.
   stay on the local, year-filtered data. Like apf2's chart functions
   (`tpop_kontrolliert_for_jber`, `pop_nach_status_for_jber`,
   `ap_ausw_pop_menge`), report charts only show the historized years up to
-  the report year — plus the current year when it is the report year. While offline or before the
+  the report year — plus the current year when it is the report year. The
+  place series follow `tpop_kontrolliert_for_jber` exactly: per year the
+  historization snapshot without potential places (status 300) and without
+  `bekannt_seit`, tpops only under a qualifying pop and if report-relevant,
+  and erloschen tpops (status 101/202) only in the first year of that
+  status. The kontrolliert series counts `check_reports` (apf2: `tpopber`),
+
+  The *Populationen nach Status* chart builds apf2's six A-table series
+  (ursprünglich / angesiedelt vor/nach Beginn AP / erloschen vor/nach /
+  Ansaatversuch, with apf2's colors) per historization year, using the
+  start year of the subproject's version of that year —
+  `pop_nach_status_for_jber` ported 1:1.
+  not checks. While offline or before the
   versions arrive, the current local state is used as fallback.
 - Demo: the 2020 Aldrovanda report (seeded in `11d_seedApfloraReport.sql`)
   is calculated from the 2020 historizations; compare with the 2025 report

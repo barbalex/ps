@@ -1138,5 +1138,6 @@
   "projectExport.baseTable.hint": "Name of the main table this query is based on (e.g. projects, subprojects, places). Used to apply the current app filter.",
   "bGeHcI": "Building blocks",
   "bPuckPanelDelete": "Delete",
-  "bPuckPanelHint": "Click a block in the preview to edit it"
+  "bPuckPanelHint": "Click a block in the preview to edit it",
+  "bExXyY": "{place} reports"
 }

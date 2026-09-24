@@ -3,6 +3,7 @@ import type { PGlite } from '@electric-sql/pglite'
 import {
   asOfYear,
   parseSysPeriod,
+  statusCode,
   type VersionedRow,
 } from '../../../../components/shared/reportVersions.ts'
 import { countPlacesPerYear } from './countPlacesRows.ts'
@@ -17,6 +18,8 @@ export type ChartSeries = {
   label: string
   /** the subject the series was built from */
   subject: ChartSubjects
+  /** stroke and fill color (auto-split series with a fixed color scheme) */
+  color?: string
 }
 
 export type ChartData = {
@@ -53,6 +56,8 @@ type Props = {
    * that year; without it the current local state is used.
    */
   placesVersions?: VersionedRow[]
+  /** historized subproject versions (for per-year start_jahr, like apf2) */
+  subprojectsVersions?: VersionedRow[]
   /**
    * Year of the report the chart is built for. Like apflora, report charts
    * only show years with historizations, up to the report year — plus the
@@ -81,11 +86,10 @@ const versionLevelFilter = (level: string | null | undefined) => (row: Versioned
       ? row.parent_id != null
       : true
 
-/** a versioned place counts for a year if it existed in it (like countPlacesPerYear) */
-const versionExistsInYear = (row: VersionedRow, year: number) => {
-  const since = row.since as number | null | undefined
-  const until = row.until as number | null | undefined
-  return (since == null || since <= year) && (until == null || until >= year)
+/** the status code of a versioned place row (from its data jsonb) */
+const statusCodeOf = (row: VersionedRow): number | null => {
+  const data = row.data as Record<string, unknown> | null
+  return statusCode((data?.status as string | null) ?? null)
 }
 
 /** first year any of the versions or their since values reaches back to */
@@ -102,16 +106,64 @@ const minVersionYear = (rows: VersionedRow[]) => {
   return all.length ? Math.min(...all) : thisYear
 }
 
-/** per year, how many places existed as of the end of that year */
+/**
+ * The places a chart year counts, mirroring apf2's chart functions
+ * (tpop_kontrolliert_for_jber / pop_nach_status_for_jber): the year's
+ * historization snapshot, without potential places (status 300) and without
+ * places lacking bekannt_seit; tpops additionally need a non-potential,
+ * known pop of that year and report relevance — and erloschen ones
+ * (101/202) count only in the first year of that status.
+ */
+export const qualifyingRowsOfYear = (
+  rows: VersionedRow[],
+  year: number,
+  level: string | null | undefined,
+): VersionedRow[] => {
+  const levelOk = versionLevelFilter(level)
+  const yearRows = asOfYear(rows, year, 'place_id')
+  const popsOfYear = new Map(
+    yearRows
+      .filter((row) => row.parent_id == null)
+      .map((row) => [row.place_id as string, row]),
+  )
+  const prevRows = new Map(
+    asOfYear(rows, year - 1, 'place_id').map((row) => [
+      row.place_id as string,
+      row,
+    ]),
+  )
+  return yearRows.filter((row) => {
+    if (!levelOk(row)) return false
+    // ohne bekannt_seit zählt ein Ort nie (wie in apf2s SQL-Vergleichen)
+    const since = row.since as number | null | undefined
+    if (since == null || since > year) return false
+    const code = statusCodeOf(row)
+    if (code == null || code >= 300) return false
+    if (row.parent_id == null) return true
+    const pop = popsOfYear.get(row.parent_id as string)
+    if (!pop) return false
+    const popSince = pop.since as number | null | undefined
+    if (popSince == null || popSince > year) return false
+    const popCode = statusCodeOf(pop)
+    if (popCode == null || popCode >= 300) return false
+    if (row.relevant_for_reports === false) return false
+    if (code === 101 || code === 202) {
+      const prev = prevRows.get(row.place_id as string)
+      if (prev && statusCodeOf(prev) === code) return false
+    }
+    return true
+  })
+}
+
+/** per chart year, how many places count (apf2 rules, see above) */
 const countPlaceVersionsPerYear = (
   rows: VersionedRow[],
   maxYear = new Date().getFullYear(),
+  level?: string | null,
 ): Record<number, number> => {
   const data: Record<number, number> = {}
   for (let year = minVersionYear(rows); year <= maxYear; year++) {
-    data[year] = asOfYear(rows, year, 'place_id').filter((row) =>
-      versionExistsInYear(row, year),
-    ).length
+    data[year] = qualifyingRowsOfYear(rows, year, level ?? null).length
   }
   return data
 }
@@ -125,7 +177,8 @@ const countPlaceVersionsByFieldPerYear = (
   const perGroup = new Map<string, Record<number, number>>()
   for (let year = minVersionYear(rows); year <= maxYear; year++) {
     for (const row of asOfYear(rows, year, 'place_id')) {
-      if (!versionExistsInYear(row, year)) continue
+      const since = row.since as number | null | undefined
+      if (since != null && since > year) continue
       const data = row.data as Record<string, unknown> | null
       const name = ((data?.[field] as string | undefined) ?? '(leer)').trim() || '(leer)'
       const values = perGroup.get(name) ?? {}
@@ -150,12 +203,115 @@ const rowsToRecord = (rows: { year: number; count: number }[]) => {
 const totalOf = (data: Record<number, number>) =>
   Object.values(data).reduce((acc, value) => acc + value, 0)
 
+/** the chart years for a report: the historized years up to the report
+ *  year, plus the current year when it is the report year */
+const historizationYears = (
+  versions: VersionedRow[],
+  reportYear: number,
+): number[] => {
+  const years = new Set(
+    versions
+      .map((row) => parseSysPeriod(row.sys_period).lower)
+      .filter((lower): lower is number => lower != null)
+      .map((lower) => new Date(lower).getUTCFullYear())
+      .filter((year) => year <= reportYear),
+  )
+  if (reportYear === new Date().getFullYear()) years.add(reportYear)
+  return [...years].sort((a, b) => a - b)
+}
+
+/**
+ * apf2's pop_nach_status_for_jber series: populations per historization year
+ * in the six A-table categories. The vor/nach-AP split uses the start year
+ * of the subproject's version of that year; pops need a report-relevant,
+ * known tpop of that year (the SQL's inner join).
+ */
+const POP_STATUS_SERIES: { label: string; color: string }[] = [
+  { label: 'ursprünglich, aktuell', color: '#2e7d32' },
+  { label: 'angesiedelt (vor Beginn AP)', color: 'rgba(245,141,66,1)' },
+  { label: 'angesiedelt (nach Beginn AP)', color: 'rgba(245,141,66,1)' },
+  { label: 'Ansaatversuch', color: 'brown' },
+  {
+    label: 'erloschen (nach 1950): zuvor autochthon oder vor AP angesiedelt',
+    color: 'rgba(46,125,50,0.5)',
+  },
+  {
+    label: 'erloschen (nach 1950): nach Beginn Aktionsplan angesiedelt',
+    color: 'rgba(245,141,66,0.5)',
+  },
+]
+
+const popStatusSeriesPerYear = (
+  places: VersionedRow[],
+  subprojects: VersionedRow[],
+  reportYear: number,
+): { name: string; values: Record<number, number>; color: string }[] => {
+  const groups = POP_STATUS_SERIES.map(({ label, color }) => ({
+    name: label,
+    color,
+    values: {} as Record<number, number>,
+  }))
+  const groupByLabel = new Map(groups.map((g) => [g.name, g]))
+
+  for (const year of historizationYears(places, reportYear)) {
+    for (const group of groups) group.values[year] = 0
+    const startYear = (() => {
+      const subproject = asOfYear(subprojects, year, 'subproject_id')[0]
+      return (subproject?.start_year as number | null | undefined) ?? null
+    })()
+    const yearRows = asOfYear(places, year, 'place_id')
+    // pops need a report-relevant, known tpop of that year (inner join);
+    // the tpop's own status does not matter here
+    const parentsWithRelevantTpop = new Set(
+      yearRows
+        .filter(
+          (row) =>
+            row.parent_id != null &&
+            row.since != null &&
+            (row.since as number) <= year &&
+            row.relevant_for_reports !== false,
+        )
+        .map((row) => row.parent_id as string),
+    )
+    for (const pop of yearRows) {
+      if (pop.parent_id != null) continue
+      const since = pop.since as number | null | undefined
+      if (since == null || since > year) continue
+      if (!parentsWithRelevantTpop.has(pop.place_id as string)) continue
+      const code = statusCodeOf(pop)
+      const label = (() => {
+        if (code === 100) return 'ursprünglich, aktuell'
+        if (code === 201) return 'Ansaatversuch'
+        if (startYear == null) return null
+        if (code === 200) {
+          return since < startYear ?
+              'angesiedelt (vor Beginn AP)'
+            : 'angesiedelt (nach Beginn AP)'
+        }
+        if (code === 101) {
+          return 'erloschen (nach 1950): zuvor autochthon oder vor AP angesiedelt'
+        }
+        if (code === 202) {
+          return since < startYear ?
+              'erloschen (nach 1950): zuvor autochthon oder vor AP angesiedelt'
+            : 'erloschen (nach 1950): nach Beginn Aktionsplan angesiedelt'
+        }
+        return null
+      })()
+      const group = label != null ? groupByLabel.get(label) : undefined
+      if (group) group.values[year] = (group.values[year] ?? 0) + 1
+    }
+  }
+  return groups
+}
+
 export const buildData = async ({
   chart,
   subjects,
   subproject_id,
   db,
   placesVersions,
+  subprojectsVersions,
   reportYear,
 }: Props): Promise<ChartData> => {
   if (!subproject_id) return { data: [], years: [], series: [] }
@@ -168,8 +324,9 @@ export const buildData = async ({
     label: string,
     subject: ChartSubjects,
     values: Record<number, number>,
+    color?: string,
   ) => {
-    series.push({ key, label, subject })
+    series.push({ key, label, subject, color })
     valuesPerSeries[key] = values
   }
 
@@ -200,7 +357,11 @@ export const buildData = async ({
                 subjectLabel(subject),
                 subjectLabel(subject),
                 subject,
-                countPlaceVersionsPerYear(rows, reportYear ?? undefined),
+                countPlaceVersionsPerYear(
+                  rows,
+                  reportYear ?? undefined,
+                  subject.table_level,
+                ),
               )
               break
             }
@@ -238,6 +399,49 @@ export const buildData = async ({
             )
             break
           }
+          case 'check_reports': {
+            // apf2's kontrolliert series counts the yearly place reports
+            // (tpopber) on the qualifying tpops of each historization year
+            const res = await db.query(
+              `SELECT r.place_id, r.year FROM check_reports r
+                 INNER JOIN places p ON r.place_id = p.place_id
+               WHERE p.subproject_id = $1`,
+              [subproject_id],
+            )
+            const berRows = (res?.rows ?? []) as {
+              place_id: string
+              year: number | null
+            }[]
+            if (placesVersions && reportYear != null) {
+              const values: Record<number, number> = {}
+              for (const year of historizationYears(placesVersions, reportYear)) {
+                const ids = new Set(
+                  qualifyingRowsOfYear(placesVersions, year, subject.table_level)
+                    .filter((row) => row.parent_id != null)
+                    .map((row) => row.place_id as string),
+                )
+                values[year] = berRows.filter(
+                  (b) => b.year === year && ids.has(b.place_id),
+                ).length
+              }
+              addSeries(subjectLabel(subject), subjectLabel(subject), subject, values)
+            } else {
+              const perYear = new Map<number, Set<string>>()
+              for (const ber of berRows) {
+                if (ber.year == null) continue
+                const set = perYear.get(ber.year) ?? new Set<string>()
+                set.add(ber.place_id)
+                perYear.set(ber.year, set)
+              }
+              addSeries(
+                subjectLabel(subject),
+                subjectLabel(subject),
+                subject,
+                Object.fromEntries([...perYear.entries()].map(([y, set]) => [y, set.size])),
+              )
+            }
+            break
+          }
           default:
             break
         }
@@ -255,6 +459,23 @@ export const buildData = async ({
         }
         switch (subject.table_name) {
           case 'places': {
+            if (placesVersions && subprojectsVersions && reportYear != null && subject.table_level === '1') {
+              // apf2's Populationen-nach-Status series (pop_nach_status_for_jber)
+              for (const group of popStatusSeriesPerYear(
+                placesVersions,
+                subprojectsVersions,
+                reportYear,
+              )) {
+                addSeries(
+                  `${subject.chart_subject_id}:${group.name}`,
+                  group.name,
+                  subject,
+                  group.values,
+                  group.color,
+                )
+              }
+              break
+            }
             if (placesVersions) {
               const rows = placesVersions.filter(versionLevelFilter(subject.table_level))
               addSplitSeries(
@@ -433,17 +654,7 @@ export const buildData = async ({
     .fill(undefined)
     .map((_element, i) => minYear + i)
   if (reportYear != null && placesVersions) {
-    // apflora charts show the historized years up to the report year; the
-    // current year joins only when it is the report year (live rows cover it)
-    const historyYears = new Set(
-      placesVersions
-        .map((row) => parseSysPeriod(row.sys_period).lower)
-        .filter((lower): lower is number => lower != null)
-        .map((lower) => new Date(lower).getUTCFullYear())
-        .filter((year) => year <= reportYear),
-    )
-    if (reportYear === new Date().getFullYear()) historyYears.add(reportYear)
-    yearRange = [...historyYears].sort((a, b) => a - b)
+    yearRange = historizationYears(placesVersions, reportYear)
   }
   if (chart?.years_last_x) {
     yearRange.splice(0, yearRange.length - chart.years_last_x)

@@ -1,5 +1,4 @@
 import type { SubprojectsSubprojectId } from './Subprojects.ts';
-import type { SubprojectReportDesignsSubprojectReportDesignId } from './SubprojectReportDesigns.ts';
 
 /** Identifier type for public.subproject_reports */
 export type SubprojectReportsSubprojectReportId = string & { __brand: 'public.subproject_reports' };
@@ -12,8 +11,6 @@ export default interface SubprojectReports {
   subproject_report_id: SubprojectReportsSubprojectReportId;
 
   subproject_id: SubprojectsSubprojectId | null;
-
-  subproject_report_design_id: SubprojectReportDesignsSubprojectReportDesignId | null;
 
   /** Year of report. Preset: current year */
   year: number | null;
@@ -31,6 +28,8 @@ export default interface SubprojectReports {
   updated_at: Date;
 
   updated_by: string | null;
+
+  subproject_report_design_id: string | null;
 }
 
 /**
@@ -42,8 +41,6 @@ export interface SubprojectReportsInitializer {
   subproject_report_id?: SubprojectReportsSubprojectReportId;
 
   subproject_id?: SubprojectsSubprojectId | null;
-
-  subproject_report_design_id?: SubprojectReportDesignsSubprojectReportDesignId | null;
 
   /**
    * Year of report. Preset: current year
@@ -64,6 +61,8 @@ export interface SubprojectReportsInitializer {
   updated_at?: Date;
 
   updated_by?: string | null;
+
+  subproject_report_design_id?: string | null;
 }
 
 /**
@@ -74,8 +73,6 @@ export interface SubprojectReportsMutator {
   subproject_report_id?: SubprojectReportsSubprojectReportId;
 
   subproject_id?: SubprojectsSubprojectId | null;
-
-  subproject_report_design_id?: SubprojectReportDesignsSubprojectReportDesignId | null;
 
   /** Year of report. Preset: current year */
   year?: number | null;
@@ -91,4 +88,6 @@ export interface SubprojectReportsMutator {
   updated_at?: Date;
 
   updated_by?: string | null;
+
+  subproject_report_design_id?: string | null;
 }

@@ -1866,7 +1866,7 @@ COMMENT ON COLUMN charts.years_until IS 'If has value: the chart shows data unti
 -- chart_subjects
 --
 CREATE TYPE chart_subject_table_names_enum AS ENUM (
-  'subprojects', 'places', 'checks', 'check_quantities', 'check_taxa', 'actions', 'action_quantities', 'action_taxa'
+  'subprojects', 'places', 'checks', 'check_reports', 'check_quantities', 'check_taxa', 'actions', 'action_quantities', 'action_taxa'
 );
 
 CREATE TYPE chart_subject_table_levels_enum AS ENUM ('1', '2');

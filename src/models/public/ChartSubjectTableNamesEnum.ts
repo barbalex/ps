@@ -1,8 +1,9 @@
 /** Represents the enum public.chart_subject_table_names_enum */
-type ChartSubjectTableNamesEnum =
+type ChartSubjectTableNamesEnum = 
   | 'subprojects'
   | 'places'
   | 'checks'
+  | 'check_reports'
   | 'check_quantities'
   | 'check_taxa'
   | 'actions'

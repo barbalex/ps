@@ -4,6 +4,7 @@ import type { Config } from '@puckeditor/core'
 
 import {
   asOfYear,
+  statusCode,
   useReportVersions,
 } from '../../components/shared/reportVersions.ts'
 import styles from './reportComponents.module.css'
@@ -107,23 +108,7 @@ const TitleBlock = ({ author, showDate }: { author?: string; showDate?: boolean 
   )
 }
 
-// apflora status codes, derived from the status text:
-// 100 ursprünglich aktuell, 101 ursprünglich erloschen,
-// 200 angesiedelt aktuell, 201 Ansaatversuch,
-// 202 angesiedelt erloschen, 300 potentieller Wuchs-/Ansiedlungsort
-const statusCode = (status: string | null | undefined): number | null => {
-  const s = (status ?? '').toLowerCase()
-  if (s.startsWith('potentieller')) return 300
-  if (s.includes('ansaatversuch')) return 201
-  const urspruenglich = s.startsWith('ursprünglich')
-  const erloschen = s.includes('erloschen')
-  const aktuell = s.includes('aktuell')
-  if (urspruenglich && aktuell) return 100
-  if (urspruenglich && erloschen) return 101
-  if (aktuell) return 200
-  if (erloschen) return 202
-  return null
-}
+
 
 type PlaceRow = {
   place_id: string

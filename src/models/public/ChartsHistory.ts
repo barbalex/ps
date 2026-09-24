@@ -35,6 +35,8 @@ export default interface ChartsHistory {
 
   percent: boolean | null;
 
+  for_subprojects: boolean;
+
   label: string | null;
 
   /** System period written by temporal_tables. lower(sys_period) is when the row version became current, upper(sys_period) when it stopped being current. */
@@ -89,6 +91,9 @@ export interface ChartsHistoryInitializer {
   /** Default value: false */
   percent?: boolean | null;
 
+  /** Default value: false */
+  for_subprojects?: boolean;
+
   label?: string | null;
 
   /** System period written by temporal_tables. lower(sys_period) is when the row version became current, upper(sys_period) when it stopped being current. */
@@ -137,6 +142,8 @@ export interface ChartsHistoryMutator {
   subjects_single?: boolean | null;
 
   percent?: boolean | null;
+
+  for_subprojects?: boolean;
 
   label?: string | null;
 

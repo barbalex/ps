@@ -1121,5 +1121,6 @@
   "projectExport.baseTable.hint": "Nom de la table principale sur laquelle cette requête est basée (p.ex. projects, subprojects, places). Utilisé pour appliquer le filtre actuel de l'application.",
   "bGeHcI": "Blocs",
   "bPuckPanelDelete": "Supprimer",
-  "bPuckPanelHint": "Cliquez sur un bloc de l'aperçu pour le modifier"
+  "bPuckPanelHint": "Cliquez sur un bloc de l'aperçu pour le modifier",
+  "bExXyY": "Rapports {place}"
 }

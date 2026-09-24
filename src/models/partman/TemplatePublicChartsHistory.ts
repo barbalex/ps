@@ -32,6 +32,8 @@ export default interface TemplatePublicChartsHistory {
 
   percent: boolean | null;
 
+  for_subprojects: boolean;
+
   label: string | null;
 
   sys_period: string;
@@ -75,6 +77,8 @@ export interface TemplatePublicChartsHistoryInitializer {
 
   percent?: boolean | null;
 
+  for_subprojects: boolean;
+
   label?: string | null;
 
   sys_period: string;
@@ -117,6 +121,8 @@ export interface TemplatePublicChartsHistoryMutator {
   subjects_single?: boolean | null;
 
   percent?: boolean | null;
+
+  for_subprojects?: boolean;
 
   label?: string | null;
 

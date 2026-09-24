@@ -20,7 +20,8 @@ INSERT INTO charts (chart_id, project_id, name, years_since, subjects_stacked, f
 
 INSERT INTO chart_subjects (chart_subject_id, chart_id, table_name, table_level, calc_method, field, value_unit, name, label, sort, fill_graded) VALUES
   ('b1000000-0000-4000-8000-000000000001', 'a1000000-0000-4000-8000-000000000001', 'places', '2', 'count_rows', NULL, NULL, 'Teil-Populationen', 'Teil-Populationen', 1, false),
-  ('b2000000-0000-4000-8000-000000000002', 'a1000000-0000-4000-8000-000000000001', 'checks', '2', 'count_rows', NULL, NULL, 'kontrollierte Teil-Populationen', 'kontrollierte Teil-Populationen', 2, false),
+  -- apf2 counts tpopber (the yearly place reports), not the checks
+  ('b2000000-0000-4000-8000-000000000002', 'a1000000-0000-4000-8000-000000000001', 'check_reports', '2', 'count_rows', NULL, NULL, 'kontrollierte Teil-Populationen', 'kontrollierte Teil-Populationen', 2, false),
   ('b3000000-0000-4000-8000-000000000003', 'a2000000-0000-4000-8000-000000000002', 'places', '1', 'count_rows_by_distinct_field_values', 'status', NULL, 'Status', 'Status', 1, false),
   ('b4000000-0000-4000-8000-000000000004', 'a3000000-0000-4000-8000-000000000003', 'check_taxa', '1', 'sum_values_of_field', 'quantity_numeric', '935432b9-fc64-7118-8167-06f985ea181f', 'Triebe total', 'Triebe total', 1, false)
   ON CONFLICT (chart_subject_id) DO NOTHING;

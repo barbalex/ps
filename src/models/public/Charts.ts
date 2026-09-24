@@ -45,12 +45,10 @@ export default interface Charts {
 
   subjects_single: boolean | null;
 
+  /** If has value: multiple subjects are shown as percentage instead of absolute values */
   percent: boolean | null;
 
-  /**
-   * Project-level charts with this flag are templates: they are offered in every subproject of the project (and its subproject reports), always computed against the subproject they are viewed in
-   * Default value: false
-   */
+  /** Project-level charts with this flag are templates: they are offered in every subproject of the project (and its subproject reports), always computed against the subproject they are viewed in */
   for_subprojects: boolean;
 
   label: string | null;
@@ -114,7 +112,10 @@ export interface ChartsInitializer {
   /** Default value: false */
   subjects_single?: boolean | null;
 
-  /** Default value: false */
+  /**
+   * If has value: multiple subjects are shown as percentage instead of absolute values
+   * Default value: false
+   */
   percent?: boolean | null;
 
   /**
@@ -174,12 +175,10 @@ export interface ChartsMutator {
 
   subjects_single?: boolean | null;
 
+  /** If has value: multiple subjects are shown as percentage instead of absolute values */
   percent?: boolean | null;
 
-  /**
-   * Project-level charts with this flag are templates: they are offered in every subproject of the project (and its subproject reports), always computed against the subproject they are viewed in
-   * Default value: false
-   */
+  /** Project-level charts with this flag are templates: they are offered in every subproject of the project (and its subproject reports), always computed against the subproject they are viewed in */
   for_subprojects?: boolean;
 
   /** System period maintained by temporal_tables for auditing and historic queries. */

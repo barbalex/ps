@@ -79,6 +79,25 @@ export const asOfYear = <T extends VersionedRow>(
   return [...byId.values()]
 }
 
+/**
+ * apf2 pop_status_werte code for a status text
+ * (100 ursprünglich aktuell, 101 ursprünglich erloschen, 200 angesiedelt
+ * aktuell, 201 Ansaatversuch, 202 angesiedelt erloschen, 300 potentiell)
+ */
+export const statusCode = (status: string | null | undefined): number | null => {
+  const s = (status ?? '').toLowerCase()
+  if (s.startsWith('potentieller')) return 300
+  if (s.includes('ansaatversuch')) return 201
+  const urspruenglich = s.startsWith('ursprünglich')
+  const erloschen = s.includes('erloschen')
+  const aktuell = s.includes('aktuell')
+  if (urspruenglich && aktuell) return 100
+  if (urspruenglich && erloschen) return 101
+  if (aktuell) return 200
+  if (erloschen) return 202
+  return null
+}
+
 export const useReportVersions = (subprojectId: string | undefined) => {
   const online = useAtomValue(onlineAtom)
   return useQuery({

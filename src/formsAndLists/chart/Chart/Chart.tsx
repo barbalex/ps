@@ -117,7 +117,9 @@ export const SingleChart = ({ chart, series, data, synchronized }: Props) => {
         />
         {series.map((singleSeries, index) => {
           const color =
-            singleSeries.subject.stroke ?? palette[index % palette.length]
+            singleSeries.color ??
+            singleSeries.subject.stroke ??
+            palette[index % palette.length]
           return (
             <Area
               key={singleSeries.key}
@@ -132,7 +134,7 @@ export const SingleChart = ({ chart, series, data, synchronized }: Props) => {
               fill={
                 singleSeries.subject.fill_graded ?
                   `url(#${gradientPrefix}-${index})`
-                : (singleSeries.subject.fill ?? color)
+                : (singleSeries.color ?? singleSeries.subject.fill ?? color)
               }
               isAnimationActive={true} // false for print?
               dot={{ stroke: color, strokeWidth: 3 }}

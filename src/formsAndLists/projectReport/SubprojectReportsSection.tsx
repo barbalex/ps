@@ -85,6 +85,7 @@ const SubprojectReportItem = ({
           subproject_id: subprojectId,
           db,
           placesVersions: versions?.places,
+          subprojectsVersions: versions?.subprojects,
           reportYear: year,
         })
         dataMap[chart.chart_id] = data
