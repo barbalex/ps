@@ -53,6 +53,12 @@ type Props = {
    * that year; without it the current local state is used.
    */
   placesVersions?: VersionedRow[]
+  /**
+   * Year of the report the chart is built for. Like apflora, report charts
+   * only show years with historizations, up to the report year — plus the
+   * current year, if it is the report year (the live rows cover it).
+   */
+  reportYear?: number | null
 }
 
 /** label for a series that comes from a single subject (not auto-split) */
@@ -97,10 +103,12 @@ const minVersionYear = (rows: VersionedRow[]) => {
 }
 
 /** per year, how many places existed as of the end of that year */
-const countPlaceVersionsPerYear = (rows: VersionedRow[]): Record<number, number> => {
-  const thisYear = new Date().getFullYear()
+const countPlaceVersionsPerYear = (
+  rows: VersionedRow[],
+  maxYear = new Date().getFullYear(),
+): Record<number, number> => {
   const data: Record<number, number> = {}
-  for (let year = minVersionYear(rows); year <= thisYear; year++) {
+  for (let year = minVersionYear(rows); year <= maxYear; year++) {
     data[year] = asOfYear(rows, year, 'place_id').filter((row) =>
       versionExistsInYear(row, year),
     ).length
@@ -112,10 +120,10 @@ const countPlaceVersionsPerYear = (rows: VersionedRow[]): Record<number, number>
 const countPlaceVersionsByFieldPerYear = (
   rows: VersionedRow[],
   field: string,
+  maxYear = new Date().getFullYear(),
 ): { name: string; values: Record<number, number> }[] => {
-  const thisYear = new Date().getFullYear()
   const perGroup = new Map<string, Record<number, number>>()
-  for (let year = minVersionYear(rows); year <= thisYear; year++) {
+  for (let year = minVersionYear(rows); year <= maxYear; year++) {
     for (const row of asOfYear(rows, year, 'place_id')) {
       if (!versionExistsInYear(row, year)) continue
       const data = row.data as Record<string, unknown> | null
@@ -148,6 +156,7 @@ export const buildData = async ({
   subproject_id,
   db,
   placesVersions,
+  reportYear,
 }: Props): Promise<ChartData> => {
   if (!subproject_id) return { data: [], years: [], series: [] }
 
@@ -191,7 +200,7 @@ export const buildData = async ({
                 subjectLabel(subject),
                 subjectLabel(subject),
                 subject,
-                countPlaceVersionsPerYear(rows),
+                countPlaceVersionsPerYear(rows, reportYear ?? undefined),
               )
               break
             }
@@ -250,7 +259,7 @@ export const buildData = async ({
               const rows = placesVersions.filter(versionLevelFilter(subject.table_level))
               addSplitSeries(
                 subject,
-                countPlaceVersionsByFieldPerYear(rows, field),
+                countPlaceVersionsByFieldPerYear(rows, field, reportYear ?? undefined),
               )
               break
             }
@@ -423,6 +432,19 @@ export const buildData = async ({
   let yearRange = Array(maxYear - minYear + 1)
     .fill(undefined)
     .map((_element, i) => minYear + i)
+  if (reportYear != null && placesVersions) {
+    // apflora charts show the historized years up to the report year; the
+    // current year joins only when it is the report year (live rows cover it)
+    const historyYears = new Set(
+      placesVersions
+        .map((row) => parseSysPeriod(row.sys_period).lower)
+        .filter((lower): lower is number => lower != null)
+        .map((lower) => new Date(lower).getUTCFullYear())
+        .filter((year) => year <= reportYear),
+    )
+    if (reportYear === new Date().getFullYear()) historyYears.add(reportYear)
+    yearRange = [...historyYears].sort((a, b) => a - b)
+  }
   if (chart?.years_last_x) {
     yearRange.splice(0, yearRange.length - chart.years_last_x)
   }

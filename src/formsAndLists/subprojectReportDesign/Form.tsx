@@ -99,10 +99,11 @@ export const Form = ({ autoFocusRef }: { autoFocusRef?: React.RefObject<HTMLInpu
         WHERE sr.subproject_id IN (SELECT subproject_id FROM subprojects WHERE project_id = $1)) AS year`,
     [row?.project_id],
   )
-  const previewSubprojectId = (previewRes?.rows?.[0] as
-    | { subproject_id?: string }
+  const previewRow = previewRes?.rows?.[0] as
+    | { subproject_id?: string; year?: number | null }
     | undefined
-  )?.subproject_id
+  const previewSubprojectId = previewRow?.subproject_id
+  const previewYear = previewRow?.year ?? null
   // server-side historized versions of the preview art's undated rows —
   // place series and report tables show the state of the preview year
   const { data: versions } = useReportVersions(previewSubprojectId)
@@ -123,6 +124,7 @@ export const Form = ({ autoFocusRef }: { autoFocusRef?: React.RefObject<HTMLInpu
           subproject_id: (previewSubprojectId ?? undefined) as string,
           db,
           placesVersions: versions?.places,
+          reportYear: previewYear,
         })
         dataMap[chart.chart_id] = data
       }
@@ -130,7 +132,7 @@ export const Form = ({ autoFocusRef }: { autoFocusRef?: React.RefObject<HTMLInpu
     }
 
     buildAllChartData()
-  }, [chartsJson, projectId, previewSubprojectId, versions])
+  }, [chartsJson, projectId, previewSubprojectId, previewYear, versions])
 
   // Build Puck config from fields with actual data
   const components: Record<string, any> = {}
@@ -227,7 +229,7 @@ export const Form = ({ autoFocusRef }: { autoFocusRef?: React.RefObject<HTMLInpu
   const previewContext = {
     projectId: row?.project_id,
     subprojectId: previewSubprojectId,
-    year: (previewRes?.rows?.[0] as { year?: number | null } | undefined)?.year ?? null,
+    year: previewYear,
   }
 
   const onActiveChange = async (

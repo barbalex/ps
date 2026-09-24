@@ -94,6 +94,7 @@ export const SubprojectReportPrint = ({ from }: { from: string }) => {
           project_id: projectId,
           db,
           placesVersions: versions?.places,
+          reportYear: row.year as number | null,
         })
         dataMap[chart.chart_id] = data
       }

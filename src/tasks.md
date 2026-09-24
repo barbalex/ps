@@ -20,8 +20,6 @@ Better-Auth, possible extensions:
 
 ---
 
-Now that the exact same data is used, the report for 2025 should be equal to the one produced from the apf2 project. Yet that seems not to be the case. Can you compare again with the way the data is generated in /home/alex/Documents/GitHub/apf2/src/components/Print/ApberForAp?
-
 ---
 
 the chart 'kontrollierte Teil-Populationen' should - as all apflora charts - only include the years for which histories exist (plus the current, if that year was choosen for the report)

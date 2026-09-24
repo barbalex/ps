@@ -259,7 +259,10 @@ historization.
   `check_reports`; C (Zwischenbilanz) counts actions plus the latest
   `action_reports` beurteilung per place. The place-based chart series
   (`buildData`) compute from the as-of rows; dated series (checks/actions)
-  stay on the local, year-filtered data. While offline or before the
+  stay on the local, year-filtered data. Like apf2's chart functions
+  (`tpop_kontrolliert_for_jber`, `pop_nach_status_for_jber`,
+  `ap_ausw_pop_menge`), report charts only show the historized years up to
+  the report year — plus the current year when it is the report year. While offline or before the
   versions arrive, the current local state is used as fallback.
 - Demo: the 2020 Aldrovanda report (seeded in `11d_seedApfloraReport.sql`)
   is calculated from the 2020 historizations; compare with the 2025 report

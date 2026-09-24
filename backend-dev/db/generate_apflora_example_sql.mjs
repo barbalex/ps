@@ -615,19 +615,17 @@ const emitChunked = (label, columns, rows, chunkSize = 500) => {
     const chunk = rows.slice(i, i + chunkSize)
     emit(`INSERT INTO ${columns.table}(${columns.cols.join(', ')}) values`)
     emit(chunk.map((r) => `  (${r.join(', ')})`).join(',\n'))
-    emit(`  ON CONFLICT (${columns.pk}) DO NOTHING;`)
+    emit(`  ON CONFLICT (${columns.pk}) ${columns.conflict ?? 'DO NOTHING'};`)
   }
 }
-
-emit('-- places are re-created (not ON CONFLICT-skipped) so column values like')
-emit('-- relevant_for_reports reach existing databases; children cascade-delete')
-emit('-- and are re-inserted below')
-emit(`DELETE FROM places WHERE subproject_id IN (SELECT subproject_id FROM subprojects WHERE project_id = ${q(PROJECT_ID)});`)
 
 emitChunked('places level 1 (apf2: pop)', {
   table: 'places',
   cols: ['place_id', 'subproject_id', 'level', 'name', 'since', 'geometry', 'data'],
   pk: 'place_id',
+  // upserted (not deleted) so place_roles and other grants on existing
+  // databases survive re-seeding (deleting places would cascade them away)
+  conflict: 'DO UPDATE SET level = EXCLUDED.level, name = EXCLUDED.name, since = EXCLUDED.since, geometry = EXCLUDED.geometry, data = EXCLUDED.data',
 }, places1.map((p) => [
   q(p.id), q(p.subproject), '1', qOrNull(p.name), intOrNull(p.since),
   geomOrNull(p.geometry), jsonbOrNull(p.data),
@@ -637,6 +635,7 @@ emitChunked('places level 2 (apf2: tpop)', {
   table: 'places',
   cols: ['place_id', 'parent_id', 'subproject_id', 'level', 'name', 'since', 'relevant_for_reports', 'geometry', 'data'],
   pk: 'place_id',
+  conflict: 'DO UPDATE SET level = EXCLUDED.level, name = EXCLUDED.name, since = EXCLUDED.since, relevant_for_reports = EXCLUDED.relevant_for_reports, geometry = EXCLUDED.geometry, data = EXCLUDED.data',
 }, places2.map((p) => [
   q(p.id), q(p.parent), q(p.subproject), '2', qOrNull(p.name), intOrNull(p.since),
   boolOrNull(p.relevant), geomOrNull(p.geometry), jsonbOrNull(p.data),
