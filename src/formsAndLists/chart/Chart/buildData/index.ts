@@ -1,5 +1,10 @@
 import type { PGlite } from '@electric-sql/pglite'
 
+import {
+  asOfYear,
+  parseSysPeriod,
+  type VersionedRow,
+} from '../../../../components/shared/reportVersions.ts'
 import { countPlacesPerYear } from './countPlacesRows.ts'
 import type Charts from '../../../../models/public/Charts.ts'
 import type ChartSubjects from '../../../../models/public/ChartSubjects.ts'
@@ -42,6 +47,12 @@ type Props = {
   project_id?: string
   /** accepts plain PGlite instances as well as the live-extended one */
   db: Pick<PGlite, 'query'>
+  /**
+   * Server-side historized place versions (live + history). When given,
+   * place series count, per year, the places as they were at the end of
+   * that year; without it the current local state is used.
+   */
+  placesVersions?: VersionedRow[]
 }
 
 /** label for a series that comes from a single subject (not auto-split) */
@@ -55,6 +66,67 @@ const placeLevelFilter = (level: string | null | undefined) =>
     : level === '2'
       ? 'p.parent_id IS NOT NULL'
       : 'TRUE'
+
+/** level restriction for versioned place rows (level never changes) */
+const versionLevelFilter = (level: string | null | undefined) => (row: VersionedRow) =>
+  level === '1'
+    ? row.parent_id == null
+    : level === '2'
+      ? row.parent_id != null
+      : true
+
+/** a versioned place counts for a year if it existed in it (like countPlacesPerYear) */
+const versionExistsInYear = (row: VersionedRow, year: number) => {
+  const since = row.since as number | null | undefined
+  const until = row.until as number | null | undefined
+  return (since == null || since <= year) && (until == null || until >= year)
+}
+
+/** first year any of the versions or their since values reaches back to */
+const minVersionYear = (rows: VersionedRow[]) => {
+  const thisYear = new Date().getFullYear()
+  const sinces = rows
+    .map((row) => row.since as number | null | undefined)
+    .filter((since): since is number => since != null)
+  const lowerYears = rows
+    .map((row) => parseSysPeriod(row.sys_period).lower)
+    .filter((lower): lower is number => lower != null)
+    .map((lower) => new Date(lower).getUTCFullYear())
+  const all = [...sinces, ...lowerYears]
+  return all.length ? Math.min(...all) : thisYear
+}
+
+/** per year, how many places existed as of the end of that year */
+const countPlaceVersionsPerYear = (rows: VersionedRow[]): Record<number, number> => {
+  const thisYear = new Date().getFullYear()
+  const data: Record<number, number> = {}
+  for (let year = minVersionYear(rows); year <= thisYear; year++) {
+    data[year] = asOfYear(rows, year, 'place_id').filter((row) =>
+      versionExistsInYear(row, year),
+    ).length
+  }
+  return data
+}
+
+/** per year, places as of that year split by a data field's values */
+const countPlaceVersionsByFieldPerYear = (
+  rows: VersionedRow[],
+  field: string,
+): { name: string; values: Record<number, number> }[] => {
+  const thisYear = new Date().getFullYear()
+  const perGroup = new Map<string, Record<number, number>>()
+  for (let year = minVersionYear(rows); year <= thisYear; year++) {
+    for (const row of asOfYear(rows, year, 'place_id')) {
+      if (!versionExistsInYear(row, year)) continue
+      const data = row.data as Record<string, unknown> | null
+      const name = ((data?.[field] as string | undefined) ?? '(leer)').trim() || '(leer)'
+      const values = perGroup.get(name) ?? {}
+      values[year] = (values[year] ?? 0) + 1
+      perGroup.set(name, values)
+    }
+  }
+  return [...perGroup.entries()].map(([name, values]) => ({ name, values }))
+}
 
 /** turns {year, count} rows into a year→value record */
 const rowsToRecord = (rows: { year: number; count: number }[]) => {
@@ -75,6 +147,7 @@ export const buildData = async ({
   subjects,
   subproject_id,
   db,
+  placesVersions,
 }: Props): Promise<ChartData> => {
   if (!subproject_id) return { data: [], years: [], series: [] }
 
@@ -112,6 +185,16 @@ export const buildData = async ({
       case 'count_rows': {
         switch (subject.table_name) {
           case 'places': {
+            if (placesVersions) {
+              const rows = placesVersions.filter(versionLevelFilter(subject.table_level))
+              addSeries(
+                subjectLabel(subject),
+                subjectLabel(subject),
+                subject,
+                countPlaceVersionsPerYear(rows),
+              )
+              break
+            }
             const res = await db.query(
               `SELECT * FROM places p WHERE p.subproject_id = $1 AND ${placeLevelFilter(subject.table_level)}`,
               [subproject_id],
@@ -163,6 +246,14 @@ export const buildData = async ({
         }
         switch (subject.table_name) {
           case 'places': {
+            if (placesVersions) {
+              const rows = placesVersions.filter(versionLevelFilter(subject.table_level))
+              addSplitSeries(
+                subject,
+                countPlaceVersionsByFieldPerYear(rows, field),
+              )
+              break
+            }
             const res = await db.query(
               `SELECT p.data ->> $2 AS value, p.since, p.until FROM places p WHERE p.subproject_id = $1 AND ${placeLevelFilter(subject.table_level)}`,
               [subproject_id, field],

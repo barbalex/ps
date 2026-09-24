@@ -13,6 +13,7 @@ import {
 } from '../subprojectReport/reportComponents.tsx'
 import type Charts from '../../models/public/Charts.ts'
 import { normalizePuckDesign } from '../../modules/normalizePuckDesign.ts'
+import { useReportVersions } from '../../components/shared/reportVersions.ts'
 import styles from './SubprojectReportsSection.module.css'
 
 interface FieldDef {
@@ -66,6 +67,9 @@ const SubprojectReportItem = ({
   const design = report?.design ?? report?.active_design
   const jsonbData = (report?.data as Record<string, unknown>) ?? {}
   const chartsJson = JSON.stringify(charts)
+  // server-side historized versions of the art's undated rows (online only,
+  // cached by react-query) — place series count as of each chart year
+  const { data: versions } = useReportVersions(subprojectId)
 
   useEffect(() => {
     const parsedCharts = JSON.parse(chartsJson)
@@ -80,6 +84,7 @@ const SubprojectReportItem = ({
           subjects: chart.subjects,
           subproject_id: subprojectId,
           db,
+          placesVersions: versions?.places,
         })
         dataMap[chart.chart_id] = data
       }
@@ -87,7 +92,7 @@ const SubprojectReportItem = ({
     }
 
     buildAllChartData()
-  }, [chartsJson, subprojectId])
+  }, [chartsJson, subprojectId, versions])
 
   if (!res) return <div className={styles.loading}>Loading...</div>
   if (!report) {

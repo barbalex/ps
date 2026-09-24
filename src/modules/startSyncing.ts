@@ -525,6 +525,27 @@ export const startSyncing = async (userId: string) => {
         table: 'check_reports',
         primaryKey: ['place_check_report_id'],
       },
+      action_reports: {
+        shape: {
+          url,
+          params: {
+            table: 'action_reports',
+            columns: [
+              'place_action_report_id',
+              'place_id',
+              'year',
+              'data',
+              'created_at',
+              'updated_at',
+              'updated_by',
+            ],
+            where: `place_id IN (${placeIdsOfUser})`,
+            params: { '1': userId },
+          },
+        },
+        table: 'action_reports',
+        primaryKey: ['place_action_report_id'],
+      },
       check_report_quantities: {
         shape: {
           url,

@@ -14,6 +14,7 @@ import { PuckCheckboxField } from '../../components/shared/PuckCheckboxField.tsx
 import { NotFound } from '../../components/NotFound.tsx'
 import { getValueFromChange } from '../../modules/getValueFromChange.ts'
 import { normalizePuckDesign } from '../../modules/normalizePuckDesign.ts'
+import { useReportVersions } from '../../components/shared/reportVersions.ts'
 import { addOperationAtom, languageAtom } from '../../store.ts'
 import { buildData } from '../chart/Chart/buildData/index.ts'
 import { groupSeriesBySubject } from '../chart/Chart/buildData/index.ts'
@@ -90,6 +91,22 @@ export const Form = ({ autoFocusRef }: { autoFocusRef?: React.RefObject<HTMLInpu
   const reportData = row?.report_data ?? ({} as Record<string, unknown>)
   const chartsJson = JSON.stringify(charts)
 
+  // preview context: the project's first art and its latest report year
+  const previewRes = useLiveQuery(
+    `SELECT
+      (SELECT subproject_id FROM subprojects WHERE project_id = $1 ORDER BY name LIMIT 1) AS subproject_id,
+      (SELECT max(year) FROM subproject_reports sr
+        WHERE sr.subproject_id IN (SELECT subproject_id FROM subprojects WHERE project_id = $1)) AS year`,
+    [row?.project_id],
+  )
+  const previewSubprojectId = (previewRes?.rows?.[0] as
+    | { subproject_id?: string }
+    | undefined
+  )?.subproject_id
+  // server-side historized versions of the preview art's undated rows —
+  // place series and report tables show the state of the preview year
+  const { data: versions } = useReportVersions(previewSubprojectId)
+
   // Build chart data for all charts
   useEffect(() => {
     const parsedCharts = JSON.parse(chartsJson)
@@ -103,8 +120,9 @@ export const Form = ({ autoFocusRef }: { autoFocusRef?: React.RefObject<HTMLInpu
           chart,
           subjects: chart.subjects,
           project_id: projectId,
-          subproject_id: undefined as unknown as string,
+          subproject_id: (previewSubprojectId ?? undefined) as string,
           db,
+          placesVersions: versions?.places,
         })
         dataMap[chart.chart_id] = data
       }
@@ -112,7 +130,7 @@ export const Form = ({ autoFocusRef }: { autoFocusRef?: React.RefObject<HTMLInpu
     }
 
     buildAllChartData()
-  }, [chartsJson, projectId])
+  }, [chartsJson, projectId, previewSubprojectId, versions])
 
   // Build Puck config from fields with actual data
   const components: Record<string, any> = {}
@@ -206,17 +224,9 @@ export const Form = ({ autoFocusRef }: { autoFocusRef?: React.RefObject<HTMLInpu
 
   const config: Config = { components, categories }
 
-  // preview context: the project's first art and its latest report year
-  const previewRes = useLiveQuery(
-    `SELECT
-      (SELECT subproject_id FROM subprojects WHERE project_id = $1 ORDER BY name LIMIT 1) AS subproject_id,
-      (SELECT max(year) FROM subproject_reports sr
-        WHERE sr.subproject_id IN (SELECT subproject_id FROM subprojects WHERE project_id = $1)) AS year`,
-    [row?.project_id],
-  )
   const previewContext = {
     projectId: row?.project_id,
-    subprojectId: (previewRes?.rows?.[0] as { subproject_id?: string } | undefined)?.subproject_id,
+    subprojectId: previewSubprojectId,
     year: (previewRes?.rows?.[0] as { year?: number | null } | undefined)?.year ?? null,
   }
 

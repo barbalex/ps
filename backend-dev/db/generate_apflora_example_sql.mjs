@@ -111,6 +111,7 @@ const listDefs = [
   ['apumsetzung', 'Umsetzung', 'apUmsetzung', null],
   ['apbergrund', 'AP-Bericht relevant: Grund', 'apberRelevantGrund', null],
   ['massntyp', 'Massnahmen: Typ', 'massnTyp', null],
+  ['massnerfbeurt', 'Massnahmen: Erfolgsbeurteilung', 'massnErfbeurt', null],
   ['zaehleinheit', 'Zaehleinheit', 'einheit', null],
 ]
 const listId = (key) => derivedId('list', key)
@@ -225,6 +226,16 @@ const fieldDefs = [
   ['places', 2, 'ekfrequenz_abweichend', 'EK-Frequenz abweichend', 'boolean', 'jesNo', null],
   ['places', 2, 'ekf_kontrolleur', 'EK-Kontrolleur/in', 'text', 'text', null],
   ['places', 2, 'bemerkungen', 'Bemerkungen', 'text', 'textarea', null],
+  // popber/tpopber -> check_reports (per place level)
+  ['check_reports', 1, 'entwicklung', 'Entwicklung', 'text', 'optionsFew', 'entwicklung'],
+  ['check_reports', 1, 'bemerkungen', 'Bemerkungen', 'text', 'textarea', null],
+  ['check_reports', 2, 'entwicklung', 'Entwicklung', 'text', 'optionsFew', 'entwicklung'],
+  ['check_reports', 2, 'bemerkungen', 'Bemerkungen', 'text', 'textarea', null],
+  // popmassnber/tpopmassnber -> action_reports
+  ['action_reports', 1, 'beurteilung', 'Beurteilung', 'text', 'optionsFew', 'massnerfbeurt'],
+  ['action_reports', 1, 'bemerkungen', 'Bemerkungen', 'text', 'textarea', null],
+  ['action_reports', 2, 'beurteilung', 'Beurteilung', 'text', 'optionsFew', 'massnerfbeurt'],
+  ['action_reports', 2, 'bemerkungen', 'Bemerkungen', 'text', 'textarea', null],
   // ap -> subprojects
   ['subprojects', null, 'bearbeitung', 'Bearbeitungsstand', 'text', 'optionsFew', 'apbearbstand'],
   ['subprojects', null, 'umsetzung', 'Umsetzung', 'text', 'optionsFew', 'apumsetzung'],
@@ -263,30 +274,74 @@ const places1 = []
 const places2 = []
 const checks = []
 const actions = []
+const checkReports = []
+const actionReports = []
 const checkTaxaByArt = new Map() // art index -> rows
+const subprojectStartYears = new Map(
+  data.arts.map((art) => [subprojectId(art.ap.id), parseInt(art.ap.start_jahr, 10)]),
+)
+
+const subprojectData = (art) =>
+  buildData([
+    ['bearbeitung', werteText('apBearbstand', art.ap.bearbeitung)],
+    ['umsetzung', werteText('apUmsetzung', art.ap.umsetzung)],
+    ['bearbeiter', adressName(art.ap.bearbeiter)],
+    ['ekf_beobachtungszeitpunkt', art.ap.ekf_beobachtungszeitpunkt],
+  ])
 
 data.arts.forEach((art, artIndex) => {
   for (const pop of art.pops) {
     places1.push({
       id: place1Id(pop.id),
       subproject: subprojectId(art.ap.id),
+      level: 1,
       name: popName(pop),
       since: pop.bekannt_seit,
       geometry: pop.geom_point,
+      histories: pop.histories ?? [],
+      berichte: pop.berichte ?? [],
+      massnberichte: pop.massnberichte ?? [],
       data: buildData([
         ['status', werteText('popStatus', pop.status)],
         ['status_unklar', pop.status_unklar],
         ['status_unklar_begruendung', pop.status_unklar_begruendung],
       ]),
     })
+    for (const ber of pop.berichte ?? []) {
+      checkReports.push({
+        id: derivedId('check_report', ber.id),
+        place: place1Id(pop.id),
+        year: ber.jahr,
+        data: buildData([
+          ['entwicklung', werteText('entwicklung', ber.entwicklung)],
+          ['bemerkungen', ber.bemerkungen],
+        ]),
+      })
+    }
+    for (const ber of pop.massnberichte ?? []) {
+      actionReports.push({
+        id: derivedId('action_report', ber.id),
+        place: place1Id(pop.id),
+        year: ber.jahr,
+        data: buildData([
+          ['beurteilung', werteText('massnErfbeurt', ber.beurteilung)],
+          ['bemerkungen', ber.bemerkungen],
+        ]),
+      })
+    }
     for (const tpop of pop.tpops) {
       places2.push({
         id: place2Id(tpop.id),
         parent: place1Id(pop.id),
         subproject: subprojectId(art.ap.id),
+        level: 2,
         name: tpopName(tpop),
         since: tpop.bekannt_seit,
         geometry: tpop.geom_point,
+        histories: tpop.histories ?? [],
+        berichte: tpop.berichte ?? [],
+        massnberichte: tpop.massnberichte ?? [],
+        relevant: tpop.apber_relevant,
         data: buildData([
           ['gemeinde', tpop.gemeinde],
           ['radius', tpop.radius],
@@ -319,6 +374,28 @@ data.arts.forEach((art, artIndex) => {
           ['bemerkungen', tpop.bemerkungen],
         ]),
       })
+      for (const ber of tpop.berichte ?? []) {
+        checkReports.push({
+          id: derivedId('check_report', ber.id),
+          place: place2Id(tpop.id),
+          year: ber.jahr,
+          data: buildData([
+            ['entwicklung', werteText('entwicklung', ber.entwicklung)],
+            ['bemerkungen', ber.bemerkungen],
+          ]),
+        })
+      }
+      for (const ber of tpop.massnberichte ?? []) {
+        actionReports.push({
+          id: derivedId('action_report', ber.id),
+          place: place2Id(tpop.id),
+          year: ber.jahr,
+          data: buildData([
+            ['beurteilung', werteText('massnErfbeurt', ber.beurteilung)],
+            ['bemerkungen', ber.bemerkungen],
+          ]),
+        })
+      }
       for (const massn of tpop.massnahmen) {
         // same convention as checks: year-only rows get January 1st
         const date =
@@ -453,14 +530,8 @@ emit(`  ON CONFLICT (place_level_id) DO NOTHING;`)
 emit('-- subprojects (one per species)')
 emit(`INSERT INTO subprojects(subproject_id, project_id, name, start_year, data) values`)
 data.arts.forEach((art, i) => {
-  const d = buildData([
-    ['bearbeitung', werteText('apBearbstand', art.ap.bearbeitung)],
-    ['umsetzung', werteText('apUmsetzung', art.ap.umsetzung)],
-    ['bearbeiter', adressName(art.ap.bearbeiter)],
-    ['ekf_beobachtungszeitpunkt', art.ap.ekf_beobachtungszeitpunkt],
-  ])
   emit(
-    `  (${q(subprojectId(art.ap.id))}, ${q(PROJECT_ID)}, ${q(art.taxonomie.artname)}, ${intOrNull(art.ap.start_jahr)}, ${jsonbOrNull(d)})${i < data.arts.length - 1 ? ',' : ''}`,
+    `  (${q(subprojectId(art.ap.id))}, ${q(PROJECT_ID)}, ${q(art.taxonomie.artname)}, ${intOrNull(art.ap.start_jahr)}, ${jsonbOrNull(subprojectData(art))})${i < data.arts.length - 1 ? ',' : ''}`,
   )
 })
 emit(`  ON CONFLICT (subproject_id) DO NOTHING;`)
@@ -548,6 +619,11 @@ const emitChunked = (label, columns, rows, chunkSize = 500) => {
   }
 }
 
+emit('-- places are re-created (not ON CONFLICT-skipped) so column values like')
+emit('-- relevant_for_reports reach existing databases; children cascade-delete')
+emit('-- and are re-inserted below')
+emit(`DELETE FROM places WHERE subproject_id IN (SELECT subproject_id FROM subprojects WHERE project_id = ${q(PROJECT_ID)});`)
+
 emitChunked('places level 1 (apf2: pop)', {
   table: 'places',
   cols: ['place_id', 'subproject_id', 'level', 'name', 'since', 'geometry', 'data'],
@@ -559,12 +635,135 @@ emitChunked('places level 1 (apf2: pop)', {
 
 emitChunked('places level 2 (apf2: tpop)', {
   table: 'places',
-  cols: ['place_id', 'parent_id', 'subproject_id', 'level', 'name', 'since', 'geometry', 'data'],
+  cols: ['place_id', 'parent_id', 'subproject_id', 'level', 'name', 'since', 'relevant_for_reports', 'geometry', 'data'],
   pk: 'place_id',
 }, places2.map((p) => [
   q(p.id), q(p.parent), q(p.subproject), '2', qOrNull(p.name), intOrNull(p.since),
-  geomOrNull(p.geometry), jsonbOrNull(p.data),
+  boolOrNull(p.relevant), geomOrNull(p.geometry), jsonbOrNull(p.data),
 ]))
+
+// ---- historized versions (for reports of past years) ----------------------
+// Places and subprojects carry no date, so their state for a past report
+// year comes from historization: apf2's ap/pop/tpop_history tables hold one
+// snapshot per (year, row), usually for the years in which a report was
+// written. Each snapshot becomes a version dated Dec 31 of its year; a
+// report for year Y reads the last version historized before the end of Y.
+// Only years with historizations exist as report years — plus the current
+// one, which the live rows cover (their trigger-maintained sys_period takes
+// over at the start of the generating year). Nothing is synthesized: rows
+// without historizations have no past.
+const genYear = new Date().getUTCFullYear()
+const rangeEnd = `${genYear}-01-01 12:00:00+00`
+const versionBound = (year) => `${year}-12-31 12:00:00+00`
+
+/** the data jsonb of a historization snapshot */
+const historyData = (history, level) =>
+  level === 1
+    ? buildData([
+        ['status', werteText('popStatus', history.status)],
+        ['status_unklar', history.status_unklar],
+        ['status_unklar_begruendung', history.status_unklar_begruendung],
+      ])
+    : buildData([
+        ['status', werteText('popStatus', history.status)],
+        ['status_unklar', history.status_unklar],
+        ['status_unklar_grund', history.status_unklar_grund],
+        ['apber_relevant_grund', werteText('apberRelevantGrund', history.apber_relevant_grund)],
+      ])
+
+/** the [from, data, relevant] versions of a place from its real historizations */
+const placeVersions = (place) =>
+  (place.histories ?? []).map((history) => [
+    versionBound(history.year),
+    historyData(history, place.level),
+    history.apber_relevant ?? null,
+  ])
+
+const historyYears = new Set()
+
+const placeHistoryRows = []
+for (const place of [...places1, ...places2]) {
+  const versions = placeVersions(place).filter(
+    // versions beyond the historized era would overlap the live rows' (and
+    // partman's) periods — the live row already covers those years
+    ([lower]) => parseInt(lower.slice(0, 4), 10) < genYear,
+  )
+  // a version runs from its own historization date to the next one's
+  versions.forEach(([lower, versionData, relevant], i) => {
+    historyYears.add(parseInt(lower.slice(0, 4), 10))
+    const upper = i + 1 < versions.length ? versions[i + 1][0] : rangeEnd
+    placeHistoryRows.push([
+      q(place.id), qOrNull(place.parent), q(place.subproject),
+      String(place.level), qOrNull(place.name), intOrNull(place.since),
+      place.level === 2 ? boolOrNull(relevant) : 'null',
+      jsonbOrNull(versionData),
+      q(lower), q(lower), `tstzrange('${lower}', '${upper}')`,
+    ])
+  })
+}
+
+const subprojectHistoryRows = []
+data.arts.forEach((art) => {
+  const histories = (art.ap.histories ?? [])
+    .filter((h) => h.year < genYear)
+    .sort((a, b) => a.year - b.year)
+  histories.forEach((history, i) => {
+    const lower = versionBound(history.year)
+    historyYears.add(history.year)
+    const upper =
+      i + 1 < histories.length ? versionBound(histories[i + 1].year) : rangeEnd
+    subprojectHistoryRows.push([
+      q(subprojectId(art.ap.id)), q(PROJECT_ID), q(art.taxonomie.artname),
+      intOrNull(history.start_jahr),
+      jsonbOrNull(
+        buildData([
+          ['bearbeitung', werteText('apBearbstand', history.bearbeitung)],
+          ['umsetzung', werteText('apUmsetzung', history.umsetzung)],
+        ]),
+      ),
+      q(lower), q(lower), `tstzrange('${lower}', '${upper}')`,
+    ])
+  })
+})
+
+emit('-- yearly partitions the historized versions live in (before inserting)')
+for (const year of [...historyYears].sort((a, b) => a - b)) {
+  for (const table of ['places_history', 'subprojects_history']) {
+    emit(
+      `CREATE TABLE IF NOT EXISTS ${table}_p${year} PARTITION OF ${table} FOR VALUES FROM ('${year}-01-01') TO ('${year + 1}-01-01');`,
+    )
+  }
+}
+
+emit('-- the deletes below need a replica identity on every partition (the db')
+emit('-- publishes deletes for electric); history tables have no primary key')
+for (const table of ['places_history', 'subprojects_history']) {
+  emit(`DO $$`)
+  emit(`DECLARE r record;`)
+  emit(`BEGIN`)
+  emit(`  FOR r IN SELECT inhrelid FROM pg_inherits WHERE inhparent = '${table}'::regclass LOOP`)
+  emit(`    EXECUTE format('ALTER TABLE %s REPLICA IDENTITY FULL', r.inhrelid::regclass);`)
+  emit(`  END LOOP;`)
+  emit(`END $$;`)
+}
+
+emit('-- historized versions of subprojects (apf2: ap_history snapshots)')
+emit(`DELETE FROM subprojects_history WHERE project_id = ${q(PROJECT_ID)};`)
+emit(`-- subprojects_history (${subprojectHistoryRows.length} rows)`)
+if (subprojectHistoryRows.length) {
+  emit(`INSERT INTO subprojects_history(subproject_id, project_id, name, start_year, data, created_at, updated_at, sys_period) values`)
+  emit(subprojectHistoryRows.map((r) => `  (${r.join(', ')})`).join(',\n') + ';')
+}
+
+emit('-- historized versions of places (apf2: pop/tpop_history snapshots)')
+emit(`DELETE FROM places_history WHERE subproject_id IN (SELECT subproject_id FROM subprojects WHERE project_id = ${q(PROJECT_ID)});`)
+emit(`-- places_history (${placeHistoryRows.length} rows)`)
+for (let i = 0; i < placeHistoryRows.length; i += 500) {
+  const chunk = placeHistoryRows.slice(i, i + 500)
+  emit(`INSERT INTO places_history(place_id, parent_id, subproject_id, level, name, since, relevant_for_reports, data, created_at, updated_at, sys_period) values`)
+  emit(chunk.map((r) => `  (${r.join(', ')})`).join(',\n') + ';')
+}
+if (!placeHistoryRows.length) emit('-- (no historizations in the source dump)')
 
 emitChunked('checks (apf2: tpopkontr, without Freiwilligen-Kontrollen)', {
   table: 'checks',
@@ -577,6 +776,18 @@ emitChunked('actions (apf2: tpopmassn)', {
   cols: ['action_id', 'place_id', 'date', 'data'],
   pk: 'action_id',
 }, actions.map((a) => [q(a.id), q(a.place), qOrNull(a.date), jsonbOrNull(a.data)]))
+
+emitChunked('check_reports (apf2: popber/tpopber)', {
+  table: 'check_reports',
+  cols: ['place_check_report_id', 'place_id', 'year', 'data'],
+  pk: 'place_check_report_id',
+}, checkReports.map((r) => [q(r.id), q(r.place), intOrNull(r.year), jsonbOrNull(r.data)]))
+
+emitChunked('action_reports (apf2: tpopmassnber)', {
+  table: 'action_reports',
+  cols: ['place_action_report_id', 'place_id', 'year', 'data'],
+  pk: 'place_action_report_id',
+}, actionReports.map((r) => [q(r.id), q(r.place), intOrNull(r.year), jsonbOrNull(r.data)]))
 
 // check_taxa need the taxon id, resolved per art through the seeded taxonomy
 const checkTaxaCount = [...checkTaxaByArt.values()].reduce((s, r) => s + r.length, 0)
@@ -610,6 +821,10 @@ emit(
 emit(`  IF got <> expected THEN`)
 emit(`    RAISE EXCEPTION 'apflora seed: expected % places, got %', expected, got;`)
 emit(`  END IF;`)
+emit(`  SELECT count(*) INTO got FROM places_history WHERE subproject_id IN (SELECT subproject_id FROM subprojects WHERE project_id = ${q(PROJECT_ID)});`)
+emit(`  IF got <> ${placeHistoryRows.length} THEN`)
+emit(`    RAISE EXCEPTION 'apflora seed: expected % places_history rows, got %', ${placeHistoryRows.length}, got;`)
+emit(`  END IF;`)
 emit(`  SELECT count(*) INTO got FROM checks c JOIN places p USING (place_id) WHERE p.subproject_id IN (SELECT subproject_id FROM subprojects WHERE project_id = ${q(PROJECT_ID)});`)
 emit(`  IF got <> ${checks.length} THEN`)
 emit(`    RAISE EXCEPTION 'apflora seed: expected % checks, got %', ${checks.length}, got;`)
@@ -617,6 +832,14 @@ emit(`  END IF;`)
 emit(`  SELECT count(*) INTO got FROM actions a JOIN places p USING (place_id) WHERE p.subproject_id IN (SELECT subproject_id FROM subprojects WHERE project_id = ${q(PROJECT_ID)});`)
 emit(`  IF got <> ${actions.length} THEN`)
 emit(`    RAISE EXCEPTION 'apflora seed: expected % actions, got %', ${actions.length}, got;`)
+emit(`  END IF;`)
+emit(`  SELECT count(*) INTO got FROM check_reports r JOIN places p USING (place_id) WHERE p.subproject_id IN (SELECT subproject_id FROM subprojects WHERE project_id = ${q(PROJECT_ID)});`)
+emit(`  IF got <> ${checkReports.length} THEN`)
+emit(`    RAISE EXCEPTION 'apflora seed: expected % check_reports, got %', ${checkReports.length}, got;`)
+emit(`  END IF;`)
+emit(`  SELECT count(*) INTO got FROM action_reports r JOIN places p USING (place_id) WHERE p.subproject_id IN (SELECT subproject_id FROM subprojects WHERE project_id = ${q(PROJECT_ID)});`)
+emit(`  IF got <> ${actionReports.length} THEN`)
+emit(`    RAISE EXCEPTION 'apflora seed: expected % action_reports, got %', ${actionReports.length}, got;`)
 emit(`  END IF;`)
 emit(`  SELECT count(*) INTO got FROM check_taxa ct JOIN checks c USING (check_id) JOIN places p USING (place_id) WHERE p.subproject_id IN (SELECT subproject_id FROM subprojects WHERE project_id = ${q(PROJECT_ID)});`)
 emit(`  IF got <> ${checkTaxaCount} THEN`)
@@ -634,5 +857,5 @@ emit('')
 writeFileSync(sqlPath, out.join('\n'))
 console.log(`Written: ${sqlPath}`)
 console.log(
-  `Rows: ${places1.length} places L1, ${places2.length} places L2, ${checks.length} checks, ${actions.length} actions, ${checkTaxaCount} check_taxa, ${fieldDefs.length} fields`,
+  `Rows: ${places1.length} places L1, ${places2.length} places L2, ${checks.length} checks, ${actions.length} actions, ${checkReports.length} check_reports, ${actionReports.length} action_reports, ${placeHistoryRows.length} places_history, ${checkTaxaCount} check_taxa, ${fieldDefs.length} fields`,
 )

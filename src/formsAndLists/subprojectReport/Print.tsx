@@ -12,6 +12,7 @@ import { languageAtom } from '../../store.ts'
 import { subprojectNameSingularExpr } from '../../modules/subprojectNameCols.ts'
 import { jsonbDataFromRow } from '../../modules/jsonbDataFromRow.ts'
 import { normalizePuckDesign } from '../../modules/normalizePuckDesign.ts'
+import { useReportVersions } from '../../components/shared/reportVersions.ts'
 import styles from './Print.module.css'
 import { buildData } from '../chart/Chart/buildData/index.ts'
 import { groupSeriesBySubject } from '../chart/Chart/buildData/index.ts'
@@ -73,6 +74,9 @@ export const SubprojectReportPrint = ({ from }: { from: string }) => {
   const fields = row?.fields ?? []
   const charts = row?.charts ?? []
   const chartsJson = JSON.stringify(charts)
+  // server-side historized versions of the art's undated rows (online only,
+  // cached by react-query) — place series count as of each chart year
+  const { data: versions } = useReportVersions(subprojectId)
 
   // Build chart data for all charts
   useEffect(() => {
@@ -89,6 +93,7 @@ export const SubprojectReportPrint = ({ from }: { from: string }) => {
           subproject_id: (subprojectId)!,
           project_id: projectId,
           db,
+          placesVersions: versions?.places,
         })
         dataMap[chart.chart_id] = data
       }
@@ -96,7 +101,7 @@ export const SubprojectReportPrint = ({ from }: { from: string }) => {
     }
 
     buildAllChartData()
-  }, [chartsJson, subprojectId, projectId])
+  }, [chartsJson, subprojectId, projectId, versions])
 
   // Build Puck config from fields with actual data
   const components: Record<string, any> = Object.assign(

@@ -156,7 +156,13 @@ database, default `../apf2/backend-dev/db/apflora.backup`, override with
   Ausgangszustand included), with counts as `check_taxa` (apf2: `tpopkontrzaehl`)
 - actions on level 2 (apf2: `tpopmassn`; apf2's inline count columns like
   `anz_pflanzen` are kept as plain fields, not mapped to `action_taxa`)
-- not imported: Beobachtungen, Berichte, Freiwilligen-Kontrollen
+- historizations (apf2: `ap_history`, `pop_history`, `tpop_history` — one
+  snapshot per `(year, row)`, usually for the years in which a report was
+  written) as `subprojects_history`/`places_history` versions (see below)
+- yearly place reports (apf2: `popber`/`tpopber` → `check_reports`,
+  `tpopmassnber`/`popmassnber` → `action_reports`) — the source of the
+  report's B and C tables
+- not imported: Beobachtungen, Berichte (ap-level), Freiwilligen-Kontrollen
 
 Pipeline (run from the repo root):
 
@@ -204,6 +210,60 @@ Potential missing features, surfaced by mapping apf2 data into ps:
    `zieleinheit_*` as columns) while ps offers `action_quantities`/`action_taxa`
    — the import keeps them as plain fields because the unit semantics
    ("Pflanzen total" vs. planted plants) don't map 1:1.
+
+## Reports For Past Years (Historization)
+
+Reports are per year (`subproject_reports.year`). Rows that carry their own
+date — checks, actions, goals — are simply filtered by the report year. Rows
+without a date — subprojects and places (status, apber_relevant, start_year)
+— may have changed since, so their state for a past report year is read from
+historization.
+
+### How the state of a year is calculated
+
+- Historizations are dated **Dec 31, 12:00 UTC of the year they describe**
+  (`sys_period` lower bound). Each version runs until the next
+  historization of the same row; the last one ends at Jan 1 of the seed's
+  generating year, where the live rows' trigger-maintained `sys_period`
+  takes over.
+- A report for year Y reads, per row, **the last version whose `sys_period`
+  contains the end of Y** (`Dec 31 12:00 UTC`) — i.e. the last
+  historization before the end of the report year. Rows without a valid
+  version (not yet existing, or deleted back then) drop out of that year.
+- Consequently only years with historizations exist as report years —
+  **plus the current one**, which the live rows cover.
+- Nothing is synthesized: the import only maps the historizations apf2
+  actually contains.
+
+### Where it is implemented
+
+- Import: `extract_apflora_example.mjs` pulls `ap/pop/tpop_history` into
+  `apf2-example.json` (key `histories` per row); `generate_apflora_example_sql.mjs`
+  maps them to `places_history`/`subprojects_history` rows, creating the
+  yearly partitions it needs (the history tables are partitioned by
+  `updated_at`) and setting `REPLICA IDENTITY FULL` on all partitions — the
+  seed's idempotent `DELETE`s require it under the Electric publication,
+  because history tables have no primary key.
+- Runtime: history tables are server-only (not synced to clients). Reports
+  query them **directly via PostgREST** — `src/components/shared/reportVersions.ts`
+  fetches live + history versions of the art's subprojects/places
+  (online only) and caches them with react-query (`staleTime: Infinity` —
+  history is immutable, so repeatedly opened reports are served from the
+  cache). `asOfYear()` picks the valid version per row.
+- Consumers: the data-driven report tables (`reportComponents.tsx`) are
+  1:1 ports of apf2's `jber_abc` SQL (`apf2/sql/apflora/functions/jber_abc.sql`),
+  so the printed numbers equal apf2's AP-Bericht: A (Grundmengen) counts
+  pop/tpop statuses from the as-of rows (tpops under non-potential pops,
+  `bekannt_seit` vs the AP start year decides vor/nach AP, places without
+  `bekannt_seit` never count); B (Bestandesentwicklung) counts the yearly
+  `check_reports`; C (Zwischenbilanz) counts actions plus the latest
+  `action_reports` beurteilung per place. The place-based chart series
+  (`buildData`) compute from the as-of rows; dated series (checks/actions)
+  stay on the local, year-filtered data. While offline or before the
+  versions arrive, the current local state is used as fallback.
+- Demo: the 2020 Aldrovanda report (seeded in `11d_seedApfloraReport.sql`)
+  is calculated from the 2020 historizations; compare with the 2025 report
+  to see the difference.
 
 ## Files Involved
 

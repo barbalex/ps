@@ -31,7 +31,9 @@ INSERT INTO fields (field_id, project_id, table_name, field_type_id, widget_type
 -- goals of the report year (Ziele im Berichtsjahr)
 DELETE FROM goals
 WHERE subproject_id = '12496da4-f3ce-79b9-87cf-c6e85bb6722c'
-  AND year = 2025;
+  AND year IN (2020, 2025);
+-- 2020 is a demo of a past-year report: its tables/charts are calculated
+-- from the historizations of that year (11b imports apf2's pop/tpop_history)
 INSERT INTO goals (goal_id, subproject_id, year, name, data) VALUES
   ('c2000000-0000-4000-8000-00000000a001', '12496da4-f3ce-79b9-87cf-c6e85bb6722c', 2025, 'Ziel 1: 14 Populationen (inkl. bestehende Populationen)',
     '{"typ":"Zwischenziel","beurteilung":"nicht erreicht; nur 10 neue Populationen"}'::jsonb),
@@ -222,7 +224,9 @@ INSERT INTO subproject_report_designs (subproject_report_design_id, project_id, 
 -- the 2025 report of the art, with the free-text sections
 DELETE FROM subproject_reports
 WHERE subproject_id = '12496da4-f3ce-79b9-87cf-c6e85bb6722c'
-  AND year = 2025;
+  AND year IN (2020, 2025);
+-- 2020 is a demo of a past-year report: its tables/charts are calculated
+-- from the historizations of that year (11b imports apf2's pop/tpop_history)
 INSERT INTO subproject_reports (subproject_report_id, subproject_id, year, data) VALUES
   ('c4000000-0000-4000-8000-00000000b001', '12496da4-f3ce-79b9-87cf-c6e85bb6722c', 2025,
   '{
@@ -238,8 +242,23 @@ INSERT INTO subproject_reports (subproject_report_id, subproject_id, year, data)
   "apber_analyse": "Die ursprünglichen Vorkommen im deutschen und österreichischen Bodenseeraum, von denen die Zürcher Populationen abstammen, sind alle erloschen. Gründe dafür sind Management-Fehler und Nährstoffeintrag resp. Landschafts- und Vegetationsveränderungen. Diese Herkunft existiert jetzt nur noch angesiedelt im Kt. Zürich. Allerdings ist eines der beiden grossen und langjährigen Vorkommen mit mehreren Tausend Trieben unerwartet zusammengebrochen. Als Grund werden Karpfen und/oder der Biber vermutet. Das verbliebene grosse Zürcher Vorkommen ist daher besonders wertvoll und schützenswert! Wie das Beispiel von Aldrovanda zeigt, ist selbst bei einer sehr grossen und jahrzehntelang existierenden Population nicht garantiert, dass sie nicht plötzlich verschwinden kann. Durch das Etablieren weiterer stabiler und individuenstarker Vorkommen muss das Risiko verkleinert werden, dass Aldrovanda im Raum Bodensee/Zürich ganz verschwindet, falls beim letzten grossen Vorkommen ebenfalls ein Problem auftreten sollte.",
   "konsequenzen_umsetzung": "In der Vergangenheit wurde oft beobachtet, dass Ansiedlungen von Aldrovanda entweder gar nicht funktionierten oder nach wenigen Jahren wieder erlöschen. Die Gründe dafür blieben meist unklar, allenfalls wurden jeweils zu wenige Individuen angesiedelt, sodass die Wintermortalität und der Zufall eine Rolle spielten. Dank stabiler Grösse kann nun jedoch ein grosses Vorkommen als Spenderpopulation genutzt und Neugründungen mit vergleichsweise vielen Individuen vorgenommen werden. Diese Strategie wird fortgesetzt. Momentan werden Neugründungen wenn möglich nicht in Gewässern vorgenommen, in denen bereits sehr seltene Utricularia-Arten vorkommen. Neue Ansiedlungsgewässer zu finden ist schwierig, da diese erstens oft nicht in der Liste mit Neuschaffungsflächen erscheinen und zweitens neuen Moortümpeln oft anderen seltenen Wasserpflanzen vorbehalten sind. Grundsätzlich scheint nach der Neuanlage oder dem Ausbaggern von Moorgewässern ein Nachpflanzen über mehrere Jahre nötig, da sich vermutlich ganz \"leere\" Gewässer nicht für Aldrovanda eignen.",
   "konsequenzen_erfolgskontrolle": "Eine Erfolgskontrolle ist bei Aldrovanda vesiculosa teilweise aus logistischen Gründen schwierig, denn das Betreten von Feuchtgebieten ist im Frühling (wenn das Schilf noch kurz ist) oft nicht gestattet wegen störungsanführiger Brutvögel. Nach der Brutsaison im Hochsommer steht das Schilf jedoch meist so hoch, dass das Auffinden der Kleingewässer bzw. die Orientierung im Ried sehr schwierig wird. Daher finden Erfolgskontrollen oft erst im September statt, nachdem der Riedschnitt begonnen hat."
+}'::jsonb),
+  ('c4000000-0000-4000-8000-00000000b002', '12496da4-f3ce-79b9-87cf-c6e85bb6722c', 2020,
+  '{
+  "biotope_neue": "(2020) Zahlreiche Neuansiedlungen konnten in den Vorjahren vorgenommen werden; die Entwicklung der jungen Populationen wird weiter verfolgt.",
+  "biotope_optimieren": "(2020) Die Bestandeskontrollen der bestehenden Gewässer laufen; erste Optimierungen der Habitatbedingungen wurden umgesetzt.",
+  "vergleich_ausfuehrung_planung": "(2020) Die geplanten Arbeiten wurden weitgehend wie vorgesehen umgesetzt.",
+  "massnahmen_optimieren": "(2020) Die Ansiedlungen der letzten Jahre entwickeln sich mehrheitlich vielversprechend; Nachpflanzungen werden fortgesetzt.",
+  "massnahmen_ap_bearb": "",
+  "vergleich_vorjahr_gesamtziel": "(2020) Mit den Neuansiedlungen der letzten Jahre wurden erste Schritte in Richtung Gesamtziel gemacht.",
+  "beurteilungsskala": "sehr erfolgreich: 3 Ziele wurden erreicht; erfolgreich: 2 Ziele wurden erreicht; mässig erfolgreich: 1 Ziel wurde erreicht; nicht erfolgreich: kein Ziel wurde erreicht",
+  "beurteilung": "erfolgreich",
+  "wirkung_auf_art": "(2020) Ohne den Aktionsplan wäre die Art im Kanton Zürich nur noch an zwei Wuchsorten vorhanden. Die neu begründeten Populationen sind noch klein, aber etabliert.",
+  "apber_analyse": "(2020) Die Ansiedlungserfolge der Jahre seit Projektbeginn zeigen, dass die gewählte Methode grundsätzlich funktioniert.",
+  "konsequenzen_umsetzung": "(2020) Die Nachpflanzungen werden wie geplant weitergeführt.",
+  "konsequenzen_erfolgskontrolle": "(2020) Die Erfolgskontrollen werden im jährlichen Rhythmus fortgesetzt."
 }'::jsonb)
-  ON CONFLICT (subproject_report_id) DO NOTHING;
+    ON CONFLICT (subproject_report_id) DO NOTHING;
 
 -- fail loudly if the report pieces are missing
 DO $$

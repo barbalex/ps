@@ -10,18 +10,35 @@ Better-Auth, possible extensions:
 
 ---
 
+---
+
+---
+
+---
+
+---
+
+---
+
+Now that the exact same data is used, the report for 2025 should be equal to the one produced from the apf2 project. Yet that seems not to be the case. Can you compare again with the way the data is generated in /home/alex/Documents/GitHub/apf2/src/components/Print/ApberForAp?
+
+---
+
+the chart 'kontrollierte Teil-Populationen' should - as all apflora charts - only include the years for which histories exist (plus the current, if that year was choosen for the report)
+
+---
+
+chart 'Populationen nach Status' shuld draw the different values cummulating/stacking. Thus the total height shows the total number of Populationen. Same for 'Triebe Total nach Populationen'
+
+---
+
+later: lets build the report for the entire apflora project
+
+---
+
+---
+
 it seems pulsatilla vulgaris's apber data (for 2025) was not imported into ps. lets change the import scripts to do this
-
----
-
----
-
----
-
----
-
-lets build reports (and their charts) for previous years. For rows without date (places and more) lets use historization: last historization before the end of the report year.
-In order to test and visualize this functionality, lets extend apf2 import to also import historized data into apf historizations (give the apf2 history rows a date inside the year they were historized for, say last of december).
 
 ---
 

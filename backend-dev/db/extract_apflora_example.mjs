@@ -165,6 +165,7 @@ const werteTables = {
   einheit: 'tpopkontrzaehl_einheit_werte',
   methode: 'tpopkontrzaehl_methode_werte',
   massnTyp: 'tpopmassn_typ_werte',
+  massnErfbeurt: 'tpopmassn_erfbeurt_werte',
   popStatus: 'pop_status_werte',
   apberRelevantGrund: 'tpop_apberrelevant_grund_werte',
   apBearbstand: 'ap_bearbstand_werte',
@@ -186,6 +187,103 @@ const tpopAll = readTable('tpop')
 const kontrAll = readTable('tpopkontr')
 const zaehlAll = readTable('tpopkontrzaehl')
 const massnAll = readTable('tpopmassn')
+const popberAll = readTable('popber')
+const tpopberAll = readTable('tpopber')
+const massnberAll = readTable('tpopmassnber')
+const popmassnberAll = readTable('popmassnber')
+
+const popmassnberByPop = new Map()
+for (const b of popmassnberAll) {
+  const list = popmassnberByPop.get(b.pop_id) ?? []
+  list.push({
+    id: b.id,
+    jahr: asInt(b.jahr),
+    beurteilung: asInt(b.beurteilung),
+    bemerkungen: b.bemerkungen,
+  })
+  popmassnberByPop.set(b.pop_id, list)
+}
+const popberByPop = new Map()
+for (const b of popberAll) {
+  const list = popberByPop.get(b.pop_id) ?? []
+  list.push({
+    id: b.id,
+    jahr: asInt(b.jahr),
+    entwicklung: asInt(b.entwicklung),
+    bemerkungen: b.bemerkungen,
+  })
+  popberByPop.set(b.pop_id, list)
+}
+const tpopberByTpop = new Map()
+for (const b of tpopberAll) {
+  const list = tpopberByTpop.get(b.tpop_id) ?? []
+  list.push({
+    id: b.id,
+    jahr: asInt(b.jahr),
+    entwicklung: asInt(b.entwicklung),
+    bemerkungen: b.bemerkungen,
+  })
+  tpopberByTpop.set(b.tpop_id, list)
+}
+const massnberByTpop = new Map()
+for (const b of massnberAll) {
+  const list = massnberByTpop.get(b.tpop_id) ?? []
+  list.push({
+    id: b.id,
+    jahr: asInt(b.jahr),
+    beurteilung: asInt(b.beurteilung),
+    bemerkungen: b.bemerkungen,
+  })
+  massnberByTpop.set(b.tpop_id, list)
+}
+// historizations: one snapshot per (year, row) — usually only for years in
+// which a report was written. Empty in demo dumps; imported when present.
+const apHistoryAll = readTable('ap_history')
+const popHistoryAll = readTable('pop_history')
+const tpopHistoryAll = readTable('tpop_history')
+
+const apHistoryById = new Map()
+for (const h of apHistoryAll) {
+  const list = apHistoryById.get(h.id) ?? []
+  list.push({
+    year: asInt(h.year),
+    bearbeitung: asInt(h.bearbeitung),
+    umsetzung: asInt(h.umsetzung),
+    start_jahr: asInt(h.start_jahr),
+  })
+  apHistoryById.set(h.id, list)
+}
+const popHistoryById = new Map()
+for (const h of popHistoryAll) {
+  const list = popHistoryById.get(h.id) ?? []
+  list.push({
+    year: asInt(h.year),
+    nr: asInt(h.nr),
+    name: h.name,
+    status: asInt(h.status),
+    status_unklar: asBool(h.status_unklar),
+    status_unklar_begruendung: h.status_unklar_begruendung,
+    bekannt_seit: asInt(h.bekannt_seit),
+  })
+  popHistoryById.set(h.id, list)
+}
+const tpopHistoryById = new Map()
+for (const h of tpopHistoryAll) {
+  const list = tpopHistoryById.get(h.id) ?? []
+  list.push({
+    year: asInt(h.year),
+    nr: asInt(h.nr),
+    gemeinde: h.gemeinde,
+    flurname: h.flurname,
+    status: asInt(h.status),
+    status_unklar: asBool(h.status_unklar),
+    status_unklar_grund: h.status_unklar_grund,
+    apber_relevant: asBool(h.apber_relevant),
+    apber_relevant_grund: asInt(h.apber_relevant_grund),
+    bekannt_seit: asInt(h.bekannt_seit),
+  })
+  tpopHistoryById.set(h.id, list)
+}
 
 const neededAdresseIds = new Set()
 
@@ -324,6 +422,9 @@ for (const t of tpopAll) {
     bemerkungen: t.bemerkungen,
     kontrollen: kontrByTpop.get(t.id) ?? [],
     massnahmen: massnByTpop.get(t.id) ?? [],
+    histories: (tpopHistoryById.get(t.id) ?? []).sort((a, b) => a.year - b.year),
+    berichte: (tpopberByTpop.get(t.id) ?? []).sort((a, b) => a.jahr - b.jahr),
+    massnberichte: (massnberByTpop.get(t.id) ?? []).sort((a, b) => a.jahr - b.jahr),
   })
   tpopByPop.set(t.pop_id, list)
 }
@@ -341,6 +442,9 @@ for (const p of popAll) {
     bekannt_seit: asInt(p.bekannt_seit),
     geom_point: ewkbToPoint(p.geom_point),
     tpops: tpopByPop.get(p.id) ?? [],
+    histories: (popHistoryById.get(p.id) ?? []).sort((a, b) => a.year - b.year),
+    berichte: (popberByPop.get(p.id) ?? []).sort((a, b) => a.jahr - b.jahr),
+    massnberichte: (popmassnberByPop.get(p.id) ?? []).sort((a, b) => a.jahr - b.jahr),
   })
   popByAp.set(p.ap_id, list)
 }
@@ -381,6 +485,7 @@ for (const artname of ARTNAMES) {
       umsetzung: asInt(ap.umsetzung),
       bearbeiter: ap.bearbeiter,
       ekf_beobachtungszeitpunkt: ap.ekf_beobachtungszeitpunkt,
+      histories: (apHistoryById.get(ap.id) ?? []).sort((a, b) => a.year - b.year),
     },
     pops,
   })

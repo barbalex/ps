@@ -2,6 +2,10 @@ import { createContext, useContext } from 'react'
 import { useLiveQuery } from '@electric-sql/pglite-react'
 import type { Config } from '@puckeditor/core'
 
+import {
+  asOfYear,
+  useReportVersions,
+} from '../../components/shared/reportVersions.ts'
 import styles from './reportComponents.module.css'
 
 /**
@@ -132,99 +136,241 @@ type PlaceRow = {
 
 /**
  * All places of the art with the fields the report tables classify by.
+ * For a report year, the rows are read from the server-side historization
+ * (as of the end of that year); offline (or without a year) the current
+ * local state is used.
  * Mirrors apf2's jber_abc: known-since (bekannt_seit) must be within the
  * report year, tpops must be relevant for reports (apber_relevant), and a
  * population only counts if it has at least one relevant tpop.
  */
-const usePlaceRows = (subprojectId?: string) => {
-  const res = useLiveQuery(
+const usePlaceRows = (
+  subprojectId: string | undefined,
+  year: number | null | undefined,
+) => {
+  const live = useLiveQuery(
     `SELECT place_id, parent_id, level, since, data ->> 'status' AS status,
        COALESCE(relevant_for_reports, TRUE) AS relevant
      FROM places
      WHERE subproject_id = $1`,
     [subprojectId ?? null],
   )
-  return (res?.rows ?? []) as unknown as PlaceRow[]
+  const { data: versions } = useReportVersions(subprojectId)
+
+  if (year != null && versions) {
+    return asOfYear(versions.places, year, 'place_id').map((place) => {
+      const data = place.data as Record<string, unknown> | null
+      return {
+        place_id: place.place_id as string,
+        parent_id: (place.parent_id as string | null) ?? null,
+        level: (place.level as number | null) ?? null,
+        since: (place.since as number | null) ?? null,
+        status: ((data?.status as string | null) ?? null),
+        relevant: place.relevant_for_reports == null
+          ? true
+          : !!place.relevant_for_reports,
+      }
+    })
+  }
+  return (live?.rows ?? []) as unknown as PlaceRow[]
 }
 
-const useStartYear = (subprojectId?: string) => {
-  const res = useLiveQuery(
+const useStartYear = (
+  subprojectId: string | undefined,
+  year: number | null | undefined,
+) => {
+  const live = useLiveQuery(
     `SELECT start_year FROM subprojects WHERE subproject_id = $1`,
     [subprojectId ?? null],
   )
-  return (res?.rows?.[0] as { start_year: number | null } | undefined)
+  const { data: versions } = useReportVersions(subprojectId)
+
+  if (year != null && versions) {
+    const subproject = asOfYear(versions.subprojects, year, 'subproject_id')[0]
+    return (subproject?.start_year as number | null) ?? null
+  }
+  return (live?.rows?.[0] as { start_year: number | null } | undefined)
     ?.start_year ?? null
+}
+
+/** apf2 tpopmassn_erfbeurt_werte: beurteilung text -> code */
+const beurteilungCode = (text: string | null | undefined): number | null => {
+  switch (text) {
+    case 'sehr erfolgreich':
+      return 1
+    case 'erfolgreich':
+      return 2
+    case 'weniger erfolgreich':
+      return 3
+    case 'nicht erfolgreich':
+      return 4
+    case 'unsicher':
+      return 5
+    default:
+      return null
+  }
+}
+
+const useCheckReports = (subprojectId: string | undefined) => {
+  const res = useLiveQuery(
+    `SELECT r.place_id, r.year, r.data ->> 'entwicklung' AS entwicklung
+     FROM check_reports r
+       INNER JOIN places p ON r.place_id = p.place_id
+     WHERE p.subproject_id = $1`,
+    [subprojectId ?? null],
+  )
+  return (res?.rows ?? []) as unknown as {
+    place_id: string
+    year: number | null
+    entwicklung: string | null
+  }[]
+}
+
+const useActionReports = (subprojectId: string | undefined) => {
+  const res = useLiveQuery(
+    `SELECT r.place_id, r.year, r.data ->> 'beurteilung' AS beurteilung
+     FROM action_reports r
+       INNER JOIN places p ON r.place_id = p.place_id
+     WHERE p.subproject_id = $1`,
+    [subprojectId ?? null],
+  )
+  return (res?.rows ?? []) as unknown as {
+    place_id: string
+    year: number | null
+    beurteilung: string | null
+  }[]
+}
+
+const useReportActions = (subprojectId: string | undefined) => {
+  const res = useLiveQuery(
+    `SELECT a.place_id, extract(year from a.date)::int AS year
+     FROM actions a
+       INNER JOIN places p ON a.place_id = p.place_id
+     WHERE p.subproject_id = $1 AND a.data ->> 'typ' IS NOT NULL`,
+    [subprojectId ?? null],
+  )
+  return (res?.rows ?? []) as unknown as { place_id: string; year: number }[]
+}
+
+/**
+ * The place sets the report tables count on, mirroring apf2's jber_abc SQL:
+ * places without bekannt_seit never count (NULL comparisons are false there),
+ * tpops must be report-relevant, and tpop counts sit under non-potential pops.
+ */
+const reportPlaceSets = (rows: PlaceRow[], jahr: number) => {
+  const popRows = rows.filter(
+    (r) => r.level === 1 && r.since != null && r.since <= jahr,
+  )
+  const popById = new Map(popRows.map((p) => [p.place_id, p]))
+  const relevantTpops = rows.filter(
+    (r) => r.level === 2 && r.relevant && r.since != null && r.since <= jahr,
+  )
+  const tpopsByPopId = new Map<string, PlaceRow[]>()
+  for (const tpop of relevantTpops) {
+    const list = tpopsByPopId.get(tpop.parent_id ?? '') ?? []
+    list.push(tpop)
+    tpopsByPopId.set(tpop.parent_id ?? '', list)
+  }
+  const nonPotential = (place: PlaceRow | undefined) =>
+    place != null && (statusCode(place.status) ?? 0) < 300
+  const tpopRows = relevantTpops.filter((t) =>
+    nonPotential(popById.get(t.parent_id ?? '')),
+  )
+  const tpopRowsBoth = tpopRows.filter(
+    (t) => (statusCode(t.status) ?? 0) < 300,
+  )
+  // pops with at least one report-relevant tpop (the join of the pop counts)
+  const joinedPops = popRows.filter(
+    (p) => (tpopsByPopId.get(p.place_id) ?? []).length > 0,
+  )
+  return {
+    popRows,
+    popById,
+    relevantTpops,
+    tpopsByPopId,
+    tpopRows,
+    tpopRowsBoth,
+    joinedPops,
+  }
 }
 
 const GrundmengenTable = ({ title }: { title?: string }) => {
   const { subprojectId, year } = useSubprojectReportContext()
-  const rows = usePlaceRows(subprojectId)
-  const startYear = useStartYear(subprojectId)
+  const rows = usePlaceRows(subprojectId, year)
+  const startYear = useStartYear(subprojectId, year)
   if (!subprojectId) return <NoContext label={title ?? 'Grundmengen'} />
 
   const jahr = year ?? new Date().getFullYear()
-
-  // tpops relevant for the report and known in the report year
-  const relevantTpops = rows.filter(
-    (r) => r.level === 2 && r.relevant && (r.since ?? Infinity) <= jahr,
+  const { popRows, popById, relevantTpops, tpopsByPopId } = reportPlaceSets(
+    rows,
+    jahr,
   )
-  // populations with at least one relevant tpop, known in the report year
-  const relevantPopIds = new Set(
-    relevantTpops.map((r) => r.parent_id).filter(Boolean) as string[],
-  )
-  const knownPops = rows.filter(
-    (r) =>
-      r.level === 1 &&
-      relevantPopIds.has(r.place_id) &&
-      (r.since ?? Infinity) <= jahr,
-  )
-  // a place qualifies for pop counting per its own (pop) status,
-  // for tpop counting per its own (tpop) status and its pop not being potential
-  const popStatus = (code: number) =>
-    knownPops.filter((r) => statusCode(r.status) === code)
-  const tpopStatus = (code: number, extra?: (r: PlaceRow) => boolean) =>
-    relevantTpops.filter((r) => {
-      const pop = rows.find((p) => p.place_id === r.parent_id)
-      return (
-        statusCode(r.status) === code &&
-        (pop ? (statusCode(pop.status) ?? 0) < 300 : true) &&
-        (!extra || extra(r))
-      )
-    })
+  const start = startYear ?? 0
+  const nonPotential = (place: PlaceRow | undefined) =>
+    place != null && (statusCode(place.status) ?? 0) < 300
 
-  const popByCode = (code: number) => popStatus(code).length
-  const tpopByCode = (code: number, extra?: (r: PlaceRow) => boolean) =>
-    tpopStatus(code, extra).length
+  // pop counts need a report-relevant tpop; for the angesiedelt split, apf2
+  // requires that tpop to be known on the same side of the AP start year
+  const popCount = (
+    pred: (place: PlaceRow) => boolean,
+    tpopPred: (tpop: PlaceRow) => boolean = () => true,
+  ) =>
+    popRows.filter(
+      (p) =>
+        pred(p) && (tpopsByPopId.get(p.place_id) ?? []).some(tpopPred),
+    ).length
 
-  const beforeAp = (r: PlaceRow) =>
-    startYear != null && (r.since ?? -Infinity) < startYear
-  const sinceAp = (r: PlaceRow) =>
-    startYear == null || (r.since ?? -Infinity) >= startYear
+  const tpopCount = (
+    pred: (tpop: PlaceRow) => boolean,
+    popOk: (place: PlaceRow | undefined) => boolean = nonPotential,
+  ) =>
+    relevantTpops.filter((t) => {
+      const pop = popById.get(t.parent_id ?? '')
+      return popOk(pop) && pred(t)
+    }).length
 
   // a3: aktuell, davon ursprünglich
-  const a3Pop = popByCode(100)
-  const a3Tpop = tpopByCode(100)
+  const a3Pop = popCount((p) => statusCode(p.status) === 100)
+  const a3Tpop = tpopCount((t) => statusCode(t.status) === 100)
   // a4: angesiedelt vor Beginn AP
-  const a4Pop = popStatus(200).filter(beforeAp).length
-  const a4Tpop = tpopStatus(200, beforeAp).length
+  const a4Pop = popCount(
+    (p) => statusCode(p.status) === 200 && (p.since ?? 0) < start,
+    (t) => (t.since ?? 0) < start,
+  )
+  const a4Tpop = tpopCount(
+    (t) => statusCode(t.status) === 200 && (t.since ?? 0) < start,
+  )
   // a5: angesiedelt nach Beginn AP
-  const a5Pop = popStatus(200).filter(sinceAp).length
-  const a5Tpop = tpopStatus(200, sinceAp).length
+  const a5Pop = popCount(
+    (p) => statusCode(p.status) === 200 && (p.since ?? Infinity) >= start,
+    (t) => (t.since ?? Infinity) >= start,
+  )
+  const a5Tpop = tpopCount(
+    (t) => statusCode(t.status) === 200 && (t.since ?? Infinity) >= start,
+  )
   // a7: erloschen, zuvor autochthon oder vor AP angesiedelt
-  const a7Pop = [
-    ...popStatus(101),
-    ...popStatus(202).filter(beforeAp),
-  ].length
-  const a7Tpop = [
-    ...tpopStatus(101),
-    ...tpopStatus(202, beforeAp),
-  ].length
+  const a7Pop = popCount(
+    (p) =>
+      statusCode(p.status) === 101 ||
+      (statusCode(p.status) === 202 && (p.since ?? 0) < start),
+  )
+  const a7Tpop = tpopCount(
+    (t) =>
+      statusCode(t.status) === 101 ||
+      (statusCode(t.status) === 202 && (t.since ?? 0) < start),
+  )
   // a8: erloschen, nach Beginn AP angesiedelt
-  const a8Pop = popStatus(202).filter(sinceAp).length
-  const a8Tpop = tpopStatus(202, sinceAp).length
-  // a9: Ansaatversuche
-  const a9Pop = popByCode(201)
-  const a9Tpop = tpopByCode(201)
+  const a8Pop = popCount(
+    (p) => statusCode(p.status) === 202 && (p.since ?? Infinity) >= start,
+  )
+  const a8Tpop = tpopCount(
+    (t) => statusCode(t.status) === 202 && (t.since ?? Infinity) >= start,
+  )
+  // a9: Ansaatversuche (apf2 counts these tpops under any known pop)
+  const a9Pop = popCount((p) => statusCode(p.status) === 201)
+  const a9Tpop = tpopCount(
+    (t) => statusCode(t.status) === 201,
+    (p) => p != null,
+  )
 
   const a1 = { pop: a3Pop + a4Pop + a5Pop + a7Pop + a8Pop + a9Pop, tpop: a3Tpop + a4Tpop + a5Tpop + a7Tpop + a8Tpop + a9Tpop }
   const a2 = { pop: a3Pop + a4Pop + a5Pop, tpop: a3Tpop + a4Tpop + a5Tpop }
@@ -281,67 +427,40 @@ const DevelopmentTable = ({
   sinceYear?: number | null
 }) => {
   const { subprojectId, year } = useSubprojectReportContext()
-  const places = usePlaceRows(subprojectId)
-  const startYear = useStartYear(subprojectId)
-  const res = useLiveQuery(
-    `SELECT c.place_id, extract(year from c.date)::int AS year
-     FROM checks c
-       INNER JOIN places p ON c.place_id = p.place_id
-     WHERE p.subproject_id = $1 AND c.data ->> 'entwicklung' IS NOT NULL`,
-    [subprojectId ?? null],
-  )
+  const rows = usePlaceRows(subprojectId, year)
+  const berichte = useCheckReports(subprojectId)
   if (!subprojectId) return <NoContext label={title ?? 'Bestandesentwicklung'} />
 
   const jahr = year ?? new Date().getFullYear()
-  const rows = (res?.rows ?? []) as { place_id: string; year: number }[]
+  const { joinedPops, tpopRowsBoth } = reportPlaceSets(rows, jahr)
 
-  // only relevant tpops known in the report year are counted; their
-  // populations with at least one such tpop
-  const relevantTpops = places.filter(
-    (r) => r.level === 2 && r.relevant && (r.since ?? Infinity) <= jahr,
+  // apf2 counts popber rows for the year column and, for the "seit" column,
+  // places with any entwicklung-bearing bericht
+  const popIds = new Set(
+    joinedPops
+      .filter((p) => (statusCode(p.status) ?? 0) < 300)
+      .map((p) => p.place_id),
   )
-  const relevantPopIds = new Set(
-    relevantTpops.map((r) => r.parent_id).filter(Boolean) as string[],
-  )
-  const placeById = new Map(places.map((r) => [r.place_id, r]))
+  const tpopIds = new Set(tpopRowsBoth.map((t) => t.place_id))
+  const popBers = berichte.filter((b) => popIds.has(b.place_id))
+  const tpopBers = berichte.filter((b) => tpopIds.has(b.place_id))
 
-  const inYear = { pop: 0, tpop: 0 }
-  const inRange = { pop: 0, tpop: 0 }
-  const firstYear: number | null = rows.length
-    ? Math.min(...rows.map((r) => r.year))
-    : null
-  const since = sinceYearProp ?? startYear
-  const seenYearTpops = new Set<string>()
-  const seenYearPops = new Set<string>()
-  const seenRangeTpops = new Set<string>()
-  const seenRangePops = new Set<string>()
-  for (const row of rows) {
-    const place = placeById.get(row.place_id)
-    if (!place || !place.relevant) continue
-    if ((place.since ?? Infinity) > jahr) continue
-    const popId = place.parent_id
-    if (row.year === jahr) {
-      if (!seenYearTpops.has(row.place_id)) {
-        seenYearTpops.add(row.place_id)
-        inYear.tpop++
-      }
-      if (popId && !seenYearPops.has(popId)) {
-        seenYearPops.add(popId)
-        inYear.pop++
-      }
-    }
-    if ((since == null || (row.year >= since && row.year <= jahr))) {
-      if (!seenRangeTpops.has(row.place_id)) {
-        seenRangeTpops.add(row.place_id)
-        inRange.tpop++
-      }
-      if (popId && !seenRangePops.has(popId)) {
-        seenRangePops.add(popId)
-        inRange.pop++
-      }
-    }
+  const inYear = {
+    pop: popBers.filter((b) => b.year === jahr).length,
+    tpop: tpopBers.filter((b) => b.year === jahr).length,
   }
-  void relevantPopIds
+  const withEntwicklung = (list: typeof berichte) =>
+    list.filter((b) => b.year != null && b.year <= jahr && b.entwicklung != null)
+  const since = {
+    pop: new Set(withEntwicklung(popBers).map((b) => b.place_id)).size,
+    tpop: new Set(withEntwicklung(tpopBers).map((b) => b.place_id)).size,
+  }
+  const firstTpopberYear = withEntwicklung(tpopBers).reduce(
+    (min, b) => Math.min(min, b.year ?? min),
+    Infinity,
+  )
+  const sinceLabel =
+    sinceYearProp ?? (Number.isFinite(firstTpopberYear) ? firstTpopberYear : '…')
 
   return (
     <TableShell title={title}>
@@ -351,8 +470,8 @@ const DevelopmentTable = ({
             <th>{''}</th>
             <th>Pop {jahr}</th>
             <th>TPop {jahr}</th>
-            <th>Pop seit {since ?? firstYear ?? '…'}</th>
-            <th>TPop seit {since ?? firstYear ?? '…'}</th>
+            <th>Pop seit {sinceLabel}</th>
+            <th>TPop seit {sinceLabel}</th>
           </tr>
         </thead>
         <tbody>
@@ -360,8 +479,8 @@ const DevelopmentTable = ({
             <td>kontrolliert (inkl. Ansaatversuche)</td>
             <td className={styles.number}>{inYear.pop}</td>
             <td className={styles.number}>{inYear.tpop}</td>
-            <td className={styles.number}>{inRange.pop}</td>
-            <td className={styles.number}>{inRange.tpop}</td>
+            <td className={styles.number}>{since.pop}</td>
+            <td className={styles.number}>{since.tpop}</td>
           </tr>
         </tbody>
       </table>
@@ -377,118 +496,64 @@ const ActionsSummaryTable = ({
   sinceYear?: number | null
 }) => {
   const { subprojectId, year } = useSubprojectReportContext()
-  const places = usePlaceRows(subprojectId)
-  const startYear = useStartYear(subprojectId)
-  const actionsRes = useLiveQuery(
-    `SELECT a.place_id, extract(year from a.date)::int AS year
-     FROM actions a
-       INNER JOIN places p ON a.place_id = p.place_id
-     WHERE p.subproject_id = $1 AND a.data ->> 'typ' IS NOT NULL`,
-    [subprojectId ?? null],
-  )
-  const checksRes = useLiveQuery(
-    `SELECT c.place_id, c.date, extract(year from c.date)::int AS year,
-        c.data ->> 'erfolgsbeurteilung' AS assessment
-     FROM checks c
-       INNER JOIN places p ON c.place_id = p.place_id
-     WHERE p.subproject_id = $1 AND c.data ->> 'erfolgsbeurteilung' IS NOT NULL
-     ORDER BY c.date`,
-    [subprojectId ?? null],
-  )
+  const rows = usePlaceRows(subprojectId, year)
+  const actions = useReportActions(subprojectId)
+  const actionReports = useActionReports(subprojectId)
   if (!subprojectId) return <NoContext label={title ?? 'Zwischenbilanz'} />
 
   const jahr = year ?? new Date().getFullYear()
-  const actionRows = (actionsRes?.rows ?? []) as {
-    place_id: string
-    year: number
-  }[]
-  const checkRows = (checksRes?.rows ?? []) as {
-    place_id: string
-    year: number
-    assessment: string
-  }[]
+  const { joinedPops, tpopRowsBoth } = reportPlaceSets(rows, jahr)
 
-  const relevantTpops = places.filter(
-    (r) => r.level === 2 && r.relevant && (r.since ?? Infinity) <= jahr,
+  const popIds = new Set(
+    joinedPops
+      .filter((p) => (statusCode(p.status) ?? 0) < 300)
+      .map((p) => p.place_id),
   )
-  const relevantPopIds = new Set(
-    relevantTpops.map((r) => r.parent_id).filter(Boolean) as string[],
+  const tpopIds = new Set(tpopRowsBoth.map((t) => t.place_id))
+  // apf2 counts actions (and pops via them) on tpop level
+  const tpopActions = actions.filter((a) => tpopIds.has(a.place_id))
+  const popOfTpop = new Map(
+    tpopRowsBoth.map((t) => [t.place_id, t.parent_id ?? '']),
   )
-  const placeById = new Map(places.map((r) => [r.place_id, r]))
+  const tpopActionYears = tpopActions.filter((a) => a.year <= jahr)
+  const inYearTpop = tpopActionYears.filter((a) => a.year === jahr)
+  const inYear = {
+    pop: new Set(inYearTpop.map((a) => popOfTpop.get(a.place_id))).size,
+    tpop: new Set(inYearTpop.map((a) => a.place_id)).size,
+  }
+  const since = {
+    pop: new Set(tpopActionYears.map((a) => popOfTpop.get(a.place_id))).size,
+    tpop: new Set(tpopActionYears.map((a) => a.place_id)).size,
+  }
+  const firstActionYear = tpopActions
+    .filter((a) => a.year <= jahr)
+    .reduce((min, a) => Math.min(min, a.year), Infinity)
+  const sinceLabel =
+    sinceYearProp ?? (Number.isFinite(firstActionYear) ? firstActionYear : '…')
 
-  const countPlaces = (placeIds: Set<string>) => {
-    let pop = 0
-    let tpop = 0
-    for (const id of placeIds) {
-      const place = placeById.get(id)
-      if (!place || !place.relevant) continue
-      if ((place.since ?? Infinity) > jahr) continue
-      if (place.level === 2) {
-        tpop++
-        if (place.parent_id && relevantPopIds.has(place.parent_id)) {
-          // pop counted once below via set
-        }
+  // latest beurteilung per place (apf2: DISTINCT ON ... ORDER BY jahr DESC)
+  const latestByPlace = (
+    list: { place_id: string; year: number | null; beurteilung: string | null }[],
+  ) => {
+    const latest = new Map<string, { year: number; code: number }>()
+    for (const ber of list) {
+      const code = beurteilungCode(ber.beurteilung)
+      if (ber.year == null || code == null || code < 1 || code > 5) continue
+      if (ber.year > jahr) continue
+      const current = latest.get(ber.place_id)
+      if (!current || ber.year >= current.year) {
+        latest.set(ber.place_id, { year: ber.year, code })
       }
     }
-    const popIds = new Set<string>()
-    for (const id of placeIds) {
-      const place = placeById.get(id)
-      if (place?.level === 2 && place.parent_id && relevantPopIds.has(place.parent_id)) {
-        popIds.add(place.parent_id)
-      }
-    }
-    pop = popIds.size
-    return { pop, tpop }
+    return latest
   }
+  const latestPop = latestByPlace(actionReports.filter((b) => popIds.has(b.place_id)))
+  const latestTpop = latestByPlace(actionReports.filter((b) => tpopIds.has(b.place_id)))
+  const byCode = (code: number) => ({
+    pop: [...latestPop.values()].filter((b) => b.code === code).length,
+    tpop: [...latestTpop.values()].filter((b) => b.code === code).length,
+  })
 
-  // places with actions in the report year / since start
-  const withActionsYear = new Set<string>()
-  const withActionsRange = new Set<string>()
-  let firstMassn: number | null = actionRows.length
-    ? Math.min(...actionRows.map((r) => r.year))
-    : null
-  for (const row of actionRows) {
-    if (row.year === jahr) withActionsYear.add(row.place_id)
-    withActionsRange.add(row.place_id)
-  }
-  const c1L = countPlaces(withActionsYear)
-  const c1R = countPlaces(withActionsRange)
-
-  // of those (since): controlled = latest assessed check per place
-  const latestAssessment = new Map<string, string>()
-  for (const row of checkRows) {
-    if (withActionsRange.has(row.place_id) && row.year <= jahr) {
-      latestAssessment.set(row.place_id, row.assessment)
-    }
-  }
-  const c2R = countPlaces(new Set(latestAssessment.keys()))
-
-  const classifyAssessment = (test: (a: string) => boolean) =>
-    countPlaces(
-      new Set(
-        [...latestAssessment.entries()]
-          .filter(([, a]) => test(a.toLowerCase()))
-          .map(([id]) => id),
-      ),
-    )
-  const sehr = classifyAssessment((a) => a.includes('sehr erfolgreich'))
-  const nicht = classifyAssessment(
-    (a) => a.includes('nicht erfolgreich') || a.includes('kein erfolg'),
-  )
-  const weniger = classifyAssessment(
-    (a) => a.includes('wenig erfolgreich') || a.includes('weniger erfolgreich'),
-  )
-  const unsicher = classifyAssessment((a) => a.includes('unsicher'))
-  const erfolgreich = classifyAssessment(
-    (a) =>
-      a.includes('erfolgreich') &&
-      !a.includes('sehr ') &&
-      !a.includes('wenig') &&
-      !a.includes('weniger') &&
-      !a.includes('nicht '),
-  )
-
-  const since = sinceYearProp ?? startYear
   const tableRows: {
     label: string
     year?: Counts
@@ -497,15 +562,15 @@ const ActionsSummaryTable = ({
   }[] = [
     {
       label: 'Anzahl Populationen/Teilpopulationen mit Massnahmen',
-      year: c1L,
-      range: c1R,
+      year: inYear,
+      range: since,
     },
-    { label: 'kontrolliert', range: c2R, indent: 1 },
-    { label: 'davon: sehr erfolgreich', range: sehr, indent: 2 },
-    { label: 'erfolgreich', range: erfolgreich, indent: 2 },
-    { label: 'weniger erfolgreich', range: weniger, indent: 2 },
-    { label: 'nicht erfolgreich', range: nicht, indent: 2 },
-    { label: 'mit unsicherer Wirkung', range: unsicher, indent: 2 },
+    { label: 'kontrolliert', range: { pop: latestPop.size, tpop: latestTpop.size }, indent: 1 },
+    { label: 'davon: sehr erfolgreich', range: byCode(1), indent: 2 },
+    { label: 'erfolgreich', range: byCode(2), indent: 2 },
+    { label: 'weniger erfolgreich', range: byCode(3), indent: 2 },
+    { label: 'nicht erfolgreich', range: byCode(4), indent: 2 },
+    { label: 'mit unsicherer Wirkung', range: byCode(5), indent: 2 },
   ]
 
   return (
@@ -516,8 +581,8 @@ const ActionsSummaryTable = ({
             <th>{''}</th>
             <th>Pop {jahr}</th>
             <th>TPop {jahr}</th>
-            <th>Pop seit {since ?? firstMassn ?? '…'}</th>
-            <th>TPop seit {since ?? firstMassn ?? '…'}</th>
+            <th>Pop seit {sinceLabel}</th>
+            <th>TPop seit {sinceLabel}</th>
           </tr>
         </thead>
         <tbody>
