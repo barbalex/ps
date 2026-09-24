@@ -28,8 +28,6 @@ import styles from './Form.module.css'
 
 import type SubprojectReportDesigns from '../../models/public/SubprojectReportDesigns.ts'
 
-import '@puckeditor/core/puck.css'
-
 type DesignRow = {
   subproject_report_design_id: string
   project_id: string

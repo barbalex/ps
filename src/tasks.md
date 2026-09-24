@@ -10,8 +10,7 @@ Better-Auth, possible extensions:
 
 ---
 
-found in the logs:
-Puck: Skipped runtime style injection as Puck styles are already loaded. As of Puck 0.22, you can safely remove CSS imports, or ignore this message.
+it seems pulsatilla vulgaris's apber data (for 2025) was not imported into ps. lets change the import scripts to do this
 
 ---
 

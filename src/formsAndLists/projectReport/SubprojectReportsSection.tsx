@@ -15,8 +15,6 @@ import type Charts from '../../models/public/Charts.ts'
 import { normalizePuckDesign } from '../../modules/normalizePuckDesign.ts'
 import styles from './SubprojectReportsSection.module.css'
 
-import '@puckeditor/core/puck.css'
-
 interface FieldDef {
   name: string
   field_label: string | null

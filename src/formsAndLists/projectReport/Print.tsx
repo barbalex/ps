@@ -20,7 +20,6 @@ import { SubprojectReportsSection } from './SubprojectReportsSection.tsx'
 import styles from './Print.module.css'
 
 import '../../form.css'
-import '@puckeditor/core/puck.css'
 
 export const ProjectReportPrint = ({ from }: { from: string }) => {
   const { projectReportId, projectId } = useParams({ strict: false })

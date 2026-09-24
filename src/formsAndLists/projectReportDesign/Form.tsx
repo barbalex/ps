@@ -20,8 +20,6 @@ import styles from './Form.module.css'
 
 import type ProjectReportDesigns from '../../models/public/ProjectReportDesigns.ts'
 
-import '@puckeditor/core/puck.css'
-
 type DesignRow = {
   project_report_design_id: string
   project_id: string
