@@ -305,6 +305,140 @@ const popStatusSeriesPerYear = (
   return groups
 }
 
+/**
+ * apf2's ap_ausw_pop_menge (Triebe total): per historization year, every
+ * qualifying tpop carries its LATEST zaehlung (counts of the zielrelevant
+ * unit, from a year whose own historization qualified) up to that year —
+ * plus the year's anpflanzung planting if it had no zaehlung. Series per
+ * population, colored ursprünglich (translucent green) or angesiedelt.
+ */
+const popMengeSeriesPerYear = async (
+  db: Pick<PGlite, 'query'>,
+  subproject_id: string,
+  places: VersionedRow[],
+  reportYear: number,
+  valueUnit: string | null | undefined,
+): Promise<{ name: string; values: Record<number, number>; color: string }[]> => {
+  if (!valueUnit) return []
+  const zaehlRes = await db.query(
+    `SELECT c.place_id, extract(year from c.date)::int AS year, sum(ct.quantity_numeric) AS total
+     FROM check_taxa ct
+       JOIN checks c USING (check_id)
+       JOIN places p ON c.place_id = p.place_id
+     WHERE p.subproject_id = $1 AND ct.unit_id = $2
+       AND ct.quantity_numeric IS NOT NULL
+       AND COALESCE(c.data ->> 'apber_nicht_relevant', 'false') <> 'true'
+     GROUP BY 1, 2`,
+    [subproject_id, valueUnit],
+  )
+  const massnRes = await db.query(
+    `SELECT a.place_id, extract(year from a.date)::int AS year,
+       sum((a.data ->> 'zieleinheit_anzahl')::double precision) AS total
+     FROM actions a
+       JOIN places p ON a.place_id = p.place_id
+     WHERE p.subproject_id = $1
+       AND a.data ->> 'typ' IN ('Ansiedlung: Anpflanzung', 'Ansiedlung: Ansaat und Auspflanzung')
+       AND a.data ->> 'zieleinheit_einheit' = (SELECT name FROM units WHERE unit_id = $2)
+       AND a.data ->> 'zieleinheit_anzahl' IS NOT NULL
+     GROUP BY 1, 2`,
+    [subproject_id, valueUnit],
+  )
+
+  // per tpop and year: the sums, kept only if the tpop's historization of
+  // THAT year qualified (apf2 joins each row on the year's own snapshot)
+  const qualifyingTpopsOfYear = (year: number, statuses: number[]) => {
+    const ids = new Set<string>()
+    for (const row of asOfYear(places, year, 'place_id')) {
+      if (row.parent_id == null) continue
+      if (row.relevant_for_reports === false) continue
+      if (statuses.includes(statusCodeOf(row) ?? -1)) {
+        ids.add(row.place_id as string)
+      }
+    }
+    return ids
+  }
+  const sumMaps = (
+    rows: { place_id: string; year: number; total: number }[],
+    statuses: number[],
+  ) => {
+    const perYearIds = new Map<number, Set<string>>()
+    const maps = new Map<string, Map<number, number>>()
+    for (const row of rows) {
+      if (row.year == null) continue
+      let ids = perYearIds.get(row.year)
+      if (!ids) {
+        ids = qualifyingTpopsOfYear(row.year, statuses)
+        perYearIds.set(row.year, ids)
+      }
+      if (!ids.has(row.place_id)) continue
+      const byYear = maps.get(row.place_id) ?? new Map<number, number>()
+      byYear.set(row.year, (byYear.get(row.year) ?? 0) + Number(row.total))
+      maps.set(row.place_id, byYear)
+    }
+    return maps
+  }
+  const zaehlungen = sumMaps(
+    (zaehlRes?.rows ?? []) as { place_id: string; year: number; total: number }[],
+    [100, 200, 201],
+  )
+  const massnahmen = sumMaps(
+    (massnRes?.rows ?? []) as { place_id: string; year: number; total: number }[],
+    [200, 201],
+  )
+  // the latest year's sum at or before the year (apf2's lookback) — a newer,
+  // lower count replaces an older higher one
+  const latestUpTo = (byYear: Map<number, number> | undefined, year: number) => {
+    if (!byYear) return 0
+    let latestYear = -Infinity
+    let sum = 0
+    for (const [y, value] of byYear) {
+      if (y <= year && y > latestYear) {
+        latestYear = y
+        sum = value
+      }
+    }
+    return sum
+  }
+
+  const groups = new Map<string, { name: string; values: Record<number, number>; color: string }>()
+  for (const year of historizationYears(places, reportYear)) {
+    for (const tpop of asOfYear(places, year, 'place_id')) {
+      if (tpop.parent_id == null) continue
+      if (tpop.relevant_for_reports === false) continue
+      const code = statusCodeOf(tpop)
+      if (code !== 100 && code !== 200 && code !== 201) continue
+      const zaehlung = latestUpTo(zaehlungen.get(tpop.place_id as string), year)
+      const massnahme =
+        zaehlung > 0 ? (massnahmen.get(tpop.place_id as string)?.get(year) ?? 0)
+          : latestUpTo(massnahmen.get(tpop.place_id as string), year)
+      const value = zaehlung + massnahme
+      if (!value) continue
+      const popId = tpop.parent_id as string
+      const pop = asOfYear(places, year, 'place_id').find(
+        (row) => row.place_id === popId,
+      )
+      const name = (pop?.name as string | null) ?? popId
+      const popCode = pop ? statusCodeOf(pop) : null
+      const group = groups.get(popId) ?? {
+        name,
+        values: {},
+        color:
+          popCode != null && popCode < 200 ?
+            'rgba(46,125,50,0.3)'
+          : 'rgba(245,141,66,1)',
+      }
+      group.values[year] = (group.values[year] ?? 0) + value
+      groups.set(popId, group)
+    }
+  }
+  return [...groups.values()].sort(
+    (a, b) =>
+      Object.values(b.values).reduce((s, v) => s + v, 0) -
+        Object.values(a.values).reduce((s, v) => s + v, 0) ||
+      a.name.localeCompare(b.name),
+  )
+}
+
 export const buildData = async ({
   chart,
   subjects,
@@ -560,6 +694,29 @@ export const buildData = async ({
           case 'check_taxa':
           case 'action_quantities':
           case 'action_taxa': {
+            if (
+              subject.table_name === 'check_taxa' &&
+              placesVersions &&
+              subprojectsVersions &&
+              reportYear != null
+            ) {
+              for (const group of await popMengeSeriesPerYear(
+                db,
+                subproject_id,
+                placesVersions,
+                reportYear,
+                subject.value_unit,
+              )) {
+                addSeries(
+                  `${subject.chart_subject_id}:${group.name}`,
+                  group.name,
+                  subject,
+                  group.values,
+                  group.color,
+                )
+              }
+              break
+            }
             // checks/actions hold the date; places provide the grouping level
             const eventTable =
               subject.table_name.startsWith('check') ? 'checks' : 'actions'

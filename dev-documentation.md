@@ -273,7 +273,11 @@ historization.
   (ursprünglich / angesiedelt vor/nach Beginn AP / erloschen vor/nach /
   Ansaatversuch, with apf2's colors) per historization year, using the
   start year of the subproject's version of that year —
-  `pop_nach_status_for_jber` ported 1:1.
+  `pop_nach_status_for_jber` ported 1:1. The *Triebe total* chart ports
+  `ap_ausw_pop_menge`: per historization year, every qualifying tpop carries
+  its latest zaehlung of the zielrelevant unit up to that year (lookback),
+  plus the year's anpflanzung planting when it had no zaehlung; series per
+  population, ursprünglich ones translucent green, angesiedelt orange.
   not checks. While offline or before the
   versions arrive, the current local state is used as fallback.
 - Demo: the 2020 Aldrovanda report (seeded in `11d_seedApfloraReport.sql`)

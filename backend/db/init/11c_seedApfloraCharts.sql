@@ -13,7 +13,8 @@ BEGIN;
 SET LOCAL electric.syncing TO 'true';
 
 INSERT INTO charts (chart_id, project_id, name, years_since, subjects_stacked, for_subprojects) VALUES
-  ('a1000000-0000-4000-8000-000000000001', '0195a101-0000-7000-8000-000000000001', '(kontrollierte) Teil-Populationen', 2014, true, true),
+  -- not stacked: kontrolliert is a subset of the tpops, so lines only (like apf2)
+  ('a1000000-0000-4000-8000-000000000001', '0195a101-0000-7000-8000-000000000001', '(kontrollierte) Teil-Populationen', 2014, false, true),
   ('a2000000-0000-4000-8000-000000000002', '0195a101-0000-7000-8000-000000000001', 'Populationen nach Status', 2014, true, true),
   ('a3000000-0000-4000-8000-000000000003', '0195a101-0000-7000-8000-000000000001', '"Triebe total" nach Populationen', 2014, true, true)
   ON CONFLICT (chart_id) DO NOTHING;
@@ -24,7 +25,8 @@ INSERT INTO chart_subjects (chart_subject_id, chart_id, table_name, table_level,
   ('b2000000-0000-4000-8000-000000000002', 'a1000000-0000-4000-8000-000000000001', 'check_reports', '2', 'count_rows', NULL, NULL, 'kontrollierte Teil-Populationen', 'kontrollierte Teil-Populationen', 2, false),
   ('b3000000-0000-4000-8000-000000000003', 'a2000000-0000-4000-8000-000000000002', 'places', '1', 'count_rows_by_distinct_field_values', 'status', NULL, 'Status', 'Status', 1, false),
   ('b4000000-0000-4000-8000-000000000004', 'a3000000-0000-4000-8000-000000000003', 'check_taxa', '1', 'sum_values_of_field', 'quantity_numeric', '935432b9-fc64-7118-8167-06f985ea181f', 'Triebe total', 'Triebe total', 1, false)
-  ON CONFLICT (chart_subject_id) DO NOTHING;
+  -- upserted: the unit is the chart's essence (a stale edit once left Pflanzen total here)
+  ON CONFLICT (chart_subject_id) DO UPDATE SET value_unit = EXCLUDED.value_unit;
 
 -- fail loudly if the charts are missing
 DO $$

@@ -115,6 +115,14 @@ export const SubprojectReportPrint = ({ from }: { from: string }) => {
             }
             return {
               chartId,
+              totals: chartData.data?.map(
+                (row) =>
+                  chartData.series?.reduce(
+                    (sum, singleSeries) =>
+                      sum + Number(row[singleSeries.key] ?? 0),
+                    0,
+                  ),
+              ),
               series: chartData.series?.map((singleSeries) => ({
                 key: singleSeries.key,
                 first: chartData.data?.[0]?.[singleSeries.key],
