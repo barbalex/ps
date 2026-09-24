@@ -10,20 +10,14 @@ Better-Auth, possible extensions:
 
 ---
 
----
+found in the logs:
+Puck: Skipped runtime style injection as Puck styles are already loaded. As of Puck 0.22, you can safely remove CSS imports, or ignore this message.
 
 ---
 
-art report design
-The left part (puck elements to drag right) is too narrow - not readable what an element is for.
-
-1. lets popup the full name on hover
-2. lets give it more width (25%?)
-3. maybe additionally: enable dragging the border to the form itself to change its width
-
 ---
 
-check translations
+---
 
 ---
 
@@ -45,3 +39,5 @@ how to create:
 light and dark mode
 
 ---
+
+check translations
