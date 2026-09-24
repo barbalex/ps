@@ -100,6 +100,25 @@ export const SubprojectReportPrint = ({ from }: { from: string }) => {
         dataMap[chart.chart_id] = data
       }
       setChartDataMap(dataMap)
+      if (import.meta.env.DEV) {
+        console.log(
+          '[report-charts]',
+          Object.entries(dataMap).map(([chartId, data]) => {
+            const chartData = data as {
+              series?: { key: string }[]
+              data?: Record<string, unknown>[]
+            }
+            return {
+              chartId,
+              series: chartData.series?.map((singleSeries) => ({
+                key: singleSeries.key,
+                first: chartData.data?.[0]?.[singleSeries.key],
+                last: chartData.data?.[chartData.data.length - 1]?.[singleSeries.key],
+              })),
+            }
+          }),
+        )
+      }
     }
 
     buildAllChartData()

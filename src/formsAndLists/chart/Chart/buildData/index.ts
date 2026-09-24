@@ -352,13 +352,14 @@ export const buildData = async ({
         switch (subject.table_name) {
           case 'places': {
             if (placesVersions) {
-              const rows = placesVersions.filter(versionLevelFilter(subject.table_level))
+              // pass all versions: qualifyingRowsOfYear filters by level
+              // itself and needs the level-1 rows to qualify each tpop's pop
               addSeries(
                 subjectLabel(subject),
                 subjectLabel(subject),
                 subject,
                 countPlaceVersionsPerYear(
-                  rows,
+                  placesVersions,
                   reportYear ?? undefined,
                   subject.table_level,
                 ),
