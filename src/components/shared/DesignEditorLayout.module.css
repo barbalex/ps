@@ -5,6 +5,7 @@
 }
 
 .sidebar {
+  box-sizing: border-box;
   width: 25%;
   flex-shrink: 0;
   min-width: 0;
@@ -39,6 +40,7 @@
 }
 
 .preview {
+  box-sizing: border-box;
   position: relative;
   min-height: 0;
   min-width: 0;
@@ -46,4 +48,11 @@
   padding-left: 8px;
   overflow: auto;
   scrollbar-width: thin;
+}
+
+.panelCol {
+  box-sizing: border-box;
+  width: 280px;
+  flex-shrink: 0;
+  min-width: 0;
 }
