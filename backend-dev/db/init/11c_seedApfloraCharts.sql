@@ -13,7 +13,7 @@ BEGIN;
 SET LOCAL electric.syncing TO 'true';
 
 INSERT INTO charts (chart_id, project_id, name, years_since, subjects_stacked, for_subprojects) VALUES
-  ('a1000000-0000-4000-8000-000000000001', '0195a101-0000-7000-8000-000000000001', '(kontrollierte) Teil-Populationen', 2014, false, true),
+  ('a1000000-0000-4000-8000-000000000001', '0195a101-0000-7000-8000-000000000001', '(kontrollierte) Teil-Populationen', 2014, true, true),
   ('a2000000-0000-4000-8000-000000000002', '0195a101-0000-7000-8000-000000000001', 'Populationen nach Status', 2014, true, true),
   ('a3000000-0000-4000-8000-000000000003', '0195a101-0000-7000-8000-000000000001', '"Triebe total" nach Populationen', 2014, true, true)
   ON CONFLICT (chart_id) DO NOTHING;

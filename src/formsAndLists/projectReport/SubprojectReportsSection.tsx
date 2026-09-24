@@ -13,7 +13,10 @@ import {
 } from '../subprojectReport/reportComponents.tsx'
 import type Charts from '../../models/public/Charts.ts'
 import { normalizePuckDesign } from '../../modules/normalizePuckDesign.ts'
-import { useReportVersions } from '../../components/shared/reportVersions.ts'
+import {
+  useLocalReportDataVersion,
+  useReportVersions,
+} from '../../components/shared/reportVersions.ts'
 import styles from './SubprojectReportsSection.module.css'
 
 interface FieldDef {
@@ -45,7 +48,7 @@ const SubprojectReportItem = ({
        WHERE project_id = (SELECT project_id FROM subprojects WHERE subproject_id = sr.subproject_id) AND active = true
        LIMIT 1) as active_design,
       (SELECT json_agg(c) FROM (
-        SELECT c.chart_id, c.name, c.subjects_single,
+        SELECT c.chart_id, c.name, c.subjects_single, c.subjects_stacked, c.percent,
           (SELECT json_agg(cs ORDER BY cs.sort, cs.name)
            FROM chart_subjects cs
            WHERE cs.chart_id = c.chart_id) as subjects
@@ -70,6 +73,7 @@ const SubprojectReportItem = ({
   // server-side historized versions of the art's undated rows (online only,
   // cached by react-query) — place series count as of each chart year
   const { data: versions } = useReportVersions(subprojectId)
+  const localDataVersion = useLocalReportDataVersion(subprojectId)
 
   useEffect(() => {
     const parsedCharts = JSON.parse(chartsJson)
@@ -94,7 +98,7 @@ const SubprojectReportItem = ({
     }
 
     buildAllChartData()
-  }, [chartsJson, subprojectId, versions])
+  }, [chartsJson, subprojectId, versions, localDataVersion])
 
   if (!res) return <div className={styles.loading}>Loading...</div>
   if (!report) {

@@ -16,11 +16,9 @@ Better-Auth, possible extensions:
 
 ---
 
-chart 'Populationen nach Status' should draw the different values cummulating/stacking. Thus the total height shows the total number of Populationen. Same for 'Triebe Total nach Populationen'
+chart 'kontrollierte Teil-Populationen': sorry - Teil-Populationen is the total, so lets not stack but only draw lines
 
 ---
-
-chart 'kontrollierte Teil-Populationen': the numbers are way too high. Example: aldrovanda 2025: 
 
 ---
 

@@ -12,7 +12,10 @@ import { languageAtom } from '../../store.ts'
 import { subprojectNameSingularExpr } from '../../modules/subprojectNameCols.ts'
 import { jsonbDataFromRow } from '../../modules/jsonbDataFromRow.ts'
 import { normalizePuckDesign } from '../../modules/normalizePuckDesign.ts'
-import { useReportVersions } from '../../components/shared/reportVersions.ts'
+import {
+  useLocalReportDataVersion,
+  useReportVersions,
+} from '../../components/shared/reportVersions.ts'
 import styles from './Print.module.css'
 import { buildData } from '../chart/Chart/buildData/index.ts'
 import { groupSeriesBySubject } from '../chart/Chart/buildData/index.ts'
@@ -44,7 +47,7 @@ export const SubprojectReportPrint = ({ from }: { from: string }) => {
         ORDER BY name
       ) f) as fields,
       (SELECT json_agg(c) FROM (
-        SELECT c.chart_id, c.name, c.subjects_single,
+        SELECT c.chart_id, c.name, c.subjects_single, c.subjects_stacked, c.percent,
           (SELECT json_agg(cs ORDER BY cs.sort, cs.name)
            FROM chart_subjects cs
            WHERE cs.chart_id = c.chart_id) as subjects
@@ -77,6 +80,7 @@ export const SubprojectReportPrint = ({ from }: { from: string }) => {
   // server-side historized versions of the art's undated rows (online only,
   // cached by react-query) — place series count as of each chart year
   const { data: versions } = useReportVersions(subprojectId)
+  const localDataVersion = useLocalReportDataVersion(subprojectId)
 
   // Build chart data for all charts
   useEffect(() => {
@@ -103,6 +107,7 @@ export const SubprojectReportPrint = ({ from }: { from: string }) => {
       if (import.meta.env.DEV) {
         console.log(
           '[report-charts]',
+          JSON.stringify(
           Object.entries(dataMap).map(([chartId, data]) => {
             const chartData = data as {
               series?: { key: string }[]
@@ -114,15 +119,19 @@ export const SubprojectReportPrint = ({ from }: { from: string }) => {
                 key: singleSeries.key,
                 first: chartData.data?.[0]?.[singleSeries.key],
                 last: chartData.data?.[chartData.data.length - 1]?.[singleSeries.key],
+                max: chartData.data?.reduce(
+                  (max, row) => Math.max(max, Number(row[singleSeries.key] ?? 0)),
+                  0,
+                ),
               })),
             }
-          }),
+          })),
         )
       }
     }
 
     buildAllChartData()
-  }, [chartsJson, subprojectId, projectId, versions])
+  }, [chartsJson, subprojectId, projectId, versions, localDataVersion])
 
   // Build Puck config from fields with actual data
   const components: Record<string, any> = Object.assign(

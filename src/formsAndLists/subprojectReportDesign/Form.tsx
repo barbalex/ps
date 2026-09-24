@@ -14,7 +14,10 @@ import { PuckCheckboxField } from '../../components/shared/PuckCheckboxField.tsx
 import { NotFound } from '../../components/NotFound.tsx'
 import { getValueFromChange } from '../../modules/getValueFromChange.ts'
 import { normalizePuckDesign } from '../../modules/normalizePuckDesign.ts'
-import { useReportVersions } from '../../components/shared/reportVersions.ts'
+import {
+  useLocalReportDataVersion,
+  useReportVersions,
+} from '../../components/shared/reportVersions.ts'
 import { addOperationAtom, languageAtom } from '../../store.ts'
 import { buildData } from '../chart/Chart/buildData/index.ts'
 import { groupSeriesBySubject } from '../chart/Chart/buildData/index.ts'
@@ -68,7 +71,7 @@ export const Form = ({ autoFocusRef }: { autoFocusRef?: React.RefObject<HTMLInpu
         ORDER BY name
       ) f) as fields,
       (SELECT json_agg(c) FROM (
-        SELECT c.chart_id, c.name, c.label, c.subjects_single,
+        SELECT c.chart_id, c.name, c.label, c.subjects_single, c.subjects_stacked, c.percent,
           (SELECT json_agg(cs ORDER BY cs.sort, cs.name) 
            FROM chart_subjects cs 
            WHERE cs.chart_id = c.chart_id) as subjects
@@ -107,6 +110,7 @@ export const Form = ({ autoFocusRef }: { autoFocusRef?: React.RefObject<HTMLInpu
   // server-side historized versions of the preview art's undated rows —
   // place series and report tables show the state of the preview year
   const { data: versions } = useReportVersions(previewSubprojectId)
+  const localDataVersion = useLocalReportDataVersion(previewSubprojectId)
 
   // Build chart data for all charts
   useEffect(() => {
@@ -133,7 +137,7 @@ export const Form = ({ autoFocusRef }: { autoFocusRef?: React.RefObject<HTMLInpu
     }
 
     buildAllChartData()
-  }, [chartsJson, projectId, previewSubprojectId, previewYear, versions])
+  }, [chartsJson, projectId, previewSubprojectId, previewYear, versions, localDataVersion])
 
   // Build Puck config from fields with actual data
   const components: Record<string, any> = {}

@@ -1,5 +1,6 @@
 import { useQuery } from '@tanstack/react-query'
 import { useAtomValue } from 'jotai'
+import { useLiveQuery } from '@electric-sql/pglite-react'
 import { PostgrestClient } from '@supabase/postgrest-js'
 
 import { onlineAtom } from '../../store.ts'
@@ -96,6 +97,25 @@ export const statusCode = (status: string | null | undefined): number | null => 
   if (aktuell) return 200
   if (erloschen) return 202
   return null
+}
+
+/**
+ * A version string of the local tables the report charts read (checks,
+ * quantities, reports). The chart data is built in an effect — this makes
+ * the effect re-run when rows arrive late during the initial sync, instead
+ * of keeping charts built from empty tables.
+ */
+export const useLocalReportDataVersion = (subprojectId: string | undefined) => {
+  const res = useLiveQuery(
+    `SELECT
+      (SELECT count(*) FROM checks c JOIN places p USING (place_id) WHERE p.subproject_id = $1) AS checks,
+      (SELECT count(*) FROM check_taxa ct JOIN checks c USING (check_id) JOIN places p USING (place_id) WHERE p.subproject_id = $1) AS check_taxa,
+      (SELECT count(*) FROM check_reports r JOIN places p USING (place_id) WHERE p.subproject_id = $1) AS check_reports,
+      (SELECT count(*) FROM action_reports r JOIN places p USING (place_id) WHERE p.subproject_id = $1) AS action_reports,
+      (SELECT count(*) FROM actions a JOIN places p USING (place_id) WHERE p.subproject_id = $1) AS actions`,
+    [subprojectId ?? null],
+  )
+  return JSON.stringify(res?.rows?.[0] ?? null)
 }
 
 export const useReportVersions = (subprojectId: string | undefined) => {
