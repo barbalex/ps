@@ -18,8 +18,6 @@ B. Triebe total nach Populationen: the data is not drawn in the chart, see image
 
 ---
 
-D. Ziele im Berichtsjahr: it seems ziele were not imported for pulsatilla. lets adjust the import to do this, also for abies alba
-
 ---
 
 ---

@@ -794,13 +794,13 @@ emitChunked('check_reports (apf2: popber/tpopber)', {
 // apber prose fields that map to our subproject_reports data jsonb;
 // beurteilung is the ap_erfkrit_werte code -> text, and apf2's
 // massnahmen_planung_vs_ausfuehrung maps to our vergleich_ausfuehrung_planung
-/** beurteilungsskala text from erfkrit (Erfolgskriterien), sorted by the
- *  ap_erfkrit_werte sort: "sehr erfolgreich: …; erfolgreich: …; …" */
-const beurteilungsskalaText = (art) => {
+/** beurteilungsskala rows from erfkrit (Erfolgskriterien), sorted by the
+ *  ap_erfkrit_werte sort — one {erfolg, kriterien} pair per rating level */
+const beurteilungsskalaRows = (art) => {
   const rows = (art.ap.erfkrit ?? [])
     .map((e) => ({
-      ...e,
-      text: werteText('apErfkrit', e.erfolg),
+      erfolg: werteText('apErfkrit', e.erfolg),
+      kriterien: e.kriterien,
       sort: parseInt(
         data.werte.apErfkrit?.find(
           (w) => parseInt(w.code, 10) === e.erfolg,
@@ -808,10 +808,9 @@ const beurteilungsskalaText = (art) => {
         10,
       ),
     }))
-    .filter((e) => e.text != null && e.kriterien != null)
+    .filter((e) => e.erfolg != null && e.kriterien != null)
     .sort((a, b) => a.sort - b.sort)
-  if (!rows.length) return null
-  return rows.map((e) => `${e.text}: ${e.kriterien}`).join('; ')
+  return rows.length ? rows : null
 }
 
 const apberData = (bericht) => {
@@ -845,10 +844,8 @@ emitChunked('subproject_reports (apf2: apber)', {
     year: bericht.jahr,
     data: (() => {
     const data = apberData(bericht)
-    const skala = beurteilungsskalaText(art)
-    if (skala) {
-      data ? (data.beurteilungsskala = skala) : null
-    }
+    const skala = beurteilungsskalaRows(art)
+    if (skala && data) data.beurteilungsskala = skala
     return data
   })(),
   }))

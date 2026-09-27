@@ -96,3 +96,26 @@
   font-size: 0.9em;
   color: #444;
 }
+
+.beurteilungsskala {
+  padding: 8px 0;
+}
+
+.beurteilungsskalaLabel {
+  font-weight: 600;
+  margin-bottom: 4px;
+}
+
+.beurteilungsskalaRow {
+  display: flex;
+  align-items: baseline;
+}
+
+.beurteilungsskalaErfolg {
+  width: 180px;
+  flex-shrink: 0;
+}
+
+.beurteilungsskalaKriterium {
+  flex: 1;
+}

@@ -170,9 +170,9 @@ INSERT INTO subproject_report_designs (subproject_report_design_id, project_id, 
       }
     },
     {
-      "type": "beurteilungsskalaField",
+      "type": "Beurteilungsskala",
       "props": {
-        "id": "beurteilungsskalaField-19"
+        "id": "Beurteilungsskala-26"
       }
     },
     {

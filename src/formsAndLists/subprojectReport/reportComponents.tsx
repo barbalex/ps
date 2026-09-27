@@ -343,6 +343,32 @@ const ProgrammInfo = () => {
   )
 }
 
+const Beurteilungsskala = () => {
+  const { subprojectId, year } = useSubprojectReportContext()
+  const res = useLiveQuery(
+    `SELECT data -> 'beurteilungsskala' AS skala
+     FROM subproject_reports
+     WHERE subproject_id = $1 AND year = $2`,
+    [subprojectId ?? null, year ?? null],
+  )
+  if (!subprojectId) return <NoContext label="Beurteilungsskala" />
+
+  const rows = (res?.rows?.[0] as { skala?: { erfolg: string; kriterien: string }[] } | undefined)?.skala
+  if (!Array.isArray(rows) || !rows.length) return null
+
+  return (
+    <div className={styles.beurteilungsskala}>
+      <div className={styles.beurteilungsskalaLabel}>Beurteilungsskala</div>
+      {rows.map((row, i) => (
+        <div className={styles.beurteilungsskalaRow} key={i}>
+          <span className={styles.beurteilungsskalaErfolg}>{row.erfolg}:</span>
+          <span className={styles.beurteilungsskalaKriterium}>{row.kriterien}</span>
+        </div>
+      ))}
+    </div>
+  )
+}
+
 const GrundmengenTable = ({ title }: { title?: string }) => {
   const { subprojectId, year } = useSubprojectReportContext()
   const rows = usePlaceRows(subprojectId, year)
@@ -774,6 +800,12 @@ const MassnahmenList = ({ title }: { title?: string }) => {
  * design editor and the report print.
  */
 export const buildDataComponents = (): Config['components'] => ({
+  Beurteilungsskala: {
+    label: 'Beurteilungsskala',
+    fields: {},
+    defaultProps: {},
+    render: () => <Beurteilungsskala />,
+  },
   ProgrammInfo: {
     label: 'Start Programm / Erste Massnahme / Erste Kontrolle',
     fields: {},
