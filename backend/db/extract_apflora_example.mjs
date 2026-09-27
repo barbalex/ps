@@ -195,6 +195,7 @@ const massnberAll = readTable('tpopmassnber')
 const popmassnberAll = readTable('popmassnber')
 const apberAll = readTable('apber')
 const zielAll = readTable('ziel')
+const erfkritAll = readTable('erfkrit')
 
 const erfkritText = (code) => {
   if (code === null || code === undefined) return null
@@ -498,6 +499,12 @@ for (const artname of ARTNAMES) {
       bearbeiter: ap.bearbeiter,
       ekf_beobachtungszeitpunkt: ap.ekf_beobachtungszeitpunkt,
       histories: (apHistoryById.get(ap.id) ?? []).sort((a, b) => a.year - b.year),
+      erfkrit: (erfkritAll.filter((e) => e.ap_id === ap.id) ?? [])
+        .map((e) => ({
+          erfolg: asInt(e.erfolg),
+          kriterien: e.kriterien,
+        }))
+        .filter((e) => e.erfolg != null),
       ziele: (zielAll.filter((z) => z.ap_id === ap.id) ?? [])
         .map((z) => ({
           id: z.id,

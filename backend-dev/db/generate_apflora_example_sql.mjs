@@ -794,6 +794,26 @@ emitChunked('check_reports (apf2: popber/tpopber)', {
 // apber prose fields that map to our subproject_reports data jsonb;
 // beurteilung is the ap_erfkrit_werte code -> text, and apf2's
 // massnahmen_planung_vs_ausfuehrung maps to our vergleich_ausfuehrung_planung
+/** beurteilungsskala text from erfkrit (Erfolgskriterien), sorted by the
+ *  ap_erfkrit_werte sort: "sehr erfolgreich: …; erfolgreich: …; …" */
+const beurteilungsskalaText = (art) => {
+  const rows = (art.ap.erfkrit ?? [])
+    .map((e) => ({
+      ...e,
+      text: werteText('apErfkrit', e.erfolg),
+      sort: parseInt(
+        data.werte.apErfkrit?.find(
+          (w) => parseInt(w.code, 10) === e.erfolg,
+        )?.sort ?? '99',
+        10,
+      ),
+    }))
+    .filter((e) => e.text != null && e.kriterien != null)
+    .sort((a, b) => a.sort - b.sort)
+  if (!rows.length) return null
+  return rows.map((e) => `${e.text}: ${e.kriterien}`).join('; ')
+}
+
 const apberData = (bericht) => {
   const fields = {
     situation: bericht.situation,
@@ -823,7 +843,14 @@ emitChunked('subproject_reports (apf2: apber)', {
     id: derivedId('subproject_report', bericht.id),
     subproject: subprojectId(art.ap.id),
     year: bericht.jahr,
-    data: apberData(bericht),
+    data: (() => {
+    const data = apberData(bericht)
+    const skala = beurteilungsskalaText(art)
+    if (skala) {
+      data ? (data.beurteilungsskala = skala) : null
+    }
+    return data
+  })(),
   }))
 }).map((r) => [
   q(r.id), q(r.subproject), intOrNull(r.year), jsonbOrNull(r.data),
