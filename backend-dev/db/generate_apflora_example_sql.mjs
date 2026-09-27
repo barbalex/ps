@@ -400,7 +400,13 @@ data.arts.forEach((art, artIndex) => {
       for (const massn of tpop.massnahmen) {
         // same convention as checks: year-only rows get January 1st
         const date =
-          massn.datum ?? (massn.jahr !== null ? `${massn.jahr}-01-01` : null)
+          // apf2's queries use the jahr column; when the datum's year
+          // contradicts it (data-entry errors like 1969 for 2009), jahr wins
+          massn.jahr !== null ?
+            (massn.datum && parseInt(massn.datum.slice(0, 4), 10) === massn.jahr ?
+              massn.datum
+            : `${massn.jahr}-01-01`)
+          : massn.datum
         actions.push({
           id: actionId(massn.id),
           place: place2Id(tpop.id),
@@ -771,6 +777,8 @@ emitChunked('checks (apf2: tpopkontr, without Freiwilligen-Kontrollen)', {
   pk: 'check_id',
 }, checks.map((c) => [q(c.id), q(c.place), q(c.date), jsonbOrNull(c.data)]))
 
+emit('-- actions are re-created so corrected dates (jahr vs datum conflicts) reach existing databases')
+emit(`DELETE FROM actions WHERE place_id IN (SELECT place_id FROM places WHERE subproject_id IN (SELECT subproject_id FROM subprojects WHERE project_id = ${q(PROJECT_ID)}));`)
 emitChunked('actions (apf2: tpopmassn)', {
   table: 'actions',
   cols: ['action_id', 'place_id', 'date', 'data'],

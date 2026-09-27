@@ -279,28 +279,60 @@ const reportPlaceSets = (rows: PlaceRow[], jahr: number) => {
 }
 
 const ProgrammInfo = () => {
-  const { subprojectId } = useSubprojectReportContext()
-  const startYearRes = useLiveQuery(
-    `SELECT start_year FROM subprojects WHERE subproject_id = $1`,
-    [subprojectId ?? null],
-  )
+  const { subprojectId, year } = useSubprojectReportContext()
+  const rows = usePlaceRows(subprojectId, year)
+  const startYear = useStartYear(subprojectId, year)
   const firstActionRes = useLiveQuery(
-    `SELECT min(extract(year from a.date))::int AS year
+    `SELECT a.place_id, min(extract(year from a.date))::int AS year
      FROM actions a JOIN places p ON a.place_id = p.place_id
-     WHERE p.subproject_id = $1`,
+     WHERE p.subproject_id = $1 AND a.data ->> 'typ' IS NOT NULL
+     GROUP BY a.place_id`,
     [subprojectId ?? null],
   )
-  const firstCheckRes = useLiveQuery(
-    `SELECT min(extract(year from c.date))::int AS year
-     FROM checks c JOIN places p ON c.place_id = p.place_id
-     WHERE p.subproject_id = $1`,
+  const firstCheckReportRes = useLiveQuery(
+    `SELECT r.place_id, min(r.year)::int AS year
+     FROM check_reports r
+       JOIN places tp ON r.place_id = tp.place_id
+       JOIN places p ON p.place_id = COALESCE(tp.parent_id, tp.place_id)
+     WHERE p.subproject_id = $1 AND r.data ->> 'entwicklung' IS NOT NULL
+     GROUP BY r.place_id`,
     [subprojectId ?? null],
   )
   if (!subprojectId) return <NoContext label="Programm" />
 
-  const startYear = (startYearRes?.rows?.[0] as { start_year: number | null } | undefined)?.start_year
-  const firstAction = (firstActionRes?.rows?.[0] as { year: number | null } | undefined)?.year
-  const firstCheck = (firstCheckRes?.rows?.[0] as { year: number | null } | undefined)?.year
+  // apf2's jber_abc: earliest action/check-report on tpops that qualify
+  // (report-relevant, non-potential) in the report year's historization
+  const jahr = year ?? new Date().getFullYear()
+  const qualifyingTpopIds = new Set(
+    rows
+      .filter(
+        (r) =>
+          r.level === 2 &&
+          r.relevant &&
+          (statusCode(r.status) ?? 400) < 300 &&
+          r.since != null &&
+          r.since <= jahr,
+      )
+      .map((r) => r.place_id),
+  )
+  const minOnQualifying = (
+    perPlace: { place_id: string; year: number | null }[] | undefined,
+  ) =>
+    (perPlace ?? []).reduce<number | null>(
+      (min, row) =>
+        row.year != null && qualifyingTpopIds.has(row.place_id) ?
+          min == null || row.year < min ? row.year
+          : min
+        : min,
+      null,
+    )
+
+  const firstAction = minOnQualifying(
+    firstActionRes?.rows as { place_id: string; year: number | null }[],
+  )
+  const firstCheck = minOnQualifying(
+    firstCheckReportRes?.rows as { place_id: string; year: number | null }[],
+  )
 
   return (
     <div className={styles.programmInfo}>
