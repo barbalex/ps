@@ -221,45 +221,6 @@ INSERT INTO subproject_report_designs (subproject_report_design_id, project_id, 
 }'::jsonb)
   ON CONFLICT (subproject_report_design_id) DO NOTHING;
 
--- the 2025 report of the art, with the free-text sections
-DELETE FROM subproject_reports
-WHERE subproject_id = '12496da4-f3ce-79b9-87cf-c6e85bb6722c'
-  AND year IN (2020, 2025);
--- 2020 is a demo of a past-year report: its tables/charts are calculated
--- from the historizations of that year (11b imports apf2's pop/tpop_history)
-INSERT INTO subproject_reports (subproject_report_id, subproject_id, year, data) VALUES
-  ('c4000000-0000-4000-8000-00000000b001', '12496da4-f3ce-79b9-87cf-c6e85bb6722c', 2025,
-  '{
-  "biotope_neue": "Geeignete Gewässer sind nach wie vor Mangelware und werden teilweise durch seltene Utricularia-Arten besiedelt, sodass dort i.d.R. von einer Ansiedlung von Aldrovanda abgesehen wird (auch wenn der negative Effekt nicht belegt ist). Neu eröffnete oder abgetiefte Moorgewässer sollten für Ansiedlungen genutzt werden können, in Absprache mit den Utricularia-AV. Ganz \"leere\" Gewässer scheinen jedoch nicht ideal; während mehrerer Jahre nachpflanzen, da \"Wintersterblichkeit\" und Zufallseffekte vermutlich gross. Auch oligotrophe Gewässer ausserhalb von Mooren können geeignet sein.",
-  "biotope_optimieren": "Eine \"alte\" Population im Kt. ZH, in der die Art Jahrzehnte mit tausenden Individuen vorkam, ist 2023 zusammengebrochen, vermutlich wegen Karpfen und/oder Biberaktivität. In Austausch mit dem NBA wird nach Möglichkeiten gesucht, die Situation zu verbessern.",
-  "vergleich_ausfuehrung_planung": "Die Überprüfung der Meldung vom Albis und die Begleitung in Maschwanden wurden bereits 2024 abgeschlossen. Am Mädlestenweiher war bisher keine zusätzliche Begehung notwendig, da erst die Rahmenbedingungen geklärt werden mussten. Die restlichen Arbeiten gemäss Offerte konnten durchgeführt werden.",
-  "massnahmen_optimieren": "Die Skepsis gegenüber der Förderung von Aldrovanda ist unter Botaniker:innen immer noch gross. Es wird befürchtet, dass Aldrovanda seltene Utricularia konkurrenzieren könnte, obwohl dazu in der Literatur keine Belege oder Hinweise vorliegen. Diese Aversionen führen dazu, dass etliche potentiell geeignete Gewässer nicht für Ansiedlungen genutzt werden können und die Umsetzung des Aktionsplans verzögert wird. Das Ansiedeln einer möglichst grossen Zahl von Trieben oder Turionen scheint wichtig zu sein, um Effekte durch die \"Wintermortalität\" zu kompensieren. Es sollten daher in angesiedelten Teil-Populationen mehrere Jahre Nachpflanzungen erfolgen.",
-  "massnahmen_ap_bearb": "",
-  "vergleich_vorjahr_gesamtziel": "Wie bereits im Vorjahr konnte keines der Ziele erreicht werden. Mit Blick auf das Gesamtziel im Jahre 2026 sind 95% der Aktionsplan-Laufzeit verstrichen. Nur 10 der geforderten 15 Populationen sind gegründet. Die neuen Populationen sind jedoch grösstenteils noch sehr individuenschwach. Die bestehende Population am Mettmenhaslisee konnte in ihrer Grösse erhalten werden. Die Population am Mädlestenweiher ist weiterhin zu schwach.",
-  "beurteilungsskala": "sehr erfolgreich: 3 Ziele wurden erreicht; erfolgreich: 2 Ziele wurden erreicht; mässig erfolgreich: 1 Ziel wurde erreicht; nicht erfolgreich: kein Ziel wurde erreicht",
-  "beurteilung": "nicht erfolgreich",
-  "wirkung_auf_art": "Ohne den Aktionsplan wäre diese Art im Kanton Zürich nur noch an 2 Wuchsorten erhalten geblieben (wobei der eine langjährige Bestand inzwischen unerwartet zusammengebrochen ist). Durch den Aktionsplan konnten einige Populationen neu angesiedelt werden, die langfristige Vitalität und Entwicklung dieser Populationen ist jedoch noch sehr ungewiss.",
-  "apber_analyse": "Die ursprünglichen Vorkommen im deutschen und österreichischen Bodenseeraum, von denen die Zürcher Populationen abstammen, sind alle erloschen. Gründe dafür sind Management-Fehler und Nährstoffeintrag resp. Landschafts- und Vegetationsveränderungen. Diese Herkunft existiert jetzt nur noch angesiedelt im Kt. Zürich. Allerdings ist eines der beiden grossen und langjährigen Vorkommen mit mehreren Tausend Trieben unerwartet zusammengebrochen. Als Grund werden Karpfen und/oder der Biber vermutet. Das verbliebene grosse Zürcher Vorkommen ist daher besonders wertvoll und schützenswert! Wie das Beispiel von Aldrovanda zeigt, ist selbst bei einer sehr grossen und jahrzehntelang existierenden Population nicht garantiert, dass sie nicht plötzlich verschwinden kann. Durch das Etablieren weiterer stabiler und individuenstarker Vorkommen muss das Risiko verkleinert werden, dass Aldrovanda im Raum Bodensee/Zürich ganz verschwindet, falls beim letzten grossen Vorkommen ebenfalls ein Problem auftreten sollte.",
-  "konsequenzen_umsetzung": "In der Vergangenheit wurde oft beobachtet, dass Ansiedlungen von Aldrovanda entweder gar nicht funktionierten oder nach wenigen Jahren wieder erlöschen. Die Gründe dafür blieben meist unklar, allenfalls wurden jeweils zu wenige Individuen angesiedelt, sodass die Wintermortalität und der Zufall eine Rolle spielten. Dank stabiler Grösse kann nun jedoch ein grosses Vorkommen als Spenderpopulation genutzt und Neugründungen mit vergleichsweise vielen Individuen vorgenommen werden. Diese Strategie wird fortgesetzt. Momentan werden Neugründungen wenn möglich nicht in Gewässern vorgenommen, in denen bereits sehr seltene Utricularia-Arten vorkommen. Neue Ansiedlungsgewässer zu finden ist schwierig, da diese erstens oft nicht in der Liste mit Neuschaffungsflächen erscheinen und zweitens neuen Moortümpeln oft anderen seltenen Wasserpflanzen vorbehalten sind. Grundsätzlich scheint nach der Neuanlage oder dem Ausbaggern von Moorgewässern ein Nachpflanzen über mehrere Jahre nötig, da sich vermutlich ganz \"leere\" Gewässer nicht für Aldrovanda eignen.",
-  "konsequenzen_erfolgskontrolle": "Eine Erfolgskontrolle ist bei Aldrovanda vesiculosa teilweise aus logistischen Gründen schwierig, denn das Betreten von Feuchtgebieten ist im Frühling (wenn das Schilf noch kurz ist) oft nicht gestattet wegen störungsanführiger Brutvögel. Nach der Brutsaison im Hochsommer steht das Schilf jedoch meist so hoch, dass das Auffinden der Kleingewässer bzw. die Orientierung im Ried sehr schwierig wird. Daher finden Erfolgskontrollen oft erst im September statt, nachdem der Riedschnitt begonnen hat."
-}'::jsonb),
-  ('c4000000-0000-4000-8000-00000000b002', '12496da4-f3ce-79b9-87cf-c6e85bb6722c', 2020,
-  '{
-  "biotope_neue": "(2020) Zahlreiche Neuansiedlungen konnten in den Vorjahren vorgenommen werden; die Entwicklung der jungen Populationen wird weiter verfolgt.",
-  "biotope_optimieren": "(2020) Die Bestandeskontrollen der bestehenden Gewässer laufen; erste Optimierungen der Habitatbedingungen wurden umgesetzt.",
-  "vergleich_ausfuehrung_planung": "(2020) Die geplanten Arbeiten wurden weitgehend wie vorgesehen umgesetzt.",
-  "massnahmen_optimieren": "(2020) Die Ansiedlungen der letzten Jahre entwickeln sich mehrheitlich vielversprechend; Nachpflanzungen werden fortgesetzt.",
-  "massnahmen_ap_bearb": "",
-  "vergleich_vorjahr_gesamtziel": "(2020) Mit den Neuansiedlungen der letzten Jahre wurden erste Schritte in Richtung Gesamtziel gemacht.",
-  "beurteilungsskala": "sehr erfolgreich: 3 Ziele wurden erreicht; erfolgreich: 2 Ziele wurden erreicht; mässig erfolgreich: 1 Ziel wurde erreicht; nicht erfolgreich: kein Ziel wurde erreicht",
-  "beurteilung": "erfolgreich",
-  "wirkung_auf_art": "(2020) Ohne den Aktionsplan wäre die Art im Kanton Zürich nur noch an zwei Wuchsorten vorhanden. Die neu begründeten Populationen sind noch klein, aber etabliert.",
-  "apber_analyse": "(2020) Die Ansiedlungserfolge der Jahre seit Projektbeginn zeigen, dass die gewählte Methode grundsätzlich funktioniert.",
-  "konsequenzen_umsetzung": "(2020) Die Nachpflanzungen werden wie geplant weitergeführt.",
-  "konsequenzen_erfolgskontrolle": "(2020) Die Erfolgskontrollen werden im jährlichen Rhythmus fortgesetzt."
-}'::jsonb)
-    ON CONFLICT (subproject_report_id) DO NOTHING;
-
 -- fail loudly if the report pieces are missing
 DO $$
 DECLARE

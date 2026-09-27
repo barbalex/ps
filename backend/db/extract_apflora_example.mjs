@@ -166,6 +166,7 @@ const werteTables = {
   methode: 'tpopkontrzaehl_methode_werte',
   massnTyp: 'tpopmassn_typ_werte',
   massnErfbeurt: 'tpopmassn_erfbeurt_werte',
+  apErfkrit: 'ap_erfkrit_werte',
   popStatus: 'pop_status_werte',
   apberRelevantGrund: 'tpop_apberrelevant_grund_werte',
   apBearbstand: 'ap_bearbstand_werte',
@@ -191,6 +192,15 @@ const popberAll = readTable('popber')
 const tpopberAll = readTable('tpopber')
 const massnberAll = readTable('tpopmassnber')
 const popmassnberAll = readTable('popmassnber')
+const apberAll = readTable('apber')
+
+const erfkritText = (code) => {
+  if (code === null || code === undefined) return null
+  const entry = data.werte.apErfkrit?.find(
+    (w) => parseInt(w.code, 10) === parseInt(code, 10),
+  )
+  return entry ? entry.text : null
+}
 
 const popmassnberByPop = new Map()
 for (const b of popmassnberAll) {
@@ -486,6 +496,27 @@ for (const artname of ARTNAMES) {
       bearbeiter: ap.bearbeiter,
       ekf_beobachtungszeitpunkt: ap.ekf_beobachtungszeitpunkt,
       histories: (apHistoryById.get(ap.id) ?? []).sort((a, b) => a.year - b.year),
+      berichte: (apberAll.filter((b) => b.ap_id === ap.id) ?? [])
+        .map((b) => ({
+          id: b.id,
+          jahr: asInt(b.jahr),
+          situation: b.situation,
+          vergleich_vorjahr_gesamtziel: b.vergleich_vorjahr_gesamtziel,
+          beurteilung: asInt(b.beurteilung),
+          beurteilung_text: erfkritText(b.beurteilung),
+          veraenderung_zum_vorjahr: b.veraenderung_zum_vorjahr,
+          apber_analyse: b.apber_analyse,
+          konsequenzen_umsetzung: b.konsequenzen_umsetzung,
+          konsequenzen_erfolgskontrolle: b.konsequenzen_erfolgskontrolle,
+          biotope_neue: b.biotope_neue,
+          biotope_optimieren: b.biotope_optimieren,
+          massnahmen_optimieren: b.massnahmen_optimieren,
+          wirkung_auf_art: b.wirkung_auf_art,
+          massnahmen_ap_bearb: b.massnahmen_ap_bearb,
+          massnahmen_planung_vs_ausfuehrung: b.massnahmen_planung_vs_ausfuehrung,
+        }))
+        .filter((b) => b.jahr != null)
+        .sort((a, b) => a.jahr - b.jahr),
     },
     pops,
   })

@@ -276,6 +276,7 @@ const checks = []
 const actions = []
 const checkReports = []
 const actionReports = []
+const subprojectReports = []
 const checkTaxaByArt = new Map() // art index -> rows
 const subprojectStartYears = new Map(
   data.arts.map((art) => [subprojectId(art.ap.id), parseInt(art.ap.start_jahr, 10)]),
@@ -782,6 +783,44 @@ emitChunked('check_reports (apf2: popber/tpopber)', {
   pk: 'place_check_report_id',
 }, checkReports.map((r) => [q(r.id), q(r.place), intOrNull(r.year), jsonbOrNull(r.data)]))
 
+// apber prose fields that map to our subproject_reports data jsonb;
+// beurteilung is the ap_erfkrit_werte code -> text, and apf2's
+// massnahmen_planung_vs_ausfuehrung maps to our vergleich_ausfuehrung_planung
+const apberData = (bericht) => {
+  const fields = {
+    situation: bericht.situation,
+    vergleich_vorjahr_gesamtziel: bericht.vergleich_vorjahr_gesamtziel,
+    beurteilung: bericht.beurteilung_text,
+    apber_analyse: bericht.apber_analyse,
+    konsequenzen_umsetzung: bericht.konsequenzen_umsetzung,
+    konsequenzen_erfolgskontrolle: bericht.konsequenzen_erfolgskontrolle,
+    biotope_neue: bericht.biotope_neue,
+    biotope_optimieren: bericht.biotope_optimieren,
+    massnahmen_optimieren: bericht.massnahmen_optimieren,
+    wirkung_auf_art: bericht.wirkung_auf_art,
+    massnahmen_ap_bearb: bericht.massnahmen_ap_bearb,
+    vergleich_ausfuehrung_planung: bericht.massnahmen_planung_vs_ausfuehrung,
+  }
+  return buildData(Object.entries(fields))
+}
+
+emit('-- subproject_reports are re-created so apber data replaces hand-written or empty rows')
+emit(`DELETE FROM subproject_reports WHERE subproject_id IN (SELECT subproject_id FROM subprojects WHERE project_id = ${q(PROJECT_ID)});`)
+emitChunked('subproject_reports (apf2: apber)', {
+  table: 'subproject_reports',
+  cols: ['subproject_report_id', 'subproject_id', 'year', 'data'],
+  pk: 'subproject_report_id',
+}, data.arts.flatMap((art) => {
+  return (art.ap.berichte ?? []).map((bericht) => ({
+    id: derivedId('subproject_report', bericht.id),
+    subproject: subprojectId(art.ap.id),
+    year: bericht.jahr,
+    data: apberData(bericht),
+  }))
+}).map((r) => [
+  q(r.id), q(r.subproject), intOrNull(r.year), jsonbOrNull(r.data),
+]))
+
 emitChunked('action_reports (apf2: tpopmassnber)', {
   table: 'action_reports',
   cols: ['place_action_report_id', 'place_id', 'year', 'data'],
@@ -839,6 +878,10 @@ emit(`  END IF;`)
 emit(`  SELECT count(*) INTO got FROM action_reports r JOIN places p USING (place_id) WHERE p.subproject_id IN (SELECT subproject_id FROM subprojects WHERE project_id = ${q(PROJECT_ID)});`)
 emit(`  IF got <> ${actionReports.length} THEN`)
 emit(`    RAISE EXCEPTION 'apflora seed: expected % action_reports, got %', ${actionReports.length}, got;`)
+emit(`  END IF;`)
+emit(`  SELECT count(*) INTO got FROM subproject_reports WHERE subproject_id IN (SELECT subproject_id FROM subprojects WHERE project_id = ${q(PROJECT_ID)});`)
+emit(`  IF got <> ${data.arts.reduce((s2, art) => s2 + (art.ap.berichte?.length ?? 0), 0)} THEN`)
+emit(`    RAISE EXCEPTION 'apflora seed: expected % subproject_reports, got %', ${data.arts.reduce((s2, art) => s2 + (art.ap.berichte?.length ?? 0), 0)}, got;`)
 emit(`  END IF;`)
 emit(`  SELECT count(*) INTO got FROM check_taxa ct JOIN checks c USING (check_id) JOIN places p USING (place_id) WHERE p.subproject_id IN (SELECT subproject_id FROM subprojects WHERE project_id = ${q(PROJECT_ID)});`)
 emit(`  IF got <> ${checkTaxaCount} THEN`)
