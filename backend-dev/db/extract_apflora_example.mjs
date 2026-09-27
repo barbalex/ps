@@ -167,6 +167,7 @@ const werteTables = {
   massnTyp: 'tpopmassn_typ_werte',
   massnErfbeurt: 'tpopmassn_erfbeurt_werte',
   apErfkrit: 'ap_erfkrit_werte',
+  zielTyp: 'ziel_typ_werte',
   popStatus: 'pop_status_werte',
   apberRelevantGrund: 'tpop_apberrelevant_grund_werte',
   apBearbstand: 'ap_bearbstand_werte',
@@ -193,6 +194,7 @@ const tpopberAll = readTable('tpopber')
 const massnberAll = readTable('tpopmassnber')
 const popmassnberAll = readTable('popmassnber')
 const apberAll = readTable('apber')
+const zielAll = readTable('ziel')
 
 const erfkritText = (code) => {
   if (code === null || code === undefined) return null
@@ -496,6 +498,17 @@ for (const artname of ARTNAMES) {
       bearbeiter: ap.bearbeiter,
       ekf_beobachtungszeitpunkt: ap.ekf_beobachtungszeitpunkt,
       histories: (apHistoryById.get(ap.id) ?? []).sort((a, b) => a.year - b.year),
+      ziele: (zielAll.filter((z) => z.ap_id === ap.id) ?? [])
+        .map((z) => ({
+          id: z.id,
+          jahr: asInt(z.jahr),
+          typ: asInt(z.typ),
+          bezeichnung: z.bezeichnung,
+          erreichung: z.erreichung,
+          bemerkungen: z.bemerkungen,
+        }))
+        .filter((z) => z.jahr != null)
+        .sort((a, b) => a.jahr - b.jahr),
       berichte: (apberAll.filter((b) => b.ap_id === ap.id) ?? [])
         .map((b) => ({
           id: b.id,

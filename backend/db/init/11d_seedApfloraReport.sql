@@ -28,21 +28,6 @@ INSERT INTO fields (field_id, project_id, table_name, field_type_id, widget_type
   ('c1000000-0000-4000-8000-00000000f01a', '0195a101-0000-7000-8000-000000000001', 'subproject_reports', '018ca19e-7a23-7bf4-8523-ff41e3b60807', '018ca1a1-0868-7f1e-80aa-119fa3932538', 'konsequenzen_erfolgskontrolle', 'Konsequenzen für die Erfolgskontrolle')
 ;
 
--- goals of the report year (Ziele im Berichtsjahr)
-DELETE FROM goals
-WHERE subproject_id = '12496da4-f3ce-79b9-87cf-c6e85bb6722c'
-  AND year IN (2020, 2025);
--- 2020 is a demo of a past-year report: its tables/charts are calculated
--- from the historizations of that year (11b imports apf2's pop/tpop_history)
-INSERT INTO goals (goal_id, subproject_id, year, name, data) VALUES
-  ('c2000000-0000-4000-8000-00000000a001', '12496da4-f3ce-79b9-87cf-c6e85bb6722c', 2025, 'Ziel 1: 14 Populationen (inkl. bestehende Populationen)',
-    '{"typ":"Zwischenziel","beurteilung":"nicht erreicht; nur 10 neue Populationen"}'::jsonb),
-  ('c2000000-0000-4000-8000-00000000a002', '12496da4-f3ce-79b9-87cf-c6e85bb6722c', 2025, 'Ziel 2: 6 neue Populationen mit mind. 1000 Triebe',
-    '{"typ":"Zwischenziel","beurteilung":"nicht erreicht; nur 1 neue Population mit mind. 1000 Triebe"}'::jsonb),
-  ('c2000000-0000-4000-8000-00000000a003', '12496da4-f3ce-79b9-87cf-c6e85bb6722c', 2025, 'Ziel 3: bestehende Populationen (Mettmenhaslisee, Mädlestenweiher): Grösse erhalten (mind. 1000 Triebe)',
-    '{"typ":"Zwischenziel","beurteilung":"nicht erreicht; nur am Mettmenhaslisee konnte die Populationsgrösse erhalten werden"}'::jsonb)
-  ON CONFLICT (goal_id) DO NOTHING;
-
 -- the active report design: title, fields, the data tables and the charts,
 -- in the layout of the apf2 yearly report
 DELETE FROM subproject_report_designs

@@ -829,6 +829,28 @@ emitChunked('subproject_reports (apf2: apber)', {
   q(r.id), q(r.subproject), intOrNull(r.year), jsonbOrNull(r.data),
 ]))
 
+emit('-- goals (apf2: ziel) — delete-first so re-seeds replace edited rows')
+emit(`DELETE FROM goals WHERE subproject_id IN (SELECT subproject_id FROM subprojects WHERE project_id = ${q(PROJECT_ID)});`)
+emitChunked('goals (apf2: ziel)', {
+  table: 'goals',
+  cols: ['goal_id', 'subproject_id', 'year', 'name', 'data'],
+  pk: 'goal_id',
+}, data.arts.flatMap((art) => {
+  return (art.ap.ziele ?? []).map((ziel) => ({
+    id: derivedId('goal', ziel.id),
+    subproject: subprojectId(art.ap.id),
+    year: ziel.jahr,
+    name: ziel.bezeichnung,
+    data: buildData([
+      ['typ', werteText('zielTyp', ziel.typ)],
+      ['erreichung', ziel.erreichung],
+      ['bemerkungen', ziel.bemerkungen],
+    ]),
+  }))
+}).map((r) => [
+  q(r.id), q(r.subproject), intOrNull(r.year), qOrNull(r.name), jsonbOrNull(r.data),
+]))
+
 emitChunked('action_reports (apf2: tpopmassnber)', {
   table: 'action_reports',
   cols: ['place_action_report_id', 'place_id', 'year', 'data'],
@@ -886,6 +908,10 @@ emit(`  END IF;`)
 emit(`  SELECT count(*) INTO got FROM action_reports r JOIN places p USING (place_id) WHERE p.subproject_id IN (SELECT subproject_id FROM subprojects WHERE project_id = ${q(PROJECT_ID)});`)
 emit(`  IF got <> ${actionReports.length} THEN`)
 emit(`    RAISE EXCEPTION 'apflora seed: expected % action_reports, got %', ${actionReports.length}, got;`)
+emit(`  END IF;`)
+emit(`  SELECT count(*) INTO got FROM goals WHERE subproject_id IN (SELECT subproject_id FROM subprojects WHERE project_id = ${q(PROJECT_ID)});`)
+emit(`  IF got <> ${data.arts.reduce((s2, art) => s2 + (art.ap.ziele?.length ?? 0), 0)} THEN`)
+emit(`    RAISE EXCEPTION 'apflora seed: expected % goals, got %', ${data.arts.reduce((s2, art) => s2 + (art.ap.ziele?.length ?? 0), 0)}, got;`)
 emit(`  END IF;`)
 emit(`  SELECT count(*) INTO got FROM subproject_reports WHERE subproject_id IN (SELECT subproject_id FROM subprojects WHERE project_id = ${q(PROJECT_ID)});`)
 emit(`  IF got <> ${data.arts.reduce((s2, art) => s2 + (art.ap.berichte?.length ?? 0), 0)} THEN`)
