@@ -452,12 +452,9 @@ const popMengeSeriesPerYear = async (
       groups.set(popId, group)
     }
   }
-  return [...groups.values()].sort(
-    (a, b) =>
-      Object.values(b.values).reduce((s, v) => s + v, 0) -
-        Object.values(a.values).reduce((s, v) => s + v, 0) ||
-      a.name.localeCompare(b.name),
-  )
+  // apf2 sorts populations by nr (ascending) then reverses, so low-nr
+  // populations (ursprünglich, translucent green) stack on top
+  return [...groups.values()].sort((a, b) => b.name.localeCompare(a.name))
 }
 
 export const buildData = async ({
