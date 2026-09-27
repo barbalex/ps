@@ -28,8 +28,9 @@ const ARTNAMES = [
   'Aldrovanda vesiculosa L.',
   'Pulsatilla vulgaris Mill.',
 ]
-// tpopkontr.typ stores the werte text; Freiwilligen-Kontrollen are excluded
-const KONTROLL_TYPEN = ['Ausgangszustand', 'Kontrolle']
+// apf2's chart functions include Freiwilligen-Kontrollen in the counts,
+// so they are imported too (their typ field lets the UI filter them)
+const KONTROLL_TYPEN = ['Ausgangszustand', 'Kontrolle', 'Freiwilligen-Kontrolle']
 
 if (!existsSync(dumpPath)) {
   console.error(`Dump not found: ${dumpPath}`)
@@ -166,6 +167,7 @@ const werteTables = {
   methode: 'tpopkontrzaehl_methode_werte',
   massnTyp: 'tpopmassn_typ_werte',
   massnErfbeurt: 'tpopmassn_erfbeurt_werte',
+  ekzaehleinheit: 'ekzaehleinheit',
   apErfkrit: 'ap_erfkrit_werte',
   zielTyp: 'ziel_typ_werte',
   popStatus: 'pop_status_werte',
@@ -175,7 +177,13 @@ const werteTables = {
 }
 for (const [key, table] of Object.entries(werteTables)) {
   data.werte[key] = readTable(table)
-    .map((r) => ({ code: r.code, text: r.text, sort: r.sort }))
+    .map((r) => ({
+      code: r.code,
+      text: r.text,
+      sort: r.sort,
+      // ekzaehleinheit references einheit werte by UUID, not by code
+      ...(key === 'einheit' ? { id: r.id } : {}),
+    }))
     .filter((r) => r.code !== undefined)
 }
 
@@ -196,6 +204,7 @@ const popmassnberAll = readTable('popmassnber')
 const apberAll = readTable('apber')
 const zielAll = readTable('ziel')
 const erfkritAll = readTable('erfkrit')
+const ekzaehleinheitAll = readTable('ekzaehleinheit')
 
 const erfkritText = (code) => {
   if (code === null || code === undefined) return null
@@ -346,10 +355,6 @@ for (const z of zaehlAll) {
 const kontrByTpop = new Map()
 let skippedFreiwillig = 0
 for (const k of kontrAll) {
-  if (k.typ === 'Freiwilligen-Kontrolle') {
-    skippedFreiwillig++
-    continue
-  }
   if (!KONTROLL_TYPEN.includes(k.typ)) continue
   if (k.bearbeiter) neededAdresseIds.add(k.bearbeiter)
   const list = kontrByTpop.get(k.tpop_id) ?? []
@@ -499,6 +504,15 @@ for (const artname of ARTNAMES) {
       bearbeiter: ap.bearbeiter,
       ekf_beobachtungszeitpunkt: ap.ekf_beobachtungszeitpunkt,
       histories: (apHistoryById.get(ap.id) ?? []).sort((a, b) => a.year - b.year),
+      // the zielrelevant counting unit (ekzaehleinheit.zielrelevant = TRUE)
+      zielrelevant_einheit: (() => {
+        const ekze = ekzaehleinheitAll.find(
+          (e) => e.ap_id === ap.id && e.zielrelevant === 't',
+        )
+        if (!ekze) return null
+        const werte = data.werte.einheit?.find((w) => w.id === ekze.zaehleinheit_id)
+        return werte ? werte.text : null
+      })(),
       erfkrit: (erfkritAll.filter((e) => e.ap_id === ap.id) ?? [])
         .map((e) => ({
           erfolg: asInt(e.erfolg),
@@ -546,7 +560,7 @@ data.adressen = [...neededAdresseIds]
   .filter((id) => adressenById.has(id))
   .map((id) => ({ id, name: adressenById.get(id).name }))
 
-console.log(`Freiwilligen-Kontrollen skipped (all species): ${skippedFreiwillig}`)
+
 
 writeFileSync(outPath, JSON.stringify(data, null, 1))
 console.log(`Written: ${outPath}`)

@@ -152,10 +152,9 @@ export const SingleChart = ({ chart, series, data, synchronized }: Props) => {
           strokeDasharray="3 3"
           horizontal={false}
         />
-        <Legend
-          verticalAlign="bottom"
-          height={36}
-        />
+        {series.length <= 8 && (
+          <Legend verticalAlign="bottom" height={36} />
+        )}
       </AreaChart>
     </ResponsiveContainer>
   )

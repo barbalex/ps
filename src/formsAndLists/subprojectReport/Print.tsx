@@ -39,6 +39,7 @@ export const SubprojectReportPrint = ({ from }: { from: string }) => {
   const res = useLiveQuery(
     `SELECT 
       sr.*,
+      (SELECT data ->> 'zielrelevant_einheit' FROM subprojects WHERE subproject_id = sr.subproject_id) AS zielrelevant_einheit,
       (SELECT ${subprojectNameSingularExpr(language, 'p')} FROM projects p WHERE p.project_id = (SELECT project_id FROM subprojects WHERE subproject_id = sr.subproject_id)) AS subproject_name_singular,
       (SELECT json_agg(f) FROM (
         SELECT field_id, name, field_label, field_type_id, widget_type_id 
@@ -187,7 +188,11 @@ export const SubprojectReportPrint = ({ from }: { from: string }) => {
         const data = chartDataMap[chart.chart_id] ?? { data: [], years: [], series: [] }
         return (
           <div className={styles.fieldWrapper}>
-            <div className={styles.chartTitle}>{chart.name}</div>
+            <div className={styles.chartTitle}>
+              {row?.zielrelevant_einheit ?
+                chart.name.replace('Triebe total', row.zielrelevant_einheit)
+              : chart.name}
+            </div>
             {chart.subjects_single === true ? (
               groupSeriesBySubject(data.series ?? []).map((series) => (
                 <SingleChart

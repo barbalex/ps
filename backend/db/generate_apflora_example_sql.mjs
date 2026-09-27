@@ -288,6 +288,7 @@ const subprojectData = (art) =>
     ['umsetzung', werteText('apUmsetzung', art.ap.umsetzung)],
     ['bearbeiter', adressName(art.ap.bearbeiter)],
     ['ekf_beobachtungszeitpunkt', art.ap.ekf_beobachtungszeitpunkt],
+    ['zielrelevant_einheit', art.ap.zielrelevant_einheit],
   ])
 
 data.arts.forEach((art, artIndex) => {
@@ -436,7 +437,10 @@ data.arts.forEach((art, artIndex) => {
       }
       for (const kontr of tpop.kontrollen) {
         // apf2 has rows with only jahr; keep them with a deterministic date
-        const date = kontr.datum ?? `${kontr.jahr}-01-01`
+        // some dump rows have the literal string "null" in the datum field
+        const rawDatum = kontr.datum === 'null' ? null : kontr.datum
+        const date =
+          rawDatum ?? (kontr.jahr !== null && kontr.jahr !== undefined ? `${kontr.jahr}-01-01` : null)
         checks.push({
           id: checkId(kontr.id),
           place: place2Id(tpop.id),
@@ -542,6 +546,10 @@ data.arts.forEach((art, i) => {
   )
 })
 emit(`  ON CONFLICT (subproject_id) DO NOTHING;`)
+emit('-- separate UPDATE because the sync-ignore trigger suppresses ON CONFLICT DO UPDATE')
+for (const art of data.arts) {
+  emit(`UPDATE subprojects SET data = ${jsonbOrNull(subprojectData(art))} WHERE subproject_id = ${q(subprojectId(art.ap.id))};`)
+}
 
 emit('-- link subprojects to their taxon in the seeded DB-TAXREF (2017) taxonomy')
 for (const art of data.arts) {
@@ -775,7 +783,7 @@ emitChunked('checks (apf2: tpopkontr, without Freiwilligen-Kontrollen)', {
   table: 'checks',
   cols: ['check_id', 'place_id', 'date', 'data'],
   pk: 'check_id',
-}, checks.map((c) => [q(c.id), q(c.place), q(c.date), jsonbOrNull(c.data)]))
+}, checks.map((c) => [q(c.id), q(c.place), qOrNull(c.date), jsonbOrNull(c.data)]))
 
 emit('-- actions are re-created so corrected dates (jahr vs datum conflicts) reach existing databases')
 emit(`DELETE FROM actions WHERE place_id IN (SELECT place_id FROM places WHERE subproject_id IN (SELECT subproject_id FROM subprojects WHERE project_id = ${q(PROJECT_ID)}));`)

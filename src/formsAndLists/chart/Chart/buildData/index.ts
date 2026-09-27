@@ -320,6 +320,27 @@ const popMengeSeriesPerYear = async (
   valueUnit: string | null | undefined,
 ): Promise<{ name: string; values: Record<number, number>; color: string }[]> => {
   if (!valueUnit) return []
+  // apf2 resolves the zielrelevant unit per AP (ekzaehleinheit); the chart
+  // subject's value_unit is a fallback when the subproject doesn't declare one
+  const unitRes = await db.query(
+    `SELECT ct.unit_id
+     FROM check_taxa ct
+       JOIN checks c USING (check_id)
+       JOIN places p ON c.place_id = p.place_id
+     WHERE p.subproject_id = $1 AND ct.unit_id = (
+       SELECT u.unit_id FROM subprojects s
+         JOIN LATERAL (
+           SELECT u2.unit_id FROM units u2
+           WHERE u2.name = s.data ->> 'zielrelevant_einheit'
+             AND u2.project_id = s.project_id
+           LIMIT 1
+         ) u ON TRUE
+       WHERE s.subproject_id = $1
+     ) LIMIT 1`,
+    [subproject_id],
+  )
+  const resolvedUnit = (unitRes?.rows?.[0] as { unit_id?: string } | undefined)?.unit_id
+  const effectiveUnit = resolvedUnit ?? valueUnit
   const zaehlRes = await db.query(
     `SELECT c.place_id, extract(year from c.date)::int AS year, sum(ct.quantity_numeric) AS total
      FROM check_taxa ct
@@ -329,7 +350,7 @@ const popMengeSeriesPerYear = async (
        AND ct.quantity_numeric IS NOT NULL
        AND COALESCE(c.data ->> 'apber_nicht_relevant', 'false') <> 'true'
      GROUP BY 1, 2`,
-    [subproject_id, valueUnit],
+    [subproject_id, effectiveUnit],
   )
   const massnRes = await db.query(
     `SELECT a.place_id, extract(year from a.date)::int AS year,
@@ -341,7 +362,7 @@ const popMengeSeriesPerYear = async (
        AND a.data ->> 'zieleinheit_einheit' = (SELECT name FROM units WHERE unit_id = $2)
        AND a.data ->> 'zieleinheit_anzahl' IS NOT NULL
      GROUP BY 1, 2`,
-    [subproject_id, valueUnit],
+    [subproject_id, effectiveUnit],
   )
 
   // per tpop and year: the sums, kept only if the tpop's historization of

@@ -34,8 +34,6 @@ later: lets build the report for the entire apflora project
 
 ---
 
-it seems pulsatilla vulgaris's apber data (for 2025) was not imported into ps. lets change the import scripts to do this
-
 ---
 
 use "virtualized tables" (queries/views on real tables) for ekf? 1. create this capability in ps 2. import data from apf2
