@@ -278,6 +278,39 @@ const reportPlaceSets = (rows: PlaceRow[], jahr: number) => {
   }
 }
 
+const ProgrammInfo = () => {
+  const { subprojectId } = useSubprojectReportContext()
+  const startYearRes = useLiveQuery(
+    `SELECT start_year FROM subprojects WHERE subproject_id = $1`,
+    [subprojectId ?? null],
+  )
+  const firstActionRes = useLiveQuery(
+    `SELECT min(extract(year from a.date))::int AS year
+     FROM actions a JOIN places p ON a.place_id = p.place_id
+     WHERE p.subproject_id = $1`,
+    [subprojectId ?? null],
+  )
+  const firstCheckRes = useLiveQuery(
+    `SELECT min(extract(year from c.date))::int AS year
+     FROM checks c JOIN places p ON c.place_id = p.place_id
+     WHERE p.subproject_id = $1`,
+    [subprojectId ?? null],
+  )
+  if (!subprojectId) return <NoContext label="Programm" />
+
+  const startYear = (startYearRes?.rows?.[0] as { start_year: number | null } | undefined)?.start_year
+  const firstAction = (firstActionRes?.rows?.[0] as { year: number | null } | undefined)?.year
+  const firstCheck = (firstCheckRes?.rows?.[0] as { year: number | null } | undefined)?.year
+
+  return (
+    <div className={styles.programmInfo}>
+      <span>Start Programm: {startYear ?? '(Start-Jahr fehlt)'}</span>
+      <span>Erste Massnahme: {firstAction ?? ''}</span>
+      <span>Erste Kontrolle: {firstCheck ?? ''}</span>
+    </div>
+  )
+}
+
 const GrundmengenTable = ({ title }: { title?: string }) => {
   const { subprojectId, year } = useSubprojectReportContext()
   const rows = usePlaceRows(subprojectId, year)
@@ -709,6 +742,12 @@ const MassnahmenList = ({ title }: { title?: string }) => {
  * design editor and the report print.
  */
 export const buildDataComponents = (): Config['components'] => ({
+  ProgrammInfo: {
+    label: 'Start Programm / Erste Massnahme / Erste Kontrolle',
+    fields: {},
+    defaultProps: {},
+    render: () => <ProgrammInfo />,
+  },
   Heading: {
     label: 'Überschrift',
     fields: {

@@ -60,6 +60,12 @@ INSERT INTO subproject_report_designs (subproject_report_design_id, project_id, 
       }
     },
     {
+      "type": "ProgrammInfo",
+      "props": {
+        "id": "ProgrammInfo-25"
+      }
+    },
+    {
       "type": "Heading",
       "props": {
         "id": "Heading-1",

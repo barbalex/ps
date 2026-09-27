@@ -14,9 +14,11 @@ Better-Auth, possible extensions:
 
 ---
 
+B. Triebe total nach Populationen: the data is not drawn in the chart, see image
+
 ---
 
-chart 'kontrollierte Teil-Populationen': sorry - Teil-Populationen is the total, so lets not stack but only draw lines
+D. Ziele im Berichtsjahr: it seems ziele were not imported for pulsatilla. lets adjust the import to do this, also for abies alba
 
 ---
 

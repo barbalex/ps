@@ -273,7 +273,10 @@ historization.
   (ursprünglich / angesiedelt vor/nach Beginn AP / erloschen vor/nach /
   Ansaatversuch, with apf2's colors) per historization year, using the
   start year of the subproject's version of that year —
-  `pop_nach_status_for_jber` ported 1:1. The *Triebe total* chart ports
+  `pop_nach_status_for_jber` ported 1:1. A `ProgrammInfo` building block
+  shows Start Programm (the subproject's start year), Erste Massnahme and
+  Erste Kontrolle (the earliest action and check years), like apf2's report
+  header. The *Triebe total* chart ports
   `ap_ausw_pop_menge`: per historization year, every qualifying tpop carries
   its latest zaehlung of the zielrelevant unit up to that year (lookback),
   plus the year's anpflanzung planting when it had no zaehlung; series per

@@ -87,3 +87,12 @@
   overflow-wrap: break-word;
   line-height: 1.5;
 }
+
+.programmInfo {
+  display: flex;
+  gap: 24px;
+  flex-wrap: wrap;
+  padding: 4px 0 8px;
+  font-size: 0.9em;
+  color: #444;
+}
