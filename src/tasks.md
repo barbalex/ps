@@ -14,8 +14,6 @@ Better-Auth, possible extensions:
 
 ---
 
-B. Triebe total nach Populationen: the data is not drawn in the chart, see image
-
 ---
 
 ---
@@ -28,7 +26,7 @@ B. Triebe total nach Populationen: the data is not drawn in the chart, see image
 
 ---
 
-later: lets build the report for the entire apflora project
+What to do about it: try the beta-subqueries image (or newer latest once #4051 ships) — that's the actual fix and worth a test before any ps-side workarounds
 
 ---
 

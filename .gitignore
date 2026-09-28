@@ -23,3 +23,6 @@ playwright-report/
 seed-data/apflora/apf2-example.json
 backend/db/init/11b_seedApfloraExampleData.sql
 backend-dev/db/init/11b_seedApfloraExampleData.sql
+# full apflora imports (unpublished apf2 data, local-only)
+seed-data/apflora/apf2-report_*.json
+seed-data/apflora/apf2-all.json

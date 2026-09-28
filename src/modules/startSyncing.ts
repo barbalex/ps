@@ -13,6 +13,8 @@ import {
 } from '../store.ts'
 import { constants } from './constants.ts'
 import { fetchPostgrestToken } from './fetchPostgrestToken.ts'
+import { dependencyLevels, untilUpToDate } from './syncStages.ts'
+import { armSyncErrorRecovery } from './syncErrorRecovery.ts'
 
 // pglite-worker.ts registers electricSync() under the `electric` namespace;
 // store.ts types the db atom as plain PGlite, so the namespace is re-declared here.
@@ -1260,64 +1262,135 @@ export const startSyncing = async (userId: string) => {
       ]),
     )
 
-    const sync = await (db as ElectricDb).electric.syncShapesToTables({
-      shapes,
-      key: 'ps-sync', // Persistent key for live updates across reloads
-      // Removed initialInsertMethod - let Electric use default for live updates
-      onInitialSync: async () => {
-        console.log('Initial sync done')
-        store.set(initialSyncingAtom, false)
-      },
-      onError: (error) => {
-        console.log('Electric sync error:', error)
-        const errorStr = error?.toString() || ''
-        const is409 = errorStr.includes('409') || errorStr.includes('Conflict')
-
-        if (is409) {
-          // 409 = shapes already exist, this is expected on reload or on a
-          // second login after an interrupted first sync. Do NOT release the
-          // boot phase here: at this point a shape may still be mid-refetch
-          // (its table cleared, snapshot not yet applied), and mounted live
-          // queries would read the empty table and never be notified of the
-          // refill. InitialSyncManager releases once isUpToDate is true.
-          console.log(
-            'Electric: Shape already exists (409) - continuing with existing shape',
-          )
-          return
-        }
-
-        // Network disconnect — mark offline so Syncer stops sync immediately
-        const isNetworkError =
-          errorStr.includes('ERR_INTERNET_DISCONNECTED') ||
-          errorStr.includes('Failed to fetch') ||
-          errorStr.includes('NetworkError') ||
-          errorStr.includes('network') ||
-          error instanceof TypeError
-        if (isNetworkError) {
-          console.warn('Electric: network error detected, marking offline')
-          store.set(onlineAtom, false)
-          return
-        }
-
-        console.error('❌ Syncer error:', error)
-        //  Don't set syncingAtom to false - let timeout or onInitialSync handle it
-      },
-      onMustRefetch: (tx) => {
-        console.warn(
-          'Electric: Must refetch - this can happen if the shape definition changes. Attempting to restart sync. Tx:',
-          tx,
-        )
-      },
-    })
-
-    // Validate sync object
-    if (!sync || typeof sync.unsubscribe !== 'function') {
-      throw new Error('Invalid sync object returned from syncShapesToTables')
+    // Apply the shapes in FK-safe levels: every table's foreign-key parents
+    // are subscribed and up to date before its own level starts. pglite
+    // enforces the (deferred) foreign keys at every apply transaction's
+    // commit, and Electric streams shapes concurrently without cross-shape
+    // ordering — without the levels, a child row arriving before its parent
+    // (e.g. subproject_roles before subprojects) aborts the whole initial
+    // sync. Live changes are unaffected: parents exist by then, and the rare
+    // same-transaction parent+child insert is caught by the FK error
+    // recovery (syncErrorRecovery.ts).
+    let levels: string[][] = [Object.values(shapes).map((s) => s.table)]
+    try {
+      levels = await dependencyLevels(
+        db as PGlite,
+        Object.values(shapes).map((s) => s.table),
+      )
+    } catch (error) {
+      console.warn('startSyncing: could not derive FK levels, syncing unordered', error)
     }
 
-    store.set(syncObjectAtom, sync)
+    const onError = (error: unknown) => {
+      console.log('Electric sync error:', error)
+      const errorStr = error?.toString() || ''
+      const is409 = errorStr.includes('409') || errorStr.includes('Conflict')
 
-    return sync
+      if (is409) {
+        // 409 = the shape handle is expired; the client library transparently
+        // re-fetches the snapshot (Electric currently never resumes subquery
+        // shapes incrementally). Do NOT release the boot phase here: at this
+        // point a shape may still be mid-refetch (its table cleared, snapshot
+        // not yet applied), and mounted live queries would read the empty
+        // table and never be notified of the refill. InitialSyncManager
+        // releases once isUpToDate is true.
+        console.log('Electric: shape handle expired (409) - re-fetching shape')
+        return
+      }
+
+      // Network disconnect — mark offline so Syncer stops sync immediately
+      const isNetworkError =
+        errorStr.includes('ERR_INTERNET_DISCONNECTED') ||
+        errorStr.includes('Failed to fetch') ||
+        errorStr.includes('NetworkError') ||
+        errorStr.includes('network') ||
+        error instanceof TypeError
+      if (isNetworkError) {
+        console.warn('Electric: network error detected, marking offline')
+        store.set(onlineAtom, false)
+        return
+      }
+
+      console.error('❌ Syncer error:', error)
+      //  Don't set syncingAtom to false - let timeout or onInitialSync handle it
+    }
+    const onMustRefetch = (tx: Transaction) => {
+      console.warn(
+        'Electric: Must refetch - this can happen if the shape definition changes. Attempting to restart sync. Tx:',
+        tx,
+      )
+    }
+
+    const syncs: SyncShapesToTablesResult[] = []
+    let allStagesStarted = false
+    // aggregate over the per-level syncs: InitialSyncManager polls
+    // isUpToDate, AuthAndDb and clearLocalSyncedData call unsubscribe
+    const aggregate: SyncShapesToTablesResult = {
+      unsubscribe: () => {
+        for (const sync of syncs) sync.unsubscribe()
+      },
+      get isUpToDate() {
+        return allStagesStarted && syncs.every((sync) => sync.isUpToDate)
+      },
+      get streams() {
+        return Object.assign({}, ...syncs.map((sync) => sync.streams))
+      },
+    } as SyncShapesToTablesResult
+
+    armSyncErrorRecovery()
+
+    const startStage = async (index: number) => {
+      const level = levels[index]!
+      const stageShapes = Object.fromEntries(
+        Object.entries(shapes).filter(([, shape]) => level.includes(shape.table)),
+      )
+      const isLast = index === levels.length - 1
+      const sync = await (db as ElectricDb).electric.syncShapesToTables({
+        shapes: stageShapes,
+        // one persistent key per level, for live updates across page reloads
+        key: `ps-sync-stage-${index + 1}`,
+        // Removed initialInsertMethod - let Electric use default for live updates
+        onInitialSync: isLast ?
+          async () => {
+            console.log(`Initial sync done (${levels.length} stages)`)
+            store.set(initialSyncingAtom, false)
+          }
+        : undefined,
+        onError,
+        onMustRefetch,
+      })
+
+      // Validate sync object
+      if (!sync || typeof sync.unsubscribe !== 'function') {
+        throw new Error('Invalid sync object returned from syncShapesToTables')
+      }
+      syncs.push(sync)
+      return sync
+    }
+
+    // subscribe and settle the first level before returning; the remaining
+    // levels chain in the background, each gated on its parents' level
+    await startStage(0)
+    if (levels.length > 1) {
+      void (async () => {
+        for (let index = 1; index < levels.length; index++) {
+          try {
+            const previous = syncs[index - 1]!
+            await untilUpToDate(previous, `${index}/${levels.length}`)
+            await startStage(index)
+          } catch (error) {
+            console.error(`Error starting sync stage ${index + 1}:`, error)
+            return
+          }
+        }
+      })().finally(() => {
+        allStagesStarted = true
+      })
+    } else {
+      allStagesStarted = true
+    }
+
+    return aggregate
   } catch (error) {
     console.error('Error starting sync:', error)
     throw error
