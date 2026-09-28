@@ -198,6 +198,128 @@ describe('buildData', () => {
     expect(rowThis?.[series[0]!.key]).toBe(7)
   })
 
+  it('orders the pop-menge report series like apflora: ursprünglich on top, then by nr', async () => {
+    const { db, ids } = await createTestDb()
+    const subprojectId = '21000000-0000-7000-8000-000000000002'
+    const unitId = '70000000-0000-7000-8000-000000000002'
+    const period = `["${thisYear - 1}-12-31 12:00:00+00",)`
+    // populations with the apf2 label convention nr + name; one tpop each
+    const pops = [
+      { name: '1 Alte Wiese', status: 'ursprünglich, aktuell' },
+      { name: '2 Alter Hügel', status: 'ursprünglich, aktuell' },
+      { name: '9 Neuer Hügel', status: 'angesiedelt, aktuell' },
+      { name: '10 Neue Wiese', status: 'angesiedelt, aktuell' },
+      { name: 'Ohnenummer', status: 'angesiedelt, aktuell' },
+    ]
+    const placeId = (i: number) => `31000000-0000-7000-8000-000000000${i}01`
+    const tpopId = (i: number) => `31000000-0000-7000-8000-000000000${i}11`
+    const popRows = pops
+      .map(
+        (p, i) =>
+          `('${placeId(i)}', '${subprojectId}', NULL, 1, '${p.name}', 2010, '{"status":"${p.status}"}')`,
+      )
+      .join(',\n')
+    const tpopRows = pops
+      .map(
+        (p, i) =>
+          `('${tpopId(i)}', '${subprojectId}', '${placeId(i)}', 2, '${p.name} / a', 2010, '{"status":"${p.status}"}')`,
+      )
+      .join(',\n')
+    const checkRows = pops
+      .map(
+        (_p, i) =>
+          `('81000000-0000-7000-8000-00000000000${i}', '${tpopId(i)}', '${thisYear - 1}-06-01')`,
+      )
+      .join(',\n')
+    const quantityRows = pops
+      .map(
+        (_p, i) =>
+          `('91000000-0000-7000-8000-00000000000${i}', '81000000-0000-7000-8000-00000000000${i}', '${unitId}', 10)`,
+      )
+      .join(',\n')
+
+    await db.exec(`
+      INSERT INTO units (unit_id, name) VALUES
+        ('${unitId}', 'Pflanzen total');
+
+      INSERT INTO subprojects (subproject_id, project_id, name) VALUES
+        ('${subprojectId}', '${ids.project}', 'Report Chart Subproject');
+
+      INSERT INTO places (place_id, subproject_id, parent_id, level, name, since, data) VALUES
+        ${popRows},
+        ${tpopRows};
+
+      INSERT INTO checks (check_id, place_id, date) VALUES
+        ${checkRows};
+
+      INSERT INTO check_taxa (check_taxon_id, check_id, unit_id, quantity_numeric) VALUES
+        ${quantityRows};
+    `)
+
+    // one version per place, valid from the end of last year on (live-like)
+    const placeVersions = [
+      ...pops.map((p, i) => ({
+        place_id: placeId(i),
+        parent_id: null,
+        name: p.name,
+        since: 2010,
+        relevant_for_reports: true,
+        data: { status: p.status },
+        sys_period: period,
+      })),
+      ...pops.map((p, i) => ({
+        place_id: tpopId(i),
+        parent_id: placeId(i),
+        name: `${p.name} / a`,
+        since: 2010,
+        relevant_for_reports: true,
+        data: { status: p.status },
+        sys_period: period,
+      })),
+    ]
+    const { series, data } = await buildData({
+      chart: chartRow,
+      subjects: [subject({
+        table_name: 'check_taxa',
+        table_level: '1',
+        calc_method: 'sum_values_of_field',
+        field: 'quantity_numeric',
+        value_unit: unitId,
+      })],
+      subproject_id: subprojectId,
+      db,
+      placesVersions: placeVersions,
+      subprojectsVersions: [
+        { subproject_id: subprojectId, start_year: 2015, sys_period: period },
+      ],
+      reportYear: thisYear,
+    })
+
+    // series render bottom-up: ursprünglich (translucent green) on top, each
+    // status group reading ascending nr from top to bottom; unnumbered at the
+    // bottom of its group. 9 before 10 proves nr sorts as a number
+    expect(series.map((s) => s.label)).toEqual([
+      'Ohnenummer',
+      '10 Neue Wiese',
+      '9 Neuer Hügel',
+      '2 Alter Hügel',
+      '1 Alte Wiese',
+    ])
+    expect(series.map((s) => s.color)).toEqual([
+      'rgba(245,141,66,1)',
+      'rgba(245,141,66,1)',
+      'rgba(245,141,66,1)',
+      'rgba(46,125,50,0.3)',
+      'rgba(46,125,50,0.3)',
+    ])
+    // every population carries its tpop's count in both chart years
+    for (const row of data) {
+      for (const singleSeries of series) {
+        expect(row[singleSeries.key]).toBe(10)
+      }
+    }
+  })
+
   it('respects chart year ranges', async () => {
     const { db, subprojectId } = await setup()
     const { data } = await buildData({

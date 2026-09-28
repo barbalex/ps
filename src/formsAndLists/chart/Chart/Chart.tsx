@@ -55,6 +55,7 @@ export const SingleChart = ({ chart, series, data, synchronized }: Props) => {
   if (!chart || !series) return null
 
   const unit = firstSubjectsUnit ?? 'Count'
+  const stacked = chart.subjects_stacked || chart.percent
 
   return (
     <ResponsiveContainer
@@ -147,7 +148,16 @@ export const SingleChart = ({ chart, series, data, synchronized }: Props) => {
             />
           )
         })}
-        <Tooltip />
+        {/* recharts' default itemSorter ('name') would sort tooltip rows
+            alphabetically; they should follow the chart instead: stacked
+            charts read top-down (the last series is the top band), others
+            follow the legend's series order */}
+        <Tooltip
+          itemSorter={(item) => {
+            const index = series.findIndex((s) => s.key === item.dataKey)
+            return stacked ? -index : index
+          }}
+        />
         <CartesianGrid
           strokeDasharray="3 3"
           horizontal={false}

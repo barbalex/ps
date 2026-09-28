@@ -305,6 +305,22 @@ const popStatusSeriesPerYear = (
   return groups
 }
 
+/** apf2 population nr: the leading number of a population's name ("16 ..." → 16) */
+const leadingNumberOf = (name: string): number | null => {
+  const match = /^(\d+)/.exec(name)
+  return match ? Number(match[1]) : null
+}
+
+type PopMengeGroup = {
+  name: string
+  values: Record<number, number>
+  color: string
+  /** population is ursprünglich (status code < 200) — those stack on top */
+  urspruenglich: boolean
+  /** the population's apf2 nr: the leading number of its name */
+  nr: number | null
+}
+
 /**
  * apf2's ap_ausw_pop_menge (Triebe total): per historization year, every
  * qualifying tpop carries its LATEST zaehlung (counts of the zielrelevant
@@ -318,7 +334,7 @@ const popMengeSeriesPerYear = async (
   places: VersionedRow[],
   reportYear: number,
   valueUnit: string | null | undefined,
-): Promise<{ name: string; values: Record<number, number>; color: string }[]> => {
+): Promise<PopMengeGroup[]> => {
   if (!valueUnit) return []
   // apf2 resolves the zielrelevant unit per AP (ekzaehleinheit); the chart
   // subject's value_unit is a fallback when the subproject doesn't declare one
@@ -421,7 +437,7 @@ const popMengeSeriesPerYear = async (
     return sum
   }
 
-  const groups = new Map<string, { name: string; values: Record<number, number>; color: string }>()
+  const groups = new Map<string, PopMengeGroup>()
   for (const year of historizationYears(places, reportYear)) {
     for (const tpop of asOfYear(places, year, 'place_id')) {
       if (tpop.parent_id == null) continue
@@ -440,21 +456,32 @@ const popMengeSeriesPerYear = async (
       )
       const name = (pop?.name as string | null) ?? popId
       const popCode = pop ? statusCodeOf(pop) : null
+      const urspruenglich = popCode != null && popCode < 200
       const group = groups.get(popId) ?? {
         name,
         values: {},
-        color:
-          popCode != null && popCode < 200 ?
-            'rgba(46,125,50,0.3)'
-          : 'rgba(245,141,66,1)',
+        color: urspruenglich ? 'rgba(46,125,50,0.3)' : 'rgba(245,141,66,1)',
+        urspruenglich,
+        nr: leadingNumberOf(name),
       }
       group.values[year] = (group.values[year] ?? 0) + value
       groups.set(popId, group)
     }
   }
-  // apf2 sorts populations by nr (ascending) then reverses, so low-nr
-  // populations (ursprünglich, translucent green) stack on top
-  return [...groups.values()].sort((a, b) => b.name.localeCompare(a.name))
+  // like apflora's PopMenge chart: ursprünglich populations (translucent
+  // green) stack on top; within each status group by nr, descending in series
+  // order — the stack reads ascending nr from top to bottom, like apf2's
+  // sort-by-nr-then-reverse. Populations without an nr land at the bottom of
+  // their group (es-toolkit's sortBy puts nullish last, apf2 reverses)
+  return [...groups.values()].sort((a, b) => {
+    if (a.urspruenglich !== b.urspruenglich) return a.urspruenglich ? 1 : -1
+    if (a.nr == null || b.nr == null) {
+      if (a.nr !== b.nr) return a.nr == null ? -1 : 1
+    } else if (a.nr !== b.nr) {
+      return b.nr - a.nr
+    }
+    return b.name.localeCompare(a.name)
+  })
 }
 
 export const buildData = async ({
