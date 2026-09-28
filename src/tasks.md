@@ -26,8 +26,6 @@ Better-Auth, possible extensions:
 
 ---
 
-apflora project report: What I haven't seen are the parts that give an overview before the reports for the single species are listed: title page, Zusammenfassung, Artverantwortliche with the species they work with, Erfolg overview, Übersicht über aktuelle Populationen aller AP-Arten. Can we add those as report-parts that can be dragged in to the report in the design page?
-
 ---
 
 ---

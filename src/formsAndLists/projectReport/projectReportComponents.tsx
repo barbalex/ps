@@ -134,19 +134,20 @@ const useLivePlaceRowsByArt = (
 }
 
 /**
- * As-of-year place rows per art. The historized versions come from the same
- * react-query cache the per-art report sections use — no duplicate fetching.
- * While online and not every art's versions have arrived yet, the hook
- * reports loading; offline (or without a year) it falls back to the current
- * local state.
+ * As-of-year place rows per art, for several years at once (the report year
+ * and the previous year for difference columns). The historized versions
+ * come from the same react-query cache the per-art report sections use — no
+ * duplicate fetching. While online and not every art's versions have
+ * arrived yet, the hook reports loading; offline (or without years) it
+ * falls back to the current local state.
  */
 const usePlaceRowsByArt = (
   projectId: string | undefined,
   arts: ArtRow[],
-  year: number | null | undefined,
-): { rowsByArt: Map<string, PlaceRow[]>; loading: boolean } => {
+  years: number[],
+): { rowsByArtByYear: Map<number, Map<string, PlaceRow[]>>; loading: boolean } => {
   const online = useAtomValue(onlineAtom)
-  const needsVersions = online && year != null && arts.length > 0
+  const needsVersions = online && years.length > 0 && arts.length > 0
   // a null projectId matches no rows — the live fallback is not needed then
   const liveByArt = useLivePlaceRowsByArt(needsVersions ? null : projectId)
   const queries = useQueries({
@@ -155,20 +156,30 @@ const usePlaceRowsByArt = (
       : [],
   })
 
-  if (!needsVersions) return { rowsByArt: liveByArt, loading: false }
-  if (queries.some((query) => query.isPending)) {
-    return { rowsByArt: new Map(), loading: true }
+  if (!needsVersions) {
+    return {
+      rowsByArtByYear: new Map(years.map((year) => [year, liveByArt])),
+      loading: false,
+    }
   }
-  const rowsByArt = new Map<string, PlaceRow[]>()
+  if (queries.some((query) => query.isPending)) {
+    return { rowsByArtByYear: new Map(), loading: true }
+  }
+  const rowsByArtByYear = new Map<number, Map<string, PlaceRow[]>>()
+  for (const year of years) rowsByArtByYear.set(year, new Map())
   arts.forEach((art, index) => {
     const places = (
       queries[index]?.data as { places?: VersionedRow[] } | undefined
     )?.places
     if (places) {
-      rowsByArt.set(art.subproject_id, placeRowsFromVersions(places, year!))
+      for (const year of years) {
+        rowsByArtByYear
+          .get(year)!
+          .set(art.subproject_id, placeRowsFromVersions(places, year))
+      }
     }
   })
-  return { rowsByArt, loading: false }
+  return { rowsByArtByYear, loading: false }
 }
 
 // ---------------------------------------------------------------------------
@@ -331,7 +342,12 @@ const ErfolgBlock = ({ title }: { title?: string }) => {
   const { projectId, year } = useProjectReportContext()
   const arts = useArts(projectId)
   const reports = useYearReports(projectId, year)
-  const { rowsByArt, loading } = usePlaceRowsByArt(projectId, arts, year)
+  const { rowsByArtByYear, loading } = usePlaceRowsByArt(
+    projectId,
+    arts,
+    year != null ? [year] : [],
+  )
+  const rowsByArt = rowsByArtByYear.get(year ?? -1) ?? new Map()
   const actionsRes = useLiveQuery(
     `SELECT DISTINCT p.parent_id AS pop_id
      FROM actions a
@@ -404,7 +420,7 @@ const ErfolgBlock = ({ title }: { title?: string }) => {
             const rows = rowsByArt.get(art.subproject_id) ?? []
             // jber_abc c1LPop: qualifying as-of populations with a massnahme
             const artPopsWithMassnahme = rows.some(
-              (pop) =>
+              (pop: PlaceRow) =>
                 pop.level === 1 &&
                 pop.since != null &&
                 pop.since <= year &&
@@ -443,15 +459,22 @@ const ErfolgBlock = ({ title }: { title?: string }) => {
 const AktuellePopulationenBlock = ({ title }: { title?: string }) => {
   const { projectId, year } = useProjectReportContext()
   const arts = useArts(projectId)
-  const { rowsByArt, loading } = usePlaceRowsByArt(projectId, arts, year)
+  // hooks before the early returns; an empty year list skips the queries
+  const { rowsByArtByYear, loading } = usePlaceRowsByArt(
+    projectId,
+    arts,
+    year != null ? [year, year - 1] : [],
+  )
   if (!projectId) return <NoContext label="Übersicht Populationen" />
   if (year == null) return <NoContext label="Übersicht Populationen" />
   if (loading) return <Loading />
 
   const counts = arts.map((art) => {
-    const rows = rowsByArt.get(art.subproject_id) ?? []
+    const rows = rowsByArtByYear.get(year)?.get(art.subproject_id) ?? []
+    const previousRows =
+      rowsByArtByYear.get(year - 1)?.get(art.subproject_id) ?? []
     const current = popCountsAsOfYear(rows, year)
-    const previous = popCountsAsOfYear(rows, year - 1)
+    const previous = popCountsAsOfYear(previousRows, year - 1)
     return {
       art,
       current,
