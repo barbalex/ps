@@ -16,7 +16,13 @@ import { normalizePuckDesign } from '../../modules/normalizePuckDesign.ts'
 import { buildData } from '../chart/Chart/buildData/index.ts'
 import { groupSeriesBySubject } from '../chart/Chart/buildData/index.ts'
 import { SingleChart } from '../chart/Chart/Chart.tsx'
+import { WrappingTextField } from '../subprojectReport/reportComponents.tsx'
 import { SubprojectReportsSection } from './SubprojectReportsSection.tsx'
+import {
+  ProjectReportContext,
+  buildProjectDataComponents,
+} from './projectReportComponents.tsx'
+import overviewStyles from './projectReportComponents.module.css'
 import styles from './Print.module.css'
 
 import '../../form.css'
@@ -55,7 +61,8 @@ export const ProjectReportPrint = ({ from }: { from: string }) => {
       (SELECT design FROM project_report_designs 
        WHERE project_id = pr.project_id 
          AND active = true 
-       LIMIT 1) as design
+       LIMIT 1) as design,
+      (SELECT p.label FROM projects p WHERE p.project_id = pr.project_id) as project_label
     FROM project_reports pr
     WHERE project_report_id = $1`,
     [projectReportId],
@@ -92,7 +99,9 @@ export const ProjectReportPrint = ({ from }: { from: string }) => {
   }, [chartsJson, projectId])
 
   // Build Puck config from fields with actual data
-  const components: Record<string, any> = {}
+  const components: Record<string, any> = {
+    ...buildProjectDataComponents(),
+  }
   fields.forEach((field: any) => {
     const componentName = `${field.name}Field`
 
@@ -229,7 +238,32 @@ export const ProjectReportPrint = ({ from }: { from: string }) => {
             validationMessage={validations?.year?.message}
           />
         </div>
-        {design && <Render config={config} data={normalizePuckDesign(design)} />}
+        <div className={overviewStyles.titlePage}>
+          <div className={overviewStyles.titlePageMain}>
+            {row.project_label ?? ''}
+          </div>
+          <div className={overviewStyles.titlePageYear}>
+            Jahresbericht {row.year ?? ''}
+          </div>
+          <div className={overviewStyles.titlePageDate}>
+            {new Date().toLocaleDateString('de-CH')}
+          </div>
+        </div>
+        {jsonbData.zusammenfassung ? (
+          <div className={overviewStyles.zusammenfassung}>
+            <WrappingTextField
+              label={formatMessage({ id: 'bDcDeF', defaultMessage: 'Zusammenfassung' })}
+              value={String(jsonbData.zusammenfassung)}
+            />
+          </div>
+        ) : null}
+        {design && (
+          <ProjectReportContext.Provider
+            value={{ projectId, year: row.year ?? null }}
+          >
+            <Render config={config} data={normalizePuckDesign(design)} />
+          </ProjectReportContext.Provider>
+        )}
         {!design && <div>{formatMessage({ id: 'bB6JkL', defaultMessage: 'Kein Berichts-Design für dieses Projekt gefunden.' })}</div>}
       </div>
     </div>

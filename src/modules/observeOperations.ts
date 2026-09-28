@@ -9,7 +9,13 @@ import {
   addNotificationAtom,
   store,
 } from '../store.ts'
+import type { QueuedOperation } from '../store.ts'
 import { executeOperation } from './executeOperation.ts'
+import {
+  applyOperations,
+  applyOperationsRpcEnabled,
+  APPLY_OPERATIONS_BATCH_SIZE,
+} from './applyOperations.ts'
 import { revertOperation } from './revertOperation.ts'
 import { removeOperation } from './removeOperation.ts'
 import { invalidatePostgrestToken } from './fetchPostgrestToken.ts'
@@ -35,16 +41,128 @@ export const observeOperations = () =>
 
     const online = get(shortTermOnlineAtom)
     const operations = get(operationsQueueAtom)
-    // console.log(`observeOperations, operations queue:`, operations)
-    // TODO: reset this return
-    // is set to test queued operations processing
-    // return
-    // TODO: write function that:
-    // if offline: returns
     if (!online) {
       return console.log('operationsQueueAtom returning due to being offline')
     }
+    if (!operations.length) return
 
+    if (applyOperationsRpcEnabled()) {
+      return await processBatch(operations)
+    }
+    return await processOneByOne(operations)
+    }) as unknown as Effect,
+    store,
+  )
+
+/** the batch path: one apply_operations RPC per up-to-50 operations */
+const processBatch = async (operations: QueuedOperation[]) => {
+  // oldest first, capped: slice from the end, then reverse
+  const batch = operations.slice(-APPLY_OPERATIONS_BATCH_SIZE).reverse()
+
+  isProcessing = true
+  let results
+  try {
+    results = await applyOperations(batch)
+  } catch (error) {
+    isProcessing = false
+    const err = error as { code?: string; message?: string }
+    if (err?.code === '28000' || err?.message?.toLowerCase?.().includes('jwt')) {
+      invalidatePostgrestToken()
+      store.set(addNotificationAtom, {
+        intent: 'error',
+        title: 'Authentication error',
+        body: 'Please log out and log back in to continue syncing your changes.',
+      })
+      return
+    }
+    // network or server error: the whole batch stays queued for the retry tick
+    console.error('observeOperations, error applying operation batch:', error)
+    return
+  }
+  isProcessing = false
+
+  for (let index = 0; index < batch.length; index++) {
+    const operation = batch[index]!
+    const result = results[index]!
+    switch (result.status) {
+      case 'applied':
+      case 'duplicate':
+        // duplicate: the row is already present on the server, so the
+        // operation is effectively done
+        removeOperation(operation)
+        break
+      case 'no-row':
+        // the row no longer exists on the server (e.g. deleted by another
+        // user) — drop the operation, there is nothing to update
+        console.warn(
+          'observeOperations, update target gone — discarding operation:',
+          operation,
+        )
+        removeOperation(operation)
+        break
+      case 'permission':
+        store.set(addNotificationAtom, {
+          intent: 'error',
+          title: 'Not authorized',
+          body: `You do not have permission to ${operation.operation} in "${operation.table}". The change has been reverted. ${result.detail ?? ''}`,
+        })
+        await revertOperation(operation)
+        removeOperation(operation)
+        break
+      case 'rejected':
+        console.error(
+          'observeOperations, dropping rejected operation:',
+          operation,
+          result.detail,
+        )
+        store.set(addNotificationAtom, {
+          intent: 'error',
+          title: 'Change not synced',
+          body: `A change in "${operation.table}" could not be synced (${result.detail ?? 'rejected'}). It was removed from the queue — please redo the edit.`,
+        })
+        removeOperation(operation)
+        break
+      case 'error': {
+        // apply the classification the per-operation path used
+        const detail = result.detail ?? ''
+        if (detail.startsWith('22P02')) {
+          // malformed value: this operation can never succeed — drop it so
+          // it doesn't block the queue; the local change stays
+          console.error(
+            'observeOperations, dropping malformed operation:',
+            operation,
+          )
+          store.set(addNotificationAtom, {
+            intent: 'error',
+            title: 'Change not synced',
+            body: `A change in "${operation.table}" was malformed and could not be synced. It was removed from the queue — please redo the edit.`,
+          })
+          removeOperation(operation)
+        } else if (detail.toLowerCase().includes('uniqueness violation')) {
+          store.set(addNotificationAtom, {
+            intent: 'info',
+            title: 'Conflict detected',
+            body: 'This edit already exists on the server. Your change is thus ignored.',
+          })
+          await revertOperation(operation)
+          removeOperation(operation)
+        } else {
+          // unknown error: keep the operation queued; the retry tick
+          // re-sends it (and only it — later operations were applied)
+          console.error(
+            'observeOperations, operation failed, keeping for retry:',
+            operation,
+            detail,
+          )
+        }
+        break
+      }
+    }
+  }
+}
+
+/** the per-operation fallback path (localStorage 'ps-apply-operations'='off') */
+const processOneByOne = async (operations: QueuedOperation[]) => {
     // loops operations
     // runs operation
     // Process oldest operation first so dependent operations (e.g. insert
@@ -149,6 +267,4 @@ export const observeOperations = () =>
     isProcessing = false
     // if successful: return remove operation
     return removeOperation(firstOperation)
-    }) as unknown as Effect,
-    store,
-  )
+}

@@ -56,6 +56,41 @@ Edit SQL files only in:
 Do not manually edit mirrored copies in `backend-dev/db/init/` or `src/sql/`.
 Do not manually edit mirrored copies in `backend-dev/db/` for the shared files listed above.
 
+## Write Path: Batched apply_operations RPC
+
+Local edits remain optimistic pglite writes queued as operations
+(`operationsQueueAtom`). The flush changed: instead of one PostgREST CRUD
+request per operation (`executeOperation.ts`), `observeOperations.ts` sends
+batches of up to 50 operations (oldest first) through one PL/pgSQL function,
+`apply_operations` (`backend/db/init/14_applyOperations.sql`) — the
+pgxsinkit-style single write path.
+
+- One transaction per batch, one subtransaction per operation: a failing
+  operation reports a status (`applied`, `duplicate`, `no-row`, `permission`,
+  `rejected`, `error`) and does not roll back the others; the client maps
+  statuses onto the same handling the per-operation path had (revert,
+  notifications, drop, keep-for-retry).
+- Permissions are still enforced by the 12_writePermissionTriggers BEFORE
+  triggers — they fire for the function's direct DML (`pg_trigger_depth()`
+  is 0). Child tables without enforce triggers remain a known, pre-existing
+  gap (parity with per-row writes).
+- Injection safety: fixed table allowlist (mirrors checkWritePermission's
+  table set), operation-kind check, and per-column validation against the
+  catalog; identifiers via `format(%I)`, values only as bind parameters.
+- `updated_by` is derived server-side from the JWT user's email; `users`
+  (no `updated_by` column) is handled by the same column-exists filter.
+- Rollback switch: `localStorage['ps-apply-operations'] = 'off'` restores
+  the per-operation PostgREST path (`executeOperation.ts`). Remove both
+  once the RPC path is validated in production.
+
+Deployment note: PostgREST caches the exposed schema — after applying
+`14_applyOperations.sql` to an existing database, run
+`NOTIFY pgrst, 'reload schema';` (fresh init databases are unaffected).
+
+Tests: `tests/applyOperations.test.ts` (real schema + permission triggers,
+statuses, isolation, injection guard); e2e `offline-sync.spec.ts` runs the
+whole path through the real stack.
+
 ## Sync Commands
 
 ### Sync files

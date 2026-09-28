@@ -33,15 +33,31 @@ export type TestFixture = {
   }
 }
 
-export async function createTestDb(): Promise<TestFixture> {
+/**
+ * extraSqlFiles: backend init files (from backend/db/init) to also load,
+ * e.g. ['12_writePermissionTriggers.sql', '14_applyOperations.sql'] — for
+ * tests that exercise server-side functions against the real schema.
+ */
+export async function createTestDb(
+  extraSqlFiles: string[] = [],
+): Promise<TestFixture> {
   const db = await PGlite.create({
     extensions: { postgis },
   })
   await db.exec('CREATE EXTENSION IF NOT EXISTS postgis;')
+  // roles that backend init files grant/revoke to (absent in a fresh pglite)
+  await db.exec('CREATE ROLE web_anon; CREATE ROLE app_user;')
 
   for (const file of SQL_FILES) {
     const sql = readFileSync(
       new URL(`../../src/sql/${file}`, import.meta.url),
+      'utf8',
+    )
+    await db.exec(sql)
+  }
+  for (const file of extraSqlFiles) {
+    const sql = readFileSync(
+      new URL(`../../backend/db/init/${file}`, import.meta.url),
       'utf8',
     )
     await db.exec(sql)
@@ -60,6 +76,16 @@ export async function createTestDb(): Promise<TestFixture> {
     action: '40000000-0000-7000-8000-000000000001',
     wmsLayer: '50000000-0000-7000-8000-000000000001',
     account: '60000000-0000-7000-8000-000000000001',
+  }
+
+  // when the write-permission triggers were loaded, the fixture inserts
+  // below would be denied (no JWT session) — use the sync escape hatch
+  // around the seeding, like the backend seeds do
+  const withPermissionTriggers = extraSqlFiles.includes(
+    '12_writePermissionTriggers.sql',
+  )
+  if (withPermissionTriggers) {
+    await db.exec(`SET electric.syncing TO 'true';`)
   }
 
   // Role inheritance happens via triggers at write time:
@@ -128,6 +154,10 @@ export async function createTestDb(): Promise<TestFixture> {
     INSERT INTO wms_layers (wms_layer_id, project_id) VALUES
       ('${ids.wmsLayer}', '${ids.project}');
   `)
+
+  if (withPermissionTriggers) {
+    await db.exec(`SET electric.syncing TO DEFAULT;`)
+  }
 
   return { db, ids }
 }

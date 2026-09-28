@@ -16,6 +16,10 @@ import { getValueFromChange } from '../../modules/getValueFromChange.ts'
 import { normalizePuckDesign } from '../../modules/normalizePuckDesign.ts'
 import { addOperationAtom, languageAtom } from '../../store.ts'
 import { subprojectNameSingularExpr } from '../../modules/subprojectNameCols.ts'
+import {
+  ProjectReportContext,
+  buildProjectDataComponents,
+} from '../projectReport/projectReportComponents.tsx'
 import styles from './Form.module.css'
 
 import type ProjectReportDesigns from '../../models/public/ProjectReportDesigns.ts'
@@ -35,6 +39,7 @@ type DesignRow = {
     subjects_single: boolean | null
   }[] | null
   report_data: Record<string, unknown> | null
+  report_year: number | null
   has_active_subproject_design: boolean | null
   [key: string]: unknown
 }
@@ -73,6 +78,10 @@ export const Form = ({ autoFocusRef }: { autoFocusRef?: React.RefObject<HTMLInpu
        WHERE project_id = prd.project_id 
        ORDER BY year DESC 
        LIMIT 1) as report_data,
+      (SELECT year FROM project_reports 
+       WHERE project_id = prd.project_id 
+       ORDER BY year DESC 
+       LIMIT 1) as report_year,
       (SELECT EXISTS(
          SELECT 1 FROM subproject_report_designs 
          WHERE project_id = prd.project_id AND active = TRUE
@@ -91,7 +100,11 @@ export const Form = ({ autoFocusRef }: { autoFocusRef?: React.RefObject<HTMLInpu
     : formatMessage({ id: 'bC1tUv', defaultMessage: 'Subprojekt-Berichte' })
 
   // Build Puck config from fields with actual data
-  const components: Record<string, any> = {}
+  const components: Record<string, any> = {
+    // data-driven overview blocks query the local database themselves,
+    // scoped by the report context provided below
+    ...buildProjectDataComponents(),
+  }
   const categories = {
     fields: {
       title: formatMessage({ id: 'bC8AbC', defaultMessage: 'Felder' }),
@@ -100,6 +113,10 @@ export const Form = ({ autoFocusRef }: { autoFocusRef?: React.RefObject<HTMLInpu
     charts: {
       title: formatMessage({ id: 'bC9BcD', defaultMessage: 'Diagramme' }),
       components: [] as string[],
+    },
+    data_blocks: {
+      title: formatMessage({ id: 'bDaBcD', defaultMessage: 'Bausteine' }),
+      components: ['ArtVerantwortliche', 'Erfolg', 'AktuellePopulationen'] as string[],
     },
     subproject_reports: {
       title: subprojectNameSingular,
@@ -331,11 +348,17 @@ export const Form = ({ autoFocusRef }: { autoFocusRef?: React.RefObject<HTMLInpu
           config={config}
           data={normalizePuckDesign(row.design ?? { content: [] })}
           onChange={onPuckChange}
+          // no iframe so the data blocks reach the app's contexts
+          // (live queries) — same reason as in subprojectReportDesign
+          iframe={{ enabled: false }}
           overrides={{
             drawerItem: PuckDrawerItem,
             fieldTypes: { checkbox: PuckCheckboxField },
           }}
         >
+          <ProjectReportContext.Provider
+            value={{ projectId: row.project_id, year: row.report_year }}
+          >
           <DesignEditorLayout
             sidebar={
               <>
@@ -384,6 +407,7 @@ export const Form = ({ autoFocusRef }: { autoFocusRef?: React.RefObject<HTMLInpu
               </>
             }
           />
+          </ProjectReportContext.Provider>
         </Puck>
       }
     </div>
