@@ -28,6 +28,12 @@ INSERT INTO fields (field_id, project_id, table_name, field_type_id, widget_type
   ('c1000000-0000-4000-8000-00000000f01a', '0195a101-0000-7000-8000-000000000001', 'subproject_reports', '018ca19e-7a23-7bf4-8523-ff41e3b60807', '018ca1a1-0868-7f1e-80aa-119fa3932538', 'konsequenzen_erfolgskontrolle', 'Konsequenzen für die Erfolgskontrolle')
 ;
 
+-- project report field: the Zusammenfassung of the yearly report
+-- (apf2 apberuebersicht.bemerkungen); rendered directly in the report print
+INSERT INTO fields (field_id, project_id, table_name, field_type_id, widget_type_id, name, field_label) VALUES
+  ('c1000000-0000-4000-8000-00000000f101', '0195a101-0000-7000-8000-000000000001', 'project_reports', '018ca19e-7a23-7bf4-8523-ff41e3b60807', '018ca1a1-0868-7f1e-80aa-119fa3932538', 'zusammenfassung', 'Zusammenfassung')
+ON CONFLICT (field_id) DO NOTHING;
+
 -- the active report design: title, fields, the data tables and the charts,
 -- in the layout of the apf2 yearly report
 DELETE FROM subproject_report_designs
@@ -222,6 +228,12 @@ BEGIN
     AND table_name = 'subproject_reports';
   IF got < 12 THEN
     RAISE EXCEPTION 'apflora report seed: expected 12 report fields, got %', got;
+  END IF;
+  SELECT count(*) INTO got FROM fields
+  WHERE project_id = '0195a101-0000-7000-8000-000000000001'
+    AND table_name = 'project_reports';
+  IF got < 1 THEN
+    RAISE EXCEPTION 'apflora report seed: expected 1 project report field, got %', got;
   END IF;
   SELECT count(*) INTO got FROM subproject_report_designs
   WHERE project_id = '0195a101-0000-7000-8000-000000000001' AND active;

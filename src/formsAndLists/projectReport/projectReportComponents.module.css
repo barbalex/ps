@@ -1,0 +1,172 @@
+/* project report building blocks — mirrors subprojectReport/reportComponents.module.css */
+
+.shell {
+  page-break-inside: avoid;
+  margin-bottom: 16px;
+}
+
+.title {
+  font-weight: bold;
+  margin-bottom: 8px;
+}
+
+.noContext,
+.loading {
+  padding: 8px;
+  font-style: italic;
+  color: #666;
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.9em;
+}
+
+.table th,
+.table td {
+  border: 1px solid #666;
+  padding: 3px 6px;
+  text-align: left;
+  vertical-align: top;
+}
+
+.table thead {
+  display: table-header-group;
+}
+
+.table tr {
+  page-break-inside: avoid;
+}
+
+.number {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+.zebra {
+  background-color: rgba(0, 0, 0, 0.03);
+}
+
+.avName {
+  width: 30%;
+  white-space: nowrap;
+}
+
+/* Erfolg matrix — apf2's column colors */
+
+.artHeader {
+  min-width: 260px;
+}
+
+.erfolgHeader {
+  text-align: center;
+}
+
+.nicht {
+  background-color: red;
+  color: white;
+}
+
+.wenig {
+  background-color: orange;
+}
+
+.maessig {
+  background-color: yellow;
+}
+
+.gut {
+  background-color: #00f6ff;
+}
+
+.sehr {
+  background-color: #00ff00;
+}
+
+.unsicher {
+  background-color: #afafaf;
+  color: white;
+}
+
+.veraenderung {
+  min-width: 50px;
+  text-align: center;
+}
+
+/* empty X cells get their column's color; the header cells always have it */
+td.nicht,
+td.wenig,
+td.maessig,
+td.gut,
+td.sehr,
+td.unsicher {
+  text-align: center;
+}
+
+td.nicht:empty,
+td.wenig:empty,
+td.maessig:empty,
+td.gut:empty,
+td.sehr:empty,
+td.unsicher:empty {
+  background-color: transparent;
+  color: inherit;
+}
+
+.verticalHeader {
+  writing-mode: vertical-rl;
+  transform: rotate(180deg);
+  min-width: 30px;
+  max-width: 30px;
+  white-space: nowrap;
+  font-weight: normal;
+}
+
+/* Populationen overview */
+
+.groupHeader {
+  text-align: center;
+}
+
+.positive {
+  background-color: #00ff00;
+}
+
+.negative {
+  background-color: red;
+  color: white;
+}
+
+.totalsRow td {
+  font-weight: bold;
+}
+
+/* title block and Zusammenfassung rendered directly in the print view */
+
+.titlePage {
+  page-break-after: always;
+  padding: 40mm 0 0;
+  text-align: center;
+}
+
+.titlePageMain {
+  font-size: 2em;
+  font-weight: bold;
+  margin-bottom: 8mm;
+}
+
+.titlePageYear {
+  font-size: 1.6em;
+  margin-bottom: 20mm;
+}
+
+.titlePageDate {
+  font-size: 1em;
+}
+
+.zusammenfassung {
+  page-break-after: always;
+  white-space: pre-wrap;
+  margin-bottom: 16px;
+}

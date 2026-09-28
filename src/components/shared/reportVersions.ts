@@ -118,43 +118,53 @@ export const useLocalReportDataVersion = (subprojectId: string | undefined) => {
   return JSON.stringify(res?.rows?.[0] ?? null)
 }
 
+/**
+ * The query options for one subproject's versions — shared by useReportVersions
+ * and useQueries-based consumers (e.g. the project-level report blocks), so
+ * they hit the same react-query cache.
+ */
+export const reportVersionsOptions = (
+  subprojectId: string | undefined,
+  online: boolean,
+) => ({
+  queryKey: ['reportVersions', subprojectId],
+  queryFn: async ({ signal }: { signal: AbortSignal }) => {
+    // dynamic: the module reads window at import time, which would break
+    // the vitest (node) graph buildData is tested in
+    const { fetchPostgrestToken } = await import(
+      '../../modules/fetchPostgrestToken.ts'
+    )
+    const token = await fetchPostgrestToken()
+    const client = new PostgrestClient(constants.getPostgrestUri(), {
+      headers: token ? { Authorization: `Bearer ${token}` } : {},
+    })
+    const select = async (table: string, columns: string) => {
+      const { data, error } = await client
+        .from(table)
+        .select(columns)
+        .eq('subproject_id', subprojectId)
+        .abortSignal(signal)
+      if (error) throw new Error(`${table}: ${error.message}`)
+      return data ?? []
+    }
+    const [subprojects, subprojectsHistory, places, placesHistory] =
+      await Promise.all([
+        select('subprojects', SUBPROJECT_COLUMNS),
+        select('subprojects_history', SUBPROJECT_COLUMNS),
+        select('places', PLACE_COLUMNS),
+        select('places_history', PLACE_COLUMNS),
+      ])
+    return {
+      subprojects: [...subprojects, ...subprojectsHistory],
+      places: [...places, ...placesHistory],
+    } as unknown as ReportVersions
+  },
+  enabled: online && !!subprojectId,
+  // historized versions never change — cache them for the whole session
+  staleTime: Infinity,
+})
+
 export const useReportVersions = (subprojectId: string | undefined) => {
   const online = useAtomValue(onlineAtom)
-  return useQuery({
-    queryKey: ['reportVersions', subprojectId],
-    queryFn: async ({ signal }) => {
-      // dynamic: the module reads window at import time, which would break
-      // the vitest (node) graph buildData is tested in
-      const { fetchPostgrestToken } = await import(
-        '../../modules/fetchPostgrestToken.ts'
-      )
-      const token = await fetchPostgrestToken()
-      const client = new PostgrestClient(constants.getPostgrestUri(), {
-        headers: token ? { Authorization: `Bearer ${token}` } : {},
-      })
-      const select = async (table: string, columns: string) => {
-        const { data, error } = await client
-          .from(table)
-          .select(columns)
-          .eq('subproject_id', subprojectId)
-          .abortSignal(signal)
-        if (error) throw new Error(`${table}: ${error.message}`)
-        return data ?? []
-      }
-      const [subprojects, subprojectsHistory, places, placesHistory] =
-        await Promise.all([
-          select('subprojects', SUBPROJECT_COLUMNS),
-          select('subprojects_history', SUBPROJECT_COLUMNS),
-          select('places', PLACE_COLUMNS),
-          select('places_history', PLACE_COLUMNS),
-        ])
-      return {
-        subprojects: [...subprojects, ...subprojectsHistory],
-        places: [...places, ...placesHistory],
-      } as unknown as ReportVersions
-    },
-    enabled: online && !!subprojectId,
-    // historized versions never change — cache them for the whole session
-    staleTime: Infinity,
-  })
+  return useQuery(reportVersionsOptions(subprojectId, online))
 }

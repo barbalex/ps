@@ -18,24 +18,32 @@
 // (ON CONFLICT DO NOTHING) and assert-guarded.
 
 import { createHash } from 'crypto'
-import { readFileSync, writeFileSync } from 'fs'
+import { existsSync, readFileSync, writeFileSync } from 'fs'
 import { fileURLToPath } from 'url'
 import { dirname, join } from 'path'
 
 const __dirname = dirname(fileURLToPath(import.meta.url))
 const projectRoot = join(__dirname, '..', '..')
 
-const jsonPath = join(projectRoot, 'seed-data', 'apflora', 'apf2-example.json')
+// APF2_JSON / APF2_SQL override input and output; APF2_APPLY_LATER=1 emits
+// `SET LOCAL electric.syncing` so the SQL can run against a database where
+// the write-permission and sync-ignore triggers already exist (psql into a
+// running stack instead of a fresh docker init)
+const jsonPath =
+  process.env.APF2_JSON ?? join(projectRoot, 'seed-data', 'apflora', 'apf2-example.json')
 // numbered to run after 11a_seedApfloraTaxonomies.sql (which provides the
 // DB-TAXREF taxa) and before 12_writePermissionTriggers.sql (which would
 // reject these inserts without a JWT session)
-const sqlPath = join(
-  projectRoot,
-  'backend',
-  'db',
-  'init',
-  '11b_seedApfloraExampleData.sql',
-)
+const sqlPath =
+  process.env.APF2_SQL ??
+  join(
+    projectRoot,
+    'backend',
+    'db',
+    'init',
+    '11b_seedApfloraExampleData.sql',
+  )
+const applyLater = process.env.APF2_APPLY_LATER === '1'
 
 // demo account from 10_seedGeneralTestData.sql; the projects insert owner
 // trigger grants it the 'own' role automatically
@@ -93,6 +101,66 @@ const werteText = (liste, code) => {
   if (code === null || code === undefined) return null
   const entry = data.werte[liste].find((w) => parseInt(w.code, 10) === code)
   return entry ? entry.text : null
+}
+
+// minimal quoted-CSV parser (same format as generate_apflora_seed_sql.mjs)
+const parseCsv = (text, delimiter = ';') => {
+  const rows = []
+  let row = []
+  let field = ''
+  let inQuotes = false
+  for (let i = 0; i < text.length; i++) {
+    const ch = text[i]
+    if (inQuotes) {
+      if (ch === '"' && text[i + 1] === '"') {
+        field += '"'
+        i++
+      } else if (ch === '"') inQuotes = false
+      else field += ch
+    } else if (ch === '"') inQuotes = true
+    else if (ch === delimiter) {
+      row.push(field)
+      field = ''
+    } else if (ch === '\n') {
+      row.push(field)
+      rows.push(row)
+      row = []
+      field = ''
+    } else if (ch !== '\r') field += ch
+  }
+  if (row.length || field) {
+    row.push(field)
+    rows.push(row)
+  }
+  return rows
+}
+
+// taxa of taxonomies that 11a does not seed (SISF 2005 stoneworts etc.),
+// read from the matching csv and reduced to the taxids the arts reference
+const EXTRA_TAXONOMY_CSVS = {
+  'SISF (2005)': 'sisf2005.csv',
+}
+const extraTaxaByTaxonomy = new Map()
+for (const art of data.arts) {
+  const taxonomyName = art.taxonomie.taxonomie_name
+  if (!taxonomyName || taxonomyName === TAXONOMY_NAME) continue
+  const csvFile = EXTRA_TAXONOMY_CSVS[taxonomyName]
+  if (!csvFile) throw new Error(`No csv source for taxonomy ${taxonomyName}`)
+  const byTaxid = extraTaxaByTaxonomy.get(taxonomyName) ?? new Map()
+  if (!byTaxid.size) {
+    const csvPath = join(projectRoot, 'seed-data', 'apflora', csvFile)
+    if (!existsSync(csvPath)) throw new Error(`Missing csv for ${taxonomyName}: ${csvPath}`)
+    const [header, ...rows] = parseCsv(readFileSync(csvPath, 'utf8'))
+    const nameIndex = header.indexOf('name')
+    const idIndex = header.indexOf('id_in_source')
+    for (const row of rows) byTaxid.set(row[idIndex], row[nameIndex])
+  }
+  if (!byTaxid.has(String(art.taxonomie.taxid))) {
+    throw new Error(
+      `taxid ${art.taxonomie.taxid} of ${art.taxonomie.artname} not in ${csvFile}`,
+    )
+  }
+  extraTaxaByTaxonomy.set(taxonomyName, byTaxid)
 }
 
 const adressName = (id) => {
@@ -516,6 +584,11 @@ for (const art of data.arts) {
   emit(`--   ${art.taxonomie.artname}: ${popCount} Populationen, ${tpopCount} Teil-Populationen, ${kontrCount} Kontrollen, ${massnCount} Massnahmen`)
 }
 emit('BEGIN;')
+if (applyLater) {
+  // lets the SQL run against a database where 12_writePermissionTriggers and
+  // the sync-ignore triggers already exist (re-running against a live stack)
+  emit(`SET LOCAL electric.syncing TO 'true';`)
+}
 
 emit('-- project (owner role for the demo account is set by insert trigger)')
 emit(
@@ -551,7 +624,38 @@ for (const art of data.arts) {
   emit(`UPDATE subprojects SET data = ${jsonbOrNull(subprojectData(art))} WHERE subproject_id = ${q(subprojectId(art.ap.id))};`)
 }
 
-emit('-- link subprojects to their taxon in the seeded DB-TAXREF (2017) taxonomy')
+// taxonomies beyond DB-TAXREF (2017) that the arts reference (e.g. SISF
+// stoneworts): project-owned like the 11a taxonomies, only the needed taxa
+for (const [taxonomyName, byTaxid] of extraTaxaByTaxonomy) {
+  const needed = data.arts
+    .filter((art) => art.taxonomie.taxonomie_name === taxonomyName)
+    .map((art) => String(art.taxonomie.taxid))
+  emit(`-- taxonomy ${taxonomyName} (${needed.length} taxa used by the imported arts)`)
+  emit(`INSERT INTO taxonomies(project_id, name, type)`)
+  emit(
+    `  SELECT ${q(PROJECT_ID)}, ${q(taxonomyName)}, 'species'`,
+  )
+  emit(
+    `  WHERE NOT EXISTS (SELECT 1 FROM taxonomies WHERE project_id = ${q(PROJECT_ID)} AND name = ${q(taxonomyName)});`,
+  )
+  for (let i = 0; i < needed.length; i += 500) {
+    const chunk = needed.slice(i, i + 500)
+    emit(`INSERT INTO taxa(taxonomy_id, name, id_in_source)`)
+    emit(
+      `  SELECT ta.taxonomy_id, v.name, v.id_in_source FROM (VALUES ${chunk
+        .map((taxid) => `(${q(byTaxid.get(taxid))}, ${q(taxid)})`)
+        .join(', ')}) AS v(name, id_in_source)`,
+    )
+    emit(
+      `  CROSS JOIN (SELECT taxonomy_id FROM taxonomies WHERE project_id = ${q(PROJECT_ID)} AND name = ${q(taxonomyName)}) ta`,
+    )
+    emit(
+      `  WHERE NOT EXISTS (SELECT 1 FROM taxa t WHERE t.taxonomy_id = ta.taxonomy_id AND t.id_in_source = v.id_in_source);`,
+    )
+  }
+}
+
+emit('-- link subprojects to their taxon in the seeded taxonomy of its source')
 for (const art of data.arts) {
   emit(
     `INSERT INTO subproject_taxa(subproject_taxon_id, subproject_id, taxon_id)`,
@@ -563,7 +667,7 @@ for (const art of data.arts) {
     `  FROM taxa t JOIN taxonomies USING (taxonomy_id)`,
   )
   emit(
-    `  WHERE t.id_in_source = ${q(art.taxonomie.taxid)} AND taxonomies.name = ${q(TAXONOMY_NAME)}`,
+    `  WHERE t.id_in_source = ${q(art.taxonomie.taxid)} AND taxonomies.name = ${q(art.taxonomie.taxonomie_name ?? TAXONOMY_NAME)}`,
   )
   emit(`  ON CONFLICT (subproject_taxon_id) DO NOTHING;`)
 }
@@ -904,7 +1008,7 @@ for (const [artIndex, rows] of checkTaxaByArt) {
       .join(', ')}) AS v(check_taxon_id, check_id, unit_id, quantity_numeric)`,
   )
   emit(
-    `  CROSS JOIN (SELECT t2.taxon_id FROM taxa t2 JOIN taxonomies USING (taxonomy_id) WHERE t2.id_in_source = ${q(art.taxonomie.taxid)} AND taxonomies.name = ${q(TAXONOMY_NAME)} LIMIT 1) t`,
+    `  CROSS JOIN (SELECT t2.taxon_id FROM taxa t2 JOIN taxonomies USING (taxonomy_id) WHERE t2.id_in_source = ${q(art.taxonomie.taxid)} AND taxonomies.name = ${q(art.taxonomie.taxonomie_name ?? TAXONOMY_NAME)} LIMIT 1) t`,
   )
   emit(`  ON CONFLICT (check_taxon_id) DO NOTHING;`)
 }

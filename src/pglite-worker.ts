@@ -5,6 +5,12 @@ import { postgis } from '@electric-sql/pglite-postgis'
 import { live } from '@electric-sql/pglite/live'
 import { pg_uuidv7 } from '@electric-sql/pglite-pg_uuidv7'
 
+import { reportSyncRejectionsFromWorker } from './modules/syncErrorRecovery.ts'
+
+// sync apply errors (e.g. FK violations) surface as unhandled rejections in
+// this worker — forward them so the page can recover
+reportSyncRejectionsFromWorker()
+
 worker({
   async init() {
     return PGlite.create('idb://ps', {

@@ -1,7 +1,15 @@
 #!/usr/bin/env node
-// Extracts example data for three species from a local apf2 database dump
-// into seed-data/apflora/apf2-example.json, for generate_apflora_example_sql.mjs.
+// Extracts data from a local apf2 database dump into JSON for
+// generate_apflora_example_sql.mjs.
 // Run from the project root: node backend/db/extract_apflora_example.mjs
+//
+// Scope (APF2_SCOPE):
+//   example    — the three example species (default), written to
+//                seed-data/apflora/apf2-example.json
+//   report:<J> — every art with an apber (AP-Bericht) for year <J>, e.g.
+//                APF2_SCOPE=report:2025 — the arts of apflora's yearly report
+//   all        — every art in the dump
+// Override the output file with APF2_OUT (default depends on scope).
 //
 // Source dump: custom-format pg_dump of the apf2 backend-dev database.
 // Default path assumes apf2 is checked out next to this repo;
@@ -20,7 +28,16 @@ const projectRoot = join(__dirname, '..', '..')
 const dumpPath =
   process.env.APF2_DUMP ??
   join(projectRoot, '..', 'apf2', 'backend-dev', 'db', 'apflora.backup')
-const outPath = join(projectRoot, 'seed-data', 'apflora', 'apf2-example.json')
+const scope = process.env.APF2_SCOPE ?? 'example'
+const scopeSlug = scope.replaceAll(':', '_')
+const outPath =
+  process.env.APF2_OUT ??
+  join(
+    projectRoot,
+    'seed-data',
+    'apflora',
+    scope === 'example' ? 'apf2-example.json' : `apf2-${scopeSlug}.json`,
+  )
 
 // resolved by artname, not by (unstable) uuid
 const ARTNAMES = [
@@ -150,7 +167,8 @@ const data = {
   meta: {
     extractedAt: new Date().toISOString(),
     source: 'apf2 backend-dev dump (apflora.backup)',
-    artnameFilter: ARTNAMES,
+    scope,
+    artnameFilter: scope === 'example' ? ARTNAMES : null,
     kontrollTypen: KONTROLL_TYPEN,
   },
   werte: {},
@@ -468,12 +486,38 @@ for (const p of popAll) {
 }
 
 const apByArt = new Map(apAll.map((a) => [a.art_id, a]))
+const taxById = new Map(taxAll.map((t) => [t.id, t]))
 
-for (const artname of ARTNAMES) {
-  const tax = taxAll.find((t) => t.artname === artname)
-  if (!tax) throw new Error(`Species not found in ae_taxonomies: ${artname}`)
+// which arts to extract, by scope — always sorted by artname for determinism
+const selectedArts = (() => {
+  if (scope === 'example') {
+    return ARTNAMES.map((artname) => {
+      const tax = taxAll.find((t) => t.artname === artname)
+      if (!tax) throw new Error(`Species not found in ae_taxonomies: ${artname}`)
+      return tax
+    })
+  }
+  if (scope.startsWith('report:')) {
+    const year = parseInt(scope.slice('report:'.length), 10)
+    if (!Number.isFinite(year)) throw new Error(`APF2_SCOPE: invalid year in ${scope}`)
+    const withBer = new Set(
+      apberAll
+        .filter((b) => parseInt(b.jahr, 10) === year)
+        .map((b) => b.ap_id),
+    )
+    return apAll.filter((a) => withBer.has(a.id)).map((a) => taxById.get(a.art_id))
+  }
+  if (scope === 'all') {
+    return apAll.map((a) => taxById.get(a.art_id))
+  }
+  throw new Error(`APF2_SCOPE: unknown scope ${scope}`)
+})()
+console.log(`scope ${scope}: ${selectedArts.length} arts`)
+
+for (const tax of selectedArts) {
+  if (!tax) throw new Error('ap row without ae_taxonomies entry')
   const ap = apByArt.get(tax.id)
-  if (!ap) throw new Error(`No ap row for ${artname} (${tax.id})`)
+  if (!ap) throw new Error(`No ap row for ${tax.artname} (${tax.id})`)
   if (ap.bearbeiter) neededAdresseIds.add(ap.bearbeiter)
   const pops = popByAp.get(ap.id) ?? []
   const tpopCount = pops.reduce((sum, p) => sum + p.tpops.length, 0)
@@ -486,7 +530,7 @@ for (const artname of ARTNAMES) {
     0,
   )
   console.log(
-    `${artname}: ${pops.length} pops, ${tpopCount} tpops, ${kontrCount} kontrollen, ${massnCount} massnahmen`,
+    `${tax.artname}: ${pops.length} pops, ${tpopCount} tpops, ${kontrCount} kontrollen, ${massnCount} massnahmen`,
   )
   data.arts.push({
     taxonomie: {
@@ -562,5 +606,6 @@ data.adressen = [...neededAdresseIds]
 
 
 
-writeFileSync(outPath, JSON.stringify(data, null, 1))
+// the committed example stays pretty-printed; big scopes get compact JSON
+writeFileSync(outPath, JSON.stringify(data, ...(scope === 'example' ? [null, 1] : [])))
 console.log(`Written: ${outPath}`)

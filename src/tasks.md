@@ -14,8 +14,6 @@ Better-Auth, possible extensions:
 
 ---
 
-B. Triebe total nach Populationen: the data is not drawn in the chart, see image
-
 ---
 
 ---
@@ -27,8 +25,6 @@ B. Triebe total nach Populationen: the data is not drawn in the chart, see image
 ---
 
 ---
-
-later: lets build the report for the entire apflora project
 
 ---
 
