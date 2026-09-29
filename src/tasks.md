@@ -14,9 +14,15 @@ Better-Auth, possible extensions:
 
 ---
 
----
+since creating two scripts to either import 3 apflora species or all, the result seems inconsistent. For instance, when choosing 3, all species are imported but no populations. What should happen is: either for 3 or all species all data is imported. Possibly this happens in all form headers?
 
 ---
+
+since introducing dark mode, in dark mode: some form headers (for instance http://localhost:5176/data/projects/0195a101-0000-7000-8000-000000000001/subprojects/655ecc9b-43ef-706f-84ae-19ef5c6387cb) render a border that is not wanted. Example Art list view: the border is top and bottom between the Art title and the buttons on the right.
+
+---
+
+check data presentation for imported form data from apflora. Example: in Art form (http://localhost:5176/data/projects/0195a101-0000-7000-8000-000000000001/subprojects/655ecc9b-43ef-706f-84ae-19ef5c6387cb/subproject) the Bearbeitungsstand has no value and no labels, only options.
 
 ---
 

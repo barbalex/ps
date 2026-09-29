@@ -61,17 +61,25 @@ export const Notification = ({ notification }: Props) => {
   // TODO: add progress bar
   // https://react.fluentui.dev/?path=/docs/components-progressbar--default
   return (
-    <div className={styles.container}>
+    <div className={styles.container} data-intent={intent}>
       <div className={styles.titleRow}>
         <div className={styles.iconAndTitle}>
           {paused === true ? (
             <Spinner size="small" />
           ) : (
             <>
-              {intent === 'error' && <ErrorIcon color={colorMap[intent]} />}
-              {intent === 'success' && <SuccessIcon color={colorMap[intent]} />}
-              {intent === 'info' && <SuccessIcon color={colorMap[intent]} />}
-              {intent === 'warning' && <WarningIcon color={colorMap[intent]} />}
+              {intent === 'error' && (
+                <ErrorIcon className={styles.intentIcon} color={colorMap[intent]} />
+              )}
+              {intent === 'success' && (
+                <SuccessIcon className={styles.intentIcon} color={colorMap[intent]} />
+              )}
+              {intent === 'info' && (
+                <SuccessIcon className={styles.intentIcon} color={colorMap[intent]} />
+              )}
+              {intent === 'warning' && (
+                <WarningIcon className={styles.intentIcon} color={colorMap[intent]} />
+              )}
             </>
           )}
           {!!title && <div className={styles.title}>{title}</div>}

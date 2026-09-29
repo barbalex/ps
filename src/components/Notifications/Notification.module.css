@@ -15,6 +15,34 @@
   min-width: 200px;
 }
 
+/* body sets no text color, so in dark mode (color-scheme: dark) the
+   inherited browser default is white — the white background must flip too,
+   or text becomes invisible */
+:global(html[data-theme='dark']) .container {
+  color: #d9e5d4;
+  background-color: #1f271e;
+  box-shadow:
+    rgba(0, 0, 0, 0.35) 0px 0px 2px 0px,
+    rgba(0, 0, 0, 0.5) 0px 4px 8px 0px;
+}
+
+/* the light-mode colorMap colors are too dark to read on the dark surface */
+:global(html[data-theme='dark']) .container[data-intent='error'] .intentIcon {
+  color: #ff7043;
+}
+
+:global(html[data-theme='dark']) .container[data-intent='success'] .intentIcon {
+  color: #66bb6a;
+}
+
+:global(html[data-theme='dark']) .container[data-intent='info'] .intentIcon {
+  color: #9575cd;
+}
+
+:global(html[data-theme='dark']) .container[data-intent='warning'] .intentIcon {
+  color: #ffb74d;
+}
+
 .titleRow {
   display: flex;
   justify-content: space-between;
@@ -39,4 +67,8 @@
   justify-content: flex-start;
   align-items: center;
   column-gap: 5px;
+}
+
+.intentIcon {
+  flex-shrink: 0;
 }
