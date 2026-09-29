@@ -4201,7 +4201,10 @@ WHERE parent_table = 'public.project_export_assignments_history';
 
 -- the history tables and their partitions are owned by partman_user, so the
 -- default privileges from 00_roles (granted before these tables existed)
--- do not apply: grant the api roles explicitly
+-- do not apply: grant the api roles explicitly.
+-- RESET ROLE first: the partman block above sets partman_user, which may
+-- not grant on postgres-owned tables
+RESET ROLE;
 GRANT USAGE ON SCHEMA public TO web_anon;
 GRANT SELECT ON ALL TABLES IN SCHEMA public TO web_anon;
 GRANT USAGE ON SCHEMA public TO app_user;

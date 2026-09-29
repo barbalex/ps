@@ -1089,7 +1089,30 @@ for (const [artIndex, rows] of checkTaxaByArt) {
   emit(`  ON CONFLICT (check_taxon_id) DO NOTHING;`)
 }
 
-emit('-- refresh labels of existing rows (the inserts above conflict-do-nothing)')
+emit('-- refresh labels of existing rows (the inserts above conflict-do-nothing,')
+emit('-- and the label triggers skip while electric.syncing is set)')
+emit(`UPDATE places SET label =`)
+emit(
+  `  CASE WHEN projects.places_label_by IS NULL THEN places.place_id::text`,
+)
+emit(
+  `    WHEN projects.places_label_by = 'id' THEN places.place_id::text`,
+)
+emit(
+  `    WHEN projects.places_label_by = 'level' THEN places.level::text`,
+)
+emit(
+  `    WHEN projects.places_label_by = 'name' THEN coalesce(nullif(places.name, ''), places.place_id::text)`,
+)
+emit(
+  `    WHEN places.data -> projects.places_label_by IS NULL THEN places.place_id::text`,
+)
+emit(
+  `    ELSE places.data ->> projects.places_label_by END`,
+)
+emit(
+  `  FROM projects WHERE projects.project_id = ${q(PROJECT_ID)} AND places.subproject_id IN (SELECT subproject_id FROM subprojects WHERE project_id = ${q(PROJECT_ID)});`,
+)
 emit(`UPDATE check_taxa ct SET label =`)
 emit(
   `  coalesce((SELECT u.name FROM units u WHERE u.unit_id = ct.unit_id AND u.project_id = ${q(PROJECT_ID)}), '(keine Einheit)') || ': ' || coalesce(ct.quantity_numeric::text, '(keine Anzahl)')`,

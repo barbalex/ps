@@ -120,6 +120,16 @@ This does:
 npm run sync-sql:check
 ```
 
+Gotcha: init files that `SET ROLE` (e.g. the partman blocks in
+`05_createHistoryTables.sql`) must `RESET ROLE` before granting or doing
+anything as the bootstrap superuser — the docker entrypoint runs the whole
+file in one session. A failing statement aborts the file (ON_ERROR_STOP),
+the container restarts (`restart: always`) and the entrypoint then SKIPS the
+whole init ("database directory appears to contain a database"), leaving a
+half-initialized database. Symptom seen once: better-auth logins looping on
+the login page because the init never reached the `sync_users_id_columns`
+triggers.
+
 - Exit code `0`: everything is in sync.
 - Exit code `1`: one or more mirrored files are out of sync.
 
