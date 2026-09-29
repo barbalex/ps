@@ -4,7 +4,6 @@ import { usePGlite, useLiveQuery } from '@electric-sql/pglite-react'
 import { useAtom, useSetAtom } from 'jotai'
 import { useIntl } from 'react-intl'
 import * as fluentUiReactComponents from '@fluentui/react-components'
-import * as XLSX from '@e965/xlsx'
 
 import { Loading } from '../components/shared/Loading.tsx'
 import {
@@ -95,6 +94,10 @@ async function runAndDownload({
     const yearNum = parseInt(year, 10)
     if (!isNaN(yearNum)) params.push(yearNum)
   }
+
+  // loaded on demand: xlsx is a large bundle and only needed once an
+  // export actually runs
+  const XLSX = await import('@e965/xlsx')
 
   // Shadow the base table with a filtered CTE so the export SQL automatically
   // queries only rows that match the current app filter.

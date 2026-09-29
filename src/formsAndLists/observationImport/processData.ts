@@ -1,13 +1,10 @@
-import { read, utils, set_cptable } from '@e965/xlsx'
-import * as cptable from '@e965/xlsx/dist/cpexcel.full.mjs'
 import type { PGliteWithLive } from '@electric-sql/pglite/live'
 import { chunkArrayWithMinSize } from '../../modules/chunkArrayWithMinSize.ts'
 import { createObservation } from '../../modules/createRows.ts'
 import { addOperationAtom, store, intlAtom } from '../../store.ts'
 import { backgroundTasks } from '../../modules/backgroundTasks.ts'
+import { loadXlsx } from '../../modules/loadXlsx.ts'
 import { checkDuplicates } from './checkDuplicates.ts'
-
-set_cptable(cptable)
 
 export type ProcessDataResult = { success: boolean; message: string }
 
@@ -108,6 +105,7 @@ export const processData = async ({
     reader.onload = async () => {
       try {
         const fileAsArrayBuffer = reader.result
+        const { read, utils } = await loadXlsx()
         const workbook = read(fileAsArrayBuffer, {
             type: 'array',
             codepage: 65001, // UTF-8

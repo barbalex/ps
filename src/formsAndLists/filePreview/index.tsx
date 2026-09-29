@@ -1,7 +1,6 @@
-import { useRef } from 'react'
+import { lazy, Suspense, useRef } from 'react'
 import { useParams } from '@tanstack/react-router'
 import { useResizeDetector } from 'react-resize-detector'
-import DocViewer from '@cyntler/react-doc-viewer'
 import { useLiveQuery } from '@electric-sql/pglite-react'
 
 import { Header } from '../file/Header.tsx'
@@ -13,6 +12,10 @@ import type Files from '../../models/public/Files.ts'
 import '../../form.css'
 import '@cyntler/react-doc-viewer/dist/index.css'
 import styles from './index.module.css'
+
+// the viewer is only used for a handful of mime types (images and PDFs use
+// native elements) and pulls a large bundle, so it loads on demand
+const DocViewer = lazy(() => import('@cyntler/react-doc-viewer'))
 
 export const FilePreview = ({ from }: { from: string }) => {
   const { fileId } = useParams({ strict: false })
@@ -94,17 +97,19 @@ export const FilePreview = ({ from }: { from: string }) => {
         )}
         {isReactDocViewable && (
           <div className={styles.object}>
-            <DocViewer
-              key={width ?? 0}
-              documents={[
-                {
-                  uri: row.url!,
-                  mimeType: row.mimetype ?? undefined,
-                } as unknown as never,
-              ]}
-              config={{ header: { disableHeader: true } }}
-              className={styles.docViewer}
-            />
+            <Suspense fallback={<Loading />}>
+              <DocViewer
+                key={width ?? 0}
+                documents={[
+                  {
+                    uri: row.url!,
+                    mimeType: row.mimetype ?? undefined,
+                  } as unknown as never,
+                ]}
+                config={{ header: { disableHeader: true } }}
+                className={styles.docViewer}
+              />
+            </Suspense>
           </div>
         )}
         {isNotViewable && (

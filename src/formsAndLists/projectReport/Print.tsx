@@ -1,12 +1,12 @@
-import { useState, useEffect } from 'react'
+import { Suspense, useState, useEffect } from 'react'
 import { useParams } from '@tanstack/react-router'
 import { usePGlite, useLiveQuery } from '@electric-sql/pglite-react'
 import { useSetAtom } from 'jotai'
-import { Render } from '@puckeditor/core'
 import { useIntl } from 'react-intl'
 
 import { Header } from './Header.tsx'
 import { Loading } from '../../components/shared/Loading.tsx'
+import { LazyPuckRender } from '../../components/shared/lazyPuck.tsx'
 import { NotFound } from '../../components/NotFound.tsx'
 import { TextField } from '../../components/shared/TextField.tsx'
 import { getValueFromChange } from '../../modules/getValueFromChange.ts'
@@ -258,11 +258,16 @@ export const ProjectReportPrint = ({ from }: { from: string }) => {
           </div>
         ) : null}
         {design && (
-          <ProjectReportContext.Provider
-            value={{ projectId, year: row.year ?? null }}
-          >
-            <Render config={config} data={normalizePuckDesign(design)} />
-          </ProjectReportContext.Provider>
+          <Suspense fallback={<Loading />}>
+            <ProjectReportContext.Provider
+              value={{ projectId, year: row.year ?? null }}
+            >
+              <LazyPuckRender
+                config={config}
+                data={normalizePuckDesign(design)}
+              />
+            </ProjectReportContext.Provider>
+          </Suspense>
         )}
         {!design && <div>{formatMessage({ id: 'bB6JkL', defaultMessage: 'Kein Berichts-Design für dieses Projekt gefunden.' })}</div>}
       </div>

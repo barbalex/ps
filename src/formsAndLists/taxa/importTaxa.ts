@@ -1,10 +1,16 @@
-import * as XLSX from '@e965/xlsx'
+import type { WorkBook } from '@e965/xlsx'
 import { v7 as uuidv7 } from 'uuid'
 
 import { addOperationAtom, store, pgliteDbAtom, intlAtom } from '../../store.ts'
 import { backgroundTasks } from '../../modules/backgroundTasks.ts'
 
-const parseWorkbook = (file: File, buffer: ArrayBuffer): XLSX.WorkBook => {
+type XLSXModule = typeof import('@e965/xlsx')
+
+const parseWorkbook = (
+  XLSX: XLSXModule,
+  file: File,
+  buffer: ArrayBuffer,
+): WorkBook => {
   const ext = file.name.split('.').pop()?.toLowerCase()
   if (ext === 'tsv') {
     const text = new TextDecoder().decode(new Uint8Array(buffer))
@@ -30,8 +36,11 @@ export const importTaxa = async ({
   const intl = store.get(intlAtom)
   const taskId = `import-taxa-${taxonomyId}-${Date.now()}`
 
+  // loaded on demand: xlsx is a large bundle and only needed once a
+  // file is actually imported
+  const XLSX = await import('@e965/xlsx')
   const buffer = await file.arrayBuffer()
-  const workbook = parseWorkbook(file, buffer)
+  const workbook = parseWorkbook(XLSX, file, buffer)
   const sheet = workbook.Sheets[workbook.SheetNames[0]]
   // Object mode: uses the first row as property names
   const rows: TaxonRow[] = XLSX.utils.sheet_to_json(sheet, {

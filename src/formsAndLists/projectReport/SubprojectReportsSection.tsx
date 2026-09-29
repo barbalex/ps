@@ -1,7 +1,8 @@
-import { useState, useEffect } from 'react'
+import { Suspense, useState, useEffect } from 'react'
 import { usePGlite, useLiveQuery } from '@electric-sql/pglite-react'
-import { Render } from '@puckeditor/core'
+import type { Data } from '@puckeditor/core'
 
+import { LazyPuckRender } from '../../components/shared/lazyPuck.tsx'
 import { buildData } from '../chart/Chart/buildData/index.ts'
 import { groupSeriesBySubject } from '../chart/Chart/buildData/index.ts'
 import type { ChartData, ChartSeries } from '../chart/Chart/buildData/index.ts'
@@ -67,7 +68,7 @@ const SubprojectReportItem = ({
 
   const report = res?.rows?.[0]
   const charts = (report?.charts ?? []) as Record<string, any>[]
-  const design = report?.design ?? report?.active_design
+  const design = (report?.design ?? report?.active_design) as Data | undefined
   const jsonbData = (report?.data as Record<string, unknown>) ?? {}
   const chartsJson = JSON.stringify(charts)
   // server-side historized versions of the art's undated rows (online only,
@@ -188,7 +189,14 @@ const SubprojectReportItem = ({
           year,
         }}
       >
-        <Render config={config} data={normalizePuckDesign(design)} />
+        <Suspense
+          fallback={<div className={styles.loading}>Loading...</div>}
+        >
+          <LazyPuckRender
+            config={config}
+            data={normalizePuckDesign(design)}
+          />
+        </Suspense>
       </SubprojectReportContext.Provider>
     )
   }

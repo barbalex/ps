@@ -1,12 +1,12 @@
-import { useEffect, useState } from 'react'
+import { Suspense, useEffect, useState } from 'react'
 import { useParams } from '@tanstack/react-router'
 import { usePGlite, useLiveQuery } from '@electric-sql/pglite-react'
 import { useAtom } from 'jotai'
-import { Render } from '@puckeditor/core'
 import { useIntl } from 'react-intl'
 
 import { Header } from './Header.tsx'
 import { Loading } from '../../components/shared/Loading.tsx'
+import { LazyPuckRender } from '../../components/shared/lazyPuck.tsx'
 import { NotFound } from '../../components/NotFound.tsx'
 import { languageAtom } from '../../store.ts'
 import { subprojectNameSingularExpr } from '../../modules/subprojectNameCols.ts'
@@ -238,7 +238,12 @@ export const SubprojectReportPrint = ({ from }: { from: string }) => {
           }}
         >
           {design && fields.length > 0 && (
-            <Render config={config} data={normalizePuckDesign(design)} />
+            <Suspense fallback={<Loading />}>
+              <LazyPuckRender
+                config={config}
+                data={normalizePuckDesign(design)}
+              />
+            </Suspense>
           )}
         </SubprojectReportContext.Provider>
         {(!design || fields.length === 0) && (

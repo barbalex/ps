@@ -1,16 +1,14 @@
-import { useState, useEffect } from 'react'
+import { Suspense, useState, useEffect } from 'react'
 import { useParams } from '@tanstack/react-router'
 import { usePGlite, useLiveQuery } from '@electric-sql/pglite-react'
 import { useSetAtom, useAtom } from 'jotai'
 import { useIntl } from 'react-intl'
-import { Puck, Config } from '@puckeditor/core'
+import type { Config } from '@puckeditor/core'
 
 import { TextField } from '../../components/shared/TextField.tsx'
 import { SwitchField } from '../../components/shared/SwitchField.tsx'
 import { Loading } from '../../components/shared/Loading.tsx'
-import { DesignEditorLayout } from '../../components/shared/DesignEditorLayout.tsx'
-import { PuckDrawerItem } from '../../components/shared/PuckDrawerItem.tsx'
-import { PuckCheckboxField } from '../../components/shared/PuckCheckboxField.tsx'
+import { LazyPuckEditor } from '../../components/shared/lazyPuck.tsx'
 import { NotFound } from '../../components/NotFound.tsx'
 import { getValueFromChange } from '../../modules/getValueFromChange.ts'
 import { normalizePuckDesign } from '../../modules/normalizePuckDesign.ts'
@@ -381,34 +379,21 @@ export const Form = ({ autoFocusRef }: { autoFocusRef?: React.RefObject<HTMLInpu
         }
       />
       <SubprojectReportContext.Provider value={previewContext}>
-        <Puck
-          key={language}
-          config={config}
-          data={normalizePuckDesign(row.design ?? { content: [] })}
-          onChange={onPuckChange}
-          // without this, Puck renders the preview inside an iframe, which
-          // cuts it off from the app's React contexts (PGlite, report
-          // context) — the data-driven building blocks could not query
-          iframe={{ enabled: false }}
-          overrides={{
-            drawerItem: PuckDrawerItem,
-            fieldTypes: { checkbox: PuckCheckboxField },
-          }}
-        >
-          <DesignEditorLayout
-            sidebar={<Puck.Components />}
-            preview={
-              <>
-                {(!row.design?.content || row.design.content.length === 0) && (
-                  <div className={styles.emptyPreview}>
-                    {formatMessage({ id: 'bCCfGh', defaultMessage: 'Bausteine, Felder und Diagramme in das Design ziehen' })}
-                  </div>
-                )}
-                <Puck.Preview />
-              </>
+        <Suspense fallback={<Loading />}>
+          <LazyPuckEditor
+            key={language}
+            config={config}
+            data={normalizePuckDesign(row.design ?? { content: [] })}
+            onChange={onPuckChange}
+            previewExtra={
+              (!row.design?.content || row.design.content.length === 0) && (
+                <div className={styles.emptyPreview}>
+                  {formatMessage({ id: 'bCCfGh', defaultMessage: 'Bausteine, Felder und Diagramme in das Design ziehen' })}
+                </div>
+              )
             }
           />
-        </Puck>
+        </Suspense>
       </SubprojectReportContext.Provider>
     </div>
   )

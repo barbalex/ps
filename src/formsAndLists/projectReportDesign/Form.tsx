@@ -1,16 +1,14 @@
-import { useState } from 'react'
+import { Suspense, useState } from 'react'
 import { useParams } from '@tanstack/react-router'
 import { usePGlite, useLiveQuery } from '@electric-sql/pglite-react'
 import { useSetAtom, useAtom } from 'jotai'
 import { useIntl } from 'react-intl'
-import { Puck, Config } from '@puckeditor/core'
+import type { Config } from '@puckeditor/core'
 
 import { TextField } from '../../components/shared/TextField.tsx'
 import { SwitchField } from '../../components/shared/SwitchField.tsx'
 import { Loading } from '../../components/shared/Loading.tsx'
-import { DesignEditorLayout } from '../../components/shared/DesignEditorLayout.tsx'
-import { PuckDrawerItem } from '../../components/shared/PuckDrawerItem.tsx'
-import { PuckCheckboxField } from '../../components/shared/PuckCheckboxField.tsx'
+import { LazyPuckEditor } from '../../components/shared/lazyPuck.tsx'
 import { NotFound } from '../../components/NotFound.tsx'
 import { getValueFromChange } from '../../modules/getValueFromChange.ts'
 import { normalizePuckDesign } from '../../modules/normalizePuckDesign.ts'
@@ -342,25 +340,16 @@ export const Form = ({ autoFocusRef }: { autoFocusRef?: React.RefObject<HTMLInpu
           })
         }
       />
-      {
-        <Puck
-          key={language}
-          config={config}
-          data={normalizePuckDesign(row.design ?? { content: [] })}
-          onChange={onPuckChange}
-          // no iframe so the data blocks reach the app's contexts
-          // (live queries) — same reason as in subprojectReportDesign
-          iframe={{ enabled: false }}
-          overrides={{
-            drawerItem: PuckDrawerItem,
-            fieldTypes: { checkbox: PuckCheckboxField },
-          }}
-        >
-          <ProjectReportContext.Provider
-            value={{ projectId: row.project_id, year: row.report_year }}
-          >
-          <DesignEditorLayout
-            sidebar={
+      <ProjectReportContext.Provider
+        value={{ projectId: row.project_id, year: row.report_year }}
+      >
+        <Suspense fallback={<Loading />}>
+          <LazyPuckEditor
+            key={language}
+            config={config}
+            data={normalizePuckDesign(row.design ?? { content: [] })}
+            onChange={onPuckChange}
+            sidebarExtra={
               <>
                 {fields.length === 0 && (
                   <div className={styles.warning}>
@@ -389,27 +378,22 @@ export const Form = ({ autoFocusRef }: { autoFocusRef?: React.RefObject<HTMLInpu
                     })}
                   </div>
                 )}
-                <Puck.Components />
               </>
             }
-            preview={
-              <>
-                {(!row.design?.content || row.design.content.length === 0) && (
-                  <div className={styles.emptyPreview}>
-                    {formatMessage({
-                      id: 'bC7zaB',
-                      defaultMessage:
-                        'Felder, Diagramme und Subprojekt-Berichte in das Design ziehen',
-                    })}
-                  </div>
-                )}
-                <Puck.Preview />
-              </>
+            previewExtra={
+              (!row.design?.content || row.design.content.length === 0) && (
+                <div className={styles.emptyPreview}>
+                  {formatMessage({
+                    id: 'bC7zaB',
+                    defaultMessage:
+                      'Felder, Diagramme und Subprojekt-Berichte in das Design ziehen',
+                  })}
+                </div>
+              )
             }
           />
-          </ProjectReportContext.Provider>
-        </Puck>
-      }
+        </Suspense>
+      </ProjectReportContext.Provider>
     </div>
   )
 }

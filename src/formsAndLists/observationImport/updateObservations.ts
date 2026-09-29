@@ -1,5 +1,3 @@
-import { read, utils, set_cptable } from '@e965/xlsx'
-import * as cptable from '@e965/xlsx/dist/cpexcel.full.mjs'
 import { point, featureCollection } from '@turf/helpers'
 import proj4 from 'proj4'
 import axios from 'redaxios'
@@ -13,9 +11,8 @@ import {
 } from '../../store.ts'
 import { setShortTermOnlineFromFetchError } from '../../modules/setShortTermOnlineFromFetchError.ts'
 import { backgroundTasks } from '../../modules/backgroundTasks.ts'
+import { loadXlsx } from '../../modules/loadXlsx.ts'
 import type ObservationImports from '../../models/public/ObservationImports.ts'
-
-set_cptable(cptable)
 
 type ProcessDataResult = { success: boolean; message: string }
 
@@ -136,6 +133,7 @@ export const replaceObservations = async ({
       let taskStarted = false
       try {
         const fileAsArrayBuffer = reader.result
+        const { read, utils } = await loadXlsx()
         const workbook = read(fileAsArrayBuffer, {
             type: 'array',
             codepage: 65001,
@@ -266,6 +264,7 @@ export const updateAndExtendObservations = async ({
       let taskStarted = false
       try {
         const fileAsArrayBuffer = reader.result
+        const { read, utils } = await loadXlsx()
         const workbook = read(fileAsArrayBuffer, {
             type: 'array',
             codepage: 65001,

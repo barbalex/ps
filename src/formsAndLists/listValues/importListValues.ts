@@ -1,4 +1,4 @@
-import * as XLSX from '@e965/xlsx'
+import type { WorkBook } from '@e965/xlsx'
 import { v7 as uuidv7 } from 'uuid'
 
 import { addOperationAtom, store, pgliteDbAtom } from '../../store.ts'
@@ -11,7 +11,13 @@ const VALUE_COLUMN: Record<string, string> = {
   datetime: 'value_datetime',
 }
 
-const parseWorkbook = (file: File, buffer: ArrayBuffer): XLSX.WorkBook => {
+type XLSXModule = typeof import('@e965/xlsx')
+
+const parseWorkbook = (
+  XLSX: XLSXModule,
+  file: File,
+  buffer: ArrayBuffer,
+): WorkBook => {
   const ext = file.name.split('.').pop()?.toLowerCase()
   if (ext === 'tsv') {
     const text = new TextDecoder().decode(new Uint8Array(buffer))
@@ -55,8 +61,11 @@ export const importListValues = async ({
   const col = VALUE_COLUMN[valueType]
   if (!col) return
 
+  // loaded on demand: xlsx is a large bundle and only needed once a
+  // file is actually imported
+  const XLSX = await import('@e965/xlsx')
   const buffer = await file.arrayBuffer()
-  const workbook = parseWorkbook(file, buffer)
+  const workbook = parseWorkbook(XLSX, file, buffer)
   const sheet = workbook.Sheets[workbook.SheetNames[0]]
   // header: 1 gives raw array-of-arrays; no column header row expected
   const rows: unknown[][] = XLSX.utils.sheet_to_json(sheet, {
