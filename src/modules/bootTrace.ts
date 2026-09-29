@@ -1,29 +1,14 @@
-// Dev-only boot diagnostics: phase breadcrumbs plus a blank-screen watchdog.
-// If the app paints nothing for >2s after boot, a raw-DOM panel appears with
-// everything known at that moment (breadcrumbs, router state, last errors),
-// so a blank page becomes self-describing instead of a mystery.
-const ensureDiv = () => {
-  if (typeof document === 'undefined') return null
-  let el = document.getElementById('boot-trace')
-  if (!el) {
-    el = document.createElement('div')
-    el.id = 'boot-trace'
-    el.style.cssText =
-      'position:fixed;bottom:34px;left:8px;z-index:99997;background:#ff0;color:#000;font:11px monospace;padding:2px 6px;white-space:pre;pointer-events:none;max-width:60vw'
-    document.body.appendChild(el)
-  }
-  return el
-}
-
+// Dev-only boot diagnostics: phase breadcrumbs collected for the
+// blank-screen watchdog. If the app paints nothing for >2s after boot, a
+// raw-DOM panel appears with everything known at that moment (breadcrumbs,
+// router state, last errors), so a blank page becomes self-describing
+// instead of a mystery.
 const t0 = performance.now()
 const lines: string[] = []
 
 export const bootTrace = (step: string) => {
   if (!import.meta.env.DEV) return
-  const line = `${Math.round(performance.now() - t0)}ms ${step}`
-  lines.push(line)
-  const el = ensureDiv()
-  if (el) el.textContent = lines.slice(-8).join('\n')
+  lines.push(`${Math.round(performance.now() - t0)}ms ${step}`)
 }
 
 const errors: string[] = []
