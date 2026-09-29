@@ -2,13 +2,15 @@ import * as fluentUiReactComponents from '@fluentui/react-components'
 const { Button } = fluentUiReactComponents
 import { MdEdit } from 'react-icons/md'
 import { useAtom } from 'jotai'
-import { useNavigate, useLocation } from '@tanstack/react-router'
+import { useNavigate, useLocation, useParams } from '@tanstack/react-router'
 import { useIntl } from 'react-intl'
 
 import { designingAtom } from '../../../../store.ts'
 
 export const EditField = ({ fieldId }: { fieldId: string }) => {
-  const [designing] = useAtom(designingAtom)
+  const { projectId } = useParams({ strict: false })
+  const [designingMap] = useAtom(designingAtom)
+  const designing = designingMap[projectId ?? ''] ?? false
   const navigate = useNavigate()
   const location = useLocation()
   const { formatMessage } = useIntl()

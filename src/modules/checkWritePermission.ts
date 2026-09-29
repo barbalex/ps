@@ -105,6 +105,7 @@ const TABLE_CONFIG: Record<string, CheckConfig> = {
   lists: projectDirect(),
   units: projectDirect(),
   fields: projectDirect(),
+  filtered_views: projectDirect(),
   field_sorts: projectDirect(),
   subproject_report_designs: projectDirect(),
   project_reports: projectDirect(),

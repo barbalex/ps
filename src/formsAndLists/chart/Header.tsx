@@ -49,9 +49,10 @@ export const Header = ({
   // only the settings page is a detail view — the chart itself renders at
   // the chart node's own url
   const isDetailView = from.endsWith('/settings')
-  const [designing] = useAtom(designingAtom)
   const addOperation = useSetAtom(addOperationAtom)
   const { projectId, subprojectId, placeId, placeId2, chartId } = useParams({ strict: false })
+  const [designingMap] = useAtom(designingAtom)
+  const designing = designingMap[projectId ?? ''] ?? false
   // charts live under a subproject (or place) or on the project itself, in
   // one of its two sections: charts or charts for subprojects (templates)
   const chartsSegment = from.includes('subproject-charts')

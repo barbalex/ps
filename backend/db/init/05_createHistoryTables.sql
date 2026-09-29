@@ -2482,6 +2482,55 @@ END
 $$;
 
 --------------------------------------------------------------
+-- filtered_views -> filtered_views_history
+-- Retention: 5 years
+--
+ALTER TABLE filtered_views
+ADD COLUMN IF NOT EXISTS sys_period tstzrange;
+
+UPDATE filtered_views
+SET sys_period = tstzrange(updated_at, NULL, '[)')
+WHERE sys_period IS NULL;
+
+ALTER TABLE filtered_views
+ALTER COLUMN sys_period SET NOT NULL;
+
+COMMENT ON COLUMN filtered_views.sys_period IS 'System period maintained by temporal_tables for auditing and historic queries.';
+
+CREATE TABLE IF NOT EXISTS filtered_views_history (
+	LIKE filtered_views INCLUDING DEFAULTS
+) PARTITION BY RANGE (updated_at);
+
+ALTER TABLE filtered_views_history OWNER TO partman_user;
+
+COMMENT ON TABLE filtered_views_history IS 'System-versioned history of filtered_views. Managed by temporal_tables and partitioned yearly by updated_at.';
+COMMENT ON COLUMN filtered_views_history.sys_period IS 'System period written by temporal_tables. lower(sys_period) is when the row version became current, upper(sys_period) when it stopped being current.';
+
+CREATE INDEX IF NOT EXISTS filtered_views_history_updated_at_idx
+ON filtered_views_history USING btree (updated_at);
+
+CREATE INDEX IF NOT EXISTS filtered_views_history_filtered_view_id_updated_at_idx
+ON filtered_views_history (filtered_view_id, updated_at);
+
+CREATE INDEX IF NOT EXISTS filtered_views_history_sys_period_idx
+ON filtered_views_history USING gist (sys_period);
+
+DO $$
+BEGIN
+	IF NOT EXISTS (
+		SELECT 1
+		FROM pg_trigger
+		WHERE tgname = 'versioning_filtered_views_trigger'
+			AND tgrelid = 'filtered_views'::regclass
+	) THEN
+		CREATE TRIGGER versioning_filtered_views_trigger
+		BEFORE INSERT OR UPDATE OR DELETE ON filtered_views
+		FOR EACH ROW EXECUTE PROCEDURE versioning('sys_period', 'filtered_views_history', true);
+	END IF;
+END
+$$;
+
+--------------------------------------------------------------
 -- messages -> messages_history
 -- Retention: 5 years
 --
@@ -2926,6 +2975,23 @@ WHERE NOT EXISTS (
 	SELECT 1
 	FROM partman.part_config
 	WHERE parent_table = 'public.fields_history'
+);
+
+SELECT partman.create_parent(
+	p_parent_table := 'public.filtered_views_history',
+	p_control := 'updated_at',
+	p_interval := '1 year',
+	p_type := 'range',
+	p_premake := 4,
+	p_start_partition := to_char(date_trunc('year', CURRENT_TIMESTAMP), 'YYYY-MM-DD HH24:MI:SS'),
+	p_default_table := true,
+	p_automatic_maintenance := 'on',
+	p_jobmon := false
+)
+WHERE NOT EXISTS (
+	SELECT 1
+	FROM partman.part_config
+	WHERE parent_table = 'public.filtered_views_history'
 );
 
 SELECT partman.create_parent(
@@ -3621,6 +3687,13 @@ SET jobmon = false,
 	retention = '5 years',
 	retention_keep_table = false,
 	retention_keep_index = false
+WHERE parent_table = 'public.filtered_views_history';
+
+UPDATE partman.part_config
+SET jobmon = false,
+	retention = '5 years',
+	retention_keep_table = false,
+	retention_keep_index = false
 WHERE parent_table = 'public.taxonomies_history';
 
 UPDATE partman.part_config
@@ -4125,3 +4198,12 @@ SET jobmon = false,
         retention_keep_index = false
 WHERE parent_table = 'public.project_export_assignments_history';
 
+
+-- the history tables and their partitions are owned by partman_user, so the
+-- default privileges from 00_roles (granted before these tables existed)
+-- do not apply: grant the api roles explicitly
+GRANT USAGE ON SCHEMA public TO web_anon;
+GRANT SELECT ON ALL TABLES IN SCHEMA public TO web_anon;
+GRANT USAGE ON SCHEMA public TO app_user;
+GRANT SELECT, INSERT, UPDATE, DELETE ON ALL TABLES IN SCHEMA public TO app_user;
+GRANT USAGE, SELECT ON ALL SEQUENCES IN SCHEMA public TO app_user;

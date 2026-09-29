@@ -1,12 +1,27 @@
 {
+  "/40i9A": {
+    "defaultMessage": "Konten"
+  },
   "/WXiU2": {
     "defaultMessage": "Vorheriges Jahr"
   },
   "04Jmk6": {
     "defaultMessage": "Daten werden laufend synchronisiert. Mehrere Mitarbeitende können effizient gleichzeitig arbeiten."
   },
-  "1noM6i": {
-    "defaultMessage": "{place}: Massnahmen"
+  "0kZ1wM": {
+    "defaultMessage": "Zeilen beschriften mit (zusätzlich zum Jahr)"
+  },
+  "0pm66C": {
+    "defaultMessage": "WMS-Dienste"
+  },
+  "1M9eWP": {
+    "defaultMessage": "Teilprojekt-Benutzer"
+  },
+  "1kFtKf": {
+    "defaultMessage": "Kontroll-Taxon"
+  },
+  "1lA2wN": {
+    "defaultMessage": "nur Jahr"
   },
   "1uPFgu": {
     "defaultMessage": "Baum"
@@ -21,19 +36,16 @@
     "defaultMessage": "Grösse"
   },
   "2hj7nH": {
-    "defaultMessage": "Du kannst arten-fördern.app deinen eigenen Bedürfnissen anpassen. Vermisst du eine Funktion? {link}"
+    "defaultMessage": "Du kannst arten-fördern.app deinen eigenen Bedürfnissen {anpassen}. Vermisst du eine Funktion? {link}"
   },
-  "2iLc/W": {
-    "defaultMessage": "Zweistufige Räume"
+  "2hj7nH.anpassen": {
+    "defaultMessage": "anpassen"
+  },
+  "2kHq3x": {
+    "defaultMessage": "Gefilterte Ansichten"
   },
   "2sWIxu": {
     "defaultMessage": "Heute"
-  },
-  "3aMKkP": {
-    "defaultMessage": "{place}: Beobachtungs-Zuordnungslinien"
-  },
-  "3oZh5s": {
-    "defaultMessage": "Beobachtungen nicht zuzuordnen"
   },
   "3srcwg": {
     "defaultMessage": "Ziele"
@@ -41,32 +53,53 @@
   "4+BE1s": {
     "defaultMessage": "Liste"
   },
-  "lVr8Zn": {
-    "defaultMessage": "Wert-Typ"
+  "4eT5wH": {
+    "defaultMessage": "Feld"
   },
-  "5xrddR": {
-    "defaultMessage": "{place}: Beobachtungen zugeordnet"
+  "5fU6wI": {
+    "defaultMessage": "Wert"
+  },
+  "5mN8vP": {
+    "defaultMessage": "Gefilterte Ansicht"
   },
   "61ELuB": {
     "defaultMessage": "Feld"
   },
+  "6MNIJU": {
+    "defaultMessage": "Taxonomie"
+  },
   "6ddsDI": {
     "defaultMessage": "Deine Daten gehören dir"
+  },
+  "6gV7wJ": {
+    "defaultMessage": "Gefilterte Ansichten zeigen nur Tabellen-Zeilen, die einem Filter entsprechen. Beispiel: Zwei Ansichten auf den Kontrollen: \"Feld-Kontrollen\" (Typ = Kontrolle) und \"Freiwilligen-Kontrollen\" (Typ = Freiwilligen-Kontrolle). Ein- und ausgeschaltet werden sie pro Ort-Stufe."
   },
   "72yYP5": {
     "defaultMessage": "Feld bearbeiten"
   },
-  "74x/v0": {
-    "defaultMessage": "Populationen in Teil-Populationen gliedern (fakultativ)."
-  },
   "788tpA": {
     "defaultMessage": "Arten fördern"
+  },
+  "7bQ1wE": {
+    "defaultMessage": "Namen"
+  },
+  "7hW8wJ": {
+    "defaultMessage": "Operator"
+  },
+  "7sVbg1": {
+    "defaultMessage": "Taxa"
   },
   "7zeTqY": {
     "defaultMessage": "Karte verkleinern"
   },
   "88zF4u": {
     "defaultMessage": "Beginnt"
+  },
+  "8cR2wF": {
+    "defaultMessage": "Filter"
+  },
+  "8iX9wK": {
+    "defaultMessage": "ist nicht"
   },
   "9E6xFT": {
     "defaultMessage": "Karte ausblenden"
@@ -78,7 +111,10 @@
     "defaultMessage": "mitteilen"
   },
   "9LbkBJ": {
-    "defaultMessage": "100% deiner Daten werden auf dein Gerät synchronisiert. Du kannst sie jederzeit exportieren."
+    "defaultMessage": "Alle {deineDaten} werden auf dein Gerät synchronisiert. Du kannst sie jederzeit exportieren."
+  },
+  "9LbkBJ.deineDaten": {
+    "defaultMessage": "deine Daten"
   },
   "9NCbxo": {
     "defaultMessage": "Formular anzeigen"
@@ -87,7 +123,16 @@
     "defaultMessage": "Rückmeldungen erwünscht"
   },
   "9ZCq87": {
-    "defaultMessage": "Es zahlt, wer Projekte konfiguriert.{br}Testen und mitarbeiten ist gratis."
+    "defaultMessage": "Es {zahlt}, wer Projekte konfiguriert.{br}Testen und mitarbeiten ist gratis."
+  },
+  "9ZCq87.zahlt": {
+    "defaultMessage": "zahlt"
+  },
+  "9dS3wG": {
+    "defaultMessage": "Reihenfolge der gefilterten Ansichten in der Navigation. Tieferer Wert erscheint weiter oben."
+  },
+  "9jY0wL": {
+    "defaultMessage": "ist"
   },
   "9oKaIi": {
     "defaultMessage": "Konto"
@@ -95,8 +140,17 @@
   "9oUdHT": {
     "defaultMessage": "Widget-Typ"
   },
-  "9rPzs2": {
-    "defaultMessage": "Optionen"
+  "Ab1CdE": {
+    "defaultMessage": "Standard-KBS"
+  },
+  "Ab5CdE": {
+    "defaultMessage": "Kreis-Radius in Bild-Punkten"
+  },
+  "Ac1BdE": {
+    "defaultMessage": "Du kannst mehrere <b>K</b>oordinaten-<b>B</b>ezugs-<b>S</b>ysteme hinzufügen."
+  },
+  "Ad0BeG": {
+    "defaultMessage": "Die Basis-URL des WFS"
   },
   "Au7tOu": {
     "defaultMessage": "Löschen?"
@@ -104,8 +158,23 @@
   "BNlEeN": {
     "defaultMessage": "...beschreiben (Teil-)Populationen, organisieren Kontrollen und Massnahmen, analysieren und berichten."
   },
+  "Bc6DeF": {
+    "defaultMessage": "Symbol: Grösse (in Bild-Punkten)"
+  },
+  "Bd7CeD": {
+    "defaultMessage": "Tippen um aus > 10'000 KBS-Optionen zu filtern"
+  },
+  "Be1CfH": {
+    "defaultMessage": "Die Basis-URL des WFS eingeben."
+  },
   "Bv8uPv": {
     "defaultMessage": "Ja"
+  },
+  "BvL3s9": {
+    "defaultMessage": "Passwort anzeigen"
+  },
+  "C7apNr": {
+    "defaultMessage": "Beobachtungs-Importe"
   },
   "CHlBuE": {
     "defaultMessage": "arten-fördern.app passt sich jeder Bildschirmgrösse an. Arbeite effizient auf Handy, Tablet oder Computer."
@@ -113,11 +182,17 @@
   "CT67xT": {
     "defaultMessage": "Baum ausblenden"
   },
+  "Cb1DcE": {
+    "defaultMessage": "WFS-Dienst-Ebene"
+  },
+  "Cd7EfG": {
+    "defaultMessage": "Linien und Punkte: Farbe"
+  },
+  "Cf2DgI": {
+    "defaultMessage": "Dann können Fähigkeiten geladen und eine Ebene ausgewählt werden."
+  },
   "CiJ0SG": {
     "defaultMessage": "Berichte"
-  },
-  "mARBts": {
-    "defaultMessage": "Massnahmen-Berichte"
   },
   "Cw9vQw": {
     "defaultMessage": "Nein"
@@ -128,14 +203,41 @@
   "DIgaIu": {
     "defaultMessage": "Mimetype"
   },
-  "Dx2eAf": {
-    "defaultMessage": "Dies ist eine (hoffentlich) vollständige Liste der <b>K</b>oordinaten-<b>B</b>ezugs-<b>S</b>ysteme."
+  "De8FgH": {
+    "defaultMessage": "Linien: Breite (in Bild-Punkten)"
   },
-  "Ey3fBg": {
-    "defaultMessage": "Sie können zu Projekten hinzugefügt werden."
+  "Dg3EhJ": {
+    "defaultMessage": "Fähigkeiten laden"
+  },
+  "Ed3FgH": {
+    "defaultMessage": "Web Map Service (WMS)"
+  },
+  "Ef8FgG": {
+    "defaultMessage": "2 oder mehr Zeichen eingeben zum Filtern"
+  },
+  "Ef9GhI": {
+    "defaultMessage": "Linien: Abschluss"
+  },
+  "Eh4FiK": {
+    "defaultMessage": "Fähigkeiten werden geladen ({count})"
+  },
+  "Eh8IjK": {
+    "defaultMessage": "Summierbar"
+  },
+  "Eh9JkL": {
+    "defaultMessage": "Gibt an, ob Werte dieser Einheit summiert werden können. Falls nicht summierbar, wird die Verteilung der Anzahl pro Wert angezeigt."
   },
   "FJVXzQ": {
     "defaultMessage": "Daten einblenden"
+  },
+  "Fe4GhI": {
+    "defaultMessage": "Ebene"
+  },
+  "Fg0HiJ": {
+    "defaultMessage": "Linien: Ecken"
+  },
+  "Fi9JkL": {
+    "defaultMessage": "ID in Quelle"
   },
   "Fl3jPw": {
     "defaultMessage": "Bezeichnung"
@@ -143,8 +245,17 @@
   "Fz4gCh": {
     "defaultMessage": "Code"
   },
-  "G3GlSA": {
-    "defaultMessage": "Projekte designen. Klicken zum Beenden"
+  "Gf5HiJ": {
+    "defaultMessage": "Web Map Service (WMS) hinzufügen"
+  },
+  "Gh1IjK": {
+    "defaultMessage": "Linien: Dash-Array"
+  },
+  "Gj0HkM": {
+    "defaultMessage": "Rolle"
+  },
+  "Gl5HjM": {
+    "defaultMessage": "Web Feature Service (WFS) hinzufügen"
   },
   "Gv5hDi": {
     "defaultMessage": "Proj4-Wert"
@@ -152,23 +263,98 @@
   "H5/rUM": {
     "defaultMessage": "Flexible Konfiguration"
   },
+  "Hg6IjK": {
+    "defaultMessage": "Ungültige URL"
+  },
+  "Hi2JkL": {
+    "defaultMessage": "Linien: Dash-Offset"
+  },
+  "Hi9IjJ": {
+    "defaultMessage": "Kein Wert gefunden, der „{filter}“ enthält."
+  },
   "HjZkRK": {
     "defaultMessage": "...verbessern den Zustand von (Teil-)Populationen."
   },
+  "Hk1IlN": {
+    "defaultMessage": "Zuweisung starten"
+  },
   "HmFNdU": {
-    "defaultMessage": "Maximum erreicht: nur 2 Raum-Stufen sind erlaubt"
+    "defaultMessage": "Maximum erreicht: nur 2 Ort-Stufen sind erlaubt"
+  },
+  "HomeWasIstDasText": {
+    "defaultMessage": "Naturschutz&shy;fachleute fördern bedrohte Arten und Lebensräume"
   },
   "Hs0f0A": {
     "defaultMessage": "Datum wählen oder tippen..."
   },
   "HsHmZy": {
-    "defaultMessage": "Ich helfe dir gerne bei der Erst-Konfiguration, damit dein Team möglichst effizient arbeitet. Profitiere von {link}."
+    "defaultMessage": "Ich helfe dir gerne bei der {erstKonfiguration}, damit dein Team möglichst effizient arbeitet. Profitiere von {link}."
+  },
+  "HsHmZy.erstKonfiguration": {
+    "defaultMessage": "Erst-Konfiguration"
+  },
+  "HzltY9": {
+    "defaultMessage": "WFS-Dienste"
+  },
+  "I+dTZE": {
+    "defaultMessage": "Felder"
   },
   "IBnz5i": {
     "defaultMessage": "Karte maximieren"
   },
+  "IKLYLz": {
+    "defaultMessage": "WMS-Ebenen"
+  },
+  "Igo7tK": {
+    "defaultMessage": "WMS-Ebene"
+  },
+  "Ih7JkL": {
+    "defaultMessage": "Die Basis-URL des WMS"
+  },
   "IhOrKh": {
     "defaultMessage": "Vorherige Jahresgruppe"
+  },
+  "Ij3KlM": {
+    "defaultMessage": "Umriss-Linien zeichnen (Polygone und Kreise)"
+  },
+  "Ikw+kl": {
+    "defaultMessage": "Ziel"
+  },
+  "Il2JmO": {
+    "defaultMessage": "Zuweisung stoppen"
+  },
+  "JY1Jke": {
+    "defaultMessage": "Ebene"
+  },
+  "Ji8KlM": {
+    "defaultMessage": "Basis-URL des WMS eingeben. Danach können Fähigkeiten geladen und eine Ebene ausgewählt werden."
+  },
+  "Jk4LmN": {
+    "defaultMessage": "Flächen füllen"
+  },
+  "Jm3KnP": {
+    "defaultMessage": "Orte 1"
+  },
+  "Jou8/E": {
+    "defaultMessage": "Teilprojekte"
+  },
+  "Kj9LmN": {
+    "defaultMessage": "Kein WMS gefunden. Du kannst einen hinzufügen."
+  },
+  "KkGaeP": {
+    "defaultMessage": "Bericht"
+  },
+  "Kl0MnN": {
+    "defaultMessage": "Als Darstellungs-KBS der Karte festlegen"
+  },
+  "Kl5MnO": {
+    "defaultMessage": "Füllung: Farbe"
+  },
+  "Kn3OpQ": {
+    "defaultMessage": "Eines davon wird verwendet, um Koordinaten in der Karte anzuzeigen."
+  },
+  "Kn4LoQ": {
+    "defaultMessage": "Orte 2"
   },
   "L7Xr8Z": {
     "defaultMessage": "Beobachtungen Dritter"
@@ -176,11 +362,38 @@
   "LTiTmL": {
     "defaultMessage": "Feld-Typ"
   },
-  "Lv9nRx": {
-    "defaultMessage": "Raum-Stufe"
+  "Lf+2pw": {
+    "defaultMessage": "Ort-Stufe"
   },
-  "M8TMJe": {
-    "defaultMessage": "Zurück"
+  "Lk0MnO": {
+    "defaultMessage": "Aus einem konfigurierten WMS wählen. Oder einen neuen hinzufügen."
+  },
+  "Lm6NoP": {
+    "defaultMessage": "Füllung: Deckkraft (%)"
+  },
+  "Lo5MpR": {
+    "defaultMessage": "Web Feature Service (WFS)"
+  },
+  "LqnqIT": {
+    "defaultMessage": "{email}"
+  },
+  "Ls6dFg": {
+    "defaultMessage": "Liste (Werte aus Liste verwenden)"
+  },
+  "Lv9nRx": {
+    "defaultMessage": "Stufe"
+  },
+  "Mn1OpQ": {
+    "defaultMessage": "WMS-Dienst-Ebene"
+  },
+  "Mn7OpQ": {
+    "defaultMessage": "Füllung: Regel, um den Inhalt von Flächen zu bestimmen"
+  },
+  "Mp6NqS": {
+    "defaultMessage": "Aus einem konfigurierten WFS wählen. Oder einen neuen hinzufügen."
+  },
+  "N3qLx9": {
+    "defaultMessage": "Benutzer in {subprojectNameSingular} anzeigen"
   },
   "NdL8pA": {
     "defaultMessage": "Benötigt eine Liste"
@@ -188,20 +401,32 @@
   "NkWsj+": {
     "defaultMessage": "Karte"
   },
+  "No2PqR": {
+    "defaultMessage": "Abfragbar"
+  },
+  "No8PqR": {
+    "defaultMessage": "Punkt-Typ"
+  },
   "NpMe6e": {
     "defaultMessage": "Nächster Monat"
   },
-  "OJ8aZD": {
-    "defaultMessage": "Abmelden {email}"
+  "Nq7OrT": {
+    "defaultMessage": "Kein WFS gefunden. Du kannst einen hinzufügen."
+  },
+  "OGDgRl": {
+    "defaultMessage": "Teilprojekt-Bericht"
   },
   "OOvRTo": {
     "defaultMessage": "Datei anzeigen"
   },
-  "OW3d3V": {
-    "defaultMessage": "Du bist offline? Einfach weiter arbeiten. Wieder online, werden deine Daten synchronisiert."
+  "OSk4zO": {
+    "defaultMessage": "Taxon"
   },
-  "OaXR/X": {
-    "defaultMessage": "Beobachtungen zugeordnet"
+  "OW3d3V": {
+    "defaultMessage": "Du bist offline? Einfach {weiterArbeiten}. Wieder online, werden deine Daten synchronisiert."
+  },
+  "OW3d3V.weiterArbeiten": {
+    "defaultMessage": "weiter arbeiten"
   },
   "Ob2kQz": {
     "defaultMessage": "Obsolet"
@@ -209,17 +434,29 @@
   "OogWmh": {
     "defaultMessage": "Ich bin interessiert!"
   },
+  "Op3QrS": {
+    "defaultMessage": "Legende URL"
+  },
+  "Op6QrS": {
+    "defaultMessage": "Ein <b>K</b>oordinaten-<b>B</b>ezugs-<b>S</b>ystem legt fest, wie Koordinaten auf der Erde verortet werden."
+  },
+  "Or8PsU": {
+    "defaultMessage": "Eine Ebene auswählen"
+  },
+  "Orl0K0": {
+    "defaultMessage": "Beobachtungs-Import"
+  },
   "Oy8x+u": {
     "defaultMessage": "Bring your own device"
   },
   "OzBS9Z": {
     "defaultMessage": "KBS"
   },
-  "Pa0bCd": {
-    "defaultMessage": "<b>K</b>BS = <b>K</b>oordinaten-<b>B</b>ezugs-<b>S</b>ystem"
-  },
   "PK3h1Q": {
     "defaultMessage": "Vorheriger Monat"
+  },
+  "Pq4RsT": {
+    "defaultMessage": "WMS-Dienst"
   },
   "Pq7nWk": {
     "defaultMessage": "Sortier-Reihenfolge"
@@ -230,26 +467,35 @@
   "Ps5mVn": {
     "defaultMessage": "Standardwert"
   },
+  "Ps9QtV": {
+    "defaultMessage": "Max. Anzahl Objekte"
+  },
+  "QMOyrE": {
+    "defaultMessage": "Listen-Wert"
+  },
   "Qb3CdE": {
     "defaultMessage": "KBS auswählen (Koordinaten-Bezugs-System)"
   },
   "Qr6tBm": {
     "defaultMessage": "Ist das Feld obsolet, werden bestehende Daten angezeigt, aber das Feld steht in neuen Datensätzen nicht zur Verfügung"
   },
-  "Rc5DeF": {
-    "defaultMessage": "Verwenden für"
-  },
-  "Eh9JkL": {
-    "defaultMessage": "Gibt an, ob Werte dieser Einheit summiert werden können. Falls nicht summierbar, wird die Verteilung der Anzahl pro Wert angezeigt."
-  },
-  "Rd6EfG": {
-    "defaultMessage": "Weitere Einstellungen"
+  "Qt0RuW": {
+    "defaultMessage": "Zu viele Objekte können die App zum Absturz bringen"
   },
   "Rm4jTs": {
     "defaultMessage": "Bemerkungen"
   },
   "Rq3wXp": {
     "defaultMessage": "Pflichtfeld"
+  },
+  "Rs6TuV": {
+    "defaultMessage": "Bildformat"
+  },
+  "Ru1SvX": {
+    "defaultMessage": "Anzahl Objekte"
+  },
+  "Ru4StV": {
+    "defaultMessage": "Benutzer können in der Karte eines der hier hinzugefügten KBS auswählen."
   },
   "SGl8EX": {
     "defaultMessage": "Anmelden"
@@ -260,23 +506,38 @@
   "Sa/aX1": {
     "defaultMessage": "Daten ausblenden"
   },
-  "T4gSjD": {
-    "defaultMessage": "Menge löschen"
+  "SelectALayer": {
+    "defaultMessage": "Wähle eine Ebene"
+  },
+  "SmwFfB": {
+    "defaultMessage": "Ziel-Berichte"
+  },
+  "Sv2TwY": {
+    "defaultMessage": "Anzahl Punkte"
   },
   "TVoh4o": {
     "defaultMessage": "Filter verlassen"
   },
   "TZgWxf": {
-    "defaultMessage": "Raum"
+    "defaultMessage": "Ort"
   },
   "Tb8kLm": {
     "defaultMessage": "Tabelle"
   },
+  "TmPR2+": {
+    "defaultMessage": "Menge"
+  },
   "TpzCEx": {
     "defaultMessage": "Url"
   },
-  "U5hTkE": {
-    "defaultMessage": "Menge löschen?"
+  "Tw3UxZ": {
+    "defaultMessage": "Anzahl Linien"
+  },
+  "U55pI0": {
+    "defaultMessage": "Widget-Typen"
+  },
+  "Ux4VyA": {
+    "defaultMessage": "Anzahl Polygone"
   },
   "V6iUlF": {
     "defaultMessage": "Menge hinzufügen"
@@ -290,14 +551,50 @@
   "VncgQ7": {
     "defaultMessage": "...erfassen den Zustand von (Teil-)Populationen und die Wirkung von Massnahmen."
   },
-  "WJk01v": {
-    "defaultMessage": "{place}: Kontrollen"
+  "Vy5WzB": {
+    "defaultMessage": "Anzeigen nach"
   },
   "Wn2kTv": {
     "defaultMessage": "vorherig"
   },
+  "Wq3zX1": {
+    "defaultMessage": "Name Singular (Deutsch)"
+  },
+  "Wq3zX2": {
+    "defaultMessage": "Name Plural (Deutsch)"
+  },
+  "Wq3zX3": {
+    "defaultMessage": "Name Singular (Englisch)"
+  },
+  "Wq3zX4": {
+    "defaultMessage": "Name Plural (Englisch)"
+  },
+  "Wq3zX5": {
+    "defaultMessage": "Name Singular (Französisch)"
+  },
+  "Wq3zX6": {
+    "defaultMessage": "Name Plural (Französisch)"
+  },
+  "Wq3zX7": {
+    "defaultMessage": "Name Singular (Italienisch)"
+  },
+  "Wq3zX8": {
+    "defaultMessage": "Name Plural (Italienisch)"
+  },
   "WrtHNX": {
     "defaultMessage": "Du darfst gerne reinschauen, testen und mir deine Eindrücke und Wünsche {link}."
+  },
+  "Wx5YzA": {
+    "defaultMessage": "Wenn kein KBS ausgewählt ist, wird standardmässig WGS84 verwendet."
+  },
+  "Wz6XaC": {
+    "defaultMessage": "Für jeden eindeutigen Wert dieses Felds wird eine Kartenanzeige generiert"
+  },
+  "X88JDr": {
+    "defaultMessage": "WFS-Dienst"
+  },
+  "Xa7YbD": {
+    "defaultMessage": "keine Felder gefunden"
   },
   "Xd0J7Y": {
     "defaultMessage": "Open Source"
@@ -314,11 +611,17 @@
   "XrRHLB": {
     "defaultMessage": "Filter bearbeiten"
   },
+  "Xuj/Gy": {
+    "defaultMessage": "Mengen"
+  },
   "YCQ66b": {
     "defaultMessage": "meiner Naturschutz- und Software-Erfahrung"
   },
   "YMGqLf": {
     "defaultMessage": "Massnahmen-Bericht"
+  },
+  "Yb8ZcE": {
+    "defaultMessage": "URL"
   },
   "Yp0iTR": {
     "defaultMessage": "Nächstes Jahr"
@@ -326,11 +629,29 @@
   "Yt5rMs": {
     "defaultMessage": "neu"
   },
+  "Yx8gIR": {
+    "defaultMessage": "Feld-Typen"
+  },
+  "Yz9AbC": {
+    "defaultMessage": "Version"
+  },
+  "Z8jucQ": {
+    "defaultMessage": "Bericht"
+  },
   "ZCwpER": {
     "defaultMessage": "Kontrolle"
   },
+  "ZPEO8P": {
+    "defaultMessage": "Diagramme"
+  },
   "ZSShqa": {
-    "defaultMessage": "Schliessen"
+    "defaultMessage": "Abbrechen"
+  },
+  "Za0BcD": {
+    "defaultMessage": "Info-Format"
+  },
+  "Zc9AdF": {
+    "defaultMessage": "Ungültige URL"
   },
   "ZiBLs/": {
     "defaultMessage": "Hier wird gebaut"
@@ -338,11 +659,257 @@
   "Zv6sNt": {
     "defaultMessage": "löschen"
   },
-  "aP5Ov5": {
-    "defaultMessage": "Zu bewertende Beobachtungen"
+  "Zy6AbC": {
+    "defaultMessage": "KBS auswählen"
   },
-  "aeUjud": {
-    "defaultMessage": "Beobachtungen zu beurteilen"
+  "aB1CdE": {
+    "defaultMessage": "Dateien"
+  },
+  "aBcDeF": {
+    "defaultMessage": "Maschinen-lesbarer Name, der in Exporten als Tabellen-Name verwendet werden kann. Beispiel: \"projekt_name\""
+  },
+  "aCdBtn": {
+    "defaultMessage": "Dann die Koordinaten per Klick auf den Button am Ende der Seite setzen."
+  },
+  "aCdDet": {
+    "defaultMessage": "✓ Koordinatenfelder automatisch erkannt"
+  },
+  "aCdVfy": {
+    "defaultMessage": "Bitte die ausgewählten Felder überprüfen und sicherstellen, dass die Koordinatenwerte korrekt sind."
+  },
+  "aQ5RsT": {
+    "defaultMessage": "Teil-Projekt-Name"
+  },
+  "aTr0bt": {
+    "defaultMessage": "Quellenangabe"
+  },
+  "aTr9Vm": {
+    "defaultMessage": "Bitte die korrekte Quellenangabe gemäss Anforderungen des Datenanbieters hinzufügen"
+  },
+  "account.projectFieldsInAccount.help": {
+    "defaultMessage": "Projekt-Felder im Kontoformular anzeigen statt in einer separaten Navigation."
+  },
+  "account.projectFieldsInAccount.label": {
+    "defaultMessage": "Projekt-Felder im Kontoformular"
+  },
+  "addUser.emailLabel": {
+    "defaultMessage": "E-Mail-Adresse"
+  },
+  "addUser.emailRequired": {
+    "defaultMessage": "Bitte eine E-Mail-Adresse eingeben."
+  },
+  "addUser.saveBtn": {
+    "defaultMessage": "Speichern"
+  },
+  "addUser.title": {
+    "defaultMessage": "Neuen Benutzer erstellen"
+  },
+  "addUser.tooltip": {
+    "defaultMessage": "Neuen Benutzer erstellen"
+  },
+  "altInOwnFormNav": {
+    "defaultMessage": "Alternative: In eigenem Formular anzeigen, mit eigenem Ordner im Navigationsbaum"
+  },
+  "anUnEx": {
+    "defaultMessage": "Ein Fehler ist aufgetreten"
+  },
+  "authConfirmPasswordInput": {
+    "defaultMessage": "Passwort bestätigen"
+  },
+  "authConfirmPasswordLabel": {
+    "defaultMessage": "Passwort bestätigen"
+  },
+  "authConfirmPasswordRequired": {
+    "defaultMessage": "Bitte Passwort bestätigen"
+  },
+  "authConfirmPasswordResetBtn": {
+    "defaultMessage": "Passwort ändern"
+  },
+  "authCreateAccount": {
+    "defaultMessage": "Konto erstellen"
+  },
+  "authEmailLabel": {
+    "defaultMessage": "E-Mail"
+  },
+  "authEmailRequired": {
+    "defaultMessage": "E-Mail ist erforderlich"
+  },
+  "authEmailVerifiedNowSignIn": {
+    "defaultMessage": "E-Mail erfolgreich bestätigt. Bitte jetzt anmelden."
+  },
+  "authEmailVerifiedSuccess": {
+    "defaultMessage": "Email verified successfully."
+  },
+  "authEmailVerifyFailed": {
+    "defaultMessage": "Email verification failed."
+  },
+  "authEnterEmail": {
+    "defaultMessage": "E-Mail eingeben"
+  },
+  "authEnterPassword": {
+    "defaultMessage": "Passwort eingeben"
+  },
+  "authForgotPasswordHide": {
+    "defaultMessage": "Formular für neues Passwort ausblenden"
+  },
+  "authForgotPasswordShow": {
+    "defaultMessage": "Neues Passwort setzen"
+  },
+  "authGoogleBtn": {
+    "defaultMessage": "Mit Google anmelden"
+  },
+  "authGoogleFailed": {
+    "defaultMessage": "Google-Anmeldung fehlgeschlagen. Bitte erneut versuchen."
+  },
+  "authHaveAccount": {
+    "defaultMessage": "Bereits ein Konto?"
+  },
+  "authInvalidCredentials": {
+    "defaultMessage": "Ungültige E-Mail oder Passwort."
+  },
+  "authInvalidEmail": {
+    "defaultMessage": "Bitte gültige E-Mail eingeben"
+  },
+  "authNoAccount": {
+    "defaultMessage": "Noch kein Konto?"
+  },
+  "authPasskeyBtn": {
+    "defaultMessage": "Mit Passkey anmelden"
+  },
+  "authPasskeyFailed": {
+    "defaultMessage": "Passkey-Anmeldung fehlgeschlagen. Bitte erneut versuchen."
+  },
+  "authPasskeyHint": {
+    "defaultMessage": "Nur möglich, wenn du bereits einen Passkey registriert hast. Melde dich zuerst per E-Mail an und füge danach unter deinem Benutzerkonto einen Passkey hinzu."
+  },
+  "authPasswordLabel": {
+    "defaultMessage": "Passwort"
+  },
+  "authPasswordMismatch": {
+    "defaultMessage": "Passwörter stimmen nicht überein"
+  },
+  "authPasswordRequired": {
+    "defaultMessage": "Passwort ist erforderlich"
+  },
+  "authPasswordResetFailed": {
+    "defaultMessage": "Passwort-Reset fehlgeschlagen."
+  },
+  "authPasswordResetLinkSendFailed": {
+    "defaultMessage": "Reset-Link konnte nicht gesendet werden."
+  },
+  "authPasswordResetLinkSent": {
+    "defaultMessage": "Reset-Link wurde gesendet. Bitte E-Mail prüfen."
+  },
+  "authPasswordResetNewPasswordPlaceholder": {
+    "defaultMessage": "Neues Passwort eingeben"
+  },
+  "authPasswordResetSuccess": {
+    "defaultMessage": "Passwort erfolgreich zurückgesetzt. Du wirst in Kürze angemeldet."
+  },
+  "authPasswordTooShort": {
+    "defaultMessage": "Passwort muss mindestens 8 Zeichen lang sein"
+  },
+  "authPleaseWait": {
+    "defaultMessage": "Bitte warten..."
+  },
+  "authPreviewCredentialsHint": {
+    "defaultMessage": "Während die App gebaut wird, kannst du mit einem Test-Benutzer anmelden: E-Mail test@test.ch, Passwort test-test"
+  },
+  "authRegisterSuggestionBtn": {
+    "defaultMessage": "Jetzt registrieren"
+  },
+  "authRegisterSuggestionText": {
+    "defaultMessage": "Für diese E-Mail gibt es noch kein Konto. Möchtest du dich registrieren?"
+  },
+  "authRequestPasswordResetBtn": {
+    "defaultMessage": "Reset-Link senden"
+  },
+  "authRequestVerificationCodeLink": {
+    "defaultMessage": "neuen Bestätigungscode anfordern"
+  },
+  "authResendVerificationEmailBtn": {
+    "defaultMessage": "Code erneut senden"
+  },
+  "authResendVerificationPromptPrefix": {
+    "defaultMessage": "E-Mail-Adresse oben eingeben und"
+  },
+  "authResetPasswordWithToken": {
+    "defaultMessage": "Neues Passwort eingeben:"
+  },
+  "authSectionEmailPassword": {
+    "defaultMessage": "1. Email & Password"
+  },
+  "authSectionPasskeys": {
+    "defaultMessage": "3. Passkeys"
+  },
+  "authSectionSso": {
+    "defaultMessage": "2. Social Sign-On (SSO)"
+  },
+  "authSendResetLink": {
+    "defaultMessage": "E-Mail eingeben, um Reset-Link zu erhalten:"
+  },
+  "authSignInBtn": {
+    "defaultMessage": "Anmelden"
+  },
+  "authSignInToContinue": {
+    "defaultMessage": "Benutzer haben massgeschneiderte Rechte"
+  },
+  "authSignUpBtn": {
+    "defaultMessage": "Registrieren"
+  },
+  "authSignUpFailed": {
+    "defaultMessage": "Registrierung fehlgeschlagen. Bitte erneut versuchen."
+  },
+  "authSignUpSucceededCheckEmail": {
+    "defaultMessage": "Registrierung erfolgreich. Bitte E-Mail-Bestätigung abschliessen und danach anmelden."
+  },
+  "authSignUpToStart": {
+    "defaultMessage": "Registrieren, um loszulegen"
+  },
+  "authTwoFactorAppPrompt": {
+    "defaultMessage": "Bitte den Code aus Ihrer Authenticator-App eingeben."
+  },
+  "authTwoFactorCodeSent": {
+    "defaultMessage": "2FA-Code gesendet. Bitte E-Mail prüfen und Code eingeben."
+  },
+  "authTwoFactorMethodEmail": {
+    "defaultMessage": "E-Mail-Code"
+  },
+  "authTwoFactorResendCode": {
+    "defaultMessage": "Code erneut senden"
+  },
+  "authTwoFactorSendFailed": {
+    "defaultMessage": "2FA-Code konnte nicht gesendet werden. Bitte erneut versuchen."
+  },
+  "authTwoFactorVerifyBtn": {
+    "defaultMessage": "2FA-Code prüfen"
+  },
+  "authUnexpectedError": {
+    "defaultMessage": "Ein unerwarteter Fehler ist aufgetreten. Bitte erneut versuchen."
+  },
+  "authVerificationCodeSendFailed": {
+    "defaultMessage": "Failed to send verification code."
+  },
+  "authVerificationCodeSent": {
+    "defaultMessage": "Verification code sent. Please check your email."
+  },
+  "authVerificationGraceExpired": {
+    "defaultMessage": "Bitte E-Mail bestätigen. Die 1-stündige Frist ist abgelaufen."
+  },
+  "authVerificationOtpPlaceholder": {
+    "defaultMessage": "Code eingeben"
+  },
+  "authVerifyEmailBanner": {
+    "defaultMessage": "Bitte E-Mail-Adresse bestätigen. Ohne Bestätigung wirst du in {timeRemaining} abgemeldet."
+  },
+  "authVerifyEmailBtn": {
+    "defaultMessage": "Verify email"
+  },
+  "authWelcomeBack": {
+    "defaultMessage": "Anmeldung"
+  },
+  "bB0++E": {
+    "defaultMessage": "Projekt-Bericht"
   },
   "bB1CdE": {
     "defaultMessage": "Projekt-Bericht Druckvorschau"
@@ -407,23 +974,32 @@
   "bCBeFg": {
     "defaultMessage": "Subprojekt-Bericht Design"
   },
+  "bCCfGh": {
+    "defaultMessage": "Bausteine, Felder und Diagramme in das Design ziehen"
+  },
   "bCEhIj": {
     "defaultMessage": "Bericht Design"
   },
-  "bCCfGh": {
-    "defaultMessage": "Felder und Diagramme in das Design ziehen"
-  },
-  "bCDgHi": {
-    "defaultMessage": "Keine Felder oder Diagramme gefunden. Bitte zuerst Felder oder Diagramme hinzufügen."
+  "bCFgHi": {
+    "defaultMessage": "Bericht"
   },
   "bCFiJk": {
     "defaultMessage": "Allgemeine Einstellungen"
   },
+  "bCGhIj": {
+    "defaultMessage": "Bericht Druckvorschau"
+  },
   "bCGjKl": {
     "defaultMessage": "Daten / Subjekt-Darstellung"
   },
+  "bCHiJk": {
+    "defaultMessage": "Teilprojekt-Bericht Druckvorschau"
+  },
   "bCHkLm": {
     "defaultMessage": "Diagramm-Typ"
+  },
+  "bCIjKl": {
+    "defaultMessage": "Kein Berichts-Design gefunden. Du musst zuerst ein {subproject}-Bericht-Design erstellen."
   },
   "bCIlMn": {
     "defaultMessage": "Wähle den anzuzeigenden Diagramm-Typ"
@@ -431,20 +1007,41 @@
   "bCJmNo": {
     "defaultMessage": "Aktuelles Jahr"
   },
+  "bCKlMn": {
+    "defaultMessage": "{places}-Ebene in Karte anzeigen"
+  },
   "bCKnOp": {
     "defaultMessage": "Das Diagramm zeigt Daten des aktuellen Jahres"
+  },
+  "bCLmNo": {
+    "defaultMessage": "{places}-Ebene aus Karte entfernen"
   },
   "bCLoQr": {
     "defaultMessage": "Vorheriges Jahr"
   },
+  "bCMnOp": {
+    "defaultMessage": "Auf {places} in Karte zoomen"
+  },
   "bCMpRs": {
     "defaultMessage": "Das Diagramm zeigt Daten des vorherigen Jahres"
+  },
+  "bCNoPq": {
+    "defaultMessage": "Keine Daten gefunden"
   },
   "bCNqSt": {
     "defaultMessage": "Bestimmtes Jahr"
   },
+  "bCOpQr": {
+    "defaultMessage": "Keine {table}-Einträge vorhanden. Bitte zuerst einen hinzufügen."
+  },
   "bCOrTu": {
     "defaultMessage": "Das Diagramm zeigt Daten des eingegebenen Jahres"
+  },
+  "bCPQmR": {
+    "defaultMessage": "Kontroll-Bericht-Menge"
+  },
+  "bCPrSt": {
+    "defaultMessage": "{label} kann nicht geändert werden"
   },
   "bCPsUv": {
     "defaultMessage": "Letzte X Jahre"
@@ -452,11 +1049,20 @@
   "bCQtVw": {
     "defaultMessage": "Das Diagramm zeigt höchstens die letzten x Jahre (x = eingegebener Wert)"
   },
+  "bCQuRv": {
+    "defaultMessage": "(kein Label)"
+  },
   "bCRuWx": {
     "defaultMessage": "Seit"
   },
+  "bCRvSw": {
+    "defaultMessage": "Ort-Benutzer"
+  },
   "bCSvXy": {
     "defaultMessage": "Das Diagramm zeigt Daten seit dem eingegebenen Jahr"
+  },
+  "bCSwTx": {
+    "defaultMessage": "Kontroll-Bericht"
   },
   "bCTwYz": {
     "defaultMessage": "Bis"
@@ -464,26 +1070,71 @@
   "bCUxZa": {
     "defaultMessage": "Das Diagramm zeigt Daten bis zum eingegebenen Jahr"
   },
+  "bCUyVz": {
+    "defaultMessage": "Keine Geometrien für {places} gefunden"
+  },
   "bCVyAb": {
     "defaultMessage": "Subjekte stapeln?"
+  },
+  "bCVzWA": {
+    "defaultMessage": "Zur Massnahme in Karte zoomen"
+  },
+  "bCWAXB": {
+    "defaultMessage": "Keine Geometrie"
   },
   "bCWzBc": {
     "defaultMessage": "Wenn aktiviert, werden Subjekt-Graphen gestapelt. Wenn nicht, überlagern sie sich"
   },
+  "bCXBYC": {
+    "defaultMessage": "Um auf eine Massnahme zu zoomen, erstelle zuerst die Geometrie"
+  },
   "bCXaBd": {
     "defaultMessage": "Subjekte in separaten Diagrammen darstellen?"
+  },
+  "bCYCZD": {
+    "defaultMessage": "Bearbeiten"
   },
   "bCYbCe": {
     "defaultMessage": "Wenn deaktiviert, werden Subjekte in einem einzigen Diagramm dargestellt"
   },
+  "bCZDEF": {
+    "defaultMessage": "Massnahmen-Menge"
+  },
   "bCZcDf": {
     "defaultMessage": "Bei mehreren Subjekten: Anteil als Prozent anzeigen?"
+  },
+  "bChrPh": {
+    "defaultMessage": "Beliebigen Text eingeben"
+  },
+  "bCommonNo": {
+    "defaultMessage": "Nein"
+  },
+  "bCommonYes": {
+    "defaultMessage": "Ja"
+  },
+  "bDAEFG": {
+    "defaultMessage": "Massnahmen-Bericht-Menge"
+  },
+  "bDCGHI": {
+    "defaultMessage": "Um auf {place} zu zoomen, erstelle zuerst die Geometrie"
+  },
+  "bDQUVW": {
+    "defaultMessage": "Kontrollen"
+  },
+  "bDSWXY": {
+    "defaultMessage": "Massnahmen"
+  },
+  "bDaBcD": {
+    "defaultMessage": "Bausteine"
   },
   "bDaDgE": {
     "defaultMessage": "Du siehst den prozentualen Anteil jedes Subjekts, zusammen 100%. Funktioniert am besten, wenn Subjekte für jedes Jahr Werte haben"
   },
   "bDbEhF": {
     "defaultMessage": "Daten"
+  },
+  "bDcDeF": {
+    "defaultMessage": "Zusammenfassung"
   },
   "bDcFiG": {
     "defaultMessage": "Tabelle"
@@ -500,14 +1151,8 @@
   "bDgJmK": {
     "defaultMessage": "Berechnungsmethode"
   },
-  "bDhKnL": {
-    "defaultMessage": "Wie die Daten berechnet werden"
-  },
   "bDiLoM": {
     "defaultMessage": "Feld"
-  },
-  "bDjMpN": {
-    "defaultMessage": "Der Name des Felds"
   },
   "bDkNqO": {
     "defaultMessage": "Einheit"
@@ -520,6 +1165,9 @@
   },
   "bDnQtR": {
     "defaultMessage": "Themen werden nach diesem Wert sortiert, sofern gesetzt. Sonst nach Name"
+  },
+  "bDoJBk": {
+    "defaultMessage": "Widgets für Felder"
   },
   "bDoRuS": {
     "defaultMessage": "Fehlende Daten verbinden"
@@ -548,32 +1196,8 @@
   "bDwZcA": {
     "defaultMessage": "TODO: Ein Filter, der auf die Tabelle angewendet wird"
   },
-  "bDxAbB": {
-    "defaultMessage": "Zeilen zählen"
-  },
-  "bDyCcD": {
-    "defaultMessage": "Zeilen nach eindeutigen Feldwerten zählen"
-  },
-  "bDzDeE": {
-    "defaultMessage": "Feldwerte summieren"
-  },
   "bEaAfF": {
     "defaultMessage": "Teilprojekte"
-  },
-  "bEbBgG": {
-    "defaultMessage": "Orte"
-  },
-  "bEcChH": {
-    "defaultMessage": "Kontrollen"
-  },
-  "bEdDiI": {
-    "defaultMessage": "Kontrollwerte"
-  },
-  "bEeEjJ": {
-    "defaultMessage": "Massnahmen"
-  },
-  "bEfFkK": {
-    "defaultMessage": "Massnahmenwerte"
   },
   "bEgGlL": {
     "defaultMessage": "{place}-Kontrollen"
@@ -605,191 +1229,293 @@
   "bEpPuU": {
     "defaultMessage": "Relevant für Berichte"
   },
-  "bEqQvV": {
-    "defaultMessage": "Wert (ganzzahlig)"
-  },
-  "bErRwW": {
-    "defaultMessage": "Wert (numerisch)"
-  },
-  "bEsSxX": {
-    "defaultMessage": "Wert (Text)"
-  },
   "bEtTyY": {
     "defaultMessage": "Einstellungen"
   },
-  "jmuVHU": {
-    "defaultMessage": "Thema"
+  "bEvVwW": {
+    "defaultMessage": "{place}-Kontroll-Taxa"
   },
-  "d9gLtS": {
-    "defaultMessage": "Bearbeitung beenden"
+  "bEwWxX": {
+    "defaultMessage": "{place}-Massnahmen-Taxa"
   },
-  "eJfllL": {
-    "defaultMessage": "Massnahmen"
+  "bExXyY": {
+    "defaultMessage": "{place}-Berichte"
   },
-  "dR0VsL": {
-    "defaultMessage": "Kontrollen: Mengen in Kontrolle"
+  "bEyYzZ": {
+    "defaultMessage": "Feld, dessen Werte die Serien bilden"
   },
-  "fD5OsU": {
-    "defaultMessage": "Massnahmen: Mengen in Massnahme"
+  "bEzZaA": {
+    "defaultMessage": "Nur Mengen dieser Einheit werden summiert. Bei mehreren Einheiten: Leerer Wert summiert alle"
   },
-  "fz2AhZ": {
-    "defaultMessage": "Projekt"
+  "bFaAbB": {
+    "defaultMessage": "Gilt für alle Teilprojekte?"
   },
-  "gjvJCk": {
-    "defaultMessage": "arten-fördern.app funktioniert auf jedem Betriebssystem: Windows, MacOS, Linux, Android, iOS..."
+  "bFbBcC": {
+    "defaultMessage": "Wenn aktiviert, steht das Diagramm in jedem Teilprojekt des Projekts zur Verfügung und wird dort mit den Daten des jeweiligen Teilprojekts berechnet"
   },
-  "gw/Eg0": {
-    "defaultMessage": "Uuid"
+  "bGeHcI": {
+    "defaultMessage": "Bausteine"
   },
-  "gxCh0c": {
-    "defaultMessage": "Teilprojekt"
+  "bGfDeF": {
+    "defaultMessage": "Berichts-Design"
   },
-  "h5g7Kk": {
-    "defaultMessage": "Räume"
+  "bGgEfG": {
+    "defaultMessage": "Design, mit dem der Bericht gedruckt wird. Standard: das aktive Design"
   },
-  "hIsRqy": {
-    "defaultMessage": "Designen starten"
+  "bHistProjSetting": {
+    "defaultMessage": "Geschichte vergleichen"
   },
-  "i43yle": {
-    "defaultMessage": "markiert"
+  "bPlaceCurrentVersion": {
+    "defaultMessage": "Aktuelle Version"
   },
-  "iaro8o": {
-    "defaultMessage": "Teamwork"
+  "bPlaceHistoricalVersion": {
+    "defaultMessage": "Historische Version"
   },
-  "jcW44N": {
-    "defaultMessage": "App öffnen"
+  "bPlaceHistoryBack": {
+    "defaultMessage": "Zurück"
   },
-  "lOK5dy": {
-    "defaultMessage": "Arten in Populationen gliedern."
+  "bPlaceHistoryFeature": {
+    "defaultMessage": "Geschichte"
   },
-  "lWQzTz": {
-    "defaultMessage": "Feld hinzufügen"
+  "bPlaceHistoryLoadFailedTitle": {
+    "defaultMessage": "Geschichte konnte nicht geladen werden"
   },
-  "lXtv80": {
-    "defaultMessage": "Räume"
+  "bPlaceHistoryToggleShort": {
+    "defaultMessage": "Geschichte"
   },
-  "ndNatR": {
-    "defaultMessage": "Datei: {label}"
+  "bPlaceHistoryUnavailable": {
+    "defaultMessage": "Geschichte ist nur online verfügbar."
   },
-  "oPMDm+": {
-    "defaultMessage": "Kontrollen"
+  "bPlaceNameLabel": {
+    "defaultMessage": "Name"
   },
-  "p61gsZ": {
-    "defaultMessage": "Enddatum muss nach dem Startdatum liegen"
+  "bPlaceNoHistory": {
+    "defaultMessage": "Keine historischen Versionen gefunden."
   },
-  "pPWZGx": {
-    "defaultMessage": "...beschreiben und beurteilen die Entwicklung, den Erfolg der Massnahmen und die Erreichung der Ziele."
+  "bPlaceNoHistoryBody": {
+    "defaultMessage": "Für diesen Ort gibt es noch keine gespeicherten Änderungen."
   },
-  "pTRYGx": {
-    "defaultMessage": "Erfasse neue Mitarbeitende mit ihrer Email. Ergänze diese Person bei allen Arten, in denen sie mitarbeiten soll. Fertig!"
+  "bPlaceNoHistoryTitle": {
+    "defaultMessage": "Keine Geschichte vorhanden"
   },
-  "pfBGqS": {
-    "defaultMessage": "Feldtauglich"
+  "bPlaceRestoreRedValues": {
+    "defaultMessage": "Rote Werte wiederherstellen"
   },
-  "qyI8KV": {
-    "defaultMessage": "Benutzer"
+  "bPlaceZoomTo": {
+    "defaultMessage": "zoomen"
   },
-  "rEN8QI": {
-    "defaultMessage": "Haben mehrere Mitarbeitende aus versehen offline die gleichen Daten geändert?{br}{br}Das lässt sich einfach korrigieren. Du siehst, wer was wann geändert hat."
+  "bPuckPanelDelete": {
+    "defaultMessage": "Löschen"
   },
-  "rxRJ6H": {
-    "defaultMessage": "Pulsatilla"
+  "bPuckPanelHint": {
+    "defaultMessage": "Baustein im Vorschau-Bereich anklicken, um ihn zu bearbeiten"
   },
-  "ryVgK4": {
-    "defaultMessage": "Baum einblenden"
+  "bSubproject": {
+    "defaultMessage": "Subproject"
   },
-  "sST5WH": {
-    "defaultMessage": "...importieren, prüfen und (Teil-)Populationen zuordnen."
+  "bT0CsE": {
+    "defaultMessage": "Standard-Einheit für Massnahmen-Taxon-Mengen"
   },
-  "sY7iHm": {
-    "defaultMessage": "Art-Verantwortliche Fachpersonen"
+  "bT3YsO": {
+    "defaultMessage": "Deutsch: Einzahl"
   },
-  "upa2nh": {
-    "defaultMessage": "Massnahme"
+  "bU6VwX": {
+    "defaultMessage": "Weitere Einstellungen"
   },
-  "vdqfwK": {
-    "defaultMessage": "Widget für Feld"
+  "bgTkCmp": {
+    "defaultMessage": "✓ Abgeschlossen"
   },
-  "field.actions": {
-    "defaultMessage": "{place}: Massnahmen"
-  },
-  "field.actionReports": {
-    "defaultMessage": "{place}: Massnahmen-Berichte"
-  },
-  "field.checks": {
-    "defaultMessage": "{place}: Kontrollen"
-  },
-  "field.checkReports": {
-    "defaultMessage": "{place}: Kontroll-Berichte"
-  },
-  "field.observations": {
-    "defaultMessage": "{place}: Beobachtungen"
-  },
-  "field.files": {
-    "defaultMessage": "{place}: Dateien"
-  },
-  "field.fallbackSubprojects": {
-    "defaultMessage": "Teil-Projekt"
-  },
-  "field.fallbackPlaceLevel1": {
-    "defaultMessage": "Ort Stufe 1"
-  },
-  "field.fallbackPlaceLevel2": {
-    "defaultMessage": "Ort Stufe 2"
-  },
-  "field.subprojectReports": {
-    "defaultMessage": "Art: Berichte"
-  },
-  "field.goals": {
-    "defaultMessage": "Art: Ziele"
-  },
-  "field.goalReports": {
-    "defaultMessage": "Art: Ziel-Berichte"
-  },
-  "field.taxa": {
-    "defaultMessage": "Art: Taxa"
-  },
-  "field.taxonomies": {
-    "defaultMessage": "Projekt: Taxonomien"
-  },
-  "field.projectReports": {
-    "defaultMessage": "Projekt: Berichte"
-  },
-  "field.lists": {
-    "defaultMessage": "Projekt: Listen"
-  },
-  "w63miQ": {
-    "defaultMessage": "Daten"
-  },
-  "xGLUF7": {
-    "defaultMessage": "Nächste Jahresgruppe"
-  },
-  "xTeBn/": {
-    "defaultMessage": "Typ"
-  },
-  "yoo7JY": {
-    "defaultMessage": "Der Code ist offen. Du kannst das Projekt jederzeit einsehen, mitgestalten, kopieren und selber weiter entwickeln (lassen)."
-  },
-  "yubcwe": {
-    "defaultMessage": "Wer zahlt, befiehlt. Wer befiehlt, zahlt..."
-  },
-  "zq+cvN": {
-    "defaultMessage": "Diese App ist in Entwicklung. Noch steckt sie voller Fehler. Funktionen werden laufend ergänzt. Daten werden sporadisch gelöscht und neu erstellt."
-  },
-  "aTr0bt": {
-    "defaultMessage": "Quellenangabe"
-  },
-  "aTr9Vm": {
-    "defaultMessage": "Bitte die korrekte Quellenangabe gemäss Anforderungen des Datenanbieters hinzufügen"
-  },
-  "anUnEx": {
-    "defaultMessage": "Ein Fehler ist aufgetreten"
+  "bgTkErr": {
+    "defaultMessage": "✗ Fehler"
   },
   "cLcHDr": {
     "defaultMessage": "Klicken zum Auswählen oder Datei ablegen. Akzeptiert .csv, .tsv, .xlsx, .xls, .ods, .txt."
   },
+  "cRsAlG": {
+    "defaultMessage": "Alle Beobachtungen haben eine Geometrie"
+  },
+  "cRsEp1": {
+    "defaultMessage": "Das von promote-species.app verwendete Koordinaten-Bezugs-System ist 'EPSG:4326', auch bekannt als 'WGS 84'."
+  },
+  "cRsEp2": {
+    "defaultMessage": "Es wird immer in GeoJSON verwendet. Obwohl es weit verbreitet ist, existieren tausende weitere Koordinaten-Bezugs-Systeme."
+  },
+  "cRsEp3": {
+    "defaultMessage": "Wenn die Beobachtungskoordinaten in 'EPSG:4326' vorliegen, ist keine Aktion erforderlich. Andernfalls müssen sie konvertiert werden."
+  },
+  "cRsExm": {
+    "defaultMessage": "Ein gültiges Beispiel ist:"
+  },
+  "cRsFrL": {
+    "defaultMessage": "für eine Liste von EPSG-Codes und deren Beschreibungen."
+  },
+  "cRsLbl": {
+    "defaultMessage": "Im importierten Datensatz verwendetes Koordinaten-Bezugs-System"
+  },
+  "cRsNfd": {
+    "defaultMessage": "Keine Definitionen für das Koordinaten-Bezugs-System '{crs}' gefunden"
+  },
+  "cRsNoO": {
+    "defaultMessage": "Keine Beobachtungen gefunden"
+  },
+  "cRsOrL": {
+    "defaultMessage": "oder"
+  },
+  "cRsRef": {
+    "defaultMessage": "'EPSG:2056',"
+  },
+  "cRsSee": {
+    "defaultMessage": "Siehe"
+  },
+  "cRsUsS": {
+    "defaultMessage": "das in der Schweiz verwendet wird."
+  },
+  "cU1DvF": {
+    "defaultMessage": "Standard-Einheit für Kontroll-Bericht-Mengen"
+  },
+  "cU4ZtP": {
+    "defaultMessage": "Deutsch: Mehrzahl"
+  },
+  "cY7ZaB": {
+    "defaultMessage": "Teilprojekt sortieren nach (Feldname)"
+  },
+  "cancel": {
+    "defaultMessage": "Abbrechen"
+  },
+  "changePasswordAllFieldsRequired": {
+    "defaultMessage": "Bitte alle Passwortfelder ausfüllen."
+  },
+  "changePasswordCancelBtn": {
+    "defaultMessage": "Abbrechen"
+  },
+  "changePasswordConfirmNewPassword": {
+    "defaultMessage": "Neues Passwort bestätigen"
+  },
+  "changePasswordCurrentPassword": {
+    "defaultMessage": "Aktuelles Passwort"
+  },
+  "changePasswordDialogTitle": {
+    "defaultMessage": "Passwort ändern"
+  },
+  "changePasswordHidePassword": {
+    "defaultMessage": "Passwort verbergen"
+  },
+  "changePasswordMenuItem": {
+    "defaultMessage": "Passwort ändern"
+  },
+  "changePasswordMismatch": {
+    "defaultMessage": "Die neuen Passwörter stimmen nicht überein."
+  },
+  "changePasswordNewPassword": {
+    "defaultMessage": "Neues Passwort"
+  },
+  "changePasswordPleaseWait": {
+    "defaultMessage": "Bitte warten..."
+  },
+  "changePasswordSaveBtn": {
+    "defaultMessage": "Passwort speichern"
+  },
+  "changePasswordShowPassword": {
+    "defaultMessage": "Passwort anzeigen"
+  },
+  "changePasswordSuccess": {
+    "defaultMessage": "Passwort erfolgreich geändert."
+  },
+  "changePasswordTooShort": {
+    "defaultMessage": "Das neue Passwort muss mindestens 8 Zeichen haben."
+  },
+  "chooseAccountForProject": {
+    "defaultMessage": "Konto für das neue Projekt wählen"
+  },
+  "colorPickerHexValue": {
+    "defaultMessage": "Hex-Wert"
+  },
+  "confirmDeleteAccountConfirm": {
+    "defaultMessage": "Konto löschen"
+  },
+  "confirmDeleteAccountNoProjects": {
+    "defaultMessage": "Dieses Konto hat keine Projekte. Es wird unwiderruflich gelöscht."
+  },
+  "confirmDeleteAccountTitle": {
+    "defaultMessage": "Konto wirklich löschen?"
+  },
+  "confirmDeleteAccountWithProjects": {
+    "defaultMessage": "Das Löschen dieses Kontos löscht unwiderruflich {count, plural, one {das folgende Projekt} other {die folgenden {count} Projekte}} und alle zugehörigen Daten:"
+  },
+  "d9gLtS": {
+    "defaultMessage": "Bearbeitung beenden"
+  },
+  "dC8DeF": {
+    "defaultMessage": "Berichte beschriften nach"
+  },
   "dLa0Ob": {
     "defaultMessage": "Alle Beobachtungen löschen und neue importieren."
+  },
+  "dR0VsL": {
+    "defaultMessage": "Kontroll-Mengen in Kontrolle anzeigen"
+  },
+  "dV2EwG": {
+    "defaultMessage": "Standard-Einheit für Massnahmen-Bericht-Mengen"
+  },
+  "dbDump.download": {
+    "defaultMessage": "Alle Daten herunterladen (als sql Datei)"
+  },
+  "dbDump.downloading": {
+    "defaultMessage": "Alle Daten werden heruntergeladen..."
+  },
+  "dbDump.failedBody": {
+    "defaultMessage": "Your data export could not be created. Please try again."
+  },
+  "dbDump.failedTitle": {
+    "defaultMessage": "Export failed"
+  },
+  "deleteAccountBtn": {
+    "defaultMessage": "Konto löschen"
+  },
+  "deleteAccountCancelBtn": {
+    "defaultMessage": "Abbrechen"
+  },
+  "deleteAccountConfirmBtn": {
+    "defaultMessage": "Konto dauerhaft löschen"
+  },
+  "deleteAccountExportHint": {
+    "defaultMessage": "Wenn du deine Daten behalten möchtest, exportiere sie bitte zuerst."
+  },
+  "deleteAccountFailed": {
+    "defaultMessage": "Konto konnte nicht gelöscht werden."
+  },
+  "deleteAccountPleaseWait": {
+    "defaultMessage": "Bitte warten..."
+  },
+  "deleteAccountTitle": {
+    "defaultMessage": "Konto löschen"
+  },
+  "deleteAccountWarning": {
+    "defaultMessage": "Das Löschen deines Kontos entfernt alle deine Daten dauerhaft und kann nicht rückgängig gemacht werden."
+  },
+  "docSingular": {
+    "defaultMessage": "Doc"
+  },
+  "docsFilterText": {
+    "defaultMessage": "Filtern..."
+  },
+  "docsList": {
+    "defaultMessage": "Dokumentation"
+  },
+  "dtFieldDate": {
+    "defaultMessage": "Datum"
+  },
+  "dtFieldHours": {
+    "defaultMessage": "Stunden"
+  },
+  "dtFieldMinutes": {
+    "defaultMessage": "Minuten"
+  },
+  "dtFieldMustBeSet": {
+    "defaultMessage": "muss gesetzt werden"
+  },
+  "dtFieldSelectDate": {
+    "defaultMessage": "Datum auswählen oder tippen"
   },
   "dupCnl": {
     "defaultMessage": "Import abbrechen"
@@ -801,7 +1527,7 @@
     "defaultMessage": "Doppelte Daten erkannt"
   },
   "dupPrc": {
-    "defaultMessage": "Möchtest du mit dem Import trotzdem fortfahren?"
+    "defaultMessage": "Möchtest du trotzdem mit dem Import fortfahren?"
   },
   "dupWrg": {
     "defaultMessage": "Warnung:"
@@ -809,62 +1535,254 @@
   "dupWrn": {
     "defaultMessage": "{duplicateCount} von {totalCount} Zeilen scheinen bereits in der Datenbank zu existieren (exakte Übereinstimmung bei allen Datenfeldern)."
   },
+  "eG9HiJ": {
+    "defaultMessage": "Orte beschriften nach"
+  },
+  "eJfllL": {
+    "defaultMessage": "Massnahmen"
+  },
+  "eV3FxH": {
+    "defaultMessage": "Berichte"
+  },
+  "eW6BvR": {
+    "defaultMessage": "Englisch: Einzahl"
+  },
+  "eZ3yEB": {
+    "defaultMessage": "Benutzer"
+  },
+  "ejuFAr": {
+    "defaultMessage": "Wert"
+  },
+  "export.baseTable": {
+    "defaultMessage": "Basis-Tabelle"
+  },
+  "export.baseTable.hint": {
+    "defaultMessage": "Name der Haupt-Tabelle dieser Abfrage (z.B. projects, subprojects, places). Wird verwendet, um den aktuellen App-Filter anzuwenden."
+  },
+  "export.description": {
+    "defaultMessage": "Beschreibung"
+  },
+  "export.level": {
+    "defaultMessage": "Auf welcher Ebene wird exportiert?"
+  },
+  "export.level.project": {
+    "defaultMessage": "Projekt"
+  },
+  "export.level.root": {
+    "defaultMessage": "Root"
+  },
+  "export.level.subproject": {
+    "defaultMessage": "Teilprojekt"
+  },
+  "export.nameDe": {
+    "defaultMessage": "Deutsch"
+  },
+  "export.nameEn": {
+    "defaultMessage": "Englisch"
+  },
+  "export.nameFr": {
+    "defaultMessage": "Französisch"
+  },
+  "export.nameIt": {
+    "defaultMessage": "Italienisch"
+  },
+  "export.section.name": {
+    "defaultMessage": "Name"
+  },
+  "export.section.name.description": {
+    "defaultMessage": "Hier wird der Name für den Export in allen Sprachen definiert. Fehlt eine Sprache, wird Deutsch verwendet."
+  },
+  "export.section.query": {
+    "defaultMessage": "Abfrage"
+  },
+  "export.section.query.description": {
+    "defaultMessage": "Die Abfrage exportiert Daten. Sie retourniert beliebige Felder, die in der Exportdatei erscheinen."
+  },
+  "export.section.variables": {
+    "defaultMessage": "Variabeln"
+  },
+  "export.section.variables.description": {
+    "defaultMessage": "Diese Einstellung bestimmt, auf welcher Ebene der Export ausgeführt wird."
+  },
+  "export.sql": {
+    "defaultMessage": "SQL"
+  },
+  "export.sql.hintNone": {
+    "defaultMessage": "Set level to see available parameters."
+  },
+  "export.sql.hintProject": {
+    "defaultMessage": "$1 = project_id (uuid), $2 = year (integer, optional)"
+  },
+  "export.sql.hintRoot": {
+    "defaultMessage": "$1 = year (integer, optional)"
+  },
+  "export.sql.hintSubproject": {
+    "defaultMessage": "$1 = subproject_id (uuid), $2 = year (integer, optional)"
+  },
+  "exports.nameSingular": {
+    "defaultMessage": "Export"
+  },
+  "exports.openDocs": {
+    "defaultMessage": "Dokumentation öffnen"
+  },
+  "exportsRun.applyFilter": {
+    "defaultMessage": "Aktuellen Filter anwenden"
+  },
+  "exportsRun.clearFilter": {
+    "defaultMessage": "Filter leeren"
+  },
+  "exportsRun.empty": {
+    "defaultMessage": "Keine Exporte vorhanden"
+  },
+  "exportsRun.filter": {
+    "defaultMessage": "Nach Label filtern"
+  },
+  "exportsRun.filterPlaceholder": {
+    "defaultMessage": "Filter..."
+  },
+  "exportsRun.year": {
+    "defaultMessage": "Bericht Jahr"
+  },
+  "fAA1bB": {
+    "defaultMessage": "Filter löschen"
+  },
+  "fBB2cC": {
+    "defaultMessage": "{name} Filter"
+  },
+  "fCC3dD": {
+    "defaultMessage": "Filter {number}"
+  },
+  "fD5OsU": {
+    "defaultMessage": "Massnahmen-Mengen in Massnahme anzeigen"
+  },
+  "fDD4eE": {
+    "defaultMessage": "Oder Filter {number}"
+  },
+  "fEE5fF": {
+    "defaultMessage": "Oder"
+  },
+  "fFF6gG": {
+    "defaultMessage": "{label} entfernen"
+  },
+  "fG2HiJ": {
+    "defaultMessage": "Dateien"
+  },
+  "fGG7hH": {
+    "defaultMessage": "Ja, entfernen"
+  },
+  "fH8JmQ": {
+    "defaultMessage": "Dateien in {subprojectNameSingular} anzeigen"
+  },
+  "fHH8iI": {
+    "defaultMessage": "E-Mail"
+  },
+  "fII9jJ": {
+    "defaultMessage": "GBIF-Download-Schlüssel"
+  },
   "fIuPSu": {
     "defaultMessage": "Datei erfolgreich hochgeladen"
+  },
+  "fK0LmN": {
+    "defaultMessage": "Orte sortieren nach"
+  },
+  "fLdAny": {
+    "defaultMessage": "Beliebiger Text"
+  },
+  "fLdSep": {
+    "defaultMessage": "Trenntext / Zeichen"
+  },
+  "fLdTtl": {
+    "defaultMessage": "Felder"
+  },
+  "fN0sZQ": {
+    "defaultMessage": "Vektor-Ebene"
+  },
+  "fNN4oO": {
+    "defaultMessage": "Zur Kontrolle in Karte zoomen"
+  },
+  "fOO5pP": {
+    "defaultMessage": "Um auf eine Kontrolle zu zoomen, erstelle zuerst die Geometrie"
+  },
+  "fW4GyI": {
+    "defaultMessage": "Bericht-Mengen"
+  },
+  "fX7CwS": {
+    "defaultMessage": "Englisch: Mehrzahl"
+  },
+  "fhL4R2": {
+    "defaultMessage": "Anzeige"
+  },
+  "field.actionReports": {
+    "defaultMessage": "{place}: Massnahmen-Berichte"
+  },
+  "field.actions": {
+    "defaultMessage": "{place}: Massnahmen"
+  },
+  "field.checkReports": {
+    "defaultMessage": "{place}: Kontroll-Berichte"
+  },
+  "field.checks": {
+    "defaultMessage": "{place}: Kontrollen"
+  },
+  "field.fallbackPlaceLevel1": {
+    "defaultMessage": "Ort Stufe 1"
+  },
+  "field.fallbackPlaceLevel2": {
+    "defaultMessage": "Ort Stufe 2"
+  },
+  "field.fallbackSubprojects": {
+    "defaultMessage": "Teil-Projekt"
+  },
+  "field.files": {
+    "defaultMessage": "{place}: Dateien"
+  },
+  "field.goalReports": {
+    "defaultMessage": "Art: Ziel-Berichte"
+  },
+  "field.goals": {
+    "defaultMessage": "Art: Ziele"
+  },
+  "field.lists": {
+    "defaultMessage": "Projekt: Listen"
+  },
+  "field.observations": {
+    "defaultMessage": "{place}: Beobachtungen"
+  },
+  "field.projectFieldSingular": {
+    "defaultMessage": "Project Field"
+  },
+  "field.projectFieldsPlural": {
+    "defaultMessage": "Project Fields"
+  },
+  "field.projectReports": {
+    "defaultMessage": "Projekt: Berichte"
+  },
+  "field.subprojectReports": {
+    "defaultMessage": "Art: Berichte"
+  },
+  "field.taxa": {
+    "defaultMessage": "Art: Taxa"
+  },
+  "field.taxonomies": {
+    "defaultMessage": "Projekt: Taxonomien"
+  },
+  "fz2AhZ": {
+    "defaultMessage": "Projekt"
+  },
+  "fz2place": {
+    "defaultMessage": "Ort"
+  },
+  "gE4ItL": {
+    "defaultMessage": "Taxa in Kontrolle anzeigen"
   },
   "gEo0mY": {
     "defaultMessage": "Geometrie"
   },
-  "iDnt0f": {
-    "defaultMessage": "Identifikation"
+  "gH3IjK": {
+    "defaultMessage": "Dateien in Massnahme anzeigen"
   },
-  "oImprt": {
-    "defaultMessage": "{count} Beobachtungen importiert"
-  },
-  "rP0bTn": {
-    "defaultMessage": "Ersetzen"
-  },
-  "rPsFai": {
-    "defaultMessage": "Ersetzen fehlgeschlagen"
-  },
-  "rPsUcc": {
-    "defaultMessage": "Ersetzen erfolgreich"
-  },
-  "uPaNTx": {
-    "defaultMessage": "Bestehende Beobachtungen aktualisieren, neue hinzufügen und fehlende entfernen. Zuweisungen und Kommentare werden beibehalten."
-  },
-  "uPaNeX": {
-    "defaultMessage": "Aktualisieren und erweitern"
-  },
-  "uPsFai": {
-    "defaultMessage": "Aktualisierung fehlgeschlagen"
-  },
-  "uPsUcc": {
-    "defaultMessage": "Aktualisierung erfolgreich"
-  },
-  "uPx0bO": {
-    "defaultMessage": "Bestehende Beobachtungen aktualisieren"
-  },
-  "uPlBTx": {
-    "defaultMessage": "Datei mit Beobachtungen hochladen"
-  },
-  "vPr8Hi": {
-    "defaultMessage": "Vorschau ausblenden"
-  },
-  "vPr9Sh": {
-    "defaultMessage": "Vorschau anzeigen"
-  },
-  "lPrW0d": {
-    "defaultMessage": "Vorschau wird geladen..."
-  },
-  "nDt0Pr": {
-    "defaultMessage": "Keine Daten für die Vorschau"
-  },
-  "prVw0A": {
-    "defaultMessage": "Vorschau"
-  },
-  "mRw0sX": {
-    "defaultMessage": "und {count} weitere Zeilen..."
+  "gHiJkL": {
+    "defaultMessage": "Menschen-freundlicher Name. Beispiel: \"Projekt-Name\""
   },
   "gJsFld": {
     "defaultMessage": "GeoJSON-Feld"
@@ -872,158 +1790,59 @@
   "gJsVld": {
     "defaultMessage": "Welches Feld enthält die GeoJSON-Geometrien?"
   },
-  "aCdDet": {
-    "defaultMessage": "✓ Koordinatenfelder automatisch erkannt"
-  },
-  "aCdVfy": {
-    "defaultMessage": "Bitte die ausgewählten Felder überprüfen und sicherstellen, dass die Koordinatenwerte korrekt sind."
-  },
-  "aCdBtn": {
-    "defaultMessage": "Dann die Koordinaten per Klick auf den Button am Ende der Seite setzen."
-  },
-  "xCdFld": {
-    "defaultMessage": "X-Koordinaten-Feld"
-  },
-  "xCdVld": {
-    "defaultMessage": "Welches Feld enthält die X-Koordinaten? Dies sollte der Breitengrad sein."
-  },
-  "yCdFld": {
-    "defaultMessage": "Y-Koordinaten-Feld"
-  },
-  "yCdVld": {
-    "defaultMessage": "Welches Feld enthält die Y-Koordinaten? Dies sollte der Längengrad sein."
-  },
-  "cRsEp1": {
-    "defaultMessage": "Das von promote-species.app verwendete Koordinaten-Bezugs-System ist 'EPSG:4326', auch bekannt als 'WGS 84'."
-  },
-  "cRsEp2": {
-    "defaultMessage": "Es wird immer in GeoJSON verwendet. Obwohl es weit verbreitet ist, existieren tausende weitere Koordinaten-Bezugs-Systeme."
-  },
-  "cRsEp3": {
-    "defaultMessage": "Wenn die Beobachtungskoordinaten in 'EPSG:4326' vorliegen, ist keine Aktion erforderlich. Andernfalls müssen sie konvertiert werden."
-  },
   "gMtLbl": {
     "defaultMessage": "Wie sind die Geometrien in den Daten enthalten?"
   },
   "gMtVld": {
     "defaultMessage": "GeoJSON und Koordinatenfelder werden unterstützt"
   },
-  "cRsLbl": {
-    "defaultMessage": "Im importierten Datensatz verwendetes Koordinaten-Bezugs-System"
+  "gO1PqR": {
+    "defaultMessage": "Karten-Präsentations-KBS"
   },
-  "cRsSee": {
-    "defaultMessage": "Siehe"
+  "gP1QrT": {
+    "defaultMessage": "Liste der Taxa, die in diesem {subprojectNameSingular}-Teilprojekt vertreten sind. Beispiele: Synonyme einer Taxonomie oder aus verschiedenen Taxonomien. Ein Taxon sollte in höchstens einem Teilprojekt verwendet werden."
   },
-  "cRsOrL": {
-    "defaultMessage": "oder"
+  "gRVMng": {
+    "defaultMessage": "Menge"
   },
-  "cRsFrL": {
-    "defaultMessage": "für eine Liste von EPSG-Codes und deren Beschreibungen."
+  "gRinGoal": {
+    "defaultMessage": "Ziel-Berichte im Ziel anzeigen"
   },
-  "cRsExm": {
-    "defaultMessage": "Ein gültiges Beispiel ist:"
+  "gX5HzJ": {
+    "defaultMessage": "Bericht-Mengen im Bericht anzeigen"
   },
-  "cRsRef": {
-    "defaultMessage": "'EPSG:2056',"
+  "gi+ubY": {
+    "defaultMessage": "Projekt-Benutzer"
   },
-  "cRsUsS": {
-    "defaultMessage": "das in der Schweiz verwendet wird."
+  "gjvJCk": {
+    "defaultMessage": "arten-fördern.app funktioniert auf jedem Betriebs&shy;system: Windows, Mac­OS, Linux, Android, iOS..."
   },
-  "cRsNfd": {
-    "defaultMessage": "Keine Definitionen für das Koordinaten-Bezugs-System '{crs}' gefunden"
+  "gw/Eg0": {
+    "defaultMessage": "Uuid"
   },
-  "cRsNoO": {
-    "defaultMessage": "Keine Beobachtungen gefunden"
+  "gxCh0c": {
+    "defaultMessage": "Teilprojekt"
   },
-  "cRsAlG": {
-    "defaultMessage": "Alle Beobachtungen haben eine Geometrie"
+  "h5g7Kk": {
+    "defaultMessage": "Orte"
   },
-  "sGAlSt": {
-    "defaultMessage": "Alle {count} Geometrien der Beobachtungen sind gesetzt"
+  "hS2TuV": {
+    "defaultMessage": "Wähle ein KBS in der KBS-Liste"
   },
-  "sCdSet": {
-    "defaultMessage": "Koordinaten von {count} Beobachtungen setzen"
+  "hZ9EyU": {
+    "defaultMessage": "Französisch: Einzahl"
   },
-  "sCdStg": {
-    "defaultMessage": "Koordinaten von {count} Beobachtungen werden gesetzt"
+  "homeMoreInfoText": {
+    "defaultMessage": "...findest du in der {link}."
   },
-  "lBlSet": {
-    "defaultMessage": "{count} Beobachtungen beschriften"
+  "homeMoreInfoTitle": {
+    "defaultMessage": "Mehr Infos"
   },
-  "lBlStg": {
-    "defaultMessage": "Beschriftungen von {count} Beobachtungen werden gesetzt"
+  "i43yle": {
+    "defaultMessage": "markiert"
   },
-  "lBlApl": {
-    "defaultMessage": "Änderungen anwenden"
-  },
-  "lBlAplg": {
-    "defaultMessage": "Änderungen werden angewendet"
-  },
-  "lBlAlS": {
-    "defaultMessage": "Alle {count} Beobachtungen haben Beschriftungen"
-  },
-  "lBlCrt": {
-    "defaultMessage": "Bitte zuerst eine Beschriftungsstruktur erstellen"
-  },
-  "lCrTtl": {
-    "defaultMessage": "Beschriftungs-Werkzeug"
-  },
-  "lCrBld": {
-    "defaultMessage": "Eigene Beschriftung erstellen."
-  },
-  "lCrPul": {
-    "defaultMessage": "Felder hierher ziehen. Der Feldwert wird in der Beschriftung verwendet."
-  },
-  "lCrCmb": {
-    "defaultMessage": "Mehrere Felder kombinieren."
-  },
-  "lCrSep": {
-    "defaultMessage": "Trenntext mit dem Trennzeichen-Werkzeug einfügen."
-  },
-  "fLdTtl": {
-    "defaultMessage": "Felder"
-  },
-  "fLdSep": {
-    "defaultMessage": "Trenntext / Zeichen"
-  },
-  "fLdAny": {
-    "defaultMessage": "Beliebiger Text"
-  },
-  "bChrSp": {
-    "defaultMessage": "Trennzeichen (beliebiger Text)"
-  },
-  "bChrPh": {
-    "defaultMessage": "Beliebigen Text eingeben"
-  },
-  "bgTkSlb": {
-    "defaultMessage": "Setze Beschriftungen"
-  },
-  "bgTkScr": {
-    "defaultMessage": "Setze Koordinaten"
-  },
-  "bgTkCmp": {
-    "defaultMessage": "✓ Abgeschlossen"
-  },
-  "bgTkErr": {
-    "defaultMessage": "✗ Fehler"
-  },
-  "bgTkImp": {
-    "defaultMessage": "Importiere Beobachtungen"
-  },
-  "bgTkRpl": {
-    "defaultMessage": "Ersetze Beobachtungen"
-  },
-  "bgTkUpd": {
-    "defaultMessage": "Aktualisiere Beobachtungen"
-  },
-  "oBsImpM": {
-    "defaultMessage": "{count} Beobachtungen importiert"
-  },
-  "oBsRplM": {
-    "defaultMessage": "{count} Beobachtungen ersetzt"
-  },
-  "oBsUpdM": {
-    "defaultMessage": "Aktualisiert: {updated}, hinzugefügt: {added}, entfernt: {removed}"
+  "iA0FzV": {
+    "defaultMessage": "Französisch: Mehrzahl"
   },
   "iDFdLb": {
     "defaultMessage": "ID-Feld"
@@ -1037,220 +1856,1087 @@
   "iDFdV3": {
     "defaultMessage": "Ermöglicht die Wahl zwischen Aktualisieren und Ersetzen bestehender Beobachtungen."
   },
+  "iDnt0f": {
+    "defaultMessage": "Identifikation"
+  },
+  "iW3XyZ": {
+    "defaultMessage": "Wert(e) für Berichte wenn:"
+  },
+  "iaro8o": {
+    "defaultMessage": "Teamwork"
+  },
+  "initDbHintMsg": {
+    "defaultMessage": "Nur beim ersten Start nötig"
+  },
+  "initDbMsg": {
+    "defaultMessage": "Baue lokale Datenbank"
+  },
+  "initDbStepLabel": {
+    "defaultMessage": "Initialisiere Datenbank"
+  },
+  "jA4BeC": {
+    "defaultMessage": "...Werte auf mehreren Ort-Stufen"
+  },
+  "jH7LwO": {
+    "defaultMessage": "Taxon hinzufügen"
+  },
+  "jcW44N": {
+    "defaultMessage": "App öffnen"
+  },
+  "jmuVHU": {
+    "defaultMessage": "Thema"
+  },
+  "kC2HbX": {
+    "defaultMessage": "Italienisch: Einzahl"
+  },
+  "kD5EfG": {
+    "defaultMessage": "...mehrere Massnahmen-Mengen auf gleicher Ort-Stufe"
+  },
+  "kL3MnO": {
+    "defaultMessage": "Dateien"
+  },
+  "lBlAlS": {
+    "defaultMessage": "Alle {count} Beobachtungen haben Beschriftungen"
+  },
+  "lBlApl": {
+    "defaultMessage": "Änderungen anwenden"
+  },
+  "lBlAplg": {
+    "defaultMessage": "Änderungen werden angewendet"
+  },
+  "lBlCrt": {
+    "defaultMessage": "Bitte zuerst eine Beschriftungsstruktur erstellen"
+  },
+  "lBlSet": {
+    "defaultMessage": "{count} Beobachtungen beschriften"
+  },
+  "lBlStg": {
+    "defaultMessage": "Beschriftungen von {count} Beobachtungen werden gesetzt"
+  },
+  "lCrBld": {
+    "defaultMessage": "Eigene Beschriftung erstellen."
+  },
+  "lCrCmb": {
+    "defaultMessage": "Mehrere Felder kombinieren."
+  },
+  "lCrPul": {
+    "defaultMessage": "Felder hierher ziehen. Der Feldwert wird in der Beschriftung verwendet."
+  },
+  "lCrSep": {
+    "defaultMessage": "Trenntext mit dem Trennzeichen-Werkzeug einfügen."
+  },
+  "lCrTtl": {
+    "defaultMessage": "Beschriftungs-Werkzeug"
+  },
+  "lD2EfG": {
+    "defaultMessage": "Koordinaten"
+  },
+  "lD3IcY": {
+    "defaultMessage": "Italienisch: Mehrzahl"
+  },
+  "lH6IjK": {
+    "defaultMessage": "...mehrere Kontroll-Mengen auf gleicher Ort-Stufe"
+  },
+  "lOK5dy": {
+    "defaultMessage": "Arten in Populationen gliedern, fakultativ in Teil-Populationen."
+  },
+  "lPrW0d": {
+    "defaultMessage": "Vorschau wird geladen..."
+  },
+  "lV6LstVals": {
+    "defaultMessage": "Werte"
+  },
+  "lV6LstValsInLst": {
+    "defaultMessage": "Listen-Werte in Liste anzeigen"
+  },
+  "lVDeleteAll": {
+    "defaultMessage": "Alle Werte entfernen"
+  },
+  "lVDeleteAllConfirm": {
+    "defaultMessage": "Alle Werte entfernen?"
+  },
+  "lVImport": {
+    "defaultMessage": "Werte aus Datei importieren"
+  },
+  "lVImportDesc": {
+    "defaultMessage": "Die Datei soll eine einfache Liste von Werten enthalten – eine pro Zeile, ohne Spaltenüberschrift. Erwarteter Typ: {type}."
+  },
+  "lVImportDrop": {
+    "defaultMessage": "Datei hier ablegen oder klicken zum Auswählen"
+  },
+  "lVImportFormats": {
+    "defaultMessage": "Unterstützte Formate: .csv, .tsv, .xlsx, .xls, .ods"
+  },
+  "lVImportTitle": {
+    "defaultMessage": "Werte importieren"
+  },
+  "lVr8Zn": {
+    "defaultMessage": "Wert-Typ"
+  },
+  "lWQzTz": {
+    "defaultMessage": "Feld hinzufügen"
+  },
+  "layerDeleteBtnTitle": {
+    "defaultMessage": "Layer {label} löschen"
+  },
+  "layerDeleteConfirmHeader": {
+    "defaultMessage": "Layer {label} löschen?"
+  },
+  "layerDeleteNo": {
+    "defaultMessage": "Nein"
+  },
+  "layerDeleteYes": {
+    "defaultMessage": "Ja"
+  },
+  "logoutCancelBtn": {
+    "defaultMessage": "Abbrechen"
+  },
+  "logoutConfirmTitle": {
+    "defaultMessage": "Abmeldung bestätigen"
+  },
+  "logoutLocalDataWipeConfirm": {
+    "defaultMessage": "Beim Abmelden werden lokale Daten auf diesem Gerät gelöscht, damit der nächste Benutzer keine alten (= deine) Daten sieht. Deine Daten wurden auf den Server synchronisiert. Daher gehen sie nicht verloren und werden bei deiner nächsten Anmeldung wieder verfügbar. Jetzt abmelden?"
+  },
+  "logoutMenuItem": {
+    "defaultMessage": "Abmelden"
+  },
+  "logoutNowBtn": {
+    "defaultMessage": "Jetzt abmelden"
+  },
+  "logoutPendingOpsBody": {
+    "defaultMessage": "Es sind noch {count} ausstehende lokale Operationen vorhanden. Wenn du dich jetzt abmeldest, werden diese lokalen Daten gelöscht und können nicht mehr synchronisiert werden. Empfehlung: Warte, bis alle Operationen mit dem Server synchronisiert wurden."
+  },
+  "logoutPendingOpsTitle": {
+    "defaultMessage": "Achtung: Ausstehende Operationen"
+  },
+  "logoutPleaseWait": {
+    "defaultMessage": "Bitte warten..."
+  },
+  "logoutProceedAnywayBtn": {
+    "defaultMessage": "Trotzdem fortfahren"
+  },
+  "mARBts": {
+    "defaultMessage": "Massnahmen-Berichte"
+  },
+  "mH3IjK": {
+    "defaultMessage": "GeoJSON"
+  },
+  "mL7MnO": {
+    "defaultMessage": "Dateien lokal speichern (offline verfügbar)"
+  },
+  "mN1OpQ": {
+    "defaultMessage": "Massnahmen-Taxon"
+  },
+  "mP7QrS": {
+    "defaultMessage": "Standard-Einheit für Kontroll-Taxon-Mengen"
+  },
+  "mQ4PrjUsersInPrj": {
+    "defaultMessage": "Benutzer im Projekt anzeigen"
+  },
+  "mRw0sX": {
+    "defaultMessage": "und {count} weitere Zeilen..."
+  },
+  "mapZoomIn": {
+    "defaultMessage": "Heranzoomen"
+  },
+  "mapZoomOut": {
+    "defaultMessage": "Herauszoomen"
+  },
+  "mn58Sh": {
+    "defaultMessage": "Dateien"
+  },
+  "nDt0Pr": {
+    "defaultMessage": "Keine Daten für die Vorschau"
+  },
+  "nF5KeA": {
+    "defaultMessage": "Berichte"
+  },
+  "nP8QrS": {
+    "defaultMessage": "Hier wird der Name für diese Ort-Stufe definiert. Damit er überall korrekt angezeigt werden kann, braucht es Einzahl, Mehrzahl und Kurzform, in allen verwendeten Sprachen. Fehlt eine Sprache, wird Deutsch verwendet."
+  },
+  "nR6StU": {
+    "defaultMessage": "Standard-Einheit für Massnahmen-Mengen"
+  },
+  "nVkh0Z": {
+    "defaultMessage": "Einheiten"
+  },
+  "nX4TyZ": {
+    "defaultMessage": "Taxonomien klassifizieren Objekte (z. B. Arten, Biotope), meist hierarchisch. Es gibt keine allgemein gültige Art, Arten und Biotope zu klassifizieren. Die genetische Zusammensetzung und die Verbreitung von Arten können im Laufe der Zeit ändern. Biotope verändern ihre Artzusammensetzung. Daher ist eine Taxonomie auch nie abschliessend. Es ist daher normal, dass je nach Kontext verschiedene und in einem einzelnen Projekt auch gleichzeitig mehrere Taxonomien verwendet werden."
+  },
+  "nauDh5": {
+    "defaultMessage": "Vektor-Ebenen"
+  },
+  "navigationDocs": {
+    "defaultMessage": "Dokumentation"
+  },
+  "navigationDocsGoBack": {
+    "defaultMessage": "Zurück"
+  },
+  "navigationHome": {
+    "defaultMessage": "Home"
+  },
+  "ndNatR": {
+    "defaultMessage": "Datei: {label}"
+  },
+  "noT0gR": {
+    "defaultMessage": "Taxonomien"
+  },
+  "oG6LfB": {
+    "defaultMessage": "Bericht-Mengen"
+  },
+  "oImprt": {
+    "defaultMessage": "{count} Beobachtungen importiert"
+  },
+  "oPMDm+": {
+    "defaultMessage": "Kontrollen"
+  },
+  "oT4UvW": {
+    "defaultMessage": "Arten wählen, um deren (Teil-)Populationen zu bearbeiten. Biotope für (Teil-)Biotope bzw. Lebensräume"
+  },
+  "obi6zi": {
+    "defaultMessage": "Passwort verbergen"
+  },
+  "obs0Cmt": {
+    "defaultMessage": "Kommentar"
+  },
+  "obs0Dnd": {
+    "defaultMessage": "Felder per Drag-and-Drop sortieren"
+  },
+  "obs0Hdr": {
+    "defaultMessage": "Beobachtung"
+  },
+  "obs0Npf": {
+    "defaultMessage": "Keine Standorte gefunden"
+  },
+  "obs0Nta": {
+    "defaultMessage": "Nicht zuzuordnen"
+  },
+  "obs0Plc": {
+    "defaultMessage": "Standort"
+  },
+  "obs0Raw": {
+    "defaultMessage": "Rohdaten"
+  },
+  "onlineStatusOffline": {
+    "defaultMessage": "Du bist offline"
+  },
+  "onlineStatusOfflineQueued": {
+    "defaultMessage": "Du bist offline. {count} Operationen warten auf Synchronisation"
+  },
+  "onlineStatusOnline": {
+    "defaultMessage": "Du bist online"
+  },
+  "ownerRoleNotEditable": {
+    "defaultMessage": "Diese Rolle wird automatisch gesetzt und kann nicht bearbeitet werden."
+  },
+  "p61gsZ": {
+    "defaultMessage": "Enddatum muss nach dem Startdatum liegen"
+  },
+  "pH7MgC": {
+    "defaultMessage": "Massnahmen"
+  },
+  "pPWZGx": {
+    "defaultMessage": "...beschreiben und beurteilen die Entwicklung, den Erfolg der Massnahmen und die Erreichung der Ziele."
+  },
+  "pQ2RsT": {
+    "defaultMessage": "Taxa"
+  },
+  "pQ9StU": {
+    "defaultMessage": "Hier wird der Name für Teil-Projekte definiert. Damit er überall korrekt angezeigt werden kann, braucht es Einzahl und Mehrzahl, in allen verwendeten Sprachen. Fehlt eine Sprache, wird Deutsch verwendet."
+  },
+  "pR0UwN": {
+    "defaultMessage": "Es können ein oder zwei Ort-Stufen definiert werden. Beispiel für Arten: Population/Teil-Population."
+  },
+  "pR8FldInPrj": {
+    "defaultMessage": "Felder im Projekt anzeigen"
+  },
+  "pTRYGx": {
+    "defaultMessage": "Erfasse neue Mitarbeitende mit ihrer E-Mail. Ergänze diese Person bei allen Arten, in denen sie mitarbeiten soll. Fertig!"
+  },
+  "pV5WxY": {
+    "defaultMessage": "Standard-Einheiten"
+  },
+  "passkeyAddFailed": {
+    "defaultMessage": "Passkey konnte nicht hinzugefügt werden. Bitte erneut versuchen."
+  },
+  "passkeyAddMenuItem": {
+    "defaultMessage": "Passkey hinzufügen"
+  },
+  "passkeyAddSuccess": {
+    "defaultMessage": "Passkey erfolgreich hinzugefügt."
+  },
+  "passkeyDialogAddBtn": {
+    "defaultMessage": "Passkey registrieren"
+  },
+  "passkeyDialogClose": {
+    "defaultMessage": "Schliessen"
+  },
+  "passkeyDialogDescription": {
+    "defaultMessage": "Passkeys ermöglichen eine sichere, passwortlose Anmeldung mit Fingerabdruck, Gesichtserkennung oder PIN."
+  },
+  "passkeyDialogTitle": {
+    "defaultMessage": "Passkey hinzufügen"
+  },
+  "pfBGqS": {
+    "defaultMessage": "Feldtauglich"
+  },
+  "prVw0A": {
+    "defaultMessage": "Vorschau"
+  },
+  "prjRptsInPrj": {
+    "defaultMessage": "Berichte im Projekt anzeigen"
+  },
+  "projectExport.baseTable": {
+    "defaultMessage": "Basis-Tabelle"
+  },
+  "projectExport.baseTable.hint": {
+    "defaultMessage": "Name der Haupt-Tabelle dieser Abfrage (z.B. projects, subprojects, places). Wird verwendet, um den aktuellen App-Filter anzuwenden."
+  },
+  "projectExport.description": {
+    "defaultMessage": "Beschreibung"
+  },
+  "projectExport.filterByYear": {
+    "defaultMessage": "Nach Jahr filtern"
+  },
+  "projectExport.filterByYearHint": {
+    "defaultMessage": "Wenn wahr, wird der Abfrage eine Variable für das gewünschte Berichts-Jahr übergeben"
+  },
+  "projectExport.level": {
+    "defaultMessage": "Auf welcher Ebene wird exportiert?"
+  },
+  "projectExport.level.project": {
+    "defaultMessage": "Projekt"
+  },
+  "projectExport.level.subproject": {
+    "defaultMessage": "Teilprojekt"
+  },
+  "projectExport.nameDe": {
+    "defaultMessage": "Deutsch"
+  },
+  "projectExport.nameEn": {
+    "defaultMessage": "Englisch"
+  },
+  "projectExport.nameFr": {
+    "defaultMessage": "Französisch"
+  },
+  "projectExport.nameIt": {
+    "defaultMessage": "Italienisch"
+  },
+  "projectExport.section.name": {
+    "defaultMessage": "Name"
+  },
+  "projectExport.section.name.description": {
+    "defaultMessage": "Hier wird der Name für den Export in allen Sprachen definiert. Fehlt eine Sprache, wird Deutsch verwendet."
+  },
+  "projectExport.section.query": {
+    "defaultMessage": "Abfrage"
+  },
+  "projectExport.section.query.description": {
+    "defaultMessage": "Die Abfrage exportiert Daten. Sie retourniert beliebige Felder, die in der Exportdatei erscheinen."
+  },
+  "projectExport.section.variables": {
+    "defaultMessage": "Variabeln"
+  },
+  "projectExport.section.variables.description": {
+    "defaultMessage": "Diese Einstellung bestimmt, auf welcher Ebene der Export ausgeführt wird."
+  },
+  "projectExport.sql": {
+    "defaultMessage": "SQL"
+  },
+  "projectExport.sql.hintNone": {
+    "defaultMessage": "Set level to see available parameters."
+  },
+  "projectExports.activateAll": {
+    "defaultMessage": "Alle aktivieren"
+  },
+  "projectExports.deactivateAll": {
+    "defaultMessage": "Alle deaktivieren"
+  },
+  "projectExports.description": {
+    "defaultMessage": "Hier kannst du eigene Exporte erstellen. Sie sind in diesem Projekt verfügbar."
+  },
+  "projectExports.empty": {
+    "defaultMessage": "Keine Exporte vorhanden"
+  },
+  "projectExports.filter": {
+    "defaultMessage": "Filtern"
+  },
+  "projectExports.filterPlaceholder": {
+    "defaultMessage": "Name..."
+  },
+  "projectQc.section.query.description": {
+    "defaultMessage": "Die Abfrage soll verdächtige Datensätze aufdecken. Sie retourniert zwei Felder: label (Beschriftung) und url (ein Link um den Datensatz aufzurufen). Beispiele findest du bei den <link>vorbereiteten Qualitätskontrollen</link>."
+  },
+  "projectQcs.activateAll": {
+    "defaultMessage": "Alle aktivieren"
+  },
+  "projectQcs.deactivateAll": {
+    "defaultMessage": "Alle deaktivieren"
+  },
+  "projectQcs.description": {
+    "defaultMessage": "Hier kannst du eigene Qualitätskontrollen erstellen. Sie sind in diesem Projekt verfügbar. Sie können auf Ebene Projekt oder {subprojectName} angewendet werden."
+  },
+  "projectQcs.empty": {
+    "defaultMessage": "Keine Qualitätskontrollen vorhanden"
+  },
+  "projectQcs.filter": {
+    "defaultMessage": "Filtern"
+  },
+  "projectQcs.filterPlaceholder": {
+    "defaultMessage": "Name..."
+  },
+  "projectQcsRun.allOk": {
+    "defaultMessage": "Alles i.O."
+  },
   "pvImpLb": {
     "defaultMessage": "Vorheriger Import"
   },
   "pvImpVl": {
     "defaultMessage": "Wurden Beobachtungen bereits zuvor aus derselben Quelle importiert? Falls ja: den vorherigen Import auswählen. Falls nein: leer lassen."
   },
-  "obs0Hdr": {
-    "defaultMessage": "Beobachtung"
+  "qB8CdE": {
+    "defaultMessage": "Standard-Einheit für Kontroll-Mengen"
   },
-  "obs0Nta": {
-    "defaultMessage": "Nicht zuzuordnen"
+  "qH7MpR4": {
+    "defaultMessage": "Bericht-Mengen im Bericht anzeigen"
   },
-  "obs0Cmt": {
-    "defaultMessage": "Kommentar"
+  "qI8NhD": {
+    "defaultMessage": "Massnahmen-Mengen"
   },
-  "obs0Plc": {
-    "defaultMessage": "Standort"
+  "qP7PrjFileInPrj": {
+    "defaultMessage": "Dateien im Projekt anzeigen"
   },
-  "obs0Npf": {
-    "defaultMessage": "Keine Standorte gefunden"
+  "qS1VxO": {
+    "defaultMessage": "Du kannst die folgenden Fähigkeiten nach deinen Bedürfnissen ein- oder ausschalten. Nicht benötigte deaktivieren ist empfohlen, weil es die Benutzeroberfläche im normalen Bearbeitungs-Modus vereinfacht. Im Design-Modus sind alle Fähigkeiten aktiviert."
   },
-  "obs0Raw": {
-    "defaultMessage": "Rohdaten"
+  "qc.filterByYear": {
+    "defaultMessage": "Nach Jahr filtern"
   },
-  "obs0Dnd": {
-    "defaultMessage": "Felder per Drag-and-Drop sortieren"
+  "qc.filterByYearHint": {
+    "defaultMessage": "Wenn wahr, wird der Abfrage eine Variable für das gewünschte Berichts-Jahr übergeben"
   },
-  "gRVMgi": {
-    "defaultMessage": "Menge (ganzzahlig)"
+  "qc.level": {
+    "defaultMessage": "Auf welcher Ebene wird Qualität kontrolliert?"
   },
-  "gRVMnu": {
-    "defaultMessage": "Menge (numerisch)"
+  "qc.level.project": {
+    "defaultMessage": "Projekt"
   },
-  "gRVMtx": {
-    "defaultMessage": "Menge (Text)"
+  "qc.level.root": {
+    "defaultMessage": "Root"
   },
-  "bCFgHi": {
-    "defaultMessage": "Bericht"
+  "qc.level.subproject": {
+    "defaultMessage": "Teilprojekt"
   },
-  "bCGhIj": {
-    "defaultMessage": "Bericht Druckvorschau"
+  "qc.nameDe": {
+    "defaultMessage": "Deutsch"
   },
-  "bCHiJk": {
-    "defaultMessage": "Teilprojekt-Bericht Druckvorschau"
+  "qc.nameEn": {
+    "defaultMessage": "Englisch"
   },
-  "bCIjKl": {
-    "defaultMessage": "Kein Berichts-Design gefunden. Du musst zuerst ein {subproject}-Bericht-Design erstellen."
+  "qc.nameFr": {
+    "defaultMessage": "Französisch"
   },
-  "bCJkLm": {
-    "defaultMessage": "Bericht-Designs"
+  "qc.nameIt": {
+    "defaultMessage": "Italienisch"
   },
-  "bCKlMn": {
-    "defaultMessage": "{places}-Ebene in Karte anzeigen"
+  "qc.openDocs": {
+    "defaultMessage": "Dokumentation öffnen"
   },
-  "bCLmNo": {
-    "defaultMessage": "{places}-Ebene aus Karte entfernen"
+  "qc.projects": {
+    "defaultMessage": "Projekte"
   },
-  "bCMnOp": {
-    "defaultMessage": "Auf {places} in Karte zoomen"
+  "qc.section.name": {
+    "defaultMessage": "Name"
   },
-  "bCNoPq": {
-    "defaultMessage": "Keine Daten gefunden"
+  "qc.section.name.description": {
+    "defaultMessage": "Hier wird der Name für die Qualitäts-Kontrolle in allen Sprachen definiert. Fehlt eine Sprache, wird Deutsch verwendet."
   },
-  "bCOpQr": {
-    "defaultMessage": "Keine {table}-Einträge vorhanden. Bitte füge zuerst einen hinzu."
+  "qc.section.query": {
+    "defaultMessage": "Abfrage"
   },
-  "bCPrSt": {
-    "defaultMessage": "{label} kann nicht geändert werden"
+  "qc.section.query.description": {
+    "defaultMessage": "Die Abfrage soll verdächtige Datensätze aufdecken. Sie retourniert zwei Felder: label (Beschriftung) und url (ein Link um den Datensatz aufzurufen)."
   },
-  "bCQuRv": {
-    "defaultMessage": "(kein Label)"
+  "qc.section.variables": {
+    "defaultMessage": "Variabeln"
   },
-  "bCRvSw": {
-    "defaultMessage": "Ort-Benutzer"
+  "qc.section.variables.description": {
+    "defaultMessage": "Diese Einstellungen bestimmen, welche Variabeln der Abfrage übergeben werden."
   },
-  "bCSwTx": {
-    "defaultMessage": "Kontroll-Bericht"
+  "qc.sql": {
+    "defaultMessage": "SQL"
   },
-  "bCSxTz": {
-    "defaultMessage": "Kontroll-Berichte"
+  "qc.sql.hintNone": {
+    "defaultMessage": "Set level to see available parameters."
   },
-  "bCTxUy": {
-    "defaultMessage": "Ort-Bericht"
+  "qc.sql.hintProject": {
+    "defaultMessage": "$1 = project_id (uuid)"
   },
-  "bCUyVz": {
-    "defaultMessage": "Keine Geometrien für {places} gefunden"
+  "qc.sql.hintProjectYear": {
+    "defaultMessage": "$1 = project_id (uuid), $2 = year (integer)"
   },
-  "bCVzWA": {
-    "defaultMessage": "Zur Massnahme in Karte zoomen"
+  "qc.sql.hintRoot": {
+    "defaultMessage": "no parameters needed."
   },
-  "bCWAXB": {
-    "defaultMessage": "Keine Geometrie"
+  "qc.sql.hintRootYear": {
+    "defaultMessage": "$1 = year (integer)"
   },
-  "bCXBYC": {
-    "defaultMessage": "Um auf eine Massnahme zu zoomen, erstelle zuerst die Geometrie"
+  "qc.sql.hintSubproject": {
+    "defaultMessage": "$1 = subproject_id (uuid)"
   },
-  "bCYCZD": {
-    "defaultMessage": "Bearbeiten"
+  "qc.sql.hintSubprojectYear": {
+    "defaultMessage": "$1 = subproject_id (uuid), $2 = year (integer)"
   },
-  "bCZDEF": {
-    "defaultMessage": "Massnahmen-Menge"
+  "qcs.info": {
+    "defaultMessage": "Das hier sind vordefinierte Qualitätskontrollen. Sie sind in jedem Projekt verfügbar. Sie können auf Ebene Projekt oder Teil-Projekt angewendet werden. Im Projekt kannst du eigene Qualitätskontrollen erstellen, die nur in diesem Projekt und seinen Teil-Projekten verfügbar sind."
   },
-  "bDAEFG": {
-    "defaultMessage": "Massnahmen-Bericht-Menge"
+  "qcs.nameSingular": {
+    "defaultMessage": "Qualitätskontrolle"
   },
-  "bDBFGH": {
-    "defaultMessage": "Auf {place} in Karte zoomen"
+  "qcsResultDialog.close": {
+    "defaultMessage": "Schliessen"
   },
-  "bDCGHI": {
-    "defaultMessage": "Um auf {place} zu zoomen, erstelle zuerst die Geometrie"
+  "qo.nameSingular": {
+    "defaultMessage": "Ausstehende Operation"
   },
-  "fNN4oO": {
-    "defaultMessage": "Zur Kontrolle in Karte zoomen"
+  "qo.revertAll": {
+    "defaultMessage": "alle widerrufen"
   },
-  "fOO5pP": {
-    "defaultMessage": "Um auf eine Kontrolle zu zoomen, erstelle zuerst die Geometrie"
+  "qo.revertAllConfirm": {
+    "defaultMessage": "Alle ausstehenden Operationen widerrufen?"
   },
-  "TmPR2+": {
-    "defaultMessage": "Menge"
+  "qoCloseBtn": {
+    "defaultMessage": "schliessen"
   },
-  "KkGaeP": {
-    "defaultMessage": "Bericht"
+  "qoEmptyValue": {
+    "defaultMessage": "(leer)"
   },
-  "gP1QrT": {
-    "defaultMessage": "Liste der Taxa, die in diesem {subprojectNameSingular}-Teilprojekt vertreten sind. Beispiele: Synonyme einer Taxonomie oder aus verschiedenen Taxonomien. Ein Taxon sollte in höchstens einem Teilprojekt verwendet werden."
+  "qoHeadingAfter": {
+    "defaultMessage": "nachher"
   },
-  "oP9QrS": {
-    "defaultMessage": "Benutzer können Kartenebenen bearbeiten"
+  "qoHeadingBefore": {
+    "defaultMessage": "vorher"
   },
-  "hQ0RsU": {
-    "defaultMessage": "Ermöglicht Benutzern, eigene WMS- und WFS-Ebenen hinzuzufügen und bestehende zu bearbeiten. Macht die Benutzeroberfläche komplexer, daher nur aktivieren wenn nötig."
+  "qoHeadingFilter": {
+    "defaultMessage": "Filter"
   },
-  "nX4TyZ": {
-    "defaultMessage": "Taxonomien klassifizieren Objekte (z. B. Arten, Biotope), meist hierarchisch. Es gibt keine allgemein gültige Art, Arten und Biotope zu klassifizieren. Die genetische Zusammensetzung und die Verbreitung von Arten können im Laufe der Zeit ändern. Biotope verändern ihre Artzusammensetzung. Daher ist eine Taxonomie auch nie abschliessend. Es ist daher normal, dass je nach Kontext verschiedene und in einem einzelnen Projekt auch gleichzeitig mehrere Taxonomien verwendet werden."
+  "qoHeadingId": {
+    "defaultMessage": "ID"
   },
-  "iR9StU": {
-    "defaultMessage": "Ganzzahl"
+  "qoHeadingOperation": {
+    "defaultMessage": "Operation"
   },
-  "jV0WxY": {
-    "defaultMessage": "Dezimalzahl"
+  "qoHeadingTable": {
+    "defaultMessage": "Tabelle"
   },
-  "kZ1AbC": {
-    "defaultMessage": "Text"
+  "qoHeadingTime": {
+    "defaultMessage": "Zeit"
   },
-  "uT5VwX": {
-    "defaultMessage": "Typ"
+  "qoNoFilter": {
+    "defaultMessage": "(kein Filter)"
   },
-  "vU6WxY": {
-    "defaultMessage": "Hilft bei der Analyse von Daten in Berichten. Beispiele: «Abundanzklasse», «Deckung». Wenn keine Einheit gesetzt ist, wird angenommen, dass die Taxonomie nur Präsenz beschreibt."
+  "qoNoPendingOps": {
+    "defaultMessage": "Momentan gibt es keine ausstehenden Operationen"
   },
-  "gE4ItL": {
-    "defaultMessage": "Kontrollen: Taxa in Kontrolle"
+  "qoNoValue": {
+    "defaultMessage": "(kein Wert)"
   },
-  "hF5JuM": {
-    "defaultMessage": "Taxon löschen"
+  "qoOpenGuideBtn": {
+    "defaultMessage": "Anleitung öffnen"
   },
-  "iG6KvN": {
-    "defaultMessage": "Taxon löschen?"
+  "qoPendingOpsTitle": {
+    "defaultMessage": "Ausstehende Operationen"
   },
-  "jH7LwO": {
-    "defaultMessage": "Taxon hinzufügen"
+  "qoRevertBtn": {
+    "defaultMessage": "widerrufen"
   },
-  "yK5Pq6": {
-    "defaultMessage": "Beobachtungen (inkl. Importe)"
+  "qyI8KV": {
+    "defaultMessage": "Benutzer"
   },
-  "aBcDeF": {
-    "defaultMessage": "Maschinen-lesbarer Name, der in Exporten als Tabellen-Name verwendet werden kann. Beispiel: \"projekt_name\""
+  "rEN8QI": {
+    "defaultMessage": "Haben mehrere Mitarbeitende aus versehen offline die gleichen Daten geändert? Das lässt sich einfach korrigieren. {duSiehst}, wer was wann geändert hat."
   },
-  "gHiJkL": {
-    "defaultMessage": "Menschen-freundlicher Name. Beispiel: \"Projekt-Name\""
+  "rEN8QI.duSiehst": {
+    "defaultMessage": "Du siehst"
   },
-  "cU1DvF": {
-    "defaultMessage": "Standard-Einheit für Kontroll-Bericht-Mengen"
+  "rN5QwT": {
+    "defaultMessage": "Dateien in Kontrolle anzeigen"
   },
-  "dV2EwG": {
-    "defaultMessage": "Standard-Einheit für Massnahmen-Bericht-Mengen"
+  "rP0bTn": {
+    "defaultMessage": "Ersetzen"
   },
-  "nR6StU": {
-    "defaultMessage": "Standard-Einheit für Massnahmen-Mengen"
+  "rP1UsQ": {
+    "defaultMessage": "{placeNameSingular}-Benutzer in {placeNameSingular} anzeigen"
   },
-  "bT0CsE": {
-    "defaultMessage": "Standard-Einheit für Massnahmen-Taxon-Mengen"
+  "rPsFai": {
+    "defaultMessage": "Ersetzen fehlgeschlagen"
   },
-  "ownerRoleNotEditable": {
-    "defaultMessage": "Diese Rolle wird automatisch gesetzt und kann nicht bearbeitet werden."
+  "rPsUcc": {
+    "defaultMessage": "Ersetzen erfolgreich"
   },
-  "specificRoleNotice": {
-    "defaultMessage": "Eine spezifische Rolle wurde gesetzt. Alle untergeordneten Rollen (falls vorhanden) wurden entfernt und müssen manuell gesetzt werden."
+  "rS3TuV": {
+    "defaultMessage": "Taxa in Massnahme anzeigen"
   },
-  "specificRoleConfirmTitle": {
-    "defaultMessage": "Rolle „{role}" setzen?"
+  "rX7ZaC": {
+    "defaultMessage": "Du kannst hier Standard-Einheiten wählen. Die Standard-Einheit wird bei neuen Datensätzen voreingestellt, kann aber verändert werden. Standardisierung der verwendeten Einheiten ermöglicht es, Daten systematisch zu vergleichen/analysieren. Du musst natürlich auch dafür sorgen, dass die Daten tatsächlich mit diesen Einheiten erfasst werden (Qualitätskontrollen können helfen)."
   },
-  "specificRoleConfirmContent": {
-    "defaultMessage": "Durch das Setzen der Rolle „{role}" werden alle untergeordneten Rollen (falls vorhanden) für diesen Benutzer entfernt. Diese müssen danach manuell gesetzt werden."
+  "rootExports.activateAll": {
+    "defaultMessage": "Alle aktivieren"
+  },
+  "rootExports.deactivateAll": {
+    "defaultMessage": "Alle deaktivieren"
+  },
+  "rootExports.empty": {
+    "defaultMessage": "Keine Exporte vorhanden"
+  },
+  "rootExports.filter": {
+    "defaultMessage": "Filtern"
+  },
+  "rootExports.filterPlaceholder": {
+    "defaultMessage": "Name..."
+  },
+  "rootQcs.activateAll": {
+    "defaultMessage": "Alle aktivieren"
+  },
+  "rootQcs.deactivateAll": {
+    "defaultMessage": "Alle deaktivieren"
+  },
+  "rootQcs.empty": {
+    "defaultMessage": "Keine Qualitätskontrollen vorhanden"
+  },
+  "rootQcs.filter": {
+    "defaultMessage": "Filtern"
+  },
+  "rootQcs.filterPlaceholder": {
+    "defaultMessage": "Name..."
+  },
+  "rootQcsRun.allOk": {
+    "defaultMessage": "Alles i.O."
+  },
+  "rptsInPrj": {
+    "defaultMessage": "Berichte"
+  },
+  "rxRJ6H": {
+    "defaultMessage": "Pulsatilla"
+  },
+  "ryVgK4": {
+    "defaultMessage": "Baum einblenden"
+  },
+  "sCdSet": {
+    "defaultMessage": "Koordinaten von {count} Beobachtungen setzen"
+  },
+  "sCdStg": {
+    "defaultMessage": "Koordinaten von {count} Beobachtungen werden gesetzt"
+  },
+  "sGAlSt": {
+    "defaultMessage": "Alle {count} Geometrien der Beobachtungen sind gesetzt"
+  },
+  "sK0PjF": {
+    "defaultMessage": "Kontrollen"
+  },
+  "sP8TaxInSubprj": {
+    "defaultMessage": "Taxa in {subprojectNameSingular} anzeigen"
+  },
+  "sPRinSP": {
+    "defaultMessage": "{subprojectNameSingular}-Berichte in {subprojectNameSingular} anzeigen"
+  },
+  "sST5WH": {
+    "defaultMessage": "...importieren, prüfen und (Teil-)Populationen zuordnen."
+  },
+  "sT8UvW": {
+    "defaultMessage": "Wie Daten für Berichte ausgewertet werden"
+  },
+  "sTk6C3": {
+    "defaultMessage": "Einheit"
+  },
+  "sY7iHm": {
+    "defaultMessage": "Art-Verantwortliche Fachpersonen"
+  },
+  "setPasswordAlreadyExists": {
+    "defaultMessage": "Passwort ist gesetzt. Du kannst es jetzt über \"Passwort ändern\" aktualisieren."
+  },
+  "setPasswordDialogDescription": {
+    "defaultMessage": "Diese Funktion ermöglicht es dir, dich zusätzlich mit deiner E-Mail-Adresse und einem Passwort anzumelden, ohne dich auf Google verlassen zu müssen."
+  },
+  "setPasswordDialogTitle": {
+    "defaultMessage": "Passwort setzen"
+  },
+  "setPasswordFlowDescription": {
+    "defaultMessage": "Gib dein neues Passwort ein und wir richten es sofort für dich ein."
+  },
+  "setPasswordMenuItem": {
+    "defaultMessage": "Passwort setzen"
+  },
+  "setPasswordSaveBtn": {
+    "defaultMessage": "Passwort setzen"
+  },
+  "setPasswordSuccess": {
+    "defaultMessage": "Passwort erfolgreich gesetzt. Du kannst dich jetzt mit E-Mail und Passwort anmelden."
   },
   "specificRoleConfirmBtn": {
     "defaultMessage": "Rolle setzen"
   },
-  "addUser.tooltip": {
-    "defaultMessage": "Neuen Benutzer erstellen"
+  "specificRoleConfirmContent": {
+    "defaultMessage": "Durch das Setzen der Rolle „{role}“ werden alle untergeordneten Rollen (falls vorhanden) für diesen Benutzer entfernt. Diese müssen danach manuell gesetzt werden."
   },
-  "addUser.title": {
-    "defaultMessage": "Neuen Benutzer erstellen"
+  "specificRoleConfirmTitle": {
+    "defaultMessage": "Rolle „{role}“ setzen?"
   },
-  "addUser.emailLabel": {
-    "defaultMessage": "E-Mail-Adresse"
+  "specificRoleNotice": {
+    "defaultMessage": "Eine spezifische Rolle wurde gesetzt. Alle untergeordneten Rollen (falls vorhanden) wurden entfernt und müssen manuell gesetzt werden."
   },
-  "addUser.emailRequired": {
-    "defaultMessage": "Bitte eine E-Mail-Adresse eingeben."
+  "subproject": {
+    "defaultMessage": "Teilprojekt"
   },
-  "addUser.emailExists": {
-    "defaultMessage": "Ein Benutzer mit dieser E-Mail-Adresse existiert bereits."
+  "subprojectExports.activateAll": {
+    "defaultMessage": "Alle aktivieren"
   },
-  "addUser.saveBtn": {
-    "defaultMessage": "Speichern"
+  "subprojectExports.deactivateAll": {
+    "defaultMessage": "Alle deaktivieren"
+  },
+  "subprojectExports.empty": {
+    "defaultMessage": "Keine Exporte vorhanden"
+  },
+  "subprojectExports.filter": {
+    "defaultMessage": "Filtern"
+  },
+  "subprojectExports.filterPlaceholder": {
+    "defaultMessage": "Name..."
+  },
+  "subprojectQcs.activateAll": {
+    "defaultMessage": "Alle aktivieren"
+  },
+  "subprojectQcs.deactivateAll": {
+    "defaultMessage": "Alle deaktivieren"
+  },
+  "subprojectQcs.empty": {
+    "defaultMessage": "Keine Qualitätskontrollen vorhanden"
+  },
+  "subprojectQcs.filter": {
+    "defaultMessage": "Filtern"
+  },
+  "subprojectQcs.filterPlaceholder": {
+    "defaultMessage": "Name..."
+  },
+  "subprojectQcsRun.allOk": {
+    "defaultMessage": "Alles i.O."
+  },
+  "subprojectQcsRun.clearFilter": {
+    "defaultMessage": "Filter leeren"
+  },
+  "subprojectQcsRun.filter": {
+    "defaultMessage": "Nach Label filtern"
+  },
+  "subprojectQcsRun.filterPlaceholder": {
+    "defaultMessage": "Filter..."
+  },
+  "subprojectQcsRun.onlyWithResults": {
+    "defaultMessage": "Nur mit Befunden"
+  },
+  "subprojectQcsRun.openInDialog": {
+    "defaultMessage": "Im Dialog öffnen"
+  },
+  "subprojectQcsRun.year": {
+    "defaultMessage": "Bericht Jahr"
+  },
+  "subprojectSingularFallback": {
+    "defaultMessage": "Teilprojekt"
+  },
+  "syncServerMsg": {
+    "defaultMessage": "Synchronisiere mit Server"
+  },
+  "syncServerStepLabel": {
+    "defaultMessage": "Synchronisiere mit dem Server"
+  },
+  "syncServerTaskBody": {
+    "defaultMessage": "Initiale Synchronisation wird ausgeführt..."
+  },
+  "syncServerTaskDone": {
+    "defaultMessage": "Synchronisation abgeschlossen."
+  },
+  "syncServerTaskError": {
+    "defaultMessage": "Synchronisation konnte nicht gestartet werden. Bitte erneut anmelden."
+  },
+  "tDeleteAll": {
+    "defaultMessage": "Alle Taxa entfernen"
+  },
+  "tDeleteAllConfirm": {
+    "defaultMessage": "Alle Taxa entfernen?"
+  },
+  "tImport": {
+    "defaultMessage": "Taxa aus Datei importieren"
+  },
+  "tImportDesc": {
+    "defaultMessage": "Die Datei soll eine oder mehrere Spalten enthalten. Pflichtkolonne: name. Optionale Spalten: id_in_source, url."
+  },
+  "tImportDrop": {
+    "defaultMessage": "Datei hier ablegen oder klicken zum Auswählen"
+  },
+  "tImportFormats": {
+    "defaultMessage": "Unterstützte Formate: .csv, .tsv, .xlsx, .xls, .ods"
+  },
+  "tImportTitle": {
+    "defaultMessage": "Taxa importieren"
+  },
+  "tL1QkG": {
+    "defaultMessage": "Kontroll-Mengen"
+  },
+  "tV2WxY": {
+    "defaultMessage": "WMS-Dienste und WMS-Ebenen"
+  },
+  "treeLayerNodeLabel": {
+    "defaultMessage": "Layer"
+  },
+  "treeTaxonomyNodeLabel": {
+    "defaultMessage": "Taxonomie"
+  },
+  "treeWfsServiceNodeLabel": {
+    "defaultMessage": "WFS-Dienst"
+  },
+  "treeWmsServiceNodeLabel": {
+    "defaultMessage": "WMS-Dienst"
+  },
+  "twoFactorBackupCodesCopied": {
+    "defaultMessage": "Backup-Codes wurden in die Zwischenablage kopiert."
+  },
+  "twoFactorBackupCodesCopyBtn": {
+    "defaultMessage": "Backup-Codes kopieren"
+  },
+  "twoFactorBackupCodesCopyFailed": {
+    "defaultMessage": "Backup-Codes konnten nicht kopiert werden."
+  },
+  "twoFactorBackupCodesHelp": {
+    "defaultMessage": "Speichere diese Backup-Codes sicher. Jeder Code kann nur einmal verwendet werden."
+  },
+  "twoFactorDialogTitle": {
+    "defaultMessage": "Zwei-Faktor-Authentifizierung"
+  },
+  "twoFactorDisableBtn": {
+    "defaultMessage": "2FA deaktivieren"
+  },
+  "twoFactorDisableFailed": {
+    "defaultMessage": "Zwei-Faktor-Authentifizierung konnte nicht deaktiviert werden."
+  },
+  "twoFactorDisableHelp": {
+    "defaultMessage": "2FA ist derzeit aktiv. Du kannst es hier deaktivieren."
+  },
+  "twoFactorDisableMenuItem": {
+    "defaultMessage": "2FA deaktivieren"
+  },
+  "twoFactorDisabledSuccess": {
+    "defaultMessage": "Zwei-Faktor-Authentifizierung deaktiviert."
+  },
+  "twoFactorEnableBtn": {
+    "defaultMessage": "2FA aktivieren"
+  },
+  "twoFactorEnableFailed": {
+    "defaultMessage": "Zwei-Faktor-Authentifizierung konnte nicht aktiviert werden."
+  },
+  "twoFactorEnableHelp": {
+    "defaultMessage": "2FA ist derzeit deaktiviert. Du kannst es hier aktivieren."
+  },
+  "twoFactorEnableMenuItem": {
+    "defaultMessage": "2FA aktivieren"
+  },
+  "twoFactorEnabledSuccess": {
+    "defaultMessage": "Zwei-Faktor-Authentifizierung aktiviert. Beim nächsten Login wird ein Code per E-Mail verlangt."
+  },
+  "twoFactorEnabledTotpSuccess": {
+    "defaultMessage": "2FA mit Authenticator-App ist aktiviert. Scanne den QR-Code und verwende danach App-Codes beim Login."
+  },
+  "twoFactorMethodAppLabel": {
+    "defaultMessage": "Authenticator-App verwenden"
+  },
+  "twoFactorMethodEmailLabel": {
+    "defaultMessage": "E-Mail-Code verwenden"
+  },
+  "twoFactorPasswordRequired": {
+    "defaultMessage": "Bitte Passwort eingeben."
+  },
+  "twoFactorTotpManualCodeLabel": {
+    "defaultMessage": "Manueller Code"
+  },
+  "twoFactorTotpQrAlt": {
+    "defaultMessage": "QR-Code für Authenticator-App"
+  },
+  "twoFactorTotpSetupHelp": {
+    "defaultMessage": "Scanne den QR-Code mit deiner Authenticator-App (z. B. Aegis, Google Authenticator, 1Password)."
+  },
+  "uA2LpQ": {
+    "defaultMessage": "Kein Wert-Typ gesetzt. Bitte in der Liste einen Wert-Typ wählen."
+  },
+  "uM2RlH": {
+    "defaultMessage": "Taxa"
+  },
+  "uN4VwX": {
+    "defaultMessage": "Mengen-Feld wird nicht angezeigt, weil die gewählte Einheit keinen Typ hat."
+  },
+  "uN9UntInPrj": {
+    "defaultMessage": "Einheiten im Projekt anzeigen"
+  },
+  "uPaNTx": {
+    "defaultMessage": "Bestehende Beobachtungen aktualisieren, neue hinzufügen und fehlende entfernen. Zuweisungen und Kommentare werden beibehalten."
+  },
+  "uPaNeX": {
+    "defaultMessage": "Aktualisieren und erweitern"
+  },
+  "uPlBTx": {
+    "defaultMessage": "Datei mit Beobachtungen hochladen"
+  },
+  "uPsFai": {
+    "defaultMessage": "Aktualisierung fehlgeschlagen"
+  },
+  "uPsUcc": {
+    "defaultMessage": "Aktualisierung erfolgreich"
+  },
+  "uPx0bO": {
+    "defaultMessage": "Bestehende Beobachtungen aktualisieren"
+  },
+  "uT5VwX": {
+    "defaultMessage": "Typ"
+  },
+  "upa2nh": {
+    "defaultMessage": "Massnahme"
+  },
+  "user.accountsInUser.help": {
+    "defaultMessage": "Konten direkt im Benutzerformular anzeigen statt in einer separaten Navigation."
+  },
+  "user.accountsInUser.label": {
+    "defaultMessage": "Konten im Benutzerformular"
+  },
+  "user.alwaysShowTree.help": {
+    "defaultMessage": "Wenn aktiviert, wird der Navigationsbaum immer angezeigt (auf dem Handy wenig praktisch)."
+  },
+  "user.alwaysShowTree.label": {
+    "defaultMessage": "Navigationsbaum immer anzeigen"
+  },
+  "user.appSettings": {
+    "defaultMessage": "App-Einstellungen"
+  },
+  "user.data": {
+    "defaultMessage": "Daten"
+  },
+  "user.enforceDesktopNavigation.help": {
+    "defaultMessage": "Wenn aktiviert, wird die Desktop-Navigation erzwungen."
+  },
+  "user.enforceDesktopNavigation.label": {
+    "defaultMessage": "Desktop-Navigation erzwingen"
+  },
+  "user.enforceMobileNavigation.help": {
+    "defaultMessage": "Wenn aktiviert, wird die mobile Navigation erzwungen."
+  },
+  "user.enforceMobileNavigation.label": {
+    "defaultMessage": "Mobile Navigation erzwingen"
+  },
+  "user.openDocs": {
+    "defaultMessage": "Dokumentation öffnen"
+  },
+  "userMenuOpen": {
+    "defaultMessage": "Benutzermenü öffnen"
+  },
+  "vMlktr": {
+    "defaultMessage": "Diagramm"
+  },
+  "vN3SmI": {
+    "defaultMessage": "Beobachtungen zugeordnet"
+  },
+  "vPr8Hi": {
+    "defaultMessage": "Vorschau ausblenden"
+  },
+  "vPr9Sh": {
+    "defaultMessage": "Vorschau anzeigen"
+  },
+  "vU6WxY": {
+    "defaultMessage": "Hilft bei der Analyse von Daten in Berichten. Beispiele: «Abundanzklasse», «Deckung». Wenn keine Einheit gesetzt ist, wird angenommen, dass die Taxonomie nur Präsenz beschreibt."
+  },
+  "vX4YzA": {
+    "defaultMessage": "WFS-Dienste und Vektor-Ebenen"
+  },
+  "vdqfwK": {
+    "defaultMessage": "Widget für Feld"
+  },
+  "vectorLayer.labelDe": {
+    "defaultMessage": "Deutsch"
+  },
+  "vectorLayer.labelEn": {
+    "defaultMessage": "Englisch"
+  },
+  "vectorLayer.labelFr": {
+    "defaultMessage": "Französisch"
+  },
+  "vectorLayer.labelIt": {
+    "defaultMessage": "Italienisch"
+  },
+  "vectorLayer.section.label.description": {
+    "defaultMessage": "Die Bezeichnung der Ebene in allen Sprachen. Fehlt eine Sprache, wird Deutsch verwendet."
+  },
+  "vldsInVL": {
+    "defaultMessage": "Vektor-Ebene-Anzeigen in Vektor-Ebene anzeigen"
+  },
+  "w63miQ": {
+    "defaultMessage": "Daten"
+  },
+  "wA1BcD": {
+    "defaultMessage": "Projekt-Typ"
+  },
+  "wO4TnJ": {
+    "defaultMessage": "Biotope fördern"
+  },
+  "wQ9LmN": {
+    "defaultMessage": "Dateien in {placeNameSingular} anzeigen"
+  },
+  "x9x+dX": {
+    "defaultMessage": "Projekte"
+  },
+  "xCdFld": {
+    "defaultMessage": "X-Koordinaten-Feld"
+  },
+  "xCdVld": {
+    "defaultMessage": "Welches Feld enthält die X-Koordinaten? Dies sollte der Breitengrad sein."
+  },
+  "xGLUF7": {
+    "defaultMessage": "Nächste Jahresgruppe"
+  },
+  "xP5UoK": {
+    "defaultMessage": "arten-fördern.app kann auch Biotope: beschreiben, Ziele definieren, Massnahmen und Kontrollen organisieren, Entwicklung analysieren und berichten."
+  },
+  "xTeBn/": {
+    "defaultMessage": "Typ"
+  },
+  "yCdFld": {
+    "defaultMessage": "Y-Koordinaten-Feld"
+  },
+  "yCdVld": {
+    "defaultMessage": "Welches Feld enthält die Y-Koordinaten? Dies sollte der Längengrad sein."
+  },
+  "yK5Pq6": {
+    "defaultMessage": "Beobachtungen (inkl. Importe)"
+  },
+  "yM1M0B": {
+    "defaultMessage": "Anzeigen"
+  },
+  "yR6TsL": {
+    "defaultMessage": "Fähigkeiten"
+  },
+  "yYvnIS": {
+    "defaultMessage": "Beobachtungen"
+  },
+  "yoo7JY": {
+    "defaultMessage": "Der Code ist {link}. Du kannst das Projekt jederzeit einsehen, mitgestalten, kopieren und selber weiter entwickeln (lassen)."
+  },
+  "yoo7JY.offen": {
+    "defaultMessage": "offen"
+  },
+  "yubcwe": {
+    "defaultMessage": "Wer zahlt, befiehlt. Wer befiehlt, zahlt..."
+  },
+  "zM4NoP": {
+    "defaultMessage": "Projekt-Konfiguration"
+  },
+  "zhvWvI": {
+    "defaultMessage": "Listen"
+  },
+  "zq+cvN": {
+    "defaultMessage": "Diese App ist in Entwicklung. Noch steckt sie voller Fehler. Funktionen werden laufend ergänzt. Daten werden sporadisch gelöscht und neu erstellt."
   }
 }

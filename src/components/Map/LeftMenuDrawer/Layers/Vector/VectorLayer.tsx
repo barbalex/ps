@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { useParams } from '@tanstack/react-router'
 import * as fluentUiReactComponents from '@fluentui/react-components'
 const {
   AccordionHeader,
@@ -59,7 +60,9 @@ export const VectorLayer = ({
   isOpen: boolean
 }) => {
   const { formatMessage } = useIntl()
-  const [designing] = useAtom(designingAtom)
+  const { projectId } = useParams({ strict: false })
+  const [designingMap] = useAtom(designingAtom)
+  const designing = designingMap[projectId ?? ''] ?? false
   const addOperation = useSetAtom(addOperationAtom)
   const [vectorLayerDisplayId, setVectorLayerDisplayId] = useAtom(
     mapDrawerVectorLayerDisplayAtom,

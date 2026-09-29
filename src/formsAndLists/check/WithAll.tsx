@@ -41,11 +41,12 @@ export const CheckWithAll = ({
   from: string
   allInline?: boolean
 }) => {
-  const { checkId, projectId, placeId, placeId2, subprojectId } = useParams({
+  const { checkId, projectId, placeId, placeId2, filteredViewId, subprojectId } = useParams({
     strict: false,
   })
   const addOperation = useSetAtom(addOperationAtom)
-  const [isDesigning] = useAtom(designingAtom)
+  const [designingMap] = useAtom(designingAtom)
+  const isDesigning = designingMap[projectId ?? ''] ?? false
   const { formatMessage } = useIntl()
   const [validations, setValidations] = useState<
     Record<string, { state: 'error'; message: string }>
@@ -133,7 +134,7 @@ export const CheckWithAll = ({
         />
       </>
     ) : undefined
-  const checkBaseUrl = `/data/projects/${projectId}/subprojects/${subprojectId}/places/${placeId}${placeId2 ? `/places/${placeId2}` : ''}/checks/${checkId}`
+  const checkBaseUrl = `/data/projects/${projectId}/subprojects/${subprojectId}/places/${placeId}${placeId2 ? `/places/${placeId2}` : ''}${filteredViewId ? `/filtered-checks/${filteredViewId}` : ''}/checks/${checkId}`
   const quantitiesUrl = `${checkBaseUrl}/quantities`
   const filesUrl = `${checkBaseUrl}/files`
   const taxaUrl = `${checkBaseUrl}/taxa`

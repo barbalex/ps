@@ -643,3 +643,143 @@ For each new doc:
 5. Commit the source file, the generated `docs/docs/{id}.html`, and the updated `docs/metadata.ts`
 
 ## Things to document
+
+# 8 Filtered Views On Tables
+
+## What it is
+
+A project can define named, filtered views on a table. Each view gets its own
+node in the navigation tree, its own breadcrumbs, its own list form and edit
+form — parallel to the "real" table it filters, which it usually replaces.
+
+Example (apflora): the checks of a Teil-Population are presented as
+**Feld-Kontrollen** (`data.typ = Kontrolle`) and **Freiwilligen-Kontrollen**
+(`data.typ = Freiwilligen-Kontrolle`) instead of one combined "Kontrollen"
+node.
+
+Currently only views on `checks` are implemented (`filtered_views.table_name`
+is prepared for other tables).
+
+## Data model
+
+- **`filtered_views`** (project-scoped config table, like `fields` or `units`):
+  - `table_name`: the table this view filters (`checks`)
+  - `name_singular_de` … `name_plural_it`: labels per language (like
+    `place_levels`); missing languages fall back to German
+  - `filter`: static filter in the **same format as the user's table row
+    filters** (`TableRowFilter[]`): an array of OR-conditions, each an object
+    of AND column conditions. Keys prefixed `data.` target the jsonb `data`
+    column. Use `{"$eq": value}` for exact matches and `{"$ne": value}` for
+    negated matches (rows with a null value included, SQL `IS DISTINCT FROM`)
+    — plain string values compile to `ILIKE '%value%'` and would e.g. match
+    both `Kontrolle` and `Freiwilligen-Kontrolle`. Examples:
+    `[{"data.typ": {"$eq": "Freiwilligen-Kontrolle"}}]`,
+    `[{"data.typ": {"$ne": "Freiwilligen-Kontrolle"}}]` (the apflora
+    Feld-Kontrollen view: everything except Freiwilligen-Kontrollen,
+    including Ausgangszustand and rows without typ)
+  - `label_by`: names of data fields appended to the year when labeling the
+    view's rows, in apf2 manner (`createComputedLabels.sql`):
+    `lpad(year, 4)`, then ": " and the value of each field, e.g.
+    "2019: Kontrolle". Fallbacks like apf2: "(kein Jahr)" and "(kein
+    <Fieldname>)". Empty/null = year only (apflora Freiwilligen-Kontrollen).
+  - `sort`: order in the navigation
+  - has a history table (`filtered_views_history`) and the standard
+    project-scoped write permission (`enforce_project_write`)
+- **`place_levels.filtered_views`** (jsonb): map of `filtered_view_id ->
+  boolean`, per place level. This is how views are enabled/disabled per level
+  — just like `place_levels.checks`, `actions`, … (missing key = disabled).
+
+## URL namespace
+
+Filtered checks live under their own path segment, keeping the literal
+`checks` segment so all `checks`-based lookups keep working (map layers parse
+`urlPath.indexOf('checks')`, DrawControl checks the second-to-last segment,
+the shared Filter infers its table name from the path):
+
+```
+.../places/<placeId>/filtered-checks/<filteredViewId>/checks              (list)
+.../places/<placeId>/filtered-checks/<filteredViewId>/checks/filter       (filter page)
+.../places/<placeId>/filtered-checks/<filteredViewId>/checks/<checkId>/…  (edit form + sub entities)
+```
+
+Level 2 mirrors this under `.../places/<placeId>/places/<placeId2>/filtered-checks/...`.
+The route subtrees are copies of the `checks` subtrees (the codebase
+duplicates level 1/2 by hand as well).
+
+## Where things live
+
+| Concern | Location |
+|---|---|
+| Table + history + permissions + allowlist | `backend/db/init/04, 05, 12, 14_*.sql` (source of truth, then `npm run sync-sql`) |
+| Sync shape | `src/modules/startSyncing.ts` (`filtered_views`, and the new `filtered_views` column on `place_levels`) |
+| Client write permission | `src/modules/checkWritePermission.ts` (`filtered_views: projectDirect()`) |
+| Nav data hooks | `src/modules/useFilteredViewsNavData.ts`, `useFilteredViewNavData.ts`, `useFilteredChecksNavData.ts`, `useFilteredCheckNavData.ts` |
+| Sub-entity nav hooks | `useCheckQuantitiesNavData`, `useCheckTaxaNavData`, `useCheckQuantityNavData`, `useCheckTaxonNavData`, `useFilesNavData`, `useFileNavData` accept an optional `filteredViewId` and insert the path segment |
+| Tree nodes | `src/components/Tree/FilteredViews.tsx` (design mode), `FilteredChecks.tsx`, and `Place/Children.tsx` renders one `FilteredChecksNode` per enabled view |
+| View config UI | `src/formsAndLists/filteredViews.tsx` + `filteredView/` (entity, also reachable from Project Configuration via `Configuration/FilteredViewsSection.tsx`) |
+| Place level UI | `src/formsAndLists/placeLevel/Form.tsx` renders a switch per view; `placeLevel/index.tsx` maps `filtered_view_<id>` switches onto the `filtered_views` jsonb |
+| Checks list + filter | `src/formsAndLists/filteredChecks.tsx`, `filteredCheck/Filter.tsx` |
+| Check form | the normal check form components; `check/Header.tsx` and `check/WithAll.tsx` insert the path segment and use the view's singular name as title |
+| Filter atoms | one per view, created dynamically: `getFilteredViewFilterAtom(filteredViewId)` in `src/store.ts`; the shared `Filter` component accepts `filterAtomOverride` |
+| Breadcrumbs | fetcher components `Filtered*Fetcher.tsx` + cases in `FetcherRouter.tsx` |
+| Routes | `src/routes/.../filtered-checks/$filteredViewId_/checks/**` (both levels) and `src/routes/.../filtered-views/**` |
+| Tests | `tests/filteredViews.test.ts` (real schema, filter semantics, row creation) |
+
+## Creating rows through a view
+
+`createCheck({ projectId, placeId, filteredViewId })` (in
+`src/modules/createRows.ts`) reads the view's filter and presets the filtered
+values on the new row: `data.*` keys go into the jsonb `data` column, other
+keys onto the row itself. Values of the first OR-condition are used (a view
+combining multiple OR-conditions cannot preset one matching value). The view's
+values win over field presets.
+
+## How to add filtered views to a project
+
+1. Design mode → project → "Gefilterte Ansichten" (or Project Configuration →
+   section "Gefilterte Ansichten") → add a view: names, filter field (from the
+   project's `fields` of the table) + value, sort
+2. Ort-Stufen (place levels) → enable the view per level (switch named after
+   the view's plural name). Usually disable the plain table (`checks`) there
+   so the views replace it.
+3. The nav tree under a place then shows one node per enabled view, with the
+   view's filtered checks as children.
+
+## Deploying to an existing database
+
+The init SQL is idempotent (`CREATE TABLE IF NOT EXISTS` /
+`ADD COLUMN IF NOT EXISTS`), so re-applying `04`/`05`/`12`/`14` plus
+`NOTIFY pgrst, 'reload schema';` is enough. Registering the history table in
+partman happens in `05` (see `filtered_views_history`).
+
+## Apflora example
+
+`backend/db/generate_apflora_example_sql.mjs` seeds two views
+(Feld-Kontrollen / Freiwilligen-Kontrollen, deterministic derived ids) and
+sets `place_levels.checks = false` + the `filtered_views` map for level 2
+(Teil-Population). Regenerate with `npm run apflora:generate`.
+
+Labels follow apflora.ch (`apf2/sql/apflora/createComputedLabels.sql`):
+- Feld-Kontrollen (EK): `typ IS DISTINCT FROM 'Freiwilligen-Kontrolle'`
+  (includes Ausgangszustand and rows without typ), rows labeled
+  `jahr: typ` (label_by `["typ"]`)
+- Freiwilligen-Kontrollen (EKF): `typ = 'Freiwilligen-Kontrolle'`, rows
+  labeled `jahr` (label_by empty)
+- places: name is built as `nr: name` (pop) resp. `nr: flurname` (tpop);
+  the places label follows via `projects.places_label_by = 'name'`
+- check_taxa (Zaehlungen): `einheit: anzahl` (apf2 also appends the
+  methode, which ps does not store)
+
+Applying the seed to a running stack requires the permission-trigger bypass:
+`APF2_APPLY_LATER=1 npm run apflora:generate`, then psql the file.
+
+## Known limitations (v1)
+
+- only `checks` (the `table_name` column and UI structure are prepared for
+  actions/places)
+- the view editor edits the first condition of the filter only (single field +
+  value); more complex filters can be set via SQL/seed
+- no history-compare UI for `filtered_views` itself (history rows are tracked
+  and retained, only the compare form is missing)
+- maps: filtered checks are drawn by the normal checks layers; there are no
+  per-view own vector layers

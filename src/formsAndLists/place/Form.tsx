@@ -41,7 +41,8 @@ export const PlaceForm = ({
   const { subprojectId, projectId, placeId2 } = useParams({ strict: false })
   const { pathname } = useLocation()
   const isFilter = pathname.endsWith('filter')
-  const [designing] = useAtom(designingAtom)
+  const [designingMap] = useAtom(designingAtom)
+  const designing = designingMap[projectId ?? ''] ?? false
   const [language] = useAtom(languageAtom)
 
   const level = placeId2 || from.includes('/$placeId_/places') ? 2 : 1

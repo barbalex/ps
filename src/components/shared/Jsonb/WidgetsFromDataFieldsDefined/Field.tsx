@@ -1,5 +1,5 @@
 import { useAtom } from 'jotai'
-import { useSearch } from '@tanstack/react-router'
+import { useSearch, useParams } from '@tanstack/react-router'
 
 import { FieldFormInForm } from '../../FieldFormInForm.tsx'
 import { WidgetDragAndDrop } from './Widget/index.tsx'
@@ -37,11 +37,16 @@ export const Field = ({
   ref,
   from,
 }: Props) => {
-  // from is a route id string; the literal union is too large to name here
-  const { editingField } = useSearch({ from: from as never }) as {
+  // editingField is a search param of the current url. Read it from the
+  // nearest active match: `from` can name a route that is not active here —
+  // e.g. the check form renders at the check's index url when its sections
+  // are inline, so the "/check" route id has no active match
+  const { editingField } = useSearch({ strict: false }) as {
     editingField?: string
   }
-  const [designing] = useAtom(designingAtom)
+  const { projectId } = useParams({ strict: false })
+  const [designingMap] = useAtom(designingAtom)
+  const designing = designingMap[projectId ?? ''] ?? false
 
   if (editingField === field.field_id) {
     return (

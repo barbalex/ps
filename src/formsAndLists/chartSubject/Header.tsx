@@ -15,10 +15,11 @@ export const Header = ({
   autoFocusRef?: React.RefObject<HTMLInputElement | null>
 }) => {
   const { formatMessage } = useIntl()
-  const [designing] = useAtom(designingAtom)
   const addOperation = useSetAtom(addOperationAtom)
 
-  const { chartId, chartSubjectId } = useParams({ strict: false })
+  const { chartId, chartSubjectId, projectId } = useParams({ strict: false })
+  const [designingMap] = useAtom(designingAtom)
+  const designing = designingMap[projectId ?? ''] ?? false
   const navigate = useNavigate()
 
   const db = usePGlite()

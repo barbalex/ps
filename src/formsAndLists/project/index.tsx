@@ -7,7 +7,8 @@ import { designingAtom } from '../../store.ts'
 
 export const ProjectIndex = ({ from }: { from: string }) => {
   const { projectId } = useParams({ strict: false })
-  const [isDesigning] = useAtom(designingAtom)
+  const [designingMap] = useAtom(designingAtom)
+  const isDesigning = designingMap[projectId ?? ''] ?? false
   const res = useLiveQuery(
     `SELECT files_active_projects, project_users_in_project, project_files_in_project, units_in_project, fields_in_project, project_reports_in_project FROM projects WHERE project_id = $1`,
     [projectId],

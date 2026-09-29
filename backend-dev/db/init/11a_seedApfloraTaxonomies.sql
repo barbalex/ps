@@ -20,6 +20,12 @@ WHERE taxonomy_id IN (
 DELETE FROM taxonomies
 WHERE name IN ('DB-TAXREF (2017)');
 
+-- ensure the apflora project exists before referencing it: on a fresh
+-- docker-entrypoint init this file runs before 11b, which creates it
+INSERT INTO projects(project_id, account_id, name, label, subproject_name_singular, subproject_name_plural, places_label_by) values
+  ('0195a101-0000-7000-8000-000000000001', '018cf958-27e2-7000-90d3-59f024d467be', 'apflora', 'apflora', 'Art', 'Arten', 'name')
+  ON CONFLICT (project_id) DO NOTHING;
+
 WITH inserted_taxonomies AS (
   INSERT INTO taxonomies(project_id, name, type)
   VALUES

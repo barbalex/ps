@@ -11,6 +11,7 @@ type Props = {
   subprojectId: string
   placeId: string
   placeId2?: string
+  filteredViewId?: string
   checkId: string
   level?: number
 }
@@ -20,6 +21,7 @@ export const CheckQuantitiesNode = ({
   subprojectId,
   placeId,
   placeId2,
+  filteredViewId,
   checkId,
   level = 9,
 }: Props) => {
@@ -30,6 +32,7 @@ export const CheckQuantitiesNode = ({
     subprojectId,
     placeId,
     placeId2,
+    filteredViewId,
     checkId,
   })
   const {
@@ -80,6 +83,7 @@ export const CheckQuantitiesNode = ({
             subprojectId={subprojectId}
             placeId={placeId}
             placeId2={placeId2}
+            filteredViewId={filteredViewId}
             checkId={checkId}
             nav={nav}
             level={level + 1}

@@ -15,8 +15,15 @@ export const Header = ({
   autoFocusRef?: React.RefObject<HTMLInputElement | null>
   from?: string
 }) => {
-  const { projectId, subprojectId, placeId, placeId2, checkId, checkTaxonId } =
-    useParams({ strict: false })
+  const {
+    projectId,
+    subprojectId,
+    placeId,
+    placeId2,
+    filteredViewId,
+    checkId,
+    checkTaxonId,
+  } = useParams({ strict: false })
   const navigate = useNavigate()
   const addOperation = useSetAtom(addOperationAtom)
   const { formatMessage } = useIntl()
@@ -25,8 +32,8 @@ export const Header = ({
     defaultMessage: 'Kontroll-Taxon',
   })
   const basePath = placeId2
-    ? `/data/projects/${projectId}/subprojects/${subprojectId}/places/${placeId}/places/${placeId2}/checks/${checkId}/taxa/${checkTaxonId}`
-    : `/data/projects/${projectId}/subprojects/${subprojectId}/places/${placeId}/checks/${checkId}/taxa/${checkTaxonId}`
+    ? `/data/projects/${projectId}/subprojects/${subprojectId}/places/${placeId}/places/${placeId2}${filteredViewId ? `/filtered-checks/${filteredViewId}` : ''}/checks/${checkId}/taxa/${checkTaxonId}`
+    : `/data/projects/${projectId}/subprojects/${subprojectId}/places/${placeId}${filteredViewId ? `/filtered-checks/${filteredViewId}` : ''}/checks/${checkId}/taxa/${checkTaxonId}`
 
   const db = usePGlite()
 

@@ -12,6 +12,7 @@ interface Props {
   placeId?: string
   placeId2?: string
   checkId?: string
+  filteredViewId?: string
   actionId?: string
   level: number
 }
@@ -22,6 +23,7 @@ export const FilesNode = ({
   placeId,
   placeId2,
   checkId,
+  filteredViewId,
   actionId,
   level,
 }: Props) => {
@@ -34,6 +36,7 @@ export const FilesNode = ({
     placeId2,
     actionId,
     checkId,
+    filteredViewId,
   })
   const {
     label,
@@ -85,6 +88,7 @@ export const FilesNode = ({
             placeId2={placeId2}
             actionId={actionId}
             checkId={checkId}
+            filteredViewId={filteredViewId}
             nav={nav}
             level={level + 1}
           />

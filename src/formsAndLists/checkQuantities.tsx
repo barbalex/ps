@@ -8,7 +8,7 @@ import { Loading } from '../components/shared/Loading.tsx'
 import '../form.css'
 
 export const CheckQuantities = ({ hideTitle = false }: { from?: string; hideTitle?: boolean }) => {
-  const { projectId, subprojectId, placeId, placeId2, checkId } = useParams({ strict: false })
+  const { projectId, subprojectId, placeId, placeId2, filteredViewId, checkId } = useParams({ strict: false })
   const navigate = useNavigate()
 
   const { loading, navData } = useCheckQuantitiesNavData({
@@ -16,6 +16,7 @@ export const CheckQuantities = ({ hideTitle = false }: { from?: string; hideTitl
     subprojectId: subprojectId!,
     placeId: placeId!,
     placeId2,
+    filteredViewId,
     checkId: checkId!,
   })
   const { navs, label, nameSingular } = navData

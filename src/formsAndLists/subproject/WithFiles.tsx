@@ -56,7 +56,8 @@ export const SubprojectWithFiles = ({ from }: { from: string }) => {
   const { projectId, subprojectId } = useParams({ strict: false })
   const addOperation = useSetAtom(addOperationAtom)
   const [language] = useAtom(languageAtom)
-  const [isDesigning] = useAtom(designingAtom)
+  const [designingMap] = useAtom(designingAtom)
+  const isDesigning = designingMap[projectId ?? ''] ?? false
   const [subprojectTaxaFilter] = useAtom(subprojectTaxaFilterAtom)
   const [subprojectUsersFilter] = useAtom(subprojectUsersFilterAtom)
   const [filesFilter] = useAtom(filesFilterAtom)

@@ -18,7 +18,8 @@ import styles from './index.module.css'
 
 // so query it here once and pass it down
 export const Tree = () => {
-  const [designing] = useAtom(designingAtom)
+  const [designingMap] = useAtom(designingAtom)
+  const designing = Object.values(designingMap).some(Boolean)
   const [isAppAdmin] = useAtom(isAppAmin)
   const operationsQueue = useAtomValue(operationsQueueAtom)
 

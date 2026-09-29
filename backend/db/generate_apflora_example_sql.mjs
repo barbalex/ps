@@ -79,6 +79,42 @@ const derivedId = (kind, key) => {
   return `${u.slice(0, 8)}-${u.slice(8, 12)}-${u.slice(12, 16)}-${u.slice(16, 20)}-${u.slice(20, 32)}`
 }
 
+// filtered views: the apflora checks are presented as Feld-Kontrollen and
+// Freiwilligen-Kontrollen, filtered on the typ field of the data jsonb
+const filteredViewDefs = [
+  {
+    key: 'feld-kontrollen',
+    deSingular: 'Feld-Kontrolle',
+    dePlural: 'Feld-Kontrollen',
+    enSingular: 'field check',
+    enPlural: 'field checks',
+    frSingular: 'contrôle de terrain',
+    frPlural: 'contrôles de terrain',
+    itSingular: 'controllo sul terreno',
+    itPlural: 'controlli sul terreno',
+    filter: { 'data.typ': { $ne: 'Freiwilligen-Kontrolle' } },
+    labelBy: ['typ'],
+    sort: 1,
+  },
+  {
+    key: 'freiwilligen-kontrollen',
+    deSingular: 'Freiwilligen-Kontrolle',
+    dePlural: 'Freiwilligen-Kontrollen',
+    enSingular: 'volunteer check',
+    enPlural: 'volunteer checks',
+    frSingular: 'contrôle bénévole',
+    frPlural: 'contrôles bénévoles',
+    itSingular: 'controllo volontario',
+    itPlural: 'controlli volontari',
+    filter: { 'data.typ': { $eq: 'Freiwilligen-Kontrolle' } },
+    labelBy: [],
+    sort: 2,
+  },
+]
+const filteredViewId = (key) => derivedId('filtered_view', key)
+const filteredViewsMap = () =>
+  Object.fromEntries(filteredViewDefs.map((v) => [filteredViewId(v.key), true]))
+
 const q = (s) => `'${String(s).replaceAll("'", "''")}'`
 const numOrNull = (n) => (n === null || n === undefined ? 'null' : String(n))
 const qOrNull = (s) => (s === null || s === undefined ? 'null' : q(s))
@@ -171,7 +207,7 @@ const adressName = (id) => {
 // ---- lists (options for fields) -----------------------------------------
 // [list key, name, werte source, allowed codes (null = all, sorted by werte.sort)]
 const listDefs = [
-  ['kontrolltyp', 'Kontrolltyp', 'typ', ['Ausgangszustand', 'Kontrolle']],
+  ['kontrolltyp', 'Kontrolltyp', 'typ', ['Ausgangszustand', 'Kontrolle', 'Freiwilligen-Kontrolle']],
   ['entwicklung', 'Entwicklung', 'entwicklung', null],
   ['popstatus', 'Populationsstatus', 'popStatus', null],
   ['idbiotuebereinst', 'Übereinstimmung mit Idealbiotop', 'idbiotuebereinst', null],
@@ -324,10 +360,15 @@ const checkTaxonId = (zaehlId) => derivedId('check_taxon', zaehlId)
 const actionId = (massnId) => derivedId('action', massnId)
 const subprojectId = (apId) => derivedId('subproject', apId)
 
-// apf2 pop/tpop label convention: nr + name/flurname
-const popName = (pop) => [pop.nr, pop.name].filter((x) => x !== null && x !== '').join(' ')
-const tpopName = (tpop) =>
-  [tpop.nr, tpop.flurname || tpop.gemeinde].filter((x) => x !== null && x !== '').join(' ')
+// apf2 pop/tpop label convention (createComputedLabels.sql): "nr: name/flurname"
+const popName = (pop) =>
+  pop.nr == null && !pop.name
+    ? '(keine Nr): (kein Name)'
+    : `${pop.nr ?? '(keine Nr)'}: ${pop.name ?? '(kein Name)'}`
+const tpopName = (tpop) => {
+  const flurname = tpop.flurname || tpop.gemeinde
+  return `${tpop.nr ?? '(keine Nr)'}: ${flurname ?? '(kein Flurname)'}`
+}
 
 // non-null jsonb data per row: [key, value] pairs, null values dropped
 const buildData = (entries) => {
@@ -601,15 +642,33 @@ emit(`  ON CONFLICT (project_id) DO NOTHING;`)
 
 emit('-- place levels')
 emit(
-  `INSERT INTO place_levels(place_level_id, project_id, level, name_singular_de, name_plural_de, checks, check_quantities, check_taxa, check_reports, check_report_quantities, actions, action_quantities, action_taxa, action_reports, action_report_quantities) values`,
+  `INSERT INTO place_levels(place_level_id, project_id, level, name_singular_de, name_plural_de, checks, check_quantities, check_taxa, check_reports, check_report_quantities, actions, action_quantities, action_taxa, action_reports, action_report_quantities, filtered_views) values`,
 )
 emit(
-  `  (${q(PLACE_LEVEL_1_ID)}, ${q(PROJECT_ID)}, 1, 'Population', 'Populationen', false, false, false, true, true, false, false, false, true, true),`,
+  `  (${q(PLACE_LEVEL_1_ID)}, ${q(PROJECT_ID)}, 1, 'Population', 'Populationen', false, false, false, true, true, false, false, false, true, true, '{}'::jsonb),`,
 )
 emit(
-  `  (${q(PLACE_LEVEL_2_ID)}, ${q(PROJECT_ID)}, 2, 'Teil-Population', 'Teil-Populationen', true, true, true, true, true, true, true, true, true, true)`,
+  `  (${q(PLACE_LEVEL_2_ID)}, ${q(PROJECT_ID)}, 2, 'Teil-Population', 'Teil-Populationen', false, true, true, true, true, true, true, true, true, true, ${jsonbOrNull(filteredViewsMap())})`,
 )
 emit(`  ON CONFLICT (place_level_id) DO NOTHING;`)
+emit(`-- separate UPDATEs because the sync-ignore trigger suppresses ON CONFLICT DO UPDATE`)
+emit(`UPDATE place_levels SET checks = false, filtered_views = ${jsonbOrNull(filteredViewsMap())} WHERE place_level_id = ${q(PLACE_LEVEL_2_ID)};`)
+
+emit('-- filtered views (Feld-Kontrollen / Freiwilligen-Kontrollen as views on checks)')
+emit(
+  `INSERT INTO filtered_views(filtered_view_id, project_id, table_name, name_singular_de, name_plural_de, name_singular_en, name_plural_en, name_singular_fr, name_plural_fr, name_singular_it, name_plural_it, filter, label_by, sort) values`,
+)
+filteredViewDefs.forEach((view, i) => {
+  emit(
+    `  (${q(filteredViewId(view.key))}, ${q(PROJECT_ID)}, 'checks', ${q(view.deSingular)}, ${q(view.dePlural)}, ${q(view.enSingular)}, ${q(view.enPlural)}, ${q(view.frSingular)}, ${q(view.frPlural)}, ${q(view.itSingular)}, ${q(view.itPlural)}, ${jsonbOrNull([view.filter])}, ${jsonbOrNull(view.labelBy.length ? view.labelBy : null)}, ${view.sort})${i < filteredViewDefs.length - 1 ? ',' : ''}`,
+  )
+})
+emit(`  ON CONFLICT (filtered_view_id) DO NOTHING;`)
+filteredViewDefs.forEach((view) => {
+  emit(
+    `UPDATE filtered_views SET table_name = 'checks', name_singular_de = ${q(view.deSingular)}, name_plural_de = ${q(view.dePlural)}, name_singular_en = ${q(view.enSingular)}, name_plural_en = ${q(view.enPlural)}, name_singular_fr = ${q(view.frSingular)}, name_plural_fr = ${q(view.frPlural)}, name_singular_it = ${q(view.itSingular)}, name_plural_it = ${q(view.itPlural)}, filter = ${jsonbOrNull([view.filter])}, label_by = ${jsonbOrNull(view.labelBy.length ? view.labelBy : null)}, sort = ${view.sort} WHERE filtered_view_id = ${q(filteredViewId(view.key))};`,
+  )
+})
 
 emit('-- subprojects (one per species)')
 emit(`INSERT INTO subprojects(subproject_id, project_id, name, start_year, data) values`)
@@ -883,7 +942,7 @@ for (let i = 0; i < placeHistoryRows.length; i += 500) {
 }
 if (!placeHistoryRows.length) emit('-- (no historizations in the source dump)')
 
-emitChunked('checks (apf2: tpopkontr, without Freiwilligen-Kontrollen)', {
+emitChunked('checks (apf2: tpopkontr; presented as the filtered views Feld-Kontrollen and Freiwilligen-Kontrollen)', {
   table: 'checks',
   cols: ['check_id', 'place_id', 'date', 'data'],
   pk: 'check_id',
@@ -998,9 +1057,12 @@ const checkTaxaCount = [...checkTaxaByArt.values()].reduce((s, r) => s + r.lengt
 emit(`-- check taxa (apf2: tpopkontrzaehl) (${checkTaxaCount} rows)`)
 for (const [artIndex, rows] of checkTaxaByArt) {
   const art = data.arts[artIndex]
-  emit(`INSERT INTO check_taxa(check_taxon_id, check_id, taxon_id, unit_id, quantity_numeric)`)
+  emit(`INSERT INTO check_taxa(check_taxon_id, check_id, taxon_id, unit_id, quantity_numeric, label)`)
   emit(
-    `  SELECT v.check_taxon_id, v.check_id, t.taxon_id, v.unit_id, v.quantity_numeric`,
+    `  SELECT v.check_taxon_id, v.check_id, t.taxon_id, v.unit_id, v.quantity_numeric,`,
+  )
+  emit(
+    `    coalesce(u.name, '(keine Einheit)') || ': ' || coalesce(v.quantity_numeric::text, '(keine Anzahl)')`,
   )
   emit(
     `  FROM (VALUES ${rows
@@ -1010,8 +1072,20 @@ for (const [artIndex, rows] of checkTaxaByArt) {
   emit(
     `  CROSS JOIN (SELECT t2.taxon_id FROM taxa t2 JOIN taxonomies USING (taxonomy_id) WHERE t2.id_in_source = ${q(art.taxonomie.taxid)} AND taxonomies.name = ${q(art.taxonomie.taxonomie_name ?? TAXONOMY_NAME)} LIMIT 1) t`,
   )
+  emit(
+    `  LEFT JOIN units u ON u.unit_id = v.unit_id AND u.project_id = ${q(PROJECT_ID)}`,
+  )
   emit(`  ON CONFLICT (check_taxon_id) DO NOTHING;`)
 }
+
+emit('-- refresh labels of existing rows (the inserts above conflict-do-nothing)')
+emit(`UPDATE check_taxa ct SET label =`)
+emit(
+  `  coalesce((SELECT u.name FROM units u WHERE u.unit_id = ct.unit_id AND u.project_id = ${q(PROJECT_ID)}), '(keine Einheit)') || ': ' || coalesce(ct.quantity_numeric::text, '(keine Anzahl)')`,
+)
+emit(
+  `WHERE ct.check_id IN (SELECT c.check_id FROM checks c JOIN places pl ON pl.place_id = c.place_id WHERE pl.subproject_id IN (SELECT subproject_id FROM subprojects WHERE project_id = ${q(PROJECT_ID)}));`,
+)
 
 emit('-- fail loudly if the seeded data is incomplete')
 emit(`DO $$`)

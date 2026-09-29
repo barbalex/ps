@@ -16,6 +16,7 @@ import { Section } from '../../../components/shared/Section.tsx'
 import { SectionLevel2 } from '../../../components/shared/SectionLevel2.tsx'
 import { SectionDescription } from '../../../components/shared/SectionDescription.tsx'
 import { Type } from './Type.tsx'
+import { FilteredViewsSection } from './FilteredViewsSection.tsx'
 import { Loading } from '../../../components/shared/Loading.tsx'
 import { NotFound } from '../../../components/NotFound.tsx'
 import { FormHeader } from '../../../components/FormHeader/index.tsx'
@@ -766,6 +767,7 @@ export const Configuration = ({ from }: { from: string }) => {
             )}
           </SectionLevel2>
         </Section>
+        <FilteredViewsSection projectId={projectId!} />
         <Section
           title={formatMessage({
             id: 'bU6VwX',

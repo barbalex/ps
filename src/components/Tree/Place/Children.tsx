@@ -5,6 +5,7 @@ import { useAtom } from 'jotai'
 
 import { Node } from '../Node.tsx'
 import { ChecksNode } from '../Checks.tsx'
+import { FilteredChecksNode } from '../FilteredChecks.tsx'
 import { ActionsNode } from '../Actions.tsx'
 import { CheckReportsNode } from '../CheckReports.tsx'
 import { ActionReportsNode } from '../ActionReports.tsx'
@@ -13,7 +14,7 @@ import { PlacesNode } from '../Places.tsx'
 import { ObservationsAssignedNode } from '../ObservationsAssigned.tsx'
 import { FilesNode } from '../Files.tsx'
 import type PlaceLevels from '../../../models/public/PlaceLevels.ts'
-import { languageAtom, designingAtom } from '../../../store.ts'
+import { languageAtom } from '../../../store.ts'
 
 // TODO: add charts?
 type Props = {
@@ -36,7 +37,6 @@ export const PlaceChildren = ({
 }: Props) => {
   // const level = placeId2 ? 8 : 6
   const [language] = useAtom(languageAtom)
-  const [isDesigning] = useAtom(designingAtom)
 
   // query from place_level what children to show
   const resPlaceLevels = useLiveQuery(
@@ -45,9 +45,25 @@ export const PlaceChildren = ({
   )
   const placeLevel = resPlaceLevels?.rows?.[0] as unknown as PlaceLevel | undefined
 
+  // filtered views enabled on this place level (design mode shows all)
+  const resFilteredViews = useLiveQuery(
+    `SELECT filtered_view_id FROM filtered_views WHERE project_id = $1 AND table_name = 'checks' ORDER BY sort, label`,
+    [projectId],
+  )
+  const filteredViews = (resFilteredViews?.rows ?? []) as {
+    filtered_view_id: string
+  }[]
+  const filteredViewsMap = (placeLevel?.filtered_views ?? {}) as Record<
+    string,
+    boolean | null
+  >
+  const enabledFilteredViews = filteredViews.filter(
+    (view) => filteredViewsMap[view.filtered_view_id] === true,
+  )
+
   // need place_level to know whether to show files
   const usersInPlace = placeLevel?.place_roles_in_place !== false
-  const showFiles = isDesigning || placeLevel?.place_files !== false
+  const showFiles = placeLevel?.place_files !== false
   const filesInPlace = placeLevel?.place_files_in_place !== false
   const showUsersNav = !usersInPlace
   const showFilesNav = showFiles && !filesInPlace
@@ -85,7 +101,7 @@ export const PlaceChildren = ({
           level={level + 1}
         />
       )}
-      {(isDesigning || !!placeLevel?.checks) && (
+      {(!!placeLevel?.checks) && (
         <ChecksNode
           projectId={projectId}
           subprojectId={subprojectId}
@@ -94,7 +110,18 @@ export const PlaceChildren = ({
           level={level + 1}
         />
       )}
-      {(isDesigning || !!placeLevel?.check_reports) && (
+      {enabledFilteredViews.map((view) => (
+        <FilteredChecksNode
+          key={view.filtered_view_id}
+          projectId={projectId}
+          subprojectId={subprojectId}
+          placeId={placeId}
+          placeId2={placeId2}
+          filteredViewId={view.filtered_view_id}
+          level={level + 1}
+        />
+      ))}
+      {(!!placeLevel?.check_reports) && (
         <CheckReportsNode
           projectId={projectId}
           subprojectId={subprojectId}
@@ -103,7 +130,7 @@ export const PlaceChildren = ({
           level={level + 1}
         />
       )}
-      {(isDesigning || !!placeLevel?.actions) && (
+      {(!!placeLevel?.actions) && (
         <ActionsNode
           projectId={projectId}
           subprojectId={subprojectId}
@@ -112,7 +139,7 @@ export const PlaceChildren = ({
           level={level + 1}
         />
       )}
-      {(isDesigning || !!placeLevel?.action_reports) && (
+      {(!!placeLevel?.action_reports) && (
         <ActionReportsNode
           projectId={projectId}
           subprojectId={subprojectId}
@@ -121,7 +148,7 @@ export const PlaceChildren = ({
           level={level + 1}
         />
       )}
-      {(isDesigning || !!placeLevel?.observations) && (
+      {(!!placeLevel?.observations) && (
         <ObservationsAssignedNode
           projectId={projectId}
           subprojectId={subprojectId}

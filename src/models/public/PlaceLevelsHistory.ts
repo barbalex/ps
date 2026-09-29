@@ -57,6 +57,8 @@ export default interface PlaceLevelsHistory {
 
   check_taxa_in_check: boolean | null;
 
+  filtered_views: unknown | null;
+
   observations: boolean | null;
 
   place_roles_in_place: boolean | null;
@@ -162,6 +164,8 @@ export interface PlaceLevelsHistoryInitializer {
   /** Default value: true */
   check_taxa_in_check?: boolean | null;
 
+  filtered_views?: unknown | null;
+
   /** Default value: true */
   observations?: boolean | null;
 
@@ -258,6 +262,8 @@ export interface PlaceLevelsHistoryMutator {
   check_taxa?: boolean | null;
 
   check_taxa_in_check?: boolean | null;
+
+  filtered_views?: unknown | null;
 
   observations?: boolean | null;
 

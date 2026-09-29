@@ -14,6 +14,7 @@ interface Props {
   placeId?: string
   placeId2?: string
   checkId?: string
+  filteredViewId?: string
   actionId?: string
   nav: NavData
   level?: number
@@ -25,6 +26,7 @@ export const FileNode = ({
   placeId,
   placeId2,
   checkId,
+  filteredViewId,
   actionId,
   nav,
   level = 2,
@@ -41,7 +43,9 @@ export const FileNode = ({
     ...(placeId ? ['places', placeId] : []),
     ...(placeId2 ? ['places', placeId2] : []),
     ...(actionId ? ['actions', actionId] : []),
-    ...(checkId ? ['checks', checkId] : []),
+    ...(checkId
+      ? [...(filteredViewId ? ['filtered-checks', filteredViewId] : []), 'checks', checkId]
+      : []),
     'files',
     nav.id,
     ...(isPreview ? ['preview'] : []),

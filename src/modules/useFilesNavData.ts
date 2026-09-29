@@ -15,6 +15,7 @@ type Props = {
   placeId2?: string
   actionId?: string
   checkId?: string
+  filteredViewId?: string
 }
 
 type NavDataOpen = {
@@ -38,6 +39,7 @@ export const useFilesNavData = ({
   placeId2,
   actionId,
   checkId,
+  filteredViewId,
 }: Props) => {
   const [openNodes] = useAtom(treeOpenNodesAtom)
   const location = useLocation()
@@ -50,7 +52,9 @@ export const useFilesNavData = ({
     ...(placeId ? ['places', placeId] : []),
     ...(placeId2 ? ['places', placeId2] : []),
     ...(actionId ? ['actions', actionId] : []),
-    ...(checkId ? ['checks', checkId] : []),
+    ...(checkId
+      ? [...(filteredViewId ? ['filtered-checks', filteredViewId] : []), 'checks', checkId]
+      : []),
   ]
   const ownArray = [...parentArray, 'files']
   // needs to work not only works for urlPath, for all opened paths!

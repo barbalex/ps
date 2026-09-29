@@ -526,6 +526,12 @@ WHEN (pg_trigger_depth() < 1)
 EXECUTE FUNCTION enforce_project_write();
 
 CREATE OR REPLACE TRIGGER enforce_project_write_trigger
+BEFORE INSERT OR UPDATE OR DELETE ON filtered_views
+FOR EACH ROW
+WHEN (pg_trigger_depth() < 1)
+EXECUTE FUNCTION enforce_project_write();
+
+CREATE OR REPLACE TRIGGER enforce_project_write_trigger
 BEFORE INSERT OR UPDATE OR DELETE ON field_sorts
 FOR EACH ROW
 WHEN (pg_trigger_depth() < 1)

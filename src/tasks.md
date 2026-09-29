@@ -32,13 +32,7 @@ Better-Auth, possible extensions:
 
 ---
 
-use "virtualized tables" (queries/views on real tables) for ekf? 1. create this capability in ps 2. import data from apf2
-
-how to create:
-
-- enable configuration of virtual tables on the project
-- enable/disable them just like the real ones (checks, check-reports, actions...)
--
+apflora data imported: labels should be same as used in apf2. Most/all are created here: /home/alex/Documents/GitHub/apf2/sql/apflora/createComputedLabels.sql. Please use same values
 
 ---
 
