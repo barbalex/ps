@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from 'react'
 import { monitorForElements } from '@atlaskit/pragmatic-drag-and-drop/adapter/element-adapter'
-import { extractClosestEdge } from '@atlaskit/pragmatic-drag-and-drop-hitbox/closest-edge'
+import { extractClosestEdge } from '@atlaskit/pragmatic-drag-and-drop-hitbox/closest-edge/extract-closest-edge'
 import { getReorderDestinationIndex } from '@atlaskit/pragmatic-drag-and-drop-hitbox/util/get-reorder-destination-index'
 import { reorder } from '@atlaskit/pragmatic-drag-and-drop/utils/reorder'
 import { v7 as uuidv7 } from 'uuid'
