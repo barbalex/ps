@@ -34,8 +34,6 @@ Better-Auth, possible extensions:
 
 ---
 
-light and dark mode
-
 ---
 
 check translations
