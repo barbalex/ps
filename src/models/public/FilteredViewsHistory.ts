@@ -27,6 +27,8 @@ export default interface FilteredViewsHistory {
 
   filter: unknown | null;
 
+  label_by: unknown | null;
+
   sort: number | null;
 
   label: string | null;
@@ -70,6 +72,8 @@ export interface FilteredViewsHistoryInitializer {
   name_plural_it?: string | null;
 
   filter?: unknown | null;
+
+  label_by?: unknown | null;
 
   /** Default value: 0 */
   sort?: number | null;
@@ -116,6 +120,8 @@ export interface FilteredViewsHistoryMutator {
   name_plural_it?: string | null;
 
   filter?: unknown | null;
+
+  label_by?: unknown | null;
 
   sort?: number | null;
 

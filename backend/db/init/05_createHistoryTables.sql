@@ -4198,3 +4198,12 @@ SET jobmon = false,
         retention_keep_index = false
 WHERE parent_table = 'public.project_export_assignments_history';
 
+
+-- the history tables and their partitions are owned by partman_user, so the
+-- default privileges from 00_roles (granted before these tables existed)
+-- do not apply: grant the api roles explicitly
+GRANT USAGE ON SCHEMA public TO web_anon;
+GRANT SELECT ON ALL TABLES IN SCHEMA public TO web_anon;
+GRANT USAGE ON SCHEMA public TO app_user;
+GRANT SELECT, INSERT, UPDATE, DELETE ON ALL TABLES IN SCHEMA public TO app_user;
+GRANT USAGE, SELECT ON ALL SEQUENCES IN SCHEMA public TO app_user;

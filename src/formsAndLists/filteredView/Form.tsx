@@ -125,6 +125,7 @@ export const FilteredViewForm = ({
         title={formatMessage({ id: '8cR2wF', defaultMessage: 'Filter' })}
       >
         <FilterEditor row={row} onChange={onChange} />
+        <LabelByEditor row={row} onChange={onChange} />
         <TextField
           label={formatMessage({ id: 'Pq7nWk', defaultMessage: 'Sortierwert' })}
           name="sort"
@@ -170,21 +171,25 @@ const FilterEditor = ({
   const fields =
     (resFields?.rows ?? []) as { name: string; field_label: string | null; list_id: string | null }[]
 
-  // current filter -> field name and value
-  const { fieldName, value } = useMemo(() => {
+  // current filter -> field name, operator and value
+  const { fieldName, operator, value } = useMemo(() => {
     const filter = (row.filter ?? []) as TableRowFilter[]
     const firstOrCondition = filter[0] ?? {}
     const entry = Object.entries(firstOrCondition)[0]
-    if (!entry) return { fieldName: '', value: '' }
+    if (!entry) return { fieldName: '', operator: '$eq', value: '' }
     const [key, wrappedValue] = entry
-    const rawValue =
+    const isOperatorObject =
       wrappedValue !== null &&
       typeof wrappedValue === 'object' &&
-      '$eq' in wrappedValue
-        ? (wrappedValue as { $eq: unknown }).$eq
-        : wrappedValue
+      !Array.isArray(wrappedValue)
+    const rawOperator =
+      isOperatorObject && '$ne' in wrappedValue ? '$ne' : '$eq'
+    const rawValue = isOperatorObject
+      ? (wrappedValue as Record<string, unknown>)[rawOperator]
+      : wrappedValue
     return {
       fieldName: key.startsWith('data.') ? key.substring(5) : key,
+      operator: rawOperator,
       value: rawValue == null ? '' : String(rawValue),
     }
   }, [row.filter])
@@ -200,9 +205,13 @@ const FilterEditor = ({
   const listValues =
     (resListValues?.rows ?? []) as { value_text: string | null }[]
 
-  const setFilter = (newFieldName: string, newValue: string) => {
+  const setFilter = (
+    newFieldName: string,
+    newValue: string,
+    newOperator: string = operator,
+  ) => {
     const newFilter: TableRowFilter[] = newFieldName
-      ? [{ [`data.${newFieldName}`]: { $eq: newValue } }]
+      ? [{ [`data.${newFieldName}`]: { [newOperator]: newValue } }]
       : []
     onChange(
       { target: { name: 'filter', type: 'change' } } as never,
@@ -232,6 +241,32 @@ const FilterEditor = ({
               {f.field_label ?? f.name}
             </Option>
           ))}
+        </Dropdown>
+      </Field>
+      <Field
+        label={formatMessage({
+          id: '7hW8wJ',
+          defaultMessage: 'Operator',
+        })}
+      >
+        <Dropdown
+          value={
+            operator === '$ne'
+              ? formatMessage({ id: '8iX9wK', defaultMessage: 'ist nicht' })
+              : formatMessage({ id: '9jY0wL', defaultMessage: 'ist' })
+          }
+          onOptionSelect={(_e, data) => {
+            setFilter(fieldName, value, (data.optionValue ?? '$eq') as string)
+          }}
+          selectedOptions={[operator]}
+          disabled={!fieldName}
+        >
+          <Option value="$eq" text="ist">
+            {formatMessage({ id: '9jY0wL', defaultMessage: 'ist' })}
+          </Option>
+          <Option value="$ne" text="ist nicht">
+            {formatMessage({ id: '8iX9wK', defaultMessage: 'ist nicht' })}
+          </Option>
         </Dropdown>
       </Field>
       {selectedField?.list_id ? (
@@ -274,5 +309,71 @@ const FilterEditor = ({
         </Field>
       )}
     </>
+  )
+}
+
+/**
+ * Chooses the data field appended to the year when labeling the rows of the
+ * view (apf2 manner: "2019: Kontrolle"). None = year only.
+ */
+const LabelByEditor = ({
+  row,
+  onChange,
+}: {
+  row: FilteredViews
+  onChange: (e: React.ChangeEvent<HTMLInputElement>, data?: unknown) => void
+}) => {
+  const { formatMessage } = useIntl()
+  const projectId = row.project_id as string | null
+  const tableName = (row.table_name ?? 'checks') as string
+
+  const resFields = useLiveQuery(
+    `SELECT name, field_label FROM fields WHERE project_id = $1 AND table_name = $2 ORDER BY field_label`,
+    [projectId, tableName],
+  )
+  const fields = (resFields?.rows ?? []) as {
+    name: string
+    field_label: string | null
+  }[]
+
+  const labelBy = (row.label_by ?? []) as string[]
+  const selectedField = labelBy[0] ?? ''
+
+  const setLabelBy = (fieldName: string) => {
+    onChange(
+      { target: { name: 'label_by', type: 'change' } } as never,
+      { value: fieldName ? [fieldName] : null },
+    )
+  }
+
+  return (
+    <Field
+      label={formatMessage({
+        id: '0kZ1wM',
+        defaultMessage: 'Zeilen beschriften mit (zusätzlich zum Jahr)',
+      })}
+    >
+      <Dropdown
+        value={
+          selectedField
+            ? (fields.find((f) => f.name === selectedField)?.field_label ??
+              selectedField)
+            : formatMessage({ id: '1lA2wN', defaultMessage: 'nur Jahr' })
+        }
+        onOptionSelect={(_e, data) => {
+          setLabelBy((data.optionValue ?? '') as string)
+        }}
+        selectedOptions={selectedField ? [selectedField] : []}
+      >
+        <Option value="" text={formatMessage({ id: '1lA2wN', defaultMessage: 'nur Jahr' })}>
+          {formatMessage({ id: '1lA2wN', defaultMessage: 'nur Jahr' })}
+        </Option>
+        {fields.map((f) => (
+          <Option key={f.name} value={f.name} text={f.field_label ?? f.name}>
+            {f.field_label ?? f.name}
+          </Option>
+        ))}
+      </Dropdown>
+    </Field>
   )
 }

@@ -27,6 +27,7 @@ type ViewData = {
   name_singular_en: string | null
   name_singular_fr: string | null
   name_singular_it: string | null
+  label_by: unknown
 }
 
 export const useFilteredCheckNavData = ({
@@ -41,6 +42,24 @@ export const useFilteredCheckNavData = ({
   const [openNodes] = useAtom(treeOpenNodesAtom)
   const [language] = useAtom(languageAtom)
 
+  const resView = useLiveQuery<ViewData>(
+    `SELECT name_singular_de, name_singular_en, name_singular_fr, name_singular_it, label_by FROM filtered_views WHERE filtered_view_id = $1`,
+    [filteredViewId],
+  )
+  const view = resView?.rows?.[0]
+  const viewNameSingular =
+    view?.[`name_singular_${language}`] ?? view?.name_singular_de
+  const labelBy = (view?.label_by ?? []) as string[]
+
+  // rows are labeled in apf2 manner: 4-digit year, then the value of each
+  // field in label_by, separated by ": " — e.g. "2019: Kontrolle"
+  const viewLabelSql = `coalesce(lpad(extract(year from checks.date)::text, 4, '0'), '(kein Jahr)')${labelBy
+    .map(
+      (field) =>
+        ` || ': ' || coalesce(checks.data->>'${field}', '(kein ${field.charAt(0).toUpperCase()}${field.slice(1)})')`,
+    )
+    .join('')}`
+
   const sql = `
       WITH
         check_quantities_count AS (SELECT count(*) FROM check_quantities WHERE check_id = '${checkId}'),
@@ -48,7 +67,7 @@ export const useFilteredCheckNavData = ({
         files_count AS (SELECT count(*) FROM files WHERE check_id = '${checkId}')
       SELECT
         check_id,
-        label,
+        ${viewLabelSql} AS label,
         check_quantities_count.count AS check_quantities_count,
         check_taxa_count.count AS check_taxa_count,
         files_count.count AS files_count
@@ -62,14 +81,6 @@ export const useFilteredCheckNavData = ({
   const res = useLiveQuery<NavData>(sql)
   const loading = res === undefined
   const nav: NavData | undefined = res?.rows?.[0]
-
-  const resView = useLiveQuery<ViewData>(
-    `SELECT name_singular_de, name_singular_en, name_singular_fr, name_singular_it FROM filtered_views WHERE filtered_view_id = $1`,
-    [filteredViewId],
-  )
-  const view = resView?.rows?.[0]
-  const viewNameSingular =
-    view?.[`name_singular_${language}`] ?? view?.name_singular_de
 
   const parentArray = [
     'data',

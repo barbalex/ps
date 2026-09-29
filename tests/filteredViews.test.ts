@@ -103,6 +103,32 @@ describe('filtered views on checks', () => {
     expect(freiw.rows.map((r) => r.id)).toEqual([CHECK_FREIW])
   })
 
+  it('$ne filters like apf2 EK: everything except Freiwilligen-Kontrolle, including Ausgangszustand and null', async () => {
+    const { db, ids } = fixture
+    const ek = await db.query<{ id: string }>(
+      viewChecksSql(ids.place, [
+        { 'data.typ': { $ne: 'Freiwilligen-Kontrolle' } },
+      ]),
+    )
+    expect(ek.rows.map((r) => r.id).sort()).toEqual(
+      [CHECK_FELD, CHECK_NO_TYP].sort(),
+    )
+  })
+
+  it('labels rows in apf2 manner: 4-digit year, then the label_by fields', async () => {
+    const { db, ids } = fixture
+    // the label expression useFilteredChecksNavData builds for label_by ["typ"]
+    const labelSql = `coalesce(lpad(extract(year from checks.date)::text, 4, '0'), '(kein Jahr)') || ': ' || coalesce(checks.data->>'typ', '(kein Typ)')`
+    const res = await db.query<{ id: string; label: string }>(
+      `SELECT check_id AS id, ${labelSql} AS label FROM checks WHERE place_id = $1 ORDER BY label`,
+      [ids.place],
+    )
+    const labels = Object.fromEntries(res.rows.map((r) => [r.id, r.label]))
+    expect(labels[CHECK_FELD]).toBe('2024: Kontrolle')
+    expect(labels[CHECK_FREIW]).toBe('2024: Freiwilligen-Kontrolle')
+    expect(labels[CHECK_NO_TYP]).toBe('2024: (kein Typ)')
+  })
+
   it('a plain string filter would wrongly match both types (why views use $eq)', async () => {
     const { db, ids } = fixture
     // ilike %Kontrolle% matches Freiwilligen-Kontrolle as well

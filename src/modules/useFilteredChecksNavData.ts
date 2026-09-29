@@ -25,6 +25,7 @@ type ViewData = {
   filtered_view_id: string
   table_name: string | null
   filter: unknown
+  label_by: unknown
   name_singular_de: string | null
   name_singular_en: string | null
   name_singular_fr: string | null
@@ -91,6 +92,16 @@ export const useFilteredChecksNavData = ({
   const filterString = filterStringFromFilter(filter)
   const isFiltered = !!filterString
 
+  // rows are labeled in apf2 manner: 4-digit year, then the value of each
+  // field in label_by, separated by ": " — e.g. "2019: Kontrolle"
+  const labelBy = (view?.label_by ?? []) as string[]
+  const viewLabelSql = `coalesce(lpad(extract(year from checks.date)::text, 4, '0'), '(kein Jahr)')${labelBy
+    .map(
+      (field) =>
+        ` || ': ' || coalesce(checks.data->>'${field}', '(kein ${field.charAt(0).toUpperCase()}${field.slice(1)})')`,
+    )
+    .join('')}`
+
   const sql = isOpen
     ? `
       WITH
@@ -98,7 +109,7 @@ export const useFilteredChecksNavData = ({
         count_filtered AS (SELECT count(*) FROM checks WHERE place_id = '${placeId2 ?? placeId}'${hasViewFilter ? ` AND (${viewFilterString})` : ''}${isFiltered ? ` AND (${filterString})` : ''})
       SELECT
         check_id AS id,
-        label,
+        ${viewLabelSql} AS label,
         count_unfiltered.count AS count_unfiltered,
         count_filtered.count AS count_filtered
       FROM checks, count_unfiltered, count_filtered

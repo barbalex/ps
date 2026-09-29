@@ -669,10 +669,19 @@ is prepared for other tables).
   - `filter`: static filter in the **same format as the user's table row
     filters** (`TableRowFilter[]`): an array of OR-conditions, each an object
     of AND column conditions. Keys prefixed `data.` target the jsonb `data`
-    column. Use `{"$eq": value}` for exact matches — plain string values
-    compile to `ILIKE '%value%'` and would e.g. match both `Kontrolle` and
-    `Freiwilligen-Kontrolle`. Example:
-    `[{"data.typ": {"$eq": "Kontrolle"}}]`
+    column. Use `{"$eq": value}` for exact matches and `{"$ne": value}` for
+    negated matches (rows with a null value included, SQL `IS DISTINCT FROM`)
+    — plain string values compile to `ILIKE '%value%'` and would e.g. match
+    both `Kontrolle` and `Freiwilligen-Kontrolle`. Examples:
+    `[{"data.typ": {"$eq": "Freiwilligen-Kontrolle"}}]`,
+    `[{"data.typ": {"$ne": "Freiwilligen-Kontrolle"}}]` (the apflora
+    Feld-Kontrollen view: everything except Freiwilligen-Kontrollen,
+    including Ausgangszustand and rows without typ)
+  - `label_by`: names of data fields appended to the year when labeling the
+    view's rows, in apf2 manner (`createComputedLabels.sql`):
+    `lpad(year, 4)`, then ": " and the value of each field, e.g.
+    "2019: Kontrolle". Fallbacks like apf2: "(kein Jahr)" and "(kein
+    <Fieldname>)". Empty/null = year only (apflora Freiwilligen-Kontrollen).
   - `sort`: order in the navigation
   - has a history table (`filtered_views_history`) and the standard
     project-scoped write permission (`enforce_project_write`)
@@ -749,6 +758,20 @@ partman happens in `05` (see `filtered_views_history`).
 (Feld-Kontrollen / Freiwilligen-Kontrollen, deterministic derived ids) and
 sets `place_levels.checks = false` + the `filtered_views` map for level 2
 (Teil-Population). Regenerate with `npm run apflora:generate`.
+
+Labels follow apflora.ch (`apf2/sql/apflora/createComputedLabels.sql`):
+- Feld-Kontrollen (EK): `typ IS DISTINCT FROM 'Freiwilligen-Kontrolle'`
+  (includes Ausgangszustand and rows without typ), rows labeled
+  `jahr: typ` (label_by `["typ"]`)
+- Freiwilligen-Kontrollen (EKF): `typ = 'Freiwilligen-Kontrolle'`, rows
+  labeled `jahr` (label_by empty)
+- places: name is built as `nr: name` (pop) resp. `nr: flurname` (tpop);
+  the places label follows via `projects.places_label_by = 'name'`
+- check_taxa (Zaehlungen): `einheit: anzahl` (apf2 also appends the
+  methode, which ps does not store)
+
+Applying the seed to a running stack requires the permission-trigger bypass:
+`APF2_APPLY_LATER=1 npm run apflora:generate`, then psql the file.
 
 ## Known limitations (v1)
 

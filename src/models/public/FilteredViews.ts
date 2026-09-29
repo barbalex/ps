@@ -33,8 +33,11 @@ export default interface FilteredViews {
 
   name_plural_it: string | null;
 
-  /** Static filter in the same format as user table row filters: array of OR-conditions, each an object of AND column conditions. Keys prefixed "data." target the jsonb data column. Use {"$eq": value} for exact matches. Example: [{"data.typ": {"$eq": "Kontrolle"}}] */
+  /** Static filter in the same format as user table row filters: array of OR-conditions, each an object of AND column conditions. Keys prefixed "data." target the jsonb data column. Use {"$eq": value} for exact matches and {"$ne": value} for negated matches (null values included). Example: [{"data.typ": {"$eq": "Kontrolle"}}] */
   filter: unknown | null;
+
+  /** Names of data fields appended to the year to label the rows of the view, in apf2 manner: lpad(year), then colon, then the value of each field. Empty/null = year only */
+  label_by: unknown | null;
 
   /** Sort order of the views in navigation */
   sort: number | null;
@@ -82,8 +85,11 @@ export interface FilteredViewsInitializer {
 
   name_plural_it?: string | null;
 
-  /** Static filter in the same format as user table row filters: array of OR-conditions, each an object of AND column conditions. Keys prefixed "data." target the jsonb data column. Use {"$eq": value} for exact matches. Example: [{"data.typ": {"$eq": "Kontrolle"}}] */
+  /** Static filter in the same format as user table row filters: array of OR-conditions, each an object of AND column conditions. Keys prefixed "data." target the jsonb data column. Use {"$eq": value} for exact matches and {"$ne": value} for negated matches (null values included). Example: [{"data.typ": {"$eq": "Kontrolle"}}] */
   filter?: unknown | null;
+
+  /** Names of data fields appended to the year to label the rows of the view, in apf2 manner: lpad(year), then colon, then the value of each field. Empty/null = year only */
+  label_by?: unknown | null;
 
   /**
    * Sort order of the views in navigation
@@ -133,8 +139,11 @@ export interface FilteredViewsMutator {
 
   name_plural_it?: string | null;
 
-  /** Static filter in the same format as user table row filters: array of OR-conditions, each an object of AND column conditions. Keys prefixed "data." target the jsonb data column. Use {"$eq": value} for exact matches. Example: [{"data.typ": {"$eq": "Kontrolle"}}] */
+  /** Static filter in the same format as user table row filters: array of OR-conditions, each an object of AND column conditions. Keys prefixed "data." target the jsonb data column. Use {"$eq": value} for exact matches and {"$ne": value} for negated matches (null values included). Example: [{"data.typ": {"$eq": "Kontrolle"}}] */
   filter?: unknown | null;
+
+  /** Names of data fields appended to the year to label the rows of the view, in apf2 manner: lpad(year), then colon, then the value of each field. Empty/null = year only */
+  label_by?: unknown | null;
 
   /** Sort order of the views in navigation */
   sort?: number | null;

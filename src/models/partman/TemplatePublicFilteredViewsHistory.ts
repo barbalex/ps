@@ -24,6 +24,8 @@ export default interface TemplatePublicFilteredViewsHistory {
 
   filter: unknown | null;
 
+  label_by: unknown | null;
+
   sort: number | null;
 
   label: string | null;
@@ -63,6 +65,8 @@ export interface TemplatePublicFilteredViewsHistoryInitializer {
 
   filter?: unknown | null;
 
+  label_by?: unknown | null;
+
   sort?: number | null;
 
   label?: string | null;
@@ -101,6 +105,8 @@ export interface TemplatePublicFilteredViewsHistoryMutator {
   name_plural_it?: string | null;
 
   filter?: unknown | null;
+
+  label_by?: unknown | null;
 
   sort?: number | null;
 

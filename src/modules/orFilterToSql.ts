@@ -25,6 +25,13 @@ export const orFilterToSql = (
         return `${columnDescriptor}::text = '${eqVal}'`
       }
     }
+    // negated exact match: includes rows where the column is null
+    if (value !== null && typeof value === 'object' && '$ne' in value) {
+      const neVal = (value as { $ne: unknown }).$ne
+      if (typeof neVal === 'string') {
+        return `${columnDescriptor}::text IS DISTINCT FROM '${neVal}'`
+      }
+    }
     if (typeof value === 'string' && isUuid(value)) {
       return `${columnDescriptor}::uuid = '${value}'`
     }

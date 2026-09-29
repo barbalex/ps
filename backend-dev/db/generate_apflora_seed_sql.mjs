@@ -10,7 +10,11 @@ const __dirname = dirname(fileURLToPath(import.meta.url))
 const projectRoot = join(__dirname, '..', '..')
 
 const DEMO_ACCOUNT_ID = '018cf958-27e2-7000-90d3-59f024d467be'
-const DEMO_PROJECT_ID = '018cfcf7-6424-7000-a100-851c5cc2c878'
+// the apflora project (created for real in 11b_seedApfloraExampleData.sql;
+// this seed only ensures the row exists so the taxonomy's project_id
+// foreign key holds on a fresh docker-entrypoint init, where this file
+// runs before 11b)
+const APFLORA_PROJECT_ID = '0195a101-0000-7000-8000-000000000001'
 
 const taxonomySources = [
   {
@@ -128,7 +132,7 @@ const allTaxa = taxonomySources.flatMap(readTaxa)
 const taxonomyValues = taxonomySources
   .map(
     ({ taxonomyName }) =>
-      `  ('${esc(DEMO_ACCOUNT_ID)}', '${esc(DEMO_PROJECT_ID)}', '${esc(taxonomyName)}', 'species')`,
+      `  ('${esc(APFLORA_PROJECT_ID)}', '${esc(taxonomyName)}', 'species')`,
   )
   .join(',\n')
 
@@ -169,15 +173,23 @@ WHERE taxonomy_id IN (
 DELETE FROM taxonomies
 WHERE name IN (${taxonomyNameList});
 
+-- ensure the apflora project exists before referencing it: on a fresh
+-- docker-entrypoint init this file runs before 11b, which creates it
+INSERT INTO projects(project_id, account_id, name, label, subproject_name_singular, subproject_name_plural, places_label_by) values
+  ('${esc(APFLORA_PROJECT_ID)}', '${esc(DEMO_ACCOUNT_ID)}', 'apflora', 'apflora', 'Art', 'Arten', 'name')
+  ON CONFLICT (project_id) DO NOTHING;
+
 WITH inserted_taxonomies AS (
-  INSERT INTO taxonomies(account_id, project_id, name, type)
+  INSERT INTO taxonomies(project_id, name, type)
   VALUES
+  -- the apflora project owns its taxonomy: its subproject_taxa reference
+  -- these taxa, and every local browser enforces the foreign keys, so the
+  -- referenced rows must be inside the project's own referential closure
 ${taxonomyValues}
   RETURNING taxonomy_id, name
 )
-INSERT INTO taxa(account_id, taxonomy_id, name, id_in_source)
+INSERT INTO taxa(taxonomy_id, name, id_in_source)
 SELECT
-  '${esc(DEMO_ACCOUNT_ID)}',
   inserted_taxonomies.taxonomy_id,
   seed.name,
   seed.id_in_source

@@ -222,6 +222,7 @@ export const startSyncing = async (userId: string) => {
               'name_plural_fr',
               'name_plural_it',
               'filter',
+              'label_by',
               'sort',
               'created_at',
               'updated_at',

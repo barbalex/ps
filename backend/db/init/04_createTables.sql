@@ -1456,6 +1456,7 @@ CREATE TABLE IF NOT EXISTS filtered_views(
   name_singular_it text DEFAULT NULL,
   name_plural_it text DEFAULT NULL,
   filter jsonb DEFAULT NULL,
+  label_by jsonb DEFAULT NULL,
   sort integer DEFAULT 0,
   label text GENERATED ALWAYS AS (coalesce(nullif(name_plural_de, ''), filtered_view_id::text)) STORED,
   sys_period tstzrange DEFAULT NULL,
@@ -1472,7 +1473,8 @@ CREATE INDEX IF NOT EXISTS filtered_views_label_idx ON filtered_views USING btre
 COMMENT ON COLUMN filtered_views.table_name IS 'Table this view filters. Currently only "checks"';
 COMMENT ON COLUMN filtered_views.name_singular_de IS 'German singular name. Example: "Feld-Kontrolle"';
 COMMENT ON COLUMN filtered_views.name_plural_de IS 'German plural name. Example: "Feld-Kontrollen"';
-COMMENT ON COLUMN filtered_views.filter IS 'Static filter in the same format as user table row filters: array of OR-conditions, each an object of AND column conditions. Keys prefixed "data." target the jsonb data column. Use {"$eq": value} for exact matches. Example: [{"data.typ": {"$eq": "Kontrolle"}}]';
+COMMENT ON COLUMN filtered_views.filter IS 'Static filter in the same format as user table row filters: array of OR-conditions, each an object of AND column conditions. Keys prefixed "data." target the jsonb data column. Use {"$eq": value} for exact matches and {"$ne": value} for negated matches (null values included). Example: [{"data.typ": {"$eq": "Kontrolle"}}]';
+COMMENT ON COLUMN filtered_views.label_by IS 'Names of data fields appended to the year to label the rows of the view, in apf2 manner: lpad(year), then colon, then the value of each field. Empty/null = year only';
 COMMENT ON COLUMN filtered_views.sort IS 'Sort order of the views in navigation';
 COMMENT ON TABLE filtered_views IS 'Named, filtered views on tables. Example: two views on checks: "Feld-Kontrollen" (typ = Kontrolle) and "Freiwilligen-Kontrollen" (typ = Freiwilligen-Kontrolle). Enabled per place level via place_levels.filtered_views';
 

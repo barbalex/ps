@@ -8,6 +8,9 @@
   "04Jmk6": {
     "defaultMessage": "Daten werden laufend synchronisiert. Mehrere Mitarbeitende können effizient gleichzeitig arbeiten."
   },
+  "0kZ1wM": {
+    "defaultMessage": "Zeilen beschriften mit (zusätzlich zum Jahr)"
+  },
   "0pm66C": {
     "defaultMessage": "WMS-Dienste"
   },
@@ -16,6 +19,9 @@
   },
   "1kFtKf": {
     "defaultMessage": "Kontroll-Taxon"
+  },
+  "1lA2wN": {
+    "defaultMessage": "nur Jahr"
   },
   "1uPFgu": {
     "defaultMessage": "Baum"
@@ -77,6 +83,9 @@
   "7bQ1wE": {
     "defaultMessage": "Namen"
   },
+  "7hW8wJ": {
+    "defaultMessage": "Operator"
+  },
   "7sVbg1": {
     "defaultMessage": "Taxa"
   },
@@ -88,6 +97,9 @@
   },
   "8cR2wF": {
     "defaultMessage": "Filter"
+  },
+  "8iX9wK": {
+    "defaultMessage": "ist nicht"
   },
   "9E6xFT": {
     "defaultMessage": "Karte ausblenden"
@@ -118,6 +130,9 @@
   },
   "9dS3wG": {
     "defaultMessage": "Reihenfolge der gefilterten Ansichten in der Navigation. Tieferer Wert erscheint weiter oben."
+  },
+  "9jY0wL": {
+    "defaultMessage": "ist"
   },
   "9oKaIi": {
     "defaultMessage": "Konto"

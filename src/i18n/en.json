@@ -1155,5 +1155,10 @@
   "8cR2wF": "Filter",
   "4eT5wH": "Field",
   "5fU6wI": "Value",
-  "9dS3wG": "Order of the filtered views in navigation. Lower value appears higher up."
+  "9dS3wG": "Order of the filtered views in navigation. Lower value appears higher up.",
+  "7hW8wJ": "Operator",
+  "8iX9wK": "is not",
+  "9jY0wL": "is",
+  "0kZ1wM": "Label rows with (in addition to the year)",
+  "1lA2wN": "year only"
 }

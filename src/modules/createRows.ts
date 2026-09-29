@@ -1012,7 +1012,7 @@ export const createCheck = async ({
  * Extracts the values a filtered view filters for, to set them on new rows.
  * Uses the first OR-condition of the view's filter (a view that combines
  * multiple OR-conditions cannot preset a single matching value).
- * "$eq"-wrapped and plain values are used verbatim.
+ * Only "$eq" values define a value to preset; other operators ("$ne") do not.
  */
 export const getDataFromFilteredView = async ({
   filteredViewId,
@@ -1032,12 +1032,14 @@ export const getDataFromFilteredView = async ({
   const data: Record<string, unknown> = {}
   const columns: Record<string, unknown> = {}
   for (const [key, wrappedValue] of Object.entries(firstOrCondition)) {
-    const value =
+    const isOperatorObject =
       wrappedValue !== null &&
       typeof wrappedValue === 'object' &&
-      '$eq' in wrappedValue
-        ? (wrappedValue as { $eq: unknown }).$eq
-        : wrappedValue
+      !Array.isArray(wrappedValue)
+    if (isOperatorObject && !('$eq' in wrappedValue)) continue
+    const value = isOperatorObject
+      ? (wrappedValue as { $eq: unknown }).$eq
+      : wrappedValue
     if (value === null || value === undefined) continue
     if (key.startsWith('data.')) {
       data[key.substring(5)] = value
