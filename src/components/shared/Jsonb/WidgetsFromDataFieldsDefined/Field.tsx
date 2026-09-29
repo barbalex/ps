@@ -1,5 +1,5 @@
 import { useAtom } from 'jotai'
-import { useSearch } from '@tanstack/react-router'
+import { useSearch, useParams } from '@tanstack/react-router'
 
 import { FieldFormInForm } from '../../FieldFormInForm.tsx'
 import { WidgetDragAndDrop } from './Widget/index.tsx'
@@ -44,7 +44,9 @@ export const Field = ({
   const { editingField } = useSearch({ strict: false }) as {
     editingField?: string
   }
-  const [designing] = useAtom(designingAtom)
+  const { projectId } = useParams({ strict: false })
+  const [designingMap] = useAtom(designingAtom)
+  const designing = designingMap[projectId ?? ''] ?? false
 
   if (editingField === field.field_id) {
     return (

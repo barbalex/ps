@@ -16,7 +16,6 @@ import {
   filesFilterAtom,
   treeOpenNodesAtom,
   languageAtom,
-  designingAtom,
 } from '../store.ts'
 import type { TableRowFilter } from '../store.ts'
 import { buildNavLabel } from './buildNavLabel.ts'
@@ -59,8 +58,6 @@ export const usePlaceNavData = ({
 }: Props) => {
   const [openNodes] = useAtom(treeOpenNodesAtom)
   const [language] = useAtom(languageAtom)
-  const [designingMap] = useAtom(designingAtom)
-  const isDesigning = designingMap[projectId] ?? false
   const { formatMessage } = useIntl()
 
   const [placesFilter] = useAtom(places1FilterAtom)
@@ -169,11 +166,11 @@ export const usePlaceNavData = ({
     | undefined
 
   const resPlaceLevel = useLiveQuery(
-    `SELECT place_files, place_files_in_place, filtered_views FROM place_levels WHERE project_id = $1 AND level = $2`,
+    `SELECT place_files, place_files_in_place, filtered_views, checks, check_reports, actions, action_reports, observations FROM place_levels WHERE project_id = $1 AND level = $2`,
     [projectId, placeId2 ? 2 : 1],
   )
   const placeLevel = resPlaceLevel?.rows?.[0]
-  const showFiles = isDesigning || placeLevel?.place_files !== false
+  const showFiles = placeLevel?.place_files !== false
   const filesInPlace = placeLevel?.place_files_in_place !== false
   const currentLevel: 1 | 2 = placeId2 ? 2 : 1
 
@@ -194,11 +191,9 @@ export const usePlaceNavData = ({
     string,
     boolean | null
   >
-  const enabledFilteredViews = isDesigning
-    ? filteredViews
-    : filteredViews.filter(
-        (view) => filteredViewsMap[view.filtered_view_id] === true,
-      )
+  const enabledFilteredViews = filteredViews.filter(
+    (view) => filteredViewsMap[view.filtered_view_id] === true,
+  )
 
   // one count per enabled filtered view
   const viewCountsRes = useLiveQuery<{
@@ -280,7 +275,7 @@ export const usePlaceNavData = ({
             },
           ]
         : []),
-      {
+      ...((placeLevel?.checks) ? [{
         id: 'checks',
         label: buildNavLabel({
           loading,
@@ -292,7 +287,7 @@ export const usePlaceNavData = ({
             defaultMessage: 'Kontrollen',
           }),
         }),
-      },
+      }] : []),
       ...enabledFilteredViews.map((view) => ({
         id: `filtered-checks/${view.filtered_view_id}/checks`,
         label: buildNavLabel({
@@ -307,7 +302,7 @@ export const usePlaceNavData = ({
             }),
         }),
       })),
-      {
+      ...((placeLevel?.actions) ? [{
         id: 'actions',
         label: buildNavLabel({
           loading,
@@ -319,8 +314,8 @@ export const usePlaceNavData = ({
             defaultMessage: 'Massnahmen',
           }),
         }),
-      },
-      {
+      }] : []),
+      ...((placeLevel?.check_reports) ? [{
         id: 'check-reports',
         label: buildNavLabel({
           loading,
@@ -332,8 +327,8 @@ export const usePlaceNavData = ({
             defaultMessage: 'Kontroll-Berichte',
           }),
         }),
-      },
-      {
+      }] : []),
+      ...((placeLevel?.action_reports) ? [{
         id: 'action-reports',
         label: buildNavLabel({
           loading,
@@ -345,8 +340,8 @@ export const usePlaceNavData = ({
             defaultMessage: 'Massnahmen-Berichte',
           }),
         }),
-      },
-      {
+      }] : []),
+      ...((placeLevel?.observations) ? [{
         id: 'observations',
         label: buildNavLabel({
           loading,
@@ -356,7 +351,7 @@ export const usePlaceNavData = ({
             defaultMessage: 'Beobachtungen zugeordnet',
           }),
         }),
-      },
+      }] : []),
       {
         id: 'users',
         label: buildNavLabel({

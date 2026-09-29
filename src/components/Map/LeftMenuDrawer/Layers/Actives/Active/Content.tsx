@@ -32,6 +32,7 @@ import { FaPlay, FaStopCircle } from 'react-icons/fa'
 import { useAtom, useAtomValue, useSetAtom } from 'jotai'
 import { usePGlite, useLiveQuery } from '@electric-sql/pglite-react'
 import { useLocation } from '@tanstack/react-router'
+import { useParams } from '@tanstack/react-router'
 import { useIntl } from 'react-intl'
 import axios from 'redaxios'
 import proj4 from 'proj4'
@@ -96,7 +97,9 @@ export const Content = ({
   dragHandleRef: RefObject<HTMLDivElement | null>
 }) => {
   const { formatMessage } = useIntl()
-  const [designing] = useAtom(designingAtom)
+  const { projectId } = useParams({ strict: false })
+  const [designingMap] = useAtom(designingAtom)
+  const designing = designingMap[projectId ?? ''] ?? false
   const [vectorLayerDisplayId, setVectorLayerDisplayId] = useAtom(
     mapDrawerVectorLayerDisplayAtom,
   )

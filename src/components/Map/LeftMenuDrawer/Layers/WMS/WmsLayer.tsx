@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react'
+import { useParams } from '@tanstack/react-router'
 import * as fluentUiReactComponents from '@fluentui/react-components'
 const {
   AccordionHeader,
@@ -46,7 +47,9 @@ type Props = {
 
 export const WmsLayer = ({ layer, isLast, isOpen }: Props) => {
   const { formatMessage } = useIntl()
-  const [designing] = useAtom(designingAtom)
+  const { projectId } = useParams({ strict: false })
+  const [designingMap] = useAtom(designingAtom)
+  const designing = designingMap[projectId ?? ''] ?? false
   const addOperation = useSetAtom(addOperationAtom)
 
   const db = usePGlite()

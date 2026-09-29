@@ -24,8 +24,9 @@ type Props = {
 }
 
 export const AddField = ({ tableName, level }: Props) => {
-  const [designing] = useAtom(designingAtom)
   const { projectId } = useParams({ strict: false })
+  const [designingMap] = useAtom(designingAtom)
+  const designing = designingMap[projectId ?? ''] ?? false
   const navigate = useNavigate()
   const location = useLocation()
   const { formatMessage } = useIntl()

@@ -49,7 +49,8 @@ export const ActionWithAll = ({
     strict: false,
   })
   const addOperation = useSetAtom(addOperationAtom)
-  const [isDesigning] = useAtom(designingAtom)
+  const [designingMap] = useAtom(designingAtom)
+  const isDesigning = designingMap[projectId ?? ''] ?? false
   const { formatMessage } = useIntl()
   const [validations, setValidations] = useState<Validations>({})
   const autoFocusRef = useRef<HTMLInputElement>(null)
