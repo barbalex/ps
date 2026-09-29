@@ -297,10 +297,14 @@ const fieldDefs = [
   ['actions', 2, 'pflanzanordnung', 'Pflanzanordnung', 'text', 'text', null],
   ['actions', 2, 'bemerkungen', 'Bemerkungen', 'text', 'textarea', null],
   // pop -> places level 1
+  ['places', 1, 'nr', 'Nr', 'integer', 'text', null],
+  ['places', 1, 'name', 'Name', 'text', 'text', null],
   ['places', 1, 'status', 'Status', 'text', 'optionsFew', 'popstatus'],
   ['places', 1, 'status_unklar', 'Status unklar', 'boolean', 'jesNo', null],
   ['places', 1, 'status_unklar_begruendung', 'Begründung: Status unklar', 'text', 'textarea', null],
   // tpop -> places level 2
+  ['places', 2, 'nr', 'Nr', 'integer', 'text', null],
+  ['places', 2, 'flurname', 'Flurname', 'text', 'text', null],
   ['places', 2, 'gemeinde', 'Gemeinde', 'text', 'text', null],
   ['places', 2, 'radius', 'Radius (m)', 'integer', 'text', null],
   ['places', 2, 'hoehe', 'Höhe (m ü. M.)', 'integer', 'text', null],
@@ -413,6 +417,8 @@ data.arts.forEach((art, artIndex) => {
       berichte: pop.berichte ?? [],
       massnberichte: pop.massnberichte ?? [],
       data: buildData([
+        ['nr', pop.nr],
+        ['name', pop.name],
         ['status', werteText('popStatus', pop.status)],
         ['status_unklar', pop.status_unklar],
         ['status_unklar_begruendung', pop.status_unklar_begruendung],
@@ -454,6 +460,8 @@ data.arts.forEach((art, artIndex) => {
         massnberichte: tpop.massnberichte ?? [],
         relevant: tpop.apber_relevant,
         data: buildData([
+          ['nr', tpop.nr],
+          ['flurname', tpop.flurname],
           ['gemeinde', tpop.gemeinde],
           ['radius', tpop.radius],
           ['hoehe', tpop.hoehe],
@@ -633,12 +641,15 @@ if (applyLater) {
 
 emit('-- project (owner role for the demo account is set by insert trigger)')
 emit(
-  `INSERT INTO projects(project_id, account_id, name, label, subproject_name_singular, subproject_name_plural, places_label_by) values`,
+  `INSERT INTO projects(project_id, account_id, name, label, subproject_name_singular, subproject_name_plural, places_label_by, places_order_by) values`,
 )
 emit(
-  `  (${q(PROJECT_ID)}, ${q(ACCOUNT_ID)}, 'apflora', 'apflora', 'Art', 'Arten', 'name')`,
+  `  (${q(PROJECT_ID)}, ${q(ACCOUNT_ID)}, 'apflora', 'apflora', 'Art', 'Arten', 'name', 'nr,name,flurname')`,
 )
 emit(`  ON CONFLICT (project_id) DO NOTHING;`)
+emit(
+  `UPDATE projects SET places_order_by = 'nr,name,flurname' WHERE project_id = ${q(PROJECT_ID)};`,
+)
 
 emit('-- place levels')
 emit(

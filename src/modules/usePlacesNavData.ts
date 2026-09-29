@@ -62,6 +62,36 @@ export const usePlacesNavData = ({
   const filterString = filterStringFromFilter(filter, 'places')
   const isFiltered = !!filterString
 
+  const projectTypeRes = useLiveQuery(
+    `SELECT type, places_order_by FROM projects WHERE project_id = $1`,
+    [projectId],
+  )
+  const projectType = projectTypeRes?.rows?.[0]?.type as
+    | string
+    | null
+    | undefined
+  // configured place ordering: names of data fields, applied before the
+  // label fallback. Values may come as jsonb array, comma string or
+  // postgres array literal, depending on who wrote them
+  const placesOrderByRaw = projectTypeRes?.rows?.[0]?.places_order_by
+  const placesOrderBy: string[] = Array.isArray(placesOrderByRaw)
+    ? placesOrderByRaw.map(String).filter(Boolean)
+    : typeof placesOrderByRaw === 'string'
+      ? placesOrderByRaw
+          .replace(/^\{|\}$/g, '')
+          .split(',')
+          .map((field) => field.trim())
+          .filter(Boolean)
+      : []
+  // numeric values sort numerically ("2" < "10"), text values lexically
+  const orderBySql = [
+    ...placesOrderBy.flatMap((field) => [
+      `(case when data->>'${field}' ~ '^[0-9]+([.][0-9]+)?$' then (data->>'${field}')::numeric end) asc nulls last`,
+      `(data->>'${field}') asc nulls last`,
+    ]),
+    'label',
+  ].join(', ')
+
   const sql = isOpen
     ? `
       WITH
@@ -84,7 +114,7 @@ export const usePlacesNavData = ({
         places.subproject_id = '${subprojectId}'
         AND places.parent_id ${placeId ? `= '${placeId}'` : `IS NULL`}
         ${isFiltered ? ` AND ${filterString}` : ''}
-      ORDER BY label
+      ORDER BY ${orderBySql}
     `
     : `
       WITH
@@ -104,14 +134,6 @@ export const usePlacesNavData = ({
     `
   const res = useLiveQuery(sql)
 
-  const projectTypeRes = useLiveQuery(
-    `SELECT type FROM projects WHERE project_id = $1`,
-    [projectId],
-  )
-  const projectType = projectTypeRes?.rows?.[0]?.type as
-    | string
-    | null
-    | undefined
   const level = placeId ? 2 : 1
   const fallbackNames = getPlaceFallbackNames(projectType, level, formatMessage)
 

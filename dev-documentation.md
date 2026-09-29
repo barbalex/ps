@@ -766,7 +766,14 @@ Labels follow apflora.ch (`apf2/sql/apflora/createComputedLabels.sql`):
 - Freiwilligen-Kontrollen (EKF): `typ = 'Freiwilligen-Kontrolle'`, rows
   labeled `jahr` (label_by empty)
 - places: name is built as `nr: name` (pop) resp. `nr: flurname` (tpop);
-  the places label follows via `projects.places_label_by = 'name'`
+  the places label follows via `projects.places_label_by = 'name'`.
+  Ordering matches apf2 (`orderBy: [NR_ASC, NAME_ASC]` for pop,
+  `[NR_ASC, FLURNAME_ASC]` for tpop) via `projects.places_order_by =
+  'nr,name,flurname'` (consumed in `usePlacesNavData`: each configured data
+  field sorts numerically when its value is a number, lexically otherwise,
+  label as fallback; fields without a value are skipped — that is how one
+  config serves both levels). nr/name/flurname are real fields of the place
+  forms
 - check_taxa (Zaehlungen): `einheit: anzahl` (apf2 also appends the
   methode, which ps does not store)
 
