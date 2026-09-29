@@ -804,8 +804,14 @@ regenerates `11b` from it (`APF2_APPLY_LATER=1`), resets the apflora project
 container (files copied to `/var/tmp` — `/tmp` is a tmpfs mount where
 `docker cp` does not stick), and refreshes the place labels (the label
 triggers skip while `electric.syncing` is set, because normally Electric
-delivers labels with the rows). Switching between the modes is free: re-run
-the other script.
+delivers labels with the rows). The reset cascades away all access rows
+(`project_users`, `project_roles`, `subproject_roles`, `place_roles`) and the
+triggers that would recreate them skip while `electric.syncing` is set, so
+the script snapshots them first and restores them afterwards by hand
+(re-creating the owner's directory row and `own` role, replicating the
+role-propagation triggers) — without this, nobody can read the imported data
+and the app's sync shows stale remnants. Switching between the modes is free:
+re-run the other script.
 
 Manual equivalent for a single file: `APF2_APPLY_LATER=1
 npm run apflora:generate`, then psql the file with `SET electric.syncing TO

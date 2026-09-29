@@ -66,10 +66,11 @@ const run = (command, args, env = {}) => {
   }
 }
 
-const psqlInDb = (sqlFiles, setupCommands = []) => {
+const psqlInDb = (sqlFiles, setupCommands = [], trailingCommands = []) => {
   const args = ['exec', '-i', CONTAINER, 'psql', '-U', 'postgres', '-d', 'ps', '-v', 'ON_ERROR_STOP=1', '-q']
   for (const command of setupCommands) args.push('-c', command)
   for (const file of sqlFiles) args.push('-f', file)
+  for (const command of trailingCommands) args.push('-c', command)
   const result = spawnSync('docker', args, { stdio: 'inherit' })
   if (result.status !== 0) {
     console.error(`Failed to apply SQL in ${CONTAINER} (is the dev backend running?)`)
@@ -117,6 +118,18 @@ run('npm', ['run', 'sync-sql'])
 // /docker-entrypoint-initdb.d are the versions baked into the image).
 // 11a has no electric.syncing bypass of its own: set it for the whole session
 // (the other files manage their own transactions)
+//
+// The reset cascades away all access rows (project_users, project_roles,
+// subproject_roles, place_roles), and the triggers that would recreate them
+// (projects_insert_owner_trigger, project_roles_cascade_trigger, …) skip
+// while electric.syncing is set — the same session-level flag the import
+// needs to get past the write-permission triggers. Without the restore
+// below, NOBODY (not even the owner account) can read the imported data:
+// the client's Electric shapes filter every table through the role tables,
+// so the app shows stale remnants instead of the imported species.
+// The restore replicates the skipped triggers by hand: re-create the owner's
+// directory row and 'own' role, bring back the saved access rows, and
+// propagate non-specific roles to the re-imported subprojects and places.
 console.log('Resetting the apflora project and applying the seeds ...')
 const seedFiles = [
   '11a_seedApfloraTaxonomies.sql',
@@ -138,8 +151,91 @@ for (const file of seedFiles) {
 psqlInDb(
   seedFiles.map((file) => `/var/tmp/${file}`),
   [
+    // snapshot the access rows before the reset cascades them away
+    // (temp tables live for this psql session, which also applies the seeds)
+    `CREATE TEMP TABLE ps_saved_project_users AS SELECT * FROM project_users WHERE project_id = '${PROJECT_ID}';`,
+    `CREATE TEMP TABLE ps_saved_project_roles AS SELECT * FROM project_roles WHERE project_id = '${PROJECT_ID}';`,
+    `CREATE TEMP TABLE ps_saved_subproject_roles AS SELECT * FROM subproject_roles WHERE subproject_id IN (SELECT subproject_id FROM subprojects WHERE project_id = '${PROJECT_ID}');`,
+    `CREATE TEMP TABLE ps_saved_place_roles AS SELECT * FROM place_roles WHERE place_id IN (SELECT place_id FROM places WHERE subproject_id IN (SELECT subproject_id FROM subprojects WHERE project_id = '${PROJECT_ID}'));`,
     `BEGIN; SET LOCAL electric.syncing TO 'true'; DELETE FROM projects WHERE project_id = '${PROJECT_ID}'; COMMIT;`,
     `SET electric.syncing TO 'true';`,
+  ],
+  [
+    `BEGIN;
+SET LOCAL electric.syncing TO 'true';
+
+-- the access rows from before the reset, with their original ids (saved
+-- project_roles reference them); as far as their rows still exist —
+-- switching from 'all' to 'test' drops the removed species' specific roles
+INSERT INTO project_users(project_user_id, project_id, email, auth_user_id)
+  SELECT project_user_id, project_id, email, auth_user_id FROM ps_saved_project_users
+ON CONFLICT (project_id, email) DO UPDATE SET auth_user_id = EXCLUDED.auth_user_id;
+
+-- owner directory row and 'own' role for the account owner, like
+-- projects_insert_owner_trigger would have created (it skips while
+-- electric.syncing is set); only adds emails the snapshot does not have
+INSERT INTO project_users(project_id, email, auth_user_id)
+  SELECT p.project_id, coalesce(a.email, u.email), a.user_id
+  FROM projects p
+  JOIN accounts a ON a.account_id = p.account_id
+  LEFT JOIN users u ON u.user_id = a.user_id
+  WHERE p.project_id = '${PROJECT_ID}'
+    AND a.user_id IS NOT NULL
+    AND coalesce(a.email, u.email) IS NOT NULL
+    AND coalesce(a.email, u.email) NOT IN (
+      SELECT email FROM project_users WHERE project_id = '${PROJECT_ID}'
+    )
+ON CONFLICT (project_id, email) DO UPDATE SET auth_user_id = EXCLUDED.auth_user_id;
+
+INSERT INTO project_roles(project_id, project_user_id, role, label)
+  SELECT r.project_id, r.project_user_id, r.role, roles_label(r.project_user_id, r.role)
+  FROM ps_saved_project_roles r
+ON CONFLICT (project_user_id, project_id) DO UPDATE SET role = EXCLUDED.role, label = EXCLUDED.label;
+
+INSERT INTO project_roles(project_id, project_user_id, role, label)
+  SELECT '${PROJECT_ID}', pu.project_user_id, 'own', roles_label(pu.project_user_id, 'own'::user_roles_enum)
+  FROM project_users pu
+  WHERE pu.project_id = '${PROJECT_ID}'
+    AND pu.email IN (
+      SELECT coalesce(a.email, u.email)
+      FROM projects p
+      JOIN accounts a ON a.account_id = p.account_id
+      LEFT JOIN users u ON u.user_id = a.user_id
+      WHERE p.project_id = '${PROJECT_ID}'
+    )
+ON CONFLICT (project_user_id, project_id) DO NOTHING;
+
+-- replicate project_roles_cascade_trigger (it skips while electric.syncing
+-- is set): propagate non-specific roles to the re-imported subprojects/places
+INSERT INTO subproject_roles(subproject_id, project_user_id, role, label)
+  SELECT s.subproject_id, pr.project_user_id, pr.role, roles_label(pr.project_user_id, pr.role)
+  FROM project_roles pr
+  JOIN subprojects s ON s.project_id = pr.project_id
+  WHERE pr.project_id = '${PROJECT_ID}' AND pr.role NOT IN ('read-specific', 'write-specific')
+ON CONFLICT (project_user_id, subproject_id) DO UPDATE SET role = EXCLUDED.role, label = EXCLUDED.label;
+
+INSERT INTO place_roles(place_id, project_user_id, role, label)
+  SELECT p.place_id, pr.project_user_id, pr.role, roles_label(pr.project_user_id, pr.role)
+  FROM project_roles pr
+  JOIN subprojects s ON s.project_id = pr.project_id
+  JOIN places p ON p.subproject_id = s.subproject_id
+  WHERE pr.project_id = '${PROJECT_ID}' AND pr.role NOT IN ('read-specific', 'write-specific')
+ON CONFLICT (project_user_id, place_id) DO UPDATE SET role = EXCLUDED.role, label = EXCLUDED.label;
+
+-- saved -specific roles that survived the mode switch
+INSERT INTO subproject_roles(subproject_id, project_user_id, role, label)
+  SELECT r.subproject_id, r.project_user_id, r.role, roles_label(r.project_user_id, r.role)
+  FROM ps_saved_subproject_roles r
+  JOIN subprojects s ON s.subproject_id = r.subproject_id
+ON CONFLICT (project_user_id, subproject_id) DO UPDATE SET role = EXCLUDED.role, label = EXCLUDED.label;
+
+INSERT INTO place_roles(place_id, project_user_id, role, label)
+  SELECT r.place_id, r.project_user_id, r.role, roles_label(r.project_user_id, r.role)
+  FROM ps_saved_place_roles r
+  JOIN places p ON p.place_id = r.place_id
+ON CONFLICT (project_user_id, place_id) DO UPDATE SET role = EXCLUDED.role, label = EXCLUDED.label;
+
+COMMIT;`,
   ],
 )
 
@@ -169,6 +265,8 @@ const counts = queryInDb(`
   UNION ALL SELECT 'places: ' || count(*) FROM places WHERE subproject_id IN (SELECT subproject_id FROM subprojects WHERE project_id = '${PROJECT_ID}')
   UNION ALL SELECT 'checks: ' || count(*) FROM checks c JOIN places p USING (place_id) WHERE p.subproject_id IN (SELECT subproject_id FROM subprojects WHERE project_id = '${PROJECT_ID}')
   UNION ALL SELECT 'actions: ' || count(*) FROM actions a JOIN places p USING (place_id) WHERE p.subproject_id IN (SELECT subproject_id FROM subprojects WHERE project_id = '${PROJECT_ID}')
+  UNION ALL SELECT 'project roles: ' || count(*) FROM project_roles WHERE project_id = '${PROJECT_ID}'
+  UNION ALL SELECT 'place roles: ' || count(*) FROM place_roles WHERE place_id IN (SELECT place_id FROM places WHERE subproject_id IN (SELECT subproject_id FROM subprojects WHERE project_id = '${PROJECT_ID}'))
   UNION ALL SELECT 'filtered views: ' || count(*) FROM filtered_views WHERE project_id = '${PROJECT_ID}'
 `)
 console.log('\nDone:')
