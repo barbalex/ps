@@ -1122,5 +1122,21 @@
   "bGeHcI": "Blocs",
   "bPuckPanelDelete": "Supprimer",
   "bPuckPanelHint": "Cliquez sur un bloc de l'aperçu pour le modifier",
-  "bExXyY": "Rapports {place}"
+  "bExXyY": "Rapports {place}",
+  "2kHq3x": "Vues filtrées",
+  "5mN8vP": "Vue filtrée",
+  "6gV7wJ": "Les vues filtrées n'affichent que les lignes correspondant à un filtre. Exemple avec deux vues sur les contrôles (« contrôles de terrain », type = Kontrolle ; « contrôles bénévoles », type = Freiwilligen-Kontrolle). Elles sont activées par niveau de lieu.",
+  "7bQ1wE": "Noms",
+  "Wq3zX1": "Nom singulier (allemand)",
+  "Wq3zX2": "Nom pluriel (allemand)",
+  "Wq3zX3": "Nom singulier (anglais)",
+  "Wq3zX4": "Nom pluriel (anglais)",
+  "Wq3zX5": "Nom singulier (français)",
+  "Wq3zX6": "Nom pluriel (français)",
+  "Wq3zX7": "Nom singulier (italien)",
+  "Wq3zX8": "Nom pluriel (italien)",
+  "8cR2wF": "Filtre",
+  "4eT5wH": "Champ",
+  "5fU6wI": "Valeur",
+  "9dS3wG": "Ordre des vues filtrées dans la navigation. Une valeur plus basse apparaît plus haut."
 }

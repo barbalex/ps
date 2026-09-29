@@ -472,6 +472,10 @@ export const vectorLayersFilterAtom = atomWithStorage<TableRowFilter[]>(
 export const listsFilterAtom = atomWithStorage<TableRowFilter[]>('listsFilterAtom', [])
 export const taxonomiesFilterAtom = atomWithStorage<TableRowFilter[]>('taxonomiesFilterAtom', [])
 export const unitsFilterAtom = atomWithStorage<TableRowFilter[]>('unitsFilterAtom', [])
+export const filteredViewsFilterAtom = atomWithStorage<TableRowFilter[]>(
+  'filteredViewsFilterAtom',
+  [],
+)
 export const subprojectsFilterAtom = atomWithStorage<TableRowFilter[]>(
   'subprojectsFilterAtom',
   [],
@@ -573,6 +577,7 @@ export const filterAtoms = {
   lists: listsFilterAtom,
   taxonomies: taxonomiesFilterAtom,
   units: unitsFilterAtom,
+  filteredViews: filteredViewsFilterAtom,
   subprojects: subprojectsFilterAtom,
   subprojectReports: subprojectReportsFilterAtom,
   subprojectUsers: subprojectUsersFilterAtom,
@@ -599,6 +604,21 @@ export const filterAtoms = {
   projectQcs: projectQcsFilterAtom,
   exports: exportsFilterAtom,
   projectExports: projectExportsFilterAtom,
+}
+
+// filter atoms for filtered views are created dynamically, one per view:
+// view ids are runtime data, so the atoms cannot be exported statically
+const filteredViewFilterAtoms = new Map<string, typeof checks1FilterAtom>()
+export const getFilteredViewFilterAtom = (filteredViewId: string) => {
+  let filterAtom = filteredViewFilterAtoms.get(filteredViewId)
+  if (!filterAtom) {
+    filterAtom = atomWithStorage<TableRowFilter[]>(
+      `filteredView-${filteredViewId}-filterAtom`,
+      [],
+    )
+    filteredViewFilterAtoms.set(filteredViewId, filterAtom)
+  }
+  return filterAtom
 }
 
 // postgrestClient

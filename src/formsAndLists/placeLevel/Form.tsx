@@ -1,4 +1,5 @@
 import { useIntl } from 'react-intl'
+import { useLiveQuery } from '@electric-sql/pglite-react'
 
 import { TextField } from '../../components/shared/TextField.tsx'
 import { SwitchField } from '../../components/shared/SwitchField.tsx'
@@ -17,6 +18,16 @@ type Props = {
   autoFocusRef?: React.Ref<HTMLInputElement>
 }
 
+type FilteredView = {
+  filtered_view_id: string
+  table_name: string | null
+  name_singular_de: string | null
+  name_plural_de: string | null
+  name_plural_en: string | null
+  name_plural_fr: string | null
+  name_plural_it: string | null
+}
+
 export const PlaceLevelForm = ({
   row,
   onChange,
@@ -24,6 +35,23 @@ export const PlaceLevelForm = ({
   autoFocusRef,
 }: Props) => {
   const { formatMessage, locale } = useIntl()
+  const lang = locale.split('-')[0]
+
+  const resFilteredViews = useLiveQuery(
+    `SELECT filtered_view_id, table_name, name_singular_de, name_plural_de, name_plural_en, name_plural_fr, name_plural_it
+     FROM filtered_views
+     WHERE project_id = $1
+     ORDER BY sort, label`,
+    [row.project_id],
+  )
+  const filteredViews = (resFilteredViews?.rows ?? []) as FilteredView[]
+  const filteredViewsMap = (row.filtered_views ?? {}) as Record<
+    string,
+    boolean
+  >
+  const anyFilteredViewEnabled = filteredViews.some(
+    (view) => filteredViewsMap[view.filtered_view_id] === true,
+  )
   const altInOwnFormNavMessage = formatMessage({
     id: 'altInOwnFormNav',
     defaultMessage:
@@ -38,7 +66,6 @@ export const PlaceLevelForm = ({
     defaultMessage: 'Massnahmen',
   })
 
-  const lang = locale.split('-')[0]
   const placeNameSingular =
     (row as Record<string, any>)?.[`name_singular_${lang}`] ??
     row?.name_singular_de ??
@@ -243,7 +270,26 @@ export const PlaceLevelForm = ({
             validationState={validations?.checks?.state}
             validationMessage={validations?.checks?.message}
           />
-          {row.checks && (
+          {filteredViews
+            .filter((view) => view.table_name === 'checks')
+            .map((view) => {
+              const viewLabel =
+                (view as Record<string, string | null>)[
+                  `name_plural_${lang}`
+                ] ??
+                view?.name_plural_de ??
+                view.filtered_view_id
+              return (
+                <SwitchField
+                  key={view.filtered_view_id}
+                  label={viewLabel}
+                  name={`filtered_view_${view.filtered_view_id}`}
+                  value={filteredViewsMap[view.filtered_view_id] === true}
+                  onChange={onChange}
+                />
+              )
+            })}
+          {(row.checks || anyFilteredViewEnabled) && (
             <>
               <SwitchField
                 label={formatMessage({

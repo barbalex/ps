@@ -69,6 +69,7 @@ import { Route as DataProjectsProjectIdExportsRouteRouteImport } from './routes/
 import { Route as DataProjectsProjectIdExportsRunRouteRouteImport } from './routes/data/projects/$projectId_/exports-run/route'
 import { Route as DataProjectsProjectIdFieldsRouteRouteImport } from './routes/data/projects/$projectId_/fields/route'
 import { Route as DataProjectsProjectIdFilesRouteRouteImport } from './routes/data/projects/$projectId_/files/route'
+import { Route as DataProjectsProjectIdFilteredViewsRouteRouteImport } from './routes/data/projects/$projectId_/filtered-views/route'
 import { Route as DataProjectsProjectIdListsRouteRouteImport } from './routes/data/projects/$projectId_/lists/route'
 import { Route as DataProjectsProjectIdPlaceLevelsRouteRouteImport } from './routes/data/projects/$projectId_/place-levels/route'
 import { Route as DataProjectsProjectIdProjectRouteImport } from './routes/data/projects/$projectId_/project'
@@ -104,6 +105,8 @@ import { Route as DataProjectsProjectIdFieldsFilterRouteImport } from './routes/
 import { Route as DataProjectsProjectIdFilesIndexRouteImport } from './routes/data/projects/$projectId_/files/index'
 import { Route as DataProjectsProjectIdFilesFileIdRouteImport } from './routes/data/projects/$projectId_/files/$fileId'
 import { Route as DataProjectsProjectIdFilesFilterRouteImport } from './routes/data/projects/$projectId_/files/filter'
+import { Route as DataProjectsProjectIdFilteredViewsIndexRouteImport } from './routes/data/projects/$projectId_/filtered-views/index'
+import { Route as DataProjectsProjectIdFilteredViewsFilterRouteImport } from './routes/data/projects/$projectId_/filtered-views/filter'
 import { Route as DataProjectsProjectIdHistoriesProjectHistoryIdRouteImport } from './routes/data/projects/$projectId_/histories/$projectHistoryId'
 import { Route as DataProjectsProjectIdListsIndexRouteImport } from './routes/data/projects/$projectId_/lists/index'
 import { Route as DataProjectsProjectIdListsListIdRouteRouteImport } from './routes/data/projects/$projectId_/lists/$listId_/route'
@@ -152,6 +155,7 @@ import { Route as DataProjectsProjectIdCrsProjectCrsIdIndexRouteImport } from '.
 import { Route as DataProjectsProjectIdDesignsProjectReportDesignIdIndexRouteImport } from './routes/data/projects/$projectId_/designs/$projectReportDesignId.index'
 import { Route as DataProjectsProjectIdExportsProjectExportsIdIndexRouteImport } from './routes/data/projects/$projectId_/exports/$projectExportsId.index'
 import { Route as DataProjectsProjectIdFilesFileIdPreviewRouteImport } from './routes/data/projects/$projectId_/files/$fileId_/preview'
+import { Route as DataProjectsProjectIdFilteredViewsFilteredViewIdIndexRouteImport } from './routes/data/projects/$projectId_/filtered-views/$filteredViewId.index'
 import { Route as DataProjectsProjectIdListsListIdIndexRouteImport } from './routes/data/projects/$projectId_/lists/$listId_/index'
 import { Route as DataProjectsProjectIdListsListIdListRouteImport } from './routes/data/projects/$projectId_/lists/$listId_/list'
 import { Route as DataProjectsProjectIdListsListIdValuesRouteRouteImport } from './routes/data/projects/$projectId_/lists/$listId_/values/route'
@@ -346,6 +350,7 @@ import { Route as DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdCheck
 import { Route as DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdChecksCheckIdQuantitiesRouteRouteImport } from './routes/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/checks/$checkId_/quantities/route'
 import { Route as DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdChecksCheckIdTaxaRouteRouteImport } from './routes/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/checks/$checkId_/taxa/route'
 import { Route as DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdFilesFileIdPreviewRouteImport } from './routes/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/files/$fileId_/preview'
+import { Route as DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdFilteredChecksFilteredViewIdChecksRouteRouteImport } from './routes/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/filtered-checks/$filteredViewId_/checks/route'
 import { Route as DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdObservationsObservationIdIndexRouteImport } from './routes/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/observations/$observationId.index'
 import { Route as DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2IndexRouteImport } from './routes/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/places/$placeId2_/index'
 import { Route as DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2ActionReportsRouteRouteImport } from './routes/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/places/$placeId2_/action-reports/route'
@@ -378,6 +383,9 @@ import { Route as DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdCheck
 import { Route as DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdChecksCheckIdQuantitiesIndexRouteImport } from './routes/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/checks/$checkId_/quantities/index'
 import { Route as DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdChecksCheckIdTaxaIndexRouteImport } from './routes/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/checks/$checkId_/taxa/index'
 import { Route as DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdFilesFileIdPreviewIndexRouteImport } from './routes/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/files/$fileId_/preview.index'
+import { Route as DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdFilteredChecksFilteredViewIdChecksIndexRouteImport } from './routes/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/filtered-checks/$filteredViewId_/checks/index'
+import { Route as DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdFilteredChecksFilteredViewIdChecksCheckIdRouteRouteImport } from './routes/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/filtered-checks/$filteredViewId_/checks/$checkId_/route'
+import { Route as DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdFilteredChecksFilteredViewIdChecksFilterRouteImport } from './routes/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/filtered-checks/$filteredViewId_/checks/filter'
 import { Route as DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdObservationsObservationIdHistoriesObservationHistoryIdRouteImport } from './routes/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/observations/$observationId_/histories/$observationHistoryId'
 import { Route as DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2ActionReportsIndexRouteImport } from './routes/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/places/$placeId2_/action-reports/index'
 import { Route as DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2ActionReportsActionReportIdRouteRouteImport } from './routes/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/places/$placeId2_/action-reports/$actionReportId_/route'
@@ -410,6 +418,11 @@ import { Route as DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdCheck
 import { Route as DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdChecksCheckIdFilesFileIdPreviewRouteImport } from './routes/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/checks/$checkId_/files/$fileId_/preview'
 import { Route as DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdChecksCheckIdQuantitiesCheckQuantityIdIndexRouteImport } from './routes/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/checks/$checkId_/quantities/$checkQuantityId.index'
 import { Route as DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdChecksCheckIdTaxaCheckTaxonIdIndexRouteImport } from './routes/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/checks/$checkId_/taxa/$checkTaxonId.index'
+import { Route as DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdFilteredChecksFilteredViewIdChecksCheckIdIndexRouteImport } from './routes/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/filtered-checks/$filteredViewId_/checks/$checkId_/index'
+import { Route as DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdFilteredChecksFilteredViewIdChecksCheckIdCheckRouteImport } from './routes/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/filtered-checks/$filteredViewId_/checks/$checkId_/check'
+import { Route as DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdFilteredChecksFilteredViewIdChecksCheckIdFilesRouteRouteImport } from './routes/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/filtered-checks/$filteredViewId_/checks/$checkId_/files/route'
+import { Route as DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdFilteredChecksFilteredViewIdChecksCheckIdQuantitiesRouteRouteImport } from './routes/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/filtered-checks/$filteredViewId_/checks/$checkId_/quantities/route'
+import { Route as DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdFilteredChecksFilteredViewIdChecksCheckIdTaxaRouteRouteImport } from './routes/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/filtered-checks/$filteredViewId_/checks/$checkId_/taxa/route'
 import { Route as DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2ActionReportsActionReportIdIndexRouteImport } from './routes/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/places/$placeId2_/action-reports/$actionReportId_/index'
 import { Route as DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2ActionReportsActionReportIdQuantitiesRouteRouteImport } from './routes/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/places/$placeId2_/action-reports/$actionReportId_/quantities/route'
 import { Route as DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2ActionReportsActionReportIdReportRouteImport } from './routes/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/places/$placeId2_/action-reports/$actionReportId_/report'
@@ -427,6 +440,7 @@ import { Route as DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlace
 import { Route as DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2ChecksCheckIdQuantitiesRouteRouteImport } from './routes/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/places/$placeId2_/checks/$checkId_/quantities/route'
 import { Route as DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2ChecksCheckIdTaxaRouteRouteImport } from './routes/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/places/$placeId2_/checks/$checkId_/taxa/route'
 import { Route as DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2FilesFileIdPreviewRouteImport } from './routes/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/places/$placeId2_/files/$fileId_/preview'
+import { Route as DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2FilteredChecksFilteredViewIdChecksRouteRouteImport } from './routes/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/places/$placeId2_/filtered-checks/$filteredViewId_/checks/route'
 import { Route as DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2ObservationsObservationIdIndexRouteImport } from './routes/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/places/$placeId2_/observations/$observationId.index'
 import { Route as DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2UsersPlaceUserIdIndexRouteImport } from './routes/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/places/$placeId2_/users/$placeUserId_/index'
 import { Route as DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdActionReportsActionReportIdQuantitiesActionReportQuantityIdHistoriesActionReportQuantityHistoryIdRouteImport } from './routes/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/action-reports/$actionReportId_/quantities/$actionReportQuantityId_/histories/$actionReportQuantityHistoryId'
@@ -439,6 +453,12 @@ import { Route as DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdCheck
 import { Route as DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdChecksCheckIdFilesFileIdPreviewIndexRouteImport } from './routes/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/checks/$checkId_/files/$fileId_/preview.index'
 import { Route as DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdChecksCheckIdQuantitiesCheckQuantityIdHistoriesCheckQuantityHistoryIdRouteImport } from './routes/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/checks/$checkId_/quantities/$checkQuantityId_/histories/$checkQuantityHistoryId'
 import { Route as DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdChecksCheckIdTaxaCheckTaxonIdHistoriesCheckTaxonHistoryIdRouteImport } from './routes/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/checks/$checkId_/taxa/$checkTaxonId_/histories/$checkTaxonHistoryId'
+import { Route as DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdFilteredChecksFilteredViewIdChecksCheckIdFilesIndexRouteImport } from './routes/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/filtered-checks/$filteredViewId_/checks/$checkId_/files/index'
+import { Route as DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdFilteredChecksFilteredViewIdChecksCheckIdFilesFileIdRouteImport } from './routes/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/filtered-checks/$filteredViewId_/checks/$checkId_/files/$fileId'
+import { Route as DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdFilteredChecksFilteredViewIdChecksCheckIdFilesFilterRouteImport } from './routes/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/filtered-checks/$filteredViewId_/checks/$checkId_/files/filter'
+import { Route as DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdFilteredChecksFilteredViewIdChecksCheckIdHistoriesCheckHistoryIdRouteImport } from './routes/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/filtered-checks/$filteredViewId_/checks/$checkId_/histories/$checkHistoryId'
+import { Route as DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdFilteredChecksFilteredViewIdChecksCheckIdQuantitiesIndexRouteImport } from './routes/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/filtered-checks/$filteredViewId_/checks/$checkId_/quantities/index'
+import { Route as DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdFilteredChecksFilteredViewIdChecksCheckIdTaxaIndexRouteImport } from './routes/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/filtered-checks/$filteredViewId_/checks/$checkId_/taxa/index'
 import { Route as DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2ActionReportsActionReportIdHistoriesActionReportHistoryIdRouteImport } from './routes/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/places/$placeId2_/action-reports/$actionReportId_/histories/$actionReportHistoryId'
 import { Route as DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2ActionReportsActionReportIdQuantitiesIndexRouteImport } from './routes/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/places/$placeId2_/action-reports/$actionReportId_/quantities/index'
 import { Route as DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2ActionsActionIdFilesIndexRouteImport } from './routes/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/places/$placeId2_/actions/$actionId_/files/index'
@@ -456,8 +476,14 @@ import { Route as DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlace
 import { Route as DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2ChecksCheckIdQuantitiesIndexRouteImport } from './routes/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/places/$placeId2_/checks/$checkId_/quantities/index'
 import { Route as DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2ChecksCheckIdTaxaIndexRouteImport } from './routes/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/places/$placeId2_/checks/$checkId_/taxa/index'
 import { Route as DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2FilesFileIdPreviewIndexRouteImport } from './routes/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/places/$placeId2_/files/$fileId_/preview.index'
+import { Route as DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2FilteredChecksFilteredViewIdChecksIndexRouteImport } from './routes/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/places/$placeId2_/filtered-checks/$filteredViewId_/checks/index'
+import { Route as DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2FilteredChecksFilteredViewIdChecksCheckIdRouteRouteImport } from './routes/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/places/$placeId2_/filtered-checks/$filteredViewId_/checks/$checkId_/route'
+import { Route as DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2FilteredChecksFilteredViewIdChecksFilterRouteImport } from './routes/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/places/$placeId2_/filtered-checks/$filteredViewId_/checks/filter'
 import { Route as DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2ObservationsObservationIdHistoriesObservationHistoryIdRouteImport } from './routes/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/places/$placeId2_/observations/$observationId_/histories/$observationHistoryId'
 import { Route as DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2UsersPlaceUserIdHistoriesPlaceUserHistoryIdRouteImport } from './routes/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/places/$placeId2_/users/$placeUserId_/histories/$placeUserHistoryId'
+import { Route as DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdFilteredChecksFilteredViewIdChecksCheckIdFilesFileIdPreviewRouteImport } from './routes/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/filtered-checks/$filteredViewId_/checks/$checkId_/files/$fileId_/preview'
+import { Route as DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdFilteredChecksFilteredViewIdChecksCheckIdQuantitiesCheckQuantityIdIndexRouteImport } from './routes/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/filtered-checks/$filteredViewId_/checks/$checkId_/quantities/$checkQuantityId.index'
+import { Route as DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdFilteredChecksFilteredViewIdChecksCheckIdTaxaCheckTaxonIdIndexRouteImport } from './routes/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/filtered-checks/$filteredViewId_/checks/$checkId_/taxa/$checkTaxonId.index'
 import { Route as DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2ActionReportsActionReportIdQuantitiesActionReportQuantityIdIndexRouteImport } from './routes/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/places/$placeId2_/action-reports/$actionReportId_/quantities/$actionReportQuantityId.index'
 import { Route as DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2ActionsActionIdFilesFileIdPreviewRouteImport } from './routes/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/places/$placeId2_/actions/$actionId_/files/$fileId_/preview'
 import { Route as DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2ActionsActionIdQuantitiesActionQuantityIdIndexRouteImport } from './routes/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/places/$placeId2_/actions/$actionId_/quantities/$actionQuantityId.index'
@@ -467,6 +493,15 @@ import { Route as DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlace
 import { Route as DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2ChecksCheckIdFilesFileIdPreviewRouteImport } from './routes/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/places/$placeId2_/checks/$checkId_/files/$fileId_/preview'
 import { Route as DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2ChecksCheckIdQuantitiesCheckQuantityIdIndexRouteImport } from './routes/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/places/$placeId2_/checks/$checkId_/quantities/$checkQuantityId.index'
 import { Route as DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2ChecksCheckIdTaxaCheckTaxonIdIndexRouteImport } from './routes/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/places/$placeId2_/checks/$checkId_/taxa/$checkTaxonId.index'
+import { Route as DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2FilteredChecksFilteredViewIdChecksCheckIdIndexRouteImport } from './routes/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/places/$placeId2_/filtered-checks/$filteredViewId_/checks/$checkId_/index'
+import { Route as DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2FilteredChecksFilteredViewIdChecksCheckIdCheckRouteImport } from './routes/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/places/$placeId2_/filtered-checks/$filteredViewId_/checks/$checkId_/check'
+import { Route as DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2FilteredChecksFilteredViewIdChecksCheckIdFilesRouteRouteImport } from './routes/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/places/$placeId2_/filtered-checks/$filteredViewId_/checks/$checkId_/files/route'
+import { Route as DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2FilteredChecksFilteredViewIdChecksCheckIdQuantitiesRouteRouteImport } from './routes/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/places/$placeId2_/filtered-checks/$filteredViewId_/checks/$checkId_/quantities/route'
+import { Route as DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2FilteredChecksFilteredViewIdChecksCheckIdTaxaRouteRouteImport } from './routes/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/places/$placeId2_/filtered-checks/$filteredViewId_/checks/$checkId_/taxa/route'
+import { Route as DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdFilteredChecksFilteredViewIdChecksCheckIdFilesFileIdHistoriesFileHistoryIdRouteImport } from './routes/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/filtered-checks/$filteredViewId_/checks/$checkId_/files/$fileId_/histories/$fileHistoryId'
+import { Route as DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdFilteredChecksFilteredViewIdChecksCheckIdFilesFileIdPreviewIndexRouteImport } from './routes/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/filtered-checks/$filteredViewId_/checks/$checkId_/files/$fileId_/preview.index'
+import { Route as DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdFilteredChecksFilteredViewIdChecksCheckIdQuantitiesCheckQuantityIdHistoriesCheckQuantityHistoryIdRouteImport } from './routes/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/filtered-checks/$filteredViewId_/checks/$checkId_/quantities/$checkQuantityId_/histories/$checkQuantityHistoryId'
+import { Route as DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdFilteredChecksFilteredViewIdChecksCheckIdTaxaCheckTaxonIdHistoriesCheckTaxonHistoryIdRouteImport } from './routes/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/filtered-checks/$filteredViewId_/checks/$checkId_/taxa/$checkTaxonId_/histories/$checkTaxonHistoryId'
 import { Route as DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2ActionReportsActionReportIdQuantitiesActionReportQuantityIdHistoriesActionReportQuantityHistoryIdRouteImport } from './routes/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/places/$placeId2_/action-reports/$actionReportId_/quantities/$actionReportQuantityId_/histories/$actionReportQuantityHistoryId'
 import { Route as DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2ActionsActionIdFilesFileIdHistoriesFileHistoryIdRouteImport } from './routes/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/places/$placeId2_/actions/$actionId_/files/$fileId_/histories/$fileHistoryId'
 import { Route as DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2ActionsActionIdFilesFileIdPreviewIndexRouteImport } from './routes/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/places/$placeId2_/actions/$actionId_/files/$fileId_/preview.index'
@@ -477,6 +512,20 @@ import { Route as DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlace
 import { Route as DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2ChecksCheckIdFilesFileIdPreviewIndexRouteImport } from './routes/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/places/$placeId2_/checks/$checkId_/files/$fileId_/preview.index'
 import { Route as DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2ChecksCheckIdQuantitiesCheckQuantityIdHistoriesCheckQuantityHistoryIdRouteImport } from './routes/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/places/$placeId2_/checks/$checkId_/quantities/$checkQuantityId_/histories/$checkQuantityHistoryId'
 import { Route as DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2ChecksCheckIdTaxaCheckTaxonIdHistoriesCheckTaxonHistoryIdRouteImport } from './routes/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/places/$placeId2_/checks/$checkId_/taxa/$checkTaxonId_/histories/$checkTaxonHistoryId'
+import { Route as DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2FilteredChecksFilteredViewIdChecksCheckIdFilesIndexRouteImport } from './routes/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/places/$placeId2_/filtered-checks/$filteredViewId_/checks/$checkId_/files/index'
+import { Route as DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2FilteredChecksFilteredViewIdChecksCheckIdFilesFileIdRouteRouteImport } from './routes/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/places/$placeId2_/filtered-checks/$filteredViewId_/checks/$checkId_/files/$fileId_/route'
+import { Route as DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2FilteredChecksFilteredViewIdChecksCheckIdFilesFilterRouteImport } from './routes/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/places/$placeId2_/filtered-checks/$filteredViewId_/checks/$checkId_/files/filter'
+import { Route as DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2FilteredChecksFilteredViewIdChecksCheckIdHistoriesCheckHistoryIdRouteImport } from './routes/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/places/$placeId2_/filtered-checks/$filteredViewId_/checks/$checkId_/histories/$checkHistoryId'
+import { Route as DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2FilteredChecksFilteredViewIdChecksCheckIdQuantitiesIndexRouteImport } from './routes/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/places/$placeId2_/filtered-checks/$filteredViewId_/checks/$checkId_/quantities/index'
+import { Route as DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2FilteredChecksFilteredViewIdChecksCheckIdTaxaIndexRouteImport } from './routes/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/places/$placeId2_/filtered-checks/$filteredViewId_/checks/$checkId_/taxa/index'
+import { Route as DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2FilteredChecksFilteredViewIdChecksCheckIdFilesFileIdIndexRouteImport } from './routes/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/places/$placeId2_/filtered-checks/$filteredViewId_/checks/$checkId_/files/$fileId_/index'
+import { Route as DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2FilteredChecksFilteredViewIdChecksCheckIdFilesFileIdPreviewRouteImport } from './routes/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/places/$placeId2_/filtered-checks/$filteredViewId_/checks/$checkId_/files/$fileId_/preview'
+import { Route as DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2FilteredChecksFilteredViewIdChecksCheckIdQuantitiesCheckQuantityIdIndexRouteImport } from './routes/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/places/$placeId2_/filtered-checks/$filteredViewId_/checks/$checkId_/quantities/$checkQuantityId.index'
+import { Route as DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2FilteredChecksFilteredViewIdChecksCheckIdTaxaCheckTaxonIdIndexRouteImport } from './routes/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/places/$placeId2_/filtered-checks/$filteredViewId_/checks/$checkId_/taxa/$checkTaxonId.index'
+import { Route as DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2FilteredChecksFilteredViewIdChecksCheckIdFilesFileIdHistoriesFileHistoryIdRouteImport } from './routes/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/places/$placeId2_/filtered-checks/$filteredViewId_/checks/$checkId_/files/$fileId_/histories/$fileHistoryId'
+import { Route as DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2FilteredChecksFilteredViewIdChecksCheckIdFilesFileIdPreviewIndexRouteImport } from './routes/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/places/$placeId2_/filtered-checks/$filteredViewId_/checks/$checkId_/files/$fileId_/preview.index'
+import { Route as DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2FilteredChecksFilteredViewIdChecksCheckIdQuantitiesCheckQuantityIdHistoriesCheckQuantityHistoryIdRouteImport } from './routes/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/places/$placeId2_/filtered-checks/$filteredViewId_/checks/$checkId_/quantities/$checkQuantityId_/histories/$checkQuantityHistoryId'
+import { Route as DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2FilteredChecksFilteredViewIdChecksCheckIdTaxaCheckTaxonIdHistoriesCheckTaxonHistoryIdRouteImport } from './routes/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/places/$placeId2_/filtered-checks/$filteredViewId_/checks/$checkId_/taxa/$checkTaxonId_/histories/$checkTaxonHistoryId'
 
 const LayoutRoute = LayoutRouteImport.update({
   id: '/_layout',
@@ -799,6 +848,12 @@ const DataProjectsProjectIdFilesRouteRoute =
     path: '/files',
     getParentRoute: () => DataProjectsProjectIdRouteRoute,
   } as any)
+const DataProjectsProjectIdFilteredViewsRouteRoute =
+  DataProjectsProjectIdFilteredViewsRouteRouteImport.update({
+    id: '/filtered-views',
+    path: '/filtered-views',
+    getParentRoute: () => DataProjectsProjectIdRouteRoute,
+  } as any)
 const DataProjectsProjectIdListsRouteRoute =
   DataProjectsProjectIdListsRouteRouteImport.update({
     id: '/lists',
@@ -1008,6 +1063,18 @@ const DataProjectsProjectIdFilesFilterRoute =
     id: '/filter',
     path: '/filter',
     getParentRoute: () => DataProjectsProjectIdFilesRouteRoute,
+  } as any)
+const DataProjectsProjectIdFilteredViewsIndexRoute =
+  DataProjectsProjectIdFilteredViewsIndexRouteImport.update({
+    id: '/',
+    path: '/',
+    getParentRoute: () => DataProjectsProjectIdFilteredViewsRouteRoute,
+  } as any)
+const DataProjectsProjectIdFilteredViewsFilterRoute =
+  DataProjectsProjectIdFilteredViewsFilterRouteImport.update({
+    id: '/filter',
+    path: '/filter',
+    getParentRoute: () => DataProjectsProjectIdFilteredViewsRouteRoute,
   } as any)
 const DataProjectsProjectIdHistoriesProjectHistoryIdRoute =
   DataProjectsProjectIdHistoriesProjectHistoryIdRouteImport.update({
@@ -1298,6 +1365,12 @@ const DataProjectsProjectIdFilesFileIdPreviewRoute =
     id: '/$fileId_/preview',
     path: '/$fileId/preview',
     getParentRoute: () => DataProjectsProjectIdFilesRouteRoute,
+  } as any)
+const DataProjectsProjectIdFilteredViewsFilteredViewIdIndexRoute =
+  DataProjectsProjectIdFilteredViewsFilteredViewIdIndexRouteImport.update({
+    id: '/$filteredViewId/',
+    path: '/$filteredViewId/',
+    getParentRoute: () => DataProjectsProjectIdFilteredViewsRouteRoute,
   } as any)
 const DataProjectsProjectIdListsListIdIndexRoute =
   DataProjectsProjectIdListsListIdIndexRouteImport.update({
@@ -2874,6 +2947,15 @@ const DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdFilesFileIdPrevie
         DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdFilesRouteRoute,
     } as any,
   )
+const DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdFilteredChecksFilteredViewIdChecksRouteRoute =
+  DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdFilteredChecksFilteredViewIdChecksRouteRouteImport.update(
+    {
+      id: '/filtered-checks/$filteredViewId_/checks',
+      path: '/filtered-checks/$filteredViewId/checks',
+      getParentRoute: () =>
+        DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdRouteRoute,
+    } as any,
+  )
 const DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdObservationsObservationIdIndexRoute =
   DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdObservationsObservationIdIndexRouteImport.update(
     {
@@ -3160,6 +3242,33 @@ const DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdFilesFileIdPrevie
       path: '/',
       getParentRoute: () =>
         DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdFilesFileIdPreviewRoute,
+    } as any,
+  )
+const DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdFilteredChecksFilteredViewIdChecksIndexRoute =
+  DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdFilteredChecksFilteredViewIdChecksIndexRouteImport.update(
+    {
+      id: '/',
+      path: '/',
+      getParentRoute: () =>
+        DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdFilteredChecksFilteredViewIdChecksRouteRoute,
+    } as any,
+  )
+const DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdFilteredChecksFilteredViewIdChecksCheckIdRouteRoute =
+  DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdFilteredChecksFilteredViewIdChecksCheckIdRouteRouteImport.update(
+    {
+      id: '/$checkId_',
+      path: '/$checkId',
+      getParentRoute: () =>
+        DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdFilteredChecksFilteredViewIdChecksRouteRoute,
+    } as any,
+  )
+const DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdFilteredChecksFilteredViewIdChecksFilterRoute =
+  DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdFilteredChecksFilteredViewIdChecksFilterRouteImport.update(
+    {
+      id: '/filter',
+      path: '/filter',
+      getParentRoute: () =>
+        DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdFilteredChecksFilteredViewIdChecksRouteRoute,
     } as any,
   )
 const DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdObservationsObservationIdHistoriesObservationHistoryIdRoute =
@@ -3450,6 +3559,51 @@ const DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdChecksCheckIdTaxa
         DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdChecksCheckIdTaxaRouteRoute,
     } as any,
   )
+const DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdFilteredChecksFilteredViewIdChecksCheckIdIndexRoute =
+  DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdFilteredChecksFilteredViewIdChecksCheckIdIndexRouteImport.update(
+    {
+      id: '/',
+      path: '/',
+      getParentRoute: () =>
+        DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdFilteredChecksFilteredViewIdChecksCheckIdRouteRoute,
+    } as any,
+  )
+const DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdFilteredChecksFilteredViewIdChecksCheckIdCheckRoute =
+  DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdFilteredChecksFilteredViewIdChecksCheckIdCheckRouteImport.update(
+    {
+      id: '/check',
+      path: '/check',
+      getParentRoute: () =>
+        DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdFilteredChecksFilteredViewIdChecksCheckIdRouteRoute,
+    } as any,
+  )
+const DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdFilteredChecksFilteredViewIdChecksCheckIdFilesRouteRoute =
+  DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdFilteredChecksFilteredViewIdChecksCheckIdFilesRouteRouteImport.update(
+    {
+      id: '/files',
+      path: '/files',
+      getParentRoute: () =>
+        DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdFilteredChecksFilteredViewIdChecksCheckIdRouteRoute,
+    } as any,
+  )
+const DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdFilteredChecksFilteredViewIdChecksCheckIdQuantitiesRouteRoute =
+  DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdFilteredChecksFilteredViewIdChecksCheckIdQuantitiesRouteRouteImport.update(
+    {
+      id: '/quantities',
+      path: '/quantities',
+      getParentRoute: () =>
+        DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdFilteredChecksFilteredViewIdChecksCheckIdRouteRoute,
+    } as any,
+  )
+const DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdFilteredChecksFilteredViewIdChecksCheckIdTaxaRouteRoute =
+  DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdFilteredChecksFilteredViewIdChecksCheckIdTaxaRouteRouteImport.update(
+    {
+      id: '/taxa',
+      path: '/taxa',
+      getParentRoute: () =>
+        DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdFilteredChecksFilteredViewIdChecksCheckIdRouteRoute,
+    } as any,
+  )
 const DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2ActionReportsActionReportIdIndexRoute =
   DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2ActionReportsActionReportIdIndexRouteImport.update(
     {
@@ -3603,6 +3757,15 @@ const DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2Fil
         DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2FilesRouteRoute,
     } as any,
   )
+const DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2FilteredChecksFilteredViewIdChecksRouteRoute =
+  DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2FilteredChecksFilteredViewIdChecksRouteRouteImport.update(
+    {
+      id: '/filtered-checks/$filteredViewId_/checks',
+      path: '/filtered-checks/$filteredViewId/checks',
+      getParentRoute: () =>
+        DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2RouteRoute,
+    } as any,
+  )
 const DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2ObservationsObservationIdIndexRoute =
   DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2ObservationsObservationIdIndexRouteImport.update(
     {
@@ -3709,6 +3872,60 @@ const DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdChecksCheckIdTaxa
       path: '/$checkTaxonId/histories/$checkTaxonHistoryId',
       getParentRoute: () =>
         DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdChecksCheckIdTaxaRouteRoute,
+    } as any,
+  )
+const DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdFilteredChecksFilteredViewIdChecksCheckIdFilesIndexRoute =
+  DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdFilteredChecksFilteredViewIdChecksCheckIdFilesIndexRouteImport.update(
+    {
+      id: '/',
+      path: '/',
+      getParentRoute: () =>
+        DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdFilteredChecksFilteredViewIdChecksCheckIdFilesRouteRoute,
+    } as any,
+  )
+const DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdFilteredChecksFilteredViewIdChecksCheckIdFilesFileIdRoute =
+  DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdFilteredChecksFilteredViewIdChecksCheckIdFilesFileIdRouteImport.update(
+    {
+      id: '/$fileId',
+      path: '/$fileId',
+      getParentRoute: () =>
+        DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdFilteredChecksFilteredViewIdChecksCheckIdFilesRouteRoute,
+    } as any,
+  )
+const DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdFilteredChecksFilteredViewIdChecksCheckIdFilesFilterRoute =
+  DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdFilteredChecksFilteredViewIdChecksCheckIdFilesFilterRouteImport.update(
+    {
+      id: '/filter',
+      path: '/filter',
+      getParentRoute: () =>
+        DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdFilteredChecksFilteredViewIdChecksCheckIdFilesRouteRoute,
+    } as any,
+  )
+const DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdFilteredChecksFilteredViewIdChecksCheckIdHistoriesCheckHistoryIdRoute =
+  DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdFilteredChecksFilteredViewIdChecksCheckIdHistoriesCheckHistoryIdRouteImport.update(
+    {
+      id: '/histories/$checkHistoryId',
+      path: '/histories/$checkHistoryId',
+      getParentRoute: () =>
+        DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdFilteredChecksFilteredViewIdChecksCheckIdRouteRoute,
+    } as any,
+  )
+const DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdFilteredChecksFilteredViewIdChecksCheckIdQuantitiesIndexRoute =
+  DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdFilteredChecksFilteredViewIdChecksCheckIdQuantitiesIndexRouteImport.update(
+    {
+      id: '/',
+      path: '/',
+      getParentRoute: () =>
+        DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdFilteredChecksFilteredViewIdChecksCheckIdQuantitiesRouteRoute,
+    } as any,
+  )
+const DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdFilteredChecksFilteredViewIdChecksCheckIdTaxaIndexRoute =
+  DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdFilteredChecksFilteredViewIdChecksCheckIdTaxaIndexRouteImport.update(
+    {
+      id: '/',
+      path: '/',
+      getParentRoute: () =>
+        DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdFilteredChecksFilteredViewIdChecksCheckIdTaxaRouteRoute,
     } as any,
   )
 const DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2ActionReportsActionReportIdHistoriesActionReportHistoryIdRoute =
@@ -3864,6 +4081,33 @@ const DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2Fil
         DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2FilesFileIdPreviewRoute,
     } as any,
   )
+const DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2FilteredChecksFilteredViewIdChecksIndexRoute =
+  DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2FilteredChecksFilteredViewIdChecksIndexRouteImport.update(
+    {
+      id: '/',
+      path: '/',
+      getParentRoute: () =>
+        DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2FilteredChecksFilteredViewIdChecksRouteRoute,
+    } as any,
+  )
+const DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2FilteredChecksFilteredViewIdChecksCheckIdRouteRoute =
+  DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2FilteredChecksFilteredViewIdChecksCheckIdRouteRouteImport.update(
+    {
+      id: '/$checkId_',
+      path: '/$checkId',
+      getParentRoute: () =>
+        DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2FilteredChecksFilteredViewIdChecksRouteRoute,
+    } as any,
+  )
+const DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2FilteredChecksFilteredViewIdChecksFilterRoute =
+  DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2FilteredChecksFilteredViewIdChecksFilterRouteImport.update(
+    {
+      id: '/filter',
+      path: '/filter',
+      getParentRoute: () =>
+        DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2FilteredChecksFilteredViewIdChecksRouteRoute,
+    } as any,
+  )
 const DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2ObservationsObservationIdHistoriesObservationHistoryIdRoute =
   DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2ObservationsObservationIdHistoriesObservationHistoryIdRouteImport.update(
     {
@@ -3880,6 +4124,33 @@ const DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2Use
       path: '/histories/$placeUserHistoryId',
       getParentRoute: () =>
         DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2UsersPlaceUserIdRouteRoute,
+    } as any,
+  )
+const DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdFilteredChecksFilteredViewIdChecksCheckIdFilesFileIdPreviewRoute =
+  DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdFilteredChecksFilteredViewIdChecksCheckIdFilesFileIdPreviewRouteImport.update(
+    {
+      id: '/$fileId_/preview',
+      path: '/$fileId/preview',
+      getParentRoute: () =>
+        DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdFilteredChecksFilteredViewIdChecksCheckIdFilesRouteRoute,
+    } as any,
+  )
+const DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdFilteredChecksFilteredViewIdChecksCheckIdQuantitiesCheckQuantityIdIndexRoute =
+  DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdFilteredChecksFilteredViewIdChecksCheckIdQuantitiesCheckQuantityIdIndexRouteImport.update(
+    {
+      id: '/$checkQuantityId/',
+      path: '/$checkQuantityId/',
+      getParentRoute: () =>
+        DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdFilteredChecksFilteredViewIdChecksCheckIdQuantitiesRouteRoute,
+    } as any,
+  )
+const DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdFilteredChecksFilteredViewIdChecksCheckIdTaxaCheckTaxonIdIndexRoute =
+  DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdFilteredChecksFilteredViewIdChecksCheckIdTaxaCheckTaxonIdIndexRouteImport.update(
+    {
+      id: '/$checkTaxonId/',
+      path: '/$checkTaxonId/',
+      getParentRoute: () =>
+        DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdFilteredChecksFilteredViewIdChecksCheckIdTaxaRouteRoute,
     } as any,
   )
 const DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2ActionReportsActionReportIdQuantitiesActionReportQuantityIdIndexRoute =
@@ -3961,6 +4232,87 @@ const DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2Che
       path: '/$checkTaxonId/',
       getParentRoute: () =>
         DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2ChecksCheckIdTaxaRouteRoute,
+    } as any,
+  )
+const DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2FilteredChecksFilteredViewIdChecksCheckIdIndexRoute =
+  DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2FilteredChecksFilteredViewIdChecksCheckIdIndexRouteImport.update(
+    {
+      id: '/',
+      path: '/',
+      getParentRoute: () =>
+        DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2FilteredChecksFilteredViewIdChecksCheckIdRouteRoute,
+    } as any,
+  )
+const DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2FilteredChecksFilteredViewIdChecksCheckIdCheckRoute =
+  DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2FilteredChecksFilteredViewIdChecksCheckIdCheckRouteImport.update(
+    {
+      id: '/check',
+      path: '/check',
+      getParentRoute: () =>
+        DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2FilteredChecksFilteredViewIdChecksCheckIdRouteRoute,
+    } as any,
+  )
+const DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2FilteredChecksFilteredViewIdChecksCheckIdFilesRouteRoute =
+  DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2FilteredChecksFilteredViewIdChecksCheckIdFilesRouteRouteImport.update(
+    {
+      id: '/files',
+      path: '/files',
+      getParentRoute: () =>
+        DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2FilteredChecksFilteredViewIdChecksCheckIdRouteRoute,
+    } as any,
+  )
+const DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2FilteredChecksFilteredViewIdChecksCheckIdQuantitiesRouteRoute =
+  DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2FilteredChecksFilteredViewIdChecksCheckIdQuantitiesRouteRouteImport.update(
+    {
+      id: '/quantities',
+      path: '/quantities',
+      getParentRoute: () =>
+        DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2FilteredChecksFilteredViewIdChecksCheckIdRouteRoute,
+    } as any,
+  )
+const DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2FilteredChecksFilteredViewIdChecksCheckIdTaxaRouteRoute =
+  DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2FilteredChecksFilteredViewIdChecksCheckIdTaxaRouteRouteImport.update(
+    {
+      id: '/taxa',
+      path: '/taxa',
+      getParentRoute: () =>
+        DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2FilteredChecksFilteredViewIdChecksCheckIdRouteRoute,
+    } as any,
+  )
+const DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdFilteredChecksFilteredViewIdChecksCheckIdFilesFileIdHistoriesFileHistoryIdRoute =
+  DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdFilteredChecksFilteredViewIdChecksCheckIdFilesFileIdHistoriesFileHistoryIdRouteImport.update(
+    {
+      id: '/$fileId_/histories/$fileHistoryId',
+      path: '/$fileId/histories/$fileHistoryId',
+      getParentRoute: () =>
+        DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdFilteredChecksFilteredViewIdChecksCheckIdFilesRouteRoute,
+    } as any,
+  )
+const DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdFilteredChecksFilteredViewIdChecksCheckIdFilesFileIdPreviewIndexRoute =
+  DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdFilteredChecksFilteredViewIdChecksCheckIdFilesFileIdPreviewIndexRouteImport.update(
+    {
+      id: '/',
+      path: '/',
+      getParentRoute: () =>
+        DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdFilteredChecksFilteredViewIdChecksCheckIdFilesFileIdPreviewRoute,
+    } as any,
+  )
+const DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdFilteredChecksFilteredViewIdChecksCheckIdQuantitiesCheckQuantityIdHistoriesCheckQuantityHistoryIdRoute =
+  DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdFilteredChecksFilteredViewIdChecksCheckIdQuantitiesCheckQuantityIdHistoriesCheckQuantityHistoryIdRouteImport.update(
+    {
+      id: '/$checkQuantityId_/histories/$checkQuantityHistoryId',
+      path: '/$checkQuantityId/histories/$checkQuantityHistoryId',
+      getParentRoute: () =>
+        DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdFilteredChecksFilteredViewIdChecksCheckIdQuantitiesRouteRoute,
+    } as any,
+  )
+const DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdFilteredChecksFilteredViewIdChecksCheckIdTaxaCheckTaxonIdHistoriesCheckTaxonHistoryIdRoute =
+  DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdFilteredChecksFilteredViewIdChecksCheckIdTaxaCheckTaxonIdHistoriesCheckTaxonHistoryIdRouteImport.update(
+    {
+      id: '/$checkTaxonId_/histories/$checkTaxonHistoryId',
+      path: '/$checkTaxonId/histories/$checkTaxonHistoryId',
+      getParentRoute: () =>
+        DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdFilteredChecksFilteredViewIdChecksCheckIdTaxaRouteRoute,
     } as any,
   )
 const DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2ActionReportsActionReportIdQuantitiesActionReportQuantityIdHistoriesActionReportQuantityHistoryIdRoute =
@@ -4053,6 +4405,132 @@ const DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2Che
         DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2ChecksCheckIdTaxaRouteRoute,
     } as any,
   )
+const DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2FilteredChecksFilteredViewIdChecksCheckIdFilesIndexRoute =
+  DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2FilteredChecksFilteredViewIdChecksCheckIdFilesIndexRouteImport.update(
+    {
+      id: '/',
+      path: '/',
+      getParentRoute: () =>
+        DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2FilteredChecksFilteredViewIdChecksCheckIdFilesRouteRoute,
+    } as any,
+  )
+const DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2FilteredChecksFilteredViewIdChecksCheckIdFilesFileIdRouteRoute =
+  DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2FilteredChecksFilteredViewIdChecksCheckIdFilesFileIdRouteRouteImport.update(
+    {
+      id: '/$fileId_',
+      path: '/$fileId',
+      getParentRoute: () =>
+        DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2FilteredChecksFilteredViewIdChecksCheckIdFilesRouteRoute,
+    } as any,
+  )
+const DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2FilteredChecksFilteredViewIdChecksCheckIdFilesFilterRoute =
+  DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2FilteredChecksFilteredViewIdChecksCheckIdFilesFilterRouteImport.update(
+    {
+      id: '/filter',
+      path: '/filter',
+      getParentRoute: () =>
+        DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2FilteredChecksFilteredViewIdChecksCheckIdFilesRouteRoute,
+    } as any,
+  )
+const DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2FilteredChecksFilteredViewIdChecksCheckIdHistoriesCheckHistoryIdRoute =
+  DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2FilteredChecksFilteredViewIdChecksCheckIdHistoriesCheckHistoryIdRouteImport.update(
+    {
+      id: '/histories/$checkHistoryId',
+      path: '/histories/$checkHistoryId',
+      getParentRoute: () =>
+        DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2FilteredChecksFilteredViewIdChecksCheckIdRouteRoute,
+    } as any,
+  )
+const DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2FilteredChecksFilteredViewIdChecksCheckIdQuantitiesIndexRoute =
+  DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2FilteredChecksFilteredViewIdChecksCheckIdQuantitiesIndexRouteImport.update(
+    {
+      id: '/',
+      path: '/',
+      getParentRoute: () =>
+        DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2FilteredChecksFilteredViewIdChecksCheckIdQuantitiesRouteRoute,
+    } as any,
+  )
+const DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2FilteredChecksFilteredViewIdChecksCheckIdTaxaIndexRoute =
+  DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2FilteredChecksFilteredViewIdChecksCheckIdTaxaIndexRouteImport.update(
+    {
+      id: '/',
+      path: '/',
+      getParentRoute: () =>
+        DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2FilteredChecksFilteredViewIdChecksCheckIdTaxaRouteRoute,
+    } as any,
+  )
+const DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2FilteredChecksFilteredViewIdChecksCheckIdFilesFileIdIndexRoute =
+  DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2FilteredChecksFilteredViewIdChecksCheckIdFilesFileIdIndexRouteImport.update(
+    {
+      id: '/',
+      path: '/',
+      getParentRoute: () =>
+        DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2FilteredChecksFilteredViewIdChecksCheckIdFilesFileIdRouteRoute,
+    } as any,
+  )
+const DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2FilteredChecksFilteredViewIdChecksCheckIdFilesFileIdPreviewRoute =
+  DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2FilteredChecksFilteredViewIdChecksCheckIdFilesFileIdPreviewRouteImport.update(
+    {
+      id: '/preview',
+      path: '/preview',
+      getParentRoute: () =>
+        DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2FilteredChecksFilteredViewIdChecksCheckIdFilesFileIdRouteRoute,
+    } as any,
+  )
+const DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2FilteredChecksFilteredViewIdChecksCheckIdQuantitiesCheckQuantityIdIndexRoute =
+  DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2FilteredChecksFilteredViewIdChecksCheckIdQuantitiesCheckQuantityIdIndexRouteImport.update(
+    {
+      id: '/$checkQuantityId/',
+      path: '/$checkQuantityId/',
+      getParentRoute: () =>
+        DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2FilteredChecksFilteredViewIdChecksCheckIdQuantitiesRouteRoute,
+    } as any,
+  )
+const DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2FilteredChecksFilteredViewIdChecksCheckIdTaxaCheckTaxonIdIndexRoute =
+  DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2FilteredChecksFilteredViewIdChecksCheckIdTaxaCheckTaxonIdIndexRouteImport.update(
+    {
+      id: '/$checkTaxonId/',
+      path: '/$checkTaxonId/',
+      getParentRoute: () =>
+        DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2FilteredChecksFilteredViewIdChecksCheckIdTaxaRouteRoute,
+    } as any,
+  )
+const DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2FilteredChecksFilteredViewIdChecksCheckIdFilesFileIdHistoriesFileHistoryIdRoute =
+  DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2FilteredChecksFilteredViewIdChecksCheckIdFilesFileIdHistoriesFileHistoryIdRouteImport.update(
+    {
+      id: '/histories/$fileHistoryId',
+      path: '/histories/$fileHistoryId',
+      getParentRoute: () =>
+        DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2FilteredChecksFilteredViewIdChecksCheckIdFilesFileIdRouteRoute,
+    } as any,
+  )
+const DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2FilteredChecksFilteredViewIdChecksCheckIdFilesFileIdPreviewIndexRoute =
+  DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2FilteredChecksFilteredViewIdChecksCheckIdFilesFileIdPreviewIndexRouteImport.update(
+    {
+      id: '/',
+      path: '/',
+      getParentRoute: () =>
+        DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2FilteredChecksFilteredViewIdChecksCheckIdFilesFileIdPreviewRoute,
+    } as any,
+  )
+const DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2FilteredChecksFilteredViewIdChecksCheckIdQuantitiesCheckQuantityIdHistoriesCheckQuantityHistoryIdRoute =
+  DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2FilteredChecksFilteredViewIdChecksCheckIdQuantitiesCheckQuantityIdHistoriesCheckQuantityHistoryIdRouteImport.update(
+    {
+      id: '/$checkQuantityId_/histories/$checkQuantityHistoryId',
+      path: '/$checkQuantityId/histories/$checkQuantityHistoryId',
+      getParentRoute: () =>
+        DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2FilteredChecksFilteredViewIdChecksCheckIdQuantitiesRouteRoute,
+    } as any,
+  )
+const DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2FilteredChecksFilteredViewIdChecksCheckIdTaxaCheckTaxonIdHistoriesCheckTaxonHistoryIdRoute =
+  DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2FilteredChecksFilteredViewIdChecksCheckIdTaxaCheckTaxonIdHistoriesCheckTaxonHistoryIdRouteImport.update(
+    {
+      id: '/$checkTaxonId_/histories/$checkTaxonHistoryId',
+      path: '/$checkTaxonId/histories/$checkTaxonHistoryId',
+      getParentRoute: () =>
+        DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2FilteredChecksFilteredViewIdChecksCheckIdTaxaRouteRoute,
+    } as any,
+  )
 
 export interface FileRoutesByFullPath {
   '/data': typeof DataRouteRouteWithChildren
@@ -4113,6 +4591,7 @@ export interface FileRoutesByFullPath {
   '/data/projects/$projectId/exports-run': typeof DataProjectsProjectIdExportsRunRouteRouteWithChildren
   '/data/projects/$projectId/fields': typeof DataProjectsProjectIdFieldsRouteRouteWithChildren
   '/data/projects/$projectId/files': typeof DataProjectsProjectIdFilesRouteRouteWithChildren
+  '/data/projects/$projectId/filtered-views': typeof DataProjectsProjectIdFilteredViewsRouteRouteWithChildren
   '/data/projects/$projectId/lists': typeof DataProjectsProjectIdListsRouteRouteWithChildren
   '/data/projects/$projectId/place-levels': typeof DataProjectsProjectIdPlaceLevelsRouteRouteWithChildren
   '/data/projects/$projectId/qc-assignments': typeof DataProjectsProjectIdQcAssignmentsRouteRouteWithChildren
@@ -4149,6 +4628,7 @@ export interface FileRoutesByFullPath {
   '/data/projects/$projectId/fields/filter': typeof DataProjectsProjectIdFieldsFilterRoute
   '/data/projects/$projectId/files/$fileId': typeof DataProjectsProjectIdFilesFileIdRoute
   '/data/projects/$projectId/files/filter': typeof DataProjectsProjectIdFilesFilterRoute
+  '/data/projects/$projectId/filtered-views/filter': typeof DataProjectsProjectIdFilteredViewsFilterRoute
   '/data/projects/$projectId/histories/$projectHistoryId': typeof DataProjectsProjectIdHistoriesProjectHistoryIdRoute
   '/data/projects/$projectId/lists/filter': typeof DataProjectsProjectIdListsFilterRoute
   '/data/projects/$projectId/qcs/filter': typeof DataProjectsProjectIdQcsFilterRoute
@@ -4172,6 +4652,7 @@ export interface FileRoutesByFullPath {
   '/data/projects/$projectId/exports/': typeof DataProjectsProjectIdExportsIndexRoute
   '/data/projects/$projectId/fields/': typeof DataProjectsProjectIdFieldsIndexRoute
   '/data/projects/$projectId/files/': typeof DataProjectsProjectIdFilesIndexRoute
+  '/data/projects/$projectId/filtered-views/': typeof DataProjectsProjectIdFilteredViewsIndexRoute
   '/data/projects/$projectId/lists/': typeof DataProjectsProjectIdListsIndexRoute
   '/data/projects/$projectId/place-levels/': typeof DataProjectsProjectIdPlaceLevelsIndexRoute
   '/data/projects/$projectId/qc-assignments/': typeof DataProjectsProjectIdQcAssignmentsIndexRoute
@@ -4227,6 +4708,7 @@ export interface FileRoutesByFullPath {
   '/data/projects/$projectId/crs/$projectCrsId/': typeof DataProjectsProjectIdCrsProjectCrsIdIndexRoute
   '/data/projects/$projectId/designs/$projectReportDesignId/': typeof DataProjectsProjectIdDesignsProjectReportDesignIdIndexRoute
   '/data/projects/$projectId/exports/$projectExportsId/': typeof DataProjectsProjectIdExportsProjectExportsIdIndexRoute
+  '/data/projects/$projectId/filtered-views/$filteredViewId/': typeof DataProjectsProjectIdFilteredViewsFilteredViewIdIndexRoute
   '/data/projects/$projectId/lists/$listId/': typeof DataProjectsProjectIdListsListIdIndexRoute
   '/data/projects/$projectId/place-levels/$placeLevelId/': typeof DataProjectsProjectIdPlaceLevelsPlaceLevelIdIndexRoute
   '/data/projects/$projectId/qcs/$projectQcId/': typeof DataProjectsProjectIdQcsProjectQcIdIndexRoute
@@ -4380,6 +4862,7 @@ export interface FileRoutesByFullPath {
   '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/checks/$checkId/files': typeof DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdChecksCheckIdFilesRouteRouteWithChildren
   '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/checks/$checkId/quantities': typeof DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdChecksCheckIdQuantitiesRouteRouteWithChildren
   '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/checks/$checkId/taxa': typeof DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdChecksCheckIdTaxaRouteRouteWithChildren
+  '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/filtered-checks/$filteredViewId/checks': typeof DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdFilteredChecksFilteredViewIdChecksRouteRouteWithChildren
   '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/places/$placeId2/action-reports': typeof DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2ActionReportsRouteRouteWithChildren
   '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/places/$placeId2/actions': typeof DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2ActionsRouteRouteWithChildren
   '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/places/$placeId2/check-reports': typeof DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2CheckReportsRouteRouteWithChildren
@@ -4405,6 +4888,7 @@ export interface FileRoutesByFullPath {
   '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/places/check-reports/': typeof DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesCheckReportsIndexRoute
   '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/places/taxa/': typeof DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesTaxaIndexRoute
   '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/users/$placeUserId/': typeof DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdUsersPlaceUserIdIndexRoute
+  '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/filtered-checks/$filteredViewId/checks/$checkId': typeof DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdFilteredChecksFilteredViewIdChecksCheckIdRouteRouteWithChildren
   '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/places/$placeId2/action-reports/$actionReportId': typeof DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2ActionReportsActionReportIdRouteRouteWithChildren
   '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/places/$placeId2/actions/$actionId': typeof DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2ActionsActionIdRouteRouteWithChildren
   '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/places/$placeId2/check-reports/$checkReportId': typeof DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2CheckReportsCheckReportIdRouteRouteWithChildren
@@ -4419,6 +4903,7 @@ export interface FileRoutesByFullPath {
   '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/checks/$checkId/files/$fileId': typeof DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdChecksCheckIdFilesFileIdRoute
   '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/checks/$checkId/files/filter': typeof DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdChecksCheckIdFilesFilterRoute
   '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/checks/$checkId/histories/$checkHistoryId': typeof DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdChecksCheckIdHistoriesCheckHistoryIdRoute
+  '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/filtered-checks/$filteredViewId/checks/filter': typeof DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdFilteredChecksFilteredViewIdChecksFilterRoute
   '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/observations/$observationId/histories/$observationHistoryId': typeof DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdObservationsObservationIdHistoriesObservationHistoryIdRoute
   '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/places/$placeId2/action-reports/filter': typeof DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2ActionReportsFilterRoute
   '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/places/$placeId2/actions/filter': typeof DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2ActionsFilterRoute
@@ -4438,6 +4923,7 @@ export interface FileRoutesByFullPath {
   '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/checks/$checkId/quantities/': typeof DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdChecksCheckIdQuantitiesIndexRoute
   '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/checks/$checkId/taxa/': typeof DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdChecksCheckIdTaxaIndexRoute
   '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/files/$fileId/preview/': typeof DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdFilesFileIdPreviewIndexRoute
+  '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/filtered-checks/$filteredViewId/checks/': typeof DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdFilteredChecksFilteredViewIdChecksIndexRoute
   '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/places/$placeId2/action-reports/': typeof DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2ActionReportsIndexRoute
   '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/places/$placeId2/actions/': typeof DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2ActionsIndexRoute
   '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/places/$placeId2/check-reports/': typeof DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2CheckReportsIndexRoute
@@ -4447,6 +4933,9 @@ export interface FileRoutesByFullPath {
   '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/places/$placeId2/users/': typeof DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2UsersIndexRoute
   '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/places/check-reports/$checkReportId/': typeof DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesCheckReportsCheckReportIdIndexRoute
   '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/places/taxa/$subprojectTaxonId/': typeof DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesTaxaSubprojectTaxonIdIndexRoute
+  '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/filtered-checks/$filteredViewId/checks/$checkId/files': typeof DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdFilteredChecksFilteredViewIdChecksCheckIdFilesRouteRouteWithChildren
+  '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/filtered-checks/$filteredViewId/checks/$checkId/quantities': typeof DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdFilteredChecksFilteredViewIdChecksCheckIdQuantitiesRouteRouteWithChildren
+  '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/filtered-checks/$filteredViewId/checks/$checkId/taxa': typeof DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdFilteredChecksFilteredViewIdChecksCheckIdTaxaRouteRouteWithChildren
   '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/places/$placeId2/action-reports/$actionReportId/quantities': typeof DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2ActionReportsActionReportIdQuantitiesRouteRouteWithChildren
   '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/places/$placeId2/actions/$actionId/files': typeof DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2ActionsActionIdFilesRouteRouteWithChildren
   '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/places/$placeId2/actions/$actionId/quantities': typeof DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2ActionsActionIdQuantitiesRouteRouteWithChildren
@@ -4455,8 +4944,10 @@ export interface FileRoutesByFullPath {
   '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/places/$placeId2/checks/$checkId/files': typeof DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2ChecksCheckIdFilesRouteRouteWithChildren
   '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/places/$placeId2/checks/$checkId/quantities': typeof DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2ChecksCheckIdQuantitiesRouteRouteWithChildren
   '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/places/$placeId2/checks/$checkId/taxa': typeof DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2ChecksCheckIdTaxaRouteRouteWithChildren
+  '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/places/$placeId2/filtered-checks/$filteredViewId/checks': typeof DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2FilteredChecksFilteredViewIdChecksRouteRouteWithChildren
   '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/actions/$actionId/files/$fileId/preview': typeof DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdActionsActionIdFilesFileIdPreviewRouteWithChildren
   '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/checks/$checkId/files/$fileId/preview': typeof DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdChecksCheckIdFilesFileIdPreviewRouteWithChildren
+  '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/filtered-checks/$filteredViewId/checks/$checkId/check': typeof DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdFilteredChecksFilteredViewIdChecksCheckIdCheckRoute
   '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/places/$placeId2/action-reports/$actionReportId/report': typeof DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2ActionReportsActionReportIdReportRoute
   '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/places/$placeId2/actions/$actionId/action': typeof DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2ActionsActionIdActionRoute
   '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/places/$placeId2/check-reports/$checkReportId/report': typeof DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2CheckReportsCheckReportIdReportRoute
@@ -4468,6 +4959,7 @@ export interface FileRoutesByFullPath {
   '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/check-reports/$checkReportId/quantities/$checkReportQuantityId/': typeof DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdCheckReportsCheckReportIdQuantitiesCheckReportQuantityIdIndexRoute
   '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/checks/$checkId/quantities/$checkQuantityId/': typeof DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdChecksCheckIdQuantitiesCheckQuantityIdIndexRoute
   '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/checks/$checkId/taxa/$checkTaxonId/': typeof DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdChecksCheckIdTaxaCheckTaxonIdIndexRoute
+  '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/filtered-checks/$filteredViewId/checks/$checkId/': typeof DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdFilteredChecksFilteredViewIdChecksCheckIdIndexRoute
   '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/places/$placeId2/action-reports/$actionReportId/': typeof DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2ActionReportsActionReportIdIndexRoute
   '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/places/$placeId2/actions/$actionId/': typeof DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2ActionsActionIdIndexRoute
   '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/places/$placeId2/check-reports/$checkReportId/': typeof DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2CheckReportsCheckReportIdIndexRoute
@@ -4475,6 +4967,7 @@ export interface FileRoutesByFullPath {
   '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/places/$placeId2/observations/$observationId/': typeof DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2ObservationsObservationIdIndexRoute
   '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/places/$placeId2/users/$placeUserId/': typeof DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2UsersPlaceUserIdIndexRoute
   '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/places/$placeId2/checks/$checkId/files/$fileId': typeof DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2ChecksCheckIdFilesFileIdRouteRouteWithChildren
+  '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/places/$placeId2/filtered-checks/$filteredViewId/checks/$checkId': typeof DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2FilteredChecksFilteredViewIdChecksCheckIdRouteRouteWithChildren
   '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/action-reports/$actionReportId/quantities/$actionReportQuantityId/histories/$actionReportQuantityHistoryId': typeof DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdActionReportsActionReportIdQuantitiesActionReportQuantityIdHistoriesActionReportQuantityHistoryIdRoute
   '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/actions/$actionId/files/$fileId/histories/$fileHistoryId': typeof DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdActionsActionIdFilesFileIdHistoriesFileHistoryIdRoute
   '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/actions/$actionId/quantities/$actionQuantityId/histories/$actionQuantityHistoryId': typeof DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdActionsActionIdQuantitiesActionQuantityIdHistoriesActionQuantityHistoryIdRoute
@@ -4483,6 +4976,9 @@ export interface FileRoutesByFullPath {
   '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/checks/$checkId/files/$fileId/histories/$fileHistoryId': typeof DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdChecksCheckIdFilesFileIdHistoriesFileHistoryIdRoute
   '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/checks/$checkId/quantities/$checkQuantityId/histories/$checkQuantityHistoryId': typeof DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdChecksCheckIdQuantitiesCheckQuantityIdHistoriesCheckQuantityHistoryIdRoute
   '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/checks/$checkId/taxa/$checkTaxonId/histories/$checkTaxonHistoryId': typeof DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdChecksCheckIdTaxaCheckTaxonIdHistoriesCheckTaxonHistoryIdRoute
+  '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/filtered-checks/$filteredViewId/checks/$checkId/files/$fileId': typeof DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdFilteredChecksFilteredViewIdChecksCheckIdFilesFileIdRoute
+  '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/filtered-checks/$filteredViewId/checks/$checkId/files/filter': typeof DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdFilteredChecksFilteredViewIdChecksCheckIdFilesFilterRoute
+  '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/filtered-checks/$filteredViewId/checks/$checkId/histories/$checkHistoryId': typeof DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdFilteredChecksFilteredViewIdChecksCheckIdHistoriesCheckHistoryIdRoute
   '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/places/$placeId2/action-reports/$actionReportId/histories/$actionReportHistoryId': typeof DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2ActionReportsActionReportIdHistoriesActionReportHistoryIdRoute
   '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/places/$placeId2/actions/$actionId/files/$fileId': typeof DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2ActionsActionIdFilesFileIdRoute
   '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/places/$placeId2/actions/$actionId/files/filter': typeof DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2ActionsActionIdFilesFilterRoute
@@ -4490,10 +4986,14 @@ export interface FileRoutesByFullPath {
   '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/places/$placeId2/check-reports/$checkReportId/histories/$checkReportHistoryId': typeof DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2CheckReportsCheckReportIdHistoriesCheckReportHistoryIdRoute
   '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/places/$placeId2/checks/$checkId/files/filter': typeof DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2ChecksCheckIdFilesFilterRoute
   '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/places/$placeId2/checks/$checkId/histories/$checkHistoryId': typeof DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2ChecksCheckIdHistoriesCheckHistoryIdRoute
+  '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/places/$placeId2/filtered-checks/$filteredViewId/checks/filter': typeof DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2FilteredChecksFilteredViewIdChecksFilterRoute
   '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/places/$placeId2/observations/$observationId/histories/$observationHistoryId': typeof DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2ObservationsObservationIdHistoriesObservationHistoryIdRoute
   '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/places/$placeId2/users/$placeUserId/histories/$placeUserHistoryId': typeof DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2UsersPlaceUserIdHistoriesPlaceUserHistoryIdRoute
   '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/actions/$actionId/files/$fileId/preview/': typeof DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdActionsActionIdFilesFileIdPreviewIndexRoute
   '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/checks/$checkId/files/$fileId/preview/': typeof DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdChecksCheckIdFilesFileIdPreviewIndexRoute
+  '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/filtered-checks/$filteredViewId/checks/$checkId/files/': typeof DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdFilteredChecksFilteredViewIdChecksCheckIdFilesIndexRoute
+  '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/filtered-checks/$filteredViewId/checks/$checkId/quantities/': typeof DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdFilteredChecksFilteredViewIdChecksCheckIdQuantitiesIndexRoute
+  '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/filtered-checks/$filteredViewId/checks/$checkId/taxa/': typeof DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdFilteredChecksFilteredViewIdChecksCheckIdTaxaIndexRoute
   '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/places/$placeId2/action-reports/$actionReportId/quantities/': typeof DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2ActionReportsActionReportIdQuantitiesIndexRoute
   '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/places/$placeId2/actions/$actionId/files/': typeof DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2ActionsActionIdFilesIndexRoute
   '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/places/$placeId2/actions/$actionId/quantities/': typeof DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2ActionsActionIdQuantitiesIndexRoute
@@ -4503,8 +5003,16 @@ export interface FileRoutesByFullPath {
   '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/places/$placeId2/checks/$checkId/quantities/': typeof DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2ChecksCheckIdQuantitiesIndexRoute
   '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/places/$placeId2/checks/$checkId/taxa/': typeof DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2ChecksCheckIdTaxaIndexRoute
   '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/places/$placeId2/files/$fileId/preview/': typeof DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2FilesFileIdPreviewIndexRoute
+  '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/places/$placeId2/filtered-checks/$filteredViewId/checks/': typeof DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2FilteredChecksFilteredViewIdChecksIndexRoute
+  '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/places/$placeId2/filtered-checks/$filteredViewId/checks/$checkId/files': typeof DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2FilteredChecksFilteredViewIdChecksCheckIdFilesRouteRouteWithChildren
+  '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/places/$placeId2/filtered-checks/$filteredViewId/checks/$checkId/quantities': typeof DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2FilteredChecksFilteredViewIdChecksCheckIdQuantitiesRouteRouteWithChildren
+  '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/places/$placeId2/filtered-checks/$filteredViewId/checks/$checkId/taxa': typeof DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2FilteredChecksFilteredViewIdChecksCheckIdTaxaRouteRouteWithChildren
+  '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/filtered-checks/$filteredViewId/checks/$checkId/files/$fileId/preview': typeof DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdFilteredChecksFilteredViewIdChecksCheckIdFilesFileIdPreviewRouteWithChildren
   '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/places/$placeId2/actions/$actionId/files/$fileId/preview': typeof DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2ActionsActionIdFilesFileIdPreviewRouteWithChildren
   '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/places/$placeId2/checks/$checkId/files/$fileId/preview': typeof DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2ChecksCheckIdFilesFileIdPreviewRouteWithChildren
+  '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/places/$placeId2/filtered-checks/$filteredViewId/checks/$checkId/check': typeof DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2FilteredChecksFilteredViewIdChecksCheckIdCheckRoute
+  '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/filtered-checks/$filteredViewId/checks/$checkId/quantities/$checkQuantityId/': typeof DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdFilteredChecksFilteredViewIdChecksCheckIdQuantitiesCheckQuantityIdIndexRoute
+  '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/filtered-checks/$filteredViewId/checks/$checkId/taxa/$checkTaxonId/': typeof DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdFilteredChecksFilteredViewIdChecksCheckIdTaxaCheckTaxonIdIndexRoute
   '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/places/$placeId2/action-reports/$actionReportId/quantities/$actionReportQuantityId/': typeof DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2ActionReportsActionReportIdQuantitiesActionReportQuantityIdIndexRoute
   '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/places/$placeId2/actions/$actionId/quantities/$actionQuantityId/': typeof DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2ActionsActionIdQuantitiesActionQuantityIdIndexRoute
   '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/places/$placeId2/actions/$actionId/taxa/$actionTaxonId/': typeof DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2ActionsActionIdTaxaActionTaxonIdIndexRoute
@@ -4512,6 +5020,11 @@ export interface FileRoutesByFullPath {
   '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/places/$placeId2/checks/$checkId/files/$fileId/': typeof DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2ChecksCheckIdFilesFileIdIndexRoute
   '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/places/$placeId2/checks/$checkId/quantities/$checkQuantityId/': typeof DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2ChecksCheckIdQuantitiesCheckQuantityIdIndexRoute
   '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/places/$placeId2/checks/$checkId/taxa/$checkTaxonId/': typeof DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2ChecksCheckIdTaxaCheckTaxonIdIndexRoute
+  '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/places/$placeId2/filtered-checks/$filteredViewId/checks/$checkId/': typeof DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2FilteredChecksFilteredViewIdChecksCheckIdIndexRoute
+  '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/places/$placeId2/filtered-checks/$filteredViewId/checks/$checkId/files/$fileId': typeof DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2FilteredChecksFilteredViewIdChecksCheckIdFilesFileIdRouteRouteWithChildren
+  '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/filtered-checks/$filteredViewId/checks/$checkId/files/$fileId/histories/$fileHistoryId': typeof DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdFilteredChecksFilteredViewIdChecksCheckIdFilesFileIdHistoriesFileHistoryIdRoute
+  '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/filtered-checks/$filteredViewId/checks/$checkId/quantities/$checkQuantityId/histories/$checkQuantityHistoryId': typeof DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdFilteredChecksFilteredViewIdChecksCheckIdQuantitiesCheckQuantityIdHistoriesCheckQuantityHistoryIdRoute
+  '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/filtered-checks/$filteredViewId/checks/$checkId/taxa/$checkTaxonId/histories/$checkTaxonHistoryId': typeof DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdFilteredChecksFilteredViewIdChecksCheckIdTaxaCheckTaxonIdHistoriesCheckTaxonHistoryIdRoute
   '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/places/$placeId2/action-reports/$actionReportId/quantities/$actionReportQuantityId/histories/$actionReportQuantityHistoryId': typeof DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2ActionReportsActionReportIdQuantitiesActionReportQuantityIdHistoriesActionReportQuantityHistoryIdRoute
   '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/places/$placeId2/actions/$actionId/files/$fileId/histories/$fileHistoryId': typeof DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2ActionsActionIdFilesFileIdHistoriesFileHistoryIdRoute
   '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/places/$placeId2/actions/$actionId/quantities/$actionQuantityId/histories/$actionQuantityHistoryId': typeof DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2ActionsActionIdQuantitiesActionQuantityIdHistoriesActionQuantityHistoryIdRoute
@@ -4520,8 +5033,22 @@ export interface FileRoutesByFullPath {
   '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/places/$placeId2/checks/$checkId/files/$fileId/histories/$fileHistoryId': typeof DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2ChecksCheckIdFilesFileIdHistoriesFileHistoryIdRoute
   '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/places/$placeId2/checks/$checkId/quantities/$checkQuantityId/histories/$checkQuantityHistoryId': typeof DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2ChecksCheckIdQuantitiesCheckQuantityIdHistoriesCheckQuantityHistoryIdRoute
   '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/places/$placeId2/checks/$checkId/taxa/$checkTaxonId/histories/$checkTaxonHistoryId': typeof DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2ChecksCheckIdTaxaCheckTaxonIdHistoriesCheckTaxonHistoryIdRoute
+  '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/places/$placeId2/filtered-checks/$filteredViewId/checks/$checkId/files/filter': typeof DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2FilteredChecksFilteredViewIdChecksCheckIdFilesFilterRoute
+  '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/places/$placeId2/filtered-checks/$filteredViewId/checks/$checkId/histories/$checkHistoryId': typeof DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2FilteredChecksFilteredViewIdChecksCheckIdHistoriesCheckHistoryIdRoute
+  '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/filtered-checks/$filteredViewId/checks/$checkId/files/$fileId/preview/': typeof DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdFilteredChecksFilteredViewIdChecksCheckIdFilesFileIdPreviewIndexRoute
   '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/places/$placeId2/actions/$actionId/files/$fileId/preview/': typeof DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2ActionsActionIdFilesFileIdPreviewIndexRoute
   '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/places/$placeId2/checks/$checkId/files/$fileId/preview/': typeof DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2ChecksCheckIdFilesFileIdPreviewIndexRoute
+  '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/places/$placeId2/filtered-checks/$filteredViewId/checks/$checkId/files/': typeof DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2FilteredChecksFilteredViewIdChecksCheckIdFilesIndexRoute
+  '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/places/$placeId2/filtered-checks/$filteredViewId/checks/$checkId/quantities/': typeof DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2FilteredChecksFilteredViewIdChecksCheckIdQuantitiesIndexRoute
+  '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/places/$placeId2/filtered-checks/$filteredViewId/checks/$checkId/taxa/': typeof DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2FilteredChecksFilteredViewIdChecksCheckIdTaxaIndexRoute
+  '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/places/$placeId2/filtered-checks/$filteredViewId/checks/$checkId/files/$fileId/preview': typeof DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2FilteredChecksFilteredViewIdChecksCheckIdFilesFileIdPreviewRouteWithChildren
+  '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/places/$placeId2/filtered-checks/$filteredViewId/checks/$checkId/files/$fileId/': typeof DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2FilteredChecksFilteredViewIdChecksCheckIdFilesFileIdIndexRoute
+  '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/places/$placeId2/filtered-checks/$filteredViewId/checks/$checkId/quantities/$checkQuantityId/': typeof DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2FilteredChecksFilteredViewIdChecksCheckIdQuantitiesCheckQuantityIdIndexRoute
+  '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/places/$placeId2/filtered-checks/$filteredViewId/checks/$checkId/taxa/$checkTaxonId/': typeof DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2FilteredChecksFilteredViewIdChecksCheckIdTaxaCheckTaxonIdIndexRoute
+  '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/places/$placeId2/filtered-checks/$filteredViewId/checks/$checkId/files/$fileId/histories/$fileHistoryId': typeof DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2FilteredChecksFilteredViewIdChecksCheckIdFilesFileIdHistoriesFileHistoryIdRoute
+  '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/places/$placeId2/filtered-checks/$filteredViewId/checks/$checkId/quantities/$checkQuantityId/histories/$checkQuantityHistoryId': typeof DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2FilteredChecksFilteredViewIdChecksCheckIdQuantitiesCheckQuantityIdHistoriesCheckQuantityHistoryIdRoute
+  '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/places/$placeId2/filtered-checks/$filteredViewId/checks/$checkId/taxa/$checkTaxonId/histories/$checkTaxonHistoryId': typeof DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2FilteredChecksFilteredViewIdChecksCheckIdTaxaCheckTaxonIdHistoriesCheckTaxonHistoryIdRoute
+  '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/places/$placeId2/filtered-checks/$filteredViewId/checks/$checkId/files/$fileId/preview/': typeof DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2FilteredChecksFilteredViewIdChecksCheckIdFilesFileIdPreviewIndexRoute
 }
 export interface FileRoutesByTo {
   '/auth': typeof LayoutAuthRoute
@@ -4568,6 +5095,7 @@ export interface FileRoutesByTo {
   '/data/projects/$projectId/fields/filter': typeof DataProjectsProjectIdFieldsFilterRoute
   '/data/projects/$projectId/files/$fileId': typeof DataProjectsProjectIdFilesFileIdRoute
   '/data/projects/$projectId/files/filter': typeof DataProjectsProjectIdFilesFilterRoute
+  '/data/projects/$projectId/filtered-views/filter': typeof DataProjectsProjectIdFilteredViewsFilterRoute
   '/data/projects/$projectId/histories/$projectHistoryId': typeof DataProjectsProjectIdHistoriesProjectHistoryIdRoute
   '/data/projects/$projectId/lists/filter': typeof DataProjectsProjectIdListsFilterRoute
   '/data/projects/$projectId/qcs/filter': typeof DataProjectsProjectIdQcsFilterRoute
@@ -4591,6 +5119,7 @@ export interface FileRoutesByTo {
   '/data/projects/$projectId/exports': typeof DataProjectsProjectIdExportsIndexRoute
   '/data/projects/$projectId/fields': typeof DataProjectsProjectIdFieldsIndexRoute
   '/data/projects/$projectId/files': typeof DataProjectsProjectIdFilesIndexRoute
+  '/data/projects/$projectId/filtered-views': typeof DataProjectsProjectIdFilteredViewsIndexRoute
   '/data/projects/$projectId/lists': typeof DataProjectsProjectIdListsIndexRoute
   '/data/projects/$projectId/place-levels': typeof DataProjectsProjectIdPlaceLevelsIndexRoute
   '/data/projects/$projectId/qc-assignments': typeof DataProjectsProjectIdQcAssignmentsIndexRoute
@@ -4623,6 +5152,7 @@ export interface FileRoutesByTo {
   '/data/projects/$projectId/crs/$projectCrsId': typeof DataProjectsProjectIdCrsProjectCrsIdIndexRoute
   '/data/projects/$projectId/designs/$projectReportDesignId': typeof DataProjectsProjectIdDesignsProjectReportDesignIdIndexRoute
   '/data/projects/$projectId/exports/$projectExportsId': typeof DataProjectsProjectIdExportsProjectExportsIdIndexRoute
+  '/data/projects/$projectId/filtered-views/$filteredViewId': typeof DataProjectsProjectIdFilteredViewsFilteredViewIdIndexRoute
   '/data/projects/$projectId/lists/$listId': typeof DataProjectsProjectIdListsListIdIndexRoute
   '/data/projects/$projectId/place-levels/$placeLevelId': typeof DataProjectsProjectIdPlaceLevelsPlaceLevelIdIndexRoute
   '/data/projects/$projectId/qcs/$projectQcId': typeof DataProjectsProjectIdQcsProjectQcIdIndexRoute
@@ -4774,6 +5304,7 @@ export interface FileRoutesByTo {
   '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/checks/$checkId/files/$fileId': typeof DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdChecksCheckIdFilesFileIdRoute
   '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/checks/$checkId/files/filter': typeof DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdChecksCheckIdFilesFilterRoute
   '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/checks/$checkId/histories/$checkHistoryId': typeof DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdChecksCheckIdHistoriesCheckHistoryIdRoute
+  '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/filtered-checks/$filteredViewId/checks/filter': typeof DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdFilteredChecksFilteredViewIdChecksFilterRoute
   '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/observations/$observationId/histories/$observationHistoryId': typeof DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdObservationsObservationIdHistoriesObservationHistoryIdRoute
   '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/places/$placeId2/action-reports/filter': typeof DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2ActionReportsFilterRoute
   '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/places/$placeId2/actions/filter': typeof DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2ActionsFilterRoute
@@ -4793,6 +5324,7 @@ export interface FileRoutesByTo {
   '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/checks/$checkId/quantities': typeof DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdChecksCheckIdQuantitiesIndexRoute
   '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/checks/$checkId/taxa': typeof DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdChecksCheckIdTaxaIndexRoute
   '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/files/$fileId/preview': typeof DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdFilesFileIdPreviewIndexRoute
+  '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/filtered-checks/$filteredViewId/checks': typeof DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdFilteredChecksFilteredViewIdChecksIndexRoute
   '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/places/$placeId2/action-reports': typeof DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2ActionReportsIndexRoute
   '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/places/$placeId2/actions': typeof DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2ActionsIndexRoute
   '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/places/$placeId2/check-reports': typeof DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2CheckReportsIndexRoute
@@ -4802,6 +5334,7 @@ export interface FileRoutesByTo {
   '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/places/$placeId2/users': typeof DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2UsersIndexRoute
   '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/places/check-reports/$checkReportId': typeof DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesCheckReportsCheckReportIdIndexRoute
   '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/places/taxa/$subprojectTaxonId': typeof DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesTaxaSubprojectTaxonIdIndexRoute
+  '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/filtered-checks/$filteredViewId/checks/$checkId/check': typeof DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdFilteredChecksFilteredViewIdChecksCheckIdCheckRoute
   '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/places/$placeId2/action-reports/$actionReportId/report': typeof DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2ActionReportsActionReportIdReportRoute
   '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/places/$placeId2/actions/$actionId/action': typeof DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2ActionsActionIdActionRoute
   '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/places/$placeId2/check-reports/$checkReportId/report': typeof DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2CheckReportsCheckReportIdReportRoute
@@ -4812,6 +5345,7 @@ export interface FileRoutesByTo {
   '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/check-reports/$checkReportId/quantities/$checkReportQuantityId': typeof DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdCheckReportsCheckReportIdQuantitiesCheckReportQuantityIdIndexRoute
   '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/checks/$checkId/quantities/$checkQuantityId': typeof DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdChecksCheckIdQuantitiesCheckQuantityIdIndexRoute
   '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/checks/$checkId/taxa/$checkTaxonId': typeof DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdChecksCheckIdTaxaCheckTaxonIdIndexRoute
+  '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/filtered-checks/$filteredViewId/checks/$checkId': typeof DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdFilteredChecksFilteredViewIdChecksCheckIdIndexRoute
   '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/places/$placeId2/action-reports/$actionReportId': typeof DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2ActionReportsActionReportIdIndexRoute
   '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/places/$placeId2/actions/$actionId': typeof DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2ActionsActionIdIndexRoute
   '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/places/$placeId2/check-reports/$checkReportId': typeof DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2CheckReportsCheckReportIdIndexRoute
@@ -4826,6 +5360,9 @@ export interface FileRoutesByTo {
   '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/checks/$checkId/files/$fileId/histories/$fileHistoryId': typeof DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdChecksCheckIdFilesFileIdHistoriesFileHistoryIdRoute
   '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/checks/$checkId/quantities/$checkQuantityId/histories/$checkQuantityHistoryId': typeof DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdChecksCheckIdQuantitiesCheckQuantityIdHistoriesCheckQuantityHistoryIdRoute
   '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/checks/$checkId/taxa/$checkTaxonId/histories/$checkTaxonHistoryId': typeof DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdChecksCheckIdTaxaCheckTaxonIdHistoriesCheckTaxonHistoryIdRoute
+  '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/filtered-checks/$filteredViewId/checks/$checkId/files/$fileId': typeof DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdFilteredChecksFilteredViewIdChecksCheckIdFilesFileIdRoute
+  '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/filtered-checks/$filteredViewId/checks/$checkId/files/filter': typeof DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdFilteredChecksFilteredViewIdChecksCheckIdFilesFilterRoute
+  '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/filtered-checks/$filteredViewId/checks/$checkId/histories/$checkHistoryId': typeof DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdFilteredChecksFilteredViewIdChecksCheckIdHistoriesCheckHistoryIdRoute
   '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/places/$placeId2/action-reports/$actionReportId/histories/$actionReportHistoryId': typeof DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2ActionReportsActionReportIdHistoriesActionReportHistoryIdRoute
   '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/places/$placeId2/actions/$actionId/files/$fileId': typeof DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2ActionsActionIdFilesFileIdRoute
   '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/places/$placeId2/actions/$actionId/files/filter': typeof DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2ActionsActionIdFilesFilterRoute
@@ -4833,10 +5370,14 @@ export interface FileRoutesByTo {
   '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/places/$placeId2/check-reports/$checkReportId/histories/$checkReportHistoryId': typeof DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2CheckReportsCheckReportIdHistoriesCheckReportHistoryIdRoute
   '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/places/$placeId2/checks/$checkId/files/filter': typeof DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2ChecksCheckIdFilesFilterRoute
   '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/places/$placeId2/checks/$checkId/histories/$checkHistoryId': typeof DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2ChecksCheckIdHistoriesCheckHistoryIdRoute
+  '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/places/$placeId2/filtered-checks/$filteredViewId/checks/filter': typeof DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2FilteredChecksFilteredViewIdChecksFilterRoute
   '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/places/$placeId2/observations/$observationId/histories/$observationHistoryId': typeof DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2ObservationsObservationIdHistoriesObservationHistoryIdRoute
   '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/places/$placeId2/users/$placeUserId/histories/$placeUserHistoryId': typeof DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2UsersPlaceUserIdHistoriesPlaceUserHistoryIdRoute
   '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/actions/$actionId/files/$fileId/preview': typeof DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdActionsActionIdFilesFileIdPreviewIndexRoute
   '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/checks/$checkId/files/$fileId/preview': typeof DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdChecksCheckIdFilesFileIdPreviewIndexRoute
+  '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/filtered-checks/$filteredViewId/checks/$checkId/files': typeof DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdFilteredChecksFilteredViewIdChecksCheckIdFilesIndexRoute
+  '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/filtered-checks/$filteredViewId/checks/$checkId/quantities': typeof DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdFilteredChecksFilteredViewIdChecksCheckIdQuantitiesIndexRoute
+  '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/filtered-checks/$filteredViewId/checks/$checkId/taxa': typeof DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdFilteredChecksFilteredViewIdChecksCheckIdTaxaIndexRoute
   '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/places/$placeId2/action-reports/$actionReportId/quantities': typeof DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2ActionReportsActionReportIdQuantitiesIndexRoute
   '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/places/$placeId2/actions/$actionId/files': typeof DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2ActionsActionIdFilesIndexRoute
   '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/places/$placeId2/actions/$actionId/quantities': typeof DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2ActionsActionIdQuantitiesIndexRoute
@@ -4846,6 +5387,10 @@ export interface FileRoutesByTo {
   '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/places/$placeId2/checks/$checkId/quantities': typeof DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2ChecksCheckIdQuantitiesIndexRoute
   '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/places/$placeId2/checks/$checkId/taxa': typeof DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2ChecksCheckIdTaxaIndexRoute
   '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/places/$placeId2/files/$fileId/preview': typeof DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2FilesFileIdPreviewIndexRoute
+  '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/places/$placeId2/filtered-checks/$filteredViewId/checks': typeof DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2FilteredChecksFilteredViewIdChecksIndexRoute
+  '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/places/$placeId2/filtered-checks/$filteredViewId/checks/$checkId/check': typeof DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2FilteredChecksFilteredViewIdChecksCheckIdCheckRoute
+  '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/filtered-checks/$filteredViewId/checks/$checkId/quantities/$checkQuantityId': typeof DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdFilteredChecksFilteredViewIdChecksCheckIdQuantitiesCheckQuantityIdIndexRoute
+  '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/filtered-checks/$filteredViewId/checks/$checkId/taxa/$checkTaxonId': typeof DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdFilteredChecksFilteredViewIdChecksCheckIdTaxaCheckTaxonIdIndexRoute
   '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/places/$placeId2/action-reports/$actionReportId/quantities/$actionReportQuantityId': typeof DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2ActionReportsActionReportIdQuantitiesActionReportQuantityIdIndexRoute
   '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/places/$placeId2/actions/$actionId/quantities/$actionQuantityId': typeof DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2ActionsActionIdQuantitiesActionQuantityIdIndexRoute
   '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/places/$placeId2/actions/$actionId/taxa/$actionTaxonId': typeof DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2ActionsActionIdTaxaActionTaxonIdIndexRoute
@@ -4853,6 +5398,10 @@ export interface FileRoutesByTo {
   '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/places/$placeId2/checks/$checkId/files/$fileId': typeof DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2ChecksCheckIdFilesFileIdIndexRoute
   '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/places/$placeId2/checks/$checkId/quantities/$checkQuantityId': typeof DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2ChecksCheckIdQuantitiesCheckQuantityIdIndexRoute
   '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/places/$placeId2/checks/$checkId/taxa/$checkTaxonId': typeof DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2ChecksCheckIdTaxaCheckTaxonIdIndexRoute
+  '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/places/$placeId2/filtered-checks/$filteredViewId/checks/$checkId': typeof DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2FilteredChecksFilteredViewIdChecksCheckIdIndexRoute
+  '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/filtered-checks/$filteredViewId/checks/$checkId/files/$fileId/histories/$fileHistoryId': typeof DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdFilteredChecksFilteredViewIdChecksCheckIdFilesFileIdHistoriesFileHistoryIdRoute
+  '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/filtered-checks/$filteredViewId/checks/$checkId/quantities/$checkQuantityId/histories/$checkQuantityHistoryId': typeof DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdFilteredChecksFilteredViewIdChecksCheckIdQuantitiesCheckQuantityIdHistoriesCheckQuantityHistoryIdRoute
+  '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/filtered-checks/$filteredViewId/checks/$checkId/taxa/$checkTaxonId/histories/$checkTaxonHistoryId': typeof DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdFilteredChecksFilteredViewIdChecksCheckIdTaxaCheckTaxonIdHistoriesCheckTaxonHistoryIdRoute
   '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/places/$placeId2/action-reports/$actionReportId/quantities/$actionReportQuantityId/histories/$actionReportQuantityHistoryId': typeof DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2ActionReportsActionReportIdQuantitiesActionReportQuantityIdHistoriesActionReportQuantityHistoryIdRoute
   '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/places/$placeId2/actions/$actionId/files/$fileId/histories/$fileHistoryId': typeof DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2ActionsActionIdFilesFileIdHistoriesFileHistoryIdRoute
   '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/places/$placeId2/actions/$actionId/quantities/$actionQuantityId/histories/$actionQuantityHistoryId': typeof DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2ActionsActionIdQuantitiesActionQuantityIdHistoriesActionQuantityHistoryIdRoute
@@ -4861,8 +5410,21 @@ export interface FileRoutesByTo {
   '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/places/$placeId2/checks/$checkId/files/$fileId/histories/$fileHistoryId': typeof DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2ChecksCheckIdFilesFileIdHistoriesFileHistoryIdRoute
   '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/places/$placeId2/checks/$checkId/quantities/$checkQuantityId/histories/$checkQuantityHistoryId': typeof DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2ChecksCheckIdQuantitiesCheckQuantityIdHistoriesCheckQuantityHistoryIdRoute
   '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/places/$placeId2/checks/$checkId/taxa/$checkTaxonId/histories/$checkTaxonHistoryId': typeof DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2ChecksCheckIdTaxaCheckTaxonIdHistoriesCheckTaxonHistoryIdRoute
+  '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/places/$placeId2/filtered-checks/$filteredViewId/checks/$checkId/files/filter': typeof DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2FilteredChecksFilteredViewIdChecksCheckIdFilesFilterRoute
+  '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/places/$placeId2/filtered-checks/$filteredViewId/checks/$checkId/histories/$checkHistoryId': typeof DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2FilteredChecksFilteredViewIdChecksCheckIdHistoriesCheckHistoryIdRoute
+  '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/filtered-checks/$filteredViewId/checks/$checkId/files/$fileId/preview': typeof DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdFilteredChecksFilteredViewIdChecksCheckIdFilesFileIdPreviewIndexRoute
   '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/places/$placeId2/actions/$actionId/files/$fileId/preview': typeof DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2ActionsActionIdFilesFileIdPreviewIndexRoute
   '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/places/$placeId2/checks/$checkId/files/$fileId/preview': typeof DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2ChecksCheckIdFilesFileIdPreviewIndexRoute
+  '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/places/$placeId2/filtered-checks/$filteredViewId/checks/$checkId/files': typeof DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2FilteredChecksFilteredViewIdChecksCheckIdFilesIndexRoute
+  '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/places/$placeId2/filtered-checks/$filteredViewId/checks/$checkId/quantities': typeof DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2FilteredChecksFilteredViewIdChecksCheckIdQuantitiesIndexRoute
+  '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/places/$placeId2/filtered-checks/$filteredViewId/checks/$checkId/taxa': typeof DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2FilteredChecksFilteredViewIdChecksCheckIdTaxaIndexRoute
+  '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/places/$placeId2/filtered-checks/$filteredViewId/checks/$checkId/files/$fileId': typeof DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2FilteredChecksFilteredViewIdChecksCheckIdFilesFileIdIndexRoute
+  '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/places/$placeId2/filtered-checks/$filteredViewId/checks/$checkId/quantities/$checkQuantityId': typeof DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2FilteredChecksFilteredViewIdChecksCheckIdQuantitiesCheckQuantityIdIndexRoute
+  '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/places/$placeId2/filtered-checks/$filteredViewId/checks/$checkId/taxa/$checkTaxonId': typeof DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2FilteredChecksFilteredViewIdChecksCheckIdTaxaCheckTaxonIdIndexRoute
+  '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/places/$placeId2/filtered-checks/$filteredViewId/checks/$checkId/files/$fileId/histories/$fileHistoryId': typeof DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2FilteredChecksFilteredViewIdChecksCheckIdFilesFileIdHistoriesFileHistoryIdRoute
+  '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/places/$placeId2/filtered-checks/$filteredViewId/checks/$checkId/quantities/$checkQuantityId/histories/$checkQuantityHistoryId': typeof DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2FilteredChecksFilteredViewIdChecksCheckIdQuantitiesCheckQuantityIdHistoriesCheckQuantityHistoryIdRoute
+  '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/places/$placeId2/filtered-checks/$filteredViewId/checks/$checkId/taxa/$checkTaxonId/histories/$checkTaxonHistoryId': typeof DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2FilteredChecksFilteredViewIdChecksCheckIdTaxaCheckTaxonIdHistoriesCheckTaxonHistoryIdRoute
+  '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/places/$placeId2/filtered-checks/$filteredViewId/checks/$checkId/files/$fileId/preview': typeof DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2FilteredChecksFilteredViewIdChecksCheckIdFilesFileIdPreviewIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -4925,6 +5487,7 @@ export interface FileRoutesById {
   '/data/projects/$projectId_/exports-run': typeof DataProjectsProjectIdExportsRunRouteRouteWithChildren
   '/data/projects/$projectId_/fields': typeof DataProjectsProjectIdFieldsRouteRouteWithChildren
   '/data/projects/$projectId_/files': typeof DataProjectsProjectIdFilesRouteRouteWithChildren
+  '/data/projects/$projectId_/filtered-views': typeof DataProjectsProjectIdFilteredViewsRouteRouteWithChildren
   '/data/projects/$projectId_/lists': typeof DataProjectsProjectIdListsRouteRouteWithChildren
   '/data/projects/$projectId_/place-levels': typeof DataProjectsProjectIdPlaceLevelsRouteRouteWithChildren
   '/data/projects/$projectId_/qc-assignments': typeof DataProjectsProjectIdQcAssignmentsRouteRouteWithChildren
@@ -4961,6 +5524,7 @@ export interface FileRoutesById {
   '/data/projects/$projectId_/fields/filter': typeof DataProjectsProjectIdFieldsFilterRoute
   '/data/projects/$projectId_/files/$fileId': typeof DataProjectsProjectIdFilesFileIdRoute
   '/data/projects/$projectId_/files/filter': typeof DataProjectsProjectIdFilesFilterRoute
+  '/data/projects/$projectId_/filtered-views/filter': typeof DataProjectsProjectIdFilteredViewsFilterRoute
   '/data/projects/$projectId_/histories/$projectHistoryId': typeof DataProjectsProjectIdHistoriesProjectHistoryIdRoute
   '/data/projects/$projectId_/lists/filter': typeof DataProjectsProjectIdListsFilterRoute
   '/data/projects/$projectId_/qcs/filter': typeof DataProjectsProjectIdQcsFilterRoute
@@ -4984,6 +5548,7 @@ export interface FileRoutesById {
   '/data/projects/$projectId_/exports/': typeof DataProjectsProjectIdExportsIndexRoute
   '/data/projects/$projectId_/fields/': typeof DataProjectsProjectIdFieldsIndexRoute
   '/data/projects/$projectId_/files/': typeof DataProjectsProjectIdFilesIndexRoute
+  '/data/projects/$projectId_/filtered-views/': typeof DataProjectsProjectIdFilteredViewsIndexRoute
   '/data/projects/$projectId_/lists/': typeof DataProjectsProjectIdListsIndexRoute
   '/data/projects/$projectId_/place-levels/': typeof DataProjectsProjectIdPlaceLevelsIndexRoute
   '/data/projects/$projectId_/qc-assignments/': typeof DataProjectsProjectIdQcAssignmentsIndexRoute
@@ -5039,6 +5604,7 @@ export interface FileRoutesById {
   '/data/projects/$projectId_/crs/$projectCrsId/': typeof DataProjectsProjectIdCrsProjectCrsIdIndexRoute
   '/data/projects/$projectId_/designs/$projectReportDesignId/': typeof DataProjectsProjectIdDesignsProjectReportDesignIdIndexRoute
   '/data/projects/$projectId_/exports/$projectExportsId/': typeof DataProjectsProjectIdExportsProjectExportsIdIndexRoute
+  '/data/projects/$projectId_/filtered-views/$filteredViewId/': typeof DataProjectsProjectIdFilteredViewsFilteredViewIdIndexRoute
   '/data/projects/$projectId_/lists/$listId_/': typeof DataProjectsProjectIdListsListIdIndexRoute
   '/data/projects/$projectId_/place-levels/$placeLevelId/': typeof DataProjectsProjectIdPlaceLevelsPlaceLevelIdIndexRoute
   '/data/projects/$projectId_/qcs/$projectQcId/': typeof DataProjectsProjectIdQcsProjectQcIdIndexRoute
@@ -5192,6 +5758,7 @@ export interface FileRoutesById {
   '/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/checks/$checkId_/files': typeof DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdChecksCheckIdFilesRouteRouteWithChildren
   '/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/checks/$checkId_/quantities': typeof DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdChecksCheckIdQuantitiesRouteRouteWithChildren
   '/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/checks/$checkId_/taxa': typeof DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdChecksCheckIdTaxaRouteRouteWithChildren
+  '/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/filtered-checks/$filteredViewId_/checks': typeof DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdFilteredChecksFilteredViewIdChecksRouteRouteWithChildren
   '/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/places/$placeId2_/action-reports': typeof DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2ActionReportsRouteRouteWithChildren
   '/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/places/$placeId2_/actions': typeof DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2ActionsRouteRouteWithChildren
   '/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/places/$placeId2_/check-reports': typeof DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2CheckReportsRouteRouteWithChildren
@@ -5217,6 +5784,7 @@ export interface FileRoutesById {
   '/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/places/check-reports/': typeof DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesCheckReportsIndexRoute
   '/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/places/taxa/': typeof DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesTaxaIndexRoute
   '/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/users/$placeUserId/': typeof DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdUsersPlaceUserIdIndexRoute
+  '/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/filtered-checks/$filteredViewId_/checks/$checkId_': typeof DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdFilteredChecksFilteredViewIdChecksCheckIdRouteRouteWithChildren
   '/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/places/$placeId2_/action-reports/$actionReportId_': typeof DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2ActionReportsActionReportIdRouteRouteWithChildren
   '/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/places/$placeId2_/actions/$actionId_': typeof DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2ActionsActionIdRouteRouteWithChildren
   '/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/places/$placeId2_/check-reports/$checkReportId_': typeof DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2CheckReportsCheckReportIdRouteRouteWithChildren
@@ -5231,6 +5799,7 @@ export interface FileRoutesById {
   '/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/checks/$checkId_/files/$fileId': typeof DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdChecksCheckIdFilesFileIdRoute
   '/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/checks/$checkId_/files/filter': typeof DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdChecksCheckIdFilesFilterRoute
   '/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/checks/$checkId_/histories/$checkHistoryId': typeof DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdChecksCheckIdHistoriesCheckHistoryIdRoute
+  '/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/filtered-checks/$filteredViewId_/checks/filter': typeof DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdFilteredChecksFilteredViewIdChecksFilterRoute
   '/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/observations/$observationId_/histories/$observationHistoryId': typeof DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdObservationsObservationIdHistoriesObservationHistoryIdRoute
   '/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/places/$placeId2_/action-reports/filter': typeof DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2ActionReportsFilterRoute
   '/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/places/$placeId2_/actions/filter': typeof DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2ActionsFilterRoute
@@ -5250,6 +5819,7 @@ export interface FileRoutesById {
   '/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/checks/$checkId_/quantities/': typeof DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdChecksCheckIdQuantitiesIndexRoute
   '/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/checks/$checkId_/taxa/': typeof DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdChecksCheckIdTaxaIndexRoute
   '/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/files/$fileId_/preview/': typeof DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdFilesFileIdPreviewIndexRoute
+  '/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/filtered-checks/$filteredViewId_/checks/': typeof DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdFilteredChecksFilteredViewIdChecksIndexRoute
   '/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/places/$placeId2_/action-reports/': typeof DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2ActionReportsIndexRoute
   '/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/places/$placeId2_/actions/': typeof DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2ActionsIndexRoute
   '/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/places/$placeId2_/check-reports/': typeof DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2CheckReportsIndexRoute
@@ -5259,6 +5829,9 @@ export interface FileRoutesById {
   '/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/places/$placeId2_/users/': typeof DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2UsersIndexRoute
   '/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/places/check-reports/$checkReportId/': typeof DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesCheckReportsCheckReportIdIndexRoute
   '/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/places/taxa/$subprojectTaxonId/': typeof DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesTaxaSubprojectTaxonIdIndexRoute
+  '/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/filtered-checks/$filteredViewId_/checks/$checkId_/files': typeof DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdFilteredChecksFilteredViewIdChecksCheckIdFilesRouteRouteWithChildren
+  '/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/filtered-checks/$filteredViewId_/checks/$checkId_/quantities': typeof DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdFilteredChecksFilteredViewIdChecksCheckIdQuantitiesRouteRouteWithChildren
+  '/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/filtered-checks/$filteredViewId_/checks/$checkId_/taxa': typeof DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdFilteredChecksFilteredViewIdChecksCheckIdTaxaRouteRouteWithChildren
   '/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/places/$placeId2_/action-reports/$actionReportId_/quantities': typeof DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2ActionReportsActionReportIdQuantitiesRouteRouteWithChildren
   '/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/places/$placeId2_/actions/$actionId_/files': typeof DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2ActionsActionIdFilesRouteRouteWithChildren
   '/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/places/$placeId2_/actions/$actionId_/quantities': typeof DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2ActionsActionIdQuantitiesRouteRouteWithChildren
@@ -5267,8 +5840,10 @@ export interface FileRoutesById {
   '/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/places/$placeId2_/checks/$checkId_/files': typeof DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2ChecksCheckIdFilesRouteRouteWithChildren
   '/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/places/$placeId2_/checks/$checkId_/quantities': typeof DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2ChecksCheckIdQuantitiesRouteRouteWithChildren
   '/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/places/$placeId2_/checks/$checkId_/taxa': typeof DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2ChecksCheckIdTaxaRouteRouteWithChildren
+  '/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/places/$placeId2_/filtered-checks/$filteredViewId_/checks': typeof DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2FilteredChecksFilteredViewIdChecksRouteRouteWithChildren
   '/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/actions/$actionId_/files/$fileId_/preview': typeof DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdActionsActionIdFilesFileIdPreviewRouteWithChildren
   '/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/checks/$checkId_/files/$fileId_/preview': typeof DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdChecksCheckIdFilesFileIdPreviewRouteWithChildren
+  '/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/filtered-checks/$filteredViewId_/checks/$checkId_/check': typeof DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdFilteredChecksFilteredViewIdChecksCheckIdCheckRoute
   '/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/places/$placeId2_/action-reports/$actionReportId_/report': typeof DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2ActionReportsActionReportIdReportRoute
   '/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/places/$placeId2_/actions/$actionId_/action': typeof DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2ActionsActionIdActionRoute
   '/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/places/$placeId2_/check-reports/$checkReportId_/report': typeof DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2CheckReportsCheckReportIdReportRoute
@@ -5280,6 +5855,7 @@ export interface FileRoutesById {
   '/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/check-reports/$checkReportId_/quantities/$checkReportQuantityId/': typeof DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdCheckReportsCheckReportIdQuantitiesCheckReportQuantityIdIndexRoute
   '/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/checks/$checkId_/quantities/$checkQuantityId/': typeof DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdChecksCheckIdQuantitiesCheckQuantityIdIndexRoute
   '/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/checks/$checkId_/taxa/$checkTaxonId/': typeof DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdChecksCheckIdTaxaCheckTaxonIdIndexRoute
+  '/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/filtered-checks/$filteredViewId_/checks/$checkId_/': typeof DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdFilteredChecksFilteredViewIdChecksCheckIdIndexRoute
   '/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/places/$placeId2_/action-reports/$actionReportId_/': typeof DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2ActionReportsActionReportIdIndexRoute
   '/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/places/$placeId2_/actions/$actionId_/': typeof DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2ActionsActionIdIndexRoute
   '/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/places/$placeId2_/check-reports/$checkReportId_/': typeof DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2CheckReportsCheckReportIdIndexRoute
@@ -5287,6 +5863,7 @@ export interface FileRoutesById {
   '/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/places/$placeId2_/observations/$observationId/': typeof DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2ObservationsObservationIdIndexRoute
   '/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/places/$placeId2_/users/$placeUserId_/': typeof DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2UsersPlaceUserIdIndexRoute
   '/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/places/$placeId2_/checks/$checkId_/files/$fileId_': typeof DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2ChecksCheckIdFilesFileIdRouteRouteWithChildren
+  '/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/places/$placeId2_/filtered-checks/$filteredViewId_/checks/$checkId_': typeof DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2FilteredChecksFilteredViewIdChecksCheckIdRouteRouteWithChildren
   '/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/action-reports/$actionReportId_/quantities/$actionReportQuantityId_/histories/$actionReportQuantityHistoryId': typeof DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdActionReportsActionReportIdQuantitiesActionReportQuantityIdHistoriesActionReportQuantityHistoryIdRoute
   '/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/actions/$actionId_/files/$fileId_/histories/$fileHistoryId': typeof DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdActionsActionIdFilesFileIdHistoriesFileHistoryIdRoute
   '/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/actions/$actionId_/quantities/$actionQuantityId_/histories/$actionQuantityHistoryId': typeof DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdActionsActionIdQuantitiesActionQuantityIdHistoriesActionQuantityHistoryIdRoute
@@ -5295,6 +5872,9 @@ export interface FileRoutesById {
   '/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/checks/$checkId_/files/$fileId_/histories/$fileHistoryId': typeof DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdChecksCheckIdFilesFileIdHistoriesFileHistoryIdRoute
   '/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/checks/$checkId_/quantities/$checkQuantityId_/histories/$checkQuantityHistoryId': typeof DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdChecksCheckIdQuantitiesCheckQuantityIdHistoriesCheckQuantityHistoryIdRoute
   '/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/checks/$checkId_/taxa/$checkTaxonId_/histories/$checkTaxonHistoryId': typeof DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdChecksCheckIdTaxaCheckTaxonIdHistoriesCheckTaxonHistoryIdRoute
+  '/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/filtered-checks/$filteredViewId_/checks/$checkId_/files/$fileId': typeof DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdFilteredChecksFilteredViewIdChecksCheckIdFilesFileIdRoute
+  '/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/filtered-checks/$filteredViewId_/checks/$checkId_/files/filter': typeof DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdFilteredChecksFilteredViewIdChecksCheckIdFilesFilterRoute
+  '/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/filtered-checks/$filteredViewId_/checks/$checkId_/histories/$checkHistoryId': typeof DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdFilteredChecksFilteredViewIdChecksCheckIdHistoriesCheckHistoryIdRoute
   '/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/places/$placeId2_/action-reports/$actionReportId_/histories/$actionReportHistoryId': typeof DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2ActionReportsActionReportIdHistoriesActionReportHistoryIdRoute
   '/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/places/$placeId2_/actions/$actionId_/files/$fileId': typeof DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2ActionsActionIdFilesFileIdRoute
   '/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/places/$placeId2_/actions/$actionId_/files/filter': typeof DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2ActionsActionIdFilesFilterRoute
@@ -5302,10 +5882,14 @@ export interface FileRoutesById {
   '/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/places/$placeId2_/check-reports/$checkReportId_/histories/$checkReportHistoryId': typeof DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2CheckReportsCheckReportIdHistoriesCheckReportHistoryIdRoute
   '/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/places/$placeId2_/checks/$checkId_/files/filter': typeof DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2ChecksCheckIdFilesFilterRoute
   '/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/places/$placeId2_/checks/$checkId_/histories/$checkHistoryId': typeof DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2ChecksCheckIdHistoriesCheckHistoryIdRoute
+  '/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/places/$placeId2_/filtered-checks/$filteredViewId_/checks/filter': typeof DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2FilteredChecksFilteredViewIdChecksFilterRoute
   '/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/places/$placeId2_/observations/$observationId_/histories/$observationHistoryId': typeof DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2ObservationsObservationIdHistoriesObservationHistoryIdRoute
   '/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/places/$placeId2_/users/$placeUserId_/histories/$placeUserHistoryId': typeof DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2UsersPlaceUserIdHistoriesPlaceUserHistoryIdRoute
   '/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/actions/$actionId_/files/$fileId_/preview/': typeof DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdActionsActionIdFilesFileIdPreviewIndexRoute
   '/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/checks/$checkId_/files/$fileId_/preview/': typeof DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdChecksCheckIdFilesFileIdPreviewIndexRoute
+  '/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/filtered-checks/$filteredViewId_/checks/$checkId_/files/': typeof DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdFilteredChecksFilteredViewIdChecksCheckIdFilesIndexRoute
+  '/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/filtered-checks/$filteredViewId_/checks/$checkId_/quantities/': typeof DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdFilteredChecksFilteredViewIdChecksCheckIdQuantitiesIndexRoute
+  '/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/filtered-checks/$filteredViewId_/checks/$checkId_/taxa/': typeof DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdFilteredChecksFilteredViewIdChecksCheckIdTaxaIndexRoute
   '/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/places/$placeId2_/action-reports/$actionReportId_/quantities/': typeof DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2ActionReportsActionReportIdQuantitiesIndexRoute
   '/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/places/$placeId2_/actions/$actionId_/files/': typeof DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2ActionsActionIdFilesIndexRoute
   '/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/places/$placeId2_/actions/$actionId_/quantities/': typeof DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2ActionsActionIdQuantitiesIndexRoute
@@ -5315,8 +5899,16 @@ export interface FileRoutesById {
   '/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/places/$placeId2_/checks/$checkId_/quantities/': typeof DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2ChecksCheckIdQuantitiesIndexRoute
   '/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/places/$placeId2_/checks/$checkId_/taxa/': typeof DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2ChecksCheckIdTaxaIndexRoute
   '/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/places/$placeId2_/files/$fileId_/preview/': typeof DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2FilesFileIdPreviewIndexRoute
+  '/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/places/$placeId2_/filtered-checks/$filteredViewId_/checks/': typeof DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2FilteredChecksFilteredViewIdChecksIndexRoute
+  '/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/places/$placeId2_/filtered-checks/$filteredViewId_/checks/$checkId_/files': typeof DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2FilteredChecksFilteredViewIdChecksCheckIdFilesRouteRouteWithChildren
+  '/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/places/$placeId2_/filtered-checks/$filteredViewId_/checks/$checkId_/quantities': typeof DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2FilteredChecksFilteredViewIdChecksCheckIdQuantitiesRouteRouteWithChildren
+  '/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/places/$placeId2_/filtered-checks/$filteredViewId_/checks/$checkId_/taxa': typeof DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2FilteredChecksFilteredViewIdChecksCheckIdTaxaRouteRouteWithChildren
+  '/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/filtered-checks/$filteredViewId_/checks/$checkId_/files/$fileId_/preview': typeof DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdFilteredChecksFilteredViewIdChecksCheckIdFilesFileIdPreviewRouteWithChildren
   '/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/places/$placeId2_/actions/$actionId_/files/$fileId_/preview': typeof DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2ActionsActionIdFilesFileIdPreviewRouteWithChildren
   '/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/places/$placeId2_/checks/$checkId_/files/$fileId_/preview': typeof DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2ChecksCheckIdFilesFileIdPreviewRouteWithChildren
+  '/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/places/$placeId2_/filtered-checks/$filteredViewId_/checks/$checkId_/check': typeof DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2FilteredChecksFilteredViewIdChecksCheckIdCheckRoute
+  '/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/filtered-checks/$filteredViewId_/checks/$checkId_/quantities/$checkQuantityId/': typeof DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdFilteredChecksFilteredViewIdChecksCheckIdQuantitiesCheckQuantityIdIndexRoute
+  '/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/filtered-checks/$filteredViewId_/checks/$checkId_/taxa/$checkTaxonId/': typeof DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdFilteredChecksFilteredViewIdChecksCheckIdTaxaCheckTaxonIdIndexRoute
   '/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/places/$placeId2_/action-reports/$actionReportId_/quantities/$actionReportQuantityId/': typeof DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2ActionReportsActionReportIdQuantitiesActionReportQuantityIdIndexRoute
   '/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/places/$placeId2_/actions/$actionId_/quantities/$actionQuantityId/': typeof DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2ActionsActionIdQuantitiesActionQuantityIdIndexRoute
   '/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/places/$placeId2_/actions/$actionId_/taxa/$actionTaxonId/': typeof DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2ActionsActionIdTaxaActionTaxonIdIndexRoute
@@ -5324,6 +5916,11 @@ export interface FileRoutesById {
   '/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/places/$placeId2_/checks/$checkId_/files/$fileId_/': typeof DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2ChecksCheckIdFilesFileIdIndexRoute
   '/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/places/$placeId2_/checks/$checkId_/quantities/$checkQuantityId/': typeof DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2ChecksCheckIdQuantitiesCheckQuantityIdIndexRoute
   '/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/places/$placeId2_/checks/$checkId_/taxa/$checkTaxonId/': typeof DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2ChecksCheckIdTaxaCheckTaxonIdIndexRoute
+  '/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/places/$placeId2_/filtered-checks/$filteredViewId_/checks/$checkId_/': typeof DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2FilteredChecksFilteredViewIdChecksCheckIdIndexRoute
+  '/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/places/$placeId2_/filtered-checks/$filteredViewId_/checks/$checkId_/files/$fileId_': typeof DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2FilteredChecksFilteredViewIdChecksCheckIdFilesFileIdRouteRouteWithChildren
+  '/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/filtered-checks/$filteredViewId_/checks/$checkId_/files/$fileId_/histories/$fileHistoryId': typeof DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdFilteredChecksFilteredViewIdChecksCheckIdFilesFileIdHistoriesFileHistoryIdRoute
+  '/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/filtered-checks/$filteredViewId_/checks/$checkId_/quantities/$checkQuantityId_/histories/$checkQuantityHistoryId': typeof DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdFilteredChecksFilteredViewIdChecksCheckIdQuantitiesCheckQuantityIdHistoriesCheckQuantityHistoryIdRoute
+  '/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/filtered-checks/$filteredViewId_/checks/$checkId_/taxa/$checkTaxonId_/histories/$checkTaxonHistoryId': typeof DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdFilteredChecksFilteredViewIdChecksCheckIdTaxaCheckTaxonIdHistoriesCheckTaxonHistoryIdRoute
   '/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/places/$placeId2_/action-reports/$actionReportId_/quantities/$actionReportQuantityId_/histories/$actionReportQuantityHistoryId': typeof DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2ActionReportsActionReportIdQuantitiesActionReportQuantityIdHistoriesActionReportQuantityHistoryIdRoute
   '/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/places/$placeId2_/actions/$actionId_/files/$fileId_/histories/$fileHistoryId': typeof DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2ActionsActionIdFilesFileIdHistoriesFileHistoryIdRoute
   '/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/places/$placeId2_/actions/$actionId_/quantities/$actionQuantityId_/histories/$actionQuantityHistoryId': typeof DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2ActionsActionIdQuantitiesActionQuantityIdHistoriesActionQuantityHistoryIdRoute
@@ -5332,8 +5929,22 @@ export interface FileRoutesById {
   '/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/places/$placeId2_/checks/$checkId_/files/$fileId_/histories/$fileHistoryId': typeof DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2ChecksCheckIdFilesFileIdHistoriesFileHistoryIdRoute
   '/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/places/$placeId2_/checks/$checkId_/quantities/$checkQuantityId_/histories/$checkQuantityHistoryId': typeof DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2ChecksCheckIdQuantitiesCheckQuantityIdHistoriesCheckQuantityHistoryIdRoute
   '/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/places/$placeId2_/checks/$checkId_/taxa/$checkTaxonId_/histories/$checkTaxonHistoryId': typeof DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2ChecksCheckIdTaxaCheckTaxonIdHistoriesCheckTaxonHistoryIdRoute
+  '/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/places/$placeId2_/filtered-checks/$filteredViewId_/checks/$checkId_/files/filter': typeof DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2FilteredChecksFilteredViewIdChecksCheckIdFilesFilterRoute
+  '/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/places/$placeId2_/filtered-checks/$filteredViewId_/checks/$checkId_/histories/$checkHistoryId': typeof DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2FilteredChecksFilteredViewIdChecksCheckIdHistoriesCheckHistoryIdRoute
+  '/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/filtered-checks/$filteredViewId_/checks/$checkId_/files/$fileId_/preview/': typeof DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdFilteredChecksFilteredViewIdChecksCheckIdFilesFileIdPreviewIndexRoute
   '/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/places/$placeId2_/actions/$actionId_/files/$fileId_/preview/': typeof DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2ActionsActionIdFilesFileIdPreviewIndexRoute
   '/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/places/$placeId2_/checks/$checkId_/files/$fileId_/preview/': typeof DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2ChecksCheckIdFilesFileIdPreviewIndexRoute
+  '/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/places/$placeId2_/filtered-checks/$filteredViewId_/checks/$checkId_/files/': typeof DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2FilteredChecksFilteredViewIdChecksCheckIdFilesIndexRoute
+  '/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/places/$placeId2_/filtered-checks/$filteredViewId_/checks/$checkId_/quantities/': typeof DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2FilteredChecksFilteredViewIdChecksCheckIdQuantitiesIndexRoute
+  '/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/places/$placeId2_/filtered-checks/$filteredViewId_/checks/$checkId_/taxa/': typeof DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2FilteredChecksFilteredViewIdChecksCheckIdTaxaIndexRoute
+  '/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/places/$placeId2_/filtered-checks/$filteredViewId_/checks/$checkId_/files/$fileId_/preview': typeof DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2FilteredChecksFilteredViewIdChecksCheckIdFilesFileIdPreviewRouteWithChildren
+  '/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/places/$placeId2_/filtered-checks/$filteredViewId_/checks/$checkId_/files/$fileId_/': typeof DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2FilteredChecksFilteredViewIdChecksCheckIdFilesFileIdIndexRoute
+  '/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/places/$placeId2_/filtered-checks/$filteredViewId_/checks/$checkId_/quantities/$checkQuantityId/': typeof DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2FilteredChecksFilteredViewIdChecksCheckIdQuantitiesCheckQuantityIdIndexRoute
+  '/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/places/$placeId2_/filtered-checks/$filteredViewId_/checks/$checkId_/taxa/$checkTaxonId/': typeof DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2FilteredChecksFilteredViewIdChecksCheckIdTaxaCheckTaxonIdIndexRoute
+  '/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/places/$placeId2_/filtered-checks/$filteredViewId_/checks/$checkId_/files/$fileId_/histories/$fileHistoryId': typeof DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2FilteredChecksFilteredViewIdChecksCheckIdFilesFileIdHistoriesFileHistoryIdRoute
+  '/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/places/$placeId2_/filtered-checks/$filteredViewId_/checks/$checkId_/quantities/$checkQuantityId_/histories/$checkQuantityHistoryId': typeof DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2FilteredChecksFilteredViewIdChecksCheckIdQuantitiesCheckQuantityIdHistoriesCheckQuantityHistoryIdRoute
+  '/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/places/$placeId2_/filtered-checks/$filteredViewId_/checks/$checkId_/taxa/$checkTaxonId_/histories/$checkTaxonHistoryId': typeof DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2FilteredChecksFilteredViewIdChecksCheckIdTaxaCheckTaxonIdHistoriesCheckTaxonHistoryIdRoute
+  '/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/places/$placeId2_/filtered-checks/$filteredViewId_/checks/$checkId_/files/$fileId_/preview/': typeof DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2FilteredChecksFilteredViewIdChecksCheckIdFilesFileIdPreviewIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -5396,6 +6007,7 @@ export interface FileRouteTypes {
     | '/data/projects/$projectId/exports-run'
     | '/data/projects/$projectId/fields'
     | '/data/projects/$projectId/files'
+    | '/data/projects/$projectId/filtered-views'
     | '/data/projects/$projectId/lists'
     | '/data/projects/$projectId/place-levels'
     | '/data/projects/$projectId/qc-assignments'
@@ -5432,6 +6044,7 @@ export interface FileRouteTypes {
     | '/data/projects/$projectId/fields/filter'
     | '/data/projects/$projectId/files/$fileId'
     | '/data/projects/$projectId/files/filter'
+    | '/data/projects/$projectId/filtered-views/filter'
     | '/data/projects/$projectId/histories/$projectHistoryId'
     | '/data/projects/$projectId/lists/filter'
     | '/data/projects/$projectId/qcs/filter'
@@ -5455,6 +6068,7 @@ export interface FileRouteTypes {
     | '/data/projects/$projectId/exports/'
     | '/data/projects/$projectId/fields/'
     | '/data/projects/$projectId/files/'
+    | '/data/projects/$projectId/filtered-views/'
     | '/data/projects/$projectId/lists/'
     | '/data/projects/$projectId/place-levels/'
     | '/data/projects/$projectId/qc-assignments/'
@@ -5510,6 +6124,7 @@ export interface FileRouteTypes {
     | '/data/projects/$projectId/crs/$projectCrsId/'
     | '/data/projects/$projectId/designs/$projectReportDesignId/'
     | '/data/projects/$projectId/exports/$projectExportsId/'
+    | '/data/projects/$projectId/filtered-views/$filteredViewId/'
     | '/data/projects/$projectId/lists/$listId/'
     | '/data/projects/$projectId/place-levels/$placeLevelId/'
     | '/data/projects/$projectId/qcs/$projectQcId/'
@@ -5663,6 +6278,7 @@ export interface FileRouteTypes {
     | '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/checks/$checkId/files'
     | '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/checks/$checkId/quantities'
     | '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/checks/$checkId/taxa'
+    | '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/filtered-checks/$filteredViewId/checks'
     | '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/places/$placeId2/action-reports'
     | '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/places/$placeId2/actions'
     | '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/places/$placeId2/check-reports'
@@ -5688,6 +6304,7 @@ export interface FileRouteTypes {
     | '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/places/check-reports/'
     | '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/places/taxa/'
     | '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/users/$placeUserId/'
+    | '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/filtered-checks/$filteredViewId/checks/$checkId'
     | '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/places/$placeId2/action-reports/$actionReportId'
     | '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/places/$placeId2/actions/$actionId'
     | '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/places/$placeId2/check-reports/$checkReportId'
@@ -5702,6 +6319,7 @@ export interface FileRouteTypes {
     | '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/checks/$checkId/files/$fileId'
     | '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/checks/$checkId/files/filter'
     | '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/checks/$checkId/histories/$checkHistoryId'
+    | '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/filtered-checks/$filteredViewId/checks/filter'
     | '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/observations/$observationId/histories/$observationHistoryId'
     | '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/places/$placeId2/action-reports/filter'
     | '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/places/$placeId2/actions/filter'
@@ -5721,6 +6339,7 @@ export interface FileRouteTypes {
     | '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/checks/$checkId/quantities/'
     | '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/checks/$checkId/taxa/'
     | '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/files/$fileId/preview/'
+    | '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/filtered-checks/$filteredViewId/checks/'
     | '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/places/$placeId2/action-reports/'
     | '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/places/$placeId2/actions/'
     | '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/places/$placeId2/check-reports/'
@@ -5730,6 +6349,9 @@ export interface FileRouteTypes {
     | '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/places/$placeId2/users/'
     | '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/places/check-reports/$checkReportId/'
     | '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/places/taxa/$subprojectTaxonId/'
+    | '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/filtered-checks/$filteredViewId/checks/$checkId/files'
+    | '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/filtered-checks/$filteredViewId/checks/$checkId/quantities'
+    | '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/filtered-checks/$filteredViewId/checks/$checkId/taxa'
     | '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/places/$placeId2/action-reports/$actionReportId/quantities'
     | '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/places/$placeId2/actions/$actionId/files'
     | '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/places/$placeId2/actions/$actionId/quantities'
@@ -5738,8 +6360,10 @@ export interface FileRouteTypes {
     | '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/places/$placeId2/checks/$checkId/files'
     | '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/places/$placeId2/checks/$checkId/quantities'
     | '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/places/$placeId2/checks/$checkId/taxa'
+    | '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/places/$placeId2/filtered-checks/$filteredViewId/checks'
     | '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/actions/$actionId/files/$fileId/preview'
     | '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/checks/$checkId/files/$fileId/preview'
+    | '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/filtered-checks/$filteredViewId/checks/$checkId/check'
     | '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/places/$placeId2/action-reports/$actionReportId/report'
     | '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/places/$placeId2/actions/$actionId/action'
     | '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/places/$placeId2/check-reports/$checkReportId/report'
@@ -5751,6 +6375,7 @@ export interface FileRouteTypes {
     | '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/check-reports/$checkReportId/quantities/$checkReportQuantityId/'
     | '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/checks/$checkId/quantities/$checkQuantityId/'
     | '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/checks/$checkId/taxa/$checkTaxonId/'
+    | '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/filtered-checks/$filteredViewId/checks/$checkId/'
     | '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/places/$placeId2/action-reports/$actionReportId/'
     | '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/places/$placeId2/actions/$actionId/'
     | '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/places/$placeId2/check-reports/$checkReportId/'
@@ -5758,6 +6383,7 @@ export interface FileRouteTypes {
     | '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/places/$placeId2/observations/$observationId/'
     | '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/places/$placeId2/users/$placeUserId/'
     | '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/places/$placeId2/checks/$checkId/files/$fileId'
+    | '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/places/$placeId2/filtered-checks/$filteredViewId/checks/$checkId'
     | '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/action-reports/$actionReportId/quantities/$actionReportQuantityId/histories/$actionReportQuantityHistoryId'
     | '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/actions/$actionId/files/$fileId/histories/$fileHistoryId'
     | '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/actions/$actionId/quantities/$actionQuantityId/histories/$actionQuantityHistoryId'
@@ -5766,6 +6392,9 @@ export interface FileRouteTypes {
     | '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/checks/$checkId/files/$fileId/histories/$fileHistoryId'
     | '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/checks/$checkId/quantities/$checkQuantityId/histories/$checkQuantityHistoryId'
     | '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/checks/$checkId/taxa/$checkTaxonId/histories/$checkTaxonHistoryId'
+    | '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/filtered-checks/$filteredViewId/checks/$checkId/files/$fileId'
+    | '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/filtered-checks/$filteredViewId/checks/$checkId/files/filter'
+    | '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/filtered-checks/$filteredViewId/checks/$checkId/histories/$checkHistoryId'
     | '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/places/$placeId2/action-reports/$actionReportId/histories/$actionReportHistoryId'
     | '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/places/$placeId2/actions/$actionId/files/$fileId'
     | '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/places/$placeId2/actions/$actionId/files/filter'
@@ -5773,10 +6402,14 @@ export interface FileRouteTypes {
     | '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/places/$placeId2/check-reports/$checkReportId/histories/$checkReportHistoryId'
     | '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/places/$placeId2/checks/$checkId/files/filter'
     | '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/places/$placeId2/checks/$checkId/histories/$checkHistoryId'
+    | '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/places/$placeId2/filtered-checks/$filteredViewId/checks/filter'
     | '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/places/$placeId2/observations/$observationId/histories/$observationHistoryId'
     | '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/places/$placeId2/users/$placeUserId/histories/$placeUserHistoryId'
     | '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/actions/$actionId/files/$fileId/preview/'
     | '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/checks/$checkId/files/$fileId/preview/'
+    | '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/filtered-checks/$filteredViewId/checks/$checkId/files/'
+    | '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/filtered-checks/$filteredViewId/checks/$checkId/quantities/'
+    | '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/filtered-checks/$filteredViewId/checks/$checkId/taxa/'
     | '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/places/$placeId2/action-reports/$actionReportId/quantities/'
     | '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/places/$placeId2/actions/$actionId/files/'
     | '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/places/$placeId2/actions/$actionId/quantities/'
@@ -5786,8 +6419,16 @@ export interface FileRouteTypes {
     | '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/places/$placeId2/checks/$checkId/quantities/'
     | '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/places/$placeId2/checks/$checkId/taxa/'
     | '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/places/$placeId2/files/$fileId/preview/'
+    | '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/places/$placeId2/filtered-checks/$filteredViewId/checks/'
+    | '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/places/$placeId2/filtered-checks/$filteredViewId/checks/$checkId/files'
+    | '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/places/$placeId2/filtered-checks/$filteredViewId/checks/$checkId/quantities'
+    | '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/places/$placeId2/filtered-checks/$filteredViewId/checks/$checkId/taxa'
+    | '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/filtered-checks/$filteredViewId/checks/$checkId/files/$fileId/preview'
     | '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/places/$placeId2/actions/$actionId/files/$fileId/preview'
     | '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/places/$placeId2/checks/$checkId/files/$fileId/preview'
+    | '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/places/$placeId2/filtered-checks/$filteredViewId/checks/$checkId/check'
+    | '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/filtered-checks/$filteredViewId/checks/$checkId/quantities/$checkQuantityId/'
+    | '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/filtered-checks/$filteredViewId/checks/$checkId/taxa/$checkTaxonId/'
     | '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/places/$placeId2/action-reports/$actionReportId/quantities/$actionReportQuantityId/'
     | '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/places/$placeId2/actions/$actionId/quantities/$actionQuantityId/'
     | '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/places/$placeId2/actions/$actionId/taxa/$actionTaxonId/'
@@ -5795,6 +6436,11 @@ export interface FileRouteTypes {
     | '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/places/$placeId2/checks/$checkId/files/$fileId/'
     | '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/places/$placeId2/checks/$checkId/quantities/$checkQuantityId/'
     | '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/places/$placeId2/checks/$checkId/taxa/$checkTaxonId/'
+    | '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/places/$placeId2/filtered-checks/$filteredViewId/checks/$checkId/'
+    | '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/places/$placeId2/filtered-checks/$filteredViewId/checks/$checkId/files/$fileId'
+    | '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/filtered-checks/$filteredViewId/checks/$checkId/files/$fileId/histories/$fileHistoryId'
+    | '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/filtered-checks/$filteredViewId/checks/$checkId/quantities/$checkQuantityId/histories/$checkQuantityHistoryId'
+    | '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/filtered-checks/$filteredViewId/checks/$checkId/taxa/$checkTaxonId/histories/$checkTaxonHistoryId'
     | '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/places/$placeId2/action-reports/$actionReportId/quantities/$actionReportQuantityId/histories/$actionReportQuantityHistoryId'
     | '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/places/$placeId2/actions/$actionId/files/$fileId/histories/$fileHistoryId'
     | '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/places/$placeId2/actions/$actionId/quantities/$actionQuantityId/histories/$actionQuantityHistoryId'
@@ -5803,8 +6449,22 @@ export interface FileRouteTypes {
     | '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/places/$placeId2/checks/$checkId/files/$fileId/histories/$fileHistoryId'
     | '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/places/$placeId2/checks/$checkId/quantities/$checkQuantityId/histories/$checkQuantityHistoryId'
     | '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/places/$placeId2/checks/$checkId/taxa/$checkTaxonId/histories/$checkTaxonHistoryId'
+    | '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/places/$placeId2/filtered-checks/$filteredViewId/checks/$checkId/files/filter'
+    | '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/places/$placeId2/filtered-checks/$filteredViewId/checks/$checkId/histories/$checkHistoryId'
+    | '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/filtered-checks/$filteredViewId/checks/$checkId/files/$fileId/preview/'
     | '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/places/$placeId2/actions/$actionId/files/$fileId/preview/'
     | '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/places/$placeId2/checks/$checkId/files/$fileId/preview/'
+    | '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/places/$placeId2/filtered-checks/$filteredViewId/checks/$checkId/files/'
+    | '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/places/$placeId2/filtered-checks/$filteredViewId/checks/$checkId/quantities/'
+    | '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/places/$placeId2/filtered-checks/$filteredViewId/checks/$checkId/taxa/'
+    | '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/places/$placeId2/filtered-checks/$filteredViewId/checks/$checkId/files/$fileId/preview'
+    | '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/places/$placeId2/filtered-checks/$filteredViewId/checks/$checkId/files/$fileId/'
+    | '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/places/$placeId2/filtered-checks/$filteredViewId/checks/$checkId/quantities/$checkQuantityId/'
+    | '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/places/$placeId2/filtered-checks/$filteredViewId/checks/$checkId/taxa/$checkTaxonId/'
+    | '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/places/$placeId2/filtered-checks/$filteredViewId/checks/$checkId/files/$fileId/histories/$fileHistoryId'
+    | '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/places/$placeId2/filtered-checks/$filteredViewId/checks/$checkId/quantities/$checkQuantityId/histories/$checkQuantityHistoryId'
+    | '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/places/$placeId2/filtered-checks/$filteredViewId/checks/$checkId/taxa/$checkTaxonId/histories/$checkTaxonHistoryId'
+    | '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/places/$placeId2/filtered-checks/$filteredViewId/checks/$checkId/files/$fileId/preview/'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/auth'
@@ -5851,6 +6511,7 @@ export interface FileRouteTypes {
     | '/data/projects/$projectId/fields/filter'
     | '/data/projects/$projectId/files/$fileId'
     | '/data/projects/$projectId/files/filter'
+    | '/data/projects/$projectId/filtered-views/filter'
     | '/data/projects/$projectId/histories/$projectHistoryId'
     | '/data/projects/$projectId/lists/filter'
     | '/data/projects/$projectId/qcs/filter'
@@ -5874,6 +6535,7 @@ export interface FileRouteTypes {
     | '/data/projects/$projectId/exports'
     | '/data/projects/$projectId/fields'
     | '/data/projects/$projectId/files'
+    | '/data/projects/$projectId/filtered-views'
     | '/data/projects/$projectId/lists'
     | '/data/projects/$projectId/place-levels'
     | '/data/projects/$projectId/qc-assignments'
@@ -5906,6 +6568,7 @@ export interface FileRouteTypes {
     | '/data/projects/$projectId/crs/$projectCrsId'
     | '/data/projects/$projectId/designs/$projectReportDesignId'
     | '/data/projects/$projectId/exports/$projectExportsId'
+    | '/data/projects/$projectId/filtered-views/$filteredViewId'
     | '/data/projects/$projectId/lists/$listId'
     | '/data/projects/$projectId/place-levels/$placeLevelId'
     | '/data/projects/$projectId/qcs/$projectQcId'
@@ -6057,6 +6720,7 @@ export interface FileRouteTypes {
     | '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/checks/$checkId/files/$fileId'
     | '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/checks/$checkId/files/filter'
     | '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/checks/$checkId/histories/$checkHistoryId'
+    | '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/filtered-checks/$filteredViewId/checks/filter'
     | '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/observations/$observationId/histories/$observationHistoryId'
     | '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/places/$placeId2/action-reports/filter'
     | '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/places/$placeId2/actions/filter'
@@ -6076,6 +6740,7 @@ export interface FileRouteTypes {
     | '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/checks/$checkId/quantities'
     | '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/checks/$checkId/taxa'
     | '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/files/$fileId/preview'
+    | '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/filtered-checks/$filteredViewId/checks'
     | '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/places/$placeId2/action-reports'
     | '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/places/$placeId2/actions'
     | '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/places/$placeId2/check-reports'
@@ -6085,6 +6750,7 @@ export interface FileRouteTypes {
     | '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/places/$placeId2/users'
     | '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/places/check-reports/$checkReportId'
     | '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/places/taxa/$subprojectTaxonId'
+    | '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/filtered-checks/$filteredViewId/checks/$checkId/check'
     | '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/places/$placeId2/action-reports/$actionReportId/report'
     | '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/places/$placeId2/actions/$actionId/action'
     | '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/places/$placeId2/check-reports/$checkReportId/report'
@@ -6095,6 +6761,7 @@ export interface FileRouteTypes {
     | '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/check-reports/$checkReportId/quantities/$checkReportQuantityId'
     | '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/checks/$checkId/quantities/$checkQuantityId'
     | '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/checks/$checkId/taxa/$checkTaxonId'
+    | '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/filtered-checks/$filteredViewId/checks/$checkId'
     | '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/places/$placeId2/action-reports/$actionReportId'
     | '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/places/$placeId2/actions/$actionId'
     | '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/places/$placeId2/check-reports/$checkReportId'
@@ -6109,6 +6776,9 @@ export interface FileRouteTypes {
     | '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/checks/$checkId/files/$fileId/histories/$fileHistoryId'
     | '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/checks/$checkId/quantities/$checkQuantityId/histories/$checkQuantityHistoryId'
     | '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/checks/$checkId/taxa/$checkTaxonId/histories/$checkTaxonHistoryId'
+    | '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/filtered-checks/$filteredViewId/checks/$checkId/files/$fileId'
+    | '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/filtered-checks/$filteredViewId/checks/$checkId/files/filter'
+    | '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/filtered-checks/$filteredViewId/checks/$checkId/histories/$checkHistoryId'
     | '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/places/$placeId2/action-reports/$actionReportId/histories/$actionReportHistoryId'
     | '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/places/$placeId2/actions/$actionId/files/$fileId'
     | '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/places/$placeId2/actions/$actionId/files/filter'
@@ -6116,10 +6786,14 @@ export interface FileRouteTypes {
     | '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/places/$placeId2/check-reports/$checkReportId/histories/$checkReportHistoryId'
     | '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/places/$placeId2/checks/$checkId/files/filter'
     | '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/places/$placeId2/checks/$checkId/histories/$checkHistoryId'
+    | '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/places/$placeId2/filtered-checks/$filteredViewId/checks/filter'
     | '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/places/$placeId2/observations/$observationId/histories/$observationHistoryId'
     | '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/places/$placeId2/users/$placeUserId/histories/$placeUserHistoryId'
     | '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/actions/$actionId/files/$fileId/preview'
     | '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/checks/$checkId/files/$fileId/preview'
+    | '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/filtered-checks/$filteredViewId/checks/$checkId/files'
+    | '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/filtered-checks/$filteredViewId/checks/$checkId/quantities'
+    | '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/filtered-checks/$filteredViewId/checks/$checkId/taxa'
     | '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/places/$placeId2/action-reports/$actionReportId/quantities'
     | '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/places/$placeId2/actions/$actionId/files'
     | '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/places/$placeId2/actions/$actionId/quantities'
@@ -6129,6 +6803,10 @@ export interface FileRouteTypes {
     | '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/places/$placeId2/checks/$checkId/quantities'
     | '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/places/$placeId2/checks/$checkId/taxa'
     | '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/places/$placeId2/files/$fileId/preview'
+    | '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/places/$placeId2/filtered-checks/$filteredViewId/checks'
+    | '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/places/$placeId2/filtered-checks/$filteredViewId/checks/$checkId/check'
+    | '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/filtered-checks/$filteredViewId/checks/$checkId/quantities/$checkQuantityId'
+    | '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/filtered-checks/$filteredViewId/checks/$checkId/taxa/$checkTaxonId'
     | '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/places/$placeId2/action-reports/$actionReportId/quantities/$actionReportQuantityId'
     | '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/places/$placeId2/actions/$actionId/quantities/$actionQuantityId'
     | '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/places/$placeId2/actions/$actionId/taxa/$actionTaxonId'
@@ -6136,6 +6814,10 @@ export interface FileRouteTypes {
     | '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/places/$placeId2/checks/$checkId/files/$fileId'
     | '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/places/$placeId2/checks/$checkId/quantities/$checkQuantityId'
     | '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/places/$placeId2/checks/$checkId/taxa/$checkTaxonId'
+    | '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/places/$placeId2/filtered-checks/$filteredViewId/checks/$checkId'
+    | '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/filtered-checks/$filteredViewId/checks/$checkId/files/$fileId/histories/$fileHistoryId'
+    | '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/filtered-checks/$filteredViewId/checks/$checkId/quantities/$checkQuantityId/histories/$checkQuantityHistoryId'
+    | '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/filtered-checks/$filteredViewId/checks/$checkId/taxa/$checkTaxonId/histories/$checkTaxonHistoryId'
     | '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/places/$placeId2/action-reports/$actionReportId/quantities/$actionReportQuantityId/histories/$actionReportQuantityHistoryId'
     | '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/places/$placeId2/actions/$actionId/files/$fileId/histories/$fileHistoryId'
     | '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/places/$placeId2/actions/$actionId/quantities/$actionQuantityId/histories/$actionQuantityHistoryId'
@@ -6144,8 +6826,21 @@ export interface FileRouteTypes {
     | '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/places/$placeId2/checks/$checkId/files/$fileId/histories/$fileHistoryId'
     | '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/places/$placeId2/checks/$checkId/quantities/$checkQuantityId/histories/$checkQuantityHistoryId'
     | '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/places/$placeId2/checks/$checkId/taxa/$checkTaxonId/histories/$checkTaxonHistoryId'
+    | '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/places/$placeId2/filtered-checks/$filteredViewId/checks/$checkId/files/filter'
+    | '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/places/$placeId2/filtered-checks/$filteredViewId/checks/$checkId/histories/$checkHistoryId'
+    | '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/filtered-checks/$filteredViewId/checks/$checkId/files/$fileId/preview'
     | '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/places/$placeId2/actions/$actionId/files/$fileId/preview'
     | '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/places/$placeId2/checks/$checkId/files/$fileId/preview'
+    | '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/places/$placeId2/filtered-checks/$filteredViewId/checks/$checkId/files'
+    | '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/places/$placeId2/filtered-checks/$filteredViewId/checks/$checkId/quantities'
+    | '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/places/$placeId2/filtered-checks/$filteredViewId/checks/$checkId/taxa'
+    | '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/places/$placeId2/filtered-checks/$filteredViewId/checks/$checkId/files/$fileId'
+    | '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/places/$placeId2/filtered-checks/$filteredViewId/checks/$checkId/quantities/$checkQuantityId'
+    | '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/places/$placeId2/filtered-checks/$filteredViewId/checks/$checkId/taxa/$checkTaxonId'
+    | '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/places/$placeId2/filtered-checks/$filteredViewId/checks/$checkId/files/$fileId/histories/$fileHistoryId'
+    | '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/places/$placeId2/filtered-checks/$filteredViewId/checks/$checkId/quantities/$checkQuantityId/histories/$checkQuantityHistoryId'
+    | '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/places/$placeId2/filtered-checks/$filteredViewId/checks/$checkId/taxa/$checkTaxonId/histories/$checkTaxonHistoryId'
+    | '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/places/$placeId2/filtered-checks/$filteredViewId/checks/$checkId/files/$fileId/preview'
   id:
     | '__root__'
     | '/data'
@@ -6207,6 +6902,7 @@ export interface FileRouteTypes {
     | '/data/projects/$projectId_/exports-run'
     | '/data/projects/$projectId_/fields'
     | '/data/projects/$projectId_/files'
+    | '/data/projects/$projectId_/filtered-views'
     | '/data/projects/$projectId_/lists'
     | '/data/projects/$projectId_/place-levels'
     | '/data/projects/$projectId_/qc-assignments'
@@ -6243,6 +6939,7 @@ export interface FileRouteTypes {
     | '/data/projects/$projectId_/fields/filter'
     | '/data/projects/$projectId_/files/$fileId'
     | '/data/projects/$projectId_/files/filter'
+    | '/data/projects/$projectId_/filtered-views/filter'
     | '/data/projects/$projectId_/histories/$projectHistoryId'
     | '/data/projects/$projectId_/lists/filter'
     | '/data/projects/$projectId_/qcs/filter'
@@ -6266,6 +6963,7 @@ export interface FileRouteTypes {
     | '/data/projects/$projectId_/exports/'
     | '/data/projects/$projectId_/fields/'
     | '/data/projects/$projectId_/files/'
+    | '/data/projects/$projectId_/filtered-views/'
     | '/data/projects/$projectId_/lists/'
     | '/data/projects/$projectId_/place-levels/'
     | '/data/projects/$projectId_/qc-assignments/'
@@ -6321,6 +7019,7 @@ export interface FileRouteTypes {
     | '/data/projects/$projectId_/crs/$projectCrsId/'
     | '/data/projects/$projectId_/designs/$projectReportDesignId/'
     | '/data/projects/$projectId_/exports/$projectExportsId/'
+    | '/data/projects/$projectId_/filtered-views/$filteredViewId/'
     | '/data/projects/$projectId_/lists/$listId_/'
     | '/data/projects/$projectId_/place-levels/$placeLevelId/'
     | '/data/projects/$projectId_/qcs/$projectQcId/'
@@ -6474,6 +7173,7 @@ export interface FileRouteTypes {
     | '/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/checks/$checkId_/files'
     | '/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/checks/$checkId_/quantities'
     | '/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/checks/$checkId_/taxa'
+    | '/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/filtered-checks/$filteredViewId_/checks'
     | '/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/places/$placeId2_/action-reports'
     | '/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/places/$placeId2_/actions'
     | '/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/places/$placeId2_/check-reports'
@@ -6499,6 +7199,7 @@ export interface FileRouteTypes {
     | '/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/places/check-reports/'
     | '/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/places/taxa/'
     | '/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/users/$placeUserId/'
+    | '/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/filtered-checks/$filteredViewId_/checks/$checkId_'
     | '/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/places/$placeId2_/action-reports/$actionReportId_'
     | '/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/places/$placeId2_/actions/$actionId_'
     | '/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/places/$placeId2_/check-reports/$checkReportId_'
@@ -6513,6 +7214,7 @@ export interface FileRouteTypes {
     | '/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/checks/$checkId_/files/$fileId'
     | '/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/checks/$checkId_/files/filter'
     | '/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/checks/$checkId_/histories/$checkHistoryId'
+    | '/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/filtered-checks/$filteredViewId_/checks/filter'
     | '/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/observations/$observationId_/histories/$observationHistoryId'
     | '/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/places/$placeId2_/action-reports/filter'
     | '/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/places/$placeId2_/actions/filter'
@@ -6532,6 +7234,7 @@ export interface FileRouteTypes {
     | '/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/checks/$checkId_/quantities/'
     | '/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/checks/$checkId_/taxa/'
     | '/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/files/$fileId_/preview/'
+    | '/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/filtered-checks/$filteredViewId_/checks/'
     | '/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/places/$placeId2_/action-reports/'
     | '/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/places/$placeId2_/actions/'
     | '/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/places/$placeId2_/check-reports/'
@@ -6541,6 +7244,9 @@ export interface FileRouteTypes {
     | '/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/places/$placeId2_/users/'
     | '/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/places/check-reports/$checkReportId/'
     | '/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/places/taxa/$subprojectTaxonId/'
+    | '/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/filtered-checks/$filteredViewId_/checks/$checkId_/files'
+    | '/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/filtered-checks/$filteredViewId_/checks/$checkId_/quantities'
+    | '/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/filtered-checks/$filteredViewId_/checks/$checkId_/taxa'
     | '/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/places/$placeId2_/action-reports/$actionReportId_/quantities'
     | '/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/places/$placeId2_/actions/$actionId_/files'
     | '/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/places/$placeId2_/actions/$actionId_/quantities'
@@ -6549,8 +7255,10 @@ export interface FileRouteTypes {
     | '/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/places/$placeId2_/checks/$checkId_/files'
     | '/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/places/$placeId2_/checks/$checkId_/quantities'
     | '/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/places/$placeId2_/checks/$checkId_/taxa'
+    | '/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/places/$placeId2_/filtered-checks/$filteredViewId_/checks'
     | '/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/actions/$actionId_/files/$fileId_/preview'
     | '/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/checks/$checkId_/files/$fileId_/preview'
+    | '/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/filtered-checks/$filteredViewId_/checks/$checkId_/check'
     | '/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/places/$placeId2_/action-reports/$actionReportId_/report'
     | '/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/places/$placeId2_/actions/$actionId_/action'
     | '/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/places/$placeId2_/check-reports/$checkReportId_/report'
@@ -6562,6 +7270,7 @@ export interface FileRouteTypes {
     | '/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/check-reports/$checkReportId_/quantities/$checkReportQuantityId/'
     | '/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/checks/$checkId_/quantities/$checkQuantityId/'
     | '/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/checks/$checkId_/taxa/$checkTaxonId/'
+    | '/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/filtered-checks/$filteredViewId_/checks/$checkId_/'
     | '/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/places/$placeId2_/action-reports/$actionReportId_/'
     | '/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/places/$placeId2_/actions/$actionId_/'
     | '/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/places/$placeId2_/check-reports/$checkReportId_/'
@@ -6569,6 +7278,7 @@ export interface FileRouteTypes {
     | '/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/places/$placeId2_/observations/$observationId/'
     | '/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/places/$placeId2_/users/$placeUserId_/'
     | '/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/places/$placeId2_/checks/$checkId_/files/$fileId_'
+    | '/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/places/$placeId2_/filtered-checks/$filteredViewId_/checks/$checkId_'
     | '/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/action-reports/$actionReportId_/quantities/$actionReportQuantityId_/histories/$actionReportQuantityHistoryId'
     | '/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/actions/$actionId_/files/$fileId_/histories/$fileHistoryId'
     | '/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/actions/$actionId_/quantities/$actionQuantityId_/histories/$actionQuantityHistoryId'
@@ -6577,6 +7287,9 @@ export interface FileRouteTypes {
     | '/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/checks/$checkId_/files/$fileId_/histories/$fileHistoryId'
     | '/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/checks/$checkId_/quantities/$checkQuantityId_/histories/$checkQuantityHistoryId'
     | '/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/checks/$checkId_/taxa/$checkTaxonId_/histories/$checkTaxonHistoryId'
+    | '/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/filtered-checks/$filteredViewId_/checks/$checkId_/files/$fileId'
+    | '/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/filtered-checks/$filteredViewId_/checks/$checkId_/files/filter'
+    | '/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/filtered-checks/$filteredViewId_/checks/$checkId_/histories/$checkHistoryId'
     | '/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/places/$placeId2_/action-reports/$actionReportId_/histories/$actionReportHistoryId'
     | '/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/places/$placeId2_/actions/$actionId_/files/$fileId'
     | '/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/places/$placeId2_/actions/$actionId_/files/filter'
@@ -6584,10 +7297,14 @@ export interface FileRouteTypes {
     | '/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/places/$placeId2_/check-reports/$checkReportId_/histories/$checkReportHistoryId'
     | '/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/places/$placeId2_/checks/$checkId_/files/filter'
     | '/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/places/$placeId2_/checks/$checkId_/histories/$checkHistoryId'
+    | '/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/places/$placeId2_/filtered-checks/$filteredViewId_/checks/filter'
     | '/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/places/$placeId2_/observations/$observationId_/histories/$observationHistoryId'
     | '/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/places/$placeId2_/users/$placeUserId_/histories/$placeUserHistoryId'
     | '/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/actions/$actionId_/files/$fileId_/preview/'
     | '/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/checks/$checkId_/files/$fileId_/preview/'
+    | '/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/filtered-checks/$filteredViewId_/checks/$checkId_/files/'
+    | '/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/filtered-checks/$filteredViewId_/checks/$checkId_/quantities/'
+    | '/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/filtered-checks/$filteredViewId_/checks/$checkId_/taxa/'
     | '/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/places/$placeId2_/action-reports/$actionReportId_/quantities/'
     | '/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/places/$placeId2_/actions/$actionId_/files/'
     | '/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/places/$placeId2_/actions/$actionId_/quantities/'
@@ -6597,8 +7314,16 @@ export interface FileRouteTypes {
     | '/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/places/$placeId2_/checks/$checkId_/quantities/'
     | '/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/places/$placeId2_/checks/$checkId_/taxa/'
     | '/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/places/$placeId2_/files/$fileId_/preview/'
+    | '/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/places/$placeId2_/filtered-checks/$filteredViewId_/checks/'
+    | '/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/places/$placeId2_/filtered-checks/$filteredViewId_/checks/$checkId_/files'
+    | '/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/places/$placeId2_/filtered-checks/$filteredViewId_/checks/$checkId_/quantities'
+    | '/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/places/$placeId2_/filtered-checks/$filteredViewId_/checks/$checkId_/taxa'
+    | '/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/filtered-checks/$filteredViewId_/checks/$checkId_/files/$fileId_/preview'
     | '/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/places/$placeId2_/actions/$actionId_/files/$fileId_/preview'
     | '/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/places/$placeId2_/checks/$checkId_/files/$fileId_/preview'
+    | '/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/places/$placeId2_/filtered-checks/$filteredViewId_/checks/$checkId_/check'
+    | '/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/filtered-checks/$filteredViewId_/checks/$checkId_/quantities/$checkQuantityId/'
+    | '/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/filtered-checks/$filteredViewId_/checks/$checkId_/taxa/$checkTaxonId/'
     | '/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/places/$placeId2_/action-reports/$actionReportId_/quantities/$actionReportQuantityId/'
     | '/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/places/$placeId2_/actions/$actionId_/quantities/$actionQuantityId/'
     | '/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/places/$placeId2_/actions/$actionId_/taxa/$actionTaxonId/'
@@ -6606,6 +7331,11 @@ export interface FileRouteTypes {
     | '/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/places/$placeId2_/checks/$checkId_/files/$fileId_/'
     | '/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/places/$placeId2_/checks/$checkId_/quantities/$checkQuantityId/'
     | '/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/places/$placeId2_/checks/$checkId_/taxa/$checkTaxonId/'
+    | '/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/places/$placeId2_/filtered-checks/$filteredViewId_/checks/$checkId_/'
+    | '/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/places/$placeId2_/filtered-checks/$filteredViewId_/checks/$checkId_/files/$fileId_'
+    | '/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/filtered-checks/$filteredViewId_/checks/$checkId_/files/$fileId_/histories/$fileHistoryId'
+    | '/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/filtered-checks/$filteredViewId_/checks/$checkId_/quantities/$checkQuantityId_/histories/$checkQuantityHistoryId'
+    | '/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/filtered-checks/$filteredViewId_/checks/$checkId_/taxa/$checkTaxonId_/histories/$checkTaxonHistoryId'
     | '/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/places/$placeId2_/action-reports/$actionReportId_/quantities/$actionReportQuantityId_/histories/$actionReportQuantityHistoryId'
     | '/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/places/$placeId2_/actions/$actionId_/files/$fileId_/histories/$fileHistoryId'
     | '/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/places/$placeId2_/actions/$actionId_/quantities/$actionQuantityId_/histories/$actionQuantityHistoryId'
@@ -6614,8 +7344,22 @@ export interface FileRouteTypes {
     | '/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/places/$placeId2_/checks/$checkId_/files/$fileId_/histories/$fileHistoryId'
     | '/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/places/$placeId2_/checks/$checkId_/quantities/$checkQuantityId_/histories/$checkQuantityHistoryId'
     | '/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/places/$placeId2_/checks/$checkId_/taxa/$checkTaxonId_/histories/$checkTaxonHistoryId'
+    | '/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/places/$placeId2_/filtered-checks/$filteredViewId_/checks/$checkId_/files/filter'
+    | '/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/places/$placeId2_/filtered-checks/$filteredViewId_/checks/$checkId_/histories/$checkHistoryId'
+    | '/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/filtered-checks/$filteredViewId_/checks/$checkId_/files/$fileId_/preview/'
     | '/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/places/$placeId2_/actions/$actionId_/files/$fileId_/preview/'
     | '/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/places/$placeId2_/checks/$checkId_/files/$fileId_/preview/'
+    | '/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/places/$placeId2_/filtered-checks/$filteredViewId_/checks/$checkId_/files/'
+    | '/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/places/$placeId2_/filtered-checks/$filteredViewId_/checks/$checkId_/quantities/'
+    | '/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/places/$placeId2_/filtered-checks/$filteredViewId_/checks/$checkId_/taxa/'
+    | '/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/places/$placeId2_/filtered-checks/$filteredViewId_/checks/$checkId_/files/$fileId_/preview'
+    | '/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/places/$placeId2_/filtered-checks/$filteredViewId_/checks/$checkId_/files/$fileId_/'
+    | '/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/places/$placeId2_/filtered-checks/$filteredViewId_/checks/$checkId_/quantities/$checkQuantityId/'
+    | '/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/places/$placeId2_/filtered-checks/$filteredViewId_/checks/$checkId_/taxa/$checkTaxonId/'
+    | '/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/places/$placeId2_/filtered-checks/$filteredViewId_/checks/$checkId_/files/$fileId_/histories/$fileHistoryId'
+    | '/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/places/$placeId2_/filtered-checks/$filteredViewId_/checks/$checkId_/quantities/$checkQuantityId_/histories/$checkQuantityHistoryId'
+    | '/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/places/$placeId2_/filtered-checks/$filteredViewId_/checks/$checkId_/taxa/$checkTaxonId_/histories/$checkTaxonHistoryId'
+    | '/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/places/$placeId2_/filtered-checks/$filteredViewId_/checks/$checkId_/files/$fileId_/preview/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -7045,6 +7789,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DataProjectsProjectIdFilesRouteRouteImport
       parentRoute: typeof DataProjectsProjectIdRouteRoute
     }
+    '/data/projects/$projectId_/filtered-views': {
+      id: '/data/projects/$projectId_/filtered-views'
+      path: '/filtered-views'
+      fullPath: '/data/projects/$projectId/filtered-views'
+      preLoaderRoute: typeof DataProjectsProjectIdFilteredViewsRouteRouteImport
+      parentRoute: typeof DataProjectsProjectIdRouteRoute
+    }
     '/data/projects/$projectId_/lists': {
       id: '/data/projects/$projectId_/lists'
       path: '/lists'
@@ -7289,6 +8040,20 @@ declare module '@tanstack/react-router' {
       fullPath: '/data/projects/$projectId/files/filter'
       preLoaderRoute: typeof DataProjectsProjectIdFilesFilterRouteImport
       parentRoute: typeof DataProjectsProjectIdFilesRouteRoute
+    }
+    '/data/projects/$projectId_/filtered-views/': {
+      id: '/data/projects/$projectId_/filtered-views/'
+      path: '/'
+      fullPath: '/data/projects/$projectId/filtered-views/'
+      preLoaderRoute: typeof DataProjectsProjectIdFilteredViewsIndexRouteImport
+      parentRoute: typeof DataProjectsProjectIdFilteredViewsRouteRoute
+    }
+    '/data/projects/$projectId_/filtered-views/filter': {
+      id: '/data/projects/$projectId_/filtered-views/filter'
+      path: '/filter'
+      fullPath: '/data/projects/$projectId/filtered-views/filter'
+      preLoaderRoute: typeof DataProjectsProjectIdFilteredViewsFilterRouteImport
+      parentRoute: typeof DataProjectsProjectIdFilteredViewsRouteRoute
     }
     '/data/projects/$projectId_/histories/$projectHistoryId': {
       id: '/data/projects/$projectId_/histories/$projectHistoryId'
@@ -7625,6 +8390,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/data/projects/$projectId/files/$fileId/preview'
       preLoaderRoute: typeof DataProjectsProjectIdFilesFileIdPreviewRouteImport
       parentRoute: typeof DataProjectsProjectIdFilesRouteRoute
+    }
+    '/data/projects/$projectId_/filtered-views/$filteredViewId/': {
+      id: '/data/projects/$projectId_/filtered-views/$filteredViewId/'
+      path: '/$filteredViewId'
+      fullPath: '/data/projects/$projectId/filtered-views/$filteredViewId/'
+      preLoaderRoute: typeof DataProjectsProjectIdFilteredViewsFilteredViewIdIndexRouteImport
+      parentRoute: typeof DataProjectsProjectIdFilteredViewsRouteRoute
     }
     '/data/projects/$projectId_/lists/$listId_/': {
       id: '/data/projects/$projectId_/lists/$listId_/'
@@ -8984,6 +9756,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdFilesFileIdPreviewRouteImport
       parentRoute: typeof DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdFilesRouteRoute
     }
+    '/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/filtered-checks/$filteredViewId_/checks': {
+      id: '/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/filtered-checks/$filteredViewId_/checks'
+      path: '/filtered-checks/$filteredViewId/checks'
+      fullPath: '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/filtered-checks/$filteredViewId/checks'
+      preLoaderRoute: typeof DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdFilteredChecksFilteredViewIdChecksRouteRouteImport
+      parentRoute: typeof DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdRouteRoute
+    }
     '/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/observations/$observationId/': {
       id: '/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/observations/$observationId/'
       path: '/$observationId'
@@ -9207,6 +9986,27 @@ declare module '@tanstack/react-router' {
       fullPath: '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/files/$fileId/preview/'
       preLoaderRoute: typeof DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdFilesFileIdPreviewIndexRouteImport
       parentRoute: typeof DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdFilesFileIdPreviewRoute
+    }
+    '/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/filtered-checks/$filteredViewId_/checks/': {
+      id: '/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/filtered-checks/$filteredViewId_/checks/'
+      path: '/'
+      fullPath: '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/filtered-checks/$filteredViewId/checks/'
+      preLoaderRoute: typeof DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdFilteredChecksFilteredViewIdChecksIndexRouteImport
+      parentRoute: typeof DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdFilteredChecksFilteredViewIdChecksRouteRoute
+    }
+    '/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/filtered-checks/$filteredViewId_/checks/$checkId_': {
+      id: '/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/filtered-checks/$filteredViewId_/checks/$checkId_'
+      path: '/$checkId'
+      fullPath: '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/filtered-checks/$filteredViewId/checks/$checkId'
+      preLoaderRoute: typeof DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdFilteredChecksFilteredViewIdChecksCheckIdRouteRouteImport
+      parentRoute: typeof DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdFilteredChecksFilteredViewIdChecksRouteRoute
+    }
+    '/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/filtered-checks/$filteredViewId_/checks/filter': {
+      id: '/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/filtered-checks/$filteredViewId_/checks/filter'
+      path: '/filter'
+      fullPath: '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/filtered-checks/$filteredViewId/checks/filter'
+      preLoaderRoute: typeof DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdFilteredChecksFilteredViewIdChecksFilterRouteImport
+      parentRoute: typeof DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdFilteredChecksFilteredViewIdChecksRouteRoute
     }
     '/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/observations/$observationId_/histories/$observationHistoryId': {
       id: '/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/observations/$observationId_/histories/$observationHistoryId'
@@ -9432,6 +10232,41 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdChecksCheckIdTaxaCheckTaxonIdIndexRouteImport
       parentRoute: typeof DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdChecksCheckIdTaxaRouteRoute
     }
+    '/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/filtered-checks/$filteredViewId_/checks/$checkId_/': {
+      id: '/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/filtered-checks/$filteredViewId_/checks/$checkId_/'
+      path: '/'
+      fullPath: '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/filtered-checks/$filteredViewId/checks/$checkId/'
+      preLoaderRoute: typeof DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdFilteredChecksFilteredViewIdChecksCheckIdIndexRouteImport
+      parentRoute: typeof DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdFilteredChecksFilteredViewIdChecksCheckIdRouteRoute
+    }
+    '/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/filtered-checks/$filteredViewId_/checks/$checkId_/check': {
+      id: '/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/filtered-checks/$filteredViewId_/checks/$checkId_/check'
+      path: '/check'
+      fullPath: '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/filtered-checks/$filteredViewId/checks/$checkId/check'
+      preLoaderRoute: typeof DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdFilteredChecksFilteredViewIdChecksCheckIdCheckRouteImport
+      parentRoute: typeof DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdFilteredChecksFilteredViewIdChecksCheckIdRouteRoute
+    }
+    '/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/filtered-checks/$filteredViewId_/checks/$checkId_/files': {
+      id: '/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/filtered-checks/$filteredViewId_/checks/$checkId_/files'
+      path: '/files'
+      fullPath: '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/filtered-checks/$filteredViewId/checks/$checkId/files'
+      preLoaderRoute: typeof DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdFilteredChecksFilteredViewIdChecksCheckIdFilesRouteRouteImport
+      parentRoute: typeof DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdFilteredChecksFilteredViewIdChecksCheckIdRouteRoute
+    }
+    '/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/filtered-checks/$filteredViewId_/checks/$checkId_/quantities': {
+      id: '/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/filtered-checks/$filteredViewId_/checks/$checkId_/quantities'
+      path: '/quantities'
+      fullPath: '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/filtered-checks/$filteredViewId/checks/$checkId/quantities'
+      preLoaderRoute: typeof DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdFilteredChecksFilteredViewIdChecksCheckIdQuantitiesRouteRouteImport
+      parentRoute: typeof DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdFilteredChecksFilteredViewIdChecksCheckIdRouteRoute
+    }
+    '/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/filtered-checks/$filteredViewId_/checks/$checkId_/taxa': {
+      id: '/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/filtered-checks/$filteredViewId_/checks/$checkId_/taxa'
+      path: '/taxa'
+      fullPath: '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/filtered-checks/$filteredViewId/checks/$checkId/taxa'
+      preLoaderRoute: typeof DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdFilteredChecksFilteredViewIdChecksCheckIdTaxaRouteRouteImport
+      parentRoute: typeof DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdFilteredChecksFilteredViewIdChecksCheckIdRouteRoute
+    }
     '/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/places/$placeId2_/action-reports/$actionReportId_/': {
       id: '/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/places/$placeId2_/action-reports/$actionReportId_/'
       path: '/'
@@ -9551,6 +10386,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2FilesFileIdPreviewRouteImport
       parentRoute: typeof DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2FilesRouteRoute
     }
+    '/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/places/$placeId2_/filtered-checks/$filteredViewId_/checks': {
+      id: '/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/places/$placeId2_/filtered-checks/$filteredViewId_/checks'
+      path: '/filtered-checks/$filteredViewId/checks'
+      fullPath: '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/places/$placeId2/filtered-checks/$filteredViewId/checks'
+      preLoaderRoute: typeof DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2FilteredChecksFilteredViewIdChecksRouteRouteImport
+      parentRoute: typeof DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2RouteRoute
+    }
     '/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/places/$placeId2_/observations/$observationId/': {
       id: '/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/places/$placeId2_/observations/$observationId/'
       path: '/$observationId'
@@ -9634,6 +10476,48 @@ declare module '@tanstack/react-router' {
       fullPath: '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/checks/$checkId/taxa/$checkTaxonId/histories/$checkTaxonHistoryId'
       preLoaderRoute: typeof DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdChecksCheckIdTaxaCheckTaxonIdHistoriesCheckTaxonHistoryIdRouteImport
       parentRoute: typeof DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdChecksCheckIdTaxaRouteRoute
+    }
+    '/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/filtered-checks/$filteredViewId_/checks/$checkId_/files/': {
+      id: '/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/filtered-checks/$filteredViewId_/checks/$checkId_/files/'
+      path: '/'
+      fullPath: '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/filtered-checks/$filteredViewId/checks/$checkId/files/'
+      preLoaderRoute: typeof DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdFilteredChecksFilteredViewIdChecksCheckIdFilesIndexRouteImport
+      parentRoute: typeof DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdFilteredChecksFilteredViewIdChecksCheckIdFilesRouteRoute
+    }
+    '/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/filtered-checks/$filteredViewId_/checks/$checkId_/files/$fileId': {
+      id: '/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/filtered-checks/$filteredViewId_/checks/$checkId_/files/$fileId'
+      path: '/$fileId'
+      fullPath: '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/filtered-checks/$filteredViewId/checks/$checkId/files/$fileId'
+      preLoaderRoute: typeof DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdFilteredChecksFilteredViewIdChecksCheckIdFilesFileIdRouteImport
+      parentRoute: typeof DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdFilteredChecksFilteredViewIdChecksCheckIdFilesRouteRoute
+    }
+    '/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/filtered-checks/$filteredViewId_/checks/$checkId_/files/filter': {
+      id: '/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/filtered-checks/$filteredViewId_/checks/$checkId_/files/filter'
+      path: '/filter'
+      fullPath: '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/filtered-checks/$filteredViewId/checks/$checkId/files/filter'
+      preLoaderRoute: typeof DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdFilteredChecksFilteredViewIdChecksCheckIdFilesFilterRouteImport
+      parentRoute: typeof DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdFilteredChecksFilteredViewIdChecksCheckIdFilesRouteRoute
+    }
+    '/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/filtered-checks/$filteredViewId_/checks/$checkId_/histories/$checkHistoryId': {
+      id: '/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/filtered-checks/$filteredViewId_/checks/$checkId_/histories/$checkHistoryId'
+      path: '/histories/$checkHistoryId'
+      fullPath: '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/filtered-checks/$filteredViewId/checks/$checkId/histories/$checkHistoryId'
+      preLoaderRoute: typeof DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdFilteredChecksFilteredViewIdChecksCheckIdHistoriesCheckHistoryIdRouteImport
+      parentRoute: typeof DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdFilteredChecksFilteredViewIdChecksCheckIdRouteRoute
+    }
+    '/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/filtered-checks/$filteredViewId_/checks/$checkId_/quantities/': {
+      id: '/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/filtered-checks/$filteredViewId_/checks/$checkId_/quantities/'
+      path: '/'
+      fullPath: '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/filtered-checks/$filteredViewId/checks/$checkId/quantities/'
+      preLoaderRoute: typeof DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdFilteredChecksFilteredViewIdChecksCheckIdQuantitiesIndexRouteImport
+      parentRoute: typeof DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdFilteredChecksFilteredViewIdChecksCheckIdQuantitiesRouteRoute
+    }
+    '/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/filtered-checks/$filteredViewId_/checks/$checkId_/taxa/': {
+      id: '/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/filtered-checks/$filteredViewId_/checks/$checkId_/taxa/'
+      path: '/'
+      fullPath: '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/filtered-checks/$filteredViewId/checks/$checkId/taxa/'
+      preLoaderRoute: typeof DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdFilteredChecksFilteredViewIdChecksCheckIdTaxaIndexRouteImport
+      parentRoute: typeof DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdFilteredChecksFilteredViewIdChecksCheckIdTaxaRouteRoute
     }
     '/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/places/$placeId2_/action-reports/$actionReportId_/histories/$actionReportHistoryId': {
       id: '/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/places/$placeId2_/action-reports/$actionReportId_/histories/$actionReportHistoryId'
@@ -9754,6 +10638,27 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2FilesFileIdPreviewIndexRouteImport
       parentRoute: typeof DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2FilesFileIdPreviewRoute
     }
+    '/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/places/$placeId2_/filtered-checks/$filteredViewId_/checks/': {
+      id: '/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/places/$placeId2_/filtered-checks/$filteredViewId_/checks/'
+      path: '/'
+      fullPath: '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/places/$placeId2/filtered-checks/$filteredViewId/checks/'
+      preLoaderRoute: typeof DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2FilteredChecksFilteredViewIdChecksIndexRouteImport
+      parentRoute: typeof DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2FilteredChecksFilteredViewIdChecksRouteRoute
+    }
+    '/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/places/$placeId2_/filtered-checks/$filteredViewId_/checks/$checkId_': {
+      id: '/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/places/$placeId2_/filtered-checks/$filteredViewId_/checks/$checkId_'
+      path: '/$checkId'
+      fullPath: '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/places/$placeId2/filtered-checks/$filteredViewId/checks/$checkId'
+      preLoaderRoute: typeof DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2FilteredChecksFilteredViewIdChecksCheckIdRouteRouteImport
+      parentRoute: typeof DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2FilteredChecksFilteredViewIdChecksRouteRoute
+    }
+    '/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/places/$placeId2_/filtered-checks/$filteredViewId_/checks/filter': {
+      id: '/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/places/$placeId2_/filtered-checks/$filteredViewId_/checks/filter'
+      path: '/filter'
+      fullPath: '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/places/$placeId2/filtered-checks/$filteredViewId/checks/filter'
+      preLoaderRoute: typeof DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2FilteredChecksFilteredViewIdChecksFilterRouteImport
+      parentRoute: typeof DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2FilteredChecksFilteredViewIdChecksRouteRoute
+    }
     '/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/places/$placeId2_/observations/$observationId_/histories/$observationHistoryId': {
       id: '/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/places/$placeId2_/observations/$observationId_/histories/$observationHistoryId'
       path: '/$observationId/histories/$observationHistoryId'
@@ -9767,6 +10672,27 @@ declare module '@tanstack/react-router' {
       fullPath: '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/places/$placeId2/users/$placeUserId/histories/$placeUserHistoryId'
       preLoaderRoute: typeof DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2UsersPlaceUserIdHistoriesPlaceUserHistoryIdRouteImport
       parentRoute: typeof DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2UsersPlaceUserIdRouteRoute
+    }
+    '/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/filtered-checks/$filteredViewId_/checks/$checkId_/files/$fileId_/preview': {
+      id: '/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/filtered-checks/$filteredViewId_/checks/$checkId_/files/$fileId_/preview'
+      path: '/$fileId/preview'
+      fullPath: '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/filtered-checks/$filteredViewId/checks/$checkId/files/$fileId/preview'
+      preLoaderRoute: typeof DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdFilteredChecksFilteredViewIdChecksCheckIdFilesFileIdPreviewRouteImport
+      parentRoute: typeof DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdFilteredChecksFilteredViewIdChecksCheckIdFilesRouteRoute
+    }
+    '/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/filtered-checks/$filteredViewId_/checks/$checkId_/quantities/$checkQuantityId/': {
+      id: '/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/filtered-checks/$filteredViewId_/checks/$checkId_/quantities/$checkQuantityId/'
+      path: '/$checkQuantityId'
+      fullPath: '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/filtered-checks/$filteredViewId/checks/$checkId/quantities/$checkQuantityId/'
+      preLoaderRoute: typeof DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdFilteredChecksFilteredViewIdChecksCheckIdQuantitiesCheckQuantityIdIndexRouteImport
+      parentRoute: typeof DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdFilteredChecksFilteredViewIdChecksCheckIdQuantitiesRouteRoute
+    }
+    '/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/filtered-checks/$filteredViewId_/checks/$checkId_/taxa/$checkTaxonId/': {
+      id: '/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/filtered-checks/$filteredViewId_/checks/$checkId_/taxa/$checkTaxonId/'
+      path: '/$checkTaxonId'
+      fullPath: '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/filtered-checks/$filteredViewId/checks/$checkId/taxa/$checkTaxonId/'
+      preLoaderRoute: typeof DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdFilteredChecksFilteredViewIdChecksCheckIdTaxaCheckTaxonIdIndexRouteImport
+      parentRoute: typeof DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdFilteredChecksFilteredViewIdChecksCheckIdTaxaRouteRoute
     }
     '/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/places/$placeId2_/action-reports/$actionReportId_/quantities/$actionReportQuantityId/': {
       id: '/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/places/$placeId2_/action-reports/$actionReportId_/quantities/$actionReportQuantityId/'
@@ -9830,6 +10756,69 @@ declare module '@tanstack/react-router' {
       fullPath: '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/places/$placeId2/checks/$checkId/taxa/$checkTaxonId/'
       preLoaderRoute: typeof DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2ChecksCheckIdTaxaCheckTaxonIdIndexRouteImport
       parentRoute: typeof DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2ChecksCheckIdTaxaRouteRoute
+    }
+    '/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/places/$placeId2_/filtered-checks/$filteredViewId_/checks/$checkId_/': {
+      id: '/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/places/$placeId2_/filtered-checks/$filteredViewId_/checks/$checkId_/'
+      path: '/'
+      fullPath: '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/places/$placeId2/filtered-checks/$filteredViewId/checks/$checkId/'
+      preLoaderRoute: typeof DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2FilteredChecksFilteredViewIdChecksCheckIdIndexRouteImport
+      parentRoute: typeof DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2FilteredChecksFilteredViewIdChecksCheckIdRouteRoute
+    }
+    '/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/places/$placeId2_/filtered-checks/$filteredViewId_/checks/$checkId_/check': {
+      id: '/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/places/$placeId2_/filtered-checks/$filteredViewId_/checks/$checkId_/check'
+      path: '/check'
+      fullPath: '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/places/$placeId2/filtered-checks/$filteredViewId/checks/$checkId/check'
+      preLoaderRoute: typeof DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2FilteredChecksFilteredViewIdChecksCheckIdCheckRouteImport
+      parentRoute: typeof DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2FilteredChecksFilteredViewIdChecksCheckIdRouteRoute
+    }
+    '/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/places/$placeId2_/filtered-checks/$filteredViewId_/checks/$checkId_/files': {
+      id: '/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/places/$placeId2_/filtered-checks/$filteredViewId_/checks/$checkId_/files'
+      path: '/files'
+      fullPath: '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/places/$placeId2/filtered-checks/$filteredViewId/checks/$checkId/files'
+      preLoaderRoute: typeof DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2FilteredChecksFilteredViewIdChecksCheckIdFilesRouteRouteImport
+      parentRoute: typeof DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2FilteredChecksFilteredViewIdChecksCheckIdRouteRoute
+    }
+    '/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/places/$placeId2_/filtered-checks/$filteredViewId_/checks/$checkId_/quantities': {
+      id: '/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/places/$placeId2_/filtered-checks/$filteredViewId_/checks/$checkId_/quantities'
+      path: '/quantities'
+      fullPath: '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/places/$placeId2/filtered-checks/$filteredViewId/checks/$checkId/quantities'
+      preLoaderRoute: typeof DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2FilteredChecksFilteredViewIdChecksCheckIdQuantitiesRouteRouteImport
+      parentRoute: typeof DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2FilteredChecksFilteredViewIdChecksCheckIdRouteRoute
+    }
+    '/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/places/$placeId2_/filtered-checks/$filteredViewId_/checks/$checkId_/taxa': {
+      id: '/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/places/$placeId2_/filtered-checks/$filteredViewId_/checks/$checkId_/taxa'
+      path: '/taxa'
+      fullPath: '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/places/$placeId2/filtered-checks/$filteredViewId/checks/$checkId/taxa'
+      preLoaderRoute: typeof DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2FilteredChecksFilteredViewIdChecksCheckIdTaxaRouteRouteImport
+      parentRoute: typeof DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2FilteredChecksFilteredViewIdChecksCheckIdRouteRoute
+    }
+    '/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/filtered-checks/$filteredViewId_/checks/$checkId_/files/$fileId_/histories/$fileHistoryId': {
+      id: '/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/filtered-checks/$filteredViewId_/checks/$checkId_/files/$fileId_/histories/$fileHistoryId'
+      path: '/$fileId/histories/$fileHistoryId'
+      fullPath: '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/filtered-checks/$filteredViewId/checks/$checkId/files/$fileId/histories/$fileHistoryId'
+      preLoaderRoute: typeof DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdFilteredChecksFilteredViewIdChecksCheckIdFilesFileIdHistoriesFileHistoryIdRouteImport
+      parentRoute: typeof DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdFilteredChecksFilteredViewIdChecksCheckIdFilesRouteRoute
+    }
+    '/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/filtered-checks/$filteredViewId_/checks/$checkId_/files/$fileId_/preview/': {
+      id: '/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/filtered-checks/$filteredViewId_/checks/$checkId_/files/$fileId_/preview/'
+      path: '/'
+      fullPath: '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/filtered-checks/$filteredViewId/checks/$checkId/files/$fileId/preview/'
+      preLoaderRoute: typeof DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdFilteredChecksFilteredViewIdChecksCheckIdFilesFileIdPreviewIndexRouteImport
+      parentRoute: typeof DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdFilteredChecksFilteredViewIdChecksCheckIdFilesFileIdPreviewRoute
+    }
+    '/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/filtered-checks/$filteredViewId_/checks/$checkId_/quantities/$checkQuantityId_/histories/$checkQuantityHistoryId': {
+      id: '/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/filtered-checks/$filteredViewId_/checks/$checkId_/quantities/$checkQuantityId_/histories/$checkQuantityHistoryId'
+      path: '/$checkQuantityId/histories/$checkQuantityHistoryId'
+      fullPath: '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/filtered-checks/$filteredViewId/checks/$checkId/quantities/$checkQuantityId/histories/$checkQuantityHistoryId'
+      preLoaderRoute: typeof DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdFilteredChecksFilteredViewIdChecksCheckIdQuantitiesCheckQuantityIdHistoriesCheckQuantityHistoryIdRouteImport
+      parentRoute: typeof DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdFilteredChecksFilteredViewIdChecksCheckIdQuantitiesRouteRoute
+    }
+    '/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/filtered-checks/$filteredViewId_/checks/$checkId_/taxa/$checkTaxonId_/histories/$checkTaxonHistoryId': {
+      id: '/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/filtered-checks/$filteredViewId_/checks/$checkId_/taxa/$checkTaxonId_/histories/$checkTaxonHistoryId'
+      path: '/$checkTaxonId/histories/$checkTaxonHistoryId'
+      fullPath: '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/filtered-checks/$filteredViewId/checks/$checkId/taxa/$checkTaxonId/histories/$checkTaxonHistoryId'
+      preLoaderRoute: typeof DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdFilteredChecksFilteredViewIdChecksCheckIdTaxaCheckTaxonIdHistoriesCheckTaxonHistoryIdRouteImport
+      parentRoute: typeof DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdFilteredChecksFilteredViewIdChecksCheckIdTaxaRouteRoute
     }
     '/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/places/$placeId2_/action-reports/$actionReportId_/quantities/$actionReportQuantityId_/histories/$actionReportQuantityHistoryId': {
       id: '/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/places/$placeId2_/action-reports/$actionReportId_/quantities/$actionReportQuantityId_/histories/$actionReportQuantityHistoryId'
@@ -9900,6 +10889,104 @@ declare module '@tanstack/react-router' {
       fullPath: '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/places/$placeId2/checks/$checkId/taxa/$checkTaxonId/histories/$checkTaxonHistoryId'
       preLoaderRoute: typeof DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2ChecksCheckIdTaxaCheckTaxonIdHistoriesCheckTaxonHistoryIdRouteImport
       parentRoute: typeof DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2ChecksCheckIdTaxaRouteRoute
+    }
+    '/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/places/$placeId2_/filtered-checks/$filteredViewId_/checks/$checkId_/files/': {
+      id: '/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/places/$placeId2_/filtered-checks/$filteredViewId_/checks/$checkId_/files/'
+      path: '/'
+      fullPath: '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/places/$placeId2/filtered-checks/$filteredViewId/checks/$checkId/files/'
+      preLoaderRoute: typeof DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2FilteredChecksFilteredViewIdChecksCheckIdFilesIndexRouteImport
+      parentRoute: typeof DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2FilteredChecksFilteredViewIdChecksCheckIdFilesRouteRoute
+    }
+    '/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/places/$placeId2_/filtered-checks/$filteredViewId_/checks/$checkId_/files/$fileId_': {
+      id: '/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/places/$placeId2_/filtered-checks/$filteredViewId_/checks/$checkId_/files/$fileId_'
+      path: '/$fileId'
+      fullPath: '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/places/$placeId2/filtered-checks/$filteredViewId/checks/$checkId/files/$fileId'
+      preLoaderRoute: typeof DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2FilteredChecksFilteredViewIdChecksCheckIdFilesFileIdRouteRouteImport
+      parentRoute: typeof DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2FilteredChecksFilteredViewIdChecksCheckIdFilesRouteRoute
+    }
+    '/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/places/$placeId2_/filtered-checks/$filteredViewId_/checks/$checkId_/files/filter': {
+      id: '/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/places/$placeId2_/filtered-checks/$filteredViewId_/checks/$checkId_/files/filter'
+      path: '/filter'
+      fullPath: '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/places/$placeId2/filtered-checks/$filteredViewId/checks/$checkId/files/filter'
+      preLoaderRoute: typeof DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2FilteredChecksFilteredViewIdChecksCheckIdFilesFilterRouteImport
+      parentRoute: typeof DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2FilteredChecksFilteredViewIdChecksCheckIdFilesRouteRoute
+    }
+    '/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/places/$placeId2_/filtered-checks/$filteredViewId_/checks/$checkId_/histories/$checkHistoryId': {
+      id: '/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/places/$placeId2_/filtered-checks/$filteredViewId_/checks/$checkId_/histories/$checkHistoryId'
+      path: '/histories/$checkHistoryId'
+      fullPath: '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/places/$placeId2/filtered-checks/$filteredViewId/checks/$checkId/histories/$checkHistoryId'
+      preLoaderRoute: typeof DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2FilteredChecksFilteredViewIdChecksCheckIdHistoriesCheckHistoryIdRouteImport
+      parentRoute: typeof DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2FilteredChecksFilteredViewIdChecksCheckIdRouteRoute
+    }
+    '/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/places/$placeId2_/filtered-checks/$filteredViewId_/checks/$checkId_/quantities/': {
+      id: '/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/places/$placeId2_/filtered-checks/$filteredViewId_/checks/$checkId_/quantities/'
+      path: '/'
+      fullPath: '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/places/$placeId2/filtered-checks/$filteredViewId/checks/$checkId/quantities/'
+      preLoaderRoute: typeof DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2FilteredChecksFilteredViewIdChecksCheckIdQuantitiesIndexRouteImport
+      parentRoute: typeof DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2FilteredChecksFilteredViewIdChecksCheckIdQuantitiesRouteRoute
+    }
+    '/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/places/$placeId2_/filtered-checks/$filteredViewId_/checks/$checkId_/taxa/': {
+      id: '/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/places/$placeId2_/filtered-checks/$filteredViewId_/checks/$checkId_/taxa/'
+      path: '/'
+      fullPath: '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/places/$placeId2/filtered-checks/$filteredViewId/checks/$checkId/taxa/'
+      preLoaderRoute: typeof DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2FilteredChecksFilteredViewIdChecksCheckIdTaxaIndexRouteImport
+      parentRoute: typeof DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2FilteredChecksFilteredViewIdChecksCheckIdTaxaRouteRoute
+    }
+    '/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/places/$placeId2_/filtered-checks/$filteredViewId_/checks/$checkId_/files/$fileId_/': {
+      id: '/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/places/$placeId2_/filtered-checks/$filteredViewId_/checks/$checkId_/files/$fileId_/'
+      path: '/'
+      fullPath: '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/places/$placeId2/filtered-checks/$filteredViewId/checks/$checkId/files/$fileId/'
+      preLoaderRoute: typeof DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2FilteredChecksFilteredViewIdChecksCheckIdFilesFileIdIndexRouteImport
+      parentRoute: typeof DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2FilteredChecksFilteredViewIdChecksCheckIdFilesFileIdRouteRoute
+    }
+    '/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/places/$placeId2_/filtered-checks/$filteredViewId_/checks/$checkId_/files/$fileId_/preview': {
+      id: '/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/places/$placeId2_/filtered-checks/$filteredViewId_/checks/$checkId_/files/$fileId_/preview'
+      path: '/preview'
+      fullPath: '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/places/$placeId2/filtered-checks/$filteredViewId/checks/$checkId/files/$fileId/preview'
+      preLoaderRoute: typeof DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2FilteredChecksFilteredViewIdChecksCheckIdFilesFileIdPreviewRouteImport
+      parentRoute: typeof DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2FilteredChecksFilteredViewIdChecksCheckIdFilesFileIdRouteRoute
+    }
+    '/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/places/$placeId2_/filtered-checks/$filteredViewId_/checks/$checkId_/quantities/$checkQuantityId/': {
+      id: '/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/places/$placeId2_/filtered-checks/$filteredViewId_/checks/$checkId_/quantities/$checkQuantityId/'
+      path: '/$checkQuantityId'
+      fullPath: '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/places/$placeId2/filtered-checks/$filteredViewId/checks/$checkId/quantities/$checkQuantityId/'
+      preLoaderRoute: typeof DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2FilteredChecksFilteredViewIdChecksCheckIdQuantitiesCheckQuantityIdIndexRouteImport
+      parentRoute: typeof DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2FilteredChecksFilteredViewIdChecksCheckIdQuantitiesRouteRoute
+    }
+    '/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/places/$placeId2_/filtered-checks/$filteredViewId_/checks/$checkId_/taxa/$checkTaxonId/': {
+      id: '/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/places/$placeId2_/filtered-checks/$filteredViewId_/checks/$checkId_/taxa/$checkTaxonId/'
+      path: '/$checkTaxonId'
+      fullPath: '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/places/$placeId2/filtered-checks/$filteredViewId/checks/$checkId/taxa/$checkTaxonId/'
+      preLoaderRoute: typeof DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2FilteredChecksFilteredViewIdChecksCheckIdTaxaCheckTaxonIdIndexRouteImport
+      parentRoute: typeof DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2FilteredChecksFilteredViewIdChecksCheckIdTaxaRouteRoute
+    }
+    '/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/places/$placeId2_/filtered-checks/$filteredViewId_/checks/$checkId_/files/$fileId_/histories/$fileHistoryId': {
+      id: '/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/places/$placeId2_/filtered-checks/$filteredViewId_/checks/$checkId_/files/$fileId_/histories/$fileHistoryId'
+      path: '/histories/$fileHistoryId'
+      fullPath: '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/places/$placeId2/filtered-checks/$filteredViewId/checks/$checkId/files/$fileId/histories/$fileHistoryId'
+      preLoaderRoute: typeof DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2FilteredChecksFilteredViewIdChecksCheckIdFilesFileIdHistoriesFileHistoryIdRouteImport
+      parentRoute: typeof DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2FilteredChecksFilteredViewIdChecksCheckIdFilesFileIdRouteRoute
+    }
+    '/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/places/$placeId2_/filtered-checks/$filteredViewId_/checks/$checkId_/files/$fileId_/preview/': {
+      id: '/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/places/$placeId2_/filtered-checks/$filteredViewId_/checks/$checkId_/files/$fileId_/preview/'
+      path: '/'
+      fullPath: '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/places/$placeId2/filtered-checks/$filteredViewId/checks/$checkId/files/$fileId/preview/'
+      preLoaderRoute: typeof DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2FilteredChecksFilteredViewIdChecksCheckIdFilesFileIdPreviewIndexRouteImport
+      parentRoute: typeof DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2FilteredChecksFilteredViewIdChecksCheckIdFilesFileIdPreviewRoute
+    }
+    '/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/places/$placeId2_/filtered-checks/$filteredViewId_/checks/$checkId_/quantities/$checkQuantityId_/histories/$checkQuantityHistoryId': {
+      id: '/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/places/$placeId2_/filtered-checks/$filteredViewId_/checks/$checkId_/quantities/$checkQuantityId_/histories/$checkQuantityHistoryId'
+      path: '/$checkQuantityId/histories/$checkQuantityHistoryId'
+      fullPath: '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/places/$placeId2/filtered-checks/$filteredViewId/checks/$checkId/quantities/$checkQuantityId/histories/$checkQuantityHistoryId'
+      preLoaderRoute: typeof DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2FilteredChecksFilteredViewIdChecksCheckIdQuantitiesCheckQuantityIdHistoriesCheckQuantityHistoryIdRouteImport
+      parentRoute: typeof DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2FilteredChecksFilteredViewIdChecksCheckIdQuantitiesRouteRoute
+    }
+    '/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/places/$placeId2_/filtered-checks/$filteredViewId_/checks/$checkId_/taxa/$checkTaxonId_/histories/$checkTaxonHistoryId': {
+      id: '/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/places/$placeId2_/filtered-checks/$filteredViewId_/checks/$checkId_/taxa/$checkTaxonId_/histories/$checkTaxonHistoryId'
+      path: '/$checkTaxonId/histories/$checkTaxonHistoryId'
+      fullPath: '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/places/$placeId2/filtered-checks/$filteredViewId/checks/$checkId/taxa/$checkTaxonId/histories/$checkTaxonHistoryId'
+      preLoaderRoute: typeof DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2FilteredChecksFilteredViewIdChecksCheckIdTaxaCheckTaxonIdHistoriesCheckTaxonHistoryIdRouteImport
+      parentRoute: typeof DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2FilteredChecksFilteredViewIdChecksCheckIdTaxaRouteRoute
     }
   }
 }
@@ -10214,6 +11301,27 @@ const DataProjectsProjectIdFilesRouteRouteChildren: DataProjectsProjectIdFilesRo
 const DataProjectsProjectIdFilesRouteRouteWithChildren =
   DataProjectsProjectIdFilesRouteRoute._addFileChildren(
     DataProjectsProjectIdFilesRouteRouteChildren,
+  )
+
+interface DataProjectsProjectIdFilteredViewsRouteRouteChildren {
+  DataProjectsProjectIdFilteredViewsFilterRoute: typeof DataProjectsProjectIdFilteredViewsFilterRoute
+  DataProjectsProjectIdFilteredViewsIndexRoute: typeof DataProjectsProjectIdFilteredViewsIndexRoute
+  DataProjectsProjectIdFilteredViewsFilteredViewIdIndexRoute: typeof DataProjectsProjectIdFilteredViewsFilteredViewIdIndexRoute
+}
+
+const DataProjectsProjectIdFilteredViewsRouteRouteChildren: DataProjectsProjectIdFilteredViewsRouteRouteChildren =
+  {
+    DataProjectsProjectIdFilteredViewsFilterRoute:
+      DataProjectsProjectIdFilteredViewsFilterRoute,
+    DataProjectsProjectIdFilteredViewsIndexRoute:
+      DataProjectsProjectIdFilteredViewsIndexRoute,
+    DataProjectsProjectIdFilteredViewsFilteredViewIdIndexRoute:
+      DataProjectsProjectIdFilteredViewsFilteredViewIdIndexRoute,
+  }
+
+const DataProjectsProjectIdFilteredViewsRouteRouteWithChildren =
+  DataProjectsProjectIdFilteredViewsRouteRoute._addFileChildren(
+    DataProjectsProjectIdFilteredViewsRouteRouteChildren,
   )
 
 interface DataProjectsProjectIdListsListIdValuesRouteRouteChildren {
@@ -11731,6 +12839,156 @@ const DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2Use
     DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2UsersRouteRouteChildren,
   )
 
+interface DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2FilteredChecksFilteredViewIdChecksCheckIdFilesFileIdPreviewRouteChildren {
+  DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2FilteredChecksFilteredViewIdChecksCheckIdFilesFileIdPreviewIndexRoute: typeof DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2FilteredChecksFilteredViewIdChecksCheckIdFilesFileIdPreviewIndexRoute
+}
+
+const DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2FilteredChecksFilteredViewIdChecksCheckIdFilesFileIdPreviewRouteChildren: DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2FilteredChecksFilteredViewIdChecksCheckIdFilesFileIdPreviewRouteChildren =
+  {
+    DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2FilteredChecksFilteredViewIdChecksCheckIdFilesFileIdPreviewIndexRoute:
+      DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2FilteredChecksFilteredViewIdChecksCheckIdFilesFileIdPreviewIndexRoute,
+  }
+
+const DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2FilteredChecksFilteredViewIdChecksCheckIdFilesFileIdPreviewRouteWithChildren =
+  DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2FilteredChecksFilteredViewIdChecksCheckIdFilesFileIdPreviewRoute._addFileChildren(
+    DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2FilteredChecksFilteredViewIdChecksCheckIdFilesFileIdPreviewRouteChildren,
+  )
+
+interface DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2FilteredChecksFilteredViewIdChecksCheckIdFilesFileIdRouteRouteChildren {
+  DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2FilteredChecksFilteredViewIdChecksCheckIdFilesFileIdPreviewRoute: typeof DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2FilteredChecksFilteredViewIdChecksCheckIdFilesFileIdPreviewRouteWithChildren
+  DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2FilteredChecksFilteredViewIdChecksCheckIdFilesFileIdIndexRoute: typeof DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2FilteredChecksFilteredViewIdChecksCheckIdFilesFileIdIndexRoute
+  DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2FilteredChecksFilteredViewIdChecksCheckIdFilesFileIdHistoriesFileHistoryIdRoute: typeof DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2FilteredChecksFilteredViewIdChecksCheckIdFilesFileIdHistoriesFileHistoryIdRoute
+}
+
+const DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2FilteredChecksFilteredViewIdChecksCheckIdFilesFileIdRouteRouteChildren: DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2FilteredChecksFilteredViewIdChecksCheckIdFilesFileIdRouteRouteChildren =
+  {
+    DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2FilteredChecksFilteredViewIdChecksCheckIdFilesFileIdPreviewRoute:
+      DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2FilteredChecksFilteredViewIdChecksCheckIdFilesFileIdPreviewRouteWithChildren,
+    DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2FilteredChecksFilteredViewIdChecksCheckIdFilesFileIdIndexRoute:
+      DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2FilteredChecksFilteredViewIdChecksCheckIdFilesFileIdIndexRoute,
+    DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2FilteredChecksFilteredViewIdChecksCheckIdFilesFileIdHistoriesFileHistoryIdRoute:
+      DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2FilteredChecksFilteredViewIdChecksCheckIdFilesFileIdHistoriesFileHistoryIdRoute,
+  }
+
+const DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2FilteredChecksFilteredViewIdChecksCheckIdFilesFileIdRouteRouteWithChildren =
+  DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2FilteredChecksFilteredViewIdChecksCheckIdFilesFileIdRouteRoute._addFileChildren(
+    DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2FilteredChecksFilteredViewIdChecksCheckIdFilesFileIdRouteRouteChildren,
+  )
+
+interface DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2FilteredChecksFilteredViewIdChecksCheckIdFilesRouteRouteChildren {
+  DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2FilteredChecksFilteredViewIdChecksCheckIdFilesFileIdRouteRoute: typeof DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2FilteredChecksFilteredViewIdChecksCheckIdFilesFileIdRouteRouteWithChildren
+  DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2FilteredChecksFilteredViewIdChecksCheckIdFilesFilterRoute: typeof DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2FilteredChecksFilteredViewIdChecksCheckIdFilesFilterRoute
+  DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2FilteredChecksFilteredViewIdChecksCheckIdFilesIndexRoute: typeof DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2FilteredChecksFilteredViewIdChecksCheckIdFilesIndexRoute
+}
+
+const DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2FilteredChecksFilteredViewIdChecksCheckIdFilesRouteRouteChildren: DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2FilteredChecksFilteredViewIdChecksCheckIdFilesRouteRouteChildren =
+  {
+    DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2FilteredChecksFilteredViewIdChecksCheckIdFilesFileIdRouteRoute:
+      DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2FilteredChecksFilteredViewIdChecksCheckIdFilesFileIdRouteRouteWithChildren,
+    DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2FilteredChecksFilteredViewIdChecksCheckIdFilesFilterRoute:
+      DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2FilteredChecksFilteredViewIdChecksCheckIdFilesFilterRoute,
+    DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2FilteredChecksFilteredViewIdChecksCheckIdFilesIndexRoute:
+      DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2FilteredChecksFilteredViewIdChecksCheckIdFilesIndexRoute,
+  }
+
+const DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2FilteredChecksFilteredViewIdChecksCheckIdFilesRouteRouteWithChildren =
+  DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2FilteredChecksFilteredViewIdChecksCheckIdFilesRouteRoute._addFileChildren(
+    DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2FilteredChecksFilteredViewIdChecksCheckIdFilesRouteRouteChildren,
+  )
+
+interface DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2FilteredChecksFilteredViewIdChecksCheckIdQuantitiesRouteRouteChildren {
+  DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2FilteredChecksFilteredViewIdChecksCheckIdQuantitiesIndexRoute: typeof DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2FilteredChecksFilteredViewIdChecksCheckIdQuantitiesIndexRoute
+  DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2FilteredChecksFilteredViewIdChecksCheckIdQuantitiesCheckQuantityIdIndexRoute: typeof DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2FilteredChecksFilteredViewIdChecksCheckIdQuantitiesCheckQuantityIdIndexRoute
+  DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2FilteredChecksFilteredViewIdChecksCheckIdQuantitiesCheckQuantityIdHistoriesCheckQuantityHistoryIdRoute: typeof DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2FilteredChecksFilteredViewIdChecksCheckIdQuantitiesCheckQuantityIdHistoriesCheckQuantityHistoryIdRoute
+}
+
+const DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2FilteredChecksFilteredViewIdChecksCheckIdQuantitiesRouteRouteChildren: DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2FilteredChecksFilteredViewIdChecksCheckIdQuantitiesRouteRouteChildren =
+  {
+    DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2FilteredChecksFilteredViewIdChecksCheckIdQuantitiesIndexRoute:
+      DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2FilteredChecksFilteredViewIdChecksCheckIdQuantitiesIndexRoute,
+    DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2FilteredChecksFilteredViewIdChecksCheckIdQuantitiesCheckQuantityIdIndexRoute:
+      DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2FilteredChecksFilteredViewIdChecksCheckIdQuantitiesCheckQuantityIdIndexRoute,
+    DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2FilteredChecksFilteredViewIdChecksCheckIdQuantitiesCheckQuantityIdHistoriesCheckQuantityHistoryIdRoute:
+      DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2FilteredChecksFilteredViewIdChecksCheckIdQuantitiesCheckQuantityIdHistoriesCheckQuantityHistoryIdRoute,
+  }
+
+const DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2FilteredChecksFilteredViewIdChecksCheckIdQuantitiesRouteRouteWithChildren =
+  DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2FilteredChecksFilteredViewIdChecksCheckIdQuantitiesRouteRoute._addFileChildren(
+    DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2FilteredChecksFilteredViewIdChecksCheckIdQuantitiesRouteRouteChildren,
+  )
+
+interface DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2FilteredChecksFilteredViewIdChecksCheckIdTaxaRouteRouteChildren {
+  DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2FilteredChecksFilteredViewIdChecksCheckIdTaxaIndexRoute: typeof DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2FilteredChecksFilteredViewIdChecksCheckIdTaxaIndexRoute
+  DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2FilteredChecksFilteredViewIdChecksCheckIdTaxaCheckTaxonIdIndexRoute: typeof DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2FilteredChecksFilteredViewIdChecksCheckIdTaxaCheckTaxonIdIndexRoute
+  DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2FilteredChecksFilteredViewIdChecksCheckIdTaxaCheckTaxonIdHistoriesCheckTaxonHistoryIdRoute: typeof DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2FilteredChecksFilteredViewIdChecksCheckIdTaxaCheckTaxonIdHistoriesCheckTaxonHistoryIdRoute
+}
+
+const DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2FilteredChecksFilteredViewIdChecksCheckIdTaxaRouteRouteChildren: DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2FilteredChecksFilteredViewIdChecksCheckIdTaxaRouteRouteChildren =
+  {
+    DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2FilteredChecksFilteredViewIdChecksCheckIdTaxaIndexRoute:
+      DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2FilteredChecksFilteredViewIdChecksCheckIdTaxaIndexRoute,
+    DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2FilteredChecksFilteredViewIdChecksCheckIdTaxaCheckTaxonIdIndexRoute:
+      DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2FilteredChecksFilteredViewIdChecksCheckIdTaxaCheckTaxonIdIndexRoute,
+    DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2FilteredChecksFilteredViewIdChecksCheckIdTaxaCheckTaxonIdHistoriesCheckTaxonHistoryIdRoute:
+      DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2FilteredChecksFilteredViewIdChecksCheckIdTaxaCheckTaxonIdHistoriesCheckTaxonHistoryIdRoute,
+  }
+
+const DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2FilteredChecksFilteredViewIdChecksCheckIdTaxaRouteRouteWithChildren =
+  DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2FilteredChecksFilteredViewIdChecksCheckIdTaxaRouteRoute._addFileChildren(
+    DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2FilteredChecksFilteredViewIdChecksCheckIdTaxaRouteRouteChildren,
+  )
+
+interface DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2FilteredChecksFilteredViewIdChecksCheckIdRouteRouteChildren {
+  DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2FilteredChecksFilteredViewIdChecksCheckIdFilesRouteRoute: typeof DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2FilteredChecksFilteredViewIdChecksCheckIdFilesRouteRouteWithChildren
+  DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2FilteredChecksFilteredViewIdChecksCheckIdQuantitiesRouteRoute: typeof DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2FilteredChecksFilteredViewIdChecksCheckIdQuantitiesRouteRouteWithChildren
+  DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2FilteredChecksFilteredViewIdChecksCheckIdTaxaRouteRoute: typeof DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2FilteredChecksFilteredViewIdChecksCheckIdTaxaRouteRouteWithChildren
+  DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2FilteredChecksFilteredViewIdChecksCheckIdCheckRoute: typeof DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2FilteredChecksFilteredViewIdChecksCheckIdCheckRoute
+  DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2FilteredChecksFilteredViewIdChecksCheckIdIndexRoute: typeof DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2FilteredChecksFilteredViewIdChecksCheckIdIndexRoute
+  DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2FilteredChecksFilteredViewIdChecksCheckIdHistoriesCheckHistoryIdRoute: typeof DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2FilteredChecksFilteredViewIdChecksCheckIdHistoriesCheckHistoryIdRoute
+}
+
+const DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2FilteredChecksFilteredViewIdChecksCheckIdRouteRouteChildren: DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2FilteredChecksFilteredViewIdChecksCheckIdRouteRouteChildren =
+  {
+    DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2FilteredChecksFilteredViewIdChecksCheckIdFilesRouteRoute:
+      DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2FilteredChecksFilteredViewIdChecksCheckIdFilesRouteRouteWithChildren,
+    DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2FilteredChecksFilteredViewIdChecksCheckIdQuantitiesRouteRoute:
+      DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2FilteredChecksFilteredViewIdChecksCheckIdQuantitiesRouteRouteWithChildren,
+    DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2FilteredChecksFilteredViewIdChecksCheckIdTaxaRouteRoute:
+      DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2FilteredChecksFilteredViewIdChecksCheckIdTaxaRouteRouteWithChildren,
+    DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2FilteredChecksFilteredViewIdChecksCheckIdCheckRoute:
+      DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2FilteredChecksFilteredViewIdChecksCheckIdCheckRoute,
+    DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2FilteredChecksFilteredViewIdChecksCheckIdIndexRoute:
+      DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2FilteredChecksFilteredViewIdChecksCheckIdIndexRoute,
+    DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2FilteredChecksFilteredViewIdChecksCheckIdHistoriesCheckHistoryIdRoute:
+      DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2FilteredChecksFilteredViewIdChecksCheckIdHistoriesCheckHistoryIdRoute,
+  }
+
+const DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2FilteredChecksFilteredViewIdChecksCheckIdRouteRouteWithChildren =
+  DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2FilteredChecksFilteredViewIdChecksCheckIdRouteRoute._addFileChildren(
+    DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2FilteredChecksFilteredViewIdChecksCheckIdRouteRouteChildren,
+  )
+
+interface DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2FilteredChecksFilteredViewIdChecksRouteRouteChildren {
+  DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2FilteredChecksFilteredViewIdChecksCheckIdRouteRoute: typeof DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2FilteredChecksFilteredViewIdChecksCheckIdRouteRouteWithChildren
+  DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2FilteredChecksFilteredViewIdChecksFilterRoute: typeof DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2FilteredChecksFilteredViewIdChecksFilterRoute
+  DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2FilteredChecksFilteredViewIdChecksIndexRoute: typeof DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2FilteredChecksFilteredViewIdChecksIndexRoute
+}
+
+const DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2FilteredChecksFilteredViewIdChecksRouteRouteChildren: DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2FilteredChecksFilteredViewIdChecksRouteRouteChildren =
+  {
+    DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2FilteredChecksFilteredViewIdChecksCheckIdRouteRoute:
+      DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2FilteredChecksFilteredViewIdChecksCheckIdRouteRouteWithChildren,
+    DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2FilteredChecksFilteredViewIdChecksFilterRoute:
+      DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2FilteredChecksFilteredViewIdChecksFilterRoute,
+    DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2FilteredChecksFilteredViewIdChecksIndexRoute:
+      DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2FilteredChecksFilteredViewIdChecksIndexRoute,
+  }
+
+const DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2FilteredChecksFilteredViewIdChecksRouteRouteWithChildren =
+  DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2FilteredChecksFilteredViewIdChecksRouteRoute._addFileChildren(
+    DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2FilteredChecksFilteredViewIdChecksRouteRouteChildren,
+  )
+
 interface DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2RouteRouteChildren {
   DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2ActionReportsRouteRoute: typeof DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2ActionReportsRouteRouteWithChildren
   DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2ActionsRouteRoute: typeof DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2ActionsRouteRouteWithChildren
@@ -11742,6 +13000,7 @@ interface DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId
   DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2PlaceRoute: typeof DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2PlaceRoute
   DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2IndexRoute: typeof DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2IndexRoute
   DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2HistoriesPlaceHistoryIdRoute: typeof DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2HistoriesPlaceHistoryIdRoute
+  DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2FilteredChecksFilteredViewIdChecksRouteRoute: typeof DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2FilteredChecksFilteredViewIdChecksRouteRouteWithChildren
 }
 
 const DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2RouteRouteChildren: DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2RouteRouteChildren =
@@ -11766,6 +13025,8 @@ const DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2Rou
       DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2IndexRoute,
     DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2HistoriesPlaceHistoryIdRoute:
       DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2HistoriesPlaceHistoryIdRoute,
+    DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2FilteredChecksFilteredViewIdChecksRouteRoute:
+      DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2FilteredChecksFilteredViewIdChecksRouteRouteWithChildren,
   }
 
 const DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlacesPlaceId2RouteRouteWithChildren =
@@ -11833,6 +13094,141 @@ const DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdUsersRouteRouteWi
     DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdUsersRouteRouteChildren,
   )
 
+interface DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdFilteredChecksFilteredViewIdChecksCheckIdFilesFileIdPreviewRouteChildren {
+  DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdFilteredChecksFilteredViewIdChecksCheckIdFilesFileIdPreviewIndexRoute: typeof DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdFilteredChecksFilteredViewIdChecksCheckIdFilesFileIdPreviewIndexRoute
+}
+
+const DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdFilteredChecksFilteredViewIdChecksCheckIdFilesFileIdPreviewRouteChildren: DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdFilteredChecksFilteredViewIdChecksCheckIdFilesFileIdPreviewRouteChildren =
+  {
+    DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdFilteredChecksFilteredViewIdChecksCheckIdFilesFileIdPreviewIndexRoute:
+      DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdFilteredChecksFilteredViewIdChecksCheckIdFilesFileIdPreviewIndexRoute,
+  }
+
+const DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdFilteredChecksFilteredViewIdChecksCheckIdFilesFileIdPreviewRouteWithChildren =
+  DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdFilteredChecksFilteredViewIdChecksCheckIdFilesFileIdPreviewRoute._addFileChildren(
+    DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdFilteredChecksFilteredViewIdChecksCheckIdFilesFileIdPreviewRouteChildren,
+  )
+
+interface DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdFilteredChecksFilteredViewIdChecksCheckIdFilesRouteRouteChildren {
+  DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdFilteredChecksFilteredViewIdChecksCheckIdFilesFileIdRoute: typeof DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdFilteredChecksFilteredViewIdChecksCheckIdFilesFileIdRoute
+  DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdFilteredChecksFilteredViewIdChecksCheckIdFilesFilterRoute: typeof DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdFilteredChecksFilteredViewIdChecksCheckIdFilesFilterRoute
+  DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdFilteredChecksFilteredViewIdChecksCheckIdFilesIndexRoute: typeof DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdFilteredChecksFilteredViewIdChecksCheckIdFilesIndexRoute
+  DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdFilteredChecksFilteredViewIdChecksCheckIdFilesFileIdPreviewRoute: typeof DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdFilteredChecksFilteredViewIdChecksCheckIdFilesFileIdPreviewRouteWithChildren
+  DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdFilteredChecksFilteredViewIdChecksCheckIdFilesFileIdHistoriesFileHistoryIdRoute: typeof DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdFilteredChecksFilteredViewIdChecksCheckIdFilesFileIdHistoriesFileHistoryIdRoute
+}
+
+const DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdFilteredChecksFilteredViewIdChecksCheckIdFilesRouteRouteChildren: DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdFilteredChecksFilteredViewIdChecksCheckIdFilesRouteRouteChildren =
+  {
+    DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdFilteredChecksFilteredViewIdChecksCheckIdFilesFileIdRoute:
+      DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdFilteredChecksFilteredViewIdChecksCheckIdFilesFileIdRoute,
+    DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdFilteredChecksFilteredViewIdChecksCheckIdFilesFilterRoute:
+      DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdFilteredChecksFilteredViewIdChecksCheckIdFilesFilterRoute,
+    DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdFilteredChecksFilteredViewIdChecksCheckIdFilesIndexRoute:
+      DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdFilteredChecksFilteredViewIdChecksCheckIdFilesIndexRoute,
+    DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdFilteredChecksFilteredViewIdChecksCheckIdFilesFileIdPreviewRoute:
+      DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdFilteredChecksFilteredViewIdChecksCheckIdFilesFileIdPreviewRouteWithChildren,
+    DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdFilteredChecksFilteredViewIdChecksCheckIdFilesFileIdHistoriesFileHistoryIdRoute:
+      DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdFilteredChecksFilteredViewIdChecksCheckIdFilesFileIdHistoriesFileHistoryIdRoute,
+  }
+
+const DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdFilteredChecksFilteredViewIdChecksCheckIdFilesRouteRouteWithChildren =
+  DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdFilteredChecksFilteredViewIdChecksCheckIdFilesRouteRoute._addFileChildren(
+    DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdFilteredChecksFilteredViewIdChecksCheckIdFilesRouteRouteChildren,
+  )
+
+interface DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdFilteredChecksFilteredViewIdChecksCheckIdQuantitiesRouteRouteChildren {
+  DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdFilteredChecksFilteredViewIdChecksCheckIdQuantitiesIndexRoute: typeof DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdFilteredChecksFilteredViewIdChecksCheckIdQuantitiesIndexRoute
+  DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdFilteredChecksFilteredViewIdChecksCheckIdQuantitiesCheckQuantityIdIndexRoute: typeof DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdFilteredChecksFilteredViewIdChecksCheckIdQuantitiesCheckQuantityIdIndexRoute
+  DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdFilteredChecksFilteredViewIdChecksCheckIdQuantitiesCheckQuantityIdHistoriesCheckQuantityHistoryIdRoute: typeof DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdFilteredChecksFilteredViewIdChecksCheckIdQuantitiesCheckQuantityIdHistoriesCheckQuantityHistoryIdRoute
+}
+
+const DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdFilteredChecksFilteredViewIdChecksCheckIdQuantitiesRouteRouteChildren: DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdFilteredChecksFilteredViewIdChecksCheckIdQuantitiesRouteRouteChildren =
+  {
+    DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdFilteredChecksFilteredViewIdChecksCheckIdQuantitiesIndexRoute:
+      DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdFilteredChecksFilteredViewIdChecksCheckIdQuantitiesIndexRoute,
+    DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdFilteredChecksFilteredViewIdChecksCheckIdQuantitiesCheckQuantityIdIndexRoute:
+      DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdFilteredChecksFilteredViewIdChecksCheckIdQuantitiesCheckQuantityIdIndexRoute,
+    DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdFilteredChecksFilteredViewIdChecksCheckIdQuantitiesCheckQuantityIdHistoriesCheckQuantityHistoryIdRoute:
+      DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdFilteredChecksFilteredViewIdChecksCheckIdQuantitiesCheckQuantityIdHistoriesCheckQuantityHistoryIdRoute,
+  }
+
+const DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdFilteredChecksFilteredViewIdChecksCheckIdQuantitiesRouteRouteWithChildren =
+  DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdFilteredChecksFilteredViewIdChecksCheckIdQuantitiesRouteRoute._addFileChildren(
+    DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdFilteredChecksFilteredViewIdChecksCheckIdQuantitiesRouteRouteChildren,
+  )
+
+interface DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdFilteredChecksFilteredViewIdChecksCheckIdTaxaRouteRouteChildren {
+  DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdFilteredChecksFilteredViewIdChecksCheckIdTaxaIndexRoute: typeof DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdFilteredChecksFilteredViewIdChecksCheckIdTaxaIndexRoute
+  DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdFilteredChecksFilteredViewIdChecksCheckIdTaxaCheckTaxonIdIndexRoute: typeof DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdFilteredChecksFilteredViewIdChecksCheckIdTaxaCheckTaxonIdIndexRoute
+  DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdFilteredChecksFilteredViewIdChecksCheckIdTaxaCheckTaxonIdHistoriesCheckTaxonHistoryIdRoute: typeof DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdFilteredChecksFilteredViewIdChecksCheckIdTaxaCheckTaxonIdHistoriesCheckTaxonHistoryIdRoute
+}
+
+const DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdFilteredChecksFilteredViewIdChecksCheckIdTaxaRouteRouteChildren: DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdFilteredChecksFilteredViewIdChecksCheckIdTaxaRouteRouteChildren =
+  {
+    DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdFilteredChecksFilteredViewIdChecksCheckIdTaxaIndexRoute:
+      DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdFilteredChecksFilteredViewIdChecksCheckIdTaxaIndexRoute,
+    DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdFilteredChecksFilteredViewIdChecksCheckIdTaxaCheckTaxonIdIndexRoute:
+      DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdFilteredChecksFilteredViewIdChecksCheckIdTaxaCheckTaxonIdIndexRoute,
+    DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdFilteredChecksFilteredViewIdChecksCheckIdTaxaCheckTaxonIdHistoriesCheckTaxonHistoryIdRoute:
+      DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdFilteredChecksFilteredViewIdChecksCheckIdTaxaCheckTaxonIdHistoriesCheckTaxonHistoryIdRoute,
+  }
+
+const DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdFilteredChecksFilteredViewIdChecksCheckIdTaxaRouteRouteWithChildren =
+  DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdFilteredChecksFilteredViewIdChecksCheckIdTaxaRouteRoute._addFileChildren(
+    DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdFilteredChecksFilteredViewIdChecksCheckIdTaxaRouteRouteChildren,
+  )
+
+interface DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdFilteredChecksFilteredViewIdChecksCheckIdRouteRouteChildren {
+  DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdFilteredChecksFilteredViewIdChecksCheckIdFilesRouteRoute: typeof DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdFilteredChecksFilteredViewIdChecksCheckIdFilesRouteRouteWithChildren
+  DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdFilteredChecksFilteredViewIdChecksCheckIdQuantitiesRouteRoute: typeof DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdFilteredChecksFilteredViewIdChecksCheckIdQuantitiesRouteRouteWithChildren
+  DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdFilteredChecksFilteredViewIdChecksCheckIdTaxaRouteRoute: typeof DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdFilteredChecksFilteredViewIdChecksCheckIdTaxaRouteRouteWithChildren
+  DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdFilteredChecksFilteredViewIdChecksCheckIdCheckRoute: typeof DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdFilteredChecksFilteredViewIdChecksCheckIdCheckRoute
+  DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdFilteredChecksFilteredViewIdChecksCheckIdIndexRoute: typeof DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdFilteredChecksFilteredViewIdChecksCheckIdIndexRoute
+  DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdFilteredChecksFilteredViewIdChecksCheckIdHistoriesCheckHistoryIdRoute: typeof DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdFilteredChecksFilteredViewIdChecksCheckIdHistoriesCheckHistoryIdRoute
+}
+
+const DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdFilteredChecksFilteredViewIdChecksCheckIdRouteRouteChildren: DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdFilteredChecksFilteredViewIdChecksCheckIdRouteRouteChildren =
+  {
+    DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdFilteredChecksFilteredViewIdChecksCheckIdFilesRouteRoute:
+      DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdFilteredChecksFilteredViewIdChecksCheckIdFilesRouteRouteWithChildren,
+    DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdFilteredChecksFilteredViewIdChecksCheckIdQuantitiesRouteRoute:
+      DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdFilteredChecksFilteredViewIdChecksCheckIdQuantitiesRouteRouteWithChildren,
+    DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdFilteredChecksFilteredViewIdChecksCheckIdTaxaRouteRoute:
+      DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdFilteredChecksFilteredViewIdChecksCheckIdTaxaRouteRouteWithChildren,
+    DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdFilteredChecksFilteredViewIdChecksCheckIdCheckRoute:
+      DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdFilteredChecksFilteredViewIdChecksCheckIdCheckRoute,
+    DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdFilteredChecksFilteredViewIdChecksCheckIdIndexRoute:
+      DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdFilteredChecksFilteredViewIdChecksCheckIdIndexRoute,
+    DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdFilteredChecksFilteredViewIdChecksCheckIdHistoriesCheckHistoryIdRoute:
+      DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdFilteredChecksFilteredViewIdChecksCheckIdHistoriesCheckHistoryIdRoute,
+  }
+
+const DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdFilteredChecksFilteredViewIdChecksCheckIdRouteRouteWithChildren =
+  DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdFilteredChecksFilteredViewIdChecksCheckIdRouteRoute._addFileChildren(
+    DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdFilteredChecksFilteredViewIdChecksCheckIdRouteRouteChildren,
+  )
+
+interface DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdFilteredChecksFilteredViewIdChecksRouteRouteChildren {
+  DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdFilteredChecksFilteredViewIdChecksCheckIdRouteRoute: typeof DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdFilteredChecksFilteredViewIdChecksCheckIdRouteRouteWithChildren
+  DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdFilteredChecksFilteredViewIdChecksFilterRoute: typeof DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdFilteredChecksFilteredViewIdChecksFilterRoute
+  DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdFilteredChecksFilteredViewIdChecksIndexRoute: typeof DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdFilteredChecksFilteredViewIdChecksIndexRoute
+}
+
+const DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdFilteredChecksFilteredViewIdChecksRouteRouteChildren: DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdFilteredChecksFilteredViewIdChecksRouteRouteChildren =
+  {
+    DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdFilteredChecksFilteredViewIdChecksCheckIdRouteRoute:
+      DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdFilteredChecksFilteredViewIdChecksCheckIdRouteRouteWithChildren,
+    DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdFilteredChecksFilteredViewIdChecksFilterRoute:
+      DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdFilteredChecksFilteredViewIdChecksFilterRoute,
+    DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdFilteredChecksFilteredViewIdChecksIndexRoute:
+      DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdFilteredChecksFilteredViewIdChecksIndexRoute,
+  }
+
+const DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdFilteredChecksFilteredViewIdChecksRouteRouteWithChildren =
+  DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdFilteredChecksFilteredViewIdChecksRouteRoute._addFileChildren(
+    DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdFilteredChecksFilteredViewIdChecksRouteRouteChildren,
+  )
+
 interface DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdRouteRouteChildren {
   DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdActionReportsRouteRoute: typeof DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdActionReportsRouteRouteWithChildren
   DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdActionsRouteRoute: typeof DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdActionsRouteRouteWithChildren
@@ -11845,6 +13241,7 @@ interface DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdRouteRouteChi
   DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlaceRoute: typeof DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdPlaceRoute
   DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdIndexRoute: typeof DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdIndexRoute
   DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdHistoriesPlaceHistoryIdRoute: typeof DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdHistoriesPlaceHistoryIdRoute
+  DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdFilteredChecksFilteredViewIdChecksRouteRoute: typeof DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdFilteredChecksFilteredViewIdChecksRouteRouteWithChildren
 }
 
 const DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdRouteRouteChildren: DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdRouteRouteChildren =
@@ -11871,6 +13268,8 @@ const DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdRouteRouteChildre
       DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdIndexRoute,
     DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdHistoriesPlaceHistoryIdRoute:
       DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdHistoriesPlaceHistoryIdRoute,
+    DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdFilteredChecksFilteredViewIdChecksRouteRoute:
+      DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdFilteredChecksFilteredViewIdChecksRouteRouteWithChildren,
   }
 
 const DataProjectsProjectIdSubprojectsSubprojectIdPlacesPlaceIdRouteRouteWithChildren =
@@ -12462,6 +13861,7 @@ interface DataProjectsProjectIdRouteRouteChildren {
   DataProjectsProjectIdExportsRunRouteRoute: typeof DataProjectsProjectIdExportsRunRouteRouteWithChildren
   DataProjectsProjectIdFieldsRouteRoute: typeof DataProjectsProjectIdFieldsRouteRouteWithChildren
   DataProjectsProjectIdFilesRouteRoute: typeof DataProjectsProjectIdFilesRouteRouteWithChildren
+  DataProjectsProjectIdFilteredViewsRouteRoute: typeof DataProjectsProjectIdFilteredViewsRouteRouteWithChildren
   DataProjectsProjectIdListsRouteRoute: typeof DataProjectsProjectIdListsRouteRouteWithChildren
   DataProjectsProjectIdPlaceLevelsRouteRoute: typeof DataProjectsProjectIdPlaceLevelsRouteRouteWithChildren
   DataProjectsProjectIdQcAssignmentsRouteRoute: typeof DataProjectsProjectIdQcAssignmentsRouteRouteWithChildren
@@ -12503,6 +13903,8 @@ const DataProjectsProjectIdRouteRouteChildren: DataProjectsProjectIdRouteRouteCh
       DataProjectsProjectIdFieldsRouteRouteWithChildren,
     DataProjectsProjectIdFilesRouteRoute:
       DataProjectsProjectIdFilesRouteRouteWithChildren,
+    DataProjectsProjectIdFilteredViewsRouteRoute:
+      DataProjectsProjectIdFilteredViewsRouteRouteWithChildren,
     DataProjectsProjectIdListsRouteRoute:
       DataProjectsProjectIdListsRouteRouteWithChildren,
     DataProjectsProjectIdPlaceLevelsRouteRoute:

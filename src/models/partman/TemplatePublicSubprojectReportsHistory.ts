@@ -4,6 +4,8 @@ export default interface TemplatePublicSubprojectReportsHistory {
 
   subproject_id: string | null;
 
+  subproject_report_design_id: string | null;
+
   year: number | null;
 
   data: unknown | null;
@@ -25,6 +27,8 @@ export interface TemplatePublicSubprojectReportsHistoryInitializer {
 
   subproject_id?: string | null;
 
+  subproject_report_design_id?: string | null;
+
   year?: number | null;
 
   data?: unknown | null;
@@ -45,6 +49,8 @@ export interface TemplatePublicSubprojectReportsHistoryMutator {
   subproject_report_id?: string;
 
   subproject_id?: string | null;
+
+  subproject_report_design_id?: string | null;
 
   year?: number | null;
 

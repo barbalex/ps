@@ -329,6 +329,7 @@ CREATE TABLE IF NOT EXISTS place_levels(
   check_quantities_in_check boolean DEFAULT TRUE,
   check_taxa boolean DEFAULT TRUE,
   check_taxa_in_check boolean DEFAULT TRUE,
+  filtered_views jsonb DEFAULT NULL,
   observations boolean DEFAULT TRUE,
   place_roles_in_place boolean DEFAULT TRUE,
   place_files boolean DEFAULT TRUE,
@@ -357,6 +358,9 @@ CREATE INDEX IF NOT EXISTS place_levels_level_idx ON place_levels USING btree(le
 CREATE INDEX IF NOT EXISTS place_levels_name_singular_de_idx ON place_levels USING btree(name_singular_de);
 CREATE INDEX IF NOT EXISTS place_levels_label_idx ON place_levels USING btree(label);
 
+ALTER TABLE place_levels
+ADD COLUMN IF NOT EXISTS filtered_views jsonb DEFAULT NULL;
+
 COMMENT ON COLUMN place_levels.level IS 'level of place: 1, 2';
 COMMENT ON COLUMN place_levels.name_singular_de IS 'German singular name. Preset: "Population"';
 COMMENT ON COLUMN place_levels.name_plural_de IS 'German plural name. Preset: "Populationen"';
@@ -378,6 +382,7 @@ COMMENT ON COLUMN place_levels.checks IS 'Are checks used? Preset: true';
 COMMENT ON COLUMN place_levels.check_quantities IS 'Are check values used? Preset: true';
 COMMENT ON COLUMN place_levels.check_quantities_in_check IS 'Show check quantities inside the check form instead of a separate route? Preset: true';
 COMMENT ON COLUMN place_levels.check_taxa IS 'Are check taxa used? Preset: true';
+COMMENT ON COLUMN place_levels.filtered_views IS 'Map of filtered_view_id -> boolean: whether this filtered view is used on this place level. Preset: NULL (no view enabled)';
 COMMENT ON COLUMN place_levels.observations IS 'Are observations used? Preset: true';
 COMMENT ON COLUMN place_levels.place_roles_in_place IS 'Render place users inside the place form? Preset: true';
 COMMENT ON COLUMN place_levels.place_files IS 'Are files used for places on this level? Preset: false';
@@ -1434,6 +1439,42 @@ CREATE INDEX IF NOT EXISTS field_sorts_table_name_idx ON field_sorts USING btree
 CREATE INDEX IF NOT EXISTS field_sorts_sorted_field_ids_idx ON field_sorts USING gin(sorted_field_ids);
 
 COMMENT ON TABLE field_sorts IS 'Stores the sort order of fields per table_name';
+
+--------------------------------------------------------------
+-- filtered_views
+--
+CREATE TABLE IF NOT EXISTS filtered_views(
+  filtered_view_id uuid PRIMARY KEY DEFAULT uuidv7(),
+  project_id uuid DEFAULT NULL REFERENCES projects(project_id) ON DELETE CASCADE ON UPDATE CASCADE DEFERRABLE INITIALLY DEFERRED,
+  table_name text DEFAULT NULL,
+  name_singular_de text DEFAULT NULL,
+  name_plural_de text DEFAULT NULL,
+  name_singular_en text DEFAULT NULL,
+  name_plural_en text DEFAULT NULL,
+  name_singular_fr text DEFAULT NULL,
+  name_plural_fr text DEFAULT NULL,
+  name_singular_it text DEFAULT NULL,
+  name_plural_it text DEFAULT NULL,
+  filter jsonb DEFAULT NULL,
+  sort integer DEFAULT 0,
+  label text GENERATED ALWAYS AS (coalesce(nullif(name_plural_de, ''), filtered_view_id::text)) STORED,
+  sys_period tstzrange DEFAULT NULL,
+  created_at timestamptz NOT NULL DEFAULT now(),
+  updated_at timestamptz NOT NULL DEFAULT now(),
+  updated_by text DEFAULT NULL
+);
+
+CREATE INDEX IF NOT EXISTS filtered_views_project_id_idx ON filtered_views USING btree(project_id);
+CREATE INDEX IF NOT EXISTS filtered_views_table_name_idx ON filtered_views USING btree(table_name);
+CREATE INDEX IF NOT EXISTS filtered_views_sort_idx ON filtered_views USING btree(sort);
+CREATE INDEX IF NOT EXISTS filtered_views_label_idx ON filtered_views USING btree(label);
+
+COMMENT ON COLUMN filtered_views.table_name IS 'Table this view filters. Currently only "checks"';
+COMMENT ON COLUMN filtered_views.name_singular_de IS 'German singular name. Example: "Feld-Kontrolle"';
+COMMENT ON COLUMN filtered_views.name_plural_de IS 'German plural name. Example: "Feld-Kontrollen"';
+COMMENT ON COLUMN filtered_views.filter IS 'Static filter in the same format as user table row filters: array of OR-conditions, each an object of AND column conditions. Keys prefixed "data." target the jsonb data column. Use {"$eq": value} for exact matches. Example: [{"data.typ": {"$eq": "Kontrolle"}}]';
+COMMENT ON COLUMN filtered_views.sort IS 'Sort order of the views in navigation';
+COMMENT ON TABLE filtered_views IS 'Named, filtered views on tables. Example: two views on checks: "Feld-Kontrollen" (typ = Kontrolle) and "Freiwilligen-Kontrollen" (typ = Freiwilligen-Kontrolle). Enabled per place level via place_levels.filtered_views';
 
 --------------------------------------------------------------
 --observation_imports

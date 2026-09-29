@@ -26,19 +26,21 @@ export const CheckHistoryCompare = ({
   from:
     | '/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/checks/$checkId_/histories/$checkHistoryId'
     | '/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/places/$placeId2_/checks/$checkId_/histories/$checkHistoryId'
+    | '/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/filtered-checks/$filteredViewId_/checks/$checkId_/histories/$checkHistoryId'
+    | '/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/places/$placeId2_/filtered-checks/$filteredViewId_/checks/$checkId_/histories/$checkHistoryId'
 }) => {
   const { formatMessage } = useIntl()
   const navigate = useNavigate()
-  const { projectId, subprojectId, placeId, placeId2, checkId, checkHistoryId } =
+  const { projectId, subprojectId, placeId, placeId2, filteredViewId, checkId, checkHistoryId } =
     useParams({ strict: false })
 
   const checkPath = placeId2
-    ? `/data/projects/${projectId}/subprojects/${subprojectId}/places/${placeId}/places/${placeId2}/checks/${checkId}/check`
-    : `/data/projects/${projectId}/subprojects/${subprojectId}/places/${placeId}/checks/${checkId}/check`
+    ? `/data/projects/${projectId}/subprojects/${subprojectId}/places/${placeId}/places/${placeId2}${filteredViewId ? `/filtered-checks/${filteredViewId}` : ''}/checks/${checkId}/check`
+    : `/data/projects/${projectId}/subprojects/${subprojectId}/places/${placeId}${filteredViewId ? `/filtered-checks/${filteredViewId}` : ''}/checks/${checkId}/check`
 
   const historyPath = placeId2
-    ? `/data/projects/${projectId}/subprojects/${subprojectId}/places/${placeId}/places/${placeId2}/checks/${checkId}/histories`
-    : `/data/projects/${projectId}/subprojects/${subprojectId}/places/${placeId}/checks/${checkId}/histories`
+    ? `/data/projects/${projectId}/subprojects/${subprojectId}/places/${placeId}/places/${placeId2}${filteredViewId ? `/filtered-checks/${filteredViewId}` : ''}/checks/${checkId}/histories`
+    : `/data/projects/${projectId}/subprojects/${subprojectId}/places/${placeId}${filteredViewId ? `/filtered-checks/${filteredViewId}` : ''}/checks/${checkId}/histories`
 
   const addOperation = useSetAtom(addOperationAtom)
   const db = usePGlite()

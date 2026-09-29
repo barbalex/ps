@@ -32,6 +32,10 @@ import { PlaceFetcher } from './PlaceFetcher.tsx'
 
 import { ChecksFetcher } from './ChecksFetcher.tsx'
 import { CheckFetcher } from './CheckFetcher.tsx'
+import { FilteredViewsFetcher } from './FilteredViewsFetcher.tsx'
+import { FilteredViewFetcher } from './FilteredViewFetcher.tsx'
+import { FilteredChecksFetcher } from './FilteredChecksFetcher.tsx'
+import { FilteredCheckFetcher } from './FilteredCheckFetcher.tsx'
 import { CheckQuantitiesFetcher } from './CheckQuantitiesFetcher.tsx'
 import { CheckQuantityFetcher } from './CheckQuantityFetcher.tsx'
 import { CheckTaxaFetcher } from './CheckTaxaFetcher.tsx'
@@ -198,6 +202,35 @@ export const FetcherRouter = ({ fetcherName, params, ...other }: Props) => {
       if (!params.projectId || !params.subprojectId || !params.placeId)
         return null
       return <ChecksFetcher params={paramsExact} {...other} />
+    }
+    case 'useFilteredViewsNavData': {
+      if (!params.projectId) return null
+      return <FilteredViewsFetcher params={paramsExact} {...other} />
+    }
+    case 'useFilteredViewNavData': {
+      if (!params.projectId || !params.filteredViewId) return null
+      return <FilteredViewFetcher params={paramsExact} {...other} />
+    }
+    case 'useFilteredChecksNavData': {
+      if (
+        !params.projectId ||
+        !params.subprojectId ||
+        !params.placeId ||
+        !params.filteredViewId
+      )
+        return null
+      return <FilteredChecksFetcher params={paramsExact} {...other} />
+    }
+    case 'useFilteredCheckNavData': {
+      if (
+        !params.projectId ||
+        !params.subprojectId ||
+        !params.placeId ||
+        !params.filteredViewId ||
+        !params.checkId
+      )
+        return null
+      return <FilteredCheckFetcher params={paramsExact} {...other} />
     }
     case 'useCheckNavData': {
       if (

@@ -41,7 +41,7 @@ export const CheckWithAll = ({
   from: string
   allInline?: boolean
 }) => {
-  const { checkId, projectId, placeId, placeId2, subprojectId } = useParams({
+  const { checkId, projectId, placeId, placeId2, filteredViewId, subprojectId } = useParams({
     strict: false,
   })
   const addOperation = useSetAtom(addOperationAtom)
@@ -133,7 +133,7 @@ export const CheckWithAll = ({
         />
       </>
     ) : undefined
-  const checkBaseUrl = `/data/projects/${projectId}/subprojects/${subprojectId}/places/${placeId}${placeId2 ? `/places/${placeId2}` : ''}/checks/${checkId}`
+  const checkBaseUrl = `/data/projects/${projectId}/subprojects/${subprojectId}/places/${placeId}${placeId2 ? `/places/${placeId2}` : ''}${filteredViewId ? `/filtered-checks/${filteredViewId}` : ''}/checks/${checkId}`
   const quantitiesUrl = `${checkBaseUrl}/quantities`
   const filesUrl = `${checkBaseUrl}/files`
   const taxaUrl = `${checkBaseUrl}/taxa`

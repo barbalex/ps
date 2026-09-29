@@ -25,6 +25,7 @@ type Props = {
   subprojectId: string
   placeId: string
   placeId2?: string
+  filteredViewId?: string
   nav: NavData
   level?: number
 }
@@ -34,6 +35,7 @@ export const CheckNode = ({
   subprojectId,
   placeId,
   placeId2,
+  filteredViewId,
   nav,
   level = 8,
 }: Props) => {
@@ -75,6 +77,7 @@ export const CheckNode = ({
     'places',
     placeId,
     ...(placeId2 ? ['places', placeId2] : []),
+    ...(filteredViewId ? ['filtered-checks', filteredViewId] : []),
     'checks',
   ]
   const parentUrl = `/${parentArray.join('/')}`
@@ -141,6 +144,7 @@ export const CheckNode = ({
                     subprojectId={subprojectId}
                     placeId={placeId}
                     placeId2={placeId2}
+                    filteredViewId={filteredViewId}
                     checkId={nav.id}
                     level={level + 1}
                   />
@@ -151,6 +155,7 @@ export const CheckNode = ({
                     subprojectId={subprojectId}
                     placeId={placeId}
                     placeId2={placeId2}
+                    filteredViewId={filteredViewId}
                     checkId={nav.id}
                     level={level + 1}
                   />
@@ -161,6 +166,7 @@ export const CheckNode = ({
                     subprojectId={subprojectId}
                     placeId={placeId}
                     placeId2={placeId2}
+                    filteredViewId={filteredViewId}
                     checkId={nav.id}
                     level={level + 1}
                   />

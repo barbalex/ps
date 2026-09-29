@@ -12,6 +12,7 @@ type Props = {
   subprojectId: string
   placeId: string
   placeId2?: string
+  filteredViewId?: string
   checkId: string
 }
 
@@ -25,6 +26,7 @@ export const useCheckQuantitiesNavData = ({
   subprojectId,
   placeId,
   placeId2,
+  filteredViewId,
   checkId,
 }: Props) => {
   const { formatMessage } = useIntl()
@@ -54,6 +56,7 @@ export const useCheckQuantitiesNavData = ({
     'places',
     placeId,
     ...(placeId2 ? ['places', placeId2] : []),
+    ...(filteredViewId ? ['filtered-checks', filteredViewId] : []),
     'checks',
     checkId,
   ]

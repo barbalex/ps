@@ -13,6 +13,7 @@ type Props = {
   subprojectId: string
   placeId: string
   placeId2?: string
+  filteredViewId?: string
   checkId: string
   nav: NavData
   level?: number
@@ -23,6 +24,7 @@ export const CheckQuantityNode = ({
   subprojectId,
   placeId,
   placeId2,
+  filteredViewId,
   checkId,
   nav,
   level = 10,
@@ -39,6 +41,7 @@ export const CheckQuantityNode = ({
     'places',
     placeId,
     ...(placeId2 ? ['places', placeId2] : []),
+    ...(filteredViewId ? ['filtered-checks', filteredViewId] : []),
     'checks',
     checkId,
     'quantities',

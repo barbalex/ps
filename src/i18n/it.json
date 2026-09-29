@@ -1125,5 +1125,21 @@
   "bGeHcI": "Blocchi",
   "bPuckPanelDelete": "Elimina",
   "bPuckPanelHint": "Fai clic su un blocco dell'anteprima per modificarlo",
-  "bExXyY": "Rapporti {place}"
+  "bExXyY": "Rapporti {place}",
+  "2kHq3x": "Viste filtrate",
+  "5mN8vP": "Vista filtrata",
+  "6gV7wJ": "Le viste filtrate mostrano solo le righe che corrispondono a un filtro. Esempio: due viste sui controlli: «controlli sul terreno» (tipo = Kontrolle) e «controlli volontari» (tipo = Freiwilligen-Kontrolle). Vengono attivate per livello di luogo.",
+  "7bQ1wE": "Nomi",
+  "Wq3zX1": "Nome singolare (tedesco)",
+  "Wq3zX2": "Nome plurale (tedesco)",
+  "Wq3zX3": "Nome singolare (inglese)",
+  "Wq3zX4": "Nome plurale (inglese)",
+  "Wq3zX5": "Nome singolare (francese)",
+  "Wq3zX6": "Nome plurale (francese)",
+  "Wq3zX7": "Nome singolare (italiano)",
+  "Wq3zX8": "Nome plurale (italiano)",
+  "8cR2wF": "Filtro",
+  "4eT5wH": "Campo",
+  "5fU6wI": "Valore",
+  "9dS3wG": "Ordine delle viste filtrate nella navigazione. Un valore più basso appare più in alto."
 }

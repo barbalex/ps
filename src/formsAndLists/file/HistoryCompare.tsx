@@ -29,6 +29,8 @@ export const FileHistoryCompare = ({
     | '/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/places/$placeId2_/actions/$actionId_/files/$fileId_/histories/$fileHistoryId'
     | '/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/checks/$checkId_/files/$fileId_/histories/$fileHistoryId'
     | '/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/places/$placeId2_/checks/$checkId_/files/$fileId_/histories/$fileHistoryId'
+    | '/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/filtered-checks/$filteredViewId_/checks/$checkId_/files/$fileId_/histories/$fileHistoryId'
+    | '/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/places/$placeId2_/filtered-checks/$filteredViewId_/checks/$checkId_/files/$fileId_/histories/$fileHistoryId'
 }) => {
   const { formatMessage } = useIntl()
   const navigate = useNavigate()
@@ -39,6 +41,7 @@ export const FileHistoryCompare = ({
     placeId2,
     actionId,
     checkId,
+    filteredViewId,
     fileId,
     fileHistoryId,
   } = useParams({ strict: false })
@@ -48,8 +51,8 @@ export const FileHistoryCompare = ({
       : `/data/projects/${projectId}/subprojects/${subprojectId}/places/${placeId}/actions/${actionId}/files/${fileId}`
     : checkId
       ? placeId2
-        ? `/data/projects/${projectId}/subprojects/${subprojectId}/places/${placeId}/places/${placeId2}/checks/${checkId}/files/${fileId}`
-        : `/data/projects/${projectId}/subprojects/${subprojectId}/places/${placeId}/checks/${checkId}/files/${fileId}`
+        ? `/data/projects/${projectId}/subprojects/${subprojectId}/places/${placeId}/places/${placeId2}${filteredViewId ? `/filtered-checks/${filteredViewId}` : ''}/checks/${checkId}/files/${fileId}`
+        : `/data/projects/${projectId}/subprojects/${subprojectId}/places/${placeId}${filteredViewId ? `/filtered-checks/${filteredViewId}` : ''}/checks/${checkId}/files/${fileId}`
       : subprojectId
         ? `/data/projects/${projectId}/subprojects/${subprojectId}/files/${fileId}`
         : `/data/projects/${projectId}/files/${fileId}`

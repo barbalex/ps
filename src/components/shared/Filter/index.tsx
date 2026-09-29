@@ -344,6 +344,8 @@ type Props = {
   children: (renderProps: OrFilterRenderProps) => ReactNode
   tableNameOverride?: string
   filterAtomNameOverride?: string
+  // filtered views use one dynamically created filter atom per view
+  filterAtomOverride?: unknown
 }
 
 export const Filter = ({
@@ -352,7 +354,8 @@ export const Filter = ({
   children,
   tableNameOverride,
   filterAtomNameOverride,
-}: Props) => {
+  filterAtomOverride,
+}: Props): ReactNode => {
   // from is a route id string; the literal union is too large to name here
   const params = useParams({ from: from as never }) as Record<
     string,
@@ -433,7 +436,10 @@ export const Filter = ({
           table: tableName,
           level: placeId ? 2 : 1,
         })
-  const filterAtom = filterAtoms[resolvedFilterAtomName] ?? projectsFilterAtom
+  const filterAtom =
+    (filterAtomOverride as typeof projectsFilterAtom | undefined) ??
+    filterAtoms[resolvedFilterAtomName] ??
+    projectsFilterAtom
   const [filter, setFilter] = useAtom(filterAtom)
   const virtualTabValue = filter.length + 1
   const isActiveVirtualTab = activeTab > filter.length

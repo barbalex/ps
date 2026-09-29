@@ -18,6 +18,7 @@ import {
   languageAtom,
   designingAtom,
 } from '../store.ts'
+import type { TableRowFilter } from '../store.ts'
 import { buildNavLabel } from './buildNavLabel.ts'
 import { filterStringFromFilter } from './filterStringFromFilter.ts'
 import { getPlaceFallbackNames } from './placeNameFallback.ts'
@@ -168,13 +169,56 @@ export const usePlaceNavData = ({
     | undefined
 
   const resPlaceLevel = useLiveQuery(
-    `SELECT place_files, place_files_in_place FROM place_levels WHERE project_id = $1 AND level = $2`,
+    `SELECT place_files, place_files_in_place, filtered_views FROM place_levels WHERE project_id = $1 AND level = $2`,
     [projectId, placeId2 ? 2 : 1],
   )
   const placeLevel = resPlaceLevel?.rows?.[0]
   const showFiles = isDesigning || placeLevel?.place_files !== false
   const filesInPlace = placeLevel?.place_files_in_place !== false
   const currentLevel: 1 | 2 = placeId2 ? 2 : 1
+
+  // filtered views enabled on this place level (design mode shows all)
+  const resFilteredViews = useLiveQuery(
+    `SELECT filtered_view_id, filter, name_plural_de, name_plural_en, name_plural_fr, name_plural_it FROM filtered_views WHERE project_id = $1 AND table_name = 'checks' ORDER BY sort, label`,
+    [projectId],
+  )
+  const filteredViews = (resFilteredViews?.rows ?? []) as {
+    filtered_view_id: string
+    filter: unknown
+    name_plural_de: string | null
+    name_plural_en: string | null
+    name_plural_fr: string | null
+    name_plural_it: string | null
+  }[]
+  const filteredViewsMap = (placeLevel?.filtered_views ?? {}) as Record<
+    string,
+    boolean | null
+  >
+  const enabledFilteredViews = isDesigning
+    ? filteredViews
+    : filteredViews.filter(
+        (view) => filteredViewsMap[view.filtered_view_id] === true,
+      )
+
+  // one count per enabled filtered view
+  const viewCountsRes = useLiveQuery<{
+    filtered_view_id: string
+    count: number
+  }>(
+    enabledFilteredViews.length > 0
+      ? enabledFilteredViews
+          .map((view) => {
+            const viewFilterString = filterStringFromFilter(
+              (view.filter ?? []) as TableRowFilter[],
+            )
+            return `SELECT '${view.filtered_view_id}' AS filtered_view_id, (SELECT count(*) FROM checks WHERE place_id = '${placeId2 ?? placeId}'${viewFilterString ? ` AND (${viewFilterString})` : ''}) AS count`
+          })
+          .join(' UNION ALL ')
+      : `SELECT 1 AS filtered_view_id, 0 AS count WHERE false`,
+  )
+  const viewCounts = new Map(
+    (viewCountsRes?.rows ?? []).map((r) => [r.filtered_view_id, Number(r.count)]),
+  )
   const fallbackCurrent = getPlaceFallbackNames(
     projectType,
     currentLevel,
@@ -249,6 +293,20 @@ export const usePlaceNavData = ({
           }),
         }),
       },
+      ...enabledFilteredViews.map((view) => ({
+        id: `filtered-checks/${view.filtered_view_id}/checks`,
+        label: buildNavLabel({
+          loading,
+          countFiltered: viewCounts.get(view.filtered_view_id) ?? 0,
+          namePlural:
+            view?.[`name_plural_${language}`] ??
+            view?.name_plural_de ??
+            formatMessage({
+              id: 'oPMDm+',
+              defaultMessage: 'Kontrollen',
+            }),
+        }),
+      })),
       {
         id: 'actions',
         label: buildNavLabel({

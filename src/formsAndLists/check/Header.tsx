@@ -10,6 +10,9 @@ import { useAtom, useSetAtom } from 'jotai'
 import { usePGlite, useLiveQuery } from '@electric-sql/pglite-react'
 import { useRef, useEffect } from 'react'
 
+import { filterStringFromFilter } from '../../modules/filterStringFromFilter.ts'
+import type { TableRowFilter } from '../../store.ts'
+
 import {
   createCheck,
   createLayerPresentation,
@@ -34,25 +37,37 @@ export const Header = ({
   autoFocusRef?: React.RefObject<HTMLInputElement | null>
   from: string
   allInline?: boolean
-}) => {
-  const isForm =
-    from ===
-      '/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/checks/$checkId_/check' ||
-    from ===
-      '/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/places/$placeId2_/checks/$checkId_/check'
-  const { formatMessage } = useIntl()
-  const checkTitle = formatMessage({ id: 'ZCwpER', defaultMessage: 'Kontrolle' })
+}) =>  {
+  // works for plain checks and for checks of a filtered view
+  const isForm = from.endsWith('/checks/$checkId_/check')
+  const { formatMessage, locale } = useIntl()
+  const { projectId, subprojectId, placeId, placeId2, filteredViewId, checkId } =
+    useParams({
+      strict: false,
+    })
+
+  // names of the filtered view this check belongs to (if any)
+  const resFilteredView = useLiveQuery(
+    filteredViewId
+      ? `SELECT name_singular_de, name_singular_en, name_singular_fr, name_singular_it, filter FROM filtered_views WHERE filtered_view_id = $1`
+      : `SELECT 1 WHERE false`,
+    filteredViewId ? [filteredViewId] : [],
+  )
+  const lang = locale.split('-')[0]
+  const filteredView = resFilteredView?.rows?.[0] as
+    | Record<string, unknown>
+    | undefined
+  const checkTitle =
+    (filteredViewId &&
+      ((filteredView?.[`name_singular_${lang}`] as string | null) ??
+        (filteredView?.name_singular_de as string | null))) ||
+    formatMessage({ id: 'ZCwpER', defaultMessage: 'Kontrolle' })
+
   const [tabs, setTabs] = useAtom(tabsAtom)
   const [mapLayerSorting, setMapLayerSorting] = useAtom(mapLayerSortingAtom)
   const setMapBounds = useSetAtom(mapBoundsAtom)
   const addNotification = useSetAtom(addNotificationAtom)
   const addOperation = useSetAtom(addOperationAtom)
-  const { projectId, subprojectId, placeId, placeId2, checkId } = useParams({
-    strict: false,
-  })
-  const basePath = placeId2
-    ? `/data/projects/${projectId}/subprojects/${subprojectId}/places/${placeId}/places/${placeId2}/checks/${checkId}`
-    : `/data/projects/${projectId}/subprojects/${subprojectId}/places/${placeId}/checks/${checkId}`
   const navigate = useNavigate()
 
   const db = usePGlite()
@@ -64,8 +79,16 @@ export const Header = ({
     checkIdRef.current = checkId
   }, [checkId])
 
+  // the view's static filter narrows counts and sibling navigation
+  const viewFilterString = filteredViewId
+    ? filterStringFromFilter((filteredView?.filter ?? []) as TableRowFilter[])
+    : ''
+  const hasViewFilter = !!viewFilterString
+
+  const basePath = `${placeId2 ? `/data/projects/${projectId}/subprojects/${subprojectId}/places/${placeId}/places/${placeId2}` : `/data/projects/${projectId}/subprojects/${subprojectId}/places/${placeId}`}${filteredViewId ? `/filtered-checks/${filteredViewId}` : ''}/checks/${checkId}`
+
   const countRes = useLiveQuery(
-    `SELECT COUNT(*) as count FROM checks WHERE place_id = '${placeId2 ?? placeId}'`,
+    `SELECT COUNT(*) as count FROM checks WHERE place_id = '${placeId2 ?? placeId}'${hasViewFilter ? ` AND (${viewFilterString})` : ''}`,
   )
   const rowCount = (countRes?.rows?.[0]?.count as number) ?? 2
 
@@ -73,6 +96,7 @@ export const Header = ({
     const id = await createCheck({
       projectId: projectId!,
       placeId: placeId2 ?? placeId!,
+      filteredViewId,
     })
     if (!id) return
     navigate({
@@ -112,7 +136,7 @@ export const Header = ({
   const toNext = async () => {
     try {
       const res = await db.query(
-        `SELECT check_id FROM checks WHERE place_id = $1 ORDER BY label`,
+        `SELECT check_id FROM checks WHERE place_id = $1${hasViewFilter ? ` AND (${viewFilterString})` : ''} ORDER BY label`,
         [placeId2 ?? placeId],
       )
       const checks = res?.rows as { check_id: string }[]
@@ -137,7 +161,7 @@ export const Header = ({
   const toPrevious = async () => {
     try {
       const res = await db.query(
-        `SELECT check_id FROM checks WHERE place_id = $1 ORDER BY label`,
+        `SELECT check_id FROM checks WHERE place_id = $1${hasViewFilter ? ` AND (${viewFilterString})` : ''} ORDER BY label`,
         [placeId2 ?? placeId],
       )
       const checks = res?.rows as { check_id: string }[]

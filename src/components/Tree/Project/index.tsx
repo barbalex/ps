@@ -20,6 +20,7 @@ import { VectorLayersNode } from '../VectorLayers.tsx'
 import { ProjectUsersNode } from '../ProjectUsers.tsx'
 import { PlaceLevelsNode } from '../PlaceLevels.tsx'
 import { FieldsNode } from '../Fields.tsx'
+import { FilteredViewsNode } from '../FilteredViews.tsx'
 import { FilesNode } from '../Files.tsx'
 import { ProjectReportDesignsNode } from '../ProjectReportDesigns.tsx'
 import { SubprojectReportDesignsNode } from '../SubprojectReportDesigns.tsx'
@@ -166,6 +167,7 @@ export const ProjectNode = ({ nav, level = 2 }: Props) => {
               <ProjectCrssNode projectId={nav.id} />
               <PlaceLevelsNode projectId={nav.id} />
               {showFieldsNav && <FieldsNode projectId={nav.id} />}
+              <FilteredViewsNode projectId={nav.id} />
             </>
           )}
           {showDesigningNodes && <ProjectQcsNode projectId={nav.id} />}

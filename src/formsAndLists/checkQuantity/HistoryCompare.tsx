@@ -29,6 +29,8 @@ export const CheckQuantityHistoryCompare = ({
   from?:
     | '/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/checks/$checkId_/quantities/$checkQuantityId_/histories/$checkQuantityHistoryId'
     | '/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/places/$placeId2_/checks/$checkId_/quantities/$checkQuantityId_/histories/$checkQuantityHistoryId'
+    | '/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/filtered-checks/$filteredViewId_/checks/$checkId_/quantities/$checkQuantityId_/histories/$checkQuantityHistoryId'
+    | '/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/places/$placeId2_/filtered-checks/$filteredViewId_/checks/$checkId_/quantities/$checkQuantityId_/histories/$checkQuantityHistoryId'
 }) => {
   const { formatMessage } = useIntl()
   const navigate = useNavigate()
@@ -40,10 +42,11 @@ export const CheckQuantityHistoryCompare = ({
     checkId,
     checkQuantityId,
     checkQuantityHistoryId,
+    filteredViewId,
   } = useParams({ strict: false })
   const checkQuantityPath = placeId2
-    ? `/data/projects/${projectId}/subprojects/${subprojectId}/places/${placeId}/places/${placeId2}/checks/${checkId}/quantities/${checkQuantityId}`
-    : `/data/projects/${projectId}/subprojects/${subprojectId}/places/${placeId}/checks/${checkId}/quantities/${checkQuantityId}`
+    ? `/data/projects/${projectId}/subprojects/${subprojectId}/places/${placeId}/places/${placeId2}${filteredViewId ? `/filtered-checks/${filteredViewId}` : ''}/checks/${checkId}/quantities/${checkQuantityId}`
+    : `/data/projects/${projectId}/subprojects/${subprojectId}/places/${placeId}${filteredViewId ? `/filtered-checks/${filteredViewId}` : ''}/checks/${checkId}/quantities/${checkQuantityId}`
   const historyPath = `${checkQuantityPath}/histories`
 
   const addOperation = useSetAtom(addOperationAtom)

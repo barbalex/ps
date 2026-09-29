@@ -1,0 +1,30 @@
+import { createFileRoute } from '@tanstack/react-router'
+import { CheckLayout } from './-layout.tsx'
+
+export const Route = createFileRoute(
+  '/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/places/$placeId2_/filtered-checks/$filteredViewId_/checks/$checkId_',
+)({
+  component: CheckLayout,
+  beforeLoad: ({ params }) => {
+    if (!params.projectId || params.projectId === 'undefined') {
+      throw new Error('Invalid or missing projectId in route parameters')
+    }
+    if (!params.subprojectId || params.subprojectId === 'undefined') {
+      throw new Error('Invalid or missing subprojectId in route parameters')
+    }
+    if (!params.placeId || params.placeId === 'undefined') {
+      throw new Error('Invalid or missing placeId in route parameters')
+    }
+    if (!params.filteredViewId || params.filteredViewId === 'undefined') {
+      throw new Error(
+        'Invalid or missing filteredViewId in route parameters',
+      )
+    }
+    if (!params.checkId || params.checkId === 'undefined') {
+      throw new Error('Invalid or missing checkId in route parameters')
+    }
+    return {
+      navDataFetcher: 'useFilteredCheckNavData',
+    }
+  },
+})

@@ -961,9 +961,11 @@ export const createSubprojectReport = async ({
 export const createCheck = async ({
   projectId,
   placeId,
+  filteredViewId,
 }: {
   projectId: string
   placeId: string
+  filteredViewId?: string
 }) => {
   const db = store.get(pgliteDbAtom)!
   // find fields with preset values on the data column
@@ -971,14 +973,21 @@ export const createCheck = async ({
     projectId,
     table: 'checks',
   })
+  // a filtered view sets the values it filters for
+  const viewData: { data: Record<string, unknown>; columns: Record<string, unknown> } =
+    filteredViewId
+      ? await getDataFromFilteredView({ filteredViewId })
+      : { data: {}, columns: {} }
 
   const check_id = uuidv7()
+  const dataJsonb = { ...presetData, ...viewData.data }
   const data = {
     check_id,
     place_id: placeId,
     date: new Date(),
     relevant_for_reports: true,
-    ...presetData,
+    ...(Object.keys(dataJsonb).length > 0 ? { data: dataJsonb } : {}),
+    ...viewData.columns,
   }
   const columns = Object.keys(data).join(',')
   const values = Object.values(data)
@@ -997,6 +1006,72 @@ export const createCheck = async ({
   })
 
   return check_id
+}
+
+/**
+ * Extracts the values a filtered view filters for, to set them on new rows.
+ * Uses the first OR-condition of the view's filter (a view that combines
+ * multiple OR-conditions cannot preset a single matching value).
+ * "$eq"-wrapped and plain values are used verbatim.
+ */
+export const getDataFromFilteredView = async ({
+  filteredViewId,
+}: {
+  filteredViewId: string
+}) => {
+  const db = store.get(pgliteDbAtom)!
+  const res = await db.query<{ filter: unknown }>(
+    `SELECT filter FROM filtered_views WHERE filtered_view_id = $1`,
+    [filteredViewId],
+  )
+  const view = res?.rows?.[0]
+  const firstOrCondition =
+    Array.isArray(view?.filter) && view.filter.length > 0
+      ? (view.filter[0] as Record<string, unknown>)
+      : {}
+  const data: Record<string, unknown> = {}
+  const columns: Record<string, unknown> = {}
+  for (const [key, wrappedValue] of Object.entries(firstOrCondition)) {
+    const value =
+      wrappedValue !== null &&
+      typeof wrappedValue === 'object' &&
+      '$eq' in wrappedValue
+        ? (wrappedValue as { $eq: unknown }).$eq
+        : wrappedValue
+    if (value === null || value === undefined) continue
+    if (key.startsWith('data.')) {
+      data[key.substring(5)] = value
+    } else {
+      columns[key] = value
+    }
+  }
+  return { data, columns }
+}
+
+export const createFilteredView = async ({
+  projectId,
+}: {
+  projectId: string
+}) => {
+  const filtered_view_id = uuidv7()
+  const db = store.get(pgliteDbAtom)!
+  await db.query(
+    `INSERT INTO filtered_views (filtered_view_id, project_id, table_name, sort) VALUES ($1, $2, $3, $4)`,
+    [filtered_view_id, projectId, 'checks', 0],
+  )
+
+  store.set(addOperationAtom, {
+    table: 'filtered_views',
+    operation: 'insert',
+    draft: {
+      filtered_view_id,
+      project_id: projectId,
+      table_name: 'checks',
+      sort: 0,
+    },
+  })
+
+  return filtered_view_id
 }
 
 export const createCheckQuantity = async ({

@@ -7,6 +7,8 @@ export default interface SubprojectReportsHistory {
 
   subproject_id: string | null;
 
+  subproject_report_design_id: string | null;
+
   year: number | null;
 
   data: unknown | null;
@@ -32,6 +34,8 @@ export interface SubprojectReportsHistoryInitializer {
   subproject_report_id?: string;
 
   subproject_id?: string | null;
+
+  subproject_report_design_id?: string | null;
 
   /** Default value: date_part('year'::text, (now())::date) */
   year?: number | null;
@@ -60,6 +64,8 @@ export interface SubprojectReportsHistoryMutator {
   subproject_report_id?: string;
 
   subproject_id?: string | null;
+
+  subproject_report_design_id?: string | null;
 
   year?: number | null;
 
