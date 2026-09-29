@@ -770,8 +770,29 @@ Labels follow apflora.ch (`apf2/sql/apflora/createComputedLabels.sql`):
 - check_taxa (Zaehlungen): `einheit: anzahl` (apf2 also appends the
   methode, which ps does not store)
 
-Applying the seed to a running stack requires the permission-trigger bypass:
-`APF2_APPLY_LATER=1 npm run apflora:generate`, then psql the file.
+### Importing apflora data into the dev backend
+
+Two npm scripts drive the whole pipeline (extract → generate → apply):
+
+```bash
+npm run apflora:import:test   # the three example species (Abies alba, Aldrovanda vesiculosa, Pulsatilla vulgaris)
+npm run apflora:import:all    # every art of the apf2 dump
+```
+
+`scripts/import-apflora.mjs` extracts the apf2 dump (default
+`../apf2/backend-dev/db/apflora.backup`, override with `APF2_DUMP`) to
+`seed-data/apflora/apf2-example.json` resp. `apf2-all.json` if missing,
+regenerates `11b` from it (`APF2_APPLY_LATER=1`), resets the apflora project
+(the delete cascades all its data), applies 11a–11d inside the `ps_db`
+container (files copied to `/var/tmp` — `/tmp` is a tmpfs mount where
+`docker cp` does not stick), and refreshes the place labels (the label
+triggers skip while `electric.syncing` is set, because normally Electric
+delivers labels with the rows). Switching between the modes is free: re-run
+the other script.
+
+Manual equivalent for a single file: `APF2_APPLY_LATER=1
+npm run apflora:generate`, then psql the file with `SET electric.syncing TO
+'true'` first (the write-permission triggers otherwise reject the writes).
 
 ## Known limitations (v1)
 

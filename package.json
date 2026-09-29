@@ -25,6 +25,8 @@
     "qcs:generate": "node backend/db/generate_qcs_sql.mjs",
     "apflora:extract": "node backend/db/extract_apflora_example.mjs",
     "apflora:generate": "node backend/db/generate_apflora_example_sql.mjs",
+    "apflora:import:test": "node scripts/import-apflora.mjs test",
+    "apflora:import:all": "node scripts/import-apflora.mjs all",
     "exports:generate": "node backend/db/generate_exports_sql.mjs",
     "models:generate": "node scripts/kanel-generate.mjs",
     "docs:build": "node scripts/build-docs.mjs"
@@ -158,7 +160,7 @@
   },
   "devRemarks": {
     "nothing": "now",
-    "tabster": "errors were caused. tabster@8.7.0 bundled its own keyborg@2.6.0 which conflicted with the top-level keyborg@2.14.0 required by @fluentui/react-components — keyborg 2.14 removed getNavigating, so forcing tabster@8.8.0 (which depends on keyborg@^2.14.0) eliminates the nested copy and makes both packages use the same API.",
+    "tabster": "errors were caused. tabster@8.7.0 bundled its own keyborg@2.6.0 which conflicted with the top-level keyborg@2.14.0 required by @fluentui/react-components \u2014 keyborg 2.14 removed getNavigating, so forcing tabster@8.8.0 (which depends on keyborg@^2.14.0) eliminates the nested copy and makes both packages use the same API.",
     "typescript-eslint": "typescript@7 (native) ships no JS API, which @typescript-eslint still requires (its peer range caps at <6.1.0), so eslint cannot run on v7 yet. The overrides pin the peer to typescript@6.0.3, and the postinstall script (scripts/patch-eslint-typescript.mjs) copies the aliased typescript-v6 devDependency into @typescript-eslint/parser and @typescript-eslint/eslint-plugin, because npm cannot nest a peer-satisfying typescript copy under root-level packages. Root typescript stays on v7 for tsc. Drop overrides + typescript-v6 + postinstall once typescript-eslint supports v7."
   }
 }
