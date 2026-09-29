@@ -98,6 +98,13 @@
   background-color: rgba(0, 0, 0, 0.12) !important;
 }
 
+/* dark mode: the pale separator borders are invisible on light header
+   backgrounds but show up as unwanted lines on dark ones */
+:global(html[data-theme='dark']) .measuredOuterContainer {
+  border-top: none;
+  border-bottom: none;
+}
+
 /* dark mode: the overflow menu buttons are forced out of their Fluent
    theming by the light rules above */
 :global(html[data-theme='dark']) .menuContent button {
