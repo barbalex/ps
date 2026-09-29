@@ -6,6 +6,10 @@
   overflow: hidden;
 }
 
+:global(html[data-theme='dark']) .container {
+  background-color: #233021;
+}
+
 @media print {
   .container {
     display: none !important;

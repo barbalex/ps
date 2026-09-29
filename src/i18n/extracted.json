@@ -2684,6 +2684,15 @@
   "tV2WxY": {
     "defaultMessage": "WMS-Dienste und WMS-Ebenen"
   },
+  "themeModeDark": {
+    "defaultMessage": "Darstellung: dunkel"
+  },
+  "themeModeLight": {
+    "defaultMessage": "Darstellung: hell"
+  },
+  "themeModeSystem": {
+    "defaultMessage": "Darstellung: wie System"
+  },
   "treeLayerNodeLabel": {
     "defaultMessage": "Layer"
   },

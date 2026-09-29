@@ -119,3 +119,11 @@
 .dragging {
   pointer-events: none;
 }
+
+:global(html[data-theme='dark']) .container {
+  background-color: #292929;
+}
+
+:global(html[data-theme='dark']) .innerContainer {
+  background-color: #292929;
+}

@@ -32,3 +32,17 @@
 .resizerActive {
   background-color: rgba(38, 82, 37, 0.9);
 }
+
+:global(html[data-theme='dark']) .resizer {
+  background-color: #1f291c;
+
+  @container (width <= 700px) {
+    border-top-color: rgba(110, 170, 100, 0.4);
+    border-bottom-color: rgba(110, 170, 100, 0.4);
+  }
+
+  @container (width > 700px) {
+    border-right-color: rgba(110, 170, 100, 0.4);
+    border-left-color: rgba(110, 170, 100, 0.4);
+  }
+}

@@ -26,3 +26,13 @@
   flex-wrap: nowrap;
   column-gap: 5px;
 }
+
+/* dark mode: bump the translucent green tints so they stay visible on the
+   dark background */
+:global(html[data-theme='dark']) .container {
+  background-color: rgba(103, 216, 101, 0.08);
+}
+
+:global(html[data-theme='dark']) .titleRow {
+  background-color: rgba(103, 216, 101, 0.2);
+}

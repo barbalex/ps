@@ -154,3 +154,39 @@
     font-size: 1rem;
   }
 }
+
+/* dark mode: mirrors the #boot-init dark variants in index.html (this
+   component takes over from the static boot shell once React mounts) */
+:global(html[data-theme='dark']) .container {
+  color: #d9e5d4;
+  background: radial-gradient(
+    circle at top right,
+    #1a2418,
+    #161e14 45%,
+    #121810
+  );
+}
+
+:global(html[data-theme='dark']) .card {
+  background: rgba(31, 39, 30, 0.92);
+  border-color: rgba(130, 170, 120, 0.22);
+  box-shadow: 0 12px 36px rgba(0, 0, 0, 0.45);
+}
+
+:global(html[data-theme='dark']) .title {
+  color: #d3e4cc;
+}
+
+:global(html[data-theme='dark']) .subtitle {
+  color: #a3b89c;
+}
+
+:global(html[data-theme='dark']) .stepPending {
+  border-color: rgba(110, 130, 104, 0.3);
+  background: rgba(255, 255, 255, 0.045);
+}
+
+:global(html[data-theme='dark']) .stepPending .stepNumber {
+  background: #35422f;
+  color: #cfe3c8;
+}

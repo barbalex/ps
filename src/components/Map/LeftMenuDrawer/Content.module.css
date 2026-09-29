@@ -20,3 +20,7 @@
     padding-left: 34px;
   }
 }
+
+:global(html[data-theme='dark']) .tabList {
+  background-color: rgba(103, 216, 101, 0.13);
+}

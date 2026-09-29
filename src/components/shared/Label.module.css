@@ -7,3 +7,7 @@
   user-select: none;
   padding-bottom: 8px;
 }
+
+:global(html[data-theme='dark']) .label {
+  color: rgba(255, 255, 255, 0.8);
+}

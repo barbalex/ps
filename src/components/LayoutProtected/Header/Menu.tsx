@@ -21,6 +21,7 @@ import styles from './Menu.module.css'
 import { UserMenu } from './UserMenu/index.tsx'
 import { Tabs } from './Tabs.tsx'
 import { LanguageChooser } from '../../shared/LanguageChooser.tsx'
+import { ThemeChooser } from '../../shared/ThemeChooser.tsx'
 import { MenuBar as MenuBarWithRequiredProps } from '../../MenuBar/index.tsx'
 import { signOut, useSession } from '../../../modules/authClient.ts'
 
@@ -154,6 +155,7 @@ export const Menu = () => {
       />
       <MenuBar addMargin={false} showBorder={false} grow={false}>
         <LanguageChooser width={44} />
+        <ThemeChooser />
         {isAuthenticated ? (
           <UserMenu
             authUser={authUser}

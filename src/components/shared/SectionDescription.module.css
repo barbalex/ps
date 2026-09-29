@@ -5,3 +5,8 @@
   font-size: 0.875em;
   color: #444;
 }
+
+:global(html[data-theme='dark']) .description {
+  background-color: #273521;
+  color: #c2c2c2;
+}

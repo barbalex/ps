@@ -113,3 +113,11 @@
 .label {
   flex-grow: 1;
 }
+
+:global(html[data-theme='dark']) .rowContent {
+  background-color: #292929;
+}
+
+:global(html[data-theme='dark']) .imgDiv {
+  background-color: rgba(255, 255, 255, 0.05);
+}

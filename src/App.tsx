@@ -1,4 +1,4 @@
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { RouterProvider } from '@tanstack/react-router'
 import * as fluentUiReactComponents from '@fluentui/react-components'
 const { FluentProvider } = fluentUiReactComponents
@@ -18,9 +18,9 @@ import { router } from './router.tsx'
 import './style.css'
 import styles from './App.module.css'
 
-import { lightTheme } from './modules/theme.ts'
+import { lightTheme, darkTheme } from './modules/theme.ts'
 import { markBootDone } from './modules/bootDone.ts'
-import { store, languageAtom, intlAtom } from './store.ts'
+import { store, languageAtom, intlAtom, themeModeAtom } from './store.ts'
 
 const IntlSetter = () => {
   const intl = useIntl()
@@ -30,6 +30,31 @@ const IntlSetter = () => {
 
 export const App = () => {
   const language = useAtomValue(languageAtom, { store })
+  const themeMode = useAtomValue(themeModeAtom, { store })
+
+  // track the OS color-scheme preference so 'system' mode can follow it live
+  const [systemPrefersDark, setSystemPrefersDark] = useState(() =>
+    window.matchMedia('(prefers-color-scheme: dark)').matches,
+  )
+  useEffect(() => {
+    const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)')
+    const onChange = (event: MediaQueryListEvent) =>
+      setSystemPrefersDark(event.matches)
+    mediaQuery.addEventListener('change', onChange)
+    return () => mediaQuery.removeEventListener('change', onChange)
+  }, [])
+
+  const isDark =
+    themeMode === 'dark' ||
+    (themeMode === 'system' && systemPrefersDark)
+
+  // mirror the resolved mode onto <html> so plain CSS (style.css, component
+  // modules, the boot shell) can define dark variants via [data-theme='dark'];
+  // index.html sets the same attribute before first paint
+  useEffect(() => {
+    document.documentElement.dataset.theme = isDark ? 'dark' : 'light'
+  }, [isDark])
+
   useEffect(() => {
     const titles: Record<string, string> = {
       de: 'Arten fördern',
@@ -58,7 +83,7 @@ export const App = () => {
         }}
       >
         <IntlSetter />
-        <FluentProvider theme={lightTheme}>
+        <FluentProvider theme={isDark ? darkTheme : lightTheme}>
           <div id="router-container" className={styles.routerContainer}>
             <RouterProvider router={router} />
           </div>

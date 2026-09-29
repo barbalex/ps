@@ -73,3 +73,15 @@
   cursor: default;
   user-select: none;
 }
+
+:global(html[data-theme='dark']) .toggle {
+  color: #e6e6e6 !important;
+}
+
+:global(html[data-theme='dark']) .contentLink {
+  color: #e6e6e6;
+}
+
+:global(html[data-theme='dark']) .svg {
+  color: #e6e6e6;
+}

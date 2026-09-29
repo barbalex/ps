@@ -81,3 +81,19 @@
   transition: opacity 700ms ease-in-out;
   user-select: none;
 }
+
+/* dark mode: white separators and text follow the theme's page background
+   and foreground (breadcrumbs render inside FluentProvider, so its tokens
+   are available) */
+html[data-theme='dark'] .crumb-outer-container::after,
+html[data-theme='dark'] .crumb-outer-container::before {
+  background: var(--colorNeutralBackground1, #1f1f1f);
+}
+
+html[data-theme='dark'] .crumb-container::before {
+  background: var(--colorNeutralBackground1, #1f1f1f);
+}
+
+html[data-theme='dark'] .crumb-label-link {
+  color: var(--colorNeutralForeground1, #fff);
+}

@@ -311,6 +311,41 @@
           transform: rotate(360deg);
         }
       }
+      /* dark-mode boot shell variants; html[data-theme] is set before first
+         paint by the head script. The photo hero (#boot-home) keeps its
+         image-driven look in both modes. */
+      html[data-theme='dark'] #boot-home {
+        background: #121810;
+      }
+      html[data-theme='dark'] #boot-splash,
+      html[data-theme='dark'] #boot-init {
+        background: radial-gradient(
+          circle at top right,
+          #1a2418,
+          #161e14 45%,
+          #121810
+        );
+        color: #d9e5d4;
+      }
+      html[data-theme='dark'] #boot-init-card {
+        background: rgba(31, 39, 30, 0.92);
+        border-color: rgba(130, 170, 120, 0.22);
+        box-shadow: 0 12px 36px rgba(0, 0, 0, 0.45);
+      }
+      html[data-theme='dark'] #boot-init-title {
+        color: #d3e4cc;
+      }
+      html[data-theme='dark'] #boot-init-subtitle {
+        color: #a3b89c;
+      }
+      html[data-theme='dark'] .boot-step.pending {
+        border-color: rgba(110, 130, 104, 0.3);
+        background: rgba(255, 255, 255, 0.045);
+      }
+      html[data-theme='dark'] .boot-step.pending .boot-step-number {
+        background: #35422f;
+        color: #cfe3c8;
+      }
     </style>
     <script>
       // Runs before first paint; picks the static shell variant and language
@@ -332,6 +367,22 @@
         html.dataset.bootLang = ['de', 'en', 'fr', 'it'].includes(lang)
           ? lang
           : 'de'
+        // theme: resolve the stored mode ('system' | 'light' | 'dark',
+        // JSON-encoded by jotai's atomWithStorage) against the OS preference
+        // before first paint; App.tsx keeps html[data-theme] in sync after
+        const storedThemeMode = (() => {
+          try {
+            return JSON.parse(localStorage.getItem('themeMode') ?? 'null')
+          } catch {
+            return null
+          }
+        })()
+        const bootIsDark =
+          storedThemeMode === 'dark' ||
+          (storedThemeMode !== 'light' &&
+            window.matchMedia('(prefers-color-scheme: dark)').matches)
+        html.dataset.theme = bootIsDark ? 'dark' : 'light'
+        html.style.colorScheme = bootIsDark ? 'dark' : 'light'
       })()
     </script>
   </head>

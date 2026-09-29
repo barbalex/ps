@@ -18,3 +18,15 @@
 .errorMessage {
   color: rgb(196, 49, 75);
 }
+
+:global(html[data-theme='dark']) .buttonDragging {
+  background-color: rgba(103, 216, 101, 0.25) !important;
+}
+
+:global(html[data-theme='dark']) .buttonSuccess {
+  color: rgba(140, 200, 120, 0.95) !important;
+}
+
+:global(html[data-theme='dark']) .errorMessage {
+  color: #e5737f;
+}

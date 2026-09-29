@@ -28,3 +28,8 @@
   border: 0.666667px solid rgb(209, 209, 209);
   border-radius: 4px;
 }
+
+:global(html[data-theme='dark']) .switch {
+  background-color: #292929;
+  border-color: #4a4a4a;
+}

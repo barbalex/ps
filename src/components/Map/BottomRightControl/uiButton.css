@@ -7,3 +7,8 @@ it can't be styled using module css */
   color: black !important;
   border-color: black !important;
 }
+
+html[data-theme='dark'] .fui-Switch__indicator {
+  color: white !important;
+  border-color: white !important;
+}

@@ -69,3 +69,19 @@
 .childrenOpen {
   border-top: 1px solid #cccccc9d;
 }
+
+:global(html[data-theme='dark']) .title {
+  background-color: #233021;
+}
+
+:global(html[data-theme='dark']) .titleStuck {
+  border-top-color: rgba(255, 255, 255, 0.35);
+}
+
+:global(html[data-theme='dark']) .toggleButton {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+:global(html[data-theme='dark']) .childrenOpen {
+  border-top-color: rgba(255, 255, 255, 0.3);
+}

@@ -2,6 +2,10 @@
   color: black;
 }
 
+:global(html[data-theme='dark']) .title {
+  color: #e6e6e6;
+}
+
 .descriptionWrapper {
   padding: 10px 10px 0 10px;
 }

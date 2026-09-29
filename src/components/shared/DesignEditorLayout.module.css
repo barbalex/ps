@@ -39,6 +39,15 @@
   width: 2px;
 }
 
+:global(html[data-theme='dark']) .splitter::after {
+  background: #444;
+}
+
+:global(html[data-theme='dark']) .splitter:hover::after,
+:global(html[data-theme='dark']) .splitter:active::after {
+  background: #777;
+}
+
 .preview {
   box-sizing: border-box;
   position: relative;

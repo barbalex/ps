@@ -36,3 +36,15 @@
     color: black;
   }
 }
+
+/* dark mode: the popup wrapper itself is recolored in style.css */
+:global(html[data-theme='dark']) .label {
+  color: rgba(255, 255, 255, 0.6);
+}
+
+:global(html[data-theme='dark']) .row {
+  &:nth-child(odd) {
+    background-color: rgba(255, 255, 255, 0.06);
+    color: white;
+  }
+}

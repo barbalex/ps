@@ -89,3 +89,32 @@
   font-size: 0.82rem;
   color: #5c4700;
 }
+
+/* dark mode: amber banner tuned for the dark theme */
+:global(html[data-theme='dark']) .container {
+  background: #3a3117;
+  border-color: #8a6f00;
+}
+
+:global(html[data-theme='dark']) .otpInput {
+  background: #26210f;
+  color: #ffe28a;
+}
+
+:global(html[data-theme='dark']) .otpVerifyBtn {
+  background: #3a3117;
+  color: #ffe28a;
+}
+
+:global(html[data-theme='dark']) .otpVerifyBtn:hover:not(:disabled) {
+  background: #4a3f1d;
+}
+
+:global(html[data-theme='dark']) .button {
+  background: #26210f;
+  color: #ffe28a;
+}
+
+:global(html[data-theme='dark']) .info {
+  color: #d9c47d;
+}

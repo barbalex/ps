@@ -7,6 +7,7 @@ import { useIntl } from 'react-intl'
 import globalStyles from '../../../styles.module.css'
 import styles from './Menu.module.css'
 import { LanguageChooser } from '../../shared/LanguageChooser.tsx'
+import { ThemeChooser } from '../../shared/ThemeChooser.tsx'
 import { docsReturnUrlAtom } from '../../../store.ts'
 
 export const Menu = () => {
@@ -39,6 +40,7 @@ export const Menu = () => {
   return (
     <div className={globalStyles.controls}>
       <LanguageChooser />
+      <ThemeChooser />
       <button
         className={styles.button}
         onClick={onClickDocs}

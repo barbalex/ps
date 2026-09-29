@@ -13,3 +13,11 @@
 .svg {
   font-size: medium;
 }
+
+:global(html[data-theme='dark']) .button {
+  color: #e6e6e6 !important;
+
+  &:hover {
+    background-color: #3d3d3d;
+  }
+}

@@ -273,6 +273,17 @@ export const languageAtom = atomWithStorage<Language>(
 )
 export const intlAtom = atom<IntlShape | null>(null)
 
+// 'system' follows the OS prefers-color-scheme preference (the default),
+// 'light' and 'dark' force a mode. index.html resolves the same storage key
+// before first paint to set html[data-theme] without a flash.
+export type ThemeMode = 'system' | 'light' | 'dark'
+export const themeModeAtom = atomWithStorage<ThemeMode>(
+  'themeMode',
+  'system',
+  undefined,
+  { getOnInit: true },
+)
+
 // initialSyncing gates the boot UI on every page load. It must NOT be
 // persisted: Electric can clear and re-snapshot shape tables at any point
 // while shapes are not yet up-to-date, and live queries get no change

@@ -43,3 +43,22 @@
   font-size: 0.9em;
   padding-top: 16px;
 }
+
+:global(html[data-theme='dark']) .header {
+  border-bottom-color: #444;
+}
+
+:global(html[data-theme='dark']) .removeButton {
+  border-color: #555;
+  background: #292929;
+}
+
+:global(html[data-theme='dark']) .removeButton:hover {
+  border-color: #e57373;
+  background: #3d2424;
+  color: #e57373;
+}
+
+:global(html[data-theme='dark']) .emptyState {
+  color: #8a8a8a;
+}

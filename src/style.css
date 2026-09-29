@@ -114,7 +114,7 @@ https://stackoverflow.com/a/21541021/712005 */
   margin-left: -1em;
   column-gap: 0;
   row-gap: 0;
-  background-color: fff;
+  background-color: transparent;
   border-bottom: 1px solid rgba(55, 118, 28, 0.5);
   border-collapse: collapse;
   border-top: none;
@@ -126,7 +126,7 @@ https://stackoverflow.com/a/21541021/712005 */
 }
 
 .navs {
-  background-color: fff;
+  background-color: transparent;
   display: flex;
   flex-wrap: wrap;
   column-gap: 0;
@@ -267,7 +267,6 @@ html {
   scrollbar-width: thin;
 }
 
-/* own syntax for webkit */
 ::-webkit-scrollbar {
   width: 8px;
 }
@@ -284,6 +283,80 @@ html {
 
 ::-webkit-scrollbar-corner {
   background: rgba(0, 0, 0, 0);
+}
+
+/* dark mode
+   html[data-theme] is set before first paint by the script in index.html and
+   kept in sync with the themeModeAtom by App.tsx */
+html {
+  color-scheme: light;
+}
+
+html[data-theme='dark'] {
+  color-scheme: dark;
+  scrollbar-color: rgba(55, 118, 28, 1) #1b221a;
+}
+
+html[data-theme='dark'] ::-webkit-scrollbar-thumb {
+  box-shadow: inset 0 0 7px rgba(110, 170, 100, 1);
+  background: rgba(255, 255, 255, 0.06);
+}
+
+html[data-theme='dark'] .form-container.filter {
+  background-color: rgba(255, 141, 2, 0.12);
+}
+
+html[data-theme='dark'] .form-header {
+  background-color: #233021;
+}
+
+html[data-theme='dark'] .form-header.filter {
+  background-color: rgba(255, 141, 2, 0.32);
+}
+
+html[data-theme='dark'] .navs a,
+html[data-theme='dark'] .navs-resizable a {
+  color: #e6e6e6;
+}
+
+html[data-theme='dark'] .navs a:hover,
+html[data-theme='dark'] .navs-resizable a:hover {
+  text-decoration-color: rgba(255, 255, 255, 0.4);
+}
+
+html[data-theme='dark'] .navs,
+html[data-theme='dark'] .navs-resizable {
+  border-bottom-color: rgba(110, 170, 100, 0.4);
+}
+
+html[data-theme='dark'] .navs a:not(:last-of-type):after,
+html[data-theme='dark'] .navs-resizable a:not(:last-of-type):after {
+  background-color: rgba(110, 170, 100, 0.4);
+}
+
+html[data-theme='dark'] .form-container [role='separator']:before,
+html[data-theme='dark'] .form-container [role='separator']:after,
+html[data-theme='dark'] .form-container-embedded [role='separator']:before,
+html[data-theme='dark'] .form-container-embedded [role='separator']:after {
+  border-color: rgba(110, 170, 100, 0.35);
+}
+
+html[data-theme='dark'] .list-view .list-view-header {
+  background-color: rgba(103, 216, 101, 0.13);
+}
+
+html[data-theme='dark'] .list-view .list-container .row {
+  border-top-color: rgba(110, 170, 100, 0.35);
+  &:last-child {
+    border-bottom-color: rgba(110, 170, 100, 0.35);
+  }
+  &:hover {
+    background-color: rgba(103, 216, 101, 0.09);
+  }
+}
+
+html[data-theme='dark'] .uploadcare-uploader-config {
+  --darkmode: 1;
 }
 
 /* map */
@@ -366,6 +439,48 @@ html {
 }
 .map-container.row-resize {
   cursor: row-resize;
+}
+
+/* dark mode: adapt leaflet's white chrome (popups, zoom bar, attribution,
+   draw controls) to the dark theme; map tiles themselves stay light */
+html[data-theme='dark'] .leaflet-popup-content-wrapper,
+html[data-theme='dark'] .leaflet-popup-tip {
+  background: #2b2b2b;
+  color: #fff;
+}
+
+html[data-theme='dark'] .leaflet-popup-close-button {
+  color: #fff !important;
+}
+
+html[data-theme='dark'] .leaflet-bar a,
+html[data-theme='dark'] .leaflet-draw-toolbar a {
+  background-color: #2b2b2b;
+  color: #fff;
+}
+
+html[data-theme='dark'] .leaflet-bar a:hover {
+  background-color: #3d3d3d;
+}
+
+html[data-theme='dark'] .leaflet-bar a,
+html[data-theme='dark'] .leaflet-draw-toolbar a,
+html[data-theme='dark'] .leaflet-draw-tooltip {
+  border-color: #4a4a4a !important;
+}
+
+html[data-theme='dark'] .leaflet-control-attribution {
+  background: rgba(43, 43, 43, 0.8);
+  color: #ccc;
+}
+
+html[data-theme='dark'] .leaflet-control-attribution a {
+  color: #9cc985;
+}
+
+html[data-theme='dark'] .leaflet-draw-tooltip {
+  background: #363636;
+  color: #fff;
 }
 
 /* uploadcare */

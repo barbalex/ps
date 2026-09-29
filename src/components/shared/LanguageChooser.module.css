@@ -59,3 +59,17 @@
 .menuItemActive {
   font-weight: bold;
 }
+
+/* dark mode */
+:global(html[data-theme='dark']) .popup {
+  background: #292929;
+  border-color: #4a4a4a;
+}
+
+:global(html[data-theme='dark']) .option {
+  color: #e6e6e6;
+
+  &:hover {
+    background: #3d3d3d;
+  }
+}

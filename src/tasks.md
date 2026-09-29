@@ -32,8 +32,6 @@ Better-Auth, possible extensions:
 
 ---
 
-apflora data imported: labels should be same as used in apf2. Most/all are created here: /home/alex/Documents/GitHub/apf2/sql/apflora/createComputedLabels.sql. Please use same values
-
 ---
 
 light and dark mode
