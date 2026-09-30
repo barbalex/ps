@@ -445,3 +445,162 @@
   font-size: 13px;
   text-align: left;
 }
+
+/* dark mode: palette mirrors Initiating.module.css (brand ramp greens) */
+:global(html[data-theme='dark']) .authContainer {
+  background: radial-gradient(
+    circle at top right,
+    #1a2418,
+    #161e14 45%,
+    #121810
+  );
+}
+
+:global(html[data-theme='dark']) .authCard {
+  background: rgba(31, 39, 30, 0.92);
+  border-color: rgba(130, 170, 120, 0.22);
+  box-shadow: 0 12px 36px rgba(0, 0, 0, 0.45);
+}
+
+:global(html[data-theme='dark']) .authTitle {
+  color: #d3e4cc;
+}
+
+:global(html[data-theme='dark']) .authSubtitle {
+  color: #a3b89c;
+}
+
+:global(html[data-theme='dark']) .previewHint {
+  color: #c0d3b5;
+  background-color: rgba(255, 255, 255, 0.045);
+  border-color: rgba(130, 170, 120, 0.26);
+}
+
+:global(html[data-theme='dark']) .authSection {
+  border-top-color: rgba(130, 170, 120, 0.18);
+}
+
+:global(html[data-theme='dark']) .sectionTitle {
+  color: #c0d3b5;
+}
+
+:global(html[data-theme='dark']) .authHint {
+  color: #a3b89c;
+}
+
+:global(html[data-theme='dark']) .socialButton {
+  color: #d9e5d4;
+  background: rgba(255, 255, 255, 0.045);
+  border-color: rgba(130, 170, 120, 0.3);
+}
+
+:global(html[data-theme='dark']) .socialButton:hover:not(:disabled) {
+  background-color: rgba(255, 255, 255, 0.09);
+  border-color: rgba(130, 170, 120, 0.5);
+}
+
+:global(html[data-theme='dark']) .socialDivider::before {
+  border-top-color: rgba(130, 170, 120, 0.18);
+}
+
+:global(html[data-theme='dark']) .socialDivider span {
+  color: #a3b89c;
+  background: #1f271e;
+}
+
+:global(html[data-theme='dark']) .methodTab {
+  background: rgba(255, 255, 255, 0.045);
+  color: #c0d3b5;
+  border-color: rgba(130, 170, 120, 0.3);
+}
+
+:global(html[data-theme='dark']) .methodTabActive {
+  background: rgba(115, 158, 94, 0.18);
+  border-color: rgba(115, 158, 94, 0.7);
+}
+
+:global(html[data-theme='dark']) .secondaryButton {
+  color: #c0d3b5;
+  background: rgba(115, 158, 94, 0.14);
+  border-color: rgba(115, 158, 94, 0.4);
+}
+
+:global(html[data-theme='dark']) .secondaryButton:hover:not(:disabled) {
+  background: rgba(115, 158, 94, 0.26);
+  border-color: rgba(115, 158, 94, 0.7);
+}
+
+:global(html[data-theme='dark']) .inlineTextLink {
+  color: #9ab889;
+}
+
+:global(html[data-theme='dark']) .inlineTextLink:hover:not(:disabled) {
+  color: #d4e1cc;
+}
+
+:global(html[data-theme='dark']) .accountToolsPanel {
+  background: rgba(255, 255, 255, 0.045);
+  border-color: rgba(130, 170, 120, 0.2);
+}
+
+:global(html[data-theme='dark']) .formLabel {
+  color: #d9e5d4;
+}
+
+:global(html[data-theme='dark']) .formInput {
+  color: #d9e5d4;
+  background-color: rgba(255, 255, 255, 0.05);
+  border-color: rgba(130, 170, 120, 0.3);
+}
+
+:global(html[data-theme='dark']) .formInput:focus {
+  border-color: rgba(134, 171, 115, 0.85);
+  box-shadow: 0 0 0 2px rgba(115, 158, 94, 0.25);
+}
+
+:global(html[data-theme='dark']) .formInput.error {
+  border-color: #ff8a80;
+}
+
+:global(html[data-theme='dark']) .errorMessage {
+  color: #ff9d94;
+}
+
+:global(html[data-theme='dark']) .passwordToggle {
+  color: #a3b89c;
+}
+
+:global(html[data-theme='dark']) .passwordToggle:hover:not(:disabled) {
+  color: #d4e1cc;
+}
+
+:global(html[data-theme='dark']) .toggleContainer {
+  border-top-color: rgba(130, 170, 120, 0.18);
+}
+
+:global(html[data-theme='dark']) .toggleText,
+:global(html[data-theme='dark']) .inlinePromptText {
+  color: #a3b89c;
+}
+
+:global(html[data-theme='dark']) .toggleButton {
+  color: #c0d3b5;
+  border-color: rgba(115, 158, 94, 0.65);
+}
+
+:global(html[data-theme='dark']) .toggleButton:hover {
+  background-color: rgba(115, 158, 94, 0.12);
+  border-color: rgba(115, 158, 94, 0.9);
+}
+
+:global(html[data-theme='dark']) .generalError {
+  background-color: rgba(199, 63, 53, 0.15);
+  border-color: rgba(229, 170, 166, 0.45);
+  color: #ff9d94;
+}
+
+:global(html[data-theme='dark']) .successMessage {
+  background-color: rgba(115, 158, 94, 0.12);
+  border-color: rgba(176, 212, 177, 0.4);
+  color: #c0d3b5;
+}
