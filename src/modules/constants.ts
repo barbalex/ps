@@ -413,17 +413,9 @@ export const projectTypeOptions: {
   { value: 'biotope', labelId: 'yI3JkL', defaultMessage: 'Biotope', sort: 2 },
 ]
 
-// TODO: most of these constants are not used yet
-const isLocalDevHost = () => {
-  const host = window?.location?.hostname
-  return (
-    host === 'localhost' ||
-    host === '127.0.0.1' ||
-    host === '::1' ||
-    host === '[::1]'
-  )
-}
+import { isLocalDevHost } from './isLocalDevHost.ts'
 
+// TODO: most of these constants are not used yet
 const isPromoteSpeciesHost = () =>
   window?.location?.hostname?.endsWith('promote-species.app')
 
@@ -439,7 +431,7 @@ export const constants = {
   mobileViewMaxWidth: 999,
   getPostgrestUri: () =>
     isLocalDevHost()
-      ? `http://localhost:3002`
+      ? `http://${window.location.hostname}:3002`
       : isPromoteSpeciesHost()
         ? 'https://api.promote-species.app'
         : isArtenFoerdernChHost()

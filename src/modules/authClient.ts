@@ -1,6 +1,7 @@
 import { createAuthClient } from 'better-auth/react'
 import { emailOTPClient, twoFactorClient } from 'better-auth/client/plugins'
 import { passkeyClient } from '@better-auth/passkey/client'
+import { isLocalDevHost } from './isLocalDevHost.ts'
 import { languageAtom, store, type Language } from '../store.ts'
 
 const DEFAULT_LANGUAGE: Language = 'de'
@@ -33,18 +34,10 @@ const getProductionAuthBaseUrl = () => {
   return 'https://auth.xn--arten-frdern-bjb.app'
 }
 
-const isLocalDevHost = () => {
-  const host = window?.location?.hostname
-  return (
-    host === 'localhost' ||
-    host === '127.0.0.1' ||
-    host === '::1' ||
-    host === '[::1]'
-  )
-}
-
 export const getAuthBaseUrl = () =>
-  isLocalDevHost() ? 'http://localhost:3003' : getProductionAuthBaseUrl()
+  isLocalDevHost()
+    ? `http://${window.location.hostname}:3003`
+    : getProductionAuthBaseUrl()
 
 export const authClient = createAuthClient({
   /** The base URL of the server (optional if you're using the same domain) */
