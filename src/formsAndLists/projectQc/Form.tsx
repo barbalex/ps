@@ -15,20 +15,17 @@ import { subprojectNameSingularExpr } from '../../modules/subprojectNameCols.ts'
 import type ProjectQcs from '../../models/public/ProjectQcs.ts'
 
 import '../../form.css'
+import type { FieldChangeHandler } from '../../components/shared/fieldChange.ts'
 
 type Props = {
-  onChange: (e: React.ChangeEvent<any>, data?: any) => void
+  onChange: FieldChangeHandler
   validations?: Record<string, { state: 'error'; message: string }>
-  row: Record<string, any> | ProjectQcs
+  row: ProjectQcs | Record<string, never>
   autoFocusRef?: React.RefObject<HTMLInputElement | null>
   from?: string
 }
 
-export const ProjectQcForm = ({
-  onChange,
-  row,
-  autoFocusRef,
-}: Props) => {
+export const ProjectQcForm = ({ onChange, row, autoFocusRef }: Props) => {
   const { formatMessage } = useIntl()
   const [language] = useAtom(languageAtom)
   const { projectId } = useParams({ strict: false })
@@ -37,10 +34,8 @@ export const ProjectQcForm = ({
     `SELECT ${subprojectNameSingularExpr(language)} AS subproject_name_singular FROM projects WHERE project_id = $1`,
     [projectId ?? null],
   )
-  const subprojectNameSingular =
-    resSubprojectName?.rows?.[0]?.subproject_name_singular as
-      | string
-      | undefined
+  const subprojectNameSingular = resSubprojectName?.rows?.[0]
+    ?.subproject_name_singular as string | undefined
 
   const paramHint = (() => {
     const parts: string[] = []

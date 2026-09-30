@@ -28,15 +28,10 @@ import styles from './index.module.css'
 import '../../form.css'
 import type Accounts from '../../models/public/Accounts.ts'
 import type Users from '../../models/public/Users.ts'
+import type { FieldChangeData } from '../../components/shared/fieldChange.ts'
 
 const from = '/data/users/$userId_/accounts/$accountId_'
 const { Button } = fluentUiReactComponents
-
-type InputOnChangeData = Parameters<
-  NonNullable<
-    React.ComponentProps<typeof fluentUiReactComponents.Input>['onChange']
-  >
->[1]
 
 type Validation = {
   state: 'error'
@@ -66,8 +61,7 @@ export const Account = () => {
     [userId],
   )
   const userRow = userRes?.rows?.[0] as
-    | Pick<Users, 'project_fields_in_account'>
-    | undefined
+    Pick<Users, 'project_fields_in_account'> | undefined
 
   const fieldsCountRes = useLiveQuery(
     `SELECT count(*)::int AS count FROM fields WHERE account_id = $1 AND project_id IS NULL`,
@@ -104,21 +98,20 @@ export const Account = () => {
     ) : undefined
 
   const onChange = async (
-    e: React.ChangeEvent<HTMLInputElement>,
-    data: InputOnChangeData,
+    e: React.ChangeEvent<HTMLElement>,
+    data?: FieldChangeData,
   ) => {
     const { name, value } = getValueFromChange(e, data)
     // only change if value has changed: maybe only focus entered and left
-    if (!row || (row as Record<string, any>)[name] === value) return
+    if (!row || (row as unknown as Record<string, unknown>)[name] === value)
+      return
 
     // Validate period dates
     if (name === 'period_start' || name === 'period_end') {
       const startDate = (name === 'period_start' ? value : row.period_start) as
-        | string
-        | null
+        string | null
       const endDate = (name === 'period_end' ? value : row.period_end) as
-        | string
-        | null
+        string | null
 
       if (startDate && endDate && new Date(endDate) <= new Date(startDate)) {
         setValidations((prev) => ({
@@ -135,7 +128,6 @@ export const Account = () => {
       } else {
         // remove all date related validations if any
         setValidations((prev) => {
-           
           const { period_start, period_end, ...rest } = prev
           return rest
         })
@@ -155,7 +147,6 @@ export const Account = () => {
       return
     }
     setValidations((prev) => {
-       
       const { [name]: _, ...rest } = prev
       return rest
     })

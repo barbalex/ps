@@ -17,6 +17,7 @@ import type Units from '../../models/public/Units.ts'
 import type ListValues from '../../models/public/ListValues.ts'
 
 import '../../form.css'
+import type { FieldChangeData } from '../../components/shared/fieldChange.ts'
 
 export const CheckReportQuantity = ({ from }: { from: string }) => {
   const { checkReportQuantityId, projectId } = useParams({ strict: false })
@@ -80,10 +81,7 @@ export const CheckReportQuantity = ({ from }: { from: string }) => {
     listValueOptions.map((o) => [o.value, o.label]),
   )
 
-  const onChange = async (
-    e: React.ChangeEvent<HTMLInputElement>,
-    data?: object,
-  ) => {
+  const onChange = async (e: React.ChangeEvent<HTMLElement>, data?: object) => {
     const { name, value } = getValueFromChange(
       e,
       data as Parameters<typeof getValueFromChange>[1],
@@ -103,7 +101,6 @@ export const CheckReportQuantity = ({ from }: { from: string }) => {
       return
     }
     setValidations((prev) => {
-       
       const { [name]: _, ...rest } = prev
       return rest
     })
@@ -141,7 +138,6 @@ export const CheckReportQuantity = ({ from }: { from: string }) => {
       return
     }
     setValidations((prev) => {
-       
       const { [unitValueField]: _, ...rest } = prev
       return rest
     })
@@ -199,12 +195,13 @@ export const CheckReportQuantity = ({ from }: { from: string }) => {
                   list={listValueIds}
                   labelMap={listValueLabelMap}
                   value={currentListValueStr}
-                  onChange={(
-                    _e: unknown,
-                    data: { value?: string | null },
-                  ) => onListValueChange(data?.value ?? null)}
+                  onChange={(_e: unknown, data?: FieldChangeData) =>
+                    onListValueChange(data?.value ?? null)
+                  }
                   validationState={validations?.[unitValueField ?? '']?.state}
-                  validationMessage={validations?.[unitValueField ?? '']?.message}
+                  validationMessage={
+                    validations?.[unitValueField ?? '']?.message
+                  }
                 />
               ) : (
                 <DropdownFieldSimpleOptions
@@ -214,7 +211,9 @@ export const CheckReportQuantity = ({ from }: { from: string }) => {
                   value={currentListValueStr}
                   onChange={(e) => onListValueChange(e.target.value ?? null)}
                   validationState={validations?.[unitValueField ?? '']?.state}
-                  validationMessage={validations?.[unitValueField ?? '']?.message}
+                  validationMessage={
+                    validations?.[unitValueField ?? '']?.message
+                  }
                 />
               )
             ) : (

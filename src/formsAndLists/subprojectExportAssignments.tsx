@@ -49,10 +49,12 @@ type Props = {
   from: '/data/projects/$projectId_/subprojects/$subprojectId_/export-assignments/'
 }
 
-export const SubprojectExportAssignments = ({}: Props) => {
+export const SubprojectExportAssignments = (_: Props) => {
   const { projectId, subprojectId } = useParams({ strict: false })
   const { navData } = useSubprojectExportAssignmentsNavData({
-    projectId: projectId!,    subprojectId: subprojectId!,  })
+    projectId: projectId!,
+    subprojectId: subprojectId!,
+  })
   const { formatMessage } = useIntl()
   const [language] = useAtom(languageAtom)
   const addOperation = useSetAtom(addOperationAtom)
@@ -156,7 +158,8 @@ export const SubprojectExportAssignments = ({}: Props) => {
         }
       } else {
         await createSubprojectExportAssignment({
-          subprojectId: subprojectId!,          exportsId: item.id,
+          subprojectId: subprojectId!,
+          exportsId: item.id,
         })
       }
     } else {
@@ -197,7 +200,8 @@ export const SubprojectExportAssignments = ({}: Props) => {
     for (const item of filteredItems.filter((i) => !isActive(i))) {
       if (item.source === 'exports') {
         await createSubprojectExportAssignment({
-          subprojectId: subprojectId!,          exportsId: item.id,
+          subprojectId: subprojectId!,
+          exportsId: item.id,
         })
       } else {
         await createProjectExportAssignmentForProjectExport({

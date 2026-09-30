@@ -16,7 +16,12 @@ import { FormHeader } from '../../components/FormHeader/index.tsx'
 import { HistoryToggleButton } from '../../components/shared/HistoryCompare/HistoryToggleButton.tsx'
 import { addOperationAtom } from '../../store.ts'
 
-export const Header = ({ autoFocusRef }: { autoFocusRef?: React.RefObject<HTMLInputElement | null>; from?: string }) => {
+export const Header = ({
+  autoFocusRef,
+}: {
+  autoFocusRef?: React.RefObject<HTMLInputElement | null>
+  from?: string
+}) => {
   const { projectId, projectReportId } = useParams({ strict: false })
   const basePath = `/data/projects/${projectId}/reports/${projectReportId}`
   const navigate = useNavigate()
@@ -29,7 +34,7 @@ export const Header = ({ autoFocusRef }: { autoFocusRef?: React.RefObject<HTMLIn
   const onClickPdf = () =>
     navigate({
       to: './print',
-      params: (prev: any) => prev,
+      params: (prev: Record<string, string | undefined>) => prev,
     } as unknown as Parameters<typeof navigate>[0])
 
   const onClickPrint = () => window.print()
@@ -37,7 +42,7 @@ export const Header = ({ autoFocusRef }: { autoFocusRef?: React.RefObject<HTMLIn
   const onClickBack = () =>
     navigate({
       to: '..',
-      params: (prev: any) => prev,
+      params: (prev: Record<string, string | undefined>) => prev,
     })
 
   const db = usePGlite()
@@ -55,7 +60,7 @@ export const Header = ({ autoFocusRef }: { autoFocusRef?: React.RefObject<HTMLIn
   const rowCount = Number(countRes?.rows?.[0]?.count ?? 2)
 
   const addRow = async () => {
-    const id = await createProjectReport({projectId: projectId! })
+    const id = await createProjectReport({ projectId: projectId! })
     if (!id) return
     navigate({
       to: `../${id}`,

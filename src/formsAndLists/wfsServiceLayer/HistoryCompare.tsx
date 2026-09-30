@@ -22,19 +22,26 @@ import {
 
 import type WfsServiceLayers from '../../models/public/WfsServiceLayers.ts'
 import type WfsServiceLayersHistory from '../../models/public/WfsServiceLayersHistory.ts'
+import type { FieldChangeData } from '../../components/shared/fieldChange.ts'
 
 export const WfsServiceLayerHistoryCompare = () => {
   const { formatMessage } = useIntl()
   const navigate = useNavigate()
-  const { projectId, wfsServiceId, wfsServiceLayerId, wfsServiceLayerHistoryId } =
-    useParams({ strict: false })
+  const {
+    projectId,
+    wfsServiceId,
+    wfsServiceLayerId,
+    wfsServiceLayerHistoryId,
+  } = useParams({ strict: false })
 
   const formPath = `/data/projects/${projectId}/wfs-services/${wfsServiceId}/layers/${wfsServiceLayerId}`
   const historyPath = `${formPath}/histories`
 
   const db = usePGlite()
   const addOperation = useSetAtom(addOperationAtom)
-  const [validations, setValidations] = useState<Record<string, { state: 'error'; message: string }>>({})
+  const [validations, setValidations] = useState<
+    Record<string, { state: 'error'; message: string }>
+  >({})
 
   const rowRes = useLiveQuery(
     `SELECT * FROM wfs_service_layers WHERE wfs_service_layer_id = $1`,
@@ -43,11 +50,12 @@ export const WfsServiceLayerHistoryCompare = () => {
   const row = rowRes?.rows?.[0] as WfsServiceLayers | undefined
 
   const onChange = async (
-    e: React.ChangeEvent<HTMLInputElement>,
-    data: Parameters<typeof getValueFromChange>[1],
+    e: React.ChangeEvent<HTMLElement>,
+    data?: FieldChangeData,
   ) => {
     const { name, value } = getValueFromChange(e, data)
-    if (!row || (row as Record<string, any>)[name] === value) return
+    if (!row || (row as unknown as Record<string, unknown>)[name] === value)
+      return
 
     try {
       await db.query(
@@ -57,13 +65,15 @@ export const WfsServiceLayerHistoryCompare = () => {
     } catch (error) {
       setValidations((prev) => ({
         ...prev,
-        [name]: { state: 'error', message: error instanceof Error ? error.message : String(error) },
+        [name]: {
+          state: 'error',
+          message: error instanceof Error ? error.message : String(error),
+        },
       }))
       return
     }
 
     setValidations((prev) => {
-       
       const { [name]: _unused, ...rest } = prev
       return rest
     })
@@ -83,7 +93,10 @@ export const WfsServiceLayerHistoryCompare = () => {
   if (!row) {
     return (
       <NotFound
-        table={formatMessage({ id: 'Cb1DcE', defaultMessage: 'WFS-Dienst-Ebene' })}
+        table={formatMessage({
+          id: 'Cb1DcE',
+          defaultMessage: 'WFS-Dienst-Ebene',
+        })}
         id={wfsServiceLayerId}
       />
     )
@@ -113,7 +126,9 @@ export const WfsServiceLayerHistoryCompare = () => {
   })
 
   const formatFieldValue = (field: string, history: WfsServiceLayersHistory) =>
-    stringifyHistoryValue((history as Record<string, any>)[field])
+    stringifyHistoryValue(
+      (history as unknown as Record<string, unknown>)[field],
+    )
 
   return (
     <HistoryCompare<WfsServiceLayersHistory>

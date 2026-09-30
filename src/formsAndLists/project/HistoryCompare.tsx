@@ -1,9 +1,9 @@
 import { useRef, useState } from 'react'
+import type Projects from '../../models/public/Projects.ts'
 import { useParams, useNavigate } from '@tanstack/react-router'
 import { usePGlite, useLiveQuery } from '@electric-sql/pglite-react'
 import { useSetAtom } from 'jotai'
 import { useIntl } from 'react-intl'
-import type { InputOnChangeData } from '@fluentui/react-components'
 
 import { ProjectForm } from './Form.tsx'
 import { HistoryCompare } from '../../components/shared/HistoryCompare/index.tsx'
@@ -19,6 +19,7 @@ import {
 } from './historyCompareConfig.ts'
 
 import type ProjectsHistory from '../../models/public/ProjectsHistory.ts'
+import type { FieldChangeData } from '../../components/shared/fieldChange.ts'
 
 export const ProjectHistoryCompare = ({
   from,
@@ -41,7 +42,7 @@ export const ProjectHistoryCompare = ({
   const rowRes = useLiveQuery(`SELECT * FROM projects WHERE project_id = $1`, [
     projectId,
   ])
-  const row = rowRes?.rows?.[0] as Record<string, unknown> | undefined
+  const row = rowRes?.rows?.[0] as Projects | undefined
 
   const visibleCurrentFields = new Set(['name', 'label', 'data'])
 
@@ -55,11 +56,12 @@ export const ProjectHistoryCompare = ({
   })
 
   const onChange = async (
-    e: React.ChangeEvent<HTMLInputElement>,
-    data?: InputOnChangeData,
+    e: React.ChangeEvent<HTMLElement>,
+    data?: FieldChangeData,
   ) => {
     const { name, value } = getValueFromChange(e, data!)
-    if (!row || (row as Record<string, unknown>)[name] === value) return
+    if (!row || (row as unknown as Record<string, unknown>)[name] === value)
+      return
 
     try {
       await db.query(`UPDATE projects SET ${name} = $1 WHERE project_id = $2`, [
@@ -75,7 +77,6 @@ export const ProjectHistoryCompare = ({
     }
 
     setValidations((prev) => {
-       
       const { [name]: _unused, ...rest } = prev
       return rest
     })
@@ -102,7 +103,7 @@ export const ProjectHistoryCompare = ({
   }
 
   return (
-    <HistoryCompare<ProjectsHistory & Record<string, unknown>>
+    <HistoryCompare<ProjectsHistory>
       onBack={() => navigate({ to: projectPath })}
       leftContent={
         <div className="form-container">

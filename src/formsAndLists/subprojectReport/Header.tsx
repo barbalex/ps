@@ -17,8 +17,15 @@ import { HistoryToggleButton } from '../../components/shared/HistoryCompare/Hist
 import { addOperationAtom, languageAtom } from '../../store.ts'
 import { subprojectNameSingularExpr } from '../../modules/subprojectNameCols.ts'
 
-export const Header = ({ autoFocusRef }: { autoFocusRef?: React.RefObject<HTMLInputElement | null>; from?: string }) => {
-  const { projectId, subprojectId, subprojectReportId } = useParams({ strict: false })
+export const Header = ({
+  autoFocusRef,
+}: {
+  autoFocusRef?: React.RefObject<HTMLInputElement | null>
+  from?: string
+}) => {
+  const { projectId, subprojectId, subprojectReportId } = useParams({
+    strict: false,
+  })
   const navigate = useNavigate()
   const location = useLocation()
   const addOperation = useSetAtom(addOperationAtom)
@@ -52,7 +59,7 @@ export const Header = ({ autoFocusRef }: { autoFocusRef?: React.RefObject<HTMLIn
   const onClickPdf = () => {
     navigate({
       to: './print',
-      params: (prev: any) => prev,
+      params: (prev: Record<string, string | undefined>) => prev,
     } as unknown as Parameters<typeof navigate>[0])
   }
 
@@ -63,7 +70,7 @@ export const Header = ({ autoFocusRef }: { autoFocusRef?: React.RefObject<HTMLIn
   const onClickBack = () => {
     navigate({
       to: '..',
-      params: (prev: any) => prev,
+      params: (prev: Record<string, string | undefined>) => prev,
     })
   }
 
@@ -72,7 +79,7 @@ export const Header = ({ autoFocusRef }: { autoFocusRef?: React.RefObject<HTMLIn
       projectId: projectId!,
       subprojectId: subprojectId!,
     })
-   if (!id) return
+    if (!id) return
     navigate({
       to: `../${id}`,
       params: (prev) => ({

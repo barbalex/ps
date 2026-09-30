@@ -4,15 +4,13 @@ type SwitchProps = React.ComponentProps<typeof Switch>
 type FieldProps = React.ComponentProps<typeof Field>
 
 import styles from './SwitchField.module.css'
+import type { FieldChangeHandler } from './fieldChange.ts'
 
 type Props = Omit<SwitchProps, 'checked' | 'value' | 'onChange'> &
-  Pick<
-    FieldProps,
-    'validationMessage' | 'validationState' | 'hint'
-  > & {
+  Pick<FieldProps, 'validationMessage' | 'validationState' | 'hint'> & {
     value?: boolean | null
     button?: React.ReactNode
-    onChange?: (ev: React.ChangeEvent<HTMLInputElement>, data?: any) => void
+    onChange?: FieldChangeHandler
   }
 
 export const SwitchField = ({

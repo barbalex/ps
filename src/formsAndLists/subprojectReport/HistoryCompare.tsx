@@ -19,6 +19,7 @@ import {
 
 import type SubprojectReports from '../../models/public/SubprojectReports.ts'
 import type SubprojectReportsHistory from '../../models/public/SubprojectReportsHistory.ts'
+import type { FieldChangeData } from '../../components/shared/fieldChange.ts'
 
 const from =
   '/data/projects/$projectId_/subprojects/$subprojectId_/reports/$subprojectReportId_/histories/$subprojectReportHistoryId'
@@ -40,7 +41,9 @@ export const SubprojectReportHistoryCompare = () => {
   const db = usePGlite()
   const autoFocusRef = useRef<HTMLInputElement>(null)
 
-  const [validations, setValidations] = useState<Record<string, { state: 'error'; message: string }>>({})
+  const [validations, setValidations] = useState<
+    Record<string, { state: 'error'; message: string }>
+  >({})
 
   const rowRes = useLiveQuery(
     `SELECT * FROM subproject_reports WHERE subproject_report_id = $1`,
@@ -59,11 +62,12 @@ export const SubprojectReportHistoryCompare = () => {
   })
 
   const onChange = async (
-    e: React.ChangeEvent<HTMLInputElement>,
-    data: Parameters<typeof getValueFromChange>[1],
+    e: React.ChangeEvent<HTMLElement>,
+    data?: FieldChangeData,
   ) => {
     const { name, value } = getValueFromChange(e, data)
-    if (!row || (row as Record<string, any>)[name] === value) return
+    if (!row || (row as unknown as Record<string, unknown>)[name] === value)
+      return
 
     try {
       await db.query(
@@ -73,12 +77,14 @@ export const SubprojectReportHistoryCompare = () => {
     } catch (error) {
       setValidations((prev) => ({
         ...prev,
-        [name]: { state: 'error', message: error instanceof Error ? error.message : String(error) },
+        [name]: {
+          state: 'error',
+          message: error instanceof Error ? error.message : String(error),
+        },
       }))
       return
     }
     setValidations((prev) => {
-       
       const { [name]: _unused, ...rest } = prev
       return rest
     })
@@ -97,7 +103,10 @@ export const SubprojectReportHistoryCompare = () => {
   if (!row) {
     return (
       <NotFound
-        table={formatMessage({ id: 'OGDgRl', defaultMessage: 'Teilprojekt-Bericht' })}
+        table={formatMessage({
+          id: 'OGDgRl',
+          defaultMessage: 'Teilprojekt-Bericht',
+        })}
         id={subprojectReportId}
       />
     )

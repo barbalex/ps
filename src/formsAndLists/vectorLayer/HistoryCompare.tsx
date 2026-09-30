@@ -22,6 +22,7 @@ import {
 
 import type VectorLayers from '../../models/public/VectorLayers.ts'
 import type VectorLayersHistory from '../../models/public/VectorLayersHistory.ts'
+import type { FieldChangeData } from '../../components/shared/fieldChange.ts'
 
 const from =
   '/data/projects/$projectId_/vector-layers/$vectorLayerId_/histories/$vectorLayerHistoryId'
@@ -29,13 +30,17 @@ const from =
 export const VectorLayerHistoryCompare = () => {
   const { formatMessage } = useIntl()
   const navigate = useNavigate()
-  const { projectId, vectorLayerId, vectorLayerHistoryId } = useParams({ strict: false })
+  const { projectId, vectorLayerId, vectorLayerHistoryId } = useParams({
+    strict: false,
+  })
   const vectorLayerPath = `/data/projects/${projectId}/vector-layers/${vectorLayerId}/vector-layer`
   const historyPath = `/data/projects/${projectId}/vector-layers/${vectorLayerId}/histories`
 
   const addOperation = useSetAtom(addOperationAtom)
   const db = usePGlite()
-  const [validations, setValidations] = useState<Record<string, { state: 'error'; message: string }>>({})
+  const [validations, setValidations] = useState<
+    Record<string, { state: 'error'; message: string }>
+  >({})
 
   const rowRes = useLiveQuery(
     `SELECT * FROM vector_layers WHERE vector_layer_id = $1`,
@@ -44,11 +49,12 @@ export const VectorLayerHistoryCompare = () => {
   const row = rowRes?.rows?.[0] as VectorLayers | undefined
 
   const onChange = async (
-    e: React.ChangeEvent<HTMLInputElement>,
-    data: Parameters<typeof getValueFromChange>[1],
+    e: React.ChangeEvent<HTMLElement>,
+    data?: FieldChangeData,
   ) => {
     const { name, value } = getValueFromChange(e, data)
-    if (!row || (row as Record<string, any>)[name] === value) return
+    if (!row || (row as unknown as Record<string, unknown>)[name] === value)
+      return
 
     try {
       await db.query(
@@ -58,13 +64,15 @@ export const VectorLayerHistoryCompare = () => {
     } catch (error) {
       setValidations((prev) => ({
         ...prev,
-        [name]: { state: 'error', message: error instanceof Error ? error.message : String(error) },
+        [name]: {
+          state: 'error',
+          message: error instanceof Error ? error.message : String(error),
+        },
       }))
       return
     }
 
     setValidations((prev) => {
-       
       const { [name]: _unused, ...rest } = prev
       return rest
     })
@@ -95,7 +103,9 @@ export const VectorLayerHistoryCompare = () => {
       <VectorLayerForm
         row={row}
         onChange={onChange}
-        validations={validations as Record<string, { state: 'error'; message: string }>}
+        validations={
+          validations as Record<string, { state: 'error'; message: string }>
+        }
         from={from}
       />
     </div>
@@ -120,13 +130,19 @@ export const VectorLayerHistoryCompare = () => {
     formatMessage,
     fieldLabelMap: {
       type: { id: 'xTeBn/', defaultMessage: 'Typ' },
-      wfs_service_id: { id: 'Lo5MpR', defaultMessage: 'Web Feature Service (WFS)' },
+      wfs_service_id: {
+        id: 'Lo5MpR',
+        defaultMessage: 'Web Feature Service (WFS)',
+      },
       wfs_service_layer_name: { id: 'JY1Jke', defaultMessage: 'Ebene' },
       name: { id: 'XkV5yZ', defaultMessage: 'Name' },
       max_features: { id: 'Ps9QtV', defaultMessage: 'Max. Anzahl Objekte' },
       display_by_property: { id: 'Vy5WzB', defaultMessage: 'Anzeigen nach' },
       own_table: { id: 'Yb8ZcF', defaultMessage: 'Eigene Tabelle' },
-      own_table_level: { id: 'Zc9AdG', defaultMessage: 'Eigene Tabelle: Stufe' },
+      own_table_level: {
+        id: 'Zc9AdG',
+        defaultMessage: 'Eigene Tabelle: Stufe',
+      },
       feature_count: { id: 'Ru1SvX', defaultMessage: 'Anzahl Objekte' },
       point_count: { id: 'Sv2TwY', defaultMessage: 'Anzahl Punkte' },
       line_count: { id: 'Tw3UxZ', defaultMessage: 'Anzahl Linien' },
@@ -135,7 +151,9 @@ export const VectorLayerHistoryCompare = () => {
   })
 
   const formatFieldValue = (field: string, history: VectorLayersHistory) =>
-    stringifyHistoryValue((history as Record<string, any>)[field])
+    stringifyHistoryValue(
+      (history as unknown as Record<string, unknown>)[field],
+    )
 
   return (
     <HistoryCompare<VectorLayersHistory>

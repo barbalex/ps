@@ -1,25 +1,28 @@
 import { useIntl } from 'react-intl'
-import type { InputOnChangeData } from '@fluentui/react-components'
 
 import { TextField } from '../../components/shared/TextField.tsx'
 import type FieldTypes from '../../models/public/FieldTypes.ts'
 
 import '../../form.css'
+import type { FieldChangeData } from '../../components/shared/fieldChange.ts'
 
 type Props = {
-  onChange: (
-    e: React.ChangeEvent<HTMLInputElement>,
-    data?: InputOnChangeData,
-  ) => void
+  onChange: (e: React.ChangeEvent<HTMLElement>, data?: FieldChangeData) => void
   validations?: Record<
     string,
-    { state: 'error' | 'warning' | 'success' | 'none'; message: string } | undefined
+    | { state: 'error' | 'warning' | 'success' | 'none'; message: string }
+    | undefined
   >
-  row: Record<string, unknown>
+  row: FieldTypes | Record<string, never>
   autoFocusRef?: React.RefObject<HTMLInputElement | null>
 }
 
-export const FieldTypeForm = ({ onChange, validations, row, autoFocusRef }: Props) => {
+export const FieldTypeForm = ({
+  onChange,
+  validations,
+  row,
+  autoFocusRef,
+}: Props) => {
   const { formatMessage } = useIntl()
   const fieldTypeRow = row as unknown as FieldTypes
 
@@ -36,7 +39,10 @@ export const FieldTypeForm = ({ onChange, validations, row, autoFocusRef }: Prop
         validationMessage={validations?.name?.message}
       />
       <TextField
-        label={formatMessage({ id: 'Pq7nWk', defaultMessage: 'Sortier-Reihenfolge' })}
+        label={formatMessage({
+          id: 'Pq7nWk',
+          defaultMessage: 'Sortier-Reihenfolge',
+        })}
         name="sort"
         value={fieldTypeRow.sort ?? ''}
         onChange={onChange}

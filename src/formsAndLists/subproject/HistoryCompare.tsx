@@ -1,4 +1,5 @@
 import { useRef, useState } from 'react'
+import type Subprojects from '../../models/public/Subprojects.ts'
 import { useParams, useNavigate } from '@tanstack/react-router'
 import { usePGlite, useLiveQuery } from '@electric-sql/pglite-react'
 import { useSetAtom } from 'jotai'
@@ -18,6 +19,7 @@ import {
 } from './historyCompareConfig.ts'
 
 import type SubprojectsHistory from '../../models/public/SubprojectsHistory.ts'
+import type { FieldChangeData } from '../../components/shared/fieldChange.ts'
 
 export const SubprojectHistoryCompare = ({
   from,
@@ -26,20 +28,24 @@ export const SubprojectHistoryCompare = ({
 }) => {
   const { formatMessage } = useIntl()
   const navigate = useNavigate()
-  const { projectId, subprojectId, subprojectHistoryId } = useParams({ strict: false })
+  const { projectId, subprojectId, subprojectHistoryId } = useParams({
+    strict: false,
+  })
   const subprojectPath = `/data/projects/${projectId}/subprojects/${subprojectId}/subproject`
   const historyPath = `/data/projects/${projectId}/subprojects/${subprojectId}/histories`
   const addOperation = useSetAtom(addOperationAtom)
   const db = usePGlite()
   const autoFocusRef = useRef<HTMLInputElement>(null)
 
-  const [validations, setValidations] = useState<Record<string, { state: 'error'; message: string }>>({})
+  const [validations, setValidations] = useState<
+    Record<string, { state: 'error'; message: string }>
+  >({})
 
   const rowRes = useLiveQuery(
     `SELECT * FROM subprojects WHERE subproject_id = $1`,
     [subprojectId],
   )
-  const row = rowRes?.rows?.[0] as Record<string, unknown> | undefined
+  const row = rowRes?.rows?.[0] as SubprojectsHistory | undefined
 
   const visibleCurrentFields = new Set(['name', 'start_year', 'data'])
 
@@ -54,11 +60,12 @@ export const SubprojectHistoryCompare = ({
   })
 
   const onChange = async (
-    e: React.ChangeEvent<HTMLInputElement>,
-    data: Parameters<typeof getValueFromChange>[1],
+    e: React.ChangeEvent<HTMLElement>,
+    data?: FieldChangeData,
   ) => {
     const { name, value } = getValueFromChange(e, data)
-    if (!row || (row as Record<string, unknown>)[name] === value) return
+    if (!row || (row as unknown as Record<string, unknown>)[name] === value)
+      return
 
     try {
       await db.query(
@@ -68,13 +75,15 @@ export const SubprojectHistoryCompare = ({
     } catch (error) {
       setValidations((prev) => ({
         ...prev,
-        [name]: { state: 'error', message: error instanceof Error ? error.message : String(error) },
+        [name]: {
+          state: 'error',
+          message: error instanceof Error ? error.message : String(error),
+        },
       }))
       return
     }
 
     setValidations((prev) => {
-       
       const { [name]: _unused, ...rest } = prev
       return rest
     })
@@ -109,7 +118,7 @@ export const SubprojectHistoryCompare = ({
       leftContent={
         <div className="form-container">
           <SubprojectForm
-            row={row}
+            row={row as unknown as Subprojects}
             onChange={onChange}
             validations={validations}
             autoFocusRef={autoFocusRef}

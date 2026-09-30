@@ -1,4 +1,5 @@
 import { useParams, useLocation } from '@tanstack/react-router'
+import type Places from '../../models/public/Places.ts'
 import { useIntl } from 'react-intl'
 import { useAtom } from 'jotai'
 import { useLiveQuery } from '@electric-sql/pglite-react'
@@ -14,6 +15,7 @@ import { EditingGeometry } from '../../components/shared/EditingGeometry.tsx'
 import { jsonbDataFromRow } from '../../modules/jsonbDataFromRow.ts'
 
 import '../../form.css'
+import type { FieldChangeHandler } from '../../components/shared/fieldChange.ts'
 
 type Validation = {
   state: 'error'
@@ -29,9 +31,9 @@ export const PlaceForm = ({
   autoFocusRef,
   withContainer = true,
 }: {
-  onChange: (e: React.ChangeEvent<any>, data?: any) => void
+  onChange: FieldChangeHandler
   validations?: Record<string, Validation>
-  row: Record<string, unknown>
+  row: Places | Record<string, never>
   orIndex?: number
   from: string
   autoFocusRef?: React.RefObject<HTMLInputElement | null>

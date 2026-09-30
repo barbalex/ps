@@ -22,17 +22,22 @@ import {
 
 import type ProjectUsers from '../../models/public/ProjectUsers.ts'
 import type ProjectUsersHistory from '../../models/public/ProjectUsersHistory.ts'
+import type { FieldChangeData } from '../../components/shared/fieldChange.ts'
 
 export const ProjectUserHistoryCompare = () => {
   const { formatMessage } = useIntl()
   const navigate = useNavigate()
-  const { projectId, projectUserId, projectUserHistoryId } = useParams({ strict: false })
+  const { projectId, projectUserId, projectUserHistoryId } = useParams({
+    strict: false,
+  })
   const projectUserPath = `/data/projects/${projectId}/users/${projectUserId}`
   const historyPath = `${projectUserPath}/histories`
 
   const addOperation = useSetAtom(addOperationAtom)
   const db = usePGlite()
-  const [validations, setValidations] = useState<Record<string, { state: 'error'; message: string }>>({})
+  const [validations, setValidations] = useState<
+    Record<string, { state: 'error'; message: string }>
+  >({})
 
   const rowRes = useLiveQuery(
     `SELECT * FROM project_users WHERE project_user_id = $1`,
@@ -41,11 +46,12 @@ export const ProjectUserHistoryCompare = () => {
   const row = rowRes?.rows?.[0] as ProjectUsers | undefined
 
   const onChange = async (
-    e: React.ChangeEvent<HTMLInputElement>,
-    data: Parameters<typeof getValueFromChange>[1],
+    e: React.ChangeEvent<HTMLElement>,
+    data?: FieldChangeData,
   ) => {
     const { name, value } = getValueFromChange(e, data)
-    if (!row || (row as Record<string, any>)[name] === value) return
+    if (!row || (row as unknown as Record<string, unknown>)[name] === value)
+      return
 
     try {
       await db.query(
@@ -55,13 +61,15 @@ export const ProjectUserHistoryCompare = () => {
     } catch (error) {
       setValidations((prev) => ({
         ...prev,
-        [name]: { state: 'error', message: error instanceof Error ? error.message : String(error) },
+        [name]: {
+          state: 'error',
+          message: error instanceof Error ? error.message : String(error),
+        },
       }))
       return
     }
 
     setValidations((prev) => {
-       
       const { [name]: _unused, ...rest } = prev
       return rest
     })
@@ -81,7 +89,10 @@ export const ProjectUserHistoryCompare = () => {
   if (!row) {
     return (
       <NotFound
-        table={formatMessage({ id: 'gi+ubY', defaultMessage: 'Projekt-Benutzer' })}
+        table={formatMessage({
+          id: 'gi+ubY',
+          defaultMessage: 'Projekt-Benutzer',
+        })}
         id={projectUserId}
       />
     )
@@ -90,30 +101,33 @@ export const ProjectUserHistoryCompare = () => {
   const leftContent = (
     <div className="form-container">
       <>
-      <DropdownField
-        label={formatMessage({ id: 'qyI8KV', defaultMessage: 'Benutzer' })}
-        name="email"
-        table="project_users"
-        value={row.email ?? ''}
-        onChange={onChange}
-        validationState={validations?.email?.state}
-        validationMessage={validations?.email?.message}
-      />
-      <RadioGroupField
-        label={formatMessage({ id: 'Gj0HkM', defaultMessage: 'Rolle' })}
-        name="role"
-        list={userRoleOptions.map((o) => o.value)}
-        labelMap={Object.fromEntries(
-          userRoleOptions.map((o) => [
-            o.value,
-            formatMessage({ id: o.labelId, defaultMessage: o.defaultMessage }),
-          ]),
-        )}
-        value={(row as Record<string, any>).role ?? ''}
-        onChange={onChange}
-        validationState={validations?.role?.state}
-        validationMessage={validations?.role?.message}
-      />
+        <DropdownField
+          label={formatMessage({ id: 'qyI8KV', defaultMessage: 'Benutzer' })}
+          name="email"
+          table="project_users"
+          value={row.email ?? ''}
+          onChange={onChange}
+          validationState={validations?.email?.state}
+          validationMessage={validations?.email?.message}
+        />
+        <RadioGroupField
+          label={formatMessage({ id: 'Gj0HkM', defaultMessage: 'Rolle' })}
+          name="role"
+          list={userRoleOptions.map((o) => o.value)}
+          labelMap={Object.fromEntries(
+            userRoleOptions.map((o) => [
+              o.value,
+              formatMessage({
+                id: o.labelId,
+                defaultMessage: o.defaultMessage,
+              }),
+            ]),
+          )}
+          value={String((row as unknown as Record<string, unknown>).role ?? '')}
+          onChange={onChange}
+          validationState={validations?.role?.state}
+          validationMessage={validations?.role?.message}
+        />
       </>
     </div>
   )
@@ -129,7 +143,9 @@ export const ProjectUserHistoryCompare = () => {
   })
 
   const formatFieldValue = (field: string, history: ProjectUsersHistory) =>
-    stringifyHistoryValue((history as Record<string, any>)[field])
+    stringifyHistoryValue(
+      (history as unknown as Record<string, unknown>)[field],
+    )
 
   return (
     <HistoryCompare<ProjectUsersHistory>

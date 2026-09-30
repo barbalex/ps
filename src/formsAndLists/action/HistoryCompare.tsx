@@ -1,4 +1,5 @@
 import { useRef, useState } from 'react'
+import type Actions from '../../models/public/Actions.ts'
 import { useParams, useNavigate } from '@tanstack/react-router'
 import { usePGlite, useLiveQuery } from '@electric-sql/pglite-react'
 import { useSetAtom } from 'jotai'
@@ -19,6 +20,7 @@ import {
 } from './historyCompareConfig.ts'
 
 import type ActionsHistory from '../../models/public/ActionsHistory.ts'
+import type { FieldChangeData } from '../../components/shared/fieldChange.ts'
 
 export const ActionHistoryCompare = ({
   from,
@@ -29,8 +31,14 @@ export const ActionHistoryCompare = ({
 }) => {
   const { formatMessage } = useIntl()
   const navigate = useNavigate()
-  const { projectId, subprojectId, placeId, placeId2, actionId, actionHistoryId } =
-    useParams({ strict: false })
+  const {
+    projectId,
+    subprojectId,
+    placeId,
+    placeId2,
+    actionId,
+    actionHistoryId,
+  } = useParams({ strict: false })
 
   const actionPath = placeId2
     ? `/data/projects/${projectId}/subprojects/${subprojectId}/places/${placeId}/places/${placeId2}/actions/${actionId}/action`
@@ -49,7 +57,7 @@ export const ActionHistoryCompare = ({
   const rowRes = useLiveQuery(`SELECT * FROM actions WHERE action_id = $1`, [
     actionId,
   ])
-  const row = rowRes?.rows?.[0] as Record<string, unknown> | undefined
+  const row = rowRes?.rows?.[0] as Actions | undefined
 
   const visibleCurrentFields = new Set(['date', 'relevant_for_reports', 'data'])
 
@@ -66,11 +74,12 @@ export const ActionHistoryCompare = ({
   })
 
   const onChange = async (
-    e: React.ChangeEvent<HTMLInputElement>,
-    data: Parameters<typeof getValueFromChange>[1],
+    e: React.ChangeEvent<HTMLElement>,
+    data?: FieldChangeData,
   ) => {
     const { name, value } = getValueFromChange(e, data)
-    if (!row || (row as Record<string, unknown>)[name] === value) return
+    if (!row || (row as unknown as Record<string, unknown>)[name] === value)
+      return
 
     try {
       await db.query(`UPDATE actions SET ${name} = $1 WHERE action_id = $2`, [
@@ -86,7 +95,6 @@ export const ActionHistoryCompare = ({
     }
 
     setValidations((prev) => {
-       
       const { [name]: _unused, ...rest } = prev
       return rest
     })
@@ -113,7 +121,7 @@ export const ActionHistoryCompare = ({
   }
 
   return (
-    <HistoryCompare<ActionsHistory & Record<string, unknown>>
+    <HistoryCompare<ActionsHistory>
       onBack={() => navigate({ to: actionPath })}
       leftContent={
         <div className="form-container">

@@ -51,13 +51,12 @@ export const LayerPresentationForm = ({ layer }: Props) => {
   )
 
   const row: LayerPresentations | undefined = res?.rows?.[0] as
-    | LayerPresentations
-    | undefined
+    LayerPresentations | undefined
 
   // the same handler is passed to SliderField, SwitchField and TextField,
   // whose fluent onChange payloads differ (value: string | number / checked)
   const onChange = (
-    e: React.ChangeEvent<HTMLInputElement>,
+    e: React.ChangeEvent<HTMLElement>,
     data?: { value?: unknown; checked?: unknown },
   ) => {
     if (!row?.layer_presentation_id) {

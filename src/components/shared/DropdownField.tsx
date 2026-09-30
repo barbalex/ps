@@ -4,9 +4,7 @@ import { useLiveQuery } from '@electric-sql/pglite-react'
 import { useIntl } from 'react-intl'
 
 import styles from './DropdownField.module.css'
-
-type InputProps = React.ComponentProps<typeof fluentUiReactComponents.Input>
-type InputOnChangeData = Parameters<NonNullable<InputProps['onChange']>>[1]
+import type { FieldChangeData } from './fieldChange.ts'
 
 type Props = {
   name: string
@@ -19,7 +17,7 @@ type Props = {
   value?: unknown
   onChange: (
     ev: React.ChangeEvent<HTMLInputElement>,
-    data: InputOnChangeData,
+    data?: FieldChangeData,
   ) => void
   autoFocus?: boolean
   disabled?: boolean

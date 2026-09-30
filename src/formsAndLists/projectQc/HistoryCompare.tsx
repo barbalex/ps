@@ -22,11 +22,14 @@ import {
 
 import type ProjectQcs from '../../models/public/ProjectQcs.ts'
 import type ProjectQcsHistory from '../../models/public/ProjectQcsHistory.ts'
+import type { FieldChangeData } from '../../components/shared/fieldChange.ts'
 
 export const ProjectQcHistoryCompare = () => {
   const { formatMessage } = useIntl()
   const navigate = useNavigate()
-  const { projectId, projectQcId, projectQcHistoryId } = useParams({ strict: false })
+  const { projectId, projectQcId, projectQcHistoryId } = useParams({
+    strict: false,
+  })
   const projectQcPath = `/data/projects/${projectId}/qcs/${projectQcId}`
   const historyPath = `${projectQcPath}/histories`
 
@@ -44,11 +47,11 @@ export const ProjectQcHistoryCompare = () => {
   const row = rowRes?.rows?.[0] as ProjectQcs | undefined
 
   const onChange = async (
-    e: React.ChangeEvent<HTMLInputElement>,
-    data: Parameters<typeof getValueFromChange>[1],
+    e: React.ChangeEvent<HTMLElement>,
+    data?: FieldChangeData,
   ) => {
     const { name, value } = getValueFromChange(e, data)
-    if ((row as Record<string, any>)?.[name] === value) return
+    if ((row as unknown as Record<string, unknown>)?.[name] === value) return
 
     try {
       await db.query(
@@ -58,12 +61,14 @@ export const ProjectQcHistoryCompare = () => {
     } catch (error) {
       setValidations((prev) => ({
         ...prev,
-        [name]: { state: 'error', message: error instanceof Error ? error.message : String(error) },
+        [name]: {
+          state: 'error',
+          message: error instanceof Error ? error.message : String(error),
+        },
       }))
       return
     }
     setValidations((prev) => {
-       
       const { [name]: _, ...rest } = prev
       return rest
     })
@@ -132,7 +137,9 @@ export const ProjectQcHistoryCompare = () => {
   })
 
   const formatFieldValue = (field: string, history: ProjectQcsHistory) =>
-    stringifyHistoryValue((history as Record<string, any>)[field])
+    stringifyHistoryValue(
+      (history as unknown as Record<string, unknown>)[field],
+    )
 
   return (
     <HistoryCompare<ProjectQcsHistory>

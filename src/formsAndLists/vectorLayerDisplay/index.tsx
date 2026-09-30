@@ -1,4 +1,5 @@
 import { useRef, useState } from 'react'
+import type { FieldChangeData } from '../../components/shared/fieldChange.ts'
 import { useParams } from '@tanstack/react-router'
 // import type { InputProps } from '@fluentui/react-components'
 import { usePGlite, useLiveQuery } from '@electric-sql/pglite-react'
@@ -46,8 +47,8 @@ export const VectorLayerDisplay = ({
     `SELECT * FROM vector_layer_displays WHERE vector_layer_display_id = $1`,
     [vectorLayerDisplayId],
   )
-  const row: VectorLayerDisplays | undefined =
-    res?.rows?.[0] as VectorLayerDisplays | undefined
+  const row: VectorLayerDisplays | undefined = res?.rows?.[0] as
+    VectorLayerDisplays | undefined
 
   const vldsRes = useLiveQuery(
     `SELECT vlds_in_vector_layer FROM projects WHERE project_id = $1`,
@@ -56,10 +57,13 @@ export const VectorLayerDisplay = ({
   const vldsInVectorLayer = vldsRes?.rows?.[0]?.vlds_in_vector_layer !== false
   const isEmbedded = vldsInVectorLayer && !calledFromMapDrawer
 
-  const onChange = async (e: React.ChangeEvent<HTMLInputElement>, data?: any) => {
+  const onChange = async (
+    e: React.ChangeEvent<HTMLElement>,
+    data?: FieldChangeData,
+  ) => {
     const { name, value } = getValueFromChange(e, data)
     // only change if value has changed: maybe only focus entered and left
-    if ((row as Record<string, any>)[name] === value) return
+    if ((row as unknown as Record<string, unknown>)[name] === value) return
 
     try {
       await db.query(
@@ -69,12 +73,14 @@ export const VectorLayerDisplay = ({
     } catch (error) {
       setValidations((prev) => ({
         ...prev,
-        [name]: { state: 'error', message: error instanceof Error ? error.message : String(error) },
+        [name]: {
+          state: 'error',
+          message: error instanceof Error ? error.message : String(error),
+        },
       }))
       return
     }
     setValidations((prev) => {
-       
       const { [name]: _, ...rest } = prev
       return rest
     })

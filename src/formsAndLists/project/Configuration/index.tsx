@@ -26,6 +26,7 @@ import { addOperationAtom } from '../../../store.ts'
 import { projectTypeNames } from '../../../modules/projectTypeNames.ts'
 import type Projects from '../../../models/public/Projects.ts'
 import type Units from '../../../models/public/Units.ts'
+import type { FieldChangeData } from '../../../components/shared/fieldChange.ts'
 
 export const Configuration = ({ from }: { from: string }) => {
   const { projectId } = useParams({ strict: false })
@@ -56,32 +57,35 @@ export const Configuration = ({ from }: { from: string }) => {
     `SELECT unit_id, name FROM units WHERE project_id = $1 ORDER BY sort, name`,
     [projectId],
   )
-  const units = (unitsRes?.rows ?? []) as Pick<
-    Units,
-    'unit_id' | 'name'
-  >[]
+  const units = (unitsRes?.rows ?? []) as Pick<Units, 'unit_id' | 'name'>[]
   const unitIds = units.map((u) => u.unit_id)
   const unitLabelMap = Object.fromEntries(
     units.map((u) => [u.unit_id, u.name ?? u.unit_id]),
   )
 
   const lang = locale.split('-')[0]
-  const subprojectName =
-    (row as Record<string, any>)?.[`subproject_name_plural_${lang}`] ??
-    row?.subproject_name_plural ??
-    'Arten'
-  const subprojectNameSingular =
-    (row as Record<string, any>)?.[`subproject_name_singular_${lang}`] ??
-    row?.subproject_name_singular ??
-    'Teilprojekt'
+  const subprojectName = String(
+    (row as unknown as Record<string, unknown>)?.[
+      `subproject_name_plural_${lang}`
+    ] ??
+      row?.subproject_name_plural ??
+      'Arten',
+  )
+  const subprojectNameSingular = String(
+    (row as unknown as Record<string, unknown>)?.[
+      `subproject_name_singular_${lang}`
+    ] ??
+      row?.subproject_name_singular ??
+      'Teilprojekt',
+  )
 
   const onChange = async (
-    e: React.ChangeEvent<HTMLInputElement>,
-    data: Parameters<typeof getValueFromChange>[1],
+    e: React.ChangeEvent<HTMLElement>,
+    data?: FieldChangeData,
   ) => {
     const { name, value } = getValueFromChange(e, data)
     // only change if value has changed: maybe only focus entered and left
-    if ((row as Record<string, any>)[name] === value) return
+    if ((row as unknown as Record<string, unknown>)[name] === value) return
 
     if (name === 'type') {
       const names = projectTypeNames[value as string] ?? {}
@@ -97,7 +101,10 @@ export const Configuration = ({ from }: { from: string }) => {
       } catch (error) {
         setValidations((prev) => ({
           ...prev,
-          [name]: { state: 'error', message: error instanceof Error ? error.message : String(error) },
+          [name]: {
+            state: 'error',
+            message: error instanceof Error ? error.message : String(error),
+          },
         }))
         return
       }
@@ -120,12 +127,14 @@ export const Configuration = ({ from }: { from: string }) => {
     } catch (error) {
       setValidations((prev) => ({
         ...prev,
-        [name]: { state: 'error', message: error instanceof Error ? error.message : String(error) },
+        [name]: {
+          state: 'error',
+          message: error instanceof Error ? error.message : String(error),
+        },
       }))
       return
     }
     setValidations((prev) => {
-       
       const { [name]: _, ...rest } = prev
       return rest
     })
@@ -475,7 +484,7 @@ export const Configuration = ({ from }: { from: string }) => {
             <SwitchField
               label={reportsLabel}
               name="project_reports"
-              value={row.project_reports ?? true}
+              value={Boolean(row.project_reports ?? true)}
               onChange={onChange}
               validationState={validations?.project_reports?.state}
               validationMessage={validations?.project_reports?.message}
@@ -486,7 +495,7 @@ export const Configuration = ({ from }: { from: string }) => {
                 defaultMessage: 'WMS-Dienste und WMS-Ebenen',
               })}
               name="wms_layers"
-              value={row.wms_layers ?? false}
+              value={Boolean(row.wms_layers ?? false)}
               onChange={onChange}
               validationState={validations?.wms_layers?.state}
               validationMessage={validations?.wms_layers?.message}
@@ -497,7 +506,7 @@ export const Configuration = ({ from }: { from: string }) => {
                 defaultMessage: 'WFS-Dienste und Vektor-Ebenen',
               })}
               name="vector_layers"
-              value={row.vector_layers ?? false}
+              value={Boolean(row.vector_layers ?? false)}
               onChange={onChange}
               validationState={validations?.vector_layers?.state}
               validationMessage={validations?.vector_layers?.message}
@@ -505,7 +514,7 @@ export const Configuration = ({ from }: { from: string }) => {
             <SwitchField
               label={filesLabel}
               name="files_active_projects"
-              value={row.files_active_projects ?? false}
+              value={Boolean(row.files_active_projects ?? false)}
               onChange={onChange}
               validationState={validations?.files_active_projects?.state}
               validationMessage={validations?.files_active_projects?.message}
@@ -517,7 +526,7 @@ export const Configuration = ({ from }: { from: string }) => {
                   defaultMessage: 'Dateien im Projekt anzeigen',
                 })}
                 name="project_files_in_project"
-                value={row.project_files_in_project ?? true}
+                value={Boolean(row.project_files_in_project ?? true)}
                 onChange={onChange}
                 validationState={validations?.project_files_in_project?.state}
                 validationMessage={
@@ -532,7 +541,7 @@ export const Configuration = ({ from }: { from: string }) => {
                 defaultMessage: 'Benutzer im Projekt anzeigen',
               })}
               name="project_users_in_project"
-              value={row.project_users_in_project ?? true}
+              value={Boolean(row.project_users_in_project ?? true)}
               onChange={onChange}
               validationState={validations?.project_users_in_project?.state}
               validationMessage={
@@ -546,7 +555,7 @@ export const Configuration = ({ from }: { from: string }) => {
                 defaultMessage: 'Berichte im Projekt anzeigen',
               })}
               name="project_reports_in_project"
-              value={row.project_reports_in_project ?? true}
+              value={Boolean(row.project_reports_in_project ?? true)}
               onChange={onChange}
               validationState={validations?.project_reports_in_project?.state}
               validationMessage={
@@ -560,7 +569,7 @@ export const Configuration = ({ from }: { from: string }) => {
                 defaultMessage: 'Einheiten im Projekt anzeigen',
               })}
               name="units_in_project"
-              value={row.units_in_project ?? true}
+              value={Boolean(row.units_in_project ?? true)}
               onChange={onChange}
               validationState={validations?.units_in_project?.state}
               validationMessage={
@@ -573,7 +582,7 @@ export const Configuration = ({ from }: { from: string }) => {
                 defaultMessage: 'Felder im Projekt anzeigen',
               })}
               name="fields_in_project"
-              value={row.fields_in_project ?? true}
+              value={Boolean(row.fields_in_project ?? true)}
               onChange={onChange}
               validationState={validations?.fields_in_project?.state}
               validationMessage={
@@ -587,7 +596,7 @@ export const Configuration = ({ from }: { from: string }) => {
                 defaultMessage: 'Listen-Werte in Liste anzeigen',
               })}
               name="list_values_in_list"
-              value={row.list_values_in_list ?? true}
+              value={Boolean(row.list_values_in_list ?? true)}
               onChange={onChange}
               validationState={validations?.list_values_in_list?.state}
               validationMessage={
@@ -602,7 +611,7 @@ export const Configuration = ({ from }: { from: string }) => {
                   'Vektor-Ebene-Anzeigen in Vektor-Ebene anzeigen',
               })}
               name="vlds_in_vector_layer"
-              value={row.vlds_in_vector_layer ?? true}
+              value={Boolean(row.vlds_in_vector_layer ?? true)}
               onChange={onChange}
               validationState={validations?.vlds_in_vector_layer?.state}
               validationMessage={
@@ -615,7 +624,7 @@ export const Configuration = ({ from }: { from: string }) => {
             <SwitchField
               label={`${subprojectNameSingular}-${reportsLabel}`}
               name="subproject_reports"
-              value={row.subproject_reports ?? true}
+              value={Boolean(row.subproject_reports ?? true)}
               onChange={onChange}
               validationState={validations?.subproject_reports?.state}
               validationMessage={validations?.subproject_reports?.message}
@@ -630,7 +639,7 @@ export const Configuration = ({ from }: { from: string }) => {
                 { subprojectNameSingular },
               )}
               name="subproject_reports_in_subproject"
-              value={row.subproject_reports_in_subproject ?? true}
+              value={Boolean(row.subproject_reports_in_subproject ?? true)}
               onChange={onChange}
               validationState={
                 validations?.subproject_reports_in_subproject?.state
@@ -643,7 +652,7 @@ export const Configuration = ({ from }: { from: string }) => {
             <SwitchField
               label={formatMessage({ id: '3srcwg', defaultMessage: 'Ziele' })}
               name="goals"
-              value={row.goals ?? true}
+              value={Boolean(row.goals ?? true)}
               onChange={onChange}
               validationState={validations?.goals?.state}
               validationMessage={validations?.goals?.message}
@@ -654,7 +663,7 @@ export const Configuration = ({ from }: { from: string }) => {
                 defaultMessage: 'Ziel-Berichte im Ziel anzeigen',
               })}
               name="goal_reports_in_goal"
-              value={row.goal_reports_in_goal ?? true}
+              value={Boolean(row.goal_reports_in_goal ?? true)}
               onChange={onChange}
               validationState={validations?.goal_reports_in_goal?.state}
               validationMessage={
@@ -668,7 +677,7 @@ export const Configuration = ({ from }: { from: string }) => {
                 defaultMessage: 'Beobachtungen (inkl. Importe)',
               })}
               name="occurrences"
-              value={row.occurrences ?? true}
+              value={Boolean(row.occurrences ?? true)}
               onChange={onChange}
               validationState={validations?.occurrences?.state}
               validationMessage={validations?.occurrences?.message}
@@ -676,7 +685,7 @@ export const Configuration = ({ from }: { from: string }) => {
             <SwitchField
               label={formatMessage({ id: '7sVbg1', defaultMessage: 'Taxa' })}
               name="taxa"
-              value={row.taxa ?? true}
+              value={Boolean(row.taxa ?? true)}
               onChange={onChange}
               validationState={validations?.taxa?.state}
               validationMessage={validations?.taxa?.message}
@@ -690,7 +699,7 @@ export const Configuration = ({ from }: { from: string }) => {
                 { subprojectNameSingular },
               )}
               name="subproject_taxa_in_subproject"
-              value={row.subproject_taxa_in_subproject ?? true}
+              value={Boolean(row.subproject_taxa_in_subproject ?? true)}
               onChange={onChange}
               validationState={
                 validations?.subproject_taxa_in_subproject?.state
@@ -706,7 +715,7 @@ export const Configuration = ({ from }: { from: string }) => {
                 defaultMessage: 'Diagramme',
               })}
               name="charts"
-              value={row.charts ?? true}
+              value={Boolean(row.charts ?? true)}
               onChange={onChange}
               validationState={validations?.charts?.state}
               validationMessage={validations?.charts?.message}
@@ -722,9 +731,11 @@ export const Configuration = ({ from }: { from: string }) => {
               )}
               name="subproject_roles_in_subproject"
               value={
-                (row as Projects & {
-                  subproject_roles_in_subproject?: boolean | null
-                }).subproject_roles_in_subproject ?? true
+                (
+                  row as Projects & {
+                    subproject_roles_in_subproject?: boolean | null
+                  }
+                ).subproject_roles_in_subproject ?? true
               }
               onChange={onChange}
               validationState={
@@ -738,7 +749,7 @@ export const Configuration = ({ from }: { from: string }) => {
             <SwitchField
               label={filesLabel}
               name="files_active_subprojects"
-              value={row.files_active_subprojects ?? false}
+              value={Boolean(row.files_active_subprojects ?? false)}
               onChange={onChange}
               validationState={validations?.files_active_subprojects?.state}
               validationMessage={validations?.files_active_subprojects?.message}
@@ -754,7 +765,7 @@ export const Configuration = ({ from }: { from: string }) => {
                   { subprojectNameSingular },
                 )}
                 name="subproject_files_in_subproject"
-                value={row.subproject_files_in_subproject ?? true}
+                value={Boolean(row.subproject_files_in_subproject ?? true)}
                 onChange={onChange}
                 validationState={
                   validations?.subproject_files_in_subproject?.state

@@ -23,19 +23,26 @@ import {
 
 import type WmsServiceLayers from '../../models/public/WmsServiceLayers.ts'
 import type WmsServiceLayersHistory from '../../models/public/WmsServiceLayersHistory.ts'
+import type { FieldChangeData } from '../../components/shared/fieldChange.ts'
 
 export const WmsServiceLayerHistoryCompare = () => {
   const { formatMessage } = useIntl()
   const navigate = useNavigate()
-  const { projectId, wmsServiceId, wmsServiceLayerId, wmsServiceLayerHistoryId } =
-    useParams({ strict: false })
+  const {
+    projectId,
+    wmsServiceId,
+    wmsServiceLayerId,
+    wmsServiceLayerHistoryId,
+  } = useParams({ strict: false })
 
   const formPath = `/data/projects/${projectId}/wms-services/${wmsServiceId}/layers/${wmsServiceLayerId}`
   const historyPath = `${formPath}/histories`
 
   const db = usePGlite()
   const addOperation = useSetAtom(addOperationAtom)
-  const [validations, setValidations] = useState<Record<string, { state: 'error'; message: string }>>({})
+  const [validations, setValidations] = useState<
+    Record<string, { state: 'error'; message: string }>
+  >({})
 
   const rowRes = useLiveQuery(
     `SELECT * FROM wms_service_layers WHERE wms_service_layer_id = $1`,
@@ -44,11 +51,12 @@ export const WmsServiceLayerHistoryCompare = () => {
   const row = rowRes?.rows?.[0] as WmsServiceLayers | undefined
 
   const onChange = async (
-    e: React.ChangeEvent<HTMLInputElement>,
-    data: Parameters<typeof getValueFromChange>[1],
+    e: React.ChangeEvent<HTMLElement>,
+    data?: FieldChangeData,
   ) => {
     const { name, value } = getValueFromChange(e, data)
-    if (!row || (row as Record<string, any>)[name] === value) return
+    if (!row || (row as unknown as Record<string, unknown>)[name] === value)
+      return
 
     try {
       await db.query(
@@ -58,13 +66,15 @@ export const WmsServiceLayerHistoryCompare = () => {
     } catch (error) {
       setValidations((prev) => ({
         ...prev,
-        [name]: { state: 'error', message: error instanceof Error ? error.message : String(error) },
+        [name]: {
+          state: 'error',
+          message: error instanceof Error ? error.message : String(error),
+        },
       }))
       return
     }
 
     setValidations((prev) => {
-       
       const { [name]: _unused, ...rest } = prev
       return rest
     })
@@ -84,7 +94,10 @@ export const WmsServiceLayerHistoryCompare = () => {
   if (!row) {
     return (
       <NotFound
-        table={formatMessage({ id: 'Mn1OpQ', defaultMessage: 'WMS-Dienst-Ebene' })}
+        table={formatMessage({
+          id: 'Mn1OpQ',
+          defaultMessage: 'WMS-Dienst-Ebene',
+        })}
         id={wmsServiceLayerId}
       />
     )
@@ -116,7 +129,9 @@ export const WmsServiceLayerHistoryCompare = () => {
   })
 
   const formatFieldValue = (field: string, history: WmsServiceLayersHistory) =>
-    stringifyHistoryValue((history as Record<string, any>)[field])
+    stringifyHistoryValue(
+      (history as unknown as Record<string, unknown>)[field],
+    )
 
   return (
     <HistoryCompare<WmsServiceLayersHistory>

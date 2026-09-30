@@ -7,6 +7,7 @@ import type WfsServices from '../../models/public/WfsServices.ts'
 import styles from './Form.module.css'
 
 import '../../form.css'
+import type { FieldChangeHandler } from '../../components/shared/fieldChange.ts'
 
 export const WfsServiceForm = ({
   onChange,
@@ -14,9 +15,9 @@ export const WfsServiceForm = ({
   row,
   autoFocusRef,
 }: {
-  onChange: (e: React.ChangeEvent<any>, data?: any) => void
+  onChange: FieldChangeHandler
   validations?: Record<string, { state: 'error'; message: string }>
-  row: WfsServices | Record<string, any>
+  row: WfsServices | Record<string, never>
   autoFocusRef?: React.Ref<HTMLInputElement>
 }) => {
   const [fetching, setFetching] = useState(false)
@@ -44,7 +45,7 @@ export const WfsServiceForm = ({
       <div className={styles.fetchWrapper}>
         <FetchWfsCapabilities
           vectorLayer={vectorLayerForFetch as unknown as VectorLayers}
-          url={row.url}
+          url={row.url ?? ''}
           fetching={fetching}
           setFetching={setFetching}
         />

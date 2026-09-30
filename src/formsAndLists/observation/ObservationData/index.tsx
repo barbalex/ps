@@ -52,7 +52,7 @@ export const OccurenceData = (_props: { from: string }) => {
 
   const rowData = observation?.data ?? {}
   const fields = Object.entries(rowData as Record<string, unknown>)
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+
     .filter(([_key, value]) => exists(value))
     .sort(sortFn)
   const keys = fields.map((f) => f[0])
@@ -113,8 +113,17 @@ export const OccurenceData = (_props: { from: string }) => {
   return (
     <ErrorBoundary>
       <div>
-        <Section title={formatMessage({ id: 'obs0Raw', defaultMessage: 'Rohdaten' })}>{null}</Section>
-        <p className={styles.explainer}>{formatMessage({ id: 'obs0Dnd', defaultMessage: 'Felder per Drag-and-Drop sortieren' })}</p>
+        <Section
+          title={formatMessage({ id: 'obs0Raw', defaultMessage: 'Rohdaten' })}
+        >
+          {null}
+        </Section>
+        <p className={styles.explainer}>
+          {formatMessage({
+            id: 'obs0Dnd',
+            defaultMessage: 'Felder per Drag-and-Drop sortieren',
+          })}
+        </p>
         <div className={styles.outerContainer}>
           <div className={styles.container}>
             <DndProvider backend={HTML5Backend} context={window}>

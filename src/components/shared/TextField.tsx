@@ -5,16 +5,14 @@ type InputProps = React.ComponentProps<typeof Input>
 type FieldProps = React.ComponentProps<typeof Field>
 
 import styles from './TextField.module.css'
+import type { FieldChangeHandler } from './fieldChange.ts'
 
 type Props = Omit<InputProps, 'onChange' | 'value'> &
   Pick<
     FieldProps,
     'label' | 'hint' | 'validationMessage' | 'validationState'
   > & {
-    onChange?: (
-    ev: React.ChangeEvent<any>,
-    data?: any,
-  ) => void
+    onChange?: FieldChangeHandler
     value?: string | number
     button?: React.ReactNode
   }
@@ -50,8 +48,7 @@ export const TextField = ({
   // consumers pass Fluent's (ev, data) change handlers;
   // from key events only the event is available
   const onChangeEvent = onChangeIn as
-    | ((event: React.SyntheticEvent<HTMLInputElement>) => void)
-    | undefined
+    ((event: React.SyntheticEvent<HTMLInputElement>) => void) | undefined
 
   const onKeyPress = (event: React.KeyboardEvent<HTMLInputElement>) => {
     if (event.key === 'Enter') {

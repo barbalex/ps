@@ -1,4 +1,5 @@
 import { useIntl } from 'react-intl'
+import type { FieldChangeHandler } from '../../components/shared/fieldChange.ts'
 import { Filter } from '../../components/shared/Filter/index.tsx'
 import { TextField } from '../../components/shared/TextField.tsx'
 import { RadioGroupField } from '../../components/shared/RadioGroupField.tsx'
@@ -25,7 +26,7 @@ export const ChartFilter = ({ from }: Props) => {
         onChange,
       }: {
         row: Record<string, unknown>
-        onChange: (e: React.ChangeEvent<HTMLInputElement>, data?: any) => void
+        onChange: FieldChangeHandler
       }) => (
         <>
           <TextField

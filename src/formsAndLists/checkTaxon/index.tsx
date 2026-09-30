@@ -55,10 +55,7 @@ export const CheckTaxon = ({ from }: { from: string }) => {
 
   // console.log('CheckTaxon', { row, results })
 
-  const onChange = async (
-    e: React.ChangeEvent<HTMLInputElement>,
-    data?: object,
-  ) => {
+  const onChange = async (e: React.ChangeEvent<HTMLElement>, data?: object) => {
     const { name, value } = getValueFromChange(
       e,
       data as Parameters<typeof getValueFromChange>[1],
@@ -79,7 +76,6 @@ export const CheckTaxon = ({ from }: { from: string }) => {
       return
     }
     setValidations((prev) => {
-       
       const { [name]: _, ...rest } = prev
       return rest
     })

@@ -31,10 +31,10 @@ import { FilterButton } from '../../components/shared/FilterButton.tsx'
 import { UploaderContext } from '../../UploaderContext.ts'
 import { filterStringFromFilter } from '../../modules/filterStringFromFilter.ts'
 import type Actions from '../../models/public/Actions.ts'
-import type { InputOnChangeData } from '@fluentui/react-components'
 import styles from './WithAll.module.css'
 
 import '../../form.css'
+import type { FieldChangeData } from '../../components/shared/fieldChange.ts'
 
 const { Button } = fluentUiReactComponents
 
@@ -103,11 +103,12 @@ export const ActionWithAll = ({
   const filesCount = filesCountRes?.rows?.[0]?.count ?? 0
 
   const onChange = async (
-    e: React.ChangeEvent<HTMLInputElement>,
-    data?: InputOnChangeData,
+    e: React.ChangeEvent<HTMLElement>,
+    data?: FieldChangeData,
   ) => {
     const { name, value } = getValueFromChange(e, data)
-    if (!row || (row as Record<string, any>)[name] === value) return
+    if (!row || (row as unknown as Record<string, unknown>)[name] === value)
+      return
     try {
       await db.query(`UPDATE actions SET ${name} = $1 WHERE action_id = $2`, [
         value,
@@ -121,7 +122,6 @@ export const ActionWithAll = ({
       return
     }
     setValidations((prev) => {
-       
       const { [name]: _, ...rest } = prev
       return rest
     })
@@ -228,7 +228,7 @@ export const ActionWithAll = ({
             <Form
               onChange={onChange}
               validations={validations}
-              row={row as unknown as Record<string, unknown>}
+              row={row as unknown as Actions}
               autoFocusRef={autoFocusRef}
               from={from}
             />

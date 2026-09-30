@@ -49,9 +49,9 @@ type Props = {
   from: '/data/projects/$projectId_/qc-assignments/'
 }
 
-export const ProjectQcAssignments = ({}: Props) => {
+export const ProjectQcAssignments = (_: Props) => {
   const { projectId } = useParams({ strict: false })
-  const { navData } = useProjectQcAssignmentsNavData({projectId: projectId! })
+  const { navData } = useProjectQcAssignmentsNavData({ projectId: projectId! })
   const { formatMessage } = useIntl()
   const [language] = useAtom(languageAtom)
   const addOperation = useSetAtom(addOperationAtom)
@@ -160,7 +160,7 @@ export const ProjectQcAssignments = ({}: Props) => {
           projectId: projectId!,
           qcId: item.id,
         })
-     }
+      }
     } else {
       if (activeProjectQcIds.has(item.id)) {
         const entry = activeProjectQcEntries.find(
@@ -202,7 +202,7 @@ export const ProjectQcAssignments = ({}: Props) => {
           projectId: projectId!,
           qcId: item.id,
         })
-     } else {
+      } else {
         await createProjectQcAssignmentsForProjectQc({
           projectId,
           projectQcId: item.id,

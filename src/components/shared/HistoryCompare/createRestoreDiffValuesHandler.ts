@@ -18,8 +18,8 @@ type CreateRestoreDiffValuesHandlerArgs = {
   table: string
   rowIdName: string
   rowId: string | undefined
-  row: Record<string, unknown> | undefined
-  selectedHistory: Record<string, unknown> | undefined
+  row: object | undefined
+  selectedHistory: object | undefined
   diffFields: string[]
   excludedRestoreFields: Set<string>
   addOperation: AddOperation

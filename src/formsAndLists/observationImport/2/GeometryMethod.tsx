@@ -1,15 +1,9 @@
 import { useIntl } from 'react-intl'
-import * as fluentUiReactComponents from '@fluentui/react-components'
 
 import { observationImportGeometryMethodOptions } from '../../../modules/constants.ts'
 import { RadioGroupField } from '../../../components/shared/RadioGroupField.tsx'
 import type ObservationImports from '../../../models/public/ObservationImports.ts'
-
-type InputOnChangeData = Parameters<
-  NonNullable<
-    React.ComponentProps<typeof fluentUiReactComponents.Input>['onChange']
-  >
->[1]
+import type { FieldChangeData } from '../../../components/shared/fieldChange.ts'
 
 export const GeometryMethod = ({
   onChange,
@@ -17,8 +11,8 @@ export const GeometryMethod = ({
   row,
 }: {
   onChange: (
-    e: React.ChangeEvent<HTMLInputElement>,
-    data: InputOnChangeData,
+    e: React.ChangeEvent<HTMLElement>,
+    data?: FieldChangeData,
   ) => Promise<void>
   validations?: Record<string, { state: 'error'; message: string }>
   row: ObservationImports

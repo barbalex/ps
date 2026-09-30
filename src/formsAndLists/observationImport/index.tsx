@@ -22,12 +22,7 @@ import type Observations from '../../models/public/Observations.ts'
 
 import '../../form.css'
 import styles from './index.module.css'
-
-type InputOnChangeData = Parameters<
-  NonNullable<
-    React.ComponentProps<typeof fluentUiReactComponents.Input>['onChange']
-  >
->[1]
+import type { FieldChangeData } from '../../components/shared/fieldChange.ts'
 
 type Validation = {
   state: 'error'
@@ -57,7 +52,8 @@ export const ObservationImport = () => {
     `SELECT * FROM observation_imports WHERE observation_import_id = $1`,
     [observationImportId],
   )
-  const observationImport = oIResult?.rows?.[0] as ObservationImports | undefined
+  const observationImport = oIResult?.rows?.[0] as
+    ObservationImports | undefined
 
   const oResult = useLiveQuery(
     `SELECT * FROM observations WHERE observation_import_id = $1`,
@@ -133,8 +129,8 @@ export const ObservationImport = () => {
   ])
 
   const onChange = async (
-    e: React.ChangeEvent<HTMLInputElement>,
-    data?: InputOnChangeData,
+    e: React.ChangeEvent<HTMLElement>,
+    data?: FieldChangeData,
   ) => {
     const { name, value } = getValueFromChange(e, data!)
     // only change if value has changed: maybe only focus entered and left
@@ -173,7 +169,6 @@ export const ObservationImport = () => {
     }
 
     setValidations((prev) => {
-       
       const { [name]: _, ...rest } = prev
       return rest
     })
@@ -190,10 +185,7 @@ export const ObservationImport = () => {
   const onTabSelect: OnTabSelect = (_e, data) =>
     navigate({ search: { observationImportTab: data.value } as never })
 
-  const getTabNumberClassName = (
-    isComplete: boolean,
-    isCurrent: boolean,
-  ) =>
+  const getTabNumberClassName = (isComplete: boolean, isCurrent: boolean) =>
     `${styles.tabNumber}${isComplete ? ` ${styles.tabNumberComplete}` : isCurrent ? ` ${styles.tabNumberCurrent}` : ''}`
 
   // TODO:

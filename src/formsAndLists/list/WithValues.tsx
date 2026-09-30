@@ -1,5 +1,10 @@
 import { useRef, useState } from 'react'
-import { Outlet, useNavigate, useParams, useLocation } from '@tanstack/react-router'
+import {
+  Outlet,
+  useNavigate,
+  useParams,
+  useLocation,
+} from '@tanstack/react-router'
 import { usePGlite, useLiveQuery } from '@electric-sql/pglite-react'
 import { useSetAtom } from 'jotai'
 import { useIntl } from 'react-intl'
@@ -23,6 +28,7 @@ import type Lists from '../../models/public/Lists.ts'
 import styles from './WithValues.module.css'
 
 import '../../form.css'
+import type { FieldChangeData } from '../../components/shared/fieldChange.ts'
 
 const { Button, Tooltip } = fluentUiReactComponents
 
@@ -61,7 +67,7 @@ export const ListWithValues = ({ from }: { from: string }) => {
   const isListValuesList = /\/values\/?$/.test(location.pathname)
 
   const onClickAddListValue = async () => {
-    const id = await createListValue({listId: listId! })
+    const id = await createListValue({ listId: listId! })
     if (!id) return
     navigate({ to: `${valuesUrl}/${id}/` })
   }
@@ -102,7 +108,11 @@ export const ListWithValues = ({ from }: { from: string }) => {
           content={formatMessage({ id: 'Yt5rMs', defaultMessage: 'neu' })}
           relationship="label"
         >
-          <Button size="medium" icon={<FaPlus />} onClick={onClickAddListValue} />
+          <Button
+            size="medium"
+            icon={<FaPlus />}
+            onClick={onClickAddListValue}
+          />
         </Tooltip>
         <Delete
           deleteRow={deleteAllValues}
@@ -120,12 +130,12 @@ export const ListWithValues = ({ from }: { from: string }) => {
     ) : undefined
 
   const onChange = async (
-    e: React.ChangeEvent<HTMLInputElement>,
-    data: Parameters<typeof getValueFromChange>[1],
+    e: React.ChangeEvent<HTMLElement>,
+    data?: FieldChangeData,
   ) => {
     const { name, value } = getValueFromChange(e, data)
     // only change if value has changed: maybe only focus entered and left
-    if ((row as Record<string, any>)[name] === value) return
+    if ((row as unknown as Record<string, unknown>)[name] === value) return
 
     try {
       await db.query(`UPDATE lists SET ${name} = $1 WHERE list_id = $2`, [
@@ -135,12 +145,14 @@ export const ListWithValues = ({ from }: { from: string }) => {
     } catch (error) {
       setValidations((prev) => ({
         ...prev,
-        [name]: { state: 'error', message: error instanceof Error ? error.message : String(error) },
+        [name]: {
+          state: 'error',
+          message: error instanceof Error ? error.message : String(error),
+        },
       }))
       return
     }
     setValidations((prev) => {
-       
       const { [name]: _, ...rest } = prev
       return rest
     })

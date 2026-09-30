@@ -49,9 +49,11 @@ type Props = {
   from: '/data/projects/$projectId_/export-assignments/'
 }
 
-export const ProjectExportAssignments = ({}: Props) => {
+export const ProjectExportAssignments = (_: Props) => {
   const { projectId } = useParams({ strict: false })
-  const { navData } = useProjectExportAssignmentsNavData({projectId: projectId! })
+  const { navData } = useProjectExportAssignmentsNavData({
+    projectId: projectId!,
+  })
   const { formatMessage } = useIntl()
   const [language] = useAtom(languageAtom)
   const addOperation = useSetAtom(addOperationAtom)
@@ -159,7 +161,7 @@ export const ProjectExportAssignments = ({}: Props) => {
           projectId: projectId!,
           exportsId: item.id,
         })
-     }
+      }
     } else {
       if (activeProjectExportsIds.has(item.id)) {
         const entry = activeProjectExportEntries.find(
@@ -201,7 +203,7 @@ export const ProjectExportAssignments = ({}: Props) => {
           projectId: projectId!,
           exportsId: item.id,
         })
-     } else {
+      } else {
         await createProjectExportAssignmentForProjectExport({
           projectId,
           projectExportsId: item.id,

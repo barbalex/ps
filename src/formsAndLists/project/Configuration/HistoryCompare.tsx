@@ -26,7 +26,9 @@ const configFrom = '/data/projects/$projectId_/configuration'
 export const ProjectConfigurationHistoryCompare = () => {
   const { formatMessage, locale } = useIntl()
   const navigate = useNavigate()
-  const { projectId, projectConfigurationHistoryId } = useParams({ strict: false })
+  const { projectId, projectConfigurationHistoryId } = useParams({
+    strict: false,
+  })
 
   const formPath = `/data/projects/${projectId}/configuration`
   const historyPath = `${formPath}/histories`
@@ -64,7 +66,10 @@ export const ProjectConfigurationHistoryCompare = () => {
   const subprojectNameSingular =
     (row?.[`subproject_name_singular_${lang}`] as string | undefined) ??
     (row?.subproject_name_singular as string | undefined) ??
-    formatMessage({ id: 'subprojectSingularFallback', defaultMessage: 'Teilprojekt' })
+    formatMessage({
+      id: 'subprojectSingularFallback',
+      defaultMessage: 'Teilprojekt',
+    })
 
   const baseFormatFieldLabel = createHistoryFieldLabelFormatter({
     formatMessage,
@@ -281,27 +286,26 @@ export const ProjectConfigurationHistoryCompare = () => {
     'action_reports_default_unit_id',
   ])
 
-  const formatFieldValue = (
-    field: string,
-    history: ProjectsHistory & Record<string, unknown>,
-  ) => {
+  const formatFieldValue = (field: string, history: ProjectsHistory) => {
     if (field === 'type') {
-      const value = history[field]
+      const value = (history as unknown as Record<string, unknown>)[field]
       if (typeof value === 'string') {
         return projectTypeLabelMap[value] ?? value
       }
     }
     if (unitIdFields.has(field)) {
-      const value = history[field]
+      const value = (history as unknown as Record<string, unknown>)[field]
       if (typeof value === 'string') {
         return unitLabelMap[value] ?? value
       }
     }
-    return stringifyHistoryValue((history as Record<string, unknown>)[field])
+    return stringifyHistoryValue(
+      (history as unknown as Record<string, unknown>)[field],
+    )
   }
 
   return (
-    <HistoryCompare<ProjectsHistory & Record<string, unknown>>
+    <HistoryCompare<ProjectsHistory>
       onBack={() => navigate({ to: formPath })}
       leftContent={leftContent}
       visibleCurrentFields={new Set(preferredOrder)}
@@ -309,7 +313,7 @@ export const ProjectConfigurationHistoryCompare = () => {
       preferredOrder={preferredOrder}
       formatFieldLabel={formatFieldLabel}
       formatFieldValue={formatFieldValue}
-      row={row}
+      row={row as unknown as ProjectsHistory}
       historyConfig={{
         historyTable: 'projects_history',
         rowIdField: 'project_id',

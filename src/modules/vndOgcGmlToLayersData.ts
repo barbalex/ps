@@ -16,24 +16,24 @@ export const vndOgcGmlToLayersData = (xml: Document) => {
   const output = body?.MSGMLOUTPUT as Record<string, unknown> | undefined
   const layers = Object.entries(output ?? {})
     .filter(([key]) => key.toLowerCase().includes('_layer'))
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+
     .map(([, value]) => value)
 
   const layersData = layers.map((l) => {
     const layer = l as Record<string, unknown>
-    const label = (
-      layer['GML:NAME'] as Record<string, unknown> | undefined
-    )?.['#text']
+    const label = (layer['GML:NAME'] as Record<string, unknown> | undefined)?.[
+      '#text'
+    ]
 
     const propsObject = Object.entries(layer ?? {})
       .filter(([key]) => key.toLowerCase().includes('_feature'))
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+
       .map(([, value]) => value)?.[0] as Record<string, unknown> | undefined
 
     if (propsObject?.['#text']) delete propsObject!['#text']
 
     const properties = Object.entries(propsObject as Record<string, unknown>)
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+
       .filter(([key, _value]) => !key.includes(':'))
       .map(
         ([key, value]) =>

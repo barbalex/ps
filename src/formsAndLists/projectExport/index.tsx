@@ -1,4 +1,5 @@
 import { useRef, useState } from 'react'
+import type ProjectExports from '../../models/public/ProjectExports.ts'
 import { useParams } from '@tanstack/react-router'
 import { usePGlite, useLiveQuery } from '@electric-sql/pglite-react'
 import { useSetAtom } from 'jotai'
@@ -11,7 +12,7 @@ import { NotFound } from '../../components/NotFound.tsx'
 import { addOperationAtom } from '../../store.ts'
 
 import '../../form.css'
-
+import type { FieldChangeData } from '../../components/shared/fieldChange.ts'
 
 export const ProjectExport = () => {
   const { projectExportsId } = useParams({ strict: false })
@@ -27,14 +28,14 @@ export const ProjectExport = () => {
     `SELECT * FROM project_exports WHERE project_exports_id = $1`,
     [projectExportsId],
   )
-  const row = res?.rows?.[0]
+  const row = res?.rows?.[0] as ProjectExports | undefined
 
   const onChange = async (
-    e: React.ChangeEvent<HTMLInputElement>,
-    data: Parameters<typeof getValueFromChange>[1],
+    e: React.ChangeEvent<HTMLElement>,
+    data?: FieldChangeData,
   ) => {
     const { name, value } = getValueFromChange(e, data)
-    if (row?.[name] === value) return
+    if ((row as unknown as Record<string, unknown>)?.[name] === value) return
 
     try {
       await db.query(
@@ -44,13 +45,15 @@ export const ProjectExport = () => {
     } catch (error) {
       setValidations((prev) => ({
         ...prev,
-        [name]: { state: 'error', message: error instanceof Error ? error.message : String(error) },
+        [name]: {
+          state: 'error',
+          message: error instanceof Error ? error.message : String(error),
+        },
       }))
       return
     }
 
     setValidations((prev) => {
-       
       const { [name]: _, ...rest } = prev
       return rest
     })

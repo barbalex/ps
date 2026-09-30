@@ -1,9 +1,11 @@
 import { useIntl } from 'react-intl'
+import type ActionReports from '../../models/public/ActionReports.ts'
 import { TextField } from '../../components/shared/TextField.tsx'
 import { Jsonb } from '../../components/shared/Jsonb/index.tsx'
 import { jsonbDataFromRow } from '../../modules/jsonbDataFromRow.ts'
 
 import '../../form.css'
+import type { FieldChangeHandler } from '../../components/shared/fieldChange.ts'
 
 type Validations = Record<
   string,
@@ -12,9 +14,9 @@ type Validations = Record<
 >
 
 type Props = {
-  onChange: (e: React.ChangeEvent<any>, data?: any) => void
+  onChange: FieldChangeHandler
   validations?: Validations
-  row: Record<string, any>
+  row: ActionReports | Record<string, never>
   orIndex?: number
   from: string
   autoFocusRef?: React.RefObject<HTMLInputElement | null>

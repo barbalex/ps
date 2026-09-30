@@ -16,8 +16,9 @@ import type ActionTaxa from '../../models/public/ActionTaxa.ts'
 import type Units from '../../models/public/Units.ts'
 
 import '../../form.css'
+import type { FieldChangeData } from '../../components/shared/fieldChange.ts'
 
-export const ActionTaxon = ({}: { from: string }) => {
+export const ActionTaxon = (_: { from: string }) => {
   const { actionTaxonId, projectId } = useParams({ strict: false })
   const addOperation = useSetAtom(addOperationAtom)
   const [validations, setValidations] = useState<
@@ -54,11 +55,11 @@ export const ActionTaxon = ({}: { from: string }) => {
   const selectedUnit = units.find((u) => u.unit_id === row?.unit_id)
 
   const onChange = async (
-    e: React.ChangeEvent<HTMLInputElement>,
-    data: Parameters<typeof getValueFromChange>[1],
+    e: React.ChangeEvent<HTMLElement>,
+    data?: FieldChangeData,
   ) => {
     const { name, value } = getValueFromChange(e, data)
-    if ((row as Record<string, any>)[name] === value) return
+    if ((row as unknown as Record<string, unknown>)[name] === value) return
 
     try {
       await db.query(
@@ -68,12 +69,14 @@ export const ActionTaxon = ({}: { from: string }) => {
     } catch (error) {
       setValidations((prev) => ({
         ...prev,
-        [name]: { state: 'error', message: error instanceof Error ? error.message : String(error) },
+        [name]: {
+          state: 'error',
+          message: error instanceof Error ? error.message : String(error),
+        },
       }))
       return
     }
     setValidations((prev) => {
-       
       const { [name]: _, ...rest } = prev
       return rest
     })

@@ -135,9 +135,9 @@ async function runAndDownload({
   }
 }
 
-export const ProjectExportsRun = ({}: { from: string }) => {
+export const ProjectExportsRun = (_: { from: string }) => {
   const { projectId } = useParams({ strict: false })
-  const { navData } = useProjectExportsRunNavData({projectId: projectId! })
+  const { navData } = useProjectExportsRunNavData({ projectId: projectId! })
   const { formatMessage } = useIntl()
   const [language] = useAtom(languageAtom)
   const [labelFilter, setLabelFilter] = useAtom(
@@ -229,8 +229,9 @@ export const ProjectExportsRun = ({}: { from: string }) => {
 
   const handleDownload = async (e: ExportRow, format: ExportFormat) => {
     if (!e.sql) return
-    const filterStr =
-      applyFilter[e.exports_id] ? getFilterString(e.base_table) : undefined
+    const filterStr = applyFilter[e.exports_id]
+      ? getFilterString(e.base_table)
+      : undefined
     try {
       await runAndDownload({
         db,
@@ -238,7 +239,8 @@ export const ProjectExportsRun = ({}: { from: string }) => {
         year,
         label: e.label ?? e.exports_id,
         format,
-        projectId: projectId!,        filterByYear: e.filter_by_year,
+        projectId: projectId!,
+        filterByYear: e.filter_by_year,
         isProjectExport: e.is_project_export,
         baseTable: e.base_table,
         filterString: filterStr || undefined,
@@ -258,9 +260,7 @@ export const ProjectExportsRun = ({}: { from: string }) => {
             id: 'exports.openDocs',
             defaultMessage: 'Dokumentation öffnen',
           })}
-          onClick={() =>
-            window.open('/docs/exports', '_blank', 'noreferrer')
-          }
+          onClick={() => window.open('/docs/exports', '_blank', 'noreferrer')}
         />
       </div>
 

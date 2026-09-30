@@ -30,7 +30,9 @@ import { mapMaximizedAtom } from '../../store.ts'
 const tanstackQueryClient = new QueryClient()
 
 // JSX typings for the Uploadcare web components (defined via UC.defineComponents above)
+// declaration merging is only possible with namespace syntax
 declare module 'react' {
+  // eslint-disable-next-line @typescript-eslint/no-namespace
   namespace JSX {
     interface IntrinsicElements {
       'uc-config': DetailedHTMLProps<

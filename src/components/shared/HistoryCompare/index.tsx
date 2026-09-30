@@ -29,7 +29,7 @@ type HistoryConfig = {
   rowId: string | undefined
   historyPath: string
   routeHistoryId: string | undefined
-  currentRow: Record<string, any> | undefined
+  currentRow: object | undefined
 }
 
 type RestoreConfig = {
@@ -41,7 +41,7 @@ type RestoreConfig = {
   addOperation: AddOperation
 }
 
-type HistoryCompareProps<THistory extends Record<string, any>> = {
+type HistoryCompareProps<THistory extends object> = {
   onBack: () => void
   leftContent: ReactNode
   leftHistories?: THistory[]
@@ -56,12 +56,12 @@ type HistoryCompareProps<THistory extends Record<string, any>> = {
   differentFields?: string[]
   formatFieldLabel: (field: string) => ReactNode
   formatFieldValue?: (field: string, history: THistory) => ReactNode
-  row: Record<string, any> | undefined
+  row: THistory | undefined
   historyConfig: HistoryConfig
   restoreConfig: RestoreConfig
 }
 
-export function HistoryCompare<THistory extends Record<string, any>>({
+export function HistoryCompare<THistory extends object>({
   onBack,
   leftContent,
   leftHistories,
@@ -140,12 +140,12 @@ export function HistoryCompare<THistory extends Record<string, any>>({
     if (formatFieldValue) return formatFieldValue(field, history)
 
     if (field === 'deleted') {
-      return history[field]
+      return (history as Record<string, unknown>)[field]
         ? formatMessage({ id: 'bCommonYes', defaultMessage: 'Ja' })
         : formatMessage({ id: 'bCommonNo', defaultMessage: 'Nein' })
     }
 
-    return stringifyHistoryValue(history[field])
+    return stringifyHistoryValue((history as Record<string, unknown>)[field])
   }
 
   const renderHistoryRows = ({
@@ -162,13 +162,15 @@ export function HistoryCompare<THistory extends Record<string, any>>({
     <HistoryValueListScroller>
       <div
         className={`${styles.sliderTrack} ${styles.sliderTrackShifted}`}
-        style={{
-          '--history-track-transform': `translateX(-${selectedIndex * 100}%)`,
-        } as React.CSSProperties}
+        style={
+          {
+            '--history-track-transform': `translateX(-${selectedIndex * 100}%)`,
+          } as React.CSSProperties
+        }
       >
         {historiesToRender.map((history, index) => (
           <div
-            key={`${String(history.updated_at ?? 'no-date')}-${index}`}
+            key={`${String((history as Record<string, unknown>).updated_at ?? 'no-date')}-${index}`}
             className={styles.slide}
           >
             <HistoryValueList
@@ -302,14 +304,13 @@ export function HistoryCompare<THistory extends Record<string, any>>({
                     )}
                   {!loadingHistories &&
                     !historyError &&
-                    histories.length > 0 && (
-                      renderHistoryRows({
-                        historiesToRender: histories,
-                        selectedIndex: selectedHistoryIndex,
-                        fields: displayFields,
-                        differentFieldsToRender: differentFields,
-                      })
-                    )}
+                    histories.length > 0 &&
+                    renderHistoryRows({
+                      historiesToRender: histories,
+                      selectedIndex: selectedHistoryIndex,
+                      fields: displayFields,
+                      differentFieldsToRender: differentFields,
+                    })}
                 </div>
               </div>
               <div className={styles.footer}>

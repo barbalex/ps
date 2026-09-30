@@ -3,13 +3,14 @@ import { useIntl } from 'react-intl'
 import { RadioGroupFromOptions } from '../../components/shared/RadioGroupFromOptions.tsx'
 import { vectorLayerMarkerTypeOptions } from '../../modules/constants.ts'
 import type VectorLayerDisplays from '../../models/public/VectorLayerDisplays.ts'
+import type { FieldChangeHandler } from '../../components/shared/fieldChange.ts'
 
 export const MarkerType = ({
   onChange,
   row,
 }: {
-  onChange: (e: React.ChangeEvent<any>, data?: any) => void
-  row: VectorLayerDisplays | Record<string, any>
+  onChange: FieldChangeHandler
+  row: VectorLayerDisplays | Record<string, never>
 }) => {
   const { formatMessage } = useIntl()
 

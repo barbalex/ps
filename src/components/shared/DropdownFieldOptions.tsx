@@ -1,8 +1,7 @@
 import * as fluentUiReactComponents from '@fluentui/react-components'
+import type { FieldChangeData } from './fieldChange.ts'
 const { Dropdown, Field, Option } = fluentUiReactComponents
 
-type InputProps = React.ComponentProps<typeof fluentUiReactComponents.Input>
-type InputOnChangeData = Parameters<NonNullable<InputProps['onChange']>>[1]
 type FieldProps = React.ComponentProps<typeof Field>
 
 type Props = {
@@ -12,7 +11,7 @@ type Props = {
   value?: unknown
   onChange: (
     ev: React.ChangeEvent<HTMLInputElement>,
-    data: InputOnChangeData,
+    data?: FieldChangeData,
   ) => void
   autoFocus?: boolean
   validationMessage?: FieldProps['validationMessage']
@@ -62,10 +61,7 @@ export const DropdownFieldOptions = ({
         clearable
       >
         {options.map(({ label, value }) => (
-          <Option
-            key={value}
-            value={value as string}
-          >
+          <Option key={value} value={value as string}>
             {label as string}
           </Option>
         ))}

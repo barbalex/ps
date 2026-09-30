@@ -22,6 +22,7 @@ import {
 
 import type ProjectReports from '../../models/public/ProjectReports.ts'
 import type ProjectReportsHistory from '../../models/public/ProjectReportsHistory.ts'
+import type { FieldChangeData } from '../../components/shared/fieldChange.ts'
 
 const from =
   '/data/projects/$projectId_/reports/$projectReportId_/histories/$projectReportHistoryId'
@@ -29,14 +30,18 @@ const from =
 export const ProjectReportHistoryCompare = () => {
   const { formatMessage } = useIntl()
   const navigate = useNavigate()
-  const { projectId, projectReportId, projectReportHistoryId } = useParams({ strict: false })
+  const { projectId, projectReportId, projectReportHistoryId } = useParams({
+    strict: false,
+  })
 
   const formPath = `/data/projects/${projectId}/reports/${projectReportId}`
   const historyPath = `${formPath}/histories`
 
   const db = usePGlite()
   const addOperation = useSetAtom(addOperationAtom)
-  const [validations, setValidations] = useState<Record<string, { state: 'error'; message: string }>>({})
+  const [validations, setValidations] = useState<
+    Record<string, { state: 'error'; message: string }>
+  >({})
 
   const rowRes = useLiveQuery(
     `SELECT * FROM project_reports WHERE project_report_id = $1`,
@@ -45,11 +50,12 @@ export const ProjectReportHistoryCompare = () => {
   const row = rowRes?.rows?.[0] as ProjectReports | undefined
 
   const onChange = async (
-    e: React.ChangeEvent<HTMLInputElement>,
-    data: Parameters<typeof getValueFromChange>[1],
+    e: React.ChangeEvent<HTMLElement>,
+    data?: FieldChangeData,
   ) => {
     const { name, value } = getValueFromChange(e, data)
-    if (!row || (row as Record<string, any>)[name] === value) return
+    if (!row || (row as unknown as Record<string, unknown>)[name] === value)
+      return
 
     try {
       await db.query(
@@ -59,13 +65,15 @@ export const ProjectReportHistoryCompare = () => {
     } catch (error) {
       setValidations((prev) => ({
         ...prev,
-        [name]: { state: 'error', message: error instanceof Error ? error.message : String(error) },
+        [name]: {
+          state: 'error',
+          message: error instanceof Error ? error.message : String(error),
+        },
       }))
       return
     }
 
     setValidations((prev) => {
-       
       const { [name]: _unused, ...rest } = prev
       return rest
     })
@@ -115,7 +123,9 @@ export const ProjectReportHistoryCompare = () => {
   })
 
   const formatFieldValue = (field: string, history: ProjectReportsHistory) =>
-    stringifyHistoryValue((history as Record<string, any>)[field])
+    stringifyHistoryValue(
+      (history as unknown as Record<string, unknown>)[field],
+    )
 
   return (
     <HistoryCompare<ProjectReportsHistory>

@@ -28,10 +28,7 @@ export const Check = ({ from }: { from: string }) => {
   ])
   const row = res?.rows?.[0] as Checks | undefined
 
-  const onChange = async (
-    e: React.ChangeEvent<HTMLInputElement>,
-    data?: object,
-  ) => {
+  const onChange = async (e: React.ChangeEvent<HTMLElement>, data?: object) => {
     const { name, value } = getValueFromChange(
       e,
       data as Parameters<typeof getValueFromChange>[1],
@@ -52,7 +49,6 @@ export const Check = ({ from }: { from: string }) => {
       return
     }
     setValidations((prev) => {
-       
       const { [name]: _, ...rest } = prev
       return rest
     })
@@ -68,14 +64,11 @@ export const Check = ({ from }: { from: string }) => {
 
   return (
     <div className="form-outer-container">
-      <Header
-        autoFocusRef={autoFocusRef}
-        from={from}
-      />
+      <Header autoFocusRef={autoFocusRef} from={from} />
       <div className="form-container">
-        {!res ?
+        {!res ? (
           <Loading />
-        : row ?
+        ) : row ? (
           <Form
             onChange={onChange}
             row={row}
@@ -83,11 +76,9 @@ export const Check = ({ from }: { from: string }) => {
             from={from}
             validations={validations}
           />
-        : <NotFound
-            table="Check"
-            id={checkId}
-          />
-        }
+        ) : (
+          <NotFound table="Check" id={checkId} />
+        )}
       </div>
     </div>
   )

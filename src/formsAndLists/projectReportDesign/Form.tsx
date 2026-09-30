@@ -21,28 +21,36 @@ import {
 import styles from './Form.module.css'
 
 import type ProjectReportDesigns from '../../models/public/ProjectReportDesigns.ts'
+import type { FieldChangeData } from '../../components/shared/fieldChange.ts'
 
 type DesignRow = {
   project_report_design_id: string
   project_id: string
   name: string | null
-  design: any
+  design: ({ content?: unknown[] } & Record<string, unknown>) | null
   active: boolean | null
   subproject_name_singular: string | null
   fields: { name: string; field_label: string | null }[] | null
-  charts: {
-    chart_id: string
-    name: string | null
-    label: string | null
-    subjects_single: boolean | null
-  }[] | null
+  charts:
+    | {
+        chart_id: string
+        name: string | null
+        label: string | null
+        subjects_single: boolean | null
+      }[]
+    | null
   report_data: Record<string, unknown> | null
   report_year: number | null
   has_active_subproject_design: boolean | null
   [key: string]: unknown
 }
 
-export const Form = ({ autoFocusRef }: { autoFocusRef?: React.RefObject<HTMLInputElement | null>; from?: string }) => {
+export const Form = ({
+  autoFocusRef,
+}: {
+  autoFocusRef?: React.RefObject<HTMLInputElement | null>
+  from?: string
+}) => {
   const { projectReportDesignId } = useParams({ strict: false })
   const addOperation = useSetAtom(addOperationAtom)
   const [validations, setValidations] = useState<
@@ -98,7 +106,7 @@ export const Form = ({ autoFocusRef }: { autoFocusRef?: React.RefObject<HTMLInpu
     : formatMessage({ id: 'bC1tUv', defaultMessage: 'Subprojekt-Berichte' })
 
   // Build Puck config from fields with actual data
-  const components: Record<string, any> = {
+  const components: Record<string, unknown> = {
     // data-driven overview blocks query the local database themselves,
     // scoped by the report context provided below
     ...buildProjectDataComponents(),
@@ -114,7 +122,11 @@ export const Form = ({ autoFocusRef }: { autoFocusRef?: React.RefObject<HTMLInpu
     },
     data_blocks: {
       title: formatMessage({ id: 'bDaBcD', defaultMessage: 'Bausteine' }),
-      components: ['ArtVerantwortliche', 'Erfolg', 'AktuellePopulationen'] as string[],
+      components: [
+        'ArtVerantwortliche',
+        'Erfolg',
+        'AktuellePopulationen',
+      ] as string[],
     },
     subproject_reports: {
       title: subprojectNameSingular,
@@ -197,11 +209,11 @@ export const Form = ({ autoFocusRef }: { autoFocusRef?: React.RefObject<HTMLInpu
     categories.charts.components.push(componentName)
   })
 
-  const config: Config = { components, categories }
+  const config = { components, categories } as unknown as Config
 
   const onActiveChange = async (
-    e: React.ChangeEvent<HTMLInputElement>,
-    data: Parameters<typeof getValueFromChange>[1],
+    e: React.ChangeEvent<HTMLElement>,
+    data?: FieldChangeData,
   ) => {
     const { value } = getValueFromChange(e, data)
     if (row!.active === value) return
@@ -235,12 +247,14 @@ export const Form = ({ autoFocusRef }: { autoFocusRef?: React.RefObject<HTMLInpu
     } catch (error) {
       setValidations((prev) => ({
         ...prev,
-        active: { state: 'error', message: error instanceof Error ? error.message : String(error) },
+        active: {
+          state: 'error',
+          message: error instanceof Error ? error.message : String(error),
+        },
       }))
       return
     }
     setValidations((prev) => {
-       
       const { active: _, ...rest } = prev
       return rest
     })
@@ -255,12 +269,12 @@ export const Form = ({ autoFocusRef }: { autoFocusRef?: React.RefObject<HTMLInpu
   }
 
   const onChange = async (
-    e: React.ChangeEvent<HTMLInputElement>,
-    data: Parameters<typeof getValueFromChange>[1],
+    e: React.ChangeEvent<HTMLElement>,
+    data?: FieldChangeData,
   ) => {
     const { name, value } = getValueFromChange(e, data)
     // only change if value has changed: maybe only focus entered and left
-    if ((row as Record<string, any>)[name] === value) return
+    if ((row as Record<string, unknown>)[name] === value) return
 
     try {
       await db.query(
@@ -270,12 +284,14 @@ export const Form = ({ autoFocusRef }: { autoFocusRef?: React.RefObject<HTMLInpu
     } catch (error) {
       setValidations((prev) => ({
         ...prev,
-        [name]: { state: 'error', message: error instanceof Error ? error.message : String(error) },
+        [name]: {
+          state: 'error',
+          message: error instanceof Error ? error.message : String(error),
+        },
       }))
       return
     }
     setValidations((prev) => {
-       
       const { [name]: _, ...rest } = prev
       return rest
     })
@@ -289,7 +305,9 @@ export const Form = ({ autoFocusRef }: { autoFocusRef?: React.RefObject<HTMLInpu
     })
   }
 
-  const onPuckChange = async (data: any) => {
+  const onPuckChange = async (
+    data: Parameters<typeof LazyPuckEditor>[0]['data'],
+  ) => {
     try {
       await db.query(
         `UPDATE project_report_designs SET design = $1 WHERE project_report_design_id = $2`,
@@ -347,7 +365,11 @@ export const Form = ({ autoFocusRef }: { autoFocusRef?: React.RefObject<HTMLInpu
           <LazyPuckEditor
             key={language}
             config={config}
-            data={normalizePuckDesign(row.design ?? { content: [] })}
+            data={
+              normalizePuckDesign(row.design ?? { content: [] }) as Parameters<
+                typeof LazyPuckEditor
+              >[0]['data']
+            }
             onChange={onPuckChange}
             sidebarExtra={
               <>

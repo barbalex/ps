@@ -2,7 +2,6 @@ import { useRef, useState } from 'react'
 import { useParams } from '@tanstack/react-router'
 import { usePGlite, useLiveQuery } from '@electric-sql/pglite-react'
 import { useSetAtom } from 'jotai'
-import type { InputOnChangeData } from '@fluentui/react-components'
 
 import { getValueFromChange } from '../../modules/getValueFromChange.ts'
 import { Header } from './Header.tsx'
@@ -13,6 +12,7 @@ import { addOperationAtom } from '../../store.ts'
 import type FieldTypes from '../../models/public/FieldTypes.ts'
 
 import '../../form.css'
+import type { FieldChangeData } from '../../components/shared/fieldChange.ts'
 
 export const FieldType = () => {
   const { fieldTypeId } = useParams({ strict: false })
@@ -31,12 +31,13 @@ export const FieldType = () => {
   const row = res?.rows?.[0] as FieldTypes | undefined
 
   const onChange = async (
-    e: React.ChangeEvent<HTMLInputElement>,
-    data?: InputOnChangeData,
+    e: React.ChangeEvent<HTMLElement>,
+    data?: FieldChangeData,
   ) => {
     const { name, value } = getValueFromChange(e, data!)
     // only change if value has changed: maybe only focus entered and left
-    if (!row || (row as Record<string, any>)[name] === value) return
+    if (!row || (row as unknown as Record<string, unknown>)[name] === value)
+      return
 
     const sql = `UPDATE field_types SET ${name} = $1 WHERE field_type_id = $2`
     try {
@@ -49,7 +50,6 @@ export const FieldType = () => {
       return
     }
     setValidations((prev) => {
-       
       const { [name]: _, ...rest } = prev
       return rest
     })
@@ -67,17 +67,18 @@ export const FieldType = () => {
     <div className="form-outer-container">
       <Header autoFocusRef={autoFocusRef} />
       <div className="form-container">
-        {!res ?
+        {!res ? (
           <Loading />
-        : row ?
+        ) : row ? (
           <Form
             onChange={onChange}
             validations={validations}
-            row={row as unknown as Record<string, unknown>}
+            row={row as unknown as FieldTypes}
             autoFocusRef={autoFocusRef}
           />
-        : <NotFound table="Field Type" id={fieldTypeId} />
-        }
+        ) : (
+          <NotFound table="Field Type" id={fieldTypeId} />
+        )}
       </div>
     </div>
   )

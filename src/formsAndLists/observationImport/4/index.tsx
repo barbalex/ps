@@ -1,17 +1,11 @@
 import { useParams } from '@tanstack/react-router'
 import { useLiveQuery } from '@electric-sql/pglite-react'
 import { useIntl } from 'react-intl'
-import * as fluentUiReactComponents from '@fluentui/react-components'
 
 import { DropdownFieldSimpleOptions } from '../../../components/shared/DropdownFieldSimpleOptions.tsx'
 import { DropdownFieldOptions } from '../../../components/shared/DropdownFieldOptions.tsx'
 import type ObservationImports from '../../../models/public/ObservationImports.ts'
-
-type InputOnChangeData = Parameters<
-  NonNullable<
-    React.ComponentProps<typeof fluentUiReactComponents.Input>['onChange']
-  >
->[1]
+import type { FieldChangeData } from '../../../components/shared/fieldChange.ts'
 
 export const Four = ({
   observationImport,
@@ -21,8 +15,8 @@ export const Four = ({
   observationImport: ObservationImports
   observationFields: string[]
   onChange: (
-    e: React.ChangeEvent<HTMLInputElement>,
-    data: InputOnChangeData,
+    e: React.ChangeEvent<HTMLElement>,
+    data?: FieldChangeData,
   ) => Promise<void>
   validations?: Record<string, { state: 'error'; message: string }>
 }) => {
@@ -59,11 +53,25 @@ export const Four = ({
         validationMessage={
           <>
             <div>
-              {formatMessage({ id: 'iDFdV1', defaultMessage: 'Das Feld, das die Beobachtung in der Datenquelle identifiziert.' })}
+              {formatMessage({
+                id: 'iDFdV1',
+                defaultMessage:
+                  'Das Feld, das die Beobachtung in der Datenquelle identifiziert.',
+              })}
             </div>
-            <div>{formatMessage({ id: 'iDFdV2', defaultMessage: 'Wird benötigt, wenn gleiche Beobachtungen mehrfach importiert werden.' })}</div>
             <div>
-              {formatMessage({ id: 'iDFdV3', defaultMessage: 'Ermöglicht die Wahl zwischen Aktualisieren und Ersetzen bestehender Beobachtungen.' })}
+              {formatMessage({
+                id: 'iDFdV2',
+                defaultMessage:
+                  'Wird benötigt, wenn gleiche Beobachtungen mehrfach importiert werden.',
+              })}
+            </div>
+            <div>
+              {formatMessage({
+                id: 'iDFdV3',
+                defaultMessage:
+                  'Ermöglicht die Wahl zwischen Aktualisieren und Ersetzen bestehender Beobachtungen.',
+              })}
             </div>
           </>
         }
@@ -71,12 +79,19 @@ export const Four = ({
       {!!observationImportOptions.length && (
         <>
           <DropdownFieldOptions
-            label={formatMessage({ id: 'pvImpLb', defaultMessage: 'Vorheriger Import' })}
+            label={formatMessage({
+              id: 'pvImpLb',
+              defaultMessage: 'Vorheriger Import',
+            })}
             name="previous_import"
             options={observationImportOptions}
             value={observationImport.previous_import ?? ''}
             onChange={onChange}
-            validationMessage={formatMessage({ id: 'pvImpVl', defaultMessage: 'Wurden Beobachtungen bereits zuvor aus derselben Quelle importiert? Falls ja: den vorherigen Import auswählen. Falls nein: leer lassen.' })}
+            validationMessage={formatMessage({
+              id: 'pvImpVl',
+              defaultMessage:
+                'Wurden Beobachtungen bereits zuvor aus derselben Quelle importiert? Falls ja: den vorherigen Import auswählen. Falls nein: leer lassen.',
+            })}
           />
         </>
       )}

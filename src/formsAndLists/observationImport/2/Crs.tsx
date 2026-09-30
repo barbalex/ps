@@ -1,19 +1,13 @@
 import { useState } from 'react'
 import axios from 'redaxios'
 import { useIntl } from 'react-intl'
-import * as fluentUiReactComponents from '@fluentui/react-components'
 
 import { TextField } from '../../../components/shared/TextField.tsx'
 import { setShortTermOnlineFromFetchError } from '../../../modules/setShortTermOnlineFromFetchError.ts'
 import type ObservationImports from '../../../models/public/ObservationImports.ts'
 import type Observations from '../../../models/public/Observations.ts'
 import styles from './Crs.module.css'
-
-type InputOnChangeData = Parameters<
-  NonNullable<
-    React.ComponentProps<typeof fluentUiReactComponents.Input>['onChange']
-  >
->[1]
+import type { FieldChangeData } from '../../../components/shared/fieldChange.ts'
 
 export const Crs = ({
   observationImport,
@@ -22,8 +16,8 @@ export const Crs = ({
 }: {
   observationImport: ObservationImports
   onChange: (
-    e: React.ChangeEvent<HTMLInputElement>,
-    data: InputOnChangeData,
+    e: React.ChangeEvent<HTMLElement>,
+    data?: FieldChangeData,
   ) => Promise<void>
   validations?: Record<string, { state: 'error'; message: string }>
 }) => {
@@ -69,9 +63,9 @@ export const Crs = ({
     const defs = resp?.data
     if (!defs) return
 
-    const observations: Observations[] = (
-      observationImport as unknown as { observations?: Observations[] }
-    )?.observations ?? []
+    const observations: Observations[] =
+      (observationImport as unknown as { observations?: Observations[] })
+        ?.observations ?? []
 
     if (!observations.length) {
       return setNotification(

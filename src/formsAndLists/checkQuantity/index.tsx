@@ -83,10 +83,7 @@ export const CheckQuantity = ({ from }: { from: string }) => {
 
   // console.log('CheckQuantity', { row, results })
 
-  const onChange = async (
-    e: React.ChangeEvent<HTMLInputElement>,
-    data?: object,
-  ) => {
+  const onChange = async (e: React.ChangeEvent<HTMLElement>, data?: object) => {
     const { name, value } = getValueFromChange(
       e,
       data as Parameters<typeof getValueFromChange>[1],
@@ -107,7 +104,6 @@ export const CheckQuantity = ({ from }: { from: string }) => {
       return
     }
     setValidations((prev) => {
-       
       const { [name]: _, ...rest } = prev
       return rest
     })
@@ -145,7 +141,6 @@ export const CheckQuantity = ({ from }: { from: string }) => {
       return
     }
     setValidations((prev) => {
-       
       const { [unitValueField]: _, ...rest } = prev
       return rest
     })
@@ -204,7 +199,9 @@ export const CheckQuantity = ({ from }: { from: string }) => {
                     onListValueChange(data?.value ?? null)
                   }
                   validationState={validations?.[unitValueField ?? '']?.state}
-                  validationMessage={validations?.[unitValueField ?? '']?.message}
+                  validationMessage={
+                    validations?.[unitValueField ?? '']?.message
+                  }
                 />
               ) : (
                 <DropdownFieldSimpleOptions
@@ -214,7 +211,9 @@ export const CheckQuantity = ({ from }: { from: string }) => {
                   value={currentListValueStr}
                   onChange={(e) => onListValueChange(e.target.value ?? null)}
                   validationState={validations?.[unitValueField ?? '']?.state}
-                  validationMessage={validations?.[unitValueField ?? '']?.message}
+                  validationMessage={
+                    validations?.[unitValueField ?? '']?.message
+                  }
                 />
               )
             ) : (

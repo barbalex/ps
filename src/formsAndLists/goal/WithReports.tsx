@@ -24,6 +24,7 @@ import type Goals from '../../models/public/Goals.ts'
 import styles from './WithReports.module.css'
 
 import '../../form.css'
+import type { FieldChangeData } from '../../components/shared/fieldChange.ts'
 
 const { Button } = fluentUiReactComponents
 
@@ -51,7 +52,8 @@ export const GoalWithReports = ({ from }: { from: string }) => {
       WHERE g.goal_id = $1`,
     [goalId],
   )
-  const goalReportsInGoal = settingsRes?.rows?.[0]?.goal_reports_in_goal !== false
+  const goalReportsInGoal =
+    settingsRes?.rows?.[0]?.goal_reports_in_goal !== false
 
   const reportsCountRes = useLiveQuery(
     `SELECT count(*)::int AS count FROM goal_reports WHERE goal_id = $1`,
@@ -73,7 +75,7 @@ export const GoalWithReports = ({ from }: { from: string }) => {
       projectId: projectId!,
       goalId: goalId!,
     })
-   if (!id) return
+    if (!id) return
     navigate({ to: `${reportsUrl}/${id}/` })
   }
 
@@ -88,11 +90,11 @@ export const GoalWithReports = ({ from }: { from: string }) => {
     ) : undefined
 
   const onChange = async (
-    e: React.ChangeEvent<HTMLInputElement>,
-    data: Parameters<typeof getValueFromChange>[1],
+    e: React.ChangeEvent<HTMLElement>,
+    data?: FieldChangeData,
   ) => {
     const { name, value } = getValueFromChange(e, data)
-    if ((row as Record<string, any>)[name] === value) return
+    if ((row as unknown as Record<string, unknown>)[name] === value) return
 
     try {
       await db.query(`UPDATE goals SET ${name} = $1 WHERE goal_id = $2`, [
@@ -102,12 +104,14 @@ export const GoalWithReports = ({ from }: { from: string }) => {
     } catch (error) {
       setValidations((prev) => ({
         ...prev,
-        [name]: { state: 'error', message: error instanceof Error ? error.message : String(error) },
+        [name]: {
+          state: 'error',
+          message: error instanceof Error ? error.message : String(error),
+        },
       }))
       return
     }
     setValidations((prev) => {
-       
       const { [name]: _, ...rest } = prev
       return rest
     })

@@ -8,10 +8,11 @@ import { Type } from './Type.tsx'
 import type Taxonomies from '../../models/public/Taxonomies.ts'
 
 import '../../form.css'
+import type { FieldChangeHandler } from '../../components/shared/fieldChange.ts'
 
 type Props = {
   row: Taxonomies
-  onChange: (e: React.ChangeEvent<any>, data?: any) => void
+  onChange: FieldChangeHandler
   validations?: Record<string, { state: 'error'; message: string }>
   autoFocusRef?: React.Ref<HTMLInputElement>
   projectId: string

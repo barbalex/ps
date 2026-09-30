@@ -1,11 +1,13 @@
 import { useIntl } from 'react-intl'
+import type Subprojects from '../../models/public/Subprojects.ts'
 
 import { TextField } from '../../components/shared/TextField.tsx'
 import { Jsonb } from '../../components/shared/Jsonb/index.tsx'
+import type { FieldChangeHandler } from '../../components/shared/fieldChange.ts'
 
 type Props = {
-  onChange: (e: React.ChangeEvent<any>, data?: any) => void
-  row: Record<string, any>
+  onChange: FieldChangeHandler
+  row: Subprojects | Record<string, never>
   orIndex?: number
   from: string
   autoFocusRef?: React.RefObject<HTMLInputElement | null>
@@ -47,7 +49,7 @@ export const SubprojectForm = ({
         table="subprojects"
         idField="subproject_id"
         id={row.subproject_id}
-        data={row.data ?? {}}
+        data={(row.data ?? {}) as Record<string, unknown>}
         orIndex={orIndex}
         from={from}
       />

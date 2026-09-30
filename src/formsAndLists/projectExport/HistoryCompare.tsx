@@ -22,11 +22,14 @@ import {
 
 import type ProjectExports from '../../models/public/ProjectExports.ts'
 import type ProjectExportsHistory from '../../models/public/ProjectExportsHistory.ts'
+import type { FieldChangeData } from '../../components/shared/fieldChange.ts'
 
 export const ProjectExportHistoryCompare = () => {
   const { formatMessage } = useIntl()
   const navigate = useNavigate()
-  const { projectId, projectExportsId, projectExportsHistoryId } = useParams({ strict: false })
+  const { projectId, projectExportsId, projectExportsHistoryId } = useParams({
+    strict: false,
+  })
   const projectExportPath = `/data/projects/${projectId}/exports/${projectExportsId}`
   const historyPath = `${projectExportPath}/histories`
 
@@ -44,11 +47,11 @@ export const ProjectExportHistoryCompare = () => {
   const row = rowRes?.rows?.[0] as ProjectExports | undefined
 
   const onChange = async (
-    e: React.ChangeEvent<HTMLInputElement>,
-    data: Parameters<typeof getValueFromChange>[1],
+    e: React.ChangeEvent<HTMLElement>,
+    data?: FieldChangeData,
   ) => {
     const { name, value } = getValueFromChange(e, data)
-    if ((row as Record<string, any>)?.[name] === value) return
+    if ((row as unknown as Record<string, unknown>)?.[name] === value) return
 
     try {
       await db.query(
@@ -58,12 +61,14 @@ export const ProjectExportHistoryCompare = () => {
     } catch (error) {
       setValidations((prev) => ({
         ...prev,
-        [name]: { state: 'error', message: error instanceof Error ? error.message : String(error) },
+        [name]: {
+          state: 'error',
+          message: error instanceof Error ? error.message : String(error),
+        },
       }))
       return
     }
     setValidations((prev) => {
-       
       const { [name]: _, ...rest } = prev
       return rest
     })
@@ -120,15 +125,26 @@ export const ProjectExportHistoryCompare = () => {
       name_en: { id: 'projectExport.nameEn', defaultMessage: 'Name (EN)' },
       name_fr: { id: 'projectExport.nameFr', defaultMessage: 'Name (FR)' },
       name_it: { id: 'projectExport.nameIt', defaultMessage: 'Name (IT)' },
-      level: { id: 'projectExport.level', defaultMessage: 'Auf welcher Ebene wird exportiert?' },
-      filter_by_year: { id: 'projectExport.filterByYear', defaultMessage: 'Nach Jahr filtern' },
-      description: { id: 'projectExport.description', defaultMessage: 'Beschreibung' },
+      level: {
+        id: 'projectExport.level',
+        defaultMessage: 'Auf welcher Ebene wird exportiert?',
+      },
+      filter_by_year: {
+        id: 'projectExport.filterByYear',
+        defaultMessage: 'Nach Jahr filtern',
+      },
+      description: {
+        id: 'projectExport.description',
+        defaultMessage: 'Beschreibung',
+      },
       sql: { id: 'projectExport.sql', defaultMessage: 'SQL' },
     },
   })
 
   const formatFieldValue = (field: string, history: ProjectExportsHistory) =>
-    stringifyHistoryValue((history as Record<string, any>)[field])
+    stringifyHistoryValue(
+      (history as unknown as Record<string, unknown>)[field],
+    )
 
   return (
     <HistoryCompare<ProjectExportsHistory>

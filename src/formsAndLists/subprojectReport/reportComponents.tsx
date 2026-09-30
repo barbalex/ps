@@ -1,3 +1,4 @@
+/* eslint-disable react-refresh/only-export-components -- this file intentionally bundles components with contexts and helpers */
 import { createContext, useContext } from 'react'
 import { useLiveQuery } from '@electric-sql/pglite-react'
 import type { Config } from '@puckeditor/core'
@@ -64,9 +65,7 @@ const TableShell = ({
 )
 
 const NoContext = ({ label }: { label: string }) => (
-  <div className={styles.noContext}>
-    {label}: kein Teilprojekt-Kontext
-  </div>
+  <div className={styles.noContext}>{label}: kein Teilprojekt-Kontext</div>
 )
 
 // ---------------------------------------------------------------------------
@@ -75,7 +74,13 @@ const Heading = ({ text }: { text?: string }) => (
   <h2 className={styles.heading}>{text}</h2>
 )
 
-const TitleBlock = ({ author, showDate }: { author?: string; showDate?: boolean }) => {
+const TitleBlock = ({
+  author,
+  showDate,
+}: {
+  author?: string
+  showDate?: boolean
+}) => {
   const { subprojectId, year } = useSubprojectReportContext()
   // a null subprojectId matches no row — avoids conditional queries
   const res = useLiveQuery(
@@ -86,8 +91,7 @@ const TitleBlock = ({ author, showDate }: { author?: string; showDate?: boolean 
     [subprojectId ?? null],
   )
   const row = res?.rows?.[0] as
-    | { project_name: string | null; subproject_name: string | null }
-    | undefined
+    { project_name: string | null; subproject_name: string | null } | undefined
   if (!subprojectId) return <NoContext label="Titel" />
 
   return (
@@ -99,16 +103,12 @@ const TitleBlock = ({ author, showDate }: { author?: string; showDate?: boolean 
         <div className={styles.titleMeta}>
           {row?.project_name}
           {author ? ` — ${author}` : ''}
-          {showDate ?
-            ` — ${new Date().toLocaleDateString('de-CH')}`
-          : ''}
+          {showDate ? ` — ${new Date().toLocaleDateString('de-CH')}` : ''}
         </div>
       )}
     </div>
   )
 }
-
-
 
 type PlaceRow = {
   place_id: string
@@ -149,10 +149,11 @@ const usePlaceRows = (
         parent_id: (place.parent_id as string | null) ?? null,
         level: (place.level as number | null) ?? null,
         since: (place.since as number | null) ?? null,
-        status: ((data?.status as string | null) ?? null),
-        relevant: place.relevant_for_reports == null
-          ? true
-          : !!place.relevant_for_reports,
+        status: (data?.status as string | null) ?? null,
+        relevant:
+          place.relevant_for_reports == null
+            ? true
+            : !!place.relevant_for_reports,
       }
     })
   }
@@ -173,8 +174,10 @@ const useStartYear = (
     const subproject = asOfYear(versions.subprojects, year, 'subproject_id')[0]
     return (subproject?.start_year as number | null) ?? null
   }
-  return (live?.rows?.[0] as { start_year: number | null } | undefined)
-    ?.start_year ?? null
+  return (
+    (live?.rows?.[0] as { start_year: number | null } | undefined)
+      ?.start_year ?? null
+  )
 }
 
 /** apf2 tpopmassn_erfbeurt_werte: beurteilung text -> code */
@@ -260,9 +263,7 @@ const reportPlaceSets = (rows: PlaceRow[], jahr: number) => {
   const tpopRows = relevantTpops.filter((t) =>
     nonPotential(popById.get(t.parent_id ?? '')),
   )
-  const tpopRowsBoth = tpopRows.filter(
-    (t) => (statusCode(t.status) ?? 0) < 300,
-  )
+  const tpopRowsBoth = tpopRows.filter((t) => (statusCode(t.status) ?? 0) < 300)
   // pops with at least one report-relevant tpop (the join of the pop counts)
   const joinedPops = popRows.filter(
     (p) => (tpopsByPopId.get(p.place_id) ?? []).length > 0,
@@ -320,10 +321,11 @@ const ProgrammInfo = () => {
   ) =>
     (perPlace ?? []).reduce<number | null>(
       (min, row) =>
-        row.year != null && qualifyingTpopIds.has(row.place_id) ?
-          min == null || row.year < min ? row.year
-          : min
-        : min,
+        row.year != null && qualifyingTpopIds.has(row.place_id)
+          ? min == null || row.year < min
+            ? row.year
+            : min
+          : min,
       null,
     )
 
@@ -353,7 +355,10 @@ const Beurteilungsskala = () => {
   )
   if (!subprojectId) return <NoContext label="Beurteilungsskala" />
 
-  const rows = (res?.rows?.[0] as { skala?: { erfolg: string; kriterien: string }[] } | undefined)?.skala
+  const rows = (
+    res?.rows?.[0] as
+      { skala?: { erfolg: string; kriterien: string }[] } | undefined
+  )?.skala
   if (!Array.isArray(rows) || !rows.length) return null
 
   return (
@@ -362,7 +367,9 @@ const Beurteilungsskala = () => {
       {rows.map((row, i) => (
         <div className={styles.beurteilungsskalaRow} key={i}>
           <span className={styles.beurteilungsskalaErfolg}>{row.erfolg}:</span>
-          <span className={styles.beurteilungsskalaKriterium}>{row.kriterien}</span>
+          <span className={styles.beurteilungsskalaKriterium}>
+            {row.kriterien}
+          </span>
         </div>
       ))}
     </div>
@@ -391,8 +398,7 @@ const GrundmengenTable = ({ title }: { title?: string }) => {
     tpopPred: (tpop: PlaceRow) => boolean = () => true,
   ) =>
     popRows.filter(
-      (p) =>
-        pred(p) && (tpopsByPopId.get(p.place_id) ?? []).some(tpopPred),
+      (p) => pred(p) && (tpopsByPopId.get(p.place_id) ?? []).some(tpopPred),
     ).length
 
   const tpopCount = (
@@ -448,19 +454,47 @@ const GrundmengenTable = ({ title }: { title?: string }) => {
     (p) => p != null,
   )
 
-  const a1 = { pop: a3Pop + a4Pop + a5Pop + a7Pop + a8Pop + a9Pop, tpop: a3Tpop + a4Tpop + a5Tpop + a7Tpop + a8Tpop + a9Tpop }
+  const a1 = {
+    pop: a3Pop + a4Pop + a5Pop + a7Pop + a8Pop + a9Pop,
+    tpop: a3Tpop + a4Tpop + a5Tpop + a7Tpop + a8Tpop + a9Tpop,
+  }
   const a2 = { pop: a3Pop + a4Pop + a5Pop, tpop: a3Tpop + a4Tpop + a5Tpop }
   const a6 = { pop: a7Pop + a8Pop, tpop: a7Tpop + a8Tpop }
 
-  const tableRows: { label: string; counts: Counts; indent?: number; bold?: boolean }[] = [
+  const tableRows: {
+    label: string
+    counts: Counts
+    indent?: number
+    bold?: boolean
+  }[] = [
     { label: 'Anzahl bekannt', counts: a1 },
     { label: 'aktuell', counts: a2, indent: 1, bold: true },
-    { label: 'davon: ursprünglich', counts: { pop: a3Pop, tpop: a3Tpop }, indent: 2 },
-    { label: 'angesiedelt (vor Beginn AP)', counts: { pop: a4Pop, tpop: a4Tpop }, indent: 2 },
-    { label: 'angesiedelt (nach Beginn AP)', counts: { pop: a5Pop, tpop: a5Tpop }, indent: 2 },
+    {
+      label: 'davon: ursprünglich',
+      counts: { pop: a3Pop, tpop: a3Tpop },
+      indent: 2,
+    },
+    {
+      label: 'angesiedelt (vor Beginn AP)',
+      counts: { pop: a4Pop, tpop: a4Tpop },
+      indent: 2,
+    },
+    {
+      label: 'angesiedelt (nach Beginn AP)',
+      counts: { pop: a5Pop, tpop: a5Tpop },
+      indent: 2,
+    },
     { label: 'erloschen (nach 1950):', counts: a6, indent: 1, bold: true },
-    { label: 'davon: zuvor autochthon oder vor AP angesiedelt', counts: { pop: a7Pop, tpop: a7Tpop }, indent: 2 },
-    { label: 'nach Beginn Aktionsplan angesiedelt', counts: { pop: a8Pop, tpop: a8Tpop }, indent: 2 },
+    {
+      label: 'davon: zuvor autochthon oder vor AP angesiedelt',
+      counts: { pop: a7Pop, tpop: a7Tpop },
+      indent: 2,
+    },
+    {
+      label: 'nach Beginn Aktionsplan angesiedelt',
+      counts: { pop: a8Pop, tpop: a8Tpop },
+      indent: 2,
+    },
     { label: 'Ansaatversuche:', counts: { pop: a9Pop, tpop: a9Tpop } },
   ]
 
@@ -505,7 +539,8 @@ const DevelopmentTable = ({
   const { subprojectId, year } = useSubprojectReportContext()
   const rows = usePlaceRows(subprojectId, year)
   const berichte = useCheckReports(subprojectId)
-  if (!subprojectId) return <NoContext label={title ?? 'Bestandesentwicklung'} />
+  if (!subprojectId)
+    return <NoContext label={title ?? 'Bestandesentwicklung'} />
 
   const jahr = year ?? new Date().getFullYear()
   const { joinedPops, tpopRowsBoth } = reportPlaceSets(rows, jahr)
@@ -526,7 +561,9 @@ const DevelopmentTable = ({
     tpop: tpopBers.filter((b) => b.year === jahr).length,
   }
   const withEntwicklung = (list: typeof berichte) =>
-    list.filter((b) => b.year != null && b.year <= jahr && b.entwicklung != null)
+    list.filter(
+      (b) => b.year != null && b.year <= jahr && b.entwicklung != null,
+    )
   const since = {
     pop: new Set(withEntwicklung(popBers).map((b) => b.place_id)).size,
     tpop: new Set(withEntwicklung(tpopBers).map((b) => b.place_id)).size,
@@ -536,7 +573,8 @@ const DevelopmentTable = ({
     Infinity,
   )
   const sinceLabel =
-    sinceYearProp ?? (Number.isFinite(firstTpopberYear) ? firstTpopberYear : '…')
+    sinceYearProp ??
+    (Number.isFinite(firstTpopberYear) ? firstTpopberYear : '…')
 
   return (
     <TableShell title={title}>
@@ -609,7 +647,11 @@ const ActionsSummaryTable = ({
 
   // latest beurteilung per place (apf2: DISTINCT ON ... ORDER BY jahr DESC)
   const latestByPlace = (
-    list: { place_id: string; year: number | null; beurteilung: string | null }[],
+    list: {
+      place_id: string
+      year: number | null
+      beurteilung: string | null
+    }[],
   ) => {
     const latest = new Map<string, { year: number; code: number }>()
     for (const ber of list) {
@@ -623,8 +665,12 @@ const ActionsSummaryTable = ({
     }
     return latest
   }
-  const latestPop = latestByPlace(actionReports.filter((b) => popIds.has(b.place_id)))
-  const latestTpop = latestByPlace(actionReports.filter((b) => tpopIds.has(b.place_id)))
+  const latestPop = latestByPlace(
+    actionReports.filter((b) => popIds.has(b.place_id)),
+  )
+  const latestTpop = latestByPlace(
+    actionReports.filter((b) => tpopIds.has(b.place_id)),
+  )
   const byCode = (code: number) => ({
     pop: [...latestPop.values()].filter((b) => b.code === code).length,
     tpop: [...latestTpop.values()].filter((b) => b.code === code).length,
@@ -641,7 +687,11 @@ const ActionsSummaryTable = ({
       year: inYear,
       range: since,
     },
-    { label: 'kontrolliert', range: { pop: latestPop.size, tpop: latestTpop.size }, indent: 1 },
+    {
+      label: 'kontrolliert',
+      range: { pop: latestPop.size, tpop: latestTpop.size },
+      indent: 1,
+    },
     { label: 'davon: sehr erfolgreich', range: byCode(1), indent: 2 },
     { label: 'erfolgreich', range: byCode(2), indent: 2 },
     { label: 'weniger erfolgreich', range: byCode(3), indent: 2 },
@@ -665,7 +715,9 @@ const ActionsSummaryTable = ({
           {tableRows.map((row, i) => (
             <tr key={`${i}-${row.label}`}>
               <td
-                style={{ paddingLeft: `calc(6px + ${(row.indent ?? 0) * 16}px)` }}
+                style={{
+                  paddingLeft: `calc(6px + ${(row.indent ?? 0) * 16}px)`,
+                }}
               >
                 {row.label}
               </td>
@@ -720,11 +772,11 @@ const GoalsTable = ({ title }: { title?: string }) => {
               </td>
               <td>
                 {row.name}
-                {row.data?.beurteilung ?
+                {row.data?.beurteilung ? (
                   <div className={styles.assessment}>
                     Beurteilung: {row.data.beurteilung as string}
                   </div>
-                : null}
+                ) : null}
               </td>
             </tr>
           ))}
@@ -856,7 +908,10 @@ export const buildDataComponents = (): Config['components'] => ({
       title: { type: 'text' },
       sinceYear: { type: 'number' },
     },
-    defaultProps: { title: 'C. Zwischenbilanz zur Wirkung von Massnahmen', sinceYear: null },
+    defaultProps: {
+      title: 'C. Zwischenbilanz zur Wirkung von Massnahmen',
+      sinceYear: null,
+    },
     render: ({ title, sinceYear }) => (
       <ActionsSummaryTable title={title} sinceYear={sinceYear} />
     ),

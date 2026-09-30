@@ -10,10 +10,11 @@ import { jsonbDataFromRow } from '../../modules/jsonbDataFromRow.ts'
 import type SubprojectReports from '../../models/public/SubprojectReports.ts'
 
 import '../../form.css'
+import type { FieldChangeHandler } from '../../components/shared/fieldChange.ts'
 
 type Props = {
-  onChange: (e: React.ChangeEvent<any>, data?: any) => void
-  row: Record<string, any> | SubprojectReports
+  onChange: FieldChangeHandler
+  row: SubprojectReports | Record<string, never>
   orIndex?: number
   from: string
   autoFocusRef?: React.RefObject<HTMLInputElement | null>
@@ -54,7 +55,9 @@ export const SubprojectReportForm = ({
     value: d.subproject_report_design_id,
     label: d.name ?? d.subproject_report_design_id,
   }))
-  const activeDesignId = designs.find((d) => d.active)?.subproject_report_design_id
+  const activeDesignId = designs.find(
+    (d) => d.active,
+  )?.subproject_report_design_id
 
   return (
     <>

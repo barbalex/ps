@@ -17,6 +17,7 @@ import type ActionQuantities from '../../models/public/ActionQuantities.ts'
 import type Units from '../../models/public/Units.ts'
 import type ListValues from '../../models/public/ListValues.ts'
 import '../../form.css'
+import type { FieldChangeData } from '../../components/shared/fieldChange.ts'
 
 export const ActionQuantity = ({ from }: { from: string }) => {
   const { actionQuantityId, projectId } = useParams({ strict: false })
@@ -81,12 +82,12 @@ export const ActionQuantity = ({ from }: { from: string }) => {
   )
 
   const onChange = async (
-    e: React.ChangeEvent<HTMLInputElement>,
-    data: Parameters<typeof getValueFromChange>[1],
+    e: React.ChangeEvent<HTMLElement>,
+    data?: FieldChangeData,
   ) => {
     const { name, value } = getValueFromChange(e, data)
     // only change if value has changed: maybe only focus entered and left
-    if ((row as Record<string, any>)[name] === value) return
+    if ((row as unknown as Record<string, unknown>)[name] === value) return
 
     try {
       await db.query(
@@ -96,12 +97,14 @@ export const ActionQuantity = ({ from }: { from: string }) => {
     } catch (error) {
       setValidations((prev) => ({
         ...prev,
-        [name]: { state: 'error', message: error instanceof Error ? error.message : String(error) },
+        [name]: {
+          state: 'error',
+          message: error instanceof Error ? error.message : String(error),
+        },
       }))
       return
     }
     setValidations((prev) => {
-       
       const { [name]: _, ...rest } = prev
       return rest
     })
@@ -134,12 +137,14 @@ export const ActionQuantity = ({ from }: { from: string }) => {
     } catch (error) {
       setValidations((prev) => ({
         ...prev,
-        [unitValueField]: { state: 'error', message: error instanceof Error ? error.message : String(error) },
+        [unitValueField]: {
+          state: 'error',
+          message: error instanceof Error ? error.message : String(error),
+        },
       }))
       return
     }
     setValidations((prev) => {
-       
       const { [unitValueField]: _, ...rest } = prev
       return rest
     })
@@ -198,7 +203,9 @@ export const ActionQuantity = ({ from }: { from: string }) => {
                     onListValueChange(data?.value ?? null)
                   }
                   validationState={validations?.[unitValueField ?? '']?.state}
-                  validationMessage={validations?.[unitValueField ?? '']?.message}
+                  validationMessage={
+                    validations?.[unitValueField ?? '']?.message
+                  }
                 />
               ) : (
                 <DropdownFieldSimpleOptions
@@ -208,7 +215,9 @@ export const ActionQuantity = ({ from }: { from: string }) => {
                   value={currentListValueStr}
                   onChange={(e) => onListValueChange(e.target.value ?? null)}
                   validationState={validations?.[unitValueField ?? '']?.state}
-                  validationMessage={validations?.[unitValueField ?? '']?.message}
+                  validationMessage={
+                    validations?.[unitValueField ?? '']?.message
+                  }
                 />
               )
             ) : (
@@ -245,7 +254,8 @@ export const ActionQuantity = ({ from }: { from: string }) => {
                     validationMessage={validations?.quantity_numeric?.message}
                   />
                 )}
-                {(selectedUnit?.type === 'text' || row.quantity_text !== null) && (
+                {(selectedUnit?.type === 'text' ||
+                  row.quantity_text !== null) && (
                   <TextField
                     label={
                       selectedUnit?.type !== 'text'

@@ -19,19 +19,14 @@ import { formatNumber } from '../../modules/formatNumber.ts'
 import type ObservationImports from '../../models/public/ObservationImports.ts'
 import type Observations from '../../models/public/Observations.ts'
 import styles from './1.module.css'
-
-type InputOnChangeData = Parameters<
-  NonNullable<
-    React.ComponentProps<typeof fluentUiReactComponents.Input>['onChange']
-  >
->[1]
+import type { FieldChangeData } from '../../components/shared/fieldChange.ts'
 
 type Props = {
   observationImport: ObservationImports
   observations: Observations[]
   onChange: (
-    e: React.ChangeEvent<HTMLInputElement>,
-    data?: InputOnChangeData,
+    e: React.ChangeEvent<HTMLElement>,
+    data?: FieldChangeData,
   ) => void | Promise<void>
   validations?: Record<string, { state: 'error'; message: string }>
   autoFocusRef?: React.Ref<HTMLInputElement>
@@ -277,9 +272,7 @@ export const One = ({
               </Button>
             </div>
             <p className={styles.updateDescription}>
-              <strong>
-                {replaceLabel}:
-              </strong>{' '}
+              <strong>{replaceLabel}:</strong>{' '}
               {formatMessage({
                 id: 'dLa0Ob',
                 defaultMessage:

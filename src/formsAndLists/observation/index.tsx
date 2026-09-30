@@ -16,6 +16,7 @@ import { addOperationAtom } from '../../store.ts'
 import type Observations from '../../models/public/Observations.ts'
 
 import '../../form.css'
+import type { FieldChangeData } from '../../components/shared/fieldChange.ts'
 
 type Validation = {
   state: 'error'
@@ -23,7 +24,9 @@ type Validation = {
 }
 
 export const Observation = ({ from }: { from: string }) => {
-  const { projectId, subprojectId, observationId } = useParams({ strict: false })
+  const { projectId, subprojectId, observationId } = useParams({
+    strict: false,
+  })
   const navigate = useNavigate()
   const addOperation = useSetAtom(addOperationAtom)
   const [validations, setValidations] = useState<Record<string, Validation>>({})
@@ -42,15 +45,16 @@ export const Observation = ({ from }: { from: string }) => {
   // console.log('Observation, row:', row)
 
   const onChange = async (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
-    eData?: Record<string, unknown>,
+    e: React.ChangeEvent<HTMLElement>,
+    eData?: FieldChangeData,
   ) => {
     const { name, value } = getValueFromChange(
       e as React.ChangeEvent<HTMLInputElement>,
       (eData ?? {}) as Parameters<typeof getValueFromChange>[1],
     )
     // only change if value has changed: maybe only focus entered and left
-    if (!row || (row as Record<string, any>)[name] === value) return
+    if (!row || (row as unknown as Record<string, unknown>)[name] === value)
+      return
 
     // Issue: for not_to_assign, the value needs to be null instead of false
     // because querying for null or false with electric-sql does not work
@@ -82,7 +86,6 @@ export const Observation = ({ from }: { from: string }) => {
       return
     }
     setValidations((prev) => {
-       
       const { [name]: _, ...rest } = prev
       return rest
     })
@@ -118,9 +121,9 @@ export const Observation = ({ from }: { from: string }) => {
         `SELECT parent_id FROM places WHERE place_id = $1`,
         [value],
       )
-      const parentPlaceId = (res?.rows?.[0] as
-        | { parent_id: string | null }
-        | undefined)?.parent_id
+      const parentPlaceId = (
+        res?.rows?.[0] as { parent_id: string | null } | undefined
+      )?.parent_id
       const url = parentPlaceId
         ? `/data/projects/${projectId}/subprojects/${subprojectId}/places/${parentPlaceId}/places/${value}/observations/${observationId}`
         : `/data/projects/${projectId}/subprojects/${subprojectId}/places/${value}/observations/${observationId}`
@@ -141,7 +144,10 @@ export const Observation = ({ from }: { from: string }) => {
       <Header autoFocusRef={autoFocusRef} from={from} />
       <div className="form-container">
         <SwitchField
-          label={formatMessage({ id: 'obs0Nta', defaultMessage: 'Nicht zuzuordnen' })}
+          label={formatMessage({
+            id: 'obs0Nta',
+            defaultMessage: 'Nicht zuzuordnen',
+          })}
           name="not_to_assign"
           value={row.not_to_assign as never}
           onChange={onChange}

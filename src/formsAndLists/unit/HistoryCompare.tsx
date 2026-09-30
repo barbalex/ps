@@ -24,6 +24,7 @@ import {
 
 import type Units from '../../models/public/Units.ts'
 import type UnitsHistory from '../../models/public/UnitsHistory.ts'
+import type { FieldChangeData } from '../../components/shared/fieldChange.ts'
 
 export const UnitHistoryCompare = () => {
   const { formatMessage } = useIntl()
@@ -34,7 +35,9 @@ export const UnitHistoryCompare = () => {
 
   const addOperation = useSetAtom(addOperationAtom)
   const db = usePGlite()
-  const [validations, setValidations] = useState<Record<string, { state: 'error'; message: string }>>({})
+  const [validations, setValidations] = useState<
+    Record<string, { state: 'error'; message: string }>
+  >({})
 
   const rowRes = useLiveQuery(`SELECT * FROM units WHERE unit_id = $1`, [
     unitId,
@@ -42,27 +45,30 @@ export const UnitHistoryCompare = () => {
   const row = rowRes?.rows?.[0] as Units | undefined
 
   const onChange = async (
-    e: React.ChangeEvent<HTMLInputElement>,
-    data: Parameters<typeof getValueFromChange>[1],
+    e: React.ChangeEvent<HTMLElement>,
+    data?: FieldChangeData,
   ) => {
     const { name, value } = getValueFromChange(e, data)
-    if (!row || (row as Record<string, any>)[name] === value) return
+    if (!row || (row as unknown as Record<string, unknown>)[name] === value)
+      return
 
     try {
-      await db.query(
-        `UPDATE units SET ${name} = $1 WHERE unit_id = $2`,
-        [value, unitId],
-      )
+      await db.query(`UPDATE units SET ${name} = $1 WHERE unit_id = $2`, [
+        value,
+        unitId,
+      ])
     } catch (error) {
       setValidations((prev) => ({
         ...prev,
-        [name]: { state: 'error', message: error instanceof Error ? error.message : String(error) },
+        [name]: {
+          state: 'error',
+          message: error instanceof Error ? error.message : String(error),
+        },
       }))
       return
     }
 
     setValidations((prev) => {
-       
       const { [name]: _unused, ...rest } = prev
       return rest
     })
@@ -99,60 +105,66 @@ export const UnitHistoryCompare = () => {
   const leftContent = (
     <div className="form-container">
       <>
-      <TextField
-        label={formatMessage({ id: 'XkV5yZ', defaultMessage: 'Name' })}
-        name="name"
-        value={row.name ?? ''}
-        onChange={onChange}
-        validationState={validations?.name?.state}
-        validationMessage={validations?.name?.message}
-      />
-      <RadioGroupField
-        label={formatMessage({ id: 'uT5VwX', defaultMessage: 'Typ' })}
-        name="type"
-        list={unitTypeList}
-        value={row.type ?? ''}
-        onChange={onChange}
-        validationState={validations?.type?.state}
-        validationMessage={validations?.type?.message}
-        labelMap={unitTypeLabelMap}
-      />
-      <SwitchField
-        label={formatMessage({ id: 'Eh8IjK', defaultMessage: 'Summierbar' })}
-        name="summable"
-        value={row.summable ?? false}
-        onChange={onChange}
-        validationState={validations?.summable?.state}
-        validationMessage={validations?.summable?.message}
-      />
-      <DropdownField
-        label={formatMessage({
-          id: 'Ls6dFg',
-          defaultMessage: 'Liste (Werte aus Liste verwenden)',
-        })}
-        name="list_id"
-        table="lists"
-        where={`project_id = '${row.project_id}'`}
-        value={row.list_id ?? ''}
-        onChange={onChange}
-        validationState={validations?.list_id?.state}
-        validationMessage={validations?.list_id?.message}
-        hideWhenNoData
-      />
-      <TextField
-        label={formatMessage({ id: 'Pq7nWk', defaultMessage: 'Sortierwert' })}
-        name="sort"
-        type="number"
-        value={row.sort ?? ''}
-        onChange={onChange}
-        validationState={validations?.sort?.state}
-        validationMessage={validations?.sort?.message}
-      />
+        <TextField
+          label={formatMessage({ id: 'XkV5yZ', defaultMessage: 'Name' })}
+          name="name"
+          value={row.name ?? ''}
+          onChange={onChange}
+          validationState={validations?.name?.state}
+          validationMessage={validations?.name?.message}
+        />
+        <RadioGroupField
+          label={formatMessage({ id: 'uT5VwX', defaultMessage: 'Typ' })}
+          name="type"
+          list={unitTypeList}
+          value={row.type ?? ''}
+          onChange={onChange}
+          validationState={validations?.type?.state}
+          validationMessage={validations?.type?.message}
+          labelMap={unitTypeLabelMap}
+        />
+        <SwitchField
+          label={formatMessage({ id: 'Eh8IjK', defaultMessage: 'Summierbar' })}
+          name="summable"
+          value={row.summable ?? false}
+          onChange={onChange}
+          validationState={validations?.summable?.state}
+          validationMessage={validations?.summable?.message}
+        />
+        <DropdownField
+          label={formatMessage({
+            id: 'Ls6dFg',
+            defaultMessage: 'Liste (Werte aus Liste verwenden)',
+          })}
+          name="list_id"
+          table="lists"
+          where={`project_id = '${row.project_id}'`}
+          value={row.list_id ?? ''}
+          onChange={onChange}
+          validationState={validations?.list_id?.state}
+          validationMessage={validations?.list_id?.message}
+          hideWhenNoData
+        />
+        <TextField
+          label={formatMessage({ id: 'Pq7nWk', defaultMessage: 'Sortierwert' })}
+          name="sort"
+          type="number"
+          value={row.sort ?? ''}
+          onChange={onChange}
+          validationState={validations?.sort?.state}
+          validationMessage={validations?.sort?.message}
+        />
       </>
     </div>
   )
 
-  const visibleCurrentFields = new Set(['name', 'type', 'summable', 'list_id', 'sort'])
+  const visibleCurrentFields = new Set([
+    'name',
+    'type',
+    'summable',
+    'list_id',
+    'sort',
+  ])
 
   const formatFieldLabel = createHistoryFieldLabelFormatter({
     formatMessage,
@@ -160,13 +172,18 @@ export const UnitHistoryCompare = () => {
       name: { id: 'XkV5yZ', defaultMessage: 'Name' },
       type: { id: 'uT5VwX', defaultMessage: 'Typ' },
       summable: { id: 'Eh8IjK', defaultMessage: 'Summierbar' },
-      list_id: { id: 'Ls6dFg', defaultMessage: 'Liste (Werte aus Liste verwenden)' },
+      list_id: {
+        id: 'Ls6dFg',
+        defaultMessage: 'Liste (Werte aus Liste verwenden)',
+      },
       sort: { id: 'Pq7nWk', defaultMessage: 'Sortierwert' },
     },
   })
 
   const formatFieldValue = (field: string, history: UnitsHistory) =>
-    stringifyHistoryValue((history as Record<string, any>)[field])
+    stringifyHistoryValue(
+      (history as unknown as Record<string, unknown>)[field],
+    )
 
   return (
     <HistoryCompare<UnitsHistory>

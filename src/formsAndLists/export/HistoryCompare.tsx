@@ -3,7 +3,6 @@ import { useParams, useNavigate } from '@tanstack/react-router'
 import { usePGlite, useLiveQuery } from '@electric-sql/pglite-react'
 import { useSetAtom } from 'jotai'
 import { useIntl } from 'react-intl'
-import type { InputProps } from '@fluentui/react-components'
 
 import { ExportForm } from './Form.tsx'
 import { HistoryCompare } from '../../components/shared/HistoryCompare/index.tsx'
@@ -23,10 +22,9 @@ import {
 
 import type Exports from '../../models/public/Exports.ts'
 import type ExportsHistory from '../../models/public/ExportsHistory.ts'
+import type { FieldChangeData } from '../../components/shared/fieldChange.ts'
 
-type InputOnChangeData = Parameters<NonNullable<InputProps['onChange']>>[1]
-
-type HistoryRow = ExportsHistory & Record<string, unknown>
+type HistoryRow = ExportsHistory
 
 export const ExportHistoryCompare = () => {
   const { formatMessage } = useIntl()
@@ -42,26 +40,23 @@ export const ExportHistoryCompare = () => {
     Record<string, { state: 'error'; message: string }>
   >({})
 
-  const rowRes = useLiveQuery(
-    `SELECT * FROM exports WHERE exports_id = $1`,
-    [exportsId],
-  )
-  const row = rowRes?.rows?.[0] as
-    | (Exports & Record<string, unknown>)
-    | undefined
+  const rowRes = useLiveQuery(`SELECT * FROM exports WHERE exports_id = $1`, [
+    exportsId,
+  ])
+  const row = rowRes?.rows?.[0] as Exports | undefined
 
   const onChange = async (
-    e: React.ChangeEvent<HTMLInputElement>,
-    data: InputOnChangeData,
+    e: React.ChangeEvent<HTMLElement>,
+    data?: FieldChangeData,
   ) => {
     const { name, value } = getValueFromChange(e, data)
-    if (row?.[name] === value) return
+    if ((row as unknown as Record<string, unknown>)?.[name] === value) return
 
     try {
-      await db.query(
-        `UPDATE exports SET ${name} = $1 WHERE exports_id = $2`,
-        [value, exportsId],
-      )
+      await db.query(`UPDATE exports SET ${name} = $1 WHERE exports_id = $2`, [
+        value,
+        exportsId,
+      ])
     } catch (error) {
       setValidations((prev) => ({
         ...prev,
@@ -70,7 +65,6 @@ export const ExportHistoryCompare = () => {
       return
     }
     setValidations((prev) => {
-       
       const { [name]: _, ...rest } = prev
       return rest
     })
@@ -127,15 +121,23 @@ export const ExportHistoryCompare = () => {
       name_en: { id: 'export.nameEn', defaultMessage: 'Name (EN)' },
       name_fr: { id: 'export.nameFr', defaultMessage: 'Name (FR)' },
       name_it: { id: 'export.nameIt', defaultMessage: 'Name (IT)' },
-      level: { id: 'export.level', defaultMessage: 'Auf welcher Ebene wird exportiert?' },
-      filter_by_year: { id: 'export.filterByYear', defaultMessage: 'Nach Jahr filtern' },
+      level: {
+        id: 'export.level',
+        defaultMessage: 'Auf welcher Ebene wird exportiert?',
+      },
+      filter_by_year: {
+        id: 'export.filterByYear',
+        defaultMessage: 'Nach Jahr filtern',
+      },
       description: { id: 'export.description', defaultMessage: 'Beschreibung' },
       sql: { id: 'export.sql', defaultMessage: 'SQL' },
     },
   })
 
   const formatFieldValue = (field: string, history: HistoryRow) =>
-    stringifyHistoryValue((history as Record<string, unknown>)[field])
+    stringifyHistoryValue(
+      (history as unknown as Record<string, unknown>)[field],
+    )
 
   return (
     <HistoryCompare<HistoryRow>

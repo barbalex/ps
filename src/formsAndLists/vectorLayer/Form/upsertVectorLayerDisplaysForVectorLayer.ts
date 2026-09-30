@@ -47,8 +47,8 @@ export const upsertVectorLayerDisplaysForVectorLayer = async ({
     `SELECT * FROM vector_layer_displays WHERE vector_layer_id = $1`,
     [vectorLayer.vector_layer_id],
   )
-  const existingVectorLayerDisplays =
-    (existingVLDRes?.rows ?? []) as VectorLayerDisplays[]
+  const existingVectorLayerDisplays = (existingVLDRes?.rows ??
+    []) as VectorLayerDisplays[]
 
   if (!displayByProperty) {
     const firstExistingVectorLayerDisplay = existingVectorLayerDisplays?.[0]
@@ -132,24 +132,29 @@ export const upsertVectorLayerDisplaysForVectorLayer = async ({
     // remove all displays not in list
     const toDeleteRes = await db.query(
       `SELECT vector_layer_display_id FROM vector_layer_displays WHERE vector_layer_id = $1 AND display_property_value NOT IN (${listValues
-        .map((v) => (v as Record<string, any>).value)
+        .map((v) => (v as unknown as Record<string, unknown>).value)
         .map((_v, i) => `$${i + 2}`)
         .join(', ')})`,
       [
         vectorLayer.vector_layer_id,
-        ...listValues.map((v) => (v as Record<string, any>).value),
+        ...listValues.map(
+          (v) => (v as unknown as Record<string, unknown>).value,
+        ),
       ],
     )
-    const toDeleteVectorLayerDisplayIds = (toDeleteRes?.rows ??
-      []) as { vector_layer_display_id: string }[]
+    const toDeleteVectorLayerDisplayIds = (toDeleteRes?.rows ?? []) as {
+      vector_layer_display_id: string
+    }[]
     await db.query(
       `DELETE FROM vector_layer_displays WHERE vector_layer_id = $1 AND display_property_value NOT IN (${listValues
-        .map((v) => (v as Record<string, any>).value)
+        .map((v) => (v as unknown as Record<string, unknown>).value)
         .map((_v, i) => `$${i + 2}`)
         .join(', ')})`,
       [
         vectorLayer.vector_layer_id,
-        ...listValues.map((v) => (v as Record<string, any>).value),
+        ...listValues.map(
+          (v) => (v as unknown as Record<string, unknown>).value,
+        ),
       ],
     )
     store.set(addOperationAtom, {
@@ -168,8 +173,9 @@ export const upsertVectorLayerDisplaysForVectorLayer = async ({
       `SELECT vector_layer_display_id FROM vector_layer_displays WHERE vector_layer_id = $1 AND display_property_value IS NULL`,
       [vectorLayer.vector_layer_id],
     )
-    const toDeleteNullVectorLayerDisplayIds = (toDeleteNullRes?.rows ??
-      []) as { vector_layer_display_id: string }[]
+    const toDeleteNullVectorLayerDisplayIds = (toDeleteNullRes?.rows ?? []) as {
+      vector_layer_display_id: string
+    }[]
     await db.query(
       `DELETE FROM vector_layer_displays WHERE vector_layer_id = $1 AND display_property_value IS NULL`,
       [vectorLayer.vector_layer_id],
@@ -189,17 +195,19 @@ export const upsertVectorLayerDisplaysForVectorLayer = async ({
     for (const listValue of listValues) {
       const res = await db.query(
         `SELECT * FROM vector_layer_displays WHERE vector_layer_id = $1 AND display_property_value = $2`,
-        [vectorLayer.vector_layer_id, (listValue as Record<string, any>).value],
+        [
+          vectorLayer.vector_layer_id,
+          (listValue as unknown as Record<string, unknown>).value,
+        ],
       )
       const existingVectorLayerDisplay = res?.rows?.[0] as
-        | VectorLayerDisplays
-        | undefined
+        VectorLayerDisplays | undefined
       // leave existing VLD unchanged
       if (existingVectorLayerDisplay) return
 
       await createVectorLayerDisplay({
         vectorLayerId: vectorLayer.vector_layer_id,
-        displayPropertyValue: (listValue as Record<string, any>)
+        displayPropertyValue: (listValue as unknown as Record<string, unknown>)
           .value as string | null,
       })
     }
@@ -296,8 +304,7 @@ export const upsertVectorLayerDisplaysForVectorLayer = async ({
       [vectorLayer.vector_layer_id, value ?? null],
     )
     const existingVectorLayerDisplay = res?.rows?.[0] as
-      | VectorLayerDisplays
-      | undefined
+      VectorLayerDisplays | undefined
     // leave existing VLD unchanged
     if (existingVectorLayerDisplay) continue
 

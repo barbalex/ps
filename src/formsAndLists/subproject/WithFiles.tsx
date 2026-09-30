@@ -21,7 +21,10 @@ import { NotFound } from '../../components/NotFound.tsx'
 import { Section } from '../../components/shared/Section.tsx'
 import { FilterButton } from '../../components/shared/FilterButton.tsx'
 import { getValueFromChange } from '../../modules/getValueFromChange.ts'
-import {createSubprojectTaxon, createSubprojectReport} from '../../modules/createRows.ts'
+import {
+  createSubprojectTaxon,
+  createSubprojectReport,
+} from '../../modules/createRows.ts'
 import { AddProjectUserButton } from '../../components/shared/AddProjectUserButton.tsx'
 import {
   addOperationAtom,
@@ -39,6 +42,7 @@ import type Projects from '../../models/public/Projects.ts'
 import styles from './WithFiles.module.css'
 
 import '../../form.css'
+import type { FieldChangeData } from '../../components/shared/fieldChange.ts'
 
 const { Button } = fluentUiReactComponents
 
@@ -87,8 +91,7 @@ export const SubprojectWithFiles = ({ from }: { from: string }) => {
     WHERE subproject_id = $1`,
     [subprojectId],
   )
-  const row =
-    res?.rows?.[0] as unknown as SubprojectWithProjectInfo | undefined
+  const row = res?.rows?.[0] as unknown as SubprojectWithProjectInfo | undefined
 
   const filesCountRes = useLiveQuery(
     `SELECT count(*)::int AS count FROM files WHERE subproject_id = $1`,
@@ -166,11 +169,11 @@ export const SubprojectWithFiles = ({ from }: { from: string }) => {
       projectId: projectId!,
       subprojectId: subprojectId!,
     })
-   if (!id) return
+    if (!id) return
     navigate({ to: `${reportsUrl}/${id}/` })
   }
   const onClickAddSubprojectTaxon = async () => {
-    const id = await createSubprojectTaxon({subprojectId: subprojectId! })
+    const id = await createSubprojectTaxon({ subprojectId: subprojectId! })
     if (!id) return
     navigate({ to: `${taxaUrl}/${id}/` })
   }
@@ -208,7 +211,9 @@ export const SubprojectWithFiles = ({ from }: { from: string }) => {
         <AddProjectUserButton
           scope={{
             kind: 'subproject',
-            projectId: projectId!,            subprojectId: subprojectId!,          }}
+            projectId: projectId!,
+            subprojectId: subprojectId!,
+          }}
           onUserCreated={(id) => navigate({ to: `${usersUrl}/${id}/` })}
         />
       </>
@@ -228,11 +233,11 @@ export const SubprojectWithFiles = ({ from }: { from: string }) => {
     ) : undefined
 
   const onChange = async (
-    e: React.ChangeEvent<HTMLInputElement>,
-    data: Parameters<typeof getValueFromChange>[1],
+    e: React.ChangeEvent<HTMLElement>,
+    data?: FieldChangeData,
   ) => {
     const { name, value } = getValueFromChange(e, data)
-    if ((row as Record<string, any>)[name] === value) return
+    if ((row as unknown as Record<string, unknown>)[name] === value) return
 
     try {
       await db.query(
@@ -242,12 +247,14 @@ export const SubprojectWithFiles = ({ from }: { from: string }) => {
     } catch (error) {
       setValidations((prev) => ({
         ...prev,
-        [name]: { state: 'error', message: error instanceof Error ? error.message : String(error) },
+        [name]: {
+          state: 'error',
+          message: error instanceof Error ? error.message : String(error),
+        },
       }))
       return
     }
     setValidations((prev) => {
-       
       const { [name]: _, ...rest } = prev
       return rest
     })
@@ -277,7 +284,7 @@ export const SubprojectWithFiles = ({ from }: { from: string }) => {
       <div className="form-container" role="tabpanel" aria-labelledby="form">
         <Form
           onChange={onChange}
-          row={row as unknown as Record<string, any>}
+          row={row as unknown as Subprojects}
           autoFocusRef={autoFocusRef}
           from={from}
           validations={validations}

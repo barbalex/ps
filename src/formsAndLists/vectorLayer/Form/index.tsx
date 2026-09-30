@@ -1,5 +1,4 @@
 import { useIntl } from 'react-intl'
-import * as fluentUiReactComponents from '@fluentui/react-components'
 
 import { vectorLayerTypeOptions } from '../../../modules/constants.ts'
 import { TextFieldInactive } from '../../../components/shared/TextFieldInactive.tsx'
@@ -15,17 +14,12 @@ import { CreateWfsService } from './CreateWfsService.tsx'
 import type VectorLayers from '../../../models/public/VectorLayers.ts'
 
 import '../../../form.css'
-
-type InputOnChangeData = Parameters<
-  NonNullable<
-    React.ComponentProps<typeof fluentUiReactComponents.Input>['onChange']
-  >
->[1]
+import type { FieldChangeData } from '../../../components/shared/fieldChange.ts'
 
 type Props = {
   onChange: (
-    e: React.ChangeEvent<HTMLInputElement>,
-    data?: InputOnChangeData,
+    e: React.ChangeEvent<HTMLElement>,
+    data?: FieldChangeData,
   ) => void | Promise<void>
   validations?: Record<string, { state: 'error'; message: string }>
   row: VectorLayers

@@ -33,7 +33,9 @@ export const ChartHistoryCompare = () => {
   const { formatMessage } = useIntl()
   const navigate = useNavigate()
   const { pathname } = useLocation()
-  const { projectId, subprojectId, chartId, chartHistoryId } = useParams({ strict: false })
+  const { projectId, subprojectId, chartId, chartHistoryId } = useParams({
+    strict: false,
+  })
 
   // charts live under a subproject or on the project itself, in one of its
   // two sections: charts or charts for subprojects (templates)
@@ -107,10 +109,7 @@ export const ChartHistoryCompare = () => {
     ]),
   )
 
-  const formatFieldValue = (
-    field: string,
-    history: ChartsHistory & Record<string, unknown>,
-  ) => {
+  const formatFieldValue = (field: string, history: ChartsHistory) => {
     if (field === 'chart_type') {
       const value = history[field]
       if (value !== null && value !== undefined) {
@@ -118,11 +117,13 @@ export const ChartHistoryCompare = () => {
       }
       return value
     }
-    return stringifyHistoryValue((history as Record<string, unknown>)[field])
+    return stringifyHistoryValue(
+      (history as unknown as Record<string, unknown>)[field],
+    )
   }
 
   return (
-    <HistoryCompare<ChartsHistory & Record<string, unknown>>
+    <HistoryCompare<ChartsHistory>
       onBack={() => navigate({ to: formPath })}
       leftContent={leftContent}
       visibleCurrentFields={new Set(preferredOrder)}
@@ -130,14 +131,14 @@ export const ChartHistoryCompare = () => {
       preferredOrder={preferredOrder}
       formatFieldLabel={formatFieldLabel}
       formatFieldValue={formatFieldValue}
-      row={row as Charts & Record<string, unknown>}
+      row={row as Charts}
       historyConfig={{
         historyTable: 'charts_history',
         rowIdField: 'chart_id',
         rowId: chartId,
         historyPath,
         routeHistoryId: chartHistoryId,
-        currentRow: row as Charts & Record<string, unknown>,
+        currentRow: row as Charts,
       }}
       restoreConfig={{
         db,

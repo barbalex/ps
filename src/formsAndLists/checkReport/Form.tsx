@@ -5,6 +5,7 @@ import { jsonbDataFromRow } from '../../modules/jsonbDataFromRow.ts'
 import type CheckReports from '../../models/public/CheckReports.ts'
 
 import '../../form.css'
+import type { FieldChangeHandler } from '../../components/shared/fieldChange.ts'
 
 // this form is rendered from a parent or outlet
 export const CheckReportForm = ({
@@ -15,7 +16,7 @@ export const CheckReportForm = ({
   from,
   autoFocusRef,
 }: {
-  onChange: (e: React.ChangeEvent<any>, data?: any) => void
+  onChange: FieldChangeHandler
   validations?: Record<
     string,
     | { state?: 'error' | 'warning' | 'success' | 'none'; message?: string }

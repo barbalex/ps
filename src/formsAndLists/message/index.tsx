@@ -13,7 +13,7 @@ import { addOperationAtom } from '../../store.ts'
 import type Messages from '../../models/public/Messages.ts'
 
 import '../../form.css'
-
+import type { FieldChangeData } from '../../components/shared/fieldChange.ts'
 
 export const Message = () => {
   const { messageId } = useParams({ strict: false })
@@ -29,12 +29,12 @@ export const Message = () => {
   const row = res?.rows?.[0] as Messages | undefined
 
   const onChange = async (
-    e: React.ChangeEvent<HTMLInputElement>,
-    data: Parameters<typeof getValueFromChange>[1],
+    e: React.ChangeEvent<HTMLElement>,
+    data?: FieldChangeData,
   ) => {
     const { name, value } = getValueFromChange(e, data)
     // only change if value has changed: maybe only focus entered and left
-    if ((row as Record<string, any>)[name] === value) return
+    if ((row as unknown as Record<string, unknown>)[name] === value) return
 
     try {
       await db.query(`UPDATE messages SET ${name} = $1 WHERE message_id = $2`, [
@@ -44,12 +44,14 @@ export const Message = () => {
     } catch (error) {
       setValidations((prev) => ({
         ...prev,
-        [name]: { state: 'error', message: error instanceof Error ? error.message : String(error) },
+        [name]: {
+          state: 'error',
+          message: error instanceof Error ? error.message : String(error),
+        },
       }))
       return
     }
     setValidations((prev) => {
-       
       const { [name]: _, ...rest } = prev
       return rest
     })
@@ -67,9 +69,9 @@ export const Message = () => {
     <div className="form-outer-container">
       <Header />
       <div className="form-container">
-        {!res ?
+        {!res ? (
           <Loading />
-        : row ?
+        ) : row ? (
           <>
             <DateField
               label="Date"
@@ -89,11 +91,9 @@ export const Message = () => {
               validationMessage={validations?.message?.message}
             />
           </>
-        : <NotFound
-            table="Message"
-            id={messageId}
-          />
-        }
+        ) : (
+          <NotFound table="Message" id={messageId} />
+        )}
       </div>
     </div>
   )

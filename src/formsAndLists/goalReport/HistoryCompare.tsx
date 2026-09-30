@@ -79,7 +79,7 @@ export const GoalReportHistoryCompare = () => {
       excludedDisplayFields={excludedDisplayFields}
       preferredOrder={preferredOrder}
       formatFieldLabel={formatFieldLabel}
-      row={row as unknown as Record<string, unknown>}
+      row={row as unknown as GoalReportsHistory}
       historyConfig={{
         historyTable: 'goal_reports_history',
         rowIdField: 'goal_report_id',

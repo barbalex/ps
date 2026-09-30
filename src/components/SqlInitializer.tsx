@@ -16,35 +16,35 @@ export const SqlInitializer = () => {
       try {
         // 1. initialize pgLite db
         const resultProjectsTableExists = await db.query<{ exists: boolean }>(
-        `
+          `
           SELECT EXISTS (
             SELECT FROM pg_tables
             WHERE  schemaname = 'public'
             AND    tablename  = 'projects'
           )
         `,
-      )
-      const projectsTableExists = resultProjectsTableExists?.rows?.[0]?.exists
+        )
+        const projectsTableExists = resultProjectsTableExists?.rows?.[0]?.exists
 
-      const resultLayerPresentationsTableExists = await db.query<{
-        exists: boolean
-      }>(
-        `
+        const resultLayerPresentationsTableExists = await db.query<{
+          exists: boolean
+        }>(
+          `
           SELECT EXISTS (
             SELECT FROM pg_tables
             WHERE  schemaname = 'public'
             AND    tablename  = 'layer_presentations'
           )
         `,
-      )
-      const layerPresentationsTableExists =
-        resultLayerPresentationsTableExists?.rows?.[0]?.exists
+        )
+        const layerPresentationsTableExists =
+          resultLayerPresentationsTableExists?.rows?.[0]?.exists
 
-      // Always run: remove duplicate layer_presentations per vector_layer_id
-      // (can be created by a previous bug; trigger prevents new ones)
-      if (layerPresentationsTableExists) {
-        try {
-          await db.exec(`
+        // Always run: remove duplicate layer_presentations per vector_layer_id
+        // (can be created by a previous bug; trigger prevents new ones)
+        if (layerPresentationsTableExists) {
+          try {
+            await db.exec(`
             DELETE FROM layer_presentations
             WHERE layer_presentation_id NOT IN (
               SELECT DISTINCT ON (vector_layer_id) layer_presentation_id
@@ -54,15 +54,15 @@ export const SqlInitializer = () => {
             )
             AND vector_layer_id IS NOT NULL
           `)
-        } catch (error) {
-          console.error('Error deduplicating layer_presentations:', error)
+          } catch (error) {
+            console.error('Error deduplicating layer_presentations:', error)
+          }
         }
-      }
 
-      // this is probably not needed
-      if (projectsTableExists) {
-        try {
-          await db.exec(`
+        // this is probably not needed
+        if (projectsTableExists) {
+          try {
+            await db.exec(`
             -- the users→roles rename (2026-08) missed these flag columns;
             -- heal local databases created before the schema caught up
             DO $$
@@ -466,13 +466,67 @@ export const SqlInitializer = () => {
             FOR EACH ROW
             EXECUTE PROCEDURE projects_goals_label_trigger();
           `)
-        } catch (error) {
-          console.error(
-            'Error installing sync duplicate-guard triggers:',
-            error,
-          )
+          } catch (error) {
+            console.error(
+              'Error installing sync duplicate-guard triggers:',
+              error,
+            )
+          }
+
+          const syncIgnoreDuplicateInsertTriggersSql = (
+            await import(`../sql/syncIgnoreDuplicateInsertTriggers.sql?raw`)
+          ).default
+          try {
+            await db.exec(syncIgnoreDuplicateInsertTriggersSql)
+          } catch (error) {
+            console.error(
+              'Error executing syncIgnoreDuplicateInsertTriggersSql:',
+              error,
+            )
+          }
+
+          bootTrace('SqlInitializer done (existing db)')
+          setSqlInitializing(false)
+          return
         }
 
+        // need to create functions, tables and triggers
+        setFirstRunDbInit(true)
+        const immutableDateSql = (await import(`../sql/immutableDate.sql?raw`))
+          .default
+        try {
+          await db.exec(immutableDateSql)
+        } catch (error) {
+          console.error('Error executing immutableDateSql:', error)
+        }
+        const uuidv7Sql = (await import(`../sql/uuidv7.sql?raw`)).default
+        try {
+          await db.exec(uuidv7Sql)
+        } catch (error) {
+          console.error('Error executing uuidv7Sql:', error)
+        }
+        try {
+          await db.exec(`CREATE EXTENSION IF NOT EXISTS postgis;`)
+        } catch (error) {
+          console.error('Error creating postgis extension:', error)
+        }
+        try {
+          await db.exec(`CREATE EXTENSION IF NOT EXISTS pg_uuidv7;`)
+        } catch (error) {
+          console.error('Error creating pg_uuidv7 extension:', error)
+        }
+        const createSql = (await import(`../sql/createTables.sql?raw`)).default
+        try {
+          await db.exec(createSql)
+        } catch (error) {
+          console.error('Error executing createSql:', error)
+        }
+        const triggersSql = (await import(`../sql/triggers.sql?raw`)).default
+        try {
+          await db.exec(triggersSql)
+        } catch (error) {
+          console.error('Error executing triggersSql:', error)
+        }
         const syncIgnoreDuplicateInsertTriggersSql = (
           await import(`../sql/syncIgnoreDuplicateInsertTriggers.sql?raw`)
         ).default
@@ -485,60 +539,6 @@ export const SqlInitializer = () => {
           )
         }
 
-        bootTrace('SqlInitializer done (existing db)')
-        setSqlInitializing(false)
-        return
-      }
-
-      // need to create functions, tables and triggers
-      setFirstRunDbInit(true)
-      const immutableDateSql = (await import(`../sql/immutableDate.sql?raw`))
-        .default
-      try {
-        await db.exec(immutableDateSql)
-      } catch (error) {
-        console.error('Error executing immutableDateSql:', error)
-      }
-      const uuidv7Sql = (await import(`../sql/uuidv7.sql?raw`)).default
-      try {
-        await db.exec(uuidv7Sql)
-      } catch (error) {
-        console.error('Error executing uuidv7Sql:', error)
-      }
-      try {
-        await db.exec(`CREATE EXTENSION IF NOT EXISTS postgis;`)
-      } catch (error) {
-        console.error('Error creating postgis extension:', error)
-      }
-      try {
-        await db.exec(`CREATE EXTENSION IF NOT EXISTS pg_uuidv7;`)
-      } catch (error) {
-        console.error('Error creating pg_uuidv7 extension:', error)
-      }
-      const createSql = (await import(`../sql/createTables.sql?raw`)).default
-      try {
-        await db.exec(createSql)
-      } catch (error) {
-        console.error('Error executing createSql:', error)
-      }
-      const triggersSql = (await import(`../sql/triggers.sql?raw`)).default
-      try {
-        await db.exec(triggersSql)
-      } catch (error) {
-        console.error('Error executing triggersSql:', error)
-      }
-      const syncIgnoreDuplicateInsertTriggersSql = (
-        await import(`../sql/syncIgnoreDuplicateInsertTriggers.sql?raw`)
-      ).default
-      try {
-        await db.exec(syncIgnoreDuplicateInsertTriggersSql)
-      } catch (error) {
-        console.error(
-          'Error executing syncIgnoreDuplicateInsertTriggersSql:',
-          error,
-        )
-      }
-
         bootTrace('SqlInitializer done')
         setSqlInitializing(false)
       } catch (error) {
@@ -550,7 +550,7 @@ export const SqlInitializer = () => {
       }
     }
     run()
-  }, [db, setSqlInitializing])
+  }, [db, setSqlInitializing, setFirstRunDbInit])
 
   return null
 }

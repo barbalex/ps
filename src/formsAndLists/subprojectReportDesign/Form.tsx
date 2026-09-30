@@ -18,6 +18,7 @@ import {
 } from '../../components/shared/reportVersions.ts'
 import { addOperationAtom, languageAtom } from '../../store.ts'
 import { buildData } from '../chart/Chart/buildData/index.ts'
+import type { ChartData } from '../../formsAndLists/chart/Chart/buildData/index.ts'
 import { groupSeriesBySubject } from '../chart/Chart/buildData/index.ts'
 import { SingleChart } from '../chart/Chart/Chart.tsx'
 import {
@@ -29,32 +30,42 @@ import type Charts from '../../models/public/Charts.ts'
 import styles from './Form.module.css'
 
 import type SubprojectReportDesigns from '../../models/public/SubprojectReportDesigns.ts'
+import type { FieldChangeData } from '../../components/shared/fieldChange.ts'
 
 type DesignRow = {
   subproject_report_design_id: string
   project_id: string
   name: string | null
-  design: any
+  design: ({ content?: unknown[] } & Record<string, unknown>) | null
   active: boolean | null
   fields: { name: string; field_label: string | null }[] | null
-  charts: {
-    chart_id: string
-    name: string | null
-    label: string | null
-    subjects_single: boolean | null
-    subjects: any[] | null
-  }[] | null
+  charts:
+    | {
+        chart_id: string
+        name: string | null
+        label: string | null
+        subjects_single: boolean | null
+        subjects: unknown[] | null
+      }[]
+    | null
   report_data: Record<string, unknown> | null
   [key: string]: unknown
 }
 
-export const Form = ({ autoFocusRef }: { autoFocusRef?: React.RefObject<HTMLInputElement | null>; from?: string }) => {
+export const Form = ({
+  autoFocusRef,
+}: {
+  autoFocusRef?: React.RefObject<HTMLInputElement | null>
+  from?: string
+}) => {
   const { subprojectReportDesignId, projectId } = useParams({ strict: false })
   const addOperation = useSetAtom(addOperationAtom)
   const [validations, setValidations] = useState<
     Record<string, { state: 'error'; message: string }>
   >({})
-  const [chartDataMap, setChartDataMap] = useState<Record<string, any>>({})
+  const [chartDataMap, setChartDataMap] = useState<Record<string, ChartData>>(
+    {},
+  )
   const { formatMessage } = useIntl()
   const [language] = useAtom(languageAtom)
 
@@ -101,8 +112,7 @@ export const Form = ({ autoFocusRef }: { autoFocusRef?: React.RefObject<HTMLInpu
     [row?.project_id],
   )
   const previewRow = previewRes?.rows?.[0] as
-    | { subproject_id?: string; year?: number | null }
-    | undefined
+    { subproject_id?: string; year?: number | null } | undefined
   const previewSubprojectId = previewRow?.subproject_id
   const previewYear = previewRow?.year ?? null
   // server-side historized versions of the preview art's undated rows —
@@ -116,7 +126,7 @@ export const Form = ({ autoFocusRef }: { autoFocusRef?: React.RefObject<HTMLInpu
     if (!parsedCharts.length) return
 
     const buildAllChartData = async () => {
-      const dataMap: Record<string, unknown> = {}
+      const dataMap: Record<string, ChartData> = {}
       for (const chart of parsedCharts) {
         if (!chart.subjects || !chart.subjects.length) continue
         const data = await buildData({
@@ -135,9 +145,18 @@ export const Form = ({ autoFocusRef }: { autoFocusRef?: React.RefObject<HTMLInpu
     }
 
     buildAllChartData()
-  }, [chartsJson, projectId, previewSubprojectId, previewYear, versions, localDataVersion])
+  }, [
+    chartsJson,
+    projectId,
+    previewSubprojectId,
+    previewYear,
+    versions,
+    localDataVersion,
+    db,
+  ])
 
   // Build Puck config from fields with actual data
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any -- Puck component configs are structurally dynamic
   const components: Record<string, any> = {}
   const categories = {
     fields: {
@@ -197,12 +216,14 @@ export const Form = ({ autoFocusRef }: { autoFocusRef?: React.RefObject<HTMLInpu
       fields: {},
       defaultProps: {},
       render: () => {
-        const data = chartDataMap[chart.chart_id] ?? { data: [], years: [], series: [] }
+        const data = chartDataMap[chart.chart_id] ?? {
+          data: [],
+          years: [],
+          series: [],
+        }
         return (
           <div className={styles.chartWrapper}>
-            <div className={styles.chartTitle}>
-              {chart.label}
-            </div>
+            <div className={styles.chartTitle}>{chart.label}</div>
             {chart.subjects_single === true ? (
               groupSeriesBySubject(data.series ?? []).map((series) => (
                 <SingleChart
@@ -227,7 +248,7 @@ export const Form = ({ autoFocusRef }: { autoFocusRef?: React.RefObject<HTMLInpu
     categories.charts.components.push(componentName)
   })
 
-  const config: Config = { components, categories }
+  const config = { components, categories } as unknown as Config
 
   const previewContext = {
     projectId: row?.project_id,
@@ -236,8 +257,8 @@ export const Form = ({ autoFocusRef }: { autoFocusRef?: React.RefObject<HTMLInpu
   }
 
   const onActiveChange = async (
-    e: React.ChangeEvent<HTMLInputElement>,
-    data: Parameters<typeof getValueFromChange>[1],
+    e: React.ChangeEvent<HTMLElement>,
+    data?: FieldChangeData,
   ) => {
     const { value } = getValueFromChange(e, data)
     if (row!.active === value) return
@@ -271,12 +292,14 @@ export const Form = ({ autoFocusRef }: { autoFocusRef?: React.RefObject<HTMLInpu
     } catch (error) {
       setValidations((prev) => ({
         ...prev,
-        active: { state: 'error', message: error instanceof Error ? error.message : String(error) },
+        active: {
+          state: 'error',
+          message: error instanceof Error ? error.message : String(error),
+        },
       }))
       return
     }
     setValidations((prev) => {
-       
       const { active: _, ...rest } = prev
       return rest
     })
@@ -291,12 +314,12 @@ export const Form = ({ autoFocusRef }: { autoFocusRef?: React.RefObject<HTMLInpu
   }
 
   const onChange = async (
-    e: React.ChangeEvent<HTMLInputElement>,
-    data: Parameters<typeof getValueFromChange>[1],
+    e: React.ChangeEvent<HTMLElement>,
+    data?: FieldChangeData,
   ) => {
     const { name, value } = getValueFromChange(e, data)
     // only change if value has changed: maybe only focus entered and left
-    if ((row as Record<string, any>)[name] === value) return
+    if ((row as Record<string, unknown>)[name] === value) return
 
     try {
       await db.query(
@@ -306,12 +329,14 @@ export const Form = ({ autoFocusRef }: { autoFocusRef?: React.RefObject<HTMLInpu
     } catch (error) {
       setValidations((prev) => ({
         ...prev,
-        [name]: { state: 'error', message: error instanceof Error ? error.message : String(error) },
+        [name]: {
+          state: 'error',
+          message: error instanceof Error ? error.message : String(error),
+        },
       }))
       return
     }
     setValidations((prev) => {
-       
       const { [name]: _, ...rest } = prev
       return rest
     })
@@ -325,7 +350,9 @@ export const Form = ({ autoFocusRef }: { autoFocusRef?: React.RefObject<HTMLInpu
     })
   }
 
-  const onPuckChange = async (data: any) => {
+  const onPuckChange = async (
+    data: Parameters<typeof LazyPuckEditor>[0]['data'],
+  ) => {
     try {
       await db.query(
         `UPDATE subproject_report_designs SET design = $1 WHERE subproject_report_design_id = $2`,
@@ -375,7 +402,10 @@ export const Form = ({ autoFocusRef }: { autoFocusRef?: React.RefObject<HTMLInpu
         validationState={validations?.active?.state ?? 'success'}
         validationMessage={
           validations?.active?.message ??
-          formatMessage({ id: 'bB9OrS', defaultMessage: 'Es kann immer nur ein Design aktiv sein' })
+          formatMessage({
+            id: 'bB9OrS',
+            defaultMessage: 'Es kann immer nur ein Design aktiv sein',
+          })
         }
       />
       <SubprojectReportContext.Provider value={previewContext}>
@@ -383,12 +413,20 @@ export const Form = ({ autoFocusRef }: { autoFocusRef?: React.RefObject<HTMLInpu
           <LazyPuckEditor
             key={language}
             config={config}
-            data={normalizePuckDesign(row.design ?? { content: [] })}
+            data={
+              normalizePuckDesign(row.design ?? { content: [] }) as Parameters<
+                typeof LazyPuckEditor
+              >[0]['data']
+            }
             onChange={onPuckChange}
             previewExtra={
               (!row.design?.content || row.design.content.length === 0) && (
                 <div className={styles.emptyPreview}>
-                  {formatMessage({ id: 'bCCfGh', defaultMessage: 'Bausteine, Felder und Diagramme in das Design ziehen' })}
+                  {formatMessage({
+                    id: 'bCCfGh',
+                    defaultMessage:
+                      'Bausteine, Felder und Diagramme in das Design ziehen',
+                  })}
                 </div>
               )
             }

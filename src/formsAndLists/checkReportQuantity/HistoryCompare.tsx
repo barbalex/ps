@@ -23,9 +23,9 @@ import {
 import type CheckReportQuantitiesHistory from '../../models/public/CheckReportQuantitiesHistory.ts'
 import type Units from '../../models/public/Units.ts'
 import type ListValues from '../../models/public/ListValues.ts'
+import type { FieldChangeData } from '../../components/shared/fieldChange.ts'
 
-export const CheckReportQuantityHistoryCompare = ({
-}: {
+export const CheckReportQuantityHistoryCompare = (_: {
   from?:
     | '/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/check-reports/$checkReportId_/quantities/$checkReportQuantityId_/histories/$checkReportQuantityHistoryId'
     | '/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/places/$placeId2_/check-reports/$checkReportId_/quantities/$checkReportQuantityId_/histories/$checkReportQuantityHistoryId'
@@ -106,10 +106,7 @@ export const CheckReportQuantityHistoryCompare = ({
     listValueOptions.map((o) => [o.value, o.label]),
   )
 
-  const onChange = async (
-    e: React.ChangeEvent<HTMLInputElement>,
-    data?: object,
-  ) => {
+  const onChange = async (e: React.ChangeEvent<HTMLElement>, data?: object) => {
     const { name, value } = getValueFromChange(
       e,
       data as Parameters<typeof getValueFromChange>[1],
@@ -130,7 +127,6 @@ export const CheckReportQuantityHistoryCompare = ({
     }
 
     setValidations((prev) => {
-       
       const { [name]: _unused, ...rest } = prev
       return rest
     })
@@ -173,7 +169,6 @@ export const CheckReportQuantityHistoryCompare = ({
     }
 
     setValidations((prev) => {
-       
       const { [unitValueField]: _unused, ...rest } = prev
       return rest
     })
@@ -205,105 +200,106 @@ export const CheckReportQuantityHistoryCompare = ({
   const leftContent = (
     <div className="form-container">
       <>
-      <RadioGroupField
-        label={formatMessage(unitFieldLabel)}
-        name="unit_id"
-        list={unitIds}
-        labelMap={unitLabelMap}
-        isLoading={unitsRes === undefined}
-        value={(row.unit_id as string | null) ?? ''}
-        onChange={onChange}
-        autoFocus
-        ref={autoFocusRef}
-        validationState={
-          selectedUnit && !selectedUnit.type
-            ? 'warning'
-            : (validations?.unit_id?.state ?? 'none')
-        }
-        validationMessage={
-          selectedUnit && !selectedUnit.type
-            ? formatMessage({
-                id: 'uN4VwX',
-                defaultMessage:
-                  'Mengen-Feld wird nicht angezeigt, weil die gewählte Einheit keinen Typ hat.',
-              })
-            : validations?.unit_id?.message
-        }
-      />
-      {selectedUnit?.list_id && hasListValues ? (
-        listValues.length <= 5 ? (
-          <RadioGroupField
-            label={quantityLabel}
-            name={unitValueField ?? undefined}
-            list={listValueIds}
-            labelMap={listValueLabelMap}
-            value={currentListValueStr}
-            onChange={(
-              _e: unknown,
-              data: { value?: string | null },
-            ) => onListValueChange(data?.value ?? null)}
-            validationState={validations?.[unitValueField ?? '']?.state}
-            validationMessage={validations?.[unitValueField ?? '']?.message}
-          />
+        <RadioGroupField
+          label={formatMessage(unitFieldLabel)}
+          name="unit_id"
+          list={unitIds}
+          labelMap={unitLabelMap}
+          isLoading={unitsRes === undefined}
+          value={(row.unit_id as string | null) ?? ''}
+          onChange={onChange}
+          autoFocus
+          ref={autoFocusRef}
+          validationState={
+            selectedUnit && !selectedUnit.type
+              ? 'warning'
+              : (validations?.unit_id?.state ?? 'none')
+          }
+          validationMessage={
+            selectedUnit && !selectedUnit.type
+              ? formatMessage({
+                  id: 'uN4VwX',
+                  defaultMessage:
+                    'Mengen-Feld wird nicht angezeigt, weil die gewählte Einheit keinen Typ hat.',
+                })
+              : validations?.unit_id?.message
+          }
+        />
+        {selectedUnit?.list_id && hasListValues ? (
+          listValues.length <= 5 ? (
+            <RadioGroupField
+              label={quantityLabel}
+              name={unitValueField ?? undefined}
+              list={listValueIds}
+              labelMap={listValueLabelMap}
+              value={currentListValueStr}
+              onChange={(_e: unknown, data?: FieldChangeData) =>
+                onListValueChange(data?.value ?? null)
+              }
+              validationState={validations?.[unitValueField ?? '']?.state}
+              validationMessage={validations?.[unitValueField ?? '']?.message}
+            />
+          ) : (
+            <DropdownFieldSimpleOptions
+              name={unitValueField as string}
+              label={quantityLabel}
+              options={listValueIds}
+              value={currentListValueStr}
+              onChange={(e) => onListValueChange(e.target.value ?? null)}
+              validationState={validations?.[unitValueField ?? '']?.state}
+              validationMessage={validations?.[unitValueField ?? '']?.message}
+            />
+          )
         ) : (
-          <DropdownFieldSimpleOptions
-            name={unitValueField as string}
-            label={quantityLabel}
-            options={listValueIds}
-            value={currentListValueStr}
-            onChange={(e) => onListValueChange(e.target.value ?? null)}
-            validationState={validations?.[unitValueField ?? '']?.state}
-            validationMessage={validations?.[unitValueField ?? '']?.message}
-          />
-        )
-      ) : (
-        <>
-          {(selectedUnit?.type === 'integer' || row.quantity_integer !== null) && (
-            <TextField
-              label={
-                selectedUnit?.type !== 'integer'
-                  ? `${quantityLabel} (integer)`
-                  : quantityLabel
-              }
-              name="quantity_integer"
-              type="number"
-              value={(row.quantity_integer as number | null) ?? ''}
-              onChange={onChange}
-              validationState={validations?.quantity_integer?.state}
-              validationMessage={validations?.quantity_integer?.message}
-            />
-          )}
-          {(selectedUnit?.type === 'numeric' || row.quantity_numeric !== null) && (
-            <TextField
-              label={
-                selectedUnit?.type !== 'numeric'
-                  ? `${quantityLabel} (numeric)`
-                  : quantityLabel
-              }
-              name="quantity_numeric"
-              type="number"
-              value={(row.quantity_numeric as number | null) ?? ''}
-              onChange={onChange}
-              validationState={validations?.quantity_numeric?.state}
-              validationMessage={validations?.quantity_numeric?.message}
-            />
-          )}
-          {(selectedUnit?.type === 'text' || row.quantity_text !== null) && (
-            <TextField
-              label={
-                selectedUnit?.type !== 'text'
-                  ? `${quantityLabel} (text)`
-                  : quantityLabel
-              }
-              name="quantity_text"
-              value={(row.quantity_text as string | null) ?? ''}
-              onChange={onChange}
-              validationState={validations?.quantity_text?.state}
-              validationMessage={validations?.quantity_text?.message}
-            />
-          )}
-        </>
-      )}
+          <>
+            {(selectedUnit?.type === 'integer' ||
+              row.quantity_integer !== null) && (
+              <TextField
+                label={
+                  selectedUnit?.type !== 'integer'
+                    ? `${quantityLabel} (integer)`
+                    : quantityLabel
+                }
+                name="quantity_integer"
+                type="number"
+                value={(row.quantity_integer as number | null) ?? ''}
+                onChange={onChange}
+                validationState={validations?.quantity_integer?.state}
+                validationMessage={validations?.quantity_integer?.message}
+              />
+            )}
+            {(selectedUnit?.type === 'numeric' ||
+              row.quantity_numeric !== null) && (
+              <TextField
+                label={
+                  selectedUnit?.type !== 'numeric'
+                    ? `${quantityLabel} (numeric)`
+                    : quantityLabel
+                }
+                name="quantity_numeric"
+                type="number"
+                value={(row.quantity_numeric as number | null) ?? ''}
+                onChange={onChange}
+                validationState={validations?.quantity_numeric?.state}
+                validationMessage={validations?.quantity_numeric?.message}
+              />
+            )}
+            {(selectedUnit?.type === 'text' || row.quantity_text !== null) && (
+              <TextField
+                label={
+                  selectedUnit?.type !== 'text'
+                    ? `${quantityLabel} (text)`
+                    : quantityLabel
+                }
+                name="quantity_text"
+                value={(row.quantity_text as string | null) ?? ''}
+                onChange={onChange}
+                validationState={validations?.quantity_text?.state}
+                validationMessage={validations?.quantity_text?.message}
+              />
+            )}
+          </>
+        )}
       </>
     </div>
   )
@@ -320,25 +316,30 @@ export const CheckReportQuantityHistoryCompare = ({
     fieldLabelMap: {
       unit_id: unitFieldLabel,
       quantity_integer: { id: 'gRVMng', defaultMessage: 'Menge (integer)' },
-      quantity_numeric: { id: 'bQuantityNumeric', defaultMessage: 'Menge (numeric)' },
+      quantity_numeric: {
+        id: 'bQuantityNumeric',
+        defaultMessage: 'Menge (numeric)',
+      },
       quantity_text: { id: 'bQuantityText', defaultMessage: 'Menge (text)' },
     },
   })
 
   const formatFieldValue = (
     field: string,
-    history: CheckReportQuantitiesHistory & Record<string, unknown>,
+    history: CheckReportQuantitiesHistory,
   ) => {
     if (field === 'unit_id') {
       const unitId = history.unit_id
       if (!unitId) return ''
       return unitLabelMap[unitId] ?? unitId
     }
-    return stringifyHistoryValue((history as Record<string, unknown>)[field])
+    return stringifyHistoryValue(
+      (history as unknown as Record<string, unknown>)[field],
+    )
   }
 
   return (
-    <HistoryCompare<CheckReportQuantitiesHistory & Record<string, unknown>>
+    <HistoryCompare<CheckReportQuantitiesHistory>
       onBack={() => navigate({ to: checkReportQuantityPath })}
       leftContent={leftContent}
       visibleCurrentFields={visibleCurrentFields}
@@ -346,7 +347,7 @@ export const CheckReportQuantityHistoryCompare = ({
       preferredOrder={preferredOrder}
       formatFieldLabel={formatFieldLabel}
       formatFieldValue={formatFieldValue}
-      row={row}
+      row={row as unknown as CheckReportQuantitiesHistory}
       historyConfig={{
         historyTable: 'check_report_quantities_history',
         rowIdField: 'place_check_report_quantity_id',
@@ -362,9 +363,7 @@ export const CheckReportQuantityHistoryCompare = ({
         rowId: checkReportQuantityId,
         excludedRestoreFields,
         // the shared component types the operation as plain string
-        addOperation: addOperation as unknown as (
-          ...args: unknown[]
-        ) => void,
+        addOperation: addOperation as unknown as (...args: unknown[]) => void,
       }}
     />
   )

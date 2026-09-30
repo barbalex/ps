@@ -32,7 +32,7 @@ type NavData = {
 // subproject_roles_in_subproject exists in the db but not (yet) in the generated Projects model
 type ProjectData = Projects & {
   subproject_roles_in_subproject?: boolean | null
-} & Record<string, unknown>
+}
 
 interface Props {
   projectId: string
@@ -59,14 +59,14 @@ export const SubprojectNode = ({ projectId, nav, level = 4 }: Props) => {
   const taxaInSubproject = project?.subproject_taxa_in_subproject !== false
   const usersInSubproject = project?.subproject_roles_in_subproject !== false
   const filesInSubproject = project?.subproject_files_in_subproject !== false
-  const reportsInSubproject = project?.subproject_reports_in_subproject !== false
+  const reportsInSubproject =
+    project?.subproject_reports_in_subproject !== false
   const showTaxaNav = showTaxa && !taxaInSubproject
   const showUsersNav = !usersInSubproject
   const showFilesNav = showFiles && !filesInSubproject
   const showSubprojectReports =
     isDesigning || (project?.subproject_reports ?? true)
-  const showSubprojectReportsNav =
-    showSubprojectReports && !reportsInSubproject
+  const showSubprojectReportsNav = showSubprojectReports && !reportsInSubproject
   const showGoals = isDesigning || (project?.goals ?? true)
   const showOccurrences = isDesigning || (project?.occurrences ?? true)
   const showCharts = isDesigning || (project?.charts ?? true)
@@ -124,7 +124,7 @@ export const SubprojectNode = ({ projectId, nav, level = 4 }: Props) => {
           <Node
             label={
               getSubprojectNameSingular(
-                project as Record<string, unknown>,
+                project as unknown as Record<string, unknown>,
                 language,
               ) || 'Subproject'
             }

@@ -1,4 +1,6 @@
 import { Suspense, useState, useEffect } from 'react'
+import type Charts from '../../models/public/Charts.ts'
+import type Fields from '../../models/public/Fields.ts'
 import { useParams } from '@tanstack/react-router'
 import { usePGlite, useLiveQuery } from '@electric-sql/pglite-react'
 import { useSetAtom } from 'jotai'
@@ -14,6 +16,7 @@ import { addOperationAtom } from '../../store.ts'
 import { jsonbDataFromRow } from '../../modules/jsonbDataFromRow.ts'
 import { normalizePuckDesign } from '../../modules/normalizePuckDesign.ts'
 import { buildData } from '../chart/Chart/buildData/index.ts'
+import type { ChartData } from '../chart/Chart/buildData/index.ts'
 import { groupSeriesBySubject } from '../chart/Chart/buildData/index.ts'
 import { SingleChart } from '../chart/Chart/Chart.tsx'
 import { WrappingTextField } from '../subprojectReport/reportComponents.tsx'
@@ -26,6 +29,7 @@ import overviewStyles from './projectReportComponents.module.css'
 import styles from './Print.module.css'
 
 import '../../form.css'
+import type { FieldChangeData } from '../../components/shared/fieldChange.ts'
 
 export const ProjectReportPrint = ({ from }: { from: string }) => {
   const { projectReportId, projectId } = useParams({ strict: false })
@@ -33,7 +37,9 @@ export const ProjectReportPrint = ({ from }: { from: string }) => {
   const [validations, setValidations] = useState<
     Record<string, { state: 'error'; message: string }>
   >({})
-  const [chartDataMap, setChartDataMap] = useState<Record<string, any>>({})
+  const [chartDataMap, setChartDataMap] = useState<Record<string, ChartData>>(
+    {},
+  )
   const { formatMessage } = useIntl()
 
   const db = usePGlite()
@@ -67,11 +73,11 @@ export const ProjectReportPrint = ({ from }: { from: string }) => {
     WHERE project_report_id = $1`,
     [projectReportId],
   )
-  const row = (res?.rows?.[0] ?? {}) as Record<string, any>
+  const row = (res?.rows?.[0] ?? {}) as Record<string, unknown>
   const jsonbData = jsonbDataFromRow(row)
   const design = row?.design
-  const fields = row?.fields ?? []
-  const charts = row?.charts ?? []
+  const fields = (row?.fields ?? []) as Fields[]
+  const charts = (row?.charts ?? []) as Charts[]
   const chartsJson = JSON.stringify(charts)
 
   // Build chart data for all charts
@@ -80,7 +86,7 @@ export const ProjectReportPrint = ({ from }: { from: string }) => {
     if (!parsedCharts.length) return
 
     const buildAllChartData = async () => {
-      const dataMap: Record<string, unknown> = {}
+      const dataMap: Record<string, ChartData> = {}
       for (const chart of parsedCharts) {
         if (!chart.subjects || !chart.subjects.length) continue
         const data = await buildData({
@@ -90,19 +96,19 @@ export const ProjectReportPrint = ({ from }: { from: string }) => {
           subproject_id: undefined as unknown as string,
           db,
         })
-        dataMap[chart.chart_id] = data
+        dataMap[chart.chart_id!] = data
       }
       setChartDataMap(dataMap)
     }
 
     buildAllChartData()
-  }, [chartsJson, projectId])
+  }, [chartsJson, projectId, db])
 
   // Build Puck config from fields with actual data
-  const components: Record<string, any> = {
+  const components: Record<string, unknown> = {
     ...buildProjectDataComponents(),
   }
-  fields.forEach((field: any) => {
+  fields.forEach((field) => {
     const componentName = `${field.name}Field`
 
     components[componentName] = {
@@ -116,12 +122,12 @@ export const ProjectReportPrint = ({ from }: { from: string }) => {
       },
       render: () => {
         // Always read from the current report's jsonbData, not from the saved design value
-        const fieldValue = (jsonbData[field.name] ?? '') as string
+        const fieldValue = (jsonbData[field.name!] ?? '') as string
         return (
           <div className={styles.fieldWrapper}>
             <TextField
-              label={field.field_label || field.name}
-              name={field.name}
+              label={field.field_label || field.name || ''}
+              name={field.name ?? undefined}
               value={fieldValue}
               readOnly
             />
@@ -132,20 +138,22 @@ export const ProjectReportPrint = ({ from }: { from: string }) => {
   })
 
   // Add chart components
-  charts.forEach((chart: any) => {
+  charts.forEach((chart) => {
     const componentName = `chart_${chart.chart_id}`
 
     components[componentName] = {
-      label: chart.name || 'Chart',
+      label: chart.name ?? 'Chart',
       fields: {},
       defaultProps: {},
       render: () => {
-        const data = chartDataMap[chart.chart_id] ?? { data: [], years: [], series: [] }
+        const data = chartDataMap[chart.chart_id!] ?? {
+          data: [],
+          years: [],
+          series: [],
+        }
         return (
           <div className={styles.fieldWrapper}>
-            <div className={styles.chartTitle}>
-              {chart.name}
-            </div>
+            <div className={styles.chartTitle}>{chart.name ?? ''}</div>
             {chart.subjects_single === true ? (
               groupSeriesBySubject(data.series ?? []).map((series) => (
                 <SingleChart
@@ -175,18 +183,23 @@ export const ProjectReportPrint = ({ from }: { from: string }) => {
     fields: {},
     defaultProps: {},
     render: () => (
-      <SubprojectReportsSection projectId={projectId!} year={row.year ?? null} />
+      <SubprojectReportsSection
+        projectId={projectId!}
+        year={(row.year as number | null) ?? null}
+      />
     ),
   }
 
-  const config = { components }
+  const config = { components } as unknown as Parameters<
+    typeof LazyPuckRender
+  >[0]['config']
 
   const onChange = async (
-    e: React.ChangeEvent<HTMLInputElement>,
-    data: Parameters<typeof getValueFromChange>[1],
+    e: React.ChangeEvent<HTMLElement>,
+    data?: FieldChangeData,
   ) => {
     const { name, value } = getValueFromChange(e, data)
-    if ((row as Record<string, any>)[name] === value) return
+    if ((row as Record<string, unknown>)[name] === value) return
 
     try {
       await db.query(
@@ -196,12 +209,14 @@ export const ProjectReportPrint = ({ from }: { from: string }) => {
     } catch (error) {
       setValidations((prev) => ({
         ...prev,
-        [name]: { state: 'error', message: error instanceof Error ? error.message : String(error) },
+        [name]: {
+          state: 'error',
+          message: error instanceof Error ? error.message : String(error),
+        },
       }))
       return
     }
     setValidations((prev) => {
-       
       const { [name]: _, ...rest } = prev
       return rest
     })
@@ -232,7 +247,7 @@ export const ProjectReportPrint = ({ from }: { from: string }) => {
             label={formatMessage({ id: 'bB4FgH', defaultMessage: 'Jahr' })}
             name="year"
             type="number"
-            value={row.year ?? ''}
+            value={(row.year as number | null) ?? ''}
             onChange={onChange}
             validationState={validations?.year?.state}
             validationMessage={validations?.year?.message}
@@ -240,36 +255,51 @@ export const ProjectReportPrint = ({ from }: { from: string }) => {
         </div>
         <div className={overviewStyles.titlePage}>
           <div className={overviewStyles.titlePageMain}>
-            {row.project_label ?? ''}
+            {(row.project_label as string | null) ?? ''}
           </div>
           <div className={overviewStyles.titlePageYear}>
-            Jahresbericht {row.year ?? ''}
+            Jahresbericht {(row.year as number | null) ?? ''}
           </div>
           <div className={overviewStyles.titlePageDate}>
             {new Date().toLocaleDateString('de-CH')}
           </div>
         </div>
-        {jsonbData.zusammenfassung ? (
+        {(jsonbData.zusammenfassung as string | undefined) ? (
           <div className={overviewStyles.zusammenfassung}>
             <WrappingTextField
-              label={formatMessage({ id: 'bDcDeF', defaultMessage: 'Zusammenfassung' })}
+              label={formatMessage({
+                id: 'bDcDeF',
+                defaultMessage: 'Zusammenfassung',
+              })}
               value={String(jsonbData.zusammenfassung)}
             />
           </div>
         ) : null}
-        {design && (
+        {!!design && (
           <Suspense fallback={<Loading />}>
             <ProjectReportContext.Provider
-              value={{ projectId, year: row.year ?? null }}
+              value={{ projectId, year: (row.year as number | null) ?? null }}
             >
               <LazyPuckRender
                 config={config}
-                data={normalizePuckDesign(design)}
+                data={
+                  normalizePuckDesign(design) as Parameters<
+                    typeof LazyPuckRender
+                  >[0]['data']
+                }
               />
             </ProjectReportContext.Provider>
           </Suspense>
         )}
-        {!design && <div>{formatMessage({ id: 'bB6JkL', defaultMessage: 'Kein Berichts-Design für dieses Projekt gefunden.' })}</div>}
+        {!design && (
+          <div>
+            {formatMessage({
+              id: 'bB6JkL',
+              defaultMessage:
+                'Kein Berichts-Design für dieses Projekt gefunden.',
+            })}
+          </div>
+        )}
       </div>
     </div>
   )

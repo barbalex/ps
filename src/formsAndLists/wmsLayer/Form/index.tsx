@@ -9,6 +9,7 @@ import { CreateWmsService } from './CreateWmsService/index.tsx'
 import type WmsLayers from '../../../models/public/WmsLayers.ts'
 
 import '../../../form.css'
+import type { FieldChangeHandler } from '../../../components/shared/fieldChange.ts'
 
 // this form is rendered from a parent or outlet
 export const WmsLayerForm = ({
@@ -17,9 +18,9 @@ export const WmsLayerForm = ({
   row,
   isFilter,
 }: {
-  onChange: (e: React.ChangeEvent<any>, data?: any) => void
+  onChange: FieldChangeHandler
   validations?: Record<string, { state: 'error'; message: string }>
-  row: WmsLayers | Record<string, any>
+  row: WmsLayers | Record<string, never>
   isFilter?: boolean
   autoFocusRef?: React.Ref<HTMLInputElement>
 }) => {
@@ -123,12 +124,12 @@ export const WmsLayerForm = ({
               <TextFieldInactive
                 label="Local Data Size"
                 name="local_data_size"
-                value={row.local_data_size}
+                value={row.local_data_size ?? ''}
               />
               <TextFieldInactive
                 label="Local Data Bounds"
                 name="local_data_bounds"
-                value={row.local_data_bounds}
+                value={String(row.local_data_bounds ?? '')}
               />
             </>
           )}

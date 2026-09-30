@@ -1,6 +1,5 @@
 import { useParams } from '@tanstack/react-router'
 import { useIntl } from 'react-intl'
-import type { InputOnChangeData } from '@fluentui/react-components'
 
 import { TextField } from '../../components/shared/TextField.tsx'
 import { DropdownField } from '../../components/shared/DropdownField.tsx'
@@ -10,6 +9,7 @@ import { TableAndLevel } from './TableAndLevel.tsx'
 import type Fields from '../../models/public/Fields.ts'
 
 import '../../form.css'
+import type { FieldChangeData } from '../../components/shared/fieldChange.ts'
 
 const widgetsNeedingList = [
   '018ca1a1-9ea1-77a0-a89e-e7dfa92e2cfe',
@@ -17,15 +17,13 @@ const widgetsNeedingList = [
 ] // options-few, options-many
 
 type Props = {
-  onChange: (
-    e: React.ChangeEvent<HTMLInputElement>,
-    data?: InputOnChangeData,
-  ) => void
+  onChange: (e: React.ChangeEvent<HTMLElement>, data?: FieldChangeData) => void
   validations?: Record<
     string,
-    { state: 'error' | 'warning' | 'success' | 'none'; message: string } | undefined
+    | { state: 'error' | 'warning' | 'success' | 'none'; message: string }
+    | undefined
   >
-  row: Record<string, unknown>
+  row: Fields | Record<string, never>
   autoFocusRef?: React.RefObject<HTMLInputElement | null>
   isInForm?: boolean
   from?: string

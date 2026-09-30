@@ -36,7 +36,9 @@ export const WMTSOffline = ({ layer }: Props) => {
   const setLocalMapValues = useSetAtom(localMapValuesAtom)
   const addNotification = useSetAtom(addNotificationAtom)
   const map = useMap()
-  const layerPresentation = layer.layer_presentations?.[0]!
+  const layerPresentation = (layer.layer_presentations ?? [])[0] as NonNullable<
+    Props['layer']['layer_presentations']
+  >[number]
 
   const db = usePGlite()
 
@@ -69,10 +71,7 @@ export const WMTSOffline = ({ layer }: Props) => {
           },
         ) => L.Control & {
           openDB: () => void
-          saveMap: (options: {
-            layer: Props['layer']
-            map: L.Map
-          }) => void
+          saveMap: (options: { layer: Props['layer']; map: L.Map }) => void
           deleteTable: (layerId: string) => void
         }
       }

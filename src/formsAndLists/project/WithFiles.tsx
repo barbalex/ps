@@ -9,7 +9,6 @@ import { usePGlite, useLiveQuery } from '@electric-sql/pglite-react'
 import { useAtom, useSetAtom } from 'jotai'
 import { useIntl } from 'react-intl'
 import * as fluentUiReactComponents from '@fluentui/react-components'
-import type { InputOnChangeData } from '@fluentui/react-components'
 import { FaPlus } from 'react-icons/fa'
 
 import { Header } from './Header.tsx'
@@ -24,7 +23,11 @@ import { NotFound } from '../../components/NotFound.tsx'
 import { Section } from '../../components/shared/Section.tsx'
 import { FilterButton } from '../../components/shared/FilterButton.tsx'
 import { getValueFromChange } from '../../modules/getValueFromChange.ts'
-import {createField, createProjectReport, createUnit} from '../../modules/createRows.ts'
+import {
+  createField,
+  createProjectReport,
+  createUnit,
+} from '../../modules/createRows.ts'
 import { AddProjectUserButton } from '../../components/shared/AddProjectUserButton.tsx'
 import {
   addOperationAtom,
@@ -41,6 +44,7 @@ import type Projects from '../../models/public/Projects.ts'
 import styles from './WithFiles.module.css'
 
 import '../../form.css'
+import type { FieldChangeData } from '../../components/shared/fieldChange.ts'
 
 const { Button } = fluentUiReactComponents
 
@@ -137,7 +141,8 @@ export const ProjectWithFiles = ({ from }: { from: string }) => {
   const filesUrl = `${projectBaseUrl}/files`
 
   const projectUsersIsFiltered = !!filterStringFromFilter(projectUsersFilter)
-  const projectReportsIsFiltered = !!filterStringFromFilter(projectReportsFilter)
+  const projectReportsIsFiltered =
+    !!filterStringFromFilter(projectReportsFilter)
   const unitsIsFiltered = !!filterStringFromFilter(unitsFilter)
   const fieldsIsFiltered = !!filterStringFromFilter(fieldsFilter)
   const filesIsFiltered = !!filterStringFromFilter(filesFilter)
@@ -228,8 +233,8 @@ export const ProjectWithFiles = ({ from }: { from: string }) => {
     ) : undefined
 
   const onChange = async (
-    e: React.ChangeEvent<HTMLInputElement>,
-    data?: InputOnChangeData,
+    e: React.ChangeEvent<HTMLElement>,
+    data?: FieldChangeData,
   ) => {
     const { name, value } = getValueFromChange(e, data!)
     if (row?.[name as keyof Projects] === value) return
@@ -247,7 +252,6 @@ export const ProjectWithFiles = ({ from }: { from: string }) => {
       return
     }
     setValidations((prev) => {
-       
       const { [name]: _, ...rest } = prev
       return rest
     })
@@ -274,7 +278,7 @@ export const ProjectWithFiles = ({ from }: { from: string }) => {
         <Form
           onChange={onChange}
           validations={validations}
-          row={row as unknown as Record<string, unknown>}
+          row={row as unknown as Projects}
           from={from}
           autoFocusRef={autoFocusRef}
         />
@@ -349,7 +353,11 @@ export const ProjectWithFiles = ({ from }: { from: string }) => {
             headerActions={unitsHeaderActions}
           >
             {isUnitsOpen &&
-              (isUnitsList ? <Units projectId={projectId} hideHeader /> : <Outlet />)}
+              (isUnitsList ? (
+                <Units projectId={projectId} hideHeader />
+              ) : (
+                <Outlet />
+              ))}
           </Section>
         ) : (
           isUnitsOpen && <Outlet />
@@ -366,11 +374,7 @@ export const ProjectWithFiles = ({ from }: { from: string }) => {
           >
             {isFieldsOpen &&
               (isFieldsList ? (
-                <Fields
-                  projectId={projectId}
-                  from={from}
-                  hideHeader
-                />
+                <Fields projectId={projectId} from={from} hideHeader />
               ) : (
                 <Outlet />
               ))}

@@ -20,6 +20,7 @@ import {
 
 import type SubprojectTaxa from '../../models/public/SubprojectTaxa.ts'
 import type SubprojectTaxaHistory from '../../models/public/SubprojectTaxaHistory.ts'
+import type { FieldChangeData } from '../../components/shared/fieldChange.ts'
 
 const taxaInclude = { taxonomies: true }
 
@@ -38,7 +39,9 @@ export const SubprojectTaxonHistoryCompare = () => {
 
   const addOperation = useSetAtom(addOperationAtom)
   const db = usePGlite()
-  const [validations, setValidations] = useState<Record<string, { state: 'error'; message: string }>>({})
+  const [validations, setValidations] = useState<
+    Record<string, { state: 'error'; message: string }>
+  >({})
 
   const rowRes = useLiveQuery(
     `SELECT * FROM subproject_taxa WHERE subproject_taxon_id = $1`,
@@ -48,10 +51,11 @@ export const SubprojectTaxonHistoryCompare = () => {
 
   const onChange = async (
     e: React.ChangeEvent<HTMLInputElement>,
-    data: Parameters<typeof getValueFromChange>[1],
+    data?: FieldChangeData,
   ) => {
     const { name, value } = getValueFromChange(e, data)
-    if (!row || (row as Record<string, any>)[name] === value) return
+    if (!row || (row as unknown as Record<string, unknown>)[name] === value)
+      return
 
     try {
       await db.query(
@@ -61,13 +65,15 @@ export const SubprojectTaxonHistoryCompare = () => {
     } catch (error) {
       setValidations((prev) => ({
         ...prev,
-        [name]: { state: 'error', message: error instanceof Error ? error.message : String(error) },
+        [name]: {
+          state: 'error',
+          message: error instanceof Error ? error.message : String(error),
+        },
       }))
       return
     }
 
     setValidations((prev) => {
-       
       const { [name]: _unused, ...rest } = prev
       return rest
     })
@@ -115,7 +121,9 @@ export const SubprojectTaxonHistoryCompare = () => {
   })
 
   const formatFieldValue = (field: string, history: SubprojectTaxaHistory) =>
-    stringifyHistoryValue((history as Record<string, any>)[field])
+    stringifyHistoryValue(
+      (history as unknown as Record<string, unknown>)[field],
+    )
 
   return (
     <HistoryCompare<SubprojectTaxaHistory>

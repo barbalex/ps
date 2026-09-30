@@ -54,12 +54,14 @@ const bboxFromBounds = ({
   const sw = bounds.getSouthWest()
   const usesDefaultCrs = !!defaultCrs && defaultCrs.code !== 'EPSG:4326'
 
-  const [swX, swY] = usesDefaultCrs
-    ? proj4('EPSG:4326', defaultCrs?.proj4!, [sw.lng, sw.lat])
-    : [sw.lng, sw.lat]
-  const [neX, neY] = usesDefaultCrs
-    ? proj4('EPSG:4326', defaultCrs?.proj4!, [ne.lng, ne.lat])
-    : [ne.lng, ne.lat]
+  const [swX, swY] =
+    usesDefaultCrs && defaultCrs
+      ? proj4('EPSG:4326', defaultCrs.proj4!, [sw.lng, sw.lat])
+      : [sw.lng, sw.lat]
+  const [neX, neY] =
+    usesDefaultCrs && defaultCrs
+      ? proj4('EPSG:4326', defaultCrs.proj4!, [ne.lng, ne.lat])
+      : [ne.lng, ne.lat]
 
   const minX = Math.min(swX, neX)
   const maxX = Math.max(swX, neX)
@@ -118,9 +120,9 @@ export const WFS = ({ layer, layerPresentation }: Props) => {
   const [zoom, setZoom] = useState(map.getZoom())
   const [lastBbox, setLastBbox] = useState<string | null>(null)
 
-  const [data, setData] = useState<GeoJSON.FeatureCollection | null | undefined>(
-    undefined,
-  )
+  const [data, setData] = useState<
+    GeoJSON.FeatureCollection | null | undefined
+  >(undefined)
   const fetchData = useCallback(
     async () => {
       const resCrs = await db.query(`SELECT * FROM crs WHERE code = $1`, [
@@ -221,7 +223,9 @@ export const WFS = ({ layer, layerPresentation }: Props) => {
           : dataToProject
 
       setData(
-        (reprojectedData ?? sourceData ?? null) as GeoJSON.FeatureCollection | null,
+        (reprojectedData ??
+          sourceData ??
+          null) as GeoJSON.FeatureCollection | null,
       )
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -309,8 +313,9 @@ export const WFS = ({ layer, layerPresentation }: Props) => {
         )}`}
         data={data}
         onEachFeature={(feature, geoLayer) => {
-          ;(geoLayer as L.Layer & { vectorLayerLabel?: string })
-            .vectorLayerLabel = layer.label || 'WFS Layer'
+          ;(
+            geoLayer as L.Layer & { vectorLayerLabel?: string }
+          ).vectorLayerLabel = layer.label || 'WFS Layer'
           feature.properties = feature.properties ?? {}
           feature.properties.label = 'Feature'
         }}
@@ -326,9 +331,8 @@ export const WFS = ({ layer, layerPresentation }: Props) => {
             })
           }
 
-          const IconComponent = icons[
-            display.marker_symbol as keyof typeof icons
-          ]
+          const IconComponent =
+            icons[display.marker_symbol as keyof typeof icons]
           const markerIconStyle = {
             '--marker-color': display.color ?? '#cc756b',
             '--marker-size': `${display.marker_size ?? 16}px`,

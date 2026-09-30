@@ -13,6 +13,7 @@ import { addOperationAtom } from '../../store.ts'
 import type Lists from '../../models/public/Lists.ts'
 
 import '../../form.css'
+import type { FieldChangeData } from '../../components/shared/fieldChange.ts'
 
 export const List = ({ from }: { from: string }) => {
   const { listId } = useParams({ strict: false })
@@ -28,12 +29,12 @@ export const List = ({ from }: { from: string }) => {
   const row: Lists | undefined = res?.rows?.[0] as Lists | undefined
 
   const onChange = async (
-    e: React.ChangeEvent<HTMLInputElement>,
-    data: Parameters<typeof getValueFromChange>[1],
+    e: React.ChangeEvent<HTMLElement>,
+    data?: FieldChangeData,
   ) => {
     const { name, value } = getValueFromChange(e, data)
     // only change if value has changed: maybe only focus entered and left
-    if ((row as Record<string, any>)[name] === value) return
+    if ((row as unknown as Record<string, unknown>)[name] === value) return
 
     try {
       await db.query(`UPDATE lists SET ${name} = $1 WHERE list_id = $2`, [
@@ -43,12 +44,14 @@ export const List = ({ from }: { from: string }) => {
     } catch (error) {
       setValidations((prev) => ({
         ...prev,
-        [name]: { state: 'error', message: error instanceof Error ? error.message : String(error) },
+        [name]: {
+          state: 'error',
+          message: error instanceof Error ? error.message : String(error),
+        },
       }))
       return
     }
     setValidations((prev) => {
-       
       const { [name]: _, ...rest } = prev
       return rest
     })

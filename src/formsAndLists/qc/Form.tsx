@@ -21,12 +21,17 @@ type Props = {
 }
 
 // this form is rendered from the item view and from the filter
-export const QcForm = ({ onChange, validations = {}, row, autoFocusRef }: Props) => {
+export const QcForm = ({
+  onChange,
+  validations = {},
+  row,
+  autoFocusRef,
+}: Props) => {
   const { formatMessage } = useIntl()
   // the change handlers of the field components have slightly different
   // signatures; all of them receive (event, data)
   const onChangeField = onChange as unknown as (
-    ev: React.ChangeEvent<HTMLInputElement>,
+    ev: React.ChangeEvent<HTMLElement>,
     data?: unknown,
   ) => void
 
@@ -88,8 +93,7 @@ export const QcForm = ({ onChange, validations = {}, row, autoFocusRef }: Props)
       ? parts.join('\n')
       : formatMessage({
           id: 'qc.sql.hintNone',
-          defaultMessage:
-            'Set level to see available parameters.',
+          defaultMessage: 'Set level to see available parameters.',
         })
   })()
 
@@ -145,7 +149,10 @@ export const QcForm = ({ onChange, validations = {}, row, autoFocusRef }: Props)
         />
       </Section>
       <Section
-        title={formatMessage({ id: 'qc.section.variables', defaultMessage: 'Variabeln' })}
+        title={formatMessage({
+          id: 'qc.section.variables',
+          defaultMessage: 'Variabeln',
+        })}
       >
         <SectionDescription>
           {formatMessage({
@@ -164,9 +171,18 @@ export const QcForm = ({ onChange, validations = {}, row, autoFocusRef }: Props)
           value={(row?.level ?? null) as string | null}
           onChange={onChangeField}
           labelMap={{
-            root: formatMessage({ id: 'qc.level.root', defaultMessage: 'Root' }),
-            project: formatMessage({ id: 'qc.level.project', defaultMessage: 'Projekt' }),
-            subproject: formatMessage({ id: 'qc.level.subproject', defaultMessage: 'Teilprojekt' }),
+            root: formatMessage({
+              id: 'qc.level.root',
+              defaultMessage: 'Root',
+            }),
+            project: formatMessage({
+              id: 'qc.level.project',
+              defaultMessage: 'Projekt',
+            }),
+            subproject: formatMessage({
+              id: 'qc.level.subproject',
+              defaultMessage: 'Teilprojekt',
+            }),
           }}
         />
         <SwitchField
@@ -185,7 +201,10 @@ export const QcForm = ({ onChange, validations = {}, row, autoFocusRef }: Props)
         />
       </Section>
       <Section
-        title={formatMessage({ id: 'qc.section.query', defaultMessage: 'Abfrage' })}
+        title={formatMessage({
+          id: 'qc.section.query',
+          defaultMessage: 'Abfrage',
+        })}
       >
         <SectionDescription>
           {formatMessage({

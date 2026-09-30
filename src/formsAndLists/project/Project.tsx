@@ -2,7 +2,6 @@ import { useRef, useState } from 'react'
 import { useSetAtom } from 'jotai'
 import { usePGlite, useLiveQuery } from '@electric-sql/pglite-react'
 import { useParams } from '@tanstack/react-router'
-import type { InputOnChangeData } from '@fluentui/react-components'
 
 import { Header } from './Header.tsx'
 import { ProjectForm } from './Form.tsx'
@@ -13,6 +12,7 @@ import { NotFound } from '../../components/NotFound.tsx'
 import type Projects from '../../models/public/Projects.ts'
 
 import '../../form.css'
+import type { FieldChangeData } from '../../components/shared/fieldChange.ts'
 
 export const Project = ({ from }: { from: string }) => {
   const addOperation = useSetAtom(addOperationAtom)
@@ -31,8 +31,8 @@ export const Project = ({ from }: { from: string }) => {
   const row = res?.rows?.[0] as Projects | undefined
 
   const onChange = async (
-    e: React.ChangeEvent<HTMLInputElement>,
-    data?: InputOnChangeData,
+    e: React.ChangeEvent<HTMLElement>,
+    data?: FieldChangeData,
   ) => {
     const { name, value } = getValueFromChange(e, data!)
     // only change if value has changed: maybe only focus entered and left
@@ -51,7 +51,6 @@ export const Project = ({ from }: { from: string }) => {
       return
     }
     setValidations((prev) => {
-       
       const { [name]: _, ...rest } = prev
       return rest
     })
@@ -70,30 +69,21 @@ export const Project = ({ from }: { from: string }) => {
 
   return (
     <div className="form-outer-container">
-      <Header
-        autoFocusRef={autoFocusRef}
-        from={from}
-      />
-      <div
-        className="form-container"
-        role="tabpanel"
-        aria-labelledby="form"
-      >
-        {!res ?
+      <Header autoFocusRef={autoFocusRef} from={from} />
+      <div className="form-container" role="tabpanel" aria-labelledby="form">
+        {!res ? (
           <Loading />
-        : row ?
+        ) : row ? (
           <ProjectForm
             onChange={onChange}
             validations={validations}
-            row={row as unknown as Record<string, unknown>}
+            row={row as unknown as Projects}
             from={from}
             autoFocusRef={autoFocusRef}
           />
-        : <NotFound
-            table="Project"
-            id={projectId}
-          />
-        }
+        ) : (
+          <NotFound table="Project" id={projectId} />
+        )}
       </div>
     </div>
   )

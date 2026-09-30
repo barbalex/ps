@@ -24,6 +24,7 @@ import {
 
 import type Observations from '../../models/public/Observations.ts'
 import type ObservationsHistory from '../../models/public/ObservationsHistory.ts'
+import type { FieldChangeData } from '../../components/shared/fieldChange.ts'
 
 type Validation = {
   state: 'error'
@@ -70,14 +71,15 @@ export const ObservationHistoryCompare = ({
   const row = rowRes?.rows?.[0] as Observations | undefined
 
   const onChange = async (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
-    data?: Record<string, unknown>,
+    e: React.ChangeEvent<HTMLElement>,
+    data?: FieldChangeData,
   ) => {
     const { name, value } = getValueFromChange(
       e as React.ChangeEvent<HTMLInputElement>,
       (data ?? {}) as Parameters<typeof getValueFromChange>[1],
     )
-    if (!row || (row as Record<string, any>)[name] === value) return
+    if (!row || (row as unknown as Record<string, unknown>)[name] === value)
+      return
 
     try {
       await db.query(
@@ -93,7 +95,6 @@ export const ObservationHistoryCompare = ({
     }
 
     setValidations((prev) => {
-       
       const { [name]: _unused, ...rest } = prev
       return rest
     })
@@ -164,10 +165,12 @@ export const ObservationHistoryCompare = ({
   })
 
   const formatFieldValue = (field: string, history: ObservationsHistory) =>
-    stringifyHistoryValue((history as Record<string, any>)[field])
+    stringifyHistoryValue(
+      (history as unknown as Record<string, unknown>)[field],
+    )
 
   return (
-    <HistoryCompare<ObservationsHistory & Record<string, unknown>>
+    <HistoryCompare<ObservationsHistory>
       onBack={() => navigate({ to: observationPath })}
       leftContent={leftContent}
       visibleCurrentFields={visibleCurrentFields}
@@ -175,7 +178,7 @@ export const ObservationHistoryCompare = ({
       preferredOrder={preferredOrder}
       formatFieldLabel={formatFieldLabel}
       formatFieldValue={formatFieldValue}
-      row={row as unknown as Record<string, unknown> | undefined}
+      row={row as unknown as ObservationsHistory | undefined}
       historyConfig={{
         historyTable: 'observations_history',
         rowIdField: 'observation_id',

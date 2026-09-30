@@ -79,10 +79,11 @@ async function ensureE2eData() {
 
 const treeState = (page: Page) =>
   page.evaluate(() => {
-    const treeLinks = Array.from(document.querySelectorAll('a[class*="contentLink"]'))
-      .map((a) => (a.textContent ?? '').trim())
+    const treeLinks = Array.from(
+      document.querySelectorAll('a[class*="contentLink"]'),
+    ).map((a) => (a.textContent ?? '').trim())
     const raw = localStorage.getItem('treeOpenNodesAtom')
-    let openNodes: string[][] = []
+    let openNodes: string[][]
     try {
       openNodes = raw ? JSON.parse(raw) : []
     } catch {
@@ -133,7 +134,9 @@ test.describe('nav tree after reload on deep url', () => {
         hasText: '01.01 first.first',
       }),
     ).toBeVisible({ timeout: 180_000 })
-    console.log(`first load: tree complete after ${Date.now() - firstLoadStart}ms`)
+    console.log(
+      `first load: tree complete after ${Date.now() - firstLoadStart}ms`,
+    )
 
     // RELOAD — the actual bug scenario
     const reloadStart = Date.now()

@@ -4,6 +4,7 @@ import { useAtom } from 'jotai'
 import { useIntl } from 'react-intl'
 
 import { SwitchField } from './SwitchField.tsx'
+import type { FieldChangeData } from './fieldChange.ts'
 import {
   tabsAtom,
   editingPlaceGeometryAtom,
@@ -36,12 +37,9 @@ export const EditingGeometry = ({ row, table }: Props) => {
   )
   const [tabs, setTabs] = useAtom(tabsAtom)
 
-  const onChange = async (
-    _e: unknown,
-    data: { checked?: boolean | null },
-  ) => {
+  const onChange = async (_e: unknown, data?: FieldChangeData) => {
     // 1. if checked, show map if not already shown
-    if (data.checked) {
+    if (data?.checked) {
       if (!tabs.includes('map')) {
         setTabs([...tabs, 'map'])
       }
@@ -50,17 +48,17 @@ export const EditingGeometry = ({ row, table }: Props) => {
     switch (table) {
       case 'places':
         setEditingPlaceGeometry(
-          (data.checked ? row.place_id : null) as string | null,
+          (data?.checked ? row.place_id : null) as string | null,
         )
         break
       case 'checks':
         setEditingCheckGeometry(
-          (data.checked ? row.check_id : null) as string | null,
+          (data?.checked ? row.check_id : null) as string | null,
         )
         break
       case 'actions':
         setEditingActionGeometry(
-          (data.checked ? row.action_id : null) as string | null,
+          (data?.checked ? row.action_id : null) as string | null,
         )
         break
     }

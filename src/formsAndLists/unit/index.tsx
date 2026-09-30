@@ -12,7 +12,7 @@ import { addOperationAtom } from '../../store.ts'
 import type Units from '../../models/public/Units.ts'
 
 import '../../form.css'
-
+import type { FieldChangeData } from '../../components/shared/fieldChange.ts'
 
 export const Unit = () => {
   const { unitId } = useParams({ strict: false })
@@ -28,12 +28,12 @@ export const Unit = () => {
   const row: Units | undefined = res?.rows?.[0] as Units | undefined
 
   const onChange = async (
-    e: React.ChangeEvent<HTMLInputElement>,
-    data: Parameters<typeof getValueFromChange>[1],
+    e: React.ChangeEvent<HTMLElement>,
+    data?: FieldChangeData,
   ) => {
     const { name, value } = getValueFromChange(e, data)
     // only change if value has changed: maybe only focus entered and left
-    if ((row as Record<string, any>)[name] === value) return
+    if ((row as unknown as Record<string, unknown>)[name] === value) return
 
     try {
       await db.query(`UPDATE units SET ${name} = $1 WHERE unit_id = $2`, [
@@ -43,12 +43,14 @@ export const Unit = () => {
     } catch (error) {
       setValidations((prev) => ({
         ...prev,
-        [name]: { state: 'error', message: error instanceof Error ? error.message : String(error) },
+        [name]: {
+          state: 'error',
+          message: error instanceof Error ? error.message : String(error),
+        },
       }))
       return
     }
     setValidations((prev) => {
-       
       const { [name]: _, ...rest } = prev
       return rest
     })
@@ -72,7 +74,12 @@ export const Unit = () => {
     <div className="form-outer-container">
       <Header autoFocusRef={autoFocusRef} />
       <div className="form-container">
-        <Form onChange={onChange} row={row} autoFocusRef={autoFocusRef} validations={validations} />
+        <Form
+          onChange={onChange}
+          row={row}
+          autoFocusRef={autoFocusRef}
+          validations={validations}
+        />
       </div>
     </div>
   )

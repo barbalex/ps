@@ -173,7 +173,7 @@ export const ObservationImportHistoryCompare = () => {
       preferredOrder={preferredOrder}
       formatFieldLabel={formatFieldLabel}
       formatFieldValue={formatFieldValue}
-      row={row as unknown as Record<string, unknown> | undefined}
+      row={row as unknown as ObservationImportsHistoryRow | undefined}
       historyConfig={{
         historyTable: 'observation_imports_history',
         rowIdField: 'observation_import_id',

@@ -33,10 +33,7 @@ export const CheckReport = ({ from }: { from: string }) => {
   const row = res?.rows?.[0] as CheckReports | undefined
   console.log('CheckReport', { checkReportId, row, res })
 
-  const onChange = async (
-    e: React.ChangeEvent<HTMLInputElement>,
-    data?: object,
-  ) => {
+  const onChange = async (e: React.ChangeEvent<HTMLElement>, data?: object) => {
     const { name, value } = getValueFromChange(
       e,
       data as Parameters<typeof getValueFromChange>[1],
@@ -57,7 +54,6 @@ export const CheckReport = ({ from }: { from: string }) => {
       return
     }
     setValidations((prev) => {
-       
       const { [name]: _, ...rest } = prev
       return rest
     })

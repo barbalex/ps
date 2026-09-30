@@ -43,13 +43,14 @@ export const FetchWmsCapabilities = ({
     `SELECT count(*) FROM wms_service_layers WHERE wms_service_id = $1`,
     [wmsLayer.wms_service_id],
   )
-  const wmsServiceLayersCount: number = Number(res?.rows?.[0]?.count ?? 0)
+  const wmsServiceLayersCount = Number(res?.rows?.[0]?.count ?? 0)
 
   const onFetchCapabilities = async () => {
     const urlTrimmed = url?.trim?.()
     if (!urlTrimmed) return
 
-    let service: WmsServices | { wms_service_id: string; url: string } | undefined
+    let service:
+      WmsServices | { wms_service_id: string; url: string } | undefined
 
     // If wmsLayer has a wms_service_id, use that service directly
     if (wmsLayer.wms_service_id) {
@@ -107,8 +108,8 @@ export const FetchWmsCapabilities = ({
           if (layerIds.includes(op.rowId as string)) return false
           // Also remove if the draft references this service
           if (
-            (op.draft as Record<string, unknown> | undefined)?.wms_service_id ===
-            service?.wms_service_id
+            (op.draft as Record<string, unknown> | undefined)
+              ?.wms_service_id === service?.wms_service_id
           )
             return false
           return true
@@ -177,8 +178,8 @@ export const FetchWmsCapabilities = ({
           if (layerIds.includes(op.rowId as string)) return false
           // Also remove if the draft references this service
           if (
-            (op.draft as Record<string, unknown> | undefined)?.wms_service_id ===
-            service?.wms_service_id
+            (op.draft as Record<string, unknown> | undefined)
+              ?.wms_service_id === service?.wms_service_id
           )
             return false
           return true

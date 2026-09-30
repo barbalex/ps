@@ -2,7 +2,6 @@ import { useParams } from '@tanstack/react-router'
 import { usePGlite, useLiveQuery } from '@electric-sql/pglite-react'
 import { useSetAtom } from 'jotai'
 import { useIntl } from 'react-intl'
-import * as fluentUiReactComponents from '@fluentui/react-components'
 
 import { DropdownFieldOptions } from '../../../components/shared/DropdownFieldOptions.tsx'
 import { TextField } from '../../../components/shared/TextField.tsx'
@@ -10,14 +9,14 @@ import { getValueFromChange } from '../../../modules/getValueFromChange.ts'
 import { upsertVectorLayerDisplaysForVectorLayer } from './upsertVectorLayerDisplaysForVectorLayer.ts'
 import { addOperationAtom } from '../../../store.ts'
 import type VectorLayers from '../../../models/public/VectorLayers.ts'
+import type { FieldChangeData } from '../../../components/shared/fieldChange.ts'
 
-type InputOnChangeData = Parameters<
-  NonNullable<
-    React.ComponentProps<typeof fluentUiReactComponents.Input>['onChange']
-  >
->[1]
-
-export const Property = ({ vectorLayer }: { vectorLayer: VectorLayers; from?: string }) => {
+export const Property = ({
+  vectorLayer,
+}: {
+  vectorLayer: VectorLayers
+  from?: string
+}) => {
   const { projectId, vectorLayerId } = useParams({ strict: false })
   const addOperation = useSetAtom(addOperationAtom)
   const { formatMessage } = useIntl()
@@ -54,8 +53,8 @@ export const Property = ({ vectorLayer }: { vectorLayer: VectorLayers; from?: st
 
   // TODO: get fields of wfs
   const onChange = async (
-    e: React.ChangeEvent<HTMLInputElement>,
-    data: InputOnChangeData,
+    e: React.ChangeEvent<HTMLElement>,
+    data?: FieldChangeData,
   ) => {
     const { value } = getValueFromChange(e, data)
     const prevRes = await db.query(

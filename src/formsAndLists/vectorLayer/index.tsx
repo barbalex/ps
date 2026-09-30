@@ -12,6 +12,7 @@ import { addOperationAtom } from '../../store.ts'
 import type VectorLayers from '../../models/public/VectorLayers.ts'
 
 import '../../form.css'
+import type { FieldChangeData } from '../../components/shared/fieldChange.ts'
 
 export const VectorLayer = ({ from }: { from: string }) => {
   const { vectorLayerId } = useParams({ strict: false })
@@ -26,15 +27,16 @@ export const VectorLayer = ({ from }: { from: string }) => {
     `SELECT * FROM vector_layers WHERE vector_layer_id = $1`,
     [vectorLayerId],
   )
-  const row: VectorLayers | undefined = res?.rows?.[0] as VectorLayers | undefined
+  const row: VectorLayers | undefined = res?.rows?.[0] as
+    VectorLayers | undefined
 
   const onChange = async (
-    e: React.ChangeEvent<HTMLInputElement>,
-    data: Parameters<typeof getValueFromChange>[1],
+    e: React.ChangeEvent<HTMLElement>,
+    data?: FieldChangeData,
   ) => {
     const { name, value } = getValueFromChange(e, data)
     // only change if value has changed: maybe only focus entered and left
-    if ((row as Record<string, any>)[name] === value) return
+    if ((row as unknown as Record<string, unknown>)[name] === value) return
 
     try {
       await db.query(
@@ -44,12 +46,14 @@ export const VectorLayer = ({ from }: { from: string }) => {
     } catch (error) {
       setValidations((prev) => ({
         ...prev,
-        [name]: { state: 'error', message: error instanceof Error ? error.message : String(error) },
+        [name]: {
+          state: 'error',
+          message: error instanceof Error ? error.message : String(error),
+        },
       }))
       return
     }
     setValidations((prev) => {
-       
       const { [name]: _, ...rest } = prev
       return rest
     })
@@ -66,20 +70,12 @@ export const VectorLayer = ({ from }: { from: string }) => {
   if (!res) return <Loading />
 
   if (!row) {
-    return (
-      <NotFound
-        table="Vector Layer"
-        id={vectorLayerId}
-      />
-    )
+    return <NotFound table="Vector Layer" id={vectorLayerId} />
   }
 
   return (
     <div className="form-outer-container">
-      <Header
-        row={row}
-        from={from}
-      />
+      <Header row={row} from={from} />
       <div className="form-container">
         <VectorLayerForm
           onChange={onChange}

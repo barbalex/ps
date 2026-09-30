@@ -22,18 +22,23 @@ import {
 
 import type WmsLayers from '../../models/public/WmsLayers.ts'
 import type WmsLayersHistory from '../../models/public/WmsLayersHistory.ts'
+import type { FieldChangeData } from '../../components/shared/fieldChange.ts'
 
 export const WmsLayerHistoryCompare = () => {
   const { formatMessage } = useIntl()
   const navigate = useNavigate()
-  const { projectId, wmsLayerId, wmsLayerHistoryId } = useParams({ strict: false })
+  const { projectId, wmsLayerId, wmsLayerHistoryId } = useParams({
+    strict: false,
+  })
   const wmsLayerPath = `/data/projects/${projectId}/wms-layers/${wmsLayerId}/wms-layer`
   const historyPath = `/data/projects/${projectId}/wms-layers/${wmsLayerId}/histories`
 
   const addOperation = useSetAtom(addOperationAtom)
   const db = usePGlite()
   const autoFocusRef = useRef<HTMLInputElement>(null)
-  const [validations, setValidations] = useState<Record<string, { state: 'error'; message: string }>>({})
+  const [validations, setValidations] = useState<
+    Record<string, { state: 'error'; message: string }>
+  >({})
 
   const rowRes = useLiveQuery(
     `SELECT * FROM wms_layers WHERE wms_layer_id = $1`,
@@ -42,11 +47,12 @@ export const WmsLayerHistoryCompare = () => {
   const row = rowRes?.rows?.[0] as WmsLayers | undefined
 
   const onChange = async (
-    e: React.ChangeEvent<HTMLInputElement>,
-    data: Parameters<typeof getValueFromChange>[1],
+    e: React.ChangeEvent<HTMLElement>,
+    data?: FieldChangeData,
   ) => {
     const { name, value } = getValueFromChange(e, data)
-    if (!row || (row as Record<string, any>)[name] === value) return
+    if (!row || (row as unknown as Record<string, unknown>)[name] === value)
+      return
 
     try {
       await db.query(
@@ -56,13 +62,15 @@ export const WmsLayerHistoryCompare = () => {
     } catch (error) {
       setValidations((prev) => ({
         ...prev,
-        [name]: { state: 'error', message: error instanceof Error ? error.message : String(error) },
+        [name]: {
+          state: 'error',
+          message: error instanceof Error ? error.message : String(error),
+        },
       }))
       return
     }
 
     setValidations((prev) => {
-       
       const { [name]: _unused, ...rest } = prev
       return rest
     })
@@ -125,7 +133,9 @@ export const WmsLayerHistoryCompare = () => {
   })
 
   const formatFieldValue = (field: string, history: WmsLayersHistory) =>
-    stringifyHistoryValue((history as Record<string, any>)[field])
+    stringifyHistoryValue(
+      (history as unknown as Record<string, unknown>)[field],
+    )
 
   return (
     <HistoryCompare<WmsLayersHistory>

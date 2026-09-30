@@ -23,9 +23,9 @@ import {
 import type ActionTaxa from '../../models/public/ActionTaxa.ts'
 import type ActionTaxaHistory from '../../models/public/ActionTaxaHistory.ts'
 import type Units from '../../models/public/Units.ts'
+import type { FieldChangeData } from '../../components/shared/fieldChange.ts'
 
-export const ActionTaxonHistoryCompare = ({
-}: {
+export const ActionTaxonHistoryCompare = (_: {
   from:
     | '/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/actions/$actionId_/taxa/$actionTaxonId_/histories/$actionTaxonHistoryId'
     | '/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/places/$placeId2_/actions/$actionId_/taxa/$actionTaxonId_/histories/$actionTaxonHistoryId'
@@ -51,7 +51,9 @@ export const ActionTaxonHistoryCompare = ({
   const db = usePGlite()
   const autoFocusRef = useRef<HTMLInputElement>(null)
 
-  const [validations, setValidations] = useState<Record<string, { state: 'error'; message: string }>>({})
+  const [validations, setValidations] = useState<
+    Record<string, { state: 'error'; message: string }>
+  >({})
 
   const rowRes = useLiveQuery(
     `WITH at AS (
@@ -78,11 +80,12 @@ export const ActionTaxonHistoryCompare = ({
   const selectedUnit = units.find((u) => u.unit_id === row?.unit_id)
 
   const onChange = async (
-    e: React.ChangeEvent<HTMLInputElement>,
-    data: Parameters<typeof getValueFromChange>[1],
+    e: React.ChangeEvent<HTMLElement>,
+    data?: FieldChangeData,
   ) => {
     const { name, value } = getValueFromChange(e, data)
-    if (!row || (row as Record<string, any>)[name] === value) return
+    if (!row || (row as unknown as Record<string, unknown>)[name] === value)
+      return
 
     try {
       await db.query(
@@ -92,13 +95,15 @@ export const ActionTaxonHistoryCompare = ({
     } catch (error) {
       setValidations((prev) => ({
         ...prev,
-        [name]: { state: 'error', message: error instanceof Error ? error.message : String(error) },
+        [name]: {
+          state: 'error',
+          message: error instanceof Error ? error.message : String(error),
+        },
       }))
       return
     }
 
     setValidations((prev) => {
-       
       const { [name]: _unused, ...rest } = prev
       return rest
     })
@@ -130,72 +135,74 @@ export const ActionTaxonHistoryCompare = ({
   const leftContent = (
     <div className="form-container">
       <>
-      <DropdownField
-        label={formatMessage({ id: 'OSk4zO', defaultMessage: 'Taxon' })}
-        name="taxon_id"
-        table="taxa"
-        value={(row.taxon_id as string | null) ?? ''}
-        onChange={onChange}
-        autoFocus
-        ref={autoFocusRef}
-        validationState={validations?.taxon_id?.state}
-        validationMessage={validations?.taxon_id?.message}
-      />
-      <RadioGroupField
-        label={formatMessage({ id: 'bDkNqO', defaultMessage: 'Einheit' })}
-        name="unit_id"
-        list={unitIds}
-        labelMap={unitLabelMap}
-        isLoading={rowRes === undefined}
-        value={(row.unit_id as string | null) ?? ''}
-        onChange={onChange}
-        validationState={
-          selectedUnit && !selectedUnit.type
-            ? 'warning'
-            : (validations?.unit_id?.state ?? 'none')
-        }
-        validationMessage={
-          selectedUnit && !selectedUnit.type
-            ? formatMessage({
-                id: 'uN4VwX',
-                defaultMessage:
-                  'Mengen-Feld wird nicht angezeigt, weil die gewählte Einheit keinen Typ hat.',
-              })
-            : validations?.unit_id?.message
-        }
-      />
-      {(selectedUnit?.type === 'integer' || row.quantity_integer !== null) && (
-        <TextField
-          label={quantityLabel}
-          name="quantity_integer"
-          type="number"
-          value={(row.quantity_integer as number | null) ?? ''}
+        <DropdownField
+          label={formatMessage({ id: 'OSk4zO', defaultMessage: 'Taxon' })}
+          name="taxon_id"
+          table="taxa"
+          value={(row.taxon_id as string | null) ?? ''}
           onChange={onChange}
-          validationState={validations?.quantity_integer?.state}
-          validationMessage={validations?.quantity_integer?.message}
+          autoFocus
+          ref={autoFocusRef}
+          validationState={validations?.taxon_id?.state}
+          validationMessage={validations?.taxon_id?.message}
         />
-      )}
-      {(selectedUnit?.type === 'numeric' || row.quantity_numeric !== null) && (
-        <TextField
-          label={quantityLabel}
-          name="quantity_numeric"
-          type="number"
-          value={(row.quantity_numeric as number | null) ?? ''}
+        <RadioGroupField
+          label={formatMessage({ id: 'bDkNqO', defaultMessage: 'Einheit' })}
+          name="unit_id"
+          list={unitIds}
+          labelMap={unitLabelMap}
+          isLoading={rowRes === undefined}
+          value={(row.unit_id as string | null) ?? ''}
           onChange={onChange}
-          validationState={validations?.quantity_numeric?.state}
-          validationMessage={validations?.quantity_numeric?.message}
+          validationState={
+            selectedUnit && !selectedUnit.type
+              ? 'warning'
+              : (validations?.unit_id?.state ?? 'none')
+          }
+          validationMessage={
+            selectedUnit && !selectedUnit.type
+              ? formatMessage({
+                  id: 'uN4VwX',
+                  defaultMessage:
+                    'Mengen-Feld wird nicht angezeigt, weil die gewählte Einheit keinen Typ hat.',
+                })
+              : validations?.unit_id?.message
+          }
         />
-      )}
-      {(selectedUnit?.type === 'text' || row.quantity_text !== null) && (
-        <TextField
-          label={quantityLabel}
-          name="quantity_text"
-          value={(row.quantity_text as string | null) ?? ''}
-          onChange={onChange}
-          validationState={validations?.quantity_text?.state}
-          validationMessage={validations?.quantity_text?.message}
-        />
-      )}
+        {(selectedUnit?.type === 'integer' ||
+          row.quantity_integer !== null) && (
+          <TextField
+            label={quantityLabel}
+            name="quantity_integer"
+            type="number"
+            value={(row.quantity_integer as number | null) ?? ''}
+            onChange={onChange}
+            validationState={validations?.quantity_integer?.state}
+            validationMessage={validations?.quantity_integer?.message}
+          />
+        )}
+        {(selectedUnit?.type === 'numeric' ||
+          row.quantity_numeric !== null) && (
+          <TextField
+            label={quantityLabel}
+            name="quantity_numeric"
+            type="number"
+            value={(row.quantity_numeric as number | null) ?? ''}
+            onChange={onChange}
+            validationState={validations?.quantity_numeric?.state}
+            validationMessage={validations?.quantity_numeric?.message}
+          />
+        )}
+        {(selectedUnit?.type === 'text' || row.quantity_text !== null) && (
+          <TextField
+            label={quantityLabel}
+            name="quantity_text"
+            value={(row.quantity_text as string | null) ?? ''}
+            onChange={onChange}
+            validationState={validations?.quantity_text?.state}
+            validationMessage={validations?.quantity_text?.message}
+          />
+        )}
       </>
     </div>
   )
@@ -220,7 +227,9 @@ export const ActionTaxonHistoryCompare = ({
       if (!unitId) return ''
       return unitLabelMap[unitId] ?? unitId
     }
-    return stringifyHistoryValue((history as Record<string, any>)[field])
+    return stringifyHistoryValue(
+      (history as unknown as Record<string, unknown>)[field],
+    )
   }
 
   const visibleCurrentFields = new Set([

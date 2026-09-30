@@ -1,5 +1,4 @@
 import { useIntl } from 'react-intl'
-import type { InputProps } from '@fluentui/react-components'
 
 import { TextField } from '../../components/shared/TextField.tsx'
 import { RadioGroupField } from '../../components/shared/RadioGroupField.tsx'
@@ -10,11 +9,10 @@ import { SectionDescription } from '../../components/shared/SectionDescription.t
 import type Exports from '../../models/public/Exports.ts'
 
 import '../../form.css'
-
-type InputOnChangeData = Parameters<NonNullable<InputProps['onChange']>>[1]
+import type { FieldChangeData } from '../../components/shared/fieldChange.ts'
 
 type Props = {
-  onChange: (e: React.ChangeEvent<HTMLInputElement>, data: InputOnChangeData) => void
+  onChange: (e: React.ChangeEvent<HTMLElement>, data?: FieldChangeData) => void
   validations?: Record<string, { state: 'error'; message: string }>
   row?: Exports
   autoFocusRef?: React.RefObject<HTMLInputElement | null>
@@ -22,7 +20,12 @@ type Props = {
 }
 
 // this form is rendered from the item view and from the filter
-export const ExportForm = ({ onChange, validations = {}, row, autoFocusRef }: Props) => {
+export const ExportForm = ({
+  onChange,
+  validations = {},
+  row,
+  autoFocusRef,
+}: Props) => {
   const { formatMessage } = useIntl()
 
   const paramHint = (() => {
@@ -41,7 +44,8 @@ export const ExportForm = ({ onChange, validations = {}, row, autoFocusRef }: Pr
     if (row?.level === 'subproject') {
       return formatMessage({
         id: 'export.sql.hintSubproject',
-        defaultMessage: '$1 = subproject_id (uuid), $2 = year (integer, optional)',
+        defaultMessage:
+          '$1 = subproject_id (uuid), $2 = year (integer, optional)',
       })
     }
     return formatMessage({
@@ -53,7 +57,10 @@ export const ExportForm = ({ onChange, validations = {}, row, autoFocusRef }: Pr
   return (
     <>
       <Section
-        title={formatMessage({ id: 'export.section.name', defaultMessage: 'Name' })}
+        title={formatMessage({
+          id: 'export.section.name',
+          defaultMessage: 'Name',
+        })}
       >
         <SectionDescription>
           {formatMessage({
@@ -102,7 +109,10 @@ export const ExportForm = ({ onChange, validations = {}, row, autoFocusRef }: Pr
         />
       </Section>
       <Section
-        title={formatMessage({ id: 'export.section.variables', defaultMessage: 'Variabeln' })}
+        title={formatMessage({
+          id: 'export.section.variables',
+          defaultMessage: 'Variabeln',
+        })}
       >
         <SectionDescription>
           {formatMessage({
@@ -121,8 +131,14 @@ export const ExportForm = ({ onChange, validations = {}, row, autoFocusRef }: Pr
           value={row?.level ?? null}
           onChange={onChange}
           labelMap={{
-            root: formatMessage({ id: 'export.level.root', defaultMessage: 'Root' }),
-            project: formatMessage({ id: 'export.level.project', defaultMessage: 'Projekt' }),
+            root: formatMessage({
+              id: 'export.level.root',
+              defaultMessage: 'Root',
+            }),
+            project: formatMessage({
+              id: 'export.level.project',
+              defaultMessage: 'Projekt',
+            }),
             subproject: formatMessage({
               id: 'export.level.subproject',
               defaultMessage: 'Teilprojekt',
@@ -131,7 +147,10 @@ export const ExportForm = ({ onChange, validations = {}, row, autoFocusRef }: Pr
         />
       </Section>
       <Section
-        title={formatMessage({ id: 'export.section.query', defaultMessage: 'Abfrage' })}
+        title={formatMessage({
+          id: 'export.section.query',
+          defaultMessage: 'Abfrage',
+        })}
       >
         <SectionDescription>
           {formatMessage({
@@ -141,7 +160,10 @@ export const ExportForm = ({ onChange, validations = {}, row, autoFocusRef }: Pr
           })}
         </SectionDescription>
         <TextArea
-          label={formatMessage({ id: 'export.description', defaultMessage: 'Beschreibung' })}
+          label={formatMessage({
+            id: 'export.description',
+            defaultMessage: 'Beschreibung',
+          })}
           name="description"
           value={row?.description ?? ''}
           onChange={onChange}
@@ -150,9 +172,7 @@ export const ExportForm = ({ onChange, validations = {}, row, autoFocusRef }: Pr
           label={formatMessage({ id: 'export.sql', defaultMessage: 'SQL' })}
           name="sql"
           value={row?.sql ?? ''}
-          onChange={
-            onChange as (e: React.ChangeEvent<HTMLInputElement>) => void
-          }
+          onChange={onChange as (e: React.ChangeEvent<HTMLElement>) => void}
           hint={paramHint}
           validationMessage={validations?.sql?.message}
           validationState={validations?.sql?.state}

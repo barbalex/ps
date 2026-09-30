@@ -58,7 +58,8 @@ type VectorLayerGeomRow = {
 
 export const PVLGeom = ({ layer, display }: Props) => {
   const db = usePGlite()
-  const layerPresentation = layer.layer_presentations?.[0]!
+  const layerPresentation = (layer.layer_presentations ??
+    [])[0] as LayerPresentations
   const addNotification = useSetAtom(addNotificationAtom)
   const removeNotification = useSetAtom(removeNotificationAtom)
 
@@ -214,16 +215,14 @@ export const PVLGeom = ({ layer, display }: Props) => {
           const layersData = [
             {
               label: layer.label,
-              properties: Object.entries(
-                feature?.properties ?? {},
-              ) as [string, ReactNode][],
+              properties: Object.entries(feature?.properties ?? {}) as [
+                string,
+                ReactNode,
+              ][],
             },
           ]
           const popupContent = ReactDOMServer.renderToString(
-            <Popup
-              layersData={layersData}
-              mapSize={mapSize}
-            />,
+            <Popup layersData={layersData} mapSize={mapSize} />,
           )
           _layer.bindPopup(popupContent)
         }}
@@ -236,16 +235,17 @@ export const PVLGeom = ({ layer, display }: Props) => {
             } as L.CircleMarkerOptions)
           }
           const Component =
-            icons[display.marker_symbol as keyof typeof icons] ??
-            icons.MdPlace
+            icons[display.marker_symbol as keyof typeof icons] ?? icons.MdPlace
           const markerIconStyle = {
             '--marker-size': `${display?.marker_size ?? 16}px`,
             ...(display?.color ? { '--marker-color': display.color } : {}),
           } as React.CSSProperties
           return L.marker(latlng, {
-            icon: new (L.divIcon as unknown as new (
-              options?: L.DivIconOptions,
-            ) => L.DivIcon)({
+            icon: new (
+              L.divIcon as unknown as new (
+                options?: L.DivIconOptions,
+              ) => L.DivIcon
+            )({
               html: ReactDOMServer.renderToString(
                 <Component
                   className={`${styles.markerIcon} ${styles.markerIconSized}`}
@@ -253,8 +253,9 @@ export const PVLGeom = ({ layer, display }: Props) => {
                 />,
               ),
             }),
-            opacity:
-              display.opacity_percent ? display.opacity_percent / 100 : 0,
+            opacity: display.opacity_percent
+              ? display.opacity_percent / 100
+              : 0,
           })
         }}
       />

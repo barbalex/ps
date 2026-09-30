@@ -41,7 +41,14 @@ export const CheckWithAll = ({
   from: string
   allInline?: boolean
 }) => {
-  const { checkId, projectId, placeId, placeId2, filteredViewId, subprojectId } = useParams({
+  const {
+    checkId,
+    projectId,
+    placeId,
+    placeId2,
+    filteredViewId,
+    subprojectId,
+  } = useParams({
     strict: false,
   })
   const addOperation = useSetAtom(addOperationAtom)
@@ -102,9 +109,9 @@ export const CheckWithAll = ({
   const [filesFilter] = useAtom(filesFilterAtom)
   const filesIsFiltered = !!filterStringFromFilter(filesFilter)
   // the context actually holds a ref to the uploader API
-  const uploaderCtx = useContext(UploaderContext) as unknown as
-    | { current?: { getAPI?: () => { initFlow?: () => void } } | null }
-    | null
+  const uploaderCtx = useContext(UploaderContext) as unknown as {
+    current?: { getAPI?: () => { initFlow?: () => void } } | null
+  } | null
   const uploaderApi = uploaderCtx?.current?.getAPI?.()
   const onClickAddFile = () => uploaderApi?.initFlow?.()
 
@@ -140,10 +147,7 @@ export const CheckWithAll = ({
   const taxaUrl = `${checkBaseUrl}/taxa`
   const checkUrl = isAllInline ? checkBaseUrl : `${checkBaseUrl}/check`
 
-  const onChange = async (
-    e: React.ChangeEvent<HTMLInputElement>,
-    data?: object,
-  ) => {
+  const onChange = async (e: React.ChangeEvent<HTMLElement>, data?: object) => {
     const { name, value } = getValueFromChange(
       e,
       data as Parameters<typeof getValueFromChange>[1],
@@ -162,7 +166,6 @@ export const CheckWithAll = ({
       return
     }
     setValidations((prev) => {
-       
       const { [name]: _, ...rest } = prev
       return rest
     })

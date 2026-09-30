@@ -5,6 +5,7 @@ import { SwitchField } from '../../components/shared/SwitchField.tsx'
 import type WidgetTypes from '../../models/public/WidgetTypes.ts'
 
 import '../../form.css'
+import type { FieldChangeHandler } from '../../components/shared/fieldChange.ts'
 
 // this form is rendered from a parent or outlet
 // TODO: get working from filter
@@ -14,9 +15,9 @@ export const WidgetTypeForm = ({
   row,
   autoFocusRef,
 }: {
-  onChange: (e: React.ChangeEvent<any>, data?: any) => void
+  onChange: FieldChangeHandler
   validations?: Record<string, { state: 'error'; message: string }>
-  row: WidgetTypes | Record<string, any>
+  row: WidgetTypes | Record<string, never>
   autoFocusRef?: React.Ref<HTMLInputElement>
 }) => {
   const { formatMessage } = useIntl()
@@ -34,13 +35,19 @@ export const WidgetTypeForm = ({
         validationState={validations?.name?.state}
       />
       <SwitchField
-        label={formatMessage({ id: 'NdL8pA', defaultMessage: 'Ben\u00f6tigt eine Liste' })}
+        label={formatMessage({
+          id: 'NdL8pA',
+          defaultMessage: 'Ben\u00f6tigt eine Liste',
+        })}
         name="needs_list"
         value={row.needs_list ?? false}
         onChange={onChange}
       />
       <TextField
-        label={formatMessage({ id: 'Pq7nWk', defaultMessage: 'Sortier-Reihenfolge' })}
+        label={formatMessage({
+          id: 'Pq7nWk',
+          defaultMessage: 'Sortier-Reihenfolge',
+        })}
         name="sort"
         value={row.sort ?? ''}
         type="number"

@@ -14,10 +14,10 @@ import { onlineAtom } from '../../../store.ts'
 import { fetchPostgrestToken } from '../../../modules/fetchPostgrestToken.ts'
 import { constants } from '../../../modules/constants.ts'
 
-type HistoryRowLike = Record<string, unknown>
+type HistoryRowLike = object
 
 const getHistoryRecordId = (history: HistoryRowLike): string | null => {
-  const updatedAt = history.updated_at
+  const updatedAt = (history as Record<string, unknown>).updated_at
   if (updatedAt) return String(updatedAt)
   return null
 }
@@ -28,7 +28,7 @@ type UseHistoryRecordsArgs = {
   rowId: string | undefined
   historyPath: string
   routeHistoryId: string | undefined
-  currentRow: Record<string, unknown> | undefined
+  currentRow: object | undefined
 }
 
 type UseHistoryRecordsResult<TRow extends HistoryRowLike> = {

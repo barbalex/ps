@@ -13,7 +13,7 @@ import { addOperationAtom } from '../../store.ts'
 import type Taxa from '../../models/public/Taxa.ts'
 
 import '../../form.css'
-
+import type { FieldChangeData } from '../../components/shared/fieldChange.ts'
 
 export const Taxon = () => {
   const { taxonId } = useParams({ strict: false })
@@ -30,12 +30,12 @@ export const Taxon = () => {
   const row: Taxa | undefined = res?.rows?.[0] as Taxa | undefined
 
   const onChange = async (
-    e: React.ChangeEvent<HTMLInputElement>,
-    data: Parameters<typeof getValueFromChange>[1],
+    e: React.ChangeEvent<HTMLElement>,
+    data?: FieldChangeData,
   ) => {
     const { name, value } = getValueFromChange(e, data)
     // only change if value has changed: maybe only focus entered and left
-    if ((row as Record<string, any>)[name] === value) return
+    if ((row as unknown as Record<string, unknown>)[name] === value) return
 
     try {
       await db.query(`UPDATE taxa SET ${name} = $1 WHERE taxon_id = $2`, [
@@ -45,12 +45,14 @@ export const Taxon = () => {
     } catch (error) {
       setValidations((prev) => ({
         ...prev,
-        [name]: { state: 'error', message: error instanceof Error ? error.message : String(error) },
+        [name]: {
+          state: 'error',
+          message: error instanceof Error ? error.message : String(error),
+        },
       }))
       return
     }
     setValidations((prev) => {
-       
       const { [name]: _, ...rest } = prev
       return rest
     })

@@ -15,7 +15,7 @@ import type ListValues from '../../models/public/ListValues.ts'
 import type Lists from '../../models/public/Lists.ts'
 
 import '../../form.css'
-
+import type { FieldChangeData } from '../../components/shared/fieldChange.ts'
 
 export const ListValue = () => {
   const { listId, listValueId } = useParams({ strict: false })
@@ -36,8 +36,8 @@ export const ListValue = () => {
     [listId],
   )
   const row: ListValues | undefined = res?.rows?.[0] as ListValues | undefined
-  const listValueType: Lists['value_type'] | undefined =
-    listRes?.rows?.[0]?.value_type as Lists['value_type'] | undefined
+  const listValueType: Lists['value_type'] | undefined = listRes?.rows?.[0]
+    ?.value_type as Lists['value_type'] | undefined
 
   const formatDateForInput = (value: unknown) => {
     if (!value) return ''
@@ -54,8 +54,8 @@ export const ListValue = () => {
   }
 
   const onChange = async (
-    e: React.ChangeEvent<HTMLInputElement>,
-    data: Parameters<typeof getValueFromChange>[1],
+    e: React.ChangeEvent<HTMLElement>,
+    data?: FieldChangeData,
   ) => {
     const { name, value: valueRaw } = getValueFromChange(e, data)
     const value =
@@ -63,7 +63,7 @@ export const ListValue = () => {
         ? null
         : valueRaw
     // only change if value has changed: maybe only focus entered and left
-    if ((row as Record<string, any>)[name] === value) return
+    if ((row as unknown as Record<string, unknown>)[name] === value) return
 
     try {
       await db.query(
@@ -73,12 +73,14 @@ export const ListValue = () => {
     } catch (error) {
       setValidations((prev) => ({
         ...prev,
-        [name]: { state: 'error', message: error instanceof Error ? error.message : String(error) },
+        [name]: {
+          state: 'error',
+          message: error instanceof Error ? error.message : String(error),
+        },
       }))
       return
     }
     setValidations((prev) => {
-       
       const { [name]: _, ...rest } = prev
       return rest
     })
@@ -152,7 +154,8 @@ export const ListValue = () => {
                 label={formatMessage({ id: 'ejuFAr', defaultMessage: 'Wert' })}
                 name={valueField.name}
                 type={
-                  valueField.type as 'number' | 'text' | 'date' | 'datetime-local'
+                  valueField.type as
+                    'number' | 'text' | 'date' | 'datetime-local'
                 }
                 value={valueField.value}
                 onChange={onChange}

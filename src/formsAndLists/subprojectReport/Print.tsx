@@ -1,4 +1,6 @@
 import { Suspense, useEffect, useState } from 'react'
+import type Charts from '../../models/public/Charts.ts'
+import type Fields from '../../models/public/Fields.ts'
 import { useParams } from '@tanstack/react-router'
 import { usePGlite, useLiveQuery } from '@electric-sql/pglite-react'
 import { useAtom } from 'jotai'
@@ -18,6 +20,7 @@ import {
 } from '../../components/shared/reportVersions.ts'
 import styles from './Print.module.css'
 import { buildData } from '../chart/Chart/buildData/index.ts'
+import type { ChartData } from '../chart/Chart/buildData/index.ts'
 import { groupSeriesBySubject } from '../chart/Chart/buildData/index.ts'
 import { SingleChart } from '../chart/Chart/Chart.tsx'
 import {
@@ -29,10 +32,14 @@ import {
 import '../../form.css'
 
 export const SubprojectReportPrint = ({ from }: { from: string }) => {
-  const { subprojectReportId, projectId, subprojectId } = useParams({ strict: false })
+  const { subprojectReportId, projectId, subprojectId } = useParams({
+    strict: false,
+  })
   const { formatMessage } = useIntl()
   const [language] = useAtom(languageAtom)
-  const [chartDataMap, setChartDataMap] = useState<Record<string, any>>({})
+  const [chartDataMap, setChartDataMap] = useState<Record<string, ChartData>>(
+    {},
+  )
 
   const db = usePGlite()
 
@@ -69,14 +76,13 @@ export const SubprojectReportPrint = ({ from }: { from: string }) => {
     WHERE subproject_report_id = $1`,
     [subprojectReportId],
   )
-  const row = (res?.rows?.[0] ?? {}) as Record<string, any>
+  const row = (res?.rows?.[0] ?? {}) as Record<string, unknown>
   const subprojectNameSingular = row?.subproject_name_singular as
-    | string
-    | undefined
+    string | undefined
   const jsonbData = jsonbDataFromRow(row)
   const design = row?.design ?? row?.active_design
-  const fields = row?.fields ?? []
-  const charts = row?.charts ?? []
+  const fields = (row?.fields ?? []) as Fields[]
+  const charts = (row?.charts ?? []) as Charts[]
   const chartsJson = JSON.stringify(charts)
   // server-side historized versions of the art's undated rows (online only,
   // cached by react-query) — place series count as of each chart year
@@ -89,65 +95,76 @@ export const SubprojectReportPrint = ({ from }: { from: string }) => {
     if (!parsedCharts.length) return
 
     const buildAllChartData = async () => {
-      const dataMap: Record<string, unknown> = {}
+      const dataMap: Record<string, ChartData> = {}
       for (const chart of parsedCharts) {
         if (!chart.subjects || !chart.subjects.length) continue
         const data = await buildData({
           chart,
           subjects: chart.subjects,
-          subproject_id: (subprojectId)!,
+          subproject_id: subprojectId!,
           project_id: projectId,
           db,
           placesVersions: versions?.places,
           subprojectsVersions: versions?.subprojects,
           reportYear: row.year as number | null,
         })
-        dataMap[chart.chart_id] = data
+        dataMap[chart.chart_id!] = data
       }
       setChartDataMap(dataMap)
       if (import.meta.env.DEV) {
         console.log(
           '[report-charts]',
           JSON.stringify(
-          Object.entries(dataMap).map(([chartId, data]) => {
-            const chartData = data as {
-              series?: { key: string }[]
-              data?: Record<string, unknown>[]
-            }
-            return {
-              chartId,
-              totals: chartData.data?.map(
-                (row) =>
+            Object.entries(dataMap).map(([chartId, data]) => {
+              const chartData = data as {
+                series?: { key: string }[]
+                data?: Record<string, unknown>[]
+              }
+              return {
+                chartId,
+                totals: chartData.data?.map((row) =>
                   chartData.series?.reduce(
                     (sum, singleSeries) =>
                       sum + Number(row[singleSeries.key] ?? 0),
                     0,
                   ),
-              ),
-              series: chartData.series?.map((singleSeries) => ({
-                key: singleSeries.key,
-                first: chartData.data?.[0]?.[singleSeries.key],
-                last: chartData.data?.[chartData.data.length - 1]?.[singleSeries.key],
-                max: chartData.data?.reduce(
-                  (max, row) => Math.max(max, Number(row[singleSeries.key] ?? 0)),
-                  0,
                 ),
-              })),
-            }
-          })),
+                series: chartData.series?.map((singleSeries) => ({
+                  key: singleSeries.key,
+                  first: chartData.data?.[0]?.[singleSeries.key],
+                  last: chartData.data?.[chartData.data.length - 1]?.[
+                    singleSeries.key
+                  ],
+                  max: chartData.data?.reduce(
+                    (max, row) =>
+                      Math.max(max, Number(row[singleSeries.key] ?? 0)),
+                    0,
+                  ),
+                })),
+              }
+            }),
+          ),
         )
       }
     }
 
     buildAllChartData()
-  }, [chartsJson, subprojectId, projectId, versions, localDataVersion])
+  }, [
+    chartsJson,
+    subprojectId,
+    projectId,
+    versions,
+    localDataVersion,
+    db,
+    row.year,
+  ])
 
   // Build Puck config from fields with actual data
-  const components: Record<string, any> = Object.assign(
+  const components: Record<string, unknown> = Object.assign(
     {},
     buildDataComponents(),
   )
-  fields.forEach((field: any) => {
+  fields.forEach((field) => {
     const componentName = `${field.name}Field`
 
     components[componentName] = {
@@ -161,13 +178,13 @@ export const SubprojectReportPrint = ({ from }: { from: string }) => {
       },
       render: () => {
         // Always read from the current report's jsonbData, not from the saved design value
-        const fieldValue = (jsonbData[field.name] ?? '') as string
+        const fieldValue = (jsonbData[field.name!] ?? '') as string
         // like apf2: empty fields are omitted from the printed report
         if (!fieldValue) return null
         return (
           <div className={styles.fieldWrapper}>
             <WrappingTextField
-              label={field.field_label || field.name}
+              label={field.field_label || field.name || ''}
               value={fieldValue}
             />
           </div>
@@ -177,21 +194,28 @@ export const SubprojectReportPrint = ({ from }: { from: string }) => {
   })
 
   // Add chart components
-  charts.forEach((chart: any) => {
+  charts.forEach((chart) => {
     const componentName = `chart_${chart.chart_id}`
 
     components[componentName] = {
-      label: chart.name || 'Chart',
+      label: chart.name ?? 'Chart',
       fields: {},
       defaultProps: {},
       render: () => {
-        const data = chartDataMap[chart.chart_id] ?? { data: [], years: [], series: [] }
+        const data = chartDataMap[chart.chart_id!] ?? {
+          data: [],
+          years: [],
+          series: [],
+        }
         return (
           <div className={styles.fieldWrapper}>
             <div className={styles.chartTitle}>
-              {row?.zielrelevant_einheit ?
-                chart.name.replace('Triebe total', row.zielrelevant_einheit)
-              : chart.name}
+              {row?.zielrelevant_einheit
+                ? (chart.name ?? '').replace(
+                    'Triebe total',
+                    String(row.zielrelevant_einheit),
+                  )
+                : (chart.name ?? '')}
             </div>
             {chart.subjects_single === true ? (
               groupSeriesBySubject(data.series ?? []).map((series) => (
@@ -216,7 +240,9 @@ export const SubprojectReportPrint = ({ from }: { from: string }) => {
     }
   })
 
-  const config = { components }
+  const config = { components } as unknown as Parameters<
+    typeof LazyPuckRender
+  >[0]['config']
 
   if (!res) return <Loading />
 
@@ -232,16 +258,20 @@ export const SubprojectReportPrint = ({ from }: { from: string }) => {
       <div className="form-container">
         <SubprojectReportContext.Provider
           value={{
-            projectId: row.project_id,
-            subprojectId: row.subproject_id,
-            year: row.year,
+            projectId: row.project_id as string | undefined,
+            subprojectId: row.subproject_id as string | undefined,
+            year: row.year as number | null,
           }}
         >
-          {design && fields.length > 0 && (
+          {!!design && fields.length > 0 && (
             <Suspense fallback={<Loading />}>
               <LazyPuckRender
                 config={config}
-                data={normalizePuckDesign(design)}
+                data={
+                  normalizePuckDesign(design) as Parameters<
+                    typeof LazyPuckRender
+                  >[0]['data']
+                }
               />
             </Suspense>
           )}

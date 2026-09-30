@@ -23,9 +23,9 @@ import {
 import type CheckTaxa from '../../models/public/CheckTaxa.ts'
 import type CheckTaxaHistory from '../../models/public/CheckTaxaHistory.ts'
 import type Units from '../../models/public/Units.ts'
+import type { FieldChangeData } from '../../components/shared/fieldChange.ts'
 
-export const CheckTaxonHistoryCompare = ({
-}: {
+export const CheckTaxonHistoryCompare = (_: {
   from:
     | '/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/checks/$checkId_/taxa/$checkTaxonId_/histories/$checkTaxonHistoryId'
     | '/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/places/$placeId2_/checks/$checkId_/taxa/$checkTaxonId_/histories/$checkTaxonHistoryId'
@@ -56,7 +56,9 @@ export const CheckTaxonHistoryCompare = ({
   const db = usePGlite()
   const autoFocusRef = useRef<HTMLInputElement>(null)
 
-  const [validations, setValidations] = useState<Record<string, { state: 'error'; message: string }>>({})
+  const [validations, setValidations] = useState<
+    Record<string, { state: 'error'; message: string }>
+  >({})
 
   const rowRes = useLiveQuery(
     `WITH ct AS (
@@ -83,11 +85,12 @@ export const CheckTaxonHistoryCompare = ({
   const selectedUnit = units.find((u) => u.unit_id === row?.unit_id)
 
   const onChange = async (
-    e: React.ChangeEvent<HTMLInputElement>,
-    data: Parameters<typeof getValueFromChange>[1],
+    e: React.ChangeEvent<HTMLElement>,
+    data?: FieldChangeData,
   ) => {
     const { name, value } = getValueFromChange(e, data)
-    if (!row || (row as Record<string, any>)[name] === value) return
+    if (!row || (row as unknown as Record<string, unknown>)[name] === value)
+      return
 
     try {
       await db.query(
@@ -97,13 +100,15 @@ export const CheckTaxonHistoryCompare = ({
     } catch (error) {
       setValidations((prev) => ({
         ...prev,
-        [name]: { state: 'error', message: error instanceof Error ? error.message : String(error) },
+        [name]: {
+          state: 'error',
+          message: error instanceof Error ? error.message : String(error),
+        },
       }))
       return
     }
 
     setValidations((prev) => {
-       
       const { [name]: _unused, ...rest } = prev
       return rest
     })
@@ -227,7 +232,9 @@ export const CheckTaxonHistoryCompare = ({
       if (!unitId) return ''
       return unitLabelMap[unitId] ?? unitId
     }
-    return stringifyHistoryValue((history as Record<string, any>)[field])
+    return stringifyHistoryValue(
+      (history as unknown as Record<string, unknown>)[field],
+    )
   }
 
   const visibleCurrentFields = new Set([

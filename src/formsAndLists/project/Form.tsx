@@ -1,5 +1,4 @@
 import { useIntl } from 'react-intl'
-import type { InputOnChangeData } from '@fluentui/react-components'
 
 import { TextField } from '../../components/shared/TextField.tsx'
 import { Jsonb } from '../../components/shared/Jsonb/index.tsx'
@@ -7,18 +6,16 @@ import { jsonbDataFromRow } from '../../modules/jsonbDataFromRow.ts'
 import type Projects from '../../models/public/Projects.ts'
 
 import '../../form.css'
+import type { FieldChangeData } from '../../components/shared/fieldChange.ts'
 
 type Props = {
-  onChange: (
-    e: React.ChangeEvent<HTMLInputElement>,
-    data?: InputOnChangeData,
-  ) => void
+  onChange: (e: React.ChangeEvent<HTMLElement>, data?: FieldChangeData) => void
   validations?: Record<
     string,
     | { state: 'error' | 'warning' | 'success' | 'none'; message: string }
     | undefined
   >
-  row: Record<string, unknown>
+  row: Projects | Record<string, never>
   orIndex?: number
   from?: string
   autoFocusRef?: React.RefObject<HTMLInputElement | null>
@@ -69,7 +66,8 @@ export const ProjectForm = ({
           validations?.label?.message ??
           formatMessage({
             id: 'gHiJkL',
-            defaultMessage: 'Menschen-freundlicher Name. Beispiel: "Projekt-Name"',
+            defaultMessage:
+              'Menschen-freundlicher Name. Beispiel: "Projekt-Name"',
           })
         }
       />

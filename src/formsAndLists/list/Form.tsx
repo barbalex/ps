@@ -9,9 +9,10 @@ import { jsonbDataFromRow } from '../../modules/jsonbDataFromRow.ts'
 import type Lists from '../../models/public/Lists.ts'
 
 import '../../form.css'
+import type { FieldChangeHandler } from '../../components/shared/fieldChange.ts'
 
 type Props = {
-  onChange: (e: React.ChangeEvent<any>, data?: any) => void
+  onChange: FieldChangeHandler
   validations?: Record<string, { state: 'error'; message: string }>
   row: Lists
   orIndex?: number

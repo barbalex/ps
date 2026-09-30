@@ -20,12 +20,12 @@ import {
   preferredOrder,
 } from './historyCompareConfig.ts'
 
-import type PlaceActionReportQuantitiesHistory from '../../models/public/ActionReportQuantitiesHistory.ts'
+import type ActionReportQuantitiesHistory from '../../models/public/ActionReportQuantitiesHistory.ts'
 import type Units from '../../models/public/Units.ts'
 import type ListValues from '../../models/public/ListValues.ts'
+import type { FieldChangeData } from '../../components/shared/fieldChange.ts'
 
-export const ActionReportQuantityHistoryCompare = ({
-}: {
+export const ActionReportQuantityHistoryCompare = (_: {
   from:
     | '/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/action-reports/$actionReportId_/quantities/$actionReportQuantityId_/histories/$actionReportQuantityHistoryId'
     | '/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/places/$placeId2_/action-reports/$actionReportId_/quantities/$actionReportQuantityId_/histories/$actionReportQuantityHistoryId'
@@ -53,13 +53,15 @@ export const ActionReportQuantityHistoryCompare = ({
   const db = usePGlite()
   const autoFocusRef = useRef<HTMLInputElement>(null)
 
-  const [validations, setValidations] = useState<Record<string, { state: 'error'; message: string }>>({})
+  const [validations, setValidations] = useState<
+    Record<string, { state: 'error'; message: string }>
+  >({})
 
   const rowRes = useLiveQuery(
     `SELECT * FROM action_report_quantities WHERE place_action_report_quantity_id = $1`,
     [actionReportQuantityId],
   )
-  const row = rowRes?.rows?.[0] as Record<string, unknown> | undefined
+  const row = rowRes?.rows?.[0] as ActionReportQuantitiesHistory | undefined
 
   const unitsRes = useLiveQuery(
     `SELECT unit_id, name, type, list_id FROM units WHERE project_id = $1 ORDER BY sort, name`,
@@ -106,11 +108,12 @@ export const ActionReportQuantityHistoryCompare = ({
   )
 
   const onChange = async (
-    e: React.ChangeEvent<HTMLInputElement>,
-    data: Parameters<typeof getValueFromChange>[1],
+    e: React.ChangeEvent<HTMLElement>,
+    data?: FieldChangeData,
   ) => {
     const { name, value } = getValueFromChange(e, data)
-    if (!row || (row as Record<string, any>)[name] === value) return
+    if (!row || (row as unknown as Record<string, unknown>)[name] === value)
+      return
 
     try {
       await db.query(
@@ -120,13 +123,15 @@ export const ActionReportQuantityHistoryCompare = ({
     } catch (error) {
       setValidations((prev) => ({
         ...prev,
-        [name]: { state: 'error', message: error instanceof Error ? error.message : String(error) },
+        [name]: {
+          state: 'error',
+          message: error instanceof Error ? error.message : String(error),
+        },
       }))
       return
     }
 
     setValidations((prev) => {
-       
       const { [name]: _unused, ...rest } = prev
       return rest
     })
@@ -163,13 +168,15 @@ export const ActionReportQuantityHistoryCompare = ({
     } catch (error) {
       setValidations((prev) => ({
         ...prev,
-        [unitValueField]: { state: 'error', message: error instanceof Error ? error.message : String(error) },
+        [unitValueField]: {
+          state: 'error',
+          message: error instanceof Error ? error.message : String(error),
+        },
       }))
       return
     }
 
     setValidations((prev) => {
-       
       const { [unitValueField]: _unused, ...rest } = prev
       return rest
     })
@@ -325,18 +332,20 @@ export const ActionReportQuantityHistoryCompare = ({
 
   const formatFieldValue = (
     field: string,
-    history: PlaceActionReportQuantitiesHistory,
+    history: ActionReportQuantitiesHistory,
   ) => {
     if (field === 'unit_id') {
       const unitId = history.unit_id
       if (!unitId) return ''
       return unitLabelMap[unitId] ?? unitId
     }
-    return stringifyHistoryValue((history as Record<string, any>)[field])
+    return stringifyHistoryValue(
+      (history as unknown as Record<string, unknown>)[field],
+    )
   }
 
   return (
-    <HistoryCompare<PlaceActionReportQuantitiesHistory>
+    <HistoryCompare<ActionReportQuantitiesHistory>
       onBack={() => navigate({ to: actionReportQuantityPath })}
       leftContent={leftContent}
       visibleCurrentFields={visibleCurrentFields}

@@ -1,13 +1,12 @@
 import * as icons from 'react-icons/md'
-import * as fluentUiReactComponents from '@fluentui/react-components'
-type InputProps = React.ComponentProps<typeof fluentUiReactComponents.Input>
 
 import { Label } from '../../../components/shared/Label.tsx'
+import type { FieldChangeHandler } from '../../../components/shared/fieldChange.ts'
 import { MarkerSymbol } from './Symbol.tsx'
 import styles from './index.module.css'
 
 interface Props {
-  onChange: InputProps['onChange']
+  onChange: FieldChangeHandler
   value: string | undefined
 }
 
@@ -23,10 +22,9 @@ export const MarkerSymbolPicker = ({ onChange, value }: Props) => {
       <Label label="Symbol" />
       <div className={styles.symbolContainer}>
         {wantedIconKeys.map((key) => {
-          const Component = (icons as Record<
-            string,
-            React.ComponentType<any>
-          >)[key]
+          const Component = (
+            icons as Record<string, React.ComponentType<{ className?: string }>>
+          )[key]
 
           return (
             <MarkerSymbol

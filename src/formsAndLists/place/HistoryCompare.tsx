@@ -1,4 +1,5 @@
 import { useRef, useState } from 'react'
+import type Places from '../../models/public/Places.ts'
 import { useParams, useNavigate } from '@tanstack/react-router'
 import { usePGlite, useLiveQuery } from '@electric-sql/pglite-react'
 import { useSetAtom, useAtomValue } from 'jotai'
@@ -16,6 +17,7 @@ import {
   excludedRestoreFields,
   preferredOrder,
 } from './historyCompareConfig.ts'
+import type { FieldChangeData } from '../../components/shared/fieldChange.ts'
 
 export const PlaceHistoryCompare = ({
   from,
@@ -41,12 +43,14 @@ export const PlaceHistoryCompare = ({
   const db = usePGlite()
   const autoFocusRef = useRef<HTMLInputElement>(null)
 
-  const [validations, setValidations] = useState<Record<string, { state: 'error'; message: string }>>({})
+  const [validations, setValidations] = useState<
+    Record<string, { state: 'error'; message: string }>
+  >({})
 
   const rowRes = useLiveQuery(`SELECT * FROM places WHERE place_id = $1`, [
     currentPlaceId,
   ])
-  const row = rowRes?.rows?.[0] as Record<string, unknown> | undefined
+  const row = rowRes?.rows?.[0] as Places | undefined
 
   const levelForLabel = (row?.level as number | undefined) ?? (placeId2 ? 2 : 1)
   const nameRes = useLiveQuery(
@@ -90,11 +94,12 @@ export const PlaceHistoryCompare = ({
   })
 
   const onChange = async (
-    e: React.ChangeEvent<HTMLInputElement>,
-    data: Parameters<typeof getValueFromChange>[1],
+    e: React.ChangeEvent<HTMLElement>,
+    data?: FieldChangeData,
   ) => {
     const { name, value } = getValueFromChange(e, data)
-    if (!row || (row as Record<string, unknown>)[name] === value) return
+    if (!row || (row as unknown as Record<string, unknown>)[name] === value)
+      return
 
     try {
       await db.query(`UPDATE places SET ${name} = $1 WHERE place_id = $2`, [
@@ -104,13 +109,15 @@ export const PlaceHistoryCompare = ({
     } catch (error) {
       setValidations((prev) => ({
         ...prev,
-        [name]: { state: 'error', message: error instanceof Error ? error.message : String(error) },
+        [name]: {
+          state: 'error',
+          message: error instanceof Error ? error.message : String(error),
+        },
       }))
       return
     }
 
     setValidations((prev) => {
-       
       const { [name]: _unused, ...rest } = prev
       return rest
     })

@@ -8,6 +8,7 @@ import { WmsLayerForm as WmsLayerFormUntyped } from '../../../../../formsAndList
 import { addOperationAtom } from '../../../../../store.ts'
 import type WmsLayers from '../../../../../models/public/WmsLayers.ts'
 import styles from './Editing.module.css'
+import type { FieldChangeData } from '../../../../shared/fieldChange.ts'
 
 export const WmsLayerEditing = ({ layer: row }: { layer: WmsLayers }) => {
   const db = usePGlite()
@@ -15,7 +16,7 @@ export const WmsLayerEditing = ({ layer: row }: { layer: WmsLayers }) => {
 
   const onChange = async (
     e: Parameters<typeof getValueFromChange>[0],
-    data: Parameters<typeof getValueFromChange>[1],
+    data?: FieldChangeData,
   ) => {
     const { name, value } = getValueFromChange(e, data)
     // only change if value has changed: maybe only focus entered and left

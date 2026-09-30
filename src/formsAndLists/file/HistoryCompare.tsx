@@ -61,7 +61,9 @@ export const FileHistoryCompare = ({
   const addOperation = useSetAtom(addOperationAtom)
   const db = usePGlite()
 
-  const rowRes = useLiveQuery(`SELECT * FROM files WHERE file_id = $1`, [fileId])
+  const rowRes = useLiveQuery(`SELECT * FROM files WHERE file_id = $1`, [
+    fileId,
+  ])
   const row = rowRes?.rows?.[0] as Files | undefined
 
   if (!rowRes) return <Loading />
@@ -106,14 +108,20 @@ export const FileHistoryCompare = ({
   })
 
   const formatFieldValue = (field: string, history: FilesHistory) =>
-    stringifyHistoryValue((history as Record<string, any>)[field])
+    stringifyHistoryValue(
+      (history as unknown as Record<string, unknown>)[field],
+    )
 
   return (
     <HistoryCompare<FilesHistory>
       onBack={() => navigate({ to: filePath })}
       leftContent={
         <div className="form-container">
-          <FileForm row={row as Files & { id: Files['file_id'] }} from={from} withContainer={false} />
+          <FileForm
+            row={row as Files & { id: Files['file_id'] }}
+            from={from}
+            withContainer={false}
+          />
         </div>
       }
       visibleCurrentFields={visibleCurrentFields}

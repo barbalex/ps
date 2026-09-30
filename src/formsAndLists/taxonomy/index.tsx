@@ -13,6 +13,7 @@ import { addOperationAtom } from '../../store.ts'
 import type Taxonomies from '../../models/public/Taxonomies.ts'
 
 import '../../form.css'
+import type { FieldChangeData } from '../../components/shared/fieldChange.ts'
 
 export const Taxonomy = ({ from }: { from: string }) => {
   const { projectId, taxonomyId } = useParams({ strict: false })
@@ -31,12 +32,12 @@ export const Taxonomy = ({ from }: { from: string }) => {
   const row: Taxonomies | undefined = res?.rows?.[0] as Taxonomies | undefined
 
   const onChange = async (
-    e: React.ChangeEvent<HTMLInputElement>,
-    data: Parameters<typeof getValueFromChange>[1],
+    e: React.ChangeEvent<HTMLElement>,
+    data?: FieldChangeData,
   ) => {
     const { name, value } = getValueFromChange(e, data)
     // only change if value has changed: maybe only focus entered and left
-    if ((row as Record<string, any>)[name] === value) return
+    if ((row as unknown as Record<string, unknown>)[name] === value) return
 
     try {
       await db.query(
@@ -46,12 +47,14 @@ export const Taxonomy = ({ from }: { from: string }) => {
     } catch (error) {
       setValidations((prev) => ({
         ...prev,
-        [name]: { state: 'error', message: error instanceof Error ? error.message : String(error) },
+        [name]: {
+          state: 'error',
+          message: error instanceof Error ? error.message : String(error),
+        },
       }))
       return
     }
     setValidations((prev) => {
-       
       const { [name]: _, ...rest } = prev
       return rest
     })

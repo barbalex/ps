@@ -2,6 +2,7 @@ import * as fluentUiReactComponents from '@fluentui/react-components'
 const { Field, RadioGroup, Radio } = fluentUiReactComponents
 
 import { Loading } from './Loading.tsx'
+import type { FieldChangeHandler } from './fieldChange.ts'
 
 type FieldProps = React.ComponentProps<typeof Field>
 
@@ -11,10 +12,7 @@ type Props = {
   list?: string[]
   isLoading?: boolean
   value?: string | null
-  onChange: (
-    ev: React.ChangeEvent<HTMLInputElement>,
-    data?: any,
-  ) => void
+  onChange: FieldChangeHandler
   validationMessage?: FieldProps['validationMessage']
   validationState?: 'error' | 'warning' | 'success' | 'none'
   autoFocus?: boolean

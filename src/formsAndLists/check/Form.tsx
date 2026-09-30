@@ -7,6 +7,7 @@ import { useIntl } from 'react-intl'
 import type Checks from '../../models/public/Checks.ts'
 
 import '../../form.css'
+import type { FieldChangeHandler } from '../../components/shared/fieldChange.ts'
 
 // this form is rendered from a parent or outlet
 export const CheckForm = ({
@@ -17,7 +18,7 @@ export const CheckForm = ({
   from,
   autoFocusRef,
 }: {
-  onChange: (e: React.ChangeEvent<any>, data?: any) => void
+  onChange: FieldChangeHandler
   validations?: Record<
     string,
     | { state?: 'error' | 'warning' | 'success' | 'none'; message?: string }
@@ -45,7 +46,10 @@ export const CheckForm = ({
         validationMessage={validations?.date?.message}
       />
       <SwitchField
-        label={formatMessage({ id: 'bEpPuU', defaultMessage: 'Relevant für Berichte' })}
+        label={formatMessage({
+          id: 'bEpPuU',
+          defaultMessage: 'Relevant für Berichte',
+        })}
         name="relevant_for_reports"
         value={row.relevant_for_reports as never}
         onChange={onChange}
@@ -63,12 +67,14 @@ export const CheckForm = ({
         ref={autoFocusRef as unknown as React.Ref<HTMLDivElement>}
       />
       <EditingGeometry
-        row={row as unknown as {
-          place_id?: string
-          action_id?: string
-          check_id?: string
-          geometry?: unknown
-        }}
+        row={
+          row as unknown as {
+            place_id?: string
+            action_id?: string
+            check_id?: string
+            geometry?: unknown
+          }
+        }
         table="checks"
       />
     </>

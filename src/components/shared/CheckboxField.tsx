@@ -3,15 +3,13 @@ const { Checkbox } = fluentUiReactComponents
 import type { CheckboxOnChangeData } from '@fluentui/react-components'
 
 import styles from './CheckboxField.module.css'
+import type { FieldChangeHandler } from './fieldChange.ts'
 
 type Props = {
   label?: string
   name?: string
   value?: boolean | null | string
-  onChange?: (
-    ev: React.ChangeEvent<any>,
-    data?: any,
-  ) => void
+  onChange?: FieldChangeHandler
   autoFocus?: boolean
   size?: 'medium' | 'large'
   indeterminate?: boolean

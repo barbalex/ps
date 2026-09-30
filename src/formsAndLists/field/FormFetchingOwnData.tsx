@@ -1,7 +1,6 @@
 import { useState } from 'react'
 import { usePGlite, useLiveQuery } from '@electric-sql/pglite-react'
 import { useSetAtom } from 'jotai'
-import type { InputOnChangeData } from '@fluentui/react-components'
 
 import { getValueFromChange } from '../../modules/getValueFromChange.ts'
 import { Loading } from '../../components/shared/Loading.tsx'
@@ -9,6 +8,7 @@ import { FieldForm as Form } from './Form.tsx'
 import { NotFound } from '../../components/NotFound.tsx'
 import { addOperationAtom } from '../../store.ts'
 import type Fields from '../../models/public/Fields.ts'
+import type { FieldChangeData } from '../../components/shared/fieldChange.ts'
 
 type Props = {
   fieldId?: string
@@ -36,12 +36,13 @@ export const FieldFormFetchingOwnData = ({
   const row = res?.rows?.[0] as Fields | undefined
 
   const onChange = async (
-    e: React.ChangeEvent<HTMLInputElement>,
-    data?: InputOnChangeData,
+    e: React.ChangeEvent<HTMLElement>,
+    data?: FieldChangeData,
   ) => {
     const { name, value } = getValueFromChange(e, data!)
     // only change if value has changed: maybe only focus entered and left
-    if (!row || (row as Record<string, any>)[name] === value) return
+    if (!row || (row as unknown as Record<string, unknown>)[name] === value)
+      return
 
     try {
       await db.query(`UPDATE fields SET ${name} = $1 WHERE field_id = $2`, [
@@ -56,7 +57,6 @@ export const FieldFormFetchingOwnData = ({
       return
     }
     setValidations((prev) => {
-       
       const { [name]: _, ...rest } = prev
       return rest
     })
@@ -81,7 +81,7 @@ export const FieldFormFetchingOwnData = ({
       <Form
         onChange={onChange}
         validations={validations}
-        row={row as unknown as Record<string, unknown>}
+        row={row as unknown as Fields}
         autoFocusRef={autoFocusRef}
         isInForm={isInForm}
         from={from}

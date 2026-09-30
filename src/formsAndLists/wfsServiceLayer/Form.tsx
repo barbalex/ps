@@ -4,10 +4,11 @@ import { TextField } from '../../components/shared/TextField.tsx'
 import type WfsServiceLayers from '../../models/public/WfsServiceLayers.ts'
 
 import '../../form.css'
+import type { FieldChangeHandler } from '../../components/shared/fieldChange.ts'
 
 type WfsServiceLayerFormProps = {
   row: WfsServiceLayers
-  onChange: (e: React.ChangeEvent<any>, data?: any) => void
+  onChange: FieldChangeHandler
   validations?: Record<
     string,
     | { state?: 'error' | 'warning' | 'success' | 'none'; message?: string }

@@ -160,9 +160,9 @@ function QcCard({
   )
 }
 
-export const ProjectQcsRun = ({}: { from: string }) => {
+export const ProjectQcsRun = (_: { from: string }) => {
   const { projectId } = useParams({ strict: false })
-  const { navData } = useProjectQcsRunNavData({projectId: projectId! })
+  const { navData } = useProjectQcsRunNavData({ projectId: projectId! })
   const { formatMessage } = useIntl()
   const [language] = useAtom(languageAtom)
   const [onlyWithResults, setOnlyWithResults] = useAtom(

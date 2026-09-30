@@ -37,7 +37,9 @@ const SubprojectReportItem = ({
   year,
   fields,
 }: SubprojectReportItemProps) => {
-  const [chartDataMap, setChartDataMap] = useState<Record<string, unknown>>({})
+  const [chartDataMap, setChartDataMap] = useState<Record<string, ChartData>>(
+    {},
+  )
   const db = usePGlite()
 
   const res = useLiveQuery(
@@ -67,7 +69,7 @@ const SubprojectReportItem = ({
   )
 
   const report = res?.rows?.[0]
-  const charts = (report?.charts ?? []) as Record<string, any>[]
+  const charts = (report?.charts ?? []) as Charts[]
   const design = (report?.design ?? report?.active_design) as Data | undefined
   const jsonbData = (report?.data as Record<string, unknown>) ?? {}
   const chartsJson = JSON.stringify(charts)
@@ -81,7 +83,7 @@ const SubprojectReportItem = ({
     if (!parsedCharts.length) return
 
     const buildAllChartData = async () => {
-      const dataMap: Record<string, unknown> = {}
+      const dataMap: Record<string, ChartData> = {}
       for (const chart of parsedCharts) {
         if (!chart.subjects?.length) continue
         const data = await buildData({
@@ -99,7 +101,7 @@ const SubprojectReportItem = ({
     }
 
     buildAllChartData()
-  }, [chartsJson, subprojectId, versions, localDataVersion])
+  }, [chartsJson, subprojectId, versions, localDataVersion, db, year])
 
   if (!res) return <div className={styles.loading}>Loading...</div>
   if (!report) {
@@ -111,7 +113,7 @@ const SubprojectReportItem = ({
   }
 
   // Build Puck config from field definitions and chart data
-  const components: Record<string, any> = Object.assign(
+  const components: Record<string, unknown> = Object.assign(
     {},
     buildDataComponents(),
   )
@@ -153,9 +155,7 @@ const SubprojectReportItem = ({
         }
         return (
           <div className={styles.chartWrapper}>
-            <div className={styles.chartTitle}>
-              {chart.name}
-            </div>
+            <div className={styles.chartTitle}>{chart.name}</div>
             {chart.subjects_single === true ? (
               groupSeriesBySubject(data.series ?? []).map((series) => (
                 <SingleChart
@@ -179,7 +179,9 @@ const SubprojectReportItem = ({
     }
   })
 
-  const config = { components }
+  const config = { components } as unknown as Parameters<
+    typeof LazyPuckRender
+  >[0]['config']
 
   if (design) {
     return (
@@ -189,13 +191,8 @@ const SubprojectReportItem = ({
           year,
         }}
       >
-        <Suspense
-          fallback={<div className={styles.loading}>Loading...</div>}
-        >
-          <LazyPuckRender
-            config={config}
-            data={normalizePuckDesign(design)}
-          />
+        <Suspense fallback={<div className={styles.loading}>Loading...</div>}>
+          <LazyPuckRender config={config} data={normalizePuckDesign(design)} />
         </Suspense>
       </SubprojectReportContext.Provider>
     )
@@ -257,20 +254,14 @@ export const SubprojectReportsSection = ({
   }
 
   if (!subprojects.length) {
-    return (
-      <div className={styles.emptyItalic}>
-        No subprojects found.
-      </div>
-    )
+    return <div className={styles.emptyItalic}>No subprojects found.</div>
   }
 
   return (
     <div>
       {subprojects.map((sp) => (
         <div key={sp.subproject_id} className={styles.subprojectSection}>
-          <h3 className={styles.subprojectHeader}>
-            {sp.subproject_name}
-          </h3>
+          <h3 className={styles.subprojectHeader}>{sp.subproject_name}</h3>
           <SubprojectReportItem
             subprojectId={sp.subproject_id}
             year={year}

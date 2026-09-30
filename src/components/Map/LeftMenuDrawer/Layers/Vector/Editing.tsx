@@ -8,6 +8,7 @@ import { VectorLayerForm as VectorLayerFormUntyped } from '../../../../../formsA
 import { addOperationAtom } from '../../../../../store.ts'
 import type VectorLayers from '../../../../../models/public/VectorLayers.ts'
 import styles from './Editing.module.css'
+import type { FieldChangeData } from '../../../../shared/fieldChange.ts'
 
 export const VectorLayerEditing = ({ layer: row }: { layer: VectorLayers }) => {
   const db = usePGlite()
@@ -15,7 +16,7 @@ export const VectorLayerEditing = ({ layer: row }: { layer: VectorLayers }) => {
 
   const onChange = async (
     e: Parameters<typeof getValueFromChange>[0],
-    data: Parameters<typeof getValueFromChange>[1],
+    data?: FieldChangeData,
   ) => {
     const { name, value } = getValueFromChange(e, data)
     // only change if value has changed: maybe only focus entered and left

@@ -3,7 +3,6 @@ import { useParams } from '@tanstack/react-router'
 import { usePGlite, useLiveQuery } from '@electric-sql/pglite-react'
 import { useSetAtom } from 'jotai'
 import { useIntl } from 'react-intl'
-import type { InputOnChangeData } from '@fluentui/react-components'
 
 import { getValueFromChange } from '../../modules/getValueFromChange.ts'
 import { Header } from './Header.tsx'
@@ -14,6 +13,7 @@ import { NotFound } from '../../components/NotFound.tsx'
 import { addOperationAtom } from '../../store.ts'
 import '../../form.css'
 import type Actions from '../../models/public/Actions.ts'
+import type { FieldChangeData } from '../../components/shared/fieldChange.ts'
 
 export const Action = ({ from }: { from: string }) => {
   const { actionId } = useParams({ strict: false })
@@ -30,12 +30,13 @@ export const Action = ({ from }: { from: string }) => {
   const row = res?.rows?.[0] as Actions | undefined
 
   const onChange = async (
-    e: React.ChangeEvent<HTMLInputElement>,
-    data?: InputOnChangeData,
+    e: React.ChangeEvent<HTMLElement>,
+    data?: FieldChangeData,
   ) => {
     const { name, value } = getValueFromChange(e, data)
     // only change if value has changed: maybe only focus entered and left
-    if (!row || (row as Record<string, any>)[name] === value) return
+    if (!row || (row as unknown as Record<string, unknown>)[name] === value)
+      return
 
     try {
       await db.query(`UPDATE actions SET ${name} = $1 WHERE action_id = $2`, [
@@ -50,7 +51,6 @@ export const Action = ({ from }: { from: string }) => {
       return
     }
     setValidations((prev) => {
-
       const { [name]: _, ...rest } = prev
       return rest
     })
@@ -74,7 +74,7 @@ export const Action = ({ from }: { from: string }) => {
           <Form
             onChange={onChange}
             validations={validations}
-            row={row as unknown as Record<string, unknown>}
+            row={row as unknown as Actions}
             autoFocusRef={autoFocusRef}
             from={from}
           />

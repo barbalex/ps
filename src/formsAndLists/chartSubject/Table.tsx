@@ -10,6 +10,7 @@ import { subprojectNamePluralExpr } from '../../modules/subprojectNameCols.ts'
 import { getPlaceFallbackNames } from '../../modules/placeNameFallback.ts'
 import { projectTypeNames } from '../../modules/projectTypeNames.ts'
 import type ChartSubjects from '../../models/public/ChartSubjects.ts'
+import type { FieldChangeData } from '../../components/shared/fieldChange.ts'
 
 type Option = {
   id: string
@@ -23,7 +24,7 @@ export const Table = ({
   ref,
   validations,
 }: {
-  onChange: (e: React.ChangeEvent<HTMLInputElement>, data?: object) => void
+  onChange: (e: React.ChangeEvent<HTMLElement>, data?: object) => void
   row: ChartSubjects
   ref?: React.Ref<HTMLInputElement>
   validations: Record<
@@ -100,18 +101,34 @@ export const Table = ({
     { id: 'places_1', table_name: 'places', table_level: '1' },
     { id: 'checks_1', table_name: 'checks', table_level: '1' },
     { id: 'check_reports_1', table_name: 'check_reports', table_level: '1' },
-    { id: 'check_quantities_1', table_name: 'check_quantities', table_level: '1' },
+    {
+      id: 'check_quantities_1',
+      table_name: 'check_quantities',
+      table_level: '1',
+    },
     { id: 'check_taxa_1', table_name: 'check_taxa', table_level: '1' },
     { id: 'actions_1', table_name: 'actions', table_level: '1' },
-    { id: 'action_quantities_1', table_name: 'action_quantities', table_level: '1' },
+    {
+      id: 'action_quantities_1',
+      table_name: 'action_quantities',
+      table_level: '1',
+    },
     { id: 'action_taxa_1', table_name: 'action_taxa', table_level: '1' },
     { id: 'places_2', table_name: 'places', table_level: '2' },
     { id: 'checks_2', table_name: 'checks', table_level: '2' },
     { id: 'check_reports_2', table_name: 'check_reports', table_level: '2' },
-    { id: 'check_quantities_2', table_name: 'check_quantities', table_level: '2' },
+    {
+      id: 'check_quantities_2',
+      table_name: 'check_quantities',
+      table_level: '2',
+    },
     { id: 'check_taxa_2', table_name: 'check_taxa', table_level: '2' },
     { id: 'actions_2', table_name: 'actions', table_level: '2' },
-    { id: 'action_quantities_2', table_name: 'action_quantities', table_level: '2' },
+    {
+      id: 'action_quantities_2',
+      table_name: 'action_quantities',
+      table_level: '2',
+    },
     { id: 'action_taxa_2', table_name: 'action_taxa', table_level: '2' },
   ]
 
@@ -186,10 +203,10 @@ export const Table = ({
     : ''
 
   const handleChange = (
-    _e: React.ChangeEvent<HTMLInputElement>,
-    data: { value: string | null },
+    _e: React.ChangeEvent<HTMLElement>,
+    data?: FieldChangeData,
   ) => {
-    const selected = data.value ? opts.find((o) => o.id === data.value) : null
+    const selected = data?.value ? opts.find((o) => o.id === data.value) : null
     onChange(
       {
         target: { name: 'table_name', type: 'radio' },

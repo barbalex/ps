@@ -7,6 +7,7 @@ import type WmsServices from '../../models/public/WmsServices.ts'
 import styles from './Form.module.css'
 
 import '../../form.css'
+import type { FieldChangeHandler } from '../../components/shared/fieldChange.ts'
 
 export const WmsServiceForm = ({
   onChange,
@@ -14,9 +15,9 @@ export const WmsServiceForm = ({
   row,
   autoFocusRef,
 }: {
-  onChange: (e: React.ChangeEvent<any>, data?: any) => void
+  onChange: FieldChangeHandler
   validations?: Record<string, { state: 'error'; message: string }>
-  row: WmsServices | Record<string, any>
+  row: WmsServices | Record<string, never>
   autoFocusRef?: React.Ref<HTMLInputElement>
 }) => {
   const { formatMessage } = useIntl()

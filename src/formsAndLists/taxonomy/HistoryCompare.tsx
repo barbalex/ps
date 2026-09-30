@@ -22,18 +22,23 @@ import {
 
 import type Taxonomies from '../../models/public/Taxonomies.ts'
 import type TaxonomiesHistory from '../../models/public/TaxonomiesHistory.ts'
+import type { FieldChangeData } from '../../components/shared/fieldChange.ts'
 
 export const TaxonomyHistoryCompare = () => {
   const { formatMessage } = useIntl()
   const navigate = useNavigate()
-  const { projectId, taxonomyId, taxonomyHistoryId } = useParams({ strict: false })
+  const { projectId, taxonomyId, taxonomyHistoryId } = useParams({
+    strict: false,
+  })
   const taxonomyPath = `/data/projects/${projectId}/taxonomies/${taxonomyId}/taxonomy`
   const historyPath = `/data/projects/${projectId}/taxonomies/${taxonomyId}/histories`
 
   const addOperation = useSetAtom(addOperationAtom)
   const db = usePGlite()
   const autoFocusRef = useRef<HTMLInputElement>(null)
-  const [validations, setValidations] = useState<Record<string, { state: 'error'; message: string }>>({})
+  const [validations, setValidations] = useState<
+    Record<string, { state: 'error'; message: string }>
+  >({})
 
   const rowRes = useLiveQuery(
     `SELECT * FROM taxonomies WHERE taxonomy_id = $1`,
@@ -42,11 +47,12 @@ export const TaxonomyHistoryCompare = () => {
   const row = rowRes?.rows?.[0] as Taxonomies | undefined
 
   const onChange = async (
-    e: React.ChangeEvent<HTMLInputElement>,
-    data: Parameters<typeof getValueFromChange>[1],
+    e: React.ChangeEvent<HTMLElement>,
+    data?: FieldChangeData,
   ) => {
     const { name, value } = getValueFromChange(e, data)
-    if (!row || (row as Record<string, any>)[name] === value) return
+    if (!row || (row as unknown as Record<string, unknown>)[name] === value)
+      return
 
     try {
       await db.query(
@@ -56,13 +62,15 @@ export const TaxonomyHistoryCompare = () => {
     } catch (error) {
       setValidations((prev) => ({
         ...prev,
-        [name]: { state: 'error', message: error instanceof Error ? error.message : String(error) },
+        [name]: {
+          state: 'error',
+          message: error instanceof Error ? error.message : String(error),
+        },
       }))
       return
     }
 
     setValidations((prev) => {
-       
       const { [name]: _unused, ...rest } = prev
       return rest
     })
@@ -93,7 +101,9 @@ export const TaxonomyHistoryCompare = () => {
       <TaxonomyForm
         row={row}
         onChange={onChange}
-        validations={validations as Record<string, { state: 'error'; message: string }>}
+        validations={
+          validations as Record<string, { state: 'error'; message: string }>
+        }
         autoFocusRef={autoFocusRef}
         projectId={projectId!}
       />
@@ -120,7 +130,9 @@ export const TaxonomyHistoryCompare = () => {
   })
 
   const formatFieldValue = (field: string, history: TaxonomiesHistory) =>
-    stringifyHistoryValue((history as Record<string, any>)[field])
+    stringifyHistoryValue(
+      (history as unknown as Record<string, unknown>)[field],
+    )
 
   return (
     <HistoryCompare<TaxonomiesHistory>

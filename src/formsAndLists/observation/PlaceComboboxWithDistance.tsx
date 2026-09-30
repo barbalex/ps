@@ -1,4 +1,5 @@
 import { useState, useEffect, useMemo } from 'react'
+import type { FieldChangeHandler } from '../../components/shared/fieldChange.ts'
 import * as fluentUiReactComponents from '@fluentui/react-components'
 const { Combobox, Field, Option } = fluentUiReactComponents
 import type { OptionOnSelectData } from '@fluentui/react-components'
@@ -44,7 +45,7 @@ export const PlaceComboboxWithDistance = ({
 }: {
   observationId: string | undefined
   value: string
-  onChange: (e: any, data?: any) => void
+  onChange: FieldChangeHandler
   autoFocus?: boolean
   ref?: React.Ref<HTMLInputElement>
   validationState?: 'error' | 'none' | 'success' | 'warning'
@@ -59,8 +60,7 @@ export const PlaceComboboxWithDistance = ({
     [observationId],
   )
   const observation = observationRes?.rows?.[0] as
-    | { geometry: LooseGeometry | null }
-    | undefined
+    { geometry: LooseGeometry | null } | undefined
 
   // Get all places
   const placesRes = useLiveQuery(
@@ -136,7 +136,10 @@ export const PlaceComboboxWithDistance = ({
           try {
             if (place.geometry?.type === 'Point') {
               dist =
-                distance(occPoint, point(place.geometry.coordinates as number[])) * 1000
+                distance(
+                  occPoint,
+                  point(place.geometry.coordinates as number[]),
+                ) * 1000
             } else if (
               place.geometry?.type === 'GeometryCollection' &&
               (place.geometry.geometries?.length ?? 0) > 0
@@ -206,10 +209,14 @@ export const PlaceComboboxWithDistance = ({
   const onOptionSelect = (_e: unknown, data: OptionOnSelectData) => {
     if (!data.optionValue || data.optionValue === '0') {
       setFilter('')
-      onChange({ target: { name: 'place_id', value: null } })
+      onChange({
+        target: { name: 'place_id', value: null },
+      } as unknown as Parameters<FieldChangeHandler>[0])
       return
     }
-    onChange({ target: { name: 'place_id', value: data.optionValue } })
+    onChange({
+      target: { name: 'place_id', value: data.optionValue },
+    } as unknown as Parameters<FieldChangeHandler>[0])
   }
 
   // Filter places based on user input
@@ -254,7 +261,10 @@ export const PlaceComboboxWithDistance = ({
           })
         ) : (
           <Option key="no-results" value="0">
-            {formatMessage({ id: 'obs0Npf', defaultMessage: 'Keine Standorte gefunden' })}
+            {formatMessage({
+              id: 'obs0Npf',
+              defaultMessage: 'Keine Standorte gefunden',
+            })}
           </Option>
         )}
       </Combobox>

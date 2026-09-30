@@ -1,4 +1,5 @@
 import { useIntl } from 'react-intl'
+import type { FieldChangeData } from '../../components/shared/fieldChange.ts'
 
 import { TextField } from '../../components/shared/TextField.tsx'
 import { SliderFieldWithInput } from '../../components/shared/SliderFieldWithInput.tsx'
@@ -19,7 +20,7 @@ type VectorLayerDisplayFormValidations = Record<
 
 type VectorLayerDisplayFormProps = {
   row: VectorLayerDisplays
-  onChange: (e: React.ChangeEvent<HTMLInputElement>, data?: unknown) => void
+  onChange: (e: React.ChangeEvent<HTMLElement>, data?: FieldChangeData) => void
   validations: VectorLayerDisplayFormValidations
 }
 
@@ -40,7 +41,7 @@ export const VectorLayerDisplayForm = ({
             id: 'Ab5CdE',
             defaultMessage: 'Kreis-Radius in Bild-Punkten',
           })}
-            value={row.circle_marker_radius ?? undefined}
+          value={row.circle_marker_radius ?? undefined}
           onChange={onChange}
           type="number"
           validationMessage={validations?.circle_marker_radius?.message}
@@ -160,7 +161,13 @@ export const VectorLayerDisplayForm = ({
         })}
         name="fill_opacity_percent"
         value={row.fill_opacity_percent ?? ''}
-        onChange={onChange}
+        // Fluent Slider passes its own change payload
+        onChange={
+          onChange as unknown as (
+            ev: React.ChangeEvent<HTMLInputElement>,
+            data: { value?: number },
+          ) => void
+        }
         max={100}
         min={0}
         step={5}

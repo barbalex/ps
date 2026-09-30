@@ -61,9 +61,7 @@ export const SubprojectReportDesignHistoryCompare = () => {
     )
   }
 
-  const leftContent = (
-    <Form autoFocusRef={autoFocusRef} from={from} />
-  )
+  const leftContent = <Form autoFocusRef={autoFocusRef} from={from} />
 
   const formatFieldLabel = createHistoryFieldLabelFormatter({
     formatMessage,
@@ -76,7 +74,10 @@ export const SubprojectReportDesignHistoryCompare = () => {
   const formatFieldValue = (
     field: string,
     history: SubprojectReportDesignsHistory,
-  ) => stringifyHistoryValue((history as Record<string, any>)[field])
+  ) =>
+    stringifyHistoryValue(
+      (history as unknown as Record<string, unknown>)[field],
+    )
 
   return (
     <HistoryCompare<SubprojectReportDesignsHistory>

@@ -31,8 +31,15 @@ export const CheckHistoryCompare = ({
 }) => {
   const { formatMessage } = useIntl()
   const navigate = useNavigate()
-  const { projectId, subprojectId, placeId, placeId2, filteredViewId, checkId, checkHistoryId } =
-    useParams({ strict: false })
+  const {
+    projectId,
+    subprojectId,
+    placeId,
+    placeId2,
+    filteredViewId,
+    checkId,
+    checkHistoryId,
+  } = useParams({ strict: false })
 
   const checkPath = placeId2
     ? `/data/projects/${projectId}/subprojects/${subprojectId}/places/${placeId}/places/${placeId2}${filteredViewId ? `/filtered-checks/${filteredViewId}` : ''}/checks/${checkId}/check`
@@ -69,10 +76,7 @@ export const CheckHistoryCompare = ({
     },
   })
 
-  const onChange = async (
-    e: React.ChangeEvent<HTMLInputElement>,
-    data?: object,
-  ) => {
+  const onChange = async (e: React.ChangeEvent<HTMLElement>, data?: object) => {
     const { name, value } = getValueFromChange(
       e,
       data as Parameters<typeof getValueFromChange>[1],
@@ -93,7 +97,6 @@ export const CheckHistoryCompare = ({
     }
 
     setValidations((prev) => {
-       
       const { [name]: _unused, ...rest } = prev
       return rest
     })
@@ -120,7 +123,7 @@ export const CheckHistoryCompare = ({
   }
 
   return (
-    <HistoryCompare<ChecksHistory & Record<string, unknown>>
+    <HistoryCompare<ChecksHistory>
       onBack={() => navigate({ to: checkPath })}
       leftContent={
         <div className="form-container">
@@ -137,7 +140,7 @@ export const CheckHistoryCompare = ({
       excludedDisplayFields={excludedDisplayFields}
       preferredOrder={preferredOrder}
       formatFieldLabel={formatFieldLabel}
-      row={row}
+      row={row as unknown as ChecksHistory}
       historyConfig={{
         historyTable: 'checks_history',
         rowIdField: 'check_id',

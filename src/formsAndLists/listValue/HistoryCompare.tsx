@@ -22,20 +22,24 @@ import {
 import type ListValues from '../../models/public/ListValues.ts'
 import type ListValuesHistory from '../../models/public/ListValuesHistory.ts'
 import type Lists from '../../models/public/Lists.ts'
+import type { FieldChangeData } from '../../components/shared/fieldChange.ts'
 
-export const ListValueHistoryCompare = ({
-}: {
+export const ListValueHistoryCompare = (_: {
   from: '/data/projects/$projectId_/lists/$listId_/values/$listValueId_/histories/$listValueHistoryId'
 }) => {
   const { formatMessage } = useIntl()
   const navigate = useNavigate()
-  const { projectId, listId, listValueId, listValueHistoryId } = useParams({ strict: false })
+  const { projectId, listId, listValueId, listValueHistoryId } = useParams({
+    strict: false,
+  })
   const listValuePath = `/data/projects/${projectId}/lists/${listId}/values/${listValueId}`
   const historyPath = `${listValuePath}/histories`
 
   const addOperation = useSetAtom(addOperationAtom)
   const db = usePGlite()
-  const [validations, setValidations] = useState<Record<string, { state: 'error'; message: string }>>({})
+  const [validations, setValidations] = useState<
+    Record<string, { state: 'error'; message: string }>
+  >({})
 
   const rowRes = useLiveQuery(
     `SELECT * FROM list_values WHERE list_value_id = $1`,
@@ -47,8 +51,8 @@ export const ListValueHistoryCompare = ({
     `SELECT value_type FROM lists WHERE list_id = $1`,
     [listId],
   )
-  const listValueType: Lists['value_type'] | undefined =
-    listRes?.rows?.[0]?.value_type as Lists['value_type'] | undefined
+  const listValueType: Lists['value_type'] | undefined = listRes?.rows?.[0]
+    ?.value_type as Lists['value_type'] | undefined
 
   const formatDateForInput = (value: unknown) => {
     if (!value) return ''
@@ -65,15 +69,16 @@ export const ListValueHistoryCompare = ({
   }
 
   const onChange = async (
-    e: React.ChangeEvent<HTMLInputElement>,
-    data: Parameters<typeof getValueFromChange>[1],
+    e: React.ChangeEvent<HTMLElement>,
+    data?: FieldChangeData,
   ) => {
     const { name, value: valueRaw } = getValueFromChange(e, data)
     const value =
       (name === 'value_date' || name === 'value_datetime') && valueRaw === ''
         ? null
         : valueRaw
-    if (!row || (row as Record<string, any>)[name] === value) return
+    if (!row || (row as unknown as Record<string, unknown>)[name] === value)
+      return
 
     try {
       await db.query(
@@ -83,13 +88,15 @@ export const ListValueHistoryCompare = ({
     } catch (error) {
       setValidations((prev) => ({
         ...prev,
-        [name]: { state: 'error', message: error instanceof Error ? error.message : String(error) },
+        [name]: {
+          state: 'error',
+          message: error instanceof Error ? error.message : String(error),
+        },
       }))
       return
     }
 
     setValidations((prev) => {
-       
       const { [name]: _unused, ...rest } = prev
       return rest
     })
@@ -164,7 +171,9 @@ export const ListValueHistoryCompare = ({
           <TextField
             label={formatMessage({ id: 'ejuFAr', defaultMessage: 'Wert' })}
             name={valueField.name}
-            type={valueField.type as 'number' | 'text' | 'date' | 'datetime-local'}
+            type={
+              valueField.type as 'number' | 'text' | 'date' | 'datetime-local'
+            }
             value={valueField.value}
             onChange={onChange}
             validationState={validations?.[valueField.name]?.state}
@@ -200,7 +209,9 @@ export const ListValueHistoryCompare = ({
   })
 
   const formatFieldValue = (field: string, history: ListValuesHistory) =>
-    stringifyHistoryValue((history as Record<string, any>)[field])
+    stringifyHistoryValue(
+      (history as unknown as Record<string, unknown>)[field],
+    )
 
   return (
     <HistoryCompare<ListValuesHistory>

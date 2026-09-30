@@ -9,7 +9,7 @@ export const ValueSource = ({
   row,
   validations,
 }: {
-  onChange: (e: React.ChangeEvent<HTMLInputElement>, data?: object) => void
+  onChange: (e: React.ChangeEvent<HTMLElement>, data?: object) => void
   row: ChartSubjects
   validations: Record<
     string,

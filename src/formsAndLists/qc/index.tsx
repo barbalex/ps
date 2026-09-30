@@ -11,6 +11,7 @@ import { NotFound } from '../../components/NotFound.tsx'
 import { addOperationAtom } from '../../store.ts'
 
 import '../../form.css'
+import type { FieldChangeData } from '../../components/shared/fieldChange.ts'
 
 export const Qc = () => {
   const { qcsId } = useParams({ strict: false })
@@ -27,7 +28,7 @@ export const Qc = () => {
 
   const onChange = async (
     e: Parameters<typeof getValueFromChange>[0],
-    data: Parameters<typeof getValueFromChange>[1],
+    data?: FieldChangeData,
   ) => {
     const { name, value } = getValueFromChange(e, data)
     if (row?.[name] === value) return
@@ -43,7 +44,6 @@ export const Qc = () => {
       return
     }
     setValidations((prev) => {
-       
       const { [name]: _, ...rest } = prev
       return rest
     })

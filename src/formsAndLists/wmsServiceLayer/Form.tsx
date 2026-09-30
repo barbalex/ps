@@ -5,10 +5,11 @@ import { SwitchField } from '../../components/shared/SwitchField.tsx'
 import type WmsServiceLayers from '../../models/public/WmsServiceLayers.ts'
 
 import '../../form.css'
+import type { FieldChangeHandler } from '../../components/shared/fieldChange.ts'
 
 type WmsServiceLayerFormProps = {
   row: WmsServiceLayers
-  onChange: (e: React.ChangeEvent<any>, data?: any) => void
+  onChange: FieldChangeHandler
   validations?: Record<
     string,
     | { state?: 'error' | 'warning' | 'success' | 'none'; message?: string }

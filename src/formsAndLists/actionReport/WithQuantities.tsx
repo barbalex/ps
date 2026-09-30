@@ -63,11 +63,11 @@ export const ActionReportWithQuantities = ({ from }: { from: string }) => {
     isDesigning || placeLevel?.action_report_quantities !== false
 
   const onChange = async (
-    e: React.ChangeEvent<HTMLInputElement>,
+    e: React.ChangeEvent<HTMLElement>,
     data?: Parameters<typeof getValueFromChange>[1],
   ) => {
     const { name, value } = getValueFromChange(e, data)
-    if ((row as Record<string, any>)[name] === value) return
+    if ((row as unknown as Record<string, unknown>)[name] === value) return
     try {
       await db.query(
         `UPDATE action_reports SET ${name} = $1 WHERE place_action_report_id = $2`,
@@ -76,12 +76,14 @@ export const ActionReportWithQuantities = ({ from }: { from: string }) => {
     } catch (error) {
       setValidations((prev) => ({
         ...prev,
-        [name]: { state: 'error', message: error instanceof Error ? error.message : String(error) },
+        [name]: {
+          state: 'error',
+          message: error instanceof Error ? error.message : String(error),
+        },
       }))
       return
     }
     setValidations((prev) => {
-       
       const { [name]: _, ...rest } = prev
       return rest
     })
@@ -104,7 +106,9 @@ export const ActionReportWithQuantities = ({ from }: { from: string }) => {
   const quantitiesUrl = `${actionReportBaseUrl}/quantities`
 
   const addQuantity = async () => {
-    const id = await createActionReportQuantity({actionReportId: actionReportId! })
+    const id = await createActionReportQuantity({
+      actionReportId: actionReportId!,
+    })
     if (!id) return
     navigate({ to: `${quantitiesUrl}/${id}` })
   }

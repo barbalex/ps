@@ -44,10 +44,7 @@ export const ChartSubjectForm = ({ autoFocusRef }: Props) => {
     label: unit.name as string,
   }))
 
-  const onChange = async (
-    e: React.ChangeEvent<HTMLInputElement>,
-    data?: object,
-  ) => {
+  const onChange = async (e: React.ChangeEvent<HTMLElement>, data?: object) => {
     const { name, value } = getValueFromChange(
       e,
       data as Parameters<typeof getValueFromChange>[1],
@@ -68,7 +65,6 @@ export const ChartSubjectForm = ({ autoFocusRef }: Props) => {
       return
     }
     setValidations((prev) => {
-       
       const { [name]: _, ...rest } = prev
       return rest
     })

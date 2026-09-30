@@ -6,10 +6,11 @@ import { jsonbDataFromRow } from '../../modules/jsonbDataFromRow.ts'
 import type ProjectReports from '../../models/public/ProjectReports.ts'
 
 import '../../form.css'
+import type { FieldChangeHandler } from '../../components/shared/fieldChange.ts'
 
 type Props = {
-  onChange: (e: React.ChangeEvent<any>, data?: any) => void
-  row: Record<string, any> | ProjectReports
+  onChange: FieldChangeHandler
+  row: ProjectReports | Record<string, never>
   orIndex?: number
   from: string
   autoFocusRef?: React.RefObject<HTMLInputElement | null>

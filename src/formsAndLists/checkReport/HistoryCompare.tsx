@@ -70,10 +70,7 @@ export const CheckReportHistoryCompare = ({
     },
   })
 
-  const onChange = async (
-    e: React.ChangeEvent<HTMLInputElement>,
-    data?: object,
-  ) => {
+  const onChange = async (e: React.ChangeEvent<HTMLElement>, data?: object) => {
     const { name, value } = getValueFromChange(
       e,
       data as Parameters<typeof getValueFromChange>[1],
@@ -94,7 +91,6 @@ export const CheckReportHistoryCompare = ({
     }
 
     setValidations((prev) => {
-       
       const { [name]: _unused, ...rest } = prev
       return rest
     })
@@ -121,7 +117,7 @@ export const CheckReportHistoryCompare = ({
   }
 
   return (
-    <HistoryCompare<CheckReportsHistory & Record<string, unknown>>
+    <HistoryCompare<CheckReportsHistory>
       onBack={() => navigate({ to: reportPath })}
       leftContent={
         <div className="form-container">
@@ -138,7 +134,7 @@ export const CheckReportHistoryCompare = ({
       excludedDisplayFields={excludedDisplayFields}
       preferredOrder={preferredOrder}
       formatFieldLabel={formatFieldLabel}
-      row={row}
+      row={row as unknown as CheckReportsHistory}
       historyConfig={{
         historyTable: 'check_reports_history',
         rowIdField: 'place_check_report_id',
@@ -154,9 +150,7 @@ export const CheckReportHistoryCompare = ({
         rowId: checkReportId,
         excludedRestoreFields,
         // the shared component types the operation as plain string
-        addOperation: addOperation as unknown as (
-          ...args: unknown[]
-        ) => void,
+        addOperation: addOperation as unknown as (...args: unknown[]) => void,
       }}
     />
   )

@@ -8,8 +8,10 @@ import { Loading } from '../components/shared/Loading.tsx'
 import { useCheckReportsNavData } from '../modules/useCheckReportsNavData.ts'
 import '../form.css'
 
-export const CheckReports = ({ }: { from?: string }) => {
-  const { projectId, subprojectId, placeId, placeId2 } = useParams({ strict: false })
+export const CheckReports = (_: { from?: string }) => {
+  const { projectId, subprojectId, placeId, placeId2 } = useParams({
+    strict: false,
+  })
   const navigate = useNavigate()
 
   const { loading, navData, isFiltered } = useCheckReportsNavData({

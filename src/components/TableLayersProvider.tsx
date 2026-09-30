@@ -1,4 +1,5 @@
 import { useEffect, useRef } from 'react'
+import type Projects from '../models/public/Projects.ts'
 import { useAtomValue } from 'jotai'
 import { usePGlite, useLiveQuery } from '@electric-sql/pglite-react'
 
@@ -10,8 +11,6 @@ import {
   operationsQueueAtom,
   store,
 } from '../store.ts'
-
-import type Projects from '../models/public/Projects.ts'
 
 // Places (level 1/2), actions (level 1/2), and checks (level 1/2) vector layers
 // are created by server-side PostgreSQL triggers on project INSERT and

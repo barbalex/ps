@@ -6,9 +6,8 @@ import type { CalendarStrings } from '@fluentui/react-datepicker-compat'
 import { useIntl } from 'react-intl'
 
 import styles from './DateField.module.css'
+import type { FieldChangeData } from './fieldChange.ts'
 
-type InputProps = React.ComponentProps<typeof fluentUiReactComponents.Input>
-type InputOnChangeData = Parameters<NonNullable<InputProps['onChange']>>[1]
 type FieldProps = React.ComponentProps<typeof Field>
 
 type Props = {
@@ -17,7 +16,7 @@ type Props = {
   name?: string
   onChange: (
     ev: React.ChangeEvent<HTMLInputElement>,
-    data: InputOnChangeData,
+    data?: FieldChangeData,
   ) => void
   validationMessage?: FieldProps['validationMessage']
   validationState?: 'error' | 'warning' | 'success' | 'none'

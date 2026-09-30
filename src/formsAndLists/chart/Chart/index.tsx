@@ -11,7 +11,7 @@ import styles from './index.module.css'
 import type Charts from '../../../models/public/Charts.ts'
 import type ChartSubjects from '../../../models/public/ChartSubjects.ts'
 
-export const Chart = ({ }: { from?: string }) => {
+export const Chart = (_: { from?: string }) => {
   const { projectId, subprojectId, chartId } = useParams({ strict: false })
 
   const db = usePGlite()
@@ -28,8 +28,7 @@ export const Chart = ({ }: { from?: string }) => {
   )
   const chart = result?.rows?.[0] as Charts | undefined
   const subjects: ChartSubjects[] = useMemo(
-    () =>
-      (chart as { subjects?: ChartSubjects[] } | undefined)?.subjects ?? [],
+    () => (chart as { subjects?: ChartSubjects[] } | undefined)?.subjects ?? [],
     [chart],
   )
 
@@ -57,12 +56,7 @@ export const Chart = ({ }: { from?: string }) => {
   }, [chartId, chart, db, projectId, subjects, subprojectId])
 
   if (!chart) {
-    return (
-      <NotFound
-        table="Chart"
-        id={chartId}
-      />
-    )
+    return <NotFound table="Chart" id={chartId} />
   }
 
   // subjects_single: one chart per subject — but a subject that splits into
@@ -77,7 +71,7 @@ export const Chart = ({ }: { from?: string }) => {
   return (
     <>
       <div className={styles.titleRow}>{chart.name}</div>
-      {chart.subjects_single === true ?
+      {chart.subjects_single === true ? (
         [...seriesBySubject.values()].map((series) => (
           <SingleChart
             key={series[0]?.subject.chart_subject_id}
@@ -87,12 +81,13 @@ export const Chart = ({ }: { from?: string }) => {
             synchronized={true}
           />
         ))
-      : <SingleChart
+      ) : (
+        <SingleChart
           chart={chart}
           series={chartData.series}
           data={chartData.data}
         />
-      }
+      )}
     </>
   )
 }

@@ -8,6 +8,7 @@ import { unitTypeOptions } from '../../modules/constants.ts'
 import type Units from '../../models/public/Units.ts'
 
 import '../../form.css'
+import type { FieldChangeHandler } from '../../components/shared/fieldChange.ts'
 
 // this form is rendered from a parent or outlet
 export const UnitForm = ({
@@ -16,8 +17,8 @@ export const UnitForm = ({
   autoFocusRef,
   validations = {},
 }: {
-  onChange: (e: React.ChangeEvent<any>, data?: any) => void
-  row: Units | Record<string, any>
+  onChange: FieldChangeHandler
+  row: Units | Record<string, never>
   autoFocusRef?: React.Ref<HTMLInputElement>
   validations?: Record<string, { state: 'error'; message: string }>
 }) => {

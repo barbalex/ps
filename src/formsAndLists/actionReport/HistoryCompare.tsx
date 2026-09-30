@@ -1,4 +1,5 @@
 import { useRef, useState } from 'react'
+import type ActionReports from '../../models/public/ActionReports.ts'
 import { useParams, useNavigate } from '@tanstack/react-router'
 import { usePGlite, useLiveQuery } from '@electric-sql/pglite-react'
 import { useSetAtom } from 'jotai'
@@ -49,13 +50,15 @@ export const ActionReportHistoryCompare = ({
   const db = usePGlite()
   const autoFocusRef = useRef<HTMLInputElement>(null)
 
-  const [validations, setValidations] = useState<Record<string, { state: 'error'; message: string }>>({})
+  const [validations, setValidations] = useState<
+    Record<string, { state: 'error'; message: string }>
+  >({})
 
   const rowRes = useLiveQuery(
     `SELECT * FROM action_reports WHERE place_action_report_id = $1`,
     [actionReportId],
   )
-  const row = rowRes?.rows?.[0] as Record<string, unknown> | undefined
+  const row = rowRes?.rows?.[0] as ActionReportsHistory | undefined
 
   const visibleCurrentFields = new Set(['year', 'data'])
 
@@ -68,11 +71,12 @@ export const ActionReportHistoryCompare = ({
   })
 
   const onChange = async (
-    e: React.ChangeEvent<HTMLInputElement>,
+    e: React.ChangeEvent<HTMLElement>,
     data?: Parameters<typeof getValueFromChange>[1],
   ) => {
     const { name, value } = getValueFromChange(e, data)
-    if (!row || (row as Record<string, unknown>)[name] === value) return
+    if (!row || (row as unknown as Record<string, unknown>)[name] === value)
+      return
 
     try {
       await db.query(
@@ -82,13 +86,15 @@ export const ActionReportHistoryCompare = ({
     } catch (error) {
       setValidations((prev) => ({
         ...prev,
-        [name]: { state: 'error', message: error instanceof Error ? error.message : String(error) },
+        [name]: {
+          state: 'error',
+          message: error instanceof Error ? error.message : String(error),
+        },
       }))
       return
     }
 
     setValidations((prev) => {
-       
       const { [name]: _unused, ...rest } = prev
       return rest
     })
@@ -123,7 +129,7 @@ export const ActionReportHistoryCompare = ({
       leftContent={
         <div className="form-container">
           <ActionReportForm
-            row={row}
+            row={row as unknown as ActionReports}
             onChange={onChange}
             validations={validations}
             autoFocusRef={autoFocusRef}

@@ -10,7 +10,7 @@ type ValidationEntry = {
 }
 
 type Props = {
-  onChange: (e: React.ChangeEvent<HTMLInputElement>, data?: object) => void
+  onChange: (e: React.ChangeEvent<HTMLElement>, data?: object) => void
   validations: Record<string, ValidationEntry>
   row: Charts
   ref?: React.Ref<HTMLInputElement>

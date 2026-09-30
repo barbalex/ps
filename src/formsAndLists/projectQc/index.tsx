@@ -12,7 +12,7 @@ import { addOperationAtom } from '../../store.ts'
 import type ProjectQcs from '../../models/public/ProjectQcs.ts'
 
 import '../../form.css'
-
+import type { FieldChangeData } from '../../components/shared/fieldChange.ts'
 
 export const ProjectQc = () => {
   const { projectQcId } = useParams({ strict: false })
@@ -31,11 +31,11 @@ export const ProjectQc = () => {
   const row = res?.rows?.[0] as ProjectQcs | undefined
 
   const onChange = async (
-    e: React.ChangeEvent<HTMLInputElement>,
-    data: Parameters<typeof getValueFromChange>[1],
+    e: React.ChangeEvent<HTMLElement>,
+    data?: FieldChangeData,
   ) => {
     const { name, value } = getValueFromChange(e, data)
-    if ((row as Record<string, any>)?.[name] === value) return
+    if ((row as unknown as Record<string, unknown>)?.[name] === value) return
 
     try {
       await db.query(
@@ -45,13 +45,15 @@ export const ProjectQc = () => {
     } catch (error) {
       setValidations((prev) => ({
         ...prev,
-        [name]: { state: 'error', message: error instanceof Error ? error.message : String(error) },
+        [name]: {
+          state: 'error',
+          message: error instanceof Error ? error.message : String(error),
+        },
       }))
       return
     }
 
     setValidations((prev) => {
-       
       const { [name]: _, ...rest } = prev
       return rest
     })

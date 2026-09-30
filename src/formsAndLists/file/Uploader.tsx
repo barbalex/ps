@@ -5,9 +5,14 @@ import { usePGlite } from '@electric-sql/pglite-react'
 import { useBeforeunload } from 'react-beforeunload'
 import { useAtomValue } from 'jotai'
 import { defineLocale } from '@uploadcare/file-uploader'
+// the .js extension is required by the package's export map
+// eslint-disable-next-line import/extensions
 import deLocale from '@uploadcare/file-uploader/locales/file-uploader/de.js'
+// eslint-disable-next-line import/extensions
 import enLocale from '@uploadcare/file-uploader/locales/file-uploader/en.js'
+// eslint-disable-next-line import/extensions
 import frLocale from '@uploadcare/file-uploader/locales/file-uploader/fr.js'
+// eslint-disable-next-line import/extensions
 import itLocale from '@uploadcare/file-uploader/locales/file-uploader/it.js'
 
 // css is needed
@@ -91,7 +96,9 @@ export const Uploader = ({
   // const isFile = pathname.endsWith('file')
 
   const db = usePGlite()
-  const uploaderCtx = useContext(UploaderContext) as unknown as UploaderContextRef
+  const uploaderCtx = useContext(
+    UploaderContext,
+  ) as unknown as UploaderContextRef
   const api = uploaderCtx?.current?.getAPI?.()
   const projectId = projectIdProp ?? routeProjectId ?? null
   const subprojectId = subprojectIdProp ?? routeSubprojectId ?? null
@@ -228,7 +235,10 @@ export const Uploader = ({
       'file-upload-success',
       onUploadSuccessDebounced as unknown as EventListener,
     )
-    ctx?.removeEventListener('file-upload-failed', onUploadFailed as unknown as EventListener)
+    ctx?.removeEventListener(
+      'file-upload-failed',
+      onUploadFailed as unknown as EventListener,
+    )
   })
 
   useEffect(() => {
@@ -237,7 +247,10 @@ export const Uploader = ({
       'file-upload-success',
       onUploadSuccessDebounced as unknown as EventListener,
     )
-    ctx?.addEventListener('file-upload-failed', onUploadFailed as unknown as EventListener)
+    ctx?.addEventListener(
+      'file-upload-failed',
+      onUploadFailed as unknown as EventListener,
+    )
   }, [onUploadFailed, onUploadSuccessDebounced, uploaderCtx])
 
   // docs: https://uploadcare.com/docs/file-uploader

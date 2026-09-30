@@ -14,6 +14,7 @@ import { addOperationAtom } from '../../store.ts'
 import type WmsLayers from '../../models/public/WmsLayers.ts'
 
 import '../../form.css'
+import type { FieldChangeData } from '../../components/shared/fieldChange.ts'
 
 export const WmsLayer = () => {
   const { projectId: projectIdFromUrl, wmsLayerId } = useParams({
@@ -38,12 +39,12 @@ export const WmsLayer = () => {
   const projectId = row?.project_id ?? projectIdFromUrl
 
   const onChange = async (
-    e: React.ChangeEvent<HTMLInputElement>,
-    data: Parameters<typeof getValueFromChange>[1],
+    e: React.ChangeEvent<HTMLElement>,
+    data?: FieldChangeData,
   ) => {
     const { name, value } = getValueFromChange(e, data)
     // only change if value has changed: maybe only focus entered and left
-    if ((row as Record<string, any>)[name] === value) return
+    if ((row as unknown as Record<string, unknown>)[name] === value) return
 
     try {
       await db.query(
@@ -53,12 +54,14 @@ export const WmsLayer = () => {
     } catch (error) {
       setValidations((prev) => ({
         ...prev,
-        [name]: { state: 'error', message: error instanceof Error ? error.message : String(error) },
+        [name]: {
+          state: 'error',
+          message: error instanceof Error ? error.message : String(error),
+        },
       }))
       return
     }
     setValidations((prev) => {
-       
       const { [name]: _, ...rest } = prev
       return rest
     })
@@ -81,7 +84,12 @@ export const WmsLayer = () => {
   if (!res) return <Loading />
 
   if (!row) {
-    return <NotFound table={formatMessage({ id: 'Igo7tK', defaultMessage: 'WMS-Ebene' })} id={wmsLayerId} />
+    return (
+      <NotFound
+        table={formatMessage({ id: 'Igo7tK', defaultMessage: 'WMS-Ebene' })}
+        id={wmsLayerId}
+      />
+    )
   }
 
   // console.log('hello WmsLayer, row:', row)

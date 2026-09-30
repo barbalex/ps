@@ -22,6 +22,7 @@ import {
 
 import type SubprojectRoles from '../../models/public/SubprojectRoles.ts'
 import type SubprojectRolesHistory from '../../models/public/SubprojectRolesHistory.ts'
+import type { FieldChangeData } from '../../components/shared/fieldChange.ts'
 
 export const SubprojectUserHistoryCompare = () => {
   const { formatMessage } = useIntl()
@@ -33,7 +34,9 @@ export const SubprojectUserHistoryCompare = () => {
 
   const addOperation = useSetAtom(addOperationAtom)
   const db = usePGlite()
-  const [validations, setValidations] = useState<Record<string, { state: 'error'; message: string }>>({})
+  const [validations, setValidations] = useState<
+    Record<string, { state: 'error'; message: string }>
+  >({})
 
   const rowRes = useLiveQuery(
     `SELECT * FROM subproject_roles WHERE subproject_role_id = $1`,
@@ -42,11 +45,12 @@ export const SubprojectUserHistoryCompare = () => {
   const row = rowRes?.rows?.[0] as SubprojectRoles | undefined
 
   const onChange = async (
-    e: React.ChangeEvent<HTMLInputElement>,
-    data: Parameters<typeof getValueFromChange>[1],
+    e: React.ChangeEvent<HTMLElement>,
+    data?: FieldChangeData,
   ) => {
     const { name, value } = getValueFromChange(e, data)
-    if (!row || (row as unknown as Record<string, unknown>)[name] === value) return
+    if (!row || (row as unknown as Record<string, unknown>)[name] === value)
+      return
 
     try {
       await db.query(
@@ -56,13 +60,15 @@ export const SubprojectUserHistoryCompare = () => {
     } catch (error) {
       setValidations((prev) => ({
         ...prev,
-        [name]: { state: 'error', message: error instanceof Error ? error.message : String(error) },
+        [name]: {
+          state: 'error',
+          message: error instanceof Error ? error.message : String(error),
+        },
       }))
       return
     }
 
     setValidations((prev) => {
-       
       const { [name]: _unused, ...rest } = prev
       return rest
     })
@@ -82,7 +88,10 @@ export const SubprojectUserHistoryCompare = () => {
   if (!row) {
     return (
       <NotFound
-        table={formatMessage({ id: '1M9eWP', defaultMessage: 'Teilprojekt-Benutzer' })}
+        table={formatMessage({
+          id: '1M9eWP',
+          defaultMessage: 'Teilprojekt-Benutzer',
+        })}
         id={subprojectUserId}
       />
     )
@@ -91,30 +100,33 @@ export const SubprojectUserHistoryCompare = () => {
   const leftContent = (
     <div className="form-container">
       <>
-      <DropdownField
-        label={formatMessage({ id: 'qyI8KV', defaultMessage: 'Benutzer' })}
-        name="project_user_id"
-        table="project_users"
-        value={row.project_user_id ?? ''}
-        onChange={onChange}
-        validationState={validations?.project_user_id?.state}
-        validationMessage={validations?.project_user_id?.message}
-      />
-      <RadioGroupField
-        label={formatMessage({ id: 'Gj0HkM', defaultMessage: 'Rolle' })}
-        name="role"
-        list={userRoleOptions.map((o) => o.value)}
-        labelMap={Object.fromEntries(
-          userRoleOptions.map((o) => [
-            o.value,
-            formatMessage({ id: o.labelId, defaultMessage: o.defaultMessage }),
-          ]),
-        )}
-        value={row.role ?? ''}
-        onChange={onChange}
-        validationState={validations?.role?.state}
-        validationMessage={validations?.role?.message}
-      />
+        <DropdownField
+          label={formatMessage({ id: 'qyI8KV', defaultMessage: 'Benutzer' })}
+          name="project_user_id"
+          table="project_users"
+          value={row.project_user_id ?? ''}
+          onChange={onChange}
+          validationState={validations?.project_user_id?.state}
+          validationMessage={validations?.project_user_id?.message}
+        />
+        <RadioGroupField
+          label={formatMessage({ id: 'Gj0HkM', defaultMessage: 'Rolle' })}
+          name="role"
+          list={userRoleOptions.map((o) => o.value)}
+          labelMap={Object.fromEntries(
+            userRoleOptions.map((o) => [
+              o.value,
+              formatMessage({
+                id: o.labelId,
+                defaultMessage: o.defaultMessage,
+              }),
+            ]),
+          )}
+          value={row.role ?? ''}
+          onChange={onChange}
+          validationState={validations?.role?.state}
+          validationMessage={validations?.role?.message}
+        />
       </>
     </div>
   )
@@ -130,7 +142,9 @@ export const SubprojectUserHistoryCompare = () => {
   })
 
   const formatFieldValue = (field: string, history: SubprojectRolesHistory) =>
-    stringifyHistoryValue((history as unknown as Record<string, unknown>)[field])
+    stringifyHistoryValue(
+      (history as unknown as Record<string, unknown>)[field],
+    )
 
   return (
     <HistoryCompare<SubprojectRolesHistory>

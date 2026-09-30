@@ -1,5 +1,10 @@
 import { useRef, useState } from 'react'
-import { Outlet, useNavigate, useParams, useLocation } from '@tanstack/react-router'
+import {
+  Outlet,
+  useNavigate,
+  useParams,
+  useLocation,
+} from '@tanstack/react-router'
 import { usePGlite, useLiveQuery } from '@electric-sql/pglite-react'
 import { useSetAtom } from 'jotai'
 import { useIntl } from 'react-intl'
@@ -19,6 +24,7 @@ import type VectorLayers from '../../models/public/VectorLayers.ts'
 import styles from './WithDisplays.module.css'
 
 import '../../form.css'
+import type { FieldChangeData } from '../../components/shared/fieldChange.ts'
 
 const { Button } = fluentUiReactComponents
 
@@ -39,13 +45,15 @@ export const VectorLayerWithDisplays = ({ from }: { from: string }) => {
     `SELECT * FROM vector_layers WHERE vector_layer_id = $1`,
     [vectorLayerId],
   )
-  const row: VectorLayers | undefined = res?.rows?.[0] as VectorLayers | undefined
+  const row: VectorLayers | undefined = res?.rows?.[0] as
+    VectorLayers | undefined
 
   const projectRes = useLiveQuery(
     `SELECT vlds_in_vector_layer FROM projects WHERE project_id = $1`,
     [projectId],
   )
-  const vldsInVectorLayer = projectRes?.rows?.[0]?.vlds_in_vector_layer !== false
+  const vldsInVectorLayer =
+    projectRes?.rows?.[0]?.vlds_in_vector_layer !== false
 
   const displayCountRes = useLiveQuery(
     `SELECT COUNT(*)::int AS count FROM vector_layer_displays WHERE vector_layer_id = $1`,
@@ -80,11 +88,11 @@ export const VectorLayerWithDisplays = ({ from }: { from: string }) => {
     ) : undefined
 
   const onChange = async (
-    e: React.ChangeEvent<HTMLInputElement>,
-    data: Parameters<typeof getValueFromChange>[1],
+    e: React.ChangeEvent<HTMLElement>,
+    data?: FieldChangeData,
   ) => {
     const { name, value } = getValueFromChange(e, data)
-    if ((row as Record<string, any>)[name] === value) return
+    if ((row as unknown as Record<string, unknown>)[name] === value) return
 
     try {
       await db.query(
@@ -94,12 +102,14 @@ export const VectorLayerWithDisplays = ({ from }: { from: string }) => {
     } catch (error) {
       setValidations((prev) => ({
         ...prev,
-        [name]: { state: 'error', message: error instanceof Error ? error.message : String(error) },
+        [name]: {
+          state: 'error',
+          message: error instanceof Error ? error.message : String(error),
+        },
       }))
       return
     }
     setValidations((prev) => {
-       
       const { [name]: _, ...rest } = prev
       return rest
     })
@@ -126,11 +136,7 @@ export const VectorLayerWithDisplays = ({ from }: { from: string }) => {
 
   return (
     <div className="form-outer-container">
-      <Header
-        autoFocusRef={autoFocusRef}
-        row={row}
-        from={from}
-      />
+      <Header autoFocusRef={autoFocusRef} row={row} from={from} />
       <div className="form-container">
         <Form
           onChange={onChange}
@@ -149,7 +155,11 @@ export const VectorLayerWithDisplays = ({ from }: { from: string }) => {
             headerActions={displaysHeaderActions}
           >
             {isDisplaysOpen &&
-              (isDisplaysList ? <VectorLayerDisplays hideHeader /> : <Outlet />)}
+              (isDisplaysList ? (
+                <VectorLayerDisplays hideHeader />
+              ) : (
+                <Outlet />
+              ))}
           </Section>
         ) : null}
       </div>

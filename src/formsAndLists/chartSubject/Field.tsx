@@ -54,11 +54,31 @@ const fieldsByTable: Record<string, string[]> = {
   subprojects: ['name', 'start_year'],
   places: ['level', 'parent_id', 'since', 'until'],
   checks: ['date', 'relevant_for_reports'],
-  check_quantities: ['unit_id', 'quantity_integer', 'quantity_numeric', 'quantity_text'],
-  check_taxa: ['unit_id', 'quantity_integer', 'quantity_numeric', 'quantity_text'],
+  check_quantities: [
+    'unit_id',
+    'quantity_integer',
+    'quantity_numeric',
+    'quantity_text',
+  ],
+  check_taxa: [
+    'unit_id',
+    'quantity_integer',
+    'quantity_numeric',
+    'quantity_text',
+  ],
   actions: ['date', 'relevant_for_reports'],
-  action_quantities: ['unit_id', 'quantity_integer', 'quantity_numeric', 'quantity_text'],
-  action_taxa: ['unit_id', 'quantity_integer', 'quantity_numeric', 'quantity_text'],
+  action_quantities: [
+    'unit_id',
+    'quantity_integer',
+    'quantity_numeric',
+    'quantity_text',
+  ],
+  action_taxa: [
+    'unit_id',
+    'quantity_integer',
+    'quantity_numeric',
+    'quantity_text',
+  ],
 }
 
 // tables whose regular columns can serve as a sum source
@@ -72,10 +92,11 @@ const levelFilter = (tableLevel: string | null | undefined, alias: string) =>
       : 'TRUE'
 
 type FieldProps = {
-  onChange: (e: React.ChangeEvent<HTMLInputElement>, data?: object) => void
+  onChange: (e: React.ChangeEvent<HTMLElement>, data?: object) => void
   row: ChartSubjects
   validations: Record<
-    string, { state?: 'error' | 'warning' | 'success' | 'none'; message?: string }
+    string,
+    { state?: 'error' | 'warning' | 'success' | 'none'; message?: string }
   >
 }
 
@@ -99,18 +120,18 @@ const DataKeysField = ({ onChange, row, validations }: FieldProps) => {
       : null
 
   const query =
-    scope && row.table_name === 'places' ?
-      `SELECT DISTINCT k AS key
+    scope && row.table_name === 'places'
+      ? `SELECT DISTINCT k AS key
        FROM places t, jsonb_object_keys(t.data) k
        WHERE t.${scope.column} = ${scope.value} AND ${levelFilter(row.table_level, 't')}
        ORDER BY 1`
-    : scope ?
-      `SELECT DISTINCT k AS key
+      : scope
+        ? `SELECT DISTINCT k AS key
        FROM ${row.table_name} t
          INNER JOIN places p ON t.place_id = p.place_id, jsonb_object_keys(t.data) k
        WHERE p.${scope.column} = ${scope.value} AND ${levelFilter(row.table_level, 'p')}
        ORDER BY 1`
-    : undefined
+        : undefined
 
   // useLiveQuery requires a query string; without a scope there is nothing to offer
   const res = useLiveQuery(query ?? 'SELECT NULL AS key WHERE FALSE')
@@ -138,16 +159,18 @@ const DataKeysField = ({ onChange, row, validations }: FieldProps) => {
 export const Field = ({ onChange, row, validations }: FieldProps) => {
   const { formatMessage } = useIntl()
   const [language] = useAtom(languageAtom)
-  const params = useParams({ strict: false }) as Record<string, string | undefined>
+  const params = useParams({ strict: false }) as Record<
+    string,
+    string | undefined
+  >
   const projectId = params.projectId ?? params.projectId_
 
   const nameRes = useLiveQuery(
     `SELECT name_singular_${language} FROM place_levels WHERE project_id = $1 AND level = $2`,
     [projectId, Number(row?.table_level ?? 1)],
   )
-  const nameSingular = (nameRes?.rows?.[0]?.[
-    `name_singular_${language}`
-  ] ?? 'Population') as string
+  const nameSingular = (nameRes?.rows?.[0]?.[`name_singular_${language}`] ??
+    'Population') as string
 
   if (row?.calc_method === 'count_rows_by_distinct_field_values') {
     const isRowTable =
@@ -155,20 +178,17 @@ export const Field = ({ onChange, row, validations }: FieldProps) => {
       row.table_name === 'checks' ||
       row.table_name === 'actions'
     // no data keys to group by on other tables
-    return isRowTable ?
-        <DataKeysField
-          onChange={onChange}
-          row={row}
-          validations={validations}
-        />
-      : null
+    return isRowTable ? (
+      <DataKeysField onChange={onChange} row={row} validations={validations} />
+    ) : null
   }
 
   const fields =
-    row?.calc_method === 'sum_values_of_field' ?
-      sumFields
-    : row.table_name ? (fieldsByTable[row.table_name] ?? [])
-    : []
+    row?.calc_method === 'sum_values_of_field'
+      ? sumFields
+      : row.table_name
+        ? (fieldsByTable[row.table_name] ?? [])
+        : []
 
   // Nothing to show if the table has no recognized fields
   if (!fields.length) return null
@@ -176,9 +196,9 @@ export const Field = ({ onChange, row, validations }: FieldProps) => {
   const labelMap = Object.fromEntries(
     fields.map((key) => [
       key,
-      key in fieldMessages ?
-        formatMessage(fieldMessages[key], { nameSingular })
-      : key,
+      key in fieldMessages
+        ? formatMessage(fieldMessages[key], { nameSingular })
+        : key,
     ]),
   )
 

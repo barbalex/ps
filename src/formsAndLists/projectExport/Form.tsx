@@ -11,11 +11,12 @@ import { SectionDescription } from '../../components/shared/SectionDescription.t
 import type ProjectExports from '../../models/public/ProjectExports.ts'
 
 import '../../form.css'
+import type { FieldChangeHandler } from '../../components/shared/fieldChange.ts'
 
 type Props = {
-  onChange: (e: React.ChangeEvent<any>, data?: any) => void
+  onChange: FieldChangeHandler
   validations?: Record<string, { state: 'error'; message: string }>
-  row: Record<string, any> | ProjectExports
+  row: ProjectExports | Record<string, never>
   autoFocusRef?: React.RefObject<HTMLInputElement | null>
   from?: string
 }
@@ -32,7 +33,9 @@ export const ProjectExportForm = ({
   const paramHint = (() => {
     if (row?.level === 'project') {
       return formatMessage({
-        id: row?.filter_by_year ? 'projectExport.sql.hintProjectYear' : 'projectExport.sql.hintProject',
+        id: row?.filter_by_year
+          ? 'projectExport.sql.hintProjectYear'
+          : 'projectExport.sql.hintProject',
         defaultMessage: row?.filter_by_year
           ? '$1 = project_id (uuid), $2 = year (integer)'
           : '$1 = project_id (uuid)',
@@ -40,7 +43,9 @@ export const ProjectExportForm = ({
     }
     if (row?.level === 'subproject') {
       return formatMessage({
-        id: row?.filter_by_year ? 'projectExport.sql.hintSubprojectYear' : 'projectExport.sql.hintSubproject',
+        id: row?.filter_by_year
+          ? 'projectExport.sql.hintSubprojectYear'
+          : 'projectExport.sql.hintSubproject',
         defaultMessage: row?.filter_by_year
           ? '$1 = subproject_id (uuid), $2 = year (integer)'
           : '$1 = subproject_id (uuid)',
@@ -55,7 +60,10 @@ export const ProjectExportForm = ({
   return (
     <>
       <Section
-        title={formatMessage({ id: 'projectExport.section.name', defaultMessage: 'Name' })}
+        title={formatMessage({
+          id: 'projectExport.section.name',
+          defaultMessage: 'Name',
+        })}
       >
         <SectionDescription>
           {formatMessage({
@@ -104,7 +112,10 @@ export const ProjectExportForm = ({
         />
       </Section>
       <Section
-        title={formatMessage({ id: 'projectExport.section.variables', defaultMessage: 'Variabeln' })}
+        title={formatMessage({
+          id: 'projectExport.section.variables',
+          defaultMessage: 'Variabeln',
+        })}
       >
         <SectionDescription>
           {formatMessage({
@@ -123,7 +134,10 @@ export const ProjectExportForm = ({
           value={row?.level ?? null}
           onChange={onChange}
           labelMap={{
-            project: formatMessage({ id: 'projectExport.level.project', defaultMessage: 'Projekt' }),
+            project: formatMessage({
+              id: 'projectExport.level.project',
+              defaultMessage: 'Projekt',
+            }),
             subproject: formatMessage({
               id: 'projectExport.level.subproject',
               defaultMessage: 'Teilprojekt',
@@ -146,7 +160,10 @@ export const ProjectExportForm = ({
         />
       </Section>
       <Section
-        title={formatMessage({ id: 'projectExport.section.query', defaultMessage: 'Abfrage' })}
+        title={formatMessage({
+          id: 'projectExport.section.query',
+          defaultMessage: 'Abfrage',
+        })}
       >
         <SectionDescription>
           {formatMessage({
@@ -156,13 +173,19 @@ export const ProjectExportForm = ({
           })}
         </SectionDescription>
         <TextArea
-          label={formatMessage({ id: 'projectExport.description', defaultMessage: 'Beschreibung' })}
+          label={formatMessage({
+            id: 'projectExport.description',
+            defaultMessage: 'Beschreibung',
+          })}
           name="description"
           value={row?.description ?? ''}
           onChange={onChange}
         />
         <SqlEditorField
-          label={formatMessage({ id: 'projectExport.sql', defaultMessage: 'SQL' })}
+          label={formatMessage({
+            id: 'projectExport.sql',
+            defaultMessage: 'SQL',
+          })}
           name="sql"
           value={row?.sql ?? ''}
           onChange={onChange}

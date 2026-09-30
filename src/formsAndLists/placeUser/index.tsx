@@ -18,6 +18,7 @@ import { userRoleOptions } from '../../modules/constants.ts'
 import styles from './index.module.css'
 
 import '../../form.css'
+import type { FieldChangeData } from '../../components/shared/fieldChange.ts'
 
 const {
   Dialog,
@@ -64,12 +65,12 @@ export const PlaceUser = ({ from }: { from: string }) => {
   const isOwner = (ownerRes?.rows?.length ?? 0) > 0
 
   const onChange = async (
-    e: React.ChangeEvent<HTMLInputElement>,
-    data: Parameters<typeof getValueFromChange>[1],
+    e: React.ChangeEvent<HTMLElement>,
+    data?: FieldChangeData,
   ) => {
     const { name, value } = getValueFromChange(e, data)
     // only change if value has changed: maybe only focus entered and left
-    if ((row as Record<string, any>)[name] === value) return
+    if ((row as unknown as Record<string, unknown>)[name] === value) return
 
     if (
       name === 'role' &&
@@ -87,7 +88,10 @@ export const PlaceUser = ({ from }: { from: string }) => {
     } catch (error) {
       setValidations((prev) => ({
         ...prev,
-        [name]: { state: 'error', message: error instanceof Error ? error.message : String(error) },
+        [name]: {
+          state: 'error',
+          message: error instanceof Error ? error.message : String(error),
+        },
       }))
       return
     }
@@ -116,7 +120,10 @@ export const PlaceUser = ({ from }: { from: string }) => {
     } catch (error) {
       setValidations((prev) => ({
         ...prev,
-        role: { state: 'error', message: error instanceof Error ? error.message : String(error) },
+        role: {
+          state: 'error',
+          message: error instanceof Error ? error.message : String(error),
+        },
       }))
       return
     }
@@ -149,15 +156,13 @@ export const PlaceUser = ({ from }: { from: string }) => {
   const showSpecificNotice =
     row.role === 'read-specific' || row.role === 'write-specific'
 
-  const pendingRoleOption = userRoleOptions.find(
-    (o) => o.value === pendingRole,
-  )
+  const pendingRoleOption = userRoleOptions.find((o) => o.value === pendingRole)
   const pendingRoleLabel = pendingRoleOption
     ? formatMessage({
         id: pendingRoleOption.labelId,
         defaultMessage: pendingRoleOption.defaultMessage,
       })
-    : pendingRole ?? ''
+    : (pendingRole ?? '')
 
   return (
     <div className="form-outer-container">

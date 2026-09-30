@@ -1,3 +1,4 @@
+/* eslint-disable react-refresh/only-export-components -- this file intentionally bundles components with contexts and helpers */
 import { createContext, useContext } from 'react'
 import { useLiveQuery } from '@electric-sql/pglite-react'
 import { useQueries } from '@tanstack/react-query'
@@ -28,15 +29,12 @@ export type ProjectReportContextValue = {
   year?: number | null
 }
 
-export const ProjectReportContext =
-  createContext<ProjectReportContextValue>({})
+export const ProjectReportContext = createContext<ProjectReportContextValue>({})
 
 export const useProjectReportContext = () => useContext(ProjectReportContext)
 
 const NoContext = ({ label }: { label: string }) => (
-  <div className={styles.noContext}>
-    {label}: kein Projekt-Kontext
-  </div>
+  <div className={styles.noContext}>{label}: kein Projekt-Kontext</div>
 )
 
 const Loading = () => <div className={styles.loading}>wird geladen…</div>
@@ -94,7 +92,10 @@ type PlaceRow = {
   relevant: boolean
 }
 
-const placeRowsFromVersions = (places: VersionedRow[], year: number): PlaceRow[] =>
+const placeRowsFromVersions = (
+  places: VersionedRow[],
+  year: number,
+): PlaceRow[] =>
   asOfYear(places, year, 'place_id').map((place) => {
     const data = place.data as Record<string, unknown> | null
     return {
@@ -145,7 +146,10 @@ const usePlaceRowsByArt = (
   projectId: string | undefined,
   arts: ArtRow[],
   years: number[],
-): { rowsByArtByYear: Map<number, Map<string, PlaceRow[]>>; loading: boolean } => {
+): {
+  rowsByArtByYear: Map<number, Map<string, PlaceRow[]>>
+  loading: boolean
+} => {
   const online = useAtomValue(onlineAtom)
   const needsVersions = online && years.length > 0 && arts.length > 0
   // a null projectId matches no rows — the live fallback is not needed then
@@ -265,7 +269,10 @@ export const popCountsAsOfYear = (
  * non-potential population (status < 300, bekannt_seit <= year) with a
  * non-potential, report-relevant, by-then-known tpop.
  */
-export const hasQualifyingPopulation = (rows: PlaceRow[], year: number): boolean => {
+export const hasQualifyingPopulation = (
+  rows: PlaceRow[],
+  year: number,
+): boolean => {
   const popById = new Map(
     rows
       .filter(
@@ -382,8 +389,12 @@ const ErfolgBlock = ({ title }: { title?: string }) => {
       <table className={styles.table}>
         <thead>
           <tr>
-            <th rowSpan={2} className={styles.artHeader}>Art</th>
-            <th colSpan={7} className={styles.erfolgHeader}>Erfolg</th>
+            <th rowSpan={2} className={styles.artHeader}>
+              Art
+            </th>
+            <th colSpan={7} className={styles.erfolgHeader}>
+              Erfolg
+            </th>
             <th rowSpan={2} className={styles.verticalHeader}>
               nicht beurteilt
             </th>
@@ -412,7 +423,9 @@ const ErfolgBlock = ({ title }: { title?: string }) => {
               rowsByArt.get(art.subproject_id) != null &&
               hasQualifyingPopulation(rowsByArt.get(art.subproject_id)!, year)
             const erfolg = qualifies
-              ? erfolgSortOf(reportByArtYear.get(`${art.subproject_id}|${year}`))
+              ? erfolgSortOf(
+                  reportByArtYear.get(`${art.subproject_id}|${year}`),
+                )
               : null
             const erfolgVorjahr = erfolgSortOf(
               reportByArtYear.get(`${art.subproject_id}|${year - 1}`),
@@ -441,9 +454,7 @@ const ErfolgBlock = ({ title }: { title?: string }) => {
                 <td className={styles.veraenderung}>
                   {veränderung(erfolg, erfolgVorjahr)}
                 </td>
-                <td className={styles.unsicher}>
-                  {erfolg === 6 ? 'X' : ''}
-                </td>
+                <td className={styles.unsicher}>{erfolg === 6 ? 'X' : ''}</td>
                 <td>{erfolg == null ? 'X' : ''}</td>
                 <td>{!artPopsWithMassnahme ? 'X' : ''}</td>
                 <td>{art.bearbeitung === 'erstellt' ? 'X' : ''}</td>
@@ -496,7 +507,9 @@ const AktuellePopulationenBlock = ({ title }: { title?: string }) => {
         <thead>
           <tr>
             <th rowSpan={2}>Aktionsplan</th>
-            <th colSpan={3} className={styles.groupHeader}>aktuelle Werte</th>
+            <th colSpan={3} className={styles.groupHeader}>
+              aktuelle Werte
+            </th>
             <th colSpan={3} className={styles.groupHeader}>
               Differenz zum Vorjahr
             </th>
@@ -520,13 +533,19 @@ const AktuellePopulationenBlock = ({ title }: { title?: string }) => {
               <td className={styles.number}>{current.pop100}</td>
               <td className={styles.number}>{current.pop200}</td>
               <td className={styles.number}>{current.total}</td>
-              <td className={`${styles.number} ${diffClass(diffs.pop100) ?? ''}`}>
+              <td
+                className={`${styles.number} ${diffClass(diffs.pop100) ?? ''}`}
+              >
                 {diffs.pop100}
               </td>
-              <td className={`${styles.number} ${diffClass(diffs.pop200) ?? ''}`}>
+              <td
+                className={`${styles.number} ${diffClass(diffs.pop200) ?? ''}`}
+              >
                 {diffs.pop200}
               </td>
-              <td className={`${styles.number} ${diffClass(diffs.total) ?? ''}`}>
+              <td
+                className={`${styles.number} ${diffClass(diffs.total) ?? ''}`}
+              >
                 {diffs.total}
               </td>
             </tr>

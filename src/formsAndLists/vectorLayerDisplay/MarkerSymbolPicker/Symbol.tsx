@@ -1,4 +1,5 @@
 import styles from './Symbol.module.css'
+import type { FieldChangeHandler } from '../../../components/shared/fieldChange.ts'
 
 interface Props {
   Component: React.ComponentType<{
@@ -6,7 +7,7 @@ interface Props {
     onClick?: React.MouseEventHandler
   }>
   name: string
-  onChange: (e: React.ChangeEvent<any>, data?: any) => void
+  onChange: FieldChangeHandler
   active: boolean
 }
 
@@ -21,7 +22,7 @@ export const MarkerSymbol = ({ Component, name, onChange, active }: Props) => {
         name: 'marker_symbol',
         value: name,
       },
-    } as unknown as React.ChangeEvent<any>)
+    } as unknown as React.ChangeEvent<HTMLElement>)
 
   return (
     <Component

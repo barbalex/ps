@@ -4,6 +4,7 @@ import { DropdownField } from '../../components/shared/DropdownField.tsx'
 import type WidgetsForFields from '../../models/public/WidgetsForFields.ts'
 
 import '../../form.css'
+import type { FieldChangeHandler } from '../../components/shared/fieldChange.ts'
 
 export const WidgetForFieldForm = ({
   onChange,
@@ -11,9 +12,9 @@ export const WidgetForFieldForm = ({
   row,
   autoFocusRef,
 }: {
-  onChange: (e: React.ChangeEvent<any>, data?: any) => void
+  onChange: FieldChangeHandler
   validations?: Record<string, { state: 'error'; message: string }>
-  row: WidgetsForFields | Record<string, any>
+  row: WidgetsForFields | Record<string, never>
   autoFocusRef?: React.Ref<HTMLInputElement>
   from?: string
 }) => {

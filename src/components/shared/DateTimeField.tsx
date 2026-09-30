@@ -5,9 +5,8 @@ import { DatePicker } from '@fluentui/react-datepicker-compat'
 import { useIntl } from 'react-intl'
 
 import styles from './DateTimeField.module.css'
+import type { FieldChangeData } from './fieldChange.ts'
 
-type InputProps = React.ComponentProps<typeof Input>
-type InputOnChangeData = Parameters<NonNullable<InputProps['onChange']>>[1]
 type DatePickerProps = React.ComponentProps<typeof DatePicker>
 type DatePickerOnChange = NonNullable<DatePickerProps['onChange']>
 
@@ -19,7 +18,7 @@ type Props = {
   ref?: React.Ref<HTMLInputElement>
   onChange: (
     ev: React.ChangeEvent<HTMLInputElement>,
-    data: InputOnChangeData,
+    data?: FieldChangeData,
   ) => void
   button?: React.ReactNode
   validationMessage?: React.ReactNode
@@ -106,7 +105,9 @@ export const DateTimeField = ({
         ? ['none', '']
         : ['warning', mustBeSetMessage]
 
-  const onChangeDate = (ev: { target?: { name?: string; value?: Date | null } }) => {
+  const onChangeDate = (ev: {
+    target?: { name?: string; value?: Date | null }
+  }) => {
     const newDate = ev?.target?.value
     const newYear = newDate?.getFullYear?.() ?? ''
     const newMonth = newDate?.getMonth?.() ?? ''

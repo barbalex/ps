@@ -6,6 +6,7 @@ import { useIntl } from 'react-intl'
 
 import { languageAtom } from '../../store.ts'
 import type Fields from '../../models/public/Fields.ts'
+import type { FieldChangeData } from '../../components/shared/fieldChange.ts'
 
 const { Dropdown, Field, Option } = fluentUiReactComponents
 
@@ -19,12 +20,13 @@ type Props = {
   projectId?: string
   onChange: (
     e: React.ChangeEvent<HTMLInputElement>,
-    data?: InputOnChangeData,
+    data?: FieldChangeData,
   ) => void
-  row: Record<string, unknown>
+  row: Fields | Record<string, never>
   validations?: Record<
     string,
-    { state: 'error' | 'warning' | 'success' | 'none'; message: string } | undefined
+    | { state: 'error' | 'warning' | 'success' | 'none'; message: string }
+    | undefined
   >
   autoFocusRef?: React.RefObject<HTMLInputElement | null>
 }
@@ -267,7 +269,9 @@ export const TableAndLevel = ({
       {
         target: { name: 'level', type: 'radio' },
       } as React.ChangeEvent<HTMLInputElement>,
-      { value: opt?.level != null ? String(opt.level) : null } as unknown as InputOnChangeData,
+      {
+        value: opt?.level != null ? String(opt.level) : null,
+      } as unknown as InputOnChangeData,
     )
   }
 

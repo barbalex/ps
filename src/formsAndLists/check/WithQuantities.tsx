@@ -14,7 +14,7 @@ import { Loading } from '../../components/shared/Loading.tsx'
 import { NotFound } from '../../components/NotFound.tsx'
 import { Section } from '../../components/shared/Section.tsx'
 // module was removed in commit d156ab7f6; component is currently unused
-// @ts-ignore
+// @ts-expect-error module '../checkQuantity/Inline.tsx' was removed
 import { CheckQuantityInline } from '../checkQuantity/Inline.tsx'
 import { addOperationAtom, designingAtom } from '../../store.ts'
 import type Checks from '../../models/public/Checks.ts'
@@ -46,8 +46,9 @@ export const CheckWithQuantities = ({ from }: { from: string }) => {
     `SELECT check_quantity_id FROM check_quantities WHERE check_id = $1 ORDER BY check_quantity_id`,
     [checkId],
   )
-  const quantities =
-    (quantitiesRes?.rows ?? []) as { check_quantity_id: string }[]
+  const quantities = (quantitiesRes?.rows ?? []) as {
+    check_quantity_id: string
+  }[]
 
   const placeLevelRes = useLiveQuery(
     `SELECT check_quantities FROM place_levels WHERE project_id = $1 AND level = $2`,
@@ -56,10 +57,7 @@ export const CheckWithQuantities = ({ from }: { from: string }) => {
   const placeLevel = placeLevelRes?.rows?.[0]
   const showQuantities = isDesigning || placeLevel?.check_quantities !== false
 
-  const onChange = async (
-    e: React.ChangeEvent<HTMLInputElement>,
-    data?: object,
-  ) => {
+  const onChange = async (e: React.ChangeEvent<HTMLElement>, data?: object) => {
     const { name, value } = getValueFromChange(
       e,
       data as Parameters<typeof getValueFromChange>[1],
@@ -78,7 +76,6 @@ export const CheckWithQuantities = ({ from }: { from: string }) => {
       return
     }
     setValidations((prev) => {
-       
       const { [name]: _, ...rest } = prev
       return rest
     })

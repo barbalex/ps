@@ -2,10 +2,10 @@ import { useState } from 'react'
 import * as fluentUiReactComponents from '@fluentui/react-components'
 const { Input, Field } = fluentUiReactComponents
 type InputProps = React.ComponentProps<typeof Input>
-type InputOnChangeData = Parameters<NonNullable<InputProps['onChange']>>[1]
 type FieldProps = React.ComponentProps<typeof Field>
 
 import styles from './TimeFields.module.css'
+import type { FieldChangeData } from './fieldChange.ts'
 
 type Props = {
   label?: string
@@ -49,9 +49,9 @@ export const TimeFields = ({
 
   const onChangeHours = (
     _ev: React.ChangeEvent<HTMLInputElement>,
-    data: InputOnChangeData,
+    data?: FieldChangeData,
   ) => {
-    const newHours = data.value
+    const newHours = data?.value ?? ''
     setHours(newHours)
     if (minutes) {
       onChange({
@@ -62,9 +62,9 @@ export const TimeFields = ({
 
   const onChangeMinutes = (
     _ev: React.ChangeEvent<HTMLInputElement>,
-    data: InputOnChangeData,
+    data?: FieldChangeData,
   ) => {
-    const newMinutes = data.value
+    const newMinutes = data?.value ?? ''
     setMinutes(newMinutes)
     if (hours) {
       onChange({

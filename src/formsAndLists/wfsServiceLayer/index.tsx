@@ -13,6 +13,7 @@ import { addOperationAtom } from '../../store.ts'
 import type WfsServiceLayers from '../../models/public/WfsServiceLayers.ts'
 
 import '../../form.css'
+import type { FieldChangeData } from '../../components/shared/fieldChange.ts'
 
 export const WfsServiceLayer = () => {
   const { wfsServiceLayerId } = useParams({ strict: false })
@@ -27,15 +28,16 @@ export const WfsServiceLayer = () => {
     `SELECT * FROM wfs_service_layers WHERE wfs_service_layer_id = $1`,
     [wfsServiceLayerId],
   )
-  const row: WfsServiceLayers | undefined =
-    res?.rows?.[0] as WfsServiceLayers | undefined
+  const row: WfsServiceLayers | undefined = res?.rows?.[0] as
+    WfsServiceLayers | undefined
 
   const onChange = async (
-    e: React.ChangeEvent<HTMLInputElement>,
-    data: Parameters<typeof getValueFromChange>[1],
+    e: React.ChangeEvent<HTMLElement>,
+    data?: FieldChangeData,
   ) => {
     const { name, value } = getValueFromChange(e, data)
-    if (!row || (row as Record<string, any>)[name] === value) return
+    if (!row || (row as unknown as Record<string, unknown>)[name] === value)
+      return
 
     try {
       await db.query(
@@ -45,13 +47,15 @@ export const WfsServiceLayer = () => {
     } catch (error) {
       setValidations((prev) => ({
         ...prev,
-        [name]: { state: 'error', message: error instanceof Error ? error.message : String(error) },
+        [name]: {
+          state: 'error',
+          message: error instanceof Error ? error.message : String(error),
+        },
       }))
       return
     }
 
     setValidations((prev) => {
-       
       const { [name]: _unused, ...rest } = prev
       return rest
     })
@@ -70,7 +74,10 @@ export const WfsServiceLayer = () => {
   if (row === null)
     return (
       <NotFound
-        table={formatMessage({ id: 'Cb1DcE', defaultMessage: 'WFS-Dienst-Ebene' })}
+        table={formatMessage({
+          id: 'Cb1DcE',
+          defaultMessage: 'WFS-Dienst-Ebene',
+        })}
         id={wfsServiceLayerId}
       />
     )

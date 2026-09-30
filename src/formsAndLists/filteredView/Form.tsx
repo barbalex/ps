@@ -18,7 +18,7 @@ export const FilteredViewForm = ({
   autoFocusRef,
   validations = {},
 }: {
-  onChange: (e: React.ChangeEvent<HTMLInputElement>, data?: unknown) => void
+  onChange: (e: React.ChangeEvent<HTMLElement>, data?: unknown) => void
   row: FilteredViews
   autoFocusRef?: React.Ref<HTMLInputElement>
   validations?: Record<string, { state: 'error'; message: string }>
@@ -27,9 +27,7 @@ export const FilteredViewForm = ({
 
   return (
     <>
-      <Section
-        title={formatMessage({ id: '7bQ1wE', defaultMessage: 'Namen' })}
-      >
+      <Section title={formatMessage({ id: '7bQ1wE', defaultMessage: 'Namen' })}>
         <TextField
           label={formatMessage({
             id: 'Wq3zX1',
@@ -158,7 +156,7 @@ const FilterEditor = ({
   onChange,
 }: {
   row: FilteredViews
-  onChange: (e: React.ChangeEvent<HTMLInputElement>, data?: unknown) => void
+  onChange: (e: React.ChangeEvent<HTMLElement>, data?: unknown) => void
 }) => {
   const { formatMessage } = useIntl()
   const projectId = row.project_id as string | null
@@ -168,8 +166,11 @@ const FilterEditor = ({
     `SELECT name, field_label, list_id FROM fields WHERE project_id = $1 AND table_name = $2 ORDER BY field_label`,
     [projectId, tableName],
   )
-  const fields =
-    (resFields?.rows ?? []) as { name: string; field_label: string | null; list_id: string | null }[]
+  const fields = (resFields?.rows ?? []) as {
+    name: string
+    field_label: string | null
+    list_id: string | null
+  }[]
 
   // current filter -> field name, operator and value
   const { fieldName, operator, value } = useMemo(() => {
@@ -202,8 +203,9 @@ const FilterEditor = ({
       : `SELECT 1 WHERE false`,
     selectedField?.list_id ? [selectedField.list_id] : [],
   )
-  const listValues =
-    (resListValues?.rows ?? []) as { value_text: string | null }[]
+  const listValues = (resListValues?.rows ?? []) as {
+    value_text: string | null
+  }[]
 
   const setFilter = (
     newFieldName: string,
@@ -213,10 +215,9 @@ const FilterEditor = ({
     const newFilter: TableRowFilter[] = newFieldName
       ? [{ [`data.${newFieldName}`]: { [newOperator]: newValue } }]
       : []
-    onChange(
-      { target: { name: 'filter', type: 'change' } } as never,
-      { value: newFilter },
-    )
+    onChange({ target: { name: 'filter', type: 'change' } } as never, {
+      value: newFilter,
+    })
   }
 
   return (
@@ -321,7 +322,7 @@ const LabelByEditor = ({
   onChange,
 }: {
   row: FilteredViews
-  onChange: (e: React.ChangeEvent<HTMLInputElement>, data?: unknown) => void
+  onChange: (e: React.ChangeEvent<HTMLElement>, data?: unknown) => void
 }) => {
   const { formatMessage } = useIntl()
   const projectId = row.project_id as string | null
@@ -340,10 +341,9 @@ const LabelByEditor = ({
   const selectedField = labelBy[0] ?? ''
 
   const setLabelBy = (fieldName: string) => {
-    onChange(
-      { target: { name: 'label_by', type: 'change' } } as never,
-      { value: fieldName ? [fieldName] : null },
-    )
+    onChange({ target: { name: 'label_by', type: 'change' } } as never, {
+      value: fieldName ? [fieldName] : null,
+    })
   }
 
   return (
@@ -365,7 +365,10 @@ const LabelByEditor = ({
         }}
         selectedOptions={selectedField ? [selectedField] : []}
       >
-        <Option value="" text={formatMessage({ id: '1lA2wN', defaultMessage: 'nur Jahr' })}>
+        <Option
+          value=""
+          text={formatMessage({ id: '1lA2wN', defaultMessage: 'nur Jahr' })}
+        >
           {formatMessage({ id: '1lA2wN', defaultMessage: 'nur Jahr' })}
         </Option>
         {fields.map((f) => (

@@ -2,7 +2,6 @@ import { useRef, useState } from 'react'
 import { useParams } from '@tanstack/react-router'
 import { usePGlite, useLiveQuery } from '@electric-sql/pglite-react'
 import { useSetAtom } from 'jotai'
-import type { InputProps } from '@fluentui/react-components'
 
 import { getValueFromChange } from '../../modules/getValueFromChange.ts'
 import { Header } from './Header.tsx'
@@ -13,8 +12,7 @@ import { addOperationAtom } from '../../store.ts'
 import type Exports from '../../models/public/Exports.ts'
 
 import '../../form.css'
-
-type InputOnChangeData = Parameters<NonNullable<InputProps['onChange']>>[1]
+import type { FieldChangeData } from '../../components/shared/fieldChange.ts'
 
 export const Export = () => {
   const { exportsId } = useParams({ strict: false })
@@ -26,15 +24,18 @@ export const Export = () => {
   const autoFocusRef = useRef<HTMLInputElement>(null)
 
   const db = usePGlite()
-  const res = useLiveQuery(`SELECT * FROM exports WHERE exports_id = $1`, [exportsId])
+  const res = useLiveQuery(`SELECT * FROM exports WHERE exports_id = $1`, [
+    exportsId,
+  ])
   const row = res?.rows?.[0] as Exports | undefined
 
   const onChange = async (
-    e: React.ChangeEvent<HTMLInputElement>,
-    data: InputOnChangeData,
+    e: React.ChangeEvent<HTMLElement>,
+    data?: FieldChangeData,
   ) => {
     const { name, value } = getValueFromChange(e, data)
-    if (!row || (row as Record<string, any>)[name] === value) return
+    if (!row || (row as unknown as Record<string, unknown>)[name] === value)
+      return
 
     const sql = `UPDATE exports SET ${name} = $1 WHERE exports_id = $2`
     try {
@@ -47,7 +48,6 @@ export const Export = () => {
       return
     }
     setValidations((prev) => {
-       
       const { [name]: _, ...rest } = prev
       return rest
     })

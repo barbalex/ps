@@ -15,6 +15,7 @@ import type Subprojects from '../../models/public/Subprojects.ts'
 import type Projects from '../../models/public/Projects.ts'
 
 import '../../form.css'
+import type { FieldChangeData } from '../../components/shared/fieldChange.ts'
 
 // create type combining Subprojects and project subproject_name_singular from Projects
 type SubprojectWithProjectInfo = Subprojects & {
@@ -45,12 +46,12 @@ export const Subproject = ({ from }: { from: string }) => {
   const row = res?.rows?.[0] as unknown as SubprojectWithProjectInfo | undefined
 
   const onChange = async (
-    e: React.ChangeEvent<HTMLInputElement>,
-    data: Parameters<typeof getValueFromChange>[1],
+    e: React.ChangeEvent<HTMLElement>,
+    data?: FieldChangeData,
   ) => {
     const { name, value } = getValueFromChange(e, data)
     // only change if value has changed: maybe only focus entered and left
-    if ((row as Record<string, any>)[name] === value) return
+    if ((row as unknown as Record<string, unknown>)[name] === value) return
 
     try {
       await db.query(
@@ -60,12 +61,14 @@ export const Subproject = ({ from }: { from: string }) => {
     } catch (error) {
       setValidations((prev) => ({
         ...prev,
-        [name]: { state: 'error', message: error instanceof Error ? error.message : String(error) },
+        [name]: {
+          state: 'error',
+          message: error instanceof Error ? error.message : String(error),
+        },
       }))
       return
     }
     setValidations((prev) => {
-       
       const { [name]: _, ...rest } = prev
       return rest
     })
@@ -86,26 +89,20 @@ export const Subproject = ({ from }: { from: string }) => {
         nameSingular={row?.subproject_name_singular as string | undefined}
         from={from}
       />
-      <div
-        className="form-container"
-        role="tabpanel"
-        aria-labelledby="form"
-      >
-        {!res ?
+      <div className="form-container" role="tabpanel" aria-labelledby="form">
+        {!res ? (
           <Loading />
-        : row ?
+        ) : row ? (
           <Form
             onChange={onChange}
-            row={row as unknown as Record<string, any>}
+            row={row as unknown as Subprojects}
             autoFocusRef={autoFocusRef}
             from={from}
             validations={validations}
           />
-        : <NotFound
-            table="Subproject"
-            id={subprojectId}
-          />
-        }
+        ) : (
+          <NotFound table="Subproject" id={subprojectId} />
+        )}
       </div>
     </div>
   )

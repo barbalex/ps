@@ -4,10 +4,12 @@ import { getValueFromChange } from '../../../modules/getValueFromChange.ts'
 import { setNewFilterFromOld } from '../../../modules/setNewFilterFromOld.ts'
 
 import '../../../form.css'
+import type { FieldChangeData } from '../fieldChange.ts'
 
 export type OrFilterRenderProps = {
-  // row is an object with keys and values
-  row: Record<string, any>
+  // row is an object with keys and values; typed as never so filter forms can
+  // read any key while real values live in the filter state
+  row: Record<string, never>
   onChange: (...args: Parameters<typeof getValueFromChange>) => void
   orIndex: number
 }
@@ -39,7 +41,7 @@ export const OrFilter = ({
 
   const onChange = (
     e: Parameters<typeof getValueFromChange>[0],
-    data: Parameters<typeof getValueFromChange>[1],
+    data?: FieldChangeData,
   ) => {
     const { name, value, targetType } = getValueFromChange(e, data)
     const newFilter = setNewFilterFromOld({
@@ -58,7 +60,7 @@ export const OrFilter = ({
 
   return (
     <div className="form-container filter">
-      {children({ row, onChange, orIndex })}
+      {children({ row: row as Record<string, never>, onChange, orIndex })}
     </div>
   )
 }

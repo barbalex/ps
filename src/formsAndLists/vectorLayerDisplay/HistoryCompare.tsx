@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import type { FieldChangeData } from '../../components/shared/fieldChange.ts'
 import { useParams, useNavigate } from '@tanstack/react-router'
 import { usePGlite, useLiveQuery } from '@electric-sql/pglite-react'
 import { useSetAtom } from 'jotai'
@@ -26,14 +27,20 @@ import type VectorLayerDisplaysHistory from '../../models/public/VectorLayerDisp
 export const VectorLayerDisplayHistoryCompare = () => {
   const { formatMessage } = useIntl()
   const navigate = useNavigate()
-  const { projectId, vectorLayerId, vectorLayerDisplayId, vectorLayerDisplayHistoryId } =
-    useParams({ strict: false })
+  const {
+    projectId,
+    vectorLayerId,
+    vectorLayerDisplayId,
+    vectorLayerDisplayHistoryId,
+  } = useParams({ strict: false })
   const displayPath = `/data/projects/${projectId}/vector-layers/${vectorLayerId}/displays/${vectorLayerDisplayId}/vector-layer-display`
   const historyPath = `/data/projects/${projectId}/vector-layers/${vectorLayerId}/displays/${vectorLayerDisplayId}/histories`
 
   const addOperation = useSetAtom(addOperationAtom)
   const db = usePGlite()
-  const [validations, setValidations] = useState<Record<string, { state: 'error'; message: string }>>({})
+  const [validations, setValidations] = useState<
+    Record<string, { state: 'error'; message: string }>
+  >({})
 
   const rowRes = useLiveQuery(
     `SELECT * FROM vector_layer_displays WHERE vector_layer_display_id = $1`,
@@ -41,9 +48,13 @@ export const VectorLayerDisplayHistoryCompare = () => {
   )
   const row = rowRes?.rows?.[0] as VectorLayerDisplays | undefined
 
-  const onChange = async (e: React.ChangeEvent<HTMLInputElement>, data?: any) => {
+  const onChange = async (
+    e: React.ChangeEvent<HTMLElement>,
+    data?: FieldChangeData,
+  ) => {
     const { name, value } = getValueFromChange(e, data)
-    if (!row || (row as Record<string, any>)[name] === value) return
+    if (!row || (row as unknown as Record<string, unknown>)[name] === value)
+      return
 
     try {
       await db.query(
@@ -53,13 +64,15 @@ export const VectorLayerDisplayHistoryCompare = () => {
     } catch (error) {
       setValidations((prev) => ({
         ...prev,
-        [name]: { state: 'error', message: error instanceof Error ? error.message : String(error) },
+        [name]: {
+          state: 'error',
+          message: error instanceof Error ? error.message : String(error),
+        },
       }))
       return
     }
 
     setValidations((prev) => {
-       
       const { [name]: _unused, ...rest } = prev
       return rest
     })
@@ -114,7 +127,10 @@ export const VectorLayerDisplayHistoryCompare = () => {
         defaultMessage: 'Symbol: Grösse (in Bild-Punkten)',
       },
       color: { id: 'Cd7EfG', defaultMessage: 'Linien und Punkte: Farbe' },
-      weight: { id: 'De8FgH', defaultMessage: 'Linien: Breite (in Bild-Punkten)' },
+      weight: {
+        id: 'De8FgH',
+        defaultMessage: 'Linien: Breite (in Bild-Punkten)',
+      },
       line_cap: { id: 'Ef9GhI', defaultMessage: 'Linien: Abschluss' },
       line_join: { id: 'Fg0HiJ', defaultMessage: 'Linien: Ecken' },
       dash_array: { id: 'Gh1IjK', defaultMessage: 'Linien: Dash-Array' },
@@ -131,7 +147,8 @@ export const VectorLayerDisplayHistoryCompare = () => {
       },
       fill_rule: {
         id: 'Mn7OpQ',
-        defaultMessage: 'Füllung: Regel, um den Inhalt von Flächen zu bestimmen',
+        defaultMessage:
+          'Füllung: Regel, um den Inhalt von Flächen zu bestimmen',
       },
       display_property_value: {
         id: 'vldDisplayPropVal',
@@ -143,7 +160,10 @@ export const VectorLayerDisplayHistoryCompare = () => {
   const formatFieldValue = (
     field: string,
     history: VectorLayerDisplaysHistory,
-  ) => stringifyHistoryValue((history as Record<string, any>)[field])
+  ) =>
+    stringifyHistoryValue(
+      (history as unknown as Record<string, unknown>)[field],
+    )
 
   return (
     <HistoryCompare<VectorLayerDisplaysHistory>

@@ -1,28 +1,29 @@
-import * as fluentUiReactComponents from '@fluentui/react-components'
-type InputOnChangeData = Parameters<
-  NonNullable<
-    React.ComponentProps<typeof fluentUiReactComponents.Input>['onChange']
-  >
->[1]
+import type { FieldChangeData } from '../components/shared/fieldChange.ts'
 
 export const getValueFromChange = (
-  e: React.ChangeEvent<HTMLInputElement>,
-  data?: InputOnChangeData,
+  e: React.ChangeEvent<HTMLElement>,
+  data?: FieldChangeData,
 ) => {
-  const name = e.target.name
-  const targetType = e.target.type
+  // handlers are shared between input, textarea and select fields and are
+  // also invoked with synthetic events, so the target is read loosely
+  const target = e.target as EventTarget & HTMLInputElement
+  const name = target.name
+  const targetType = target.type
 
   switch (targetType) {
     case 'checkbox':
-      return { value: (data as { checked?: boolean })?.checked, name, targetType }
+      return {
+        value: (data as { checked?: boolean })?.checked,
+        name,
+        targetType,
+      }
     case 'radio': {
       if (data?.value === null) return { value: null, name, targetType }
       // numbers need to be converted to numbers
       return {
-        value:
-          !isNaN(data?.value as unknown as number)
-            ? parseFloat(data?.value as string)
-            : data?.value,
+        value: !isNaN(data?.value as unknown as number)
+          ? parseFloat(data?.value as string)
+          : data?.value,
         name,
         targetType,
       }
@@ -31,17 +32,17 @@ export const getValueFromChange = (
       return { value: data?.value, name, targetType }
     case 'number':
       return {
-        value: isNaN(e.target.valueAsNumber) ? null : e.target.valueAsNumber,
+        value: isNaN(target.valueAsNumber) ? null : target.valueAsNumber,
         name,
         targetType,
       }
     case 'range':
       return {
-        value: isNaN(e.target.valueAsNumber) ? null : e.target.valueAsNumber,
+        value: isNaN(target.valueAsNumber) ? null : target.valueAsNumber,
         name,
         targetType,
       }
     default:
-      return { value: e.target.value ?? null, name, targetType }
+      return { value: target.value ?? null, name, targetType }
   }
 }

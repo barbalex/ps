@@ -4,10 +4,11 @@ import { TextField } from '../../components/shared/TextField.tsx'
 import type Taxa from '../../models/public/Taxa.ts'
 
 import '../../form.css'
+import type { FieldChangeHandler } from '../../components/shared/fieldChange.ts'
 
 type Props = {
   row: Taxa
-  onChange: (e: React.ChangeEvent<any>, data?: any) => void
+  onChange: FieldChangeHandler
   validations?: Record<string, { state: 'error'; message: string }>
   autoFocusRef?: React.Ref<HTMLInputElement>
 }

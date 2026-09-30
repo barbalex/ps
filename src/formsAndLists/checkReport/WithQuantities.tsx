@@ -62,10 +62,7 @@ export const CheckReportWithQuantities = ({ from }: { from: string }) => {
   const showQuantities =
     isDesigning || placeLevel?.check_report_quantities !== false
 
-  const onChange = async (
-    e: React.ChangeEvent<HTMLInputElement>,
-    data?: object,
-  ) => {
+  const onChange = async (e: React.ChangeEvent<HTMLElement>, data?: object) => {
     const { name, value } = getValueFromChange(
       e,
       data as Parameters<typeof getValueFromChange>[1],
@@ -84,7 +81,6 @@ export const CheckReportWithQuantities = ({ from }: { from: string }) => {
       return
     }
     setValidations((prev) => {
-       
       const { [name]: _, ...rest } = prev
       return rest
     })
@@ -107,7 +103,9 @@ export const CheckReportWithQuantities = ({ from }: { from: string }) => {
   const quantitiesUrl = `${checkReportBaseUrl}/quantities`
 
   const addQuantity = async () => {
-    const id = await createCheckReportQuantity({ checkReportId: checkReportId! })
+    const id = await createCheckReportQuantity({
+      checkReportId: checkReportId!,
+    })
     if (!id) return
     navigate({ to: `${quantitiesUrl}/${id}` })
   }

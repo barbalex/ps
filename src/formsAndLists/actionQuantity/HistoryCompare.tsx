@@ -23,6 +23,7 @@ import {
 import type ActionQuantitiesHistory from '../../models/public/ActionQuantitiesHistory.ts'
 import type Units from '../../models/public/Units.ts'
 import type ListValues from '../../models/public/ListValues.ts'
+import type { FieldChangeData } from '../../components/shared/fieldChange.ts'
 
 type Validations = Record<
   string,
@@ -30,8 +31,7 @@ type Validations = Record<
   | undefined
 >
 
-export const ActionQuantityHistoryCompare = ({
-}: {
+export const ActionQuantityHistoryCompare = (_: {
   from:
     | '/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/actions/$actionId_/quantities/$actionQuantityId_/histories/$actionQuantityHistoryId'
     | '/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/places/$placeId2_/actions/$actionId_/quantities/$actionQuantityId_/histories/$actionQuantityHistoryId'
@@ -111,8 +111,8 @@ export const ActionQuantityHistoryCompare = ({
   )
 
   const onChange = async (
-    e: React.ChangeEvent<HTMLInputElement>,
-    data: Parameters<typeof getValueFromChange>[1],
+    e: React.ChangeEvent<HTMLElement>,
+    data?: FieldChangeData,
   ) => {
     const { name, value } = getValueFromChange(e, data)
     if (!row || (row as Record<string, unknown>)[name] === value) return
@@ -131,7 +131,6 @@ export const ActionQuantityHistoryCompare = ({
     }
 
     setValidations((prev) => {
-       
       const { [name]: _unused, ...rest } = prev
       return rest
     })
@@ -174,7 +173,6 @@ export const ActionQuantityHistoryCompare = ({
     }
 
     setValidations((prev) => {
-       
       const { [unitValueField]: _unused, ...rest } = prev
       return rest
     })
@@ -239,10 +237,9 @@ export const ActionQuantityHistoryCompare = ({
               list={listValueIds}
               labelMap={listValueLabelMap}
               value={currentListValueStr}
-              onChange={(
-                _e: unknown,
-                data: { value?: string | null },
-              ) => onListValueChange(data?.value ?? null)}
+              onChange={(_e: unknown, data?: FieldChangeData) =>
+                onListValueChange(data?.value ?? null)
+              }
               validationState={validations?.[unitValueField!]?.state}
               validationMessage={validations?.[unitValueField!]?.message}
             />
@@ -333,18 +330,20 @@ export const ActionQuantityHistoryCompare = ({
 
   const formatFieldValue = (
     field: string,
-    history: ActionQuantitiesHistory & Record<string, unknown>,
+    history: ActionQuantitiesHistory,
   ) => {
     if (field === 'unit_id') {
       const unitId = history.unit_id
       if (!unitId) return ''
       return unitLabelMap[unitId] ?? unitId
     }
-    return stringifyHistoryValue((history as Record<string, unknown>)[field])
+    return stringifyHistoryValue(
+      (history as unknown as Record<string, unknown>)[field],
+    )
   }
 
   return (
-    <HistoryCompare<ActionQuantitiesHistory & Record<string, unknown>>
+    <HistoryCompare<ActionQuantitiesHistory>
       onBack={() => navigate({ to: actionQuantityPath })}
       leftContent={leftContent}
       visibleCurrentFields={visibleCurrentFields}
@@ -352,7 +351,7 @@ export const ActionQuantityHistoryCompare = ({
       preferredOrder={preferredOrder}
       formatFieldLabel={formatFieldLabel}
       formatFieldValue={formatFieldValue}
-      row={row}
+      row={row as unknown as ActionQuantitiesHistory}
       historyConfig={{
         historyTable: 'action_quantities_history',
         rowIdField: 'action_quantity_id',

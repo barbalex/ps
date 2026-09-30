@@ -1,4 +1,5 @@
 import { DateField } from '../../components/shared/DateField.tsx'
+import type Actions from '../../models/public/Actions.ts'
 import { SwitchField } from '../../components/shared/SwitchField.tsx'
 import { Jsonb } from '../../components/shared/Jsonb/index.tsx'
 import { EditingGeometry } from '../../components/shared/EditingGeometry.tsx'
@@ -17,7 +18,7 @@ export type Validations = Record<
 type Props = {
   onChange: (...args: Parameters<typeof getValueFromChange>) => void
   validations?: Validations
-  row: Record<string, unknown>
+  row: Actions | Record<string, never>
   orIndex?: number
   from: string
   autoFocusRef?: React.RefObject<HTMLInputElement | null>
@@ -38,11 +39,10 @@ export const ActionForm = ({
   const jsonbData = jsonbDataFromRow(row)
   const { formatMessage } = useIntl()
   // field components declare narrower Fluent change-data types than the shared handler
-  const onChangeField =
-    onChange as unknown as (
-      e: React.ChangeEvent<HTMLInputElement>,
-      data?: unknown,
-    ) => void
+  const onChangeField = onChange as unknown as (
+    e: React.ChangeEvent<HTMLElement>,
+    data?: unknown,
+  ) => void
 
   return (
     <>
@@ -55,7 +55,10 @@ export const ActionForm = ({
         validationMessage={validations?.date?.message}
       />
       <SwitchField
-        label={formatMessage({ id: 'bEpPuU', defaultMessage: 'Relevant für Berichte' })}
+        label={formatMessage({
+          id: 'bEpPuU',
+          defaultMessage: 'Relevant für Berichte',
+        })}
         name="relevant_for_reports"
         value={row.relevant_for_reports as boolean | null | undefined}
         onChange={onChangeField}

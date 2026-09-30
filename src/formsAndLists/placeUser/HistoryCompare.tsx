@@ -22,9 +22,9 @@ import {
 
 import type PlaceRoles from '../../models/public/PlaceRoles.ts'
 import type PlaceRolesHistory from '../../models/public/PlaceRolesHistory.ts'
+import type { FieldChangeData } from '../../components/shared/fieldChange.ts'
 
-export const PlaceUserHistoryCompare = ({
-}: {
+export const PlaceUserHistoryCompare = (_: {
   from:
     | '/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/users/$placeUserId_/histories/$placeUserHistoryId'
     | '/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/places/$placeId2_/users/$placeUserId_/histories/$placeUserHistoryId'
@@ -46,19 +46,23 @@ export const PlaceUserHistoryCompare = ({
 
   const addOperation = useSetAtom(addOperationAtom)
   const db = usePGlite()
-  const [validations, setValidations] = useState<Record<string, { state: 'error'; message: string }>>({})
+  const [validations, setValidations] = useState<
+    Record<string, { state: 'error'; message: string }>
+  >({})
 
-  const rowRes = useLiveQuery(`SELECT * FROM place_roles WHERE place_role_id = $1`, [
-    placeUserId,
-  ])
+  const rowRes = useLiveQuery(
+    `SELECT * FROM place_roles WHERE place_role_id = $1`,
+    [placeUserId],
+  )
   const row = rowRes?.rows?.[0] as PlaceRoles | undefined
 
   const onChange = async (
-    e: React.ChangeEvent<HTMLInputElement>,
-    data: Parameters<typeof getValueFromChange>[1],
+    e: React.ChangeEvent<HTMLElement>,
+    data?: FieldChangeData,
   ) => {
     const { name, value } = getValueFromChange(e, data)
-    if (!row || (row as unknown as Record<string, unknown>)[name] === value) return
+    if (!row || (row as unknown as Record<string, unknown>)[name] === value)
+      return
 
     try {
       await db.query(
@@ -68,13 +72,15 @@ export const PlaceUserHistoryCompare = ({
     } catch (error) {
       setValidations((prev) => ({
         ...prev,
-        [name]: { state: 'error', message: error instanceof Error ? error.message : String(error) },
+        [name]: {
+          state: 'error',
+          message: error instanceof Error ? error.message : String(error),
+        },
       }))
       return
     }
 
     setValidations((prev) => {
-       
       const { [name]: _unused, ...rest } = prev
       return rest
     })
@@ -103,30 +109,33 @@ export const PlaceUserHistoryCompare = ({
   const leftContent = (
     <div className="form-container">
       <>
-      <DropdownField
-        label={formatMessage({ id: 'qyI8KV', defaultMessage: 'Benutzer' })}
-        name="project_user_id"
-        table="project_users"
-        value={row.project_user_id ?? ''}
-        onChange={onChange}
-        validationState={validations?.project_user_id?.state}
-        validationMessage={validations?.project_user_id?.message}
-      />
-      <RadioGroupField
-        label={formatMessage({ id: 'Gj0HkM', defaultMessage: 'Rolle' })}
-        name="role"
-        list={userRoleOptions.map((o) => o.value)}
-        labelMap={Object.fromEntries(
-          userRoleOptions.map((o) => [
-            o.value,
-            formatMessage({ id: o.labelId, defaultMessage: o.defaultMessage }),
-          ]),
-        )}
-        value={row.role ?? ''}
-        onChange={onChange}
-        validationState={validations?.role?.state}
-        validationMessage={validations?.role?.message}
-      />
+        <DropdownField
+          label={formatMessage({ id: 'qyI8KV', defaultMessage: 'Benutzer' })}
+          name="project_user_id"
+          table="project_users"
+          value={row.project_user_id ?? ''}
+          onChange={onChange}
+          validationState={validations?.project_user_id?.state}
+          validationMessage={validations?.project_user_id?.message}
+        />
+        <RadioGroupField
+          label={formatMessage({ id: 'Gj0HkM', defaultMessage: 'Rolle' })}
+          name="role"
+          list={userRoleOptions.map((o) => o.value)}
+          labelMap={Object.fromEntries(
+            userRoleOptions.map((o) => [
+              o.value,
+              formatMessage({
+                id: o.labelId,
+                defaultMessage: o.defaultMessage,
+              }),
+            ]),
+          )}
+          value={row.role ?? ''}
+          onChange={onChange}
+          validationState={validations?.role?.state}
+          validationMessage={validations?.role?.message}
+        />
       </>
     </div>
   )
@@ -142,7 +151,9 @@ export const PlaceUserHistoryCompare = ({
   })
 
   const formatFieldValue = (field: string, history: PlaceRolesHistory) =>
-    stringifyHistoryValue((history as unknown as Record<string, unknown>)[field])
+    stringifyHistoryValue(
+      (history as unknown as Record<string, unknown>)[field],
+    )
 
   return (
     <HistoryCompare<PlaceRolesHistory>

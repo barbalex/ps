@@ -10,10 +10,11 @@ import { SectionDescription } from '../../components/shared/SectionDescription.t
 import type PlaceLevels from '../../models/public/PlaceLevels.ts'
 
 import '../../form.css'
+import type { FieldChangeHandler } from '../../components/shared/fieldChange.ts'
 
 type Props = {
   row: PlaceLevels
-  onChange: (e: React.ChangeEvent<any>, data?: any) => void
+  onChange: FieldChangeHandler
   validations?: Record<string, { state: 'error'; message: string }>
   autoFocusRef?: React.Ref<HTMLInputElement>
 }
@@ -45,10 +46,7 @@ export const PlaceLevelForm = ({
     [row.project_id],
   )
   const filteredViews = (resFilteredViews?.rows ?? []) as FilteredView[]
-  const filteredViewsMap = (row.filtered_views ?? {}) as Record<
-    string,
-    boolean
-  >
+  const filteredViewsMap = (row.filtered_views ?? {}) as Record<string, boolean>
   const anyFilteredViewEnabled = filteredViews.some(
     (view) => filteredViewsMap[view.filtered_view_id] === true,
   )
@@ -66,14 +64,16 @@ export const PlaceLevelForm = ({
     defaultMessage: 'Massnahmen',
   })
 
-  const placeNameSingular =
-    (row as Record<string, any>)?.[`name_singular_${lang}`] ??
-    row?.name_singular_de ??
-    'Ort'
-  const placeName =
-    (row as Record<string, any>)?.[`name_plural_${lang}`] ??
-    row?.name_plural_de ??
-    'Orte'
+  const placeNameSingular = String(
+    (row as unknown as Record<string, unknown>)?.[`name_singular_${lang}`] ??
+      row?.name_singular_de ??
+      'Ort',
+  )
+  const placeName = String(
+    (row as unknown as Record<string, unknown>)?.[`name_plural_${lang}`] ??
+      row?.name_plural_de ??
+      'Orte',
+  )
 
   return (
     <>
@@ -209,7 +209,7 @@ export const PlaceLevelForm = ({
               defaultMessage: 'Beobachtungen zugeordnet',
             })}
             name="observations"
-            value={row.observations ?? false}
+            value={Boolean(row.observations ?? false)}
             onChange={onChange}
             validationState={validations?.observations?.state}
             validationMessage={validations?.observations?.message}
@@ -217,7 +217,7 @@ export const PlaceLevelForm = ({
           <SwitchField
             label={formatMessage({ id: 'aB1CdE', defaultMessage: 'Dateien' })}
             name="place_files"
-            value={row.place_files ?? false}
+            value={Boolean(row.place_files ?? false)}
             onChange={onChange}
             validationState={validations?.place_files?.state}
             validationMessage={validations?.place_files?.message}
@@ -232,7 +232,10 @@ export const PlaceLevelForm = ({
               { placeNameSingular },
             )}
             name="place_roles_in_place"
-            value={(row as Record<string, any>).place_roles_in_place ?? true}
+            value={Boolean(
+              (row as unknown as Record<string, unknown>)
+                .place_roles_in_place ?? true,
+            )}
             onChange={onChange}
             validationState={validations?.place_roles_in_place?.state}
             validationMessage={
@@ -240,7 +243,7 @@ export const PlaceLevelForm = ({
               altInOwnFormNavMessage
             }
           />
-          {row.place_files && (
+          {Boolean(row.place_files) && (
             <SwitchField
               label={formatMessage(
                 {
@@ -250,7 +253,7 @@ export const PlaceLevelForm = ({
                 { placeNameSingular },
               )}
               name="place_files_in_place"
-              value={row.place_files_in_place ?? true}
+              value={Boolean(row.place_files_in_place ?? true)}
               onChange={onChange}
               validationState={validations?.place_files_in_place?.state}
               validationMessage={
@@ -264,7 +267,7 @@ export const PlaceLevelForm = ({
           <SwitchField
             label={checksLabel}
             name="checks"
-            value={row.checks ?? false}
+            value={Boolean(row.checks ?? false)}
             onChange={onChange}
             validationState={validations?.checks?.state}
             validationMessage={validations?.checks?.message}
@@ -296,7 +299,7 @@ export const PlaceLevelForm = ({
                   defaultMessage: 'Kontroll-Mengen',
                 })}
                 name="check_quantities"
-                value={row.check_quantities ?? false}
+                value={Boolean(row.check_quantities ?? false)}
                 onChange={onChange}
                 validationState={validations?.check_quantities?.state}
                 validationMessage={validations?.check_quantities?.message}
@@ -308,7 +311,7 @@ export const PlaceLevelForm = ({
                     defaultMessage: 'Kontroll-Mengen in Kontrolle anzeigen',
                   })}
                   name="check_quantities_in_check"
-                  value={row.check_quantities_in_check ?? true}
+                  value={Boolean(row.check_quantities_in_check ?? true)}
                   onChange={onChange}
                   validationState={
                     validations?.check_quantities_in_check?.state
@@ -322,7 +325,7 @@ export const PlaceLevelForm = ({
               <SwitchField
                 label={formatMessage({ id: 'uM2RlH', defaultMessage: 'Taxa' })}
                 name="check_taxa"
-                value={row.check_taxa ?? false}
+                value={Boolean(row.check_taxa ?? false)}
                 onChange={onChange}
                 validationState={validations?.check_taxa?.state}
                 validationMessage={validations?.check_taxa?.message}
@@ -334,7 +337,7 @@ export const PlaceLevelForm = ({
                     defaultMessage: 'Taxa in Kontrolle anzeigen',
                   })}
                   name="check_taxa_in_check"
-                  value={row.check_taxa_in_check ?? true}
+                  value={Boolean(row.check_taxa_in_check ?? true)}
                   onChange={onChange}
                   validationState={validations?.check_taxa_in_check?.state}
                   validationMessage={
@@ -349,7 +352,7 @@ export const PlaceLevelForm = ({
                   defaultMessage: 'Dateien',
                 })}
                 name="check_files"
-                value={row.check_files ?? false}
+                value={Boolean(row.check_files ?? false)}
                 onChange={onChange}
                 validationState={validations?.check_files?.state}
                 validationMessage={validations?.check_files?.message}
@@ -361,7 +364,7 @@ export const PlaceLevelForm = ({
                     defaultMessage: 'Dateien in Kontrolle anzeigen',
                   })}
                   name="check_files_in_check"
-                  value={row.check_files_in_check ?? true}
+                  value={Boolean(row.check_files_in_check ?? true)}
                   onChange={onChange}
                   validationState={validations?.check_files_in_check?.state}
                   validationMessage={
@@ -376,7 +379,7 @@ export const PlaceLevelForm = ({
                   defaultMessage: 'Berichte',
                 })}
                 name="check_reports"
-                value={row.check_reports ?? false}
+                value={Boolean(row.check_reports ?? false)}
                 onChange={onChange}
                 validationState={validations?.check_reports?.state}
                 validationMessage={validations?.check_reports?.message}
@@ -389,7 +392,7 @@ export const PlaceLevelForm = ({
                       defaultMessage: 'Bericht-Mengen',
                     })}
                     name="check_report_quantities"
-                    value={row.check_report_quantities ?? false}
+                    value={Boolean(row.check_report_quantities ?? false)}
                     onChange={onChange}
                     validationState={
                       validations?.check_report_quantities?.state
@@ -405,7 +408,9 @@ export const PlaceLevelForm = ({
                         defaultMessage: 'Bericht-Mengen im Bericht anzeigen',
                       })}
                       name="check_report_quantities_in_report"
-                      value={row.check_report_quantities_in_report ?? true}
+                      value={Boolean(
+                        row.check_report_quantities_in_report ?? true,
+                      )}
                       onChange={onChange}
                       validationState={
                         validations?.check_report_quantities_in_report?.state
@@ -425,7 +430,7 @@ export const PlaceLevelForm = ({
           <SwitchField
             label={actionsLabel}
             name="actions"
-            value={row.actions ?? false}
+            value={Boolean(row.actions ?? false)}
             onChange={onChange}
             validationState={validations?.actions?.state}
             validationMessage={validations?.actions?.message}
@@ -438,7 +443,7 @@ export const PlaceLevelForm = ({
                   defaultMessage: 'Massnahmen-Mengen',
                 })}
                 name="action_quantities"
-                value={row.action_quantities ?? false}
+                value={Boolean(row.action_quantities ?? false)}
                 onChange={onChange}
                 validationState={validations?.action_quantities?.state}
                 validationMessage={validations?.action_quantities?.message}
@@ -450,7 +455,7 @@ export const PlaceLevelForm = ({
                     defaultMessage: 'Massnahmen-Mengen in Massnahme anzeigen',
                   })}
                   name="action_quantities_in_action"
-                  value={row.action_quantities_in_action ?? true}
+                  value={Boolean(row.action_quantities_in_action ?? true)}
                   onChange={onChange}
                   validationState={
                     validations?.action_quantities_in_action?.state
@@ -464,7 +469,7 @@ export const PlaceLevelForm = ({
               <SwitchField
                 label={formatMessage({ id: 'pQ2RsT', defaultMessage: 'Taxa' })}
                 name="action_taxa"
-                value={row.action_taxa ?? false}
+                value={Boolean(row.action_taxa ?? false)}
                 onChange={onChange}
                 validationState={validations?.action_taxa?.state}
                 validationMessage={validations?.action_taxa?.message}
@@ -476,7 +481,7 @@ export const PlaceLevelForm = ({
                     defaultMessage: 'Taxa in Massnahme anzeigen',
                   })}
                   name="action_taxa_in_action"
-                  value={row.action_taxa_in_action ?? true}
+                  value={Boolean(row.action_taxa_in_action ?? true)}
                   onChange={onChange}
                   validationState={validations?.action_taxa_in_action?.state}
                   validationMessage={
@@ -491,7 +496,7 @@ export const PlaceLevelForm = ({
                   defaultMessage: 'Dateien',
                 })}
                 name="action_files"
-                value={row.action_files ?? false}
+                value={Boolean(row.action_files ?? false)}
                 onChange={onChange}
                 validationState={validations?.action_files?.state}
                 validationMessage={validations?.action_files?.message}
@@ -503,7 +508,7 @@ export const PlaceLevelForm = ({
                     defaultMessage: 'Dateien in Massnahme anzeigen',
                   })}
                   name="action_files_in_action"
-                  value={row.action_files_in_action ?? true}
+                  value={Boolean(row.action_files_in_action ?? true)}
                   onChange={onChange}
                   validationState={validations?.action_files_in_action?.state}
                   validationMessage={
@@ -518,7 +523,7 @@ export const PlaceLevelForm = ({
                   defaultMessage: 'Berichte',
                 })}
                 name="action_reports"
-                value={row.action_reports ?? false}
+                value={Boolean(row.action_reports ?? false)}
                 onChange={onChange}
                 validationState={validations?.action_reports?.state}
                 validationMessage={validations?.action_reports?.message}
@@ -531,7 +536,7 @@ export const PlaceLevelForm = ({
                       defaultMessage: 'Bericht-Mengen',
                     })}
                     name="action_report_quantities"
-                    value={row.action_report_quantities ?? false}
+                    value={Boolean(row.action_report_quantities ?? false)}
                     onChange={onChange}
                     validationState={
                       validations?.action_report_quantities?.state
@@ -547,7 +552,9 @@ export const PlaceLevelForm = ({
                         defaultMessage: 'Bericht-Mengen im Bericht anzeigen',
                       })}
                       name="action_report_quantities_in_report"
-                      value={row.action_report_quantities_in_report ?? true}
+                      value={Boolean(
+                        row.action_report_quantities_in_report ?? true,
+                      )}
                       onChange={onChange}
                       validationState={
                         validations?.action_report_quantities_in_report?.state

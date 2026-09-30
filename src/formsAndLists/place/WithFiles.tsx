@@ -36,6 +36,7 @@ import type Places from '../../models/public/Places.ts'
 import styles from './WithFiles.module.css'
 
 import '../../form.css'
+import type { FieldChangeData } from '../../components/shared/fieldChange.ts'
 
 const { Button } = fluentUiReactComponents
 
@@ -150,7 +151,9 @@ export const PlaceWithFiles = ({ from }: { from: string }) => {
         <AddProjectUserButton
           scope={{
             kind: 'place',
-            projectId: projectId!,            placeId: (currentPlaceId)!,          }}
+            projectId: projectId!,
+            placeId: currentPlaceId!,
+          }}
           onUserCreated={(id) => navigate({ to: `${usersUrl}/${id}/` })}
         />
       </>
@@ -170,11 +173,11 @@ export const PlaceWithFiles = ({ from }: { from: string }) => {
     ) : undefined
 
   const onChange = async (
-    e: React.ChangeEvent<HTMLInputElement>,
-    data: Parameters<typeof getValueFromChange>[1],
+    e: React.ChangeEvent<HTMLElement>,
+    data?: FieldChangeData,
   ) => {
     const { name, value } = getValueFromChange(e, data)
-    if ((row as Record<string, any>)[name] === value) return
+    if ((row as unknown as Record<string, unknown>)[name] === value) return
 
     try {
       await db.query(`UPDATE places SET ${name} = $1 WHERE place_id = $2`, [
@@ -184,12 +187,14 @@ export const PlaceWithFiles = ({ from }: { from: string }) => {
     } catch (error) {
       setValidations((prev) => ({
         ...prev,
-        [name]: { state: 'error', message: error instanceof Error ? error.message : String(error) },
+        [name]: {
+          state: 'error',
+          message: error instanceof Error ? error.message : String(error),
+        },
       }))
       return
     }
     setValidations((prev) => {
-       
       const { [name]: _, ...rest } = prev
       return rest
     })
@@ -212,7 +217,7 @@ export const PlaceWithFiles = ({ from }: { from: string }) => {
   if (onlyForm) {
     return (
       <Form
-        row={row as unknown as Record<string, unknown>}
+        row={row as unknown as Places}
         onChange={onChange}
         validations={validations}
         autoFocusRef={autoFocusRef}
@@ -231,7 +236,7 @@ export const PlaceWithFiles = ({ from }: { from: string }) => {
       />
       <div className="form-container">
         <Form
-          row={row as unknown as Record<string, unknown>}
+          row={row as unknown as Places}
           onChange={onChange}
           validations={validations}
           autoFocusRef={autoFocusRef}
@@ -249,11 +254,7 @@ export const PlaceWithFiles = ({ from }: { from: string }) => {
             headerActions={placeUserHeaderActions}
           >
             {isUsersOpen &&
-              (isUsersList ? (
-                <PlaceUsers hideHeader />
-              ) : (
-                <Outlet />
-              ))}
+              (isUsersList ? <PlaceUsers hideHeader /> : <Outlet />)}
           </Section>
         ) : (
           isUsersOpen && <Outlet />

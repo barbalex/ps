@@ -1,6 +1,6 @@
 import type { PrimitiveType } from 'react-intl'
 
-type HistoryRowLike = Record<string, any>
+type HistoryRowLike = object
 
 type GetDiffFieldsArgs<TRow extends HistoryRowLike> = {
   row: TRow | undefined
@@ -94,7 +94,10 @@ export const getDiffFields = <TRow extends HistoryRowLike>({
     if (!visibleCurrentFields.has(field)) return false
     if (excludedDisplayFields.has(field)) return false
     if (alwaysIgnoreDiffFields.has(field)) return false
-    return !areHistoryValuesSame(selectedHistory[field], row[field])
+    return !areHistoryValuesSame(
+      (selectedHistory as Record<string, unknown>)[field],
+      (row as Record<string, unknown>)[field],
+    )
   })
 }
 
@@ -174,11 +177,12 @@ export const formatHistoryFieldValue = <TRow extends HistoryRowLike>({
   fieldValueMap: HistoryFieldValueMap<TRow>
 }) => {
   const configuredValue = fieldValueMap[field]
-  if (!configuredValue) return stringifyHistoryValue(history[field])
+  if (!configuredValue)
+    return stringifyHistoryValue((history as Record<string, unknown>)[field])
 
   if (configuredValue.booleanLabels) {
     return formatMessage(
-      history[field]
+      (history as Record<string, unknown>)[field]
         ? configuredValue.booleanLabels.trueLabel
         : configuredValue.booleanLabels.falseLabel,
     )
@@ -186,11 +190,14 @@ export const formatHistoryFieldValue = <TRow extends HistoryRowLike>({
 
   if (configuredValue.format) {
     return stringifyHistoryValue(
-      configuredValue.format(history[field], history),
+      configuredValue.format(
+        (history as Record<string, unknown>)[field],
+        history,
+      ),
     )
   }
 
-  return stringifyHistoryValue(history[field])
+  return stringifyHistoryValue((history as Record<string, unknown>)[field])
 }
 
 export const createHistoryFieldValueFormatter = <TRow extends HistoryRowLike>({

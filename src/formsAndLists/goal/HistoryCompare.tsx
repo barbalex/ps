@@ -1,4 +1,5 @@
 import { useRef, useState } from 'react'
+import type Goals from '../../models/public/Goals.ts'
 import { useParams, useNavigate } from '@tanstack/react-router'
 import { usePGlite, useLiveQuery } from '@electric-sql/pglite-react'
 import { useSetAtom } from 'jotai'
@@ -18,6 +19,7 @@ import {
 } from './historyCompareConfig.ts'
 
 import type GoalsHistory from '../../models/public/GoalsHistory.ts'
+import type { FieldChangeData } from '../../components/shared/fieldChange.ts'
 
 const from =
   '/data/projects/$projectId_/subprojects/$subprojectId_/goals/$goalId_/histories/$goalHistoryId'
@@ -25,17 +27,23 @@ const from =
 export const GoalHistoryCompare = () => {
   const { formatMessage } = useIntl()
   const navigate = useNavigate()
-  const { projectId, subprojectId, goalId, goalHistoryId } = useParams({ strict: false })
+  const { projectId, subprojectId, goalId, goalHistoryId } = useParams({
+    strict: false,
+  })
   const goalBasePath = `/data/projects/${projectId}/subprojects/${subprojectId}/goals/${goalId}`
   const historyPath = `${goalBasePath}/histories`
   const addOperation = useSetAtom(addOperationAtom)
   const db = usePGlite()
   const autoFocusRef = useRef<HTMLInputElement>(null)
 
-  const [validations, setValidations] = useState<Record<string, { state: 'error'; message: string }>>({})
+  const [validations, setValidations] = useState<
+    Record<string, { state: 'error'; message: string }>
+  >({})
 
-  const rowRes = useLiveQuery(`SELECT * FROM goals WHERE goal_id = $1`, [goalId])
-  const row = rowRes?.rows?.[0] as Record<string, unknown> | undefined
+  const rowRes = useLiveQuery(`SELECT * FROM goals WHERE goal_id = $1`, [
+    goalId,
+  ])
+  const row = rowRes?.rows?.[0] as GoalsHistory | undefined
 
   const settingsRes = useLiveQuery(
     `SELECT p.goal_reports_in_goal
@@ -45,7 +53,8 @@ export const GoalHistoryCompare = () => {
       WHERE g.goal_id = $1`,
     [goalId],
   )
-  const goalReportsInGoal = settingsRes?.rows?.[0]?.goal_reports_in_goal !== false
+  const goalReportsInGoal =
+    settingsRes?.rows?.[0]?.goal_reports_in_goal !== false
   const goalPath = goalReportsInGoal ? goalBasePath : `${goalBasePath}/goal`
 
   const visibleCurrentFields = new Set(['year', 'name', 'data'])
@@ -60,11 +69,12 @@ export const GoalHistoryCompare = () => {
   })
 
   const onChange = async (
-    e: React.ChangeEvent<HTMLInputElement>,
-    data: Parameters<typeof getValueFromChange>[1],
+    e: React.ChangeEvent<HTMLElement>,
+    data?: FieldChangeData,
   ) => {
     const { name, value } = getValueFromChange(e, data)
-    if (!row || (row as Record<string, unknown>)[name] === value) return
+    if (!row || (row as unknown as Record<string, unknown>)[name] === value)
+      return
 
     try {
       await db.query(`UPDATE goals SET ${name} = $1 WHERE goal_id = $2`, [
@@ -74,13 +84,15 @@ export const GoalHistoryCompare = () => {
     } catch (error) {
       setValidations((prev) => ({
         ...prev,
-        [name]: { state: 'error', message: error instanceof Error ? error.message : String(error) },
+        [name]: {
+          state: 'error',
+          message: error instanceof Error ? error.message : String(error),
+        },
       }))
       return
     }
 
     setValidations((prev) => {
-       
       const { [name]: _unused, ...rest } = prev
       return rest
     })
@@ -112,7 +124,7 @@ export const GoalHistoryCompare = () => {
       leftContent={
         <div className="form-container">
           <GoalForm
-            row={row}
+            row={row as unknown as Goals}
             onChange={onChange}
             validations={validations}
             autoFocusRef={autoFocusRef}

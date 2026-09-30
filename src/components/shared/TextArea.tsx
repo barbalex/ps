@@ -5,13 +5,11 @@ type TextareaProps = React.ComponentProps<typeof Textarea>
 type FieldProps = React.ComponentProps<typeof Field>
 
 import styles from './TextArea.module.css'
+import type { FieldChangeHandler } from './fieldChange.ts'
 
 type Props = Omit<Partial<TextareaProps>, 'onChange' | 'value'> &
   Pick<FieldProps, 'label' | 'validationMessage' | 'validationState'> & {
-    onChange?: (
-    ev: React.ChangeEvent<any>,
-    data?: any,
-  ) => void
+    onChange?: FieldChangeHandler
     value?: string | number
     button?: React.ReactNode
   }
@@ -42,8 +40,7 @@ export const TextArea = (props: Props) => {
   // consumers pass Fluent's (ev, data) change handlers;
   // from key events only the event is available
   const onChangeEvent = onChangeIn as
-    | ((event: React.SyntheticEvent<HTMLTextAreaElement>) => void)
-    | undefined
+    ((event: React.SyntheticEvent<HTMLTextAreaElement>) => void) | undefined
 
   const onKeyPress = (event: React.KeyboardEvent<HTMLTextAreaElement>) => {
     if (event.key === 'Enter') {

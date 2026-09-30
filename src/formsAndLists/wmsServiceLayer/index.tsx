@@ -14,8 +14,9 @@ import { addOperationAtom } from '../../store.ts'
 import type WmsServiceLayers from '../../models/public/WmsServiceLayers.ts'
 
 import '../../form.css'
+import type { FieldChangeData } from '../../components/shared/fieldChange.ts'
 
-  '/data/projects/$projectId_/wms-services/$wmsServiceId_/layers/$wmsServiceLayerId/'
+;('/data/projects/$projectId_/wms-services/$wmsServiceId_/layers/$wmsServiceLayerId/')
 
 // TODO: we need an onChange handler
 export const WmsServiceLayer = () => {
@@ -31,15 +32,16 @@ export const WmsServiceLayer = () => {
     `SELECT * FROM wms_service_layers WHERE wms_service_layer_id = $1`,
     [wmsServiceLayerId],
   )
-  const row: WmsServiceLayers | undefined =
-    res?.rows?.[0] as WmsServiceLayers | undefined
+  const row: WmsServiceLayers | undefined = res?.rows?.[0] as
+    WmsServiceLayers | undefined
 
   const onChange = async (
-    e: React.ChangeEvent<HTMLInputElement>,
-    data: Parameters<typeof getValueFromChange>[1],
+    e: React.ChangeEvent<HTMLElement>,
+    data?: FieldChangeData,
   ) => {
     const { name, value } = getValueFromChange(e, data)
-    if (!row || (row as Record<string, any>)[name] === value) return
+    if (!row || (row as unknown as Record<string, unknown>)[name] === value)
+      return
 
     try {
       await db.query(
@@ -49,13 +51,15 @@ export const WmsServiceLayer = () => {
     } catch (error) {
       setValidations((prev) => ({
         ...prev,
-        [name]: { state: 'error', message: error instanceof Error ? error.message : String(error) },
+        [name]: {
+          state: 'error',
+          message: error instanceof Error ? error.message : String(error),
+        },
       }))
       return
     }
 
     setValidations((prev) => {
-       
       const { [name]: _unused, ...rest } = prev
       return rest
     })

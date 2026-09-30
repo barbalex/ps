@@ -8,7 +8,7 @@ type RestoreDiffFieldsArgs = {
   rowIdField: string
   rowId: string
   diffFields: string[]
-  selectedHistory: Record<string, unknown>
+  selectedHistory: object
   excludedRestoreFields: Set<string>
 }
 
@@ -27,7 +27,10 @@ export const restoreDiffFields = async ({
 }: RestoreDiffFieldsArgs): Promise<[string, unknown][]> => {
   const restoreEntries = diffFields
     .filter((field) => !excludedRestoreFields.has(field))
-    .map((field): [string, unknown] => [field, selectedHistory[field]])
+    .map((field): [string, unknown] => [
+      field,
+      (selectedHistory as Record<string, unknown>)[field],
+    ])
 
   if (!restoreEntries.length) return restoreEntries
 
