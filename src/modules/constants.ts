@@ -448,7 +448,7 @@ export const constants = {
   // set 3001 to go via caddy, 3000 to go directly to electric backend
   getElectricUri: () =>
     isLocalDevHost()
-      ? `https://localhost:3001/v1/shape`
+      ? `https://${window.location.hostname}:3001/v1/shape`
       : isPromoteSpeciesHost()
         ? 'https://sync.promote-species.app/v1/shape'
         : 'https://sync.arten-fördern.app/v1/shape',

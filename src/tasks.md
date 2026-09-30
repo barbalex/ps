@@ -34,6 +34,8 @@ Better-Auth, possible extensions:
 
 ---
 
+ensure apflora import is complete (dropdown lists etc.)
+
 ---
 
 check translations

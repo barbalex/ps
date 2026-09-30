@@ -7,8 +7,11 @@
 # One-time setup: caddy start && caddy trust && caddy stop
 # Chrome on Linux: manually import ~/.local/share/caddy/pki/authorities/local/root.crt
 # via chrome://settings/certificates → Authorities → Import
+# Mobile testing: the LAN IPs are added so phones on the same Wi-Fi can reach
+# the proxy (vite is exposed via `npm run dev-host`); install root.crt on the
+# phone too. Update the IPs if your machine's DHCP lease changes.
 # This is only for development; in production, Caddy would handle HTTPS directly and proxy to the backend over HTTP
-localhost:3001 {
+localhost:3001, 192.168.68.66:3001, 192.168.68.67:3001 {
 	# '?' = set only if not already present: the forward_auth endpoint
 	# (better-auth) sets its own reflected CORS headers on 401s, and a
 	# second Access-Control-Allow-Origin here makes browsers reject the
