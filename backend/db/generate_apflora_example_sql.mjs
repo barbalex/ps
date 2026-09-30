@@ -349,6 +349,8 @@ const fieldDefs = [
   ['subprojects', null, 'umsetzung', 'Umsetzung', 'text', 'optionsFew', 'apumsetzung'],
   ['subprojects', null, 'bearbeiter', 'Bearbeiter/in', 'text', 'text', null],
   ['subprojects', null, 'ekf_beobachtungszeitpunkt', 'EK-Beobachtungszeitpunkt', 'text', 'text', null],
+  // dropdown not radios: the zaehleinheit list has too many values
+  ['subprojects', null, 'zielrelevant_einheit', 'Zielrelevante Einheit', 'text', 'optionsMany', 'zaehleinheit'],
 ]
 const fieldId = (table, level, name) =>
   derivedId('field', `${table}:${level ?? 'x'}:${name}`)

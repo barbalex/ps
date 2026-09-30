@@ -14,7 +14,7 @@ import {
 import { constants } from './constants.ts'
 import { fetchPostgrestToken } from './fetchPostgrestToken.ts'
 import { dependencyLevels, untilUpToDate } from './syncStages.ts'
-import { armSyncErrorRecovery } from './syncErrorRecovery.ts'
+import { armSyncErrorRecovery, syncRecovered } from './syncErrorRecovery.ts'
 
 // pglite-worker.ts registers electricSync() under the `electric` namespace;
 // store.ts types the db atom as plain PGlite, so the namespace is re-declared here.
@@ -1386,6 +1386,7 @@ export const startSyncing = async (userId: string) => {
           async () => {
             console.log(`Initial sync done (${levels.length} stages)`)
             store.set(initialSyncingAtom, false)
+            syncRecovered()
           }
         : undefined,
         onError,

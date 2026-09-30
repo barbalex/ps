@@ -4,7 +4,6 @@ import { useLiveQuery } from '@electric-sql/pglite-react'
 
 import { Loading } from './Loading.tsx'
 import styles from './RadioGroupFromList.module.css'
-import type ListValues from '../../models/public/ListValues.ts'
 
 type FieldProps = React.ComponentProps<typeof Field>
 
@@ -24,6 +23,12 @@ type Props = {
   button?: React.ReactNode
 }
 
+type ListValueRow = Record<string, unknown> & {
+  list_value_id: string
+  label?: string | null
+  value_type?: string | null
+}
+
 export const RadioGroupFromList = ({
   name,
   label,
@@ -36,21 +41,37 @@ export const RadioGroupFromList = ({
   ref,
   button,
 }: Props) => {
-  const res = useLiveQuery(`SELECT * FROM list_values WHERE list_id = $1`, [
-    list_id,
-  ])
-  // rows are read with a `.value` property that does not exist as a column
-  const listValues = (res?.rows ?? []) as unknown as (ListValues & {
-    value?: string
-  })[]
+  const res = useLiveQuery(
+    `SELECT lv.list_value_id, lv.label, l.value_type,
+      lv.value_integer, lv.value_numeric, lv.value_text, lv.value_date, lv.value_datetime
+     FROM list_values lv
+     JOIN lists l ON l.list_id = lv.list_id
+     WHERE lv.list_id = $1`,
+    [list_id],
+  )
+  const rows = (res?.rows ?? []) as ListValueRow[]
 
-  const onClick = (e: React.MouseEvent<HTMLElement>) => {
-    const valueChoosen = (e.target as HTMLInputElement).value
-    // if valueChoosen equals rowValue, set rowValue to null
-    // else set rowValue to valueChoosen
-    onChangePassed(e as unknown as React.ChangeEvent<HTMLInputElement>, {
-      value: valueChoosen === rowValue ? null : valueChoosen,
-    })
+  const typedValueOf = (row: ListValueRow) =>
+    row.value_type ? row[`value_${row.value_type}`] : undefined
+  const selectedRow = rows.find(
+    (row) => String(typedValueOf(row)) === String(rowValue),
+  )
+
+  // per-row handler: reading the value off the click event's target is
+  // unreliable (Fluent Radio can fire it on the wrapping label, not the input)
+  const selectRow = (row: ListValueRow) => {
+    if (!row.value_type) return
+    // clicking the selected value deselects it
+    const deselect = selectedRow?.list_value_id === row.list_value_id
+    const value = (deselect ? null : typedValueOf(row)) as string | null
+    // deliver the value via a plain target event: getValueFromChange's radio
+    // case parseFloats numeric-looking strings and would corrupt text values
+    onChangePassed(
+      { target: { name, value } } as unknown as React.ChangeEvent<
+        HTMLInputElement
+      >,
+      { value },
+    )
   }
 
   return (
@@ -63,7 +84,7 @@ export const RadioGroupFromList = ({
         <RadioGroup
           layout="horizontal"
           name={name}
-          value={rowValue}
+          value={selectedRow?.list_value_id}
           autoFocus={autoFocus}
           ref={ref as unknown as React.Ref<HTMLDivElement>}
         >
@@ -71,16 +92,14 @@ export const RadioGroupFromList = ({
             <Loading />
           ) : (
             <>
-              {listValues.map(({ value: listValue }) => {
-                return (
-                  <Radio
-                    key={listValue}
-                    label={listValue}
-                    value={listValue}
-                    onClick={onClick}
-                  />
-                )
-              })}
+              {rows.map((row) => (
+                <Radio
+                  key={row.list_value_id}
+                  label={row.label ?? row.list_value_id}
+                  value={row.list_value_id}
+                  onClick={() => selectRow(row)}
+                />
+              ))}
             </>
           )}
         </RadioGroup>
