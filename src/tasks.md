@@ -18,8 +18,6 @@ Better-Auth, possible extensions:
 
 ---
 
-data presentation for imported form data from apflora seems partually off. Example: in Art form (http://localhost:5176/data/projects/0195a101-0000-7000-8000-000000000001/subprojects/655ecc9b-43ef-706f-84ae-19ef5c6387cb/subproject) the Bearbeitungsstand has no value and no labels, only options.
-
 ---
 
 ---
