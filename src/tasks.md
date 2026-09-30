@@ -14,6 +14,8 @@ Better-Auth, possible extensions:
 
 ---
 
+on mobile, after logging in: Tree button in top menu is not active. But the nav tree is rendered. Only the Data section should be rendered
+
 ---
 
 ---
