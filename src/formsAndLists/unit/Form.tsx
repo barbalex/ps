@@ -52,7 +52,6 @@ export const UnitForm = ({
         validationState={validations?.type?.state}
         validationMessage={validations?.type?.message}
         labelMap={unitTypeLabelMap}
-        layout="horizontal"
       />
       <SwitchField
         label={formatMessage({ id: 'Eh8IjK', defaultMessage: 'Summierbar' })}

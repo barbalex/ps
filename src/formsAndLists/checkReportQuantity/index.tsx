@@ -171,7 +171,6 @@ export const CheckReportQuantity = ({ from }: { from: string }) => {
               isLoading={unitsRes === undefined}
               value={row.unit_id ?? ''}
               onChange={onChange}
-              layout="horizontal"
               autoFocus
               ref={autoFocusRef}
               validationState={
@@ -204,7 +203,6 @@ export const CheckReportQuantity = ({ from }: { from: string }) => {
                     _e: unknown,
                     data: { value?: string | null },
                   ) => onListValueChange(data?.value ?? null)}
-                  layout="horizontal"
                   validationState={validations?.[unitValueField ?? '']?.state}
                   validationMessage={validations?.[unitValueField ?? '']?.message}
                 />

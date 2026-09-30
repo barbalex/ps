@@ -114,7 +114,6 @@ export const ActionTaxon = ({}: { from: string }) => {
               isLoading={res === undefined}
               value={row.unit_id ?? ''}
               onChange={onChange}
-              layout="horizontal"
               validationState={
                 selectedUnit && !selectedUnit.type
                   ? 'warning'

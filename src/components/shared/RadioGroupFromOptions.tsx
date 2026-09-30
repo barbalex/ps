@@ -1,6 +1,5 @@
 import * as fluentUiReactComponents from '@fluentui/react-components'
 const { Field, RadioGroup, Radio } = fluentUiReactComponents
-import { useResizeDetector } from 'react-resize-detector'
 
 type FieldProps = React.ComponentProps<typeof Field>
 
@@ -32,15 +31,6 @@ export const RadioGroupFromOptions = (props: Props) => {
     ref,
   } = props
 
-  const { width, ref: widthRef } = useResizeDetector({
-    handleHeight: false,
-    refreshMode: 'debounce',
-    refreshRate: 100,
-    refreshOptions: { leading: false, trailing: true },
-  })
-
-  const verticalLayout = !!width && width < 500
-
   // TODO: enable nulling when clicking on the selected radio
   // as in other RadioGroup components
   // do this when this component is actually used (not used now)
@@ -56,10 +46,9 @@ export const RadioGroupFromOptions = (props: Props) => {
       label={label ?? '(no label provided)'}
       validationMessage={validationMessage}
       validationState={validationState}
-      ref={widthRef}
     >
       <RadioGroup
-        layout={verticalLayout ? 'vertical' : 'horizontal'}
+        layout="vertical"
         name={name}
         value={value ?? undefined}
         onChange={onChange}

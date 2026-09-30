@@ -149,7 +149,6 @@ export const ActionTaxonHistoryCompare = ({
         isLoading={rowRes === undefined}
         value={(row.unit_id as string | null) ?? ''}
         onChange={onChange}
-        layout="horizontal"
         validationState={
           selectedUnit && !selectedUnit.type
             ? 'warning'

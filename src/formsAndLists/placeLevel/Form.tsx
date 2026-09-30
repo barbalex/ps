@@ -88,7 +88,6 @@ export const PlaceLevelForm = ({
         label={formatMessage({ id: 'Lv9nRx', defaultMessage: 'Stufe' })}
         name="level"
         list={[1, 2] as unknown as string[]}
-        layout="horizontal"
         value={(row.level ?? '') as unknown as string}
         onChange={onChange}
         validationState={validations?.level?.state}

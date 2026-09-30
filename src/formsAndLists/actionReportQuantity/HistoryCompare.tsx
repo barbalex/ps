@@ -209,7 +209,6 @@ export const ActionReportQuantityHistoryCompare = ({
           isLoading={unitsRes === undefined}
           value={(row.unit_id as string | null) ?? ''}
           onChange={onChange}
-          layout="horizontal"
           autoFocus
           ref={autoFocusRef}
           validationState={
@@ -236,7 +235,6 @@ export const ActionReportQuantityHistoryCompare = ({
               labelMap={listValueLabelMap}
               value={currentListValueStr}
               onChange={(_e, data) => onListValueChange(data?.value ?? null)}
-              layout="horizontal"
               validationState={validations?.[unitValueField ?? '']?.state}
               validationMessage={validations?.[unitValueField ?? '']?.message}
             />

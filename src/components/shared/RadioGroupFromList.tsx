@@ -82,9 +82,11 @@ export const RadioGroupFromList = ({
     >
       <div className={styles.row}>
         <RadioGroup
-          layout="horizontal"
+          layout="vertical"
           name={name}
-          value={selectedRow?.list_value_id}
+          // always a string: undefined would flip the inputs between
+          // controlled and uncontrolled when selecting/deselecting
+          value={selectedRow?.list_value_id ?? ''}
           autoFocus={autoFocus}
           ref={ref as unknown as React.Ref<HTMLDivElement>}
         >
