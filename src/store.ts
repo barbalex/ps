@@ -135,7 +135,14 @@ export const writeEnforceMobileNavigationAtom = atom(
     return
   },
 )
-export const isDesktopViewAtom = atomWithStorage('isDesktopView', false)
+export const isDesktopViewAtom = atomWithStorage(
+  'isDesktopView',
+  false,
+  undefined,
+  // getOnInit: read localStorage synchronously so the very first render
+  // already knows the view mode (isMobileViewAtom derives from this)
+  { getOnInit: true },
+)
 export const setDesktopViewAtom = atom(
   (get) => get(isDesktopViewAtom),
   (get, set, width: number) => {
@@ -210,7 +217,41 @@ export const designingAtom = atomWithStorage<Record<string, boolean>>(
   undefined,
   { getOnInit: true },
 )
-export const tabsAtom = atomWithStorage('tabsAtom', ['tree', 'data'])
+// the mobile navigation shows a single tab at a time, in this priority
+export const MOBILE_TAB_PRIORITY = ['data', 'map', 'tree'] as const
+
+export const pickMobileTab = (tabs: string[]) => {
+  for (const tab of MOBILE_TAB_PRIORITY) {
+    if (tabs.includes(tab)) return tab
+  }
+  return 'data'
+}
+
+export const tabsAtom = atomWithStorage(
+  'tabsAtom',
+  ['tree', 'data'],
+  undefined,
+  // getOnInit: read localStorage synchronously so the very first render
+  // already uses the stored tabs instead of the desktop default
+  { getOnInit: true },
+)
+// On mobile view only one tab is active at a time. Deriving the effective
+// tabs at read time (instead of only compacting tabsAtom in an effect after
+// mount) keeps the toggle buttons and the rendered panes consistent from the
+// very first render: jotai misses store writes that happen between a
+// component's first render and its subscribe (see LayoutProtected comment),
+// so a mount-effect compaction left Main rendering a stale tree pane
+export const effectiveTabsAtom = atom((get) => {
+  const tabs = get(tabsAtom)
+  const isMobileView = get(isMobileViewAtom)
+  const enforceMobileNavigation = get(enforceMobileNavigationAtom)
+  const isNarrowViewport =
+    typeof window !== 'undefined' &&
+    window.innerWidth < constants.mobileViewMaxWidth
+  const useSingleMobileTab =
+    isMobileView && (isNarrowViewport || enforceMobileNavigation)
+  return useSingleMobileTab ? [pickMobileTab(tabs)] : tabs
+})
 export type TableRowFilter = Record<string, unknown>
 export const qcsRunOnlyWithResultsAtom = atomWithStorage(
   'qcsRunOnlyWithResults',

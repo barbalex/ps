@@ -5,7 +5,7 @@ import { lazy, Suspense } from 'react'
 import 'allotment/dist/style.css'
 
 import { Tree } from '../Tree/index.tsx'
-import { mapMaximizedAtom, tabsAtom } from '../../store.ts'
+import { effectiveTabsAtom, mapMaximizedAtom } from '../../store.ts'
 import styles from './Main.module.css'
 
 const MapContainer = lazy(() =>
@@ -14,7 +14,10 @@ const MapContainer = lazy(() =>
 
 export const Main = () => {
   const mapMaximized = useAtomValue(mapMaximizedAtom)
-  const tabs = useAtomValue(tabsAtom)
+  // effectiveTabsAtom applies the mobile single-tab rule at read time, so on
+  // mobile only the preferred pane (data > map > tree) renders from the very
+  // first render — no stale tree pane while tabsAtom catches up
+  const tabs = useAtomValue(effectiveTabsAtom)
 
   // onlyForm is a query parameter that allows the user to view a form without the rest of the app
   // used for popups inside the map

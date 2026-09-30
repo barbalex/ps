@@ -9,9 +9,12 @@ import { useIntl } from 'react-intl'
 
 import {
   docsReturnUrlAtom,
+  effectiveTabsAtom,
   enforceMobileNavigationAtom,
   isMobileViewAtom,
   mapMaximizedAtom,
+  MOBILE_TAB_PRIORITY,
+  pickMobileTab,
   tabsAtom,
 } from '../../../store.ts'
 import { clearLocalSyncedData } from '../../../modules/clearLocalSyncedData.ts'
@@ -43,18 +46,10 @@ const MenuBar = MenuBarWithRequiredProps as ComponentType<{
   children?: ReactNode
 }>
 
-const MOBILE_TAB_PRIORITY = ['data', 'map', 'tree'] as const
-
-const pickMobileTab = (tabs: string[]) => {
-  for (const tab of MOBILE_TAB_PRIORITY) {
-    if (tabs.includes(tab)) return tab
-  }
-  return 'data'
-}
-
 export const Menu = () => {
   const intl = useIntl()
   const [tabs, setTabs] = useAtom(tabsAtom)
+  const [tabsToDisplay] = useAtom(effectiveTabsAtom)
   const [isMobileView] = useAtom(isMobileViewAtom)
   const [enforceMobileNavigation] = useAtom(enforceMobileNavigationAtom)
   const navigate = useNavigate()
@@ -69,6 +64,8 @@ export const Menu = () => {
 
   const [mapIsMaximized, setMapIsMaximized] = useAtom(mapMaximizedAtom)
 
+  // persist the compacted single tab (the derived effectiveTabsAtom already
+  // renders it; this keeps tabsAtom/localStorage in sync)
   useEffect(() => {
     if (!isMobileView) return
 
@@ -94,9 +91,14 @@ export const Menu = () => {
       return
     }
 
-    const newlyActivatedTab = nextTabs.find((tab) => !tabs.includes(tab))
+    const newlyActivatedTab = nextTabs.find(
+      (tab) => !tabsToDisplay.includes(tab),
+    )
     const nextActiveTab =
-      newlyActivatedTab ?? nextTabs[0] ?? tabs[0] ?? MOBILE_TAB_PRIORITY[0]
+      newlyActivatedTab ??
+      nextTabs[0] ??
+      tabsToDisplay[0] ??
+      MOBILE_TAB_PRIORITY[0]
 
     setTabs([nextActiveTab])
   }
@@ -113,9 +115,9 @@ export const Menu = () => {
     // prevent toggling map tab
     e.stopPropagation()
 
-    // if map is not included in app_sate.tabs, add it
-    if (!tabs.includes('map')) {
-      setTabs(isMobileView ? ['map'] : [...tabs, 'map'])
+    // if map is not included in the active tabs, add it
+    if (!tabsToDisplay.includes('map')) {
+      setTabs(isMobileView ? ['map'] : [...tabsToDisplay, 'map'])
     }
 
     // toggle map maximized
@@ -147,7 +149,7 @@ export const Menu = () => {
   return (
     <div className={`${styles.container} no-print`}>
       <Tabs
-        tabs={tabs}
+        tabs={tabsToDisplay}
         isHome={isHome}
         mapIsMaximized={mapIsMaximized}
         onChangeTabs={onChangeTabs}
