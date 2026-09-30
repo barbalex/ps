@@ -1,8 +1,9 @@
--- yearly-report demo for the apflora example data (Aldrovanda vesiculosa):
+-- yearly-report demo for the apflora example data (Abies alba):
 -- the report fields (mirroring apflora's apber form), goals, an active
 -- subproject report design assembling the data-driven building blocks,
 -- charts and fields in the layout of the apf2 yearly report, and the 2025
--- report. Prose texts are the ones from the apf2 Aldrovanda report.
+-- report. Prose texts are the ones from the apf2 yearly report (originally
+-- Aldrovanda vesiculosa's).
 BEGIN;
 SET LOCAL electric.syncing TO 'true';
 
@@ -241,7 +242,7 @@ BEGIN
     RAISE EXCEPTION 'apflora report seed: expected 1 active design, got %', got;
   END IF;
   SELECT count(*) INTO got FROM subproject_reports
-  WHERE subproject_id = '12496da4-f3ce-79b9-87cf-c6e85bb6722c';
+  WHERE subproject_id = '655ecc9b-43ef-706f-84ae-19ef5c6387cb';
   IF got < 1 THEN
     RAISE EXCEPTION 'apflora report seed: report row missing';
   END IF;

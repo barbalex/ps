@@ -4,7 +4,7 @@
 // Run from the project root: node backend/db/extract_apflora_example.mjs
 //
 // Scope (APF2_SCOPE):
-//   example    — the three example species (default), written to
+//   example    — the example species (Abies alba), written to
 //                seed-data/apflora/apf2-example.json
 //   report:<J> — every art with an apber (AP-Bericht) for year <J>, e.g.
 //                APF2_SCOPE=report:2025 — the arts of apflora's yearly report
@@ -39,12 +39,10 @@ const outPath =
     scope === 'example' ? 'apf2-example.json' : `apf2-${scopeSlug}.json`,
   )
 
-// resolved by artname, not by (unstable) uuid
-const ARTNAMES = [
-  'Abies alba Mill.',
-  'Aldrovanda vesiculosa L.',
-  'Pulsatilla vulgaris Mill.',
-]
+// resolved by artname, not by (unstable) uuid.
+// Only one species to keep the seed (and thus the live database) small;
+// use APF2_SCOPE=all for the full dataset on a dev database
+const ARTNAMES = ['Abies alba Mill.']
 // apf2's chart functions include Freiwilligen-Kontrollen in the counts,
 // so they are imported too (their typ field lets the UI filter them)
 const KONTROLL_TYPEN = ['Ausgangszustand', 'Kontrolle', 'Freiwilligen-Kontrolle']
