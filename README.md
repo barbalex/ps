@@ -89,5 +89,4 @@ This app is under development. It still has many bugs. Features are continuously
 
 ### Feedback Welcome
 
-~~Feel free to take a look, test, and share your impressions and wishes.~~
-Sorry, the app is not yet accessible.
+Feel free to take a look, test, and share your impressions and wishes.
