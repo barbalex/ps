@@ -11,6 +11,9 @@ import babel from '@rolldown/plugin-babel'
 export default defineConfig({
   server: {
     port: 5176,
+    // Fail loudly instead of drifting to 5177+: the auth server's CORS
+    // allowlist only trusts localhost:5176, so a drifted port breaks login.
+    strictPort: true,
     // host: '0.0.0.0',
   },
   resolve: {
