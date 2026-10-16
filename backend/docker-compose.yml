@@ -3,7 +3,7 @@ services:
   db:
     # specify container name to make it easier to run commands
     container_name: ps_db
-    image: db
+    image: ps-db
     # ensure enough shared memory - docker only allows 64mb
     # https://stackoverflow.com/a/56754077/712005
     shm_size: 1g
