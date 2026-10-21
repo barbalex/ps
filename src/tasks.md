@@ -30,7 +30,11 @@ Better-Auth, possible extensions:
 
 ---
 
+apf2: migrate to using uuidV7 ids, convert existing to these
+
 ---
+
+question: can't we just create a dump of the apflora project (in the structure it becomes inside ps) from which we will import into ps? Then all the id's already exist. Would be a great first step to enabling exporting into dumps and re-importing from dumps in the ui
 
 ---
 

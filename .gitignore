@@ -26,6 +26,8 @@ backend-dev/db/init/11b_seedApfloraExampleData.sql
 # full apflora imports (unpublished apf2 data, local-only)
 seed-data/apflora/apf2-report_*.json
 seed-data/apflora/apf2-all.json
+# project dumps (unpublished apf2 data, local-only); regenerate via npm run project:dump
+seed-data/apflora/apflora-project-dump.sql
 
 # tanstack router plugin cache
 .tanstack/

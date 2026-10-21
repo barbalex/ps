@@ -27,6 +27,8 @@
     "apflora:generate": "node backend/db/generate_apflora_example_sql.mjs",
     "apflora:import:test": "node scripts/import-apflora.mjs test",
     "apflora:import:all": "node scripts/import-apflora.mjs all",
+    "project:dump": "node scripts/dump-project.mjs",
+    "project:import:dump": "node scripts/import-project-dump.mjs",
     "exports:generate": "node backend/db/generate_exports_sql.mjs",
     "models:generate": "node scripts/kanel-generate.mjs",
     "docs:build": "node scripts/build-docs.mjs"

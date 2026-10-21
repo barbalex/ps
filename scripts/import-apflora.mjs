@@ -164,9 +164,14 @@ psqlInDb(
     `BEGIN;
 SET LOCAL electric.syncing TO 'true';
 
--- the access rows from before the reset, with their original ids (saved
--- project_roles reference them); as far as their rows still exist —
--- switching from 'all' to 'test' drops the removed species' specific roles
+-- the access rows from before the reset, with their original ids — for the
+-- role tables, too: Electric streams these tables and a re-import with
+-- regenerated role ids replaces rows on the same unique keys, which clients
+-- syncing from a cached shape snapshot cannot apply (duplicate key on
+-- project_roles_project_user_id_unique). As far as the saved rows still
+-- exist — switching from 'all' to 'test' drops the removed species' rows —
+-- they are restored; the saved subproject/place roles go in before the
+-- cascade propagation below, whose upserts then reuse the restored rows
 INSERT INTO project_users(project_user_id, project_id, email, auth_user_id)
   SELECT project_user_id, project_id, email, auth_user_id FROM ps_saved_project_users
 ON CONFLICT (project_id, email) DO UPDATE SET auth_user_id = EXCLUDED.auth_user_id;
@@ -187,8 +192,8 @@ INSERT INTO project_users(project_id, email, auth_user_id)
     )
 ON CONFLICT (project_id, email) DO UPDATE SET auth_user_id = EXCLUDED.auth_user_id;
 
-INSERT INTO project_roles(project_id, project_user_id, role, label)
-  SELECT r.project_id, r.project_user_id, r.role, roles_label(r.project_user_id, r.role)
+INSERT INTO project_roles(project_role_id, project_id, project_user_id, role, label)
+  SELECT r.project_role_id, r.project_id, r.project_user_id, r.role, roles_label(r.project_user_id, r.role)
   FROM ps_saved_project_roles r
 ON CONFLICT (project_user_id, project_id) DO UPDATE SET role = EXCLUDED.role, label = EXCLUDED.label;
 
@@ -205,6 +210,20 @@ INSERT INTO project_roles(project_id, project_user_id, role, label)
     )
 ON CONFLICT (project_user_id, project_id) DO NOTHING;
 
+-- saved subproject/place roles that survived the mode switch, with their
+-- original ids; before the cascade propagation so its upserts reuse them
+INSERT INTO subproject_roles(subproject_role_id, subproject_id, project_user_id, role, label)
+  SELECT r.subproject_role_id, r.subproject_id, r.project_user_id, r.role, roles_label(r.project_user_id, r.role)
+  FROM ps_saved_subproject_roles r
+  JOIN subprojects s ON s.subproject_id = r.subproject_id
+ON CONFLICT (project_user_id, subproject_id) DO UPDATE SET role = EXCLUDED.role, label = EXCLUDED.label;
+
+INSERT INTO place_roles(place_role_id, place_id, project_user_id, role, label)
+  SELECT r.place_role_id, r.place_id, r.project_user_id, r.role, roles_label(r.project_user_id, r.role)
+  FROM ps_saved_place_roles r
+  JOIN places p ON p.place_id = r.place_id
+ON CONFLICT (project_user_id, place_id) DO UPDATE SET role = EXCLUDED.role, label = EXCLUDED.label;
+
 -- replicate project_roles_cascade_trigger (it skips while electric.syncing
 -- is set): propagate non-specific roles to the re-imported subprojects/places
 INSERT INTO subproject_roles(subproject_id, project_user_id, role, label)
@@ -220,19 +239,6 @@ INSERT INTO place_roles(place_id, project_user_id, role, label)
   JOIN subprojects s ON s.project_id = pr.project_id
   JOIN places p ON p.subproject_id = s.subproject_id
   WHERE pr.project_id = '${PROJECT_ID}' AND pr.role NOT IN ('read-specific', 'write-specific')
-ON CONFLICT (project_user_id, place_id) DO UPDATE SET role = EXCLUDED.role, label = EXCLUDED.label;
-
--- saved -specific roles that survived the mode switch
-INSERT INTO subproject_roles(subproject_id, project_user_id, role, label)
-  SELECT r.subproject_id, r.project_user_id, r.role, roles_label(r.project_user_id, r.role)
-  FROM ps_saved_subproject_roles r
-  JOIN subprojects s ON s.subproject_id = r.subproject_id
-ON CONFLICT (project_user_id, subproject_id) DO UPDATE SET role = EXCLUDED.role, label = EXCLUDED.label;
-
-INSERT INTO place_roles(place_id, project_user_id, role, label)
-  SELECT r.place_id, r.project_user_id, r.role, roles_label(r.project_user_id, r.role)
-  FROM ps_saved_place_roles r
-  JOIN places p ON p.place_id = r.place_id
 ON CONFLICT (project_user_id, place_id) DO UPDATE SET role = EXCLUDED.role, label = EXCLUDED.label;
 
 COMMIT;`,
