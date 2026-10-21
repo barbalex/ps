@@ -13,9 +13,12 @@
 // Taxa are NOT imported: 11a_seedApfloraTaxonomies.sql already seeds
 // DB-TAXREF (2017); this file links into it by id_in_source (taxid).
 //
-// All generated ids are deterministic (md5-derived uuidv7-shaped),
-// so regenerating produces stable ids and the seed is idempotent
-// (ON CONFLICT DO NOTHING) and assert-guarded.
+// apf2-sourced rows use apf2's own uuidv7 ids verbatim (subprojects, places,
+// checks, check_taxa, actions, *_reports, subproject_taxa). ps-only constructs
+// (project, place levels, filtered views, lists, units, fields) use
+// deterministic md5-derived uuidv7-shaped ids. Regenerating produces stable
+// ids either way; the seed is idempotent (ON CONFLICT DO NOTHING) and
+// assert-guarded.
 
 import { createHash } from 'crypto'
 import { existsSync, readFileSync, writeFileSync } from 'fs'
@@ -359,12 +362,14 @@ const fieldId = (table, level, name) =>
 const out = []
 const emit = (s) => out.push(s)
 
-const place1Id = (popId) => derivedId('place1', popId)
-const place2Id = (tpopId) => derivedId('place2', tpopId)
-const checkId = (kontrId) => derivedId('check', kontrId)
-const checkTaxonId = (zaehlId) => derivedId('check_taxon', zaehlId)
-const actionId = (massnId) => derivedId('action', massnId)
-const subprojectId = (apId) => derivedId('subproject', apId)
+// apf2's ids are uuidv7 since its migration: use them verbatim, so ps ids
+// and apf2 ids correlate 1:1 (dump/import keeps them stable from here on)
+const place1Id = (popId) => popId
+const place2Id = (tpopId) => tpopId
+const checkId = (kontrId) => kontrId
+const checkTaxonId = (zaehlId) => zaehlId
+const actionId = (massnId) => massnId
+const subprojectId = (apId) => apId
 
 // apf2 pop/tpop label convention (createComputedLabels.sql): "nr: name/flurname"
 const popName = (pop) =>
@@ -428,7 +433,7 @@ data.arts.forEach((art, artIndex) => {
     })
     for (const ber of pop.berichte ?? []) {
       checkReports.push({
-        id: derivedId('check_report', ber.id),
+        id: ber.id,
         place: place1Id(pop.id),
         year: ber.jahr,
         data: buildData([
@@ -439,7 +444,7 @@ data.arts.forEach((art, artIndex) => {
     }
     for (const ber of pop.massnberichte ?? []) {
       actionReports.push({
-        id: derivedId('action_report', ber.id),
+        id: ber.id,
         place: place1Id(pop.id),
         year: ber.jahr,
         data: buildData([
@@ -497,7 +502,7 @@ data.arts.forEach((art, artIndex) => {
       })
       for (const ber of tpop.berichte ?? []) {
         checkReports.push({
-          id: derivedId('check_report', ber.id),
+          id: ber.id,
           place: place2Id(tpop.id),
           year: ber.jahr,
           data: buildData([
@@ -508,7 +513,7 @@ data.arts.forEach((art, artIndex) => {
       }
       for (const ber of tpop.massnberichte ?? []) {
         actionReports.push({
-          id: derivedId('action_report', ber.id),
+          id: ber.id,
           place: place2Id(tpop.id),
           year: ber.jahr,
           data: buildData([
@@ -733,7 +738,7 @@ for (const art of data.arts) {
     `INSERT INTO subproject_taxa(subproject_taxon_id, subproject_id, taxon_id)`,
   )
   emit(
-    `  SELECT ${q(derivedId('subproject_taxon', art.taxonomie.id))}, ${q(subprojectId(art.ap.id))}, t.taxon_id`,
+    `  SELECT ${q(art.taxonomie.id)}, ${q(subprojectId(art.ap.id))}, t.taxon_id`,
   )
   emit(
     `  FROM taxa t JOIN taxonomies USING (taxonomy_id)`,
@@ -1023,7 +1028,7 @@ emitChunked('subproject_reports (apf2: apber)', {
   pk: 'subproject_report_id',
 }, data.arts.flatMap((art) => {
   return (art.ap.berichte ?? []).map((bericht) => ({
-    id: derivedId('subproject_report', bericht.id),
+    id: bericht.id,
     subproject: subprojectId(art.ap.id),
     year: bericht.jahr,
     data: (() => {

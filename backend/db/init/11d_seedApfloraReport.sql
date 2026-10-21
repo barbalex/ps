@@ -241,8 +241,15 @@ BEGIN
   IF got <> 1 THEN
     RAISE EXCEPTION 'apflora report seed: expected 1 active design, got %', got;
   END IF;
+  -- resolve the demo art's subproject by name: its id is apf2's own uuidv7
+  -- (the seeds pass apf2's ids through), so hardcoding it would break on
+  -- every apf2 id migration
   SELECT count(*) INTO got FROM subproject_reports
-  WHERE subproject_id = '655ecc9b-43ef-706f-84ae-19ef5c6387cb';
+  WHERE subproject_id = (
+    SELECT subproject_id FROM subprojects
+    WHERE project_id = '0195a101-0000-7000-8000-000000000001'
+      AND name LIKE 'Abies alba%'
+  );
   IF got < 1 THEN
     RAISE EXCEPTION 'apflora report seed: report row missing';
   END IF;
