@@ -16,7 +16,7 @@ Better-Auth, possible extensions:
 
 ---
 
-So the app is being blocked by sync when lots of data streams in. Is there a way to have that happen in the background (seprarate thread?). If not: it needs to be shown in the UI somehow that this is happening and _could_ block the UI.
+dark mode not well implemented for: file upload?
 
 ---
 
