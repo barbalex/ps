@@ -903,6 +903,8 @@
   "initDbStepLabel": "Inizializzazione del database",
   "syncServerStepLabel": "Sincronizzazione con il server",
   "syncServerMsg": "Sincronizzazione con il server",
+  "syncInBackgroundTitle": "Sincronizzazione in background",
+  "syncInBackgroundBody": "I dati vengono aggiornati. L'interfaccia potrebbe bloccarsi brevemente durante l'operazione.",
   "syncServerTaskBody": "Sincronizzazione iniziale in corso...",
   "syncServerTaskDone": "Sincronizzazione completata.",
   "syncServerTaskError": "Impossibile avviare la sincronizzazione. Effettua nuovamente l'accesso.",

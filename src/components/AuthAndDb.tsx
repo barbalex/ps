@@ -8,6 +8,7 @@ import type { PGliteWithLive } from '@electric-sql/pglite/live'
 import { SqlInitializer } from './SqlInitializer.tsx'
 import { InitialSyncManager } from './InitialSyncManager.tsx'
 import { Syncer } from './Syncer.tsx'
+import { BackgroundSyncIndicator } from './BackgroundSyncIndicator.tsx'
 import { LayoutProtected } from './LayoutProtected/index.tsx'
 import { Initiating } from './Initiating.tsx'
 import {
@@ -48,6 +49,7 @@ export const AuthAndDb = () => {
           <SqlInitializer />
           <InitialSyncManager />
           <Syncer />
+          <BackgroundSyncIndicator />
           {sqlInitializing || initialSyncing ? (
             <Initiating />
           ) : (

@@ -1,23 +1,35 @@
-import { PGlite } from '@electric-sql/pglite'
+import { PGliteWorker } from '@electric-sql/pglite/worker'
+import type { PGlite } from '@electric-sql/pglite'
 import { electricSync } from '@electric-sql/pglite-sync'
-import { postgis } from '@electric-sql/pglite-postgis'
 import { live } from '@electric-sql/pglite/live'
-import { pg_uuidv7 } from '@electric-sql/pglite-pg_uuidv7'
 
 import { pgliteDbAtom, store } from '../store.ts'
 
-let creatingDbPromise: Promise<PGlite> | null = null
+let creatingDbPromise: Promise<PGliteWorker> | null = null
 
-const createDb = () =>
-  PGlite.create('idb://ps', {
+// The database (WASM Postgres, Electric sync applies, live-query execution,
+// IndexedDB persistence) runs inside a web worker so heavy sync batches and
+// query work never block the UI thread. pglite-worker.ts registers the real
+// extensions on the worker-side instance; the factories passed here attach
+// the client-side namespaces, whose methods become RPC calls to the worker.
+// Only live and electric have client-side namespaces — postgis/pg_uuidv7 are
+// emscripten extensions and only provide SQL functions that run worker-side
+// (their factories throw when set up on the worker client).
+const createDb = () => {
+  const worker = new Worker(new URL('../pglite-worker.ts', import.meta.url), {
+    type: 'module',
+  })
+  return PGliteWorker.create(worker, {
     extensions: {
       live,
       electric: electricSync(),
-      postgis,
-      pg_uuidv7,
     },
     relaxedDurability: true,
+  }).catch((err: unknown) => {
+    worker.terminate()
+    throw err
   })
+}
 
 const isWasmAbort = (err: unknown) =>
   err instanceof Error &&
@@ -68,10 +80,10 @@ export const ensurePgliteDb = async () => {
         throw err
       })
       .then(async (db) => {
-        store.set(pgliteDbAtom, db)
+        store.set(pgliteDbAtom, db as unknown as PGlite)
 
         if (import.meta.env.DEV) {
-          window.__pglite_db__ = db
+          window.__pglite_db__ = db as unknown as PGlite
           window.__jotai_store__ = store
         }
 

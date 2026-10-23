@@ -2642,6 +2642,12 @@
   "subprojectSingularFallback": {
     "defaultMessage": "Teilprojekt"
   },
+  "syncInBackgroundBody": {
+    "defaultMessage": "Daten werden aktualisiert. Die Oberfläche kann währenddessen kurzzeitig blockieren."
+  },
+  "syncInBackgroundTitle": {
+    "defaultMessage": "Synchronisiere im Hintergrund"
+  },
   "syncServerMsg": {
     "defaultMessage": "Synchronisiere mit Server"
   },

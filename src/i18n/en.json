@@ -919,6 +919,8 @@
   "initDbStepLabel": "Initializing database",
   "syncServerStepLabel": "Syncing with server",
   "syncServerMsg": "Syncing with server",
+  "syncInBackgroundTitle": "Syncing in the background",
+  "syncInBackgroundBody": "Data is being updated. The interface may briefly freeze during this.",
   "syncServerTaskBody": "Initial synchronization is running...",
   "syncServerTaskDone": "Synchronization complete.",
   "syncServerTaskError": "Synchronization could not be started. Please sign in again.",
