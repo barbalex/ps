@@ -42,10 +42,12 @@ services:
     networks:
       - network
     healthcheck:
+      # force TCP (-h 127.0.0.1) so the check fails while the entrypoint runs
+      # init scripts with a unix-socket-only temporary server (listen_addresses='')
       test:
         [
           'CMD-SHELL',
-          'psql -U postgres -d ${POSTGRES_DB} -c "SELECT 1" > /dev/null 2>&1',
+          'pg_isready -h 127.0.0.1 -p 5432 -U postgres -d ${POSTGRES_DB}',
         ]
       interval: 5s
       timeout: 5s
