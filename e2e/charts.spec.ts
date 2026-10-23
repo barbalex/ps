@@ -15,8 +15,10 @@ const E2E_EMAIL = process.env.E2E_EMAIL ?? 'zcode-charts@test.ch'
 const E2E_PASSWORD = process.env.E2E_PASSWORD ?? 'e2e-test-password-123'
 
 const PROJECT_ID = '0195a101-0000-7000-8000-000000000001'
-const SUBPROJECT_ID = '12496da4-f3ce-79b9-87cf-c6e85bb6722c' // Aldrovanda
-const OTHER_SUBPROJECT_ID = '4eddea03-b64a-755b-885c-5f173c7aba8f' // Pulsatilla
+// apflora demo ids (verify against a fresh dump with:
+// SELECT subproject_id, name FROM subprojects WHERE name ILIKE '%vesiculosa%')
+const SUBPROJECT_ID = '017d3472-d75d-7095-82f2-34b3a41b09f2' // Aldrovanda
+const OTHER_SUBPROJECT_ID = '017d3472-d75d-7a4f-8040-dfdd5df00bdb' // Pulsatilla
 const UNIT_TRIEBE_TOTAL = '935432b9-fc64-7118-8167-06f985ea181f'
 
 const CHART_TPOPS = 'a1000000-0000-4000-8000-000000000001'
@@ -120,7 +122,7 @@ COMMIT;
 
 test.describe('charts from apflora demo data', () => {
   test('renders the three yearly-report charts', async ({ page }) => {
-    test.setTimeout(420_000)
+    test.setTimeout(780_000)
     await ensureE2eData()
 
     await page.goto('/auth')
@@ -129,29 +131,48 @@ test.describe('charts from apflora demo data', () => {
     await page.click('button[type="submit"]')
     await page.waitForURL('**/data/projects**', { timeout: 120_000 })
 
-    // wait until the tables the charts read from hold the demo data
+    // wait until the tables the charts read from hold the demo data —
+    // charts/chart_subjects sync in a later FK stage than places/checks,
+    // so they need their own condition (and time) here
     await expect
       .poll(
         async () =>
-          page.evaluate(async (subprojectId) => {
-            const db = window.__pglite_db__
-            if (!db) return false
-            try {
-              const places = await db.query(
-                `select count(*)::int as n from places where subproject_id = '${subprojectId}'`,
-              )
-              const taxa = await db.query(
-                `select count(*)::int as n from check_taxa cq
-                 join checks c using (check_id)
-                 join places p on c.place_id = p.place_id
-                 where p.subproject_id = '${subprojectId}'`,
-              )
-              return places.rows[0].n >= 135 && taxa.rows[0].n >= 150
-            } catch {
-              return false
-            }
-          }, SUBPROJECT_ID),
-        { timeout: 300_000, intervals: [2_000] },
+          page.evaluate(
+            async ({ subprojectId, chartIds }) => {
+              const db = window.__pglite_db__
+              if (!db) return false
+              try {
+                const places = await db.query(
+                  `select count(*)::int as n from places where subproject_id = '${subprojectId}'`,
+                )
+                const taxa = await db.query(
+                  `select count(*)::int as n from check_taxa cq
+                   join checks c using (check_id)
+                   join places p on c.place_id = p.place_id
+                   where p.subproject_id = '${subprojectId}'`,
+                )
+                const charts = await db.query(
+                  `select count(*)::int as n from charts where chart_id in ('${chartIds.join("','")}')`,
+                )
+                const subjects = await db.query(
+                  `select count(*)::int as n from chart_subjects where chart_id in ('${chartIds.join("','")}')`,
+                )
+                return (
+                  places.rows[0].n >= 135 &&
+                  taxa.rows[0].n >= 150 &&
+                  charts.rows[0].n >= 3 &&
+                  subjects.rows[0].n >= 4
+                )
+              } catch {
+                return false
+              }
+            },
+            {
+              subprojectId: SUBPROJECT_ID,
+              chartIds: [CHART_TPOPS, CHART_STATUS, CHART_TRIEBE],
+            },
+          ),
+        { timeout: 600_000, intervals: [2_000] },
       )
       .toBe(true)
 
@@ -200,7 +221,7 @@ test.describe('charts from apflora demo data', () => {
     ).toBeVisible()
 
     // 4. the templates are project-level: another art offers them too
-    const otherArtBase = `/data/projects/${PROJECT_ID}/subprojects/4eddea03-b64a-755b-885c-5f173c7aba8f/charts`
+    const otherArtBase = `/data/projects/${PROJECT_ID}/subprojects/${OTHER_SUBPROJECT_ID}/charts`
     await page.goto(otherArtBase)
     // scoped to the list: the open nav tree shows the same chart names too
     const otherList = page.locator('.list-container')
