@@ -43,9 +43,9 @@
     "@codemirror/theme-one-dark": "6.1.3",
     "@cyntler/react-doc-viewer": "1.17.1",
     "@e965/xlsx": "0.20.3",
-    "@electric-sql/pglite": "0.5.10",
-    "@electric-sql/pglite-pg_uuidv7": "0.0.11",
-    "@electric-sql/pglite-postgis": "0.2.10",
+    "@electric-sql/pglite": "0.5.11",
+    "@electric-sql/pglite-pg_uuidv7": "0.0.12",
+    "@electric-sql/pglite-postgis": "0.2.11",
     "@electric-sql/pglite-react": "0.4.11",
     "@electric-sql/pglite-sync": "0.6.12",
     "@electric-sql/pglite-tools": "0.4.10",
@@ -162,7 +162,7 @@
   },
   "devRemarks": {
     "nothing": "now",
-    "tabster": "errors were caused. tabster@8.7.0 bundled its own keyborg@2.6.0 which conflicted with the top-level keyborg@2.14.0 required by @fluentui/react-components \u2014 keyborg 2.14 removed getNavigating, so forcing tabster@8.8.0 (which depends on keyborg@^2.14.0) eliminates the nested copy and makes both packages use the same API.",
+    "tabster": "errors were caused. tabster@8.7.0 bundled its own keyborg@2.6.0 which conflicted with the top-level keyborg@2.14.0 required by @fluentui/react-components — keyborg 2.14 removed getNavigating, so forcing tabster@8.8.0 (which depends on keyborg@^2.14.0) eliminates the nested copy and makes both packages use the same API.",
     "typescript-eslint": "typescript@7 (native) ships no JS API, which @typescript-eslint still requires (its peer range caps at <6.1.0), so eslint cannot run on v7 yet. The overrides pin the peer to typescript@6.0.3, and the postinstall script (scripts/patch-eslint-typescript.mjs) copies the aliased typescript-v6 devDependency into @typescript-eslint/parser and @typescript-eslint/eslint-plugin, because npm cannot nest a peer-satisfying typescript copy under root-level packages. Root typescript stays on v7 for tsc. Drop overrides + typescript-v6 + postinstall once typescript-eslint supports v7."
   }
 }
