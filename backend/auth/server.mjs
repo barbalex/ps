@@ -373,6 +373,14 @@ const ensurePreviewUser = async () => {
         await resetPreviewUser()
       }
 
+      // The preview user cannot complete the email-verification OTP flow;
+      // without this flag sign-in breaks once the sign-up verification
+      // window (1 hour) expires
+      await pool.query(
+        'UPDATE users SET email_verified = TRUE, updated_at = NOW() WHERE email = $1 AND email_verified = FALSE',
+        [PREVIEW_TEST_EMAIL],
+      )
+
       const signInResult = await signInPreviewUser()
       if (signInResult.ok) {
         console.log('Preview test user is ready')
