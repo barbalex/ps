@@ -14,34 +14,6 @@ Better-Auth, possible extensions:
 
 ---
 
-backend-dev db log:
-
-2026-10-23 14:28:58.966 UTC [540] ERROR: permission denied for table subprojects_history_p2025
-
-    CONTEXT: SQL statement "SELECT updated_at::text FROM public.subprojects_history_p2025 LIMIT 1"
-
-    PL/pgSQL function run_maintenance(text,boolean,boolean) line 245 at EXECUTE
-
-    SQL statement "SELECT partman.run_maintenance('public.subprojects_history', p_jobmon := 'f', p_analyze := 'f')"
-
-    PL/pgSQL function partman.run_maintenance_proc(integer,boolean,boolean) line 42 at EXECUTE
-
-    SQL statement "CALL partman.run_maintenance_proc(p_wait => 0, p_analyze => false, p_jobmon => false)"
-
-    DETAIL:
-
-    HINT:
-
-2026-10-23 14:28:58.966 UTC [540] CONTEXT: PL/pgSQL function run_maintenance(text,boolean,boolean) line 492 at RAISE
-
-    SQL statement "SELECT partman.run_maintenance('public.subprojects_history', p_jobmon := 'f', p_analyze := 'f')"
-
-    PL/pgSQL function partman.run_maintenance_proc(integer,boolean,boolean) line 42 at EXECUTE
-
-    SQL statement "CALL partman.run_maintenance_proc(p_wait => 0, p_analyze => false, p_jobmon => false)"
-
-2026-10-23 14:28:58.968 UTC [1] LOG: background worker "pg_partman background worker" (PID 540) exited with exit code 1
-
 ---
 
 ---
