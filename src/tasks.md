@@ -20,6 +20,8 @@ dark mode not well implemented for: file upload?
 
 ---
 
+would it make sense to use Tanstack Start for this app? https://tanstack.com/start/latest
+
 ---
 
 ---
