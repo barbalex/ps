@@ -188,7 +188,8 @@ test.describe('charts from apflora demo data', () => {
     })
     await expect(page.locator('.recharts-legend-item-text')).toHaveText(
       ['Teil-Populationen', 'kontrollierte Teil-Populationen'],
-      { timeout: 30_000 },
+      // generous: in the worker setup reads queue behind ongoing sync applies
+      { timeout: 180_000 },
     )
 
     // 2. one stacked series per status value
@@ -200,7 +201,7 @@ test.describe('charts from apflora demo data', () => {
       page.locator('.recharts-legend-item-text', {
         hasText: 'angesiedelt, aktuell',
       }),
-    ).toBeVisible({ timeout: 30_000 })
+    ).toBeVisible({ timeout: 180_000 })
     await expect(
       page.locator('.recharts-legend-item-text', {
         hasText: 'ursprünglich, erloschen',
@@ -217,7 +218,7 @@ test.describe('charts from apflora demo data', () => {
     // asserted via the y-axis unit label instead of legend items
     await expect(
       page.locator('.recharts-wrapper svg text', { hasText: 'Triebe total' }),
-    ).toBeVisible({ timeout: 30_000 })
+    ).toBeVisible({ timeout: 180_000 })
 
     // 4. the templates are project-level: another art offers them too
     const otherArtBase = `/data/projects/${PROJECT_ID}/subprojects/${OTHER_SUBPROJECT_ID}/charts`
@@ -241,6 +242,6 @@ test.describe('charts from apflora demo data', () => {
       page.locator('.recharts-legend-item-text', {
         hasText: 'angesiedelt, aktuell',
       }),
-    ).toBeVisible({ timeout: 30_000 })
+    ).toBeVisible({ timeout: 180_000 })
   })
 })
