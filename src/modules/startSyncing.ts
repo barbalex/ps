@@ -57,13 +57,15 @@ export const startSyncing = async (userId: string) => {
   // On reload: shapes already exist (409 warnings), Electric resumes streaming changes
   // PGlite data persists in IndexedDB, so no need to clear or re-sync everything
 
-  // Fetch the PostgREST JWT so Caddy's forward_auth gate on the Electric
+  // Preflight the PostgREST JWT so Caddy's forward_auth gate on the Electric
   // endpoint accepts the shape requests.
-  const electricToken = await fetchPostgrestToken()
-  // typed so the empty branch stays assignable to Electric's headers record
-  const authHeaders: Record<string, string> = electricToken
-    ? { Authorization: `Bearer ${electricToken}` }
-    : {}
+  await fetchPostgrestToken()
+  // Function-valued header so every shape request resolves the CURRENT token
+  // from fetchPostgrestToken's expiry-aware cache — a static header would 401
+  // on every long-poll once the 1h PostgREST JWT expires (caddy forward_auth)
+  const authHeaders = {
+    Authorization: async () => `Bearer ${await fetchPostgrestToken()}`,
+  } as unknown as Record<string, string>
 
   try {
     const rawShapes = {
