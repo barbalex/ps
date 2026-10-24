@@ -6,10 +6,12 @@ import {
   addNotificationAtom,
   backgroundSyncingAtom,
   initialSyncingAtom,
+  pgliteDbAtom,
   store,
   syncObjectAtom,
   updateNotificationAtom,
 } from '../store.ts'
+import { notifyAllLiveTables } from '../modules/gateLiveNotifyTriggers.ts'
 
 // Shows a spinner notification while a post-boot sync applies a sustained
 // amount of data. Even with the database in a web worker, large batches keep
@@ -38,13 +40,26 @@ export const BackgroundSyncIndicator = () => {
 
     let notUpToDateSince: number | null = null
     let wasBackgroundSyncing = false
+    let wasNotUpToDate = false
 
     const tick = () => {
       const syncObject = store.get(syncObjectAtom) as {
         isUpToDate?: boolean
       } | null
 
-      if (syncObject?.isUpToDate === false) {
+      const notUpToDate = syncObject?.isUpToDate === false
+
+      // when a sync settles, fire one notification round so live queries
+      // mounted mid-sync pick up the applied data — sync applies themselves
+      // no longer notify (gateLiveNotifyTriggers)
+      if (wasNotUpToDate && !notUpToDate) {
+        const db = store.get(pgliteDbAtom)
+        // errors are irrelevant here: the next settle will retry
+        if (db) void notifyAllLiveTables(db).catch(() => undefined)
+      }
+      wasNotUpToDate = notUpToDate
+
+      if (notUpToDate) {
         if (notUpToDateSince === null) notUpToDateSince = Date.now()
       } else {
         // up to date, or no sync object (offline / signed out)

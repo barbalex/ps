@@ -6,12 +6,14 @@ import {
   addNotificationAtom,
   initialSyncingAtom,
   onlineAtom,
+  pgliteDbAtom,
   sqlInitializingAtom,
   store,
   syncObjectAtom,
   updateNotificationAtom,
 } from '../store.ts'
 import { startSyncing } from '../modules/startSyncing.ts'
+import { gateLiveNotifyTriggers } from '../modules/gateLiveNotifyTriggers.ts'
 import { useSession } from '../modules/authClient.ts'
 
 export const Syncer = () => {
@@ -72,6 +74,27 @@ export const Syncer = () => {
     })
     syncNotificationIdRef.current = null
   }, [formatMessage, initialSyncing, isAuthenticated, updateNotification])
+
+  // Gate the live extension's notify functions against electric.syncing so
+  // sync applies stop re-running every mounted live query (see module doc).
+  // The extension creates these functions lazily per table, hence the
+  // interval; already-gated bodies are replaced by identical ones.
+  useEffect(() => {
+    if (!isAuthenticated) return
+    let cancelled = false
+    const run = () => {
+      if (cancelled) return
+      const db = store.get(pgliteDbAtom)
+      // errors are irrelevant here: the interval retries
+      if (db) void gateLiveNotifyTriggers(db).catch(() => undefined)
+    }
+    run()
+    const interval = setInterval(run, 30_000)
+    return () => {
+      cancelled = true
+      clearInterval(interval)
+    }
+  }, [isAuthenticated])
 
   // Stop syncing when offline; the start-sync effect below will restart it when online again
   useEffect(() => {
