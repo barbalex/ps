@@ -2643,7 +2643,7 @@
     "defaultMessage": "Teilprojekt"
   },
   "syncInBackgroundBody": {
-    "defaultMessage": "Daten werden aktualisiert. Die Oberfläche kann währenddessen kurzzeitig blockieren."
+    "defaultMessage": "Daten werden aktualisiert. Die Oberfläche kann einfrieren."
   },
   "syncInBackgroundTitle": {
     "defaultMessage": "Synchronisiere im Hintergrund"
