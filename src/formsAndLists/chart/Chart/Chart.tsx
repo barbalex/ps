@@ -54,7 +54,7 @@ export const SingleChart = ({ chart, series, data, synchronized }: Props) => {
   const firstSubjectsUnit = res?.rows?.[0] as Units | undefined
   if (!chart || !series) return null
 
-  const unit = firstSubjectsUnit ?? 'Count'
+  const unit = firstSubjectsUnit?.name ?? 'Count'
   const stacked = chart.subjects_stacked || chart.percent
 
   return (
@@ -103,7 +103,7 @@ export const SingleChart = ({ chart, series, data, synchronized }: Props) => {
           interval={0}
           width={40}
           label={{
-            value: unit as unknown as string,
+            value: unit,
             angle: -90,
             position: 'insideLeft',
             // print is the window.print function and thus always truthy;
