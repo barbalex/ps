@@ -67,6 +67,10 @@ async function ensureE2eData() {
   }
   if (!userId) throw new Error(`e2e user ${E2E_EMAIL} not found in dev db`)
 
+  // e2e users cannot complete the email-verification OTP flow; without this
+  // their sign-in breaks once the sign-up verification window (1 hour) ends
+  psql(`UPDATE users SET email_verified = TRUE WHERE email = '${E2E_EMAIL}'`)
+
   psql(`
     -- Build the fixture the way electric sync would write it:
     -- with triggers bypassed, role rows inserted explicitly
