@@ -903,7 +903,7 @@
   "syncServerStepLabel": "Synchronisation avec le serveur",
   "syncServerMsg": "Synchronisation avec le serveur",
   "syncInBackgroundTitle": "Synchronisation en arrière-plan",
-  "syncInBackgroundBody": "Les données sont en cours de mise à jour. L'interface peut se figer brièvement.",
+  "syncInBackgroundBody": "Les données sont en cours de mise à jour. L'interface peut se figer.",
   "syncServerTaskBody": "La synchronisation initiale est en cours...",
   "syncServerTaskDone": "Synchronisation terminée.",
   "syncServerTaskError": "La synchronisation n'a pas pu être démarrée. Veuillez vous reconnecter.",

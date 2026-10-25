@@ -904,7 +904,7 @@
   "syncServerStepLabel": "Sincronizzazione con il server",
   "syncServerMsg": "Sincronizzazione con il server",
   "syncInBackgroundTitle": "Sincronizzazione in background",
-  "syncInBackgroundBody": "I dati vengono aggiornati. L'interfaccia potrebbe bloccarsi brevemente.",
+  "syncInBackgroundBody": "I dati vengono aggiornati. L'interfaccia potrebbe bloccarsi.",
   "syncServerTaskBody": "Sincronizzazione iniziale in corso...",
   "syncServerTaskDone": "Sincronizzazione completata.",
   "syncServerTaskError": "Impossibile avviare la sincronizzazione. Effettua nuovamente l'accesso.",
