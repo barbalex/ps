@@ -40,7 +40,6 @@ export const BackgroundSyncIndicator = () => {
 
     let notUpToDateSince: number | null = null
     let wasBackgroundSyncing = false
-    let wasNotUpToDate = false
 
     const tick = () => {
       const syncObject = store.get(syncObjectAtom) as {
@@ -48,16 +47,6 @@ export const BackgroundSyncIndicator = () => {
       } | null
 
       const notUpToDate = syncObject?.isUpToDate === false
-
-      // when a sync settles, fire one notification round so live queries
-      // mounted mid-sync pick up the applied data — sync applies themselves
-      // no longer notify (gateLiveNotifyTriggers)
-      if (wasNotUpToDate && !notUpToDate) {
-        const db = store.get(pgliteDbAtom)
-        // errors are irrelevant here: the next settle will retry
-        if (db) void notifyAllLiveTables(db).catch(() => undefined)
-      }
-      wasNotUpToDate = notUpToDate
 
       if (notUpToDate) {
         if (notUpToDateSince === null) notUpToDateSince = Date.now()
@@ -73,6 +62,17 @@ export const BackgroundSyncIndicator = () => {
       if (backgroundSyncing === wasBackgroundSyncing) return
       wasBackgroundSyncing = backgroundSyncing
       setBackgroundSyncing(backgroundSyncing)
+
+      if (!backgroundSyncing) {
+        // a SUSTAINED sync just settled: fire one notification round so live
+        // queries mounted mid-sync pick up the applied data — sync applies
+        // themselves no longer notify (gateLiveNotifyTriggers). Only on the
+        // sustained transition: isUpToDate oscillates on every live long-poll
+        // cycle, and a kick re-runs EVERY mounted live query.
+        const db = store.get(pgliteDbAtom)
+        // errors are irrelevant here: the next settle will retry
+        if (db) void notifyAllLiveTables(db).catch(() => undefined)
+      }
 
       if (backgroundSyncing) {
         const id = addNotification({
