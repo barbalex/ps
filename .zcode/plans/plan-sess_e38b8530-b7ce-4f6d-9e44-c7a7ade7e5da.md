@@ -7,11 +7,17 @@ Move PGlite + Electric sync into the (already written but never wired-up) web wo
 ## Part 1: Wire up the worker
 
 **`src/modules/ensurePgliteDb.ts`** (only real change):
+
 - Replace `PGlite.create('idb://ps', {...})` with:
   ```ts
   import { PGliteWorker } from '@electric-sql/pglite/worker'
-  const worker = new Worker(new URL('../pglite-worker.ts', import.meta.url), { type: 'module' })
-  PGliteWorker.create(worker, { extensions: { live, electric: electricSync(), postgis, pg_uuidv7 }, relaxedDurability: true })
+  const worker = new Worker(new URL('../pglite-worker.ts', import.meta.url), {
+    type: 'module',
+  })
+  PGliteWorker.create(worker, {
+    extensions: { live, electric: electricSync(), postgis, pg_uuidv7 },
+    relaxedDurability: true,
+  })
   ```
   Client side needs the same extension factories so their namespaces attach to the client instance; the real extensions run worker-side (`pglite-worker.ts` already registers all four + relaxedDurability).
 - Keep the WASM-abort recovery (`deleteIdbDatabases` + retry); on retry, terminate the old worker before creating a new one.
