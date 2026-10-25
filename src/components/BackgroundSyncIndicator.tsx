@@ -83,7 +83,7 @@ export const BackgroundSyncIndicator = () => {
           body: formatMessage({
             id: 'syncInBackgroundBody',
             defaultMessage:
-              'Daten werden aktualisiert. Die Oberfläche kann währenddessen kurzzeitig blockieren.',
+              'Daten werden aktualisiert. Die Oberfläche kann einfrieren.',
           }),
           intent: 'info',
           paused: true,
