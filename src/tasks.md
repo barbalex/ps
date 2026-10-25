@@ -20,8 +20,6 @@ dark mode not well implemented for: file upload?
 
 ---
 
-would it make sense to use Tanstack Start for this app? https://tanstack.com/start/latest
-
 ---
 
 would it make sense to use Tanstack Redact instead of React? https://tanstack.com/redact/latest
