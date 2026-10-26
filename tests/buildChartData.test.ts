@@ -364,4 +364,52 @@ describe('buildData', () => {
     })
     expect(until.data).toEqual([])
   })
+
+  it('sums the zielrelevant unit, not the subject unit (like apf2)', async () => {
+    const { db, ids } = await createTestDb()
+    // subproject counting "Pflanzen total" while the (project-wide) chart
+    // subject carries "Triebe total" as its value_unit — the standalone
+    // chart page must resolve the subproject's zielrelevant EK-Zähleinheit
+    const subprojectId = '21000000-0000-7000-8000-000000000002'
+    const triebeUnit = '70000000-0000-7000-8000-000000000002'
+    const pflanzenUnit = '70000000-0000-7000-8000-000000000003'
+    await db.exec(`
+      INSERT INTO units (unit_id, project_id, name) VALUES
+        ('${triebeUnit}', '${ids.project}', 'Triebe total'),
+        ('${pflanzenUnit}', '${ids.project}', 'Pflanzen total');
+
+      INSERT INTO subprojects (subproject_id, project_id, name, data) VALUES
+        ('${subprojectId}', '${ids.project}', 'Pulsatilla',
+          '{"zielrelevant_einheit": "Pflanzen total"}');
+
+      INSERT INTO places (place_id, subproject_id, parent_id, level, name, since, data) VALUES
+        ('30000000-0000-7000-8000-000000002001', '${subprojectId}', NULL, 1, 'Pop', 2010,
+          '{"status":"ursprünglich, aktuell"}'),
+        ('30000000-0000-7000-8000-000000002011', '${subprojectId}',
+          '30000000-0000-7000-8000-000000002001', 2, 'Pop / a', 2010,
+          '{"status":"ursprünglich, aktuell"}');
+
+      INSERT INTO checks (check_id, place_id, date) VALUES
+        ('80000000-0000-7000-8000-0000000000d1',
+          '30000000-0000-7000-8000-000000002011', '2024-06-01');
+
+      INSERT INTO check_taxa (check_taxon_id, check_id, unit_id, quantity_numeric) VALUES
+        ('90000000-0000-7000-8000-0000000000d1', '80000000-0000-7000-8000-0000000000d1',
+          '${pflanzenUnit}', 50);
+    `)
+    const { data, series } = await buildData({
+      chart: chartRow,
+      subjects: [subject({
+        table_name: 'check_taxa',
+        calc_method: 'sum_values_of_field',
+        field: 'quantity_numeric',
+        value_unit: triebeUnit,
+      })],
+      subproject_id: subprojectId,
+      db,
+    })
+    expect(series).toHaveLength(1)
+    const row2024 = data.find((d) => d.year === 2024)
+    expect(row2024?.[series[0]!.key]).toBe(50)
+  })
 })

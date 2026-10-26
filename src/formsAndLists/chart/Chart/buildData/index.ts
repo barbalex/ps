@@ -328,16 +328,16 @@ type PopMengeGroup = {
  * plus the year's anpflanzung planting if it had no zaehlung. Series per
  * population, colored ursprünglich (translucent green) or angesiedelt.
  */
-const popMengeSeriesPerYear = async (
+/**
+ * The unit apf2 counts a subproject's reports in: its zielrelevant
+ * EK-Zähleinheit (subprojects.data.zielrelevant_einheit), but only if some
+ * check already counts it — mirroring the report path, the caller falls back
+ * to the chart subject's value_unit otherwise.
+ */
+const resolveZielrelevantUnit = async (
   db: Pick<PGlite, 'query'>,
   subproject_id: string,
-  places: VersionedRow[],
-  reportYear: number,
-  valueUnit: string | null | undefined,
-): Promise<PopMengeGroup[]> => {
-  if (!valueUnit) return []
-  // apf2 resolves the zielrelevant unit per AP (ekzaehleinheit); the chart
-  // subject's value_unit is a fallback when the subproject doesn't declare one
+): Promise<string | null> => {
   const unitRes = await db.query(
     `SELECT ct.unit_id
      FROM check_taxa ct
@@ -355,8 +355,20 @@ const popMengeSeriesPerYear = async (
      ) LIMIT 1`,
     [subproject_id],
   )
-  const resolvedUnit = (unitRes?.rows?.[0] as { unit_id?: string } | undefined)?.unit_id
-  const effectiveUnit = resolvedUnit ?? valueUnit
+  return (unitRes?.rows?.[0] as { unit_id?: string } | undefined)?.unit_id ?? null
+}
+
+const popMengeSeriesPerYear = async (
+  db: Pick<PGlite, 'query'>,
+  subproject_id: string,
+  places: VersionedRow[],
+  reportYear: number,
+  valueUnit: string | null | undefined,
+): Promise<PopMengeGroup[]> => {
+  if (!valueUnit) return []
+  // apf2 resolves the zielrelevant unit per AP (ekzaehleinheit); the chart
+  // subject's value_unit is a fallback when the subproject doesn't declare one
+  const effectiveUnit = (await resolveZielrelevantUnit(db, subproject_id)) ?? valueUnit
   const zaehlRes = await db.query(
     `SELECT c.place_id, extract(year from c.date)::int AS year, sum(ct.quantity_numeric) AS total
      FROM check_taxa ct
@@ -770,8 +782,14 @@ export const buildData = async ({
             const params: (string | number | null)[] = [subproject_id]
             let unitFilter = ''
             if (subject.value_unit) {
+              // same unit resolution as the report path: subprojects count
+              // their zielrelevant EK-Zähleinheit, which can differ from the
+              // chart subject's value_unit (the subject serves every
+              // subproject of the project)
+              const effectiveUnit =
+                (await resolveZielrelevantUnit(db, subproject_id)) ?? subject.value_unit
               unitFilter = 'AND q.unit_id = $2'
-              params.push(subject.value_unit)
+              params.push(effectiveUnit)
             }
             // level 1 groups by the parent place (population), level 2 by the
             // checked/treated place itself; without level a single series sums
