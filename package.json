@@ -75,7 +75,7 @@
     "@uploadcare/file-uploader": "1.35.1",
     "@uploadcare/react-uploader": "1.17.0",
     "allotment": "1.20.6",
-    "arktype": "2.2.8",
+    "arktype": "2.2.9",
     "array-move": "4.0.0",
     "better-auth": "1.7.12",
     "dayjs": "1.11.23",
@@ -148,7 +148,7 @@
     "kanel": "4.0.4",
     "typescript": "7.0.2",
     "typescript-v6": "npm:typescript@6.0.3",
-    "vite": "8.3.4",
+    "vite": "8.3.5",
     "vite-plugin-svgr": "5.2.0",
     "vitest": "5.0.5"
   },
