@@ -16,6 +16,9 @@
 //    11a (taxonomies), 11b (data), 11c (charts), 11d (report)
 //    inside the ps_db container, with the write-permission triggers
 //    bypassed via electric.syncing (like Electric itself does)
+// 4. restarts the electric container: its shape store keeps serving
+//    snapshots built from the previous dataset otherwise (subquery shapes
+//    are not invalidated by direct writes), streaming stale data to clients
 //
 // The apflora data is self-contained: re-running with the other mode freely
 // switches between the full dataset and the three-species test data.
@@ -277,3 +280,19 @@ const counts = queryInDb(`
 `)
 console.log('\nDone:')
 console.log(counts)
+
+// 4. flush Electric's shape store (see header) — poll until healthy so a
+// client logging in right after the import gets the new dataset
+console.log('\nRestarting Electric to flush stale shape snapshots ...')
+const electricContainer = process.env.PS_ELECTRIC_CONTAINER ?? 'ps_electric'
+run('docker', ['restart', electricContainer])
+for (let i = 0; i < 30; i++) {
+  const health = spawnSync(
+    'docker',
+    ['inspect', '-f', '{{.State.Health.Status}}', electricContainer],
+    { encoding: 'utf8' },
+  )?.stdout?.trim()
+  if (health === 'healthy') break
+  spawnSync('sleep', ['2'])
+}
+console.log('Electric is back — stale shape snapshots are gone')

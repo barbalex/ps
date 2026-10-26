@@ -26,6 +26,12 @@ export type ChartData = {
   data: { year: number; [key: string]: number | undefined }[]
   years: number[]
   series: ChartSeries[]
+  /**
+   * the unit the values were summed in — the subproject's zielrelevant
+   * EK-Zähleinheit when one was resolved, else the subject's value_unit.
+   * The chart's y-axis label should use it, not the subject's raw unit.
+   */
+  unit_id?: string
 }
 
 /**
@@ -363,12 +369,11 @@ const popMengeSeriesPerYear = async (
   subproject_id: string,
   places: VersionedRow[],
   reportYear: number,
-  valueUnit: string | null | undefined,
+  // the caller resolves this: the subproject's zielrelevant unit, falling
+  // back to the chart subject's value_unit
+  effectiveUnit: string | null | undefined,
 ): Promise<PopMengeGroup[]> => {
-  if (!valueUnit) return []
-  // apf2 resolves the zielrelevant unit per AP (ekzaehleinheit); the chart
-  // subject's value_unit is a fallback when the subproject doesn't declare one
-  const effectiveUnit = (await resolveZielrelevantUnit(db, subproject_id)) ?? valueUnit
+  if (!effectiveUnit) return []
   const zaehlRes = await db.query(
     `SELECT c.place_id, extract(year from c.date)::int AS year, sum(ct.quantity_numeric) AS total
      FROM check_taxa ct
@@ -395,9 +400,26 @@ const popMengeSeriesPerYear = async (
 
   // per tpop and year: the sums, kept only if the tpop's historization of
   // THAT year qualified (apf2 joins each row on the year's own snapshot)
+  // asOfYear filters all versions on every call — cache each year's rows as
+  // an id map: they are needed per tpop, and re-filtering every version for
+  // every tpop of every year is what made chart building take half a minute
+  const yearRowsCache = new Map<number, Map<string, VersionedRow>>()
+  const rowsOfYearById = (year: number) => {
+    let byId = yearRowsCache.get(year)
+    if (!byId) {
+      byId = new Map(
+        asOfYear(places, year, 'place_id').map((row) => [
+          row.place_id as string,
+          row,
+        ]),
+      )
+      yearRowsCache.set(year, byId)
+    }
+    return byId
+  }
   const qualifyingTpopsOfYear = (year: number, statuses: number[]) => {
     const ids = new Set<string>()
-    for (const row of asOfYear(places, year, 'place_id')) {
+    for (const row of rowsOfYearById(year).values()) {
       if (row.parent_id == null) continue
       if (row.relevant_for_reports === false) continue
       if (statuses.includes(statusCodeOf(row) ?? -1)) {
@@ -451,7 +473,8 @@ const popMengeSeriesPerYear = async (
 
   const groups = new Map<string, PopMengeGroup>()
   for (const year of historizationYears(places, reportYear)) {
-    for (const tpop of asOfYear(places, year, 'place_id')) {
+    const rowsById = rowsOfYearById(year)
+    for (const tpop of rowsById.values()) {
       if (tpop.parent_id == null) continue
       if (tpop.relevant_for_reports === false) continue
       const code = statusCodeOf(tpop)
@@ -463,9 +486,7 @@ const popMengeSeriesPerYear = async (
       const value = zaehlung + massnahme
       if (!value) continue
       const popId = tpop.parent_id as string
-      const pop = asOfYear(places, year, 'place_id').find(
-        (row) => row.place_id === popId,
-      )
+      const pop = rowsById.get(popId)
       const name = (pop?.name as string | null) ?? popId
       const popCode = pop ? statusCodeOf(pop) : null
       const urspruenglich = popCode != null && popCode < 200
@@ -508,6 +529,8 @@ export const buildData = async ({
   if (!subproject_id) return { data: [], years: [], series: [] }
 
   const series: ChartSeries[] = []
+  // first resolved unit wins — the y-axis label follows the first series
+  let chartUnitId: string | undefined
   const valuesPerSeries: Record<string, Record<number, number>> = {}
 
   const addSeries = (
@@ -757,12 +780,19 @@ export const buildData = async ({
               subprojectsVersions &&
               reportYear != null
             ) {
+              // same unit resolution as below: the subproject's zielrelevant
+              // EK-Zähleinheit, falling back to the subject's value_unit
+              const effectiveUnit =
+                (subject.value_unit ?
+                  await resolveZielrelevantUnit(db, subproject_id)
+                : null) ?? subject.value_unit
+              chartUnitId ??= effectiveUnit ?? undefined
               for (const group of await popMengeSeriesPerYear(
                 db,
                 subproject_id,
                 placesVersions,
                 reportYear,
-                subject.value_unit,
+                effectiveUnit,
               )) {
                 addSeries(
                   `${subject.chart_subject_id}:${group.name}`,
@@ -788,6 +818,7 @@ export const buildData = async ({
               // subproject of the project)
               const effectiveUnit =
                 (await resolveZielrelevantUnit(db, subproject_id)) ?? subject.value_unit
+              chartUnitId ??= effectiveUnit
               unitFilter = 'AND q.unit_id = $2'
               params.push(effectiveUnit)
             }
@@ -911,5 +942,5 @@ export const buildData = async ({
     return yearsData
   })
 
-  return { data, years, series }
+  return { data, years, series, unit_id: chartUnitId }
 }

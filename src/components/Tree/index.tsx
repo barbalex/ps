@@ -2,6 +2,7 @@ import { useAtom, useAtomValue } from 'jotai'
 
 import { ProjectsNode } from './Projects.tsx'
 import { UsersNode } from './Users.tsx'
+import { IntoViewScroller } from './IntoViewScroller.tsx'
 import { FieldTypesNode } from './FieldTypes.tsx'
 import { WidgetTypesNode } from './WidgetTypes.tsx'
 import { WidgetsForFieldsNode } from './WidgetsForFields.tsx'
@@ -25,6 +26,7 @@ export const Tree = () => {
 
   return (
     <div className={`${styles.container} no-print`}>
+      <IntoViewScroller />
       <ProjectsNode />
       <UsersNode />
       {designing && (

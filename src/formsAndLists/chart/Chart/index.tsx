@@ -48,6 +48,9 @@ export const Chart = (_: { from?: string }) => {
     if (!chart) return
     if (!subjects.length) return
 
+    // buildData is async — when the chart or subproject changes while it
+    // runs, the stale result must not overwrite the new chart's data
+    let cancelled = false
     const run = async () => {
       const chartData = await buildData({
         chart,
@@ -59,11 +62,18 @@ export const Chart = (_: { from?: string }) => {
         subprojectsVersions: versions?.subprojects,
         reportYear: versions ? new Date().getFullYear() : null,
       })
-      setChartData(chartData)
+      if (!cancelled) setChartData(chartData)
     }
     run()
+    return () => {
+      cancelled = true
+    }
   }, [chartId, chart, db, projectId, subjects, subprojectId, versions])
 
+  // useLiveQuery returns undefined while the local database is still loading
+  // (e.g. rows arriving during the sync after a reload) — that must not
+  // render as "not found"; only a loaded query without the row is
+  if (!result) return null
   if (!chart) {
     return <NotFound table="Chart" id={chartId} />
   }

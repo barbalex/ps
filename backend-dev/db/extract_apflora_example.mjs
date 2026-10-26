@@ -40,9 +40,14 @@ const outPath =
   )
 
 // resolved by artname, not by (unstable) uuid.
-// Only one species to keep the seed (and thus the live database) small;
-// use APF2_SCOPE=all for the full dataset on a dev database
-const ARTNAMES = ['Abies alba Mill.']
+// The three example species — small enough to keep the seed (and thus the
+// live database and the Electric shape streams) fast; use APF2_SCOPE=all
+// for the full dataset on a dev database
+const ARTNAMES = [
+  'Abies alba Mill.',
+  'Aldrovanda vesiculosa L.',
+  'Pulsatilla vulgaris Mill.',
+]
 // apf2's chart functions include Freiwilligen-Kontrollen in the counts,
 // so they are imported too (their typ field lets the UI filter them)
 const KONTROLL_TYPEN = ['Ausgangszustand', 'Kontrolle', 'Freiwilligen-Kontrolle']
