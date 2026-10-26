@@ -6,6 +6,7 @@ import { buildData } from './buildData/index.ts'
 import type { ChartData, ChartSeries } from './buildData/index.ts'
 import { SingleChart } from './Chart.tsx'
 import { NotFound } from '../../../components/NotFound.tsx'
+import { useReportVersions } from '../../../components/shared/reportVersions.ts'
 import styles from './index.module.css'
 
 import type Charts from '../../../models/public/Charts.ts'
@@ -15,6 +16,11 @@ export const Chart = (_: { from?: string }) => {
   const { projectId, subprojectId, chartId } = useParams({ strict: false })
 
   const db = usePGlite()
+
+  // apf2's chart functions read the historization snapshots — the same
+  // versions the report uses (online only; while offline the current local
+  // state is the fallback, like in the report)
+  const { data: versions } = useReportVersions(subprojectId)
 
   const result = useLiveQuery(
     `SELECT
@@ -49,11 +55,14 @@ export const Chart = (_: { from?: string }) => {
         subproject_id: subprojectId!,
         project_id: projectId,
         db,
+        placesVersions: versions?.places,
+        subprojectsVersions: versions?.subprojects,
+        reportYear: versions ? new Date().getFullYear() : null,
       })
       setChartData(chartData)
     }
     run()
-  }, [chartId, chart, db, projectId, subjects, subprojectId])
+  }, [chartId, chart, db, projectId, subjects, subprojectId, versions])
 
   if (!chart) {
     return <NotFound table="Chart" id={chartId} />
