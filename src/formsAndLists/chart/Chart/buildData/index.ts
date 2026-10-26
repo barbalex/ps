@@ -853,9 +853,15 @@ export const buildData = async ({
   if (chart?.years_until && chart.years_until < maxYear) {
     maxYear = chart.years_until
   }
-  let yearRange = Array(maxYear - minYear + 1)
-    .fill(undefined)
-    .map((_element, i) => minYear + i)
+  // years_since/years_until can exclude every data year (e.g. a since after
+  // the last data year) — an empty range renders an empty chart, Array() with
+  // a negative length would throw
+  let yearRange =
+    minYear > maxYear ?
+      []
+    : Array(maxYear - minYear + 1)
+      .fill(undefined)
+      .map((_element, i) => minYear + i)
   if (reportYear != null && placesVersions) {
     yearRange = historizationYears(placesVersions, reportYear)
   }

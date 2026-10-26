@@ -42,10 +42,7 @@ Suggested fix: gate the trigger function on electric.syncing, and (for queries m
 
 ---
 
-error when navigating to: http://localhost:5176/data/projects/0195a101-0000-7000-8000-000000000001/subprojects/017d3472-d75d-7a4f-8040-dfdd5df00bdb/charts/a3000000-0000-4000-8000-000000000003 (chart):
-Uncaught (in promise) RangeError: Invalid array length
-    at buildData (index.ts:856:19)
-    at async run (index.tsx:46:25)
+nav tree scroll into view not working for http://localhost:5176/data/projects/0195a101-0000-7000-8000-000000000001/subprojects/017d3472-d75d-7a4f-8040-dfdd5df00bdb/charts/a3000000-0000-4000-8000-000000000003: the species and its data is nowhere to be seen on the screen
 
 ---
 

@@ -334,4 +334,34 @@ describe('buildData', () => {
     })
     expect(data.map((d) => d.year)).toEqual([thisYear - 1, thisYear])
   })
+
+  it('returns empty data when the year window excludes every data year', async () => {
+    const { db, subprojectId } = await setup()
+    // fixture data years run 2010..thisYear; a since after the last or an
+    // until before the first data year used to throw RangeError: Invalid
+    // array length
+    const since = await buildData({
+      chart: { ...chartRow, years_since: thisYear + 10 } as Charts,
+      subjects: [subject({
+        table_name: 'places',
+        table_level: '1',
+        calc_method: 'count_rows',
+      })],
+      subproject_id: subprojectId,
+      db,
+    })
+    expect(since.data).toEqual([])
+    expect(since.series).toHaveLength(1)
+    const until = await buildData({
+      chart: { ...chartRow, years_until: 2000 } as Charts,
+      subjects: [subject({
+        table_name: 'places',
+        table_level: '1',
+        calc_method: 'count_rows',
+      })],
+      subproject_id: subprojectId,
+      db,
+    })
+    expect(until.data).toEqual([])
+  })
 })
