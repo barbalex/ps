@@ -44,11 +44,7 @@ Suggested fix: gate the trigger function on electric.syncing, and (for queries m
 
 ---
 
-chart hover legends: 1. vertical padding is too large 2. title (year) should be bold(er) 3. dark mode not implemented
-
 ---
-
-previous and next buttons in form header not working for charts: http://localhost:5176/data/projects/0195a101-0000-7000-8000-000000000001/subprojects/017d3472-d75d-7a4f-8040-dfdd5df00bdb/charts/a3000000-0000-4000-8000-000000000003
 
 ---
 

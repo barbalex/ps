@@ -601,3 +601,31 @@ html[data-theme='dark'] .leaflet-draw-tooltip {
     display: none !important;
   }
 }
+
+/* recharts hover tooltip: tighten the default's vertical padding (10px box,
+   4px per item), bold the year label and adapt to the dark theme.
+   !important is needed because recharts applies its defaults as inline
+   styles */
+.recharts-default-tooltip {
+  padding: 5px 10px !important;
+}
+
+.recharts-tooltip-label {
+  font-weight: 600;
+  margin-bottom: 3px;
+}
+
+.recharts-tooltip-item {
+  padding-top: 1px !important;
+  padding-bottom: 1px !important;
+}
+
+html[data-theme='dark'] .recharts-default-tooltip {
+  background-color: #2b2b2b !important;
+  border-color: #4d4d4d !important;
+  color: #fff;
+}
+
+html[data-theme='dark'] .recharts-tooltip-label {
+  color: #fff;
+}

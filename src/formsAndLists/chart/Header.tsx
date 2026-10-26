@@ -9,33 +9,37 @@ import { FormHeader } from '../../components/FormHeader/index.tsx'
 import { HistoryToggleButton } from '../../components/shared/HistoryCompare/HistoryToggleButton.tsx'
 import { designingAtom, addOperationAtom } from '../../store.ts'
 
+// mirrors useChartsNavData: within a subproject, the project's chart
+// templates (for_subprojects, without an own subproject/place) appear
+// alongside the subproject's own charts; on the project itself, the two
+// sections are separate lists
 const getFilter = ({
   placeId,
   placeId2,
   projectId,
   subprojectId,
+  forSubprojects,
 }: {
   placeId?: string
   placeId2?: string
   projectId?: string
   subprojectId?: string
+  forSubprojects?: boolean
 }) => {
-  let filterField
-  let filterValue
-  if (placeId2) {
-    filterField = 'place_id'
-    filterValue = placeId2
-  } else if (placeId) {
-    filterField = 'place_id'
-    filterValue = placeId
-  } else if (subprojectId) {
-    filterField = 'subproject_id'
-    filterValue = subprojectId
-  } else if (projectId) {
-    filterField = 'project_id'
-    filterValue = projectId
+  if (placeId2 || placeId) {
+    return { clause: 'place_id = $1', params: [placeId2 ?? placeId] }
   }
-  return { filterField, filterValue }
+  if (subprojectId) {
+    return {
+      clause:
+        '(subproject_id = $1 OR (for_subprojects AND project_id = $2 AND subproject_id IS NULL))',
+      params: [subprojectId, projectId],
+    }
+  }
+  return {
+    clause: 'project_id = $1 AND for_subprojects = $2',
+    params: [projectId, forSubprojects ?? false],
+  }
 }
 
 export const Header = ({
@@ -109,25 +113,28 @@ export const Header = ({
     navigate({ to: isDetailView ? ('../..' as '..') : '..' })
   }
 
-  const { filterField, filterValue } = getFilter({
+  const { clause, params } = getFilter({
     placeId,
     placeId2,
     projectId,
     subprojectId,
+    forSubprojects: chartsSegment === 'subproject-charts',
   })
 
   const countRes = useLiveQuery(
-    `SELECT COUNT(*) as count FROM charts WHERE ${filterField} = '${filterValue}'`,
+    `SELECT COUNT(*) as count FROM charts WHERE ${clause}`,
+    params,
   )
   const rowCount = (countRes?.rows?.[0]?.count as number) ?? 2
 
   const toNext = async () => {
     const res = await db.query(
-      `select chart_id from charts where ${filterField} = $1 order by label`,
-      [filterValue],
+      `select chart_id from charts where ${clause} order by label`,
+      params,
     )
     const rows = res?.rows as { chart_id: string }[]
     const len = rows.length
+    if (!len) return
     const index = rows.findIndex((p) => p.chart_id === chartIdRef.current)
     const next = rows[(index + 1) % len]
     navigate({
@@ -140,11 +147,12 @@ export const Header = ({
 
   const toPrevious = async () => {
     const res = await db.query(
-      `select chart_id from charts where ${filterField} = $1 order by label`,
-      [filterValue],
+      `select chart_id from charts where ${clause} order by label`,
+      params,
     )
     const rows = res?.rows as { chart_id: string }[]
     const len = rows.length
+    if (!len) return
     const index = rows.findIndex((p) => p.chart_id === chartIdRef.current)
     const previous = rows[(index + len - 1) % len]
     navigate({
