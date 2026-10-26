@@ -43,13 +43,15 @@ interface Props {
   chart: Charts
   series: ChartSeries[]
   data: ChartData['data']
+  /** unit the values were summed in (resolved zielrelevant unit) */
+  unitId?: string
   synchronized?: boolean
 }
 
-export const SingleChart = ({ chart, series, data, synchronized }: Props) => {
+export const SingleChart = ({ chart, series, data, unitId, synchronized }: Props) => {
   const gradientPrefix = useId().replace(/[^a-zA-Z0-9-]/g, '')
   const res = useLiveQuery(`SELECT * FROM units WHERE unit_id = $1`, [
-    series?.[0]?.subject.value_unit ?? '99999999-9999-9999-9999-999999999999',
+    unitId ?? series?.[0]?.subject.value_unit ?? '99999999-9999-9999-9999-999999999999',
   ])
   const firstSubjectsUnit = res?.rows?.[0] as Units | undefined
   if (!chart || !series) return null

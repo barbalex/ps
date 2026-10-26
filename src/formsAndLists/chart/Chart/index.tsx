@@ -97,6 +97,7 @@ export const Chart = (_: { from?: string }) => {
             chart={chart}
             series={series}
             data={chartData.data}
+            unitId={chartData.unit_id}
             synchronized={true}
           />
         ))
@@ -105,6 +106,7 @@ export const Chart = (_: { from?: string }) => {
           chart={chart}
           series={chartData.series}
           data={chartData.data}
+          unitId={chartData.unit_id}
         />
       )}
     </>
