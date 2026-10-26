@@ -2267,6 +2267,11 @@ ON places_history USING btree (updated_at);
 CREATE INDEX IF NOT EXISTS places_history_place_id_updated_at_idx
 ON places_history USING btree (place_id, updated_at);
 
+-- report/chart version fetches filter by subproject_id (reportVersions.ts
+-- via PostgREST) — without this they sequentially scan every partition
+CREATE INDEX IF NOT EXISTS places_history_subproject_id_idx
+ON places_history USING btree (subproject_id);
+
 CREATE INDEX IF NOT EXISTS places_history_sys_period_idx
 ON places_history USING gist (sys_period);
 
