@@ -36,11 +36,18 @@ Done:
 - configs for the main spine: projects/project/subprojects/subproject/places/place/goals/goal/goalReports/files/file/checks/actions/charts/observations folders/users/user/accounts/messages/message/queuedOperations
 - old tree components kept as reference (dead code) until conversion completes
 
+Progress (2nd round):
+- check + action singulars incl. quantities/taxa/files folders
+- place children via usePlaceNavData (all conditions + dynamic filtered-checks/<id>/checks, multi-segment nav ids handled by walker)
+- designing branches: project children (wms/wfs/vector/users/lists/taxonomies/units/crs/placeLevels/fields/filteredViews/qcs/exports), subproject designing children, designing roots (fieldTypes, widgetTypes, widgetsForFields, qcs, rootQcs/run, exports, rootExports/run)
+- nav.id bridged into each singular hook's id param; project row's Editing sibling restored
+- config ids aligned with the real url segments the hooks build
+
 Remaining:
 - live verification in the user's browser (dev sync stalls in automation context; typecheck + vitest 95/95 pass)
-- convert: check, action, place children conditions (filtered views), designing-only branches (wms/wfs/vector/lists/taxonomies/units/crs/placeLevels/fields/filteredViews/qcs/exports...), i18n labels for formLink rows (currently hardcoded German placeholders)
-- indentation levels partly approximated (formLink children)
-- then delete the old Tree components
+- formLink labels for some project-level nodes are German placeholders (project-design, qc-assignments, qcs-run, exports-run...) - map to their real hooks (useProjectQcAssignmentsNavData etc.) and i18n
+- singular rows of secondary collections (quantities, taxa, reports, users...) render as form links - fine until they need children
+- delete the old Tree components once verified
 
 ---
 

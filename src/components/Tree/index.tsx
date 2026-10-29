@@ -103,7 +103,10 @@ const FocusPathLoader = ({ rows }: { rows: TreeRow[] }) => {
     if (!isEqual(rowArray, urlPath.slice(0, rowArray.length))) continue
     for (const child of row.children ?? []) {
       const nav = (child.nav ?? {}) as { id?: string }
-      const childKey = JSON.stringify([...rowArray, nav.id ?? ''])
+      const childKey = JSON.stringify([
+        ...rowArray,
+        ...String(nav.id ?? '').split('/').filter(Boolean),
+      ])
       if (!registeredRows.has(childKey)) {
         // the missing child's registrar must mount
         // (only the FIRST missing one - level by level)

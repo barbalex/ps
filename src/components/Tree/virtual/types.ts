@@ -43,6 +43,7 @@ export interface NavDataLike {
   ownUrl: string
   navs?: Record<string, unknown>[]
   notFound?: boolean
+  sibling?: ReactNode
 }
 
 /**

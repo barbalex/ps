@@ -35,7 +35,11 @@ export const useVisibleTreeRows = () => {
       if (!isOpen) return
       for (const child of row.children ?? []) {
         const nav = (child.nav ?? {}) as { id?: string }
-        const childKey = JSON.stringify([...row.ownArray, nav.id ?? ''])
+        // nav ids can be multi-segment ('filtered-checks/<id>/checks')
+        const childKey = JSON.stringify([
+          ...row.ownArray,
+          ...String(nav.id ?? '').split('/').filter(Boolean),
+        ])
         const childRow = registeredRows.get(childKey)
         if (childRow) visit(childRow)
       }
