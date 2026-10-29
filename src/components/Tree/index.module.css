@@ -6,3 +6,16 @@
   /* do not layout offscreen content while allowing search */
   contain: paint layout style;
 }
+
+/* spacer element giving the virtualized rows their total height */
+.rows {
+  position: relative;
+  width: 100%;
+}
+
+.row {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+}

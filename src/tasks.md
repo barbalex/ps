@@ -22,7 +22,27 @@ dark mode not well implemented for: file upload?
 
 ---
 
-would it make sense to use Tanstack Redact instead of React? https://tanstack.com/redact/latest
+lets build lists using https://tanstack.com/virtual/latest / https://github.com/TanStack/virtual
+
+---
+
+tree building: optimizable?
+
+→ WIP on branch `virtualized_tree`: apf2's virtualized-tree method ported.
+
+Done:
+- infra in `src/components/Tree/virtual/`: registry atoms, generic Registrar (runs each node type's navData hook and registers its row + children descriptors), useVisibleTreeRows walker, FocusPathLoader + scrollToIndex scroll-into-view (exact row, deepest-ancestor fallback)
+- `Tree/index.tsx` window-renders via @tanstack/react-virtual (22px estimate, measureElement), uniform onClickButton port, live isOpen/isActive per row
+- configs for the main spine: projects/project/subprojects/subproject/places/place/goals/goal/goalReports/files/file/checks/actions/charts/observations folders/users/user/accounts/messages/message/queuedOperations
+- old tree components kept as reference (dead code) until conversion completes
+
+Remaining:
+- live verification in the user's browser (dev sync stalls in automation context; typecheck + vitest 95/95 pass)
+- convert: check, action, place children conditions (filtered views), designing-only branches (wms/wfs/vector/lists/taxonomies/units/crs/placeLevels/fields/filteredViews/qcs/exports...), i18n labels for formLink rows (currently hardcoded German placeholders)
+- indentation levels partly approximated (formLink children)
+- then delete the old Tree components
+
+---
 
 ---
 
