@@ -221,16 +221,15 @@ export const Tree = () => {
                   : undefined
                 }
               />
-              {isOpen &&
-                (registered.children ?? []).map((child) => (
-                  <Registrar
-                    key={`${child.type}-${child.orderKey}`}
-                    type={child.type}
-                    params={child.params}
-                    nav={child.nav}
-                    level={child.level}
-                  />
-                ))}
+              {isOpen && registered.descriptor && (
+                <Registrar
+                  key={`${registered.descriptor.type}-${registered.key}`}
+                  type={registered.descriptor.type}
+                  params={registered.descriptor.params}
+                  nav={registered.descriptor.nav}
+                  level={registered.descriptor.level}
+                />
+              )}
             </div>
           )
         })}

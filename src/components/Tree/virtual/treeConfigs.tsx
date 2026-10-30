@@ -213,6 +213,7 @@ export const treeConfigs: Record<string, TreeNodeConfig> = {
     children: collectionChildren('project', 2),
   },
   project: {
+    childrenCount: 10,
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     hook: (params: any, nav: any) => {
       const flags = useProjectFlags({ nav, params })
@@ -309,6 +310,7 @@ export const treeConfigs: Record<string, TreeNodeConfig> = {
     children: collectionChildren('subproject', 4),
   },
   subproject: {
+    childrenCount: 6,
     hook: (params, nav) => useSubprojectNavData({ ...params, subprojectId: nav.id }).navData,
     children: entityChildren(
       () => 'Subproject',
@@ -393,6 +395,7 @@ export const treeConfigs: Record<string, TreeNodeConfig> = {
     children: collectionChildren('place', undefined),
   },
   place: {
+    childrenCount: 11,
     hook: (params, nav) =>
       usePlaceNavData({
         ...params,
@@ -471,6 +474,7 @@ export const treeConfigs: Record<string, TreeNodeConfig> = {
     children: collectionChildren('goal', 6),
   },
   goal: {
+    childrenCount: 1,
     hook: (params, nav) => useGoalNavData({ ...params, goalId: nav.id }).navData,
     children: entityChildren(
       () => 'Ziel',
@@ -532,6 +536,7 @@ export const treeConfigs: Record<string, TreeNodeConfig> = {
     children: collectionChildren('formLink', undefined),
   },
   check: {
+    childrenCount: 1,
     hook: (params, nav) => useCheckNavData({ ...params, checkId: nav.id }).navData,
     children: entityChildren(
       () => 'Kontrolle',
@@ -573,6 +578,7 @@ export const treeConfigs: Record<string, TreeNodeConfig> = {
     ),
   },
   action: {
+    childrenCount: 11,
     hook: (params, nav) => useActionNavData({ ...params, actionId: nav.id }).navData,
     children: entityChildren(
       () => 'Massnahme',
@@ -645,6 +651,7 @@ export const treeConfigs: Record<string, TreeNodeConfig> = {
     children: collectionChildren('user', undefined),
   },
   user: {
+    childrenCount: 1,
     hook: (params, nav) => useUserNavData({ ...params, userId: nav.id }).navData,
     children: entityChildren(
       () => 'User',

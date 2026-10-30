@@ -4,6 +4,7 @@ import { isEqual } from 'es-toolkit'
 
 import { treeOpenNodesAtom } from '../../../store.ts'
 import { treeRegisteredRowsAtom, treeRootRowsAtom } from './atoms.ts'
+import { treeConfigs } from './treeConfigs.tsx'
 import type { TreeRegisteredRow } from './types.ts'
 
 export interface TreeRow {
@@ -38,15 +39,33 @@ export const useVisibleTreeRows = () => {
       rows.push({ key: row.key, row, isOpen })
       if (!isOpen) return
       for (const child of row.children ?? []) {
-        const nav = (child.nav ?? {}) as { id?: string }
+        const nav = (child.nav ?? {}) as { id?: string; label?: unknown }
         if (!nav.id) continue
         // nav ids can be multi-segment ('filtered-checks/<id>/checks')
-        const childKey = JSON.stringify([
+        const childOwnArray = [
           ...row.ownArray,
           ...String(nav.id).split('/').filter(Boolean),
-        ])
-        const childRow = registeredRows.get(childKey)
-        if (childRow) visit(childRow)
+        ]
+        const childKey = JSON.stringify(childOwnArray)
+        const registered = registeredRows.get(childKey)
+        if (registered) {
+          visit(registered)
+          continue
+        }
+        // not registered (yet): render the row straight from the parent's
+        // nav data - like the old components did for closed rows. Its
+        // Registrar (and its queries) only mounts once the row is open
+        const config = treeConfigs[child.type]
+        const synthesized: TreeRegisteredRow = {
+          key: childKey,
+          ownArray: childOwnArray,
+          label: (nav.label as string) ?? nav.id,
+          level: child.level,
+          to: `/${childOwnArray.join('/')}`,
+          childrenCount: config?.children ? (config.childrenCount ?? 1) : 0,
+          descriptor: child,
+        }
+        visit(synthesized)
       }
     }
 

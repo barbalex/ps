@@ -34,6 +34,8 @@ export interface TreeRegisteredRow {
   childrenCount: number
   siblingType?: 'editing'
   children?: TreeChild[]
+  // this row's own descriptor, to lazily mount its Registrar when open
+  descriptor?: TreeChild
 }
 
 export interface NavDataLike {
@@ -56,6 +58,10 @@ export interface TreeNodeConfig {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   hook: (params: any, nav: any) => NavDataLike
   isRoot?: boolean
+  // hint shown on closed rows (chevron) - the exact count only matters
+  // once the row is open and registered. Ported from the old components'
+  // hardcoded childrenCount props
+  childrenCount?: number
   children?: (ctx: {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     params: any
