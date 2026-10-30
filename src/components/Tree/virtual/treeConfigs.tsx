@@ -317,31 +317,31 @@ export const treeConfigs: Record<string, TreeNodeConfig> = {
           type: 'places',
           params: {
             projectId: p.projectId,
-            subprojectId: p.subprojectId,
+            subprojectId: p.nav.id,
             level: 5,
           },
         }),
         goals: (p) => ({
           type: 'goals',
-          params: { projectId: p.projectId, subprojectId: p.subprojectId },
+          params: { projectId: p.projectId, subprojectId: p.nav.id },
         }),
         'observation-imports': (p) => ({
           type: 'observationImports',
-          params: { projectId: p.projectId, subprojectId: p.subprojectId },
+          params: { projectId: p.projectId, subprojectId: p.nav.id },
         }),
         'observations-to-assess': (p) => ({
           type: 'observationsToAssess',
-          params: { projectId: p.projectId, subprojectId: p.subprojectId },
+          params: { projectId: p.projectId, subprojectId: p.nav.id },
         }),
         'observations-not-to-assign': (p) => ({
           type: 'observationsNotToAssign',
-          params: { projectId: p.projectId, subprojectId: p.subprojectId },
+          params: { projectId: p.projectId, subprojectId: p.nav.id },
         }),
         files: (p) => ({
           type: 'files',
           params: {
             projectId: p.projectId,
-            subprojectId: p.subprojectId,
+            subprojectId: p.nav.id,
             level: 5,
           },
         }),
@@ -349,7 +349,7 @@ export const treeConfigs: Record<string, TreeNodeConfig> = {
           type: 'charts',
           params: {
             projectId: p.projectId,
-            subprojectId: p.subprojectId,
+            subprojectId: p.nav.id,
             level: 5,
           },
         }),
@@ -357,28 +357,28 @@ export const treeConfigs: Record<string, TreeNodeConfig> = {
           type: 'subprojectReports',
           params: {
             projectId: p.projectId,
-            subprojectId: p.subprojectId,
+            subprojectId: p.nav.id,
           },
         }),
         users: (p) => ({
           type: 'subprojectUsers',
-          params: { projectId: p.projectId, subprojectId: p.subprojectId },
+          params: { projectId: p.projectId, subprojectId: p.nav.id },
         }),
         'qc-assignments': (p) => ({
           type: 'subprojectQcs',
-          params: { projectId: p.projectId, subprojectId: p.subprojectId },
+          params: { projectId: p.projectId, subprojectId: p.nav.id },
         }),
         'qcs-run': (p) => ({
           type: 'subprojectQcsRun',
-          params: { projectId: p.projectId, subprojectId: p.subprojectId },
+          params: { projectId: p.projectId, subprojectId: p.nav.id },
         }),
         'exports-run': (p) => ({
           type: 'subprojectExportsRun',
-          params: { projectId: p.projectId, subprojectId: p.subprojectId },
+          params: { projectId: p.projectId, subprojectId: p.nav.id },
         }),
         'export-assignments': (p) => ({
           type: 'subprojectExportAssignments',
-          params: { projectId: p.projectId, subprojectId: p.subprojectId },
+          params: { projectId: p.projectId, subprojectId: p.nav.id },
         }),
         taxa: () => ({
           type: 'formLink',
@@ -478,7 +478,7 @@ export const treeConfigs: Record<string, TreeNodeConfig> = {
           type: 'goalReports',
           params: {
             projectId: p.projectId,
-            subprojectId: p.subprojectId,
+            subprojectId: p.nav.id,
             goalId: p.goalId,
           },
         }),
@@ -539,7 +539,7 @@ export const treeConfigs: Record<string, TreeNodeConfig> = {
           type: 'checkQuantities',
           params: {
             projectId: p.projectId,
-            subprojectId: p.subprojectId,
+            subprojectId: p.nav.id,
             placeId: p.placeId,
             placeId2: p.placeId2,
             filteredViewId: p.filteredViewId,
@@ -550,7 +550,7 @@ export const treeConfigs: Record<string, TreeNodeConfig> = {
           type: 'checkTaxa',
           params: {
             projectId: p.projectId,
-            subprojectId: p.subprojectId,
+            subprojectId: p.nav.id,
             placeId: p.placeId,
             placeId2: p.placeId2,
             filteredViewId: p.filteredViewId,
@@ -561,7 +561,7 @@ export const treeConfigs: Record<string, TreeNodeConfig> = {
           type: 'files',
           params: {
             projectId: p.projectId,
-            subprojectId: p.subprojectId,
+            subprojectId: p.nav.id,
             placeId: p.placeId,
             placeId2: p.placeId2,
             checkId: p.nav.id,
@@ -580,7 +580,7 @@ export const treeConfigs: Record<string, TreeNodeConfig> = {
           type: 'actionQuantities',
           params: {
             projectId: p.projectId,
-            subprojectId: p.subprojectId,
+            subprojectId: p.nav.id,
             placeId: p.placeId,
             placeId2: p.placeId2,
             actionId: p.nav.id,
@@ -590,7 +590,7 @@ export const treeConfigs: Record<string, TreeNodeConfig> = {
           type: 'actionTaxa',
           params: {
             projectId: p.projectId,
-            subprojectId: p.subprojectId,
+            subprojectId: p.nav.id,
             placeId: p.placeId,
             placeId2: p.placeId2,
             actionId: p.nav.id,
@@ -600,7 +600,7 @@ export const treeConfigs: Record<string, TreeNodeConfig> = {
           type: 'files',
           params: {
             projectId: p.projectId,
-            subprojectId: p.subprojectId,
+            subprojectId: p.nav.id,
             placeId: p.placeId,
             placeId2: p.placeId2,
             actionId: p.nav.id,
@@ -648,7 +648,7 @@ export const treeConfigs: Record<string, TreeNodeConfig> = {
     children: entityChildren(
       () => 'User',
       {
-        accounts: (p) => ({ type: 'accounts', params: { userId: p.userId } }),
+        accounts: (p) => ({ type: 'accounts', params: { userId: p.nav.id } }),
       },
       0,
     ),
