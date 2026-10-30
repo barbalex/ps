@@ -399,49 +399,51 @@ export const treeConfigs: Record<string, TreeNodeConfig> = {
         placeId: params.placeId ?? nav.id,
         placeId2: params.placeId ? nav.id : params.placeId2,
       }).navData,
-    children: ({ params, navData, level }) => {
-      // dynamic: filtered-checks/<viewId>/checks
+    children: ({ params, nav, navData, level }) => {
+      // resolve ids like the hook bridge does: a level-1 place row's
+      // params carry no placeId - its id is nav.id
+      const placeId = params.placeId ?? nav.id
+      const placeId2 = params.placeId ? nav.id : params.placeId2
+      const base = {
+        projectId: params.projectId,
+        subprojectId: params.subprojectId,
+        placeId,
+        placeId2,
+      }
       const children: TreeChild[] = []
-      for (const nav of navData.navs ?? []) {
-        const id = (nav.id as string) ?? ''
+      for (const childNav of navData.navs ?? []) {
+        const id = (childNav.id as string) ?? ''
         // navs without id come from hooks of closed folders (counts only)
         if (!id) continue
-        const base = {
-          projectId: params.projectId,
-          subprojectId: params.subprojectId,
-          placeId: params.placeId,
-          placeId2: params.placeId2,
-        }
-        const navParams = { ...base, placeId: params.placeId, navId: nav.id }
         if (id.startsWith('filtered-checks/')) {
           const filteredViewId = id.split('/')[1] ?? ''
           children.push({
             orderKey: id,
             type: 'filteredChecks',
             params: { ...base, filteredViewId },
-            nav,
+            nav: childNav,
             level: level + 1,
           })
         } else if (id === 'checks') {
-          children.push({ orderKey: id, type: 'checks', params: { ...base }, nav, level: level + 1 })
+          children.push({ orderKey: id, type: 'checks', params: { ...base }, nav: childNav, level: level + 1 })
         } else if (id === 'actions') {
-          children.push({ orderKey: id, type: 'actions', params: { ...base }, nav, level: level + 1 })
+          children.push({ orderKey: id, type: 'actions', params: { ...base }, nav: childNav, level: level + 1 })
         } else if (id === 'check-reports') {
-          children.push({ orderKey: id, type: 'checkReports', params: { ...base }, nav, level: level + 1 })
+          children.push({ orderKey: id, type: 'checkReports', params: { ...base }, nav: childNav, level: level + 1 })
         } else if (id === 'action-reports') {
-          children.push({ orderKey: id, type: 'actionReports', params: { ...base }, nav, level: level + 1 })
+          children.push({ orderKey: id, type: 'actionReports', params: { ...base }, nav: childNav, level: level + 1 })
         } else if (id === 'observations') {
-          children.push({ orderKey: id, type: 'observationsAssigned', params: { ...base }, nav, level: level + 1 })
+          children.push({ orderKey: id, type: 'observationsAssigned', params: { ...base }, nav: childNav, level: level + 1 })
         } else if (id === 'users') {
-          children.push({ orderKey: id, type: 'placeUsers', params: { ...base }, nav, level: level + 1 })
+          children.push({ orderKey: id, type: 'placeUsers', params: { ...base }, nav: childNav, level: level + 1 })
         } else if (id === 'files') {
-          children.push({ orderKey: id, type: 'files', params: { ...base, level: level + 1 }, nav, level: level + 1 })
-        } else if (id === 'places' && !params.placeId2) {
+          children.push({ orderKey: id, type: 'files', params: { ...base, level: level + 1 }, nav: childNav, level: level + 1 })
+        } else if (id === 'places' && !placeId2) {
           children.push({
             orderKey: id,
             type: 'places',
-            params: { ...base, placeId: params.placeId, level: level + 1 },
-            nav,
+            params: { ...base, placeId, level: level + 1 },
+            nav: childNav,
             level: level + 1,
           })
         } else {
@@ -454,13 +456,12 @@ export const treeConfigs: Record<string, TreeNodeConfig> = {
                 ...(navData.ownArray ?? []).map((seg) => seg ?? ''),
                 ...id.split('/').filter(Boolean),
               ],
-              label: (nav as { label?: string }).label ?? id,
+              label: (childNav as { label?: string }).label ?? id,
             },
-            nav,
+            nav: childNav,
             level: level + 1,
           })
         }
-        void navParams
       }
       return children
     },
