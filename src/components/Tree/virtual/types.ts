@@ -32,7 +32,7 @@ export interface TreeRegisteredRow {
   toParams?: Record<string, string>
   id?: string
   childrenCount: number
-  sibling?: ReactNode
+  siblingType?: 'editing'
   children?: TreeChild[]
 }
 
@@ -43,7 +43,9 @@ export interface NavDataLike {
   ownUrl: string
   navs?: Record<string, unknown>[]
   notFound?: boolean
-  sibling?: ReactNode
+  // marker, not an element: the row renderer materializes it
+  // (elements would break the deep-equal registration guard)
+  siblingType?: 'editing'
 }
 
 /**

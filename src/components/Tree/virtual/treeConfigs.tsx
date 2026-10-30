@@ -3,7 +3,6 @@ import { useLiveQuery } from '@electric-sql/pglite-react'
 import { useIntl } from 'react-intl'
 
 import { designingAtom, isAppAmin } from '../../../store.ts'
-import { Editing } from '../Project/Editing.tsx'
 import { useProjectsNavData } from '../../../modules/useProjectsNavData.ts'
 import { useSubprojectsNavData } from '../../../modules/useSubprojectsNavData.ts'
 import { useSubprojectNavData } from '../../../modules/useSubprojectNavData.ts'
@@ -166,7 +165,7 @@ const useProjectFlags = (params: any) => {
   const [designingMap] = useAtom(designingAtom)
   const designing = designingMap[params.nav.id] ?? false
   const res = useLiveQuery(
-    `SELECT wms_layers, vector_layers, files_active_projects, project_files_in_project, charts, project_reports, project_roles_in_project FROM projects WHERE project_id = $1`,
+    `SELECT wms_layers, vector_layers, files_active_projects, project_files_in_project, charts, project_reports FROM projects WHERE project_id = $1`,
     [params.nav.id as string],
   )
   const project = res?.rows?.[0] as
@@ -177,7 +176,6 @@ const useProjectFlags = (params: any) => {
         project_files_in_project: boolean
         charts: boolean
         project_reports: boolean
-        project_roles_in_project: boolean
       }
     | undefined
   return {
@@ -207,7 +205,7 @@ export const treeConfigs: Record<string, TreeNodeConfig> = {
         ownArray: ['data', 'projects', nav.id],
         ownUrl: `/data/projects/${nav.id}`,
         label: nav.label ?? nav.id,
-        sibling: <Editing projectId={nav.id} />,
+        siblingType: 'editing' as const,
         navs: [
           { id: 'project' },
           ...(flags.designing ? [{ id: 'project-design' }] : []),

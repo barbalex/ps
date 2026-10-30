@@ -9,6 +9,7 @@ import { useLocation, useNavigate } from '@tanstack/react-router'
 import { isEqual } from 'es-toolkit'
 
 import { Node } from './Node.tsx'
+import { Editing } from './Project/Editing.tsx'
 import { Registrar } from './virtual/Registrar.tsx'
 import { useVisibleTreeRows } from './virtual/useVisibleTreeRows.ts'
 import type { TreeRow } from './virtual/useVisibleTreeRows.ts'
@@ -213,7 +214,11 @@ export const Tree = () => {
                 to={registered.to}
                 toParams={registered.toParams}
                 onClickButton={onClickButton}
-                sibling={undefined}
+                sibling={
+                  registered.siblingType === 'editing' ?
+                    <Editing projectId={ownArray[2] ?? ''} />
+                  : undefined
+                }
               />
               {isOpen &&
                 (registered.children ?? []).map((child) => (

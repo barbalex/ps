@@ -39,7 +39,7 @@ export const Registrar = ({ type, params, nav, level }: Props) => {
     level,
     to: navData.ownUrl,
     childrenCount: navData.navs?.length ?? 0,
-    sibling: navData.sibling,
+    siblingType: navData.siblingType,
     children: config.children?.({ params, nav, navData, level }),
   }
 
