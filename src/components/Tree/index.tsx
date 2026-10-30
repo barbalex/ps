@@ -92,8 +92,10 @@ const FocusPathLoader = ({ rows }: { rows: TreeRow[] }) => {
   const { pathname } = useLocation()
   const registeredRows = useAtomValue(treeRegisteredRowsAtom)
 
-  // find the deepest registered row that is an ancestor of the active node
-  // and whose children descriptors have no registered row yet
+  // find the deepest row that is an ancestor of the active node; if the
+  // next row on the url path has no registered row yet, mount its
+  // registrar. Synthesized rows render without registration - only rows
+  // ON the path need loading (their children build the path below)
   const urlPath = pathname.split('/').filter((p) => p !== '')
   let toLoad: { type: string; params: Record<string, unknown>; nav?: Record<string, unknown>; level: number } | null = null
   for (let i = rows.length - 1; i >= 0; i--) {
@@ -105,15 +107,18 @@ const FocusPathLoader = ({ rows }: { rows: TreeRow[] }) => {
     for (const child of row.children ?? []) {
       const nav = (child.nav ?? {}) as { id?: string }
       if (!nav.id) continue
-      const childKey = JSON.stringify([
+      const childArray = [
         ...rowArray,
         ...String(nav.id).split('/').filter(Boolean),
-      ])
-      if (!registeredRows.has(childKey)) {
-        // the missing child's registrar must mount
-        // (only the FIRST missing one - level by level)
-        if (!toLoad) toLoad = child
-      }
+      ]
+      // only the child that is itself on the url path
+      if (
+        childArray.length > urlPath.length ||
+        !isEqual(childArray, urlPath.slice(0, childArray.length))
+      )
+        continue
+      const childKey = JSON.stringify(childArray)
+      if (!registeredRows.has(childKey)) toLoad = child
     }
     break
   }
