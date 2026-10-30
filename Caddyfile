@@ -3,7 +3,7 @@
 	auto_https disable_redirects
 }
 
-# Proxy to Electric on port 3000 with HTTP/2 (requires HTTPS via Caddy's local CA)
+# Proxy to Electric on port 3004 with HTTP/2 (requires HTTPS via Caddy's local CA)
 # One-time setup: caddy start && caddy trust && caddy stop
 # Chrome on Linux: manually import ~/.local/share/caddy/pki/authorities/local/root.crt
 # via chrome://settings/certificates → Authorities → Import
@@ -29,7 +29,7 @@ localhost:3001, 192.168.68.66:3001, 192.168.68.67:3001 {
 		uri /auth/electric/check
 	}
 
-	reverse_proxy localhost:3000 {
+	reverse_proxy localhost:3004 {
 		# Disable buffering so SSE events are flushed immediately
 		flush_interval -1
 		# Strip upstream CORS header before we set our own *

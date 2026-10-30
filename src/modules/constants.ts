@@ -437,7 +437,7 @@ export const constants = {
         : isArtenFoerdernChHost()
           ? `${window.location.origin}/api`
           : 'https://api.arten-fördern.app',
-  // set 3001 to go via caddy, 3000 to go directly to electric backend
+  // set 3001 to go via caddy, 3004 to go directly to electric backend
   getElectricUri: () =>
     isLocalDevHost()
       ? `https://${window.location.hostname}:3001/v1/shape`

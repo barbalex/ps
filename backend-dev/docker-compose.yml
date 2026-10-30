@@ -14,9 +14,9 @@ services:
     env_file:
       - ./.env
     ports:
+      # host port 54321 (not 5432): this stack must coexist with other local
+      # projects claiming 5432 (apf2). Ps dev port block: 54321, 3001-3004.
       - 54321:5432
-      # make the Postgres database accessible from outside the Docker container on port 5432
-      - 5432:5432
     expose:
       - 5432
     tmpfs:
@@ -60,7 +60,11 @@ services:
     env_file:
       - ./.env
     ports:
-      - 3000:3000
+      # host port 3004 (not 3000): this stack must coexist with other local
+      # projects claiming 3000 (apf2). Ps dev port block: 54321, 3001-3004.
+      # Update the reverse_proxy in the Caddyfile and the comment in
+      # src/modules/constants.ts when changing this.
+      - 3004:3000
     restart: always
     # Electric stores shape logs and handles under /app/persistent
     # (ELECTRIC_STORAGE=FAST_FILE, ELECTRIC_PERSISTENT_STATE=FILE by default).
