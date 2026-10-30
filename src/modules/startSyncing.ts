@@ -1400,6 +1400,40 @@ export const startSyncing = async (userId: string) => {
         throw new Error('Invalid sync object returned from syncShapesToTables')
       }
       syncs.push(sync)
+
+      // TODO: remove after the stuck-initial-sync issue is diagnosed
+      // logs which stage (and eventually which shape) never goes up to date
+      const stageLabel = `stage ${index + 1}/${levels.length} (${level.length} tables)`
+      console.log(`startSyncing: ${stageLabel} started: ${level.join(', ')}`)
+      const stageStart = Date.now()
+      let lastLogged = 0
+      const diagTimer = setInterval(() => {
+        if (sync.isUpToDate) {
+          clearInterval(diagTimer)
+          console.log(
+            `startSyncing: ${stageLabel} up to date after ${Math.round((Date.now() - stageStart) / 1000)}s`,
+          )
+          return
+        }
+        const elapsed = Math.round((Date.now() - stageStart) / 1000)
+        // every 10s for the first minute, then every 30s
+        const shouldLog = elapsed <= 60 ? elapsed - lastLogged >= 10 : elapsed - lastLogged >= 30
+        if (!shouldLog) return
+        lastLogged = elapsed
+        const streamStates = Object.entries(sync.streams).map(([name, stream]) => {
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          const s = stream as any
+          return `${name}:${s?.isUpToDate ? 'uptodate' : 'syncing'}`
+        })
+        console.warn(
+          `startSyncing: ${stageLabel} NOT up to date after ${elapsed}s [${streamStates.join(' ')}]`,
+        )
+      }, 1000)
+      aggregate.unsubscribe = () => {
+        clearInterval(diagTimer)
+        for (const sync2 of syncs) sync2.unsubscribe()
+      }
+
       return sync
     }
 
