@@ -107,6 +107,9 @@ const entityChildren =
     const children: TreeChild[] = []
     for (const nav of navData.navs ?? []) {
       const id = (nav.id as string) ?? ''
+      // navs without id come from hooks of closed folders (counts only):
+      // they are no rows - like the old components' navs[0].id check
+      if (!id) continue
       // the form-link row (f.i. { id: 'subproject' }) has no folder
       const folder = folderTypes[id]
       if (folder) {
@@ -151,13 +154,26 @@ const collectionChildren =
     navData: NavDataLike
     level: number
   }): TreeChild[] =>
-    (navData.navs ?? []).map((nav) => ({
-      orderKey: (nav.id as string) ?? '',
-      type,
-      params: { ...params, nav },
-      nav,
-      level: childLevel ?? level + 1,
-    }))
+    (navData.navs ?? [])
+      // navs without id come from hooks of closed folders (counts only)
+      .filter((nav) => !!(nav as { id?: string }).id)
+      .map((nav) => {
+        const id = nav.id as string
+        const childParams =
+          type === 'formLink' ?
+            {
+              ownArray: [...(navData.ownArray ?? []).map((seg) => seg ?? ''), id],
+              label: (nav as { label?: string }).label ?? id,
+            }
+          : { ...params, nav }
+        return {
+          orderKey: id,
+          type,
+          params: childParams,
+          nav,
+          level: childLevel ?? level + 1,
+        }
+      })
 
 /** flags of the project node, ported from Project/index.tsx */
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -388,6 +404,8 @@ export const treeConfigs: Record<string, TreeNodeConfig> = {
       const children: TreeChild[] = []
       for (const nav of navData.navs ?? []) {
         const id = (nav.id as string) ?? ''
+        // navs without id come from hooks of closed folders (counts only)
+        if (!id) continue
         const base = {
           projectId: params.projectId,
           subprojectId: params.subprojectId,

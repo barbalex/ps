@@ -28,17 +28,22 @@ export const useVisibleTreeRows = () => {
 
   const rows = useMemo(() => {
     const rows: TreeRow[] = []
+    const visited = new Set<string>()
 
     const visit = (row: TreeRegisteredRow) => {
+      // guard against (stale) registration cycles
+      if (visited.has(row.key)) return
+      visited.add(row.key)
       const isOpen = isRowOpen(row.ownArray, openNodes)
       rows.push({ key: row.key, row, isOpen })
       if (!isOpen) return
       for (const child of row.children ?? []) {
         const nav = (child.nav ?? {}) as { id?: string }
+        if (!nav.id) continue
         // nav ids can be multi-segment ('filtered-checks/<id>/checks')
         const childKey = JSON.stringify([
           ...row.ownArray,
-          ...String(nav.id ?? '').split('/').filter(Boolean),
+          ...String(nav.id).split('/').filter(Boolean),
         ])
         const childRow = registeredRows.get(childKey)
         if (childRow) visit(childRow)
