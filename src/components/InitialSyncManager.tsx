@@ -7,6 +7,7 @@ import {
   onlineAtom,
   sqlInitializingAtom,
   store,
+  syncLeaderAtom,
   syncObjectAtom,
 } from '../store.ts'
 import { bootTrace } from '../modules/bootTrace.ts'
@@ -44,14 +45,23 @@ const InitialSyncWatcher = () => {
         release('all shapes up to date')
         return
       }
-      // While offline no sync object is created; local data is all there is
-      if (!syncObject && !store.get(onlineAtom)) {
+      // While offline no sync object is created; local data is all there
+      // is. A non-leader tab does not sync either: the leader tab keeps the
+      // shared database current.
+      if (
+        !syncObject &&
+        (!store.get(onlineAtom) || !store.get(syncLeaderAtom))
+      ) {
         try {
           const res = await db.query<{ exists: boolean }>(
             `SELECT EXISTS (SELECT 1 FROM projects LIMIT 1) AS exists`,
           )
           if (res.rows[0]?.exists) {
-            release('offline, data present locally')
+            release(
+              store.get(onlineAtom) ?
+                'non-leader tab, data present locally'
+              : 'offline, data present locally',
+            )
             return
           }
           // offline on a first run without local data: only the timeout

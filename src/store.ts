@@ -347,6 +347,10 @@ export const firstRunDbInitAtom = atom(false)
 // stores the sync object returned from startSyncing() so we can unsubscribe on unload
 export const syncObjectAtom = atom<unknown>(null)
 
+// true when this tab is the PGlite worker leader and therefore the only tab
+// running the Electric shape streams (see modules/syncLeader.ts)
+export const syncLeaderAtom = atom(true)
+
 // true while a post-boot sync is applying a sustained amount of data (shapes
 // not up-to-date for several seconds) — see BackgroundSyncIndicator. Not
 // persisted: meaningless across page loads.

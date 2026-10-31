@@ -9,11 +9,14 @@ import {
   pgliteDbAtom,
   sqlInitializingAtom,
   store,
+  syncLeaderAtom,
   syncObjectAtom,
   updateNotificationAtom,
 } from '../store.ts'
 import { startSyncing } from '../modules/startSyncing.ts'
 import { gateLiveNotifyTriggers } from '../modules/gateLiveNotifyTriggers.ts'
+import { clearLocalSyncedData } from '../modules/clearLocalSyncedData.ts'
+import { isSyncLeader, watchSyncLeader } from '../modules/syncLeader.ts'
 import { useSession } from '../modules/authClient.ts'
 
 export const Syncer = () => {
@@ -23,9 +26,13 @@ export const Syncer = () => {
   const syncObject = useAtomValue(syncObjectAtom)
   const setSyncObject = useSetAtom(syncObjectAtom)
   const online = useAtomValue(onlineAtom)
+  const isLeader = useAtomValue(syncLeaderAtom)
+  const setSyncLeader = useSetAtom(syncLeaderAtom)
   const addNotification = useSetAtom(addNotificationAtom)
   const updateNotification = useSetAtom(updateNotificationAtom)
   const syncNotificationIdRef = useRef<string | null>(null)
+  // the user the current sync object streams for
+  const syncedUserIdRef = useRef<string | null>(null)
   const { data: session, isPending } = useSession()
   const isAuthenticated = Boolean(session?.user)
 
@@ -96,6 +103,14 @@ export const Syncer = () => {
     }
   }, [isAuthenticated])
 
+  // Only the PGlite leader tab runs the shape streams (see syncLeader.ts)
+  useEffect(() => {
+    const db = store.get(pgliteDbAtom)
+    if (!db) return
+    setSyncLeader(isSyncLeader(db))
+    return watchSyncLeader(db, setSyncLeader)
+  }, [setSyncLeader, sqlInitializing])
+
   // Stop syncing when offline; the start-sync effect below will restart it when online again
   useEffect(() => {
     if (online || !syncObject) return
@@ -104,12 +119,31 @@ export const Syncer = () => {
     setSyncObject(null)
   }, [online, setSyncObject, syncObject])
 
-  // TODO: ensure syncing resumes after user has changed
+  // The shapes are bound to the user they were started for. On sign-out stop
+  // them; when a different user signs in (same tab, no reload) the local
+  // database holds the previous user's data and must be rebuilt from scratch.
+  useEffect(() => {
+    if (isPending || !syncObject) return
+    const syncedUserId = syncedUserIdRef.current
+    const currentUserId = session?.user?.id ?? null
+    if (!syncedUserId || currentUserId === syncedUserId) return
+
+    const s = syncObject as { unsubscribe?: () => void }
+    s.unsubscribe?.()
+    setSyncObject(null)
+    syncedUserIdRef.current = null
+
+    if (currentUserId) {
+      void clearLocalSyncedData().finally(() => window.location.reload())
+    }
+  }, [isPending, session?.user?.id, setSyncObject, syncObject])
+
   useEffect(() => {
     if (isPending) return
     if (!isAuthenticated) return
     if (!online) return
     if (sqlInitializing) return
+    if (!isLeader) return
     if (!session?.user?.id) return
     if (syncObject) {
       console.warn('Sync already initialized, skipping')
@@ -119,6 +153,7 @@ export const Syncer = () => {
     startSyncing(session.user.id)
       .then((syncObj) => {
         console.log('Sync started')
+        syncedUserIdRef.current = session.user.id
         setSyncObject(syncObj)
       })
       .catch((error) => {
@@ -148,6 +183,7 @@ export const Syncer = () => {
   }, [
     formatMessage,
     isAuthenticated,
+    isLeader,
     isPending,
     online,
     session?.user?.id,
