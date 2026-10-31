@@ -4211,7 +4211,7 @@ WHERE parent_table = 'public.project_export_assignments_history';
 -- not grant on postgres-owned tables
 RESET ROLE;
 GRANT USAGE ON SCHEMA public TO web_anon;
-GRANT SELECT ON ALL TABLES IN SCHEMA public TO web_anon;
+REVOKE SELECT ON ALL TABLES IN SCHEMA public FROM web_anon;
 GRANT USAGE ON SCHEMA public TO app_user;
 GRANT SELECT, INSERT, UPDATE, DELETE ON ALL TABLES IN SCHEMA public TO app_user;
 GRANT USAGE, SELECT ON ALL SEQUENCES IN SCHEMA public TO app_user;

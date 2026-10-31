@@ -1,10 +1,11 @@
 // https://www.better-auth.com/docs/integrations/fastify
 import express from 'express'
 import cors from 'cors'
-import { createHmac } from 'crypto'
+import { createHmac, timingSafeEqual } from 'crypto'
 import { toNodeHandler, fromNodeHeaders } from 'better-auth/node'
 import { hashPassword } from '@better-auth/utils/password'
 import { auth, pool } from './auth.mjs' // Your configured Better Auth instance
+import { authorizeShapeRequest } from './shapeDefinitions.mjs'
 
 const app = express()
 const port = Number(process.env.PORT ?? 3003)
@@ -221,22 +222,35 @@ const signPostgrestJwt = (userId, secret) => {
 // Stateless JWT signature check used by the Caddy forward_auth for Electric.
 // Reads Authorization: Bearer <token>, verifies HMAC-SHA256 signature and exp
 // using the same PGRST_JWT_SECRET as PostgREST.  No DB lookup.
+// Returns the payload when valid, null otherwise.
 const verifyJwt = (token, secret) => {
   const parts = token?.split('.')
-  if (!Array.isArray(parts) || parts.length !== 3) return false
+  if (!Array.isArray(parts) || parts.length !== 3) return null
   const [header, payload, sig] = parts
   const expected = createHmac('sha256', secret)
     .update(`${header}.${payload}`)
     .digest('base64url')
-  if (sig !== expected) return false
+  if (
+    sig.length !== expected.length ||
+    !timingSafeEqual(Buffer.from(sig), Buffer.from(expected))
+  ) {
+    return null
+  }
   try {
-    const { exp } = JSON.parse(Buffer.from(payload, 'base64url').toString())
-    return typeof exp === 'number' && exp > Date.now() / 1000
+    const claims = JSON.parse(Buffer.from(payload, 'base64url').toString())
+    const valid =
+      typeof claims.exp === 'number' &&
+      claims.exp > Date.now() / 1000 &&
+      typeof claims.user_id === 'string'
+    return valid ? claims : null
   } catch {
-    return false
+    return null
   }
 }
 
+// Electric itself does not know who the caller is: it serves whatever
+// table/where the request names. The shape request must therefore match one
+// of the client's shape definitions with $1 bound to the caller's own user id.
 app.get('/auth/electric/check', (req, res) => {
   const jwtSecret = process.env.PGRST_JWT_SECRET
   if (!jwtSecret) {
@@ -245,8 +259,18 @@ app.get('/auth/electric/check', (req, res) => {
   }
   const authHeader = req.headers.authorization ?? ''
   const token = authHeader.startsWith('Bearer ') ? authHeader.slice(7) : ''
-  if (!token || !verifyJwt(token, jwtSecret)) {
+  const claims = token ? verifyJwt(token, jwtSecret) : null
+  if (!claims) {
     return res.status(401).json({ error: 'UNAUTHORIZED' })
+  }
+  const result = authorizeShapeRequest({
+    method: req.headers['x-forwarded-method'],
+    forwardedUri: req.headers['x-forwarded-uri'],
+    userId: claims.user_id,
+  })
+  if (!result.ok) {
+    console.warn(`/auth/electric/check: rejected shape request: ${result.reason}`)
+    return res.status(403).json({ error: 'FORBIDDEN' })
   }
   return res.status(200).end()
 })

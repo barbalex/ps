@@ -12,6 +12,21 @@ const backendDevInitDir = path.join(repoRoot, 'backend-dev', 'db', 'init')
 const sourceDbDir = path.join(repoRoot, 'backend', 'db')
 const backendDevDbDir = path.join(repoRoot, 'backend-dev', 'db')
 const frontendSqlDir = path.join(repoRoot, 'src', 'sql')
+const sourceAuthDir = path.join(repoRoot, 'backend', 'auth')
+const backendDevAuthDir = path.join(repoRoot, 'backend-dev', 'auth')
+const frontendModulesDir = path.join(repoRoot, 'src', 'modules')
+
+// shared between the auth server (shape request authorization) and the
+// client (shape subscriptions): [source, [targets...]]
+const sharedAuthMappings = [
+  [
+    'shapeDefinitions.mjs',
+    [
+      path.join(backendDevAuthDir, 'shapeDefinitions.mjs'),
+      path.join(frontendModulesDir, 'shapeDefinitions.mjs'),
+    ],
+  ],
+]
 
 const frontendMappings = [
   ['01_immutableDate.sql', 'immutableDate.sql'],
@@ -106,11 +121,25 @@ const syncBackendDbFiles = async () => {
   return results
 }
 
+const syncSharedAuthFiles = async () => {
+  const results = []
+
+  for (const [sourceName, targets] of sharedAuthMappings) {
+    const fromPath = path.join(sourceAuthDir, sourceName)
+    for (const toPath of targets) {
+      results.push(await copyFileIfNeeded(fromPath, toPath))
+    }
+  }
+
+  return results
+}
+
 const main = async () => {
   const results = [
     ...(await syncDirectory(sourceInitDir, backendDevInitDir)),
     ...(await syncBackendDbFiles()),
     ...(await syncFrontendFiles()),
+    ...(await syncSharedAuthFiles()),
   ]
 
   const changed = results.filter((result) => result.changed)

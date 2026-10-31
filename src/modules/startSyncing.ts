@@ -1,4 +1,4 @@
-import type { PGlite, Transaction } from '@electric-sql/pglite'
+import type { PGlite } from '@electric-sql/pglite'
 import type {
   SyncShapesToTablesOptions,
   SyncShapesToTablesResult,
@@ -15,30 +15,43 @@ import { constants } from './constants.ts'
 import { fetchPostgrestToken } from './fetchPostgrestToken.ts'
 import { dependencyLevels, untilUpToDate } from './syncStages.ts'
 import { armSyncErrorRecovery, syncRecovered } from './syncErrorRecovery.ts'
+import { shapeDefinitions } from './shapeDefinitions.mjs'
 
 // pglite-worker.ts registers electricSync() under the `electric` namespace;
 // store.ts types the db atom as plain PGlite, so the namespace is re-declared here.
 type ElectricDb = PGlite & {
   electric: {
     syncShapesToTables: (
-      options: SyncShapesToTablesOptions & {
-        onMustRefetch?: (tx: Transaction) => void
-      },
+      options: SyncShapesToTablesOptions,
     ) => Promise<SyncShapesToTablesResult>
   }
 }
 
 const url = constants.getElectricUri()
 
-// Resolves the auth user ($1) to their project directory rows:
-// claimed rows (auth_user_id) plus rows matching the auth user's email.
-// Electric's subquery parser only accepts plain column references (no table
-// aliases) and only IN-subqueries (no scalar subqueries) — verified against
-// the dev Electric API.
-const projectUserIdsOfUser = `(SELECT project_user_id FROM project_users WHERE auth_user_id = $1 OR email IN (SELECT email FROM users WHERE user_id = $1))`
-const projectIdsOfUser = `SELECT project_id FROM project_roles WHERE project_user_id IN ${projectUserIdsOfUser}`
-const subprojectIdsOfUser = `SELECT subproject_id FROM subproject_roles WHERE project_user_id IN ${projectUserIdsOfUser}`
-const placeIdsOfUser = `SELECT place_id FROM place_roles WHERE project_user_id IN ${projectUserIdsOfUser}`
+// Per-table row transforms; not part of the server-validated shape definition.
+// change.value is the change row (see MapColumnsFn in @electric-sql/pglite-sync)
+const mapColumnsByTable: Record<
+  string,
+  (change: { value: Record<string, unknown> }) => Record<string, unknown>
+> = {
+  goal_reports: (change) => ({
+    goal_report_id: change.value.goal_report_id,
+    goal_id: change.value.goal_id,
+    label: change.value.label,
+    created_at: change.value.created_at,
+    updated_at: change.value.updated_at,
+    updated_by: change.value.updated_by,
+    data:
+      !change.value.data ? '{}'
+      : (
+        typeof change.value.data === 'string' &&
+        !change.value.data.trim().startsWith('{')
+      ) ?
+        JSON.stringify(change.value.data)
+      : change.value.data,
+  }),
+}
 
 // Bypass browser HTTP cache for shape requests so stale offset=-1 snapshots
 // (which survive a site-storage clear) never cause an expired-handle replay bug
@@ -68,1232 +81,31 @@ export const startSyncing = async (userId: string) => {
   } as unknown as Record<string, string>
 
   try {
-    const rawShapes = {
-      users: {
-        shape: {
-          url,
-          params: {
-            table: 'users',
-            columns: [
-              'user_id',
-              'name',
-              'email',
-              'image',
-              'email_verified',
-              'sys_period',
-              'created_at',
-              'updated_at',
-            ],
-            // own user row plus the users behind every synced account
-            // (project owners) and every member of the user's projects —
-            // project_users.auth_user_id references them; the local foreign
-            // keys need the referenced rows to sync
-            where: `user_id = $1 OR user_id IN (SELECT user_id FROM accounts WHERE account_id IN (SELECT account_id FROM projects WHERE project_id IN (${projectIdsOfUser}))) OR user_id IN (SELECT auth_user_id FROM project_users WHERE project_id IN (${projectIdsOfUser}))`,
-            params: { '1': userId },
-          },
-        },
-        table: 'users',
-        primaryKey: ['user_id'],
-      },
-      auth_sessions: {
-        shape: {
-          url,
-          params: {
-            table: 'auth_sessions',
-            where: `user_id = $1`,
-            params: { '1': userId },
-          },
-        },
-        table: 'auth_sessions',
-        primaryKey: ['auth_session_id'],
-      },
-      auth_accounts: {
-        shape: {
-          url,
-          params: {
-            table: 'auth_accounts',
-            where: `user_id = $1`,
-            params: { '1': userId },
-          },
-        },
-        table: 'auth_accounts',
-        primaryKey: ['auth_account_id'],
-      },
-      accounts: {
-        shape: {
-          url,
-          params: {
-            table: 'accounts',
-            // own account plus the accounts of every project the user can
-            // see: projects reference their owner's account, and the local
-            // database enforces foreign keys (deferred, checked when the
-            // apply transaction commits) — a parent row that never syncs
-            // would poison the whole sync
-            where: `user_id = $1 OR account_id IN (SELECT account_id FROM projects WHERE project_id IN (${projectIdsOfUser}))`,
-            params: { '1': userId },
-          },
-        },
-        table: 'accounts',
-        primaryKey: ['account_id'],
-      },
-      auth_verifications: {
-        shape: {
-          url,
-          params: { table: 'auth_verifications' },
-        },
-        table: 'auth_verifications',
-        primaryKey: ['auth_verification_id'],
-      },
-      projects: {
-        shape: {
-          url,
-          params: {
-            table: 'projects',
-            where: `project_id IN (${projectIdsOfUser})`,
-            params: { '1': userId },
-          },
-        },
-        table: 'projects',
-        primaryKey: ['project_id'],
-      },
-      place_levels: {
-        shape: {
-          url,
-          params: {
-            table: 'place_levels',
-            columns: [
-              'place_level_id',
-              'project_id',
-              'level',
-              'name_singular_de',
-              'name_singular_en',
-              'name_singular_fr',
-              'name_singular_it',
-              'name_plural_de',
-              'name_plural_en',
-              'name_plural_fr',
-              'name_plural_it',
-              'check_reports',
-              'check_report_quantities',
-              'check_report_quantities_in_report',
-              'action_reports',
-              'action_report_quantities',
-              'action_report_quantities_in_report',
-              'actions',
-              'action_quantities',
-              'action_quantities_in_action',
-              'action_taxa',
-              'action_taxa_in_action',
-              'checks',
-              'check_quantities',
-              'check_quantities_in_check',
-              'check_taxa',
-              'check_taxa_in_check',
-              'check_files',
-              'check_files_in_check',
-              'filtered_views',
-              'observations',
-              'place_roles_in_place',
-              'place_files_in_place',
-              'created_at',
-              'updated_at',
-              'updated_by',
-            ],
-            where: `project_id IN (${projectIdsOfUser})`,
-            params: { '1': userId },
-          },
-        },
-        table: 'place_levels',
-        primaryKey: ['place_level_id'],
-      },
-      filtered_views: {
-        shape: {
-          url,
-          params: {
-            table: 'filtered_views',
-            columns: [
-              'filtered_view_id',
-              'project_id',
-              'table_name',
-              'name_singular_de',
-              'name_singular_en',
-              'name_singular_fr',
-              'name_singular_it',
-              'name_plural_de',
-              'name_plural_en',
-              'name_plural_fr',
-              'name_plural_it',
-              'filter',
-              'label_by',
-              'sort',
-              'created_at',
-              'updated_at',
-              'updated_by',
-            ],
-            where: `project_id IN (${projectIdsOfUser})`,
-            params: { '1': userId },
-          },
-        },
-        table: 'filtered_views',
-        primaryKey: ['filtered_view_id'],
-      },
-      subprojects: {
-        shape: {
-          url,
-          params: {
-            table: 'subprojects',
-            columns: [
-              'subproject_id',
-              'project_id',
-              'name',
-              'start_year',
-              'end_year',
-              'data',
-              'created_at',
-              'updated_at',
-              'updated_by',
-            ],
-            where: `project_id IN (${projectIdsOfUser})`,
-            params: { '1': userId },
-          },
-        },
-        table: 'subprojects',
-        primaryKey: ['subproject_id'],
-      },
-      project_users: {
-        shape: {
-          url,
-          params: {
-            table: 'project_users',
-            // label is a GENERATED column — explicit values are rejected on
-            // sync insert, so it must be excluded (it derives from email)
-            columns: [
-              'project_user_id',
-              'project_id',
-              'email',
-              'auth_user_id',
-              'sys_period',
-              'created_at',
-              'updated_at',
-              'updated_by',
-            ],
-            where: `project_id IN (${projectIdsOfUser})`,
-            params: { '1': userId },
-          },
-        },
-        table: 'project_users',
-        primaryKey: ['project_user_id'],
-      },
-
-      project_roles: {
-        shape: {
-          url,
-          params: {
-            table: 'project_roles',
-            where: `project_id IN (${projectIdsOfUser})`,
-            params: { '1': userId },
-          },
-        },
-        table: 'project_roles',
-        primaryKey: ['project_role_id'],
-      },
-      subproject_roles: {
-        shape: {
-          url,
-          params: {
-            table: 'subproject_roles',
-            where: `subproject_id IN (${subprojectIdsOfUser})`,
-            params: { '1': userId },
-          },
-        },
-        table: 'subproject_roles',
-        primaryKey: ['subproject_role_id'],
-      },
-      taxonomies: {
-        shape: {
-          url,
-          params: {
-            table: 'taxonomies',
-            columns: [
-              'taxonomy_id',
-              'project_id',
-              'type',
-              'unit_id',
-              'name',
-              'url',
-              'obsolete',
-              'data',
-              'created_at',
-              'updated_at',
-              'updated_by',
-            ],
-            where: `project_id IN (${projectIdsOfUser}) OR taxonomy_id IN (SELECT taxonomy_id FROM taxa WHERE taxon_id IN (SELECT taxon_id FROM subproject_taxa WHERE subproject_id IN (${subprojectIdsOfUser})))`,
-            params: { '1': userId },
-          },
-        },
-        table: 'taxonomies',
-        primaryKey: ['taxonomy_id'],
-      },
-      taxa: {
-        shape: {
-          url,
-          params: {
-            table: 'taxa',
-            // taxa of the user's taxonomies plus every taxon referenced by
-            // synced subproject/check/action taxa rows — the local foreign
-            // keys need the referenced rows to sync
-            where: `taxonomy_id IN (SELECT taxonomy_id FROM taxonomies WHERE project_id IN (${projectIdsOfUser})) OR taxon_id IN (SELECT taxon_id FROM subproject_taxa WHERE subproject_id IN (${subprojectIdsOfUser}))`,
-            params: { '1': userId },
-          },
-        },
-        table: 'taxa',
-        primaryKey: ['taxon_id'],
-      },
-      subproject_taxa: {
-        shape: {
-          url,
-          params: {
-            table: 'subproject_taxa',
-            where: `subproject_id IN (${subprojectIdsOfUser})`,
-            params: { '1': userId },
-          },
-        },
-        table: 'subproject_taxa',
-        primaryKey: ['subproject_taxon_id'],
-      },
-      lists: {
-        shape: {
-          url,
-          params: {
-            table: 'lists',
-            columns: [
-              'list_id',
-              'project_id',
-              'name',
-              'value_type',
-              'data',
-              'obsolete',
-              'created_at',
-              'updated_at',
-              'updated_by',
-            ],
-            where: `project_id IN (${projectIdsOfUser})`,
-            params: { '1': userId },
-          },
-        },
-        table: 'lists',
-        primaryKey: ['list_id'],
-      },
-      list_values: {
-        shape: {
-          url,
-          params: {
-            table: 'list_values',
-            columns: [
-              'list_value_id',
-              'list_id',
-              'value_integer',
-              'value_numeric',
-              'value_text',
-              'value_date',
-              'value_datetime',
-              'obsolete',
-              'created_at',
-              'updated_at',
-              'updated_by',
-            ],
-            where: `list_id IN (SELECT list_id FROM lists WHERE project_id IN (${projectIdsOfUser}))`,
-            params: { '1': userId },
-          },
-        },
-        table: 'list_values',
-        primaryKey: ['list_value_id'],
-      },
-      units: {
-        shape: {
-          url,
-          params: {
-            table: 'units',
-            columns: [
-              'unit_id',
-              'project_id',
-              'name',
-              'summable',
-              'sort',
-              'type',
-              'created_at',
-              'updated_at',
-              'updated_by',
-            ],
-            where: `project_id IN (${projectIdsOfUser})`,
-            params: { '1': userId },
-          },
-        },
-        table: 'units',
-        primaryKey: ['unit_id'],
-      },
-      places: {
-        shape: {
-          url,
-          params: {
-            table: 'places',
-            where: `place_id IN (${placeIdsOfUser})`,
-            params: { '1': userId },
-          },
-        },
-        table: 'places',
-        primaryKey: ['place_id'],
-      },
-      actions: {
-        shape: {
-          url,
-          params: {
-            table: 'actions',
-            columns: [
-              'action_id',
-              'place_id',
-              'date',
-              'data',
-              'geometry',
-              'bbox',
-              'relevant_for_reports',
-              'created_at',
-              'updated_at',
-              'updated_by',
-            ],
-            where: `place_id IN (${placeIdsOfUser})`,
-            params: { '1': userId },
-          },
-        },
-        table: 'actions',
-        primaryKey: ['action_id'],
-      },
-      action_quantities: {
-        shape: {
-          url,
-          params: {
-            table: 'action_quantities',
-            where: `action_id IN (SELECT action_id FROM actions WHERE place_id IN (${placeIdsOfUser}))`,
-            params: { '1': userId },
-          },
-        },
-        table: 'action_quantities',
-        primaryKey: ['action_quantity_id'],
-      },
-      checks: {
-        shape: {
-          url,
-          params: {
-            table: 'checks',
-            columns: [
-              'check_id',
-              'place_id',
-              'date',
-              'data',
-              'geometry',
-              'bbox',
-              'relevant_for_reports',
-              'created_at',
-              'updated_at',
-              'updated_by',
-            ],
-            where: `place_id IN (${placeIdsOfUser})`,
-            params: { '1': userId },
-          },
-        },
-        table: 'checks',
-        primaryKey: ['check_id'],
-      },
-      check_quantities: {
-        shape: {
-          url,
-          params: {
-            table: 'check_quantities',
-            where: `check_id IN (SELECT check_id FROM checks WHERE place_id IN (${placeIdsOfUser}))`,
-            params: { '1': userId },
-          },
-        },
-        table: 'check_quantities',
-        primaryKey: ['check_quantity_id'],
-      },
-      check_taxa: {
-        shape: {
-          url,
-          params: {
-            table: 'check_taxa',
-            where: `check_id IN (SELECT check_id FROM checks WHERE place_id IN (${placeIdsOfUser}))`,
-            params: { '1': userId },
-          },
-        },
-        table: 'check_taxa',
-        primaryKey: ['check_taxon_id'],
-      },
-      action_taxa: {
-        shape: {
-          url,
-          params: {
-            table: 'action_taxa',
-            where: `action_id IN (SELECT action_id FROM actions WHERE place_id IN (${placeIdsOfUser}))`,
-            params: { '1': userId },
-          },
-        },
-        table: 'action_taxa',
-        primaryKey: ['action_taxon_id'],
-      },
-      check_reports: {
-        shape: {
-          url,
-          params: {
-            table: 'check_reports',
-            columns: [
-              'place_check_report_id',
-              'place_id',
-              'year',
-              'data',
-              'created_at',
-              'updated_at',
-              'updated_by',
-            ],
-            where: `place_id IN (${placeIdsOfUser})`,
-            params: { '1': userId },
-          },
-        },
-        table: 'check_reports',
-        primaryKey: ['place_check_report_id'],
-      },
-      action_reports: {
-        shape: {
-          url,
-          params: {
-            table: 'action_reports',
-            columns: [
-              'place_action_report_id',
-              'place_id',
-              'year',
-              'data',
-              'created_at',
-              'updated_at',
-              'updated_by',
-            ],
-            where: `place_id IN (${placeIdsOfUser})`,
-            params: { '1': userId },
-          },
-        },
-        table: 'action_reports',
-        primaryKey: ['place_action_report_id'],
-      },
-      check_report_quantities: {
-        shape: {
-          url,
-          params: {
-            table: 'check_report_quantities',
-            where: `place_check_report_id IN (SELECT place_check_report_id FROM check_reports WHERE place_id IN (${placeIdsOfUser}))`,
-            params: { '1': userId },
-          },
-        },
-        table: 'check_report_quantities',
-        primaryKey: ['place_check_report_quantity_id'],
-      },
-      messages: {
-        shape: {
-          url,
-          params: {
-            table: 'messages',
-          },
-        },
-        table: 'messages',
-        primaryKey: ['message_id'],
-      },
-      user_messages: {
-        shape: {
-          url,
-          params: {
-            table: 'user_messages',
-            where: `user_id = $1`,
-            params: { '1': userId },
-          },
-        },
-        table: 'user_messages',
-        primaryKey: ['user_message_id'],
-      },
-      place_roles: {
-        shape: {
-          url,
-          params: {
-            table: 'place_roles',
-            where: `place_id IN (${placeIdsOfUser})`,
-            params: { '1': userId },
-          },
-        },
-        table: 'place_roles',
-        primaryKey: ['place_role_id'],
-      },
-      goals: {
-        shape: {
-          url,
-          params: {
-            table: 'goals',
-            columns: [
-              'goal_id',
-              'subproject_id',
-              'year',
-              'name',
-              'data',
-              'created_at',
-              'updated_at',
-              'updated_by',
-            ],
-            where: `subproject_id IN (${subprojectIdsOfUser})`,
-            params: { '1': userId },
-          },
-        },
-        table: 'goals',
-        primaryKey: ['goal_id'],
-      },
-      goal_reports: {
-        shape: {
-          url,
-          params: {
-            table: 'goal_reports',
-            where: `goal_id IN (SELECT goal_id FROM goals WHERE subproject_id IN (${subprojectIdsOfUser}))`,
-            params: { '1': userId },
-          },
-        },
-        // change.value is the change row (see MapColumnsFn in @electric-sql/pglite-sync)
-        mapColumns: (change: { value: Record<string, unknown> }) => {
-          return {
-            goal_report_id: change.value.goal_report_id,
-            goal_id: change.value.goal_id,
-            label: change.value.label,
-            created_at: change.value.created_at,
-            updated_at: change.value.updated_at,
-            updated_by: change.value.updated_by,
-            data: !change.value.data
-              ? '{}'
-              : typeof change.value.data === 'string' &&
-                  !change.value.data.trim().startsWith('{')
-                ? JSON.stringify(change.value.data)
-                : change.value.data,
-          }
-        },
-        table: 'goal_reports',
-        primaryKey: ['goal_report_id'],
-      },
-      subproject_reports: {
-        shape: {
-          url,
-          params: {
-            table: 'subproject_reports',
-            columns: [
-              'subproject_report_id',
-              'subproject_id',
-              'subproject_report_design_id',
-              'year',
-              'data',
-              'created_at',
-              'updated_at',
-              'updated_by',
-            ],
-            where: `subproject_id IN (${subprojectIdsOfUser})`,
-            params: { '1': userId },
-          },
-        },
-        table: 'subproject_reports',
-        primaryKey: ['subproject_report_id'],
-      },
-      // add subproject_report_designs
-      subproject_report_designs: {
-        shape: {
-          url,
-          params: {
-            table: 'subproject_report_designs',
-            columns: [
-              'subproject_report_design_id',
-              'project_id',
-              'name',
-              'active',
-              'design',
-              'created_at',
-              'updated_at',
-              'updated_by',
-            ],
-            where: `project_id IN (${projectIdsOfUser})`,
-            params: { '1': userId },
-          },
-        },
-        table: 'subproject_report_designs',
-        primaryKey: ['subproject_report_design_id'],
-      },
-      project_reports: {
-        shape: {
-          url,
-          params: {
-            table: 'project_reports',
-            columns: [
-              'project_report_id',
-              'project_id',
-              'year',
-              'data',
-              'created_at',
-              'updated_at',
-              'updated_by',
-            ],
-            where: `project_id IN (${projectIdsOfUser})`,
-            params: { '1': userId },
-          },
-        },
-        table: 'project_reports',
-        primaryKey: ['project_report_id'],
-      },
-      // add project_report_designs
-      project_report_designs: {
-        shape: {
-          url,
-          params: {
-            table: 'project_report_designs',
-            columns: [
-              'project_report_design_id',
-              'project_id',
-              'name',
-              'active',
-              'design',
-              'created_at',
-              'updated_at',
-              'updated_by',
-            ],
-            where: `project_id IN (${projectIdsOfUser})`,
-            params: { '1': userId },
-          },
-        },
-        table: 'project_report_designs',
-        primaryKey: ['project_report_design_id'],
-      },
-      project_report_subdesigns: {
-        shape: {
-          url,
-          params: {
-            table: 'project_report_subdesigns',
-            columns: [
-              'project_report_subdesign_id',
-              'project_id',
-              'name',
-              'design',
-              'created_at',
-              'updated_at',
-              'updated_by',
-            ],
-            where: `project_id IN (${projectIdsOfUser})`,
-            params: { '1': userId },
-          },
-        },
-        table: 'project_report_subdesigns',
-        primaryKey: ['project_report_subdesign_id'],
-      },
-      files: {
-        shape: {
-          url,
-          params: {
-            table: 'files',
-            columns: [
-              'file_id',
-              'project_id',
-              'subproject_id',
-              'place_id',
-              'action_id',
-              'check_id',
-              'name',
-              'size',
-              'data',
-              'mimetype',
-              'width',
-              'height',
-              'file',
-              'preview',
-              'url',
-              'uuid',
-              'preview_uuid',
-              'created_at',
-              'updated_at',
-              'updated_by',
-            ],
-            where: `project_id IN (${projectIdsOfUser})`,
-            params: { '1': userId },
-          },
-        },
-        table: 'files',
-        primaryKey: ['file_id'],
-      },
-      field_types: {
-        shape: {
-          url,
-          params: {
-            table: 'field_types',
-            columns: [
-              'field_type_id',
-              'name',
-              'sort',
-              'comment',
-              'created_at',
-              'updated_at',
-              'updated_by',
-            ],
-          },
-        },
-        table: 'field_types',
-        primaryKey: ['field_type_id'],
-      },
-      widget_types: {
-        shape: {
-          url,
-          params: {
-            table: 'widget_types',
-            columns: [
-              'widget_type_id',
-              'name',
-              'needs_list',
-              'sort',
-              'comment',
-              'created_at',
-              'updated_at',
-              'updated_by',
-            ],
-          },
-        },
-        table: 'widget_types',
-        primaryKey: ['widget_type_id'],
-      },
-      widgets_for_fields: {
-        shape: {
-          url,
-          params: {
-            table: 'widgets_for_fields',
-          },
-        },
-        table: 'widgets_for_fields',
-        primaryKey: ['widget_for_field_id'],
-      },
-      fields: {
-        shape: {
-          url,
-          params: {
-            table: 'fields',
-            columns: [
-              'field_id',
-              'project_id',
-              'account_id',
-              'table_name',
-              'level',
-              'field_type_id',
-              'widget_type_id',
-              'name',
-              'field_label',
-              'list_id',
-              'preset',
-              'obsolete',
-              'created_at',
-              'updated_at',
-              'updated_by',
-            ],
-            where: `project_id IN (${projectIdsOfUser}) OR account_id IN (SELECT account_id FROM accounts WHERE user_id = $1)`,
-            params: { '1': userId },
-          },
-        },
-        table: 'fields',
-        primaryKey: ['field_id'],
-      },
-      field_sorts: {
-        shape: {
-          url,
-          params: {
-            table: 'field_sorts',
-            where: `project_id IN (${projectIdsOfUser})`,
-            params: { '1': userId },
-          },
-        },
-        table: 'field_sorts',
-        primaryKey: ['field_sort_id'],
-      },
-      observation_imports: {
-        shape: {
-          url,
-          params: {
-            table: 'observation_imports',
-            columns: [
-              'observation_import_id',
-              'subproject_id',
-              'created_time',
-              'inserted_count',
-              'id_field',
-              'geometry_method',
-              'geojson_geometry_field',
-              'x_coordinate_field',
-              'y_coordinate_field',
-              'crs',
-              'label_creation',
-              'name',
-              'attribution',
-              'previous_import',
-              'download_from_gbif',
-              'gbif_filters',
-              'gbif_download_key',
-              'gbif_error',
-              'created_at',
-              'updated_at',
-              'updated_by',
-            ],
-            where: `subproject_id IN (${subprojectIdsOfUser})`,
-            params: { '1': userId },
-          },
-        },
-        table: 'observation_imports',
-        primaryKey: ['observation_import_id'],
-      },
-      observations: {
-        shape: {
-          url,
-          params: {
-            table: 'observations',
-            where: `observation_import_id IN (SELECT observation_import_id FROM observation_imports WHERE subproject_id IN (${subprojectIdsOfUser}))`,
-            params: { '1': userId },
-          },
-        },
-        table: 'observations',
-        primaryKey: ['observation_id'],
-      },
-      wms_services: {
-        shape: {
-          url,
-          params: {
-            table: 'wms_services',
-            columns: [
-              'wms_service_id',
-              'project_id',
-              'url',
-              'image_formats',
-              'image_format',
-              'version',
-              'info_formats',
-              'info_format',
-              'default_crs',
-              'created_at',
-              'updated_at',
-              'updated_by',
-            ],
-            where: `project_id IN (${projectIdsOfUser})`,
-            params: { '1': userId },
-          },
-        },
-        table: 'wms_services',
-        primaryKey: ['wms_service_id'],
-      },
-      wms_service_layers: {
-        shape: {
-          url,
-          params: {
-            table: 'wms_service_layers',
-            where: `wms_service_id IN (SELECT wms_service_id FROM wms_services WHERE project_id IN (${projectIdsOfUser}))`,
-            params: { '1': userId },
-          },
-        },
-        table: 'wms_service_layers',
-        primaryKey: ['wms_service_layer_id'],
-      },
-      wms_layers: {
-        shape: {
-          url,
-          params: {
-            table: 'wms_layers',
-            where: `project_id IN (${projectIdsOfUser})`,
-            params: { '1': userId },
-          },
-        },
-        table: 'wms_layers',
-        primaryKey: ['wms_layer_id'],
-      },
-      wfs_services: {
-        shape: {
-          url,
-          params: {
-            table: 'wfs_services',
-            columns: [
-              'wfs_service_id',
-              'project_id',
-              'url',
-              'version',
-              'info_formats',
-              'info_format',
-              'default_crs',
-              'created_at',
-              'updated_at',
-              'updated_by',
-            ],
-            where: `project_id IN (${projectIdsOfUser})`,
-            params: { '1': userId },
-          },
-        },
-        table: 'wfs_services',
-        primaryKey: ['wfs_service_id'],
-      },
-      wfs_service_layers: {
-        shape: {
-          url,
-          params: {
-            table: 'wfs_service_layers',
-            where: `wfs_service_id IN (SELECT wfs_service_id FROM wfs_services WHERE project_id IN (${projectIdsOfUser}))`,
-            params: { '1': userId },
-          },
-        },
-        table: 'wfs_service_layers',
-        primaryKey: ['wfs_service_layer_id'],
-      },
-      vector_layers: {
-        shape: {
-          url,
-          params: {
-            table: 'vector_layers',
-            where: `project_id IN (${projectIdsOfUser})`,
-            params: { '1': userId },
-          },
-        },
-        table: 'vector_layers',
-        primaryKey: ['vector_layer_id'],
-      },
-      vector_layer_geoms: {
-        shape: {
-          url,
-          params: {
-            table: 'vector_layer_geoms',
-            where: `vector_layer_id IN (SELECT vector_layer_id FROM vector_layers WHERE project_id IN (${projectIdsOfUser}))`,
-            params: { '1': userId },
-          },
-        },
-        table: 'vector_layer_geoms',
-        primaryKey: ['vector_layer_geom_id'],
-      },
-      vector_layer_displays: {
-        shape: {
-          url,
-          params: {
-            table: 'vector_layer_displays',
-            columns: [
-              'vector_layer_display_id',
-              'vector_layer_id',
-              'display_property_value',
-              'marker_type',
-              'circle_marker_radius',
-              'marker_symbol',
-              'marker_size',
-              'stroke',
-              'color',
-              'weight',
-              'line_cap',
-              'line_join',
-              'dash_array',
-              'dash_offset',
-              'fill',
-              'fill_color',
-              'fill_opacity_percent',
-              'fill_rule',
-              'created_at',
-              'updated_at',
-              'updated_by',
-            ],
-            where: `vector_layer_id IN (SELECT vector_layer_id FROM vector_layers WHERE project_id IN (${projectIdsOfUser}))`,
-            params: { '1': userId },
-          },
-        },
-        table: 'vector_layer_displays',
-        primaryKey: ['vector_layer_display_id'],
-      },
-      layer_presentations: {
-        shape: {
-          url,
-          params: {
-            table: 'layer_presentations',
-            columns: [
-              'layer_presentation_id',
-              'wms_layer_id',
-              'vector_layer_id',
-              'project_id',
-              'active',
-              'opacity_percent',
-              'transparent',
-              'grayscale',
-              'max_zoom',
-              'min_zoom',
-              'created_at',
-              'updated_at',
-              'updated_by',
-            ],
-            where: `project_id IN (${projectIdsOfUser})`,
-            params: { '1': userId },
-          },
-        },
-        table: 'layer_presentations',
-        primaryKey: ['layer_presentation_id'],
-      },
-      charts: {
-        shape: {
-          url,
-          params: {
-            table: 'charts',
-            columns: [
-              'chart_id',
-              'project_id',
-              'subproject_id',
-              'place_id',
-              'years_current',
-              'years_previous',
-              'years_specific',
-              'years_last_x',
-              'years_since',
-              'years_until',
-              'chart_type',
-              'name',
-              'subjects_stacked',
-              'subjects_single',
-              'percent',
-              'for_subprojects',
-              'created_at',
-              'updated_at',
-              'updated_by',
-            ],
-            where: `project_id IN (${projectIdsOfUser})`,
-            params: { '1': userId },
-          },
-        },
-        table: 'charts',
-        primaryKey: ['chart_id'],
-      },
-      chart_subjects: {
-        shape: {
-          url,
-          params: {
-            table: 'chart_subjects',
-            where: `chart_id IN (SELECT chart_id FROM charts WHERE project_id IN (${projectIdsOfUser}))`,
-            params: { '1': userId },
-          },
-        },
-        table: 'chart_subjects',
-        primaryKey: ['chart_subject_id'],
-      },
-      project_crs: {
-        shape: {
-          url,
-          params: {
-            table: 'project_crs',
-            columns: [
-              'project_crs_id',
-              'crs_id',
-              'project_id',
-              'code',
-              'name',
-              'proj4',
-              'created_at',
-              'updated_at',
-              'updated_by',
-            ],
-            where: `project_id IN (${projectIdsOfUser})`,
-            params: { '1': userId },
-          },
-        },
-        table: 'project_crs',
-        primaryKey: ['project_crs_id'],
-      },
-      qcs: {
-        shape: {
-          url,
-          params: {
-            table: 'qcs',
-          },
-        },
-        table: 'qcs',
-        primaryKey: ['qcs_id'],
-      },
-      qc_assignments: {
-        shape: {
-          url,
-          params: {
-            table: 'qc_assignments',
-            where: `project_id IN (${projectIdsOfUser})`,
-            params: { '1': userId },
-          },
-        },
-        table: 'qc_assignments',
-        primaryKey: ['qc_assignment_id'],
-      },
-      project_qcs: {
-        shape: {
-          url,
-          params: {
-            table: 'project_qcs',
-            where: `project_id IN (${projectIdsOfUser})`,
-            params: { '1': userId },
-          },
-        },
-        table: 'project_qcs',
-        primaryKey: ['project_qc_id'],
-      },
-      exports: {
-        shape: {
-          url,
-          params: {
-            table: 'exports',
-          },
-        },
-        table: 'exports',
-        primaryKey: ['exports_id'],
-      },
-      export_assignments: {
-        shape: {
-          url,
-          params: {
-            table: 'export_assignments',
-            where: `project_id IN (${projectIdsOfUser})`,
-            params: { '1': userId },
-          },
-        },
-        table: 'export_assignments',
-        primaryKey: ['export_assignment_id'],
-      },
-      project_exports: {
-        shape: {
-          url,
-          params: {
-            table: 'project_exports',
-            where: `project_id IN (${projectIdsOfUser})`,
-            params: { '1': userId },
-          },
-        },
-        table: 'project_exports',
-        primaryKey: ['project_exports_id'],
-      },
-      project_export_assignments: {
-        shape: {
-          url,
-          params: {
-            table: 'project_export_assignments',
-            where: `project_id IN (${projectIdsOfUser})`,
-            params: { '1': userId },
-          },
-        },
-        table: 'project_export_assignments',
-        primaryKey: ['project_export_assignment_id'],
-      },
-    }
-
+    // shape definitions (table, where, columns) are shared with the auth
+    // server, which rejects any shape request that deviates from them
     const shapes = Object.fromEntries(
-      Object.entries(rawShapes).map(([k, v]) => [
-        k,
-        {
-          ...v,
-          shape: {
-            ...v.shape,
-            fetchClient: noCacheFetch,
-            headers: authHeaders,
+      Object.entries(shapeDefinitions).map(
+        ([table, { where, columns, primaryKey }]) => [
+          table,
+          {
+            shape: {
+              url,
+              params: {
+                table,
+                ...(columns ? { columns } : {}),
+                ...(where ? { where, params: { '1': userId } } : {}),
+              },
+              fetchClient: noCacheFetch,
+              headers: authHeaders,
+            },
+            table,
+            primaryKey,
+            ...(mapColumnsByTable[table] ?
+              { mapColumns: mapColumnsByTable[table] }
+            : {}),
           },
-        },
-      ]),
+        ],
+      ),
     )
 
     // Apply the shapes in FK-safe levels: every table's foreign-key parents
@@ -1312,7 +124,10 @@ export const startSyncing = async (userId: string) => {
         Object.values(shapes).map((s) => s.table),
       )
     } catch (error) {
-      console.warn('startSyncing: could not derive FK levels, syncing unordered', error)
+      console.warn(
+        'startSyncing: could not derive FK levels, syncing unordered',
+        error,
+      )
     }
 
     const onError = (error: unknown) => {
@@ -1348,12 +163,8 @@ export const startSyncing = async (userId: string) => {
       console.error('❌ Syncer error:', error)
       //  Don't set syncingAtom to false - let timeout or onInitialSync handle it
     }
-    const onMustRefetch = (tx: Transaction) => {
-      console.warn(
-        'Electric: Must refetch - this can happen if the shape definition changes. Attempting to restart sync. Tx:',
-        tx,
-      )
-    }
+    // must-refetch control messages need no handler here: pglite-sync clears
+    // the shape's table and re-applies the new snapshot in one transaction
 
     const syncs: SyncShapesToTablesResult[] = []
     let allStagesStarted = false
@@ -1376,7 +187,9 @@ export const startSyncing = async (userId: string) => {
     const startStage = async (index: number) => {
       const level = levels[index]!
       const stageShapes = Object.fromEntries(
-        Object.entries(shapes).filter(([, shape]) => level.includes(shape.table)),
+        Object.entries(shapes).filter(([, shape]) =>
+          level.includes(shape.table),
+        ),
       )
       const isLast = index === levels.length - 1
       const sync = await (db as ElectricDb).electric.syncShapesToTables({
@@ -1384,15 +197,15 @@ export const startSyncing = async (userId: string) => {
         // one persistent key per level, for live updates across page reloads
         key: `ps-sync-stage-${index + 1}`,
         // Removed initialInsertMethod - let Electric use default for live updates
-        onInitialSync: isLast ?
-          async () => {
-            console.log(`Initial sync done (${levels.length} stages)`)
-            store.set(initialSyncingAtom, false)
-            syncRecovered()
-          }
-        : undefined,
+        onInitialSync:
+          isLast ?
+            async () => {
+              console.log(`Initial sync done (${levels.length} stages)`)
+              store.set(initialSyncingAtom, false)
+              syncRecovered()
+            }
+          : undefined,
         onError,
-        onMustRefetch,
       })
 
       // Validate sync object
@@ -1417,14 +230,19 @@ export const startSyncing = async (userId: string) => {
         }
         const elapsed = Math.round((Date.now() - stageStart) / 1000)
         // every 10s for the first minute, then every 30s
-        const shouldLog = elapsed <= 60 ? elapsed - lastLogged >= 10 : elapsed - lastLogged >= 30
+        const shouldLog =
+          elapsed <= 60 ?
+            elapsed - lastLogged >= 10
+          : elapsed - lastLogged >= 30
         if (!shouldLog) return
         lastLogged = elapsed
-        const streamStates = Object.entries(sync.streams).map(([name, stream]) => {
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          const s = stream as any
-          return `${name}:${s?.isUpToDate ? 'uptodate' : 'syncing'}`
-        })
+        const streamStates = Object.entries(sync.streams).map(
+          ([name, stream]) => {
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            const s = stream as any
+            return `${name}:${s?.isUpToDate ? 'uptodate' : 'syncing'}`
+          },
+        )
         console.warn(
           `startSyncing: ${stageLabel} NOT up to date after ${elapsed}s [${streamStates.join(' ')}]`,
         )
@@ -1448,7 +266,13 @@ export const startSyncing = async (userId: string) => {
             await untilUpToDate(previous, `${index}/${levels.length}`)
             await startStage(index)
           } catch (error) {
+            // a hung or failed level: the later levels are not started (their
+            // parents are missing). Stop the sync so Syncer restarts it from
+            // the persisted stage state once the user is online again.
             console.error(`Error starting sync stage ${index + 1}:`, error)
+            aggregate.unsubscribe()
+            store.set(syncObjectAtom, null)
+            store.set(onlineAtom, false)
             return
           }
         }
