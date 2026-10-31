@@ -22,8 +22,8 @@ import { invalidatePostgrestToken } from './fetchPostgrestToken.ts'
 
 // returns unobserve function
 // https://jotai.org/docs/extensions/effect
-// TODO: make this dependent on store.shortTermOnline
-// TODO: ensure function is run all 30 seconds
+// Gated on shortTermOnlineAtom; OperationsObserver re-triggers it every 10s
+// via operationsRetryTickAtom so failed sends are retried.
 let isProcessing = false
 
 export const observeOperations = () =>

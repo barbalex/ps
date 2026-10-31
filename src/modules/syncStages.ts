@@ -136,13 +136,19 @@ const stronglyConnectedComponents = (
   return sccOf
 }
 
-/** resolves once the sync object reports every one of its shapes up to date */
+/**
+ * Resolves once the sync object reports every one of its shapes up to date;
+ * rejects after timeoutMs. Callers must not start the next level on
+ * rejection: a child level started under a hung parent level produces FK
+ * violations that abort the whole sync (syncErrorRecovery would then reload
+ * in a loop).
+ */
 export const untilUpToDate = (
   sync: { isUpToDate: boolean },
   label: string,
   timeoutMs = 5 * 60 * 1000,
 ): Promise<void> =>
-  new Promise((resolve) => {
+  new Promise((resolve, reject) => {
     if (sync.isUpToDate) return resolve()
     const startedAt = Date.now()
     const timer = setInterval(() => {
@@ -151,12 +157,12 @@ export const untilUpToDate = (
         return resolve()
       }
       if (Date.now() - startedAt > timeoutMs) {
-        // a hung stream must not block the later levels (and their data)
-        // forever — continue unordered and let the FK recovery handle a
-        // possible collision
-        console.warn(`syncStages: stage ${label} not up to date after ${timeoutMs / 1000}s, continuing`)
         clearInterval(timer)
-        resolve()
+        reject(
+          new Error(
+            `syncStages: stage ${label} not up to date after ${timeoutMs / 1000}s`,
+          ),
+        )
       }
     }, 500)
   })

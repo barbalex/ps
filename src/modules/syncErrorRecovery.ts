@@ -30,6 +30,26 @@ const isRecoverableSyncViolation = (reason: unknown) => {
 }
 
 let armed = false
+// in-memory fallback for when sessionStorage is unavailable (private mode,
+// storage quota): still guards against reloading more than once per sync
+let recoveredInMemory = false
+
+const hasRecoveryFlag = () => {
+  try {
+    return Boolean(sessionStorage.getItem(RECOVERY_FLAG))
+  } catch {
+    return recoveredInMemory
+  }
+}
+
+const setRecoveryFlag = () => {
+  recoveredInMemory = true
+  try {
+    sessionStorage.setItem(RECOVERY_FLAG, '1')
+  } catch {
+    // the in-memory flag still holds for this page instance
+  }
+}
 
 /** forwards unhandled sync rejections from the worker to the page (no-op outside a worker) */
 export const reportSyncRejectionsFromWorker = () => {
@@ -62,20 +82,16 @@ export const armSyncErrorRecovery = () => {
     if (data?.type !== 'apply-violation') return
     // the flag is checked at message time (not setup time) so recovery
     // re-arms after every successfully completed sync
-    try {
-      if (sessionStorage.getItem(RECOVERY_FLAG)) return
-    } catch {
+    if (hasRecoveryFlag()) {
+      console.error(
+        'Electric sync: apply violation after a recovery reload — not reloading again',
+      )
       return
     }
     console.error(
       'Electric sync: apply violation — reloading once to re-sync in stage order',
     )
-    try {
-      sessionStorage.setItem(RECOVERY_FLAG, '1')
-    } catch {
-      // without session storage the flag cannot guard against a loop
-      return
-    }
+    setRecoveryFlag()
     channel.close()
     window.location.reload()
   }
@@ -83,6 +99,7 @@ export const armSyncErrorRecovery = () => {
 
 /** called when an initial sync completes: allow one more recovery reload for later violations */
 export const syncRecovered = () => {
+  recoveredInMemory = false
   try {
     sessionStorage.removeItem(RECOVERY_FLAG)
   } catch {
