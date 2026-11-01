@@ -26,7 +26,7 @@ import { rmSync } from 'fs'
 import { fileURLToPath } from 'url'
 import { dirname, join } from 'path'
 
-import { projectTables } from './project-dump-tables.mjs'
+import { projectTables, projectTableWhere } from './project-dump-tables.mjs'
 
 const __dirname = dirname(fileURLToPath(import.meta.url))
 const projectRoot = join(__dirname, '..')
@@ -64,8 +64,8 @@ const createStatements = [
   'DROP SCHEMA IF EXISTS ps_dump CASCADE;',
   'CREATE SCHEMA ps_dump;',
   ...projectTables.map(
-    ({ table, where }) =>
-      `CREATE TABLE ps_dump.${table} AS SELECT * FROM public.${table} WHERE ${where(projectId)};`,
+    ({ table }) =>
+      `CREATE TABLE ps_dump.${table} AS SELECT * FROM public.${table} WHERE ${projectTableWhere(table, projectId, 'ps_dump')};`,
   ),
   // the CTAS turns generated columns (most label columns) into plain ones;
   // pg_dump would then emit values the real table rejects on insert — drop

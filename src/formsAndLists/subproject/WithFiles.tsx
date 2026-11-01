@@ -40,6 +40,7 @@ import { UploaderContext } from '../../UploaderContext.ts'
 import type Subprojects from '../../models/public/Subprojects.ts'
 import type Projects from '../../models/public/Projects.ts'
 import styles from './WithFiles.module.css'
+import { filesScopeWhere } from '../../modules/filesScopeWhere.ts'
 
 import '../../form.css'
 import type { FieldChangeData } from '../../components/shared/fieldChange.ts'
@@ -94,8 +95,7 @@ export const SubprojectWithFiles = ({ from }: { from: string }) => {
   const row = res?.rows?.[0] as unknown as SubprojectWithProjectInfo | undefined
 
   const filesCountRes = useLiveQuery(
-    `SELECT count(*)::int AS count FROM files WHERE subproject_id = $1`,
-    [subprojectId],
+    `SELECT count(*)::int AS count FROM files WHERE ${filesScopeWhere({ subprojectId })}`,
   )
   const filesCount = filesCountRes?.rows?.[0]?.count ?? 0
 

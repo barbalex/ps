@@ -17,6 +17,14 @@ import { dependencyLevels, untilUpToDate } from './syncStages.ts'
 import { armSyncErrorRecovery, syncRecovered } from './syncErrorRecovery.ts'
 import { shapeDefinitions } from './shapeDefinitions.mjs'
 
+/** the aggregate sync object stored in syncObjectAtom */
+export type PsSyncObject = SyncShapesToTablesResult & {
+  /** every stage's snapshot has been applied (committed) locally */
+  readonly isApplied: boolean
+  /** a stage received up-to-date and its apply transaction is still running */
+  readonly isApplying: boolean
+}
+
 // pglite-worker.ts registers electricSync() under the `electric` namespace;
 // store.ts types the db atom as plain PGlite, so the namespace is re-declared here.
 type ElectricDb = PGlite & {
@@ -61,6 +69,7 @@ const noCacheFetch: typeof fetch = (input, init) =>
 
 export const startSyncing = async (userId: string) => {
   const db = store.get(pgliteDbAtom)
+  const syncStart = Date.now()
 
   // is syncObjectAtom exists, return
   const syncObject = store.get(syncObjectAtom)
@@ -145,7 +154,7 @@ export const startSyncing = async (userId: string) => {
         // point a shape may still be mid-refetch (its table cleared, snapshot
         // not yet applied), and mounted live queries would read the empty
         // table and never be notified of the refill. InitialSyncManager
-        // releases once isUpToDate is true.
+        // releases once every stage's snapshot is applied (isApplied).
         return
       }
 
@@ -170,19 +179,35 @@ export const startSyncing = async (userId: string) => {
 
     const syncs: SyncShapesToTablesResult[] = []
     let allStagesStarted = false
+    // onInitialSync fired per stage: pglite-sync calls it after the apply
+    // transaction committed, whereas isUpToDate flips as soon as the stream
+    // RECEIVED the up-to-date marker — possibly long before the rows exist
+    const stageApplied: boolean[] = []
     // aggregate over the per-level syncs: InitialSyncManager polls
-    // isUpToDate, AuthAndDb and clearLocalSyncedData call unsubscribe
-    const aggregate: SyncShapesToTablesResult = {
+    // isApplied/isApplying, AuthAndDb and clearLocalSyncedData call unsubscribe
+    const aggregate: PsSyncObject = {
       unsubscribe: () => {
         for (const sync of syncs) sync.unsubscribe()
       },
       get isUpToDate() {
         return allStagesStarted && syncs.every((sync) => sync.isUpToDate)
       },
+      get isApplied() {
+        return (
+          allStagesStarted &&
+          syncs.length === levels.length &&
+          syncs.every((_, index) => stageApplied[index] === true)
+        )
+      },
+      get isApplying() {
+        return syncs.some(
+          (sync, index) => sync.isUpToDate && stageApplied[index] !== true,
+        )
+      },
       get streams() {
         return Object.assign({}, ...syncs.map((sync) => sync.streams))
       },
-    } as SyncShapesToTablesResult
+    } as PsSyncObject
 
     armSyncErrorRecovery()
 
@@ -198,15 +223,19 @@ export const startSyncing = async (userId: string) => {
         shapes: stageShapes,
         // one persistent key per level, for live updates across page reloads
         key: `ps-sync-stage-${index + 1}`,
-        // Removed initialInsertMethod - let Electric use default for live updates
-        onInitialSync:
-          isLast ?
-            async () => {
-              console.log(`Initial sync done (${levels.length} stages)`)
-              store.set(initialSyncingAtom, false)
-              syncRecovered()
-            }
-          : undefined,
+        // fresh subscriptions bulk-load the snapshot via json_to_recordset
+        // (10k rows per statement) instead of batched INSERTs; pglite-sync
+        // ignores this when resuming persisted state (409 re-snapshots)
+        initialInsertMethod: 'json',
+        onInitialSync: async () => {
+          stageApplied[index] = true
+          if (!isLast) return
+          console.log(
+            `Initial sync done (${levels.length} stages, ${Math.round((Date.now() - syncStart) / 1000)}s)`,
+          )
+          store.set(initialSyncingAtom, false)
+          syncRecovered()
+        },
         onError,
       })
 

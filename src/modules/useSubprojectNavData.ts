@@ -16,6 +16,7 @@ import { buildNavLabel } from './buildNavLabel.ts'
 import { filterStringFromFilter } from './filterStringFromFilter.ts'
 import { subprojectNameSingularExpr } from './subprojectNameCols.ts'
 import { getPlaceFallbackNames } from './placeNameFallback.ts'
+import { filesScopeWhere } from './filesScopeWhere.ts'
 
 type Props = {
   projectId: string
@@ -107,9 +108,11 @@ export const useSubprojectNavData = ({ projectId, subprojectId }: Props) => {
         observations_not_to_assign_count AS (SELECT count(*) FROM observations o INNER JOIN observation_imports oi ON o.observation_import_id = oi.observation_import_id WHERE oi.subproject_id = '${subprojectId}' AND o.not_to_assign IS TRUE AND o.place_id IS NULL),
         subproject_taxa_count AS (SELECT count(*) FROM subproject_taxa WHERE subproject_id = '${subprojectId}'),
         subproject_roles_count AS (SELECT count(*) FROM subproject_roles WHERE subproject_id = '${subprojectId}'),
-        files_count_unfiltered AS (SELECT count(*) FROM files WHERE subproject_id = '${subprojectId}'),
-        files_count_filtered AS (SELECT count(*) FROM files WHERE subproject_id = '${subprojectId}' ${filesIsFiltered ? ` AND ${filesFilterString}` : ''}),
-        charts_count AS (SELECT count(*) FROM charts WHERE subproject_id = '${subprojectId}'),
+        files_count_unfiltered AS (SELECT count(*) FROM files WHERE ${filesScopeWhere({ subprojectId })}),
+        files_count_filtered AS (SELECT count(*) FROM files WHERE ${filesScopeWhere({ subprojectId })} ${filesIsFiltered ? ` AND ${filesFilterString}` : ''}),
+        -- own charts plus the project's chart templates for all subprojects
+        -- (same scope as useChartsNavData for a subproject)
+        charts_count AS (SELECT count(*) FROM charts WHERE subproject_id = '${subprojectId}' OR (for_subprojects AND project_id = '${projectId}' AND subproject_id IS NULL)),
         subproject_qc_assignments_count AS (SELECT count(*) FROM (SELECT qa.qc_assignment_id FROM qc_assignments qa JOIN qcs q ON q.qcs_id = qa.qc_id WHERE qa.subproject_id = '${subprojectId}' AND q.level = 'subproject' UNION ALL SELECT pqa.project_qc_assignment_id FROM project_qc_assignments pqa WHERE pqa.subproject_id = '${subprojectId}') t),
         subproject_qcs_run_count AS (SELECT count(*) FROM qc_assignments qa JOIN qcs q ON q.qcs_id = qa.qc_id WHERE qa.subproject_id = '${subprojectId}' AND q.level = 'subproject'),
         subproject_export_assignments_count AS (SELECT count(*) FROM (SELECT ea.export_assignment_id FROM export_assignments ea JOIN exports e ON e.exports_id = ea.exports_id WHERE ea.subproject_id = '${subprojectId}' AND e.level = 'subproject' UNION ALL SELECT pea.project_export_assignment_id FROM project_export_assignments pea WHERE pea.subproject_id = '${subprojectId}') t),

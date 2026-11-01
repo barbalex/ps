@@ -18,6 +18,8 @@ npm run dev           # Start Vite dev server + Caddy proxy (localhost:5176)
 npm run dev-host      # Expose dev server to network
 npm run build         # Production build → frontend/dist
 npm run preview       # Preview production build
+npm run deploy        # Deploy: bump patch version + date, push main, update production branch (Netlify deploys production)
+npm run deploy minor  # Same with a minor bump (or: major)
 ```
 
 ### Code Quality
@@ -148,6 +150,9 @@ npm run hooks:install  # Install git pre-commit hooks
 **PGlite** (in-browser PostgreSQL) enables offline work:
 
 - Data syncs to IndexedDB via ElectricSQL
+- Field edits write PGlite immediately (labels stay live) but are aggregated
+  into ONE queued operation per row and form session (`src/modules/operationAggregation.ts`),
+  flushed on form blur, navigation, tab hide/close or ~5s of inactivity
 - Operations queue locally, sync when connection restored
 - **Conflict resolution:** "Time Machine" view shows who changed what when
 - **Data export:** Users can export all data at any time

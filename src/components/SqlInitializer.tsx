@@ -484,6 +484,17 @@ export const SqlInitializer = () => {
               error,
             )
           }
+          const syncReplaceStaleUniqueRowsSql = (
+            await import(`../sql/syncReplaceStaleUniqueRows.sql?raw`)
+          ).default
+          try {
+            await db.exec(syncReplaceStaleUniqueRowsSql)
+          } catch (error) {
+            console.error(
+              'Error executing syncReplaceStaleUniqueRowsSql:',
+              error,
+            )
+          }
 
           bootTrace('SqlInitializer done (existing db)')
           setSqlInitializing(false)
@@ -535,6 +546,17 @@ export const SqlInitializer = () => {
         } catch (error) {
           console.error(
             'Error executing syncIgnoreDuplicateInsertTriggersSql:',
+            error,
+          )
+        }
+        const syncReplaceStaleUniqueRowsSql = (
+          await import(`../sql/syncReplaceStaleUniqueRows.sql?raw`)
+        ).default
+        try {
+          await db.exec(syncReplaceStaleUniqueRowsSql)
+        } catch (error) {
+          console.error(
+            'Error executing syncReplaceStaleUniqueRowsSql:',
             error,
           )
         }

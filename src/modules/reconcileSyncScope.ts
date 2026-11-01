@@ -7,6 +7,12 @@ import {
 } from '../store.ts'
 import { fetchPostgrestToken } from './fetchPostgrestToken.ts'
 import { notifyAllLiveTables } from './gateLiveNotifyTriggers.ts'
+import { hasAggregatedUpdates } from './operationAggregation.ts'
+
+// queued or still-buffered local writes: both must reach the server before
+// pruning local rows out of the sync scope
+const hasPendingWrites = () =>
+  store.get(operationsQueueAtom).length > 0 || hasAggregatedUpdates()
 
 /**
  * Drops local rows that left the user's sync scope.
@@ -58,19 +64,19 @@ const fetchSyncScope = async (): Promise<SyncScope> => {
  * Returns the pruned counts, or null when reconciling is not safe right now:
  * sync not settled (a re-snapshot may have the tables half-filled) or local
  * writes still queued (a project created offline is not in the server scope
- * until its insert is applied).
+ * until its insert is applied — that includes edits still buffered by the
+ * update aggregation).
  */
 export const reconcileSyncScope = async (): Promise<PrunedCounts | null> => {
   const db = store.get(pgliteDbAtom)
   const sync = store.get(syncObjectAtom) as { isUpToDate?: boolean } | null
   if (!db || !sync?.isUpToDate) return null
-  if (store.get(operationsQueueAtom).length > 0) return null
+  if (hasPendingWrites()) return null
 
   const scope = await fetchSyncScope()
 
   // re-check after the round trip
-  if (!store.get(syncObjectAtom) || store.get(operationsQueueAtom).length > 0)
-    return null
+  if (!store.get(syncObjectAtom) || hasPendingWrites()) return null
 
   const counts = await db.transaction(async (tx) => {
     // same escape hatch pglite-sync uses: no history/audit triggers, no

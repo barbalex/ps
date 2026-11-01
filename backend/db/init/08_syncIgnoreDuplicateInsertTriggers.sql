@@ -7,7 +7,6 @@ RETURNS TRIGGER AS $$
 DECLARE
   is_syncing BOOLEAN;
   pk_column TEXT;
-  pk_value TEXT;
   duplicate_exists BOOLEAN;
 BEGIN
   SELECT COALESCE(NULLIF(current_setting('electric.syncing', true), ''), 'false')::boolean INTO is_syncing;
@@ -18,22 +17,19 @@ BEGIN
 
   pk_column := TG_ARGV[0];
 
-  EXECUTE format('SELECT ($1).%I::text', pk_column)
-  INTO pk_value
-  USING NEW;
-
-  IF pk_value IS NULL THEN
-    RETURN NEW;
-  END IF;
-
+  -- compare in the column's own type so the primary-key index is used; a
+  -- ::text cast on the column forced a sequential scan per inserted row,
+  -- turning a bulk sync apply of n rows into O(n²)
   EXECUTE format(
-    'SELECT EXISTS (SELECT 1 FROM %I.%I WHERE %I::text = $1)',
+    'SELECT ($1).%I IS NOT NULL AND EXISTS (SELECT 1 FROM %I.%I WHERE %I = ($1).%I)',
+    pk_column,
     TG_TABLE_SCHEMA,
     TG_TABLE_NAME,
+    pk_column,
     pk_column
   )
   INTO duplicate_exists
-  USING pk_value;
+  USING NEW;
 
   IF duplicate_exists THEN
     RETURN NULL;

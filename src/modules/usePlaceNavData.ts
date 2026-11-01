@@ -21,6 +21,7 @@ import type { TableRowFilter } from '../store.ts'
 import { buildNavLabel } from './buildNavLabel.ts'
 import { filterStringFromFilter } from './filterStringFromFilter.ts'
 import { getPlaceFallbackNames } from './placeNameFallback.ts'
+import { filesScopeWhere } from './filesScopeWhere.ts'
 
 type Props = {
   projectId: string
@@ -112,8 +113,8 @@ export const usePlaceNavData = ({
         action_reports_count_filtered AS (SELECT count(*) FROM action_reports WHERE place_id = '${placeId2 ?? placeId}' ${actionReportsIsFiltered ? ` AND ${actionReportsFilterString}` : ''}),
         observations_count AS (SELECT count(*) FROM observations WHERE place_id = '${placeId2 ?? placeId}'),
         place_roles_count AS (SELECT count(*) FROM place_roles WHERE place_id = '${placeId2 ?? placeId}'),
-        files_count_unfiltered AS (SELECT count(*) FROM files WHERE place_id = '${placeId2 ?? placeId}'),
-        files_count_filtered AS (SELECT count(*) FROM files WHERE place_id = '${placeId2 ?? placeId}' ${filesIsFiltered ? ` AND ${filesFilterString}` : ''})
+        files_count_unfiltered AS (SELECT count(*) FROM files WHERE ${filesScopeWhere({ placeId: placeId2 ?? placeId })}),
+        files_count_filtered AS (SELECT count(*) FROM files WHERE ${filesScopeWhere({ placeId: placeId2 ?? placeId })} ${filesIsFiltered ? ` AND ${filesFilterString}` : ''})
       SELECT
         place_id AS id,
         label,

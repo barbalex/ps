@@ -8,6 +8,12 @@ import { constants } from './modules/constants.ts'
 import { v7 as uuidv7 } from 'uuid'
 import { checkWritePermission } from './modules/checkWritePermission.ts'
 import { inferPkColumn } from './modules/inferPkColumn.ts'
+import {
+  initOperationAggregation,
+  registerAggregatedUpdate,
+  flushAggregatedUpdates,
+  isAggregatableUpdate,
+} from './modules/operationAggregation.ts'
 // import { atom } from 'jotai'
 
 export const store = createStore()
@@ -350,6 +356,12 @@ export const syncObjectAtom = atom<unknown>(null)
 // true when this tab is the PGlite worker leader and therefore the only tab
 // running the Electric shape streams (see modules/syncLeader.ts)
 export const syncLeaderAtom = atom(true)
+
+// true while the shape streams must stay stopped: a bulk upload of a whole
+// project (dump import) would otherwise stream its rows back piecemeal, in
+// no cross-stage order, and the child-before-parent applies abort the sync.
+// Syncer restarts the staged sync when the pause ends.
+export const syncPausedAtom = atom(false)
 
 // true while a post-boot sync is applying a sustained amount of data (shapes
 // not up-to-date for several seconds) — see BackgroundSyncIndicator. Not
@@ -760,18 +772,23 @@ export const addOperationAtom = atom(
   async (
     get,
     set,
-    opDraft: Omit<QueuedOperation, 'id' | 'time'>,
+    opDraft: Omit<QueuedOperation, 'id' | 'time'> & {
+      // the caller verified the permission itself, before a local change
+      // destroyed what the check reads (a project delete cascades its roles)
+      skipPermissionCheck?: boolean
+    },
   ) => {
     const db = get(pgliteDbAtom)
     const userId = get(userIdAtom)
+    const { skipPermissionCheck, ...opFields } = opDraft
 
     const operation: QueuedOperation = {
       id: uuidv7(),
       time: new Date().toISOString(),
-      ...opDraft,
+      ...opFields,
     }
 
-    if (db && userId) {
+    if (db && userId && !skipPermissionCheck) {
       const row = { ...opDraft.prev, ...opDraft.draft }
       const { allowed, userRole } = await checkWritePermission(
         db,
@@ -796,10 +813,32 @@ export const addOperationAtom = atom(
     }
 
     // console.log('store.addOperationAtom, operation:', operation)
+    if (isAggregatableUpdate(opFields)) {
+      // aggregate field edits into one operation per row and form session,
+      // flushed when the session ends (form blur, navigation, tab hide,
+      // page close, ~5s of inactivity) — see modules/operationAggregation.ts
+      registerAggregatedUpdate(opFields)
+      return
+    }
+    // any other write: flush buffered edits first so the queue keeps write
+    // order (e.g. an update ahead of its row's delete)
+    flushAggregatedUpdates()
     const opQueue = get(operationsQueueAtom)
     set(operationsQueueAtom, [operation, ...opQueue])
   },
 )
+// wires the update aggregation: field-edit updates are buffered (one merged
+// operation per row and form session) and flushed onto the queue when the
+// session ends. Runs at module load so the boot heal enqueues the edits of a
+// crashed session before the sync starts pulling server state.
+// The queue is newest-first; flushed entries arrive in first-edit order
+// (oldest first), so reversed they keep that contract.
+initOperationAggregation({
+  enqueue: (ops) => {
+    const opQueue = store.get(operationsQueueAtom)
+    store.set(operationsQueueAtom, [...ops.slice().reverse(), ...opQueue])
+  },
+})
 export const removeOperationAtom = atom(
   (_get) => null,
   (get, set, id: string) => {

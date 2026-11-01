@@ -6,6 +6,7 @@ import {
   syncObjectAtom,
 } from '../store.ts'
 import { invalidatePostgrestToken } from './fetchPostgrestToken.ts'
+import { clearAggregatedUpdates } from './operationAggregation.ts'
 
 const deleteIndexedDbDatabase = (dbName: string) =>
   new Promise<boolean>((resolve) => {
@@ -119,6 +120,8 @@ export const clearLocalSyncedData = async () => {
   clearPersistedSyncUiState()
 
   store.set(pgliteDbAtom, null)
+  // buffered field edits belong to the wiped local data
+  clearAggregatedUpdates()
   store.set(operationsQueueAtom, [])
   store.set(initialSyncingAtom, true)
 

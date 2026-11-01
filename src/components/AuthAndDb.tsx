@@ -10,6 +10,7 @@ import { InitialSyncManager } from './InitialSyncManager.tsx'
 import { Syncer } from './Syncer.tsx'
 import { BackgroundSyncIndicator } from './BackgroundSyncIndicator.tsx'
 import { SyncScopeReconciler } from './SyncScopeReconciler.tsx'
+import { InterruptedImportCleanup } from './InterruptedImportCleanup.tsx'
 import { LayoutProtected } from './LayoutProtected/index.tsx'
 import { Initiating } from './Initiating.tsx'
 import {
@@ -52,6 +53,7 @@ export const AuthAndDb = () => {
           <Syncer />
           <BackgroundSyncIndicator />
           <SyncScopeReconciler />
+          <InterruptedImportCleanup />
           {sqlInitializing || initialSyncing ? (
             <Initiating />
           ) : (

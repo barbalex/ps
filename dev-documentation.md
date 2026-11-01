@@ -56,6 +56,36 @@ Edit SQL files only in:
 Do not manually edit mirrored copies in `backend-dev/db/init/` or `src/sql/`.
 Do not manually edit mirrored copies in `backend-dev/db/` for the shared files listed above.
 
+## Write Path: Update Aggregation (one operation per row and form session)
+
+Field edits save locally into PGlite immediately (tree/breadcrumb labels are
+live queries on PGlite and stay live), but they no longer queue one operation
+per field change — each server update is also one row version in the
+`*_history` tables, and per-field writes churned the history and made
+sessions of offline conflicts noisy to compare. `addOperationAtom` routes
+single-row, draft-based `update` operations through
+`src/modules/operationAggregation.ts`, which merges them per row (latest
+draft per field, pre-session value per field as the revert target) and
+enqueues ONE merged operation when the editing session ends:
+
+- ~5s after the last change on the row
+- when the focus leaves the form the edited field belongs to (portals of
+  form controls — Fluent dropdowns, dialogs — count as inside)
+- on navigation (`router.history` subscription in `src/router.tsx`)
+- on tab-hide and page close (visibilitychange/pagehide)
+
+The buffer persists in localStorage (`ps-aggregated-updates`) holding the
+edit values; a boot heal enqueues leftover edits before the ElectricSQL sync
+pulls server state — because the flush sends buffered values (it never
+re-reads the row), a sync applying a stale server version mid-session cannot
+destroy them. Everything else (inserts, deletes, filter-based updates,
+upserts) passes straight to the queue and flushes the buffer first, keeping
+write order. The write permission check stays per field edit in
+`addOperationAtom`; the merged flush does not re-check. On server rejection
+the merged `prev` reverts the whole session.
+
+Tests: `tests/operationAggregation.test.ts`.
+
 ## Write Path: Batched apply_operations RPC
 
 Local edits remain optimistic pglite writes queued as operations
@@ -816,6 +846,40 @@ re-run the other script.
 Manual equivalent for a single file: `APF2_APPLY_LATER=1
 npm run apflora:generate`, then psql the file with `SET electric.syncing TO
 'true'` first (the write-permission triggers otherwise reject the writes).
+
+### Project dumps (export / import)
+
+A project can be moved as one SQL file — between installations, as a backup,
+or to restore a deleted project — with its original ids.
+
+- **Table list:** `scripts/project-dump-tables.mjs` (`projectTables` in FK
+  order, `projectTableWhere()` builds each table's project scope). Access
+  rows (`project_users`, `*_roles`) are part of a dump; history tables,
+  global catalogs and account-scoped fields are not.
+- **In the app:** project header → "Export to SQL dumpfile" writes the
+  locally synced rows (`src/modules/projectDump/exportProjectDump.ts`) as one
+  `INSERT … SELECT … FROM jsonb_populate_recordset(NULL::table, $ps_dump$[…]$ps_dump$)`
+  statement per table chunk — valid SQL *and* parseable without a SQL
+  parser (`parseProjectDump.ts`). Projects list → "Import from SQL dumpfile"
+  uploads the rows to the server through `apply_operations` in FK order
+  (`importProjectDump.ts`): the project row first (attached to the chosen
+  account; the owner trigger grants the importer the `own` role), then
+  chunks of 250 rows; access rows are skipped, the cascade triggers recreate
+  them. Nothing is written locally — Electric streams the project down. A
+  project with the same id must not exist; on any server failure the
+  partially imported project is deleted again.
+- **Scripts (dev backend, pg_dump format):** `npm run project:dump <projectId> <file>`
+  and `npm run project:import:dump <file> <projectId>` — the import also
+  accepts files written by the app.
+
+Known limits: `apply_operations` stamps `created_at`/`updated_at` with the
+import time; the in-app import does not read pg_dump-format files. After a
+large import Electric needs minutes before the data streams to clients: it
+evaluates every uploaded row against all ~60 subquery shapes (the apflora
+project, 250k rows, took ~7 min end to end; a cold client sync of the
+same data takes ~1 min). The importing tab pauses its shape streams during
+the upload (`syncPausedAtom`), otherwise the rows would arrive
+child-before-parent across stages and abort the applies.
 
 ## Known limitations (v1)
 
