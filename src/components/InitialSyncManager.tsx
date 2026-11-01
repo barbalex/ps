@@ -25,9 +25,12 @@ const HARD_CAP_MS = 15 * 60_000
 // up-to-date marker is RECEIVED — before the apply transaction has
 // committed, which for a large dataset can be a minute later. Live queries
 // can't be trusted to notice the arrival either (sync applies don't notify,
-// see gateLiveNotifyTriggers), so this polls the aggregate sync object's
-// `isApplied`: it only turns true once EVERY stage's onInitialSync fired,
-// i.e. all snapshots are committed and the UI will find the rows.
+// see gateLiveNotifyTriggers), so this polls the aggregate sync object:
+// `isApplied` (every stage's onInitialSync fired, i.e. all snapshots are
+// committed) releases immediately; once every stage is merely up to date, a
+// probe query queued behind the worker's running apply releases when that
+// apply has committed — which also covers a resume with nothing new, where
+// pglite-sync never commits and onInitialSync never fires.
 const InitialSyncWatcher = () => {
   const db = usePGlite()
   const setInitialSyncing = useSetAtom(initialSyncingAtom)
@@ -50,6 +53,7 @@ const InitialSyncWatcher = () => {
     let lastSignature = ''
     let lastProgressAt = Date.now()
     const startedAt = Date.now()
+    let probing = false
 
     const tick = async () => {
       const syncObject = store.get(syncObjectAtom) as PsSyncObject | null
@@ -59,6 +63,25 @@ const InitialSyncWatcher = () => {
       }
       if (Date.now() - startedAt > HARD_CAP_MS) {
         release(`${HARD_CAP_MS / 60_000}min hard cap`)
+        return
+      }
+      if (syncObject?.isUpToDate && !probing) {
+        // every stage received up-to-date, none reported its commit yet:
+        // either a big apply is still running, or this is a resume with
+        // nothing new (pglite-sync then never commits, so onInitialSync
+        // never fires). A probe queues behind any running apply in the
+        // worker — when it returns, whatever was pending is committed.
+        probing = true
+        try {
+          await db.query(`SELECT 1`)
+          release(
+            syncObject.isApplied ?
+              'all stages applied'
+            : 'up to date, nothing pending',
+          )
+        } catch {
+          probing = false
+        }
         return
       }
       if (syncObject) {
