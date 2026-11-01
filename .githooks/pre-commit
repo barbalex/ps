@@ -6,3 +6,6 @@ npm run sync-sql:check
 
 printf '%s\n' 'Running i18n punctuation check...'
 npm run i18n:punctuation:check
+
+printf '%s\n' 'Running i18n completeness check...'
+npm run i18n:missing:check
