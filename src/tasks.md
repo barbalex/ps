@@ -97,5 +97,3 @@ question: can't we just create a dump of the apflora project (in the structure i
 ensure apflora import is complete (dropdown lists etc.)
 
 ---
-
-check translations
