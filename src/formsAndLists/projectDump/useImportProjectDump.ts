@@ -12,6 +12,7 @@ import {
   syncPausedAtom,
 } from '../../store.ts'
 import { backgroundTasks } from '../../modules/backgroundTasks.ts'
+import { flushAggregatedUpdates } from '../../modules/operationAggregation.ts'
 import {
   countArrivedRows,
   importedRowCount,
@@ -148,7 +149,10 @@ export const useImportProjectDump = () => {
     )
     try {
       // local edits still queued (typically the delete of the project being
-      // re-imported) must reach the server first, else the insert collides
+      // re-imported) must reach the server first, else the insert collides;
+      // buffered field edits count too — flush them into the queue so the
+      // wait below drains them as well
+      flushAggregatedUpdates()
       const queueStart = Date.now()
       while (
         store.get(operationsQueueAtom).length &&

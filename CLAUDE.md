@@ -150,6 +150,9 @@ npm run hooks:install  # Install git pre-commit hooks
 **PGlite** (in-browser PostgreSQL) enables offline work:
 
 - Data syncs to IndexedDB via ElectricSQL
+- Field edits write PGlite immediately (labels stay live) but are aggregated
+  into ONE queued operation per row and form session (`src/modules/operationAggregation.ts`),
+  flushed on form blur, navigation, tab hide/close or ~5s of inactivity
 - Operations queue locally, sync when connection restored
 - **Conflict resolution:** "Time Machine" view shows who changed what when
 - **Data export:** Users can export all data at any time

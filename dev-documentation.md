@@ -56,6 +56,36 @@ Edit SQL files only in:
 Do not manually edit mirrored copies in `backend-dev/db/init/` or `src/sql/`.
 Do not manually edit mirrored copies in `backend-dev/db/` for the shared files listed above.
 
+## Write Path: Update Aggregation (one operation per row and form session)
+
+Field edits save locally into PGlite immediately (tree/breadcrumb labels are
+live queries on PGlite and stay live), but they no longer queue one operation
+per field change — each server update is also one row version in the
+`*_history` tables, and per-field writes churned the history and made
+sessions of offline conflicts noisy to compare. `addOperationAtom` routes
+single-row, draft-based `update` operations through
+`src/modules/operationAggregation.ts`, which merges them per row (latest
+draft per field, pre-session value per field as the revert target) and
+enqueues ONE merged operation when the editing session ends:
+
+- ~5s after the last change on the row
+- when the focus leaves the form the edited field belongs to (portals of
+  form controls — Fluent dropdowns, dialogs — count as inside)
+- on navigation (`router.history` subscription in `src/router.tsx`)
+- on tab-hide and page close (visibilitychange/pagehide)
+
+The buffer persists in localStorage (`ps-aggregated-updates`) holding the
+edit values; a boot heal enqueues leftover edits before the ElectricSQL sync
+pulls server state — because the flush sends buffered values (it never
+re-reads the row), a sync applying a stale server version mid-session cannot
+destroy them. Everything else (inserts, deletes, filter-based updates,
+upserts) passes straight to the queue and flushes the buffer first, keeping
+write order. The write permission check stays per field edit in
+`addOperationAtom`; the merged flush does not re-check. On server rejection
+the merged `prev` reverts the whole session.
+
+Tests: `tests/operationAggregation.test.ts`.
+
 ## Write Path: Batched apply_operations RPC
 
 Local edits remain optimistic pglite writes queued as operations

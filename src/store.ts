@@ -8,6 +8,12 @@ import { constants } from './modules/constants.ts'
 import { v7 as uuidv7 } from 'uuid'
 import { checkWritePermission } from './modules/checkWritePermission.ts'
 import { inferPkColumn } from './modules/inferPkColumn.ts'
+import {
+  initOperationAggregation,
+  registerAggregatedUpdate,
+  flushAggregatedUpdates,
+  isAggregatableUpdate,
+} from './modules/operationAggregation.ts'
 // import { atom } from 'jotai'
 
 export const store = createStore()
@@ -807,10 +813,32 @@ export const addOperationAtom = atom(
     }
 
     // console.log('store.addOperationAtom, operation:', operation)
+    if (isAggregatableUpdate(opFields)) {
+      // aggregate field edits into one operation per row and form session,
+      // flushed when the session ends (form blur, navigation, tab hide,
+      // page close, ~5s of inactivity) — see modules/operationAggregation.ts
+      registerAggregatedUpdate(opFields)
+      return
+    }
+    // any other write: flush buffered edits first so the queue keeps write
+    // order (e.g. an update ahead of its row's delete)
+    flushAggregatedUpdates()
     const opQueue = get(operationsQueueAtom)
     set(operationsQueueAtom, [operation, ...opQueue])
   },
 )
+// wires the update aggregation: field-edit updates are buffered (one merged
+// operation per row and form session) and flushed onto the queue when the
+// session ends. Runs at module load so the boot heal enqueues the edits of a
+// crashed session before the sync starts pulling server state.
+// The queue is newest-first; flushed entries arrive in first-edit order
+// (oldest first), so reversed they keep that contract.
+initOperationAggregation({
+  enqueue: (ops) => {
+    const opQueue = store.get(operationsQueueAtom)
+    store.set(operationsQueueAtom, [...ops.slice().reverse(), ...opQueue])
+  },
+})
 export const removeOperationAtom = atom(
   (_get) => null,
   (get, set, id: string) => {
