@@ -31,12 +31,14 @@ tree building: optimizable?
 → WIP on branch `virtualized_tree`: apf2's virtualized-tree method ported.
 
 Done:
+
 - infra in `src/components/Tree/virtual/`: registry atoms, generic Registrar (runs each node type's navData hook and registers its row + children descriptors), useVisibleTreeRows walker, FocusPathLoader + scrollToIndex scroll-into-view (exact row, deepest-ancestor fallback)
 - `Tree/index.tsx` window-renders via @tanstack/react-virtual (22px estimate, measureElement), uniform onClickButton port, live isOpen/isActive per row
 - configs for the main spine: projects/project/subprojects/subproject/places/place/goals/goal/goalReports/files/file/checks/actions/charts/observations folders/users/user/accounts/messages/message/queuedOperations
 - old tree components kept as reference (dead code) until conversion completes
 
 Progress (2nd round):
+
 - check + action singulars incl. quantities/taxa/files folders
 - place children via usePlaceNavData (all conditions + dynamic filtered-checks/<id>/checks, multi-segment nav ids handled by walker)
 - designing branches: project children (wms/wfs/vector/users/lists/taxonomies/units/crs/placeLevels/fields/filteredViews/qcs/exports), subproject designing children, designing roots (fieldTypes, widgetTypes, widgetsForFields, qcs, rootQcs/run, exports, rootExports/run)
@@ -44,6 +46,7 @@ Progress (2nd round):
 - config ids aligned with the real url segments the hooks build
 
 Remaining:
+
 - live verification in the user's browser (dev sync stalls in automation context; typecheck + vitest 95/95 pass)
 - formLink labels for some project-level nodes are German placeholders (project-design, qc-assignments, qcs-run, exports-run...) - map to their real hooks (useProjectQcAssignmentsNavData etc.) and i18n
 - singular rows of secondary collections (quantities, taxa, reports, users...) render as form links - fine until they need children
@@ -70,6 +73,12 @@ Suggested fix: gate the trigger function on electric.syncing, and (for queries m
 ---
 
 ---
+
+nav tree: 'Subprojects (...)'. No matter how deep I navigate into subfolders (using breadcrumbs ans list views), this one stays like this and no subfolder is rendered
+
+---
+
+http://localhost:5176/data/projects/0195a101-0000-7000-8000-000000000001/subprojects/017d3472-d75d-7a4f-8040-dfdd5df00bdb: in the Art list view 'Charts (0)' but 3 charts exist
 
 ---
 
