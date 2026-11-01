@@ -5,11 +5,10 @@ import { isEqual } from 'es-toolkit'
 import { useIntl } from 'react-intl'
 
 import { treeOpenNodesAtom } from '../store.ts'
+import { buildNavLabel } from './buildNavLabel.ts'
 
-const parentArray = ['data']
+const parentArray = ['data', 'users']
 const parentUrl = `/${parentArray.join('/')}`
-const ownArray = [...parentArray, 'users']
-const ownUrl = `/${ownArray.join('/')}`
 
 type Props = {
   userId: string
@@ -18,6 +17,8 @@ type Props = {
 type NavData = {
   id: string
   label: string | null
+  accounts_in_user: boolean | null
+  accounts_count: number
 }
 
 export const useUserNavData = ({ userId }: Props) => {
@@ -29,7 +30,9 @@ export const useUserNavData = ({ userId }: Props) => {
     `
     SELECT 
       user_id AS id, 
-      label 
+      label,
+      accounts_in_user,
+      (SELECT count(*) FROM accounts WHERE accounts.user_id = users.user_id) AS accounts_count
     FROM users
     WHERE user_id = $1`,
     [userId],
@@ -38,6 +41,8 @@ export const useUserNavData = ({ userId }: Props) => {
 
   const nav = res?.rows?.[0] as NavData | undefined
   const urlPath = location.pathname.split('/').filter((p) => p !== '')
+  const ownArray = [...parentArray, nav?.id ?? userId]
+  const ownUrl = `/${ownArray.join('/')}`
 
   // needs to work not only works for urlPath, for all opened paths!
   const isOpen = openNodes.some((array) => isEqual(array, ownArray))
@@ -59,6 +64,23 @@ export const useUserNavData = ({ userId }: Props) => {
     label,
     notFound,
     nameSingular: formatMessage({ id: 'qyI8KV', defaultMessage: 'Benutzer' }),
+    // accounts are listed inside the user form unless accounts_in_user is off
+    navs:
+      nav && nav.accounts_in_user !== true ?
+        [
+          {
+            id: 'accounts',
+            label: buildNavLabel({
+              loading,
+              countFiltered: Number(nav.accounts_count ?? 0),
+              namePlural: formatMessage({
+                id: '/40i9A',
+                defaultMessage: 'Konten',
+              }),
+            }),
+          },
+        ]
+      : [],
   }
 
   return { loading, navData }

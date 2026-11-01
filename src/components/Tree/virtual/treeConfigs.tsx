@@ -68,6 +68,24 @@ import { useRootQcsRunNavData } from '../../../modules/useRootQcsRunNavData.ts'
 import { useExportsNavData } from '../../../modules/useExportsNavData.ts'
 import { useRootExportsNavData } from '../../../modules/useRootExportsNavData.ts'
 import { useRootExportsRunNavData } from '../../../modules/useRootExportsRunNavData.ts'
+import { useChartNavData } from '../../../modules/useChartNavData.ts'
+import { useChartSubjectsNavData } from '../../../modules/useChartSubjectsNavData.ts'
+import { useCheckReportNavData } from '../../../modules/useCheckReportNavData.ts'
+import { useCheckReportQuantitiesNavData } from '../../../modules/useCheckReportQuantitiesNavData.ts'
+import { useActionReportNavData } from '../../../modules/useActionReportNavData.ts'
+import { useActionReportQuantitiesNavData } from '../../../modules/useActionReportQuantitiesNavData.ts'
+import { useListNavData } from '../../../modules/useListNavData.ts'
+import { useListValuesNavData } from '../../../modules/useListValuesNavData.ts'
+import { useTaxonomyNavData } from '../../../modules/useTaxonomyNavData.ts'
+import { useTaxaNavData } from '../../../modules/useTaxaNavData.ts'
+import { useVectorLayerNavData } from '../../../modules/useVectorLayerNavData.ts'
+import { useVectorLayerDisplaysNavData } from '../../../modules/useVectorLayerDisplaysNavData.ts'
+import { useWfsServiceNavData } from '../../../modules/useWfsServiceNavData.ts'
+import { useWfsServiceLayersNavData } from '../../../modules/useWfsServiceLayersNavData.ts'
+import { useWmsServiceNavData } from '../../../modules/useWmsServiceNavData.ts'
+import { useWmsServiceLayersNavData } from '../../../modules/useWmsServiceLayersNavData.ts'
+import { useSubprojectTaxaNavData } from '../../../modules/useSubprojectTaxaNavData.ts'
+import { useAccountNavData } from '../../../modules/useAccountNavData.ts'
 
 import type { NavDataLike, TreeChild, TreeNodeConfig } from './types.ts'
 
@@ -90,8 +108,11 @@ const entityChildren =
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       params: any
     }) => string,
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    folderTypes: Record<string, (params: any) => { type: string; params: Record<string, unknown> }>,
+     
+    folderTypes: Record<
+      string,
+      (params: any) => { type: string; params: Record<string, unknown> }
+    >,
     childLevel?: number,
   ) =>
   ({
@@ -164,7 +185,10 @@ const collectionChildren =
         const childParams =
           type === 'formLink' ?
             {
-              ownArray: [...(navData.ownArray ?? []).map((seg) => seg ?? ''), id],
+              ownArray: [
+                ...(navData.ownArray ?? []).map((seg) => seg ?? ''),
+                id,
+              ],
               label: (nav as { label?: string }).label ?? id,
             }
           : { ...params, nav }
@@ -236,20 +260,47 @@ export const treeConfigs: Record<string, TreeNodeConfig> = {
           type: 'files',
           params: { projectId: p.nav.id, level: 3 },
         }),
-        'wms-services': (p) => ({ type: 'wmsServices', params: { projectId: p.nav.id } }),
-        'wms-layers': (p) => ({ type: 'wmsLayers', params: { projectId: p.nav.id } }),
-        'wfs-services': (p) => ({ type: 'wfsServices', params: { projectId: p.nav.id } }),
-        'vector-layers': (p) => ({ type: 'vectorLayers', params: { projectId: p.nav.id } }),
-        users: (p) => ({ type: 'projectUsers', params: { projectId: p.nav.id } }),
+        'wms-services': (p) => ({
+          type: 'wmsServices',
+          params: { projectId: p.nav.id },
+        }),
+        'wms-layers': (p) => ({
+          type: 'wmsLayers',
+          params: { projectId: p.nav.id },
+        }),
+        'wfs-services': (p) => ({
+          type: 'wfsServices',
+          params: { projectId: p.nav.id },
+        }),
+        'vector-layers': (p) => ({
+          type: 'vectorLayers',
+          params: { projectId: p.nav.id },
+        }),
+        users: (p) => ({
+          type: 'projectUsers',
+          params: { projectId: p.nav.id },
+        }),
         lists: (p) => ({ type: 'lists', params: { projectId: p.nav.id } }),
-        taxonomies: (p) => ({ type: 'taxonomies', params: { projectId: p.nav.id } }),
+        taxonomies: (p) => ({
+          type: 'taxonomies',
+          params: { projectId: p.nav.id },
+        }),
         units: (p) => ({ type: 'units', params: { projectId: p.nav.id } }),
         crs: (p) => ({ type: 'projectCrss', params: { projectId: p.nav.id } }),
-        'place-levels': (p) => ({ type: 'placeLevels', params: { projectId: p.nav.id } }),
+        'place-levels': (p) => ({
+          type: 'placeLevels',
+          params: { projectId: p.nav.id },
+        }),
         fields: (p) => ({ type: 'fields', params: { projectId: p.nav.id } }),
-        'filtered-views': (p) => ({ type: 'filteredViews', params: { projectId: p.nav.id } }),
+        'filtered-views': (p) => ({
+          type: 'filteredViews',
+          params: { projectId: p.nav.id },
+        }),
         qcs: (p) => ({ type: 'projectQcs', params: { projectId: p.nav.id } }),
-        exports: (p) => ({ type: 'projectExports', params: { projectId: p.nav.id } }),
+        exports: (p) => ({
+          type: 'projectExports',
+          params: { projectId: p.nav.id },
+        }),
       },
       3,
     ),
@@ -260,7 +311,8 @@ export const treeConfigs: Record<string, TreeNodeConfig> = {
   },
   subproject: {
     childrenCount: 6,
-    hook: (params, nav) => useSubprojectNavData({ ...params, subprojectId: nav.id }).navData,
+    hook: (params, nav) =>
+      useSubprojectNavData({ ...params, subprojectId: nav.id }).navData,
     children: entityChildren(
       () => 'Subproject',
       {
@@ -331,13 +383,17 @@ export const treeConfigs: Record<string, TreeNodeConfig> = {
           type: 'subprojectExportAssignments',
           params: { projectId: p.projectId, subprojectId: p.nav.id },
         }),
-        taxa: () => ({
-          type: 'formLink',
-          params: { label: 'Taxa' },
+        taxa: (p) => ({
+          type: 'subprojectTaxa',
+          params: { projectId: p.projectId, subprojectId: p.nav.id },
         }),
       },
       5,
     ),
+  },
+  subprojectTaxa: {
+    hook: (params) => useSubprojectTaxaNavData(params).navData,
+    children: collectionChildren('formLink', undefined),
   },
   places: {
     hook: (params) => usePlacesNavData(params).navData,
@@ -377,19 +433,61 @@ export const treeConfigs: Record<string, TreeNodeConfig> = {
             level: level + 1,
           })
         } else if (id === 'checks') {
-          children.push({ orderKey: id, type: 'checks', params: { ...base }, nav: childNav, level: level + 1 })
+          children.push({
+            orderKey: id,
+            type: 'checks',
+            params: { ...base },
+            nav: childNav,
+            level: level + 1,
+          })
         } else if (id === 'actions') {
-          children.push({ orderKey: id, type: 'actions', params: { ...base }, nav: childNav, level: level + 1 })
+          children.push({
+            orderKey: id,
+            type: 'actions',
+            params: { ...base },
+            nav: childNav,
+            level: level + 1,
+          })
         } else if (id === 'check-reports') {
-          children.push({ orderKey: id, type: 'checkReports', params: { ...base }, nav: childNav, level: level + 1 })
+          children.push({
+            orderKey: id,
+            type: 'checkReports',
+            params: { ...base },
+            nav: childNav,
+            level: level + 1,
+          })
         } else if (id === 'action-reports') {
-          children.push({ orderKey: id, type: 'actionReports', params: { ...base }, nav: childNav, level: level + 1 })
+          children.push({
+            orderKey: id,
+            type: 'actionReports',
+            params: { ...base },
+            nav: childNav,
+            level: level + 1,
+          })
         } else if (id === 'observations') {
-          children.push({ orderKey: id, type: 'observationsAssigned', params: { ...base }, nav: childNav, level: level + 1 })
+          children.push({
+            orderKey: id,
+            type: 'observationsAssigned',
+            params: { ...base },
+            nav: childNav,
+            level: level + 1,
+          })
         } else if (id === 'users') {
-          children.push({ orderKey: id, type: 'placeUsers', params: { ...base }, nav: childNav, level: level + 1 })
+          children.push({
+            orderKey: id,
+            type: 'placeUsers',
+            params: { ...base },
+            nav: childNav,
+            level: level + 1,
+          })
         } else if (id === 'files') {
-          children.push({ orderKey: id, type: 'files', params: { ...base, level: level + 1 }, nav: childNav, level: level + 1 })
+          children.push({
+            orderKey: id,
+            type: 'files',
+            params: { ...base, level: level + 1 },
+            nav: childNav,
+            level: level + 1,
+          })
         } else if (id === 'places' && !placeId2) {
           children.push({
             orderKey: id,
@@ -424,7 +522,8 @@ export const treeConfigs: Record<string, TreeNodeConfig> = {
   },
   goal: {
     childrenCount: 1,
-    hook: (params, nav) => useGoalNavData({ ...params, goalId: nav.id }).navData,
+    hook: (params, nav) =>
+      useGoalNavData({ ...params, goalId: nav.id }).navData,
     children: entityChildren(
       () => 'Ziel',
       {
@@ -432,8 +531,8 @@ export const treeConfigs: Record<string, TreeNodeConfig> = {
           type: 'goalReports',
           params: {
             projectId: p.projectId,
-            subprojectId: p.nav.id,
-            goalId: p.goalId,
+            subprojectId: p.subprojectId,
+            goalId: p.nav.id,
           },
         }),
       },
@@ -454,10 +553,60 @@ export const treeConfigs: Record<string, TreeNodeConfig> = {
   },
   checkReports: {
     hook: (params) => useCheckReportsNavData(params).navData,
+    children: collectionChildren('checkReport', undefined),
+  },
+  checkReport: {
+    childrenCount: 1,
+    hook: (params, nav) =>
+      useCheckReportNavData({ ...params, checkReportId: nav.id }).navData,
+    children: entityChildren(
+      () => 'Kontroll-Bericht',
+      {
+        quantities: (p) => ({
+          type: 'checkReportQuantities',
+          params: {
+            projectId: p.projectId,
+            subprojectId: p.subprojectId,
+            placeId: p.placeId,
+            placeId2: p.placeId2,
+            checkReportId: p.nav.id,
+          },
+        }),
+      },
+      undefined,
+    ),
+  },
+  checkReportQuantities: {
+    hook: (params) => useCheckReportQuantitiesNavData(params).navData,
     children: collectionChildren('formLink', undefined),
   },
   actionReports: {
     hook: (params) => useActionReportsNavData(params).navData,
+    children: collectionChildren('actionReport', undefined),
+  },
+  actionReport: {
+    childrenCount: 1,
+    hook: (params, nav) =>
+      useActionReportNavData({ ...params, actionReportId: nav.id }).navData,
+    children: entityChildren(
+      () => 'Massnahmen-Bericht',
+      {
+        quantities: (p) => ({
+          type: 'actionReportQuantities',
+          params: {
+            projectId: p.projectId,
+            subprojectId: p.subprojectId,
+            placeId: p.placeId,
+            placeId2: p.placeId2,
+            actionReportId: p.nav.id,
+          },
+        }),
+      },
+      undefined,
+    ),
+  },
+  actionReportQuantities: {
+    hook: (params) => useActionReportQuantitiesNavData(params).navData,
     children: collectionChildren('formLink', undefined),
   },
   observationsAssigned: {
@@ -486,7 +635,8 @@ export const treeConfigs: Record<string, TreeNodeConfig> = {
   },
   check: {
     childrenCount: 1,
-    hook: (params, nav) => useCheckNavData({ ...params, checkId: nav.id }).navData,
+    hook: (params, nav) =>
+      useCheckNavData({ ...params, checkId: nav.id }).navData,
     children: entityChildren(
       () => 'Kontrolle',
       {
@@ -494,7 +644,7 @@ export const treeConfigs: Record<string, TreeNodeConfig> = {
           type: 'checkQuantities',
           params: {
             projectId: p.projectId,
-            subprojectId: p.nav.id,
+            subprojectId: p.subprojectId,
             placeId: p.placeId,
             placeId2: p.placeId2,
             filteredViewId: p.filteredViewId,
@@ -505,7 +655,7 @@ export const treeConfigs: Record<string, TreeNodeConfig> = {
           type: 'checkTaxa',
           params: {
             projectId: p.projectId,
-            subprojectId: p.nav.id,
+            subprojectId: p.subprojectId,
             placeId: p.placeId,
             placeId2: p.placeId2,
             filteredViewId: p.filteredViewId,
@@ -516,7 +666,7 @@ export const treeConfigs: Record<string, TreeNodeConfig> = {
           type: 'files',
           params: {
             projectId: p.projectId,
-            subprojectId: p.nav.id,
+            subprojectId: p.subprojectId,
             placeId: p.placeId,
             placeId2: p.placeId2,
             checkId: p.nav.id,
@@ -528,7 +678,8 @@ export const treeConfigs: Record<string, TreeNodeConfig> = {
   },
   action: {
     childrenCount: 11,
-    hook: (params, nav) => useActionNavData({ ...params, actionId: nav.id }).navData,
+    hook: (params, nav) =>
+      useActionNavData({ ...params, actionId: nav.id }).navData,
     children: entityChildren(
       () => 'Massnahme',
       {
@@ -536,7 +687,7 @@ export const treeConfigs: Record<string, TreeNodeConfig> = {
           type: 'actionQuantities',
           params: {
             projectId: p.projectId,
-            subprojectId: p.nav.id,
+            subprojectId: p.subprojectId,
             placeId: p.placeId,
             placeId2: p.placeId2,
             actionId: p.nav.id,
@@ -546,7 +697,7 @@ export const treeConfigs: Record<string, TreeNodeConfig> = {
           type: 'actionTaxa',
           params: {
             projectId: p.projectId,
-            subprojectId: p.nav.id,
+            subprojectId: p.subprojectId,
             placeId: p.placeId,
             placeId2: p.placeId2,
             actionId: p.nav.id,
@@ -556,7 +707,7 @@ export const treeConfigs: Record<string, TreeNodeConfig> = {
           type: 'files',
           params: {
             projectId: p.projectId,
-            subprojectId: p.nav.id,
+            subprojectId: p.subprojectId,
             placeId: p.placeId,
             placeId2: p.placeId2,
             actionId: p.nav.id,
@@ -572,6 +723,32 @@ export const treeConfigs: Record<string, TreeNodeConfig> = {
   },
   charts: {
     hook: (params) => useChartsNavData(params).navData,
+    children: collectionChildren('chart', undefined),
+  },
+  chart: {
+    childrenCount: 1,
+    hook: (params, nav) =>
+      useChartNavData({ ...params, chartId: nav.id }).navData,
+    children: entityChildren(
+      () => 'Diagramm',
+      {
+        subjects: (p) => ({
+          type: 'chartSubjects',
+          params: {
+            projectId: p.projectId,
+            subprojectId: p.subprojectId,
+            placeId: p.placeId,
+            placeId2: p.placeId2,
+            section: p.section,
+            chartId: p.nav.id,
+          },
+        }),
+      },
+      undefined,
+    ),
+  },
+  chartSubjects: {
+    hook: (params) => useChartSubjectsNavData(params).navData,
     children: collectionChildren('formLink', undefined),
   },
   files: {
@@ -579,7 +756,8 @@ export const treeConfigs: Record<string, TreeNodeConfig> = {
     children: collectionChildren('file', undefined),
   },
   file: {
-    hook: (params, nav) => useFileNavData({ ...params, fileId: nav.id }).navData,
+    hook: (params, nav) =>
+      useFileNavData({ ...params, fileId: nav.id }).navData,
     children: undefined,
   },
   observationImports: {
@@ -601,18 +779,34 @@ export const treeConfigs: Record<string, TreeNodeConfig> = {
   },
   user: {
     childrenCount: 1,
-    hook: (params, nav) => useUserNavData({ ...params, userId: nav.id }).navData,
+    hook: (params, nav) =>
+      useUserNavData({ ...params, userId: nav.id }).navData,
     children: entityChildren(
       () => 'User',
       {
         accounts: (p) => ({ type: 'accounts', params: { userId: p.nav.id } }),
       },
-      0,
+      undefined,
     ),
   },
   accounts: {
     hook: (params) => useAccountsNavData(params).navData,
-    children: collectionChildren('formLink', undefined),
+    children: collectionChildren('account', undefined),
+  },
+  account: {
+    childrenCount: 1,
+    hook: (params, nav) =>
+      useAccountNavData({ ...params, accountId: nav.id }).navData,
+    children: entityChildren(
+      () => 'Konto',
+      {
+        'project-fields': (p) => ({
+          type: 'fields',
+          params: { accountId: p.nav.id, userId: p.userId },
+        }),
+      },
+      undefined,
+    ),
   },
   messages: {
     isRoot: true,
@@ -620,7 +814,8 @@ export const treeConfigs: Record<string, TreeNodeConfig> = {
     children: collectionChildren('message', 0),
   },
   message: {
-    hook: (params, nav) => useMessageNavData({ ...params, messageId: nav.id }).navData,
+    hook: (params, nav) =>
+      useMessageNavData({ ...params, messageId: nav.id }).navData,
     children: undefined,
   },
   queuedOperations: {
@@ -642,6 +837,25 @@ export const treeConfigs: Record<string, TreeNodeConfig> = {
   },
   wmsServices: {
     hook: (params) => useWmsServicesNavData(params).navData,
+    children: collectionChildren('wmsService', undefined),
+  },
+  wmsService: {
+    childrenCount: 1,
+    hook: (params, nav) =>
+      useWmsServiceNavData({ ...params, wmsServiceId: nav.id }).navData,
+    children: entityChildren(
+      () => 'WMS-Dienst',
+      {
+        layers: (p) => ({
+          type: 'wmsServiceLayers',
+          params: { projectId: p.projectId, wmsServiceId: p.nav.id },
+        }),
+      },
+      undefined,
+    ),
+  },
+  wmsServiceLayers: {
+    hook: (params) => useWmsServiceLayersNavData(params).navData,
     children: collectionChildren('formLink', undefined),
   },
   wmsLayers: {
@@ -650,10 +864,48 @@ export const treeConfigs: Record<string, TreeNodeConfig> = {
   },
   wfsServices: {
     hook: (params) => useWfsServicesNavData(params).navData,
+    children: collectionChildren('wfsService', undefined),
+  },
+  wfsService: {
+    childrenCount: 1,
+    hook: (params, nav) =>
+      useWfsServiceNavData({ ...params, wfsServiceId: nav.id }).navData,
+    children: entityChildren(
+      () => 'WFS-Dienst',
+      {
+        layers: (p) => ({
+          type: 'wfsServiceLayers',
+          params: { projectId: p.projectId, wfsServiceId: p.nav.id },
+        }),
+      },
+      undefined,
+    ),
+  },
+  wfsServiceLayers: {
+    hook: (params) => useWfsServiceLayersNavData(params).navData,
     children: collectionChildren('formLink', undefined),
   },
   vectorLayers: {
     hook: (params) => useVectorLayersNavData(params).navData,
+    children: collectionChildren('vectorLayer', undefined),
+  },
+  vectorLayer: {
+    childrenCount: 1,
+    hook: (params, nav) =>
+      useVectorLayerNavData({ ...params, vectorLayerId: nav.id }).navData,
+    children: entityChildren(
+      () => 'Vektor-Ebene',
+      {
+        displays: (p) => ({
+          type: 'vectorLayerDisplays',
+          params: { projectId: p.projectId, vectorLayerId: p.nav.id },
+        }),
+      },
+      undefined,
+    ),
+  },
+  vectorLayerDisplays: {
+    hook: (params) => useVectorLayerDisplaysNavData(params).navData,
     children: collectionChildren('formLink', undefined),
   },
   projectUsers: {
@@ -662,10 +914,48 @@ export const treeConfigs: Record<string, TreeNodeConfig> = {
   },
   lists: {
     hook: (params) => useListsNavData(params).navData,
+    children: collectionChildren('list', undefined),
+  },
+  list: {
+    childrenCount: 1,
+    hook: (params, nav) =>
+      useListNavData({ ...params, listId: nav.id }).navData,
+    children: entityChildren(
+      () => 'Liste',
+      {
+        values: (p) => ({
+          type: 'listValues',
+          params: { projectId: p.projectId, listId: p.nav.id },
+        }),
+      },
+      undefined,
+    ),
+  },
+  listValues: {
+    hook: (params) => useListValuesNavData(params).navData,
     children: collectionChildren('formLink', undefined),
   },
   taxonomies: {
     hook: (params) => useTaxonomiesNavData(params).navData,
+    children: collectionChildren('taxonomy', undefined),
+  },
+  taxonomy: {
+    childrenCount: 1,
+    hook: (params, nav) =>
+      useTaxonomyNavData({ ...params, taxonomyId: nav.id }).navData,
+    children: entityChildren(
+      () => 'Taxonomie',
+      {
+        taxa: (p) => ({
+          type: 'taxa',
+          params: { projectId: p.projectId, taxonomyId: p.nav.id },
+        }),
+      },
+      undefined,
+    ),
+  },
+  taxa: {
+    hook: (params) => useTaxaNavData(params).navData,
     children: collectionChildren('formLink', undefined),
   },
   units: {
@@ -787,23 +1077,23 @@ export const useTreeRoots = () => {
   return [
     { type: 'projects', params: {} },
     { type: 'users', params: {} },
-    ...(designing
-      ? [
-          ...(isAppAdmin
-            ? [
-                { type: 'fieldTypes', params: {} },
-                { type: 'widgetTypes', params: {} },
-                { type: 'widgetsForFields', params: {} },
-              ]
-            : []),
-          { type: 'qcs', params: {} },
-          { type: 'rootQcs', params: {} },
-          { type: 'rootQcsRun', params: {} },
-          { type: 'exports', params: {} },
-          { type: 'rootExports', params: {} },
-          { type: 'rootExportsRun', params: {} },
-        ]
-      : []),
+    ...(designing ?
+      [
+        ...(isAppAdmin ?
+          [
+            { type: 'fieldTypes', params: {} },
+            { type: 'widgetTypes', params: {} },
+            { type: 'widgetsForFields', params: {} },
+          ]
+        : []),
+        { type: 'qcs', params: {} },
+        { type: 'rootQcs', params: {} },
+        { type: 'rootQcsRun', params: {} },
+        { type: 'exports', params: {} },
+        { type: 'rootExports', params: {} },
+        { type: 'rootExportsRun', params: {} },
+      ]
+    : []),
     { type: 'messages', params: {} },
   ]
 }

@@ -47,7 +47,7 @@ Remaining:
 
 - live verification in the user's browser (dev sync stalls in automation context; typecheck + vitest 95/95 pass)
 - ~~formLink labels for some project-level nodes are German placeholders (project-design, qc-assignments, qcs-run, exports-run...) - map to their real hooks (useProjectQcAssignmentsNavData etc.) and i18n~~ → project node now runs useProjectNavData (real ids, i18n labels with counts; charts/subproject-charts/filtered-views added to the hook)
-- singular rows of secondary collections (quantities, taxa, reports, users...) render as form links - fine until they need children
+- ~~singular rows of secondary collections (quantities, taxa, reports, users...) render as form links - fine until they need children~~ → ported every singular the old tree gave children: chart (subjects), check/action report (quantities), list (values), taxonomy (taxa), wms/wfs service (layers), vector layer (displays), account (project fields), subproject taxa. Remaining singulars (quantities, taxa rows, reports, users, layers...) are leaves in the old tree too
 - delete the old Tree components once verified
 
 ---
@@ -74,7 +74,7 @@ Suggested fix: gate the trigger function on electric.syncing, and (for queries m
 
 ---
 
-http://localhost:5176/data/projects/0195a101-0000-7000-8000-000000000001/subprojects/017d3472-d75d-7095-82f2-34b3a41b09f2/places/017d3475-0435-7136-8381-8ec3084ed9de/places/017d3475-b837-7631-8a8c-109bcaeed5de/users/01a18ea1-f10d-7e9c-8bad-9b31f77a8c6e: renders place without users subform. Should either render with open subform or users in own form, depending on settings in place levels - Populationen (http://localhost:5176/data/projects/0195a101-0000-7000-8000-000000000001/place-levels/0195a101-0000-7000-8000-000000000002). 'Population-Benutzer in Population anzeigen' is set to true there. so what is missing is the subform
+http://localhost:5176/data/projects/0195a101-0000-7000-8000-000000000001/subprojects/017d3472-d75d-7095-82f2-34b3a41b09f2/places/017d3475-0435-7136-8381-8ec3084ed9de/places/017d3475-b837-7631-8a8c-109bcaeed5de/users/01a18ea1-f10d-7e9c-8bad-9b31f77a8c6e: renders place without users subform. Should either render with open subform or users in own form, depending on settings in place levels - Populationen (http://localhost:5176/data/projects/0195a101-0000-7000-8000-000000000001/place-levels/0195a101-0000-7000-8000-000000000002). 'Population-Benutzer in Population anzeigen' is set to true there. so what is missing is the subform. Same implementation as for Art (http://localhost:5176/data/projects/0195a101-0000-7000-8000-000000000001/subprojects/017d3472-d75d-7095-82f2-34b3a41b09f2/users)
 
 ---
 

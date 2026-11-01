@@ -51,8 +51,6 @@ export const useGoalNavData = ({ projectId, subprojectId, goalId }: Props) => {
     'subprojects',
     subprojectId,
     'goals',
-    goalId,
-    'reports',
   ]
   const parentUrl = `/${parentArray.join('/')}`
   const ownArray = [...parentArray, nav?.id]

@@ -34,12 +34,16 @@ const auditColumns = ['created_at', 'updated_at', 'updated_by']
 /** @type {Record<string, ShapeDefinition>} */
 export const shapeDefinitions = {
   users: {
+    // label is GENERATED (excluded); the two *_in_* flags are the user's
+    // own ui preferences, read by the user form and the nav tree
     columns: [
       'user_id',
       'name',
       'email',
       'image',
       'email_verified',
+      'project_fields_in_account',
+      'accounts_in_user',
       'sys_period',
       'created_at',
       'updated_at',
