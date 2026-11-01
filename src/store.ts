@@ -766,18 +766,23 @@ export const addOperationAtom = atom(
   async (
     get,
     set,
-    opDraft: Omit<QueuedOperation, 'id' | 'time'>,
+    opDraft: Omit<QueuedOperation, 'id' | 'time'> & {
+      // the caller verified the permission itself, before a local change
+      // destroyed what the check reads (a project delete cascades its roles)
+      skipPermissionCheck?: boolean
+    },
   ) => {
     const db = get(pgliteDbAtom)
     const userId = get(userIdAtom)
+    const { skipPermissionCheck, ...opFields } = opDraft
 
     const operation: QueuedOperation = {
       id: uuidv7(),
       time: new Date().toISOString(),
-      ...opDraft,
+      ...opFields,
     }
 
-    if (db && userId) {
+    if (db && userId && !skipPermissionCheck) {
       const row = { ...opDraft.prev, ...opDraft.draft }
       const { allowed, userRole } = await checkWritePermission(
         db,

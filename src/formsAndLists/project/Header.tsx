@@ -1,6 +1,7 @@
 import { useParams, useNavigate } from '@tanstack/react-router'
-import { useSetAtom } from 'jotai'
+import { useAtomValue, useSetAtom } from 'jotai'
 import { useLiveQuery, usePGlite } from '@electric-sql/pglite-react'
+import type { PGlite } from '@electric-sql/pglite'
 import { useRef, useEffect } from 'react'
 import { useIntl } from 'react-intl'
 
@@ -8,8 +9,9 @@ import { FormHeader } from '../../components/FormHeader/index.tsx'
 import { HistoryToggleButton } from '../../components/shared/HistoryCompare/HistoryToggleButton.tsx'
 import { DesigningButton } from './DesigningButton.tsx'
 import { ExportDumpButton } from '../projectDump/ExportDumpButton.tsx'
-import { addOperationAtom } from '../../store.ts'
+import { addOperationAtom, addNotificationAtom, userIdAtom } from '../../store.ts'
 import { useAddProject } from '../../modules/useAddProject.ts'
+import { checkWritePermission } from '../../modules/checkWritePermission.ts'
 
 interface Props {
   autoFocusRef?: React.RefObject<HTMLInputElement | null>
@@ -28,6 +30,8 @@ export const Header = ({ autoFocusRef, from, label }: Props) => {
   const basePath = `/data/projects/${projectId}`
   const navigate = useNavigate()
   const addOperation = useSetAtom(addOperationAtom)
+  const addNotification = useSetAtom(addNotificationAtom)
+  const userId = useAtomValue(userIdAtom)
 
   const countRes = useLiveQuery(`SELECT COUNT(*) as count FROM projects`)
   const rowCount = (countRes?.rows?.[0]?.count as number | undefined) ?? 2
@@ -56,6 +60,30 @@ export const Header = ({ autoFocusRef, from, label }: Props) => {
         [projectId],
       )
       const prev = (prevRes?.rows?.[0] ?? {}) as Record<string, unknown>
+      // checked BEFORE the local delete: its cascade removes the project's
+      // role rows, after which addOperation's check would find no role and
+      // refuse — leaving the project gone locally but present on the server
+      if (userId) {
+        const { allowed, userRole } = await checkWritePermission(
+          db as unknown as PGlite,
+          userId,
+          'projects',
+          prev,
+          'delete',
+        )
+        if (!allowed) {
+          addNotification({
+            title: 'Insufficient permissions',
+            body:
+              userRole ?
+                `Your role '${userRole}' does not allow deleting this project. Writer or higher is required.`
+              : 'You do not have write access to this project.',
+            intent: 'error',
+            duration: 10000,
+          })
+          return
+        }
+      }
       await db.query(`DELETE FROM projects WHERE project_id = $1`, [projectId])
       addOperation({
         table: 'projects',
@@ -63,6 +91,8 @@ export const Header = ({ autoFocusRef, from, label }: Props) => {
         rowId: projectId,
         operation: 'delete',
         prev,
+        // the role rows are gone locally by now: the check above was it
+        skipPermissionCheck: true,
       })
       navigate({ to: isForm ? ('../../..' as '..') : ('../..' as '..') })
     } catch (error) {
