@@ -78,7 +78,7 @@ Suggested fix: gate the trigger function on electric.syncing, and (for queries m
 
 ---
 
-at art 
+at art list view (http://localhost:5176/data/projects/0195a101-0000-7000-8000-000000000001/subprojects/017d3472-d75d-7a4f-8040-dfdd5df00bdb) 'Charts (0)' shows wrong number - is 3
 
 ---
 
