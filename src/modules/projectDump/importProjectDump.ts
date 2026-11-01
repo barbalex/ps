@@ -2,7 +2,10 @@ import type { PGlite } from '@electric-sql/pglite'
 import { v7 as uuidv7 } from 'uuid'
 
 import type { QueuedOperation } from '../../store.ts'
-import { projectTables } from '../../../scripts/project-dump-tables.mjs'
+import {
+  projectTables,
+  projectTableWhere,
+} from '../../../scripts/project-dump-tables.mjs'
 import { applyOperations } from '../applyOperations.ts'
 import { tableColumns } from './exportProjectDump.ts'
 import { ProjectDumpError, type ParsedDump } from './parseProjectDump.ts'
@@ -28,6 +31,40 @@ const ACCESS_TABLES = new Set([
   'subproject_roles',
   'place_roles',
 ])
+
+/** the rows the import uploads (access rows excluded), i.e. what will arrive by sync */
+export const importedRowCount = (dump: ParsedDump) =>
+  dump.statements
+    .filter((s) => !ACCESS_TABLES.has(s.table))
+    .reduce((sum, s) => sum + s.rows.length, 0)
+
+/**
+ * How many of the imported project's rows have arrived locally — the
+ * server needs minutes to stream a large import (Electric evaluates every
+ * row against all subquery shapes), so the arrival is tracked separately
+ * from the upload. One query summing the project's rows per dumped table.
+ */
+export const countArrivedRows = async (
+  db: Pick<PGlite, 'query'>,
+  dump: ParsedDump,
+) => {
+  const tables = [
+    ...new Set(
+      dump.statements
+        .map((s) => s.table)
+        .filter((t) => !ACCESS_TABLES.has(t)),
+    ),
+  ]
+  const res = await db.query<{ n: number }>(
+    `SELECT (${tables
+      .map(
+        (t) =>
+          `(SELECT count(*) FROM "${t}" WHERE ${projectTableWhere(t, dump.projectId)})`,
+      )
+      .join(' + ')})::int AS n`,
+  )
+  return res.rows[0]?.n ?? 0
+}
 // rows the server's insert triggers create on their own (projects and
 // place_levels → vector_layers → vector_layer_displays + layer_presentations,
 // wms_layers → layer_presentations) with fresh ids. They would collide with

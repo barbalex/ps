@@ -13,11 +13,19 @@ import {
 } from '../../store.ts'
 import { backgroundTasks } from '../../modules/backgroundTasks.ts'
 import {
+  countArrivedRows,
+  importedRowCount,
   importProjectDump,
   parseProjectDump,
   ProjectDumpError,
   type ParsedDump,
 } from '../../modules/projectDump/importProjectDump.ts'
+import { notifyAllLiveTables } from '../../modules/gateLiveNotifyTriggers.ts'
+
+// the arrival poll gives up after this long (shape dropped by Electric,
+// rows out of scope, …) and reports what came
+const ARRIVAL_TIMEOUT_MS = 60 * 60_000
+const ARRIVAL_POLL_MS = 3_000
 
 /**
  * Returns a callback importing a project dump file: resolves the account
@@ -69,6 +77,65 @@ export const useImportProjectDump = () => {
     })
   }
 
+  // Second phase, shown as its own task: the server streams the project
+  // back over minutes (Electric evaluates each row against every subquery
+  // shape). Polls the local row count of the project until all uploaded
+  // rows are there, then kicks the live queries so the UI shows them.
+  const trackArrival = async (dump: ParsedDump) => {
+    const total = importedRowCount(dump)
+    const taskId = `import-project-arrival-${dump.projectId}`
+    backgroundTasks.add(
+      taskId,
+      formatMessage(
+        { id: 'pdArrivalTask', defaultMessage: 'Empfange Projekt {name}' },
+        { name: dump.projectName ?? '' },
+      ),
+      total,
+    )
+    const startedAt = Date.now()
+    let arrived = 0
+    while (arrived < total && Date.now() - startedAt < ARRIVAL_TIMEOUT_MS) {
+      await new Promise((r) => setTimeout(r, ARRIVAL_POLL_MS))
+      try {
+        arrived = await countArrivedRows(db, dump)
+      } catch {
+        // a query lost to a busy worker: the next poll retries
+      }
+      backgroundTasks.updateProgress(taskId, Math.min(arrived, total))
+    }
+    if (arrived >= total) {
+      backgroundTasks.complete(taskId)
+      void notifyAllLiveTables(db).catch(() => undefined)
+      addNotification({
+        title: formatMessage({
+          id: 'pdArrivalDoneTitle',
+          defaultMessage: 'Projekt synchronisiert',
+        }),
+        body: formatMessage(
+          {
+            id: 'pdArrivalDoneBody',
+            defaultMessage: '"{name}" ist jetzt vollständig verfügbar.',
+          },
+          { name: dump.projectName ?? '' },
+        ),
+        intent: 'success',
+        duration: 10000,
+      })
+    } else {
+      backgroundTasks.error(
+        taskId,
+        formatMessage(
+          {
+            id: 'pdArrivalIncomplete',
+            defaultMessage:
+              'Nach einer Stunde sind {arrived} von {total} Zeilen angekommen. Die Synchronisation läuft weiter.',
+          },
+          { arrived, total },
+        ),
+      )
+    }
+  }
+
   const runImport = async (dump: ParsedDump, accountId: string) => {
     const taskId = `import-project-dump-${dump.projectId}`
     backgroundTasks.add(
@@ -104,13 +171,13 @@ export const useImportProjectDump = () => {
       addNotification({
         title: formatMessage({
           id: 'pdImportDoneTitle',
-          defaultMessage: 'Projekt importiert',
+          defaultMessage: 'Projekt hochgeladen',
         }),
         body: formatMessage(
           {
             id: 'pdImportDoneBody',
             defaultMessage:
-              '"{name}": {count} Zeilen an den Server übertragen. Der Server verarbeitet die Daten nun für die Synchronisation — bei grossen Projekten dauert es einige Minuten, bis sie hier erscheinen.',
+              '"{name}": {count} Zeilen an den Server übertragen. Der Server bereitet die Daten nun für die Synchronisation vor — der Fortschritt wird unten rechts angezeigt.',
           },
           { name: result.projectName ?? '', count: result.rowCount },
         ),
@@ -120,6 +187,7 @@ export const useImportProjectDump = () => {
       // the project arrives with the restarted sync; its form would be
       // empty until then, so stay on the list
       navigate({ to: '/data/projects' })
+      void trackArrival(dump)
     } catch (error) {
       setSyncPaused(false)
       backgroundTasks.error(taskId, (error as Error).message)
