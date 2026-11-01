@@ -1,3 +1,7 @@
+/* eslint-disable react-hooks/rules-of-hooks --
+   the `hook` properties below are navData hooks dispatched by Registrar,
+   which calls exactly one of them per instance (the type is fixed per
+   element key), so the rules of hooks hold at the call site */
 import { useAtom } from 'jotai'
 import { useIntl } from 'react-intl'
 
@@ -111,6 +115,7 @@ const entityChildren =
      
     folderTypes: Record<
       string,
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       (params: any) => { type: string; params: Record<string, unknown> }
     >,
     childLevel?: number,

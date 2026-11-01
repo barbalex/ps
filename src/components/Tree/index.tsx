@@ -142,6 +142,9 @@ export const Tree = () => {
   const urlPath = pathname.split('/').filter((p) => p !== '')
   const navigate = useNavigate()
 
+  // the file opts out of the compiler ('use no memo'); the rule still flags
+  // the virtualizer's function-returning api
+  // eslint-disable-next-line react-hooks/incompatible-library
   const virtualizer = useVirtualizer({
     count: rows.length,
     estimateSize: () => 22,

@@ -22,45 +22,45 @@ interface Props {
  * Mounts for rows inside the virtualized window and along the focus path.
  */
 export const Registrar = ({ type, params, nav, level }: Props) => {
-  const config = treeConfigs[type]
-
-  // unknown types appear while the configs are being built up -
-  // deterministic per type, so the conditional return is safe
-  if (!config) return null
-
-  const navData = config.hook(params, nav)
-
-  const key = JSON.stringify(navData.ownArray.map((s) => s ?? ''))
-  const row: TreeRegisteredRow = {
-    key,
-    ownArray: navData.ownArray.map((s) => s ?? ''),
-    isRoot: config.isRoot,
-    label: navData.label,
-    level,
-    to: navData.ownUrl,
-    childrenCount: navData.navs?.length ?? 0,
-    siblingType: navData.siblingType,
-    children: config.children?.({ params, nav, navData, level }),
-    // kept on the registered row so the tree can keep this registrar
-    // mounted while the row is open: the first registration happens before
-    // the hook's live queries have resolved (label '...', no children)
-    descriptor:
-      config.isRoot ? undefined : (
-        { orderKey: String(nav?.id ?? type), type, params, nav, level }
-      ),
-  }
-
   const setRow = useSetAtom(setTreeRegisteredRowAtom)
   const setRootRow = useSetAtom(setTreeRootRowsAtom)
   const prevRow = useRef<TreeRegisteredRow | null>(null)
 
+  // the type is fixed per instance (it is part of the element key), so the
+  // dispatched navData hook is always the same hook for this component
+  const config = treeConfigs[type]
+  const navData = config ? config.hook(params, nav) : null
+
+  const row: TreeRegisteredRow | null =
+    config && navData ?
+      {
+        key: JSON.stringify(navData.ownArray.map((s) => s ?? '')),
+        ownArray: navData.ownArray.map((s) => s ?? ''),
+        isRoot: config.isRoot,
+        label: navData.label,
+        level,
+        to: navData.ownUrl,
+        childrenCount: navData.navs?.length ?? 0,
+        siblingType: navData.siblingType,
+        children: config.children?.({ params, nav, navData, level }),
+        // kept on the registered row so the tree can keep this registrar
+        // mounted while the row is open: the first registration happens
+        // before the hook's live queries have resolved (label '...', no
+        // children)
+        descriptor:
+          config.isRoot ? undefined : (
+            { orderKey: String(nav?.id ?? type), type, params, nav, level }
+          ),
+      }
+    : null
+
   useEffect(() => {
-    if (isEqual(prevRow.current, row)) return
+    if (!row || isEqual(prevRow.current, row)) return
     prevRow.current = row
-    if (config.isRoot) {
+    if (row.isRoot) {
       setRootRow({ orderKey: type, row })
     } else {
-      setRow({ key, row })
+      setRow({ key: row.key, row })
     }
   })
 

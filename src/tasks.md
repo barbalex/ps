@@ -26,14 +26,14 @@ dark mode not well implemented for: file upload?
 
 tree building: optimizable?
 
-→ WIP on branch `virtualized_tree`: apf2's virtualized-tree method ported.
+→ done (merged to main): apf2's virtualized-tree method ported.
 
 Done:
 
 - infra in `src/components/Tree/virtual/`: registry atoms, generic Registrar (runs each node type's navData hook and registers its row + children descriptors), useVisibleTreeRows walker, FocusPathLoader + scrollToIndex scroll-into-view (exact row, deepest-ancestor fallback)
 - `Tree/index.tsx` window-renders via @tanstack/react-virtual (22px estimate, measureElement), uniform onClickButton port, live isOpen/isActive per row
 - configs for the main spine: projects/project/subprojects/subproject/places/place/goals/goal/goalReports/files/file/checks/actions/charts/observations folders/users/user/accounts/messages/message/queuedOperations
-- old tree components kept as reference (dead code) until conversion completes
+- ~~old tree components kept as reference (dead code) until conversion completes~~ → deleted (130 files)
 
 Progress (2nd round):
 
@@ -45,10 +45,10 @@ Progress (2nd round):
 
 Remaining:
 
-- live verification in the user's browser (dev sync stalls in automation context; typecheck + vitest 95/95 pass)
+- ~~live verification in the user's browser (dev sync stalls in automation context; typecheck + vitest 95/95 pass)~~ → verified (browser + playwright drive-bys); the "Subprojects (...)" stall was the Registrar unmounting after its first registration
 - ~~formLink labels for some project-level nodes are German placeholders (project-design, qc-assignments, qcs-run, exports-run...) - map to their real hooks (useProjectQcAssignmentsNavData etc.) and i18n~~ → project node now runs useProjectNavData (real ids, i18n labels with counts; charts/subproject-charts/filtered-views added to the hook)
 - ~~singular rows of secondary collections (quantities, taxa, reports, users...) render as form links - fine until they need children~~ → ported every singular the old tree gave children: chart (subjects), check/action report (quantities), list (values), taxonomy (taxa), wms/wfs service (layers), vector layer (displays), account (project fields), subproject taxa. Remaining singulars (quantities, taxa rows, reports, users, layers...) are leaves in the old tree too
-- delete the old Tree components once verified
+- ~~delete the old Tree components once verified~~ → done; `npm run lint` is green again (rules-of-hooks disabled file-wide for the dispatched navData hooks in treeConfigs)
 
 ---
 
@@ -78,10 +78,11 @@ Suggested fix: gate the trigger function on electric.syncing, and (for queries m
 
 ---
 
-~~when starting up, sync logs are logged in the console. lets only keep 'Initial sync done'~~ → done; a stage still syncing after 60s warns once with the pending shapes
+at art 
 
 ---
 
+lets grab for the stars: it seems syncing is now working much better. lets import all apflora data for the alex.barbalex@gmail.com user, what apflora:import:all was designed for. Does that still work?
 ---
 
 ---
