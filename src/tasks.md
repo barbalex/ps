@@ -59,13 +59,15 @@ lets implement this:
 
 ---
 
-ensure apflora import is complete (dropdown lists, EKF form ui, more?)
-concerning EKF form ui: this should be generally possible. Use an editor to build the form using images and more? As done for reports?
-
----
-
 As implemented in apf2, lets build a deploy script:
 
 - 'npm run deploy' patches version and updates versionDate in package.json, commits and pushes
 - then 'production' branch is updated from main and pushed. This lets netlify deploy it. Locally 'main' remains the active branch
 - additionally 'npm run deploy' can add 'patch', 'minor' or 'major'. default is 'patch'. tells the script how to update the version number
+
+---
+
+later:
+
+- ensure apflora import is complete (dropdown lists, EKF form ui, more?)
+- concerning EKF form ui: this should be generally possible. Use an editor to build the form using images and more? As done for reports?
