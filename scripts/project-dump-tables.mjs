@@ -26,9 +26,10 @@ export const projectTables = [
   byProject('subprojects'),
   byProject('place_levels'),
   byProject('filtered_views'),
-  byProject('units'),
   byProject('lists'),
   byParent('list_values', 'list_id', 'lists'),
+  // after lists: units.list_id
+  byProject('units'),
   byProject('taxonomies'),
   byParent('taxa', 'taxonomy_id', 'taxonomies'),
   byParent('subproject_taxa', 'subproject_id', 'subprojects'),

@@ -2,6 +2,7 @@ import type { PGlite } from '@electric-sql/pglite'
 import { v7 as uuidv7 } from 'uuid'
 
 import type { QueuedOperation } from '../../store.ts'
+import { projectTables } from '../../../scripts/project-dump-tables.mjs'
 import { applyOperations } from '../applyOperations.ts'
 import { tableColumns } from './exportProjectDump.ts'
 import { ProjectDumpError, type ParsedDump } from './parseProjectDump.ts'
@@ -27,6 +28,13 @@ const ACCESS_TABLES = new Set([
   'subproject_roles',
   'place_roles',
 ])
+// rows the server's insert triggers create on their own (projects and
+// place_levels → vector_layers → vector_layer_displays + layer_presentations,
+// wms_layers → layer_presentations) with fresh ids. They would collide with
+// the dump's rows (unique layer names, duplicate presentations), so they are
+// removed right before the dump's version of the table goes in; the cascade
+// takes the displays along
+const TRIGGER_DERIVED_TABLES = new Set(['vector_layers', 'layer_presentations'])
 
 export type ImportProgress = { table: string; rows: number; total: number }
 
@@ -37,10 +45,12 @@ type ImportOptions = {
   onProgress?: (progress: ImportProgress) => void
 }
 
+type Row = Record<string, unknown>
+
 const operation = (
   table: string,
   kind: 'insert' | 'insertMany',
-  draft: Record<string, unknown> | Record<string, unknown>[],
+  draft: Row | Row[],
 ): QueuedOperation => ({
   id: uuidv7(),
   time: new Date().toISOString(),
@@ -48,6 +58,70 @@ const operation = (
   operation: kind,
   draft,
 })
+
+const tableIndex = new Map(projectTables.map((entry, i) => [entry.table, i]))
+
+type ForeignKey = { table: string; column: string; ref: string }
+
+/**
+ * Every upload request is its own transaction, so a row may only reference
+ * rows uploaded before it. Foreign keys pointing at a table LATER in the
+ * import order (projects.*_default_unit_id → units) are stripped on insert
+ * and set by updates at the end; self references (places.parent_id) are
+ * handled by ordering parents before children.
+ */
+const foreignKeys = async (db: Pick<PGlite, 'query'>) => {
+  const res = await db.query<ForeignKey>(
+    `SELECT c.conrelid::regclass::text AS table, a.attname AS column,
+            c.confrelid::regclass::text AS ref
+     FROM pg_constraint c
+     JOIN pg_attribute a ON a.attrelid = c.conrelid AND a.attnum = ANY(c.conkey)
+     WHERE c.contype = 'f' AND c.connamespace = 'public'::regnamespace`,
+  )
+  const forward = new Map<string, string[]>()
+  const self = new Map<string, string>()
+  for (const fk of res.rows) {
+    const own = tableIndex.get(fk.table)
+    const other = tableIndex.get(fk.ref)
+    if (own === undefined || other === undefined) continue
+    if (fk.table === fk.ref) self.set(fk.table, fk.column)
+    else if (other > own) {
+      forward.set(fk.table, [...(forward.get(fk.table) ?? []), fk.column])
+    }
+  }
+  return { forward, self }
+}
+
+const primaryKey = async (db: Pick<PGlite, 'query'>, table: string) => {
+  const res = await db.query<{ attname: string }>(
+    `SELECT a.attname FROM pg_index i
+     JOIN pg_attribute a ON a.attrelid = i.indrelid AND a.attnum = ANY(i.indkey)
+     WHERE i.indrelid = $1::regclass AND i.indisprimary`,
+    [table],
+  )
+  return res.rows[0]?.attname ?? null
+}
+
+/** parents before children; rows whose parent is missing come last */
+const orderByParent = (rows: Row[], idColumn: string, parentColumn: string) => {
+  const byId = new Map(rows.map((row) => [row[idColumn], row]))
+  const emitted = new Set<unknown>()
+  const ordered: Row[] = []
+  let pending = rows
+  while (pending.length) {
+    const next = pending.filter((row) => {
+      const parent = row[parentColumn]
+      return parent == null || emitted.has(parent) || !byId.has(parent)
+    })
+    if (!next.length) break // a cycle: append as is
+    for (const row of next) {
+      ordered.push(row)
+      emitted.add(row[idColumn])
+    }
+    pending = pending.filter((row) => !emitted.has(row[idColumn]))
+  }
+  return [...ordered, ...pending]
+}
 
 /** uploads the dump; resolves with the row count, rejects with ProjectDumpError */
 export const importProjectDump = async ({
@@ -71,10 +145,12 @@ export const importProjectDump = async ({
     )
   }
 
-  // columns unknown to this schema version are dropped (the server would
-  // drop them too, but silently per row); access rows are never imported
-  const operations: QueuedOperation[] = []
-  let total = 0
+  const { forward, self } = await foreignKeys(db)
+
+  // rows per table in the canonical FK order (not the file's), columns
+  // unknown to this schema version dropped (the server would drop them too,
+  // but silently per row); access rows are never imported
+  const rowsByTable = new Map<string, Row[]>()
   for (const statement of dump.statements) {
     if (ACCESS_TABLES.has(statement.table)) continue
     const localColumns = new Set(
@@ -86,7 +162,56 @@ export const importProjectDump = async ({
     const rows = statement.rows.map((row) =>
       Object.fromEntries(keep.map((c) => [c, row[c] ?? null])),
     )
-    if (statement.table === 'projects') {
+    rowsByTable.set(statement.table, [
+      ...(rowsByTable.get(statement.table) ?? []),
+      ...rows,
+    ])
+  }
+
+  const operations: QueuedOperation[] = []
+  const deferredUpdates: QueuedOperation[] = []
+  let total = 0
+  for (const { table } of projectTables) {
+    let rows = rowsByTable.get(table)
+    if (!rows?.length) continue
+    const pk = await primaryKey(db, table)
+
+    const forwardColumns = forward.get(table) ?? []
+    if (forwardColumns.length && pk) {
+      for (const row of rows) {
+        const draft: Row = {}
+        for (const column of forwardColumns) {
+          if (row[column] == null) continue
+          draft[column] = row[column]
+          row[column] = null
+        }
+        if (Object.keys(draft).length) {
+          deferredUpdates.push({
+            id: uuidv7(),
+            time: new Date().toISOString(),
+            table,
+            operation: 'update',
+            rowIdName: pk,
+            rowId: row[pk] as string,
+            draft,
+          })
+        }
+      }
+    }
+    const selfColumn = self.get(table)
+    if (selfColumn && pk) rows = orderByParent(rows, pk, selfColumn)
+
+    if (TRIGGER_DERIVED_TABLES.has(table)) {
+      operations.push({
+        id: uuidv7(),
+        time: new Date().toISOString(),
+        table,
+        operation: 'delete',
+        filter: { column: 'project_id', function: 'eq', value: dump.projectId },
+      })
+    }
+
+    if (table === 'projects') {
       for (const row of rows) row.account_id = accountId
       // a plain insert: the server's owner trigger needs the project row
       // committed before anything else — it is the first operation
@@ -94,20 +219,19 @@ export const importProjectDump = async ({
     } else {
       for (let i = 0; i < rows.length; i += ROWS_PER_OPERATION) {
         operations.push(
-          operation(
-            statement.table,
-            'insertMany',
-            rows.slice(i, i + ROWS_PER_OPERATION),
-          ),
+          operation(table, 'insertMany', rows.slice(i, i + ROWS_PER_OPERATION)),
         )
       }
     }
     total += rows.length
   }
+  operations.push(...deferredUpdates)
 
   let done = 0
   const rowsOf = (op: QueuedOperation) =>
-    Array.isArray(op.draft) ? op.draft.length : 1
+    op.operation !== 'insert' && op.operation !== 'insertMany' ? 0
+    : Array.isArray(op.draft) ? op.draft.length
+    : 1
   // the project row goes alone: its owner role must exist before the rest
   // is permission-checked, and a failure there must not take other
   // operations along
