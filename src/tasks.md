@@ -61,12 +61,6 @@ Implemented. TODO: test
 
 ---
 
-As implemented in apf2, lets build a deploy script:
-
-- 'npm run deploy' patches version and updates versionDate in package.json, commits and pushes
-- then 'production' branch is updated from main and pushed. This lets netlify deploy it. Locally 'main' remains the active branch
-- additionally 'npm run deploy' can add 'patch', 'minor' or 'major'. default is 'patch'. tells the script how to update the version number
-
 ---
 
 As implemented recently in vermehrung: Save on blurring form (and all other relevant events) instead of on bluring/changing field.
