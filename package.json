@@ -55,7 +55,7 @@
     "@electric-sql/pglite-react": "0.4.14",
     "@electric-sql/pglite-sync": "0.6.15",
     "@electric-sql/pglite-tools": "0.4.14",
-    "@fluentui/react-components": "9.74.9",
+    "@fluentui/react-components": "9.75.0",
     "@fluentui/react-datepicker-compat": "0.6.40",
     "@fluentui/react-icons": "2.0.344",
     "@fluentui/react-timepicker-compat": "0.4.42",
