@@ -135,7 +135,6 @@ export const startSyncing = async (userId: string) => {
     }
 
     const onError = (error: unknown) => {
-      console.log('Electric sync error:', error)
       const errorStr = error?.toString() || ''
       const is409 = errorStr.includes('409') || errorStr.includes('Conflict')
 
@@ -147,7 +146,6 @@ export const startSyncing = async (userId: string) => {
         // not yet applied), and mounted live queries would read the empty
         // table and never be notified of the refill. InitialSyncManager
         // releases once isUpToDate is true.
-        console.log('Electric: shape handle expired (409) - re-fetching shape')
         return
       }
 
@@ -218,37 +216,21 @@ export const startSyncing = async (userId: string) => {
       }
       syncs.push(sync)
 
-      // TODO: remove after the stuck-initial-sync issue is diagnosed
-      // logs which stage (and eventually which shape) never goes up to date
-      const stageLabel = `stage ${index + 1}/${levels.length} (${level.length} tables)`
-      console.log(`startSyncing: ${stageLabel} started: ${level.join(', ')}`)
+      // a stage that has not settled after a minute is abnormal: name the
+      // shapes still syncing (once), otherwise stay silent
       const stageStart = Date.now()
-      let lastLogged = 0
       const diagTimer = setInterval(() => {
         if (sync.isUpToDate) {
           clearInterval(diagTimer)
-          console.log(
-            `startSyncing: ${stageLabel} up to date after ${Math.round((Date.now() - stageStart) / 1000)}s`,
-          )
           return
         }
-        const elapsed = Math.round((Date.now() - stageStart) / 1000)
-        // every 10s for the first minute, then every 30s
-        const shouldLog =
-          elapsed <= 60 ?
-            elapsed - lastLogged >= 10
-          : elapsed - lastLogged >= 30
-        if (!shouldLog) return
-        lastLogged = elapsed
-        const streamStates = Object.entries(sync.streams).map(
-          ([name, stream]) => {
-            // eslint-disable-next-line @typescript-eslint/no-explicit-any
-            const s = stream as any
-            return `${name}:${s?.isUpToDate ? 'uptodate' : 'syncing'}`
-          },
-        )
+        if (Date.now() - stageStart < 60_000) return
+        clearInterval(diagTimer)
+        const pending = Object.entries(sync.streams)
+          .filter(([, stream]) => !(stream as { isUpToDate?: boolean }).isUpToDate)
+          .map(([name]) => name)
         console.warn(
-          `startSyncing: ${stageLabel} NOT up to date after ${elapsed}s [${streamStates.join(' ')}]`,
+          `startSyncing: stage ${index + 1}/${levels.length} not up to date after 60s, still syncing: ${pending.join(', ')}`,
         )
       }, 1000)
       aggregate.unsubscribe = () => {

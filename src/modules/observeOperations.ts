@@ -41,9 +41,7 @@ export const observeOperations = () =>
 
     const online = get(shortTermOnlineAtom)
     const operations = get(operationsQueueAtom)
-    if (!online) {
-      return console.log('operationsQueueAtom returning due to being offline')
-    }
+    if (!online) return
     if (!operations.length) return
 
     if (applyOperationsRpcEnabled()) {

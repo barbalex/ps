@@ -74,15 +74,11 @@ Suggested fix: gate the trigger function on electric.syncing, and (for queries m
 
 ---
 
-http://localhost:5176/data/projects/0195a101-0000-7000-8000-000000000001/subprojects/017d3472-d75d-7095-82f2-34b3a41b09f2/places/017d3475-0435-7136-8381-8ec3084ed9de/places/017d3475-b837-7631-8a8c-109bcaeed5de/users/01a18ea1-f10d-7e9c-8bad-9b31f77a8c6e: renders place without users subform. Should either render with open subform or users in own form, depending on settings in place levels - Populationen (http://localhost:5176/data/projects/0195a101-0000-7000-8000-000000000001/place-levels/0195a101-0000-7000-8000-000000000002). 'Population-Benutzer in Population anzeigen' is set to true there. so what is missing is the subform. Same implementation as for Art (http://localhost:5176/data/projects/0195a101-0000-7000-8000-000000000001/subprojects/017d3472-d75d-7095-82f2-34b3a41b09f2/users)
+---
 
 ---
 
-http://localhost:5176/data/projects/0195a101-0000-7000-8000-000000000001/place-levels/0195a101-0000-7000-8000-000000000002: 'Population-Benutzer in Population anzeigen' and 'Dateien in Population anzeigen', together with their explaining text (Alternative...): should be translated to the language set. I have EN set, it shows in German
-
----
-
-when starting up, sync logs are logged in the console. lets only keep 'Initial sync done'
+~~when starting up, sync logs are logged in the console. lets only keep 'Initial sync done'~~ → done; a stage still syncing after 60s warns once with the pending shapes
 
 ---
 

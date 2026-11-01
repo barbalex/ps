@@ -145,14 +145,10 @@ export const Syncer = () => {
     if (sqlInitializing) return
     if (!isLeader) return
     if (!session?.user?.id) return
-    if (syncObject) {
-      console.warn('Sync already initialized, skipping')
-      return
-    }
+    if (syncObject) return
 
     startSyncing(session.user.id)
       .then((syncObj) => {
-        console.log('Sync started')
         syncedUserIdRef.current = session.user.id
         setSyncObject(syncObj)
       })
