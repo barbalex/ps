@@ -351,6 +351,12 @@ export const syncObjectAtom = atom<unknown>(null)
 // running the Electric shape streams (see modules/syncLeader.ts)
 export const syncLeaderAtom = atom(true)
 
+// true while the shape streams must stay stopped: a bulk upload of a whole
+// project (dump import) would otherwise stream its rows back piecemeal, in
+// no cross-stage order, and the child-before-parent applies abort the sync.
+// Syncer restarts the staged sync when the pause ends.
+export const syncPausedAtom = atom(false)
+
 // true while a post-boot sync is applying a sustained amount of data (shapes
 // not up-to-date for several seconds) — see BackgroundSyncIndicator. Not
 // persisted: meaningless across page loads.

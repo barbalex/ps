@@ -11,6 +11,7 @@ import {
   store,
   syncLeaderAtom,
   syncObjectAtom,
+  syncPausedAtom,
   updateNotificationAtom,
 } from '../store.ts'
 import { startSyncing } from '../modules/startSyncing.ts'
@@ -26,6 +27,7 @@ export const Syncer = () => {
   const syncObject = useAtomValue(syncObjectAtom)
   const setSyncObject = useSetAtom(syncObjectAtom)
   const online = useAtomValue(onlineAtom)
+  const paused = useAtomValue(syncPausedAtom)
   const isLeader = useAtomValue(syncLeaderAtom)
   const setSyncLeader = useSetAtom(syncLeaderAtom)
   const addNotification = useSetAtom(addNotificationAtom)
@@ -111,13 +113,14 @@ export const Syncer = () => {
     return watchSyncLeader(db, setSyncLeader)
   }, [setSyncLeader, sqlInitializing])
 
-  // Stop syncing when offline; the start-sync effect below will restart it when online again
+  // Stop syncing when offline or paused; the start-sync effect below
+  // restarts it (in stage order) when online and unpaused again
   useEffect(() => {
-    if (online || !syncObject) return
+    if ((online && !paused) || !syncObject) return
     const s = syncObject as { unsubscribe?: () => void }
     s.unsubscribe?.()
     setSyncObject(null)
-  }, [online, setSyncObject, syncObject])
+  }, [online, paused, setSyncObject, syncObject])
 
   // The shapes are bound to the user they were started for. On sign-out stop
   // them; when a different user signs in (same tab, no reload) the local
@@ -142,6 +145,7 @@ export const Syncer = () => {
     if (isPending) return
     if (!isAuthenticated) return
     if (!online) return
+    if (paused) return
     if (sqlInitializing) return
     if (!isLeader) return
     if (!session?.user?.id) return
@@ -182,6 +186,7 @@ export const Syncer = () => {
     isLeader,
     isPending,
     online,
+    paused,
     session?.user?.id,
     setSyncObject,
     sqlInitializing,

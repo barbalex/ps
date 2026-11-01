@@ -7,6 +7,7 @@ import {
   userIdAtom,
   addNotificationAtom,
   chooseAccountForProjectAtom,
+  syncPausedAtom,
 } from '../../store.ts'
 import { backgroundTasks } from '../../modules/backgroundTasks.ts'
 import {
@@ -29,6 +30,7 @@ export const useImportProjectDump = () => {
   const userId = useAtomValue(userIdAtom)
   const addNotification = useSetAtom(addNotificationAtom)
   const setChooseAccount = useSetAtom(chooseAccountForProjectAtom)
+  const setSyncPaused = useSetAtom(syncPausedAtom)
 
   const fail = (error: unknown) => {
     const dumpError = error instanceof ProjectDumpError ? error : null
@@ -76,12 +78,17 @@ export const useImportProjectDump = () => {
       dump.statements.reduce((sum, s) => sum + s.rows.length, 0),
     )
     try {
+      // the upload is a flood of inserts across every FK level; streamed
+      // back live they would arrive child-before-parent (see syncPausedAtom).
+      // Paused, the staged restart afterwards catches up in FK order
+      setSyncPaused(true)
       const result = await importProjectDump({
         db,
         dump,
         accountId,
         onProgress: ({ rows }) => backgroundTasks.updateProgress(taskId, rows),
       })
+      setSyncPaused(false)
       backgroundTasks.complete(taskId)
       addNotification({
         title: formatMessage({
@@ -99,11 +106,11 @@ export const useImportProjectDump = () => {
         intent: 'success',
         duration: 15000,
       })
-      navigate({
-        to: '/data/projects/$projectId/project',
-        params: { projectId: result.projectId },
-      })
+      // the project arrives with the restarted sync; its form would be
+      // empty until then, so stay on the list
+      navigate({ to: '/data/projects' })
     } catch (error) {
+      setSyncPaused(false)
       backgroundTasks.error(taskId, (error as Error).message)
       fail(error)
     }
