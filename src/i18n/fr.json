@@ -1258,6 +1258,6 @@
   "pdImportDoneBody": "« {name} »: {count} lignes transmises au serveur. Les données sont maintenant synchronisées.",
   "pdImportError": "L'importation a échoué",
   "pdImportInvalid": "Le fichier n'est pas un dump de projet de cette application.",
-  "pdImportExists": "Le projet « {name} » existe déjà. Veuillez d'abord le supprimer.",
+  "pdImportExists": "Le projet « {name} » existe déjà (localement ou sur le serveur). Veuillez d'abord le supprimer et attendre que la suppression soit synchronisée.",
   "pdImportOffline": "L'importation nécessite une connexion au serveur."
 }

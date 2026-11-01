@@ -7,6 +7,8 @@ import {
   userIdAtom,
   addNotificationAtom,
   chooseAccountForProjectAtom,
+  operationsQueueAtom,
+  store,
   syncPausedAtom,
 } from '../../store.ts'
 import { backgroundTasks } from '../../modules/backgroundTasks.ts'
@@ -46,7 +48,7 @@ export const useImportProjectDump = () => {
           {
             id: 'pdImportExists',
             defaultMessage:
-              'Das Projekt "{name}" existiert bereits. Bitte zuerst löschen.',
+              'Das Projekt "{name}" existiert bereits (lokal oder auf dem Server). Bitte zuerst löschen und warten, bis die Löschung synchronisiert ist.',
           },
           { name },
         )
@@ -78,6 +80,15 @@ export const useImportProjectDump = () => {
       dump.statements.reduce((sum, s) => sum + s.rows.length, 0),
     )
     try {
+      // local edits still queued (typically the delete of the project being
+      // re-imported) must reach the server first, else the insert collides
+      const queueStart = Date.now()
+      while (
+        store.get(operationsQueueAtom).length &&
+        Date.now() - queueStart < 120_000
+      ) {
+        await new Promise((r) => setTimeout(r, 500))
+      }
       // the upload is a flood of inserts across every FK level; streamed
       // back live they would arrive child-before-parent (see syncPausedAtom).
       // Paused, the staged restart afterwards catches up in FK order

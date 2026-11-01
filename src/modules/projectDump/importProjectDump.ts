@@ -239,33 +239,47 @@ export const importProjectDump = async ({
   for (let i = 1; i < operations.length; i += OPERATIONS_PER_REQUEST) {
     batches.push(operations.slice(i, i + OPERATIONS_PER_REQUEST))
   }
+  let projectInserted = false
   try {
     for (const batch of batches) {
       const results = await applyOperations(batch)
       const failed = results.find((r) => r.status !== 'applied')
       if (failed) {
         const op = batch[failed.op_index]
+        // the project row itself still exists on the server: a local delete
+        // not yet flushed, or the project was never deleted there
+        if (op?.table === 'projects' && failed.status === 'duplicate') {
+          throw new ProjectDumpError(
+            'exists',
+            `project ${dump.projectId} exists on the server`,
+            dump.projectName,
+          )
+        }
         throw new ProjectDumpError(
           'server',
           `${op?.table ?? '?'}: ${failed.status}${failed.detail ? ` — ${failed.detail}` : ''}`,
           dump.projectName,
         )
       }
+      projectInserted = true
       done += batch.reduce((sum, op) => sum + rowsOf(op), 0)
       onProgress?.({ table: batch.at(-1)?.table ?? '', rows: done, total })
     }
   } catch (error) {
-    // no half-imported project: the cascade removes what already landed
-    await applyOperations([
-      {
-        id: uuidv7(),
-        time: new Date().toISOString(),
-        table: 'projects',
-        operation: 'delete',
-        rowIdName: 'project_id',
-        rowId: dump.projectId,
-      },
-    ]).catch(() => undefined)
+    // no half-imported project: the cascade removes what already landed —
+    // only for a project THIS import created
+    if (projectInserted) {
+      await applyOperations([
+        {
+          id: uuidv7(),
+          time: new Date().toISOString(),
+          table: 'projects',
+          operation: 'delete',
+          rowIdName: 'project_id',
+          rowId: dump.projectId,
+        },
+      ]).catch(() => undefined)
+    }
     if (error instanceof ProjectDumpError) throw error
     throw new ProjectDumpError(
       'server',

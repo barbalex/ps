@@ -1262,6 +1262,6 @@
   "pdImportDoneBody": "\"{name}\": {count} righe trasmesse al server. I dati vengono ora sincronizzati.",
   "pdImportError": "Importazione non riuscita",
   "pdImportInvalid": "Il file non è un dump di progetto di questa app.",
-  "pdImportExists": "Il progetto \"{name}\" esiste già. Eliminarlo prima.",
+  "pdImportExists": "Il progetto \"{name}\" esiste già (localmente o sul server). Eliminarlo prima e attendere che l'eliminazione sia sincronizzata.",
   "pdImportOffline": "L'importazione richiede una connessione al server."
 }
