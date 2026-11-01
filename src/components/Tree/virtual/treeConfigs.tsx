@@ -1,9 +1,9 @@
 import { useAtom } from 'jotai'
-import { useLiveQuery } from '@electric-sql/pglite-react'
 import { useIntl } from 'react-intl'
 
 import { designingAtom, isAppAmin } from '../../../store.ts'
 import { useProjectsNavData } from '../../../modules/useProjectsNavData.ts'
+import { useProjectNavData } from '../../../modules/useProjectNavData.ts'
 import { useSubprojectsNavData } from '../../../modules/useSubprojectsNavData.ts'
 import { useSubprojectNavData } from '../../../modules/useSubprojectNavData.ts'
 import { usePlacesNavData } from '../../../modules/usePlacesNavData.ts'
@@ -37,6 +37,8 @@ import { useActionReportsNavData } from '../../../modules/useActionReportsNavDat
 import { useObservationsAssignedNavData } from '../../../modules/useObservationsAssignedNavData.ts'
 import { usePlaceUsersNavData } from '../../../modules/usePlaceUsersNavData.ts'
 import { useProjectReportsNavData } from '../../../modules/useProjectReportsNavData.ts'
+import { useProjectReportDesignsNavData } from '../../../modules/useProjectReportDesignsNavData.ts'
+import { useSubprojectReportDesignsNavData } from '../../../modules/useSubprojectReportDesignsNavData.ts'
 import { useWmsServicesNavData } from '../../../modules/useWmsServicesNavData.ts'
 import { useWmsLayersNavData } from '../../../modules/useWmsLayersNavData.ts'
 import { useWfsServicesNavData } from '../../../modules/useWfsServicesNavData.ts'
@@ -175,37 +177,6 @@ const collectionChildren =
         }
       })
 
-/** flags of the project node, ported from Project/index.tsx */
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-const useProjectFlags = (params: any) => {
-  const [designingMap] = useAtom(designingAtom)
-  const designing = designingMap[params.nav.id] ?? false
-  const res = useLiveQuery(
-    `SELECT wms_layers, vector_layers, files_active_projects, project_files_in_project, charts, project_reports FROM projects WHERE project_id = $1`,
-    [params.nav.id as string],
-  )
-  const project = res?.rows?.[0] as
-    | {
-        wms_layers: boolean
-        vector_layers: boolean
-        files_active_projects: boolean
-        project_files_in_project: boolean
-        charts: boolean
-        project_reports: boolean
-      }
-    | undefined
-  return {
-    designing,
-    showCharts: designing || (project?.charts ?? false),
-    showProjectReports: designing || (project?.project_reports ?? false),
-    showWmsNodes: designing || (project?.wms_layers ?? false),
-    showVectorNodes: designing || (project?.vector_layers ?? false),
-    showFilesNav:
-      (designing || (project?.files_active_projects ?? false)) &&
-      !(project?.project_files_in_project ?? false),
-  }
-}
-
 export const treeConfigs: Record<string, TreeNodeConfig> = {
   projects: {
     isRoot: true,
@@ -214,51 +185,20 @@ export const treeConfigs: Record<string, TreeNodeConfig> = {
   },
   project: {
     childrenCount: 10,
+    // the project's navs (ids = url segments, labels with counts, flags for
+    // optional folders) come from the same hook the list view uses
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    hook: (params: any, nav: any) => {
-      const flags = useProjectFlags({ nav, params })
-      const navData = {
-        // project rows have no own hook: build the row data from the nav
+    hook: (_params: any, nav: any) => {
+      const { navData } = useProjectNavData({ projectId: nav.id })
+      return {
+        ...navData,
         ownArray: ['data', 'projects', nav.id],
         ownUrl: `/data/projects/${nav.id}`,
-        label: nav.label ?? nav.id,
+        // the projects list already delivers the label; the hook's label
+        // flips to 'not found' while its own query is still loading
+        label: nav.label ?? navData.label,
         siblingType: 'editing' as const,
-        navs: [
-          { id: 'project' },
-          ...(flags.designing ? [{ id: 'project-design' }] : []),
-          { id: 'subprojects', label: 'Teilprojekte' },
-          ...(flags.showCharts ? [{ id: 'charts' }] : []),
-          ...(flags.designing ? [{ id: 'subproject-report-designs' }, { id: 'project-report-designs' }] : []),
-          ...(flags.showProjectReports ? [{ id: 'reports' }] : []),
-          ...(flags.showWmsNodes ? [{ id: 'wms-services' }, { id: 'wms-layers' }] : []),
-          ...(flags.showVectorNodes ? [{ id: 'wfs-services' }, { id: 'vector-layers' }] : []),
-          ...(flags.showFilesNav ? [{ id: 'files' }] : []),
-          ...(flags.designing
-            ? [
-                { id: 'users' },
-                { id: 'lists' },
-                { id: 'taxonomies' },
-                { id: 'units' },
-                { id: 'crs' },
-                { id: 'place-levels' },
-                { id: 'fields' },
-                { id: 'filtered-views' },
-                { id: 'qcs' },
-              ]
-            : []),
-          { id: 'qc-assignments' },
-          { id: 'qcs-run' },
-          ...(flags.designing
-            ? [
-                { id: 'exports' },
-                { id: 'export-assignments' },
-                { id: 'exports-run' },
-              ]
-            : []),
-        ],
       }
-      void params
-      return navData
     },
     children: entityChildren(
       () => 'Projekt',
@@ -270,6 +210,23 @@ export const treeConfigs: Record<string, TreeNodeConfig> = {
         charts: (p) => ({
           type: 'charts',
           params: { projectId: p.nav.id, level: 3 },
+        }),
+        'subproject-charts': (p) => ({
+          type: 'charts',
+          params: {
+            projectId: p.nav.id,
+            forSubprojects: true,
+            section: 'subproject-charts',
+            level: 3,
+          },
+        }),
+        'subproject-designs': (p) => ({
+          type: 'subprojectReportDesigns',
+          params: { projectId: p.nav.id },
+        }),
+        designs: (p) => ({
+          type: 'projectReportDesigns',
+          params: { projectId: p.nav.id },
         }),
         reports: (p) => ({
           type: 'projectReports',
@@ -293,14 +250,6 @@ export const treeConfigs: Record<string, TreeNodeConfig> = {
         'filtered-views': (p) => ({ type: 'filteredViews', params: { projectId: p.nav.id } }),
         qcs: (p) => ({ type: 'projectQcs', params: { projectId: p.nav.id } }),
         exports: (p) => ({ type: 'projectExports', params: { projectId: p.nav.id } }),
-        projectQcAssignments: () => ({
-          type: 'formLink',
-          params: { label: 'Zuweisungen' },
-        }),
-        projectQcsRun: () => ({
-          type: 'formLink',
-          params: { label: 'QK' },
-        }),
       },
       3,
     ),
@@ -681,6 +630,14 @@ export const treeConfigs: Record<string, TreeNodeConfig> = {
   },
   projectReports: {
     hook: (params) => useProjectReportsNavData(params).navData,
+    children: collectionChildren('formLink', undefined),
+  },
+  projectReportDesigns: {
+    hook: (params) => useProjectReportDesignsNavData(params).navData,
+    children: collectionChildren('formLink', undefined),
+  },
+  subprojectReportDesigns: {
+    hook: (params) => useSubprojectReportDesignsNavData(params).navData,
     children: collectionChildren('formLink', undefined),
   },
   wmsServices: {

@@ -58,6 +58,7 @@ type NavDataNotForBreadcrumb = {
   vector_layers_count_filtered?: number
   files_count_unfiltered?: number
   files_count_filtered?: number
+  charts_count?: number
   qc_assignments_count?: number
   qcs_run_count?: number
   export_assignments_count?: number
@@ -79,6 +80,8 @@ type NavDataNotForBreadcrumbDesigning = NavDataNotForBreadcrumb & {
   fields_count_filtered?: number
   subproject_report_designs_count?: number
   project_report_designs_count?: number
+  subproject_charts_count?: number
+  filtered_views_count?: number
 }
 
 export const useProjectNavData = ({
@@ -143,6 +146,7 @@ export const useProjectNavData = ({
             vector_layers_count_filtered AS (SELECT count(*) FROM vector_layers WHERE project_id = '${projectId}' ${vectorLayersIsFiltered ? ` AND ${vectorLayersFilterString}` : ''}),
             files_count_unfiltered AS (SELECT count(*) FROM files WHERE project_id = '${projectId}'),
             files_count_filtered AS (SELECT count(*) FROM files WHERE project_id = '${projectId}' ${filesIsFiltered ? ` AND ${filesFilterString}` : ''}),
+            charts_count AS (SELECT count(*) FROM charts WHERE project_id = '${projectId}' AND for_subprojects = FALSE),
             qc_assignments_count AS (SELECT count(*) FROM (SELECT qa.qc_assignment_id FROM qc_assignments qa JOIN qcs q ON q.qcs_id = qa.qc_id WHERE qa.project_id = '${projectId}' AND qa.subproject_id IS NULL AND q.level = 'project' UNION ALL SELECT pqa.project_qc_assignment_id FROM project_qc_assignments pqa WHERE pqa.project_id = '${projectId}' AND pqa.subproject_id IS NULL) t),
             qcs_run_count AS (SELECT count(*) FROM qc_assignments qa JOIN qcs q ON q.qcs_id = qa.qc_id WHERE qa.project_id = '${projectId}' AND qa.subproject_id IS NULL AND q.level = 'project'),
             export_assignments_count AS (SELECT count(*) FROM (SELECT ea.export_assignment_id FROM export_assignments ea JOIN exports e ON e.exports_id = ea.exports_id WHERE ea.project_id = '${projectId}' AND ea.subproject_id IS NULL AND e.level = 'project' UNION ALL SELECT pea.project_export_assignment_id FROM project_export_assignments pea WHERE pea.project_id = '${projectId}' AND pea.subproject_id IS NULL) t),
@@ -162,7 +166,9 @@ export const useProjectNavData = ({
             fields_count_unfiltered AS (SELECT count(*) FROM fields WHERE project_id = '${projectId}'),
             fields_count_filtered AS (SELECT count(*) FROM fields WHERE project_id = '${projectId}' ${fieldsIsFiltered ? ` AND ${fieldsFilterString}` : ''}),
             subproject_report_designs_count AS (SELECT count(*) FROM subproject_report_designs WHERE project_id = '${projectId}'),
-            project_report_designs_count AS (SELECT count(*) FROM project_report_designs WHERE project_id = '${projectId}')`
+            project_report_designs_count AS (SELECT count(*) FROM project_report_designs WHERE project_id = '${projectId}'),
+            subproject_charts_count AS (SELECT count(*) FROM charts WHERE project_id = '${projectId}' AND for_subprojects = TRUE),
+            filtered_views_count AS (SELECT count(*) FROM filtered_views WHERE project_id = '${projectId}')`
                 : ''
             }`
           : ''
@@ -200,6 +206,7 @@ export const useProjectNavData = ({
             vector_layers_count_filtered.count AS vector_layers_count_filtered,
             files_count_unfiltered.count AS files_count_unfiltered,
             files_count_filtered.count AS files_count_filtered,
+            charts_count.count AS charts_count,
             qc_assignments_count.count AS qc_assignments_count,
             qcs_run_count.count AS qcs_run_count,
             export_assignments_count.count AS export_assignments_count,
@@ -219,7 +226,9 @@ export const useProjectNavData = ({
             fields_count_unfiltered.count AS fields_count_unfiltered,
             fields_count_filtered.count AS fields_count_filtered,
             subproject_report_designs_count.count AS subproject_report_designs_count,
-            project_report_designs_count.count AS project_report_designs_count`
+            project_report_designs_count.count AS project_report_designs_count,
+            subproject_charts_count.count AS subproject_charts_count,
+            filtered_views_count.count AS filtered_views_count`
                 : ''
             }`
             : ''
@@ -242,6 +251,7 @@ export const useProjectNavData = ({
             vector_layers_count_filtered,
             files_count_unfiltered,
             files_count_filtered,
+            charts_count,
             qc_assignments_count,
             qcs_run_count,
             export_assignments_count,
@@ -261,7 +271,9 @@ export const useProjectNavData = ({
             fields_count_unfiltered,
             fields_count_filtered,
             subproject_report_designs_count,
-            project_report_designs_count`
+            project_report_designs_count,
+            subproject_charts_count,
+            filtered_views_count`
                 : ''
             }`
             : ''
@@ -326,8 +338,39 @@ export const useProjectNavData = ({
                 formatMessage({ id: 'Jou8/E', defaultMessage: 'Teilprojekte' }),
             }),
           },
+          ...(designing || (nav?.charts ?? true)
+            ? [
+                {
+                  id: 'charts',
+                  label: buildNavLabel({
+                    loading,
+                    countFiltered: nav?.charts_count ?? 0,
+                    namePlural: formatMessage({
+                      id: 'ZPEO8P',
+                      defaultMessage: 'Diagramme',
+                    }),
+                  }),
+                },
+              ]
+            : []),
+          // chart templates for all subprojects: design-time configuration
           ...(designing
             ? [
+                {
+                  id: 'subproject-charts',
+                  label: buildNavLabel({
+                    loading,
+                    countFiltered: nav?.subproject_charts_count ?? 0,
+                    namePlural: formatMessage(
+                      { id: 'bFcCdD', defaultMessage: '{subprojects}-Diagramme' },
+                      {
+                        subprojects:
+                          nav?.subprojects_name_plural ??
+                          formatMessage({ id: 'bEaAfF', defaultMessage: 'Teilprojekte' }),
+                      },
+                    ),
+                  }),
+                },
                 {
                   id: 'subproject-designs',
                   label: buildNavLabel({
@@ -555,6 +598,21 @@ export const useProjectNavData = ({
                     namePlural: formatMessage({
                       id: 'I+dTZE',
                       defaultMessage: 'Felder',
+                    }),
+                  }),
+                },
+              ]
+            : []),
+          ...(designing
+            ? [
+                {
+                  id: 'filtered-views',
+                  label: buildNavLabel({
+                    loading,
+                    countFiltered: nav?.filtered_views_count ?? 0,
+                    namePlural: formatMessage({
+                      id: '2kHq3x',
+                      defaultMessage: 'Gefilterte Ansichten',
                     }),
                   }),
                 },
