@@ -110,7 +110,7 @@ export const useImportProjectDump = () => {
           {
             id: 'pdImportDoneBody',
             defaultMessage:
-              '"{name}": {count} Zeilen an den Server übertragen. Die Daten werden nun synchronisiert.',
+              '"{name}": {count} Zeilen an den Server übertragen. Der Server verarbeitet die Daten nun für die Synchronisation — bei grossen Projekten dauert es einige Minuten, bis sie hier erscheinen.',
           },
           { name: result.projectName ?? '', count: result.rowCount },
         ),

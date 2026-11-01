@@ -1255,7 +1255,7 @@
   "pdImportHint": "A project with the same ID must not exist yet. The import needs a connection to the server.",
   "pdImportTask": "Importing project {name}",
   "pdImportDoneTitle": "Project imported",
-  "pdImportDoneBody": "\"{name}\": {count} rows uploaded to the server. The data is now being synced.",
+  "pdImportDoneBody": "\"{name}\": {count} rows uploaded to the server. The server is now preparing the data for sync — for large projects it takes a few minutes until it appears here.",
   "pdImportError": "Import failed",
   "pdImportInvalid": "The file is not a project dump of this app.",
   "pdImportExists": "The project \"{name}\" already exists (locally or on the server). Please delete it first and wait until the deletion has synced.",

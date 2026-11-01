@@ -843,7 +843,13 @@ or to restore a deleted project — with its original ids.
   accepts files written by the app.
 
 Known limits: `apply_operations` stamps `created_at`/`updated_at` with the
-import time; the in-app import does not read pg_dump-format files.
+import time; the in-app import does not read pg_dump-format files. After a
+large import Electric needs minutes before the data streams to clients: it
+evaluates every uploaded row against all ~60 subquery shapes (the apflora
+project, 250k rows, took ~7 min end to end; a cold client sync of the
+same data takes ~1 min). The importing tab pauses its shape streams during
+the upload (`syncPausedAtom`), otherwise the rows would arrive
+child-before-parent across stages and abort the applies.
 
 ## Known limitations (v1)
 

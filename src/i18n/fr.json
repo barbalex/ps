@@ -1255,7 +1255,7 @@
   "pdImportHint": "Un projet avec le même identifiant ne doit pas encore exister. L'importation nécessite une connexion au serveur.",
   "pdImportTask": "Importation du projet {name}",
   "pdImportDoneTitle": "Projet importé",
-  "pdImportDoneBody": "« {name} »: {count} lignes transmises au serveur. Les données sont maintenant synchronisées.",
+  "pdImportDoneBody": "« {name} »: {count} lignes transmises au serveur. Le serveur prépare maintenant les données pour la synchronisation — pour les grands projets, il faut quelques minutes avant qu'elles n'apparaissent ici.",
   "pdImportError": "L'importation a échoué",
   "pdImportInvalid": "Le fichier n'est pas un dump de projet de cette application.",
   "pdImportExists": "Le projet « {name} » existe déjà (localement ou sur le serveur). Veuillez d'abord le supprimer et attendre que la suppression soit synchronisée.",

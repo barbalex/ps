@@ -1259,7 +1259,7 @@
   "pdImportHint": "Un progetto con lo stesso ID non deve ancora esistere. L'importazione richiede una connessione al server.",
   "pdImportTask": "Importazione del progetto {name}",
   "pdImportDoneTitle": "Progetto importato",
-  "pdImportDoneBody": "\"{name}\": {count} righe trasmesse al server. I dati vengono ora sincronizzati.",
+  "pdImportDoneBody": "\"{name}\": {count} righe trasmesse al server. Il server sta ora preparando i dati per la sincronizzazione — per progetti grandi ci vogliono alcuni minuti prima che appaiano qui.",
   "pdImportError": "Importazione non riuscita",
   "pdImportInvalid": "Il file non è un dump di progetto di questa app.",
   "pdImportExists": "Il progetto \"{name}\" esiste già (localmente o sul server). Eliminarlo prima e attendere che l'eliminazione sia sincronizzata.",
