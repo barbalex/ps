@@ -286,7 +286,9 @@ app.get('/auth/postgrest-token', async (req, res) => {
   })
   if (!session?.user?.id) return res.status(401).json({ error: 'UNAUTHORIZED' })
   const token = signPostgrestJwt(session.user.id, jwtSecret)
-  res.setHeader('Cache-Control', 'private, max-age=3300')
+  // the client caches the token in memory per user; an HTTP cache entry
+  // would outlive an account switch and hand out the previous user's token
+  res.setHeader('Cache-Control', 'no-store')
   return res.json({ token })
 })
 

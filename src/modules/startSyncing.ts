@@ -71,13 +71,17 @@ export const startSyncing = async (userId: string) => {
   // PGlite data persists in IndexedDB, so no need to clear or re-sync everything
 
   // Preflight the PostgREST JWT so Caddy's forward_auth gate on the Electric
-  // endpoint accepts the shape requests.
-  await fetchPostgrestToken()
+  // endpoint accepts the shape requests. The token must be the one of THIS
+  // user: the auth server rejects shapes whose params[1] is not the caller.
+  const token = await fetchPostgrestToken(userId)
+  if (!token) {
+    throw new Error('startSyncing: no PostgREST token for the signed-in user')
+  }
   // Function-valued header so every shape request resolves the CURRENT token
   // from fetchPostgrestToken's expiry-aware cache — a static header would 401
   // on every long-poll once the 1h PostgREST JWT expires (caddy forward_auth)
   const authHeaders = {
-    Authorization: async () => `Bearer ${await fetchPostgrestToken()}`,
+    Authorization: async () => `Bearer ${await fetchPostgrestToken(userId)}`,
   } as unknown as Record<string, string>
 
   try {
