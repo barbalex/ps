@@ -22,8 +22,6 @@ dark mode not well implemented for: file upload?
 
 ---
 
-lets build lists using https://tanstack.com/virtual/latest / https://github.com/TanStack/virtual
-
 ---
 
 tree building: optimizable?
@@ -77,8 +75,6 @@ Suggested fix: gate the trigger function on electric.syncing, and (for queries m
 ~~nav tree renders under apflora: 'Subprojects (...)' (next to project, qc-assignments and qcs-run). No matter how deep I navigate into subfolders (using breadcrumbs ans list views), this one stays like this and no subfolder is rendered~~ → fixed: registered rows lost their Registrar after the first (still loading) registration; open rows now keep one mounted
 
 ---
-
-http://localhost:5176/data/projects/0195a101-0000-7000-8000-000000000001/subprojects/017d3472-d75d-7a4f-8040-dfdd5df00bdb: in the Art list view 'Charts (0)' but 3 charts exist
 
 ---
 
