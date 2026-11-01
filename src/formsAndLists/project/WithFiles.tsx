@@ -42,6 +42,7 @@ import { filterStringFromFilter } from '../../modules/filterStringFromFilter.ts'
 import { UploaderContext } from '../../UploaderContext.ts'
 import type Projects from '../../models/public/Projects.ts'
 import styles from './WithFiles.module.css'
+import { filesScopeWhere } from '../../modules/filesScopeWhere.ts'
 
 import '../../form.css'
 import type { FieldChangeData } from '../../components/shared/fieldChange.ts'
@@ -75,8 +76,7 @@ export const ProjectWithFiles = ({ from }: { from: string }) => {
   const row = res?.rows?.[0] as Projects | undefined
 
   const filesCountRes = useLiveQuery(
-    `SELECT count(*)::int AS count FROM files WHERE project_id = $1`,
-    [projectId],
+    `SELECT count(*)::int AS count FROM files WHERE ${filesScopeWhere({ projectId })}`,
   )
   const filesCount = filesCountRes?.rows?.[0]?.count ?? 0
 

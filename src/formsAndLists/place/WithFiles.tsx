@@ -34,6 +34,7 @@ import { UploaderContext } from '../../UploaderContext.ts'
 import { filterStringFromFilter } from '../../modules/filterStringFromFilter.ts'
 import type Places from '../../models/public/Places.ts'
 import styles from './WithFiles.module.css'
+import { filesScopeWhere } from '../../modules/filesScopeWhere.ts'
 
 import '../../form.css'
 import type { FieldChangeData } from '../../components/shared/fieldChange.ts'
@@ -111,8 +112,7 @@ export const PlaceWithFiles = ({ from }: { from: string }) => {
   const placeUsersCount = placeUsersCountRes?.rows?.[0]?.count ?? 0
 
   const filesCountRes = useLiveQuery(
-    `SELECT count(*)::int AS count FROM files WHERE place_id = $1`,
-    [currentPlaceId],
+    `SELECT count(*)::int AS count FROM files WHERE ${filesScopeWhere({ placeId: currentPlaceId })}`,
   )
   const filesCount = filesCountRes?.rows?.[0]?.count ?? 0
 

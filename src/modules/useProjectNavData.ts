@@ -18,6 +18,7 @@ import {
 } from '../store.ts'
 import { buildNavLabel } from './buildNavLabel.ts'
 import { filterStringFromFilter } from './filterStringFromFilter.ts'
+import { filesScopeWhere } from './filesScopeWhere.ts'
 import {
   subprojectNameSingularExpr,
   subprojectNamePluralExpr,
@@ -144,8 +145,8 @@ export const useProjectNavData = ({
             wfs_services_count_unfiltered AS (SELECT count(*) FROM wfs_services WHERE project_id = '${projectId}'),
             vector_layers_count_unfiltered AS (SELECT count(*) FROM vector_layers WHERE project_id = '${projectId}'),
             vector_layers_count_filtered AS (SELECT count(*) FROM vector_layers WHERE project_id = '${projectId}' ${vectorLayersIsFiltered ? ` AND ${vectorLayersFilterString}` : ''}),
-            files_count_unfiltered AS (SELECT count(*) FROM files WHERE project_id = '${projectId}'),
-            files_count_filtered AS (SELECT count(*) FROM files WHERE project_id = '${projectId}' ${filesIsFiltered ? ` AND ${filesFilterString}` : ''}),
+            files_count_unfiltered AS (SELECT count(*) FROM files WHERE ${filesScopeWhere({ projectId })}),
+            files_count_filtered AS (SELECT count(*) FROM files WHERE ${filesScopeWhere({ projectId })} ${filesIsFiltered ? ` AND ${filesFilterString}` : ''}),
             charts_count AS (SELECT count(*) FROM charts WHERE project_id = '${projectId}' AND for_subprojects = FALSE),
             qc_assignments_count AS (SELECT count(*) FROM (SELECT qa.qc_assignment_id FROM qc_assignments qa JOIN qcs q ON q.qcs_id = qa.qc_id WHERE qa.project_id = '${projectId}' AND qa.subproject_id IS NULL AND q.level = 'project' UNION ALL SELECT pqa.project_qc_assignment_id FROM project_qc_assignments pqa WHERE pqa.project_id = '${projectId}' AND pqa.subproject_id IS NULL) t),
             qcs_run_count AS (SELECT count(*) FROM qc_assignments qa JOIN qcs q ON q.qcs_id = qa.qc_id WHERE qa.project_id = '${projectId}' AND qa.subproject_id IS NULL AND q.level = 'project'),

@@ -6,6 +6,7 @@ import { useIntl } from 'react-intl'
 
 import { filterStringFromFilter } from './filterStringFromFilter.ts'
 import { buildNavLabel } from './buildNavLabel.ts'
+import { filesScopeWhere } from './filesScopeWhere.ts'
 import { filesFilterAtom, treeOpenNodesAtom } from '../store.ts'
 
 type Props = {
@@ -60,28 +61,14 @@ export const useFilesNavData = ({
   // needs to work not only works for urlPath, for all opened paths!
   const isOpen = openNodes.some((array) => isEqual(array, ownArray))
 
-  const hKey = actionId
-    ? 'action_id'
-    : checkId
-      ? 'check_id'
-      : placeId2
-        ? 'place_id'
-        : placeId
-          ? 'place_id'
-          : subprojectId
-            ? 'subproject_id'
-            : projectId
-              ? 'project_id'
-              : undefined
-
-  const hValue =
-    actionId ??
-    checkId ??
-    placeId2 ??
-    placeId ??
-    subprojectId ??
-    projectId ??
-    undefined
+  const scope = filesScopeWhere({
+    projectId,
+    subprojectId,
+    placeId,
+    placeId2,
+    actionId,
+    checkId,
+  })
 
   const [filter] = useAtom(filesFilterAtom)
   const filterString = filterStringFromFilter(filter)
@@ -90,8 +77,8 @@ export const useFilesNavData = ({
   const sql = isOpen
     ? `
       WITH
-        count_unfiltered AS (SELECT count(*) FROM files WHERE ${hKey ? `${hKey} = '${hValue}'` : 'true'}),
-        count_filtered AS (SELECT count(*) FROM files WHERE ${hKey ? `${hKey} = '${hValue}'` : 'true'} ${isFiltered ? ` AND ${filterString}` : ''})
+        count_unfiltered AS (SELECT count(*) FROM files WHERE ${scope}),
+        count_filtered AS (SELECT count(*) FROM files WHERE ${scope} ${isFiltered ? ` AND ${filterString}` : ''})
       SELECT
         file_id AS id,
         label,
@@ -100,14 +87,14 @@ export const useFilesNavData = ({
         count_unfiltered.count AS count_unfiltered,
         count_filtered.count AS count_filtered
       FROM files, count_unfiltered, count_filtered
-      WHERE ${hKey ? `${hKey} = '${hValue}'` : 'true'}
+      WHERE ${scope}
         ${isFiltered ? ` AND ${filterString}` : ''}
       ORDER BY label
     `
     : `
       WITH
-        count_unfiltered AS (SELECT count(*) FROM files WHERE ${hKey ? `${hKey} = '${hValue}'` : 'true'}),
-        count_filtered AS (SELECT count(*) FROM files WHERE ${hKey ? `${hKey} = '${hValue}'` : 'true'} ${isFiltered ? ` AND ${filterString}` : ''})
+        count_unfiltered AS (SELECT count(*) FROM files WHERE ${scope}),
+        count_filtered AS (SELECT count(*) FROM files WHERE ${scope} ${isFiltered ? ` AND ${filterString}` : ''})
       SELECT
         count_unfiltered.count AS count_unfiltered,
         count_filtered.count AS count_filtered

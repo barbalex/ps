@@ -13,6 +13,7 @@ import { UploaderContext } from '../../UploaderContext.ts'
 import { FullscreenControl } from './FullscreenControl.tsx'
 import { HistoryToggleButton } from '../../components/shared/HistoryCompare/HistoryToggleButton.tsx'
 import { addOperationAtom } from '../../store.ts'
+import { filesScopeWhere } from '../../modules/filesScopeWhere.ts'
 import type Files from '../../models/public/Files.ts'
 
 export const Header = ({
@@ -94,28 +95,15 @@ export const Header = ({
     }
   }
 
-  const hFilterField = actionId
-    ? 'action_id'
-    : checkId
-      ? 'check_id'
-      : placeId2
-        ? 'place_id'
-        : placeId
-          ? 'place_id'
-          : subprojectId
-            ? 'subproject_id'
-            : projectId
-              ? 'project_id'
-              : undefined
-
-  const hFilterValue =
-    actionId ??
-    checkId ??
-    placeId2 ??
-    placeId ??
-    subprojectId ??
-    projectId ??
-    undefined
+  // same scope as the files list this file was opened from
+  const scope = filesScopeWhere({
+    projectId,
+    subprojectId,
+    placeId,
+    placeId2,
+    actionId,
+    checkId,
+  })
 
   const toNext = async () => {
     try {
@@ -123,7 +111,7 @@ export const Header = ({
         `
       SELECT file_id 
       FROM files 
-      ${hFilterField ? `WHERE ${hFilterField} = '${hFilterValue}'` : ''} 
+      WHERE ${scope}
       ORDER BY label`,
       )
       const fileIds = (res?.rows ?? []) as { file_id: string }[]
@@ -147,7 +135,7 @@ export const Header = ({
         `
       SELECT file_id 
       FROM files 
-      ${hFilterField ? `WHERE ${hFilterField} = '${hFilterValue}'` : ''} 
+      WHERE ${scope}
       ORDER BY label`,
       )
       const fileIds = (res?.rows ?? []) as { file_id: string }[]

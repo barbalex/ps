@@ -16,6 +16,7 @@ import { buildNavLabel } from './buildNavLabel.ts'
 import { filterStringFromFilter } from './filterStringFromFilter.ts'
 import { subprojectNameSingularExpr } from './subprojectNameCols.ts'
 import { getPlaceFallbackNames } from './placeNameFallback.ts'
+import { filesScopeWhere } from './filesScopeWhere.ts'
 
 type Props = {
   projectId: string
@@ -107,8 +108,8 @@ export const useSubprojectNavData = ({ projectId, subprojectId }: Props) => {
         observations_not_to_assign_count AS (SELECT count(*) FROM observations o INNER JOIN observation_imports oi ON o.observation_import_id = oi.observation_import_id WHERE oi.subproject_id = '${subprojectId}' AND o.not_to_assign IS TRUE AND o.place_id IS NULL),
         subproject_taxa_count AS (SELECT count(*) FROM subproject_taxa WHERE subproject_id = '${subprojectId}'),
         subproject_roles_count AS (SELECT count(*) FROM subproject_roles WHERE subproject_id = '${subprojectId}'),
-        files_count_unfiltered AS (SELECT count(*) FROM files WHERE subproject_id = '${subprojectId}'),
-        files_count_filtered AS (SELECT count(*) FROM files WHERE subproject_id = '${subprojectId}' ${filesIsFiltered ? ` AND ${filesFilterString}` : ''}),
+        files_count_unfiltered AS (SELECT count(*) FROM files WHERE ${filesScopeWhere({ subprojectId })}),
+        files_count_filtered AS (SELECT count(*) FROM files WHERE ${filesScopeWhere({ subprojectId })} ${filesIsFiltered ? ` AND ${filesFilterString}` : ''}),
         -- own charts plus the project's chart templates for all subprojects
         -- (same scope as useChartsNavData for a subproject)
         charts_count AS (SELECT count(*) FROM charts WHERE subproject_id = '${subprojectId}' OR (for_subprojects AND project_id = '${projectId}' AND subproject_id IS NULL)),
