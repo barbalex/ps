@@ -18,6 +18,8 @@ npm run dev           # Start Vite dev server + Caddy proxy (localhost:5176)
 npm run dev-host      # Expose dev server to network
 npm run build         # Production build → frontend/dist
 npm run preview       # Preview production build
+npm run deploy        # Deploy: bump patch version + date, push main, update production branch (Netlify deploys production)
+npm run deploy minor  # Same with a minor bump (or: major)
 ```
 
 ### Code Quality
