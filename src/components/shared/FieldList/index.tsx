@@ -14,11 +14,23 @@ interface Props {
   table: string
   fieldsTable: string
   id: string
-  valueArray: string[]
+  // the column holds a comma separated list (seeds may also write a jsonb
+  // array or a postgres array literal) - see usePlacesNavData
+  value: string | string[] | null | undefined
   from: string
 }
 
 type TagGroupProps = React.ComponentProps<typeof TagGroup>
+
+const toArray = (value: Props['value']): string[] =>
+  Array.isArray(value) ? value.map(String).filter(Boolean)
+  : typeof value === 'string' ?
+    value
+      .replace(/^\{|\}$/g, '')
+      .split(',')
+      .map((v) => v.trim())
+      .filter(Boolean)
+  : []
 
 export const FieldList = ({
   name,
@@ -26,8 +38,9 @@ export const FieldList = ({
   table,
   fieldsTable,
   id,
-  valueArray = [],
+  value,
 }: Props) => {
+  const valueArray = toArray(value)
   const { projectId } = useParams({ strict: false })
 
   const addOperation = useSetAtom(addOperationAtom)
@@ -45,77 +58,51 @@ export const FieldList = ({
   const options = fieldNames.map(({ name }) => name)
   const unusedOptions = options.filter((o) => !valueArray.includes(o))
 
-  const removeItem: TagGroupProps['onDismiss'] = async (_e, { value }) => {
+  const save = async (next: string[]) => {
     const idField = idFieldFromTable(table)
-    const data = valueArray.filter((v) => v !== value)
-    // TODO: test
+    const joined = next.length ? next.join(',') : null
     const prevRes = await db.query(
       `SELECT * FROM ${table} WHERE ${idField} = $1`,
       [id],
     )
-    const prev = (prevRes?.rows?.[0] || {}) as Record<string, unknown>
-    db.query(
-      `UPDATE ${table} SET data = jsonb_set(data, '{${name}}', $1) WHERE ${idField} = $2`,
-      [data, id],
-    )
+    const prev = (prevRes?.rows?.[0] ?? {}) as Record<string, unknown>
+    await db.query(`UPDATE ${table} SET ${name} = $1 WHERE ${idField} = $2`, [
+      joined,
+      id,
+    ])
     addOperation({
       table,
       rowIdName: idField,
       rowId: id,
       operation: 'update',
-      draft: {
-        data: {
-          ...((prev.data as Record<string, unknown>) || {}),
-          [name]: valueArray.filter((v) => v !== value),
-        },
-      },
+      draft: { [name]: joined },
       prev,
     })
   }
 
-  const onChange = async ({
-    value,
+  const removeItem: TagGroupProps['onDismiss'] = (_e, { value: removed }) =>
+    void save(valueArray.filter((v) => v !== removed))
+
+  const onChange = ({
+    value: next,
     previousValue,
   }: {
     value?: string
     previousValue?: string
   }) => {
     let val = [...valueArray]
-    if (!value) {
-      // need to remove the key from the json object
+    if (!next) {
       val = val.filter((v) => v !== previousValue)
     } else {
       // replace the previous value with the new value
       const index = val.findIndex((v) => v === previousValue)
       if (index !== -1) {
-        val[index] = value
+        val[index] = next
       } else {
-        val.push(value)
+        val.push(next)
       }
     }
-    const idField = idFieldFromTable(table)
-    const prevRes = await db.query(
-      `SELECT * FROM ${table} WHERE ${idField} = $1`,
-      [id],
-    )
-    const prev = (prevRes?.rows?.[0] ?? {}) as Record<string, unknown>
-    db.query(
-      `UPDATE ${table} SET data = jsonb_set(data, '{${name}}', $1) WHERE ${idField} = $2`,
-      [val, id],
-    )
-    addOperation({
-      table,
-      rowIdName: idField,
-      rowId: id,
-      operation: 'update',
-      draft: {
-        data: {
-          ...((prev.data as Record<string, unknown>) || {}),
-          [name]: val,
-        },
-      },
-      prev,
-    })
+    void save(val)
   }
 
   return (

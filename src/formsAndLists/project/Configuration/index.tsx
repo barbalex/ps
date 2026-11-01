@@ -829,7 +829,7 @@ export const Configuration = ({ from }: { from: string }) => {
             table="projects"
             fieldsTable="places"
             id={projectId!}
-            valueArray={(row.places_order_by as unknown as string[]) ?? []}
+            value={row.places_order_by}
             from={from}
           />
           <TextFieldInactive
