@@ -1246,5 +1246,18 @@
   "vectorLayer.labelFr": "French",
   "vectorLayer.labelIt": "Italian",
   "vectorLayer.section.label.description": "The label of the layer in all languages. If a language is missing, German is used.",
-  "yoo7JY.offen": "open"
+  "yoo7JY.offen": "open",
+  "pdExportTitle": "Export to SQL dumpfile",
+  "pdExportDone": "{count} rows from {tables} tables exported (the locally synced data).",
+  "pdExportError": "Export failed",
+  "pdImportTitle": "Import from SQL dumpfile",
+  "pdImportDesc": "The file must be a project dump exported with this app (.sql). The project is uploaded to the server with its original IDs and attached to the chosen account. Access rights are not imported: you become the owner.",
+  "pdImportHint": "A project with the same ID must not exist yet. The import needs a connection to the server.",
+  "pdImportTask": "Importing project {name}",
+  "pdImportDoneTitle": "Project imported",
+  "pdImportDoneBody": "\"{name}\": {count} rows uploaded to the server. The data is now being synced.",
+  "pdImportError": "Import failed",
+  "pdImportInvalid": "The file is not a project dump of this app.",
+  "pdImportExists": "The project \"{name}\" already exists. Please delete it first.",
+  "pdImportOffline": "The import needs a connection to the server."
 }

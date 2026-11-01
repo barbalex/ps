@@ -1,7 +1,9 @@
 // The tables a project consists of, in FK-safe order (parents before children):
 // dump-project.mjs builds the dump schema in this order, import-project-dump.mjs
-// relies on it for its single-transaction restore. Tables without a project_id
-// column are scoped through their parent's rows in the dump schema.
+// relies on it for its single-transaction restore, and the in-app export /
+// import (src/modules/projectDump/) walks the same list against the local
+// database. Tables without a project_id column are scoped through their
+// parent's rows (`parent`: the FK column and the parent table).
 //
 // Deliberately excluded:
 // - global catalogs (users, accounts, auth_*, messages, user_messages,
@@ -11,149 +13,87 @@
 //   the owner's account, not the project
 // - *_history tables — derived; the versioning triggers rebuild them on
 //   future changes
+const byProject = (table) => ({ table, scope: 'project_id' })
+const byParent = (table, column, parentTable) => ({
+  table,
+  parent: { column, table: parentTable },
+})
+
 export const projectTables = [
-  { table: 'projects', where: (id) => `project_id = '${id}'` },
-  { table: 'project_users', where: (id) => `project_id = '${id}'` },
-  { table: 'project_roles', where: (id) => `project_id = '${id}'` },
-  { table: 'subprojects', where: (id) => `project_id = '${id}'` },
-  { table: 'place_levels', where: (id) => `project_id = '${id}'` },
-  { table: 'filtered_views', where: (id) => `project_id = '${id}'` },
-  { table: 'units', where: (id) => `project_id = '${id}'` },
-  { table: 'lists', where: (id) => `project_id = '${id}'` },
-  {
-    table: 'list_values',
-    where: () => `list_id IN (SELECT list_id FROM ps_dump.lists)`,
-  },
-  { table: 'taxonomies', where: (id) => `project_id = '${id}'` },
-  {
-    table: 'taxa',
-    where: () => `taxonomy_id IN (SELECT taxonomy_id FROM ps_dump.taxonomies)`,
-  },
-  {
-    table: 'subproject_taxa',
-    where: () =>
-      `subproject_id IN (SELECT subproject_id FROM ps_dump.subprojects)`,
-  },
-  {
-    table: 'subproject_roles',
-    where: () =>
-      `subproject_id IN (SELECT subproject_id FROM ps_dump.subprojects)`,
-  },
-  {
-    table: 'goals',
-    where: () =>
-      `subproject_id IN (SELECT subproject_id FROM ps_dump.subprojects)`,
-  },
-  {
-    table: 'goal_reports',
-    where: () => `goal_id IN (SELECT goal_id FROM ps_dump.goals)`,
-  },
-  {
-    table: 'places',
-    where: () =>
-      `subproject_id IN (SELECT subproject_id FROM ps_dump.subprojects)`,
-  },
-  {
-    table: 'place_roles',
-    where: () => `place_id IN (SELECT place_id FROM ps_dump.places)`,
-  },
-  {
-    table: 'actions',
-    where: () => `place_id IN (SELECT place_id FROM ps_dump.places)`,
-  },
-  {
-    table: 'action_quantities',
-    where: () => `action_id IN (SELECT action_id FROM ps_dump.actions)`,
-  },
-  {
-    table: 'action_taxa',
-    where: () => `action_id IN (SELECT action_id FROM ps_dump.actions)`,
-  },
-  {
-    table: 'checks',
-    where: () => `place_id IN (SELECT place_id FROM ps_dump.places)`,
-  },
-  {
-    table: 'check_quantities',
-    where: () => `check_id IN (SELECT check_id FROM ps_dump.checks)`,
-  },
-  {
-    table: 'check_taxa',
-    where: () => `check_id IN (SELECT check_id FROM ps_dump.checks)`,
-  },
-  {
-    table: 'check_reports',
-    where: () => `place_id IN (SELECT place_id FROM ps_dump.places)`,
-  },
-  {
-    table: 'check_report_quantities',
-    where: () =>
-      `place_check_report_id IN (SELECT place_check_report_id FROM ps_dump.check_reports)`,
-  },
-  {
-    table: 'action_reports',
-    where: () => `place_id IN (SELECT place_id FROM ps_dump.places)`,
-  },
-  {
-    table: 'action_report_quantities',
-    where: () =>
-      `place_action_report_id IN (SELECT place_action_report_id FROM ps_dump.action_reports)`,
-  },
-  {
-    table: 'subproject_reports',
-    where: () =>
-      `subproject_id IN (SELECT subproject_id FROM ps_dump.subprojects)`,
-  },
-  { table: 'subproject_report_designs', where: (id) => `project_id = '${id}'` },
-  { table: 'project_reports', where: (id) => `project_id = '${id}'` },
-  { table: 'project_report_designs', where: (id) => `project_id = '${id}'` },
-  { table: 'project_report_subdesigns', where: (id) => `project_id = '${id}'` },
-  { table: 'files', where: (id) => `project_id = '${id}'` },
-  { table: 'fields', where: (id) => `project_id = '${id}'` },
-  { table: 'field_sorts', where: (id) => `project_id = '${id}'` },
-  {
-    table: 'observation_imports',
-    where: () =>
-      `subproject_id IN (SELECT subproject_id FROM ps_dump.subprojects)`,
-  },
-  {
-    table: 'observations',
-    where: () =>
-      `observation_import_id IN (SELECT observation_import_id FROM ps_dump.observation_imports)`,
-  },
-  { table: 'wms_services', where: (id) => `project_id = '${id}'` },
-  {
-    table: 'wms_service_layers',
-    where: () => `wms_service_id IN (SELECT wms_service_id FROM ps_dump.wms_services)`,
-  },
-  { table: 'wms_layers', where: (id) => `project_id = '${id}'` },
-  { table: 'wfs_services', where: (id) => `project_id = '${id}'` },
-  {
-    table: 'wfs_service_layers',
-    where: () => `wfs_service_id IN (SELECT wfs_service_id FROM ps_dump.wfs_services)`,
-  },
-  { table: 'vector_layers', where: (id) => `project_id = '${id}'` },
-  {
-    table: 'vector_layer_geoms',
-    where: () =>
-      `vector_layer_id IN (SELECT vector_layer_id FROM ps_dump.vector_layers)`,
-  },
-  {
-    table: 'vector_layer_displays',
-    where: () =>
-      `vector_layer_id IN (SELECT vector_layer_id FROM ps_dump.vector_layers)`,
-  },
-  { table: 'layer_presentations', where: (id) => `project_id = '${id}'` },
-  { table: 'charts', where: (id) => `project_id = '${id}'` },
-  {
-    table: 'chart_subjects',
-    where: () => `chart_id IN (SELECT chart_id FROM ps_dump.charts)`,
-  },
-  { table: 'project_crs', where: (id) => `project_id = '${id}'` },
-  { table: 'qc_assignments', where: (id) => `project_id = '${id}'` },
-  { table: 'project_qcs', where: (id) => `project_id = '${id}'` },
-  { table: 'project_qc_assignments', where: (id) => `project_id = '${id}'` },
-  { table: 'export_assignments', where: (id) => `project_id = '${id}'` },
-  { table: 'project_exports', where: (id) => `project_id = '${id}'` },
-  { table: 'project_export_assignments', where: (id) => `project_id = '${id}'` },
+  byProject('projects'),
+  byProject('project_users'),
+  byProject('project_roles'),
+  byProject('subprojects'),
+  byProject('place_levels'),
+  byProject('filtered_views'),
+  byProject('units'),
+  byProject('lists'),
+  byParent('list_values', 'list_id', 'lists'),
+  byProject('taxonomies'),
+  byParent('taxa', 'taxonomy_id', 'taxonomies'),
+  byParent('subproject_taxa', 'subproject_id', 'subprojects'),
+  byParent('subproject_roles', 'subproject_id', 'subprojects'),
+  byParent('goals', 'subproject_id', 'subprojects'),
+  byParent('goal_reports', 'goal_id', 'goals'),
+  byParent('places', 'subproject_id', 'subprojects'),
+  byParent('place_roles', 'place_id', 'places'),
+  byParent('actions', 'place_id', 'places'),
+  byParent('action_quantities', 'action_id', 'actions'),
+  byParent('action_taxa', 'action_id', 'actions'),
+  byParent('checks', 'place_id', 'places'),
+  byParent('check_quantities', 'check_id', 'checks'),
+  byParent('check_taxa', 'check_id', 'checks'),
+  byParent('check_reports', 'place_id', 'places'),
+  byParent('check_report_quantities', 'place_check_report_id', 'check_reports'),
+  byParent('action_reports', 'place_id', 'places'),
+  byParent('action_report_quantities', 'place_action_report_id', 'action_reports'),
+  byParent('subproject_reports', 'subproject_id', 'subprojects'),
+  byProject('subproject_report_designs'),
+  byProject('project_reports'),
+  byProject('project_report_designs'),
+  byProject('project_report_subdesigns'),
+  byProject('files'),
+  byProject('fields'),
+  byProject('field_sorts'),
+  byParent('observation_imports', 'subproject_id', 'subprojects'),
+  byParent('observations', 'observation_import_id', 'observation_imports'),
+  byProject('wms_services'),
+  byParent('wms_service_layers', 'wms_service_id', 'wms_services'),
+  byProject('wms_layers'),
+  byProject('wfs_services'),
+  byParent('wfs_service_layers', 'wfs_service_id', 'wfs_services'),
+  byProject('vector_layers'),
+  byParent('vector_layer_geoms', 'vector_layer_id', 'vector_layers'),
+  byParent('vector_layer_displays', 'vector_layer_id', 'vector_layers'),
+  byProject('layer_presentations'),
+  byProject('charts'),
+  byParent('chart_subjects', 'chart_id', 'charts'),
+  byProject('project_crs'),
+  byProject('qc_assignments'),
+  byProject('project_qcs'),
+  byProject('project_qc_assignments'),
+  byProject('export_assignments'),
+  byProject('project_exports'),
+  byProject('project_export_assignments'),
 ]
+
+const entryByTable = new Map(projectTables.map((entry) => [entry.table, entry]))
+
+/**
+ * WHERE clause selecting a table's rows of one project.
+ * - `schema` given: parents are the already-scoped copies in that schema
+ *   (dump-project.mjs: `list_id IN (SELECT list_id FROM ps_dump.lists)`)
+ * - no schema: parents are resolved recursively against the live tables
+ *   (in-app export: `list_id IN (SELECT list_id FROM lists WHERE project_id = '…')`)
+ */
+export const projectTableWhere = (table, projectId, schema) => {
+  const entry = entryByTable.get(table)
+  if (!entry) throw new Error(`projectTableWhere: unknown table ${table}`)
+  if (entry.scope) return `${entry.scope} = '${projectId}'`
+  const { column, table: parentTable } = entry.parent
+  const parentRows =
+    schema ?
+      `SELECT ${column} FROM ${schema}.${parentTable}`
+    : `SELECT ${column} FROM ${parentTable} WHERE ${projectTableWhere(parentTable, projectId)}`
+  return `${column} IN (${parentRows})`
+}

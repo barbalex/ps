@@ -1246,5 +1246,18 @@
   "vectorLayer.labelFr": "Français",
   "vectorLayer.labelIt": "Italien",
   "vectorLayer.section.label.description": "L'étiquette de la couche dans toutes les langues. Si une langue manque, l'allemand est utilisé.",
-  "yoo7JY.offen": "ouvert"
+  "yoo7JY.offen": "ouvert",
+  "pdExportTitle": "Exporter dans un fichier dump SQL",
+  "pdExportDone": "{count} lignes de {tables} tables exportées (les données synchronisées localement).",
+  "pdExportError": "L'exportation a échoué",
+  "pdImportTitle": "Importer depuis un fichier dump SQL",
+  "pdImportDesc": "Le fichier doit être un dump de projet exporté avec cette application (.sql). Le projet est chargé sur le serveur avec ses identifiants d'origine et rattaché au compte choisi. Les droits d'accès ne sont pas importés: vous en devenez propriétaire.",
+  "pdImportHint": "Un projet avec le même identifiant ne doit pas encore exister. L'importation nécessite une connexion au serveur.",
+  "pdImportTask": "Importation du projet {name}",
+  "pdImportDoneTitle": "Projet importé",
+  "pdImportDoneBody": "« {name} »: {count} lignes transmises au serveur. Les données sont maintenant synchronisées.",
+  "pdImportError": "L'importation a échoué",
+  "pdImportInvalid": "Le fichier n'est pas un dump de projet de cette application.",
+  "pdImportExists": "Le projet « {name} » existe déjà. Veuillez d'abord le supprimer.",
+  "pdImportOffline": "L'importation nécessite une connexion au serveur."
 }

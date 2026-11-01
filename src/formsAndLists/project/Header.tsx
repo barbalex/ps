@@ -7,6 +7,7 @@ import { useIntl } from 'react-intl'
 import { FormHeader } from '../../components/FormHeader/index.tsx'
 import { HistoryToggleButton } from '../../components/shared/HistoryCompare/HistoryToggleButton.tsx'
 import { DesigningButton } from './DesigningButton.tsx'
+import { ExportDumpButton } from '../projectDump/ExportDumpButton.tsx'
 import { addOperationAtom } from '../../store.ts'
 import { useAddProject } from '../../modules/useAddProject.ts'
 
@@ -124,6 +125,7 @@ export const Header = ({ autoFocusRef, from, label }: Props) => {
       siblings={
         <>
           <DesigningButton from={from} />
+          {projectId && <ExportDumpButton projectId={projectId} />}
           <HistoryToggleButton
             historiesPath={`${basePath}/histories`}
             formPath={`${basePath}/project`}

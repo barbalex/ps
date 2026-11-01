@@ -817,6 +817,34 @@ Manual equivalent for a single file: `APF2_APPLY_LATER=1
 npm run apflora:generate`, then psql the file with `SET electric.syncing TO
 'true'` first (the write-permission triggers otherwise reject the writes).
 
+### Project dumps (export / import)
+
+A project can be moved as one SQL file — between installations, as a backup,
+or to restore a deleted project — with its original ids.
+
+- **Table list:** `scripts/project-dump-tables.mjs` (`projectTables` in FK
+  order, `projectTableWhere()` builds each table's project scope). Access
+  rows (`project_users`, `*_roles`) are part of a dump; history tables,
+  global catalogs and account-scoped fields are not.
+- **In the app:** project header → "Export to SQL dumpfile" writes the
+  locally synced rows (`src/modules/projectDump/exportProjectDump.ts`) as one
+  `INSERT … SELECT … FROM jsonb_populate_recordset(NULL::table, $ps_dump$[…]$ps_dump$)`
+  statement per table chunk — valid SQL *and* parseable without a SQL
+  parser (`parseProjectDump.ts`). Projects list → "Import from SQL dumpfile"
+  uploads the rows to the server through `apply_operations` in FK order
+  (`importProjectDump.ts`): the project row first (attached to the chosen
+  account; the owner trigger grants the importer the `own` role), then
+  chunks of 250 rows; access rows are skipped, the cascade triggers recreate
+  them. Nothing is written locally — Electric streams the project down. A
+  project with the same id must not exist; on any server failure the
+  partially imported project is deleted again.
+- **Scripts (dev backend, pg_dump format):** `npm run project:dump <projectId> <file>`
+  and `npm run project:import:dump <file> <projectId>` — the import also
+  accepts files written by the app.
+
+Known limits: `apply_operations` stamps `created_at`/`updated_at` with the
+import time; the in-app import does not read pg_dump-format files.
+
 ## Known limitations (v1)
 
 - only `checks` (the `table_name` column and UI structure are prepared for
