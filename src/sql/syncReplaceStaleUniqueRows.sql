@@ -13,36 +13,25 @@
 -- Not installed on the server: there, direct imports rely on
 -- ON CONFLICT (unique key) DO UPDATE to keep existing rows and their ids.
 
+-- TG_ARGV[0] = primary key column, TG_ARGV[1..] = one ready-made WHERE
+-- predicate per unique constraint (resolved at install time below: this
+-- runs for every synced row, so no catalog lookups here)
 CREATE OR REPLACE FUNCTION sync_replace_stale_unique_rows_trigger()
 RETURNS TRIGGER AS $$
 DECLARE
   is_syncing BOOLEAN;
-  con RECORD;
   pk_column TEXT := TG_ARGV[0];
-  cols TEXT[];
-  predicate TEXT;
+  i INTEGER;
 BEGIN
   SELECT COALESCE(NULLIF(current_setting('electric.syncing', true), ''), 'false')::boolean INTO is_syncing;
   IF NOT is_syncing THEN
     RETURN NEW;
   END IF;
 
-  FOR con IN
-    SELECT c.conkey
-    FROM pg_constraint c
-    WHERE c.conrelid = TG_RELID AND c.contype = 'u'
-  LOOP
-    SELECT array_agg(a.attname::text ORDER BY a.attnum) INTO cols
-    FROM pg_attribute a
-    WHERE a.attrelid = TG_RELID AND a.attnum = ANY(con.conkey);
-
-    -- nulls never conflict in a unique constraint: plain equality
-    SELECT string_agg(format('%I = ($1).%I', c, c), ' AND ') INTO predicate
-    FROM unnest(cols) AS c;
-
+  FOR i IN 1 .. TG_NARGS - 1 LOOP
     EXECUTE format(
       'DELETE FROM %I.%I WHERE %s AND %I IS DISTINCT FROM ($1).%I',
-      TG_TABLE_SCHEMA, TG_TABLE_NAME, predicate, pk_column, pk_column
+      TG_TABLE_SCHEMA, TG_TABLE_NAME, TG_ARGV[i], pk_column, pk_column
     ) USING NEW;
   END LOOP;
 
@@ -54,9 +43,11 @@ DO $$
 DECLARE
   t RECORD;
   trigger_name TEXT;
+  predicates TEXT;
 BEGIN
   FOR t IN
     SELECT DISTINCT
+      c.oid AS table_oid,
       n.nspname AS schema_name,
       c.relname AS table_name,
       a.attname AS pk_column
@@ -79,14 +70,25 @@ BEGIN
           AND d.deptype = 'e'
       )
   LOOP
+    -- one quoted literal per unique constraint: "col1 = ($1).col1 AND …"
+    -- (nulls never conflict in a unique constraint: plain equality)
+    SELECT string_agg(quote_literal(pred), ', ') INTO predicates
+    FROM (
+      SELECT string_agg(format('%I = ($1).%I', a.attname, a.attname), ' AND ' ORDER BY a.attnum) AS pred
+      FROM pg_constraint u
+      JOIN pg_attribute a ON a.attrelid = u.conrelid AND a.attnum = ANY(u.conkey)
+      WHERE u.conrelid = t.table_oid AND u.contype = 'u'
+      GROUP BY u.oid
+    ) p;
+
     trigger_name := t.table_name || '_sync_replace_stale_unique_trigger';
     EXECUTE format(
       'DROP TRIGGER IF EXISTS %I ON %I.%I',
       trigger_name, t.schema_name, t.table_name
     );
     EXECUTE format(
-      'CREATE TRIGGER %I BEFORE INSERT ON %I.%I FOR EACH ROW EXECUTE PROCEDURE sync_replace_stale_unique_rows_trigger(%L)',
-      trigger_name, t.schema_name, t.table_name, t.pk_column
+      'CREATE TRIGGER %I BEFORE INSERT ON %I.%I FOR EACH ROW EXECUTE PROCEDURE sync_replace_stale_unique_rows_trigger(%L, %s)',
+      trigger_name, t.schema_name, t.table_name, t.pk_column, predicates
     );
   END LOOP;
 END;
