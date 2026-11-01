@@ -61,6 +61,7 @@ const noCacheFetch: typeof fetch = (input, init) =>
 
 export const startSyncing = async (userId: string) => {
   const db = store.get(pgliteDbAtom)
+  const syncStart = Date.now()
 
   // is syncObjectAtom exists, return
   const syncObject = store.get(syncObjectAtom)
@@ -198,11 +199,16 @@ export const startSyncing = async (userId: string) => {
         shapes: stageShapes,
         // one persistent key per level, for live updates across page reloads
         key: `ps-sync-stage-${index + 1}`,
-        // Removed initialInsertMethod - let Electric use default for live updates
+        // fresh subscriptions bulk-load the snapshot via json_to_recordset
+        // (10k rows per statement) instead of batched INSERTs; pglite-sync
+        // ignores this when resuming persisted state (409 re-snapshots)
+        initialInsertMethod: 'json',
         onInitialSync:
           isLast ?
             async () => {
-              console.log(`Initial sync done (${levels.length} stages)`)
+              console.log(
+                `Initial sync done (${levels.length} stages, ${Math.round((Date.now() - syncStart) / 1000)}s)`,
+              )
               store.set(initialSyncingAtom, false)
               syncRecovered()
             }

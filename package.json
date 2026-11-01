@@ -11,7 +11,7 @@
     "sync-sql": "node scripts/sync-sql.mjs",
     "sync-sql:check": "node scripts/sync-sql.mjs --check",
     "hooks:install": "node scripts/install-git-hooks.mjs",
-    "postinstall": "node scripts/patch-eslint-typescript.mjs",
+    "postinstall": "node scripts/patch-eslint-typescript.mjs && node scripts/patch-pglite-sync.mjs",
     "format": "prettier --write .",
     "lint": "eslint . --max-warnings 0",
     "test": "vitest run",
