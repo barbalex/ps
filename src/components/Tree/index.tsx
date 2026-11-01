@@ -173,6 +173,21 @@ export const Tree = () => {
         />
       )}
       <FocusPathLoader rows={rows} />
+      {/* one registrar per OPEN row, independent of the virtualized window:
+          its navData hook must stay subscribed for the row's label and
+          children to follow the live queries; closed rows keep their last
+          registration (or the parent's nav data when never registered) */}
+      {rows.map(({ key, row: registered, isOpen }) =>
+        isOpen && registered.descriptor ?
+          <Registrar
+            key={`${registered.descriptor.type}-${key}`}
+            type={registered.descriptor.type}
+            params={registered.descriptor.params}
+            nav={registered.descriptor.nav}
+            level={registered.descriptor.level}
+          />
+        : null,
+      )}
       <div
         className={styles.rows}
         style={{ height: virtualizer.getTotalSize() }}
@@ -226,15 +241,6 @@ export const Tree = () => {
                   : undefined
                 }
               />
-              {isOpen && registered.descriptor && (
-                <Registrar
-                  key={`${registered.descriptor.type}-${registered.key}`}
-                  type={registered.descriptor.type}
-                  params={registered.descriptor.params}
-                  nav={registered.descriptor.nav}
-                  level={registered.descriptor.level}
-                />
-              )}
             </div>
           )
         })}

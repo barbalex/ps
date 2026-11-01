@@ -74,7 +74,7 @@ Suggested fix: gate the trigger function on electric.syncing, and (for queries m
 
 ---
 
-nav tree: 'Subprojects (...)'. No matter how deep I navigate into subfolders (using breadcrumbs ans list views), this one stays like this and no subfolder is rendered
+~~nav tree renders under apflora: 'Subprojects (...)' (next to project, qc-assignments and qcs-run). No matter how deep I navigate into subfolders (using breadcrumbs ans list views), this one stays like this and no subfolder is rendered~~ → fixed: registered rows lost their Registrar after the first (still loading) registration; open rows now keep one mounted
 
 ---
 

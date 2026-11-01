@@ -41,6 +41,13 @@ export const Registrar = ({ type, params, nav, level }: Props) => {
     childrenCount: navData.navs?.length ?? 0,
     siblingType: navData.siblingType,
     children: config.children?.({ params, nav, navData, level }),
+    // kept on the registered row so the tree can keep this registrar
+    // mounted while the row is open: the first registration happens before
+    // the hook's live queries have resolved (label '...', no children)
+    descriptor:
+      config.isRoot ? undefined : (
+        { orderKey: String(nav?.id ?? type), type, params, nav, level }
+      ),
   }
 
   const setRow = useSetAtom(setTreeRegisteredRowAtom)
