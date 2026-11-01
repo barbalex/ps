@@ -1264,6 +1264,8 @@
   "pdArrivalDoneTitle": "Progetto sincronizzato",
   "pdArrivalDoneBody": "\"{name}\" è ora completamente disponibile.",
   "pdArrivalIncomplete": "Dopo un'ora sono arrivate {arrived} righe su {total}. La sincronizzazione continua.",
+  "pdInterruptedTitle": "Importazione interrotta",
+  "pdInterruptedBody": "L'importazione di \"{name}\" è stata interrotta dalla chiusura o dal ricaricamento dell'app. Il progetto incompleto è stato rimosso — importare nuovamente il file dump.",
   "pdImportError": "Importazione non riuscita",
   "pdImportInvalid": "Il file non è un dump di progetto di questa app.",
   "pdImportExists": "Il progetto \"{name}\" esiste già (localmente o sul server). Eliminarlo prima e attendere che l'eliminazione sia sincronizzata.",

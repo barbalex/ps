@@ -160,12 +160,24 @@ export const useImportProjectDump = () => {
       // back live they would arrive child-before-parent (see syncPausedAtom).
       // Paused, the staged restart afterwards catches up in FK order
       setSyncPaused(true)
-      const result = await importProjectDump({
-        db,
-        dump,
-        accountId,
-        onProgress: ({ rows }) => backgroundTasks.updateProgress(taskId, rows),
-      })
+      // leaving mid-upload leaves a half project on the server (cleaned up
+      // on the next start, but the import has to be repeated)
+      const warnBeforeUnload = (event: BeforeUnloadEvent) => {
+        event.preventDefault()
+      }
+      window.addEventListener('beforeunload', warnBeforeUnload)
+      let result
+      try {
+        result = await importProjectDump({
+          db,
+          dump,
+          accountId,
+          onProgress: ({ rows }) =>
+            backgroundTasks.updateProgress(taskId, rows),
+        })
+      } finally {
+        window.removeEventListener('beforeunload', warnBeforeUnload)
+      }
       setSyncPaused(false)
       backgroundTasks.complete(taskId)
       addNotification({

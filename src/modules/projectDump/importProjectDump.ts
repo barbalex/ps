@@ -84,6 +84,49 @@ type ImportOptions = {
 
 type Row = Record<string, unknown>
 
+/** removes a project on the server (cascade takes everything under it) */
+export const deleteProjectOnServer = (projectId: string) =>
+  applyOperations([
+    {
+      id: uuidv7(),
+      time: new Date().toISOString(),
+      table: 'projects',
+      operation: 'delete',
+      rowIdName: 'project_id',
+      rowId: projectId,
+    },
+  ])
+
+// The project being uploaded, persisted across a reload or tab close: an
+// interrupted upload leaves a half project on the server (every request is
+// its own transaction) which the next app start removes again
+// (InterruptedImportCleanup). Set once the project row is committed — only
+// a project this import created is ever deleted — and cleared when the
+// upload finished or was rolled back.
+const PENDING_IMPORT_KEY = 'ps-project-import-pending'
+
+export type PendingImport = { projectId: string; projectName: string | null }
+
+export const readPendingImport = (): PendingImport | null => {
+  try {
+    const raw = localStorage.getItem(PENDING_IMPORT_KEY)
+    return raw ? (JSON.parse(raw) as PendingImport) : null
+  } catch {
+    return null
+  }
+}
+
+const writePendingImport = (pending: PendingImport | null) => {
+  try {
+    if (pending) localStorage.setItem(PENDING_IMPORT_KEY, JSON.stringify(pending))
+    else localStorage.removeItem(PENDING_IMPORT_KEY)
+  } catch {
+    // without storage the cleanup simply cannot run after a reload
+  }
+}
+
+export const clearPendingImport = () => writePendingImport(null)
+
 const operation = (
   table: string,
   kind: 'insert' | 'insertMany',
@@ -299,23 +342,23 @@ export const importProjectDump = async ({
         )
       }
       projectInserted = true
+      if (batch === batches[0]) {
+        writePendingImport({
+          projectId: dump.projectId,
+          projectName: dump.projectName,
+        })
+      }
       done += batch.reduce((sum, op) => sum + rowsOf(op), 0)
       onProgress?.({ table: batch.at(-1)?.table ?? '', rows: done, total })
     }
+    writePendingImport(null)
   } catch (error) {
     // no half-imported project: the cascade removes what already landed —
     // only for a project THIS import created
     if (projectInserted) {
-      await applyOperations([
-        {
-          id: uuidv7(),
-          time: new Date().toISOString(),
-          table: 'projects',
-          operation: 'delete',
-          rowIdName: 'project_id',
-          rowId: dump.projectId,
-        },
-      ]).catch(() => undefined)
+      await deleteProjectOnServer(dump.projectId)
+        .then(() => writePendingImport(null))
+        .catch(() => undefined)
     }
     if (error instanceof ProjectDumpError) throw error
     throw new ProjectDumpError(

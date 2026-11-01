@@ -1260,6 +1260,8 @@
   "pdArrivalDoneTitle": "Projet synchronisé",
   "pdArrivalDoneBody": "« {name} » est maintenant entièrement disponible.",
   "pdArrivalIncomplete": "Après une heure, {arrived} lignes sur {total} sont arrivées. La synchronisation se poursuit.",
+  "pdInterruptedTitle": "Importation interrompue",
+  "pdInterruptedBody": "L'importation de « {name} » a été interrompue par la fermeture ou le rechargement de l'application. Le projet incomplet a été supprimé — veuillez importer à nouveau le fichier dump.",
   "pdImportError": "L'importation a échoué",
   "pdImportInvalid": "Le fichier n'est pas un dump de projet de cette application.",
   "pdImportExists": "Le projet « {name} » existe déjà (localement ou sur le serveur). Veuillez d'abord le supprimer et attendre que la suppression soit synchronisée.",

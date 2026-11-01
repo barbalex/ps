@@ -1260,6 +1260,8 @@
   "pdArrivalDoneTitle": "Project synced",
   "pdArrivalDoneBody": "\"{name}\" is now fully available.",
   "pdArrivalIncomplete": "After an hour, {arrived} of {total} rows have arrived. The sync keeps running.",
+  "pdInterruptedTitle": "Import interrupted",
+  "pdInterruptedBody": "The import of \"{name}\" was cut short by closing or reloading the app. The incomplete project has been removed again — please import the dump file once more.",
   "pdImportError": "Import failed",
   "pdImportInvalid": "The file is not a project dump of this app.",
   "pdImportExists": "The project \"{name}\" already exists (locally or on the server). Please delete it first and wait until the deletion has synced.",
