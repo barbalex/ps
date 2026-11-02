@@ -155,8 +155,6 @@ import { QueuedOperationFetcher } from './QueuedOperationFetcher.tsx'
 type Props = {
   fetcherName: string
   params: Record<string, string>
-  // forwarded to Crumb; false while a removed crumb fades out
-  in?: boolean
 }
 
 export const FetcherRouter = ({ fetcherName, params, ...other }: Props) => {
