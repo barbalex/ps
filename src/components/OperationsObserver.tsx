@@ -1,5 +1,5 @@
 import { useEffect, useRef } from 'react'
-import { useBeforeunload } from 'react-beforeunload'
+import { useBeforeunload } from '../modules/useBeforeunload.ts'
 
 import { observeOperations } from '../modules/observeOperations.ts'
 import { operationsRetryTickAtom, store } from '../store.ts'

@@ -1,6 +1,6 @@
 import { useEffect, useRef } from 'react'
 import { useAtom } from 'jotai'
-import { useBeforeunload } from 'react-beforeunload'
+import { useBeforeunload } from '../modules/useBeforeunload.ts'
 
 import { isOnline } from '../modules/isOnline.ts'
 import { onlineAtom, shortTermOnlineAtom } from '../store.ts'
