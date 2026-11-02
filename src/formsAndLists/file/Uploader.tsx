@@ -2,7 +2,7 @@ import { useCallback, useEffect, useContext, useRef } from 'react'
 import { useNavigate, useParams, useLocation } from '@tanstack/react-router'
 import { useDebouncedCallback } from 'use-debounce'
 import { usePGlite } from '@electric-sql/pglite-react'
-import { useBeforeunload } from 'react-beforeunload'
+import { useBeforeunload } from '../../modules/useBeforeunload.ts'
 import { useAtomValue } from 'jotai'
 import { defineLocale } from '@uploadcare/file-uploader'
 // the .js extension is required by the package's export map

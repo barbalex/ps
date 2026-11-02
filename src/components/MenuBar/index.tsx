@@ -30,7 +30,7 @@ const Tooltip = FluentTooltip as unknown as (
 ) => React.ReactElement
 import { FaBars } from 'react-icons/fa6'
 import { useDebouncedCallback } from 'use-debounce'
-import { useBeforeunload } from 'react-beforeunload'
+import { useBeforeunload } from '../../modules/useBeforeunload.ts'
 
 import globalStyles from '../../styles.module.css'
 import styles from './index.module.css'

@@ -3,7 +3,6 @@ import { useResizeDetector } from 'react-resize-detector'
 import * as fluentUiReactComponents from '@fluentui/react-components'
 const { InlineDrawer, Button } = fluentUiReactComponents
 import { BiSolidLeftArrow, BiSolidRightArrow } from 'react-icons/bi'
-import { useAnimate } from 'framer-motion'
 import { useAtomValue } from 'jotai'
 
 import { Content } from './Content.tsx'
@@ -45,16 +44,11 @@ export const LeftMenuDrawer = ({ isNarrow }: Props) => {
   const sidebarRef = useRef<HTMLDivElement>(null)
   const [isResizing, setIsResizing] = useState(false)
 
-  // why do we need wasResizing?
-  // without it, after resizing the drawer, the animation will run
-  const wasResizing = useRef(false)
   const startResizing = () => {
     setIsResizing(true)
-    wasResizing.current = true
   }
   const stopResizing = useCallback(() => {
     setIsResizing(false)
-    setTimeout(() => (wasResizing.current = false), 500)
   }, [])
 
   const resize = useCallback(
@@ -94,18 +88,6 @@ export const LeftMenuDrawer = ({ isNarrow }: Props) => {
     }
   }, [isResizing, isNarrow])
 
-  // animate opening and closing of the drawer
-  const [scope, animate] = useAnimate()
-  useEffect(() => {
-    if (isResizing) return
-    if (wasResizing.current) return
-    // if mapHideUi is true, we don't want to animate as the element does not exist
-    if (mapHideUi) return
-    // This "li" selector will only select children
-    // of the element that receives `scope`.
-    animate('.map-layers-drawer', isNarrow ? { height: size } : { width: size })
-  }, [animate, isNarrow, isResizing, mapHideUi, size, wasResizing])
-
   useEffect(() => {
     window.addEventListener('mousemove', resize)
     // these events cant be added to the resizer's events
@@ -127,7 +109,7 @@ export const LeftMenuDrawer = ({ isNarrow }: Props) => {
       // dragging can mark text so we disable pointer events
       ref={widthRef}
     >
-      <div className={styles.innerContainer} ref={scope}>
+      <div className={styles.innerContainer}>
         {!mapHideUi && (
           <Button
             onClick={toggleOpen}

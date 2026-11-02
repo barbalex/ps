@@ -1,5 +1,4 @@
 import { useMatches } from '@tanstack/react-router'
-import { TransitionGroup } from 'react-transition-group'
 import { useIntl } from 'react-intl'
 
 import { FetcherRouter } from './FetcherRouter.tsx'
@@ -50,29 +49,28 @@ export const Breadcrumbs = () => {
         index === 0 || match.fetcherName !== arr[index - 1].fetcherName,
     )
 
-  // flex-direction row-reverse combined with reverse order of matches
-  // to align bookmarks to the right, but still have them in order
+  // crumbs render directly into the new url's hierarchy — no exit animation,
+  // keeping fading crumbs mounted would displace the new ones in the
+  // right-packed flex row and make them jump when the fade ends
   return (
     <div className={`${styles.container} no-print`}>
-      <TransitionGroup component={null}>
-        {navDataMatches.map(({ routeId, fetcherName, params }) => (
-          <FetcherRouter
-            key={routeId}
-            fetcherName={fetcherName}
-            params={params}
-          />
-        ))}
-        <FetcherReturner
-          key="__home"
-          navData={{
-            label: intl.formatMessage({
-              id: 'navigationHome',
-              defaultMessage: 'Home',
-            }),
-            ownUrl: '/',
-          }}
+      {navDataMatches.map(({ routeId, fetcherName, params }) => (
+        <FetcherRouter
+          key={routeId}
+          fetcherName={fetcherName}
+          params={params}
         />
-      </TransitionGroup>
+      ))}
+      <FetcherReturner
+        key="__home"
+        navData={{
+          label: intl.formatMessage({
+            id: 'navigationHome',
+            defaultMessage: 'Home',
+          }),
+          ownUrl: '/',
+        }}
+      />
     </div>
   )
 }

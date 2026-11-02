@@ -1,8 +1,5 @@
 import { useCallback, useEffect } from 'react'
 import { useParams } from '@tanstack/react-router'
-import { DndProvider } from 'react-dnd'
-import { HTML5Backend } from 'react-dnd-html5-backend'
-import { arrayMoveImmutable } from 'array-move'
 import { useLiveQuery } from '@electric-sql/pglite-react'
 import { useAtom } from 'jotai'
 import { useIntl } from 'react-intl'
@@ -15,6 +12,13 @@ import { Loading } from '../../../components/shared/Loading.tsx'
 import { observationFieldsSortedAtom } from '../../../store.ts'
 import styles from './index.module.css'
 import type Observations from '../../../models/public/Observations.ts'
+
+const arrayMoveImmutable = <T,>(array: T[], from: number, to: number): T[] => {
+  const copy = [...array]
+  const [item] = copy.splice(from, 1)
+  copy.splice(to, 0, item)
+  return copy
+}
 
 export const OccurenceData = (_props: { from: string }) => {
   const [observationFieldsSorted, setObservationFieldsSorted] = useAtom(
@@ -75,41 +79,30 @@ export const OccurenceData = (_props: { from: string }) => {
     setSortedBeobFields([...sortedBeobFields, ...additionalKeys])
   }, [keys, setSortedBeobFields, sortedBeobFields])
 
-  const moveField = (dragIndex: number, hoverIndex: number) => {
-    // get item from keys
-    const itemBeingDragged = keys[dragIndex]
-    const itemBeingHovered = keys[hoverIndex]
-    // move from dragIndex to hoverIndex
-    // in sortedBeobFields
-    const fromIndex = sortedBeobFields.indexOf(itemBeingDragged)
-    const toIndex = sortedBeobFields.indexOf(itemBeingHovered)
+  const moveField = (
+    draggedLabel: string,
+    hoveredLabel: string,
+    pointerBelowMiddle: boolean,
+  ) => {
+    const fromIndex = sortedBeobFields.indexOf(draggedLabel)
+    const toIndex = sortedBeobFields.indexOf(hoveredLabel)
     // catch some edge cases
     if (fromIndex === toIndex) return
     if (fromIndex === -1) return
     if (toIndex === -1) return
+    // only move once the pointer has crossed the middle of the hovered row:
+    // downward drags act below the middle, upward drags above it
+    if (fromIndex < toIndex && !pointerBelowMiddle) return
+    if (fromIndex > toIndex && pointerBelowMiddle) return
 
     // move
     const newArray = arrayMoveImmutable(sortedBeobFields, fromIndex, toIndex)
     setSortedBeobFields(newArray)
   }
 
-  const renderField = (field: [string, unknown], index: number) => (
-    <Field
-      key={field[0]}
-      label={field[0]}
-      value={field[1]}
-      index={index}
-      moveField={moveField}
-    />
-  )
-
   if (!observation) return <Loading />
   if (!fields || fields.length === 0) return null
 
-  // Issue: only one instance of HTML5Backend can be used at a time
-  // https://github.com/react-dnd/react-dnd/issues/3178
-  // Solution: use the same instance for all components
-  // NEW: alternative solution: https://github.com/react-dnd/react-dnd/issues/3257#issuecomment-1239254032
   return (
     <ErrorBoundary>
       <div>
@@ -126,9 +119,14 @@ export const OccurenceData = (_props: { from: string }) => {
         </p>
         <div className={styles.outerContainer}>
           <div className={styles.container}>
-            <DndProvider backend={HTML5Backend} context={window}>
-              {fields.map((field, i) => renderField(field, i))}
-            </DndProvider>
+            {fields.map((field) => (
+              <Field
+                key={field[0]}
+                label={field[0]}
+                value={field[1]}
+                moveField={moveField}
+              />
+            ))}
           </div>
         </div>
       </div>

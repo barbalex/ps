@@ -1,9 +1,9 @@
 import { useLiveQuery } from '@electric-sql/pglite-react'
-import { useIsFirstRender } from '@uidotdev/usehooks'
 import { useAtom } from 'jotai'
 import { useParams } from '@tanstack/react-router'
 import { useIntl } from 'react-intl'
 
+import { useIsFirstRender } from '../../modules/useIsFirstRender.ts'
 import { RadioGroupField } from '../../components/shared/RadioGroupField.tsx'
 import { languageAtom } from '../../store.ts'
 import { subprojectNamePluralExpr } from '../../modules/subprojectNameCols.ts'

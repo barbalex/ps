@@ -30,7 +30,9 @@
 }
 
 .drawer {
-  transition-duration: 16.66666ms;
+  /* animates opening/closing and size changes via the --left-drawer-size var */
+  transition-duration: 300ms;
+  transition-timing-function: cubic-bezier(0.33, 0, 0.2, 1);
   border: none !important;
   height: 100%;
 
@@ -45,6 +47,11 @@
     will-change: width;
     height: 100% !important;
   }
+}
+
+/* while dragging the resizer the size must track the pointer, not animate */
+.dragging .drawer {
+  transition-duration: 16.66666ms;
 }
 
 .drawerNarrow {

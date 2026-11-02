@@ -485,9 +485,14 @@ export const confirmDeleteAccountAtom = atom<{
   onConfirm: () => void
 } | null>(null)
 // The order of fields in the observation form. User can change it by drag and drop
+// getOnInit reads localStorage synchronously so the first render already sees the
+// persisted order — otherwise the append-missing-keys effect in ObservationData
+// rewrites storage with the default order before the async hydration lands
 export const observationFieldsSortedAtom = atomWithStorage<string[]>(
   'observationFieldsSortedAtom',
   [],
+  undefined,
+  { getOnInit: true },
 )
 // open tree nodes are node paths, e.g. [['projects', 'project-1'], ['projects', 'project-1', 'goals']]
 // getOnInit reads localStorage synchronously so the very first render already

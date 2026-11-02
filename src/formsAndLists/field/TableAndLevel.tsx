@@ -1,9 +1,9 @@
 import * as fluentUiReactComponents from '@fluentui/react-components'
 import { useLiveQuery } from '@electric-sql/pglite-react'
-import { useIsFirstRender } from '@uidotdev/usehooks'
 import { useAtom } from 'jotai'
 import { useIntl } from 'react-intl'
 
+import { useIsFirstRender } from '../../modules/useIsFirstRender.ts'
 import { languageAtom } from '../../store.ts'
 import type Fields from '../../models/public/Fields.ts'
 import type { FieldChangeData } from '../../components/shared/fieldChange.ts'

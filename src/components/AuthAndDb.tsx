@@ -1,7 +1,7 @@
 import { useContext } from 'react'
 import { Outlet } from '@tanstack/react-router'
 import { useAtomValue } from 'jotai'
-import { useBeforeunload } from 'react-beforeunload'
+import { useBeforeunload } from '../modules/useBeforeunload.ts'
 import { PGliteProvider } from '@electric-sql/pglite-react'
 import type { PGliteWithLive } from '@electric-sql/pglite/live'
 

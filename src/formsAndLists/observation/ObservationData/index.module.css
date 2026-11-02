@@ -18,3 +18,11 @@
     columns: 3;
   }
 }
+
+:global(html[data-theme='dark']) .explainer {
+  color: rgba(255, 255, 255, 0.8);
+}
+
+:global(html[data-theme='dark']) .container {
+  column-rule-color: rgba(110, 170, 100, 0.4);
+}
