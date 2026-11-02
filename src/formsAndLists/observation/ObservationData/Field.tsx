@@ -1,84 +1,68 @@
-import { useRef } from 'react'
-import { useDrag, useDrop } from 'react-dnd'
+import { useRef, useState, useEffect } from 'react'
+import {
+  draggable,
+  dropTargetForElements,
+} from '@atlaskit/pragmatic-drag-and-drop/adapter/element-adapter'
+import { combine } from '@atlaskit/pragmatic-drag-and-drop/utils/combine'
 import Linkify from 'linkify-react'
 
+import { isObservationFieldData, observationFieldKey } from './dnd.ts'
 import styles from './Field.module.css'
-
-const ItemTypes = { CARD: 'card' }
 
 export const Field = ({
   label,
   value,
-  index,
   moveField,
 }: {
   label: string
   value: unknown
-  index: number
-  moveField: (dragIndex: number, hoverIndex: number) => void
+  moveField: (
+    draggedLabel: string,
+    hoveredLabel: string,
+    pointerBelowMiddle: boolean,
+  ) => void
 }) => {
   const ref = useRef<HTMLDivElement>(null)
-  const [{ handlerId }, drop] = useDrop<
-    { index: number },
-    unknown,
-    { handlerId: string | number | null }
-  >({
-    accept: ItemTypes.CARD,
-    collect(monitor) {
-      return {
-        handlerId: monitor.getHandlerId() as string | number | null,
-      }
-    },
-    hover(item, monitor) {
-      if (!ref.current) return
+  const [isDragging, setIsDragging] = useState(false)
 
-      const dragIndex = item.index
-      const hoverIndex = index
-      // Don't replace items with themselves
-      if (dragIndex === hoverIndex) return
+  // moveField changes on every parent render;
+  // a ref keeps the drop target registered only once per label
+  const moveFieldRef = useRef(moveField)
+  useEffect(() => {
+    moveFieldRef.current = moveField
+  })
 
-      // Determine rectangle on screen
-      const hoverBoundingRect = ref.current?.getBoundingClientRect()
-      // Get vertical middle
-      const hoverMiddleY =
-        (hoverBoundingRect.bottom - hoverBoundingRect.top) / 2
-      // Determine mouse position
-      const clientOffset = monitor.getClientOffset()
-      // Get pixels to the top
-      const hoverClientY = clientOffset!.y - hoverBoundingRect.top
-      // Only perform the move when the mouse has crossed half of the items height
-      // When dragging downwards, only move when the cursor is below 50%
-      // When dragging upwards, only move when the cursor is above 50%
-      // Dragging downwards
-      if (dragIndex < hoverIndex && hoverClientY < hoverMiddleY) {
-        return
-      }
-      // Dragging upwards
-      if (dragIndex > hoverIndex && hoverClientY > hoverMiddleY) {
-        return
-      }
-      // Time to actually perform the action
-      moveField(dragIndex, hoverIndex)
-      // Note: we're mutating the monitor item here!
-      // Generally it's better to avoid mutations,
-      // but it's good here for the sake of performance
-      // to avoid expensive index searches.
-      item.index = hoverIndex
-    },
-  })
-  const [{ isDragging }, drag] = useDrag({
-    type: ItemTypes.CARD,
-    item: () => ({ id: label, index }),
-    collect: (monitor) => ({
-      isDragging: monitor.isDragging(),
-    }),
-  })
-  drag(drop(ref))
+  useEffect(() => {
+    const element = ref.current
+    if (!element) return
+
+    return combine(
+      draggable({
+        element,
+        getInitialData: () => ({ [observationFieldKey]: true, id: label }),
+        onDragStart: () => setIsDragging(true),
+        onDrop: () => setIsDragging(false),
+      }),
+      dropTargetForElements({
+        element,
+        canDrop: ({ source }) => isObservationFieldData(source.data),
+        onDrag: ({ source, location }) => {
+          const draggedLabel = source.data.id
+          if (typeof draggedLabel !== 'string' || draggedLabel === label) return
+
+          const rect = element.getBoundingClientRect()
+          const pointerBelowMiddle =
+            location.current.input.clientY > rect.top + rect.height / 2
+          moveFieldRef.current(draggedLabel, label, pointerBelowMiddle)
+        },
+      }),
+    )
+  }, [label])
 
   return (
     <div
       ref={ref}
-      data-handler-id={handlerId}
+      data-field-label={label}
       className={`${styles.row}${isDragging ? ` ${styles.rowDragging}` : ''}`}
     >
       <div className={styles.label}>{label}</div>
