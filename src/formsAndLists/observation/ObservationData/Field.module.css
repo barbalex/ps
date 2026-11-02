@@ -25,3 +25,16 @@
 .value {
   padding: 5px;
 }
+
+:global(html[data-theme='dark']) .row {
+  border-top-color: rgba(110, 170, 100, 0.35);
+  border-bottom-color: rgba(110, 170, 100, 0.35);
+
+  &:hover {
+    background-color: rgba(103, 216, 101, 0.09);
+  }
+}
+
+:global(html[data-theme='dark']) .label {
+  color: rgba(255, 255, 255, 0.8);
+}
