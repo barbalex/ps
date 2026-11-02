@@ -7,12 +7,26 @@ import { useIntl } from 'react-intl'
 import type { PGlite } from '@electric-sql/pglite'
 
 import { usePGlite } from '@electric-sql/pglite-react'
-import fileDownload from 'js-file-download'
 import { addNotificationAtom } from '../../store.ts'
 
 type Props = {
   activeUserId: string | null | undefined
   viewedUserId: string | null | undefined
+}
+
+const downloadFile = (data: BlobPart, filename: string) => {
+  const blob = new Blob([data], { type: 'application/octet-stream' })
+  const url = URL.createObjectURL(blob)
+  const link = document.createElement('a')
+  link.style.display = 'none'
+  link.href = url
+  link.setAttribute('download', filename)
+  document.body.appendChild(link)
+  link.click()
+  setTimeout(() => {
+    document.body.removeChild(link)
+    URL.revokeObjectURL(url)
+  }, 200)
 }
 
 export const DbDump = ({ activeUserId, viewedUserId }: Props) => {
@@ -75,7 +89,7 @@ export const DbDump = ({ activeUserId, viewedUserId }: Props) => {
       const dump = await pgDump({ pg: db as unknown as PGlite })
       await db.query('ROLLBACK')
 
-      fileDownload(dump, 'arten-foerdern-owned.sql')
+      downloadFile(dump, 'arten-foerdern-owned.sql')
     } catch (error) {
       try {
         await db.query('ROLLBACK')

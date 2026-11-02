@@ -1,6 +1,5 @@
 import { useCallback, useEffect } from 'react'
 import { useParams } from '@tanstack/react-router'
-import { arrayMoveImmutable } from 'array-move'
 import { useLiveQuery } from '@electric-sql/pglite-react'
 import { useAtom } from 'jotai'
 import { useIntl } from 'react-intl'
@@ -13,6 +12,13 @@ import { Loading } from '../../../components/shared/Loading.tsx'
 import { observationFieldsSortedAtom } from '../../../store.ts'
 import styles from './index.module.css'
 import type Observations from '../../../models/public/Observations.ts'
+
+const arrayMoveImmutable = <T,>(array: T[], from: number, to: number): T[] => {
+  const copy = [...array]
+  const [item] = copy.splice(from, 1)
+  copy.splice(to, 0, item)
+  return copy
+}
 
 export const OccurenceData = (_props: { from: string }) => {
   const [observationFieldsSorted, setObservationFieldsSorted] = useAtom(
