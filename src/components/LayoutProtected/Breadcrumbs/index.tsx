@@ -1,5 +1,5 @@
+import { useRef, useState } from 'react'
 import { useMatches } from '@tanstack/react-router'
-import { TransitionGroup } from 'react-transition-group'
 import { useIntl } from 'react-intl'
 
 import { FetcherRouter } from './FetcherRouter.tsx'
@@ -31,6 +31,15 @@ type NavDataContext = {
   navDataFetcher: string
 }
 
+// must match the 700ms opacity transition on .crumb-label-link/.crumb-label-text
+const EXIT_DURATION = 700
+
+type CrumbSpec = {
+  key: string
+  fetcherName: string
+  params: Record<string, string>
+}
+
 // this component extracts matches
 export const Breadcrumbs = () => {
   const intl = useIntl()
@@ -50,29 +59,65 @@ export const Breadcrumbs = () => {
         index === 0 || match.fetcherName !== arr[index - 1].fetcherName,
     )
 
+  const crumbSpecs: CrumbSpec[] = navDataMatches.map(
+    ({ routeId, fetcherName, params }) => ({
+      key: routeId,
+      fetcherName,
+      params,
+    }),
+  )
+
+  // keep removed crumbs mounted (with their params) while they fade out;
+  // the diff runs during render so removed crumbs never miss a frame
+  const [exitingCrumbSpecs, setExitingCrumbSpecs] = useState<CrumbSpec[]>([])
+  const prevCrumbSpecsRef = useRef<CrumbSpec[]>(crumbSpecs)
+  if (prevCrumbSpecsRef.current !== crumbSpecs) {
+    const currentKeys = new Set(crumbSpecs.map((spec) => spec.key))
+    const removed = prevCrumbSpecsRef.current.filter(
+      (spec) => !currentKeys.has(spec.key),
+    )
+    prevCrumbSpecsRef.current = crumbSpecs
+    if (removed.length) {
+      setExitingCrumbSpecs((prev) => [...prev, ...removed])
+      for (const spec of removed) {
+        setTimeout(() => {
+          setExitingCrumbSpecs((prev) =>
+            prev.filter((s) => s.key !== spec.key),
+          )
+        }, EXIT_DURATION)
+      }
+    }
+  }
+
   // flex-direction row-reverse combined with reverse order of matches
   // to align bookmarks to the right, but still have them in order
   return (
     <div className={`${styles.container} no-print`}>
-      <TransitionGroup component={null}>
-        {navDataMatches.map(({ routeId, fetcherName, params }) => (
-          <FetcherRouter
-            key={routeId}
-            fetcherName={fetcherName}
-            params={params}
-          />
-        ))}
-        <FetcherReturner
-          key="__home"
-          navData={{
-            label: intl.formatMessage({
-              id: 'navigationHome',
-              defaultMessage: 'Home',
-            }),
-            ownUrl: '/',
-          }}
+      {exitingCrumbSpecs.map((spec) => (
+        <FetcherRouter
+          key={`exiting-${spec.key}`}
+          fetcherName={spec.fetcherName}
+          params={spec.params}
+          in={false}
         />
-      </TransitionGroup>
+      ))}
+      {crumbSpecs.map((spec) => (
+        <FetcherRouter
+          key={spec.key}
+          fetcherName={spec.fetcherName}
+          params={spec.params}
+        />
+      ))}
+      <FetcherReturner
+        key="__home"
+        navData={{
+          label: intl.formatMessage({
+            id: 'navigationHome',
+            defaultMessage: 'Home',
+          }),
+          ownUrl: '/',
+        }}
+      />
     </div>
   )
 }

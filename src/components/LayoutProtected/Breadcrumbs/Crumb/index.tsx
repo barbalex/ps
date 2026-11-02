@@ -1,5 +1,4 @@
 import { useRef } from 'react'
-import { Transition } from 'react-transition-group'
 
 import { Label } from './Label.tsx'
 
@@ -15,38 +14,28 @@ type NavData = {
 
 type Props = {
   navData: NavData
+  // false while Breadcrumbs keeps a removed crumb mounted to fade it out;
+  // the label's css opacity transition (700ms) does the animating
   in?: boolean
 }
 
-export const Crumb = ({ navData, in: inProp }: Props) => {
+export const Crumb = ({ navData, in: inProp = true }: Props) => {
   const outerContainerRef = useRef<HTMLDivElement>(null)
   const labelRef = useRef<HTMLDivElement>(null)
 
   // don't add tooltip on mobile as longpress opens menu
   return (
-    <Transition
-      in={inProp}
-      timeout={700}
-      mountOnEnter
-      unmountOnExit
-      nodeRef={labelRef}
-    >
-      {(state) => (
-        <div className="crumb-outer-container" ref={outerContainerRef}>
-          <div className="crumb-container">
-            <Label
-              navData={navData}
-              outerContainerRef={outerContainerRef}
-              ref={labelRef}
-              labelClassName={
-                ['entering', 'entered'].includes(state)
-                  ? styles.labelVisible
-                  : styles.labelHidden
-              }
-            />
-          </div>
-        </div>
-      )}
-    </Transition>
+    <div className="crumb-outer-container" ref={outerContainerRef}>
+      <div className="crumb-container">
+        <Label
+          navData={navData}
+          outerContainerRef={outerContainerRef}
+          ref={labelRef}
+          labelClassName={
+            inProp ? styles.labelVisible : styles.labelHidden
+          }
+        />
+      </div>
+    </div>
   )
 }
