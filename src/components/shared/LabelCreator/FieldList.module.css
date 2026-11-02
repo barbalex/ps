@@ -95,3 +95,13 @@
 .titleSpan {
   font-weight: normal;
 }
+
+:global(html[data-theme='dark']) .fieldContainer,
+:global(html[data-theme='dark']) .dividerContainer {
+  color: #e6e6e6;
+  border-color: rgba(255, 255, 255, 0.3);
+}
+
+:global(html[data-theme='dark']) .dividerContainer {
+  background-color: #292929;
+}
