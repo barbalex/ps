@@ -48,8 +48,6 @@ I see there are still a few useCallback and useMemo (and others?) usages. Are th
 
 ---
 
-Remaining eager weight is Fluent UI (335 KiB, genuinely used by the shell), the entry itself (172 KiB), react (121 KiB) and **pglite** (65 KiB — pulled in by ErrorBoundary statically importing ensurePgliteDb, per the build warning; fixable but riskier, I left it).
-
 ---
 
 ---
