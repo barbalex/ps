@@ -123,10 +123,22 @@ export default defineConfig({
             // groups capture matched modules' dependencies recursively,
             // which otherwise drags shared deps into big vendor chunks
             { name: 'vendor-es-toolkit', test: /node_modules\/es-toolkit\// },
+            // vendor-react claims react/react-dom before the lazy vendor
+            // groups below: groups capture dependencies recursively, so a
+            // later react group loses react-dom modules to earlier groups
+            // (react-leaflet's dependency dragged react-dom into vendor-maps)
+            {
+              name: 'vendor-react',
+              test: /node_modules\/(react|react-dom|react-is|react-error-boundary|react-transition-group)\//,
+            },
             // no react-icons group: a single chunk holding every icon in the
             // app loads eagerly as soon as the app shell needs one icon.
             // without the group, icons bundle with the components using them
-            { name: 'vendor-fluent', test: /@fluentui\// },
+            // no vendor-fluent group either, for the same reason: it merged
+            // every fluent package used anywhere (carousel, tree, table,
+            // datepicker, ...) into one chunk the app shell loads eagerly.
+            // fluent modules now bundle with the components using them; the
+            // shell's fluent core lands in shared eager chunks
             {
               name: 'vendor-intl',
               test: /react-intl|@formatjs\//,
@@ -145,10 +157,6 @@ export default defineConfig({
             {
               name: 'vendor-tanstack',
               test: /node_modules\/@tanstack\//,
-            },
-            {
-              name: 'vendor-react',
-              test: /node_modules\/(react|react-dom|react-is|react-error-boundary|react-transition-group)\//,
             },
           ],
         },
