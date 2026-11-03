@@ -40,8 +40,10 @@ export default defineConfig({
     VitePWA({
       workbox: {
         sourcemap: true,
+        // avif included: the hero images are the LCP element and must come
+        // from the precache on repeat visits, not from a revalidating fetch
         globPatterns: [
-          '**/*.{js,jsx,ts,tsx,css,html,ico,png,jpg,svg,webp,json,woff2,woff}',
+          '**/*.{js,jsx,ts,tsx,css,html,ico,png,jpg,svg,webp,avif,json,woff2,woff}',
         ],
         maximumFileSizeToCacheInBytes: 1000000000,
       },
