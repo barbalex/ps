@@ -1,0 +1,10 @@
+# Netlify's default cache-control is public,max-age=0,must-revalidate: the
+# browser revalidates every asset on every visit. Vite emits content-hashed
+# filenames into assets/, so those responses can cache immutable instead.
+# Everything else (index.html, sw.js, unhashed files in public/) keeps the
+# default and stays revalidated — or is served from the service-worker
+# precache on repeat visits.
+[[headers]]
+  for = "/assets/*"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
