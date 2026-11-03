@@ -3,7 +3,6 @@ import { useSearch, useRouter } from '@tanstack/react-router'
 import { useIntl } from 'react-intl'
 
 import { getSession } from '../../modules/authClient.ts'
-import { ensurePgliteDb } from '../../modules/ensurePgliteDb.ts'
 import { useMarkBootDone } from '../../modules/bootDone.ts'
 import { EmailPassword } from './EmailPassword.tsx'
 import { Sso } from './Sso.tsx'
@@ -22,6 +21,10 @@ export const Auth = () => {
   const onLoggedIn = useCallback(
     async (onError?: (msg: string) => void) => {
       try {
+        // dynamic import keeps @electric-sql out of the chunks loaded on
+        // first paint; the db is only needed once login succeeds
+        const { ensurePgliteDb } =
+          await import('../../modules/ensurePgliteDb.ts')
         await ensurePgliteDb()
       } catch (err) {
         console.error('PGlite initialization failed:', err)
@@ -52,9 +55,9 @@ export const Auth = () => {
           query: { disableCookieCache: true },
         })
         const session =
-          result && typeof result === 'object' && 'data' in result
-            ? result.data
-            : result
+          result && typeof result === 'object' && 'data' in result ?
+            result.data
+          : result
         if (isActive && session?.user) {
           onLoggedIn()
         }
@@ -75,26 +78,28 @@ export const Auth = () => {
       <div className={styles.authCard}>
         <div className={styles.authHeader}>
           <h1 className={styles.authTitle}>
-            {isSignUp
-              ? formatMessage({
-                  id: 'authCreateAccount',
-                  defaultMessage: 'Konto erstellen',
-                })
-              : formatMessage({
-                  id: 'authWelcomeBack',
-                  defaultMessage: 'Anmeldung',
-                })}
+            {isSignUp ?
+              formatMessage({
+                id: 'authCreateAccount',
+                defaultMessage: 'Konto erstellen',
+              })
+            : formatMessage({
+                id: 'authWelcomeBack',
+                defaultMessage: 'Anmeldung',
+              })
+            }
           </h1>
           <p className={styles.authSubtitle}>
-            {isSignUp
-              ? formatMessage({
-                  id: 'authSignUpToStart',
-                  defaultMessage: 'Registrieren, um loszulegen',
-                })
-              : formatMessage({
-                  id: 'authSignInToContinue',
-                  defaultMessage: 'Benutzer haben massgeschneiderte Rechte',
-                })}
+            {isSignUp ?
+              formatMessage({
+                id: 'authSignUpToStart',
+                defaultMessage: 'Registrieren, um loszulegen',
+              })
+            : formatMessage({
+                id: 'authSignInToContinue',
+                defaultMessage: 'Benutzer haben massgeschneiderte Rechte',
+              })
+            }
           </p>
           <p className={styles.previewHint}>
             {formatMessage({

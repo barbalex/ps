@@ -32,8 +32,6 @@ dark mode not well implemented for: file upload?
 
 ---
 
-can we use https://github.com/pgrls/pgrls to test/analyze Postgres Row-Level Security?
-
 ---
 
 I see there are still a few useCallback and useMemo (and others?) usages. Are they still needed considering this app uses react compiler?
@@ -49,6 +47,8 @@ I see there are still a few useCallback and useMemo (and others?) usages. Are th
 ---
 
 ---
+
+Remaining eager weight is Fluent UI (335 KiB, genuinely used by the shell), the entry itself (172 KiB), react (121 KiB) and **pglite** (65 KiB — pulled in by ErrorBoundary statically importing ensurePgliteDb, per the build warning; fixable but riskier, I left it).
 
 ---
 
