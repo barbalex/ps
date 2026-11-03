@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { MdLogin, MdMenuBook } from 'react-icons/md'
+import { MdLogin, MdMenuBook } from '../../shared/mdIcons.ts'
 import { useNavigate, useLocation } from '@tanstack/react-router'
 import { useAtom } from 'jotai'
 import { useIntl } from 'react-intl'
@@ -33,9 +33,16 @@ export const Menu = () => {
     }
   }
 
-  const docsLabel = isInDocs
-    ? intl.formatMessage({ id: 'navigationDocsGoBack', defaultMessage: 'Zurück' })
-    : intl.formatMessage({ id: 'navigationDocs', defaultMessage: 'Dokumentation' })
+  const docsLabel =
+    isInDocs ?
+      intl.formatMessage({
+        id: 'navigationDocsGoBack',
+        defaultMessage: 'Zurück',
+      })
+    : intl.formatMessage({
+        id: 'navigationDocs',
+        defaultMessage: 'Dokumentation',
+      })
 
   return (
     <div className={globalStyles.controls}>

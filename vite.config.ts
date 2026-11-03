@@ -29,9 +29,9 @@ export default defineConfig({
     // React Compiler only for builds: the babel pass is the heaviest
     // per-module transform and saturates the dev pipeline on full-graph
     // reloads (module requests then hang forever).
-    ...(process.env.NODE_ENV === 'production'
-      ? [babel({ presets: [reactCompilerPreset()] })]
-      : []),
+    ...(process.env.NODE_ENV === 'production' ?
+      [babel({ presets: [reactCompilerPreset()] })]
+    : []),
     formatjs({
       idInterpolationPattern: '[sha512:contenthash:base64:6]',
       ast: true,
@@ -118,10 +118,14 @@ export default defineConfig({
         advancedChunks: {
           groups: [
             { name: 'vite-preload-helper', test: /vite\/preload-helper/ },
-            {
-              name: 'vendor-react-icons',
-              test: /react-icons\//,
-            },
+            // es-toolkit pinned in its own tiny chunk. it must be claimed
+            // before groups whose packages depend on it: advancedChunks
+            // groups capture matched modules' dependencies recursively,
+            // which otherwise drags shared deps into big vendor chunks
+            { name: 'vendor-es-toolkit', test: /node_modules\/es-toolkit\// },
+            // no react-icons group: a single chunk holding every icon in the
+            // app loads eagerly as soon as the app shell needs one icon.
+            // without the group, icons bundle with the components using them
             { name: 'vendor-fluent', test: /@fluentui\// },
             {
               name: 'vendor-intl',
@@ -131,7 +135,11 @@ export default defineConfig({
               name: 'vendor-maps',
               test: /leaflet|react-leaflet|@react-leaflet|proj4|@turf\/|reproject/,
             },
-            { name: 'vendor-charts', test: /recharts/ },
+            // no vendor-charts group: capturing recharts captures its
+            // dependencies recursively (es-toolkit, redux), and es-toolkit is
+            // imported app-wide — that made the whole recharts chunk a static
+            // dependency of the app shell. without the group, recharts lands
+            // in shared chunks that load with the chart pages
             { name: 'vendor-motion', test: /framer-motion/ },
             { name: 'vendor-pglite', test: /@electric-sql\// },
             {
