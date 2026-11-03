@@ -24,7 +24,8 @@
 -- custom claim names, so we parse the JSON blob directly.
 
 CREATE OR REPLACE FUNCTION get_jwt_user_id()
-RETURNS uuid LANGUAGE plpgsql STABLE SECURITY DEFINER AS $$
+RETURNS uuid LANGUAGE plpgsql STABLE SECURITY DEFINER
+SET search_path = public, pg_temp AS $$
 DECLARE
   v_claims text;
 BEGIN
@@ -42,7 +43,8 @@ $$;
 -- (auth_user_id) plus rows whose email matches the auth user's email
 CREATE OR REPLACE FUNCTION user_project_user_ids(p_user_id uuid)
 RETURNS TABLE (project_user_id uuid)
-LANGUAGE sql STABLE SECURITY DEFINER AS $$
+LANGUAGE sql STABLE SECURITY DEFINER
+SET search_path = public, pg_temp AS $$
   SELECT pu.project_user_id
   FROM project_users pu
   WHERE pu.auth_user_id = p_user_id
@@ -51,7 +53,8 @@ $$;
 
 -- Returns TRUE when the user has write-all+ on the given project directly.
 CREATE OR REPLACE FUNCTION user_can_write_project(p_project_id uuid, p_user_id uuid)
-RETURNS boolean LANGUAGE sql STABLE SECURITY DEFINER AS $$
+RETURNS boolean LANGUAGE sql STABLE SECURITY DEFINER
+SET search_path = public, pg_temp AS $$
   SELECT EXISTS (
     SELECT 1 FROM project_roles pr
     WHERE pr.project_id = p_project_id
@@ -62,7 +65,8 @@ $$;
 
 -- Returns TRUE when the user has write-all+ on the subproject OR its parent project.
 CREATE OR REPLACE FUNCTION user_can_write_subproject(p_subproject_id uuid, p_user_id uuid)
-RETURNS boolean LANGUAGE sql STABLE SECURITY DEFINER AS $$
+RETURNS boolean LANGUAGE sql STABLE SECURITY DEFINER
+SET search_path = public, pg_temp AS $$
   SELECT user_can_write_project(
     (SELECT project_id FROM subprojects WHERE subproject_id = p_subproject_id),
     p_user_id
@@ -77,7 +81,8 @@ $$;
 
 -- Returns TRUE when the user has write-all+ on the place, its subproject, or the project.
 CREATE OR REPLACE FUNCTION user_can_write_place(p_place_id uuid, p_user_id uuid)
-RETURNS boolean LANGUAGE sql STABLE SECURITY DEFINER AS $$
+RETURNS boolean LANGUAGE sql STABLE SECURITY DEFINER
+SET search_path = public, pg_temp AS $$
   SELECT user_can_write_subproject(
     (SELECT subproject_id FROM places WHERE place_id = p_place_id),
     p_user_id
@@ -93,7 +98,8 @@ $$;
 -- ─── Role-management helpers (design or higher required) ────────────────────
 
 CREATE OR REPLACE FUNCTION user_can_manage_project_roles(p_project_id uuid, p_user_id uuid)
-RETURNS boolean LANGUAGE sql STABLE SECURITY DEFINER AS $$
+RETURNS boolean LANGUAGE sql STABLE SECURITY DEFINER
+SET search_path = public, pg_temp AS $$
   SELECT EXISTS (
     SELECT 1 FROM project_roles pr
     WHERE pr.project_id = p_project_id
@@ -103,7 +109,8 @@ RETURNS boolean LANGUAGE sql STABLE SECURITY DEFINER AS $$
 $$;
 
 CREATE OR REPLACE FUNCTION user_can_manage_subproject_roles(p_subproject_id uuid, p_user_id uuid)
-RETURNS boolean LANGUAGE sql STABLE SECURITY DEFINER AS $$
+RETURNS boolean LANGUAGE sql STABLE SECURITY DEFINER
+SET search_path = public, pg_temp AS $$
   SELECT user_can_manage_project_roles(
     (SELECT project_id FROM subprojects WHERE subproject_id = p_subproject_id),
     p_user_id
@@ -117,7 +124,8 @@ RETURNS boolean LANGUAGE sql STABLE SECURITY DEFINER AS $$
 $$;
 
 CREATE OR REPLACE FUNCTION user_can_manage_place_roles(p_place_id uuid, p_user_id uuid)
-RETURNS boolean LANGUAGE sql STABLE SECURITY DEFINER AS $$
+RETURNS boolean LANGUAGE sql STABLE SECURITY DEFINER
+SET search_path = public, pg_temp AS $$
   SELECT user_can_manage_subproject_roles(
     (SELECT subproject_id FROM places WHERE place_id = p_place_id),
     p_user_id
@@ -144,7 +152,8 @@ $$;
 -- project in it; the insert-owner trigger then makes them owner.
 -- UPDATE/DELETE: write-all+ on the project required.
 CREATE OR REPLACE FUNCTION enforce_projects_write()
-RETURNS trigger LANGUAGE plpgsql SECURITY DEFINER AS $$
+RETURNS trigger LANGUAGE plpgsql SECURITY DEFINER
+SET search_path = public, pg_temp AS $$
 DECLARE
   v_user_id uuid;
 BEGIN
@@ -186,7 +195,8 @@ $$;
 
 -- For tables with a direct project_id FK (excludes projects itself).
 CREATE OR REPLACE FUNCTION enforce_project_write()
-RETURNS trigger LANGUAGE plpgsql SECURITY DEFINER AS $$
+RETURNS trigger LANGUAGE plpgsql SECURITY DEFINER
+SET search_path = public, pg_temp AS $$
 DECLARE
   v_user_id  uuid;
   v_project_id uuid;
@@ -217,7 +227,8 @@ $$;
 
 -- For tables with a direct subproject_id FK (checks subproject AND project).
 CREATE OR REPLACE FUNCTION enforce_subproject_write()
-RETURNS trigger LANGUAGE plpgsql SECURITY DEFINER AS $$
+RETURNS trigger LANGUAGE plpgsql SECURITY DEFINER
+SET search_path = public, pg_temp AS $$
 DECLARE
   v_user_id       uuid;
   v_subproject_id uuid;
@@ -248,7 +259,8 @@ $$;
 
 -- For tables with a direct place_id FK.
 CREATE OR REPLACE FUNCTION enforce_place_write()
-RETURNS trigger LANGUAGE plpgsql SECURITY DEFINER AS $$
+RETURNS trigger LANGUAGE plpgsql SECURITY DEFINER
+SET search_path = public, pg_temp AS $$
 DECLARE
   v_user_id uuid;
   v_place_id uuid;
@@ -280,7 +292,8 @@ $$;
 -- For the places table itself.  Places reference their parent via subproject_id
 -- (level 1) or parent_id (level 2, where subproject_id may be inherited).
 CREATE OR REPLACE FUNCTION enforce_places_write()
-RETURNS trigger LANGUAGE plpgsql SECURITY DEFINER AS $$
+RETURNS trigger LANGUAGE plpgsql SECURITY DEFINER
+SET search_path = public, pg_temp AS $$
 DECLARE
   v_user_id       uuid;
   v_subproject_id uuid;
@@ -318,7 +331,8 @@ $$;
 
 -- For the project_users directory: designer+ on the project required.
 CREATE OR REPLACE FUNCTION enforce_project_users_write()
-RETURNS trigger LANGUAGE plpgsql SECURITY DEFINER AS $$
+RETURNS trigger LANGUAGE plpgsql SECURITY DEFINER
+SET search_path = public, pg_temp AS $$
 DECLARE
   v_user_id    uuid;
   v_project_id uuid;
@@ -349,7 +363,8 @@ $$;
 
 -- For subproject_roles: design+ on subproject or parent project required.
 CREATE OR REPLACE FUNCTION enforce_subproject_roles_write()
-RETURNS trigger LANGUAGE plpgsql SECURITY DEFINER AS $$
+RETURNS trigger LANGUAGE plpgsql SECURITY DEFINER
+SET search_path = public, pg_temp AS $$
 DECLARE
   v_user_id       uuid;
   v_subproject_id uuid;
@@ -388,7 +403,8 @@ $$;
 
 -- For place_roles: design+ on place, subproject, or parent project required.
 CREATE OR REPLACE FUNCTION enforce_place_roles_write()
-RETURNS trigger LANGUAGE plpgsql SECURITY DEFINER AS $$
+RETURNS trigger LANGUAGE plpgsql SECURITY DEFINER
+SET search_path = public, pg_temp AS $$
 DECLARE
   v_user_id  uuid;
   v_place_id uuid;
@@ -426,7 +442,8 @@ $$;
 -- For tables with multiple nullable level FKs (charts, files, qc_assignments).
 -- Uses the most specific non-null ID: place > subproject > project.
 CREATE OR REPLACE FUNCTION enforce_multilevel_write()
-RETURNS trigger LANGUAGE plpgsql SECURITY DEFINER AS $$
+RETURNS trigger LANGUAGE plpgsql SECURITY DEFINER
+SET search_path = public, pg_temp AS $$
 DECLARE
   v_user_id       uuid;
   v_row           jsonb;
@@ -593,7 +610,8 @@ EXECUTE FUNCTION enforce_project_write();
 
 -- project_roles (designer+ required; only triggers set 'own')
 CREATE OR REPLACE FUNCTION enforce_project_roles_write()
-RETURNS trigger LANGUAGE plpgsql SECURITY DEFINER AS $$
+RETURNS trigger LANGUAGE plpgsql SECURITY DEFINER
+SET search_path = public, pg_temp AS $$
 DECLARE
   v_user_id    uuid;
   v_project_id uuid;

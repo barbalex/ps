@@ -11,7 +11,8 @@
 -- the local database until the user clears it.
 
 CREATE OR REPLACE FUNCTION sync_scope()
-RETURNS jsonb LANGUAGE plpgsql STABLE SECURITY DEFINER AS $$
+RETURNS jsonb LANGUAGE plpgsql STABLE SECURITY DEFINER
+SET search_path = public, pg_temp AS $$
 DECLARE
   v_user_id uuid := get_jwt_user_id();
   v_project_ids uuid[];
