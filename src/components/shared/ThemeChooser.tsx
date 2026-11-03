@@ -1,6 +1,6 @@
 import { useAtom } from 'jotai'
 import { defineMessages, useIntl } from 'react-intl'
-import { MdBrightnessAuto, MdDarkMode, MdLightMode } from 'react-icons/md'
+import { MdBrightnessAuto, MdDarkMode, MdLightMode } from './mdIcons.ts'
 import type { ComponentType } from 'react'
 
 import { themeModeAtom, type ThemeMode } from '../../store.ts'
