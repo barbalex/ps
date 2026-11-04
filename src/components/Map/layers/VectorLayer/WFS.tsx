@@ -4,7 +4,6 @@
 import { useEffect, useState, useCallback, useRef } from 'react'
 import { GeoJSON, useMap, useMapEvents } from 'react-leaflet'
 import * as L from 'leaflet'
-import axios from 'redaxios'
 import XMLViewer from 'react-xml-viewer'
 import { MdClose } from 'react-icons/md'
 import * as ReactDOMServer from 'react-dom/server'
@@ -32,6 +31,7 @@ const {
 
 import { vectorLayerDisplayToProperties } from '../../../../modules/vectorLayerDisplayToProperties.ts'
 import { setShortTermOnlineFromFetchError } from '../../../../modules/setShortTermOnlineFromFetchError.ts'
+import { httpGet } from '../../../../modules/httpGet.ts'
 import {
   addNotificationAtom,
   removeNotificationAtom,
@@ -156,34 +156,36 @@ export const WFS = ({ layer, layerPresentation }: Props) => {
         bbox,
       }
       try {
-        res = await axios({
-          method: 'get',
-          url: wfsService.url,
-          params,
-        })
+        res = await httpGet(wfsService.url, params)
       } catch (error) {
-        const fetchError = error as {
-          message?: string
-          url?: string
-          status?: number
-          statusText?: string
-          data?: string | null
-          type?: string
-        }
+        // the request failed on the network level
         setShortTermOnlineFromFetchError(error)
         removeNotification(notificationId)
-        console.error('VectorLayerWFS, error:', {
-          url: fetchError.url,
+        console.error('VectorLayerWFS, network error:', {
+          url: wfsService.url,
           error,
-          status: fetchError.status,
-          statusText: fetchError.statusText,
-          data: fetchError.data,
-          type: fetchError.type,
         })
-        setError(fetchError.data)
+        setError(undefined)
         return addNotification({
           title: `Fehler beim Laden der Geometrien für ${layer.label}`,
-          body: fetchError.message,
+          body: (error as Error).message,
+          intent: 'error',
+        })
+      }
+      if (!res.ok) {
+        // the server responded with a status code that falls out of the range of 2xx
+        removeNotification(notificationId)
+        console.error('VectorLayerWFS, error:', {
+          url: res.url,
+          status: res.status,
+          statusText: res.statusText,
+          data: res.data,
+        })
+        // only strings can be rendered in the error dialog
+        setError(typeof res.data === 'string' ? res.data : null)
+        return addNotification({
+          title: `Fehler beim Laden der Geometrien für ${layer.label}`,
+          body: `${res.status} ${res.statusText}`,
           intent: 'error',
         })
       }

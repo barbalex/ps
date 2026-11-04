@@ -1,8 +1,8 @@
 import { point, featureCollection } from '@turf/helpers'
 import proj4 from 'proj4'
-import axios from 'redaxios'
 import type { PGliteWithLive } from '@electric-sql/pglite/live'
 import { createObservation } from '../../modules/createRows.ts'
+import { httpGet } from '../../modules/httpGet.ts'
 import {
   addOperationAtom,
   store,
@@ -94,14 +94,19 @@ const setupProj4 = async (observationImport: ObservationImports) => {
   const proj4Url = `https://spatialreference.org/ref/${system}/${number}/proj4.txt`
 
   try {
-    const resp = await axios.get(proj4Url)
-    const defs = resp?.data
+    const resp = await httpGet<string>(proj4Url)
+    const defs = resp.ok ? resp.data : undefined
     if (defs) {
       proj4.defs([
         ['EPSG:4326', '+proj=longlat +datum=WGS84 +no_defs +type=crs'],
         [observationImport.crs, defs],
       ])
       return true
+    }
+    if (!resp.ok) {
+      console.error(
+        `Error loading proj4 definitions, status ${resp.status} ${resp.statusText} for ${proj4Url}`,
+      )
     }
   } catch (error) {
     setShortTermOnlineFromFetchError(error)

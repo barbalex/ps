@@ -1,7 +1,6 @@
 import * as fluentUiReactComponents from '@fluentui/react-components'
 const { Dropdown, Field, Option } = fluentUiReactComponents
 import type { OptionOnSelectData } from '@fluentui/react-components'
-import axios from 'redaxios'
 import { usePGlite, useLiveQuery } from '@electric-sql/pglite-react'
 import { useIntl } from 'react-intl'
 
@@ -100,28 +99,31 @@ export const LayersDropdown = ({ wmsLayer, validationMessage }: Props) => {
         `DropdownFieldFromLayerOptions, onOptionSelect, no legend_url for layer '${data.optionText}', so not fetching the legend image`,
       )
     }
-    let res
+    let res: Response
     try {
-      res = await axios.get(wmsServiceLayer.legend_url, {
-        responseType: 'blob',
-      })
+      res = await fetch(wmsServiceLayer.legend_url)
     } catch (error) {
       setShortTermOnlineFromFetchError(error)
-      // error can also be caused by timeout
       console.error(
         `hello error fetching legend for layer '${data.optionText}':`,
         error,
       )
       return false
     }
+    if (!res.ok) {
+      console.error(
+        `hello error fetching legend for layer '${data.optionText}': ${res.status} ${res.statusText}`,
+      )
+      return false
+    }
     // it seems a byte array is needed to store the image in the database
     // create an array buffer
-    const arrayBuffer = await new Response(res.data).arrayBuffer()
+    const arrayBuffer = await res.arrayBuffer()
     // convert to byte array
     const byteArray = new Uint8Array(arrayBuffer)
     // TODO: show using base64: https://stackoverflow.com/a/20756091/712005
     // 3. store wms_service_layers.legend_image and legend_url
-    if (res.data) {
+    if (byteArray.length) {
       try {
         await db.query(
           `UPDATE wms_service_layers SET legend_image = $1 WHERE wms_service_layer_id = $2`,

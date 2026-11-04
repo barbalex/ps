@@ -1,7 +1,7 @@
-import axios from 'redaxios'
 import proj4 from 'proj4'
 
 import { setShortTermOnlineFromFetchError } from '../../../modules/setShortTermOnlineFromFetchError.ts'
+import { httpGet } from '../../../modules/httpGet.ts'
 import {
   addOperationAtom,
   store,
@@ -32,18 +32,18 @@ export const setGeometries = async ({
   const proj4Url = `https://spatialreference.org/ref/${system}/${number}/proj4.txt`
   let resp
   try {
-    resp = await axios.get(proj4Url)
+    resp = await httpGet<string>(proj4Url)
   } catch (error) {
     setShortTermOnlineFromFetchError(error)
     console.error('observationImport 2, onBlurCrs, resp error:', error)
-    if ((error as { status?: number })?.status === 404) {
-      // Tell user that the crs is not found
-      return setNotification(
-        `No definitions were found for crs '${observationImport.crs}'`,
-      )
-    }
   }
-  const defs = resp?.data
+  if (resp?.status === 404) {
+    // Tell user that the crs is not found
+    return setNotification(
+      `No definitions were found for crs '${observationImport.crs}'`,
+    )
+  }
+  const defs = resp?.ok ? resp.data : undefined
   if (!defs) return
 
   proj4.defs([

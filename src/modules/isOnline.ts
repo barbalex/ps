@@ -1,6 +1,3 @@
-import axios from 'redaxios'
-import type { Options } from 'redaxios'
-
 import { constants } from './constants.ts'
 
 // we are testing if data can be WRITTEN to the backend here
@@ -15,7 +12,10 @@ export const isOnline = async () => {
 
   let res
   try {
-    res = await axios.head(postgrestUri, { timeout } as Options)
+    res = await fetch(postgrestUri, {
+      method: 'HEAD',
+      signal: AbortSignal.timeout(timeout),
+    })
   } catch {
     // error can also be caused by timeout or net::ERR_CONNECTION_REFUSED
     return false
