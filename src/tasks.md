@@ -42,8 +42,6 @@ I see there are still a few useCallback and useMemo (and others?) usages. Are th
 
 ---
 
-are we using redaxios or similar? If so, can we replace with native fetch?
-
 ---
 
 ---
