@@ -4,8 +4,13 @@ import { Label } from './Label.tsx'
 
 import './style.css'
 
-// must stay in sync with the delayed unmount in ../index.tsx
-export const EXIT_DURATION = 700
+// shared by the enter and exit animations; must stay in sync with the
+// delayed unmount in ../index.tsx
+export const ANIM_DURATION = 700
+
+// reduced-motion users get no movement at all
+const animDuration = () =>
+  matchMedia('(prefers-reduced-motion: reduce)').matches ? 0 : ANIM_DURATION
 
 type NavData = {
   id?: string
@@ -19,9 +24,16 @@ type Props = {
   // false while Breadcrumbs keeps a removed crumb mounted; the crumb's box
   // fades and collapses so the remaining crumbs slide instead of jumping
   in?: boolean
+  // true when this crumb is new: it fades in and grows from zero width so
+  // the trail extends smoothly
+  enter?: boolean
 }
 
-export const Crumb = ({ navData, in: inProp = true }: Props) => {
+export const Crumb = ({
+  navData,
+  in: inProp = true,
+  enter = false,
+}: Props) => {
   const outerContainerRef = useRef<HTMLDivElement>(null)
 
   useLayoutEffect(() => {
@@ -38,9 +50,6 @@ export const Crumb = ({ navData, in: inProp = true }: Props) => {
 
     // margins are left alone on purpose: the first-of-type margin-right
     // transfers to the next crumb when this one unmounts
-    const duration = matchMedia('(prefers-reduced-motion: reduce)').matches
-      ? 0
-      : EXIT_DURATION
     const animation = outer.animate(
       [
         {
@@ -56,10 +65,31 @@ export const Crumb = ({ navData, in: inProp = true }: Props) => {
           opacity: 0,
         },
       ],
-      { duration, easing: 'ease-in-out', fill: 'forwards' },
+      { duration: animDuration(), easing: 'ease-in-out', fill: 'forwards' },
     )
     return () => animation.cancel()
   }, [inProp])
+
+  useLayoutEffect(() => {
+    if (!enter || !inProp) return
+    const outer = outerContainerRef.current
+    if (!outer) return
+
+    // box-sizing/min-width so the box can start at zero despite the
+    // content and the automatic minimum size; fill stays 'none' - the
+    // label can resolve asynchronously and change the natural width
+    outer.style.boxSizing = 'border-box'
+    outer.style.minWidth = '0px'
+    const width = outer.offsetWidth
+    const animation = outer.animate(
+      [
+        { width: '0px', opacity: 0 },
+        { width: `${width}px`, opacity: 1 },
+      ],
+      { duration: animDuration(), easing: 'ease-in-out' },
+    )
+    return () => animation.cancel()
+  }, [enter, inProp])
 
   return (
     <div className="crumb-outer-container" ref={outerContainerRef}>

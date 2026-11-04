@@ -4,7 +4,7 @@ import { useIntl } from 'react-intl'
 
 import { FetcherRouter } from './FetcherRouter.tsx'
 import { FetcherReturner } from './FetcherReturner.tsx'
-import { EXIT_DURATION } from './Crumb/index.tsx'
+import { ANIM_DURATION } from './Crumb/index.tsx'
 import styles from './index.module.css'
 
 /**
@@ -66,9 +66,12 @@ export const Breadcrumbs = () => {
   )
 
   // keep removed crumbs mounted (with their params) while they fade and
-  // collapse; the diff runs during render so removed crumbs never miss a frame
+  // collapse; the diff runs during render so removed crumbs never miss a
+  // frame. prevKeys is captured first: crumbs without one are new and
+  // grow in, so the trail extends as smoothly as it contracts
   const [exitingCrumbSpecs, setExitingCrumbSpecs] = useState<CrumbSpec[]>([])
   const prevCrumbSpecsRef = useRef<CrumbSpec[]>(crumbSpecs)
+  const prevKeys = new Set(prevCrumbSpecsRef.current.map((spec) => spec.key))
   if (prevCrumbSpecsRef.current !== crumbSpecs) {
     const currentKeys = new Set(crumbSpecs.map((spec) => spec.key))
     const removed = prevCrumbSpecsRef.current.filter(
@@ -82,7 +85,7 @@ export const Breadcrumbs = () => {
           setExitingCrumbSpecs((prev) =>
             prev.filter((s) => s.key !== spec.key),
           )
-        }, EXIT_DURATION)
+        }, ANIM_DURATION)
       }
     }
   }
@@ -104,6 +107,7 @@ export const Breadcrumbs = () => {
           key={spec.key}
           fetcherName={spec.fetcherName}
           params={spec.params}
+          enter={!prevKeys.has(spec.key)}
         />
       ))}
       <FetcherReturner
