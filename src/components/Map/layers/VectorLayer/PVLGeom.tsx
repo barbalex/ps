@@ -229,7 +229,7 @@ export const PVLGeom = ({ layer, display }: Props) => {
         pointToLayer={(_geoJsonPoint, latlng) => {
           // TODO: add font-weight setting
           if (display.marker_type === 'circle') {
-            return L.circleMarker(latlng, {
+            return new L.CircleMarker(latlng, {
               ...display,
               radius: display.circle_marker_radius ?? 8,
             } as L.CircleMarkerOptions)
@@ -240,12 +240,8 @@ export const PVLGeom = ({ layer, display }: Props) => {
             '--marker-size': `${display?.marker_size ?? 16}px`,
             ...(display?.color ? { '--marker-color': display.color } : {}),
           } as React.CSSProperties
-          return L.marker(latlng, {
-            icon: new (
-              L.divIcon as unknown as new (
-                options?: L.DivIconOptions,
-              ) => L.DivIcon
-            )({
+          return new L.Marker(latlng, {
+            icon: new L.DivIcon({
               html: ReactDOMServer.renderToString(
                 <Component
                   className={`${styles.markerIcon} ${styles.markerIconSized}`}

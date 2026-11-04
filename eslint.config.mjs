@@ -28,6 +28,8 @@ export default [
       'src/models',
       'src/components/Map/WmsLayers/WmsLayer/WMTS.tsx',
       'src/components/Map/WmsLayers/WmsLayer/WMTSOffline.tsx',
+      // leaflet 2 experiment page, not part of the app
+      'spike',
     ],
   },
   ...fixupConfigRules(

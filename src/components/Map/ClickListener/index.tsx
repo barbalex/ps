@@ -73,7 +73,7 @@ export const ClickListener = () => {
     if ((map as MapWithDragState)._isDraggingObservation) return
 
     // Don't process clicks when a geometry is being drawn/edited on the map
-    if (map.getContainer().classList.contains('leaflet-draw-active')) return
+    if (map.getContainer().classList.contains('geoman-active')) return
 
     const { lat, lng } = event.latlng
     const zoom = map.getZoom()
@@ -98,7 +98,7 @@ export const ClickListener = () => {
     const buffer = bufferFraction * Math.pow(2, zoomDistance * 0.5)
     const bufferMeters = buffer * 111000
 
-    map.eachLayer((layer: ClickableLayer) => {
+    map.eachLayer(((layer: ClickableLayer) => {
       // Skip internal layers (markers that are part of layer groups)
       if (layer._isInternal) return
 
@@ -129,7 +129,7 @@ export const ClickListener = () => {
           clickedLayers.push(layer)
         }
       }
-    })
+    }) as unknown as (layer: unknown) => void)
 
     // Add clicked table layer features to mapInfo
     clickedLayers.forEach((layer) => {

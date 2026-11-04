@@ -1,8 +1,7 @@
 import { useLocation } from '@tanstack/react-router'
 import { useAtomValue } from 'jotai'
 
-// TODO(leaflet2): re-enable once DrawControl is rewritten for leaflet-geoman
-// import { DrawControlComponent } from './DrawControl.tsx'
+import { DrawControlComponent } from './DrawControl.tsx'
 import {
   editingPlaceGeometryAtom,
   editingCheckGeometryAtom,

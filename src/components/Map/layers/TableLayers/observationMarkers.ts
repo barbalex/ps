@@ -1,3 +1,5 @@
+import type * as L from 'leaflet'
+
 // Store references to observation markers for resetting their positions
 export const observationMarkers = new Map<
   string,

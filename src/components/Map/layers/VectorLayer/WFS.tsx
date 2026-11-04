@@ -327,7 +327,7 @@ export const WFS = ({ layer, layerPresentation }: Props) => {
         })}
         pointToLayer={(_geoJsonPoint, latlng) => {
           if (display.marker_type === 'circle') {
-            return L.circleMarker(latlng, {
+            return new L.CircleMarker(latlng, {
               ...(display as unknown as L.CircleMarkerOptions),
               radius: display.circle_marker_radius ?? 8,
             })
@@ -341,8 +341,8 @@ export const WFS = ({ layer, layerPresentation }: Props) => {
           } as React.CSSProperties
 
           return IconComponent
-            ? L.marker(latlng, {
-                icon: L.divIcon({
+            ? new L.Marker(latlng, {
+                icon: new L.DivIcon({
                   html: ReactDOMServer.renderToString(
                     <IconComponent
                       className={`${styles.markerIcon} ${styles.markerIconSized}`}
@@ -351,7 +351,7 @@ export const WFS = ({ layer, layerPresentation }: Props) => {
                   ),
                 }),
               })
-            : L.marker(latlng)
+            : new L.Marker(latlng)
         }}
       />
       <Dialog onOpenChange={() => setError(null)} open={!!error}>
