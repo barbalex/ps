@@ -14,9 +14,12 @@ type NavData = {
 
 type Props = {
   navData: NavData
+  // false while Breadcrumbs keeps a removed crumb mounted to fade it out;
+  // the label's css opacity transition (700ms) does the animating
+  in?: boolean
 }
 
-export const Crumb = ({ navData }: Props) => {
+export const Crumb = ({ navData, in: inProp = true }: Props) => {
   const outerContainerRef = useRef<HTMLDivElement>(null)
   const labelRef = useRef<HTMLDivElement>(null)
 
@@ -28,7 +31,9 @@ export const Crumb = ({ navData }: Props) => {
           navData={navData}
           outerContainerRef={outerContainerRef}
           ref={labelRef}
-          labelClassName={styles.labelVisible}
+          labelClassName={
+            inProp ? styles.labelVisible : styles.labelHidden
+          }
         />
       </div>
     </div>

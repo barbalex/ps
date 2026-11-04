@@ -8,9 +8,12 @@ type NavData = {
 
 type Props = {
   navData?: NavData
+  // passed on by TransitionGroup at runtime
+  in?: boolean
 }
 
-export const FetcherReturner = ({ navData }: Props) => {
+// pass on TransitionGroup's props
+export const FetcherReturner = ({ navData, ...other }: Props) => {
   // TODO: navData.id does not exist
   if (!navData?.label) return null
 
@@ -18,6 +21,7 @@ export const FetcherReturner = ({ navData }: Props) => {
     <Crumb
       key={`${navData?.id ?? navData?.ownUrl}`}
       navData={navData}
+      {...(other as { in: boolean })}
     />
   )
 }
