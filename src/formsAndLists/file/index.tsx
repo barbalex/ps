@@ -1,5 +1,4 @@
 import { useParams } from '@tanstack/react-router'
-import { useResizeDetector } from 'react-resize-detector'
 import { useLiveQuery } from '@electric-sql/pglite-react'
 import { useIntl } from 'react-intl'
 
@@ -9,6 +8,7 @@ import { Header } from './Header.tsx'
 import { Uploader } from './Uploader.tsx'
 import { Loading } from '../../components/shared/Loading.tsx'
 import { NotFound } from '../../components/NotFound.tsx'
+import { useElementSize } from '../../modules/useElementSize.ts'
 import type Files from '../../models/public/Files.ts'
 
 import '../../form.css'
@@ -26,11 +26,9 @@ export const FileForm = ({
   withContainer?: boolean
 }) => {
   const { formatMessage } = useIntl()
-  const { width, ref } = useResizeDetector({
-    handleHeight: false,
-    refreshMode: 'debounce',
-    refreshRate: 300,
-    refreshOptions: { leading: false, trailing: true },
+  const { width, ref } = useElementSize<HTMLDivElement>({
+    delay: 300,
+    height: false,
   })
 
   const content = (

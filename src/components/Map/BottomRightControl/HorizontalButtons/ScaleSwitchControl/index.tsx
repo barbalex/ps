@@ -1,9 +1,9 @@
 import { useState, useEffect } from 'react'
 import { useMap, useMapEvents } from 'react-leaflet'
-import { useResizeDetector } from 'react-resize-detector'
 
 import { Dropdown } from './Dropdown/index.tsx'
 import { formatNumber } from '../../../../../modules/formatNumber.ts'
+import { useElementSize } from '../../../../../modules/useElementSize.ts'
 import styles from './index.module.css'
 
 // Returns width of map in meters on specified latitude
@@ -50,11 +50,9 @@ export const ScaleSwitchControl = () => {
 
   const onClick = () => setOpen(!open)
 
-  const { width, ref } = useResizeDetector({
-    handleHeight: false,
-    refreshMode: 'debounce',
-    refreshRate: 100,
-    refreshOptions: { leading: false, trailing: true },
+  const { ref, width } = useElementSize<HTMLDivElement>({
+    delay: 100,
+    height: false,
   })
 
   const boundingRect = ref.current?.getBoundingClientRect?.()

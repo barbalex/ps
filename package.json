@@ -98,7 +98,6 @@
     "react-intl": "12.1.6",
     "react-is": "19.3.1",
     "react-leaflet": "5.0.0",
-    "react-resize-detector": "12.3.0",
     "react-xml-viewer": "3.0.5",
     "recharts": "3.10.1",
     "redaxios": "0.5.1",

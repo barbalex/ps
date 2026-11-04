@@ -1,5 +1,4 @@
 import { useCallback, useRef, useState, useEffect } from 'react'
-import { useResizeDetector } from 'react-resize-detector'
 import * as fluentUiReactComponents from '@fluentui/react-components'
 const { InlineDrawer, Button } = fluentUiReactComponents
 import { BiSolidLeftArrow, BiSolidRightArrow } from 'react-icons/bi'
@@ -8,6 +7,7 @@ import { useAtomValue } from 'jotai'
 import { Content } from './Content.tsx'
 import { Resizer } from './Resizer.tsx'
 import { mapHideUiAtom } from '../../../store.ts'
+import { useElementSize } from '../../../modules/useElementSize.ts'
 import styles from './index.module.css'
 
 type Props = { isNarrow: boolean }
@@ -19,11 +19,7 @@ export const LeftMenuDrawer = ({ isNarrow }: Props) => {
     width: ownWidth,
     height: ownHeight,
     ref: widthRef,
-  } = useResizeDetector({
-    refreshMode: 'debounce',
-    refreshRate: 100,
-    refreshOptions: { leading: false, trailing: true },
-  })
+  } = useElementSize<HTMLDivElement>({ delay: 100 })
   const [size, setSize] = useState(isNarrow ? 500 : 380)
   // when width falls below 40, set sidebarSize to 5
   useEffect(() => {
