@@ -20,21 +20,21 @@ dark mode not well implemented for: file upload?
 
 ---
 
----
-
----
-
----
-
----
-
----
-
----
-
----
-
 I see there are still a few useCallback and useMemo (and others?) usages. Are they still needed considering this app uses react compiler?
+
+---
+
+---
+
+---
+
+---
+
+---
+
+---
+
+---
 
 ---
 
