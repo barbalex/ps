@@ -4,6 +4,7 @@ import { useIntl } from 'react-intl'
 
 import { FetcherRouter } from './FetcherRouter.tsx'
 import { FetcherReturner } from './FetcherReturner.tsx'
+import { EXIT_DURATION } from './Crumb/index.tsx'
 import styles from './index.module.css'
 
 /**
@@ -30,9 +31,6 @@ const getEffectiveParams = (
 type NavDataContext = {
   navDataFetcher: string
 }
-
-// must match the 700ms opacity transition on .crumb-label-link/.crumb-label-text
-const EXIT_DURATION = 700
 
 type CrumbSpec = {
   key: string
@@ -67,8 +65,8 @@ export const Breadcrumbs = () => {
     }),
   )
 
-  // keep removed crumbs mounted (with their params) while they fade out;
-  // the diff runs during render so removed crumbs never miss a frame
+  // keep removed crumbs mounted (with their params) while they fade and
+  // collapse; the diff runs during render so removed crumbs never miss a frame
   const [exitingCrumbSpecs, setExitingCrumbSpecs] = useState<CrumbSpec[]>([])
   const prevCrumbSpecsRef = useRef<CrumbSpec[]>(crumbSpecs)
   if (prevCrumbSpecsRef.current !== crumbSpecs) {
