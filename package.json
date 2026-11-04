@@ -59,6 +59,7 @@
     "@fluentui/react-datepicker-compat": "0.6.40",
     "@fluentui/react-icons": "2.0.344",
     "@fluentui/react-timepicker-compat": "0.4.42",
+    "@geoman-io/leaflet-geoman-free": "file:vendor/leaflet-geoman-free-leaflet2-661516a-patched.tgz",
     "@puckeditor/core": "0.24.0",
     "@supabase/postgrest-js": "2.118.0",
     "@tanstack/react-query": "5.105.0",
@@ -83,7 +84,7 @@
     "es-toolkit": "1.52.0",
     "jotai": "3.0.1",
     "jotai-effect": "2.4.2",
-    "leaflet": "1.9.4",
+    "leaflet": "2.0.0-beta.1",
     "leaflet-draw": "1.0.4",
     "linkify-react": "4.4.0",
     "linkifyjs": "4.4.0",
@@ -144,6 +145,7 @@
     "vitest": "5.0.5"
   },
   "overrides": {
+    "leaflet": "$leaflet",
     "tabster": "8.8.0",
     "@typescript-eslint/eslint-plugin": {
       "typescript": "6.0.3"

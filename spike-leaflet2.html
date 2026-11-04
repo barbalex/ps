@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Leaflet 2 spike</title>
+    <style>
+      html,
+      body {
+        margin: 0;
+        padding: 0;
+        height: 100%;
+      }
+      #root {
+        height: 100%;
+      }
+      #status {
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        z-index: 1000;
+        background: rgba(255, 255, 255, 0.9);
+        padding: 8px 12px;
+        font: 12px monospace;
+        border-radius: 4px;
+        max-width: 420px;
+        white-space: pre-wrap;
+      }
+      #status .err {
+        color: #b00;
+        font-weight: bold;
+      }
+      #map {
+        height: 100%;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="status">booting…</div>
+    <div id="root"></div>
+    <script type="module" src="/spike/spike.tsx"></script>
+  </body>
+</html>
