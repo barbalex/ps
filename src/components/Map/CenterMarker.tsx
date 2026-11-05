@@ -29,6 +29,7 @@ export const CenterMarker = () => {
   return (
     <Marker
       position={center}
+      geomanIgnore={true}
       icon={new L.DivIcon({
         html: ReactDOMServer.renderToString(
           <MdCenterFocusWeak className={styles.icon} />,

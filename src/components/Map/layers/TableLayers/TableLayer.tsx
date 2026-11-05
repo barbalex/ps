@@ -183,6 +183,8 @@ export const TableLayer = ({
               opacity: 0,
               stroke: false,
               interactive: true,
+              // not editable via leaflet-geoman; only DrawControl geometry is
+              geomanIgnore: true,
               ...(isDraggable
                 ? { className: 'draggable-hitbox' }
                 : { className: 'clickable-hitbox' }),
@@ -199,6 +201,7 @@ export const TableLayer = ({
               feature?.properties?.[activeIdField] === activeId
             const visualCircle = new L.CircleMarker(latlng, {
               ...displayToUse,
+              geomanIgnore: true,
               ...(isActiveFeature ? { color: 'orange', weight: 3 } : {}),
               radius: visualRadius,
               interactive: false,
@@ -312,6 +315,8 @@ export const TableLayer = ({
             opacity: 0,
             stroke: false,
             interactive: true,
+            // not editable via leaflet-geoman; only DrawControl geometry is
+            geomanIgnore: true,
             ...(isDraggable
               ? { className: 'draggable-hitbox' }
               : { className: 'clickable-hitbox' }),
@@ -342,9 +347,11 @@ export const TableLayer = ({
                   iconAnchor: [markerSize / 2, markerSize / 2],
                 }),
                 draggable: isDraggable,
+                geomanIgnore: true,
               })
             : new L.Marker(latlng, {
                 draggable: isDraggable,
+                geomanIgnore: true,
                 ...(isDraggable ? { className: 'draggable' } : {}),
               })) as MarkerWithMeta
 

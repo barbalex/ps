@@ -227,11 +227,30 @@ export const DrawControlComponent = ({
     map.on('geoman:create', onCreate)
 
     // Toggle the active class so ClickListener suppresses click handling and
-    // the cursor changes while drawing/editing/deleting
+    // the cursor changes while drawing/editing/deleting.
+    // The per-shape toolbar buttons fire geoman:drawstart/drawend (not the
+    // global draw mode event), so both are handled here.
+    const anyGeomanModeActive = () =>
+      geoman.globalDrawModeEnabled() ||
+      geoman.globalEditModeEnabled() ||
+      geoman.globalRemovalModeEnabled()
     const setActive = (e: L.LeafletEvent) => {
       const enabled = (e as unknown as { enabled: boolean }).enabled
-      map.getContainer().classList.toggle(GEOMAN_ACTIVE_CLASS, enabled)
+      map
+        .getContainer()
+        .classList.toggle(GEOMAN_ACTIVE_CLASS, enabled || anyGeomanModeActive())
     }
+    const onDrawStart = () =>
+      map.getContainer().classList.add(GEOMAN_ACTIVE_CLASS)
+    const onDrawEnd = () => {
+      // fires on shape completion and on leaving draw mode; keep the class
+      // while another geoman mode is still active
+      if (!anyGeomanModeActive()) {
+        map.getContainer().classList.remove(GEOMAN_ACTIVE_CLASS)
+      }
+    }
+    map.on('geoman:drawstart', onDrawStart)
+    map.on('geoman:drawend', onDrawEnd)
     map.on('geoman:globaldrawmodetoggled', setActive)
     map.on('geoman:globaleditmodetoggled', setActive)
     map.on('geoman:globalremovalmodetoggled', setActive)
@@ -244,6 +263,8 @@ export const DrawControlComponent = ({
       drawLayer.off('layerremove', persist)
       geoman.removeControls()
       map.off('geoman:create', onCreate)
+      map.off('geoman:drawstart', onDrawStart)
+      map.off('geoman:drawend', onDrawEnd)
       map.off('geoman:globaldrawmodetoggled', setActive)
       map.off('geoman:globaleditmodetoggled', setActive)
       map.off('geoman:globalremovalmodetoggled', setActive)

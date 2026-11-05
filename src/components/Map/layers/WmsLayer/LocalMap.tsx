@@ -25,6 +25,7 @@ export const LocalMap = ({ layerPresentation }: Props) => {
         <Rectangle
           key={index}
           bounds={b}
+          pathOptions={{ geomanIgnore: true }}
         >
           <Tooltip>{layer.label}</Tooltip>
         </Rectangle>

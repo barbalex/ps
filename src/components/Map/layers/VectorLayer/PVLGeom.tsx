@@ -204,6 +204,7 @@ export const PVLGeom = ({ layer, display }: Props) => {
           data?.length ?? 0
         }`}
         data={data as unknown as GeoJsonObject}
+        geomanIgnore={true}
         {...{
           opacity: display.opacity_percent ? display.opacity_percent / 100 : 0,
         }}
@@ -231,6 +232,7 @@ export const PVLGeom = ({ layer, display }: Props) => {
           if (display.marker_type === 'circle') {
             return new L.CircleMarker(latlng, {
               ...display,
+              geomanIgnore: true,
               radius: display.circle_marker_radius ?? 8,
             } as L.CircleMarkerOptions)
           }
@@ -241,6 +243,7 @@ export const PVLGeom = ({ layer, display }: Props) => {
             ...(display?.color ? { '--marker-color': display.color } : {}),
           } as React.CSSProperties
           return new L.Marker(latlng, {
+            geomanIgnore: true,
             icon: new L.DivIcon({
               html: ReactDOMServer.renderToString(
                 <Component

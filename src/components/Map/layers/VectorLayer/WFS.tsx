@@ -314,6 +314,7 @@ export const WFS = ({ layer, layerPresentation }: Props) => {
           layerPresentation,
         )}`}
         data={data}
+        geomanIgnore={true}
         onEachFeature={(feature, geoLayer) => {
           ;(
             geoLayer as L.Layer & { vectorLayerLabel?: string }
@@ -329,6 +330,7 @@ export const WFS = ({ layer, layerPresentation }: Props) => {
           if (display.marker_type === 'circle') {
             return new L.CircleMarker(latlng, {
               ...(display as unknown as L.CircleMarkerOptions),
+              geomanIgnore: true,
               radius: display.circle_marker_radius ?? 8,
             })
           }
@@ -342,6 +344,7 @@ export const WFS = ({ layer, layerPresentation }: Props) => {
 
           return IconComponent
             ? new L.Marker(latlng, {
+                geomanIgnore: true,
                 icon: new L.DivIcon({
                   html: ReactDOMServer.renderToString(
                     <IconComponent
@@ -351,7 +354,7 @@ export const WFS = ({ layer, layerPresentation }: Props) => {
                   ),
                 }),
               })
-            : new L.Marker(latlng)
+            : new L.Marker(latlng, { geomanIgnore: true })
         }}
       />
       <Dialog onOpenChange={() => setError(null)} open={!!error}>

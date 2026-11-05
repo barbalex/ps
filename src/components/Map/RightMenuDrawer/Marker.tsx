@@ -13,6 +13,7 @@ export const InfoMarker = ({ mapInfo }: { mapInfo: MapInfo | null }) => {
   return (
     <Marker
       position={{ lat: mapInfo.lat, lng: mapInfo.lng }}
+      geomanIgnore={true}
       icon={new L.DivIcon({
         html: ReactDOMServer.renderToString(
           <MdNotListedLocation className={styles.icon} />,

@@ -12,6 +12,8 @@ import {
   Marker,
   Polygon,
   Pane,
+  Popup,
+  Tooltip,
   useMap,
   useMapEvents,
 } from 'react-leaflet'
@@ -138,6 +140,37 @@ const GeomanSpike = () => {
       step(`geoman:globalremovalmodetoggled enabled=${enabled}`)
     })
     map.on('moveend', () => step('map moveend (pan/drag worked)'))
+
+    // mirrors DrawControl's active-class wiring (geoman-active contract)
+    const GEOMAN_ACTIVE = 'geoman-active'
+    const anyGeomanModeActive = () =>
+      geoman.globalDrawModeEnabled() ||
+      geoman.globalEditModeEnabled() ||
+      geoman.globalRemovalModeEnabled()
+    map.on('geoman:drawstart', () =>
+      map.getContainer().classList.add(GEOMAN_ACTIVE),
+    )
+    map.on('geoman:drawend', () => {
+      if (!anyGeomanModeActive()) {
+        map.getContainer().classList.remove(GEOMAN_ACTIVE)
+      }
+    })
+    map.on('geoman:globaleditmodetoggled', (e) =>
+      map
+        .getContainer()
+        .classList.toggle(
+          GEOMAN_ACTIVE,
+          (e as unknown as { enabled: boolean }).enabled || anyGeomanModeActive(),
+        ),
+    )
+    map.on('geoman:globalremovalmodetoggled', (e) =>
+      map
+        .getContainer()
+        .classList.toggle(
+          GEOMAN_ACTIVE,
+          (e as unknown as { enabled: boolean }).enabled || anyGeomanModeActive(),
+        ),
+    )
   }, [map])
 
   return null
@@ -167,6 +200,7 @@ function App() {
       />
       <Pane name="spike-pane" style={{ zIndex: 450 }}>
         <Polygon
+          geomanIgnore={true}
           positions={[
             [47.38, 8.53],
             [47.38, 8.55],
@@ -180,20 +214,32 @@ function App() {
       <Circle
         center={[47.3769, 8.5417]}
         radius={300}
+        geomanIgnore={true}
         pathOptions={{ color: 'blue' }}
         eventHandlers={{ add: () => step('Circle added') }}
       />
       <CircleMarker
         center={[47.379, 8.54]}
         radius={8}
+        geomanIgnore={true}
         pathOptions={{ color: 'red', fillColor: 'red', fillOpacity: 0.8 }}
         eventHandlers={{ add: () => step('CircleMarker added') }}
       />
       <Marker
         position={[47.374, 8.545]}
+        geomanIgnore={true}
         icon={new L.DivIcon({ html: '<div style="color:#0a0;font-weight:bold">M</div>' })}
         eventHandlers={{ add: () => step('Marker (divIcon) added') }}
       />
+      {/* react-leaflet Popup + Tooltip against Leaflet 2's DivOverlay */}
+      <Marker position={[47.372, 8.535]} geomanIgnore={true}>
+        <Popup>
+          <div>spike popup content</div>
+        </Popup>
+      </Marker>
+      <CircleMarker center={[47.381, 8.535]} radius={6} geomanIgnore={true}>
+        <Tooltip>spike tooltip</Tooltip>
+      </CircleMarker>
     </MapContainer>
   )
 }
