@@ -48,6 +48,8 @@ I see there are still a few useCallback and useMemo (and others?) usages. Are th
 
 ---
 
+we need tests that cover if different users can access what they need to
+
 ---
 
 ---
