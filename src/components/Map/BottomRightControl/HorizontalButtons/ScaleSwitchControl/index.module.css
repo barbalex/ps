@@ -20,3 +20,8 @@
   min-width: 72px;
   height: 30px;
 }
+
+:global(html[data-theme='dark']) .text {
+  border-color: #4a4a4a;
+  background: rgba(41, 41, 41, 0.7);
+}

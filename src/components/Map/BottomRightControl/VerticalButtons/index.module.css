@@ -25,3 +25,8 @@
   min-width: 40px;
   height: 40px;
 }
+
+:global(html[data-theme='dark']) .toolbarButton {
+  background-color: #292929;
+  border-color: #4a4a4a;
+}
