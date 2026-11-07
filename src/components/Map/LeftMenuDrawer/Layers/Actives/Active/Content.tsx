@@ -38,7 +38,6 @@ import proj4 from 'proj4'
 import reproject from 'reproject'
 import type { FeatureCollection, Feature } from 'geojson'
 import { bbox } from '@turf/bbox'
-import { buffer } from '@turf/buffer'
 import { featureCollection } from '@turf/helpers'
 
 import { ErrorBoundary } from '../../../../../shared/ErrorBoundary.tsx'
@@ -59,7 +58,13 @@ import {
   languageAtom,
 } from '../../../../../../store.ts'
 import { DragHandle } from '../../../../../shared/DragAndDrop/DragHandle.tsx'
-import { boundsFromBbox } from '../../../../../../modules/boundsFromBbox.ts'
+import {
+  extentSelect,
+  queryExtent,
+  extentFromBbox,
+  extentToBoundsWithMargin,
+  type Extent,
+} from '../../../../../../modules/geoQueries.ts'
 import { httpGet } from '../../../../../../modules/httpGet.ts'
 import {
   getVectorLayerLabel,
@@ -81,9 +86,6 @@ type ActivePlaceLayer = VectorLayers & {
   name: string
   name_plural: string | null
 }
-
-// rows of the geometry queries in onClickZoomToFeatures
-type GeomRow = { geometry?: FeatureCollection | null }
 
 export const Content = ({
   layer,
@@ -353,8 +355,8 @@ export const Content = ({
 
   const onClickZoomToFeatures = async (event: MouseEvent) => {
     event.stopPropagation()
-    // Get all geometries for this layer
-    let geometries: GeomRow[] = []
+    // Get the extent of all geometries of this layer via PostGIS
+    let extent: Extent | null = null
 
     if (isVectorLayer) {
       // For vector layers (including table layers)
@@ -364,19 +366,20 @@ export const Content = ({
 
       if (tableName?.startsWith('places')) {
         const level = layer.own_table_level
-        const res = await db.query(
-          `SELECT p.geometry FROM places p 
+        extent = await queryExtent(
+          db,
+          `SELECT ${extentSelect('p')} FROM places p
            INNER JOIN subprojects s ON p.subproject_id = s.subproject_id 
            WHERE s.project_id = $1 
            AND p.geometry IS NOT NULL
            ${level ? `AND p.parent_id IS ${level === 1 ? 'NULL' : 'NOT NULL'}` : ''}`,
           [layer.project_id],
         )
-        geometries = (res?.rows ?? []) as GeomRow[]
       } else if (tableName?.startsWith('actions')) {
         const level = layer.own_table_level
-        const res = await db.query(
-          `SELECT a.geometry FROM actions a 
+        extent = await queryExtent(
+          db,
+          `SELECT ${extentSelect('a')} FROM actions a
            INNER JOIN places p ON a.place_id = p.place_id 
            INNER JOIN subprojects s ON p.subproject_id = s.subproject_id 
            WHERE s.project_id = $1 
@@ -384,11 +387,11 @@ export const Content = ({
            ${level ? `AND p.parent_id IS ${level === 1 ? 'NULL' : 'NOT NULL'}` : ''}`,
           [layer.project_id],
         )
-        geometries = (res?.rows ?? []) as GeomRow[]
       } else if (tableName?.startsWith('checks')) {
         const level = layer.own_table_level
-        const res = await db.query(
-          `SELECT c.geometry FROM checks c 
+        extent = await queryExtent(
+          db,
+          `SELECT ${extentSelect('c')} FROM checks c
            INNER JOIN places p ON c.place_id = p.place_id 
            INNER JOIN subprojects s ON p.subproject_id = s.subproject_id 
            WHERE s.project_id = $1 
@@ -396,11 +399,11 @@ export const Content = ({
            ${level ? `AND p.parent_id IS ${level === 1 ? 'NULL' : 'NOT NULL'}` : ''}`,
           [layer.project_id],
         )
-        geometries = (res?.rows ?? []) as GeomRow[]
       } else if (tableName?.startsWith('observations_assigned')) {
         const level = layer.own_table_level
-        const res = await db.query(
-          `SELECT o.geometry FROM observations o 
+        extent = await queryExtent(
+          db,
+          `SELECT ${extentSelect('o')} FROM observations o
            INNER JOIN observation_imports oi ON o.observation_import_id = oi.observation_import_id 
            INNER JOIN places p ON o.place_id = p.place_id 
            INNER JOIN subprojects s ON p.subproject_id = s.subproject_id 
@@ -409,10 +412,10 @@ export const Content = ({
            ${level ? `AND p.parent_id IS ${level === 1 ? 'NULL' : 'NOT NULL'}` : ''}`,
           [layer.project_id],
         )
-        geometries = (res?.rows ?? []) as GeomRow[]
       } else if (tableName === 'observations_to_assess') {
-        const res = await db.query(
-          `SELECT o.geometry FROM observations o 
+        extent = await queryExtent(
+          db,
+          `SELECT ${extentSelect('o')} FROM observations o
            INNER JOIN observation_imports oi ON o.observation_import_id = oi.observation_import_id 
            INNER JOIN subprojects s ON oi.subproject_id = s.subproject_id 
            WHERE s.project_id = $1 
@@ -421,10 +424,10 @@ export const Content = ({
            AND o.geometry IS NOT NULL`,
           [layer.project_id],
         )
-        geometries = (res?.rows ?? []) as GeomRow[]
       } else if (tableName === 'observations_not_to_assign') {
-        const res = await db.query(
-          `SELECT o.geometry FROM observations o 
+        extent = await queryExtent(
+          db,
+          `SELECT ${extentSelect('o')} FROM observations o
            INNER JOIN observation_imports oi ON o.observation_import_id = oi.observation_import_id 
            INNER JOIN subprojects s ON oi.subproject_id = s.subproject_id 
            WHERE s.project_id = $1 
@@ -433,16 +436,15 @@ export const Content = ({
            AND o.geometry IS NOT NULL`,
           [layer.project_id],
         )
-        geometries = (res?.rows ?? []) as GeomRow[]
       } else if (layer.type === 'wfs') {
         // For WFS layers, get from vector_layer_geoms
-        const res = await db.query(
-          `SELECT geometry FROM vector_layer_geoms WHERE vector_layer_id = $1`,
+        extent = await queryExtent(
+          db,
+          `SELECT ${extentSelect()} FROM vector_layer_geoms WHERE vector_layer_id = $1`,
           [layer.vector_layer_id],
         )
-        geometries = (res?.rows ?? []) as GeomRow[]
 
-        if (!geometries.length) {
+        if (!extent) {
           const wfsRes = await db.query(
             `SELECT * FROM wfs_services WHERE wfs_service_id = $1`,
             [layer.wfs_service_id],
@@ -539,41 +541,26 @@ export const Content = ({
               '+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs',
             ) as FeatureCollection
           }
-          geometries = [{ geometry: fc }]
+          extent = extentFromBbox(bbox(fc))
         }
       } else {
         // For uploaded vector layers
-        const res = await db.query(
-          `SELECT geometry FROM vector_layer_geoms WHERE vector_layer_id = $1`,
+        extent = await queryExtent(
+          db,
+          `SELECT ${extentSelect()} FROM vector_layer_geoms WHERE vector_layer_id = $1`,
           [layer.vector_layer_id],
         )
-        geometries = (res?.rows ?? []) as GeomRow[]
       }
     }
 
-    if (!geometries.length) {
+    if (!extent) {
       return addNotification({
         title: 'No geometries found for this layer',
         intent: 'info',
       })
     }
 
-    // Flatten all features from all FeatureCollections
-    const allFeatures = geometries.flatMap((g) => g.geometry?.features ?? [])
-
-    if (!allFeatures.length) {
-      return addNotification({
-        title: 'No geometries found for this layer',
-        intent: 'info',
-      })
-    }
-
-    const fc = featureCollection(allFeatures)
-    const bufferedFC = buffer(fc, 0.05)
-    const newBbox = bbox(bufferedFC!)
-    const newBounds = boundsFromBbox(newBbox)
-
-    setMapBounds(newBounds)
+    setMapBounds(extentToBoundsWithMargin(extent))
   }
 
   // drag and drop items by dragging the drag icon

@@ -52,7 +52,7 @@ export const Item = ({ place, observationId }: Props) => {
 
   return (
     <MenuItem onClick={onClick}>{`${place.label} (${formatNumber(
-      Math.round(place.distance * 1000),
+      Math.round(place.distance),
     )}m)`}</MenuItem>
   )
 }

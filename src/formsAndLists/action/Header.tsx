@@ -2,18 +2,20 @@ import { useParams, useNavigate } from '@tanstack/react-router'
 import { TbZoomScan } from 'react-icons/tb'
 import * as fluentUiReactComponents from '@fluentui/react-components'
 const { Button } = fluentUiReactComponents
-import { bbox } from '@turf/bbox'
-import { buffer } from '@turf/buffer'
-import type { GeoJSON } from 'geojson'
 import { useAtom, useSetAtom } from 'jotai'
 import { usePGlite, useLiveQuery } from '@electric-sql/pglite-react'
 import { useRef, useEffect } from 'react'
 import { useIntl } from 'react-intl'
+import type { GeoJSON } from 'geojson'
 
 import { createAction, createLayerPresentation } from '../../modules/createRows.ts'
 import { FormHeader } from '../../components/FormHeader/index.tsx'
 import { HistoryToggleButton } from '../../components/shared/HistoryCompare/HistoryToggleButton.tsx'
-import { boundsFromBbox } from '../../modules/boundsFromBbox.ts'
+import {
+  extentSelect,
+  queryExtent,
+  extentToBoundsWithMargin,
+} from '../../modules/geoQueries.ts'
 import {
   tabsAtom,
   mapBoundsAtom,
@@ -217,11 +219,13 @@ export const Header = ({
     }
 
     // 3. zoom to action
-    const buffered = buffer(geometry!, 0.05)
-    const newBbox = bbox(buffered!)
-    const bounds = boundsFromBbox(newBbox)
-    if (!bounds) return alertNoGeometry()
-    setMapBounds(bounds)
+    const extent = await queryExtent(
+      db,
+      `SELECT ${extentSelect()} FROM actions WHERE action_id = $1`,
+      [actionId],
+    )
+    if (!extent) return alertNoGeometry()
+    setMapBounds(extentToBoundsWithMargin(extent))
   }
 
   return (

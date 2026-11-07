@@ -1,5 +1,5 @@
 import { useLiveQuery } from '@electric-sql/pglite-react'
-import { useLocation } from '@tanstack/react-router'
+import { useLocation, useParams } from '@tanstack/react-router'
 
 import { TableLayer } from './TableLayer.tsx'
 import type { TableLayerProps } from './TableLayer.tsx'
@@ -11,6 +11,7 @@ export const Checks1 = ({ layerPresentation }: { layerPresentation: TableLayerPr
   const pathParts = pathname.split('/')
   const checksIdx = pathParts.indexOf('checks')
   const checkId = checksIdx !== -1 ? pathParts[checksIdx + 1] : undefined
+  const { subprojectId } = useParams({ strict: false })
   // TODO: query only inside current map bounds using places.bbox
   const res = useLiveQuery<Checks>(
     `
@@ -19,10 +20,12 @@ export const Checks1 = ({ layerPresentation }: { layerPresentation: TableLayerPr
       checks.label, checks.created_at, checks.updated_at, checks.updated_by
     FROM checks
       INNER JOIN places ON checks.place_id = places.place_id
-    WHERE 
+    WHERE
       checks.geometry IS NOT NULL
       AND places.parent_id IS NULL
+      AND places.subproject_id = $1
   `,
+    [subprojectId],
   )
   const checks: Checks[] = res?.rows ?? []
 

@@ -168,7 +168,7 @@ npm run hooks:install  # Install git pre-commit hooks
 **Leaflet maps** with WMS/WFS layers:
 
 - Swiss projection (LV95) support via `proj4` + `proj4leaflet`
-- Turf library for geospatial calculations (buffer, distance, etc.)
+- Geospatial calculations (distances, extents) run in PostGIS inside PGlite — see `src/modules/geoQueries.ts`; Turf is only used for data that never touches the database (WFS responses, drawn geometries)
 - WMS capabilities parsing via `wms-capabilities`
 
 ---

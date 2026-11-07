@@ -91,6 +91,7 @@ export interface MapInfo {
 export interface PlaceToAssign {
   place_id: string
   label: string | null
+  /** distance in meters, 0 if the dropped location lies within the place */
   distance: number
 }
 
