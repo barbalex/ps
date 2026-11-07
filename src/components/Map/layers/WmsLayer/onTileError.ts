@@ -1,9 +1,8 @@
 // TODO: need to debounce
 import type { Map as LeafletMap } from 'leaflet'
-import axios from 'redaxios'
 
 import { xmlToJson } from '../../../../modules/xmlToJson.ts'
-import { setShortTermOnlineFromFetchError } from '../../../../modules/setShortTermOnlineFromFetchError.ts'
+import { httpGet } from '../../../../modules/httpGet.ts'
 import { store, addNotificationAtom } from '../../../../store.ts'
 
 type WmsLayerForTileError = {
@@ -24,24 +23,19 @@ export const onTileError = async (
   console.log('hello onTileError', { ignore, map, layer })
   const mapSize = map.getSize()
   const bbox = map.getBounds().toBBoxString()
-  const res = await axios<string>({
-    method: 'get',
-    url: layer.wms_services!.url,
-    params: {
-      service: 'WMS',
-      request: 'GetMap',
-      version: layer.wms_services!.version,
-      layers: layer.wms_service_layer_name,
-      format: layer.wms_services!.info_format,
-      crs: 'EPSG:4326',
-      width: mapSize.x,
-      height: mapSize.y,
-      bbox,
-    },
+  const res = await httpGet<string>(layer.wms_services!.url, {
+    service: 'WMS',
+    request: 'GetMap',
+    version: layer.wms_services!.version,
+    layers: layer.wms_service_layer_name,
+    format: layer.wms_services!.info_format,
+    crs: 'EPSG:4326',
+    width: mapSize.x,
+    height: mapSize.y,
+    bbox,
   })
-  setShortTermOnlineFromFetchError((res as { error?: unknown }).error)
   // console.log(`onTileError res.data:`, res.data)
-  const isXML = res.data.includes('<ServiceException>')
+  const isXML = res.data?.includes('<ServiceException>')
   // console.log(`onTileError isXML:`, isXML)
   if (!isXML) return
 

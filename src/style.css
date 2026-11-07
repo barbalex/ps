@@ -418,11 +418,11 @@ html[data-theme='dark'] .uploadcare-uploader-config {
   }
 }
 
-/* When leaflet-draw is active (drawing, editing, deleting):
-   - suppress pointer-events on all SVG paths/circles so they don't block
-     leaflet-draw's _mouseMarker from receiving clicks
+/* When geoman is active (drawing, editing, deleting):
+   - suppress pointer-events on SVG paths/circles and hitbox markers so they
+     don't swallow clicks meant for geoman's draw/edit interactions
    - set crosshair cursor to override .leaflet-interactive's pointer cursor */
-.map-container.leaflet-draw-active {
+.map-container.geoman-active {
   cursor: crosshair !important;
 
   .leaflet-overlay-pane svg path,
@@ -454,7 +454,7 @@ html[data-theme='dark'] .leaflet-popup-close-button {
 }
 
 html[data-theme='dark'] .leaflet-bar a,
-html[data-theme='dark'] .leaflet-draw-toolbar a {
+html[data-theme='dark'] .leaflet-geoman-buttons-control-button {
   background-color: #2b2b2b;
   color: #fff;
 }
@@ -464,8 +464,8 @@ html[data-theme='dark'] .leaflet-bar a:hover {
 }
 
 html[data-theme='dark'] .leaflet-bar a,
-html[data-theme='dark'] .leaflet-draw-toolbar a,
-html[data-theme='dark'] .leaflet-draw-tooltip {
+html[data-theme='dark'] .leaflet-geoman-buttons-control-button,
+html[data-theme='dark'] .leaflet-tooltip {
   border-color: #4a4a4a !important;
 }
 
@@ -478,7 +478,7 @@ html[data-theme='dark'] .leaflet-control-attribution a {
   color: #9cc985;
 }
 
-html[data-theme='dark'] .leaflet-draw-tooltip {
+html[data-theme='dark'] .leaflet-tooltip {
   background: #363636;
   color: #fff;
 }

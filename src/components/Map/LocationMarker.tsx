@@ -17,7 +17,7 @@ export const LocationMarker = () => {
   }, [map])
 
   return position === null ? null : (
-    <Marker position={position}>
+    <Marker position={position} geomanIgnore={true}>
       <Popup>You are here</Popup>
     </Marker>
   )

@@ -8,9 +8,14 @@ type NavData = {
 
 type Props = {
   navData?: NavData
+  // passed on by Breadcrumbs at runtime
+  in?: boolean
+  // true when this crumb is new (fade in and grow)
+  enter?: boolean
 }
 
-export const FetcherReturner = ({ navData }: Props) => {
+// pass on Breadcrumbs' props
+export const FetcherReturner = ({ navData, ...other }: Props) => {
   // TODO: navData.id does not exist
   if (!navData?.label) return null
 
@@ -18,6 +23,7 @@ export const FetcherReturner = ({ navData }: Props) => {
     <Crumb
       key={`${navData?.id ?? navData?.ownUrl}`}
       navData={navData}
+      {...(other as { in?: boolean; enter?: boolean })}
     />
   )
 }

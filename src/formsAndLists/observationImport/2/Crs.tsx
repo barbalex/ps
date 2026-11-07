@@ -1,9 +1,9 @@
 import { useState } from 'react'
-import axios from 'redaxios'
 import { useIntl } from 'react-intl'
 
 import { TextField } from '../../../components/shared/TextField.tsx'
 import { setShortTermOnlineFromFetchError } from '../../../modules/setShortTermOnlineFromFetchError.ts'
+import { httpGet } from '../../../modules/httpGet.ts'
 import type ObservationImports from '../../../models/public/ObservationImports.ts'
 import type Observations from '../../../models/public/Observations.ts'
 import styles from './Crs.module.css'
@@ -42,25 +42,25 @@ export const Crs = ({
     const proj4Url = `https://spatialreference.org/ref/${system}/${number}/proj4.txt`
     let resp
     try {
-      resp = await axios.get(proj4Url)
+      resp = await httpGet<string>(proj4Url)
     } catch (error) {
       setShortTermOnlineFromFetchError(error)
       console.error('observationImport 2, onBlurCrs, resp error:', error)
-      if ((error as { status?: number })?.status === 404) {
-        // Tell user that the crs is not found
-        return setNotification(
-          formatMessage(
-            {
-              id: 'cRsNfd',
-              defaultMessage:
-                "Keine Definitionen für das Koordinaten-Bezugs-System '{crs}' gefunden",
-            },
-            { crs: observationImport.crs },
-          ),
-        )
-      }
     }
-    const defs = resp?.data
+    if (resp?.status === 404) {
+      // Tell user that the crs is not found
+      return setNotification(
+        formatMessage(
+          {
+            id: 'cRsNfd',
+            defaultMessage:
+              "Keine Definitionen für das Koordinaten-Bezugs-System '{crs}' gefunden",
+          },
+          { crs: observationImport.crs },
+        ),
+      )
+    }
+    const defs = resp?.ok ? resp.data : undefined
     if (!defs) return
 
     const observations: Observations[] =

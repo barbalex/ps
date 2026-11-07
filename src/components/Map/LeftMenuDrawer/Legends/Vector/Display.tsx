@@ -18,7 +18,7 @@ export const Display = ({
   <div className={styles.container}>
     {/* if a display_property_value exists, display it */}
     <MapContainer
-      crs={L.CRS.Simple}
+      crs={L.SimpleCRS}
       zoomControl={false}
       attributionControl={false}
       boxZoom={false}

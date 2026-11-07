@@ -1,12 +1,12 @@
-import { useRef } from 'react'
+import { useRef, useEffect } from 'react'
 import type { ComponentType } from 'react'
 import 'leaflet'
 import 'proj4'
-import 'proj4leaflet'
 import type { LatLngTuple, Map as LeafletMap } from 'leaflet'
 import { MapContainer } from 'react-leaflet'
-import { useResizeDetector } from 'react-resize-detector'
 import { useAtomValue } from 'jotai'
+
+import { useElementSize } from '../../modules/useElementSize.ts'
 
 import 'leaflet/dist/leaflet.css'
 
@@ -46,18 +46,14 @@ export const Map = () => {
 
   const mapRef = useRef<LeafletMap | null>(null)
 
-  const redrawMap = () => mapRef.current?.invalidateSize()
-
   // Issue: map is not drawn correctly on first render
-  // Solution: invalidateSize() after first render
-  const resizeRef = useRef<HTMLDivElement>(null)
-  useResizeDetector({
-    targetRef: resizeRef,
-    onResize: redrawMap,
-    refreshMode: 'debounce',
-    refreshRate: 300,
-    refreshOptions: { trailing: true },
+  // Solution: invalidateSize() after first render and on resize
+  const { ref: resizeRef, width, height } = useElementSize<HTMLDivElement>({
+    delay: 300,
   })
+  useEffect(() => {
+    mapRef.current?.invalidateSize()
+  }, [width, height])
 
   // TODO: this does not seem to do anything useful
   // useEffect(() => {

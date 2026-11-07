@@ -113,8 +113,8 @@ export const TableLayer = ({
     handleMouseUp: (e: L.LeafletMouseEvent) => void
   } | null>(null)
   useMapEvents({
-    mousemove: (e) => draggingRef.current?.trackCursor(e as L.LeafletMouseEvent),
-    mouseup: (e) => draggingRef.current?.handleMouseUp(e as L.LeafletMouseEvent),
+    pointermove: (e) => draggingRef.current?.trackCursor(e as L.LeafletMouseEvent),
+    pointerup: (e) => draggingRef.current?.handleMouseUp(e as L.LeafletMouseEvent),
   })
 
   if (!firstDisplay) return null
@@ -177,12 +177,14 @@ export const TableLayer = ({
             const clickRadius = Math.max(visualRadius + 5, 10)
 
             // Create the larger invisible clickable circle
-            const clickableCircle = L.circleMarker(latlng, {
+            const clickableCircle = new L.CircleMarker(latlng, {
               radius: clickRadius,
               fillOpacity: 0,
               opacity: 0,
               stroke: false,
               interactive: true,
+              // not editable via leaflet-geoman; only DrawControl geometry is
+              geomanIgnore: true,
               ...(isDraggable
                 ? { className: 'draggable-hitbox' }
                 : { className: 'clickable-hitbox' }),
@@ -197,8 +199,9 @@ export const TableLayer = ({
               activeId &&
               activeIdField &&
               feature?.properties?.[activeIdField] === activeId
-            const visualCircle = L.circleMarker(latlng, {
+            const visualCircle = new L.CircleMarker(latlng, {
               ...displayToUse,
+              geomanIgnore: true,
               ...(isActiveFeature ? { color: 'orange', weight: 3 } : {}),
               radius: visualRadius,
               interactive: false,
@@ -208,7 +211,7 @@ export const TableLayer = ({
             // Mark as internal layer
             visualCircle._isInternal = true
 
-            const marker = L.layerGroup([
+            const marker = new L.LayerGroup([
               clickableCircle,
               visualCircle,
             ]) as LayerGroupWithMeta
@@ -270,7 +273,7 @@ export const TableLayer = ({
                 })
               }
 
-              clickableCircle.on('mousedown', function () {
+              clickableCircle.on('pointerdown', function () {
                 // Store marker reference and original position for potential reset
                 const observationId = feature.properties?.observation_id
                 if (observationId) {
@@ -306,12 +309,14 @@ export const TableLayer = ({
           const markerSize = displayToUse.marker_size ?? 16
           const clickRadius = Math.max(markerSize / 2 + 5, 10)
 
-          const clickableCircle = L.circleMarker(latlng, {
+          const clickableCircle = new L.CircleMarker(latlng, {
             radius: clickRadius,
             fillOpacity: 0,
             opacity: 0,
             stroke: false,
             interactive: true,
+            // not editable via leaflet-geoman; only DrawControl geometry is
+            geomanIgnore: true,
             ...(isDraggable
               ? { className: 'draggable-hitbox' }
               : { className: 'clickable-hitbox' }),
@@ -325,8 +330,8 @@ export const TableLayer = ({
           } as React.CSSProperties
 
           const marker = (IconComponent
-            ? L.marker(latlng, {
-                icon: L.divIcon({
+            ? new L.Marker(latlng, {
+                icon: new L.DivIcon({
                   // Keep runtime values as CSS variables while moving declarations to CSS module.
                   // This removes static inline styling from JSX.
                   html: ReactDOMServer.renderToString(
@@ -342,13 +347,15 @@ export const TableLayer = ({
                   iconAnchor: [markerSize / 2, markerSize / 2],
                 }),
                 draggable: isDraggable,
+                geomanIgnore: true,
               })
-            : L.marker(latlng, {
+            : new L.Marker(latlng, {
                 draggable: isDraggable,
+                geomanIgnore: true,
                 ...(isDraggable ? { className: 'draggable' } : {}),
               })) as MarkerWithMeta
 
-          const group = L.layerGroup([
+          const group = new L.LayerGroup([
             clickableCircle,
             marker,
           ]) as LayerGroupWithMeta

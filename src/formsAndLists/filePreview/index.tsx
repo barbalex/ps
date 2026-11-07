@@ -1,12 +1,12 @@
 import { lazy, Suspense, useRef } from 'react'
 import { useParams } from '@tanstack/react-router'
-import { useResizeDetector } from 'react-resize-detector'
 import { useLiveQuery } from '@electric-sql/pglite-react'
 
 import { Header } from '../file/Header.tsx'
 import { Uploader } from '../file/Uploader.tsx'
 import { Loading } from '../../components/shared/Loading.tsx'
 import { NotFound } from '../../components/NotFound.tsx'
+import { useElementSize } from '../../modules/useElementSize.ts'
 import type Files from '../../models/public/Files.ts'
 
 import '../../form.css'
@@ -24,12 +24,7 @@ export const FilePreview = ({ from }: { from: string }) => {
   const res = useLiveQuery(`SELECT * FROM files WHERE file_id = $1`, [fileId])
   const row: Files | undefined = res?.rows?.[0] as Files | undefined
 
-  const { width, height, ref } = useResizeDetector({
-    // handleHeight: false,
-    refreshMode: 'debounce',
-    refreshRate: 300,
-    refreshOptions: { leading: false, trailing: true },
-  })
+  const { width, height, ref } = useElementSize<HTMLDivElement>({ delay: 300 })
 
   if (!res) return <Loading />
 

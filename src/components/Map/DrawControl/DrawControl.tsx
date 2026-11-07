@@ -1,13 +1,27 @@
 import { useEffect, useCallback, useRef } from 'react'
 import * as L from 'leaflet'
-import 'leaflet-draw'
-import 'leaflet-draw/dist/leaflet.draw.css'
-import { useMap, useMapEvents } from 'react-leaflet'
+// The fork's type declarations only augment the 'leaflet' module (map.geoman,
+// layer events); the runtime default export is not declared, hence the cast.
+import * as geomanModule from '@geoman-io/leaflet-geoman-free'
+import '@geoman-io/leaflet-geoman-free/dist/leaflet-geoman.css'
+import { useMap } from 'react-leaflet'
 import { bbox as getBbox } from '@turf/bbox'
 import { usePGlite } from '@electric-sql/pglite-react'
 import { useSetAtom } from 'jotai'
 
 import { addOperationAtom } from '../../../store.ts'
+
+const Geoman = (geomanModule as unknown as {
+  default: { initialize(): void }
+}).default
+
+// Registers the init hooks that attach `map.geoman` / `layer.geoman`.
+// Must run before the first map is created (module evaluation time is fine).
+Geoman.initialize()
+
+// Toggled on the map container while any geoman mode is active so
+// ClickListener can ignore map clicks and CSS can adapt the cursor.
+const GEOMAN_ACTIVE_CLASS = 'geoman-active'
 
 // Persists the draw layer across component unmounts so drawn geometry
 // stays visible on the map after drawing mode is deactivated.
@@ -40,41 +54,6 @@ const revertEditingStyle = (layer: L.Layer) => {
     ;(layer as L.Path).setStyle(DEFAULT_STYLE)
   }
 }
-
-L.drawLocal.draw.toolbar.buttons.polygon = 'Polygon(e) zeichnen, um zu filtern'
-L.drawLocal.draw.toolbar.buttons.rectangle =
-  'Rechteck(e) zeichnen, um zu filtern'
-L.drawLocal.draw.toolbar.actions.title = 'Zeichnen rückgängig machen'
-L.drawLocal.draw.toolbar.actions.text = 'rückgängig machen'
-L.drawLocal.draw.toolbar.finish.title = 'Zeichnen beenden'
-L.drawLocal.draw.toolbar.finish.text = 'beenden'
-L.drawLocal.draw.toolbar.undo.title = 'Zuletzt erfassten Punkt löschen'
-L.drawLocal.draw.toolbar.undo.text = 'letzten Punkt löschen'
-L.drawLocal.draw.handlers.polygon.tooltip.start =
-  'Klicken um Polygon zu beginnen'
-L.drawLocal.draw.handlers.polygon.tooltip.cont =
-  'Klicken um Polygon weiter zu zeichnen'
-L.drawLocal.draw.handlers.polygon.tooltip.end =
-  'ersten Punkt klicken, um Polygon zu beenden'
-L.drawLocal.draw.handlers.rectangle.tooltip.start =
-  'Klicken und ziehen, um Rechteck zu zeichnen'
-L.drawLocal.edit.toolbar.actions.save.title = 'Zeichnung speichern'
-L.drawLocal.edit.toolbar.actions.save.text = 'speichern'
-L.drawLocal.edit.toolbar.actions.cancel.title =
-  'Zeichnung abbrechen und verwerfen'
-L.drawLocal.edit.toolbar.actions.cancel.text = 'abbrechen'
-// L.drawLocal.edit.toolbar.actions.clearAll.title = 'alle Umrisse löschen'
-// L.drawLocal.edit.toolbar.actions.clearAll.text = 'alle löschen'
-L.drawLocal.edit.toolbar.buttons.edit = 'Umriss(e) ändern'
-L.drawLocal.edit.toolbar.buttons.editDisabled =
-  'Umriss(e) ändern (aktuell gibt es keine)'
-L.drawLocal.edit.toolbar.buttons.remove = 'Umriss(e) löschen'
-L.drawLocal.edit.toolbar.buttons.removeDisabled =
-  'Umriss(e) löschen (aktuell gibt es keine)'
-L.drawLocal.edit.handlers.edit.tooltip.text = `dann auf 'speichern' klicken`
-L.drawLocal.edit.handlers.edit.tooltip.subtext =
-  'Punkte ziehen, um Umriss(e) zu verändern'
-L.drawLocal.edit.handlers.remove.tooltip.text = `zum Löschen auf Umriss klicken, dann auf 'speichern'`
 
 type Props = {
   editingPlace?: string | false | null
@@ -145,6 +124,9 @@ export const DrawControlComponent = ({
   )
 
   useEffect(() => {
+    const geoman = map.geoman
+    if (!geoman) return
+
     // Remove any previously persisted draw layer (from a prior entity or session)
     if (_persistentDrawLayer && map.hasLayer(_persistentDrawLayer)) {
       map.removeLayer(_persistentDrawLayer)
@@ -154,6 +136,20 @@ export const DrawControlComponent = ({
     map.addLayer(drawLayer)
     _persistentDrawLayer = drawLayer
     drawLayerRef.current = drawLayer
+
+    const persist = () =>
+      onEdit(drawLayer.toGeoJSON() as GeoJSON.FeatureCollection)
+
+    // Persist when geoman's removal mode removes a layer from the draw layer
+    drawLayer.on('layerremove', persist)
+
+    // geoman:edit fires on every vertex move; persist only when a layer's
+    // edit session ends (geoman:update) or a drag ends, to keep the
+    // operation log free of intermediate states
+    const wireLayerEvents = (layer: L.Layer) => {
+      layer.on('geoman:update', persist)
+      layer.on('geoman:dragend', persist)
+    }
 
     // Load existing geometry from DB into the draw layer (so it is visible and editable)
     const activeId = editingPlace ?? editingCheck ?? editingAction
@@ -177,11 +173,16 @@ export const DrawControlComponent = ({
         )?.geometry
         if (geometry && drawLayer) {
           try {
-            L.geoJSON(geometry, {
+            // leaflet 2's GeoJSON types are narrower than the geojson
+            // package's GeoJsonObject, but the values are compatible
+            const geojsonArg =
+              geometry as unknown as ConstructorParameters<typeof L.GeoJSON>[0]
+            new L.GeoJSON(geojsonArg, {
               pointToLayer: (_feature, latlng) =>
-                L.circleMarker(latlng, EDITING_STYLE),
+                new L.CircleMarker(latlng, EDITING_STYLE),
             }).eachLayer((layer) => {
               applyEditingStyle(layer)
+              wireLayerEvents(layer)
               drawLayer.addLayer(layer)
             })
           } catch {
@@ -191,67 +192,85 @@ export const DrawControlComponent = ({
       })
     }
 
-    const drawControlFull = new L.Control.Draw({
-      // leaflet-draw also accepts `true` to enable a handler with defaults,
-      // but Control.DrawOptions only types `false | <HandlerOptions>`
-      draw: {
-        marker: true,
-        polyline: true,
-        circle: true,
-        circlemarker: false,
-        rectangle: { showArea: false },
-      } as unknown as L.Control.DrawOptions,
-      edit: {
-        featureGroup: drawLayer,
-      },
+    geoman.setLang('de')
+
+    geoman.addControls({
+      position: 'topleft',
+      drawMarker: true,
+      drawCircleMarker: false,
+      drawPolyline: true,
+      drawRectangle: true,
+      drawPolygon: true,
+      drawText: false,
+      drawCircle: true,
+      editMode: true,
+      dragMode: false,
+      cutPolygon: false,
+      removalMode: true,
+      rotateMode: false,
     })
-    map.addControl(drawControlFull)
+
+    // A new layer was drawn: move it into the draw layer, style it and persist
+    const onCreate = (e: L.LeafletEvent) => {
+      let layer = (e as unknown as { layer: L.Layer }).layer
+      // L.Marker doesn't support setStyle; replace with a circleMarker so
+      // the orange edit style (and its revert) works uniformly for all types.
+      if (layer instanceof L.Marker) {
+        layer = new L.CircleMarker(layer.getLatLng(), EDITING_STYLE)
+      } else {
+        applyEditingStyle(layer)
+      }
+      wireLayerEvents(layer)
+      drawLayer.addLayer(layer)
+      onEdit(drawLayer.toGeoJSON() as GeoJSON.FeatureCollection)
+    }
+    map.on('geoman:create', onCreate)
+
+    // Toggle the active class so ClickListener suppresses click handling and
+    // the cursor changes while drawing/editing/deleting.
+    // The per-shape toolbar buttons fire geoman:drawstart/drawend (not the
+    // global draw mode event), so both are handled here.
+    const anyGeomanModeActive = () =>
+      geoman.globalDrawModeEnabled() ||
+      geoman.globalEditModeEnabled() ||
+      geoman.globalRemovalModeEnabled()
+    const setActive = (e: L.LeafletEvent) => {
+      const enabled = (e as unknown as { enabled: boolean }).enabled
+      map
+        .getContainer()
+        .classList.toggle(GEOMAN_ACTIVE_CLASS, enabled || anyGeomanModeActive())
+    }
+    const onDrawStart = () =>
+      map.getContainer().classList.add(GEOMAN_ACTIVE_CLASS)
+    const onDrawEnd = () => {
+      // fires on shape completion and on leaving draw mode; keep the class
+      // while another geoman mode is still active
+      if (!anyGeomanModeActive()) {
+        map.getContainer().classList.remove(GEOMAN_ACTIVE_CLASS)
+      }
+    }
+    map.on('geoman:drawstart', onDrawStart)
+    map.on('geoman:drawend', onDrawEnd)
+    map.on('geoman:globaldrawmodetoggled', setActive)
+    map.on('geoman:globaleditmodetoggled', setActive)
+    map.on('geoman:globalremovalmodetoggled', setActive)
 
     return () => {
       // Keep drawLayer on the map so drawn geometry stays visible after
       // drawing mode is deactivated. It will be removed on the next mount.
       // Revert orange editing style back to default.
       drawLayer.eachLayer(revertEditingStyle)
-      map.removeControl(drawControlFull)
-      map.getContainer().classList.remove('leaflet-draw-active')
+      drawLayer.off('layerremove', persist)
+      geoman.removeControls()
+      map.off('geoman:create', onCreate)
+      map.off('geoman:drawstart', onDrawStart)
+      map.off('geoman:drawend', onDrawEnd)
+      map.off('geoman:globaldrawmodetoggled', setActive)
+      map.off('geoman:globaleditmodetoggled', setActive)
+      map.off('geoman:globalremovalmodetoggled', setActive)
+      map.getContainer().classList.remove(GEOMAN_ACTIVE_CLASS)
     }
   }, [map, onEdit, db, editingPlace, editingCheck, editingAction])
-
-  // During any leaflet-draw action (draw, edit, delete) add a CSS class so
-  // pointer-events on overlayPane SVG paths are suppressed — this lets the
-  // leaflet-draw _mouseMarker capture vertex clicks for polygon/line drawing
-  // and prevents the hand cursor from interfering during edit/delete.
-  // useMapEvents auto-removes these listeners when the component unmounts.
-  useMapEvents({
-    'draw:drawstart': () =>
-      map.getContainer().classList.add('leaflet-draw-active'),
-    'draw:drawstop': () =>
-      map.getContainer().classList.remove('leaflet-draw-active'),
-    'draw:editstart': () =>
-      map.getContainer().classList.add('leaflet-draw-active'),
-    'draw:editstop': () =>
-      map.getContainer().classList.remove('leaflet-draw-active'),
-    'draw:deletestart': () =>
-      map.getContainer().classList.add('leaflet-draw-active'),
-    'draw:deletestop': () =>
-      map.getContainer().classList.remove('leaflet-draw-active'),
-    'draw:created': (e: L.LeafletEvent) => {
-      let layer = (e as unknown as L.DrawEvents.Created).layer
-      // L.Marker doesn't support setStyle; replace with a circleMarker so
-      // the orange edit style (and its revert) works uniformly for all types.
-      if (layer instanceof L.Marker) {
-        layer = L.circleMarker(layer.getLatLng(), EDITING_STYLE)
-      } else {
-        applyEditingStyle(layer)
-      }
-      drawLayerRef.current?.addLayer(layer)
-      onEdit(drawLayerRef.current?.toGeoJSON() as GeoJSON.FeatureCollection)
-    },
-    'draw:edited': () =>
-      onEdit(drawLayerRef.current?.toGeoJSON() as GeoJSON.FeatureCollection),
-    'draw:deleted': () =>
-      onEdit(drawLayerRef.current?.toGeoJSON() as GeoJSON.FeatureCollection),
-  } as L.LeafletEventHandlerFnMap)
 
   return null
 }

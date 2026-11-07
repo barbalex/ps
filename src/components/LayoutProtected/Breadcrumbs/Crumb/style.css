@@ -63,7 +63,6 @@
   white-space: nowrap;
   text-decoration: none;
   align-content: center;
-  transition: opacity 700ms ease-in-out;
   user-select: none;
   color: rgb(36, 36, 36);
 }
@@ -78,7 +77,6 @@
   text-overflow: ellipsis;
   white-space: nowrap;
   align-content: center;
-  transition: opacity 700ms ease-in-out;
   user-select: none;
 }
 

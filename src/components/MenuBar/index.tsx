@@ -269,7 +269,8 @@ export const MenuBar = ({
           }
 
           // only go on if the width has changed enough (prevent unnecessary rerenders)
-          // this is the reason for not using react-resize-detector
+          // (this is why MenuBar observes with a raw ResizeObserver instead of
+          // a size hook like useElementSize, which rerenders on every change)
           previousMeasurementTimeRef.current = currentTime
           const percentageChanged = Math.abs(
             ((width - previousWidthRef.current!) / width) * 100,

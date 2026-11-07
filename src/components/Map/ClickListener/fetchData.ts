@@ -1,25 +1,8 @@
-import axios from 'redaxios'
-import type { Options } from 'redaxios'
-
 import { store, addNotificationAtom } from '../../../store.ts'
 
 import { setShortTermOnlineFromFetchError } from '../../../modules/setShortTermOnlineFromFetchError.ts'
-
-// shape of the error redaxios rejects with (a Response-like object)
-type FetchError = {
-  toJSON?: () => unknown
-  status?: number
-  response?: { data?: unknown; status?: number; headers?: unknown }
-  request?: unknown
-  message?: string
-}
-
-// redaxios's `get` accepts a config object at runtime (it forwards to the
-// default call, whose first parameter is `string | Options`), but its typings
-// only allow a url string — bridge the type locally.
-const axiosGet = axios.get as unknown as (
-  config: Options,
-) => Promise<{ data?: unknown }>
+import { httpGet } from '../../../modules/httpGet.ts'
+import type { HttpGetParams } from '../../../modules/httpGet.ts'
 
 export const fetchData = async <T = unknown>({
   url,
@@ -27,54 +10,47 @@ export const fetchData = async <T = unknown>({
   layerLabel,
 }: {
   url: string
-  params?: Options['params']
+  params?: HttpGetParams
   layerLabel?: string | null
 }): Promise<T | undefined> => {
-  let res: Awaited<ReturnType<typeof axiosGet>> | undefined
-  let failedToFetch = false
+  let res
   try {
-    res = await axiosGet({
-      method: 'get',
-      url,
-      params,
-    })
+    res = await httpGet<T>(url, params)
   } catch (error) {
-    const err = error as FetchError
-    console.log({ error: err, errorToJSON: err?.toJSON?.(), res })
-    if (err.status == 406) {
-      // user clicked where no feature exists
-    } else if (err.response) {
-      // The request was made and the server responded with a status code
-      // that falls out of the range of 2xx
-      console.error('error.response.data', err.response.data)
-      console.error('error.response.status', err.response.status)
-      console.error('error.response.headers', err.response.headers)
-      failedToFetch = true
-    } else if (err.request) {
-      // The request was made but no response was received
-      // `err.request` is an instance of XMLHttpRequest in the browser and an instance of
-      // http.ClientRequest in node.js
-      console.error('error.request:', err.request)
-      failedToFetch = true
-    } else {
-      // Something happened in setting up the request that triggered an Error
-      console.error('error.message', err.message)
-      failedToFetch = true
-    }
-    if (err.message?.toLowerCase()?.includes('failed to fetch')) {
-      failedToFetch = true
-    }
-    if (failedToFetch) {
-      store.set(addNotificationAtom, {
-        title: `Fehler beim Laden der Informationen${layerLabel ? ` für ${layerLabel}` : ''}`,
-        body: err.message,
-        intent: 'info',
-      })
-    }
-    setShortTermOnlineFromFetchError(err)
+    // the request failed on the network level (offline, dns, cors, ...)
+    console.error('ClickListener fetchData, network error:', error)
+    store.set(addNotificationAtom, {
+      title: `Fehler beim Laden der Informationen${layerLabel ? ` für ${layerLabel}` : ''}`,
+      body: (error as Error).message,
+      intent: 'info',
+    })
+    setShortTermOnlineFromFetchError(error)
+    return undefined
   }
-  if (!failedToFetch && res?.data) {
-    return res.data as T
+
+  if (res.status === 406) {
+    // user clicked where no feature exists
+    return undefined
   }
-  return undefined
+
+  if (!res.ok) {
+    // the server responded with a status code that falls out of the range of 2xx
+    console.error(
+      'ClickListener fetchData, response error:',
+      res.status,
+      res.statusText,
+      res.data,
+    )
+    store.set(addNotificationAtom, {
+      title: `Fehler beim Laden der Informationen${layerLabel ? ` für ${layerLabel}` : ''}`,
+      body: `${res.status} ${res.statusText}`,
+      intent: 'info',
+    })
+    return undefined
+  }
+
+  if (!res.data) {
+    return undefined
+  }
+  return res.data
 }

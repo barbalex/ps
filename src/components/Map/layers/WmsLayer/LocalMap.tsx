@@ -17,7 +17,7 @@ export const LocalMap = ({ layerPresentation }: Props) => {
   const bounds = ((layer.local_data_bounds ?? []) as {
     _southWest: L.LatLngLiteral
     _northEast: L.LatLngLiteral
-  }[]).map((b) => L.latLngBounds(b._southWest, b._northEast))
+  }[]).map((b) => new L.LatLngBounds(b._southWest, b._northEast))
 
   return (
     <ErrorBoundary layer={layer}>
@@ -25,6 +25,7 @@ export const LocalMap = ({ layerPresentation }: Props) => {
         <Rectangle
           key={index}
           bounds={b}
+          pathOptions={{ geomanIgnore: true }}
         >
           <Tooltip>{layer.label}</Tooltip>
         </Rectangle>

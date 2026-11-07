@@ -34,10 +34,9 @@ import { usePGlite, useLiveQuery } from '@electric-sql/pglite-react'
 import { useLocation } from '@tanstack/react-router'
 import { useParams } from '@tanstack/react-router'
 import { useIntl } from 'react-intl'
-import axios from 'redaxios'
 import proj4 from 'proj4'
 import reproject from 'reproject'
-import type { FeatureCollection } from 'geojson'
+import type { FeatureCollection, Feature } from 'geojson'
 import { bbox } from '@turf/bbox'
 import { buffer } from '@turf/buffer'
 import { featureCollection } from '@turf/helpers'
@@ -61,6 +60,7 @@ import {
 } from '../../../../../../store.ts'
 import { DragHandle } from '../../../../../shared/DragAndDrop/DragHandle.tsx'
 import { boundsFromBbox } from '../../../../../../modules/boundsFromBbox.ts'
+import { httpGet } from '../../../../../../modules/httpGet.ts'
 import {
   getVectorLayerLabel,
   usePlaceLevels,
@@ -492,17 +492,15 @@ export const Content = ({
             }
           }
           try {
-            response = await axios.get(wfsService.url, {
-              params: {
-                service: 'WFS',
-                request: 'GetFeature',
-                version: wfsService.version ?? '1.3.0',
-                typeNames: layer.wfs_service_layer_name,
-                outputFormat: wfsService.info_format ?? 'application/json',
-                srsName: wfsDefaultCrsCode,
-                ...(bboxParam ? { bbox: bboxParam } : {}),
-                maxfeatures: layer.max_features ?? 1000,
-              },
+            response = await httpGet(wfsService.url, {
+              service: 'WFS',
+              request: 'GetFeature',
+              version: wfsService.version ?? '1.3.0',
+              typeNames: layer.wfs_service_layer_name,
+              outputFormat: wfsService.info_format ?? 'application/json',
+              srsName: wfsDefaultCrsCode,
+              ...(bboxParam ? { bbox: bboxParam } : {}),
+              maxfeatures: layer.max_features ?? 1000,
             })
           } catch (error) {
             console.error('Zoom to WFS layer failed', error)
@@ -511,8 +509,20 @@ export const Content = ({
               intent: 'info',
             })
           }
+          if (!response.ok) {
+            console.error(
+              'Zoom to WFS layer failed:',
+              response.status,
+              response.statusText,
+              response.data,
+            )
+            return addNotification({
+              title: 'No geometries found for this layer',
+              intent: 'info',
+            })
+          }
 
-          const data = response?.data
+          const data = response.data as { features?: Feature[] } | undefined
           const rawFeatures = data?.features ?? []
           if (!rawFeatures.length) {
             return addNotification({
