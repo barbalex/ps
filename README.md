@@ -70,7 +70,7 @@ Data is continuously synchronized. Several collaborators can work efficiently at
 
 Did several collaborators accidentally change the same data offline? That's easy to fix. You can see who changed what and when.
 
-### Your Data Belongs To You
+### Your Data Belongs You
 
 All your data is synchronized to your device. It can be exported at any time.
 
