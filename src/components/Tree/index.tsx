@@ -11,6 +11,7 @@ import { isEqual } from 'es-toolkit'
 import { Node } from './Node.tsx'
 import { Editing } from './Project/Editing.tsx'
 import { Registrar } from './virtual/Registrar.tsx'
+import { DeepLinkPrefetcher } from './virtual/DeepLinkPrefetcher.tsx'
 import { useVisibleTreeRows } from './virtual/useVisibleTreeRows.ts'
 import type { TreeRow } from './virtual/useVisibleTreeRows.ts'
 import { treeConfigs, useTreeRoots } from './virtual/treeConfigs.tsx'
@@ -175,6 +176,7 @@ export const Tree = () => {
           level={1}
         />
       )}
+      <DeepLinkPrefetcher />
       <FocusPathLoader rows={rows} />
       {/* one registrar per OPEN row, independent of the virtualized window:
           its navData hook must stay subscribed for the row's label and
