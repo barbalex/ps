@@ -446,6 +446,15 @@ html[data-theme='dark'] .uploadcare-uploader-config {
   cursor: crosshair !important;
 }
 
+/* the legend preview (Legends/Vector/display.css) globally disables
+   pointer events on .leaflet-interactive to keep its sample geometry
+   inert — which also makes the completed measurement's tooltip inert.
+   Re-enable it there so the remove icon is clickable; higher
+   specificity beats that rule's !important */
+.map-container .measure-tooltip.leaflet-interactive {
+  pointer-events: auto !important;
+}
+
 /* the remove icon in the tooltip of a completed measurement */
 .measure-tooltip .measure-remove {
   display: inline-flex;

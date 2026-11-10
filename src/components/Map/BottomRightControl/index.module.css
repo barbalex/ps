@@ -11,4 +11,8 @@
   gap: 5px;
   justify-items: stretch;
   align-items: stretch;
+  /* the empty 1fr cell would otherwise swallow every click on the map's
+     bottom-right quadrant (e.g. the remove icon of a completed
+     measurement); the child wrappers re-enable pointer events */
+  pointer-events: none;
 }
