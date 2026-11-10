@@ -5,7 +5,7 @@ import type { TooltipProps } from '@fluentui/react-components'
 import type { ComponentType } from 'react'
 const { Button } = fluentUiReactComponents
 import { useAtom, useSetAtom } from 'jotai'
-import { usePGlite } from '@electric-sql/pglite-react'
+import { usePGlite, useLiveQuery } from '@electric-sql/pglite-react'
 import { useRef, useEffect } from 'react'
 import { useIntl } from 'react-intl'
 
@@ -73,6 +73,14 @@ export const Header = ({ autoFocusRef, from, nameSingular }: Props) => {
   useEffect(() => {
     placeIdRef.current = placeId2 ?? placeId
   }, [placeId, placeId2])
+
+  // mirrors queryExtent returning null: no geometry or an empty one
+  // (e.g. GeometryCollection without parts) can not be zoomed to
+  const geometryRes = useLiveQuery(
+    `SELECT (geometry IS NOT NULL AND NOT ST_IsEmpty(geometry)) AS has_geometry FROM places WHERE place_id = $1`,
+    [placeId2 ?? placeId],
+  )
+  const hasGeometry = geometryRes?.rows?.[0]?.has_geometry === true
 
   const addRow = async () => {
     const resPlace = (await createPlace({
@@ -261,6 +269,25 @@ export const Header = ({ autoFocusRef, from, nameSingular }: Props) => {
     setMapBounds(extentToBoundsWithMargin(extent))
   }
 
+  const zoomButton = (
+    <Button
+      size="medium"
+      icon={<TbZoomScan />}
+      disabled={!hasGeometry}
+      onClick={onClickZoomTo}
+    />
+  )
+  const zoomTooltipContent = hasGeometry
+    ? formatMessage({ id: 'bPlaceZoomTo', defaultMessage: 'zoomen' })
+    : formatMessage(
+        {
+          id: 'bDCGHI',
+          defaultMessage:
+            'Um auf {place} zu zoomen, erstelle zuerst die Geometrie',
+        },
+        { place: nameSingular },
+      )
+
   return (
     <FormHeader
       title={nameSingular ?? 'Place'}
@@ -271,17 +298,10 @@ export const Header = ({ autoFocusRef, from, nameSingular }: Props) => {
       tableName={nameSingular}
       siblings={
         <>
-          <Tooltip
-            content={formatMessage({
-              id: 'bPlaceZoomTo',
-              defaultMessage: 'zoomen',
-            })}
-          >
-            <Button
-              size="medium"
-              icon={<TbZoomScan />}
-              onClick={onClickZoomTo}
-            />
+          <Tooltip content={zoomTooltipContent}>
+            {/* disabled buttons swallow pointer events, so the tooltip
+                needs a wrapper to still open on hover */}
+            {hasGeometry ? zoomButton : <span>{zoomButton}</span>}
           </Tooltip>
           <HistoryToggleButton
             historiesPath={`${basePath}/histories`}

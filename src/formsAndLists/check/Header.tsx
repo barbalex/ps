@@ -79,6 +79,14 @@ export const Header = ({
     checkIdRef.current = checkId
   }, [checkId])
 
+  // mirrors queryExtent returning null: no geometry or an empty one
+  // (e.g. GeometryCollection without parts) can not be zoomed to
+  const geometryRes = useLiveQuery(
+    `SELECT (geometry IS NOT NULL AND NOT ST_IsEmpty(geometry)) AS has_geometry FROM checks WHERE check_id = $1`,
+    [checkId],
+  )
+  const hasGeometry = geometryRes?.rows?.[0]?.has_geometry === true
+
   // the view's static filter narrows counts and sibling navigation
   const viewFilterString = filteredViewId
     ? filterStringFromFilter((filteredView?.filter ?? []) as TableRowFilter[])
@@ -268,10 +276,19 @@ export const Header = ({
             size="medium"
             icon={<TbZoomScan />}
             onClick={onClickZoomTo}
-            title={formatMessage({
-              id: 'fNN4oO',
-              defaultMessage: 'Zur Kontrolle in Karte zoomen',
-            })}
+            disabled={!hasGeometry}
+            title={
+              hasGeometry
+                ? formatMessage({
+                    id: 'fNN4oO',
+                    defaultMessage: 'Zur Kontrolle in Karte zoomen',
+                  })
+                : formatMessage({
+                    id: 'fOO5pP',
+                    defaultMessage:
+                      'Um auf eine Kontrolle zu zoomen, erstelle zuerst die Geometrie',
+                  })
+            }
           />
           <HistoryToggleButton
             historiesPath={`${basePath}/histories`}
