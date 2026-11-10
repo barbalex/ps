@@ -12,7 +12,7 @@ import { LazyPuckEditor } from '../../components/shared/lazyPuck.tsx'
 import { NotFound } from '../../components/NotFound.tsx'
 import { getValueFromChange } from '../../modules/getValueFromChange.ts'
 import { normalizePuckDesign } from '../../modules/normalizePuckDesign.ts'
-import { addOperationAtom, languageAtom } from '../../store.ts'
+import { addOperationAtom, addNotificationAtom, languageAtom } from '../../store.ts'
 import { subprojectNameSingularExpr } from '../../modules/subprojectNameCols.ts'
 import {
   ProjectReportContext,
@@ -53,6 +53,7 @@ export const Form = ({
 }) => {
   const { projectReportDesignId } = useParams({ strict: false })
   const addOperation = useSetAtom(addOperationAtom)
+  const addNotification = useSetAtom(addNotificationAtom)
   const [validations, setValidations] = useState<
     Record<string, { state: 'error'; message: string }>
   >({})
@@ -322,7 +323,15 @@ export const Form = ({
         prev: { ...row },
       })
     } catch (error) {
+      // the editor keeps showing the edited design — without a word the
+      // user assumes it was saved
       console.error('Error saving design:', error)
+      addNotification({
+        intent: 'error',
+        duration: 30000,
+        title: 'Design not saved',
+        body: `The report design could not be saved (${error instanceof Error ? error.message : 'unknown error'}). The editor still shows your unsaved changes.`,
+      })
     }
   }
 
