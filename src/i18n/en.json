@@ -180,6 +180,7 @@
   "onlineStatusOnline": "You are online",
   "onlineStatusOffline": "You are offline",
   "onlineStatusOfflineQueued": "You are offline. {count} operations are waiting for synchronization",
+  "onlineStatusOnlineQueued": "You are online. {count} operations are waiting for synchronization",
   "OaXR/X": "Observations assigned",
   "Ob2kQz": "Obsolete",
   "OogWmh": "I'm interested!",
@@ -1265,9 +1266,9 @@
   "pdImportError": "Import failed",
   "pdImportInvalid": "The file is not a project dump of this app.",
   "pdImportExists": "The project \"{name}\" already exists (locally or on the server). Please delete it first and wait until the deletion has synced.",
-  "pdImportOffline": "The import needs a connection to the server."
-,
+  "pdImportOffline": "The import needs a connection to the server.",
   "versionCheckBanner": "A new version ({availableVersion}) of Arten fördern is available. The running version ({appVersion}) is outdated and may cause errors.",
   "versionCheckUpdateNow": "Update app",
   "versionCheckLater": "later",
-  "versionCheckUpdating": "Updating app …"}
+  "versionCheckUpdating": "Updating app …"
+}

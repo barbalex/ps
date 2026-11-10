@@ -50,11 +50,22 @@ export const Online = (_props: Props) => {
   const online = useAtomValue(onlineAtom)
   const operationsQueue = useAtomValue(operationsQueueAtom)
 
+  // a non-empty queue while online means operations are failing to sync —
+  // the badge count alone is indistinguishable from "all good"
   const title = online
-    ? formatMessage({
-        id: 'onlineStatusOnline',
-        defaultMessage: 'Du bist online',
-      })
+    ? operationsQueue.length
+      ? formatMessage(
+          {
+            id: 'onlineStatusOnlineQueued',
+            defaultMessage:
+              'Du bist online. {count} Operationen warten auf Synchronisation',
+          },
+          { count: operationsQueue.length },
+        )
+      : formatMessage({
+          id: 'onlineStatusOnline',
+          defaultMessage: 'Du bist online',
+        })
     : operationsQueue.length
       ? formatMessage(
           {
