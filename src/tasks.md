@@ -44,24 +44,21 @@ dark mode not well implemented for: file upload?
 
 ---
 
-doing:
-lets prevent the map from blocking the ui while loading high numbers of markers, similar to how it was recently done in apf2
+---
 
 ---
 
-lets add the measure, export png and print to pdf tools implemented in apf2
+---
+
+TODO:
+map: the locate and edit geometry buttons are barely visible in dark mode
 
 ---
 
-when no history is (yet) available: deactivate the history button and on hover, explain (translated)
+Doing:
+map (layers): it seems Teil-Populationen can't be choosen as layer, only their Beobachtungen (zugeordnet and Linien). We should add Teil-Beobachtungen (places level 2). I guess this has to be done in the import for the apf2 project
 
 ---
-
-same for 'zoom to in map' button
-
----
-
-history view: labels are not well enough visible in dark mode
 
 ---
 
