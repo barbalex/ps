@@ -6,21 +6,7 @@ import type { OptionOnSelectData } from '@fluentui/react-components'
 import { useLiveQuery } from '@electric-sql/pglite-react'
 import { useIntl } from 'react-intl'
 
-import { pointToLineDistance } from '@turf/point-to-line-distance'
-import { distance } from '@turf/distance'
-import { buffer } from '@turf/buffer'
-import { convex } from '@turf/convex'
-import { polygonToLine } from '@turf/polygon-to-line'
-import { point } from '@turf/helpers'
-import type { AllGeoJSON } from '@turf/helpers'
-import type { Feature, GeoJSON, LineString } from 'geojson'
-
-interface PlaceWithDistance {
-  place_id: string
-  label: string
-  distance: number | null
-  geometry: unknown
-}
+import { PLACES_WITH_DISTANCE_SQL } from '../../modules/geoQueries.ts'
 
 type LooseGeometry = {
   type: string
@@ -28,10 +14,10 @@ type LooseGeometry = {
   geometries?: LooseGeometry[] | null
 }
 
-type PlaceRow = {
+interface PlaceWithDistance {
   place_id: string
-  label: string
-  geometry: LooseGeometry
+  label: string | null
+  distance_m: number | null
 }
 
 export const PlaceComboboxWithDistance = ({
@@ -62,124 +48,32 @@ export const PlaceComboboxWithDistance = ({
   const observation = observationRes?.rows?.[0] as
     { geometry: LooseGeometry | null } | undefined
 
-  // Get all places
-  const placesRes = useLiveQuery(
-    `SELECT place_id, label, ST_AsGeoJSON(geometry)::json as geometry FROM places WHERE geometry IS NOT NULL ORDER BY label`,
-  )
-  const places = useMemo(
-    () => (placesRes?.rows ?? []) as PlaceRow[],
+  // observations are stored as GeometryCollections containing a Point
+  const observationPoint = useMemo(() => {
+    const geometry = observation?.geometry
+    if (geometry?.type === 'Point') {
+      return geometry.coordinates as [number, number]
+    }
+    if (geometry?.type === 'GeometryCollection') {
+      const first = geometry.geometries?.[0]
+      if (first?.type === 'Point') {
+        return first.coordinates as [number, number]
+      }
+    }
+    return null
+  }, [observation])
+
+  // PostGIS calculates the distance in meters from the observation point to
+  // every place and sorts nearest-first. Without an observation point all
+  // distances are NULL and places are ordered by label
+  const placesRes = useLiveQuery(PLACES_WITH_DISTANCE_SQL, [
+    observationPoint?.[0] ?? null,
+    observationPoint?.[1] ?? null,
+  ])
+  const placesWithDistance = useMemo(
+    () => (placesRes?.rows ?? []) as unknown as PlaceWithDistance[],
     [placesRes],
   )
-
-  // Calculate distances and sort
-  const placesWithDistance: PlaceWithDistance[] = useMemo(() => {
-    if (!observation?.geometry || places.length === 0) {
-      return places.map((p) => ({
-        place_id: p.place_id,
-        label: p.label,
-        distance: null,
-        geometry: p.geometry,
-      }))
-    }
-
-    try {
-      // Get observation point - assuming geometry is GeoJSON with coordinates
-      const occGeometry = observation.geometry
-      let occPoint
-
-      // Handle different geometry types for observation
-      if (occGeometry.type === 'Point') {
-        occPoint = point(occGeometry.coordinates as number[])
-      } else if (
-        occGeometry.type === 'GeometryCollection' &&
-        (occGeometry.geometries?.length ?? 0) > 0
-      ) {
-        const firstGeom = occGeometry.geometries![0]
-        if (firstGeom?.type === 'Point') {
-          occPoint = point(firstGeom.coordinates as number[])
-        }
-      } else if (occGeometry.coordinates) {
-        // Try to extract first coordinate
-        const coords = occGeometry.coordinates
-        if (Array.isArray(coords) && coords.length >= 2) {
-          occPoint = point(coords)
-        }
-      }
-
-      if (!occPoint) {
-        return places.map((p) => ({
-          place_id: p.place_id,
-          label: p.label,
-          distance: null,
-          geometry: p.geometry,
-        }))
-      }
-
-      // Calculate distance for each place
-      const placesWithDist = places.map((place) => {
-        let dist: number | null = null
-
-        try {
-          // Buffer and convex the place geometry to handle various geometry types
-          const bufferedGeometry = buffer(place.geometry as GeoJSON, 0.000001)
-          const convexedGeometry = convex(bufferedGeometry as AllGeoJSON)
-
-          if (convexedGeometry) {
-            const hullLine = polygonToLine(convexedGeometry)
-            // Calculate distance in kilometers, convert to meters
-            dist =
-              pointToLineDistance(occPoint, hullLine as Feature<LineString>) *
-              1000
-          }
-        } catch {
-          // If error, try simple point-to-point distance
-          try {
-            if (place.geometry?.type === 'Point') {
-              dist =
-                distance(
-                  occPoint,
-                  point(place.geometry.coordinates as number[]),
-                ) * 1000
-            } else if (
-              place.geometry?.type === 'GeometryCollection' &&
-              (place.geometry.geometries?.length ?? 0) > 0
-            ) {
-              const firstGeom = place.geometry.geometries![0]
-              if (firstGeom?.type === 'Point') {
-                dist =
-                  distance(occPoint, point(firstGeom.coordinates as number[])) *
-                  1000
-              }
-            }
-          } catch {
-            // Ignore distance calculation errors
-          }
-        }
-
-        return {
-          place_id: place.place_id,
-          label: place.label,
-          distance: dist,
-          geometry: place.geometry,
-        }
-      })
-
-      // Sort by distance (null distances go to end)
-      return placesWithDist.sort((a, b) => {
-        if (a.distance === null) return 1
-        if (b.distance === null) return -1
-        return a.distance - b.distance
-      })
-    } catch (error) {
-      console.log('Error calculating distances:', error)
-      return places.map((p) => ({
-        place_id: p.place_id,
-        label: p.label,
-        distance: null,
-        geometry: p.geometry,
-      }))
-    }
-  }, [observation, places])
 
   // Get selected place
   const selectedPlace = useMemo(() => {
@@ -191,8 +85,8 @@ export const PlaceComboboxWithDistance = ({
   const displayValue = useMemo(() => {
     if (!value || !selectedPlace) return ''
     const distanceText =
-      selectedPlace.distance !== null
-        ? ` (${Math.round(selectedPlace.distance)} m)`
+      selectedPlace.distance_m !== null
+        ? ` (${Math.round(selectedPlace.distance_m)} m)`
         : ''
     return `${selectedPlace.label}${distanceText}`
   }, [value, selectedPlace])
@@ -224,7 +118,7 @@ export const PlaceComboboxWithDistance = ({
     if (!filter) return placesWithDistance
     const lowerFilter = filter.toLowerCase()
     return placesWithDistance.filter((p) =>
-      p.label.toLowerCase().includes(lowerFilter),
+      p.label?.toLowerCase().includes(lowerFilter),
     )
   }, [filter, placesWithDistance])
 
@@ -250,8 +144,8 @@ export const PlaceComboboxWithDistance = ({
           filteredPlaces.map((place) => {
             // TODO: distanceText should have thousands separator and be localized
             const distanceText =
-              place.distance !== null
-                ? ` (${Math.round(place.distance).toLocaleString()} m)`
+              place.distance_m !== null
+                ? ` (${Math.round(place.distance_m).toLocaleString()} m)`
                 : ''
             return (
               <Option key={place.place_id} value={place.place_id}>

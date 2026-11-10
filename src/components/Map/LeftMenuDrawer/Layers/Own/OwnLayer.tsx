@@ -73,18 +73,28 @@ export const OwnLayer = ({
         skipOperationQueue: isTableLayer,
       } as unknown as Parameters<typeof createLayerPresentation>[0])
     } else {
-      db.query(
+      const layerPresentationId =
+        layer.layer_presentations?.[0]?.layer_presentation_id
+      // prev must be the full row: the permission check resolves the role
+      // via vector_layer_id/wms_layer_id and a revert writes updated_at
+      // and updated_by back
+      const lpRes = await db.query(
+        `SELECT * FROM layer_presentations WHERE layer_presentation_id = $1`,
+        [layerPresentationId],
+      )
+      const prev = (lpRes?.rows?.[0] ?? {}) as Record<string, unknown>
+      await db.query(
         `UPDATE layer_presentations SET active = true WHERE layer_presentation_id = $1`,
-        [layer.layer_presentations?.[0]?.layer_presentation_id],
+        [layerPresentationId],
       )
       // add task to update server and rollback PGlite in case of error
       addOperation({
         table: 'layer_presentations',
         rowIdName: 'layer_presentation_id',
-        rowId: layer.layer_presentations?.[0]?.layer_presentation_id,
+        rowId: layerPresentationId,
         operation: 'update',
         draft: { active: true },
-        prev: { ...layer.layer_presentations?.[0] },
+        prev,
       })
     }
   }

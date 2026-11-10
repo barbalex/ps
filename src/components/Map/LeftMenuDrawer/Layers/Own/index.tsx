@@ -32,7 +32,17 @@ export const OwnLayers = () => {
   // Show table-based vector layers that are not currently active
   const res = useLiveQuery(
     `
-    SELECT *
+    SELECT *,
+      (
+        SELECT json_agg(
+          json_build_object(
+            'layer_presentation_id', lp.layer_presentation_id,
+            'active', lp.active
+          ) ORDER BY lp.active DESC, lp.layer_presentation_id
+        )
+        FROM layer_presentations lp
+        WHERE lp.vector_layer_id = vector_layers.vector_layer_id
+      ) as layer_presentations
     FROM vector_layers
     WHERE
       own_table IS NOT NULL
@@ -70,9 +80,11 @@ export const OwnLayers = () => {
   )
   const placeLevels = placeLevelsRes?.rows ?? []
   // Attach the derived display label so children can render layer.label
+  // and the existing (inactive) presentation so activating reuses it
   const ownVectorLayers = ((res?.rows ?? []) as unknown as OwnLayerRow[]).map(
     (l) => ({
       ...l,
+      layer_presentation_id: l.layer_presentations?.[0]?.layer_presentation_id,
       label: getVectorLayerLabel(l as VectorLayers, language, placeLevels),
     }),
   )

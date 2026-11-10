@@ -4,10 +4,6 @@ import * as fluentUiReactComponents from '@fluentui/react-components'
 import type { TooltipProps } from '@fluentui/react-components'
 import type { ComponentType } from 'react'
 const { Button } = fluentUiReactComponents
-import { bbox } from '@turf/bbox'
-
-import { buffer } from '@turf/buffer'
-import type { GeoJSON } from 'geojson'
 import { useAtom, useSetAtom } from 'jotai'
 import { usePGlite } from '@electric-sql/pglite-react'
 import { useRef, useEffect } from 'react'
@@ -20,7 +16,11 @@ import {
 } from '../../modules/createRows.ts'
 import { FormHeader } from '../../components/FormHeader/index.tsx'
 import { HistoryToggleButton } from '../../components/shared/HistoryCompare/HistoryToggleButton.tsx'
-import { boundsFromBbox } from '../../modules/boundsFromBbox.ts'
+import {
+  extentSelect,
+  queryExtent,
+  extentToBoundsWithMargin,
+} from '../../modules/geoQueries.ts'
 import {
   tabsAtom,
   mapBoundsAtom,
@@ -28,8 +28,6 @@ import {
   addNotificationAtom,
   mapLayerSortingAtom,
 } from '../../store.ts'
-
-import type Places from '../../models/public/Places.ts'
 
 // Fluent UI's TooltipProps requires `relationship`, but it is optional at runtime
 const Tooltip = fluentUiReactComponents.Tooltip as ComponentType<
@@ -206,19 +204,12 @@ export const Header = ({ autoFocusRef, from, nameSingular }: Props) => {
     })
 
   const onClickZoomTo = async () => {
-    const res = await db.query(
-      `SELECT ST_AsGeoJSON(geometry)::json as geometry FROM places WHERE place_id = $1`,
+    const extent = await queryExtent(
+      db,
+      `SELECT ${extentSelect()} FROM places WHERE place_id = $1`,
       [placeId2 ?? placeId],
     )
-    const geometry: Places['geometry'] | undefined = (
-      res?.rows?.[0] as { geometry?: Places['geometry'] } | undefined
-    )?.geometry
-    if (
-      !geometry ||
-      (geometry as { geometries?: unknown[] }).geometries?.length === 0
-    ) {
-      return alertNoGeometry()
-    }
+    if (!extent) return alertNoGeometry()
 
     // 1. show map if not happening
     if (!tabs.includes('map')) {
@@ -267,11 +258,7 @@ export const Header = ({ autoFocusRef, from, nameSingular }: Props) => {
     }
 
     // 3. zoom to place
-    const buffered = buffer(geometry as GeoJSON, 0.05)
-    const newBbox = bbox(buffered!)
-    const bounds = boundsFromBbox(newBbox)
-    if (!bounds) return alertNoGeometry()
-    setMapBounds(bounds)
+    setMapBounds(extentToBoundsWithMargin(extent))
   }
 
   return (

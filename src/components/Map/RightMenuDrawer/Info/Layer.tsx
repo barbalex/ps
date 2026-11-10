@@ -1,13 +1,9 @@
 import { Fragment } from 'react'
 import type { ReactNode } from 'react'
-import type { Geometry } from 'geojson'
 import Linkify from 'linkify-react'
 import { useNavigate } from '@tanstack/react-router'
 import { useAtom, useSetAtom } from 'jotai'
 import { usePGlite } from '@electric-sql/pglite-react'
-import { bbox } from '@turf/bbox'
-import { buffer } from '@turf/buffer'
-import type { AllGeoJSON } from '@turf/helpers'
 import * as fluentUiReactComponents from '@fluentui/react-components'
 import { MdOpenInNew, MdEdit, MdEditOff } from 'react-icons/md'
 import { TbZoomScan } from 'react-icons/tb'
@@ -20,7 +16,11 @@ import {
   editingCheckGeometryAtom,
   editingActionGeometryAtom,
 } from '../../../../store.ts'
-import { boundsFromBbox } from '../../../../modules/boundsFromBbox.ts'
+import {
+  extentSelect,
+  queryExtent,
+  extentToBoundsWithMargin,
+} from '../../../../modules/geoQueries.ts'
 import styles from './Layer.module.css'
 
 const { Button } = fluentUiReactComponents
@@ -150,40 +150,16 @@ export const Layer = ({ layerData }: Props) => {
 
   const onZoomTo = async () => {
     if (!ownTable || !ownId) return
-    let geometry: Geometry | undefined
-    if (ownTable === 'place') {
-      const res = await db.query(
-        `SELECT ST_AsGeoJSON(geometry)::json as geometry FROM places WHERE place_id = $1`,
-        [ownId],
-      )
-      geometry = (res?.rows?.[0] as { geometry: Geometry } | undefined)
-        ?.geometry
-    } else if (ownTable === 'check') {
-      const res = await db.query(
-        `SELECT ST_AsGeoJSON(geometry)::json as geometry FROM checks WHERE check_id = $1`,
-        [ownId],
-      )
-      geometry = (res?.rows?.[0] as { geometry: Geometry } | undefined)
-        ?.geometry
-    } else if (ownTable === 'action') {
-      const res = await db.query(
-        `SELECT ST_AsGeoJSON(geometry)::json as geometry FROM actions WHERE action_id = $1`,
-        [ownId],
-      )
-      geometry = (res?.rows?.[0] as { geometry: Geometry } | undefined)
-        ?.geometry
-    }
-    if (
-      !geometry ||
-      !(geometry as { geometries?: unknown[] }).geometries?.length
+    const tableName =
+      ownTable === 'place' ? 'places' : ownTable === 'check' ? 'checks' : 'actions'
+    const extent = await queryExtent(
+      db,
+      `SELECT ${extentSelect()} FROM ${tableName} WHERE ${ownTable}_id = $1`,
+      [ownId],
     )
-      return
+    if (!extent) return
     if (!tabs.includes('map')) setTabs([...tabs, 'map'])
-    const buffered = buffer(geometry, 0.05) as AllGeoJSON
-    const newBbox = bbox(buffered)
-    const bounds = boundsFromBbox(newBbox)
-    if (!bounds) return
-    setMapBounds(bounds)
+    setMapBounds(extentToBoundsWithMargin(extent))
   }
 
   const isEditing =

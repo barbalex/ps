@@ -10,6 +10,7 @@ import { usePGlite } from '@electric-sql/pglite-react'
 import { useSetAtom } from 'jotai'
 
 import { addOperationAtom } from '../../../store.ts'
+import { flattenToGeometryCollection } from '../../../modules/repairNestedGeometries.ts'
 
 const Geoman = (geomanModule as unknown as {
   default: { initialize(): void }
@@ -92,13 +93,11 @@ export const DrawControlComponent = ({
 
       const bbox = getBbox(featureCollection!)
 
-      // Convert FeatureCollection to GeometryCollection for the PostGIS geometry column
-      const geometryCollection = {
-        type: 'GeometryCollection',
-        geometries: featureCollection!.features
-          .map((f) => f.geometry)
-          .filter(Boolean),
-      }
+      // Convert FeatureCollection to GeometryCollection for the PostGIS
+      // geometry column, flattening nested collections: the draw layer can
+      // contain the previously loaded collection as a single feature
+      const geometryCollection =
+        flattenToGeometryCollection(featureCollection!.features)
 
       // query previous geometry for the operation log
       const prevRes = await db.query(

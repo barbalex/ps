@@ -7,6 +7,10 @@
   padding: 2px 0;
 }
 
+:global(html[data-theme='dark']) .div {
+  border-color: #4a4a4a;
+}
+
 .divSized {
   width: var(--scale-width);
 }

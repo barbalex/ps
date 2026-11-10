@@ -1,0 +1,111 @@
+/* sits fixed above the page bottom, above fluent overlays; hidden on
+   print pages (they render their own layout) */
+.banner {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 1300;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 8px 16px;
+  background-color: #2e7d32;
+  color: #fff;
+}
+
+@media print {
+  .banner {
+    display: none;
+  }
+}
+
+.text {
+  flex: 1;
+  font-size: 0.9rem;
+}
+
+.actions {
+  display: flex;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+.button {
+  border: 1px solid rgba(255, 255, 255, 0.5);
+  border-radius: 6px;
+  background: transparent;
+  color: #fff;
+  padding: 6px 10px;
+  cursor: pointer;
+  white-space: nowrap;
+  font-family: inherit;
+  font-size: inherit;
+  font-weight: 600;
+}
+
+.button:hover {
+  border-color: #fff;
+}
+
+.buttonSecondary {
+  border: none;
+  border-radius: 6px;
+  background: transparent;
+  color: rgba(255, 255, 255, 0.85);
+  padding: 6px 10px;
+  cursor: pointer;
+  white-space: nowrap;
+  font-family: inherit;
+  font-size: inherit;
+}
+
+.buttonSecondary:hover {
+  color: #fff;
+}
+
+/* indeterminate bar shown while a click-triggered update is in
+   flight: signals that the click worked even though the reload may
+   still be seconds away */
+.progress {
+  position: relative;
+  overflow: hidden;
+  flex-shrink: 0;
+  width: 120px;
+  height: 4px;
+  border-radius: 2px;
+  background: rgba(255, 255, 255, 0.3);
+}
+
+.progressBar {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 40%;
+  border-radius: 2px;
+  background: #fff;
+  animation: version-check-indeterminate 1.2s ease-in-out infinite;
+}
+
+@keyframes version-check-indeterminate {
+  0% {
+    transform: translateX(-100%);
+  }
+
+  100% {
+    transform: translateX(350%);
+  }
+}
+
+/* dark mode: banner tuned for the dark theme */
+:global(html[data-theme='dark']) .banner {
+  background-color: #1d3a1e;
+}
+
+:global(html[data-theme='dark']) .button {
+  border-color: rgba(255, 255, 255, 0.4);
+}
+
+:global(html[data-theme='dark']) .button:hover {
+  border-color: rgba(255, 255, 255, 0.9);
+}

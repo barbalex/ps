@@ -44,6 +44,8 @@ dark mode not well implemented for: file upload?
 
 ---
 
+lets prevent the map from blocking the ui while loading high numbers of markers, similar to how it was done in apf2
+
 ---
 
 ---

@@ -15,6 +15,7 @@ import styles from './App.module.css'
 import { lightTheme, darkTheme } from './modules/theme.ts'
 import { markBootDone } from './modules/bootDone.ts'
 import { getMessages } from './modules/i18nMessages.ts'
+import { VersionCheck } from './components/VersionCheck/index.tsx'
 import {
   store,
   languageAtom,
@@ -107,6 +108,9 @@ export const App = () => {
       >
         <IntlSetter />
         <FluentProvider theme={isDark ? darkTheme : lightTheme}>
+          {/* version-check banner sits above the whole app, the login
+              route included: a stale bundle fails everywhere */}
+          <VersionCheck />
           <div
             id="router-container"
             className={styles.routerContainer}

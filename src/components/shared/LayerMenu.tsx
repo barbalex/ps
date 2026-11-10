@@ -4,14 +4,16 @@ import { MdLayers, MdLayersClear } from 'react-icons/md'
 import { TbZoomScan } from 'react-icons/tb'
 // import { TbMapCog } from 'react-icons/tb'
 import { useParams } from '@tanstack/react-router'
-import { bbox } from '@turf/bbox'
-import { buffer } from '@turf/buffer'
-import { featureCollection } from '@turf/helpers'
 import { useSetAtom, useAtom } from 'jotai'
 import { usePGlite, useLiveQuery } from '@electric-sql/pglite-react'
 import { useIntl } from 'react-intl'
 
-import { boundsFromBbox } from '../../modules/boundsFromBbox.ts'
+import {
+  extentSelect,
+  queryExtent,
+  extentToBoundsWithMargin,
+  type Extent,
+} from '../../modules/geoQueries.ts'
 import { createLayerPresentation } from '../../modules/createRows.ts'
 import {
   mapBoundsAtom,
@@ -29,9 +31,6 @@ type Props = {
   // accepted for compatibility but not used
   from?: string
 }
-
-// geometries from PostGIS may be plain geometries or GeometryCollections
-type GeometryWithParts = GeoJSON.Geometry & { geometries?: GeoJSON.Geometry[] }
 
 export const LayerMenu = ({ table, level, placeNamePlural }: Props) => {
   const setMapBounds = useSetAtom(mapBoundsAtom)
@@ -153,58 +152,40 @@ export const LayerMenu = ({ table, level, placeNamePlural }: Props) => {
     if (lpId && !mapLayerSorting.includes(lpId)) {
       setMapLayerSorting([...mapLayerSorting, lpId])
     }
-    // get all geometries from layer
-    // first get all places with level
-    // then get all actions/checks/observations with place_id
-    let geometries: GeometryWithParts[] = []
-    const placesResult = await db.query<{
-      place_id: string
-      geometry: GeometryWithParts
-    }>(
-      `SELECT place_id, ST_AsGeoJSON(geometry)::json as geometry FROM places WHERE subproject_id = $1 AND level = $2`,
+    // get the extent of all geometries in the layer via PostGIS
+    // first get all places with level, then all actions/checks/observations with place_id
+    const placesResult = await db.query<{ place_id: string }>(
+      `SELECT place_id FROM places WHERE subproject_id = $1 AND level = $2`,
       [subprojectId, level],
     )
     const places = placesResult?.rows ?? []
+    let extent: Extent | null = null
     if (table === 'places') {
-      geometries = places.map((place) => place.geometry)
+      extent = await queryExtent(
+        db,
+        `SELECT ${extentSelect()} FROM places WHERE subproject_id = $1 AND level = $2`,
+        [subprojectId, level],
+      )
     } else if (table === 'actions') {
-      const res = await db.query<{ action_id: string; geometry: GeometryWithParts }>(
-        `SELECT action_id, ST_AsGeoJSON(geometry)::json as geometry FROM actions WHERE place_id = ANY($1)`,
+      extent = await queryExtent(
+        db,
+        `SELECT ${extentSelect()} FROM actions WHERE place_id = ANY($1)`,
         [places.map((place) => place.place_id)],
       )
-      const actions = res?.rows ?? []
-      geometries = actions.map((action) => action.geometry)
     } else if (table === 'checks') {
-      const res = await db.query<{ check_id: string; geometry: GeometryWithParts }>(
-        `SELECT check_id, ST_AsGeoJSON(geometry)::json as geometry FROM checks WHERE place_id = ANY($1)`,
+      extent = await queryExtent(
+        db,
+        `SELECT ${extentSelect()} FROM checks WHERE place_id = ANY($1)`,
         [places.map((place) => place.place_id)],
       )
-      const checks = res?.rows ?? []
-      geometries = checks.map((check) => check.geometry)
     } else if (table === 'observations') {
-      const res = await db.query<{
-        observation_id: string
-        geometry: GeometryWithParts
-      }>(
-        `SELECT observation_id, ST_AsGeoJSON(geometry)::json as geometry FROM observations WHERE place_id = ANY($1)`,
+      extent = await queryExtent(
+        db,
+        `SELECT ${extentSelect()} FROM observations WHERE place_id = ANY($1)`,
         [places.map((place) => place.place_id)],
       )
-      const observations = res?.rows ?? []
-      geometries = observations.map((o) => o.geometry)
     }
-    // geometries are stored as GeometryCollection (PostGIS type)
-    // collect all individual geometries into a flat Feature array for bbox calculation
-    const features: GeoJSON.Feature[] = []
-    for (const geometry of geometries) {
-      if (geometry?.geometries) {
-        for (const g of geometry.geometries) {
-          features.push({ type: 'Feature', geometry: g, properties: {} })
-        }
-      } else if (geometry) {
-        features.push(geometry as unknown as GeoJSON.Feature)
-      }
-    }
-    if (!features.length) {
+    if (!extent) {
       addNotification({
         title: formatMessage(
           {
@@ -218,13 +199,7 @@ export const LayerMenu = ({ table, level, placeNamePlural }: Props) => {
       return
     }
 
-    const fC = featureCollection(features)
-    const bufferedFC = buffer(fC, 0.05)
-
-    const newBbox = bbox(bufferedFC as GeoJSON.FeatureCollection)
-    const newBounds = boundsFromBbox(newBbox)
-
-    setMapBounds(newBounds)
+    setMapBounds(extentToBoundsWithMargin(extent))
   }
 
   // TODO: implement onClickMapSettings

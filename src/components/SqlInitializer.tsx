@@ -496,6 +496,17 @@ export const SqlInitializer = () => {
             )
           }
 
+          // flatten nested GeometryCollections created by older versions of
+          // the draw control — ST_AsGeoJSON fails on them
+          try {
+            const { repairNestedGeometries } = await import(
+              `../modules/repairNestedGeometries.ts`
+            )
+            await repairNestedGeometries(db)
+          } catch (error) {
+            console.error('Error repairing nested geometries:', error)
+          }
+
           bootTrace('SqlInitializer done (existing db)')
           setSqlInitializing(false)
           return

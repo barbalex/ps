@@ -10,6 +10,10 @@
   border: none;
   padding: 0;
   font-size: 0.75rem;
+  /* without an explicit background/color the browser paints inputs black
+     with white text under color-scheme: dark */
+  background: transparent;
+  color: inherit;
   /* Need to set manual width for non-supporting browsers */
   /* only supported on chromium-based browsers, June 2024 */
   /* only able to detect support in css, so using inputs.css for this */

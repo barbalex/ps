@@ -3,9 +3,6 @@ import { useIntl } from 'react-intl'
 import { TbZoomScan } from 'react-icons/tb'
 import * as fluentUiReactComponents from '@fluentui/react-components'
 const { Button } = fluentUiReactComponents
-import { bbox } from '@turf/bbox'
-import { buffer } from '@turf/buffer'
-import type { AllGeoJSON } from '@turf/helpers'
 import { useAtom, useSetAtom } from 'jotai'
 import { usePGlite, useLiveQuery } from '@electric-sql/pglite-react'
 import { useRef, useEffect } from 'react'
@@ -19,7 +16,11 @@ import {
 } from '../../modules/createRows.ts'
 import { FormHeader } from '../../components/FormHeader/index.tsx'
 import { HistoryToggleButton } from '../../components/shared/HistoryCompare/HistoryToggleButton.tsx'
-import { boundsFromBbox } from '../../modules/boundsFromBbox.ts'
+import {
+  extentSelect,
+  queryExtent,
+  extentToBoundsWithMargin,
+} from '../../modules/geoQueries.ts'
 import {
   tabsAtom,
   mapBoundsAtom,
@@ -27,7 +28,6 @@ import {
   addOperationAtom,
   mapLayerSortingAtom,
 } from '../../store.ts'
-import type Checks from '../../models/public/Checks.ts'
 
 export const Header = ({
   autoFocusRef,
@@ -195,17 +195,12 @@ export const Header = ({
     })
 
   const onClickZoomTo = async () => {
-    const res = await db.query(
-      `SELECT *, ST_AsGeoJSON(geometry)::json as geometry FROM checks WHERE check_id = $1`,
+    const extent = await queryExtent(
+      db,
+      `SELECT ${extentSelect()} FROM checks WHERE check_id = $1`,
       [checkId],
     )
-    const check = res?.rows?.[0] as Checks | undefined
-    const geometry = check?.geometry
-    if (
-      !geometry ||
-      (geometry as { geometries?: unknown[] }).geometries?.length === 0
-    )
-      return alertNoGeometry()
+    if (!extent) return alertNoGeometry()
 
     // 1. show map if not happening
     if (!tabs.includes('map')) setTabs([...tabs, 'map'])
@@ -254,11 +249,7 @@ export const Header = ({
     }
 
     // 3. zoom to check
-    const buffered = buffer(geometry as AllGeoJSON, 0.05)
-    const newBbox = bbox(buffered!)
-    const bounds = boundsFromBbox(newBbox)
-    if (!bounds) return alertNoGeometry()
-    setMapBounds(bounds)
+    setMapBounds(extentToBoundsWithMargin(extent))
   }
 
   return (
