@@ -120,7 +120,14 @@ export const MeasureButton = () => {
         radius: 0,
         interactive: false,
       })
-        .bindTooltip('', { permanent: true, direction: 'top', opacity: 1 })
+        // the default 'top' offset pins the tooltip right at the pointer,
+        // hiding the spot being clicked — lift it clear of the crosshair
+        .bindTooltip('', {
+          permanent: true,
+          direction: 'top',
+          opacity: 1,
+          offset: [0, -15],
+        })
         .addTo(layerGroupRef.current)
     }
   }, [map])
