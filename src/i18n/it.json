@@ -1179,7 +1179,7 @@
   "bPlaceHistoryUnavailable": "La cronologia è disponibile solo online.",
   "bPlaceNameLabel": "Nome",
   "bPlaceNoHistory": "Nessuna versione storica trovata.",
-  "bPlaceNoHistoryBody": "Non ci sono ancora modifiche salvate per questo luogo.",
+  "bPlaceNoHistoryBody": "La cronologia appare dopo la prima modifica salvata.",
   "bPlaceNoHistoryTitle": "Nessuna cronologia disponibile",
   "bPlaceZoomTo": "zoom",
   "bSubproject": "Sottoprogetto",

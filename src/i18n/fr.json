@@ -1174,7 +1174,7 @@
   "bPlaceHistoryUnavailable": "L'historique n'est disponible qu'en ligne.",
   "bPlaceNameLabel": "Nom",
   "bPlaceNoHistory": "Aucune version historique trouvée.",
-  "bPlaceNoHistoryBody": "Il n'y a pas encore de modifications enregistrées pour ce lieu.",
+  "bPlaceNoHistoryBody": "L'historique apparaît après la première modification enregistrée.",
   "bPlaceNoHistoryTitle": "Aucun historique disponible",
   "bPlaceZoomTo": "zoomer",
   "bSubproject": "Sous-projet",

@@ -1191,7 +1191,7 @@
   "bPlaceHistoryUnavailable": "History is only available online.",
   "bPlaceNameLabel": "Name",
   "bPlaceNoHistory": "No historical versions found.",
-  "bPlaceNoHistoryBody": "There are no saved changes for this place yet.",
+  "bPlaceNoHistoryBody": "History appears after the first saved change.",
   "bPlaceNoHistoryTitle": "No history available",
   "bPlaceZoomTo": "zoom to",
   "bSubproject": "Subproject",

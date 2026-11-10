@@ -4,6 +4,7 @@ import * as fluentUiReactComponents from '@fluentui/react-components'
 import { useAtomValue, useSetAtom } from 'jotai'
 import { useIntl } from 'react-intl'
 import { useLiveQuery } from '@electric-sql/pglite-react'
+import { useQuery } from '@tanstack/react-query'
 
 import {
   addNotificationAtom,
@@ -14,7 +15,10 @@ import {
 const { Button } = fluentUiReactComponents
 // Tooltip's types require a relationship prop; this usage passes none at runtime
 const Tooltip = fluentUiReactComponents.Tooltip as React.ComponentType<
-  Omit<React.ComponentProps<typeof fluentUiReactComponents.Tooltip>, 'relationship'>
+  Omit<
+    React.ComponentProps<typeof fluentUiReactComponents.Tooltip>,
+    'relationship'
+  >
 >
 
 type HistoryToggleButtonProps = {
@@ -48,10 +52,37 @@ export const HistoryToggleButton = ({
     [projectId],
   )
   const historiesEnabled =
-    projectId == null
-      ? true
-      : projectRes?.rows?.[0]?.enable_histories === true
+    projectId == null ? true : projectRes?.rows?.[0]?.enable_histories === true
   const isHistoryRoute = location.pathname.startsWith(`${historiesPath}/`)
+
+  const historyExistsQuery = useQuery({
+    queryKey: ['historyExists', historyTable, rowId],
+    queryFn: async () => {
+      if (!postgrestClient || !rowId) return false
+      const { data, error } = await postgrestClient
+        .from(historyTable)
+        .select('updated_at')
+        .eq(rowIdField, rowId)
+        .order('updated_at', { ascending: false })
+        .limit(1)
+      if (error) throw new Error(error.message)
+      return (data?.length ?? 0) > 0
+    },
+    enabled:
+      online &&
+      historiesEnabled &&
+      !!postgrestClient &&
+      !!rowId &&
+      !isHistoryRoute,
+    // history rows are append-only: once one exists the button can stay
+    // enabled, so poll only until the first one appears
+    refetchInterval: (query) => (query.state.data ? false : 2_000),
+  })
+
+  // unsaved rows (no rowId) can not have history either; while the check is
+  // loading or failed the button stays clickable and onClickHistory notifies
+  const noHistoryYet =
+    !isHistoryRoute && (!rowId || historyExistsQuery.data === false)
 
   const onClickHistory = async () => {
     if (isHistoryRoute) {
@@ -94,7 +125,7 @@ export const HistoryToggleButton = ({
         body: formatMessage({
           id: 'bPlaceNoHistoryBody',
           defaultMessage:
-            'Für diesen Ort gibt es noch keine gespeicherten Änderungen.',
+            'Die Geschichte erscheint nach der ersten gespeicherten Änderung.',
         }),
         intent: 'warning',
       })
@@ -109,14 +140,37 @@ export const HistoryToggleButton = ({
 
   if (!online || !historiesEnabled || !postgrestClient) return null
 
-  return (
-    <Tooltip
-      content={formatMessage({
+  const historyButton = (
+    <Button
+      size="medium"
+      icon={<TbHistory />}
+      disabled={noHistoryYet}
+      onClick={onClickHistory}
+    />
+  )
+
+  const tooltipContent =
+    noHistoryYet ?
+      `${formatMessage({
+        id: 'bPlaceNoHistoryTitle',
+        defaultMessage: 'Keine Geschichte vorhanden',
+      })}: ${formatMessage({
+        id: 'bPlaceNoHistoryBody',
+        defaultMessage:
+          'Die Geschichte erscheint nach der ersten gespeicherten Änderung.',
+      })}`
+    : formatMessage({
         id: 'bPlaceHistoryToggleShort',
         defaultMessage: 'Geschichte',
-      })}
-    >
-      <Button size="medium" icon={<TbHistory />} onClick={onClickHistory} />
+      })
+
+  return (
+    <Tooltip content={tooltipContent}>
+      {/* disabled buttons swallow pointer events, so the tooltip needs
+          a wrapper to still open on hover */}
+      {noHistoryYet ?
+        <span>{historyButton}</span>
+      : historyButton}
     </Tooltip>
   )
 }

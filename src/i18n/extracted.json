@@ -1287,7 +1287,7 @@
     "defaultMessage": "Keine historischen Versionen gefunden."
   },
   "bPlaceNoHistoryBody": {
-    "defaultMessage": "Für diesen Ort gibt es noch keine gespeicherten Änderungen."
+    "defaultMessage": "Die Geschichte erscheint nach der ersten gespeicherten Änderung."
   },
   "bPlaceNoHistoryTitle": {
     "defaultMessage": "Keine Geschichte vorhanden"
