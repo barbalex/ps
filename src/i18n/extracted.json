@@ -2045,6 +2045,33 @@
   "mRw0sX": {
     "defaultMessage": "und {count} weitere Zeilen..."
   },
+  "mapExportPng": {
+    "defaultMessage": "Karte als PNG speichern"
+  },
+  "mapExportPngError": {
+    "defaultMessage": "Karte konnte nicht gespeichert werden"
+  },
+  "mapMeasure": {
+    "defaultMessage": "Distanz und Fläche messen"
+  },
+  "mapMeasureFinishHint": {
+    "defaultMessage": "Doppelklick beendet die Messung"
+  },
+  "mapMeasureRemove": {
+    "defaultMessage": "Messung entfernen"
+  },
+  "mapMeasureStartHint": {
+    "defaultMessage": "Klicken, um die Messung zu beginnen"
+  },
+  "mapMeasureStop": {
+    "defaultMessage": "Messung beenden"
+  },
+  "mapPrint": {
+    "defaultMessage": "Karte drucken"
+  },
+  "mapPrintPopupBlocked": {
+    "defaultMessage": "Das Druckfenster wurde vom Browser blockiert. Bitte Popups für diese Seite erlauben."
+  },
   "mapZoomIn": {
     "defaultMessage": "Heranzoomen"
   },
