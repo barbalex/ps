@@ -61,6 +61,7 @@
     "@fluentui/react-timepicker-compat": "0.4.42",
     "@geoman-io/leaflet-geoman-free": "file:vendor/leaflet-geoman-free-leaflet2-661516a-patched.tgz",
     "@puckeditor/core": "0.24.0",
+    "@react-leaflet/core": "3.0.0",
     "@supabase/postgrest-js": "2.118.0",
     "@tanstack/react-query": "5.105.0",
     "@tanstack/react-router": "1.170.46",

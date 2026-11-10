@@ -1,10 +1,12 @@
 import { useState, useRef } from 'react'
-import { GeoJSON, useMapEvent, useMapEvents, useMap } from 'react-leaflet'
+import { useMapEvent, useMapEvents, useMap } from 'react-leaflet'
 import * as L from 'leaflet'
 import * as ReactDOMServer from 'react-dom/server'
 import * as icons from 'react-icons/md'
 import { useAtomValue, useSetAtom } from 'jotai'
-import type { Feature, FeatureCollection, GeoJsonObject } from 'geojson'
+import type { Feature, FeatureCollection } from 'geojson'
+
+import { ProgressiveGeoJSON } from '../ProgressiveGeoJSON.tsx'
 
 import { vectorLayerDisplayToProperties } from '../../../../modules/vectorLayerDisplayToProperties.ts'
 import { useVectorLayerLabel } from '../../../../modules/vectorLayerLabel.ts'
@@ -147,9 +149,9 @@ export const TableLayer = ({
 
   return (
     <ErrorBoundary layer={layer}>
-      <GeoJSON
-        key={`${dataKey}/${JSON.stringify(firstDisplay)}/${activeId ?? ''}`}
-        data={data as unknown as GeoJsonObject}
+      <ProgressiveGeoJSON
+        resetKey={`${dataKey}/${JSON.stringify(firstDisplay)}/${activeId ?? ''}`}
+        data={data}
         // style by properties, use a function that receives the feature: https://stackoverflow.com/a/66106512/712005
         style={(feature) => {
           // need to choose display to pass in

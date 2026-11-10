@@ -2,7 +2,7 @@
  * Not sure if this is ever used - data should always be downloaded
  */
 import { useEffect, useState, useCallback, useRef } from 'react'
-import { GeoJSON, useMap, useMapEvents } from 'react-leaflet'
+import { useMap, useMapEvents } from 'react-leaflet'
 import * as L from 'leaflet'
 import XMLViewer from 'react-xml-viewer'
 import { MdClose } from 'react-icons/md'
@@ -12,6 +12,8 @@ import proj4 from 'proj4'
 import reproject from 'reproject'
 import { usePGlite } from '@electric-sql/pglite-react'
 import { useSetAtom } from 'jotai'
+
+import { ProgressiveGeoJSON } from '../ProgressiveGeoJSON.tsx'
 
 import type Crs from '../../../../models/public/Crs.ts'
 import type LayerPresentations from '../../../../models/public/LayerPresentations.ts'
@@ -309,8 +311,8 @@ export const WFS = ({ layer, layerPresentation }: Props) => {
 
   return (
     <>
-      <GeoJSON
-        key={`${lastBbox ?? ''}/${data?.features?.length ?? 0}/${JSON.stringify(display)}/${JSON.stringify(
+      <ProgressiveGeoJSON
+        resetKey={`${lastBbox ?? ''}/${data?.features?.length ?? 0}/${JSON.stringify(display)}/${JSON.stringify(
           layerPresentation,
         )}`}
         data={data}
