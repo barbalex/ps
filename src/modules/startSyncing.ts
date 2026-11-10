@@ -6,6 +6,7 @@ import type {
 
 import {
   store,
+  addNotificationAtom,
   initialSyncingAtom,
   onlineAtom,
   pgliteDbAtom,
@@ -143,6 +144,7 @@ export const startSyncing = async (userId: string) => {
       )
     }
 
+    let notifiedUnexpectedStreamError = false
     const onError = (error: unknown) => {
       const errorStr = error?.toString() || ''
       const is409 = errorStr.includes('409') || errorStr.includes('Conflict')
@@ -172,7 +174,18 @@ export const startSyncing = async (userId: string) => {
       }
 
       console.error('❌ Syncer error:', error)
-      //  Don't set syncingAtom to false - let timeout or onInitialSync handle it
+      //  Don't set syncingAtom to false - let timeout or onInitialSync handle it.
+      // Anything else silently stalls the stream — no indicator shows a stall,
+      // so tell the user once per sync session to reload
+      if (!notifiedUnexpectedStreamError) {
+        notifiedUnexpectedStreamError = true
+        store.set(addNotificationAtom, {
+          intent: 'error',
+          duration: 30000,
+          title: 'Synchronisation error',
+          body: 'Live synchronisation stopped with an unexpected error. Your changes are queued locally — reload the page to resume syncing.',
+        })
+      }
     }
     // must-refetch control messages need no handler here: pglite-sync clears
     // the shape's table and re-applies the new snapshot in one transaction

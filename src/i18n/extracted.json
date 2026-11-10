@@ -2117,6 +2117,9 @@
   "onlineStatusOfflineQueued": {
     "defaultMessage": "Du bist offline. {count} Operationen warten auf Synchronisation"
   },
+  "onlineStatusOnlineQueued": {
+    "defaultMessage": "Du bist online. {count} Operationen warten auf Synchronisation"
+  },
   "onlineStatusOnline": {
     "defaultMessage": "Du bist online"
   },

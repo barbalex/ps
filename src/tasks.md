@@ -48,11 +48,19 @@ lets prevent the map from blocking the ui while loading high numbers of markers,
 
 ---
 
----
+lets add the measure tool implemented in apf2
 
 ---
 
+lets add the export png tool used in apf2
+
 ---
+
+lets add a print to pdf tool as used in apf2
+
+---
+
+on both apf2 and ps, the boot phase (apf2: ~1 s blank page + module graph; ps: ~8 s SQL init in the e2e) is now the dominant remaining cost of deep-link loads
 
 ---
 
