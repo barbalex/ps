@@ -1259,6 +1259,15 @@
   "bHistProjSetting": {
     "defaultMessage": "Geschichte vergleichen"
   },
+  "bMapInfoEditGeometry": {
+    "defaultMessage": "Geometrie in der Karte bearbeiten"
+  },
+  "bMapInfoNavigateTo": {
+    "defaultMessage": "Zum Formular navigieren"
+  },
+  "bMapInfoStopEditGeometry": {
+    "defaultMessage": "Bearbeiten der Geometrie beenden"
+  },
   "bMapInfoZoomTo": {
     "defaultMessage": "Zum Objekt in Karte zoomen"
   },

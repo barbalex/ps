@@ -204,7 +204,17 @@ export const Layer = ({ layerData }: Props) => {
         size="small"
         icon={isEditing ? <MdEditOff /> : <MdEdit />}
         onClick={onEdit}
-        title={isEditing ? 'Stop editing geometry' : 'Edit geometry on map'}
+        title={
+          isEditing ?
+            formatMessage({
+              id: 'bMapInfoStopEditGeometry',
+              defaultMessage: 'Bearbeiten der Geometrie beenden',
+            })
+          : formatMessage({
+              id: 'bMapInfoEditGeometry',
+              defaultMessage: 'Geometrie in der Karte bearbeiten',
+            })
+        }
         appearance={isEditing ? 'primary' : 'secondary'}
       />
     : null
@@ -237,7 +247,10 @@ export const Layer = ({ layerData }: Props) => {
           size="small"
           icon={<MdOpenInNew />}
           onClick={onNavigate}
-          title="Navigate to"
+          title={formatMessage({
+            id: 'bMapInfoNavigateTo',
+            defaultMessage: 'Zum Formular navigieren',
+          })}
         />
         {zoomButton}
         {editButton}
