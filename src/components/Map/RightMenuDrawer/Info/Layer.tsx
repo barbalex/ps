@@ -3,8 +3,9 @@ import type { ReactNode } from 'react'
 import Linkify from 'linkify-react'
 import { useNavigate } from '@tanstack/react-router'
 import { useAtom, useSetAtom } from 'jotai'
-import { usePGlite } from '@electric-sql/pglite-react'
+import { usePGlite, useLiveQuery } from '@electric-sql/pglite-react'
 import * as fluentUiReactComponents from '@fluentui/react-components'
+import { useIntl } from 'react-intl'
 import { MdOpenInNew, MdEdit, MdEditOff } from 'react-icons/md'
 import { TbZoomScan } from 'react-icons/tb'
 
@@ -53,6 +54,7 @@ export const Layer = ({ layerData }: Props) => {
   const titleToShow = featureLabel || label
 
   const db = usePGlite()
+  const { formatMessage } = useIntl()
   const navigate = useNavigate()
   const setMapBounds = useSetAtom(mapBoundsAtom)
   const [tabs, setTabs] = useAtom(tabsAtom)
@@ -95,8 +97,7 @@ export const Layer = ({ layerData }: Props) => {
         [ownPlaceId],
       )
       const place = placeRes?.rows?.[0] as
-        | { subproject_id: string; parent_id: string | null }
-        | undefined
+        { subproject_id: string; parent_id: string | null } | undefined
       if (!place) return
       if (ownTable === 'check') {
         if (place.parent_id) {
@@ -148,10 +149,23 @@ export const Layer = ({ layerData }: Props) => {
     }
   }
 
+  const tableName =
+    ownTable === 'place' ? 'places'
+    : ownTable === 'check' ? 'checks'
+    : 'actions'
+
+  // mirrors queryExtent returning null: no geometry or an empty one
+  // (e.g. GeometryCollection without parts) can not be zoomed to
+  const geometryRes = useLiveQuery(
+    ownTable && ownId ?
+      `SELECT (geometry IS NOT NULL AND NOT ST_IsEmpty(geometry)) AS has_geometry FROM ${tableName} WHERE ${ownTable}_id = $1`
+    : `SELECT 1 WHERE false`,
+    ownTable && ownId ? [ownId] : [],
+  )
+  const hasGeometry = geometryRes?.rows?.[0]?.has_geometry === true
+
   const onZoomTo = async () => {
     if (!ownTable || !ownId) return
-    const tableName =
-      ownTable === 'place' ? 'places' : ownTable === 'check' ? 'checks' : 'actions'
     const extent = await queryExtent(
       db,
       `SELECT ${extentSelect()} FROM ${tableName} WHERE ${ownTable}_id = $1`,
@@ -184,37 +198,57 @@ export const Layer = ({ layerData }: Props) => {
 
   // console.log('Map Info Drawer Layer', { label, properties, html, json, text })
 
-  const editButton = ownTable ? (
+  const editButton =
+    ownTable ?
+      <Button
+        size="small"
+        icon={isEditing ? <MdEditOff /> : <MdEdit />}
+        onClick={onEdit}
+        title={isEditing ? 'Stop editing geometry' : 'Edit geometry on map'}
+        appearance={isEditing ? 'primary' : 'secondary'}
+      />
+    : null
+
+  const zoomButton = (
     <Button
       size="small"
-      icon={isEditing ? <MdEditOff /> : <MdEdit />}
-      onClick={onEdit}
-      title={isEditing ? 'Stop editing geometry' : 'Edit geometry on map'}
-      appearance={isEditing ? 'primary' : 'secondary'}
+      icon={<TbZoomScan />}
+      onClick={onZoomTo}
+      disabled={!hasGeometry}
+      title={
+        hasGeometry ?
+          formatMessage({
+            id: 'bMapInfoZoomTo',
+            defaultMessage: 'Zum Objekt in Karte zoomen',
+          })
+        : formatMessage({
+            id: 'bMapInfoZoomToNoGeometry',
+            defaultMessage:
+              'Um auf ein Objekt zu zoomen, erstelle zuerst die Geometrie',
+          })
+      }
     />
-  ) : null
+  )
+
+  const buttons =
+    ownTable ?
+      <div className={styles.buttons}>
+        <Button
+          size="small"
+          icon={<MdOpenInNew />}
+          onClick={onNavigate}
+          title="Navigate to"
+        />
+        {zoomButton}
+        {editButton}
+      </div>
+    : null
 
   if (text) {
     return (
       <div className={styles.container}>
         <div className={styles.title}>{titleToShow}</div>
-        {ownTable && (
-          <div className={styles.buttons}>
-            <Button
-              size="small"
-              icon={<MdOpenInNew />}
-              onClick={onNavigate}
-              title="Navigate to"
-            />
-            <Button
-              size="small"
-              icon={<TbZoomScan />}
-              onClick={onZoomTo}
-              title="Zoom to on map"
-            />
-            {editButton}
-          </div>
-        )}
+        {buttons}
         <div className={styles.text}>{text}</div>
       </div>
     )
@@ -224,23 +258,7 @@ export const Layer = ({ layerData }: Props) => {
     return (
       <div className={styles.container}>
         <div className={styles.title}>{titleToShow}</div>
-        {ownTable && (
-          <div className={styles.buttons}>
-            <Button
-              size="small"
-              icon={<MdOpenInNew />}
-              onClick={onNavigate}
-              title="Navigate to"
-            />
-            <Button
-              size="small"
-              icon={<TbZoomScan />}
-              onClick={onZoomTo}
-              title="Zoom to on map"
-            />
-            {editButton}
-          </div>
-        )}
+        {buttons}
         <pre className={styles.text}>{JSON.stringify(json, null, 2)}</pre>
       </div>
     )
@@ -250,23 +268,7 @@ export const Layer = ({ layerData }: Props) => {
     return (
       <div className={styles.container}>
         <div className={styles.title}>{titleToShow}</div>
-        {ownTable && (
-          <div className={styles.buttons}>
-            <Button
-              size="small"
-              icon={<MdOpenInNew />}
-              onClick={onNavigate}
-              title="Navigate to"
-            />
-            <Button
-              size="small"
-              icon={<TbZoomScan />}
-              onClick={onZoomTo}
-              title="Zoom to on map"
-            />
-            {editButton}
-          </div>
-        )}
+        {buttons}
         <div dangerouslySetInnerHTML={{ __html: html }} />
       </div>
     )
@@ -275,23 +277,7 @@ export const Layer = ({ layerData }: Props) => {
   return (
     <div className={styles.container}>
       <div className={styles.title}>{titleToShow}</div>
-      {ownTable && (
-        <div className={styles.buttons}>
-          <Button
-            size="small"
-            icon={<MdOpenInNew />}
-            onClick={onNavigate}
-            title="Navigate to"
-          />
-          <Button
-            size="small"
-            icon={<TbZoomScan />}
-            onClick={onZoomTo}
-            title="Zoom to on map"
-          />
-          {editButton}
-        </div>
-      )}
+      {buttons}
       <div className={styles.propertyList}>
         {properties.map((p, i) => {
           const key = p[0]
@@ -300,11 +286,15 @@ export const Layer = ({ layerData }: Props) => {
 
           return (
             <Fragment key={`${i}/${key}`}>
-              <div className={`${styles.label}${rowClassName ? ` ${rowClassName}` : ''}`}>
+              <div
+                className={`${styles.label}${rowClassName ? ` ${rowClassName}` : ''}`}
+              >
                 {key}
               </div>
               <Linkify options={{ target: '_blank' }}>
-                <div className={`${styles.text}${rowClassName ? ` ${rowClassName}` : ''}`}>
+                <div
+                  className={`${styles.text}${rowClassName ? ` ${rowClassName}` : ''}`}
+                >
                   {value as ReactNode}
                 </div>
               </Linkify>

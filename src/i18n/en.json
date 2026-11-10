@@ -690,6 +690,8 @@
   "bDCGHI": "To zoom to {place}, create its geometry first",
   "fNN4oO": "Zoom to check in map",
   "fOO5pP": "To zoom to a check, create its geometry first",
+  "bMapInfoZoomTo": "Zoom to object in map",
+  "bMapInfoZoomToNoGeometry": "To zoom to an object, create its geometry first",
   "nL4MnO": "WFS",
   "oP5QrS": "Upload",
   "pT6UvW": "Own Table",

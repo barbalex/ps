@@ -1259,6 +1259,12 @@
   "bHistProjSetting": {
     "defaultMessage": "Geschichte vergleichen"
   },
+  "bMapInfoZoomTo": {
+    "defaultMessage": "Zum Objekt in Karte zoomen"
+  },
+  "bMapInfoZoomToNoGeometry": {
+    "defaultMessage": "Um auf ein Objekt zu zoomen, erstelle zuerst die Geometrie"
+  },
   "bPlaceCurrentVersion": {
     "defaultMessage": "Aktuelle Version"
   },
@@ -2117,11 +2123,11 @@
   "onlineStatusOfflineQueued": {
     "defaultMessage": "Du bist offline. {count} Operationen warten auf Synchronisation"
   },
-  "onlineStatusOnlineQueued": {
-    "defaultMessage": "Du bist online. {count} Operationen warten auf Synchronisation"
-  },
   "onlineStatusOnline": {
     "defaultMessage": "Du bist online"
+  },
+  "onlineStatusOnlineQueued": {
+    "defaultMessage": "Du bist online. {count} Operationen warten auf Synchronisation"
   },
   "ownerRoleNotEditable": {
     "defaultMessage": "Diese Rolle wird automatisch gesetzt und kann nicht bearbeitet werden."
