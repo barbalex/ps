@@ -12,6 +12,8 @@ import { useIntl } from 'react-intl'
 import type { LatLng, LeafletMouseEvent } from 'leaflet'
 import type { Feature, LineString, Polygon as PolygonGeometry } from 'geojson'
 
+import styles from './index.module.css'
+
 // Ported from apf2, where it was the first-party replacement for
 // leaflet-measure (unmaintained since 2018, Leaflet-1-only). Measures
 // distances and — with three or more points — the enclosed area, like the
@@ -326,6 +328,7 @@ export const MeasureButton = () => {
       title={label}
       icon={<MdStraighten />}
       size="large"
+      className={styles.toolbarButton}
       // like apf2: the icon signals the active measuring mode by color
       // (ToolbarToggleButton's checked state is owned by the enclosing
       // Toolbar, so it cannot reflect the state this component controls)
