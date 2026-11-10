@@ -53,7 +53,15 @@ lets add the measure, export png and print to pdf tools implemented in apf2
 
 ---
 
+when no history is (yet) available: deactivate the history button and on hover, explain (translated)
+
 ---
+
+same for 'zoom to in map' button
+
+---
+
+history view: labels are not well enough visible in dark mode
 
 ---
 
