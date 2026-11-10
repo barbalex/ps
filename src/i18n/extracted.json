@@ -635,9 +635,6 @@
   "Yz9AbC": {
     "defaultMessage": "Version"
   },
-  "Z8jucQ": {
-    "defaultMessage": "Bericht"
-  },
   "ZCwpER": {
     "defaultMessage": "Kontrolle"
   },
@@ -1228,9 +1225,6 @@
   },
   "bEpPuU": {
     "defaultMessage": "Relevant für Berichte"
-  },
-  "bEtTyY": {
-    "defaultMessage": "Einstellungen"
   },
   "bEvVwW": {
     "defaultMessage": "{place}-Kontroll-Taxa"
@@ -2177,6 +2171,30 @@
   "passkeyDialogTitle": {
     "defaultMessage": "Passkey hinzufügen"
   },
+  "pdExportDone": {
+    "defaultMessage": "{count} Zeilen aus {tables} Tabellen exportiert (die lokal synchronisierten Daten)."
+  },
+  "pdExportError": {
+    "defaultMessage": "Export fehlgeschlagen"
+  },
+  "pdExportTitle": {
+    "defaultMessage": "In SQL-Dumpdatei exportieren"
+  },
+  "pdImportDesc": {
+    "defaultMessage": "Die Datei muss ein mit dieser App exportierter Projekt-Dump sein (.sql). Das Projekt wird mit seinen ursprünglichen IDs auf den Server geladen und dem gewählten Konto zugeordnet. Zugriffsrechte werden nicht übernommen: Sie werden Eigentümer:in."
+  },
+  "pdImportHint": {
+    "defaultMessage": "Ein Projekt mit derselben ID darf noch nicht existieren. Der Import benötigt eine Verbindung zum Server."
+  },
+  "pdImportTitle": {
+    "defaultMessage": "Aus SQL-Dumpdatei importieren"
+  },
+  "pdInterruptedBody": {
+    "defaultMessage": "Der Import von \"{name}\" wurde durch das Schliessen oder Neuladen der App abgebrochen. Das unvollständige Projekt wurde wieder entfernt — bitte die Dumpdatei erneut importieren."
+  },
+  "pdInterruptedTitle": {
+    "defaultMessage": "Import unterbrochen"
+  },
   "pfBGqS": {
     "defaultMessage": "Feldtauglich"
   },
@@ -2648,6 +2666,12 @@
   "syncInBackgroundTitle": {
     "defaultMessage": "Synchronisiere im Hintergrund"
   },
+  "syncScopeReducedBody": {
+    "defaultMessage": "Daten, auf die Sie keinen Zugriff mehr haben, wurden lokal entfernt."
+  },
+  "syncScopeReducedTitle": {
+    "defaultMessage": "Zugriff geändert"
+  },
   "syncServerMsg": {
     "defaultMessage": "Synchronisiere mit Server"
   },
@@ -2698,18 +2722,6 @@
   },
   "themeModeSystem": {
     "defaultMessage": "Darstellung: wie System"
-  },
-  "treeLayerNodeLabel": {
-    "defaultMessage": "Layer"
-  },
-  "treeTaxonomyNodeLabel": {
-    "defaultMessage": "Taxonomie"
-  },
-  "treeWfsServiceNodeLabel": {
-    "defaultMessage": "WFS-Dienst"
-  },
-  "treeWmsServiceNodeLabel": {
-    "defaultMessage": "WMS-Dienst"
   },
   "twoFactorBackupCodesCopied": {
     "defaultMessage": "Backup-Codes wurden in die Zwischenablage kopiert."
@@ -2884,6 +2896,18 @@
   },
   "vectorLayer.section.label.description": {
     "defaultMessage": "Die Bezeichnung der Ebene in allen Sprachen. Fehlt eine Sprache, wird Deutsch verwendet."
+  },
+  "versionCheckBanner": {
+    "defaultMessage": "Eine neue Version ({availableVersion}) von Arten fördern ist verfügbar. Die laufende Version ({appVersion}) ist veraltet und kann Fehler verursachen."
+  },
+  "versionCheckLater": {
+    "defaultMessage": "später"
+  },
+  "versionCheckUpdateNow": {
+    "defaultMessage": "App aktualisieren"
+  },
+  "versionCheckUpdating": {
+    "defaultMessage": "App wird aktualisiert …"
   },
   "vldsInVL": {
     "defaultMessage": "Vektor-Ebene-Anzeigen in Vektor-Ebene anzeigen"

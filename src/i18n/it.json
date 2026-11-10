@@ -1270,4 +1270,8 @@
   "pdImportInvalid": "Il file non è un dump di progetto di questa app.",
   "pdImportExists": "Il progetto \"{name}\" esiste già (localmente o sul server). Eliminarlo prima e attendere che l'eliminazione sia sincronizzata.",
   "pdImportOffline": "L'importazione richiede una connessione al server."
-}
+,
+  "versionCheckBanner": "Una nuova versione ({availableVersion}) di Arten fördern è disponibile. La versione in uso ({appVersion}) è obsoleta e può causare errori.",
+  "versionCheckUpdateNow": "Aggiorna l'app",
+  "versionCheckLater": "più tardi",
+  "versionCheckUpdating": "Aggiornamento dell'app …"}

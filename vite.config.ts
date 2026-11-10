@@ -1,3 +1,4 @@
+import { readFileSync } from 'node:fs'
 import { defineConfig } from 'vite'
 import react, { reactCompilerPreset } from '@vitejs/plugin-react'
 import { VitePWA } from 'vite-plugin-pwa'
@@ -5,6 +6,8 @@ import svgr from 'vite-plugin-svgr'
 import formatjs from '@formatjs/vite-plugin'
 import { tanstackRouter } from '@tanstack/router-plugin/vite'
 import babel from '@rolldown/plugin-babel'
+
+const pkg = JSON.parse(readFileSync('./package.json', 'utf8'))
 
 // https://vitejs.dev/config/
 export default defineConfig({
@@ -37,6 +40,25 @@ export default defineConfig({
       ast: true,
     }),
     svgr(),
+    // the version-check banner (src/components/VersionCheck) fetches
+    // /version.json to compare the deployed version against the running
+    // bundle. The file must never be cached — neither by the service
+    // worker (globIgnores in the workbox options below) nor by Netlify
+    // (headers in netlify.toml).
+    {
+      name: 'emit-version-json',
+      apply: 'build',
+      generateBundle() {
+        this.emitFile({
+          type: 'asset',
+          fileName: 'version.json',
+          source: JSON.stringify({
+            version: pkg.version,
+            versionDate: pkg.versionDate,
+          }),
+        })
+      },
+    },
     VitePWA({
       workbox: {
         sourcemap: true,
@@ -45,6 +67,9 @@ export default defineConfig({
         globPatterns: [
           '**/*.{js,jsx,ts,tsx,css,html,ico,png,jpg,svg,webp,avif,json,woff2,woff}',
         ],
+        // version.json must always come from the network (see
+        // emit-version-json above)
+        globIgnores: ['version.json'],
         maximumFileSizeToCacheInBytes: 1000000000,
       },
       registerType: 'autoUpdate',

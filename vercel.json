@@ -6,5 +6,16 @@
       "source": "/(.*)",
       "destination": "/index.html"
     }
+  ],
+  "headers": [
+    {
+      "source": "/version.json",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "no-cache"
+        }
+      ]
+    }
   ]
 }
