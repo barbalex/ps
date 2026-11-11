@@ -56,8 +56,11 @@ dark mode not well implemented for: file upload?
 
 first: finish table_views:
 
+- View form: where is the table choosen? Is this only for checks? Should also be possible for project, subpopulation, places, actions...
+- View form: Label rows: use the label tool as for observations?
+
 - create the ones for 'Art Idealbiotop' and "Biotop" Feldgruppe
-- how about how to design where to render the field view?
+- how about how to design where to render the field view? Aha: Sort value
 
 ---
 
