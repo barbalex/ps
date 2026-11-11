@@ -60,8 +60,20 @@ export const SqlInitializer = () => {
         }
 
         // this is probably not needed
-        if (projectsTableExists) {
-          try {
+          if (projectsTableExists) {
+            // the filtered_views -> table_views rename (2026-11): heal local
+            // databases created before the schema caught up. Fresh databases
+            // get the new schema from createTables.sql; the field_groups FK
+            // needs projects to exist, hence inside this branch.
+            const healTableViewRenameSql = (
+              await import(`../sql/healFilteredViewsRename.sql?raw`)
+            ).default
+            try {
+              await db.exec(healTableViewRenameSql)
+            } catch (error) {
+              console.error('Error executing healTableViewRenameSql:', error)
+            }
+            try {
             await db.exec(`
             -- the users→roles rename (2026-08) missed these flag columns;
             -- heal local databases created before the schema caught up

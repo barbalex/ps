@@ -42,7 +42,7 @@
     "defaultMessage": "anpassen"
   },
   "2kHq3x": {
-    "defaultMessage": "Gefilterte Ansichten"
+    "defaultMessage": "Ansichten"
   },
   "2sWIxu": {
     "defaultMessage": "Heute"
@@ -60,7 +60,7 @@
     "defaultMessage": "Wert"
   },
   "5mN8vP": {
-    "defaultMessage": "Gefilterte Ansicht"
+    "defaultMessage": "Ansicht"
   },
   "61ELuB": {
     "defaultMessage": "Feld"
@@ -72,7 +72,7 @@
     "defaultMessage": "Deine Daten gehören dir"
   },
   "6gV7wJ": {
-    "defaultMessage": "Gefilterte Ansichten zeigen nur Tabellen-Zeilen, die einem Filter entsprechen. Beispiel: Zwei Ansichten auf den Kontrollen: \"Feld-Kontrollen\" (Typ = Kontrolle) und \"Freiwilligen-Kontrollen\" (Typ = Freiwilligen-Kontrolle). Ein- und ausgeschaltet werden sie pro Ort-Stufe."
+    "defaultMessage": "Ansichten zeigen eine Tabelle auf zwei Weisen getrennt: nach Zeilen mit einem optionalen Filter und/oder nach Spalten mit einer optionalen Feldergruppe. Beispiel: Zwei Ansichten auf den Kontrollen: \"Feld-Kontrollen\" (Typ = Kontrolle) und \"Freiwilligen-Kontrollen\" (Typ = Freiwilligen-Kontrolle). Ein- und ausgeschaltet werden sie pro Ort-Stufe."
   },
   "72yYP5": {
     "defaultMessage": "Feld bearbeiten"
@@ -96,7 +96,7 @@
     "defaultMessage": "Beginnt"
   },
   "8cR2wF": {
-    "defaultMessage": "Filter"
+    "defaultMessage": "Zeilen und Spalten"
   },
   "8iX9wK": {
     "defaultMessage": "ist nicht"
@@ -129,7 +129,7 @@
     "defaultMessage": "zahlt"
   },
   "9dS3wG": {
-    "defaultMessage": "Reihenfolge der gefilterten Ansichten in der Navigation. Tieferer Wert erscheint weiter oben."
+    "defaultMessage": "Reihenfolge der Ansichten in der Navigation. Tieferer Wert erscheint weiter oben."
   },
   "9jY0wL": {
     "defaultMessage": "ist"
@@ -673,6 +673,9 @@
   },
   "aCdVfy": {
     "defaultMessage": "Bitte die ausgewählten Felder überprüfen und sicherstellen, dass die Koordinatenwerte korrekt sind."
+  },
+  "aG2nH6": {
+    "defaultMessage": "Feldergruppen bündeln Felder einer Tabelle. Eine Ansicht, die eine Feldergruppe verwendet, zeigt nur deren Spalten. Beispiel: \"Biotop\": die Biotop-Felder einer Kontrolle."
   },
   "aQ5RsT": {
     "defaultMessage": "Teil-Projekt-Name"
@@ -1355,6 +1358,9 @@
   "bPuckPanelHint": {
     "defaultMessage": "Baustein im Vorschau-Bereich anklicken, um ihn zu bearbeiten"
   },
+  "bQ5eF1": {
+    "defaultMessage": "Name"
+  },
   "bSubproject": {
     "defaultMessage": "Subproject"
   },
@@ -1375,6 +1381,9 @@
   },
   "cLcHDr": {
     "defaultMessage": "Klicken zum Auswählen oder Datei ablegen. Akzeptiert .csv, .tsv, .xlsx, .xls, .ods, .txt."
+  },
+  "cR7tE2": {
+    "defaultMessage": "Felder"
   },
   "cRsAlG": {
     "defaultMessage": "Alle Beobachtungen haben eine Geometrie"
@@ -1499,6 +1508,9 @@
   "dR0VsL": {
     "defaultMessage": "Kontroll-Mengen in Kontrolle anzeigen"
   },
+  "dS9uI3": {
+    "defaultMessage": "Felder dieser Tabelle für die Gruppe auswählen. Eine Ansicht mit dieser Feldergruppe zeigt nur diese Felder. Die Reihenfolge innerhalb des Formulars bleibt die übliche."
+  },
   "dV2EwG": {
     "defaultMessage": "Standard-Einheit für Massnahmen-Bericht-Mengen"
   },
@@ -1585,6 +1597,9 @@
   },
   "eJfllL": {
     "defaultMessage": "Massnahmen"
+  },
+  "eT1iO4": {
+    "defaultMessage": "Felder der Gruppe"
   },
   "eV3FxH": {
     "defaultMessage": "Berichte"
@@ -1747,6 +1762,9 @@
   },
   "fOO5pP": {
     "defaultMessage": "Um auf eine Kontrolle zu zoomen, erstelle zuerst die Geometrie"
+  },
+  "fU9oP5": {
+    "defaultMessage": "Felder auswählen…"
   },
   "fW4GyI": {
     "defaultMessage": "Bericht-Mengen"
@@ -2954,6 +2972,9 @@
   "vN3SmI": {
     "defaultMessage": "Beobachtungen zugeordnet"
   },
+  "vN8wL2": {
+    "defaultMessage": "Feldergruppe"
+  },
   "vPr8Hi": {
     "defaultMessage": "Vorschau ausblenden"
   },
@@ -3014,6 +3035,9 @@
   "wA1BcD": {
     "defaultMessage": "Projekt-Typ"
   },
+  "wF4gR8": {
+    "defaultMessage": "Feldergruppe (Spalten)"
+  },
   "wO4TnJ": {
     "defaultMessage": "Biotope fördern"
   },
@@ -3029,6 +3053,9 @@
   "xCdVld": {
     "defaultMessage": "Welches Feld enthält die X-Koordinaten? Dies sollte der Breitengrad sein."
   },
+  "xG8wQ2": {
+    "defaultMessage": "Optional: einen Zeilen-Filter setzen (nur Zeilen, die ihm entsprechen) und/oder eine Feldergruppe wählen (nur diese Spalten zeigen). Beides leer = alle Zeilen und Spalten."
+  },
   "xGLUF7": {
     "defaultMessage": "Nächste Jahresgruppe"
   },
@@ -3043,6 +3070,9 @@
   },
   "yCdVld": {
     "defaultMessage": "Welches Feld enthält die Y-Koordinaten? Dies sollte der Längengrad sein."
+  },
+  "yH6fT3": {
+    "defaultMessage": "alle Felder"
   },
   "yK5Pq6": {
     "defaultMessage": "Beobachtungen (inkl. Importe)"
@@ -3067,6 +3097,9 @@
   },
   "zM4NoP": {
     "defaultMessage": "Projekt-Konfiguration"
+  },
+  "zP3kM9": {
+    "defaultMessage": "Feldergruppen"
   },
   "zhvWvI": {
     "defaultMessage": "Listen"

@@ -29,8 +29,8 @@ export const CheckTaxonHistoryCompare = (_: {
   from:
     | '/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/checks/$checkId_/taxa/$checkTaxonId_/histories/$checkTaxonHistoryId'
     | '/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/places/$placeId2_/checks/$checkId_/taxa/$checkTaxonId_/histories/$checkTaxonHistoryId'
-    | '/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/filtered-checks/$filteredViewId_/checks/$checkId_/taxa/$checkTaxonId_/histories/$checkTaxonHistoryId'
-    | '/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/places/$placeId2_/filtered-checks/$filteredViewId_/checks/$checkId_/taxa/$checkTaxonId_/histories/$checkTaxonHistoryId'
+    | '/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/table-views/$tableViewId_/checks/$checkId_/taxa/$checkTaxonId_/histories/$checkTaxonHistoryId'
+    | '/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/places/$placeId2_/table-views/$tableViewId_/checks/$checkId_/taxa/$checkTaxonId_/histories/$checkTaxonHistoryId'
 }) => {
   const { formatMessage } = useIntl()
   const quantityLabel = formatMessage({ id: 'gRVMng', defaultMessage: 'Menge' })
@@ -45,11 +45,11 @@ export const CheckTaxonHistoryCompare = (_: {
     subprojectId,
     placeId,
     placeId2,
-    filteredViewId,
+    tableViewId,
   } = useParams({ strict: false })
   const checkTaxonPath = placeId2
-    ? `/data/projects/${projectId}/subprojects/${subprojectId}/places/${placeId}/places/${placeId2}${filteredViewId ? `/filtered-checks/${filteredViewId}` : ''}/checks/${checkId}/taxa/${checkTaxonId}`
-    : `/data/projects/${projectId}/subprojects/${subprojectId}/places/${placeId}${filteredViewId ? `/filtered-checks/${filteredViewId}` : ''}/checks/${checkId}/taxa/${checkTaxonId}`
+    ? `/data/projects/${projectId}/subprojects/${subprojectId}/places/${placeId}/places/${placeId2}${tableViewId ? `/table-views/${tableViewId}` : ''}/checks/${checkId}/taxa/${checkTaxonId}`
+    : `/data/projects/${projectId}/subprojects/${subprojectId}/places/${placeId}${tableViewId ? `/table-views/${tableViewId}` : ''}/checks/${checkId}/taxa/${checkTaxonId}`
   const historyPath = `${checkTaxonPath}/histories`
 
   const addOperation = useSetAtom(addOperationAtom)

@@ -31,7 +31,7 @@ import { useObservationsNotToAssignNavData } from '../../../modules/useObservati
 import { useQueuedOperationsNavData } from '../../../modules/useQueuedOperationsNavData.ts'
 import { useCheckNavData } from '../../../modules/useCheckNavData.ts'
 import { useActionNavData } from '../../../modules/useActionNavData.ts'
-import { useFilteredChecksNavData } from '../../../modules/useFilteredChecksNavData.ts'
+import { useTableChecksNavData } from '../../../modules/useTableChecksNavData.ts'
 import { useCheckQuantitiesNavData } from '../../../modules/useCheckQuantitiesNavData.ts'
 import { useCheckTaxaNavData } from '../../../modules/useCheckTaxaNavData.ts'
 import { useActionQuantitiesNavData } from '../../../modules/useActionQuantitiesNavData.ts'
@@ -54,7 +54,7 @@ import { useUnitsNavData } from '../../../modules/useUnitsNavData.ts'
 import { useProjectCrssNavData } from '../../../modules/useProjectCrssNavData.ts'
 import { usePlaceLevelsNavData } from '../../../modules/usePlaceLevelsNavData.ts'
 import { useFieldsNavData } from '../../../modules/useFieldsNavData.ts'
-import { useFilteredViewsNavData } from '../../../modules/useFilteredViewsNavData.ts'
+import { useTableViewsNavData } from '../../../modules/useTableViewsNavData.ts'
 import { useProjectQcsNavData } from '../../../modules/useProjectQcsNavData.ts'
 import { useProjectExportsNavData } from '../../../modules/useProjectExportsNavData.ts'
 import { useSubprojectReportsNavData } from '../../../modules/useSubprojectReportsNavData.ts'
@@ -297,8 +297,8 @@ export const treeConfigs: Record<string, TreeNodeConfig> = {
           params: { projectId: p.nav.id },
         }),
         fields: (p) => ({ type: 'fields', params: { projectId: p.nav.id } }),
-        'filtered-views': (p) => ({
-          type: 'filteredViews',
+        'table-views': (p) => ({
+          type: 'tableViews',
           params: { projectId: p.nav.id },
         }),
         qcs: (p) => ({ type: 'projectQcs', params: { projectId: p.nav.id } }),
@@ -428,12 +428,12 @@ export const treeConfigs: Record<string, TreeNodeConfig> = {
         const id = (childNav.id as string) ?? ''
         // navs without id come from hooks of closed folders (counts only)
         if (!id) continue
-        if (id.startsWith('filtered-checks/')) {
-          const filteredViewId = id.split('/')[1] ?? ''
+        if (id.startsWith('table-views/')) {
+          const tableViewId = id.split('/')[1] ?? ''
           children.push({
             orderKey: id,
-            type: 'filteredChecks',
-            params: { ...base, filteredViewId },
+            type: 'tableChecks',
+            params: { ...base, tableViewId },
             nav: childNav,
             level: level + 1,
           })
@@ -552,8 +552,8 @@ export const treeConfigs: Record<string, TreeNodeConfig> = {
     hook: (params) => useChecksNavData(params).navData,
     children: collectionChildren('check', undefined),
   },
-  filteredChecks: {
-    hook: (params) => useFilteredChecksNavData(params).navData,
+  tableChecks: {
+    hook: (params) => useTableChecksNavData(params).navData,
     children: collectionChildren('check', undefined),
   },
   checkReports: {
@@ -652,7 +652,7 @@ export const treeConfigs: Record<string, TreeNodeConfig> = {
             subprojectId: p.subprojectId,
             placeId: p.placeId,
             placeId2: p.placeId2,
-            filteredViewId: p.filteredViewId,
+            tableViewId: p.tableViewId,
             checkId: p.nav.id,
           },
         }),
@@ -663,7 +663,7 @@ export const treeConfigs: Record<string, TreeNodeConfig> = {
             subprojectId: p.subprojectId,
             placeId: p.placeId,
             placeId2: p.placeId2,
-            filteredViewId: p.filteredViewId,
+            tableViewId: p.tableViewId,
             checkId: p.nav.id,
           },
         }),
@@ -979,8 +979,8 @@ export const treeConfigs: Record<string, TreeNodeConfig> = {
     hook: (params) => useFieldsNavData(params).navData,
     children: collectionChildren('formLink', undefined),
   },
-  filteredViews: {
-    hook: (params) => useFilteredViewsNavData(params).navData,
+  tableViews: {
+    hook: (params) => useTableViewsNavData(params).navData,
     children: collectionChildren('formLink', undefined),
   },
   projectQcs: {

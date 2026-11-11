@@ -20,7 +20,7 @@ export const Header = ({
     subprojectId,
     placeId,
     placeId2,
-    filteredViewId,
+    tableViewId,
     checkId,
     checkTaxonId,
   } = useParams({ strict: false })
@@ -32,8 +32,8 @@ export const Header = ({
     defaultMessage: 'Kontroll-Taxon',
   })
   const basePath = placeId2
-    ? `/data/projects/${projectId}/subprojects/${subprojectId}/places/${placeId}/places/${placeId2}${filteredViewId ? `/filtered-checks/${filteredViewId}` : ''}/checks/${checkId}/taxa/${checkTaxonId}`
-    : `/data/projects/${projectId}/subprojects/${subprojectId}/places/${placeId}${filteredViewId ? `/filtered-checks/${filteredViewId}` : ''}/checks/${checkId}/taxa/${checkTaxonId}`
+    ? `/data/projects/${projectId}/subprojects/${subprojectId}/places/${placeId}/places/${placeId2}${tableViewId ? `/table-views/${tableViewId}` : ''}/checks/${checkId}/taxa/${checkTaxonId}`
+    : `/data/projects/${projectId}/subprojects/${subprojectId}/places/${placeId}${tableViewId ? `/table-views/${tableViewId}` : ''}/checks/${checkId}/taxa/${checkTaxonId}`
 
   const db = usePGlite()
 

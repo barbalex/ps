@@ -46,7 +46,7 @@ export const CheckWithAll = ({
     projectId,
     placeId,
     placeId2,
-    filteredViewId,
+    tableViewId,
     subprojectId,
   } = useParams({
     strict: false,
@@ -68,6 +68,21 @@ export const CheckWithAll = ({
     checkId,
   ])
   const row = res?.rows?.[0] as Checks | undefined
+
+  // a table view with a field group shows only the group's columns
+  const fieldGroupRes = useLiveQuery(
+    tableViewId
+      ? `SELECT fg.sorted_field_ids
+         FROM table_views tv
+         LEFT JOIN field_groups fg ON fg.field_group_id = tv.field_group_id
+         WHERE tv.table_view_id = $1`
+      : `SELECT 1 AS sorted_field_ids WHERE false`,
+    tableViewId ? [tableViewId] : [],
+  )
+  const fieldGroup = fieldGroupRes?.rows?.[0] as
+    | { sorted_field_ids: string[] | null }
+    | undefined
+  const fieldIds = fieldGroup?.sorted_field_ids ?? undefined
 
   const quantitiesCountRes = useLiveQuery(
     `SELECT count(*)::int AS count FROM check_quantities WHERE check_id = $1`,
@@ -141,7 +156,7 @@ export const CheckWithAll = ({
         />
       </>
     ) : undefined
-  const checkBaseUrl = `/data/projects/${projectId}/subprojects/${subprojectId}/places/${placeId}${placeId2 ? `/places/${placeId2}` : ''}${filteredViewId ? `/filtered-checks/${filteredViewId}` : ''}/checks/${checkId}`
+  const checkBaseUrl = `/data/projects/${projectId}/subprojects/${subprojectId}/places/${placeId}${placeId2 ? `/places/${placeId2}` : ''}${tableViewId ? `/table-views/${tableViewId}` : ''}/checks/${checkId}`
   const quantitiesUrl = `${checkBaseUrl}/quantities`
   const filesUrl = `${checkBaseUrl}/files`
   const taxaUrl = `${checkBaseUrl}/taxa`
@@ -231,6 +246,7 @@ export const CheckWithAll = ({
               row={row}
               autoFocusRef={autoFocusRef}
               from={from}
+              fieldIds={fieldIds}
             />
             {showQuantities ? (
               <Section

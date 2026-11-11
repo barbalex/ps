@@ -32,10 +32,12 @@ import { PlaceFetcher } from './PlaceFetcher.tsx'
 
 import { ChecksFetcher } from './ChecksFetcher.tsx'
 import { CheckFetcher } from './CheckFetcher.tsx'
-import { FilteredViewsFetcher } from './FilteredViewsFetcher.tsx'
-import { FilteredViewFetcher } from './FilteredViewFetcher.tsx'
-import { FilteredChecksFetcher } from './FilteredChecksFetcher.tsx'
-import { FilteredCheckFetcher } from './FilteredCheckFetcher.tsx'
+import { TableViewsFetcher } from './TableViewsFetcher.tsx'
+import { TableViewFetcher } from './TableViewFetcher.tsx'
+import { FieldGroupsFetcher } from './FieldGroupsFetcher.tsx'
+import { FieldGroupFetcher } from './FieldGroupFetcher.tsx'
+import { TableChecksFetcher } from './TableChecksFetcher.tsx'
+import { TableCheckFetcher } from './TableCheckFetcher.tsx'
 import { CheckQuantitiesFetcher } from './CheckQuantitiesFetcher.tsx'
 import { CheckQuantityFetcher } from './CheckQuantityFetcher.tsx'
 import { CheckTaxaFetcher } from './CheckTaxaFetcher.tsx'
@@ -207,34 +209,42 @@ export const FetcherRouter = ({ fetcherName, params, ...other }: Props) => {
         return null
       return <ChecksFetcher params={paramsExact} {...other} />
     }
-    case 'useFilteredViewsNavData': {
+    case 'useTableViewsNavData': {
       if (!params.projectId) return null
-      return <FilteredViewsFetcher params={paramsExact} {...other} />
+      return <TableViewsFetcher params={paramsExact} {...other} />
     }
-    case 'useFilteredViewNavData': {
-      if (!params.projectId || !params.filteredViewId) return null
-      return <FilteredViewFetcher params={paramsExact} {...other} />
+    case 'useTableViewNavData': {
+      if (!params.projectId || !params.tableViewId) return null
+      return <TableViewFetcher params={paramsExact} {...other} />
     }
-    case 'useFilteredChecksNavData': {
+    case 'useFieldGroupsNavData': {
+      if (!params.projectId) return null
+      return <FieldGroupsFetcher params={paramsExact} {...other} />
+    }
+    case 'useFieldGroupNavData': {
+      if (!params.projectId || !params.fieldGroupId) return null
+      return <FieldGroupFetcher params={paramsExact} {...other} />
+    }
+    case 'useTableChecksNavData': {
       if (
         !params.projectId ||
         !params.subprojectId ||
         !params.placeId ||
-        !params.filteredViewId
+        !params.tableViewId
       )
         return null
-      return <FilteredChecksFetcher params={paramsExact} {...other} />
+      return <TableChecksFetcher params={paramsExact} {...other} />
     }
-    case 'useFilteredCheckNavData': {
+    case 'useTableCheckNavData': {
       if (
         !params.projectId ||
         !params.subprojectId ||
         !params.placeId ||
-        !params.filteredViewId ||
+        !params.tableViewId ||
         !params.checkId
       )
         return null
-      return <FilteredCheckFetcher params={paramsExact} {...other} />
+      return <TableCheckFetcher params={paramsExact} {...other} />
     }
     case 'useCheckNavData': {
       if (

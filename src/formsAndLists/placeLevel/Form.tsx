@@ -19,8 +19,8 @@ type Props = {
   autoFocusRef?: React.Ref<HTMLInputElement>
 }
 
-type FilteredView = {
-  filtered_view_id: string
+type TableView = {
+  table_view_id: string
   table_name: string | null
   name_singular_de: string | null
   name_plural_de: string | null
@@ -38,17 +38,17 @@ export const PlaceLevelForm = ({
   const { formatMessage, locale } = useIntl()
   const lang = locale.split('-')[0]
 
-  const resFilteredViews = useLiveQuery(
-    `SELECT filtered_view_id, table_name, name_singular_de, name_plural_de, name_plural_en, name_plural_fr, name_plural_it
-     FROM filtered_views
+  const resTableViews = useLiveQuery(
+    `SELECT table_view_id, table_name, name_singular_de, name_plural_de, name_plural_en, name_plural_fr, name_plural_it
+     FROM table_views
      WHERE project_id = $1
      ORDER BY sort, label`,
     [row.project_id],
   )
-  const filteredViews = (resFilteredViews?.rows ?? []) as FilteredView[]
-  const filteredViewsMap = (row.filtered_views ?? {}) as Record<string, boolean>
-  const anyFilteredViewEnabled = filteredViews.some(
-    (view) => filteredViewsMap[view.filtered_view_id] === true,
+  const tableViews = (resTableViews?.rows ?? []) as TableView[]
+  const tableViewsMap = (row.table_views ?? {}) as Record<string, boolean>
+  const anyTableViewEnabled = tableViews.some(
+    (view) => tableViewsMap[view.table_view_id] === true,
   )
   const altInOwnFormNavMessage = formatMessage({
     id: 'altInOwnFormNav',
@@ -272,7 +272,7 @@ export const PlaceLevelForm = ({
             validationState={validations?.checks?.state}
             validationMessage={validations?.checks?.message}
           />
-          {filteredViews
+          {tableViews
             .filter((view) => view.table_name === 'checks')
             .map((view) => {
               const viewLabel =
@@ -280,18 +280,18 @@ export const PlaceLevelForm = ({
                   `name_plural_${lang}`
                 ] ??
                 view?.name_plural_de ??
-                view.filtered_view_id
+                view.table_view_id
               return (
                 <SwitchField
-                  key={view.filtered_view_id}
+                  key={view.table_view_id}
                   label={viewLabel}
-                  name={`filtered_view_${view.filtered_view_id}`}
-                  value={filteredViewsMap[view.filtered_view_id] === true}
+                  name={`table_view_${view.table_view_id}`}
+                  value={tableViewsMap[view.table_view_id] === true}
                   onChange={onChange}
                 />
               )
             })}
-          {(row.checks || anyFilteredViewEnabled) && (
+          {(row.checks || anyTableViewEnabled) && (
             <>
               <SwitchField
                 label={formatMessage({

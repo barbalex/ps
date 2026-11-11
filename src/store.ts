@@ -551,8 +551,8 @@ export const vectorLayersFilterAtom = atomWithStorage<TableRowFilter[]>(
 export const listsFilterAtom = atomWithStorage<TableRowFilter[]>('listsFilterAtom', [])
 export const taxonomiesFilterAtom = atomWithStorage<TableRowFilter[]>('taxonomiesFilterAtom', [])
 export const unitsFilterAtom = atomWithStorage<TableRowFilter[]>('unitsFilterAtom', [])
-export const filteredViewsFilterAtom = atomWithStorage<TableRowFilter[]>(
-  'filteredViewsFilterAtom',
+export const tableViewsFilterAtom = atomWithStorage<TableRowFilter[]>(
+  'tableViewsFilterAtom',
   [],
 )
 export const subprojectsFilterAtom = atomWithStorage<TableRowFilter[]>(
@@ -656,7 +656,7 @@ export const filterAtoms = {
   lists: listsFilterAtom,
   taxonomies: taxonomiesFilterAtom,
   units: unitsFilterAtom,
-  filteredViews: filteredViewsFilterAtom,
+  tableViews: tableViewsFilterAtom,
   subprojects: subprojectsFilterAtom,
   subprojectReports: subprojectReportsFilterAtom,
   subprojectUsers: subprojectUsersFilterAtom,
@@ -685,17 +685,17 @@ export const filterAtoms = {
   projectExports: projectExportsFilterAtom,
 }
 
-// filter atoms for filtered views are created dynamically, one per view:
+// filter atoms for table views are created dynamically, one per view:
 // view ids are runtime data, so the atoms cannot be exported statically
-const filteredViewFilterAtoms = new Map<string, typeof checks1FilterAtom>()
-export const getFilteredViewFilterAtom = (filteredViewId: string) => {
-  let filterAtom = filteredViewFilterAtoms.get(filteredViewId)
+const tableViewFilterAtoms = new Map<string, typeof checks1FilterAtom>()
+export const getTableViewFilterAtom = (tableViewId: string) => {
+  let filterAtom = tableViewFilterAtoms.get(tableViewId)
   if (!filterAtom) {
     filterAtom = atomWithStorage<TableRowFilter[]>(
-      `filteredView-${filteredViewId}-filterAtom`,
+      `tableView-${tableViewId}-filterAtom`,
       [],
     )
-    filteredViewFilterAtoms.set(filteredViewId, filterAtom)
+    tableViewFilterAtoms.set(tableViewId, filterAtom)
   }
   return filterAtom
 }

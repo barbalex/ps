@@ -82,7 +82,7 @@ type NavDataNotForBreadcrumbDesigning = NavDataNotForBreadcrumb & {
   subproject_report_designs_count?: number
   project_report_designs_count?: number
   subproject_charts_count?: number
-  filtered_views_count?: number
+  table_views_count?: number
 }
 
 export const useProjectNavData = ({
@@ -169,7 +169,7 @@ export const useProjectNavData = ({
             subproject_report_designs_count AS (SELECT count(*) FROM subproject_report_designs WHERE project_id = '${projectId}'),
             project_report_designs_count AS (SELECT count(*) FROM project_report_designs WHERE project_id = '${projectId}'),
             subproject_charts_count AS (SELECT count(*) FROM charts WHERE project_id = '${projectId}' AND for_subprojects = TRUE),
-            filtered_views_count AS (SELECT count(*) FROM filtered_views WHERE project_id = '${projectId}')`
+            table_views_count AS (SELECT count(*) FROM table_views WHERE project_id = '${projectId}')`
                 : ''
             }`
           : ''
@@ -229,7 +229,7 @@ export const useProjectNavData = ({
             subproject_report_designs_count.count AS subproject_report_designs_count,
             project_report_designs_count.count AS project_report_designs_count,
             subproject_charts_count.count AS subproject_charts_count,
-            filtered_views_count.count AS filtered_views_count`
+            table_views_count.count AS table_views_count`
                 : ''
             }`
             : ''
@@ -274,7 +274,7 @@ export const useProjectNavData = ({
             subproject_report_designs_count,
             project_report_designs_count,
             subproject_charts_count,
-            filtered_views_count`
+            table_views_count`
                 : ''
             }`
             : ''
@@ -607,13 +607,13 @@ export const useProjectNavData = ({
           ...(designing
             ? [
                 {
-                  id: 'filtered-views',
+                  id: 'table-views',
                   label: buildNavLabel({
                     loading,
-                    countFiltered: nav?.filtered_views_count ?? 0,
+                    countFiltered: nav?.table_views_count ?? 0,
                     namePlural: formatMessage({
                       id: '2kHq3x',
-                      defaultMessage: 'Gefilterte Ansichten',
+                      defaultMessage: 'Ansichten',
                     }),
                   }),
                 },

@@ -344,7 +344,7 @@ type Props = {
   children: (renderProps: OrFilterRenderProps) => ReactNode
   tableNameOverride?: string
   filterAtomNameOverride?: string
-  // filtered views use one dynamically created filter atom per view
+  // table views use one dynamically created filter atom per view
   filterAtomOverride?: unknown
 }
 

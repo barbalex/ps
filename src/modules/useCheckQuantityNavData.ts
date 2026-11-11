@@ -11,7 +11,7 @@ type Props = {
   subprojectId: string
   placeId: string
   placeId2?: string
-  filteredViewId?: string
+  tableViewId?: string
   checkId: string
   checkQuantityId: string
 }
@@ -26,7 +26,7 @@ export const useCheckQuantityNavData = ({
   subprojectId,
   placeId,
   placeId2,
-  filteredViewId,
+  tableViewId,
   checkId,
   checkQuantityId,
 }: Props) => {
@@ -56,7 +56,7 @@ export const useCheckQuantityNavData = ({
     'places',
     placeId,
     ...(placeId2 ? ['places', placeId2] : []),
-    ...(filteredViewId ? ['filtered-checks', filteredViewId] : []),
+    ...(tableViewId ? ['table-views', tableViewId] : []),
     'checks',
     checkId,
     'quantities',

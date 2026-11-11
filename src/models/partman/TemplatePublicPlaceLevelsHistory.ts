@@ -54,7 +54,7 @@ export default interface TemplatePublicPlaceLevelsHistory {
 
   check_taxa_in_check: boolean | null;
 
-  filtered_views: unknown | null;
+  table_views: unknown | null;
 
   observations: boolean | null;
 
@@ -139,7 +139,7 @@ export interface TemplatePublicPlaceLevelsHistoryInitializer {
 
   check_taxa_in_check?: boolean | null;
 
-  filtered_views?: unknown | null;
+  table_views?: unknown | null;
 
   observations?: boolean | null;
 
@@ -224,7 +224,7 @@ export interface TemplatePublicPlaceLevelsHistoryMutator {
 
   check_taxa_in_check?: boolean | null;
 
-  filtered_views?: unknown | null;
+  table_views?: unknown | null;
 
   observations?: boolean | null;
 

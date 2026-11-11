@@ -1104,6 +1104,23 @@ CREATE TABLE IF NOT EXISTS place_levels_history (
 	LIKE place_levels INCLUDING DEFAULTS
 ) PARTITION BY RANGE (updated_at);
 
+-- the filtered_views -> table_views column rename (2026-11): heal history
+DO $$
+BEGIN
+	IF EXISTS (
+		SELECT 1 FROM information_schema.columns
+		WHERE table_schema = 'public' AND table_name = 'place_levels_history'
+			AND column_name = 'filtered_views'
+	) AND NOT EXISTS (
+		SELECT 1 FROM information_schema.columns
+		WHERE table_schema = 'public' AND table_name = 'place_levels_history'
+			AND column_name = 'table_views'
+	) THEN
+		ALTER TABLE place_levels_history RENAME COLUMN filtered_views TO table_views;
+	END IF;
+END
+$$;
+
 ALTER TABLE place_levels_history OWNER TO partman_user;
 
 COMMENT ON TABLE place_levels_history IS 'System-versioned history of place_levels. Managed by temporal_tables and partitioned yearly by updated_at.';
@@ -2487,50 +2504,130 @@ END
 $$;
 
 --------------------------------------------------------------
--- filtered_views -> filtered_views_history
+-- table_views -> table_views_history
 -- Retention: 5 years
 --
-ALTER TABLE filtered_views
+-- the filtered_views -> table_views rename (2026-11): heal databases
+-- created before the schema caught up
+DO $$
+BEGIN
+	IF EXISTS (
+		SELECT 1 FROM pg_tables
+		WHERE schemaname = 'public' AND tablename = 'filtered_views_history'
+	) AND NOT EXISTS (
+		SELECT 1 FROM pg_tables
+		WHERE schemaname = 'public' AND tablename = 'table_views_history'
+	) THEN
+		ALTER TABLE filtered_views_history RENAME TO table_views_history;
+		ALTER TABLE table_views_history RENAME COLUMN filtered_view_id TO table_view_id;
+		ALTER INDEX IF EXISTS filtered_views_history_updated_at_idx RENAME TO table_views_history_updated_at_idx;
+		ALTER INDEX IF EXISTS filtered_views_history_filtered_view_id_updated_at_idx RENAME TO table_views_history_table_view_id_updated_at_idx;
+		ALTER INDEX IF EXISTS filtered_views_history_sys_period_idx RENAME TO table_views_history_sys_period_idx;
+		UPDATE partman.part_config
+		SET parent_table = 'public.table_views_history'
+		WHERE parent_table = 'public.filtered_views_history';
+	END IF;
+END
+$$;
+
+-- the trigger survived the table rename under its old name, still writing
+-- into the (renamed) history table; replace it to also carry the new name
+DROP TRIGGER IF EXISTS versioning_filtered_views_trigger ON table_views;
+
+ALTER TABLE table_views
 ADD COLUMN IF NOT EXISTS sys_period tstzrange;
 
-UPDATE filtered_views
+UPDATE table_views
 SET sys_period = tstzrange(updated_at, NULL, '[)')
 WHERE sys_period IS NULL;
 
-ALTER TABLE filtered_views
+ALTER TABLE table_views
 ALTER COLUMN sys_period SET NOT NULL;
 
-COMMENT ON COLUMN filtered_views.sys_period IS 'System period maintained by temporal_tables for auditing and historic queries.';
+COMMENT ON COLUMN table_views.sys_period IS 'System period maintained by temporal_tables for auditing and historic queries.';
 
-CREATE TABLE IF NOT EXISTS filtered_views_history (
-	LIKE filtered_views INCLUDING DEFAULTS
+CREATE TABLE IF NOT EXISTS table_views_history (
+	LIKE table_views INCLUDING DEFAULTS
 ) PARTITION BY RANGE (updated_at);
 
-ALTER TABLE filtered_views_history OWNER TO partman_user;
+-- history tables of renamed tables lack the new column
+ALTER TABLE table_views_history
+ADD COLUMN IF NOT EXISTS field_group_id uuid DEFAULT NULL;
 
-COMMENT ON TABLE filtered_views_history IS 'System-versioned history of filtered_views. Managed by temporal_tables and partitioned yearly by updated_at.';
-COMMENT ON COLUMN filtered_views_history.sys_period IS 'System period written by temporal_tables. lower(sys_period) is when the row version became current, upper(sys_period) when it stopped being current.';
+ALTER TABLE table_views_history OWNER TO partman_user;
 
-CREATE INDEX IF NOT EXISTS filtered_views_history_updated_at_idx
-ON filtered_views_history USING btree (updated_at);
+COMMENT ON TABLE table_views_history IS 'System-versioned history of table_views. Managed by temporal_tables and partitioned yearly by updated_at.';
+COMMENT ON COLUMN table_views_history.sys_period IS 'System period written by temporal_tables. lower(sys_period) is when the row version became current, upper(sys_period) when it stopped being current.';
 
-CREATE INDEX IF NOT EXISTS filtered_views_history_filtered_view_id_updated_at_idx
-ON filtered_views_history (filtered_view_id, updated_at);
+CREATE INDEX IF NOT EXISTS table_views_history_updated_at_idx
+ON table_views_history USING btree (updated_at);
 
-CREATE INDEX IF NOT EXISTS filtered_views_history_sys_period_idx
-ON filtered_views_history USING gist (sys_period);
+CREATE INDEX IF NOT EXISTS table_views_history_table_view_id_updated_at_idx
+ON table_views_history (table_view_id, updated_at);
+
+CREATE INDEX IF NOT EXISTS table_views_history_sys_period_idx
+ON table_views_history USING gist (sys_period);
 
 DO $$
 BEGIN
 	IF NOT EXISTS (
 		SELECT 1
 		FROM pg_trigger
-		WHERE tgname = 'versioning_filtered_views_trigger'
-			AND tgrelid = 'filtered_views'::regclass
+		WHERE tgname = 'versioning_table_views_trigger'
+			AND tgrelid = 'table_views'::regclass
 	) THEN
-		CREATE TRIGGER versioning_filtered_views_trigger
-		BEFORE INSERT OR UPDATE OR DELETE ON filtered_views
-		FOR EACH ROW EXECUTE PROCEDURE versioning('sys_period', 'filtered_views_history', true);
+		CREATE TRIGGER versioning_table_views_trigger
+		BEFORE INSERT OR UPDATE OR DELETE ON table_views
+		FOR EACH ROW EXECUTE PROCEDURE versioning('sys_period', 'table_views_history', true);
+	END IF;
+END
+$$;
+
+--------------------------------------------------------------
+-- field_groups -> field_groups_history
+-- Retention: 5 years
+--
+ALTER TABLE field_groups
+ADD COLUMN IF NOT EXISTS sys_period tstzrange;
+
+UPDATE field_groups
+SET sys_period = tstzrange(updated_at, NULL, '[)')
+WHERE sys_period IS NULL;
+
+ALTER TABLE field_groups
+ALTER COLUMN sys_period SET NOT NULL;
+
+COMMENT ON COLUMN field_groups.sys_period IS 'System period maintained by temporal_tables for auditing and historic queries.';
+
+CREATE TABLE IF NOT EXISTS field_groups_history (
+	LIKE field_groups INCLUDING DEFAULTS
+) PARTITION BY RANGE (updated_at);
+
+ALTER TABLE field_groups_history OWNER TO partman_user;
+
+COMMENT ON TABLE field_groups_history IS 'System-versioned history of field_groups. Managed by temporal_tables and partitioned yearly by updated_at.';
+COMMENT ON COLUMN field_groups_history.sys_period IS 'System period written by temporal_tables. lower(sys_period) is when the row version became current, upper(sys_period) when it stopped being current.';
+
+CREATE INDEX IF NOT EXISTS field_groups_history_updated_at_idx
+ON field_groups_history USING btree (updated_at);
+
+CREATE INDEX IF NOT EXISTS field_groups_history_field_group_id_updated_at_idx
+ON field_groups_history (field_group_id, updated_at);
+
+CREATE INDEX IF NOT EXISTS field_groups_history_sys_period_idx
+ON field_groups_history USING gist (sys_period);
+
+DO $$
+BEGIN
+	IF NOT EXISTS (
+		SELECT 1
+		FROM pg_trigger
+		WHERE tgname = 'versioning_field_groups_trigger'
+			AND tgrelid = 'field_groups'::regclass
+	) THEN
+		CREATE TRIGGER versioning_field_groups_trigger
+		BEFORE INSERT OR UPDATE OR DELETE ON field_groups
+		FOR EACH ROW EXECUTE PROCEDURE versioning('sys_period', 'field_groups_history', true);
 	END IF;
 END
 $$;
@@ -2983,7 +3080,7 @@ WHERE NOT EXISTS (
 );
 
 SELECT partman.create_parent(
-	p_parent_table := 'public.filtered_views_history',
+	p_parent_table := 'public.table_views_history',
 	p_control := 'updated_at',
 	p_interval := '1 year',
 	p_type := 'range',
@@ -2996,7 +3093,24 @@ SELECT partman.create_parent(
 WHERE NOT EXISTS (
 	SELECT 1
 	FROM partman.part_config
-	WHERE parent_table = 'public.filtered_views_history'
+	WHERE parent_table = 'public.table_views_history'
+);
+
+SELECT partman.create_parent(
+	p_parent_table := 'public.field_groups_history',
+	p_control := 'updated_at',
+	p_interval := '1 year',
+	p_type := 'range',
+	p_premake := 4,
+	p_start_partition := to_char(date_trunc('year', CURRENT_TIMESTAMP), 'YYYY-MM-DD HH24:MI:SS'),
+	p_default_table := true,
+	p_automatic_maintenance := 'on',
+	p_jobmon := false
+)
+WHERE NOT EXISTS (
+	SELECT 1
+	FROM partman.part_config
+	WHERE parent_table = 'public.field_groups_history'
 );
 
 SELECT partman.create_parent(
@@ -3692,7 +3806,14 @@ SET jobmon = false,
 	retention = '5 years',
 	retention_keep_table = false,
 	retention_keep_index = false
-WHERE parent_table = 'public.filtered_views_history';
+WHERE parent_table = 'public.table_views_history';
+
+UPDATE partman.part_config
+SET jobmon = false,
+	retention = '5 years',
+	retention_keep_table = false,
+	retention_keep_index = false
+WHERE parent_table = 'public.field_groups_history';
 
 UPDATE partman.part_config
 SET jobmon = false,

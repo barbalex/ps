@@ -107,7 +107,7 @@ export const shapeDefinitions = {
       'check_taxa_in_check',
       'check_files',
       'check_files_in_check',
-      'filtered_views',
+      'table_views',
       'observations',
       'place_roles_in_place',
       'place_files_in_place',
@@ -116,9 +116,9 @@ export const shapeDefinitions = {
     where: `project_id IN (${projectIdsOfUser})`,
     primaryKey: ['place_level_id'],
   },
-  filtered_views: {
+  table_views: {
     columns: [
-      'filtered_view_id',
+      'table_view_id',
       'project_id',
       'table_name',
       'name_singular_de',
@@ -130,12 +130,25 @@ export const shapeDefinitions = {
       'name_plural_fr',
       'name_plural_it',
       'filter',
+      'field_group_id',
       'label_by',
       'sort',
       ...auditColumns,
     ],
     where: `project_id IN (${projectIdsOfUser})`,
-    primaryKey: ['filtered_view_id'],
+    primaryKey: ['table_view_id'],
+  },
+  field_groups: {
+    columns: [
+      'field_group_id',
+      'project_id',
+      'table_name',
+      'name',
+      'sorted_field_ids',
+      ...auditColumns,
+    ],
+    where: `project_id IN (${projectIdsOfUser})`,
+    primaryKey: ['field_group_id'],
   },
   subprojects: {
     columns: [
