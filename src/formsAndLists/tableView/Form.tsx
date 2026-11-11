@@ -276,6 +276,14 @@ const FieldGroupEditor = ({
             })}
           </Link>
         </SectionDescription>
+      ) : singleRowTableViewTables.has(tableName) && !selectedGroupId ? (
+        <SectionDescription>
+          {formatMessage({
+            id: 'tG9iJ7',
+            defaultMessage:
+              'Ohne Feldergruppe entspricht diese Ansicht dem Formular des Teil-Projekts. Üblicherweise wählt man eine Feldergruppe.',
+          })}
+        </SectionDescription>
       ) : (
         <Link
           to={`/data/projects/${projectId}/field-groups/${tableName}` as string}

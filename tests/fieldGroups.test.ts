@@ -203,6 +203,40 @@ describe('single-row views on subprojects', () => {
   })
 })
 
+describe('reserved fields: a view\'s group fields leave the plain form', () => {
+  it('the reservation query returns exactly the fields of view-backed groups', async () => {
+    const { db, ids } = fixture
+
+    // one group referenced by a view (reserved), one unreferenced (not)
+    await db.exec(`
+      INSERT INTO field_groups(field_group_id, project_id, table_name, name, sorted_field_ids) VALUES
+        ('7d000000-0000-7000-8000-000000000001', '${ids.project}', 'subprojects', 'Referenced', '${JSON.stringify(['7a000000-0000-7000-8000-000000000001', '7a000000-0000-7000-8000-000000000002'])}'::jsonb),
+        ('7d000000-0000-7000-8000-000000000002', '${ids.project}', 'subprojects', 'Not referenced', '${JSON.stringify(['7a000000-0000-7000-8000-000000000001'])}'::jsonb);
+      INSERT INTO table_views(table_view_id, project_id, table_name, name_singular_de, name_plural_de, field_group_id, sort) VALUES
+        ('7e000000-0000-7000-8000-000000000001', '${ids.project}', 'subprojects', 'Referenced view', 'Referenced views', '7d000000-0000-7000-8000-000000000001', 2);
+    `)
+
+    // the query Jsonb runs for the plain form
+    const res = await db.query<{ field_id: string }>(
+      `SELECT DISTINCT jsonb_array_elements_text(fg.sorted_field_ids) AS field_id
+       FROM field_groups fg
+       JOIN table_views tv ON tv.field_group_id = fg.field_group_id
+       WHERE fg.project_id = $1 AND fg.table_name = $2`,
+      [ids.project, 'subprojects'],
+    )
+    expect(res.rows.map((r) => r.field_id).sort()).toEqual([
+      '7a000000-0000-7000-8000-000000000001',
+      '7a000000-0000-7000-8000-000000000002',
+    ])
+
+    // cleanup so later describes see the previous state
+    await db.exec(`
+      DELETE FROM table_views WHERE table_view_id = '7e000000-0000-7000-8000-000000000001';
+      DELETE FROM field_groups WHERE field_group_id IN ('7d000000-0000-7000-8000-000000000001', '7d000000-0000-7000-8000-000000000002');
+    `)
+  })
+})
+
 describe('healing: filtered_views -> table_views', () => {
   it('renames an old database and preserves data', async () => {
     const { db, ids } = fixture

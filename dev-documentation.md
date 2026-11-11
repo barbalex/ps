@@ -714,7 +714,10 @@ its own breadcrumbs, its own list form and edit form — parallel to the
 - **Columns**: an optional field group (`field_group_id`) selects the
   columns — the edit form then renders only the group's fields, in the
   usual form order. The list labels are unaffected (they are built from
-  `label_by`).
+  `label_by`). Fields of groups used by a view are **reserved**: they
+  only render in the views whose group contains them, not in the plain
+  form of the table (nor in groupless views). Design mode ignores the
+  reservation — designers always see all fields.
 
 Examples (apflora):
 

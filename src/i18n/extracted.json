@@ -2816,6 +2816,9 @@
   "tDeleteAllConfirm": {
     "defaultMessage": "Alle Taxa entfernen?"
   },
+  "tG9iJ7": {
+    "defaultMessage": "Ohne Feldergruppe entspricht diese Ansicht dem Formular des Teil-Projekts. Üblicherweise wählt man eine Feldergruppe."
+  },
   "tImport": {
     "defaultMessage": "Taxa aus Datei importieren"
   },
