@@ -659,7 +659,8 @@ data.arts.forEach((art) => {
     observationImports.push({
       id: observationImportId(subprojectId(art.ap.id), quelle),
       subproject: subprojectId(art.ap.id),
-      name: `apflora: ${quelle}`,
+      // apf2 has no import entity — the quelle column IS the import's name
+      name: quelle,
       idField,
       insertedCount: rows.length,
     })

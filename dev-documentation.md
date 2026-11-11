@@ -232,7 +232,8 @@ database, default `../apf2/backend-dev/db/apflora.backup`, override with
 - actions on level 2 (apf2: `tpopmassn`; apf2's inline count columns like
   `anz_pflanzen` are kept as plain fields, not mapped to `action_taxa`)
 - observations (apf2: `beob`): one `observation_imports` row per art and
-  quelle (e.g. "apflora: Info Flora 2017"), apf2's `tpop_id`/`nicht_zuordnen`
+  quelle (apf2 has no import entity — the quelle column is the import's
+  name, e.g. "Info Flora 2017"), apf2's `tpop_id`/`nicht_zuordnen`
   become `place_id`/`not_to_assign`, apf2's `datum`/`autor`/`quelle` columns
   are added into the `data` jsonb (the labels reference them), and the
   geometry comes from apf2's `geom_point` — the sources' data carries no
