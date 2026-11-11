@@ -1,0 +1,34 @@
+import { createFileRoute } from '@tanstack/react-router'
+
+import { File } from '../../../../../../../../../../../../../../../formsAndLists/file/index.tsx'
+import { NotFound } from '../../../../../../../../../../../../../../../components/NotFound.tsx'
+
+export const Route = createFileRoute('/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/places/$placeId2_/table-views/$tableViewId_/actions/$actionId_/files/$fileId')({
+  component: () => (
+    <File from="/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/places/$placeId2_/table-views/$tableViewId_/actions/$actionId_/files/$fileId" />
+  ),
+  notFoundComponent: NotFound,
+  beforeLoad: ({ params }) => {
+    if (!params.projectId || params.projectId === 'undefined') {
+      throw new Error('Invalid or missing projectId in route parameters')
+    }
+    if (!params.subprojectId || params.subprojectId === 'undefined') {
+      throw new Error('Invalid or missing subprojectId in route parameters')
+    }
+    if (!params.placeId || params.placeId === 'undefined') {
+      throw new Error('Invalid or missing placeId in route parameters')
+    }
+    if (!params.placeId2 || params.placeId2 === 'undefined') {
+      throw new Error('Invalid or missing placeId2 in route parameters')
+    }
+    if (!params.actionId || params.actionId === 'undefined') {
+      throw new Error('Invalid or missing actionId in route parameters')
+    }
+    if (!params.fileId || params.fileId === 'undefined') {
+      throw new Error('Invalid or missing fileId in route parameters')
+    }
+    return {
+      navDataFetcher: 'useFileNavData',
+    }
+  },
+})

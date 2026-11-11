@@ -1252,21 +1252,30 @@ export const createActionTaxon = async ({
 export const createAction = async ({
   projectId,
   placeId,
+  tableViewId,
 }: {
   projectId: string
   placeId: string
+  tableViewId?: string
 }) => {
   const db = store.get(pgliteDbAtom)!
   // find fields with preset values on the data column
   const presetData = await getPresetData({ projectId, table: 'actions' })
+  // a table view sets the values it filters for
+  const viewData: { data: Record<string, unknown>; columns: Record<string, unknown> } =
+    tableViewId
+      ? await getDataFromTableView({ tableViewId })
+      : { data: {}, columns: {} }
 
   const action_id = uuidv7()
+  const dataJsonb = { ...presetData, ...viewData.data }
   const data = {
     action_id,
     place_id: placeId,
     date: new Date(),
     relevant_for_reports: true,
-    ...presetData,
+    ...(Object.keys(dataJsonb).length > 0 ? { data: dataJsonb } : {}),
+    ...viewData.columns,
   }
 
   const columns = Object.keys(data).join(',')

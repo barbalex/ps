@@ -175,14 +175,25 @@ export const usePlaceNavData = ({
   const filesInPlace = placeLevel?.place_files_in_place !== false
   const currentLevel: 1 | 2 = placeId2 ? 2 : 1
 
-  // table views enabled on this place level (design mode shows all)
+  // table views enabled on this place level (design mode shows all):
+  // row-list views on checks and actions, form views on places
   const resTableViews = useLiveQuery(
-    `SELECT table_view_id, filter, name_plural_de, name_plural_en, name_plural_fr, name_plural_it FROM table_views WHERE project_id = $1 AND table_name = 'checks' ORDER BY sort, label`,
+    `SELECT table_view_id, table_name, filter,
+        name_singular_de, name_singular_en, name_singular_fr, name_singular_it,
+        name_plural_de, name_plural_en, name_plural_fr, name_plural_it
+     FROM table_views
+     WHERE project_id = $1 AND table_name IN ('checks', 'actions', 'places')
+     ORDER BY sort, label`,
     [projectId],
   )
   const tableViews = (resTableViews?.rows ?? []) as {
     table_view_id: string
+    table_name: string | null
     filter: unknown
+    name_singular_de: string | null
+    name_singular_en: string | null
+    name_singular_fr: string | null
+    name_singular_it: string | null
     name_plural_de: string | null
     name_plural_en: string | null
     name_plural_fr: string | null
@@ -195,19 +206,22 @@ export const usePlaceNavData = ({
   const enabledTableViews = tableViews.filter(
     (view) => tableViewsMap[view.table_view_id] === true,
   )
+  const enabledTableViewsWithCounts = enabledTableViews.filter(
+    (view) => view.table_name === 'checks' || view.table_name === 'actions',
+  )
 
-  // one count per enabled filtered view
+  // one count per enabled row-list view (checks/actions)
   const viewCountsRes = useLiveQuery<{
     table_view_id: string
     count: number
   }>(
-    enabledTableViews.length > 0
-      ? enabledTableViews
+    enabledTableViewsWithCounts.length > 0
+      ? enabledTableViewsWithCounts
           .map((view) => {
             const viewFilterString = filterStringFromFilter(
               (view.filter ?? []) as TableRowFilter[],
             )
-            return `SELECT '${view.table_view_id}' AS table_view_id, (SELECT count(*) FROM checks WHERE place_id = '${placeId2 ?? placeId}'${viewFilterString ? ` AND (${viewFilterString})` : ''}) AS count`
+            return `SELECT '${view.table_view_id}' AS table_view_id, (SELECT count(*) FROM ${view.table_name} WHERE place_id = '${placeId2 ?? placeId}'${viewFilterString ? ` AND (${viewFilterString})` : ''}) AS count`
           })
           .join(' UNION ALL ')
       : `SELECT 1 AS table_view_id, 0 AS count WHERE false`,
@@ -289,7 +303,9 @@ export const usePlaceNavData = ({
           }),
         }),
       }] : []),
-      ...enabledTableViews.map((view) => ({
+      ...enabledTableViews
+        .filter((view) => view.table_name === 'checks')
+        .map((view) => ({
         id: `table-views/${view.table_view_id}/checks`,
         label: buildNavLabel({
           loading,
@@ -316,6 +332,32 @@ export const usePlaceNavData = ({
           }),
         }),
       }] : []),
+      ...enabledTableViews
+        .filter((view) => view.table_name === 'actions')
+        .map((view) => ({
+          id: `table-views/${view.table_view_id}/actions`,
+          label: buildNavLabel({
+            loading,
+            countFiltered: viewCounts.get(view.table_view_id) ?? 0,
+            namePlural:
+              view?.[`name_plural_${language}`] ??
+              view?.name_plural_de ??
+              formatMessage({
+                id: 'eJfllL',
+                defaultMessage: 'Massnahmen',
+              }),
+          }),
+        })),
+      ...enabledTableViews
+        .filter((view) => view.table_name === 'places')
+        .map((view) => ({
+          // a places view is a leaf: a restricted form on this place row
+          id: `table-views/${view.table_view_id}`,
+          label:
+            view?.[`name_singular_${language}`] ??
+            view?.name_singular_de ??
+            view.table_view_id,
+        })),
       ...((placeLevel?.check_reports) ? [{
         id: 'check-reports',
         label: buildNavLabel({

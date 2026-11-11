@@ -90,13 +90,21 @@ const levelsForPath = (path: string[]): Level[] => {
     }
 
     if (folder === 'table-views') {
-      // multi-segment nav.id: table-views/<tableViewId>/checks
+      // multi-segment nav.id: table-views/<tableViewId>/checks|actions
       const tableViewId = path[i + 1]
-      if (path[i + 2] !== 'checks') return levels
-      push(i + 3, 'tableChecks', { ...placeBase(), tableViewId })
-      ids.tableViewId = tableViewId
-      i += 3
-      continue
+      const sub = path[i + 2]
+      if (sub === 'checks' || sub === 'actions') {
+        push(
+          i + 3,
+          sub === 'checks' ? 'tableChecks' : 'tableActions',
+          { ...placeBase(), tableViewId },
+        )
+        ids.tableViewId = tableViewId
+        i += 3
+        continue
+      }
+      // a places (or subprojects) view is a leaf form: nothing to prefetch
+      return levels
     }
 
     if (folder === 'checks' || folder === 'actions') {

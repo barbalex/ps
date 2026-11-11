@@ -12,6 +12,7 @@ type Props = {
   subprojectId: string
   placeId: string
   placeId2?: string
+  tableViewId?: string
   actionId: string
 }
 
@@ -25,6 +26,7 @@ export const useActionQuantitiesNavData = ({
   subprojectId,
   placeId,
   placeId2,
+  tableViewId,
   actionId,
 }: Props) => {
   const { formatMessage } = useIntl()
@@ -54,6 +56,7 @@ export const useActionQuantitiesNavData = ({
     'places',
     placeId,
     ...(placeId2 ? ['places', placeId2] : []),
+    ...(tableViewId ? ['table-views', tableViewId] : []),
     'actions',
     actionId,
   ]

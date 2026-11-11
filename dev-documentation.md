@@ -732,6 +732,13 @@ Implemented runtimes:
 
 - `checks` — full runtime (see below): view nodes under places, view
   lists, view check forms with sub-entities, place-level enablement
+- `actions` — full runtime like checks: route subtree
+  `.../places/<placeId>/table-views/<tableViewId>/actions/**` (both
+  levels), nav hooks `useTableActionsNavData`/`useTableActionNavData`,
+  `createAction` presets the view's filter values, the action form shows
+  only the view's field group, row labels follow `label_by`. Enabled per
+  place level via the same `place_levels.table_views` map (the switches
+  in the place level form list the views of checks, actions and places)
 - `subprojects` — single-row runtime: every view on `subprojects` renders
   as a leaf node under the subproject in the nav tree (always, no
   enablement map — apflora's "Idealbiotop" is simply there), its url
@@ -739,10 +746,17 @@ Implemented runtimes:
   view's form on the subproject row: the Jsonb renderer with the view's
   field group (`SubprojectTableView`). No row filter/label_by — the view
   form hides them for single-row tables
-  (`singleRowTableViewTables` in `src/modules/tableViewTables.ts`).
+  (`singleRowTableViewTables` in `src/modules/tableViewTables.ts`)
+- `places` — single-row runtime per place: views on `places` render as
+  leaf nodes under each place (url
+  `.../places/<placeId>/table-views/<tableViewId>`, level 2 mirrors),
+  opening the view's field group form on the place row
+  (`PlaceTableView`). Which levels show them comes from the same
+  `place_levels.table_views` map — a view enabled on level 2 appears
+  under every level-2 place. The field group should contain fields of
+  the matching place level (fields are per level)
 
-Not yet implemented: `actions` (row-list views like checks — route
-subtree + nav hook + place-level switches), `places`, `projects`.
+Not implemented: `projects` (removed from the tables list again).
 
 ## Data model
 
@@ -837,6 +851,8 @@ no group yet).
 | Place level UI | `src/formsAndLists/placeLevel/Form.tsx` renders a switch per view; `placeLevel/index.tsx` maps `table_view_<id>` switches onto the `table_views` jsonb |
 | View checks list + filter | `src/formsAndLists/tableChecks.tsx`, `tableCheck/Filter.tsx` |
 | Subproject view runtime | `src/modules/useSubprojectNavData.ts` (leaf navs `table-views/<id>`), `useSubprojectTableViewNavData.ts`, `subproject/TableView.tsx`, breadcrumbs `SubprojectTableViewFetcher.tsx` |
+| Action views runtime | `src/formsAndLists/tableActions.tsx`, `tableAction/Filter.tsx`, `src/modules/useTableActionsNavData.ts`, `useTableActionNavData.ts`; the plain action components (`action/Header.tsx`, `action/WithAll.tsx`, `actionQuantities.tsx`, `actionTaxa.tsx`, sub-entity hooks, HistoryCompares) are tableViewId-aware |
+| Place view runtime | `src/formsAndLists/place/TableView.tsx`, `src/modules/usePlaceTableViewNavData.ts`, breadcrumbs `PlaceTableViewFetcher.tsx`; leaf navs come from `usePlaceNavData.ts` |
 | Check form | the normal check form components; `check/Header.tsx` and `check/WithAll.tsx` insert the path segment and use the view's singular name as title; `check/WithAll.tsx` resolves the view's field group and passes its field ids down as `fieldIds` |
 | Column restriction | `src/components/shared/Jsonb/index.tsx` accepts `fieldIds`; restricted views render only those fields and hide AddField + the undefined-field warnings |
 | Filter atoms | one per view, created dynamically: `getTableViewFilterAtom(tableViewId)` in `src/store.ts`; the shared `Filter` component accepts `filterAtomOverride`. Storage keys changed with the rename (`tableView-<id>-filterAtom`) — saved view filters reset once |

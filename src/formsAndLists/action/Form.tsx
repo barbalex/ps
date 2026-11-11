@@ -22,6 +22,8 @@ type Props = {
   orIndex?: number
   from: string
   autoFocusRef?: React.RefObject<HTMLInputElement | null>
+  /** restrict rendering to these field_ids (field group of a table view) */
+  fieldIds?: string[]
 }
 
 // this form is rendered from a parent or outlet
@@ -32,6 +34,7 @@ export const ActionForm = ({
   orIndex,
   from,
   autoFocusRef,
+  fieldIds,
 }: Props) => {
   // need to extract the jsonb data from the row
   // as inside filters it's name is a path
@@ -74,6 +77,7 @@ export const ActionForm = ({
         from={from}
         autoFocus
         ref={autoFocusRef as unknown as React.Ref<HTMLDivElement>}
+        fieldIds={fieldIds}
       />
       <EditingGeometry
         row={

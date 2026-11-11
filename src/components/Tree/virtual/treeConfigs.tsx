@@ -32,6 +32,7 @@ import { useQueuedOperationsNavData } from '../../../modules/useQueuedOperations
 import { useCheckNavData } from '../../../modules/useCheckNavData.ts'
 import { useActionNavData } from '../../../modules/useActionNavData.ts'
 import { useTableChecksNavData } from '../../../modules/useTableChecksNavData.ts'
+import { useTableActionsNavData } from '../../../modules/useTableActionsNavData.ts'
 import { useCheckQuantitiesNavData } from '../../../modules/useCheckQuantitiesNavData.ts'
 import { useCheckTaxaNavData } from '../../../modules/useCheckTaxaNavData.ts'
 import { useActionQuantitiesNavData } from '../../../modules/useActionQuantitiesNavData.ts'
@@ -430,13 +431,39 @@ export const treeConfigs: Record<string, TreeNodeConfig> = {
         if (!id) continue
         if (id.startsWith('table-views/')) {
           const tableViewId = id.split('/')[1] ?? ''
-          children.push({
-            orderKey: id,
-            type: 'tableChecks',
-            params: { ...base, tableViewId },
-            nav: childNav,
-            level: level + 1,
-          })
+          if (id.endsWith('/checks')) {
+            children.push({
+              orderKey: id,
+              type: 'tableChecks',
+              params: { ...base, tableViewId },
+              nav: childNav,
+              level: level + 1,
+            })
+          } else if (id.endsWith('/actions')) {
+            children.push({
+              orderKey: id,
+              type: 'tableActions',
+              params: { ...base, tableViewId },
+              nav: childNav,
+              level: level + 1,
+            })
+          } else {
+            // a places view: a leaf form link on this place row
+            children.push({
+              orderKey: id,
+              type: 'formLink',
+              params: {
+                ownArray: [
+                  ...(navData.ownArray ?? []).map((seg) => seg ?? ''),
+                  'table-views',
+                  tableViewId,
+                ],
+                label: (childNav as { label?: string }).label ?? tableViewId,
+              },
+              nav: childNav,
+              level: level + 1,
+            })
+          }
         } else if (id === 'checks') {
           children.push({
             orderKey: id,
@@ -555,6 +582,10 @@ export const treeConfigs: Record<string, TreeNodeConfig> = {
   tableChecks: {
     hook: (params) => useTableChecksNavData(params).navData,
     children: collectionChildren('check', undefined),
+  },
+  tableActions: {
+    hook: (params) => useTableActionsNavData(params).navData,
+    children: collectionChildren('action', undefined),
   },
   checkReports: {
     hook: (params) => useCheckReportsNavData(params).navData,

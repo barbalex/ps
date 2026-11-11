@@ -11,6 +11,7 @@ type Props = {
   subprojectId: string
   placeId: string
   placeId2?: string
+  tableViewId?: string
   actionId: string
   actionQuantityId: string
 }
@@ -25,6 +26,7 @@ export const useActionQuantityNavData = ({
   subprojectId,
   placeId,
   placeId2,
+  tableViewId,
   actionId,
   actionQuantityId,
 }: Props) => {
@@ -54,6 +56,7 @@ export const useActionQuantityNavData = ({
     'places',
     placeId,
     ...(placeId2 ? ['places', placeId2] : []),
+    ...(tableViewId ? ['table-views', tableViewId] : []),
     'actions',
     actionId,
     'quantities',

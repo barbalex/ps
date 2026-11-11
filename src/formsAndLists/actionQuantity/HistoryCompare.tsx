@@ -34,7 +34,9 @@ type Validations = Record<
 export const ActionQuantityHistoryCompare = (_: {
   from:
     | '/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/actions/$actionId_/quantities/$actionQuantityId_/histories/$actionQuantityHistoryId'
+    | '/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/table-views/$tableViewId_/actions/$actionId_/quantities/$actionQuantityId_/histories/$actionQuantityHistoryId'
     | '/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/places/$placeId2_/actions/$actionId_/quantities/$actionQuantityId_/histories/$actionQuantityHistoryId'
+    | '/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/places/$placeId2_/table-views/$tableViewId_/actions/$actionId_/quantities/$actionQuantityId_/histories/$actionQuantityHistoryId'
 }) => {
   const { formatMessage } = useIntl()
   const quantityLabel = formatMessage({ id: 'gRVMng', defaultMessage: 'Menge' })
@@ -45,13 +47,14 @@ export const ActionQuantityHistoryCompare = (_: {
     subprojectId,
     placeId,
     placeId2,
+    tableViewId,
     actionId,
     actionQuantityId,
     actionQuantityHistoryId,
   } = useParams({ strict: false })
   const actionQuantityPath = placeId2
-    ? `/data/projects/${projectId}/subprojects/${subprojectId}/places/${placeId}/places/${placeId2}/actions/${actionId}/quantities/${actionQuantityId}`
-    : `/data/projects/${projectId}/subprojects/${subprojectId}/places/${placeId}/actions/${actionId}/quantities/${actionQuantityId}`
+    ? `/data/projects/${projectId}/subprojects/${subprojectId}/places/${placeId}/places/${placeId2}${tableViewId ? `/table-views/${tableViewId}` : ''}/actions/${actionId}/quantities/${actionQuantityId}`
+    : `/data/projects/${projectId}/subprojects/${subprojectId}/places/${placeId}${tableViewId ? `/table-views/${tableViewId}` : ''}/actions/${actionId}/quantities/${actionQuantityId}`
   const historyPath = `${actionQuantityPath}/histories`
 
   const addOperation = useSetAtom(addOperationAtom)
