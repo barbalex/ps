@@ -44,8 +44,6 @@ dark mode not well implemented for: file upload?
 
 ---
 
-we need a way to show in the map symbol that this object is the active according to the navigation (thus in nav tree or form)
-
 ---
 
 filtered_views: as far as I know we are using this feature for EK/EKF in apflora to separate tables by row filters.
@@ -55,7 +53,7 @@ another, different usage, maybe needing a different name: separate tables by col
 
 ---
 
-"The broken display_by_property mechanism is documented in dev-doc section 10 whenever you feel like tackling configurable per-property styling as its own task."
+"The broken display_by_property mechanism is documented in dev-doc section 10 whenever you feel like tackling configurable per-property styling as its own task.": done — per-property styling works end to end now, see dev-doc section 10 "Per-property styling (display_by_property)"
 
 ---
 

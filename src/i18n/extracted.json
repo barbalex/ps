@@ -683,6 +683,42 @@
   "aTr9Vm": {
     "defaultMessage": "Bitte die korrekte Quellenangabe gemäss Anforderungen des Datenanbieters hinzufügen"
   },
+  "absExpLb": {
+    "defaultMessage": "SQL-Ausdruck"
+  },
+  "absExpVl": {
+    "defaultMessage": "Ein SQL-Ausdruck, der pro Beobachtung true ergibt, wenn die Art nicht gefunden wurde. Bezieht sich auf die Daten der Zeile, z.B.: data->>'ANZAHL' = '0'"
+  },
+  "absFldLb": {
+    "defaultMessage": "Absenzen-Feld"
+  },
+  "absFldVl": {
+    "defaultMessage": "Welches Feld enthält einen Wert, der true ist, wenn die Art nicht gefunden wurde?"
+  },
+  "absMthCl": {
+    "defaultMessage": "Boolesche Spalte"
+  },
+  "absMthEx": {
+    "defaultMessage": "SQL-Ausdruck"
+  },
+  "absMthLb": {
+    "defaultMessage": "Wie werden Absenzen in den Daten markiert?"
+  },
+  "absMthVl": {
+    "defaultMessage": "Boolesche Spalten und SQL-Ausdrücke werden unterstützt. Keine Auswahl: keine Absenzen. Die Auswahl erneut anklicken, um sie zu entfernen."
+  },
+  "absSet": {
+    "defaultMessage": "Absenzen von {count} Beobachtungen setzen (erneut setzen leitet alle neu ab)"
+  },
+  "absSttg": {
+    "defaultMessage": "Absenzen werden gesetzt …"
+  },
+  "absTabLb": {
+    "defaultMessage": "Absenz"
+  },
+  "absenzBadge": {
+    "defaultMessage": "Absenz"
+  },
   "account.projectFieldsInAccount.help": {
     "defaultMessage": "Projekt-Felder im Kontoformular anzeigen statt in einer separaten Navigation."
   },
@@ -1799,6 +1835,9 @@
   "gJsVld": {
     "defaultMessage": "Welches Feld enthält die GeoJSON-Geometrien?"
   },
+  "gKq4qF": {
+    "defaultMessage": "Beobachtung"
+  },
   "gMtLbl": {
     "defaultMessage": "Wie sind die Geometrien in den Daten enthalten?"
   },
@@ -2131,6 +2170,9 @@
   },
   "obi6zi": {
     "defaultMessage": "Passwort verbergen"
+  },
+  "obs0Abs": {
+    "defaultMessage": "Absenz"
   },
   "obs0Cmt": {
     "defaultMessage": "Kommentar"
@@ -2953,6 +2995,15 @@
   },
   "versionCheckUpdating": {
     "defaultMessage": "App wird aktualisiert …"
+  },
+  "vldAbsenceCol": {
+    "defaultMessage": "Absenz (Spalte)"
+  },
+  "vldPropVal": {
+    "defaultMessage": "Wert der Eigenschaft"
+  },
+  "vldPropValHint": {
+    "defaultMessage": "Gilt für Objekte mit diesem Wert im Feld «{field}». Leer lassen für Objekte ohne Wert."
   },
   "vldsInVL": {
     "defaultMessage": "Vektor-Ebene-Anzeigen in Vektor-Ebene anzeigen"

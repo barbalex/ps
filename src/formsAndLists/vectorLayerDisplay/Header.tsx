@@ -47,8 +47,12 @@ export const Header = ({
   }[]
   const vectorLayerId = vectorLayerDisplays?.[0]?.vector_layer_id
 
+  // parameterized with a uuid cast: vectorLayerId is undefined while the
+  // query above loads, and interpolating it made the string 'undefined'
+  // fail uuid parsing on every form open
   const countRes = useLiveQuery(
-    `SELECT COUNT(*) as count FROM vector_layer_displays WHERE vector_layer_id = '${vectorLayerId}'`,
+    `SELECT COUNT(*) as count FROM vector_layer_displays WHERE vector_layer_id = $1::uuid`,
+    [vectorLayerId ?? null],
   )
   const rowCount = Number(countRes?.rows?.[0]?.count ?? 2)
 
