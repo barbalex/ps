@@ -9,6 +9,10 @@
 -- 3. Recreate both taxonomies and all taxa from CSV.
 
 BEGIN;
+-- the projects INSERT below must not fire projects_create_vector_layers_trigger
+-- (11b replicates the layers): on docker-entrypoint inits there is no
+-- session-level electric.syncing like in scripts/import-apflora.mjs
+SET LOCAL electric.syncing TO 'true';
 
 DELETE FROM taxa
 WHERE taxonomy_id IN (
