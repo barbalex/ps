@@ -60,6 +60,10 @@ map (layers): it seems Teil-Populationen can't be choosen as layer, only their B
 
 ---
 
+data import for test@test.ch: is now empty. Should be: 1. the Demo Project 2. apflora, but only the Abies alba species (with all its data)
+
+---
+
 ---
 
 ---
