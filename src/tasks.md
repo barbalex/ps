@@ -56,12 +56,11 @@ dark mode not well implemented for: file upload?
 
 first: finish table_views:
 
-- View form: where is the table choosen? So far this was only built for checks? Should also be possible for projects, subpopulations, places, actions. Actually: We should probably have under Ansichten a list of tables for which they can be built. And when opening such a table todays list view is shown where new table views for this table can be created. This way we can also drag list items to sort the views relative to their position where the table would be and need not manually set the sortierwert (but lets leave that just in case someone does not find out he can drag)
+- View form: where is the table choosen? So far this was only built for checks? Should also be possible for projects, subpopulations, places, actions. Actually: We should probably have under Ansichten a list of tables for which they can be built. And when opening such a table todays list view is shown where new table views for this table can be created. This way we can also drag list items to sort the views relative to their position where the table would be and need not manually set the sortierwert (but lets leave that just in case someone does not find out he can drag): done (2026-11) — Ansichten lists the tables (checks, actions, places, subprojects, projects), per table the views list with drag-to-sort (persisted as sort; Sortierwert kept as fallback), view form shows the table. Runtime for tables other than checks still open.
 - View form: Label rows: use the label tool as for observations?
 
-- create the ones for 'Art Idealbiotop' and "Biotop" Feldgruppe
-- how about how to design where to render the field view? Aha: Sort value, relative to where the original table would be rendered?
-- children: where do we choose which to use? place children in places config (exists for checks), rest in project config?
+- manually create the ones for 'Art Idealbiotop' and "Biotop" Feldgruppe to test how it works. then have them be created as part of the import
+- children: where do we choose which to use? place children in places config (exists for checks), rest in project config? Is it implemented to add this to the respective configs once a table_view was created?
 
 ---
 

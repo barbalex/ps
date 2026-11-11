@@ -1,9 +1,9 @@
 import { createFileRoute } from '@tanstack/react-router'
 
-import { TableView } from '../../../../../formsAndLists/tableView/index.tsx'
+import { TableView } from '../../../../../../formsAndLists/tableView/index.tsx'
 
 export const Route = createFileRoute(
-  '/data/projects/$projectId_/table-views/$tableViewId/',
+  '/data/projects/$projectId_/table-views/$tableName/$tableViewId/',
 )({
   component: TableView,
   beforeLoad: ({ params }) => {

@@ -1874,6 +1874,9 @@
   "gRinGoal": {
     "defaultMessage": "Ziel-Berichte im Ziel anzeigen"
   },
+  "gV7bW9": {
+    "defaultMessage": "Noch keine Ansichten. Mit dem Plus oben rechts eine erstellen."
+  },
   "gX5HzJ": {
     "defaultMessage": "Bericht-Mengen im Bericht anzeigen"
   },
@@ -1891,6 +1894,9 @@
   },
   "h5g7Kk": {
     "defaultMessage": "Orte"
+  },
+  "hJ9sD2": {
+    "defaultMessage": "Tabelle"
   },
   "hS2TuV": {
     "defaultMessage": "Wähle ein KBS in der KBS-Liste"

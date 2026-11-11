@@ -10,7 +10,7 @@ import { addOperationAtom } from '../../store.ts'
 
 
 export const Header = ({ autoFocusRef }: { autoFocusRef?: React.RefObject<HTMLInputElement | null> }) => {
-  const { projectId, tableViewId } = useParams({ strict: false })
+  const { projectId, tableName, tableViewId } = useParams({ strict: false })
   const navigate = useNavigate()
   const addOperation = useSetAtom(addOperationAtom)
   const { formatMessage } = useIntl()
@@ -24,14 +24,19 @@ export const Header = ({ autoFocusRef }: { autoFocusRef?: React.RefObject<HTMLIn
     tableViewIdRef.current = tableViewId
   }, [tableViewId])
 
+  // next/previous stay within the views of the same table
+  const tableFilter = tableName ? `AND table_name = '${tableName}'` : ''
   const countRes = useLiveQuery(
-    `SELECT COUNT(*) as count FROM table_views WHERE project_id = $1`,
+    `SELECT COUNT(*) as count FROM table_views WHERE project_id = $1 ${tableFilter}`,
     [projectId],
   )
   const rowCount = Number(countRes?.rows?.[0]?.count ?? 2)
 
   const addRow = async () => {
-    const id = await createTableView({ projectId: projectId! })
+    const id = await createTableView({
+      projectId: projectId!,
+      tableName: tableName ?? 'checks',
+    })
     if (!id) return
     navigate({
       to: `../${id}`,
@@ -72,7 +77,7 @@ export const Header = ({ autoFocusRef }: { autoFocusRef?: React.RefObject<HTMLIn
   const toNext = async () => {
     try {
       const res = await db.query(
-        `SELECT table_view_id FROM table_views WHERE project_id = $1 ORDER BY sort, label`,
+        `SELECT table_view_id FROM table_views WHERE project_id = $1 ${tableFilter} ORDER BY sort, label`,
         [projectId],
       )
       const views = res?.rows as { table_view_id: string }[]
@@ -93,7 +98,7 @@ export const Header = ({ autoFocusRef }: { autoFocusRef?: React.RefObject<HTMLIn
   const toPrevious = async () => {
     try {
       const res = await db.query(
-        `SELECT table_view_id FROM table_views WHERE project_id = $1 ORDER BY sort, label`,
+        `SELECT table_view_id FROM table_views WHERE project_id = $1 ${tableFilter} ORDER BY sort, label`,
         [projectId],
       )
       const views = res?.rows as { table_view_id: string }[]
