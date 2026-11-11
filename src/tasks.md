@@ -20,8 +20,6 @@ dark mode not well implemented for: file upload?
 
 ---
 
-log in with google on arten-fördern.app not working
-
 ---
 
 ---
@@ -50,16 +48,15 @@ log in with google on arten-fördern.app not working
 
 ---
 
----
+observation form needs a 'zoom to' button like population with the same functionality (active when geometry exists, opens map if necessary...)
 
 ---
 
-Doing:
-map (layers): it seems Teil-Populationen can't be choosen as layer, only their Beobachtungen (zugeordnet and Linien). We should add Teil-Beobachtungen (places level 2). I guess this has to be done in the import for the apf2 project
+The broken display_by_property mechanism is documented in dev-doc section 10 whenever you feel like tackling configurable per-property styling as its own task.
 
 ---
 
-data import for test@test.ch: is now empty. Should be: 1. the Demo Project 2. apflora, but only the Abies alba species (with all its data)
+---
 
 ---
 
@@ -69,6 +66,6 @@ data import for test@test.ch: is now empty. Should be: 1. the Demo Project 2. ap
 
 later:
 
-- ensure apflora import is complete (dropdown lists, EKF form ui, more?)
+- ensure apflora import is complete (dropdown lists, EKF form ui, beob, exports, more?)
 - concerning EKF form ui: this should be generally possible. Use an editor to build the form using images and more? As done for reports?
 - ensure all user facing text is translated

@@ -231,13 +231,29 @@ database, default `../apf2/backend-dev/db/apflora.backup`, override with
   Ausgangszustand included), with counts as `check_taxa` (apf2: `tpopkontrzaehl`)
 - actions on level 2 (apf2: `tpopmassn`; apf2's inline count columns like
   `anz_pflanzen` are kept as plain fields, not mapped to `action_taxa`)
+- observations (apf2: `beob`): one `observation_imports` row per art and
+  quelle (apf2 has no import entity — the quelle column is the import's
+  name, e.g. "Info Flora 2017"), apf2's `tpop_id`/`nicht_zuordnen`
+  become `place_id`/`not_to_assign`, apf2's `datum`/`autor`/`quelle` columns
+  are added into the `data` jsonb (the labels reference them), and the
+  geometry comes from apf2's `geom_point` — the sources' data carries no
+  extractable coordinates (Info Flora 2017 delivers 1-km-grid precision
+  only), so `geometry_method` stays NULL. Labels mirror apf2's `beob_label`:
+  `YYYY.MM.DD: Autor (Quelle)`. beob are scoped to an art by apf2's own
+  rule — the ap's `apart` rows: the ae_taxonomies ids the ap associates
+  itself with (usually the same taxid in several taxonomies; 60 of 600 aps
+  also list a second, closely related taxid, whose beob apf2 shows too).
+  Absenzen (confirmed absences, apf2 `beob.absenz` — for Abies alba 320 of
+  the 469 EvAB rows) set the `absence` column (see section 10); the
+  nav-data hooks append a red translated badge (`AbsenzBadge`) to their
+  labels in tree, lists and breadcrumbs — apf2 marks them with a distinct
+  icon
 - historizations (apf2: `ap_history`, `pop_history`, `tpop_history` — one
   snapshot per `(year, row)`, usually for the years in which a report was
   written) as `subprojects_history`/`places_history` versions (see below)
 - yearly place reports (apf2: `popber`/`tpopber` → `check_reports`,
   `tpopmassnber`/`popmassnber` → `action_reports`) — the source of the
   report's B and C tables
-- not imported: Beobachtungen, Berichte (ap-level), Freiwilligen-Kontrollen
 
 Pipeline (run from the repo root):
 
@@ -891,3 +907,143 @@ child-before-parent across stages and abort the applies.
   and retained, only the compare form is missing)
 - maps: filtered checks are drawn by the normal checks layers; there are no
   per-view own vector layers
+
+# 9 Map Own Layers
+
+## What they are
+
+Vector layers with `type = 'own'` draw the project's own data tables on the
+map: `places`, `actions`, `checks` and the observation tables (`observations_assigned`,
+`observations_assigned_lines`, `observations_to_assess`, `observations_not_to_assign`).
+There is one layer per table **and place level** — `own_table` +
+`own_table_level` select both. The `name` is the stable identity key
+(`<own_table>_<level>`, e.g. `checks_2`; observation layers without a level
+have no suffix, e.g. `observations_to_assess`). It is used for drag/drop state
+and deduplication — never localize or rename it.
+
+## Who creates them
+
+Three creation paths, all idempotent:
+
+1. **Server triggers** (`backend/db/init/07_triggers.sql`, the normal path):
+   - `projects_create_vector_layers_trigger`: on project INSERT, creates the
+     level-1 trio — `places_1`, `actions_1`, `checks_1` — regardless of the
+     place level config (which does not exist yet at that point).
+   - `place_levels_create_vector_layers_trigger`: on INSERT of a level-2
+     `place_levels` row (or UPDATE of its `level`/`actions`/`checks`):
+     `places_2` always; `actions_2` when `actions`; `checks_2` when `checks`.
+   - `vector_layers_insert_trigger`: on every layer INSERT, adds one
+     `vector_layer_displays` row and one `layer_presentations` row.
+   - **All three skip while `electric.syncing` is set** (Electric's own
+     writes, seeds, imports).
+2. **Client-side safety nets** (`createVectorLayer` in
+   `src/modules/createRows.ts` dedups by name before inserting, so calling it
+   again is free):
+   - creating a place ensures the level's places layer exists
+     (`src/formsAndLists/places.tsx`, `src/formsAndLists/place/Header.tsx`)
+   - `src/components/TableLayersProvider.tsx` creates the observation layers
+     once observations exist: `observations_assigned_<level>` and
+     `observations_assigned_lines_<level>` per place level with
+     `place_levels.observations = true`, plus `observations_to_assess` and
+     `observations_not_to_assign` (level-less).
+3. **Seeds/imports replicate the triggers by hand** — because the triggers
+   skip while syncing. `backend/db/generate_apflora_example_sql.mjs` inserts
+   the apflora project's layers plus one display and one presentation each
+   (the import's row-count asserts check all of this). It deviates from the
+   trigger rules deliberately — only the two places layers: apf2's
+   Massnahmen and Kontrollen carry no own geometries (apflora.ch presents
+   them at their TPop's location), so actions/checks layers would stay
+   empty; level-1 ones anyway, as apf2 has no pop-level Massnahmen or
+   Kontrollen at all. The observation layers are client-created (path 2) —
+   the import seeds the species' Beobachtungen (apf2: `beob`) as
+   observations, so those layers appear as soon as a client opens the
+   project.
+
+## Labels are derived, not stored
+
+Own layers carry no label. `src/modules/vectorLayerLabel.ts` derives the
+display label at render time from the project's `place_levels` names: places
+layers use the level's plural name (en: 'Populations' / 'Sub-Populations'),
+actions/checks/assigned-observation layers prefix the level's singular name
+('{place}: Actions', '{place}: Checks'). Missing translations fall back to
+the German name, then to generic i18n labels ('Places', 'Checks', …). So a
+project whose place levels only define German names still gets specific
+labels in an English UI. (This replaced the old
+`updateTableVectorLayerLabels.ts`, which wrote the derived label back into
+`vector_layers.label` on every load, producing spurious pending operations.)
+
+## Rendering
+
+`src/components/Map/layers/tableLayerToComponent.ts` maps `own_table` +
+`own_table_level` to a component in `src/components/Map/layers/TableLayers/`
+(Places1/2, Actions1/2, Checks1/2, Observations…). Each queries its table
+joined on `places` — level 1 filters `places.parent_id IS NULL`, level 2
+`IS NOT NULL` — and only rows with `geometry IS NOT NULL` are drawn:
+checks/actions appear on the map only once a geometry was drawn for them
+(neither the demo project nor the apflora import seeds check/action
+geometries). The Own list in the map drawer
+(`Map/LeftMenuDrawer/Layers/Own/index.tsx`) shows the project's inactive own
+layers; activating one creates or reuses its `layer_presentations` row.
+Filtered checks views (section 8) have no layers of their own — the normal
+checks layers draw their rows.
+
+# 10 Observation Absences
+
+## What it is
+
+`observations.absence` marks a confirmed absence: the record states the
+species was NOT found. Absences behave like observations everywhere (same
+lists, layers, assignment) but are visually distinct: a red translated
+badge (`AbsenzBadge`) next to the label in tree, lists and breadcrumbs,
+hollow red circles / faded red markers on the map, and an "Absenz" switch
+on the observation form.
+
+## How absence is derived on import
+
+The rule is stored on the import (`observation_imports`), exactly like
+geometry and label config:
+
+- `absence_method` — `NULL` (no absence handling) | `'boolean_column'` |
+  `'sql_expression'`
+- `absence_field` — the boolean data column (boolean_column mode)
+- `absence_expression` — a boolean SQL expression over the row
+  (sql_expression mode), e.g. `data->>'ANZAHL' = '0'`
+
+Wizard tab 3 "Absenz" (`src/formsAndLists/observationImport/3.tsx`) edits
+these; its set button (`3/Set.tsx` → `3/setAbsence.ts`) re-derives
+`absence` for all observations of the import. Changing the rule resets
+`absence` (like changing geometry config nulls geometries). Re-imports
+("Ersetzen" and "Aktualisieren und erweitern" in `updateObservations.ts`)
+re-apply the stored rule after importing, so observations added later
+derive their absence the same way. `applyAbsenceRule` queues one update
+operation per changed row, so the result syncs to the server.
+
+The apflora import sets the column directly (apf2's `beob.absenz`), with
+`absence_method` left NULL — the rule documents how to derive absence from
+imported data, and apf2's Absenzen come from the source, not the data.
+
+## Schema notes
+
+Adding columns means editing `04_createTables.sql` (source of truth, then
+`npm run sync-sql`) and regenerating the kanel models
+(`npm run models:generate` against a database built from the new schema).
+There are no migrations by design: backend-dev (and the preview
+production) are rebuilt from the init files
+(`cd backend-dev && docker compose down -v && docker compose up -d --build`)
+— installed browser clients need a local reset after the backend rebuild.
+History tables follow automatically on fresh builds (`LIKE <table>
+INCLUDING DEFAULTS` at creation; partman templates are created from the
+parent by `create_parent`).
+
+## Known issue: display_by_property is broken for own layers
+
+The configurable per-property styling (`vector_layers.display_by_property`
++ `vector_layer_displays.display_property_value`) does not work end to
+end: `Layer.tsx`'s `json_agg` omits `display_property_value` (so
+`displayFromFeature` always falls back to the first display),
+`displayFromFeature` compares text strictly against raw property values
+(jsonb booleans never match), the Property dropdown finds no fields for
+observation layers (their `own_table` is `observations_to_assess` etc.
+while fields are stored under `observations`), and the display form has no
+UI to set `display_property_value`. That is why absence styling is
+hardcoded in `TableLayer` instead of configured via displays.

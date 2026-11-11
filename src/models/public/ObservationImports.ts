@@ -1,5 +1,6 @@
 import type { SubprojectsSubprojectId } from './Subprojects.ts';
 import type { default as ObservationImportsGeometryMethodsEnum } from './ObservationImportsGeometryMethodsEnum.ts';
+import type { default as ObservationImportsAbsenceMethodsEnum } from './ObservationImportsAbsenceMethodsEnum.ts';
 
 /** Identifier type for public.observation_imports */
 export type ObservationImportsObservationImportId = string & { __brand: 'public.observation_imports' };
@@ -28,6 +29,12 @@ export default interface ObservationImports {
   y_coordinate_field: string | null;
 
   crs: string | null;
+
+  absence_method: ObservationImportsAbsenceMethodsEnum | null;
+
+  absence_field: string | null;
+
+  absence_expression: string | null;
 
   label_creation: unknown | null;
 
@@ -87,6 +94,12 @@ export interface ObservationImportsInitializer {
   /** Default value: 4326 */
   crs?: string | null;
 
+  absence_method?: ObservationImportsAbsenceMethodsEnum | null;
+
+  absence_field?: string | null;
+
+  absence_expression?: string | null;
+
   label_creation?: unknown | null;
 
   name?: string | null;
@@ -141,6 +154,12 @@ export interface ObservationImportsMutator {
   y_coordinate_field?: string | null;
 
   crs?: string | null;
+
+  absence_method?: ObservationImportsAbsenceMethodsEnum | null;
+
+  absence_field?: string | null;
+
+  absence_expression?: string | null;
 
   label_creation?: unknown | null;
 

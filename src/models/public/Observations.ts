@@ -18,6 +18,9 @@ export default interface Observations {
 
   not_to_assign: boolean | null;
 
+  /** confirmed absence — the record states the species was NOT found */
+  absence: boolean | null;
+
   comment: string | null;
 
   /** data as received from GBIF */
@@ -57,6 +60,12 @@ export interface ObservationsInitializer {
 
   /** Default value: false */
   not_to_assign?: boolean | null;
+
+  /**
+   * confirmed absence — the record states the species was NOT found
+   * Default value: false
+   */
+  absence?: boolean | null;
 
   comment?: string | null;
 
@@ -100,6 +109,9 @@ export interface ObservationsMutator {
   place_id?: PlacesPlaceId | null;
 
   not_to_assign?: boolean | null;
+
+  /** confirmed absence — the record states the species was NOT found */
+  absence?: boolean | null;
 
   comment?: string | null;
 

@@ -1,0 +1,11 @@
+/* red works on light and dark backgrounds */
+.badge {
+  margin-left: 6px;
+  padding: 0 4px;
+  border: 1px solid #d13438;
+  border-radius: 4px;
+  color: #d13438;
+  font-size: 0.75em;
+  font-weight: 600;
+  white-space: nowrap;
+}

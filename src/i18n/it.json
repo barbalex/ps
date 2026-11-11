@@ -1,4 +1,17 @@
 {
+  "absenzBadge": "assenza",
+  "absTabLb": "Assenza",
+  "absMthLb": "Come sono contrassegnate le assenze nei dati?",
+  "absMthCl": "colonna booleana",
+  "absMthEx": "espressione SQL",
+  "absMthVl": "Sono supportate colonne booleane ed espressioni SQL. Nessuna selezione: nessuna assenza. Fare di nuovo clic sull’opzione selezionata per rimuoverla.",
+  "absFldLb": "Campo assenza",
+  "absFldVl": "Quale campo contiene un valore vero quando la specie non è stata trovata?",
+  "absExpLb": "Espressione SQL",
+  "absExpVl": "Un'espressione SQL vera per un'osservazione quando la specie non è stata trovata. Si riferisce ai dati della riga, p. es.: data->>'ANZAHL' = '0'",
+  "absSet": "Impostare le assenze di {count} osservazioni (impostandole di nuovo vengono ricalcolate tutte)",
+  "absSttg": "Impostazione delle assenze …",
+  "absBgTsk": "Impostazione delle assenze",
   "bPlaceHistoryFeature": "Cronologia",
   "bPlaceHistoryBack": "Indietro",
   "bPlaceCurrentVersion": "Versione attuale",
@@ -1291,5 +1304,6 @@
   "versionCheckBanner": "Una nuova versione ({availableVersion}) di Arten fördern è disponibile. La versione in uso ({appVersion}) è obsoleta e può causare errori.",
   "versionCheckUpdateNow": "Aggiorna l'app",
   "versionCheckLater": "più tardi",
-  "versionCheckUpdating": "Aggiornamento dell'app …"
+  "versionCheckUpdating": "Aggiornamento dell'app …",
+  "obs0Abs": "assenza"
 }

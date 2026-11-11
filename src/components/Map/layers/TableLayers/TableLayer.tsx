@@ -41,6 +41,10 @@ export type TableLayerProps = {
 // Leaflet's Map with the flag used to suppress click handling during drags
 type MapWithDragState = L.Map & { _isDraggingObservation?: boolean }
 
+// distinct look of confirmed absences (observations.absence), matching the
+// red of the AbsenzBadge: hollow red circles / faded red markers
+const ABSENCE_COLOR = '#d13438'
+
 // Leaflet layers carrying internal marker metadata used for hit detection
 type CircleMarkerWithMeta = L.CircleMarker & {
   vectorLayerLabel?: string
@@ -161,14 +165,18 @@ export const TableLayer = ({
             vectorLayerDisplay: displayToUse,
             presentation: layerPresentation,
           })
+          const style =
+            feature?.properties?.absence === true ?
+              { ...baseStyle, color: ABSENCE_COLOR, fillColor: 'transparent', fillOpacity: 0 }
+            : baseStyle
           if (
             activeId &&
             activeIdField &&
             feature?.properties?.[activeIdField] === activeId
           ) {
-            return { ...baseStyle, color: 'orange', weight: 3 }
+            return { ...style, color: 'orange', weight: 3 }
           }
-          return baseStyle
+          return style
         }}
         pointToLayer={(feature, latlng) => {
           const displayToUse = displayFromFeature(feature)
@@ -201,15 +209,19 @@ export const TableLayer = ({
               activeId &&
               activeIdField &&
               feature?.properties?.[activeIdField] === activeId
-            const visualCircle = new L.CircleMarker(latlng, {
-              ...displayToUse,
-              geomanIgnore: true,
-              ...(isActiveFeature ? { color: 'orange', weight: 3 } : {}),
-              radius: visualRadius,
-              interactive: false,
-              bubblingMouseEvents: false,
-              className: 'non-interactive-visual',
-            } as L.CircleMarkerOptions) as CircleMarkerWithMeta
+          const visualCircle = new L.CircleMarker(latlng, {
+            ...displayToUse,
+            geomanIgnore: true,
+            ...(isActiveFeature ? { color: 'orange', weight: 3 } : {}),
+            // absences: hollow red
+            ...(feature?.properties?.absence === true ?
+              { color: ABSENCE_COLOR, fillColor: 'transparent', fillOpacity: 0 }
+            : {}),
+            radius: visualRadius,
+            interactive: false,
+            bubblingMouseEvents: false,
+            className: 'non-interactive-visual',
+          } as L.CircleMarkerOptions) as CircleMarkerWithMeta
             // Mark as internal layer
             visualCircle._isInternal = true
 
@@ -327,8 +339,12 @@ export const TableLayer = ({
           clickableCircle._isInternal = true
 
           const markerIconStyle = {
-            '--marker-color': displayToUse.color ?? '#cc756b',
+            '--marker-color': feature?.properties?.absence === true ?
+              ABSENCE_COLOR
+            : (displayToUse.color ?? '#cc756b'),
             '--marker-size': `${markerSize}px`,
+            // absences: faded
+            ...(feature?.properties?.absence === true ? { opacity: '0.5' } : {}),
           } as React.CSSProperties
 
           const marker = (IconComponent

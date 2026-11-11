@@ -14,6 +14,9 @@ import type PlaceLevels from '../models/public/PlaceLevels.ts'
 // label back into vector_layers.label on every load (producing spurious pending
 // operations). See plan: "vector_layers labels redesign".
 
+// Language-specific name with German fallback: projects may define place
+// level names in German only, and a specific German name ('Populationen')
+// beats the generic i18n fallback ('Places') in any language
 const pluralName = (
   pl: PlaceLevels | undefined,
   language: Language,
@@ -21,11 +24,11 @@ const pluralName = (
   if (!pl) return undefined
   switch (language) {
     case 'en':
-      return pl.name_plural_en
+      return pl.name_plural_en ?? pl.name_plural_de
     case 'fr':
-      return pl.name_plural_fr
+      return pl.name_plural_fr ?? pl.name_plural_de
     case 'it':
-      return pl.name_plural_it
+      return pl.name_plural_it ?? pl.name_plural_de
     default:
       return pl.name_plural_de
   }
@@ -38,11 +41,11 @@ const singularName = (
   if (!pl) return undefined
   switch (language) {
     case 'en':
-      return pl.name_singular_en
+      return pl.name_singular_en ?? pl.name_singular_de
     case 'fr':
-      return pl.name_singular_fr
+      return pl.name_singular_fr ?? pl.name_singular_de
     case 'it':
-      return pl.name_singular_it
+      return pl.name_singular_it ?? pl.name_singular_de
     default:
       return pl.name_singular_de
   }

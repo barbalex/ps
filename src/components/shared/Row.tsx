@@ -4,7 +4,8 @@ import { useRef, useState } from 'react'
 import styles from './Row.module.css'
 
 type Props = {
-  label: string
+  // can be an element (e.g. observations' Absenz badge next to the label)
+  label: React.ReactNode
   to: string
   onClick?: () => void
   imgSrc?: string
@@ -122,7 +123,7 @@ export const Row = ({
           <img
             onClick={onClickImg}
             src={imgSrc}
-            alt={label}
+            alt={typeof label === 'string' ? label : ''}
             className={styles.img}
             width="50"
             height="50"

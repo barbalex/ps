@@ -8,6 +8,8 @@ export default interface TemplatePublicObservationsHistory {
 
   not_to_assign: boolean | null;
 
+  absence: boolean | null;
+
   comment: string | null;
 
   data: unknown | null;
@@ -37,6 +39,8 @@ export interface TemplatePublicObservationsHistoryInitializer {
 
   not_to_assign?: boolean | null;
 
+  absence?: boolean | null;
+
   comment?: string | null;
 
   data?: unknown | null;
@@ -65,6 +69,8 @@ export interface TemplatePublicObservationsHistoryMutator {
   place_id?: string | null;
 
   not_to_assign?: boolean | null;
+
+  absence?: boolean | null;
 
   comment?: string | null;
 
