@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { useAtomValue, useSetAtom } from 'jotai'
 import { useIntl } from 'react-intl'
 
@@ -6,12 +6,62 @@ import {
   addNotificationAtom,
   backgroundSyncingAtom,
   initialSyncingAtom,
+  onlineAtom,
   pgliteDbAtom,
   store,
   syncObjectAtom,
   updateNotificationAtom,
 } from '../store.ts'
 import { notifyAllLiveTables } from '../modules/gateLiveNotifyTriggers.ts'
+
+// TODO(debug): temporary dev-only table counts to diagnose empty reads after
+// sync — remove once the live-query staleness issue is resolved
+const DebugCounts = () => {
+  const db = useAtomValue(pgliteDbAtom)
+  const [counts, setCounts] = useState('')
+  useEffect(() => {
+    if (!db || !import.meta.env.DEV) return
+    const read = async () => {
+      try {
+        const r = await db.query(
+          `SELECT (SELECT count(*) FROM projects) AS projects, (SELECT count(*) FROM users) AS users, (SELECT count(*) FROM vector_layers) AS vl, (SELECT count(*) FROM places) AS places`,
+        )
+        const syncObject = store.get(syncObjectAtom) as {
+          isUpToDate?: boolean
+          isApplied?: boolean
+        } | null
+        setCounts(
+          JSON.stringify(r.rows[0]) +
+            ` sync:${syncObject ? (syncObject.isUpToDate ? 'uptodate' : 'catchingup') : 'none'}` +
+            ` applied:${syncObject?.isApplied ?? '-'} leader:${(db as { isLeader?: boolean }).isLeader ?? '-'}` +
+            ` online:${store.get(onlineAtom)}`,
+        )
+      } catch {
+        setCounts('(query failed)')
+      }
+    }
+    void read()
+    const t = setInterval(read, 3000)
+    return () => clearInterval(t)
+  }, [db])
+  if (!counts) return null
+  return (
+    <div
+      data-debug-counts
+      style={{
+        position: 'fixed',
+        bottom: 8,
+        right: 8,
+        font: '11px monospace',
+        background: '#ff0',
+        padding: '2px 6px',
+        zIndex: 99999,
+      }}
+    >
+      {counts}
+    </div>
+  )
+}
 
 // Shows a spinner notification while a post-boot sync applies a sustained
 // amount of data. Even with the database in a web worker, large batches keep
@@ -122,5 +172,9 @@ export const BackgroundSyncIndicator = () => {
     updateNotification,
   ])
 
-  return null
+  return (
+    <>
+      <DebugCounts />
+    </>
+  )
 }
