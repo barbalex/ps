@@ -54,6 +54,11 @@ dark mode not well implemented for: file upload?
 
 ---
 
+first: finish table_views:
+
+- create the ones for 'Art Idealbiotop' and "Biotop" Feldgruppe
+- how about how to design where to render the field view?
+
 ---
 
 new feature: design an own form to replace auto-generated one
