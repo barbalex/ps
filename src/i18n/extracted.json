@@ -2258,6 +2258,9 @@
   "pTRYGx": {
     "defaultMessage": "Erfasse neue Mitarbeitende mit ihrer E-Mail. Ergänze diese Person bei allen Arten, in denen sie mitarbeiten soll. Fertig!"
   },
+  "pV2cX1": {
+    "defaultMessage": "Noch keine Feldergruppe. Mit dem Plus oben rechts eine erstellen."
+  },
   "pV5WxY": {
     "defaultMessage": "Standard-Einheiten"
   },
@@ -2426,6 +2429,9 @@
   "qB8CdE": {
     "defaultMessage": "Standard-Einheit für Kontroll-Mengen"
   },
+  "qD6fG4": {
+    "defaultMessage": "Für diese Tabelle gibt es noch keine Feldergruppe. Feldergruppen werden pro Tabelle erstellt und bündeln deren Felder."
+  },
   "qH7MpR4": {
     "defaultMessage": "Bericht-Mengen im Bericht anzeigen"
   },
@@ -2582,6 +2588,9 @@
   "qyI8KV": {
     "defaultMessage": "Benutzer"
   },
+  "rE7gH5": {
+    "defaultMessage": "Feldergruppe für diese Tabelle erstellen →"
+  },
   "rEN8QI": {
     "defaultMessage": "Haben mehrere Mitarbeitende aus versehen offline die gleichen Daten geändert? Das lässt sich einfach korrigieren. {duSiehst}, wer was wann geändert hat."
   },
@@ -2656,6 +2665,9 @@
   },
   "sCdStg": {
     "defaultMessage": "Koordinaten von {count} Beobachtungen werden gesetzt"
+  },
+  "sF8hI6": {
+    "defaultMessage": "Feldergruppen dieser Tabelle verwalten →"
   },
   "sGAlSt": {
     "defaultMessage": "Alle {count} Geometrien der Beobachtungen sind gesetzt"

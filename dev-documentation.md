@@ -804,12 +804,16 @@ The route subtrees are copies of the `checks` subtrees (the codebase
 duplicates level 1/2 by hand as well). The config lives under
 `/data/projects/<projectId>/table-views/` — the list of tables views can be
 built on (`src/modules/tableViewTables.ts`: checks, actions, places,
-subprojects, projects), per table `/table-views/<tableName>/` the table's
+subprojects), per table `/table-views/<tableName>/` the table's
 views (drag rows to sort them — persisted as `sort`; the Sortierwert field
 in the view form remains as manual fallback), and
 `/table-views/<tableName>/<tableViewId>/` the view form (the table is shown
-there, chosen by where the view was created). Field groups live under
-`/data/projects/<projectId>/field-groups/...`.
+there, chosen by where the view was created). Field groups mirror this:
+`/field-groups/` lists the same tables, `/field-groups/<tableName>/` the
+table's groups (created there, with the fields multiselect), and
+`/field-groups/<tableName>/<fieldGroupId>/` the group form. The view
+form's Feldergruppe dropdown links there (especially when the table has
+no group yet).
 
 ## Where things live
 
@@ -822,7 +826,7 @@ there, chosen by where the view was created). Field groups live under
 | Sub-entity nav hooks | `useCheckQuantitiesNavData`, `useCheckTaxaNavData`, `useCheckQuantityNavData`, `useCheckTaxonNavData`, `useFilesNavData`, `useFileNavData` accept an optional `tableViewId` and insert the path segment |
 | Tree nodes | tree configs in `src/components/Tree/virtual/treeConfigs.tsx` (design mode node + one node per enabled view under a place) |
 | View config UI | `src/formsAndLists/tableViewsTables.tsx` (tables list) + `tableViews.tsx` (per-table views list with drag-to-sort) + `tableView/` (entity, also reachable from Project Configuration via `Configuration/TableViewsSection.tsx`) |
-| Field group config UI | `src/formsAndLists/fieldGroups.tsx` + `fieldGroup/` (entity, also reachable via `Configuration/FieldGroupsSection.tsx`) |
+| Field group config UI | `src/formsAndLists/fieldGroupsTables.tsx` (tables list) + `fieldGroups.tsx` (per-table) + `fieldGroup/` (entity, also reachable via `Configuration/FieldGroupsSection.tsx`) |
 | Place level UI | `src/formsAndLists/placeLevel/Form.tsx` renders a switch per view; `placeLevel/index.tsx` maps `table_view_<id>` switches onto the `table_views` jsonb |
 | View checks list + filter | `src/formsAndLists/tableChecks.tsx`, `tableCheck/Filter.tsx` |
 | Subproject view runtime | `src/modules/useSubprojectNavData.ts` (leaf navs `table-views/<id>`), `useSubprojectTableViewNavData.ts`, `subproject/TableView.tsx`, breadcrumbs `SubprojectTableViewFetcher.tsx` |

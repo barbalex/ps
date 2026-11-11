@@ -5,10 +5,14 @@ import { isEqual } from 'es-toolkit'
 import { useIntl } from 'react-intl'
 
 import { buildNavLabel } from './buildNavLabel.ts'
+import { tableViewTableLabel } from './tableViewTables.ts'
 import { treeOpenNodesAtom } from '../store.ts'
 
 type Props = {
   projectId: string
+  /** when given, the nav data describes the field groups of that one
+   * table (per-table list, breadcrumbs); otherwise all groups */
+  tableName?: string
 }
 
 type NavData = {
@@ -17,7 +21,7 @@ type NavData = {
   table_name: string | null
 }[]
 
-export const useFieldGroupsNavData = ({ projectId }: Props) => {
+export const useFieldGroupsNavData = ({ projectId, tableName }: Props) => {
   const [openNodes] = useAtom(treeOpenNodesAtom)
   const location = useLocation()
   const { formatMessage } = useIntl()
@@ -30,8 +34,9 @@ export const useFieldGroupsNavData = ({ projectId }: Props) => {
       table_name
     FROM field_groups
     WHERE project_id = $1
+      ${tableName ? `AND table_name = $2` : ''}
     ORDER BY label`,
-    [projectId],
+    tableName ? [projectId, tableName] : [projectId],
   )
 
   const loading = res === undefined
@@ -39,13 +44,24 @@ export const useFieldGroupsNavData = ({ projectId }: Props) => {
   const navs: NavData = res?.rows ?? []
   const parentArray = ['data', 'projects', projectId]
   const parentUrl = `/${parentArray.join('/')}`
-  const ownArray = [...parentArray, 'field-groups']
+  const ownArray = [
+    ...parentArray,
+    'field-groups',
+    ...(tableName ? [tableName] : []),
+  ]
   const ownUrl = `/${ownArray.join('/')}`
   // needs to work not only works for urlPath, for all opened paths!
   const isOpen = openNodes.some((array) => isEqual(array, ownArray))
   const urlPath = location.pathname.split('/').filter((p) => p !== '')
   const isInActiveNodeArray = ownArray.every((part, i) => urlPath[i] === part)
   const isActive = isEqual(urlPath, ownArray)
+
+  const namePlural = tableName
+    ? `${formatMessage({ id: 'zP3kM9', defaultMessage: 'Feldergruppen' })} (${tableViewTableLabel(tableName, formatMessage)})`
+    : formatMessage({
+        id: 'zP3kM9',
+        defaultMessage: 'Feldergruppen',
+      })
 
   const navData = {
     isInActiveNodeArray,
@@ -58,10 +74,7 @@ export const useFieldGroupsNavData = ({ projectId }: Props) => {
     label: buildNavLabel({
       countFiltered: navs.length,
       countUnfiltered: navs.length,
-      namePlural: formatMessage({
-        id: 'zP3kM9',
-        defaultMessage: 'Feldergruppen',
-      }),
+      namePlural,
       loading,
     }),
     nameSingular: formatMessage({

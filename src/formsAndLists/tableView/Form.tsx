@@ -1,6 +1,7 @@
 import { useMemo } from 'react'
 import { useLiveQuery } from '@electric-sql/pglite-react'
 import { useIntl } from 'react-intl'
+import { Link } from '@tanstack/react-router'
 import * as fluentUiReactComponents from '@fluentui/react-components'
 const { Dropdown, Field, Option, Input } = fluentUiReactComponents
 
@@ -258,6 +259,34 @@ const FieldGroupEditor = ({
           </Option>
         ))}
       </Dropdown>
+      {fieldGroups.length === 0 ? (
+        <SectionDescription>
+          {formatMessage({
+            id: 'qD6fG4',
+            defaultMessage:
+              'Für diese Tabelle gibt es noch keine Feldergruppe. Feldergruppen werden pro Tabelle erstellt und bündeln deren Felder.',
+          })}{' '}
+          <Link
+            to={`/data/projects/${projectId}/field-groups/${tableName}` as string}
+            style={{ fontSize: 'small' }}
+          >
+            {formatMessage({
+              id: 'rE7gH5',
+              defaultMessage: 'Feldergruppe für diese Tabelle erstellen →',
+            })}
+          </Link>
+        </SectionDescription>
+      ) : (
+        <Link
+          to={`/data/projects/${projectId}/field-groups/${tableName}` as string}
+          style={{ fontSize: 'small' }}
+        >
+          {formatMessage({
+            id: 'sF8hI6',
+            defaultMessage: 'Feldergruppen dieser Tabelle verwalten →',
+          })}
+        </Link>
+      )}
     </Field>
   )
 }

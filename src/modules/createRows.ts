@@ -1086,14 +1086,16 @@ export const createTableView = async ({
 
 export const createFieldGroup = async ({
   projectId,
+  tableName,
 }: {
   projectId: string
+  tableName: string
 }) => {
   const field_group_id = uuidv7()
   const db = store.get(pgliteDbAtom)!
   await db.query(
     `INSERT INTO field_groups (field_group_id, project_id, table_name, sorted_field_ids) VALUES ($1, $2, $3, $4)`,
-    [field_group_id, projectId, 'checks', []],
+    [field_group_id, projectId, tableName, []],
   )
 
   store.set(addOperationAtom, {
@@ -1102,7 +1104,7 @@ export const createFieldGroup = async ({
     draft: {
       field_group_id,
       project_id: projectId,
-      table_name: 'checks',
+      table_name: tableName,
       sorted_field_ids: [],
     },
   })

@@ -1321,5 +1321,9 @@
   "rY6uI8": "Projects",
   "gV7bW9": "No views yet. Create one with the plus at the top right.",
   "hJ9sD2": "Table",
-  "kW2xR6": "Optional: choose a field group (show only these columns). Empty = all columns."
+  "kW2xR6": "Optional: choose a field group (show only these columns). Empty = all columns.",
+  "qD6fG4": "No field group exists for this table yet. Field groups are created per table and bundle its fields.",
+  "rE7gH5": "Create a field group for this table →",
+  "sF8hI6": "Manage this table’s field groups →",
+  "pV2cX1": "No field groups yet. Create one with the plus at the top right."
 }
