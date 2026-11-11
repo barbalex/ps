@@ -961,11 +961,11 @@ export const createSubprojectReport = async ({
 export const createCheck = async ({
   projectId,
   placeId,
-  filteredViewId,
+  tableViewId,
 }: {
   projectId: string
   placeId: string
-  filteredViewId?: string
+  tableViewId?: string
 }) => {
   const db = store.get(pgliteDbAtom)!
   // find fields with preset values on the data column
@@ -975,8 +975,8 @@ export const createCheck = async ({
   })
   // a filtered view sets the values it filters for
   const viewData: { data: Record<string, unknown>; columns: Record<string, unknown> } =
-    filteredViewId
-      ? await getDataFromFilteredView({ filteredViewId })
+    tableViewId
+      ? await getDataFromTableView({ tableViewId })
       : { data: {}, columns: {} }
 
   const check_id = uuidv7()
@@ -1014,15 +1014,15 @@ export const createCheck = async ({
  * multiple OR-conditions cannot preset a single matching value).
  * Only "$eq" values define a value to preset; other operators ("$ne") do not.
  */
-export const getDataFromFilteredView = async ({
-  filteredViewId,
+export const getDataFromTableView = async ({
+  tableViewId,
 }: {
-  filteredViewId: string
+  tableViewId: string
 }) => {
   const db = store.get(pgliteDbAtom)!
   const res = await db.query<{ filter: unknown }>(
-    `SELECT filter FROM filtered_views WHERE filtered_view_id = $1`,
-    [filteredViewId],
+    `SELECT filter FROM table_views WHERE table_view_id = $1`,
+    [tableViewId],
   )
   const view = res?.rows?.[0]
   const firstOrCondition =
@@ -1050,30 +1050,56 @@ export const getDataFromFilteredView = async ({
   return { data, columns }
 }
 
-export const createFilteredView = async ({
+export const createTableView = async ({
   projectId,
 }: {
   projectId: string
 }) => {
-  const filtered_view_id = uuidv7()
+  const table_view_id = uuidv7()
   const db = store.get(pgliteDbAtom)!
   await db.query(
-    `INSERT INTO filtered_views (filtered_view_id, project_id, table_name, sort) VALUES ($1, $2, $3, $4)`,
-    [filtered_view_id, projectId, 'checks', 0],
+    `INSERT INTO table_views (table_view_id, project_id, table_name, sort) VALUES ($1, $2, $3, $4)`,
+    [table_view_id, projectId, 'checks', 0],
   )
 
   store.set(addOperationAtom, {
-    table: 'filtered_views',
+    table: 'table_views',
     operation: 'insert',
     draft: {
-      filtered_view_id,
+      table_view_id,
       project_id: projectId,
       table_name: 'checks',
       sort: 0,
     },
   })
 
-  return filtered_view_id
+  return table_view_id
+}
+
+export const createFieldGroup = async ({
+  projectId,
+}: {
+  projectId: string
+}) => {
+  const field_group_id = uuidv7()
+  const db = store.get(pgliteDbAtom)!
+  await db.query(
+    `INSERT INTO field_groups (field_group_id, project_id, table_name, sorted_field_ids) VALUES ($1, $2, $3, $4)`,
+    [field_group_id, projectId, 'checks', []],
+  )
+
+  store.set(addOperationAtom, {
+    table: 'field_groups',
+    operation: 'insert',
+    draft: {
+      field_group_id,
+      project_id: projectId,
+      table_name: 'checks',
+      sorted_field_ids: [],
+    },
+  })
+
+  return field_group_id
 }
 
 export const createCheckQuantity = async ({

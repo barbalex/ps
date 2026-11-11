@@ -19,7 +19,7 @@
 //
 // apf2-sourced rows use apf2's own uuidv7 ids verbatim (subprojects, places,
 // checks, check_taxa, actions, *_reports, subproject_taxa). ps-only constructs
-// (project, place levels, filtered views, lists, units, fields) use
+// (project, place levels, table views, lists, units, fields) use
 // deterministic md5-derived uuidv7-shaped ids. Regenerating produces stable
 // ids either way; the seed is idempotent (ON CONFLICT DO NOTHING) and
 // assert-guarded.
@@ -86,9 +86,9 @@ const derivedId = (kind, key) => {
   return `${u.slice(0, 8)}-${u.slice(8, 12)}-${u.slice(12, 16)}-${u.slice(16, 20)}-${u.slice(20, 32)}`
 }
 
-// filtered views: the apflora checks are presented as Feld-Kontrollen and
+// table views: the apflora checks are presented as Feld-Kontrollen and
 // Freiwilligen-Kontrollen, filtered on the typ field of the data jsonb
-const filteredViewDefs = [
+const tableViewDefs = [
   {
     key: 'feld-kontrollen',
     deSingular: 'Feld-Kontrolle',
@@ -118,9 +118,11 @@ const filteredViewDefs = [
     sort: 2,
   },
 ]
-const filteredViewId = (key) => derivedId('filtered_view', key)
-const filteredViewsMap = () =>
-  Object.fromEntries(filteredViewDefs.map((v) => [filteredViewId(v.key), true]))
+// salt stays 'filtered_view': the ids exist in seeded databases and
+// place_levels.table_views references them by id
+const tableViewId = (key) => derivedId('filtered_view', key)
+const tableViewsMap = () =>
+  Object.fromEntries(tableViewDefs.map((v) => [tableViewId(v.key), true]))
 
 const q = (s) => `'${String(s).replaceAll("'", "''")}'`
 const numOrNull = (n) => (n === null || n === undefined ? 'null' : String(n))
@@ -761,7 +763,7 @@ const placeLevelDefs = [
 
 emit('-- place levels')
 emit(
-  `INSERT INTO place_levels(place_level_id, project_id, level, name_singular_de, name_plural_de, name_singular_en, name_plural_en, name_singular_fr, name_plural_fr, name_singular_it, name_plural_it, checks, check_quantities, check_taxa, check_reports, check_report_quantities, actions, action_quantities, action_taxa, action_reports, action_report_quantities, filtered_views) values`,
+  `INSERT INTO place_levels(place_level_id, project_id, level, name_singular_de, name_plural_de, name_singular_en, name_plural_en, name_singular_fr, name_plural_fr, name_singular_it, name_plural_it, checks, check_quantities, check_taxa, check_reports, check_report_quantities, actions, action_quantities, action_taxa, action_reports, action_report_quantities, table_views) values`,
 )
 placeLevelDefs.forEach((def, i) => {
   const [sgDe, plDe] = def.names.de
@@ -773,7 +775,7 @@ placeLevelDefs.forEach((def, i) => {
       ? 'false, false, false, true, true, false, false, false, true, true'
       : 'false, true, true, true, true, true, true, true, true, true'
   emit(
-    `  (${q(def.id)}, ${q(PROJECT_ID)}, ${def.level}, ${q(sgDe)}, ${q(plDe)}, ${q(sgEn)}, ${q(plEn)}, ${q(sgFr)}, ${q(plFr)}, ${q(sgIt)}, ${q(plIt)}, ${config}, ${def.level === 1 ? `'{}'::jsonb` : jsonbOrNull(filteredViewsMap())})${i < placeLevelDefs.length - 1 ? ',' : ''}`,
+    `  (${q(def.id)}, ${q(PROJECT_ID)}, ${def.level}, ${q(sgDe)}, ${q(plDe)}, ${q(sgEn)}, ${q(plEn)}, ${q(sgFr)}, ${q(plFr)}, ${q(sgIt)}, ${q(plIt)}, ${config}, ${def.level === 1 ? `'{}'::jsonb` : jsonbOrNull(tableViewsMap())})${i < placeLevelDefs.length - 1 ? ',' : ''}`,
   )
 })
 emit(`  ON CONFLICT (place_level_id) DO NOTHING;`)
@@ -786,7 +788,7 @@ for (const def of placeLevelDefs) {
   }).join(', ')
   const config =
     def.level === 2
-      ? `, checks = false, filtered_views = ${jsonbOrNull(filteredViewsMap())}`
+      ? `, checks = false, table_views = ${jsonbOrNull(tableViewsMap())}`
       : ''
   emit(
     `UPDATE place_levels SET ${setNames}${config} WHERE place_level_id = ${q(def.id)};`,
@@ -844,19 +846,19 @@ emit(
   `  WHERE NOT EXISTS (SELECT 1 FROM layer_presentations lp WHERE lp.vector_layer_id = vl.vector_layer_id);`,
 )
 
-emit('-- filtered views (Feld-Kontrollen / Freiwilligen-Kontrollen as views on checks)')
+emit('-- table views (Feld-Kontrollen / Freiwilligen-Kontrollen as views on checks)')
 emit(
-  `INSERT INTO filtered_views(filtered_view_id, project_id, table_name, name_singular_de, name_plural_de, name_singular_en, name_plural_en, name_singular_fr, name_plural_fr, name_singular_it, name_plural_it, filter, label_by, sort) values`,
+  `INSERT INTO table_views(table_view_id, project_id, table_name, name_singular_de, name_plural_de, name_singular_en, name_plural_en, name_singular_fr, name_plural_fr, name_singular_it, name_plural_it, filter, label_by, sort) values`,
 )
-filteredViewDefs.forEach((view, i) => {
+tableViewDefs.forEach((view, i) => {
   emit(
-    `  (${q(filteredViewId(view.key))}, ${q(PROJECT_ID)}, 'checks', ${q(view.deSingular)}, ${q(view.dePlural)}, ${q(view.enSingular)}, ${q(view.enPlural)}, ${q(view.frSingular)}, ${q(view.frPlural)}, ${q(view.itSingular)}, ${q(view.itPlural)}, ${jsonbOrNull([view.filter])}, ${jsonbOrNull(view.labelBy.length ? view.labelBy : null)}, ${view.sort})${i < filteredViewDefs.length - 1 ? ',' : ''}`,
+    `  (${q(tableViewId(view.key))}, ${q(PROJECT_ID)}, 'checks', ${q(view.deSingular)}, ${q(view.dePlural)}, ${q(view.enSingular)}, ${q(view.enPlural)}, ${q(view.frSingular)}, ${q(view.frPlural)}, ${q(view.itSingular)}, ${q(view.itPlural)}, ${jsonbOrNull([view.filter])}, ${jsonbOrNull(view.labelBy.length ? view.labelBy : null)}, ${view.sort})${i < tableViewDefs.length - 1 ? ',' : ''}`,
   )
 })
-emit(`  ON CONFLICT (filtered_view_id) DO NOTHING;`)
-filteredViewDefs.forEach((view) => {
+emit(`  ON CONFLICT (table_view_id) DO NOTHING;`)
+tableViewDefs.forEach((view) => {
   emit(
-    `UPDATE filtered_views SET table_name = 'checks', name_singular_de = ${q(view.deSingular)}, name_plural_de = ${q(view.dePlural)}, name_singular_en = ${q(view.enSingular)}, name_plural_en = ${q(view.enPlural)}, name_singular_fr = ${q(view.frSingular)}, name_plural_fr = ${q(view.frPlural)}, name_singular_it = ${q(view.itSingular)}, name_plural_it = ${q(view.itPlural)}, filter = ${jsonbOrNull([view.filter])}, label_by = ${jsonbOrNull(view.labelBy.length ? view.labelBy : null)}, sort = ${view.sort} WHERE filtered_view_id = ${q(filteredViewId(view.key))};`,
+    `UPDATE table_views SET table_name = 'checks', name_singular_de = ${q(view.deSingular)}, name_plural_de = ${q(view.dePlural)}, name_singular_en = ${q(view.enSingular)}, name_plural_en = ${q(view.enPlural)}, name_singular_fr = ${q(view.frSingular)}, name_plural_fr = ${q(view.frPlural)}, name_singular_it = ${q(view.itSingular)}, name_plural_it = ${q(view.itPlural)}, filter = ${jsonbOrNull([view.filter])}, label_by = ${jsonbOrNull(view.labelBy.length ? view.labelBy : null)}, sort = ${view.sort} WHERE table_view_id = ${q(tableViewId(view.key))};`,
   )
 })
 
@@ -1132,7 +1134,7 @@ for (let i = 0; i < placeHistoryRows.length; i += 500) {
 }
 if (!placeHistoryRows.length) emit('-- (no historizations in the source dump)')
 
-emitChunked('checks (apf2: tpopkontr; presented as the filtered views Feld-Kontrollen and Freiwilligen-Kontrollen)', {
+emitChunked('checks (apf2: tpopkontr; presented as the table views Feld-Kontrollen and Freiwilligen-Kontrollen)', {
   table: 'checks',
   cols: ['check_id', 'place_id', 'date', 'data'],
   pk: 'check_id',

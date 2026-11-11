@@ -17,6 +17,7 @@ export const CheckForm = ({
   orIndex,
   from,
   autoFocusRef,
+  fieldIds,
 }: {
   onChange: FieldChangeHandler
   validations?: Record<
@@ -28,6 +29,8 @@ export const CheckForm = ({
   orIndex?: number
   from?: string
   autoFocusRef?: React.RefObject<HTMLInputElement | null>
+  /** restrict rendering to these field_ids (field group of a table view) */
+  fieldIds?: string[]
 }) => {
   // need to extract the jsonb data from the row
   // as inside filters it's name is a path
@@ -65,6 +68,7 @@ export const CheckForm = ({
         from={from ?? ''}
         autoFocus
         ref={autoFocusRef as unknown as React.Ref<HTMLDivElement>}
+        fieldIds={fieldIds}
       />
       <EditingGeometry
         row={

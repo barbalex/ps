@@ -83,8 +83,8 @@ export default interface PlaceLevels {
 
   check_taxa_in_check: boolean | null;
 
-  /** Map of filtered_view_id -> boolean: whether this filtered view is used on this place level. Preset: NULL (no view enabled) */
-  filtered_views: unknown | null;
+  /** Map of table_view_id -> boolean: whether this filtered view is used on this place level. Preset: NULL (no view enabled) */
+  table_views: unknown | null;
 
   /** Are observations used? Preset: true */
   observations: boolean | null;
@@ -246,8 +246,8 @@ export interface PlaceLevelsInitializer {
   /** Default value: true */
   check_taxa_in_check?: boolean | null;
 
-  /** Map of filtered_view_id -> boolean: whether this filtered view is used on this place level. Preset: NULL (no view enabled) */
-  filtered_views?: unknown | null;
+  /** Map of table_view_id -> boolean: whether this filtered view is used on this place level. Preset: NULL (no view enabled) */
+  table_views?: unknown | null;
 
   /**
    * Are observations used? Preset: true
@@ -389,8 +389,8 @@ export interface PlaceLevelsMutator {
 
   check_taxa_in_check?: boolean | null;
 
-  /** Map of filtered_view_id -> boolean: whether this filtered view is used on this place level. Preset: NULL (no view enabled) */
-  filtered_views?: unknown | null;
+  /** Map of table_view_id -> boolean: whether this filtered view is used on this place level. Preset: NULL (no view enabled) */
+  table_views?: unknown | null;
 
   /** Are observations used? Preset: true */
   observations?: boolean | null;

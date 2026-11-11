@@ -329,7 +329,7 @@ CREATE TABLE IF NOT EXISTS place_levels(
   check_quantities_in_check boolean DEFAULT TRUE,
   check_taxa boolean DEFAULT TRUE,
   check_taxa_in_check boolean DEFAULT TRUE,
-  filtered_views jsonb DEFAULT NULL,
+  table_views jsonb DEFAULT NULL,
   observations boolean DEFAULT TRUE,
   place_roles_in_place boolean DEFAULT TRUE,
   place_files boolean DEFAULT TRUE,
@@ -358,8 +358,26 @@ CREATE INDEX IF NOT EXISTS place_levels_level_idx ON place_levels USING btree(le
 CREATE INDEX IF NOT EXISTS place_levels_name_singular_de_idx ON place_levels USING btree(name_singular_de);
 CREATE INDEX IF NOT EXISTS place_levels_label_idx ON place_levels USING btree(label);
 
+-- filtered_views -> table_views rename (2026-11): heal databases created
+-- before the schema caught up
+DO $$
+BEGIN
+  IF EXISTS (
+    SELECT 1 FROM information_schema.columns
+    WHERE table_schema = 'public' AND table_name = 'place_levels'
+      AND column_name = 'filtered_views'
+  ) AND NOT EXISTS (
+    SELECT 1 FROM information_schema.columns
+    WHERE table_schema = 'public' AND table_name = 'place_levels'
+      AND column_name = 'table_views'
+  ) THEN
+    ALTER TABLE place_levels RENAME COLUMN filtered_views TO table_views;
+  END IF;
+END
+$$;
+
 ALTER TABLE place_levels
-ADD COLUMN IF NOT EXISTS filtered_views jsonb DEFAULT NULL;
+ADD COLUMN IF NOT EXISTS table_views jsonb DEFAULT NULL;
 
 COMMENT ON COLUMN place_levels.level IS 'level of place: 1, 2';
 COMMENT ON COLUMN place_levels.name_singular_de IS 'German singular name. Preset: "Population"';
@@ -382,7 +400,7 @@ COMMENT ON COLUMN place_levels.checks IS 'Are checks used? Preset: true';
 COMMENT ON COLUMN place_levels.check_quantities IS 'Are check values used? Preset: true';
 COMMENT ON COLUMN place_levels.check_quantities_in_check IS 'Show check quantities inside the check form instead of a separate route? Preset: true';
 COMMENT ON COLUMN place_levels.check_taxa IS 'Are check taxa used? Preset: true';
-COMMENT ON COLUMN place_levels.filtered_views IS 'Map of filtered_view_id -> boolean: whether this filtered view is used on this place level. Preset: NULL (no view enabled)';
+COMMENT ON COLUMN place_levels.table_views IS 'Map of table_view_id -> boolean: whether this table view is used on this place level. Preset: NULL (no view enabled)';
 COMMENT ON COLUMN place_levels.observations IS 'Are observations used? Preset: true';
 COMMENT ON COLUMN place_levels.place_roles_in_place IS 'Render place users inside the place form? Preset: true';
 COMMENT ON COLUMN place_levels.place_files IS 'Are files used for places on this level? Preset: false';
@@ -1441,10 +1459,57 @@ CREATE INDEX IF NOT EXISTS field_sorts_sorted_field_ids_idx ON field_sorts USING
 COMMENT ON TABLE field_sorts IS 'Stores the sort order of fields per table_name';
 
 --------------------------------------------------------------
--- filtered_views
+-- field_groups
 --
-CREATE TABLE IF NOT EXISTS filtered_views(
-  filtered_view_id uuid PRIMARY KEY DEFAULT uuidv7(),
+CREATE TABLE IF NOT EXISTS field_groups(
+  field_group_id uuid PRIMARY KEY DEFAULT uuidv7(),
+  project_id uuid DEFAULT NULL REFERENCES projects(project_id) ON DELETE CASCADE ON UPDATE CASCADE DEFERRABLE INITIALLY DEFERRED,
+  table_name text DEFAULT NULL,
+  name text DEFAULT NULL,
+  sorted_field_ids uuid[] DEFAULT NULL,
+  label text GENERATED ALWAYS AS (coalesce(nullif(name, ''), field_group_id::text)) STORED,
+  sys_period tstzrange DEFAULT NULL,
+  created_at timestamptz NOT NULL DEFAULT now(),
+  updated_at timestamptz NOT NULL DEFAULT now(),
+  updated_by text DEFAULT NULL
+);
+
+CREATE INDEX IF NOT EXISTS field_groups_project_id_idx ON field_groups USING btree(project_id);
+CREATE INDEX IF NOT EXISTS field_groups_table_name_idx ON field_groups USING btree(table_name);
+CREATE INDEX IF NOT EXISTS field_groups_label_idx ON field_groups USING btree(label);
+
+COMMENT ON COLUMN field_groups.table_name IS 'Table the grouped fields belong to. Currently only "checks"';
+COMMENT ON COLUMN field_groups.name IS 'Name of the group. Example: "Biotop" (the biotope fields of a check)';
+COMMENT ON COLUMN field_groups.sorted_field_ids IS 'field_ids (fields.field_id) of the group, in form order. No foreign key possible on arrays; ids of deleted fields are ignored when rendering';
+COMMENT ON TABLE field_groups IS 'Named groups of fields of a table. Table views use them to show only a subset of the columns. Example: "Biotop": the biotope fields of a check';
+
+--------------------------------------------------------------
+-- table_views
+--
+-- the filtered_views -> table_views rename (2026-11): heal databases
+-- created before the schema caught up
+DO $$
+BEGIN
+  IF EXISTS (
+    SELECT 1 FROM pg_tables
+    WHERE schemaname = 'public' AND tablename = 'filtered_views'
+  ) AND NOT EXISTS (
+    SELECT 1 FROM pg_tables
+    WHERE schemaname = 'public' AND tablename = 'table_views'
+  ) THEN
+    ALTER TABLE filtered_views RENAME TO table_views;
+    ALTER TABLE table_views RENAME COLUMN filtered_view_id TO table_view_id;
+    ALTER TABLE table_views RENAME CONSTRAINT filtered_views_pkey TO table_views_pkey;
+    ALTER INDEX IF EXISTS filtered_views_project_id_idx RENAME TO table_views_project_id_idx;
+    ALTER INDEX IF EXISTS filtered_views_table_name_idx RENAME TO table_views_table_name_idx;
+    ALTER INDEX IF EXISTS filtered_views_sort_idx RENAME TO table_views_sort_idx;
+    ALTER INDEX IF EXISTS filtered_views_label_idx RENAME TO table_views_label_idx;
+  END IF;
+END
+$$;
+
+CREATE TABLE IF NOT EXISTS table_views(
+  table_view_id uuid PRIMARY KEY DEFAULT uuidv7(),
   project_id uuid DEFAULT NULL REFERENCES projects(project_id) ON DELETE CASCADE ON UPDATE CASCADE DEFERRABLE INITIALLY DEFERRED,
   table_name text DEFAULT NULL,
   name_singular_de text DEFAULT NULL,
@@ -1456,27 +1521,35 @@ CREATE TABLE IF NOT EXISTS filtered_views(
   name_singular_it text DEFAULT NULL,
   name_plural_it text DEFAULT NULL,
   filter jsonb DEFAULT NULL,
+  field_group_id uuid DEFAULT NULL REFERENCES field_groups(field_group_id) ON DELETE SET NULL ON UPDATE CASCADE DEFERRABLE INITIALLY DEFERRED,
   label_by jsonb DEFAULT NULL,
   sort integer DEFAULT 0,
-  label text GENERATED ALWAYS AS (coalesce(nullif(name_plural_de, ''), filtered_view_id::text)) STORED,
+  label text GENERATED ALWAYS AS (coalesce(nullif(name_plural_de, ''), table_view_id::text)) STORED,
   sys_period tstzrange DEFAULT NULL,
   created_at timestamptz NOT NULL DEFAULT now(),
   updated_at timestamptz NOT NULL DEFAULT now(),
   updated_by text DEFAULT NULL
 );
 
-CREATE INDEX IF NOT EXISTS filtered_views_project_id_idx ON filtered_views USING btree(project_id);
-CREATE INDEX IF NOT EXISTS filtered_views_table_name_idx ON filtered_views USING btree(table_name);
-CREATE INDEX IF NOT EXISTS filtered_views_sort_idx ON filtered_views USING btree(sort);
-CREATE INDEX IF NOT EXISTS filtered_views_label_idx ON filtered_views USING btree(label);
+-- for databases healed from the filtered_views rename (where the column
+-- did not exist yet); no-op on fresh databases
+ALTER TABLE table_views
+ADD COLUMN IF NOT EXISTS field_group_id uuid DEFAULT NULL REFERENCES field_groups(field_group_id) ON DELETE SET NULL ON UPDATE CASCADE DEFERRABLE INITIALLY DEFERRED;
 
-COMMENT ON COLUMN filtered_views.table_name IS 'Table this view filters. Currently only "checks"';
-COMMENT ON COLUMN filtered_views.name_singular_de IS 'German singular name. Example: "Feld-Kontrolle"';
-COMMENT ON COLUMN filtered_views.name_plural_de IS 'German plural name. Example: "Feld-Kontrollen"';
-COMMENT ON COLUMN filtered_views.filter IS 'Static filter in the same format as user table row filters: array of OR-conditions, each an object of AND column conditions. Keys prefixed "data." target the jsonb data column. Use {"$eq": value} for exact matches and {"$ne": value} for negated matches (null values included). Example: [{"data.typ": {"$eq": "Kontrolle"}}]';
-COMMENT ON COLUMN filtered_views.label_by IS 'Names of data fields appended to the year to label the rows of the view, in apf2 manner: lpad(year), then colon, then the value of each field. Empty/null = year only';
-COMMENT ON COLUMN filtered_views.sort IS 'Sort order of the views in navigation';
-COMMENT ON TABLE filtered_views IS 'Named, filtered views on tables. Example: two views on checks: "Feld-Kontrollen" (typ = Kontrolle) and "Freiwilligen-Kontrollen" (typ = Freiwilligen-Kontrolle). Enabled per place level via place_levels.filtered_views';
+CREATE INDEX IF NOT EXISTS table_views_project_id_idx ON table_views USING btree(project_id);
+CREATE INDEX IF NOT EXISTS table_views_table_name_idx ON table_views USING btree(table_name);
+CREATE INDEX IF NOT EXISTS table_views_field_group_id_idx ON table_views USING btree(field_group_id);
+CREATE INDEX IF NOT EXISTS table_views_sort_idx ON table_views USING btree(sort);
+CREATE INDEX IF NOT EXISTS table_views_label_idx ON table_views USING btree(label);
+
+COMMENT ON COLUMN table_views.table_name IS 'Table this view is defined on. Currently only "checks"';
+COMMENT ON COLUMN table_views.name_singular_de IS 'German singular name. Example: "Feld-Kontrolle"';
+COMMENT ON COLUMN table_views.name_plural_de IS 'German plural name. Example: "Feld-Kontrollen"';
+COMMENT ON COLUMN table_views.filter IS 'Optional static row filter in the same format as user table row filters: array of OR-conditions, each an object of AND column conditions. Keys prefixed "data." target the jsonb data column. Use {"$eq": value} for exact matches and {"$ne": value} for negated matches (null values included). Example: [{"data.typ": {"$eq": "Kontrolle"}}]. Null/empty = all rows';
+COMMENT ON COLUMN table_views.field_group_id IS 'Optional field group: the view shows only these columns. Null = all columns';
+COMMENT ON COLUMN table_views.label_by IS 'Names of data fields appended to the year to label the rows of the view, in apf2 manner: lpad(year), then colon, then the value of each field. Empty/null = year only';
+COMMENT ON COLUMN table_views.sort IS 'Sort order of the views in navigation';
+COMMENT ON TABLE table_views IS 'Named views on tables, separating rows by an optional filter and/or columns by an optional field group. Example: two views on checks: "Feld-Kontrollen" (typ = Kontrolle) and "Freiwilligen-Kontrollen" (typ = Freiwilligen-Kontrolle). Enabled per place level via place_levels.table_views';
 
 --------------------------------------------------------------
 --observation_imports

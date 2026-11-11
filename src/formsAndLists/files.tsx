@@ -21,7 +21,7 @@ export const Files = ({
   placeId2,
   actionId,
   checkId,
-  filteredViewId,
+  tableViewId,
   hideTitle = false,
 }: {
   projectId?: string
@@ -30,7 +30,7 @@ export const Files = ({
   placeId2?: string
   actionId?: string
   checkId?: string
-  filteredViewId?: string
+  tableViewId?: string
   hideTitle?: boolean
 }) => {
   const { loading, navData, isFiltered } = useFilesNavData({
@@ -40,7 +40,7 @@ export const Files = ({
     placeId2,
     actionId,
     checkId,
-    filteredViewId,
+    tableViewId,
   })
   const { navs, label, nameSingular } = navData
 

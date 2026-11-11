@@ -41,26 +41,26 @@ export const Header = ({
   // works for plain checks and for checks of a filtered view
   const isForm = from.endsWith('/checks/$checkId_/check')
   const { formatMessage, locale } = useIntl()
-  const { projectId, subprojectId, placeId, placeId2, filteredViewId, checkId } =
+  const { projectId, subprojectId, placeId, placeId2, tableViewId, checkId } =
     useParams({
       strict: false,
     })
 
   // names of the filtered view this check belongs to (if any)
-  const resFilteredView = useLiveQuery(
-    filteredViewId
-      ? `SELECT name_singular_de, name_singular_en, name_singular_fr, name_singular_it, filter FROM filtered_views WHERE filtered_view_id = $1`
+  const resTableView = useLiveQuery(
+    tableViewId
+      ? `SELECT name_singular_de, name_singular_en, name_singular_fr, name_singular_it, filter FROM table_views WHERE table_view_id = $1`
       : `SELECT 1 WHERE false`,
-    filteredViewId ? [filteredViewId] : [],
+    tableViewId ? [tableViewId] : [],
   )
   const lang = locale.split('-')[0]
-  const filteredView = resFilteredView?.rows?.[0] as
+  const tableView = resTableView?.rows?.[0] as
     | Record<string, unknown>
     | undefined
   const checkTitle =
-    (filteredViewId &&
-      ((filteredView?.[`name_singular_${lang}`] as string | null) ??
-        (filteredView?.name_singular_de as string | null))) ||
+    (tableViewId &&
+      ((tableView?.[`name_singular_${lang}`] as string | null) ??
+        (tableView?.name_singular_de as string | null))) ||
     formatMessage({ id: 'ZCwpER', defaultMessage: 'Kontrolle' })
 
   const [tabs, setTabs] = useAtom(tabsAtom)
@@ -88,12 +88,12 @@ export const Header = ({
   const hasGeometry = geometryRes?.rows?.[0]?.has_geometry === true
 
   // the view's static filter narrows counts and sibling navigation
-  const viewFilterString = filteredViewId
-    ? filterStringFromFilter((filteredView?.filter ?? []) as TableRowFilter[])
+  const viewFilterString = tableViewId
+    ? filterStringFromFilter((tableView?.filter ?? []) as TableRowFilter[])
     : ''
   const hasViewFilter = !!viewFilterString
 
-  const basePath = `${placeId2 ? `/data/projects/${projectId}/subprojects/${subprojectId}/places/${placeId}/places/${placeId2}` : `/data/projects/${projectId}/subprojects/${subprojectId}/places/${placeId}`}${filteredViewId ? `/filtered-checks/${filteredViewId}` : ''}/checks/${checkId}`
+  const basePath = `${placeId2 ? `/data/projects/${projectId}/subprojects/${subprojectId}/places/${placeId}/places/${placeId2}` : `/data/projects/${projectId}/subprojects/${subprojectId}/places/${placeId}`}${tableViewId ? `/table-views/${tableViewId}` : ''}/checks/${checkId}`
 
   const countRes = useLiveQuery(
     `SELECT COUNT(*) as count FROM checks WHERE place_id = '${placeId2 ?? placeId}'${hasViewFilter ? ` AND (${viewFilterString})` : ''}`,
@@ -104,7 +104,7 @@ export const Header = ({
     const id = await createCheck({
       projectId: projectId!,
       placeId: placeId2 ?? placeId!,
-      filteredViewId,
+      tableViewId,
     })
     if (!id) return
     navigate({

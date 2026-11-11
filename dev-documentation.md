@@ -700,120 +700,171 @@ For each new doc:
 
 ## Things to document
 
-# 8 Filtered Views On Tables
+# 8 Table Views On Tables
 
 ## What it is
 
-A project can define named, filtered views on a table. Each view gets its own
-node in the navigation tree, its own breadcrumbs, its own list form and edit
-form — parallel to the "real" table it filters, which it usually replaces.
+A project can define named views on a table, separating it by **rows**
+and/or by **columns**. Each view gets its own node in the navigation tree,
+its own breadcrumbs, its own list form and edit form — parallel to the
+"real" table, which it usually replaces.
 
-Example (apflora): the checks of a Teil-Population are presented as
-**Feld-Kontrollen** (`data.typ = Kontrolle`) and **Freiwilligen-Kontrollen**
-(`data.typ = Freiwilligen-Kontrolle`) instead of one combined "Kontrollen"
-node.
+- **Rows**: an optional static filter (`filter`) selects the rows of the
+  view — same format and semantics as the user's table row filters.
+- **Columns**: an optional field group (`field_group_id`) selects the
+  columns — the edit form then renders only the group's fields, in the
+  usual form order. The list labels are unaffected (they are built from
+  `label_by`).
 
-Currently only views on `checks` are implemented (`filtered_views.table_name`
+Examples (apflora):
+
+- the checks of a Teil-Population are presented as **Feld-Kontrollen**
+  (`data.typ IS DISTINCT FROM 'Freiwilligen-Kontrolle'`) and
+  **Freiwilligen-Kontrollen** (`data.typ = 'Freiwilligen-Kontrolle'`)
+  instead of one combined "Kontrollen" node
+- planned: **EK Biotop** — a view on checks combining a row filter with
+  the "Biotop" field group (only the biotope columns of the form);
+  **Art Idealbiotop** — a view on subprojects showing only the
+  Idealbiotop field group (needs views on tables other than checks,
+  see below)
+
+Currently only views on `checks` are implemented (`table_views.table_name`
 is prepared for other tables).
 
 ## Data model
 
-- **`filtered_views`** (project-scoped config table, like `fields` or `units`):
-  - `table_name`: the table this view filters (`checks`)
+- **`table_views`** (project-scoped config table, like `fields` or `units`;
+  renamed from `filtered_views` 2026-11):
+  - `table_name`: the table this view is defined on (`checks`)
   - `name_singular_de` … `name_plural_it`: labels per language (like
     `place_levels`); missing languages fall back to German
-  - `filter`: static filter in the **same format as the user's table row
-    filters** (`TableRowFilter[]`): an array of OR-conditions, each an object
-    of AND column conditions. Keys prefixed `data.` target the jsonb `data`
-    column. Use `{"$eq": value}` for exact matches and `{"$ne": value}` for
-    negated matches (rows with a null value included, SQL `IS DISTINCT FROM`)
-    — plain string values compile to `ILIKE '%value%'` and would e.g. match
-    both `Kontrolle` and `Freiwilligen-Kontrolle`. Examples:
+  - `filter`: **optional** static row filter in the **same format as the
+    user's table row filters** (`TableRowFilter[]`): an array of
+    OR-conditions, each an object of AND column conditions. Keys prefixed
+    `data.` target the jsonb `data` column. Use `{"$eq": value}` for exact
+    matches and `{"$ne": value}` for negated matches (rows with a null
+    value included, SQL `IS DISTINCT FROM`) — plain string values compile
+    to `ILIKE '%value%'` and would e.g. match both `Kontrolle` and
+    `Freiwilligen-Kontrolle`. Examples:
     `[{"data.typ": {"$eq": "Freiwilligen-Kontrolle"}}]`,
     `[{"data.typ": {"$ne": "Freiwilligen-Kontrolle"}}]` (the apflora
     Feld-Kontrollen view: everything except Freiwilligen-Kontrollen,
-    including Ausgangszustand and rows without typ)
+    including Ausgangszustand and rows without typ). Null/empty = all rows
+  - `field_group_id`: **optional** field group — the view's edit form
+    shows only these columns (null = all columns). Deleting the group
+    sets this to null (`ON DELETE SET NULL`)
   - `label_by`: names of data fields appended to the year when labeling the
     view's rows, in apf2 manner (`createComputedLabels.sql`):
     `lpad(year, 4)`, then ": " and the value of each field, e.g.
     "2019: Kontrolle". Fallbacks like apf2: "(kein Jahr)" and "(kein
     <Fieldname>)". Empty/null = year only (apflora Freiwilligen-Kontrollen).
   - `sort`: order in the navigation
-  - has a history table (`filtered_views_history`) and the standard
+  - has a history table (`table_views_history`) and the standard
     project-scoped write permission (`enforce_project_write`)
-- **`place_levels.filtered_views`** (jsonb): map of `filtered_view_id ->
-  boolean`, per place level. This is how views are enabled/disabled per level
-  — just like `place_levels.checks`, `actions`, … (missing key = disabled).
+- **`field_groups`** (project-scoped config table, new 2026-11): named
+  groups of fields of a table, reusable in any number of views (and later
+  for in-form sections/tabs):
+  - `table_name`: the table the grouped fields belong to (`checks`)
+  - `name`: e.g. "Biotop"
+  - `sorted_field_ids`: `field_id`s (of the project's `fields` rows), in
+    form order; not a foreign key (arrays cannot reference), ids of
+    deleted fields are ignored when rendering
+  - has a history table (`field_groups_history`) and the standard
+    project-scoped write permission
+- **`place_levels.table_views`** (jsonb, renamed from
+  `place_levels.filtered_views`): map of `table_view_id -> boolean`, per
+  place level. This is how views are enabled/disabled per level — just
+  like `place_levels.checks`, `actions`, … (missing key = disabled).
 
 ## URL namespace
 
-Filtered checks live under their own path segment, keeping the literal
-`checks` segment so all `checks`-based lookups keep working (map layers parse
-`urlPath.indexOf('checks')`, DrawControl checks the second-to-last segment,
-the shared Filter infers its table name from the path):
+View checks live under their own path segment, keeping the literal
+`checks` segment so all `checks`-based lookups keep working (map layers
+parse `urlPath.indexOf('checks')`, DrawControl checks the second-to-last
+segment, the shared Filter infers its table name from the path):
 
 ```
-.../places/<placeId>/filtered-checks/<filteredViewId>/checks              (list)
-.../places/<placeId>/filtered-checks/<filteredViewId>/checks/filter       (filter page)
-.../places/<placeId>/filtered-checks/<filteredViewId>/checks/<checkId>/…  (edit form + sub entities)
+.../places/<placeId>/table-views/<tableViewId>/checks              (list)
+.../places/<placeId>/table-views/<tableViewId>/checks/filter       (filter page)
+.../places/<placeId>/table-views/<tableViewId>/checks/<checkId>/…  (edit form + sub entities)
 ```
 
-Level 2 mirrors this under `.../places/<placeId>/places/<placeId2>/filtered-checks/...`.
+Level 2 mirrors this under `.../places/<placeId>/places/<placeId2>/table-views/...`.
 The route subtrees are copies of the `checks` subtrees (the codebase
-duplicates level 1/2 by hand as well).
+duplicates level 1/2 by hand as well). The config forms live under
+`/data/projects/<projectId>/table-views/...` (views) and
+`/data/projects/<projectId>/field-groups/...` (field groups).
 
 ## Where things live
 
 | Concern | Location |
 |---|---|
-| Table + history + permissions + allowlist | `backend/db/init/04, 05, 12, 14_*.sql` (source of truth, then `npm run sync-sql`) |
-| Sync shape | `src/modules/startSyncing.ts` (`filtered_views`, and the new `filtered_views` column on `place_levels`) |
-| Client write permission | `src/modules/checkWritePermission.ts` (`filtered_views: projectDirect()`) |
-| Nav data hooks | `src/modules/useFilteredViewsNavData.ts`, `useFilteredViewNavData.ts`, `useFilteredChecksNavData.ts`, `useFilteredCheckNavData.ts` |
-| Sub-entity nav hooks | `useCheckQuantitiesNavData`, `useCheckTaxaNavData`, `useCheckQuantityNavData`, `useCheckTaxonNavData`, `useFilesNavData`, `useFileNavData` accept an optional `filteredViewId` and insert the path segment |
-| Tree nodes | `src/components/Tree/FilteredViews.tsx` (design mode), `FilteredChecks.tsx`, and `Place/Children.tsx` renders one `FilteredChecksNode` per enabled view |
-| View config UI | `src/formsAndLists/filteredViews.tsx` + `filteredView/` (entity, also reachable from Project Configuration via `Configuration/FilteredViewsSection.tsx`) |
-| Place level UI | `src/formsAndLists/placeLevel/Form.tsx` renders a switch per view; `placeLevel/index.tsx` maps `filtered_view_<id>` switches onto the `filtered_views` jsonb |
-| Checks list + filter | `src/formsAndLists/filteredChecks.tsx`, `filteredCheck/Filter.tsx` |
-| Check form | the normal check form components; `check/Header.tsx` and `check/WithAll.tsx` insert the path segment and use the view's singular name as title |
-| Filter atoms | one per view, created dynamically: `getFilteredViewFilterAtom(filteredViewId)` in `src/store.ts`; the shared `Filter` component accepts `filterAtomOverride` |
-| Breadcrumbs | fetcher components `Filtered*Fetcher.tsx` + cases in `FetcherRouter.tsx` |
-| Routes | `src/routes/.../filtered-checks/$filteredViewId_/checks/**` (both levels) and `src/routes/.../filtered-views/**` |
-| Tests | `tests/filteredViews.test.ts` (real schema, filter semantics, row creation) |
+| Tables + history + permissions + allowlist | `backend/db/init/04, 05, 12, 14_*.sql` (source of truth, then `npm run sync-sql`) |
+| Sync shape | `backend/auth/shapeDefinitions.mjs` → `src/modules/shapeDefinitions.mjs` (`table_views`, `field_groups`, and the `table_views` column on `place_levels`) |
+| Client write permission | `src/modules/checkWritePermission.ts` (`table_views: projectDirect()`, `field_groups: projectDirect()`) |
+| Nav data hooks | `src/modules/useTableViewsNavData.ts`, `useTableViewNavData.ts`, `useFieldGroupsNavData.ts`, `useFieldGroupNavData.ts`, `useTableChecksNavData.ts`, `useTableCheckNavData.ts` |
+| Sub-entity nav hooks | `useCheckQuantitiesNavData`, `useCheckTaxaNavData`, `useCheckQuantityNavData`, `useCheckTaxonNavData`, `useFilesNavData`, `useFileNavData` accept an optional `tableViewId` and insert the path segment |
+| Tree nodes | tree configs in `src/components/Tree/virtual/treeConfigs.tsx` (design mode node + one node per enabled view under a place) |
+| View config UI | `src/formsAndLists/tableViews.tsx` + `tableView/` (entity, also reachable from Project Configuration via `Configuration/TableViewsSection.tsx`) |
+| Field group config UI | `src/formsAndLists/fieldGroups.tsx` + `fieldGroup/` (entity, also reachable via `Configuration/FieldGroupsSection.tsx`) |
+| Place level UI | `src/formsAndLists/placeLevel/Form.tsx` renders a switch per view; `placeLevel/index.tsx` maps `table_view_<id>` switches onto the `table_views` jsonb |
+| View checks list + filter | `src/formsAndLists/tableChecks.tsx`, `tableCheck/Filter.tsx` |
+| Check form | the normal check form components; `check/Header.tsx` and `check/WithAll.tsx` insert the path segment and use the view's singular name as title; `check/WithAll.tsx` resolves the view's field group and passes its field ids down as `fieldIds` |
+| Column restriction | `src/components/shared/Jsonb/index.tsx` accepts `fieldIds`; restricted views render only those fields and hide AddField + the undefined-field warnings |
+| Filter atoms | one per view, created dynamically: `getTableViewFilterAtom(tableViewId)` in `src/store.ts`; the shared `Filter` component accepts `filterAtomOverride`. Storage keys changed with the rename (`tableView-<id>-filterAtom`) — saved view filters reset once |
+| Breadcrumbs | fetcher components `TableView(s)Fetcher.tsx`, `TableCheck(s)Fetcher.tsx`, `FieldGroup(s)Fetcher.tsx` + cases in `FetcherRouter.tsx` |
+| Routes | `src/routes/.../table-views/$tableViewId_/checks/**` (both levels), `.../table-views/**` (config) and `.../field-groups/**` (config) |
+| Row creation | `createTableView`, `createFieldGroup`, `createCheck` + `getDataFromTableView` in `src/modules/createRows.ts` |
+| Tests | `tests/tableViews.test.ts` (real schema, filter semantics, row creation), `tests/fieldGroups.test.ts` (optional filter, field group resolution, column restriction, rename healing) |
 
 ## Creating rows through a view
 
-`createCheck({ projectId, placeId, filteredViewId })` (in
-`src/modules/createRows.ts`) reads the view's filter and presets the filtered
-values on the new row: `data.*` keys go into the jsonb `data` column, other
-keys onto the row itself. Values of the first OR-condition are used (a view
-combining multiple OR-conditions cannot preset one matching value). The view's
-values win over field presets.
+`createCheck({ projectId, placeId, tableViewId })` (in
+`src/modules/createRows.ts`) reads the view's filter and presets the
+filtered values on the new row: `data.*` keys go into the jsonb `data`
+column, other keys onto the row itself. Values of the first OR-condition
+are used (a view combining multiple OR-conditions cannot preset one
+matching value). The view's values win over field presets. A view without
+a filter presets nothing.
 
-## How to add filtered views to a project
+## How to add table views to a project
 
-1. Design mode → project → "Gefilterte Ansichten" (or Project Configuration →
-   section "Gefilterte Ansichten") → add a view: names, filter field (from the
-   project's `fields` of the table) + value, sort
-2. Ort-Stufen (place levels) → enable the view per level (switch named after
-   the view's plural name). Usually disable the plain table (`checks`) there
-   so the views replace it.
-3. The nav tree under a place then shows one node per enabled view, with the
-   view's filtered checks as children.
+1. (optional, for column views) Design mode → project configuration →
+   section "Feldergruppen" → add a group: name, fields (multiselect, kept
+   in form order)
+2. Design mode → project → "Ansichten" (or Project Configuration →
+   section "Ansichten") → add a view: names, optional filter field (from
+   the project's `fields` of the table) + value, optional field group,
+   sort
+3. Ort-Stufen (place levels) → enable the view per level (switch named
+   after the view's plural name). Usually disable the plain table
+   (`checks`) there so the views replace it.
+4. The nav tree under a place then shows one node per enabled view, with
+   the view's checks as children; the check form shows only the field
+   group's fields when the view has one.
 
 ## Deploying to an existing database
 
-The init SQL is idempotent (`CREATE TABLE IF NOT EXISTS` /
-`ADD COLUMN IF NOT EXISTS`), so re-applying `04`/`05`/`12`/`14` plus
-`NOTIFY pgrst, 'reload schema';` is enough. Registering the history table in
-partman happens in `05` (see `filtered_views_history`).
+- Backend: the init SQL is idempotent and heals the rename — `04` renames
+  `filtered_views` → `table_views` (table, pk column, constraint, indexes),
+  adds `field_group_id` and creates `field_groups`; `05` renames
+  `filtered_views_history` → `table_views_history` (incl. its partman
+  registration) and creates `field_groups_history`. Re-applying
+  `04`/`05`/`12`/`14` plus `NOTIFY pgrst, 'reload schema';` is enough.
+- Client (PGlite): `src/sql/healFilteredViewsRename.sql` (imported by
+  `SqlInitializer.tsx`) performs the same renames and creates
+  `field_groups` on existing local databases; fresh ones get the new
+  schema from `createTables.sql`. The healing is guarded and idempotent,
+  and covered by a test (`tests/fieldGroups.test.ts`).
 
 ## Apflora example
 
 `backend/db/generate_apflora_example_sql.mjs` seeds two views
-(Feld-Kontrollen / Freiwilligen-Kontrollen, deterministic derived ids) and
-sets `place_levels.checks = false` + the `filtered_views` map for level 2
-(Teil-Population). Regenerate with `npm run apflora:generate`.
+(Feld-Kontrollen / Freiwilligen-Kontrollen, deterministic derived ids)
+and sets `place_levels.checks = false` + the `table_views` map for level 2
+(Teil-Population). Regenerate with `npm run apflora:generate`. NB: the
+derived ids keep the salt `'filtered_view'` so regenerated seeds match the
+ids already present in seeded databases.
 
 Labels follow apflora.ch (`apf2/sql/apflora/createComputedLabels.sql`):
 - Feld-Kontrollen (EK): `typ IS DISTINCT FROM 'Freiwilligen-Kontrolle'`

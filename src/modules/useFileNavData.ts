@@ -13,7 +13,7 @@ type Props = {
   placeId2?: string
   actionId?: string
   checkId?: string
-  filteredViewId?: string
+  tableViewId?: string
   fileId: string
 }
 
@@ -29,7 +29,7 @@ export const useFileNavData = ({
   placeId2,
   actionId,
   checkId,
-  filteredViewId,
+  tableViewId,
   fileId,
 }: Props) => {
   const [openNodes] = useAtom(treeOpenNodesAtom)
@@ -62,7 +62,7 @@ export const useFileNavData = ({
     ...(placeId2 ? ['places', placeId2] : []),
     ...(actionId ? ['actions', actionId] : []),
     ...(checkId
-      ? [...(filteredViewId ? ['filtered-checks', filteredViewId] : []), 'checks', checkId]
+      ? [...(tableViewId ? ['table-views', tableViewId] : []), 'checks', checkId]
       : []),
     'files',
   ]

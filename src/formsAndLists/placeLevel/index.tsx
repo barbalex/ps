@@ -42,13 +42,13 @@ export const PlaceLevel = () => {
     // only change if value has changed: maybe only focus entered and left
     if ((row as unknown as Record<string, unknown>)[name] === value) return
 
-    // filtered view toggles update the filtered_views jsonb map
-    if (name.startsWith('filtered_view_')) {
-      const filteredViewId = name.substring('filtered_view_'.length)
-      const currentMap = (row?.filtered_views ?? {}) as Record<string, boolean>
-      const newMap = { ...currentMap, [filteredViewId]: value === true }
+    // filtered view toggles update the table_views jsonb map
+    if (name.startsWith('table_view_')) {
+      const tableViewId = name.substring('table_view_'.length)
+      const currentMap = (row?.table_views ?? {}) as Record<string, boolean>
+      const newMap = { ...currentMap, [tableViewId]: value === true }
       await db.query(
-        `UPDATE place_levels SET filtered_views = $1 WHERE place_level_id = $2`,
+        `UPDATE place_levels SET table_views = $1 WHERE place_level_id = $2`,
         [newMap, placeLevelId],
       )
       addOperation({
@@ -56,7 +56,7 @@ export const PlaceLevel = () => {
         rowIdName: 'place_level_id',
         rowId: placeLevelId,
         operation: 'update',
-        draft: { filtered_views: newMap },
+        draft: { table_views: newMap },
         prev: { ...row },
       })
       return

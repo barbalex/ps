@@ -36,6 +36,8 @@ interface Props {
   autoFocus?: boolean
   ref?: React.Ref<HTMLDivElement>
   from?: string
+  /** restrict rendering to these field_ids (field group of a table view) */
+  fieldIds?: string[]
 }
 
 // and focus the name field on first render?
@@ -49,6 +51,7 @@ export const Jsonb = ({
   autoFocus = false,
   ref,
   from,
+  fieldIds,
 }: Props) => {
   const isAccountTable = accountTables.includes(table)
   const { projectId, placeId, placeId2 } = useParams({ strict: false })
@@ -76,7 +79,11 @@ export const Jsonb = ({
       ORDER BY t.ord`
   const params = table === 'places' ? [table, placeId2 ? 2 : 1] : [table]
   const res = useLiveQuery(sql, params)
-  const fields = (res?.rows ?? []) as unknown as FieldsWithTypes[]
+  const allFields = (res?.rows ?? []) as unknown as FieldsWithTypes[]
+  // a table view with a field group shows only the group's fields
+  const fields = fieldIds
+    ? allFields.filter((field) => fieldIds.includes(field.field_id))
+    : allFields
 
   // TODO: return if value has not changed
   const onChange = async (
@@ -148,11 +155,12 @@ export const Jsonb = ({
   }
 
   // What if data contains keys not existing in fields? > show but warn
+  // (not for restricted views: fields outside the group are expected there)
   const fieldNamesDefined = fields.map((field) => field.name)
   const dataKeys = Object.keys(data)
-  const dataKeysNotDefined = dataKeys.filter(
-    (dataKey) => !fieldNamesDefined.includes(dataKey),
-  )
+  const dataKeysNotDefined = fieldIds
+    ? []
+    : dataKeys.filter((dataKey) => !fieldNamesDefined.includes(dataKey))
   const isHistory = from?.includes('histories')
 
   return (
@@ -198,7 +206,7 @@ export const Jsonb = ({
           autoFocus={autoFocus && index === 0 && fields.length === 0}
         />
       ))}
-      {!isHistory && (
+      {!isHistory && !fieldIds && (
         <AddField
           key="addField"
           tableName={table}

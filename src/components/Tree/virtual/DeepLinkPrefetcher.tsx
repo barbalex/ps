@@ -89,20 +89,20 @@ const levelsForPath = (path: string[]): Level[] => {
       continue
     }
 
-    if (folder === 'filtered-checks') {
-      // multi-segment nav.id: filtered-checks/<filteredViewId>/checks
-      const filteredViewId = path[i + 1]
+    if (folder === 'table-views') {
+      // multi-segment nav.id: table-views/<tableViewId>/checks
+      const tableViewId = path[i + 1]
       if (path[i + 2] !== 'checks') return levels
-      push(i + 3, 'filteredChecks', { ...placeBase(), filteredViewId })
-      ids.filteredViewId = filteredViewId
+      push(i + 3, 'tableChecks', { ...placeBase(), tableViewId })
+      ids.tableViewId = tableViewId
       i += 3
       continue
     }
 
     if (folder === 'checks' || folder === 'actions') {
       const base = placeBase()
-      const collectionParams = ids.filteredViewId
-        ? { ...base, filteredViewId: ids.filteredViewId }
+      const collectionParams = ids.tableViewId
+        ? { ...base, tableViewId: ids.tableViewId }
         : base
       const type = folder === 'checks' ? 'checks' : 'actions'
       const entityType = folder === 'checks' ? 'check' : 'action'
@@ -170,7 +170,7 @@ const levelsForPath = (path: string[]): Level[] => {
         subprojectId: ids.subprojectId,
         placeId: ids.placeId,
         placeId2: ids.placeId2,
-        filteredViewId: ids.filteredViewId,
+        tableViewId: ids.tableViewId,
         [entityIdParam]: ids.checkId ?? ids.actionId,
       })
       // quantity/taxon rows are formLinks
@@ -186,7 +186,7 @@ const levelsForPath = (path: string[]): Level[] => {
         params.subprojectId = ids.subprojectId
         params.placeId = ids.placeId
         params.placeId2 = ids.placeId2
-        params.filteredViewId = ids.filteredViewId
+        params.tableViewId = ids.tableViewId
         if (ids.checkId) params.checkId = ids.checkId
         else params.actionId = ids.actionId
       } else if (ids.placeId) {

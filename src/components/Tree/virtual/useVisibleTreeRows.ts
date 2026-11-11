@@ -41,7 +41,7 @@ export const useVisibleTreeRows = () => {
       for (const child of row.children ?? []) {
         const nav = (child.nav ?? {}) as { id?: string; label?: unknown }
         if (!nav.id) continue
-        // nav ids can be multi-segment ('filtered-checks/<id>/checks')
+        // nav ids can be multi-segment ('table-views/<id>/checks')
         const childOwnArray = [
           ...row.ownArray,
           ...String(nav.id).split('/').filter(Boolean),
