@@ -16,9 +16,10 @@
 // Source dump: custom-format pg_dump of the apf2 backend-dev database.
 // Default path assumes apf2 is checked out next to this repo;
 // override with APF2_DUMP=/path/to/apflora.backup.
-// Excluded by design: Freiwilligen-Kontrollen, Beobachtungen, Massnahmen.
+// Excluded by design: Beobachtungen flagged as Absenz (ps observations have
+// no absence concept — an absence is not an observation of the species).
 
-import { spawnSync } from 'child_process'
+import { spawn, spawnSync } from 'child_process'
 import { existsSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from 'fs'
 import { fileURLToPath } from 'url'
 import { dirname, join } from 'path'
@@ -144,6 +145,63 @@ const readTable = (table) => {
   const rows = parseCopy(restoreTable(table))
   console.log(`${table}: ${rows.length} rows`)
   return rows
+}
+
+// like readTable, but streams pg_restore's output line by line instead of
+// reading it into one string — for tables whose COPY data is gigabytes
+// (beob is ~1.3 GB). onRow receives each parsed row; rows it does not keep
+// are garbage collected as the stream advances.
+// Lines are split on \n only (NOT via readline): COPY does not escape
+// U+2028/U+2029 line separators inside field values, and JS readline
+// treats them as line terminators, splitting such rows apart
+const streamTable = async (table, onRow) => {
+  const proc = spawn(
+    'pg_restore',
+    ['--data-only', `--table=${table}`, '-f', '-', dumpPath],
+    { stdio: ['ignore', 'pipe', 'inherit'] },
+  )
+  let columns = null
+  let done = false
+  let pending = ''
+  const handleLine = (line) => {
+    if (!columns) {
+      const match = line.match(/^COPY [^(]+\(([^)]*)\) FROM stdin;$/)
+      if (match) columns = match[1].split(',').map((c) => c.trim())
+      return
+    }
+    if (line === '\\.') {
+      done = true
+      return
+    }
+    const fields = parseCopyLine(line)
+    if (fields.length !== columns.length) {
+      throw new Error(
+        `${table}: row has ${fields.length} fields, expected ${columns.length}: ${JSON.stringify(fields.slice(0, 5))}`,
+      )
+    }
+    const row = {}
+    columns.forEach((c, idx) => {
+      row[c] = fields[idx]
+    })
+    onRow(row)
+  }
+  proc.stdout.setEncoding('utf8')
+  for await (const chunk of proc.stdout) {
+    pending += chunk
+    let nl
+    while ((nl = pending.indexOf('\n')) !== -1) {
+      const line = pending.slice(0, nl)
+      pending = pending.slice(nl + 1)
+      if (!done) handleLine(line)
+    }
+  }
+  if (!done && pending) handleLine(pending)
+  await new Promise((resolve, reject) => {
+    proc.on('close', (code) =>
+      code === 0 ? resolve() : reject(new Error(`pg_restore exited with ${code}`)),
+    )
+    proc.stdout.on('error', reject)
+  })
 }
 
 // hex EWKB point (optionally with SRID) -> GeoJSON Point
@@ -531,6 +589,38 @@ const selectedArts = (() => {
 })()
 console.log(`scope ${scope}: ${selectedArts.length} arts`)
 
+// beob (Beobachtungen) of the selected arts, streamed and filtered while
+// reading the dump (the table's COPY data is ~1.3 GB). Rows of other arts
+// and Absenzen are dropped on the fly. datum/autor/quelle are apf2 columns
+// outside data — the generator adds them into the ps data jsonb so that
+// ps labels (label_creation) can reference them
+const selectedArtIds = new Set(selectedArts.map((t) => t.id))
+const beobByArtId = new Map()
+let beobAbsenzCount = 0
+await streamTable('beob', (row) => {
+  if (row.absenz === 't') {
+    beobAbsenzCount++
+    return
+  }
+  if (!selectedArtIds.has(row.art_id)) return
+  const list = beobByArtId.get(row.art_id) ?? []
+  list.push({
+    id: row.id,
+    quelle: row.quelle,
+    id_field: row.id_field,
+    datum: row.datum,
+    autor: row.autor,
+    data: row.data === null ? null : JSON.parse(row.data),
+    tpop_id: row.tpop_id,
+    nicht_zuordnen: asBool(row.nicht_zuordnen),
+    bemerkungen: row.bemerkungen,
+    geom_point: ewkbToPoint(row.geom_point),
+  })
+  beobByArtId.set(row.art_id, list)
+})
+const beobCount = [...beobByArtId.values()].reduce((sum, l) => sum + l.length, 0)
+console.log(`beob: ${beobCount} rows (${beobAbsenzCount} Absenzen skipped)`)
+
 for (const tax of selectedArts) {
   if (!tax) throw new Error('ap row without ae_taxonomies entry')
   const ap = apByArt.get(tax.id)
@@ -546,8 +636,9 @@ for (const tax of selectedArts) {
     (sum, p) => sum + p.tpops.reduce((s, t) => s + t.massnahmen.length, 0),
     0,
   )
+  const beobArtCount = (beobByArtId.get(tax.id) ?? []).length
   console.log(
-    `${tax.artname}: ${pops.length} pops, ${tpopCount} tpops, ${kontrCount} kontrollen, ${massnCount} massnahmen`,
+    `${tax.artname}: ${pops.length} pops, ${tpopCount} tpops, ${kontrCount} kontrollen, ${massnCount} massnahmen, ${beobArtCount} beob`,
   )
   data.arts.push({
     taxonomie: {
@@ -614,6 +705,7 @@ for (const tax of selectedArts) {
         .sort((a, b) => a.jahr - b.jahr),
     },
     pops,
+    beobachtungen: beobByArtId.get(tax.id) ?? [],
   })
 }
 

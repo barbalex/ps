@@ -10,6 +10,9 @@
 //   tpopkontr (EK + Ausgangszustand) -> checks, apf2 columns -> checks.data (fields)
 //   tpopkontrzaehl       -> check_taxa (taxon resolved via DB-TAXREF (2017) taxa)
 //   tpopmassn            -> actions, apf2 columns -> actions.data (fields)
+//   beob                 -> observations, one observation_import per art and
+//                           quelle; geometry from apf2's geom_point (the
+//                           sources' data carries no extractable coordinates)
 // Taxa are NOT imported: 11a_seedApfloraTaxonomies.sql already seeds
 // DB-TAXREF (2017); this file links into it by id_in_source (taxid).
 //
@@ -619,6 +622,74 @@ data.arts.forEach((art, artIndex) => {
   }
 })
 
+// ---- observations (apf2: beob) --------------------------------------------
+// One observation_import per art and quelle (id_field and coordinates differ
+// per source); one observation per beob. apf2's datum/autor/quelle columns
+// are added into the data jsonb so ps labels can reference them. The
+// geometry comes from apf2's geom_point — the sources' data carries no
+// extractable coordinates (Info Flora 2017 delivers 1-km-grid precision
+// only) — hence geometry_method stays NULL
+const observationImports = []
+const observations = []
+const place2Ids = new Set(places2.map((p) => p.id))
+const observationImportId = (apId, quelle) =>
+  derivedId('observation_import', `${apId}:${quelle}`)
+// mirrors apf2's beob_label (createComputedLabels.sql) via label_creation
+const observationLabelCreation = [
+  { type: 'field', value: 'datum', id: 'datum' },
+  { type: 'separator', value: ': ', id: 'sep-colon' },
+  { type: 'field', value: 'autor', id: 'autor' },
+  { type: 'separator', value: ' (', id: 'sep-open' },
+  { type: 'field', value: 'quelle', id: 'quelle' },
+  { type: 'separator', value: ')', id: 'sep-close' },
+]
+
+data.arts.forEach((art) => {
+  const byQuelle = new Map()
+  for (const b of art.beobachtungen ?? []) {
+    const list = byQuelle.get(b.quelle) ?? []
+    list.push(b)
+    byQuelle.set(b.quelle, list)
+  }
+  for (const [quelle, rows] of byQuelle) {
+    const idField = rows[0].id_field
+    if (rows.some((r) => r.id_field !== idField)) {
+      throw new Error(`quelle ${quelle}: inconsistent id_field`)
+    }
+    observationImports.push({
+      id: observationImportId(subprojectId(art.ap.id), quelle),
+      subproject: subprojectId(art.ap.id),
+      name: `apflora: ${quelle}`,
+      idField,
+      insertedCount: rows.length,
+    })
+    for (const b of rows) {
+      if (b.tpop_id && !place2Ids.has(b.tpop_id)) {
+        throw new Error(`beob ${b.id}: assigned to unknown tpop ${b.tpop_id}`)
+      }
+      const idInSource = b.data?.[idField]
+      if (idInSource === null || idInSource === undefined) {
+        throw new Error(`beob ${b.id}: no ${idField} in data`)
+      }
+      const dataObj = { ...b.data }
+      if (b.datum) dataObj.datum = b.datum
+      if (b.autor) dataObj.autor = b.autor
+      dataObj.quelle = quelle
+      observations.push({
+        id: b.id,
+        importId: observationImportId(subprojectId(art.ap.id), quelle),
+        place: b.tpop_id ?? null,
+        notToAssign: b.nicht_zuordnen === true,
+        comment: b.bemerkungen ?? null,
+        data: dataObj,
+        idInSource: String(idInSource),
+        geometry: b.geom_point,
+        label: `${b.datum ? b.datum.replaceAll('-', '.') : '(kein Datum)'}: ${b.autor ?? '(kein Autor)'} (${quelle})`,
+      })
+    }
+  }
+})
+
 // ---- SQL assembly ---------------------------------------------------------
 emit('-- GENERATED FILE - DO NOT EDIT')
 emit('-- Source: seed-data/apflora/apf2-example.json (extracted from the apf2 dump)')
@@ -637,7 +708,8 @@ for (const art of data.arts) {
     (s, p) => s + p.tpops.reduce((ss, t) => ss + t.massnahmen.length, 0),
     0,
   )
-  emit(`--   ${art.taxonomie.artname}: ${popCount} Populationen, ${tpopCount} Teil-Populationen, ${kontrCount} Kontrollen, ${massnCount} Massnahmen`)
+  const beobArtCount = (art.beobachtungen ?? []).length
+  emit(`--   ${art.taxonomie.artname}: ${popCount} Populationen, ${tpopCount} Teil-Populationen, ${kontrCount} Kontrollen, ${massnCount} Massnahmen, ${beobArtCount} Beobachtungen`)
 }
 emit('BEGIN;')
 if (applyLater) {
@@ -1193,6 +1265,25 @@ for (const [artIndex, rows] of checkTaxaByArt) {
   emit(`  ON CONFLICT (check_taxon_id) DO NOTHING;`)
 }
 
+emit('-- observations are re-created so changed assignments reach existing databases')
+emit(`DELETE FROM observation_imports WHERE subproject_id IN (SELECT subproject_id FROM subprojects WHERE project_id = ${q(PROJECT_ID)});`)
+emitChunked('observation_imports (apf2: beob, one per art and quelle)', {
+  table: 'observation_imports',
+  cols: ['observation_import_id', 'subproject_id', 'id_field', 'inserted_count', 'label_creation', 'name'],
+  pk: 'observation_import_id',
+}, observationImports.map((i) => [
+  q(i.id), q(i.subproject), qOrNull(i.idField), intOrNull(i.insertedCount),
+  jsonbOrNull(observationLabelCreation), q(i.name),
+]))
+emitChunked('observations (apf2: beob; geometry from apf2 geom_point, assignment from tpop_id)', {
+  table: 'observations',
+  cols: ['observation_id', 'observation_import_id', 'place_id', 'not_to_assign', 'comment', 'data', 'id_in_source', 'geometry', 'label'],
+  pk: 'observation_id',
+}, observations.map((o) => [
+  q(o.id), q(o.importId), qOrNull(o.place), boolOrNull(o.notToAssign),
+  qOrNull(o.comment), jsonbOrNull(o.data), q(o.idInSource), geomOrNull(o.geometry), qOrNull(o.label),
+]))
+
 emit('-- refresh labels of existing rows (the inserts above conflict-do-nothing,')
 emit('-- and the label triggers skip while electric.syncing is set)')
 emit(`UPDATE places SET label =`)
@@ -1273,6 +1364,14 @@ emit(`  SELECT count(*) INTO got FROM subproject_taxa st JOIN subprojects s USIN
 emit(`  IF got <> ${data.arts.length} THEN`)
 emit(`    RAISE EXCEPTION 'apflora seed: expected % subproject_taxa (DB-TAXREF taxa missing?), got %', ${data.arts.length}, got;`)
 emit(`  END IF;`)
+emit(`  SELECT count(*) INTO got FROM observation_imports WHERE subproject_id IN (SELECT subproject_id FROM subprojects WHERE project_id = ${q(PROJECT_ID)});`)
+emit(`  IF got <> ${observationImports.length} THEN`)
+emit(`    RAISE EXCEPTION 'apflora seed: expected % observation_imports, got %', ${observationImports.length}, got;`)
+emit(`  END IF;`)
+emit(`  SELECT count(*) INTO got FROM observations o JOIN observation_imports oi USING (observation_import_id) JOIN subprojects s ON oi.subproject_id = s.subproject_id WHERE s.project_id = ${q(PROJECT_ID)};`)
+emit(`  IF got <> ${observations.length} THEN`)
+emit(`    RAISE EXCEPTION 'apflora seed: expected % observations, got %', ${observations.length}, got;`)
+emit(`  END IF;`)
 emit(`  SELECT count(*) INTO got FROM vector_layers WHERE project_id = ${q(PROJECT_ID)} AND name IN (${ownVectorLayerNames()});`)
 emit(`  IF got <> ${ownVectorLayerDefs.length} THEN`)
 emit(`    RAISE EXCEPTION 'apflora seed: expected % own vector layers, got %', ${ownVectorLayerDefs.length}, got;`)
@@ -1297,5 +1396,5 @@ emit('')
 writeFileSync(sqlPath, out.join('\n'))
 console.log(`Written: ${sqlPath}`)
 console.log(
-  `Rows: ${places1.length} places L1, ${places2.length} places L2, ${checks.length} checks, ${actions.length} actions, ${checkReports.length} check_reports, ${actionReports.length} action_reports, ${placeHistoryRows.length} places_history, ${checkTaxaCount} check_taxa, ${fieldDefs.length} fields`,
+  `Rows: ${places1.length} places L1, ${places2.length} places L2, ${checks.length} checks, ${actions.length} actions, ${checkReports.length} check_reports, ${actionReports.length} action_reports, ${placeHistoryRows.length} places_history, ${checkTaxaCount} check_taxa, ${observations.length} observations (${observationImports.length} imports), ${fieldDefs.length} fields`,
 )

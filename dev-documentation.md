@@ -231,13 +231,22 @@ database, default `../apf2/backend-dev/db/apflora.backup`, override with
   Ausgangszustand included), with counts as `check_taxa` (apf2: `tpopkontrzaehl`)
 - actions on level 2 (apf2: `tpopmassn`; apf2's inline count columns like
   `anz_pflanzen` are kept as plain fields, not mapped to `action_taxa`)
+- observations (apf2: `beob`): one `observation_imports` row per art and
+  quelle (e.g. "apflora: Info Flora 2017"), apf2's `tpop_id`/`nicht_zuordnen`
+  become `place_id`/`not_to_assign`, apf2's `datum`/`autor`/`quelle` columns
+  are added into the `data` jsonb (the labels reference them), and the
+  geometry comes from apf2's `geom_point` — the sources' data carries no
+  extractable coordinates (Info Flora 2017 delivers 1-km-grid precision
+  only), so `geometry_method` stays NULL. Labels mirror apf2's `beob_label`:
+  `YYYY.MM.DD: Autor (Quelle)`
 - historizations (apf2: `ap_history`, `pop_history`, `tpop_history` — one
   snapshot per `(year, row)`, usually for the years in which a report was
   written) as `subprojects_history`/`places_history` versions (see below)
 - yearly place reports (apf2: `popber`/`tpopber` → `check_reports`,
   `tpopmassnber`/`popmassnber` → `action_reports`) — the source of the
   report's B and C tables
-- not imported: Beobachtungen, Berichte (ap-level), Freiwilligen-Kontrollen
+- not imported: Beobachtungen flagged as Absenz (ps observations have no
+  absence concept)
 
 Pipeline (run from the repo root):
 
@@ -938,8 +947,10 @@ Three creation paths, all idempotent:
    Massnahmen and Kontrollen carry no own geometries (apflora.ch presents
    them at their TPop's location), so actions/checks layers would stay
    empty; level-1 ones anyway, as apf2 has no pop-level Massnahmen or
-   Kontrollen at all. The observation layers are client-created (path 2)
-   once observations exist — the import contains none.
+   Kontrollen at all. The observation layers are client-created (path 2) —
+   the import seeds the species' Beobachtungen (apf2: `beob`) as
+   observations, so those layers appear as soon as a client opens the
+   project.
 
 ## Labels are derived, not stored
 
