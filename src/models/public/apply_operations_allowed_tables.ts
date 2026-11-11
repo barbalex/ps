@@ -1,0 +1,2 @@
+export interface apply_operations_allowed_tables_params {
+}

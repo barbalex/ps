@@ -153,12 +153,13 @@ export const ObservationHistoryCompare = ({
     </div>
   )
 
-  const visibleCurrentFields = new Set(['not_to_assign', 'place_id', 'comment'])
+  const visibleCurrentFields = new Set(['not_to_assign', 'absence', 'place_id', 'comment'])
 
   const formatFieldLabel = createHistoryFieldLabelFormatter({
     formatMessage,
     fieldLabelMap: {
       not_to_assign: { id: 'obs0Nta', defaultMessage: 'Nicht zuzuordnen' },
+      absence: { id: 'obs0Abs', defaultMessage: 'Absenz' },
       place_id: { id: 'obs0Plc', defaultMessage: 'Standort' },
       comment: { id: 'obs0Cmt', defaultMessage: 'Kommentar' },
     },

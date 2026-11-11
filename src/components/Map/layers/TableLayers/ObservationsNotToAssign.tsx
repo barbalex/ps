@@ -15,7 +15,7 @@ export const ObservationsNotToAssign = ({ layerPresentation }: {
   const { subprojectId } = useParams({ strict: false })
   const res = useLiveQuery<Observations>(
     `
-    SELECT o.observation_id, o.observation_import_id, o.place_id, o.not_to_assign,
+    SELECT o.observation_id, o.observation_import_id, o.place_id, o.not_to_assign, o.absence,
       o.comment, o.data, o.id_in_source, ST_AsGeoJSON(o.geometry)::json as geometry,
       o.label, o.created_at, o.updated_at, o.updated_by
     FROM observations o
@@ -49,9 +49,13 @@ export const ObservationsNotToAssign = ({ layerPresentation }: {
         }),
       ),
     }
-    if (!data) return fc
+    // row columns apply even when the data jsonb is empty (e.g. absence)
     fc.features.forEach((f) => {
       f.properties = properties ?? {}
+    })
+    if (!data) return fc
+    fc.features.forEach((f) => {
+      f.properties = f.properties ?? {}
       // data is _not_ passed under the data property due to errors created
       for (const [key, value] of Object.entries(data ?? {})) {
         // ensure that properties are not overwritten

@@ -12,7 +12,8 @@ import { Header } from './Header.tsx'
 import { One } from './1.tsx'
 import { Two } from './2/index.tsx'
 import { Three } from './3.tsx'
-import { Four } from './4/index.tsx'
+import { Four } from './4.tsx'
+import { Five } from './5/index.tsx'
 import { Preview } from './Preview.tsx'
 import { Loading } from '../../components/shared/Loading.tsx'
 import { NotFound } from '../../components/NotFound.tsx'
@@ -168,6 +169,16 @@ export const ObservationImport = () => {
       )
     }
 
+    // If absence-related fields changed, reset absences so the rule can be
+    // re-applied (like geometries above)
+    const absenceFields = ['absence_method', 'absence_field', 'absence_expression']
+    if (absenceFields.includes(name)) {
+      await db.query(
+        `UPDATE observations SET absence = FALSE WHERE observation_import_id = $1 AND absence`,
+        [observationImportId],
+      )
+    }
+
     setValidations((prev) => {
       const { [name]: _, ...rest } = prev
       return rest
@@ -261,15 +272,20 @@ export const ObservationImport = () => {
           icon={
             <div
               className={getTabNumberClassName(
-                !!observationImport?.label_creation,
+                !observationImport?.absence_method ||
+                  (observationImport.absence_method === 'boolean_column' &&
+                    !!observationImport.absence_field) ||
+                  (observationImport.absence_method === 'sql_expression' &&
+                    !!observationImport.absence_expression),
                 tab === 3,
               )}
             >
               3
             </div>
           }
+          disabled={!observations.length}
         >
-          {formatMessage({ id: 'Fl3jPw', defaultMessage: 'Bezeichnung' })}
+          {formatMessage({ id: 'absTabLb', defaultMessage: 'Absenz' })}
         </Tab>
         <Tab
           id="4"
@@ -277,11 +293,27 @@ export const ObservationImport = () => {
           icon={
             <div
               className={getTabNumberClassName(
-                !!observationImport?.id_field,
+                !!observationImport?.label_creation,
                 tab === 4,
               )}
             >
               4
+            </div>
+          }
+        >
+          {formatMessage({ id: 'Fl3jPw', defaultMessage: 'Bezeichnung' })}
+        </Tab>
+        <Tab
+          id="5"
+          value={5}
+          icon={
+            <div
+              className={getTabNumberClassName(
+                !!observationImport?.id_field,
+                tab === 5,
+              )}
+            >
+              5
             </div>
           }
         >
@@ -325,6 +357,14 @@ export const ObservationImport = () => {
             )}
             {tab === 4 && (
               <Four
+                observationImport={observationImport}
+                observationFields={observationFields}
+                onChange={onChange}
+                validations={validations}
+              />
+            )}
+            {tab === 5 && (
+              <Five
                 observationImport={observationImport}
                 observationFields={observationFields}
                 onChange={onChange}

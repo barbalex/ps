@@ -104,7 +104,7 @@ export const useObservationsNavData = ({
     SELECT
       o.observation_id AS id,
       o.label,
-      (o.data->>'absenz')::boolean AS is_absenz,
+      o.absence AS is_absenz,
       count_unfiltered.count AS count_unfiltered,
       count_filtered.count AS count_filtered
     FROM observations o

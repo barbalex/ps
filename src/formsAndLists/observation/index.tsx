@@ -154,6 +154,17 @@ export const Observation = ({ from }: { from: string }) => {
           validationState={validations?.not_to_assign?.state}
           validationMessage={validations?.not_to_assign?.message}
         />
+        <SwitchField
+          label={formatMessage({
+            id: 'obs0Abs',
+            defaultMessage: 'Absenz',
+          })}
+          name="absence"
+          value={row.absence as never}
+          onChange={onChange}
+          validationState={validations?.absence?.state}
+          validationMessage={validations?.absence?.message}
+        />
         <PlaceComboboxWithDistance
           observationId={observationId}
           value={row.place_id ?? ''}

@@ -1,101 +1,64 @@
 import { useState } from 'react'
 import * as fluentUiReactComponents from '@fluentui/react-components'
 const { Button, Spinner } = fluentUiReactComponents
-import { MdDone } from 'react-icons/md'
 import { useLiveQuery } from '@electric-sql/pglite-react'
 import { useIntl } from 'react-intl'
 
-import { setLabels } from './setLabels.ts'
+import { applyAbsenceRule } from './setAbsence.ts'
 import { formatNumber } from '../../../modules/formatNumber.ts'
-import type { LabelElement } from '../../../components/shared/LabelCreator/index.tsx'
-import styles from './Set.module.css'
+import styles from '../2/Set.module.css'
 import type ObservationImports from '../../../models/public/ObservationImports.ts'
-import type Observations from '../../../models/public/Observations.ts'
 
-interface Props {
-  observationImport: ObservationImports
-}
-
-export const Set = ({ observationImport }: Props) => {
-  const [settingLabels, setSettingLabels] = useState(false)
+export const Set = ({ observationImport }: { observationImport: ObservationImports }) => {
+  const [notification, setNotification] = useState<string | undefined>()
+  const [settingAbsence, setSettingAbsence] = useState(false)
   const { formatMessage } = useIntl()
 
   const res = useLiveQuery(
-    `SELECT * FROM observations WHERE observation_import_id = $1`,
+    `SELECT COUNT(*) as count FROM observations WHERE observation_import_id = $1`,
     [observationImport?.observation_import_id],
   )
-  const observations = (res?.rows ?? []) as unknown as Observations[]
-
-  const observationsWithoutLabel = observations.filter((o) => !o.label)
-  const toSetCount = observationsWithoutLabel?.length ?? 0
+  const observationCount = (res?.rows?.[0]?.count ?? 0) as number
 
   const onClick = () => {
-    setSettingLabels(true)
+    setSettingAbsence(true)
     // Don't await - let it run in background
-    setLabels({
-      labelCreation: observationImport.label_creation as LabelElement[],
-      observationImportId: observationImport.observation_import_id,
-    }).finally(() => {
-      setSettingLabels(false)
+    applyAbsenceRule({ observationImport, setNotification }).finally(() => {
+      setSettingAbsence(false)
     })
   }
 
-  if (!observations.length) return null
+  const ruleReady =
+    (observationImport.absence_method === 'boolean_column' &&
+      !!observationImport.absence_field) ||
+    (observationImport.absence_method === 'sql_expression' &&
+      !!observationImport.absence_expression)
 
-  const labelCreation = observationImport?.label_creation
-  const hasLabelCreation =
-    labelCreation && Array.isArray(labelCreation) && labelCreation.length > 0
-
-  if (!hasLabelCreation) {
-    return (
-      <div className={styles.missingLabelCreation}>
-        {formatMessage({
-          id: 'lBlCrt',
-          defaultMessage: 'Bitte zuerst eine Beschriftungsstruktur erstellen',
-        })}
-      </div>
-    )
-  }
-
-  if (toSetCount === 0) {
-    return (
-      <div className={styles.allSet}>
-        <MdDone className={styles.doneIcon} />
-        {formatMessage(
-          {
-            id: 'lBlAlS',
-            defaultMessage: 'Alle {count} Beobachtungen haben Beschriftungen',
-          },
-          { count: formatNumber(observations.length) as string },
-        )}
-      </div>
-    )
-  }
+  if (!observationCount || !ruleReady) return null
 
   return (
-    <div className={styles.container}>
+    <>
       <Button
         onClick={onClick}
-        icon={settingLabels ? <Spinner size="tiny" /> : null}
+        icon={settingAbsence ? <Spinner size="tiny" /> : null}
         className={styles.setButton}
       >
-        {settingLabels
+        {settingAbsence
           ? formatMessage(
-              {
-                id: 'lBlStg',
-                defaultMessage:
-                  'Beschriftungen von {count} Beobachtungen werden gesetzt',
-              },
-              { count: formatNumber(toSetCount) as string },
+              { id: 'absSttg', defaultMessage: 'Absenzen werden gesetzt …' },
             )
           : formatMessage(
               {
-                id: 'lBlSet',
-                defaultMessage: '{count} Beobachtungen beschriften',
+                id: 'absSet',
+                defaultMessage:
+                  'Absenzen von {count} Beobachtungen setzen (erneut setzen leitet alle neu ab)',
               },
-              { count: formatNumber(toSetCount) as string },
+              { count: formatNumber(observationCount) as string },
             )}
       </Button>
-    </div>
+      {notification && (
+        <div className={styles.notification}>{notification}</div>
+      )}
+    </>
   )
 }

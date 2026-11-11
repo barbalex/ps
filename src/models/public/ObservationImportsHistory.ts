@@ -1,4 +1,5 @@
 import type { default as ObservationImportsGeometryMethodsEnum } from './ObservationImportsGeometryMethodsEnum.ts';
+import type { default as ObservationImportsAbsenceMethodsEnum } from './ObservationImportsAbsenceMethodsEnum.ts';
 
 /**
  * Represents the table public.observation_imports_history
@@ -24,6 +25,12 @@ export default interface ObservationImportsHistory {
   y_coordinate_field: string | null;
 
   crs: string | null;
+
+  absence_method: ObservationImportsAbsenceMethodsEnum | null;
+
+  absence_field: string | null;
+
+  absence_expression: string | null;
 
   label_creation: unknown | null;
 
@@ -81,6 +88,12 @@ export interface ObservationImportsHistoryInitializer {
   /** Default value: 4326 */
   crs?: string | null;
 
+  absence_method?: ObservationImportsAbsenceMethodsEnum | null;
+
+  absence_field?: string | null;
+
+  absence_expression?: string | null;
+
   label_creation?: unknown | null;
 
   name?: string | null;
@@ -135,6 +148,12 @@ export interface ObservationImportsHistoryMutator {
   y_coordinate_field?: string | null;
 
   crs?: string | null;
+
+  absence_method?: ObservationImportsAbsenceMethodsEnum | null;
+
+  absence_field?: string | null;
+
+  absence_expression?: string | null;
 
   label_creation?: unknown | null;
 

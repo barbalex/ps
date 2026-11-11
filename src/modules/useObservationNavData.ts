@@ -42,7 +42,7 @@ export const useObservationNavData = ({
     SELECT
       observation_id AS id,
       label,
-      (data->>'absenz')::boolean AS is_absenz
+      absence AS is_absenz
     FROM observations
     WHERE observation_id = $1`,
     [observationId],

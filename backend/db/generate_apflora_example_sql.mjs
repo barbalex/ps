@@ -13,8 +13,7 @@
 //   beob                 -> observations, one observation_import per art and
 //                           quelle; geometry from apf2's geom_point (the
 //                           sources' data carries no extractable coordinates).
-//                           Absenzen (apf2 beob.absenz) are imported with
-//                           data.absenz = true — the UI shows a red badge
+//                           Absenzen (apf2 beob.absenz) set the absence column
 // Taxa are NOT imported: 11a_seedApfloraTaxonomies.sql already seeds
 // DB-TAXREF (2017); this file links into it by id_in_source (taxid).
 //
@@ -678,13 +677,12 @@ data.arts.forEach((art) => {
       if (b.datum) dataObj.datum = b.datum
       if (b.autor) dataObj.autor = b.autor
       dataObj.quelle = quelle
-      // Absenzen (confirmed absences) — marked, the UI badges them red
-      if (b.absenz) dataObj.absenz = true
       observations.push({
         id: b.id,
         importId: observationImportId(subprojectId(art.ap.id), quelle),
         place: b.tpop_id ?? null,
         notToAssign: b.nicht_zuordnen === true,
+        absence: b.absenz === true,
         comment: b.bemerkungen ?? null,
         data: dataObj,
         idInSource: String(idInSource),
@@ -1280,12 +1278,12 @@ emitChunked('observation_imports (apf2: beob, one per art and quelle)', {
   q(i.id), q(i.subproject), qOrNull(i.idField), intOrNull(i.insertedCount),
   jsonbOrNull(observationLabelCreation), q(i.name),
 ]))
-emitChunked('observations (apf2: beob; geometry from apf2 geom_point, assignment from tpop_id)', {
+emitChunked('observations (apf2: beob; geometry from apf2 geom_point, assignment from tpop_id, absences from absenz)', {
   table: 'observations',
-  cols: ['observation_id', 'observation_import_id', 'place_id', 'not_to_assign', 'comment', 'data', 'id_in_source', 'geometry', 'label'],
+  cols: ['observation_id', 'observation_import_id', 'place_id', 'not_to_assign', 'absence', 'comment', 'data', 'id_in_source', 'geometry', 'label'],
   pk: 'observation_id',
 }, observations.map((o) => [
-  q(o.id), q(o.importId), qOrNull(o.place), boolOrNull(o.notToAssign),
+  q(o.id), q(o.importId), qOrNull(o.place), boolOrNull(o.notToAssign), boolOrNull(o.absence),
   qOrNull(o.comment), jsonbOrNull(o.data), q(o.idInSource), geomOrNull(o.geometry), qOrNull(o.label),
 ]))
 

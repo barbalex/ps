@@ -20,4 +20,4 @@ export const excludedRestoreFields = new Set([
   'updated_by',
 ])
 
-export const preferredOrder = ['place_id', 'not_to_assign', 'comment']
+export const preferredOrder = ['place_id', 'not_to_assign', 'absence', 'comment']

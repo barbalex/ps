@@ -12,6 +12,7 @@ import {
 import { setShortTermOnlineFromFetchError } from '../../modules/setShortTermOnlineFromFetchError.ts'
 import { backgroundTasks } from '../../modules/backgroundTasks.ts'
 import { loadXlsx } from '../../modules/loadXlsx.ts'
+import { applyAbsenceRule } from './3/setAbsence.ts'
 import type ObservationImports from '../../models/public/ObservationImports.ts'
 
 type ProcessDataResult = { success: boolean; message: string }
@@ -222,6 +223,9 @@ export const replaceObservations = async ({
           draft: observations,
         })
 
+        // re-apply the stored absence rule to the new observations
+        await applyAbsenceRule({ observationImport })
+
         backgroundTasks.complete(taskId)
         resolve({
           success: true,
@@ -421,6 +425,10 @@ export const updateAndExtendObservations = async ({
             })
           }
         }
+
+        // re-apply the stored absence rule, so updated and added
+        // observations derive their absence the same way
+        await applyAbsenceRule({ observationImport })
 
         backgroundTasks.complete(taskId)
         resolve({

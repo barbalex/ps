@@ -244,9 +244,10 @@ database, default `../apf2/backend-dev/db/apflora.backup`, override with
   itself with (usually the same taxid in several taxonomies; 60 of 600 aps
   also list a second, closely related taxid, whose beob apf2 shows too).
   Absenzen (confirmed absences, apf2 `beob.absenz` — for Abies alba 320 of
-  the 469 EvAB rows) are imported with `data.absenz = true`; the nav-data
-  hooks append a red translated badge (`AbsenzBadge`) to their labels in
-  tree, lists and breadcrumbs — apf2 marks them with a distinct icon
+  the 469 EvAB rows) set the `absence` column (see section 10); the
+  nav-data hooks append a red translated badge (`AbsenzBadge`) to their
+  labels in tree, lists and breadcrumbs — apf2 marks them with a distinct
+  icon
 - historizations (apf2: `ap_history`, `pop_history`, `tpop_history` — one
   snapshot per `(year, row)`, usually for the years in which a report was
   written) as `subprojects_history`/`places_history` versions (see below)
@@ -985,3 +986,64 @@ geometries). The Own list in the map drawer
 layers; activating one creates or reuses its `layer_presentations` row.
 Filtered checks views (section 8) have no layers of their own — the normal
 checks layers draw their rows.
+
+# 10 Observation Absences
+
+## What it is
+
+`observations.absence` marks a confirmed absence: the record states the
+species was NOT found. Absences behave like observations everywhere (same
+lists, layers, assignment) but are visually distinct: a red translated
+badge (`AbsenzBadge`) next to the label in tree, lists and breadcrumbs,
+hollow red circles / faded red markers on the map, and an "Absenz" switch
+on the observation form.
+
+## How absence is derived on import
+
+The rule is stored on the import (`observation_imports`), exactly like
+geometry and label config:
+
+- `absence_method` — `NULL` (no absence handling) | `'boolean_column'` |
+  `'sql_expression'`
+- `absence_field` — the boolean data column (boolean_column mode)
+- `absence_expression` — a boolean SQL expression over the row
+  (sql_expression mode), e.g. `data->>'ANZAHL' = '0'`
+
+Wizard tab 3 "Absenz" (`src/formsAndLists/observationImport/3.tsx`) edits
+these; its set button (`3/Set.tsx` → `3/setAbsence.ts`) re-derives
+`absence` for all observations of the import. Changing the rule resets
+`absence` (like changing geometry config nulls geometries). Re-imports
+("Ersetzen" and "Aktualisieren und erweitern" in `updateObservations.ts`)
+re-apply the stored rule after importing, so observations added later
+derive their absence the same way. `applyAbsenceRule` queues one update
+operation per changed row, so the result syncs to the server.
+
+The apflora import sets the column directly (apf2's `beob.absenz`), with
+`absence_method` left NULL — the rule documents how to derive absence from
+imported data, and apf2's Absenzen come from the source, not the data.
+
+## Schema notes
+
+Adding columns means editing `04_createTables.sql` (source of truth, then
+`npm run sync-sql`) and regenerating the kanel models
+(`npm run models:generate` against a database built from the new schema).
+There are no migrations by design: backend-dev (and the preview
+production) are rebuilt from the init files
+(`cd backend-dev && docker compose down -v && docker compose up -d --build`)
+— installed browser clients need a local reset after the backend rebuild.
+History tables follow automatically on fresh builds (`LIKE <table>
+INCLUDING DEFAULTS` at creation; partman templates are created from the
+parent by `create_parent`).
+
+## Known issue: display_by_property is broken for own layers
+
+The configurable per-property styling (`vector_layers.display_by_property`
++ `vector_layer_displays.display_property_value`) does not work end to
+end: `Layer.tsx`'s `json_agg` omits `display_property_value` (so
+`displayFromFeature` always falls back to the first display),
+`displayFromFeature` compares text strictly against raw property values
+(jsonb booleans never match), the Property dropdown finds no fields for
+observation layers (their `own_table` is `observations_to_assess` etc.
+while fields are stored under `observations`), and the display form has no
+UI to set `display_property_value`. That is why absence styling is
+hardcoded in `TableLayer` instead of configured via displays.

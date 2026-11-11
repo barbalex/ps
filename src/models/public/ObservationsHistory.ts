@@ -11,6 +11,8 @@ export default interface ObservationsHistory {
 
   not_to_assign: boolean | null;
 
+  absence: boolean | null;
+
   comment: string | null;
 
   data: unknown | null;
@@ -45,6 +47,9 @@ export interface ObservationsHistoryInitializer {
 
   /** Default value: false */
   not_to_assign?: boolean | null;
+
+  /** Default value: false */
+  absence?: boolean | null;
 
   comment?: string | null;
 
@@ -81,6 +86,8 @@ export interface ObservationsHistoryMutator {
   place_id?: string | null;
 
   not_to_assign?: boolean | null;
+
+  absence?: boolean | null;
 
   comment?: string | null;
 

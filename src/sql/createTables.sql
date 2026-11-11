@@ -1482,6 +1482,7 @@ COMMENT ON TABLE filtered_views IS 'Named, filtered views on tables. Example: tw
 --observation_imports
 --
 CREATE TYPE observation_imports_geometry_methods_enum AS ENUM ('coordinates', 'geojson');
+CREATE TYPE observation_imports_absence_methods_enum AS ENUM ('boolean_column', 'sql_expression');
 
 CREATE TABLE IF NOT EXISTS observation_imports(
   observation_import_id uuid PRIMARY KEY DEFAULT uuidv7(),
@@ -1494,6 +1495,9 @@ CREATE TABLE IF NOT EXISTS observation_imports(
   x_coordinate_field text DEFAULT NULL,
   y_coordinate_field text DEFAULT NULL,
   crs text DEFAULT 4326,
+  absence_method observation_imports_absence_methods_enum DEFAULT NULL,
+  absence_field text DEFAULT NULL, -- boolean data column marking absences, used when absence_method = 'boolean_column'
+  absence_expression text DEFAULT NULL, -- boolean SQL expression over the row, used when absence_method = 'sql_expression'
   label_creation jsonb DEFAULT NULL, -- Array of objects with keys: type (field, separator), value (fieldname, separating text), id (required by react-beautiful-dnd)
   name text DEFAULT NULL,
   attribution text DEFAULT NULL,
@@ -1528,6 +1532,7 @@ CREATE TABLE IF NOT EXISTS observations(
   observation_import_id uuid DEFAULT NULL REFERENCES observation_imports(observation_import_id) ON DELETE CASCADE ON UPDATE CASCADE DEFERRABLE INITIALLY DEFERRED,
   place_id uuid DEFAULT NULL REFERENCES places(place_id) ON DELETE SET NULL ON UPDATE CASCADE DEFERRABLE INITIALLY DEFERRED,
   not_to_assign boolean DEFAULT FALSE, -- TODO: index?,
+  absence boolean DEFAULT FALSE, -- derived on import using observation_imports.absence_method and it's field/expression
   comment text DEFAULT NULL,
   data jsonb DEFAULT NULL,
   id_in_source text DEFAULT NULL, -- extracted from data using observation_import_id.id_field
@@ -1548,6 +1553,7 @@ CREATE INDEX IF NOT EXISTS observations_geometry_idx ON observations USING gist(
 COMMENT ON TABLE observations IS 'observations. Imported for subprojects (species projects) or projects (biotope projects).';
 COMMENT ON COLUMN observations.place_id IS 'The place this observation is assigned to.';
 COMMENT ON COLUMN observations.id_in_source IS 'Used to replace previously imported observations';
+COMMENT ON COLUMN observations.absence IS 'confirmed absence — the record states the species was NOT found';
 COMMENT ON COLUMN observations.geometry IS 'geometry of observation. Extracted from data to show the observation on a map';
 COMMENT ON COLUMN observations.data IS 'data as received from GBIF';
 COMMENT ON COLUMN observations.label IS 'label of observation, used to show it in the UI. Created on import';
