@@ -50,9 +50,6 @@ dark mode not well implemented for: file upload?
 
 ---
 
-TODO:
-map: the locate and edit geometry buttons are barely visible in dark mode
-
 ---
 
 Doing:
