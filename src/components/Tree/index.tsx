@@ -3,12 +3,13 @@
 
 import { useVirtualizer } from '@tanstack/react-virtual'
 import type { Virtualizer } from '@tanstack/react-virtual'
-import { useEffect, useRef } from 'react'
+import { createElement, useEffect, useRef } from 'react'
 import { useAtomValue } from 'jotai'
 import { useLocation, useNavigate } from '@tanstack/react-router'
 import { isEqual } from 'es-toolkit'
 
 import { Node } from './Node.tsx'
+import { AbsenzBadge } from '../shared/AbsenzBadge.tsx'
 import { Editing } from './Project/Editing.tsx'
 import { Registrar } from './virtual/Registrar.tsx'
 import { DeepLinkPrefetcher } from './virtual/DeepLinkPrefetcher.tsx'
@@ -230,7 +231,21 @@ export const Tree = () => {
               style={{ transform: `translateY(${virtualRow.start}px)` }}
             >
               <Node
-                label={registered.label}
+                // absences get their badge at render time — nav labels stay
+                // plain strings (elements would defeat Registrar's
+                // deep-equal registration guard)
+                label={
+                  (registered.descriptor?.nav as { is_absenz?: boolean })
+                    ?.is_absenz ?
+                    createElement(
+                      'span',
+                      null,
+                      registered.label,
+                      ' ',
+                      createElement(AbsenzBadge),
+                    )
+                  : registered.label
+                }
                 id={registered.id}
                 level={registered.level}
                 isOpen={isOpen}
