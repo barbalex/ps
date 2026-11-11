@@ -5,6 +5,8 @@ import { useAtom } from 'jotai'
 
 import { mapLocateAtom } from '../../../../store.ts'
 
+import styles from './index.module.css'
+
 export const LocatingButton = () => {
   const [mapIsLocating, setMapIsLocating] = useAtom(mapLocateAtom)
 
@@ -19,6 +21,7 @@ export const LocatingButton = () => {
       title={mapIsLocating ? 'Stop locating' : 'Locate'}
       icon={<IoMdLocate />}
       size="large"
+      className={styles.toolbarButton}
     />
   )
 }

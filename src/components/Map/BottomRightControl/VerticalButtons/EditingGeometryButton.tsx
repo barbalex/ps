@@ -11,6 +11,8 @@ import {
   tabsAtom,
 } from '../../../../store.ts'
 
+import styles from './index.module.css'
+
 export const EditingGeometryButton = () => {
   const [editingPlaceGeometry, setEditingPlaceGeometry] = useAtom(
     editingPlaceGeometryAtom,
@@ -87,6 +89,7 @@ export const EditingGeometryButton = () => {
       title={isActive ? 'Stop editing geometry' : 'Edit geometry'}
       icon={<FaDrawPolygon />}
       size="large"
+      className={styles.toolbarButton}
     />
   )
 }
