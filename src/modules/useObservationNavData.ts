@@ -1,12 +1,10 @@
 import { useLiveQuery } from '@electric-sql/pglite-react'
 import { useAtom } from 'jotai'
-import { createElement } from 'react'
 import { useLocation } from '@tanstack/react-router'
 import { isEqual } from 'es-toolkit'
 import { useIntl } from 'react-intl'
 
 import { treeOpenNodesAtom } from '../store.ts'
-import { AbsenzBadge } from '../components/shared/AbsenzBadge.tsx'
 
 type Props = {
   projectId: string
@@ -21,7 +19,6 @@ type Props = {
 type NavData = {
   id: string
   label: string | null
-  is_absenz?: boolean | null
 }
 
 export const useObservationNavData = ({
@@ -41,8 +38,7 @@ export const useObservationNavData = ({
     `
     SELECT
       observation_id AS id,
-      label,
-      absence AS is_absenz
+      label
     FROM observations
     WHERE observation_id = $1`,
     [observationId],
@@ -89,14 +85,9 @@ export const useObservationNavData = ({
         })
 
   const notFound = !!res && !nav
-  const labelText = notFound
+  const label = notFound
     ? formatMessage({ id: 'p+ORxp', defaultMessage: 'Nicht gefunden' })
     : (nav?.label ?? nav?.id)
-  // Absenzen carry their label plus the red badge — as elements, so the
-  // badge stays translated (label strings are stored data)
-  const label = nav?.is_absenz ?
-      [labelText, ' ', createElement(AbsenzBadge)]
-    : labelText
 
   const navData = {
     isInActiveNodeArray,

@@ -2,6 +2,7 @@ import { ListHeader } from '../components/ListHeader.tsx'
 import { Row } from '../components/shared/Row.tsx'
 import { FilterButton } from '../components/shared/FilterButton.tsx'
 import { Loading } from '../components/shared/Loading.tsx'
+import { AbsenzBadge } from '../components/shared/AbsenzBadge.tsx'
 import { useObservationsNavData } from '../modules/useObservationsNavData.ts'
 
 import '../form.css'
@@ -48,8 +49,18 @@ export const Observations = ({
         {loading ? (
           <Loading />
         ) : (
-          navs.map(({ id, label }) => (
-            <Row key={id} label={label ?? id} to={id} />
+          navs.map(({ id, label, is_absenz }) => (
+            <Row
+              key={id}
+              label={
+                is_absenz ?
+                  <span>
+                    {label ?? id} <AbsenzBadge />
+                  </span>
+                : (label ?? id)
+              }
+              to={id}
+            />
           ))
         )}
       </div>
