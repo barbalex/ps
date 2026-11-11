@@ -80,6 +80,7 @@ export const Layer = ({ layerPresentationId, index }: Props) => {
       json_agg(
         json_build_object(
           'vector_layer_display_id', vld.vector_layer_display_id,
+          'display_property_value', vld.display_property_value,
           'marker_type', vld.marker_type,
           'circle_marker_radius', vld.circle_marker_radius,
           'marker_symbol', vld.marker_symbol,

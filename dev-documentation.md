@@ -1051,15 +1051,27 @@ History tables follow automatically on fresh builds (`LIKE <table>
 INCLUDING DEFAULTS` at creation; partman templates are created from the
 parent by `create_parent`).
 
-## Known issue: display_by_property is broken for own layers
+## Per-property styling (display_by_property)
 
-The configurable per-property styling (`vector_layers.display_by_property`
-+ `vector_layer_displays.display_property_value`) does not work end to
-end: `Layer.tsx`'s `json_agg` omits `display_property_value` (so
-`displayFromFeature` always falls back to the first display),
-`displayFromFeature` compares text strictly against raw property values
-(jsonb booleans never match), the Property dropdown finds no fields for
-observation layers (their `own_table` is `observations_to_assess` etc.
-while fields are stored under `observations`), and the display form has no
-UI to set `display_property_value`. That is why absence styling is
-hardcoded in `TableLayer` instead of configured via displays.
+Own layers can be styled per property value. The vector layer form's
+"Anzeigen nach" dropdown (`vectorLayer/Form/Property.tsx`) sets
+`vector_layers.display_by_property` to a field of the layer's table or to a
+built-in column (`absence` on observation layers);
+`upsertVectorLayerDisplaysForVectorLayer` then creates/updates one
+`vector_layer_displays` row per value — list fields get one display per list
+value (extracted from the typed `value_*` column the widgets write into
+`data`), other fields one per distinct value. Values are stored as text.
+`Layer.tsx` aggregates `display_property_value` with the displays,
+`TableLayer`'s `displayFromFeature` picks the display whose value matches the
+feature's property (raw jsonb booleans/numbers are compared via their text
+representation — `propertyValueToText` in
+`src/modules/displayByProperty.ts`, which also holds the `own_table` →
+`fields.table_name` mapping: observation layers style the `observations`
+table; the assigned-lines layer has fixed properties and no fields). The
+display form has a "Wert der Eigenschaft" field to edit the value.
+
+Absence styling remains hardcoded in `TableLayer` (hollow red circles /
+faded markers) as a fallback: when a layer sets
+`display_by_property = 'absence'`, the configured displays replace the
+hardcoded look.
+

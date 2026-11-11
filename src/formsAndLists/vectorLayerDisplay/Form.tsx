@@ -1,4 +1,5 @@
 import { useIntl } from 'react-intl'
+import { useLiveQuery } from '@electric-sql/pglite-react'
 import type { FieldChangeData } from '../../components/shared/fieldChange.ts'
 
 import { TextField } from '../../components/shared/TextField.tsx'
@@ -31,9 +32,41 @@ export const VectorLayerDisplayForm = ({
 }: VectorLayerDisplayFormProps) => {
   const { formatMessage } = useIntl()
 
+  // the value only applies when the layer is styled by a property
+  const layerRes = useLiveQuery(
+    `SELECT display_by_property FROM vector_layers WHERE vector_layer_id = $1`,
+    [row.vector_layer_id],
+  )
+  const displayByProperty = layerRes?.rows?.[0]?.display_by_property as
+    string | null | undefined
+
   return (
     <>
-      <MarkerType onChange={onChange} row={row} />
+      {displayByProperty ?
+        <TextField
+          name="display_property_value"
+          label={formatMessage({
+            id: 'vldPropVal',
+            defaultMessage: 'Wert der Eigenschaft',
+          })}
+          value={row.display_property_value ?? undefined}
+          onChange={onChange}
+          hint={formatMessage(
+            {
+              id: 'vldPropValHint',
+              defaultMessage:
+                'Gilt für Objekte mit diesem Wert im Feld «{field}». Leer lassen für Objekte ohne Wert.',
+            },
+            { field: displayByProperty },
+          )}
+          validationMessage={validations?.display_property_value?.message}
+          validationState={validations?.display_property_value?.state}
+        />
+      : null}
+      <MarkerType
+        onChange={onChange}
+        row={row}
+      />
       {row.marker_type === 'circle' && (
         <TextField
           name="circle_marker_radius"
@@ -94,8 +127,14 @@ export const VectorLayerDisplayForm = ({
         validationMessage={validations?.weight?.message}
         validationState={validations?.weight?.state}
       />
-      <LineCap onChange={onChange} row={row} />
-      <LineJoin onChange={onChange} row={row} />
+      <LineCap
+        onChange={onChange}
+        row={row}
+      />
+      <LineJoin
+        onChange={onChange}
+        row={row}
+      />
       <TextField
         name="dash_array"
         label={formatMessage({
@@ -172,7 +211,10 @@ export const VectorLayerDisplayForm = ({
         min={0}
         step={5}
       />
-      <FillRule onChange={onChange} row={row} />
+      <FillRule
+        onChange={onChange}
+        row={row}
+      />
     </>
   )
 }

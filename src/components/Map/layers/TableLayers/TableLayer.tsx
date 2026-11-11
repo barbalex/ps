@@ -9,6 +9,7 @@ import type { Feature, FeatureCollection } from 'geojson'
 import { ProgressiveGeoJSON } from '../ProgressiveGeoJSON.tsx'
 
 import { vectorLayerDisplayToProperties } from '../../../../modules/vectorLayerDisplayToProperties.ts'
+import { propertyValueToText } from '../../../../modules/displayByProperty.ts'
 import { useVectorLayerLabel } from '../../../../modules/vectorLayerLabel.ts'
 import { ErrorBoundary } from '../../MapErrorBoundary.tsx'
 import { assignToNearestDroppable } from './assignToNearestDroppable.ts'
@@ -93,15 +94,22 @@ export const TableLayer = ({
   const vectorLayerDisplays = layer.vector_layer_displays
   const firstDisplay = vectorLayerDisplays?.[0]
 
+  // when the layer is styled by absence via displays, the configured styling
+  // replaces the hardcoded absence look
+  const absenceStyledByDisplays = layer?.display_by_property === 'absence'
+
   const displayFromFeature = (
     feature: Feature | undefined,
   ): VectorLayerDisplays => {
     // display_by_property is _not_ under the data property
     // as passing the data object to feature.properties lead to errors
+    // display_property_value is text while property values are raw jsonb
+    // (booleans, numbers) — compare via their text representation
+    const valueText = propertyValueToText(
+      feature?.properties?.[layer?.display_by_property as string],
+    )
     const displayToUse = (vectorLayerDisplays ?? []).find(
-      (vld) =>
-        vld.display_property_value ===
-        feature?.properties?.[layer?.display_by_property as string],
+      (vld) => propertyValueToText(vld.display_property_value) === valueText,
     )
 
     return (displayToUse ?? firstDisplay) as VectorLayerDisplays
@@ -166,6 +174,7 @@ export const TableLayer = ({
             presentation: layerPresentation,
           })
           const style =
+            !absenceStyledByDisplays &&
             feature?.properties?.absence === true ?
               { ...baseStyle, color: ABSENCE_COLOR, fillColor: 'transparent', fillOpacity: 0 }
             : baseStyle
@@ -220,7 +229,8 @@ export const TableLayer = ({
             ...displayToUse,
             geomanIgnore: true,
             // absences: hollow red
-            ...(feature?.properties?.absence === true ?
+            ...(!absenceStyledByDisplays &&
+            feature?.properties?.absence === true ?
               { color: ABSENCE_COLOR, fillColor: 'transparent', fillOpacity: 0 }
             : {}),
             radius: visualRadius,
@@ -348,12 +358,17 @@ export const TableLayer = ({
           clickableCircle._isInternal = true
 
           const markerIconStyle = {
-            '--marker-color': feature?.properties?.absence === true ?
-              ABSENCE_COLOR
-            : (displayToUse.color ?? '#cc756b'),
+            '--marker-color':
+              !absenceStyledByDisplays &&
+              feature?.properties?.absence === true ?
+                ABSENCE_COLOR
+              : (displayToUse.color ?? '#cc756b'),
             '--marker-size': `${markerSize}px`,
             // absences: faded
-            ...(feature?.properties?.absence === true ? { opacity: '0.5' } : {}),
+            ...(!absenceStyledByDisplays &&
+            feature?.properties?.absence === true ?
+              { opacity: '0.5' }
+            : {}),
           } as React.CSSProperties
 
           const marker = (IconComponent
