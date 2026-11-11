@@ -4,6 +4,7 @@ import { featureCollection, lineString } from '@turf/helpers'
 
 import { TableLayer } from './TableLayer.tsx'
 import type { TableLayerProps } from './TableLayer.tsx'
+import { useActiveObservationId } from './useActiveObservationId.ts'
 
 type AssignmentRow = {
   observation_id: string
@@ -32,6 +33,7 @@ export const ObservationsAssignedLines2 = ({
   layerPresentation: TableLayerProps['layerPresentation']
 }) => {
   const { subprojectId } = useParams({ strict: false })
+  const activeObservationId = useActiveObservationId()
 
   const res = useLiveQuery(
     `
@@ -77,5 +79,5 @@ export const ObservationsAssignedLines2 = ({
   if (!data?.length) return null
   if (!layerPresentation) return null
 
-  return <TableLayer data={data} layerPresentation={layerPresentation} />
+  return <TableLayer data={data} layerPresentation={layerPresentation} activeId={activeObservationId} activeIdField="observation_id" />
 }

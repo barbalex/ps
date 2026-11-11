@@ -4,6 +4,7 @@ import { useLiveQuery } from '@electric-sql/pglite-react'
 
 import { TableLayer } from './TableLayer.tsx'
 import type { TableLayerProps } from './TableLayer.tsx'
+import { useActiveObservationId } from './useActiveObservationId.ts'
 import type { GeoJsonProperties, GeometryCollection } from 'geojson'
 import { draggableLayersAtom } from '../../../../store.ts'
 import type Observations from '../../../../models/public/Observations.ts'
@@ -13,6 +14,7 @@ export const ObservationsAssigned1 = ({ layerPresentation }: {
 }) => {
   const draggableLayers = useAtomValue(draggableLayersAtom)
   const { subprojectId } = useParams({ strict: false })
+  const activeObservationId = useActiveObservationId()
 
   const res = useLiveQuery<Observations>(
     `
@@ -87,6 +89,8 @@ export const ObservationsAssigned1 = ({ layerPresentation }: {
       key={isDraggable as unknown as string}
       data={data}
       layerPresentation={layerPresentation}
+      activeId={activeObservationId}
+      activeIdField="observation_id"
     />
   )
 }

@@ -987,6 +987,22 @@ layers; activating one creates or reuses its `layer_presentations` row.
 Filtered checks views (section 8) have no layers of their own — the normal
 checks layers draw their rows.
 
+## The active object glows yellow on the map
+
+The object whose form is open (the "active" object of the navigation) is
+marked on the map with a yellow halo instead of a color change — objects
+configured yellow themselves stay recognizable. Mechanism: each TableLayer
+component derives `activeId` from the URL (the id segment after its
+entity's path segment, e.g. `observations-to-assess/<id>`; observations use
+the shared hook `useActiveObservationId.ts`) and passes it to
+`TableLayer.tsx` together with its `activeIdField`. Matching features get
+the CSS class `.activeHalo` (`TableLayer.module.css`, stacked yellow
+`drop-shadow`s) — on the vector path for lines/polygons, on the visual
+circle for point circles and on the icon element for marker icons. The
+class is applied at path creation, which works because TableLayer's
+`resetKey` includes `activeId`. Level-1 place layers only mark their place
+when no level-2 place is in the URL (the deeper place is the active one).
+
 # 10 Observation Absences
 
 ## What it is

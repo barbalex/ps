@@ -10,7 +10,11 @@ export const Places1 = ({ layerPresentation }: { layerPresentation: TableLayerPr
   const { pathname } = useLocation()
   const pathParts = pathname.split('/')
   const placesIdx = pathParts.indexOf('places')
-  const placeId = placesIdx !== -1 ? pathParts[placesIdx + 1] : undefined
+  // with a level-2 place open, that place is the active object — not this level
+  const hasLevel2Place =
+    placesIdx !== -1 && pathParts.indexOf('places', placesIdx + 1) !== -1
+  const placeId =
+    !hasLevel2Place && placesIdx !== -1 ? pathParts[placesIdx + 1] : undefined
   const { subprojectId } = useParams({ strict: false })
   // TODO: query only inside current map bounds using places.bbox
   const res = useLiveQuery<Places>(

@@ -6,3 +6,14 @@
   color: var(--marker-color, #cc756b);
   font-size: var(--marker-size);
 }
+
+/* yellow halo marking the object that is active in the navigation (its form
+   is open) — applied to line/polygon paths, point circles and marker icons
+   alike. Stacked drop-shadows build a dense enough halo to read on bright
+   tiles. Declared after .markerIcon so it replaces the black icon outline */
+.activeHalo {
+  filter:
+    drop-shadow(0 0 2px #ffd400)
+    drop-shadow(0 0 5px #ffd400)
+    drop-shadow(0 0 9px #ffd400);
+}

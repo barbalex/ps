@@ -44,14 +44,14 @@ dark mode not well implemented for: file upload?
 
 ---
 
+we need a way to show in the map symbol that this object is the active according to the navigation (thus in nav tree or form)
+
 ---
 
 filtered_views: as far as I know we are using this feature for EK/EKF in apflora to separate tables by row filters.
 another, different usage, maybe needing a different name: separate tables by columns. Examples: EK Biotop, Art Idealbiotop
 
 ---
-
-please commit, push and deploy last. Then: observation form header (http://localhost:5176/data/projects/0195a101-0000-7000-8000-000000000001/subprojects/017d3472-d75d-735d-8197-b6db29e70db3/observations-to-assess/b56a6604-434e-11e8-ab21-870eab8282e9) needs a 'zoom to' button like population with the same functionality (active when geometry exists, opens map if necessary...)
 
 ---
 
