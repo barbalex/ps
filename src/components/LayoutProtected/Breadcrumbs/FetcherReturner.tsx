@@ -2,7 +2,8 @@ import { Crumb } from './Crumb/index.tsx'
 
 type NavData = {
   id?: string
-  label?: string
+  // can be an element (e.g. observations' Absenz badge next to the label)
+  label?: React.ReactNode
   ownUrl?: string
 }
 

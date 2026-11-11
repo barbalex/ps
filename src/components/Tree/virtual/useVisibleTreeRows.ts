@@ -54,12 +54,13 @@ export const useVisibleTreeRows = () => {
         }
         // not registered (yet): render the row straight from the parent's
         // nav data - like the old components did for closed rows. Its
-        // Registrar (and its queries) only mounts once the row is open
+        // Registrar (and its queries) only mounts once the row is open.
+        // nav labels can be elements (e.g. observations' Absenz badge)
         const config = treeConfigs[child.type]
         const synthesized: TreeRegisteredRow = {
           key: childKey,
           ownArray: childOwnArray,
-          label: (nav.label as string) ?? nav.id,
+          label: (nav.label as React.ReactNode) ?? nav.id,
           level: child.level,
           to: `/${childOwnArray.join('/')}`,
           childrenCount: config?.children ? (config.childrenCount ?? 1) : 0,

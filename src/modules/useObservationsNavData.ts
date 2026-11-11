@@ -1,11 +1,13 @@
 import { useLiveQuery } from '@electric-sql/pglite-react'
 import { useAtom } from 'jotai'
+import { createElement } from 'react'
 import { useLocation } from '@tanstack/react-router'
 import { isEqual } from 'es-toolkit'
 import { useIntl } from 'react-intl'
 
 import { filterStringFromFilter } from './filterStringFromFilter.ts'
 import { buildNavLabel } from './buildNavLabel.ts'
+import { AbsenzBadge } from '../components/shared/AbsenzBadge.tsx'
 import {
   observationsNotToAssignFilterAtom,
   observationsToAssessFilterAtom,
@@ -23,7 +25,8 @@ type Props = {
 
 type NavData = {
   id: string
-  label: string
+  label: React.ReactNode
+  is_absenz?: boolean | null
   count_unfiltered?: number
   count_filtered?: number
 }[]
@@ -101,6 +104,7 @@ export const useObservationsNavData = ({
     SELECT
       o.observation_id AS id,
       o.label,
+      (o.data->>'absenz')::boolean AS is_absenz,
       count_unfiltered.count AS count_unfiltered,
       count_filtered.count AS count_filtered
     FROM observations o
@@ -134,7 +138,14 @@ export const useObservationsNavData = ({
 
   const loading = res === undefined
 
-  const navs: NavData = res?.rows ?? []
+  // Absenzen carry their label plus the red badge — as elements, so the
+  // badge stays translated (label strings are stored data)
+  const navs: NavData = (res?.rows ?? []).map((nav) => ({
+    ...nav,
+    label: nav.is_absenz ?
+      [nav.label ?? nav.id, ' ', createElement(AbsenzBadge)]
+    : nav.label,
+  }))
   const countUnfiltered = navs[0]?.count_unfiltered ?? 0
   const countFiltered = navs[0]?.count_filtered ?? 0
   const urlPath = location.pathname.split('/').filter((p) => p !== '')

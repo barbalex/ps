@@ -12,7 +12,9 @@
 //   tpopmassn            -> actions, apf2 columns -> actions.data (fields)
 //   beob                 -> observations, one observation_import per art and
 //                           quelle; geometry from apf2's geom_point (the
-//                           sources' data carries no extractable coordinates)
+//                           sources' data carries no extractable coordinates).
+//                           Absenzen (apf2 beob.absenz) are imported with
+//                           data.absenz = true — the UI shows a red badge
 // Taxa are NOT imported: 11a_seedApfloraTaxonomies.sql already seeds
 // DB-TAXREF (2017); this file links into it by id_in_source (taxid).
 //
@@ -676,6 +678,8 @@ data.arts.forEach((art) => {
       if (b.datum) dataObj.datum = b.datum
       if (b.autor) dataObj.autor = b.autor
       dataObj.quelle = quelle
+      // Absenzen (confirmed absences) — marked, the UI badges them red
+      if (b.absenz) dataObj.absenz = true
       observations.push({
         id: b.id,
         importId: observationImportId(subprojectId(art.ap.id), quelle),

@@ -242,16 +242,17 @@ database, default `../apf2/backend-dev/db/apflora.backup`, override with
   `YYYY.MM.DD: Autor (Quelle)`. beob are scoped to an art by apf2's own
   rule — the ap's `apart` rows: the ae_taxonomies ids the ap associates
   itself with (usually the same taxid in several taxonomies; 60 of 600 aps
-  also list a second, closely related taxid, whose beob apf2 shows too)
+  also list a second, closely related taxid, whose beob apf2 shows too).
+  Absenzen (confirmed absences, apf2 `beob.absenz` — for Abies alba 320 of
+  the 469 EvAB rows) are imported with `data.absenz = true`; the nav-data
+  hooks append a red translated badge (`AbsenzBadge`) to their labels in
+  tree, lists and breadcrumbs — apf2 marks them with a distinct icon
 - historizations (apf2: `ap_history`, `pop_history`, `tpop_history` — one
   snapshot per `(year, row)`, usually for the years in which a report was
   written) as `subprojects_history`/`places_history` versions (see below)
 - yearly place reports (apf2: `popber`/`tpopber` → `check_reports`,
   `tpopmassnber`/`popmassnber` → `action_reports`) — the source of the
   report's B and C tables
-- not imported: Beobachtungen flagged as Absenz (ps observations have no
-  absence concept — apf2 shows them with a distinct icon in the same
-  lists; for Abies alba 320 of the 469 EvAB rows are Absenzen)
 
 Pipeline (run from the repo root):
 

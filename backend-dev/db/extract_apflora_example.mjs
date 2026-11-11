@@ -16,8 +16,6 @@
 // Source dump: custom-format pg_dump of the apf2 backend-dev database.
 // Default path assumes apf2 is checked out next to this repo;
 // override with APF2_DUMP=/path/to/apflora.backup.
-// Excluded by design: Beobachtungen flagged as Absenz (ps observations have
-// no absence concept — an absence is not an observation of the species).
 
 import { spawn, spawnSync } from 'child_process'
 import { existsSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from 'fs'
@@ -600,19 +598,15 @@ console.log(`scope ${scope}: ${selectedArts.length} arts`)
 
 // beob (Beobachtungen) of the selected arts, streamed and filtered while
 // reading the dump (the table's COPY data is ~1.3 GB). Rows of other arts
-// and Absenzen are dropped on the fly. datum/autor/quelle are apf2 columns
-// outside data — the generator adds them into the ps data jsonb so that
-// ps labels (label_creation) can reference them
+// are dropped on the fly; Absenzen are kept — ps marks them via
+// data.absenz and shows a red badge next to their label. datum/autor/quelle
+// are apf2 columns outside data — the generator adds them into the ps data
+// jsonb so that ps labels (label_creation) can reference them
 const selectedApIds = new Set(
   selectedArts.map((tax) => apByArt.get(tax.id)?.id).filter(Boolean),
 )
 const beobByApId = new Map()
-let beobAbsenzCount = 0
 await streamTable('beob', (row) => {
-  if (row.absenz === 't') {
-    beobAbsenzCount++
-    return
-  }
   const apId = apOfBeobArtId.get(row.art_id)
   if (!selectedApIds.has(apId)) return
   const list = beobByApId.get(apId) ?? []
@@ -627,11 +621,18 @@ await streamTable('beob', (row) => {
     nicht_zuordnen: asBool(row.nicht_zuordnen),
     bemerkungen: row.bemerkungen,
     geom_point: ewkbToPoint(row.geom_point),
+    absenz: row.absenz === 't',
   })
   beobByApId.set(apId, list)
 })
 const beobCount = [...beobByApId.values()].reduce((sum, l) => sum + l.length, 0)
-console.log(`beob: ${beobCount} rows (${beobAbsenzCount} Absenzen skipped)`)
+const beobAbsenzCount = [...beobByApId.values()].reduce(
+  (sum, l) => sum + l.filter((b) => b.absenz).length,
+  0,
+)
+console.log(
+  `beob: ${beobCount} rows (${beobAbsenzCount} Absenzen, shown with a badge)`,
+)
 
 for (const tax of selectedArts) {
   if (!tax) throw new Error('ap row without ae_taxonomies entry')
