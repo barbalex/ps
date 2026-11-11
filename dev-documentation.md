@@ -239,7 +239,9 @@ database, default `../apf2/backend-dev/db/apflora.backup`, override with
   geometry comes from apf2's `geom_point` — the sources' data carries no
   extractable coordinates (Info Flora 2017 delivers 1-km-grid precision
   only), so `geometry_method` stays NULL. Labels mirror apf2's `beob_label`:
-  `YYYY.MM.DD: Autor (Quelle)`
+  `YYYY.MM.DD: Autor (Quelle)`. beob are matched to arts by taxid across
+  apf2's taxonomies (an EvAB beob's `art_id` references the SISF (2005)
+  row while the art's ap uses DB-TAXREF (2017))
 - historizations (apf2: `ap_history`, `pop_history`, `tpop_history` — one
   snapshot per `(year, row)`, usually for the years in which a report was
   written) as `subprojects_history`/`places_history` versions (see below)
@@ -247,7 +249,8 @@ database, default `../apf2/backend-dev/db/apflora.backup`, override with
   `tpopmassnber`/`popmassnber` → `action_reports`) — the source of the
   report's B and C tables
 - not imported: Beobachtungen flagged as Absenz (ps observations have no
-  absence concept)
+  absence concept — apf2 shows them with a distinct icon in the same
+  lists; for Abies alba 320 of the 469 EvAB rows are Absenzen)
 
 Pipeline (run from the repo root):
 

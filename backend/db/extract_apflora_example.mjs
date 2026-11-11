@@ -593,17 +593,22 @@ console.log(`scope ${scope}: ${selectedArts.length} arts`)
 // reading the dump (the table's COPY data is ~1.3 GB). Rows of other arts
 // and Absenzen are dropped on the fly. datum/autor/quelle are apf2 columns
 // outside data — the generator adds them into the ps data jsonb so that
-// ps labels (label_creation) can reference them
-const selectedArtIds = new Set(selectedArts.map((t) => t.id))
-const beobByArtId = new Map()
+// ps labels (label_creation) can reference them.
+// beob.art_id references ae_taxonomies rows of ANY taxonomy: an EvAB beob
+// points at the SISF (2005) row while the art's ap uses DB-TAXREF (2017) —
+// the taxid identifies the species across taxonomies
+const taxidByAeId = new Map(taxAll.map((t) => [t.id, t.taxid]))
+const selectedTaxids = new Set(selectedArts.map((t) => t.taxid))
+const beobByTaxid = new Map()
 let beobAbsenzCount = 0
 await streamTable('beob', (row) => {
   if (row.absenz === 't') {
     beobAbsenzCount++
     return
   }
-  if (!selectedArtIds.has(row.art_id)) return
-  const list = beobByArtId.get(row.art_id) ?? []
+  const taxid = taxidByAeId.get(row.art_id)
+  if (!selectedTaxids.has(taxid)) return
+  const list = beobByTaxid.get(taxid) ?? []
   list.push({
     id: row.id,
     quelle: row.quelle,
@@ -616,9 +621,9 @@ await streamTable('beob', (row) => {
     bemerkungen: row.bemerkungen,
     geom_point: ewkbToPoint(row.geom_point),
   })
-  beobByArtId.set(row.art_id, list)
+  beobByTaxid.set(taxid, list)
 })
-const beobCount = [...beobByArtId.values()].reduce((sum, l) => sum + l.length, 0)
+const beobCount = [...beobByTaxid.values()].reduce((sum, l) => sum + l.length, 0)
 console.log(`beob: ${beobCount} rows (${beobAbsenzCount} Absenzen skipped)`)
 
 for (const tax of selectedArts) {
@@ -636,7 +641,7 @@ for (const tax of selectedArts) {
     (sum, p) => sum + p.tpops.reduce((s, t) => s + t.massnahmen.length, 0),
     0,
   )
-  const beobArtCount = (beobByArtId.get(tax.id) ?? []).length
+  const beobArtCount = (beobByTaxid.get(tax.taxid) ?? []).length
   console.log(
     `${tax.artname}: ${pops.length} pops, ${tpopCount} tpops, ${kontrCount} kontrollen, ${massnCount} massnahmen, ${beobArtCount} beob`,
   )
@@ -705,7 +710,7 @@ for (const tax of selectedArts) {
         .sort((a, b) => a.jahr - b.jahr),
     },
     pops,
-    beobachtungen: beobByArtId.get(tax.id) ?? [],
+    beobachtungen: beobByTaxid.get(tax.taxid) ?? [],
   })
 }
 
