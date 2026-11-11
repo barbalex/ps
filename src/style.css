@@ -184,53 +184,55 @@ https://stackoverflow.com/a/21541021/712005 */
   overflow: hidden;
   height: 100%;
 
-  .list-view-header {
-    display: flex;
-    flex-wrap: nowrap;
-    justify-content: space-between;
-    padding: 5px 10px;
-    background-color: rgba(103, 216, 101, 0.2);
-    h1 {
-      margin: 0;
-      font-size: medium;
-      line-height: 32px;
-      user-select: none;
-    }
-  }
-
-  .list-container {
-    display: flex;
-    flex-direction: column;
-    flex-grow: 1;
-    overflow: auto;
-    scrollbar-width: thin;
-
-    .row {
-      display: flex;
-      justify-content: center;
-      border-top: rgba(55, 118, 28, 0.5) solid 1px;
-      width: 100%;
-      height: 50px;
-      content-visibility: auto;
-      contain-intrinsic-size: auto 50px;
-      line-height: 50px;
-      text-align: center;
-      vertical-align: middle;
-      cursor: pointer;
-      user-select: none;
-      &:last-child {
-        border-bottom: rgba(55, 118, 28, 0.5) solid 1px;
-        /* without cv visible, border is not drawn */
-        content-visibility: visible;
-      }
-      &:hover {
-        background-color: rgba(103, 216, 101, 0.07);
-      }
-    }
-  }
-
   [role='menu'] [role='menuitem'] {
     text-decoration: none !important;
+  }
+}
+
+/* header and rows style themselves, so lists embedded in forms (e.g. the
+   Configuration sections) look and behave like the full-page list views */
+.list-view-header {
+  display: flex;
+  flex-wrap: nowrap;
+  justify-content: space-between;
+  padding: 5px 10px;
+  background-color: rgba(103, 216, 101, 0.2);
+  h1 {
+    margin: 0;
+    font-size: medium;
+    line-height: 32px;
+    user-select: none;
+  }
+}
+
+.list-container {
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+  overflow: auto;
+  scrollbar-width: thin;
+
+  .row {
+    display: flex;
+    justify-content: center;
+    border-top: rgba(55, 118, 28, 0.5) solid 1px;
+    width: 100%;
+    height: 50px;
+    content-visibility: auto;
+    contain-intrinsic-size: auto 50px;
+    line-height: 50px;
+    text-align: center;
+    vertical-align: middle;
+    cursor: pointer;
+    user-select: none;
+    &:last-child {
+      border-bottom: rgba(55, 118, 28, 0.5) solid 1px;
+      /* without cv visible, border is not drawn */
+      content-visibility: visible;
+    }
+    &:hover {
+      background-color: rgba(103, 216, 101, 0.07);
+    }
   }
 }
 
@@ -341,11 +343,11 @@ html[data-theme='dark'] .form-container-embedded [role='separator']:after {
   border-color: rgba(110, 170, 100, 0.35);
 }
 
-html[data-theme='dark'] .list-view .list-view-header {
+html[data-theme='dark'] .list-view-header {
   background-color: rgba(103, 216, 101, 0.13);
 }
 
-html[data-theme='dark'] .list-view .list-container .row {
+html[data-theme='dark'] .list-container .row {
   border-top-color: rgba(110, 170, 100, 0.35);
   &:last-child {
     border-bottom-color: rgba(110, 170, 100, 0.35);
