@@ -1052,14 +1052,22 @@ export const getDataFromTableView = async ({
 
 export const createTableView = async ({
   projectId,
+  tableName,
 }: {
   projectId: string
+  tableName: string
 }) => {
-  const table_view_id = uuidv7()
   const db = store.get(pgliteDbAtom)!
+  // new views sort after the existing ones of their table
+  const maxSortRes = await db.query<{ max_sort: number | null }>(
+    `SELECT max(sort) AS max_sort FROM table_views WHERE project_id = $1 AND table_name = $2`,
+    [projectId, tableName],
+  )
+  const sort = (maxSortRes?.rows?.[0]?.max_sort ?? 0) + 1
+  const table_view_id = uuidv7()
   await db.query(
     `INSERT INTO table_views (table_view_id, project_id, table_name, sort) VALUES ($1, $2, $3, $4)`,
-    [table_view_id, projectId, 'checks', 0],
+    [table_view_id, projectId, tableName, sort],
   )
 
   store.set(addOperationAtom, {
@@ -1068,8 +1076,8 @@ export const createTableView = async ({
     draft: {
       table_view_id,
       project_id: projectId,
-      table_name: 'checks',
-      sort: 0,
+      table_name: tableName,
+      sort,
     },
   })
 

@@ -212,6 +212,12 @@ https://stackoverflow.com/a/21541021/712005 */
   overflow: auto;
   scrollbar-width: thin;
 
+  .list-empty-hint {
+    padding: 10px;
+    text-align: center;
+    color: rgba(0, 0, 0, 0.55);
+  }
+
   .row {
     display: flex;
     justify-content: center;
@@ -345,6 +351,10 @@ html[data-theme='dark'] .form-container-embedded [role='separator']:after {
 
 html[data-theme='dark'] .list-view-header {
   background-color: rgba(103, 216, 101, 0.13);
+}
+
+html[data-theme='dark'] .list-container .list-empty-hint {
+  color: rgba(255, 255, 255, 0.55);
 }
 
 html[data-theme='dark'] .list-container .row {

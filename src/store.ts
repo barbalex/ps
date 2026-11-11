@@ -551,10 +551,6 @@ export const vectorLayersFilterAtom = atomWithStorage<TableRowFilter[]>(
 export const listsFilterAtom = atomWithStorage<TableRowFilter[]>('listsFilterAtom', [])
 export const taxonomiesFilterAtom = atomWithStorage<TableRowFilter[]>('taxonomiesFilterAtom', [])
 export const unitsFilterAtom = atomWithStorage<TableRowFilter[]>('unitsFilterAtom', [])
-export const tableViewsFilterAtom = atomWithStorage<TableRowFilter[]>(
-  'tableViewsFilterAtom',
-  [],
-)
 export const subprojectsFilterAtom = atomWithStorage<TableRowFilter[]>(
   'subprojectsFilterAtom',
   [],
@@ -656,7 +652,6 @@ export const filterAtoms = {
   lists: listsFilterAtom,
   taxonomies: taxonomiesFilterAtom,
   units: unitsFilterAtom,
-  tableViews: tableViewsFilterAtom,
   subprojects: subprojectsFilterAtom,
   subprojectReports: subprojectReportsFilterAtom,
   subprojectUsers: subprojectUsersFilterAtom,

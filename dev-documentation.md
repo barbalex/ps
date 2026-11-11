@@ -791,9 +791,15 @@ segment, the shared Filter infers its table name from the path):
 
 Level 2 mirrors this under `.../places/<placeId>/places/<placeId2>/table-views/...`.
 The route subtrees are copies of the `checks` subtrees (the codebase
-duplicates level 1/2 by hand as well). The config forms live under
-`/data/projects/<projectId>/table-views/...` (views) and
-`/data/projects/<projectId>/field-groups/...` (field groups).
+duplicates level 1/2 by hand as well). The config lives under
+`/data/projects/<projectId>/table-views/` — the list of tables views can be
+built on (`src/modules/tableViewTables.ts`: checks, actions, places,
+subprojects, projects), per table `/table-views/<tableName>/` the table's
+views (drag rows to sort them — persisted as `sort`; the Sortierwert field
+in the view form remains as manual fallback), and
+`/table-views/<tableName>/<tableViewId>/` the view form (the table is shown
+there, chosen by where the view was created). Field groups live under
+`/data/projects/<projectId>/field-groups/...`.
 
 ## Where things live
 
@@ -805,7 +811,7 @@ duplicates level 1/2 by hand as well). The config forms live under
 | Nav data hooks | `src/modules/useTableViewsNavData.ts`, `useTableViewNavData.ts`, `useFieldGroupsNavData.ts`, `useFieldGroupNavData.ts`, `useTableChecksNavData.ts`, `useTableCheckNavData.ts` |
 | Sub-entity nav hooks | `useCheckQuantitiesNavData`, `useCheckTaxaNavData`, `useCheckQuantityNavData`, `useCheckTaxonNavData`, `useFilesNavData`, `useFileNavData` accept an optional `tableViewId` and insert the path segment |
 | Tree nodes | tree configs in `src/components/Tree/virtual/treeConfigs.tsx` (design mode node + one node per enabled view under a place) |
-| View config UI | `src/formsAndLists/tableViews.tsx` + `tableView/` (entity, also reachable from Project Configuration via `Configuration/TableViewsSection.tsx`) |
+| View config UI | `src/formsAndLists/tableViewsTables.tsx` (tables list) + `tableViews.tsx` (per-table views list with drag-to-sort) + `tableView/` (entity, also reachable from Project Configuration via `Configuration/TableViewsSection.tsx`) |
 | Field group config UI | `src/formsAndLists/fieldGroups.tsx` + `fieldGroup/` (entity, also reachable via `Configuration/FieldGroupsSection.tsx`) |
 | Place level UI | `src/formsAndLists/placeLevel/Form.tsx` renders a switch per view; `placeLevel/index.tsx` maps `table_view_<id>` switches onto the `table_views` jsonb |
 | View checks list + filter | `src/formsAndLists/tableChecks.tsx`, `tableCheck/Filter.tsx` |
@@ -833,9 +839,9 @@ a filter presets nothing.
    section "Feldergruppen" → add a group: name, fields (multiselect, kept
    in form order)
 2. Design mode → project → "Ansichten" (or Project Configuration →
-   section "Ansichten") → add a view: names, optional filter field (from
-   the project's `fields` of the table) + value, optional field group,
-   sort
+   section "Ansichten") → choose the table → add a view: names, optional
+   filter field (from the project's `fields` of the table) + value,
+   optional field group, sort (or drag the row in the table's views list)
 3. Ort-Stufen (place levels) → enable the view per level (switch named
    after the view's plural name). Usually disable the plain table
    (`checks`) there so the views replace it.

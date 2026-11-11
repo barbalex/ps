@@ -1,38 +1,29 @@
-import { useNavigate } from '@tanstack/react-router'
 import { useLiveQuery } from '@electric-sql/pglite-react'
 import { useIntl } from 'react-intl'
 
 import { Section } from '../../../components/shared/Section.tsx'
 import { SectionDescription } from '../../../components/shared/SectionDescription.tsx'
 import { Row } from '../../../components/shared/Row.tsx'
-import { FormMenu } from '../../../components/FormMenu/index.tsx'
-import { createTableView } from '../../../modules/createRows.ts'
+import { tableViewTables } from '../../../modules/tableViewTables.ts'
 
 /**
- * Project configuration section for table views (e.g. Feld-Kontrollen and
- * Freiwilligen-Kontrollen as two views on checks). Links to the view forms.
+ * Project configuration section for table views: one entry per table
+ * views can be built on, linking to that table's views list.
  */
 export const TableViewsSection = ({ projectId }: { projectId: string }) => {
-  const navigate = useNavigate()
   const { formatMessage } = useIntl()
 
-  const res = useLiveQuery(
-    `SELECT table_view_id AS id, label, table_name FROM table_views WHERE project_id = $1 ORDER BY sort, label`,
+  const res = useLiveQuery<{ table_name: string; count: number }>(
+    `SELECT table_name, count(*)::int AS count FROM table_views
+     WHERE project_id = $1
+     GROUP BY table_name`,
     [projectId],
   )
-  const navs = (res?.rows ?? []) as {
-    id: string
-    label: string
-    table_name: string | null
-  }[]
+  const counts = new Map(
+    (res?.rows ?? []).map((row) => [row.table_name, row.count]),
+  )
 
   const baseUrl = `/data/projects/${projectId}/table-views`
-
-  const add = async () => {
-    const id = await createTableView({ projectId })
-    if (!id) return
-    navigate({ to: `${baseUrl}/${id}/` })
-  }
 
   return (
     <Section
@@ -48,18 +39,13 @@ export const TableViewsSection = ({ projectId }: { projectId: string }) => {
             'Ansichten zeigen eine Tabelle auf zwei Weisen getrennt: nach Zeilen mit einem optionalen Filter und/oder nach Spalten mit einer optionalen Feldergruppe. Beispiel: Zwei Ansichten auf den Kontrollen: "Feld-Kontrollen" (Typ = Kontrolle) und "Freiwilligen-Kontrollen" (Typ = Freiwilligen-Kontrolle). Ein- und ausgeschaltet werden sie pro Ort-Stufe.',
         })}
       </SectionDescription>
-      <div className="list-view-header">
-        <FormMenu
-          addRow={add}
-          nameSingular={formatMessage({
-            id: '5mN8vP',
-            defaultMessage: 'Ansicht',
-          })}
-        />
-      </div>
       <div className="list-container">
-        {navs.map(({ id, label }) => (
-          <Row key={id} label={label ?? id} to={`${baseUrl}/${id}/`} />
+        {tableViewTables.map(({ tableName, label: tableLabel }) => (
+          <Row
+            key={tableName}
+            label={`${formatMessage(tableLabel)} (${counts.get(tableName) ?? 0})`}
+            to={`${baseUrl}/${tableName}`}
+          />
         ))}
       </div>
     </Section>

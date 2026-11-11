@@ -43,7 +43,14 @@ export const useTableViewNavData = ({
   const loading = res === undefined
 
   const nav: NavData | undefined = res?.rows?.[0]
-  const parentArray = ['data', 'projects', projectId, 'table-views']
+  const parentArray = [
+    'data',
+    'projects',
+    projectId,
+    'table-views',
+    // views live under their table: /table-views/<tableName>/<tableViewId>
+    nav?.table_name ?? 'checks',
+  ]
   const parentUrl = `/${parentArray.join('/')}`
   const ownArray = [...parentArray, tableViewId]
   const ownUrl = `/${ownArray.join('/')}`

@@ -7,6 +7,7 @@ const { Dropdown, Field, Option, Input } = fluentUiReactComponents
 import { TextField } from '../../components/shared/TextField.tsx'
 import { Section } from '../../components/shared/Section.tsx'
 import { SectionDescription } from '../../components/shared/SectionDescription.tsx'
+import { tableViewTables, tableViewTableLabel } from '../../modules/tableViewTables.ts'
 import type TableViews from '../../models/public/TableViews.ts'
 import type { TableRowFilter } from '../../store.ts'
 
@@ -133,6 +134,24 @@ export const TableViewForm = ({
               'Optional: einen Zeilen-Filter setzen (nur Zeilen, die ihm entsprechen) und/oder eine Feldergruppe wählen (nur diese Spalten zeigen). Beides leer = alle Zeilen und Spalten.',
           })}
         </SectionDescription>
+        <Field
+          label={formatMessage({
+            id: 'hJ9sD2',
+            defaultMessage: 'Tabelle',
+          })}
+        >
+          <Dropdown
+            value={tableViewTableLabel((row.table_name ?? 'checks') as string, formatMessage)}
+            selectedOptions={[(row.table_name ?? 'checks') as string]}
+            disabled
+          >
+            {tableViewTables.map(({ tableName, label }) => (
+              <Option key={tableName} value={tableName} text={formatMessage(label)}>
+                {formatMessage(label)}
+              </Option>
+            ))}
+          </Dropdown>
+        </Field>
         <FilterEditor row={row} onChange={onChange} />
         <FieldGroupEditor row={row} onChange={onChange} />
         <LabelByEditor row={row} onChange={onChange} />
