@@ -292,10 +292,21 @@ console.log('\nDone:')
 console.log(counts)
 
 // 4. flush Electric's shape store (see header) — poll until healthy so a
-// client logging in right after the import gets the new dataset
-console.log('\nRestarting Electric to flush stale shape snapshots ...')
+// client logging in right after the import gets the new dataset.
+// A plain restart is NOT enough: the electric_state volume preserves shape
+// handles, and clients resume them — Electric then answers "up to date"
+// while the shapes still reflect the pre-import dataset (the seeds ran
+// under electric.syncing, which Electric deliberately ignores). Recreate
+// the container without the volume so every handle is gone and every
+// client re-snapshots from scratch.
+console.log('\nRecreating Electric without its shape-store volume ...')
 const electricContainer = process.env.PS_ELECTRIC_CONTAINER ?? 'ps_electric'
-run('docker', ['restart', electricContainer])
+const electricVolume = process.env.PS_ELECTRIC_VOLUME ?? 'ps_electric_state'
+// the container must be removed for the volume to become removable;
+// docker compose then recreates it fresh (without the old volume)
+run('docker', ['rm', '-f', electricContainer])
+spawnSync('docker', ['volume', 'rm', electricVolume], { stdio: 'inherit' })
+run('docker', ['compose', '-f', join(projectRoot, 'backend-dev', 'docker-compose.yml'), 'up', '-d', 'electric'])
 for (let i = 0; i < 30; i++) {
   const health = spawnSync(
     'docker',
