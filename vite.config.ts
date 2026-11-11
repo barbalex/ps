@@ -70,6 +70,14 @@ export default defineConfig({
         // version.json must always come from the network (see
         // emit-version-json above)
         globIgnores: ['version.json'],
+        // On arten-fördern.ch the OAuth callback is a same-origin navigation
+        // to /auth/callback/google that the Netlify edge function must proxy
+        // to the auth server — without the denylist the navigation fallback
+        // serves the precached SPA shell instead, the authorization code never
+        // reaches the backend and the router shows its 404 page. '/auth'
+        // itself (the SPA login page, no trailing slash) keeps the fallback.
+        navigateFallback: 'index.html',
+        navigateFallbackDenylist: [/^\/auth\//],
         maximumFileSizeToCacheInBytes: 1000000000,
       },
       registerType: 'autoUpdate',
