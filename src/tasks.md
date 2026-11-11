@@ -48,7 +48,11 @@ dark mode not well implemented for: file upload?
 
 ---
 
+observation form needs a 'zoom to' button like population with the same functionality (active when geometry exists, opens map if necessary...)
+
 ---
+
+The broken display_by_property mechanism is documented in dev-doc section 10 whenever you feel like tackling configurable per-property styling as its own task.
 
 ---
 
