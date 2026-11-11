@@ -91,9 +91,12 @@ export const nearestPlaces = async (
   return (res?.rows ?? []) as PlaceWithDistanceRow[]
 }
 
-// SELECT list computing the bounding-box extent of a geometry column,
-// e.g. extentSelect('p') => "ST_XMin(ST_Extent(p.geometry)) AS x_min, ..."
-export const extentSelect = (column = 'geometry'): string =>
+// SELECT list computing the bounding-box extent of a table's geometry
+// column, e.g. extentSelect('p') => "ST_XMin(ST_Extent(p.geometry)) AS x_min, ..."
+// (the parameter is the table's alias, not the column: passing the bare
+// alias into ST_Extent makes Postgres resolve a whole-row reference and
+// fail with "function st_extent(<table>) does not exist")
+export const extentSelect = (alias?: string): string =>
   (
     [
       ['ST_XMin', 'x_min'],
@@ -102,7 +105,10 @@ export const extentSelect = (column = 'geometry'): string =>
       ['ST_YMax', 'y_max'],
     ] as const
   )
-    .map(([fn, alias]) => `${fn}(ST_Extent(${column})) AS ${alias}`)
+    .map(
+      ([fn, alias_]) =>
+        `${fn}(ST_Extent(${alias ? `${alias}.` : ''}geometry)) AS ${alias_}`,
+    )
     .join(', ')
 
 // runs a query built with extentSelect and returns its extent,
