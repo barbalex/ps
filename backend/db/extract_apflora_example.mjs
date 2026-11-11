@@ -292,6 +292,15 @@ const apberAll = readTable('apber')
 const zielAll = readTable('ziel')
 const erfkritAll = readTable('erfkrit')
 const ekzaehleinheitAll = readTable('ekzaehleinheit')
+// apf2 scopes an ap's beob by its apart rows: the ae_taxonomies ids the ap
+// associates itself with (usually the same taxid in several taxonomies —
+// EvAB beob point at the SISF (2005) row while the ap's art uses DB-TAXREF
+// (2017); 60 of 600 aps also list a second, closely related taxid)
+const apartAll = readTable('apart')
+const apOfBeobArtId = new Map()
+for (const row of apartAll) {
+  if (row.art_id !== null) apOfBeobArtId.set(row.art_id, row.ap_id)
+}
 
 const erfkritText = (code) => {
   if (code === null || code === undefined) return null
@@ -593,22 +602,20 @@ console.log(`scope ${scope}: ${selectedArts.length} arts`)
 // reading the dump (the table's COPY data is ~1.3 GB). Rows of other arts
 // and Absenzen are dropped on the fly. datum/autor/quelle are apf2 columns
 // outside data — the generator adds them into the ps data jsonb so that
-// ps labels (label_creation) can reference them.
-// beob.art_id references ae_taxonomies rows of ANY taxonomy: an EvAB beob
-// points at the SISF (2005) row while the art's ap uses DB-TAXREF (2017) —
-// the taxid identifies the species across taxonomies
-const taxidByAeId = new Map(taxAll.map((t) => [t.id, t.taxid]))
-const selectedTaxids = new Set(selectedArts.map((t) => t.taxid))
-const beobByTaxid = new Map()
+// ps labels (label_creation) can reference them
+const selectedApIds = new Set(
+  selectedArts.map((tax) => apByArt.get(tax.id)?.id).filter(Boolean),
+)
+const beobByApId = new Map()
 let beobAbsenzCount = 0
 await streamTable('beob', (row) => {
   if (row.absenz === 't') {
     beobAbsenzCount++
     return
   }
-  const taxid = taxidByAeId.get(row.art_id)
-  if (!selectedTaxids.has(taxid)) return
-  const list = beobByTaxid.get(taxid) ?? []
+  const apId = apOfBeobArtId.get(row.art_id)
+  if (!selectedApIds.has(apId)) return
+  const list = beobByApId.get(apId) ?? []
   list.push({
     id: row.id,
     quelle: row.quelle,
@@ -621,9 +628,9 @@ await streamTable('beob', (row) => {
     bemerkungen: row.bemerkungen,
     geom_point: ewkbToPoint(row.geom_point),
   })
-  beobByTaxid.set(taxid, list)
+  beobByApId.set(apId, list)
 })
-const beobCount = [...beobByTaxid.values()].reduce((sum, l) => sum + l.length, 0)
+const beobCount = [...beobByApId.values()].reduce((sum, l) => sum + l.length, 0)
 console.log(`beob: ${beobCount} rows (${beobAbsenzCount} Absenzen skipped)`)
 
 for (const tax of selectedArts) {
@@ -641,7 +648,7 @@ for (const tax of selectedArts) {
     (sum, p) => sum + p.tpops.reduce((s, t) => s + t.massnahmen.length, 0),
     0,
   )
-  const beobArtCount = (beobByTaxid.get(tax.taxid) ?? []).length
+  const beobArtCount = (beobByApId.get(ap.id) ?? []).length
   console.log(
     `${tax.artname}: ${pops.length} pops, ${tpopCount} tpops, ${kontrCount} kontrollen, ${massnCount} massnahmen, ${beobArtCount} beob`,
   )
@@ -710,7 +717,7 @@ for (const tax of selectedArts) {
         .sort((a, b) => a.jahr - b.jahr),
     },
     pops,
-    beobachtungen: beobByTaxid.get(tax.taxid) ?? [],
+    beobachtungen: beobByApId.get(ap.id) ?? [],
   })
 }
 

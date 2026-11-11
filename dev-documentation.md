@@ -239,9 +239,10 @@ database, default `../apf2/backend-dev/db/apflora.backup`, override with
   geometry comes from apf2's `geom_point` — the sources' data carries no
   extractable coordinates (Info Flora 2017 delivers 1-km-grid precision
   only), so `geometry_method` stays NULL. Labels mirror apf2's `beob_label`:
-  `YYYY.MM.DD: Autor (Quelle)`. beob are matched to arts by taxid across
-  apf2's taxonomies (an EvAB beob's `art_id` references the SISF (2005)
-  row while the art's ap uses DB-TAXREF (2017))
+  `YYYY.MM.DD: Autor (Quelle)`. beob are scoped to an art by apf2's own
+  rule — the ap's `apart` rows: the ae_taxonomies ids the ap associates
+  itself with (usually the same taxid in several taxonomies; 60 of 600 aps
+  also list a second, closely related taxid, whose beob apf2 shows too)
 - historizations (apf2: `ap_history`, `pop_history`, `tpop_history` — one
   snapshot per `(year, row)`, usually for the years in which a report was
   written) as `subprojects_history`/`places_history` versions (see below)
