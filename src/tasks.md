@@ -64,17 +64,18 @@ similar as done for reports?
 - enable building a grid
 - enable using images
 - printable
+- can it also work offline (images?)
 
 ---
 
 completing apflora functionality:
 
-- dropdown lists,
-- EKF form ui,
-- beob,
-- biotop in check form,
-- exports,
-- export checks as observations,
+- dropdown lists
+- EKF form ui
+- beob
+- biotop in check form
+- exports
+- export checks as observations
 - re-import observations while upserting and recognizing own checks
 - prepare and print EKF-Kontrollen
 - plan checks
