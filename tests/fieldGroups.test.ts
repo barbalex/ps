@@ -71,7 +71,7 @@ describe('table views with field groups', () => {
     // field group "Biotop": the biotope fields, stored in form order
     await db.exec(`
       INSERT INTO field_groups(field_group_id, project_id, table_name, name, sorted_field_ids) VALUES
-        ('${GROUP}', '${ids.project}', 'checks', 'Biotop', ARRAY['${FIELD_LR_DELARZE}', '${FIELD_KRAUTSCHICHT}']::uuid[]);
+        ('${GROUP}', '${ids.project}', 'checks', 'Biotop', '${JSON.stringify([FIELD_LR_DELARZE, FIELD_KRAUTSCHICHT])}'::jsonb);
     `)
 
     await db.exec(`
@@ -158,7 +158,7 @@ describe('single-row views on subprojects', () => {
         ('7a000000-0000-7000-8000-000000000001', '${ids.project}', 'subprojects', 'bearbeitung', 'Bearbeitung'),
         ('7a000000-0000-7000-8000-000000000002', '${ids.project}', 'subprojects', 'idealbiotop_boden', 'Idealbiotop: Boden');
       INSERT INTO field_groups(field_group_id, project_id, table_name, name, sorted_field_ids) VALUES
-        ('7b000000-0000-7000-8000-000000000001', '${ids.project}', 'subprojects', 'Idealbiotop', ARRAY['7a000000-0000-7000-8000-000000000002']::uuid[]);
+        ('7b000000-0000-7000-8000-000000000001', '${ids.project}', 'subprojects', 'Idealbiotop', '${JSON.stringify(['7a000000-0000-7000-8000-000000000002'])}'::jsonb);
       INSERT INTO table_views(table_view_id, project_id, table_name, name_singular_de, name_plural_de, filter, field_group_id, sort) VALUES
         ('7c000000-0000-7000-8000-000000000001', '${ids.project}', 'subprojects', 'Idealbiotop', 'Idealbiotop', NULL, '7b000000-0000-7000-8000-000000000001', 1);
       UPDATE subprojects SET data = '{"bearbeitung":"kein AP","idealbiotop_boden":"kalkreich"}'::jsonb WHERE subproject_id = '${ids.subproject}';

@@ -1466,7 +1466,8 @@ CREATE TABLE IF NOT EXISTS field_groups(
   project_id uuid DEFAULT NULL REFERENCES projects(project_id) ON DELETE CASCADE ON UPDATE CASCADE DEFERRABLE INITIALLY DEFERRED,
   table_name text DEFAULT NULL,
   name text DEFAULT NULL,
-  sorted_field_ids uuid[] DEFAULT NULL,
+  -- jsonb, not uuid[]: temporal_tables cannot version array-typed columns
+  sorted_field_ids jsonb DEFAULT NULL,
   label text GENERATED ALWAYS AS (coalesce(nullif(name, ''), field_group_id::text)) STORED,
   sys_period tstzrange DEFAULT NULL,
   created_at timestamptz NOT NULL DEFAULT now(),
@@ -1474,13 +1475,28 @@ CREATE TABLE IF NOT EXISTS field_groups(
   updated_by text DEFAULT NULL
 );
 
+-- the uuid[] -> jsonb conversion (2026-11): heal databases created before
+-- the schema caught up
+DO $$
+BEGIN
+  IF EXISTS (
+    SELECT 1 FROM information_schema.columns
+    WHERE table_schema = 'public' AND table_name = 'field_groups'
+      AND column_name = 'sorted_field_ids' AND udt_name = '_uuid'
+  ) THEN
+    ALTER TABLE field_groups
+      ALTER COLUMN sorted_field_ids TYPE jsonb USING to_jsonb(sorted_field_ids);
+  END IF;
+END
+$$;
+
 CREATE INDEX IF NOT EXISTS field_groups_project_id_idx ON field_groups USING btree(project_id);
 CREATE INDEX IF NOT EXISTS field_groups_table_name_idx ON field_groups USING btree(table_name);
 CREATE INDEX IF NOT EXISTS field_groups_label_idx ON field_groups USING btree(label);
 
 COMMENT ON COLUMN field_groups.table_name IS 'Table the grouped fields belong to. Currently only "checks"';
 COMMENT ON COLUMN field_groups.name IS 'Name of the group. Example: "Biotop" (the biotope fields of a check)';
-COMMENT ON COLUMN field_groups.sorted_field_ids IS 'field_ids (fields.field_id) of the group, in form order. No foreign key possible on arrays; ids of deleted fields are ignored when rendering';
+COMMENT ON COLUMN field_groups.sorted_field_ids IS 'field_ids (fields.field_id) of the group, in form order, as jsonb (temporal_tables cannot version array columns). No foreign key; ids of deleted fields are ignored when rendering';
 COMMENT ON TABLE field_groups IS 'Named groups of fields of a table. Table views use them to show only a subset of the columns. Example: "Biotop": the biotope fields of a check';
 
 --------------------------------------------------------------

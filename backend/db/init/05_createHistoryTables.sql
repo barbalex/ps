@@ -2603,6 +2603,30 @@ CREATE TABLE IF NOT EXISTS field_groups_history (
 	LIKE field_groups INCLUDING DEFAULTS
 ) PARTITION BY RANGE (updated_at);
 
+-- the uuid[] -> jsonb conversion (2026-11): heal databases created before
+-- the schema caught up. Converting the partitioned parent cascades to its
+-- partitions; the partman template (used for future partitions) too
+DO $$
+BEGIN
+	IF EXISTS (
+		SELECT 1 FROM information_schema.columns
+		WHERE table_schema = 'public' AND table_name = 'field_groups_history'
+			AND column_name = 'sorted_field_ids' AND udt_name = '_uuid'
+	) THEN
+		ALTER TABLE field_groups_history
+			ALTER COLUMN sorted_field_ids TYPE jsonb USING to_jsonb(sorted_field_ids);
+	END IF;
+	IF EXISTS (
+		SELECT 1 FROM information_schema.columns
+		WHERE table_schema = 'partman' AND table_name = 'template_public_field_groups_history'
+			AND column_name = 'sorted_field_ids' AND udt_name = '_uuid'
+	) THEN
+		ALTER TABLE partman.template_public_field_groups_history
+			ALTER COLUMN sorted_field_ids TYPE jsonb USING to_jsonb(sorted_field_ids);
+	END IF;
+END
+$$;
+
 ALTER TABLE field_groups_history OWNER TO partman_user;
 
 COMMENT ON TABLE field_groups_history IS 'System-versioned history of field_groups. Managed by temporal_tables and partitioned yearly by updated_at.';

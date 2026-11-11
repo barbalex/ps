@@ -777,8 +777,12 @@ subtree + nav hook + place-level switches), `places`, `projects`.
   - `table_name`: the table the grouped fields belong to (`checks`)
   - `name`: e.g. "Biotop"
   - `sorted_field_ids`: `field_id`s (of the project's `fields` rows), in
-    form order; not a foreign key (arrays cannot reference), ids of
-    deleted fields are ignored when rendering
+    form order, stored as **jsonb** — temporal_tables cannot version
+    array-typed columns (it fails with a nonsensical "is of type uuid[]
+    but ... is of type uuid[]" error, see
+    https://dba.stackexchange.com/questions/163340/); no foreign key, ids
+    of deleted fields are ignored when rendering. NB: `field_sorts`
+    keeps its `uuid[]` because it carries no versioning trigger
   - has a history table (`field_groups_history`) and the standard
     project-scoped write permission
 - **`place_levels.table_views`** (jsonb, renamed from
