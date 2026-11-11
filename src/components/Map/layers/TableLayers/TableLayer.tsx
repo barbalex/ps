@@ -174,12 +174,23 @@ export const TableLayer = ({
             activeIdField &&
             feature?.properties?.[activeIdField] === activeId
           ) {
-            return { ...style, color: 'orange', weight: 3 }
+            // yellow glow around the geometry, see .activeHalo in
+            // TableLayer.module.css — applied at path creation, which is
+            // fine because the resetKey includes activeId
+            return {
+              ...style,
+              className: `${style.className ?? ''} ${styles.activeHalo}`.trim(),
+            }
           }
           return style
         }}
         pointToLayer={(feature, latlng) => {
           const displayToUse = displayFromFeature(feature)
+
+          const isActiveFeature =
+            !!activeId &&
+            !!activeIdField &&
+            feature?.properties?.[activeIdField] === activeId
 
           if (displayToUse.marker_type === 'circle') {
             const visualRadius = displayToUse.circle_marker_radius ?? 8
@@ -205,14 +216,9 @@ export const TableLayer = ({
             clickableCircle._isInternal = true
 
             // Create the visible circle (non-interactive so clicks pass through)
-            const isActiveFeature =
-              activeId &&
-              activeIdField &&
-              feature?.properties?.[activeIdField] === activeId
-          const visualCircle = new L.CircleMarker(latlng, {
+            const visualCircle = new L.CircleMarker(latlng, {
             ...displayToUse,
             geomanIgnore: true,
-            ...(isActiveFeature ? { color: 'orange', weight: 3 } : {}),
             // absences: hollow red
             ...(feature?.properties?.absence === true ?
               { color: ABSENCE_COLOR, fillColor: 'transparent', fillOpacity: 0 }
@@ -220,7 +226,10 @@ export const TableLayer = ({
             radius: visualRadius,
             interactive: false,
             bubblingMouseEvents: false,
-            className: 'non-interactive-visual',
+            // the active object glows yellow like lines/polygons do
+            className: isActiveFeature
+              ? `non-interactive-visual ${styles.activeHalo}`
+              : 'non-interactive-visual',
           } as L.CircleMarkerOptions) as CircleMarkerWithMeta
             // Mark as internal layer
             visualCircle._isInternal = true
@@ -354,7 +363,9 @@ export const TableLayer = ({
                   // This removes static inline styling from JSX.
                   html: ReactDOMServer.renderToString(
                     <IconComponent
-                      className={`${styles.markerIcon} ${styles.markerIconSized}`}
+                      className={`${styles.markerIcon} ${styles.markerIconSized}${
+                        isActiveFeature ? ` ${styles.activeHalo}` : ''
+                      }`}
                       style={markerIconStyle}
                     />,
                   ),

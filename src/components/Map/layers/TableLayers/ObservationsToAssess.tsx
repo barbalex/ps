@@ -4,6 +4,7 @@ import { useAtomValue } from 'jotai'
 
 import { TableLayer } from './TableLayer.tsx'
 import type { TableLayerProps } from './TableLayer.tsx'
+import { useActiveObservationId } from './useActiveObservationId.ts'
 import type { GeoJsonProperties, GeometryCollection } from 'geojson'
 import { draggableLayersAtom } from '../../../../store.ts'
 
@@ -14,6 +15,7 @@ export const ObservationsToAssess = ({ layerPresentation }: {
 }) => {
   const draggableLayers = useAtomValue(draggableLayersAtom)
   const { subprojectId } = useParams({ strict: false })
+  const activeObservationId = useActiveObservationId()
   const res = useLiveQuery<Observations>(
     `
     SELECT o.observation_id, o.observation_import_id, o.place_id, o.not_to_assign, o.absence,
@@ -85,6 +87,8 @@ export const ObservationsToAssess = ({ layerPresentation }: {
       key={isDraggable as unknown as string}
       data={data}
       layerPresentation={layerPresentation}
+      activeId={activeObservationId}
+      activeIdField="observation_id"
     />
   )
 }
