@@ -87,6 +87,13 @@ export const TableLayersProvider = () => {
     }
 
     const run = async () => {
+      // read fresh: the deferred re-run below can carry a stale closure in
+      // which the live count has not updated yet
+      const obsCountRes = await db.query<{ count: number }>(
+        `SELECT COUNT(*) FROM observations`,
+      )
+      const obsCount: number = obsCountRes?.rows?.[0]?.count ?? 0
+
       for (const projectId of projectIds) {
         if (!projectId) continue
         // Skip projects whose vector_layers are already in the ops queue —
@@ -120,7 +127,7 @@ export const TableLayersProvider = () => {
         // depending on place_levels, find what vectorLayerTables need vector layers
         const placeLevel1 = placeLevels?.find((pl) => pl.level === 1)
         const placeLevel2 = placeLevels?.find((pl) => pl.level === 2)
-        if (placeLevel1?.observations && observationCount) {
+        if (placeLevel1?.observations && obsCount) {
           const observationsVectorLayersCount = await db.query<{
             count: number
           }>(
@@ -173,7 +180,7 @@ export const TableLayersProvider = () => {
         }
 
         // 5.1 observations_to_assess: needed if observations exist
-        if (observationCount) {
+        if (obsCount) {
           const observationsToAssessVectorLayersCount = await db.query<{
             count: number
           }>(
@@ -198,7 +205,7 @@ export const TableLayersProvider = () => {
         }
 
         // 6.1 observations_not_to_assign: needed if observations exist
-        if (observationCount) {
+        if (obsCount) {
           const observationsNotToAssignVectorLayersCount = await db.query<{
             count: number
           }>(
@@ -225,7 +232,7 @@ export const TableLayersProvider = () => {
         }
 
         // 7.1 observations_assigned2 and observations_assigned_lines2 needed if observations exist and placeLevels2 has observations
-        if (placeLevel2?.observations && observationCount) {
+        if (placeLevel2?.observations && obsCount) {
           const observationsAssigned2VectorLayersCount = await db.query<{
             count: number
           }>(
