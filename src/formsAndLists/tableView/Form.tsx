@@ -7,7 +7,7 @@ const { Dropdown, Field, Option, Input } = fluentUiReactComponents
 import { TextField } from '../../components/shared/TextField.tsx'
 import { Section } from '../../components/shared/Section.tsx'
 import { SectionDescription } from '../../components/shared/SectionDescription.tsx'
-import { tableViewTables, tableViewTableLabel } from '../../modules/tableViewTables.ts'
+import { tableViewTables, tableViewTableLabel, singleRowTableViewTables } from '../../modules/tableViewTables.ts'
 import type TableViews from '../../models/public/TableViews.ts'
 import type { TableRowFilter } from '../../store.ts'
 
@@ -26,6 +26,11 @@ export const TableViewForm = ({
   validations?: Record<string, { state: 'error'; message: string }>
 }) => {
   const { formatMessage } = useIntl()
+  // views on single-row tables (subprojects, projects) are forms on the
+  // entity itself: row filter and row labels do not apply
+  const isSingleRowTable = singleRowTableViewTables.has(
+    (row.table_name ?? 'checks') as string,
+  )
 
   return (
     <>
@@ -128,11 +133,19 @@ export const TableViewForm = ({
         })}
       >
         <SectionDescription>
-          {formatMessage({
-            id: 'xG8wQ2',
-            defaultMessage:
-              'Optional: einen Zeilen-Filter setzen (nur Zeilen, die ihm entsprechen) und/oder eine Feldergruppe wählen (nur diese Spalten zeigen). Beides leer = alle Zeilen und Spalten.',
-          })}
+          {formatMessage(
+            isSingleRowTable
+              ? {
+                  id: 'kW2xR6',
+                  defaultMessage:
+                    'Optional: eine Feldergruppe wählen (nur diese Spalten zeigen). Leer = alle Spalten.',
+                }
+              : {
+                  id: 'xG8wQ2',
+                  defaultMessage:
+                    'Optional: einen Zeilen-Filter setzen (nur Zeilen, die ihm entsprechen) und/oder eine Feldergruppe wählen (nur diese Spalten zeigen). Beides leer = alle Zeilen und Spalten.',
+                },
+          )}
         </SectionDescription>
         <Field
           label={formatMessage({
@@ -152,9 +165,11 @@ export const TableViewForm = ({
             ))}
           </Dropdown>
         </Field>
-        <FilterEditor row={row} onChange={onChange} />
+        {!isSingleRowTable && <FilterEditor row={row} onChange={onChange} />}
         <FieldGroupEditor row={row} onChange={onChange} />
-        <LabelByEditor row={row} onChange={onChange} />
+        {!isSingleRowTable && (
+          <LabelByEditor row={row} onChange={onChange} />
+        )}
         <TextField
           label={formatMessage({ id: 'Pq7nWk', defaultMessage: 'Sortierwert' })}
           name="sort"

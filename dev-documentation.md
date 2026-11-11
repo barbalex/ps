@@ -723,13 +723,23 @@ Examples (apflora):
   **Freiwilligen-Kontrollen** (`data.typ = 'Freiwilligen-Kontrolle'`)
   instead of one combined "Kontrollen" node
 - planned: **EK Biotop** — a view on checks combining a row filter with
-  the "Biotop" field group (only the biotope columns of the form);
-  **Art Idealbiotop** — a view on subprojects showing only the
-  Idealbiotop field group (needs views on tables other than checks,
-  see below)
+  the "Biotop" field group (only the biotope columns of the form)
 
-Currently only views on `checks` are implemented (`table_views.table_name`
-is prepared for other tables).
+Implemented runtimes:
+
+- `checks` — full runtime (see below): view nodes under places, view
+  lists, view check forms with sub-entities, place-level enablement
+- `subprojects` — single-row runtime: every view on `subprojects` renders
+  as a leaf node under the subproject in the nav tree (always, no
+  enablement map — apflora's "Idealbiotop" is simply there), its url
+  `.../subprojects/<subprojectId>/table-views/<tableViewId>` opens the
+  view's form on the subproject row: the Jsonb renderer with the view's
+  field group (`SubprojectTableView`). No row filter/label_by — the view
+  form hides them for single-row tables
+  (`singleRowTableViewTables` in `src/modules/tableViewTables.ts`).
+
+Not yet implemented: `actions` (row-list views like checks — route
+subtree + nav hook + place-level switches), `places`, `projects`.
 
 ## Data model
 
@@ -815,6 +825,7 @@ there, chosen by where the view was created). Field groups live under
 | Field group config UI | `src/formsAndLists/fieldGroups.tsx` + `fieldGroup/` (entity, also reachable via `Configuration/FieldGroupsSection.tsx`) |
 | Place level UI | `src/formsAndLists/placeLevel/Form.tsx` renders a switch per view; `placeLevel/index.tsx` maps `table_view_<id>` switches onto the `table_views` jsonb |
 | View checks list + filter | `src/formsAndLists/tableChecks.tsx`, `tableCheck/Filter.tsx` |
+| Subproject view runtime | `src/modules/useSubprojectNavData.ts` (leaf navs `table-views/<id>`), `useSubprojectTableViewNavData.ts`, `subproject/TableView.tsx`, breadcrumbs `SubprojectTableViewFetcher.tsx` |
 | Check form | the normal check form components; `check/Header.tsx` and `check/WithAll.tsx` insert the path segment and use the view's singular name as title; `check/WithAll.tsx` resolves the view's field group and passes its field ids down as `fieldIds` |
 | Column restriction | `src/components/shared/Jsonb/index.tsx` accepts `fieldIds`; restricted views render only those fields and hide AddField + the undefined-field warnings |
 | Filter atoms | one per view, created dynamically: `getTableViewFilterAtom(tableViewId)` in `src/store.ts`; the shared `Filter` component accepts `filterAtomOverride`. Storage keys changed with the rename (`tableView-<id>-filterAtom`) — saved view filters reset once |

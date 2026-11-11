@@ -3059,9 +3059,6 @@
   "xCdVld": {
     "defaultMessage": "Welches Feld enthält die X-Koordinaten? Dies sollte der Breitengrad sein."
   },
-  "xG8wQ2": {
-    "defaultMessage": "Optional: einen Zeilen-Filter setzen (nur Zeilen, die ihm entsprechen) und/oder eine Feldergruppe wählen (nur diese Spalten zeigen). Beides leer = alle Zeilen und Spalten."
-  },
   "xGLUF7": {
     "defaultMessage": "Nächste Jahresgruppe"
   },

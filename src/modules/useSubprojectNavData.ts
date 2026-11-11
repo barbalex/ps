@@ -178,6 +178,24 @@ export const useSubprojectNavData = ({ projectId, subprojectId }: Props) => {
   const loading = res === undefined
   const nav: NavData | undefined = res?.rows?.[0]
 
+  // single-row table views on the subproject (e.g. apflora's
+  // "Idealbiotop"): leaf nodes under the subproject, always rendered
+  const resTableViews = useLiveQuery<{
+    table_view_id: string
+    name_singular_de: string | null
+    name_singular_en: string | null
+    name_singular_fr: string | null
+    name_singular_it: string | null
+  }>(
+    `SELECT table_view_id,
+        name_singular_de, name_singular_en, name_singular_fr, name_singular_it
+     FROM table_views
+     WHERE project_id = $1 AND table_name = 'subprojects'
+     ORDER BY sort, label`,
+    [projectId],
+  )
+  const tableViews = resTableViews?.rows ?? []
+
   const projectTypeRes = useLiveQuery<{ type: string | null }>(
     `SELECT type FROM projects WHERE project_id = $1`,
     [projectId],
@@ -426,6 +444,15 @@ export const useSubprojectNavData = ({ projectId, subprojectId }: Props) => {
             },
           ]
         : []),
+      ...tableViews.map((view) => ({
+        // multi-segment id: entityChildren turns it into a formLink row
+        // navigating to .../subprojects/<id>/table-views/<tableViewId>
+        id: `table-views/${view.table_view_id}`,
+        label:
+          view[`name_singular_${language}` as const] ??
+          view.name_singular_de ??
+          view.table_view_id,
+      })),
     ],
   }
 

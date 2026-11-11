@@ -148,6 +148,61 @@ describe('table views with field groups', () => {
   })
 })
 
+describe('single-row views on subprojects', () => {
+  it('the view page resolves the field group and is bound to its table', async () => {
+    const { db, ids } = fixture
+
+    // fields of the subprojects table
+    await db.exec(`
+      INSERT INTO fields(field_id, project_id, table_name, name, field_label) VALUES
+        ('7a000000-0000-7000-8000-000000000001', '${ids.project}', 'subprojects', 'bearbeitung', 'Bearbeitung'),
+        ('7a000000-0000-7000-8000-000000000002', '${ids.project}', 'subprojects', 'idealbiotop_boden', 'Idealbiotop: Boden');
+      INSERT INTO field_groups(field_group_id, project_id, table_name, name, sorted_field_ids) VALUES
+        ('7b000000-0000-7000-8000-000000000001', '${ids.project}', 'subprojects', 'Idealbiotop', ARRAY['7a000000-0000-7000-8000-000000000002']::uuid[]);
+      INSERT INTO table_views(table_view_id, project_id, table_name, name_singular_de, name_plural_de, filter, field_group_id, sort) VALUES
+        ('7c000000-0000-7000-8000-000000000001', '${ids.project}', 'subprojects', 'Idealbiotop', 'Idealbiotop', NULL, '7b000000-0000-7000-8000-000000000001', 1);
+      UPDATE subprojects SET data = '{"bearbeitung":"kein AP","idealbiotop_boden":"kalkreich"}'::jsonb WHERE subproject_id = '${ids.subproject}';
+    `)
+
+    // the query the subproject view page runs (SubprojectTableView)
+    const res = await db.query<{
+      sorted_field_ids: string[] | null
+    }>(
+      `SELECT fg.sorted_field_ids
+       FROM table_views tv
+       LEFT JOIN field_groups fg ON fg.field_group_id = tv.field_group_id
+       WHERE tv.table_view_id = $1 AND tv.table_name = 'subprojects'`,
+      ['7c000000-0000-7000-8000-000000000001'],
+    )
+    expect(res.rows[0]?.sorted_field_ids).toEqual([
+      '7a000000-0000-7000-8000-000000000002',
+    ])
+
+    // the restricted form shows only the group's field of the row's data
+    const dataRes = await db.query<{ data: Record<string, unknown> }>(
+      `SELECT data FROM subprojects WHERE subproject_id = $1`,
+      [ids.subproject],
+    )
+    const data = dataRes.rows[0]?.data ?? {}
+    const shown = Object.keys(data).filter((key) =>
+      (res.rows[0]?.sorted_field_ids ?? []).some(
+        (fieldId) => fieldId === '7a000000-0000-7000-8000-000000000002',
+      ) && key === 'idealbiotop_boden',
+    )
+    expect(shown).toEqual(['idealbiotop_boden'])
+
+    // a view of another table never belongs under a subproject
+    const wrongTable = await db.query<{ sorted_field_ids: string[] | null }>(
+      `SELECT fg.sorted_field_ids
+       FROM table_views tv
+       LEFT JOIN field_groups fg ON fg.field_group_id = tv.field_group_id
+       WHERE tv.table_view_id = $1 AND tv.table_name = 'subprojects'`,
+      [VIEW_WITH_GROUP],
+    )
+    expect(wrongTable.rows.length).toBe(0)
+  })
+})
+
 describe('healing: filtered_views -> table_views', () => {
   it('renames an old database and preserves data', async () => {
     const { db, ids } = fixture

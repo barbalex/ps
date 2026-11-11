@@ -36,6 +36,7 @@ import { TableViewsFetcher } from './TableViewsFetcher.tsx'
 import { TableViewFetcher } from './TableViewFetcher.tsx'
 import { FieldGroupsFetcher } from './FieldGroupsFetcher.tsx'
 import { FieldGroupFetcher } from './FieldGroupFetcher.tsx'
+import { SubprojectTableViewFetcher } from './SubprojectTableViewFetcher.tsx'
 import { TableChecksFetcher } from './TableChecksFetcher.tsx'
 import { TableCheckFetcher } from './TableCheckFetcher.tsx'
 import { CheckQuantitiesFetcher } from './CheckQuantitiesFetcher.tsx'
@@ -224,6 +225,15 @@ export const FetcherRouter = ({ fetcherName, params, ...other }: Props) => {
     case 'useFieldGroupNavData': {
       if (!params.projectId || !params.fieldGroupId) return null
       return <FieldGroupFetcher params={paramsExact} {...other} />
+    }
+    case 'useSubprojectTableViewNavData': {
+      if (
+        !params.projectId ||
+        !params.subprojectId ||
+        !params.tableViewId
+      )
+        return null
+      return <SubprojectTableViewFetcher params={paramsExact} {...other} />
     }
     case 'useTableChecksNavData': {
       if (

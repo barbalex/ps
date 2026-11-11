@@ -23,6 +23,12 @@ export const tableViewTables: {
   { tableName: 'projects', label: { id: 'rY6uI8', defaultMessage: 'Projekte' } },
 ]
 
+/**
+ * Views on these tables are forms on a single row (the entity itself):
+ * no row filter, no list, no label_by — only the field group matters.
+ */
+export const singleRowTableViewTables = new Set(['subprojects', 'projects'])
+
 export const tableViewTableLabel = (
   tableName: string,
   formatMessage: (
