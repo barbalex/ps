@@ -9,6 +9,9 @@ import { useIntl } from 'react-intl'
 
 import { LocatingButton } from './LocatingButton.tsx'
 import { EditingGeometryButton } from './EditingGeometryButton.tsx'
+import { MeasureButton } from './MeasureButton.tsx'
+import { ExportPngButton } from './ExportPngButton.tsx'
+import { PrintButton } from './PrintButton.tsx'
 import styles from './index.module.css'
 
 // ToolbarButtonProps omits 'size', but the underlying button accepts it —
@@ -71,6 +74,9 @@ export const VerticalButtons = () => {
           size="large"
           className={styles.toolbarButton}
         />
+        <MeasureButton />
+        <ExportPngButton />
+        <PrintButton />
       </Toolbar>
     </div>
   )

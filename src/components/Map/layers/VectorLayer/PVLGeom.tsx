@@ -1,13 +1,15 @@
 import { useEffect, useState, useRef, useCallback } from 'react'
 import type { ReactNode } from 'react'
-import { GeoJSON, useMapEvent, useMap } from 'react-leaflet'
+import { useMapEvent, useMap } from 'react-leaflet'
 import * as L from 'leaflet'
 import * as ReactDOMServer from 'react-dom/server'
 import { useDebouncedCallback } from 'use-debounce'
 import * as icons from 'react-icons/md'
 import { usePGlite } from '@electric-sql/pglite-react'
 import { useSetAtom } from 'jotai'
-import type { GeoJsonObject } from 'geojson'
+import type { GeoJSON } from 'geojson'
+
+import { ProgressiveGeoJSON } from '../ProgressiveGeoJSON.tsx'
 
 import { vectorLayerDisplayToProperties } from '../../../../modules/vectorLayerDisplayToProperties.ts'
 import { Popup } from '../../Popup.tsx'
@@ -52,7 +54,7 @@ type LatLngBoundsWithInternals = L.LatLngBounds & {
 }
 
 type VectorLayerGeomRow = {
-  geometry: GeoJsonObject
+  geometry: GeoJSON
   properties: unknown
 }
 
@@ -63,7 +65,7 @@ export const PVLGeom = ({ layer, display }: Props) => {
   const addNotification = useSetAtom(addNotificationAtom)
   const removeNotification = useSetAtom(removeNotificationAtom)
 
-  const [data, setData] = useState<GeoJsonObject[]>()
+  const [data, setData] = useState<GeoJSON[]>()
 
   const notificationIds = useRef<string[]>([])
 
@@ -119,7 +121,7 @@ export const PVLGeom = ({ layer, display }: Props) => {
       const data = vectorLayerGeoms.map((pvlGeom) => ({
         ...pvlGeom.geometry,
         properties: pvlGeom.properties,
-      })) as GeoJsonObject[]
+      })) as GeoJSON[]
       removeNotifs()
 
       setData(data)
@@ -197,21 +199,23 @@ export const PVLGeom = ({ layer, display }: Props) => {
 
   return (
     <ErrorBoundary layer={layer as { label: string | null }}>
-      <GeoJSON
-        key={`${layer.id}/${display.marker_symbol}/${display?.marker_size}/${
+      <ProgressiveGeoJSON
+        resetKey={`${layer.id}/${display.marker_symbol}/${display?.marker_size}/${
           display?.color
         }/${display?.opacity_percent}/${display?.marker_type}/${
           data?.length ?? 0
         }`}
-        data={data as unknown as GeoJsonObject}
+        data={data}
         geomanIgnore={true}
-        {...{
+        // the group style is applied to every added layer; the opacity prop
+        // of react-leaflet's <GeoJSON> (applied via setStyle) folds in here
+        style={{
+          ...vectorLayerDisplayToProperties({
+            vectorLayerDisplay: display,
+            presentation: layer.layer_presentations?.[0],
+          }),
           opacity: display.opacity_percent ? display.opacity_percent / 100 : 0,
         }}
-        style={vectorLayerDisplayToProperties({
-          vectorLayerDisplay: display,
-          presentation: layer.layer_presentations?.[0],
-        })}
         onEachFeature={(feature, _layer) => {
           const layersData = [
             {

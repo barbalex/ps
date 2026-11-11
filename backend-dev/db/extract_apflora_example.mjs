@@ -6,6 +6,8 @@
 // Scope (APF2_SCOPE):
 //   example    — the example species (Abies alba), written to
 //                seed-data/apflora/apf2-example.json
+//   single:<A> — only the art named <A> (apf2 artname), e.g.
+//                APF2_SCOPE=single:Abies alba Mill.
 //   report:<J> — every art with an apber (AP-Bericht) for year <J>, e.g.
 //                APF2_SCOPE=report:2025 — the arts of apflora's yearly report
 //   all        — every art in the dump
@@ -29,7 +31,10 @@ const dumpPath =
   process.env.APF2_DUMP ??
   join(projectRoot, '..', 'apf2', 'backend-dev', 'db', 'apflora.backup')
 const scope = process.env.APF2_SCOPE ?? 'example'
-const scopeSlug = scope.replaceAll(':', '_')
+const scopeSlug = scope
+  .replaceAll(':', '_')
+  .replaceAll(' ', '_')
+  .replaceAll('.', '')
 const outPath =
   process.env.APF2_OUT ??
   join(
@@ -171,7 +176,10 @@ const data = {
     extractedAt: new Date().toISOString(),
     source: 'apf2 backend-dev dump (apflora.backup)',
     scope,
-    artnameFilter: scope === 'example' ? ARTNAMES : null,
+    artnameFilter:
+      scope === 'example' ? ARTNAMES
+      : scope.startsWith('single:') ? [scope.slice('single:'.length)]
+      : null,
     kontrollTypen: KONTROLL_TYPEN,
   },
   werte: {},
@@ -499,6 +507,12 @@ const selectedArts = (() => {
       if (!tax) throw new Error(`Species not found in ae_taxonomies: ${artname}`)
       return tax
     })
+  }
+  if (scope.startsWith('single:')) {
+    const artname = scope.slice('single:'.length)
+    const tax = taxAll.find((t) => t.artname === artname)
+    if (!tax) throw new Error(`Species not found in ae_taxonomies: ${artname}`)
+    return [tax]
   }
   if (scope.startsWith('report:')) {
     const year = parseInt(scope.slice('report:'.length), 10)

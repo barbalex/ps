@@ -75,6 +75,9 @@ export const ClickListener = () => {
     // Don't process clicks when a geometry is being drawn/edited on the map
     if (map.getContainer().classList.contains('geoman-active')) return
 
+    // Don't process clicks while a measurement is being taken
+    if (map.getContainer().classList.contains('measure-active')) return
+
     const { lat, lng } = event.latlng
     const zoom = map.getZoom()
     const mapSize = map.getSize()

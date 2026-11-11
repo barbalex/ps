@@ -245,10 +245,18 @@ export const Header = ({
             icon={<TbZoomScan />}
             onClick={onClickZoomTo}
             disabled={!hasGeometry}
-            title={formatMessage({
-              id: 'bCVzWA',
-              defaultMessage: 'Zur Massnahme in Karte zoomen',
-            })}
+            title={
+              hasGeometry
+                ? formatMessage({
+                    id: 'bCVzWA',
+                    defaultMessage: 'Zur Massnahme in Karte zoomen',
+                  })
+                : formatMessage({
+                    id: 'bCXBYC',
+                    defaultMessage:
+                      'Um auf eine Massnahme zu zoomen, erstelle zuerst die Geometrie',
+                  })
+            }
           />
           <HistoryToggleButton
             historiesPath={`${basePath}/histories`}

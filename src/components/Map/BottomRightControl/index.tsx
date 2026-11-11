@@ -10,7 +10,10 @@ export const BottomRightControl = () => {
   const hideMapUi = useAtomValue(mapHideUiAtom)
 
   return (
-    <div className={styles.container}>
+    // the global map-own-controls class lets mapExport.ts hide the
+    // self-built controls while the map is captured (same purpose as
+    // leaflet's own .leaflet-control-container)
+    <div className={`${styles.container} map-own-controls`}>
       {!hideMapUi && (
         <>
           <VerticalButtons />

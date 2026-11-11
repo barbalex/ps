@@ -672,6 +672,61 @@ emit(`  ON CONFLICT (place_level_id) DO NOTHING;`)
 emit(`-- separate UPDATEs because the sync-ignore trigger suppresses ON CONFLICT DO UPDATE`)
 emit(`UPDATE place_levels SET checks = false, filtered_views = ${jsonbOrNull(filteredViewsMap())} WHERE place_level_id = ${q(PLACE_LEVEL_2_ID)};`)
 
+// own vector layers for the geometry tables. On regular inserts,
+// projects_create_vector_layers_trigger (level 1 trio) and
+// place_levels_create_vector_layers_trigger (level 2) create them, and
+// vector_layers_insert_trigger adds a display and a presentation per layer.
+// All three skip while electric.syncing is set, so replicate them here:
+// without this, imported projects have no places/actions/checks layers in
+// the map (Teil-Populationen = places level 2 included); only the
+// client-created observation layers would appear
+const ownVectorLayerDefs = [
+  // level 1: the projects trigger creates all three, regardless of config
+  ['places_1', 'places', 1],
+  ['actions_1', 'actions', 1],
+  ['checks_1', 'checks', 1],
+  // level 2: places always; actions because place level 2 uses actions
+  // (no checks_2: place level 2 has none)
+  ['places_2', 'places', 2],
+  ['actions_2', 'actions', 2],
+]
+const vectorLayerId = (name) => derivedId('vector_layer', name)
+const vectorLayerDisplayId = (name) => derivedId('vector_layer_display', name)
+const layerPresentationId = (name) => derivedId('layer_presentation', name)
+const ownVectorLayerNames = () =>
+  ownVectorLayerDefs.map(([name]) => q(name)).join(', ')
+
+emit('-- own vector layers (places/actions/checks), replicating the triggers')
+emit('-- that skip while electric.syncing is set')
+emit(`INSERT INTO vector_layers(vector_layer_id, project_id, type, own_table, own_table_level, name) values`)
+ownVectorLayerDefs.forEach(([name, table, level], i) => {
+  emit(
+    `  (${q(vectorLayerId(name))}, ${q(PROJECT_ID)}, 'own', '${table}', ${level}, ${q(name)})${i < ownVectorLayerDefs.length - 1 ? ',' : ''}`,
+  )
+})
+emit(`  ON CONFLICT ON CONSTRAINT vector_layer_names_should_be_unique_in_project DO NOTHING;`)
+emit('-- one display and one presentation per layer, like vector_layers_insert_trigger')
+emit(`INSERT INTO vector_layer_displays(vector_layer_display_id, vector_layer_id)`)
+emit(
+  `  SELECT v.vld_id, vl.vector_layer_id FROM (VALUES ${ownVectorLayerDefs.map(([name]) => `(${q(vectorLayerDisplayId(name))}::uuid, ${q(name)}::text)`).join(', ')}) AS v(vld_id, name)`,
+)
+emit(
+  `  JOIN vector_layers vl ON vl.project_id = ${q(PROJECT_ID)} AND vl.name = v.name`,
+)
+emit(
+  `  WHERE NOT EXISTS (SELECT 1 FROM vector_layer_displays d WHERE d.vector_layer_id = vl.vector_layer_id);`,
+)
+emit(`INSERT INTO layer_presentations(layer_presentation_id, vector_layer_id, project_id)`)
+emit(
+  `  SELECT v.lp_id, vl.vector_layer_id, ${q(PROJECT_ID)} FROM (VALUES ${ownVectorLayerDefs.map(([name]) => `(${q(layerPresentationId(name))}::uuid, ${q(name)}::text)`).join(', ')}) AS v(lp_id, name)`,
+)
+emit(
+  `  JOIN vector_layers vl ON vl.project_id = ${q(PROJECT_ID)} AND vl.name = v.name`,
+)
+emit(
+  `  WHERE NOT EXISTS (SELECT 1 FROM layer_presentations lp WHERE lp.vector_layer_id = vl.vector_layer_id);`,
+)
+
 emit('-- filtered views (Feld-Kontrollen / Freiwilligen-Kontrollen as views on checks)')
 emit(
   `INSERT INTO filtered_views(filtered_view_id, project_id, table_name, name_singular_de, name_plural_de, name_singular_en, name_plural_en, name_singular_fr, name_plural_fr, name_singular_it, name_plural_it, filter, label_by, sort) values`,
@@ -1175,6 +1230,22 @@ emit(`  END IF;`)
 emit(`  SELECT count(*) INTO got FROM subproject_taxa st JOIN subprojects s USING (subproject_id) WHERE s.project_id = ${q(PROJECT_ID)};`)
 emit(`  IF got <> ${data.arts.length} THEN`)
 emit(`    RAISE EXCEPTION 'apflora seed: expected % subproject_taxa (DB-TAXREF taxa missing?), got %', ${data.arts.length}, got;`)
+emit(`  END IF;`)
+emit(`  SELECT count(*) INTO got FROM vector_layers WHERE project_id = ${q(PROJECT_ID)} AND name IN (${ownVectorLayerNames()});`)
+emit(`  IF got <> ${ownVectorLayerDefs.length} THEN`)
+emit(`    RAISE EXCEPTION 'apflora seed: expected % own vector layers, got %', ${ownVectorLayerDefs.length}, got;`)
+emit(`  END IF;`)
+emit(`  SELECT count(*) INTO got FROM vector_layers vl`)
+emit(`  WHERE vl.project_id = ${q(PROJECT_ID)} AND vl.name IN (${ownVectorLayerNames()})`)
+emit(`    AND NOT EXISTS (SELECT 1 FROM vector_layer_displays d WHERE d.vector_layer_id = vl.vector_layer_id);`)
+emit(`  IF got <> 0 THEN`)
+emit(`    RAISE EXCEPTION 'apflora seed: % own vector layers without a display', got;`)
+emit(`  END IF;`)
+emit(`  SELECT count(*) INTO got FROM vector_layers vl`)
+emit(`  WHERE vl.project_id = ${q(PROJECT_ID)} AND vl.name IN (${ownVectorLayerNames()})`)
+emit(`    AND NOT EXISTS (SELECT 1 FROM layer_presentations lp WHERE lp.vector_layer_id = vl.vector_layer_id);`)
+emit(`  IF got <> 0 THEN`)
+emit(`    RAISE EXCEPTION 'apflora seed: % own vector layers without a presentation', got;`)
 emit(`  END IF;`)
 emit(`END $$;`)
 
