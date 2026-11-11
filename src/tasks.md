@@ -56,11 +56,13 @@ dark mode not well implemented for: file upload?
 
 first: finish table_views:
 
-- View form: where is the table choosen? Is this only for checks? Should also be possible for project, subpopulation, places, actions...
+- project config, Ansichten: the table_views list should be more like a list view that indicates hovering like any other subform's list. Today it is only text that can be clicked although the mouse pointer does not indicate this is possible. Possibly same issue with Feldergruppen?
+- View form: where is the table choosen? So far this was only built for checks? Should also be possible for projects, subpopulations, places, actions
 - View form: Label rows: use the label tool as for observations?
 
 - create the ones for 'Art Idealbiotop' and "Biotop" Feldgruppe
-- how about how to design where to render the field view? Aha: Sort value
+- how about how to design where to render the field view? Aha: Sort value, relative to where the original table would be rendered?
+- children: where do we choose which to use? place children in places config (exists for checks), rest in project config?
 
 ---
 
