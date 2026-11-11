@@ -1,6 +1,6 @@
 import * as fluentUiReactComponents from '@fluentui/react-components'
 const { ToolbarToggleButton } = fluentUiReactComponents
-import { IoMdLocate } from 'react-icons/io'
+import { MdMyLocation } from 'react-icons/md'
 import { useAtom } from 'jotai'
 
 import { mapLocateAtom } from '../../../../store.ts'
@@ -19,7 +19,7 @@ export const LocatingButton = () => {
       onClick={onClickLocate}
       aria-label={mapIsLocating ? 'Stop locating' : 'Locate'}
       title={mapIsLocating ? 'Stop locating' : 'Locate'}
-      icon={<IoMdLocate />}
+      icon={<MdMyLocation />}
       size="large"
       className={styles.toolbarButton}
     />
