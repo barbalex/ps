@@ -56,7 +56,7 @@ dark mode not well implemented for: file upload?
 
 first: finish table_views:
 
-- project config, Ansichten: the table_views list should be more like a list view that indicates hovering like any other subform's list. Today it is only text that can be clicked although the mouse pointer does not indicate this is possible. Possibly same issue with Feldergruppen?
+- project config (http://localhost:5176/data/projects/0195a101-0000-7000-8000-000000000001/configuration), Ansichten: the table_views list should be more like a list view that indicates hovering like any other subform's list. Today it is only text that can be clicked although the mouse pointer does not indicate this is possible. Possibly same issue with Feldergruppen?
 - View form: where is the table choosen? So far this was only built for checks? Should also be possible for projects, subpopulations, places, actions
 - View form: Label rows: use the label tool as for observations?
 
