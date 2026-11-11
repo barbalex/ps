@@ -390,6 +390,88 @@ const hasCredentialAccount = async () => {
   return (accountResult.rowCount ?? 0) > 0
 }
 
+// A backend rebuild recreates the preview user from scratch: new user id,
+// email_verified false, and no roles — the app would be empty for it. This
+// restores all of that after every (re-)provisioning, idempotently.
+const grantPreviewUserAccess = async () => {
+  const userResult = await pool.query(
+    'SELECT user_id FROM users WHERE email = $1 LIMIT 1',
+    [PREVIEW_TEST_EMAIL],
+  )
+  const userId = userResult.rows?.[0]?.user_id
+  if (!userId) return
+
+  // the preview user cannot complete the email-verification OTP flow; the
+  // flag update in ensurePreviewUser runs BEFORE a possible sign-up, so a
+  // freshly created account is still unverified here
+  await pool.query(
+    'UPDATE users SET email_verified = TRUE, updated_at = NOW() WHERE email = $1 AND email_verified = FALSE',
+    [PREVIEW_TEST_EMAIL],
+  )
+
+  // direct write on a dedicated client: session-level GUC, so the whole
+  // grant must run on one connection. session_replication_role = replica
+  // bypasses the write-permission and sync-ignore triggers (the preview user
+  // cannot bootstrap its own roles through them), while the changes still
+  // reach logical replication — Electric must see them, or every subquery
+  // shape snapshotted before the grant keeps serving an empty result
+  // (electric.syncing would hide the writes from Electric; clients that
+  // synced meanwhile stay on their up-to-date-but-empty handles forever).
+  // The label and role-cascade triggers skipped here are replicated by hand
+  // (same pattern as scripts/import-apflora.mjs)
+  const client = await pool.connect()
+  try {
+    await client.query('SET session_replication_role = replica')
+    await client.query('BEGIN')
+    await client.query(
+      `INSERT INTO project_users(project_id, email, auth_user_id, sys_period)
+       SELECT project_id, $1, $2, tstzrange(now(), NULL) FROM projects
+       ON CONFLICT (project_id, email) DO NOTHING`,
+      [PREVIEW_TEST_EMAIL, userId],
+    )
+    // separate UPDATE: the sync-ignore trigger suppresses ON CONFLICT DO UPDATE
+    await client.query(
+      `UPDATE project_users SET auth_user_id = $2
+       WHERE email = $1 AND auth_user_id IS DISTINCT FROM $2`,
+      [PREVIEW_TEST_EMAIL, userId],
+    )
+    await client.query(
+      `INSERT INTO project_roles(project_id, project_user_id, role, label, sys_period)
+       SELECT p.project_id, pu.project_user_id, 'own', roles_label(pu.project_user_id, 'own'::user_roles_enum), tstzrange(now(), NULL)
+       FROM projects p
+       JOIN project_users pu ON pu.project_id = p.project_id AND pu.email = $1
+       ON CONFLICT (project_user_id, project_id) DO NOTHING`,
+      [PREVIEW_TEST_EMAIL],
+    )
+    await client.query(
+      `INSERT INTO subproject_roles(subproject_id, project_user_id, role, label, sys_period)
+       SELECT s.subproject_id, pr.project_user_id, pr.role, roles_label(pr.project_user_id, pr.role), tstzrange(now(), NULL)
+       FROM project_roles pr
+       JOIN project_users pu ON pu.project_user_id = pr.project_user_id AND pu.email = $1
+       JOIN subprojects s ON s.project_id = pr.project_id
+       ON CONFLICT (project_user_id, subproject_id) DO NOTHING`,
+      [PREVIEW_TEST_EMAIL],
+    )
+    await client.query(
+      `INSERT INTO place_roles(place_id, project_user_id, role, label, sys_period)
+       SELECT p.place_id, pr.project_user_id, pr.role, roles_label(pr.project_user_id, pr.role), tstzrange(now(), NULL)
+       FROM project_roles pr
+       JOIN project_users pu ON pu.project_user_id = pr.project_user_id AND pu.email = $1
+       JOIN subprojects s ON s.project_id = pr.project_id
+       JOIN places p ON p.subproject_id = s.subproject_id
+       ON CONFLICT (project_user_id, place_id) DO NOTHING`,
+      [PREVIEW_TEST_EMAIL],
+    )
+    await client.query('COMMIT')
+  } catch (error) {
+    await client.query('ROLLBACK')
+    throw error
+  } finally {
+    await client.query('SET session_replication_role TO DEFAULT')
+    client.release()
+  }
+}
+
 const ensurePreviewUser = async () => {
   const maxAttempts = 5
   for (let attempt = 1; attempt <= maxAttempts; attempt += 1) {
@@ -409,6 +491,7 @@ const ensurePreviewUser = async () => {
 
       const signInResult = await signInPreviewUser()
       if (signInResult.ok) {
+        await grantPreviewUserAccess()
         console.log('Preview test user is ready')
         return true
       }
@@ -417,6 +500,7 @@ const ensurePreviewUser = async () => {
       if (signUpResult.ok) {
         const signInAfterCreate = await signInPreviewUser()
         if (signInAfterCreate.ok) {
+          await grantPreviewUserAccess()
           console.log('Preview test user created')
           return true
         }
