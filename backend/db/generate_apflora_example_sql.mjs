@@ -658,37 +658,79 @@ emit(
   `UPDATE projects SET places_order_by = 'nr,name,flurname' WHERE project_id = ${q(PROJECT_ID)};`,
 )
 
+// place level names in all four languages: the map derives its own layer
+// labels from them ('Populationen', 'Teil-Population: Kontrollen', ...) and
+// falls back to generic labels (Places/Checks/Actions) where they are missing
+const placeLevelDefs = [
+  {
+    id: PLACE_LEVEL_1_ID,
+    level: 1,
+    names: {
+      de: ['Population', 'Populationen'],
+      en: ['Population', 'Populations'],
+      fr: ['Population', 'Populations'],
+      it: ['Popolazione', 'Popolazioni'],
+    },
+  },
+  {
+    id: PLACE_LEVEL_2_ID,
+    level: 2,
+    names: {
+      de: ['Teil-Population', 'Teil-Populationen'],
+      en: ['Sub-Population', 'Sub-Populations'],
+      fr: ['Sous-population', 'Sous-populations'],
+      it: ['Sottopopolazione', 'Sottopopolazioni'],
+    },
+  },
+]
+
 emit('-- place levels')
 emit(
-  `INSERT INTO place_levels(place_level_id, project_id, level, name_singular_de, name_plural_de, checks, check_quantities, check_taxa, check_reports, check_report_quantities, actions, action_quantities, action_taxa, action_reports, action_report_quantities, filtered_views) values`,
+  `INSERT INTO place_levels(place_level_id, project_id, level, name_singular_de, name_plural_de, name_singular_en, name_plural_en, name_singular_fr, name_plural_fr, name_singular_it, name_plural_it, checks, check_quantities, check_taxa, check_reports, check_report_quantities, actions, action_quantities, action_taxa, action_reports, action_report_quantities, filtered_views) values`,
 )
-emit(
-  `  (${q(PLACE_LEVEL_1_ID)}, ${q(PROJECT_ID)}, 1, 'Population', 'Populationen', false, false, false, true, true, false, false, false, true, true, '{}'::jsonb),`,
-)
-emit(
-  `  (${q(PLACE_LEVEL_2_ID)}, ${q(PROJECT_ID)}, 2, 'Teil-Population', 'Teil-Populationen', false, true, true, true, true, true, true, true, true, true, ${jsonbOrNull(filteredViewsMap())})`,
-)
+placeLevelDefs.forEach((def, i) => {
+  const [sgDe, plDe] = def.names.de
+  const [sgEn, plEn] = def.names.en
+  const [sgFr, plFr] = def.names.fr
+  const [sgIt, plIt] = def.names.it
+  const config =
+    def.level === 1
+      ? 'false, false, false, true, true, false, false, false, true, true'
+      : 'false, true, true, true, true, true, true, true, true, true'
+  emit(
+    `  (${q(def.id)}, ${q(PROJECT_ID)}, ${def.level}, ${q(sgDe)}, ${q(plDe)}, ${q(sgEn)}, ${q(plEn)}, ${q(sgFr)}, ${q(plFr)}, ${q(sgIt)}, ${q(plIt)}, ${config}, ${def.level === 1 ? `'{}'::jsonb` : jsonbOrNull(filteredViewsMap())})${i < placeLevelDefs.length - 1 ? ',' : ''}`,
+  )
+})
 emit(`  ON CONFLICT (place_level_id) DO NOTHING;`)
-emit(`-- separate UPDATEs because the sync-ignore trigger suppresses ON CONFLICT DO UPDATE`)
-emit(`UPDATE place_levels SET checks = false, filtered_views = ${jsonbOrNull(filteredViewsMap())} WHERE place_level_id = ${q(PLACE_LEVEL_2_ID)};`)
+emit('-- separate UPDATEs because the sync-ignore trigger suppresses ON CONFLICT DO UPDATE')
+for (const def of placeLevelDefs) {
+  const setNames = ['de', 'en', 'fr', 'it']
+    .flatMap((lang) => {
+    const [sg, pl] = def.names[lang]
+    return [`name_singular_${lang} = ${q(sg)}`, `name_plural_${lang} = ${q(pl)}`]
+  }).join(', ')
+  const config =
+    def.level === 2
+      ? `, checks = false, filtered_views = ${jsonbOrNull(filteredViewsMap())}`
+      : ''
+  emit(
+    `UPDATE place_levels SET ${setNames}${config} WHERE place_level_id = ${q(def.id)};`,
+  )
+}
 
 // own vector layers for the geometry tables. On regular inserts,
 // projects_create_vector_layers_trigger (level 1 trio) and
 // place_levels_create_vector_layers_trigger (level 2) create them, and
 // vector_layers_insert_trigger adds a display and a presentation per layer.
-// All three skip while electric.syncing is set, so replicate them here:
-// without this, imported projects have no places/actions/checks layers in
-// the map (Teil-Populationen = places level 2 included); only the
-// client-created observation layers would appear
+// All three skip while electric.syncing is set, so replicate them here —
+// but only for places: apf2's massnahmen and kontrollen carry no own
+// geometries (apflora.ch presents them at their TPop's location), so
+// actions/checks layers would stay empty; level-1 ones anyway, as apf2 has
+// no pop-level massnahmen or kontrollen at all. Observation layers are
+// client-created once observations exist
 const ownVectorLayerDefs = [
-  // level 1: the projects trigger creates all three, regardless of config
   ['places_1', 'places', 1],
-  ['actions_1', 'actions', 1],
-  ['checks_1', 'checks', 1],
-  // level 2: places always; actions because place level 2 uses actions
-  // (no checks_2: place level 2 has none)
   ['places_2', 'places', 2],
-  ['actions_2', 'actions', 2],
 ]
 const vectorLayerId = (name) => derivedId('vector_layer', name)
 const vectorLayerDisplayId = (name) => derivedId('vector_layer_display', name)

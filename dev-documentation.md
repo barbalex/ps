@@ -891,3 +891,80 @@ child-before-parent across stages and abort the applies.
   and retained, only the compare form is missing)
 - maps: filtered checks are drawn by the normal checks layers; there are no
   per-view own vector layers
+
+# 9 Map Own Layers
+
+## What they are
+
+Vector layers with `type = 'own'` draw the project's own data tables on the
+map: `places`, `actions`, `checks` and the observation tables (`observations_assigned`,
+`observations_assigned_lines`, `observations_to_assess`, `observations_not_to_assign`).
+There is one layer per table **and place level** — `own_table` +
+`own_table_level` select both. The `name` is the stable identity key
+(`<own_table>_<level>`, e.g. `checks_2`; observation layers without a level
+have no suffix, e.g. `observations_to_assess`). It is used for drag/drop state
+and deduplication — never localize or rename it.
+
+## Who creates them
+
+Three creation paths, all idempotent:
+
+1. **Server triggers** (`backend/db/init/07_triggers.sql`, the normal path):
+   - `projects_create_vector_layers_trigger`: on project INSERT, creates the
+     level-1 trio — `places_1`, `actions_1`, `checks_1` — regardless of the
+     place level config (which does not exist yet at that point).
+   - `place_levels_create_vector_layers_trigger`: on INSERT of a level-2
+     `place_levels` row (or UPDATE of its `level`/`actions`/`checks`):
+     `places_2` always; `actions_2` when `actions`; `checks_2` when `checks`.
+   - `vector_layers_insert_trigger`: on every layer INSERT, adds one
+     `vector_layer_displays` row and one `layer_presentations` row.
+   - **All three skip while `electric.syncing` is set** (Electric's own
+     writes, seeds, imports).
+2. **Client-side safety nets** (`createVectorLayer` in
+   `src/modules/createRows.ts` dedups by name before inserting, so calling it
+   again is free):
+   - creating a place ensures the level's places layer exists
+     (`src/formsAndLists/places.tsx`, `src/formsAndLists/place/Header.tsx`)
+   - `src/components/TableLayersProvider.tsx` creates the observation layers
+     once observations exist: `observations_assigned_<level>` and
+     `observations_assigned_lines_<level>` per place level with
+     `place_levels.observations = true`, plus `observations_to_assess` and
+     `observations_not_to_assign` (level-less).
+3. **Seeds/imports replicate the triggers by hand** — because the triggers
+   skip while syncing. `backend/db/generate_apflora_example_sql.mjs` inserts
+   the apflora project's layers plus one display and one presentation each
+   (the import's row-count asserts check all of this). It deviates from the
+   trigger rules deliberately — only the two places layers: apf2's
+   Massnahmen and Kontrollen carry no own geometries (apflora.ch presents
+   them at their TPop's location), so actions/checks layers would stay
+   empty; level-1 ones anyway, as apf2 has no pop-level Massnahmen or
+   Kontrollen at all. The observation layers are client-created (path 2)
+   once observations exist — the import contains none.
+
+## Labels are derived, not stored
+
+Own layers carry no label. `src/modules/vectorLayerLabel.ts` derives the
+display label at render time from the project's `place_levels` names: places
+layers use the level's plural name (en: 'Populations' / 'Sub-Populations'),
+actions/checks/assigned-observation layers prefix the level's singular name
+('{place}: Actions', '{place}: Checks'). Missing translations fall back to
+the German name, then to generic i18n labels ('Places', 'Checks', …). So a
+project whose place levels only define German names still gets specific
+labels in an English UI. (This replaced the old
+`updateTableVectorLayerLabels.ts`, which wrote the derived label back into
+`vector_layers.label` on every load, producing spurious pending operations.)
+
+## Rendering
+
+`src/components/Map/layers/tableLayerToComponent.ts` maps `own_table` +
+`own_table_level` to a component in `src/components/Map/layers/TableLayers/`
+(Places1/2, Actions1/2, Checks1/2, Observations…). Each queries its table
+joined on `places` — level 1 filters `places.parent_id IS NULL`, level 2
+`IS NOT NULL` — and only rows with `geometry IS NOT NULL` are drawn:
+checks/actions appear on the map only once a geometry was drawn for them
+(neither the demo project nor the apflora import seeds check/action
+geometries). The Own list in the map drawer
+(`Map/LeftMenuDrawer/Layers/Own/index.tsx`) shows the project's inactive own
+layers; activating one creates or reuses its `layer_presentations` row.
+Filtered checks views (section 8) have no layers of their own — the normal
+checks layers draw their rows.
