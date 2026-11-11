@@ -2,6 +2,7 @@
 // Imports apflora data into the running dev database (docker container ps_db).
 //
 //   node scripts/import-apflora.mjs test   — the three example species
+//   node scripts/import-apflora.mjs abies  — only Abies alba (with all its data)
 //   node scripts/import-apflora.mjs all    — every art of the apf2 dump
 //
 // What it does:
@@ -40,6 +41,11 @@ const modes = {
     scope: 'example',
     label: 'three example species',
   },
+  abies: {
+    json: join(projectRoot, 'seed-data', 'apflora', 'apf2-abies.json'),
+    scope: 'single:Abies alba Mill.',
+    label: 'only Abies alba (with all its data)',
+  },
   all: {
     json: join(projectRoot, 'seed-data', 'apflora', 'apf2-all.json'),
     scope: 'all',
@@ -50,9 +56,10 @@ const modes = {
 const modeName = process.argv[2]
 const mode = modes[modeName]
 if (!mode) {
-  console.error('Usage: node scripts/import-apflora.mjs test|all')
-  console.error('  test — the three example species (Abies alba, Aldrovanda vesiculosa, Pulsatilla vulgaris)')
-  console.error('  all  — every art of the apf2 dump')
+  console.error('Usage: node scripts/import-apflora.mjs test|abies|all')
+  console.error('  test  — the three example species (Abies alba, Aldrovanda vesiculosa, Pulsatilla vulgaris)')
+  console.error('  abies — only Abies alba (with all its data)')
+  console.error('  all   — every art of the apf2 dump')
   process.exit(1)
 }
 
@@ -99,7 +106,10 @@ console.log(`Importing apflora data (${mode.label}) ...`)
 // 1. extract the dump if the json is missing
 if (!existsSync(mode.json)) {
   console.log(`Extracting the apf2 dump (scope: ${mode.scope}) — this can take a while ...`)
-  run('node', ['backend/db/extract_apflora_example.mjs'], { APF2_SCOPE: mode.scope })
+  run('node', ['backend/db/extract_apflora_example.mjs'], {
+    APF2_SCOPE: mode.scope,
+    APF2_OUT: mode.json,
+  })
   if (!existsSync(mode.json)) {
     console.error(`Extraction did not produce ${mode.json}`)
     process.exit(1)
