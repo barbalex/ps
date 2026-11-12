@@ -216,7 +216,7 @@ export const FormDesignEditor = ({
   const hasContent = !!designRow.design?.content?.length
 
   return (
-    <div>
+    <div className={styles.editor}>
       <div className={`${styles.toolbar} print-hide`}>
         <SwitchField
           label={formatMessage({
@@ -237,9 +237,12 @@ export const FormDesignEditor = ({
           {formatMessage({ id: 'bFpQrJ', defaultMessage: 'Fertig' })}
         </Button>
       </div>
-      <FormDesignRuntimeContext.Provider value={runtime}>
-        <Suspense fallback={<Loading />}>
-          <LazyPuckEditor
+      {/* the flex chain gives Puck's height:100% layout a definite height —
+          auto-height wrappers in between would collapse its panes */}
+      <div className={styles.editorBody}>
+        <FormDesignRuntimeContext.Provider value={runtime}>
+          <Suspense fallback={<Loading />}>
+            <LazyPuckEditor
             key={language}
             config={config}
             data={
@@ -291,8 +294,9 @@ export const FormDesignEditor = ({
               )
             }
           />
-        </Suspense>
-      </FormDesignRuntimeContext.Provider>
+          </Suspense>
+        </FormDesignRuntimeContext.Provider>
+      </div>
     </div>
   )
 }

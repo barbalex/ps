@@ -4,6 +4,7 @@ import { useAtom } from 'jotai'
 
 import { FormHeader } from '../../components/FormHeader/index.tsx'
 import { JsonbOrFormDesign } from '../../components/shared/FormDesign/index.tsx'
+import { WithFormDesign } from '../../components/shared/FormDesign/WithFormDesign.tsx'
 import { Loading } from '../../components/shared/Loading.tsx'
 import { NotFound } from '../../components/NotFound.tsx'
 import { languageAtom } from '../../store.ts'
@@ -73,13 +74,20 @@ export const SubprojectTableView = () => {
             table="Teilprojekt"
             id={subprojectId}
           />
-        : <JsonbOrFormDesign
+        : <WithFormDesign
             table="subprojects"
             idField="subproject_id"
             id={subprojectId!}
             data={row.data ?? {}}
-            fieldIds={fieldIds}
-          />
+          >
+            <JsonbOrFormDesign
+              table="subprojects"
+              idField="subproject_id"
+              id={subprojectId!}
+              data={row.data ?? {}}
+              fieldIds={fieldIds}
+            />
+          </WithFormDesign>
         }
       </div>
     </div>

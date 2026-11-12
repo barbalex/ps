@@ -4,6 +4,7 @@ import { useAtom } from 'jotai'
 
 import { FormHeader } from '../../components/FormHeader/index.tsx'
 import { JsonbOrFormDesign } from '../../components/shared/FormDesign/index.tsx'
+import { WithFormDesign } from '../../components/shared/FormDesign/WithFormDesign.tsx'
 import { Loading } from '../../components/shared/Loading.tsx'
 import { NotFound } from '../../components/NotFound.tsx'
 import { languageAtom } from '../../store.ts'
@@ -74,13 +75,20 @@ export const PlaceTableView = () => {
             table="Ort"
             id={placeId2 ?? placeId}
           />
-        : <JsonbOrFormDesign
+        : <WithFormDesign
             table="places"
             idField="place_id"
             id={(placeId2 ?? placeId)!}
             data={row.data ?? {}}
-            fieldIds={fieldIds}
-          />
+          >
+            <JsonbOrFormDesign
+              table="places"
+              idField="place_id"
+              id={(placeId2 ?? placeId)!}
+              data={row.data ?? {}}
+              fieldIds={fieldIds}
+            />
+          </WithFormDesign>
         }
       </div>
     </div>

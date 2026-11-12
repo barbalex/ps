@@ -6,6 +6,21 @@
   margin-bottom: 12px;
 }
 
+/* the editor takes over the whole form area: root, toolbar row and the
+   Puck layout form a flex chain so DesignEditorLayout's height:100% gets
+   a definite height (auto-height wrappers would collapse its panes) */
+.editor {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.editorBody {
+  flex: 1;
+  min-height: 0;
+}
+
 .grid {
   display: grid;
   /* gridTemplateColumns and gap come from the component's props */
