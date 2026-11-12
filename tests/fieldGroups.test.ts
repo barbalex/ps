@@ -90,12 +90,15 @@ describe('table views with field groups', () => {
   it('a view without a row filter shows all rows', async () => {
     const { db, ids } = fixture
     const res = await db.query<{ id: string }>(
-      viewChecksSql(ids.place, ((
-        await db.query<{ filter: unknown }>(
-          `SELECT filter FROM table_views WHERE table_view_id = $1`,
-          [VIEW_NO_FILTER],
-        )
-      ).rows[0]?.filter ?? []) as TableRowFilter[]),
+      viewChecksSql(
+        ids.place,
+        ((
+          await db.query<{ filter: unknown }>(
+            `SELECT filter FROM table_views WHERE table_view_id = $1`,
+            [VIEW_NO_FILTER],
+          )
+        ).rows[0]?.filter ?? []) as TableRowFilter[],
+      ),
     )
     expect(res.rows.length).toBe(2)
   })
@@ -184,10 +187,11 @@ describe('single-row views on subprojects', () => {
       [ids.subproject],
     )
     const data = dataRes.rows[0]?.data ?? {}
-    const shown = Object.keys(data).filter((key) =>
-      (res.rows[0]?.sorted_field_ids ?? []).some(
-        (fieldId) => fieldId === '7a000000-0000-7000-8000-000000000002',
-      ) && key === 'idealbiotop_boden',
+    const shown = Object.keys(data).filter(
+      (key) =>
+        (res.rows[0]?.sorted_field_ids ?? []).some(
+          (fieldId) => fieldId === '7a000000-0000-7000-8000-000000000002',
+        ) && key === 'idealbiotop_boden',
     )
     expect(shown).toEqual(['idealbiotop_boden'])
 
@@ -203,7 +207,7 @@ describe('single-row views on subprojects', () => {
   })
 })
 
-describe('reserved fields: a view\'s group fields leave the plain form', () => {
+describe("reserved fields: a view's group fields leave the plain form", () => {
   it('the reservation query returns exactly the fields of view-backed groups', async () => {
     const { db, ids } = fixture
 
@@ -241,8 +245,10 @@ describe('healing: filtered_views -> table_views', () => {
   it('renames an old database and preserves data', async () => {
     const { db, ids } = fixture
 
-    // simulate a database from before the rename
+    // simulate a database from before the rename; form_designs (which
+    // references table_views) belongs to the newer schema and goes too
     await db.exec(`
+      DROP TABLE IF EXISTS form_designs;
       DROP TABLE table_views;
       ALTER TABLE place_levels DROP COLUMN IF EXISTS table_views;
       CREATE TABLE filtered_views(

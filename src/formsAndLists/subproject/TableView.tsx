@@ -3,7 +3,7 @@ import { useLiveQuery } from '@electric-sql/pglite-react'
 import { useAtom } from 'jotai'
 
 import { FormHeader } from '../../components/FormHeader/index.tsx'
-import { Jsonb } from '../../components/shared/Jsonb/index.tsx'
+import { JsonbOrFormDesign } from '../../components/shared/FormDesign/index.tsx'
 import { Loading } from '../../components/shared/Loading.tsx'
 import { NotFound } from '../../components/NotFound.tsx'
 import { languageAtom } from '../../store.ts'
@@ -47,31 +47,40 @@ export const SubprojectTableView = () => {
 
   const loading = res === undefined || resView === undefined
   const notFound = !!resView && !view
-  const title = notFound
-    ? undefined
-    : (view?.[`name_singular_${language}`] ??
+  const title =
+    notFound ? undefined : (
+      (view?.[`name_singular_${language}`] ??
       view?.name_singular_de ??
       tableViewId)
+    )
 
   return (
     <div className="form-outer-container">
-      <FormHeader title={title} tableName="tableView" />
+      <FormHeader
+        title={title}
+        tableName="tableView"
+      />
       <div className="form-container">
-        {loading ? (
+        {loading ?
           <Loading />
-        ) : notFound ? (
-          <NotFound table="Ansicht" id={tableViewId} />
-        ) : !row ? (
-          <NotFound table="Teilprojekt" id={subprojectId} />
-        ) : (
-          <Jsonb
+        : notFound ?
+          <NotFound
+            table="Ansicht"
+            id={tableViewId}
+          />
+        : !row ?
+          <NotFound
+            table="Teilprojekt"
+            id={subprojectId}
+          />
+        : <JsonbOrFormDesign
             table="subprojects"
             idField="subproject_id"
             id={subprojectId!}
             data={row.data ?? {}}
             fieldIds={fieldIds}
           />
-        )}
+        }
       </div>
     </div>
   )

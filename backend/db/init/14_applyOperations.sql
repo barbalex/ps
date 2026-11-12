@@ -31,6 +31,7 @@ RETURNS text[] LANGUAGE sql IMMUTABLE AS $$
     'projects', 'place_levels', 'taxonomies', 'lists', 'units', 'fields',
     'table_views',
     'field_groups', 'field_sorts', 'subproject_report_designs', 'project_reports',
+    'form_designs',
     'project_report_designs', 'project_report_subdesigns', 'wms_services',
     'wms_layers', 'wfs_services', 'vector_layers', 'project_crs',
     'qc_assignments', 'export_assignments', 'project_exports',

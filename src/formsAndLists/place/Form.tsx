@@ -9,7 +9,7 @@ import { designingAtom, languageAtom } from '../../store.ts'
 import { RadioGroupField } from '../../components/shared/RadioGroupField.tsx'
 import { TextField } from '../../components/shared/TextField.tsx'
 import { SwitchField } from '../../components/shared/SwitchField.tsx'
-import { Jsonb } from '../../components/shared/Jsonb/index.tsx'
+import { JsonbOrFormDesign } from '../../components/shared/FormDesign/index.tsx'
 import { DropdownField } from '../../components/shared/DropdownField.tsx'
 import { EditingGeometry } from '../../components/shared/EditingGeometry.tsx'
 import { jsonbDataFromRow } from '../../modules/jsonbDataFromRow.ts'
@@ -143,7 +143,7 @@ export const PlaceForm = ({
           )}
         </>
       )}
-      <Jsonb
+      <JsonbOrFormDesign
         table="places"
         idField="place_id"
         id={row.place_id as string}

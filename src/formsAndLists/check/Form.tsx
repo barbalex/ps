@@ -1,6 +1,6 @@
 import { DateField } from '../../components/shared/DateField.tsx'
 import { SwitchField } from '../../components/shared/SwitchField.tsx'
-import { Jsonb } from '../../components/shared/Jsonb/index.tsx'
+import { JsonbOrFormDesign } from '../../components/shared/FormDesign/index.tsx'
 import { EditingGeometry } from '../../components/shared/EditingGeometry.tsx'
 import { jsonbDataFromRow } from '../../modules/jsonbDataFromRow.ts'
 import { useIntl } from 'react-intl'
@@ -59,7 +59,7 @@ export const CheckForm = ({
         validationState={validations?.relevant_for_reports?.state}
         validationMessage={validations?.relevant_for_reports?.message}
       />
-      <Jsonb
+      <JsonbOrFormDesign
         table="checks"
         idField="check_id"
         id={row.check_id}

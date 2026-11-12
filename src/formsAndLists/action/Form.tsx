@@ -1,7 +1,7 @@
 import { DateField } from '../../components/shared/DateField.tsx'
 import type Actions from '../../models/public/Actions.ts'
 import { SwitchField } from '../../components/shared/SwitchField.tsx'
-import { Jsonb } from '../../components/shared/Jsonb/index.tsx'
+import { JsonbOrFormDesign } from '../../components/shared/FormDesign/index.tsx'
 import { EditingGeometry } from '../../components/shared/EditingGeometry.tsx'
 import { jsonbDataFromRow } from '../../modules/jsonbDataFromRow.ts'
 import type { getValueFromChange } from '../../modules/getValueFromChange.ts'
@@ -68,7 +68,7 @@ export const ActionForm = ({
         validationState={validations?.relevant_for_reports?.state}
         validationMessage={validations?.relevant_for_reports?.message}
       />
-      <Jsonb
+      <JsonbOrFormDesign
         table="actions"
         idField="action_id"
         id={row.action_id as string}
