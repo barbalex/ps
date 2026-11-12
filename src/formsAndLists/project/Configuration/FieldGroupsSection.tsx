@@ -1,39 +1,29 @@
-import { useNavigate } from '@tanstack/react-router'
 import { useLiveQuery } from '@electric-sql/pglite-react'
 import { useIntl } from 'react-intl'
 
 import { Section } from '../../../components/shared/Section.tsx'
 import { SectionDescription } from '../../../components/shared/SectionDescription.tsx'
 import { Row } from '../../../components/shared/Row.tsx'
-import { FormMenu } from '../../../components/FormMenu/index.tsx'
-import { createFieldGroup } from '../../../modules/createRows.ts'
+import { tableViewTables } from '../../../modules/tableViewTables.ts'
 
 /**
- * Project configuration section for field groups: named subsets of a
- * table's fields (e.g. "Biotop": the biotope fields of a check). Table
- * views use them to show only a subset of the columns.
+ * Project configuration section for field groups: one entry per table
+ * field groups can be built on, linking to that table's groups list.
  */
 export const FieldGroupsSection = ({ projectId }: { projectId: string }) => {
-  const navigate = useNavigate()
   const { formatMessage } = useIntl()
 
-  const res = useLiveQuery(
-    `SELECT field_group_id AS id, label, table_name FROM field_groups WHERE project_id = $1 ORDER BY label`,
+  const res = useLiveQuery<{ table_name: string; count: number }>(
+    `SELECT table_name, count(*)::int AS count FROM field_groups
+     WHERE project_id = $1
+     GROUP BY table_name`,
     [projectId],
   )
-  const navs = (res?.rows ?? []) as {
-    id: string
-    label: string
-    table_name: string | null
-  }[]
+  const counts = new Map(
+    (res?.rows ?? []).map((row) => [row.table_name, row.count]),
+  )
 
   const baseUrl = `/data/projects/${projectId}/field-groups`
-
-  const add = async () => {
-    const id = await createFieldGroup({ projectId })
-    if (!id) return
-    navigate({ to: `${baseUrl}/${id}/` })
-  }
 
   return (
     <Section
@@ -49,18 +39,13 @@ export const FieldGroupsSection = ({ projectId }: { projectId: string }) => {
             'Feldergruppen bündeln Felder einer Tabelle. Eine Ansicht, die eine Feldergruppe verwendet, zeigt nur deren Spalten. Beispiel: "Biotop": die Biotop-Felder einer Kontrolle.',
         })}
       </SectionDescription>
-      <div className="list-view-header">
-        <FormMenu
-          addRow={add}
-          nameSingular={formatMessage({
-            id: 'vN8wL2',
-            defaultMessage: 'Feldergruppe',
-          })}
-        />
-      </div>
       <div className="list-container">
-        {navs.map(({ id, label }) => (
-          <Row key={id} label={label ?? id} to={`${baseUrl}/${id}/`} />
+        {tableViewTables.map(({ tableName, label: tableLabel }) => (
+          <Row
+            key={tableName}
+            label={`${formatMessage(tableLabel)} (${counts.get(tableName) ?? 0})`}
+            to={`${baseUrl}/${tableName}`}
+          />
         ))}
       </div>
     </Section>

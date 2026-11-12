@@ -45,7 +45,14 @@ export const ActionWithAll = ({
   from: string
   allInline?: boolean
 }) => {
-  const { actionId, projectId, placeId, placeId2, subprojectId } = useParams({
+  const {
+    actionId,
+    projectId,
+    placeId,
+    placeId2,
+    tableViewId,
+    subprojectId,
+  } = useParams({
     strict: false,
   })
   const addOperation = useSetAtom(addOperationAtom)
@@ -63,6 +70,21 @@ export const ActionWithAll = ({
     actionId,
   ])
   const row = res?.rows?.[0] as Actions | undefined
+
+  // a table view with a field group shows only the group's columns
+  const fieldGroupRes = useLiveQuery(
+    tableViewId
+      ? `SELECT fg.sorted_field_ids
+         FROM table_views tv
+         LEFT JOIN field_groups fg ON fg.field_group_id = tv.field_group_id
+         WHERE tv.table_view_id = $1`
+      : `SELECT 1 AS sorted_field_ids WHERE false`,
+    tableViewId ? [tableViewId] : [],
+  )
+  const fieldGroup = fieldGroupRes?.rows?.[0] as
+    | { sorted_field_ids: string[] | null }
+    | undefined
+  const fieldIds = fieldGroup?.sorted_field_ids ?? undefined
 
   const quantitiesCountRes = useLiveQuery(
     `SELECT count(*)::int AS count FROM action_quantities WHERE action_id = $1`,
@@ -140,7 +162,7 @@ export const ActionWithAll = ({
     location.pathname.includes('/quantities/')
   const isQuantitiesList = /\/quantities\/?$/.test(location.pathname)
 
-  const actionBaseUrl = `/data/projects/${projectId}/subprojects/${subprojectId}/places/${placeId}${placeId2 ? `/places/${placeId2}` : ''}/actions/${actionId}`
+  const actionBaseUrl = `/data/projects/${projectId}/subprojects/${subprojectId}/places/${placeId}${placeId2 ? `/places/${placeId2}` : ''}${tableViewId ? `/table-views/${tableViewId}` : ''}/actions/${actionId}`
   const actionUrl = isAllInline ? actionBaseUrl : `${actionBaseUrl}/action`
   const quantitiesUrl = `${actionBaseUrl}/quantities`
   const taxaUrl = `${actionBaseUrl}/taxa`
@@ -231,6 +253,7 @@ export const ActionWithAll = ({
               row={row as unknown as Actions}
               autoFocusRef={autoFocusRef}
               from={from}
+              fieldIds={fieldIds}
             />
             {showQuantities ? (
               <Section

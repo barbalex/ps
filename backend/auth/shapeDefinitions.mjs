@@ -150,6 +150,19 @@ export const shapeDefinitions = {
     where: `project_id IN (${projectIdsOfUser})`,
     primaryKey: ['field_group_id'],
   },
+  form_designs: {
+    columns: [
+      'form_design_id',
+      'project_id',
+      'table_name',
+      'table_view_id',
+      'active',
+      'design',
+      ...auditColumns,
+    ],
+    where: `project_id IN (${projectIdsOfUser})`,
+    primaryKey: ['form_design_id'],
+  },
   subprojects: {
     columns: [
       'subproject_id',

@@ -1,0 +1,58 @@
+import { useParams, useNavigate } from '@tanstack/react-router'
+
+import { createAction } from '../modules/createRows.ts'
+import { useTableActionsNavData } from '../modules/useTableActionsNavData.ts'
+import { ListHeader } from '../components/ListHeader.tsx'
+import { Row } from '../components/shared/Row.tsx'
+import { FilterButton } from '../components/shared/FilterButton.tsx'
+import { Loading } from '../components/shared/Loading.tsx'
+
+import '../form.css'
+
+export const TableActions = (_props: { from: string }) => {
+  const { projectId, subprojectId, placeId, placeId2, tableViewId } =
+    useParams({ strict: false })
+  const navigate = useNavigate()
+
+  const { loading, navData, isFiltered } = useTableActionsNavData({
+    projectId: projectId!,
+    subprojectId: subprojectId!,
+    placeId: placeId!,
+    placeId2,
+    tableViewId: tableViewId!,
+  })
+  const { navs, label, nameSingular } = navData
+
+  const add = async () => {
+    const id = await createAction({
+      projectId: projectId!,
+      placeId: (placeId2 ?? placeId)!,
+      tableViewId: tableViewId!,
+    })
+    if (!id) return
+    navigate({
+      to: id,
+      params: (prev) => ({ ...prev, actionId: id }),
+    })
+  }
+
+  return (
+    <div className="list-view">
+      <ListHeader
+        label={label}
+        nameSingular={nameSingular}
+        addRow={add}
+        menus={<FilterButton isFiltered={isFiltered} />}
+      />
+      <div className="list-container">
+        {loading ? (
+          <Loading />
+        ) : (
+          navs.map(({ id, label }) => (
+            <Row key={id} label={label ?? id} to={id} />
+          ))
+        )}
+      </div>
+    </div>
+  )
+}

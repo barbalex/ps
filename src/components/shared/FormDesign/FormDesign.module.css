@@ -1,0 +1,96 @@
+.toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+/* the editor takes over the whole form area: root, toolbar row and the
+   Puck layout form a flex chain so DesignEditorLayout's height:100% gets
+   a definite height (auto-height wrappers would collapse its panes) */
+.editor {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.editorBody {
+  flex: 1;
+  min-height: 0;
+}
+
+.grid {
+  display: grid;
+  /* gridTemplateColumns and gap come from the component's props */
+  align-items: start;
+  margin: 4px 0;
+}
+
+/* widgets keep their box together when a print page break approaches */
+.grid > * {
+  break-inside: avoid;
+}
+
+.heading {
+  margin: 16px 0 4px;
+}
+
+.imageWrapper {
+  margin: 4px 0;
+}
+
+.image {
+  max-width: 100%;
+  height: auto;
+  break-inside: avoid;
+}
+
+.pageBreak {
+  height: 0;
+  border-top: 1px dashed lightgrey;
+}
+
+@media print {
+  .pageBreak {
+    border: none;
+    break-before: page;
+  }
+
+  /* the print view renders the widgets read-only; strip the input chrome
+     so the filled form prints as a document */
+  .printForm input,
+  .printForm textarea,
+  .printForm [role='combobox'],
+  .printForm [role='switch'],
+  .printForm [role='radio'] {
+    border: none !important;
+    background: transparent !important;
+    box-shadow: none !important;
+  }
+}
+
+.printLock {
+  pointer-events: none;
+}
+
+.printToolbar {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.warning {
+  padding: 8px;
+  margin-bottom: 8px;
+  border-left: 3px solid #d13438;
+  background: rgba(210, 60, 60, 0.08);
+}
+
+.emptyPreview {
+  padding: 32px;
+  text-align: center;
+  color: grey;
+}

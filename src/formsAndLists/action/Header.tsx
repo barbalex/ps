@@ -16,6 +16,8 @@ import {
   queryExtent,
   extentToBoundsWithMargin,
 } from '../../modules/geoQueries.ts'
+import type { TableRowFilter } from '../../store.ts'
+import { filterStringFromFilter } from '../../modules/filterStringFromFilter.ts'
 import {
   tabsAtom,
   mapBoundsAtom,
@@ -33,7 +35,7 @@ export const Header = ({
   from: string
   allInline?: boolean
 }) => {
-  const { formatMessage } = useIntl()
+  const { formatMessage, locale } = useIntl()
   const isForm =
     from ===
       '/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/actions/$actionId_/action' ||
@@ -45,10 +47,33 @@ export const Header = ({
   const addOperation = useSetAtom(addOperationAtom)
   const addNotification = useSetAtom(addNotificationAtom)
 
-  const { projectId, subprojectId, placeId, placeId2, actionId } = useParams({ strict: false })
+  const { projectId, subprojectId, placeId, placeId2, tableViewId, actionId } = useParams({ strict: false })
+
+  // names of the table view this action belongs to (if any)
+  const resTableView = useLiveQuery(
+    tableViewId
+      ? `SELECT name_singular_de, name_singular_en, name_singular_fr, name_singular_it, filter FROM table_views WHERE table_view_id = $1`
+      : `SELECT 1 WHERE false`,
+    tableViewId ? [tableViewId] : [],
+  )
+  const tableView = resTableView?.rows?.[0] as
+    | Record<string, unknown>
+    | undefined
+  const actionTitle =
+    (tableViewId &&
+      ((tableView?.[`name_singular_${locale.split('-')[0]}`] as string | null) ??
+        (tableView?.name_singular_de as string | null))) ||
+    undefined
+
+  // the view's static filter narrows counts and sibling navigation
+  const viewFilterString = tableViewId
+    ? filterStringFromFilter((tableView?.filter ?? []) as TableRowFilter[])
+    : ''
+  const hasViewFilter = !!viewFilterString
+
   const basePath = placeId2
-    ? `/data/projects/${projectId}/subprojects/${subprojectId}/places/${placeId}/places/${placeId2}/actions/${actionId}`
-    : `/data/projects/${projectId}/subprojects/${subprojectId}/places/${placeId}/actions/${actionId}`
+    ? `/data/projects/${projectId}/subprojects/${subprojectId}/places/${placeId}/places/${placeId2}${tableViewId ? `/table-views/${tableViewId}` : ''}/actions/${actionId}`
+    : `/data/projects/${projectId}/subprojects/${subprojectId}/places/${placeId}${tableViewId ? `/table-views/${tableViewId}` : ''}/actions/${actionId}`
   const navigate = useNavigate()
 
   const db = usePGlite()
@@ -61,7 +86,7 @@ export const Header = ({
   }, [actionId])
 
   const countRes = useLiveQuery(
-    `SELECT COUNT(*) as count FROM actions WHERE place_id = '${placeId2 ?? placeId}'`,
+    `SELECT COUNT(*) as count FROM actions WHERE place_id = '${placeId2 ?? placeId}'${hasViewFilter ? ` AND (${viewFilterString})` : ''}`,
   )
   const rowCount = (countRes?.rows?.[0]?.count as number | undefined) ?? 2
 
@@ -78,6 +103,7 @@ export const Header = ({
     const id = await createAction({
       projectId: projectId!,
       placeId: placeId2 ?? placeId!,
+      tableViewId,
     })
     if (!id) return
     navigate({
@@ -117,7 +143,7 @@ export const Header = ({
   const toNext = async () => {
     try {
       const res = await db.query<{ action_id: string }>(
-        'SELECT action_id FROM actions WHERE place_id = $1 ORDER BY label',
+        `SELECT action_id FROM actions WHERE place_id = $1${hasViewFilter ? ` AND (${viewFilterString})` : ''} ORDER BY label`,
         [placeId2 ?? placeId],
       )
       const actions = res?.rows
@@ -138,7 +164,7 @@ export const Header = ({
   const toPrevious = async () => {
     try {
       const res = await db.query<{ action_id: string }>(
-        'SELECT action_id FROM actions WHERE place_id = $1 ORDER BY label',
+        `SELECT action_id FROM actions WHERE place_id = $1${hasViewFilter ? ` AND (${viewFilterString})` : ''} ORDER BY label`,
         [placeId2 ?? placeId],
       )
       const actions = res?.rows
@@ -230,7 +256,10 @@ export const Header = ({
 
   return (
     <FormHeader
-      title={formatMessage({ id: 'upa2nh', defaultMessage: 'Massnahme' })}
+      title={
+        actionTitle ??
+        formatMessage({ id: 'upa2nh', defaultMessage: 'Massnahme' })
+      }
       addRow={addRow}
       deleteRow={deleteRow}
       toNext={toNext}

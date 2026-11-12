@@ -27,6 +27,8 @@ export const FileHistoryCompare = ({
     | '/data/projects/$projectId_/subprojects/$subprojectId_/files/$fileId_/histories/$fileHistoryId'
     | '/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/actions/$actionId_/files/$fileId_/histories/$fileHistoryId'
     | '/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/places/$placeId2_/actions/$actionId_/files/$fileId_/histories/$fileHistoryId'
+    | '/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/table-views/$tableViewId_/actions/$actionId_/files/$fileId_/histories/$fileHistoryId'
+    | '/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/places/$placeId2_/table-views/$tableViewId_/actions/$actionId_/files/$fileId_/histories/$fileHistoryId'
     | '/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/checks/$checkId_/files/$fileId_/histories/$fileHistoryId'
     | '/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/places/$placeId2_/checks/$checkId_/files/$fileId_/histories/$fileHistoryId'
     | '/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/table-views/$tableViewId_/checks/$checkId_/files/$fileId_/histories/$fileHistoryId'

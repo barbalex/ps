@@ -18,7 +18,7 @@ export default interface FieldGroups {
   /** Name of the group. Example: "Biotop" (the biotope fields of a check) */
   name: string | null;
 
-  /** field_ids (fields.field_id) of the group, in form order. No foreign key possible on arrays; ids of deleted fields are ignored when rendering */
+  /** field_ids (fields.field_id) of the group, in form order, as jsonb (temporal_tables cannot version array columns). No foreign key; ids of deleted fields are ignored when rendering */
   sorted_field_ids: string[] | null;
 
   label: string | null;
@@ -49,7 +49,7 @@ export interface FieldGroupsInitializer {
   /** Name of the group. Example: "Biotop" (the biotope fields of a check) */
   name?: string | null;
 
-  /** field_ids (fields.field_id) of the group, in form order. No foreign key possible on arrays; ids of deleted fields are ignored when rendering */
+  /** field_ids (fields.field_id) of the group, in form order, as jsonb (temporal_tables cannot version array columns). No foreign key; ids of deleted fields are ignored when rendering */
   sorted_field_ids?: string[] | null;
 
   /** System period maintained by temporal_tables for auditing and historic queries. */
@@ -79,7 +79,7 @@ export interface FieldGroupsMutator {
   /** Name of the group. Example: "Biotop" (the biotope fields of a check) */
   name?: string | null;
 
-  /** field_ids (fields.field_id) of the group, in form order. No foreign key possible on arrays; ids of deleted fields are ignored when rendering */
+  /** field_ids (fields.field_id) of the group, in form order, as jsonb (temporal_tables cannot version array columns). No foreign key; ids of deleted fields are ignored when rendering */
   sorted_field_ids?: string[] | null;
 
   /** System period maintained by temporal_tables for auditing and historic queries. */

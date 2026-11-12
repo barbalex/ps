@@ -1466,7 +1466,8 @@ CREATE TABLE IF NOT EXISTS field_groups(
   project_id uuid DEFAULT NULL REFERENCES projects(project_id) ON DELETE CASCADE ON UPDATE CASCADE DEFERRABLE INITIALLY DEFERRED,
   table_name text DEFAULT NULL,
   name text DEFAULT NULL,
-  sorted_field_ids uuid[] DEFAULT NULL,
+  -- jsonb, not uuid[]: temporal_tables cannot version array-typed columns
+  sorted_field_ids jsonb DEFAULT NULL,
   label text GENERATED ALWAYS AS (coalesce(nullif(name, ''), field_group_id::text)) STORED,
   sys_period tstzrange DEFAULT NULL,
   created_at timestamptz NOT NULL DEFAULT now(),
@@ -1474,13 +1475,28 @@ CREATE TABLE IF NOT EXISTS field_groups(
   updated_by text DEFAULT NULL
 );
 
+-- the uuid[] -> jsonb conversion (2026-11): heal databases created before
+-- the schema caught up
+DO $$
+BEGIN
+  IF EXISTS (
+    SELECT 1 FROM information_schema.columns
+    WHERE table_schema = 'public' AND table_name = 'field_groups'
+      AND column_name = 'sorted_field_ids' AND udt_name = '_uuid'
+  ) THEN
+    ALTER TABLE field_groups
+      ALTER COLUMN sorted_field_ids TYPE jsonb USING to_jsonb(sorted_field_ids);
+  END IF;
+END
+$$;
+
 CREATE INDEX IF NOT EXISTS field_groups_project_id_idx ON field_groups USING btree(project_id);
 CREATE INDEX IF NOT EXISTS field_groups_table_name_idx ON field_groups USING btree(table_name);
 CREATE INDEX IF NOT EXISTS field_groups_label_idx ON field_groups USING btree(label);
 
 COMMENT ON COLUMN field_groups.table_name IS 'Table the grouped fields belong to. Currently only "checks"';
 COMMENT ON COLUMN field_groups.name IS 'Name of the group. Example: "Biotop" (the biotope fields of a check)';
-COMMENT ON COLUMN field_groups.sorted_field_ids IS 'field_ids (fields.field_id) of the group, in form order. No foreign key possible on arrays; ids of deleted fields are ignored when rendering';
+COMMENT ON COLUMN field_groups.sorted_field_ids IS 'field_ids (fields.field_id) of the group, in form order, as jsonb (temporal_tables cannot version array columns). No foreign key; ids of deleted fields are ignored when rendering';
 COMMENT ON TABLE field_groups IS 'Named groups of fields of a table. Table views use them to show only a subset of the columns. Example: "Biotop": the biotope fields of a check';
 
 --------------------------------------------------------------
@@ -1550,6 +1566,36 @@ COMMENT ON COLUMN table_views.field_group_id IS 'Optional field group: the view 
 COMMENT ON COLUMN table_views.label_by IS 'Names of data fields appended to the year to label the rows of the view, in apf2 manner: lpad(year), then colon, then the value of each field. Empty/null = year only';
 COMMENT ON COLUMN table_views.sort IS 'Sort order of the views in navigation';
 COMMENT ON TABLE table_views IS 'Named views on tables, separating rows by an optional filter and/or columns by an optional field group. Example: two views on checks: "Feld-Kontrollen" (typ = Kontrolle) and "Freiwilligen-Kontrollen" (typ = Freiwilligen-Kontrolle). Enabled per place level via place_levels.table_views';
+
+--------------------------------------------------------------
+-- form_designs
+--
+CREATE TABLE IF NOT EXISTS form_designs(
+  form_design_id uuid PRIMARY KEY DEFAULT uuidv7(),
+  project_id uuid NOT NULL REFERENCES projects(project_id) ON DELETE CASCADE ON UPDATE CASCADE DEFERRABLE INITIALLY DEFERRED,
+  table_name text NOT NULL,
+  table_view_id uuid DEFAULT NULL REFERENCES table_views(table_view_id) ON DELETE CASCADE ON UPDATE CASCADE DEFERRABLE INITIALLY DEFERRED,
+  active boolean NOT NULL DEFAULT FALSE,
+  design jsonb DEFAULT NULL,
+  sys_period tstzrange DEFAULT NULL,
+  created_at timestamptz NOT NULL DEFAULT now(),
+  updated_at timestamptz NOT NULL DEFAULT now(),
+  updated_by text DEFAULT NULL
+);
+
+CREATE INDEX IF NOT EXISTS form_designs_project_id_idx ON form_designs USING btree(project_id);
+CREATE INDEX IF NOT EXISTS form_designs_table_name_idx ON form_designs USING btree(table_name);
+CREATE INDEX IF NOT EXISTS form_designs_table_view_id_idx ON form_designs USING btree(table_view_id);
+-- one design per form target: the plain form of a table (table_view_id
+-- NULL) or one table view
+CREATE UNIQUE INDEX IF NOT EXISTS form_designs_one_per_target_idx
+ON form_designs (project_id, table_name, coalesce(table_view_id, '00000000-0000-0000-0000-000000000000'::uuid));
+
+COMMENT ON COLUMN form_designs.table_name IS 'Table whose form is designed. Example: "checks"';
+COMMENT ON COLUMN form_designs.table_view_id IS 'Optional table view whose form is designed. Null = the plain form of table_name. Preset: NULL';
+COMMENT ON COLUMN form_designs.active IS 'Whether the designed form replaces the auto-generated one. False = the auto-generated form is in use. Preset: false';
+COMMENT ON COLUMN form_designs.design IS 'JSON design of the form (Puck)';
+COMMENT ON TABLE form_designs IS 'Self-designed data entry forms replacing the auto-generated one, stored as JSON (Puck). One design per form target (plain form of a table or a table view); "active" toggles between the auto-generated and the designed form';
 
 --------------------------------------------------------------
 --observation_imports

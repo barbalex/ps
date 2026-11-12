@@ -23,6 +23,9 @@ type TableView = {
   table_view_id: string
   table_name: string | null
   name_singular_de: string | null
+  name_singular_en: string | null
+  name_singular_fr: string | null
+  name_singular_it: string | null
   name_plural_de: string | null
   name_plural_en: string | null
   name_plural_fr: string | null
@@ -39,7 +42,7 @@ export const PlaceLevelForm = ({
   const lang = locale.split('-')[0]
 
   const resTableViews = useLiveQuery(
-    `SELECT table_view_id, table_name, name_singular_de, name_plural_de, name_plural_en, name_plural_fr, name_plural_it
+    `SELECT table_view_id, table_name, name_singular_de, name_singular_en, name_singular_fr, name_singular_it, name_plural_de, name_plural_en, name_plural_fr, name_plural_it
      FROM table_views
      WHERE project_id = $1
      ORDER BY sort, label`,
@@ -273,13 +276,22 @@ export const PlaceLevelForm = ({
             validationMessage={validations?.checks?.message}
           />
           {tableViews
-            .filter((view) => view.table_name === 'checks')
+            .filter((view) =>
+              view.table_name === 'checks' ||
+              view.table_name === 'actions' ||
+              view.table_name === 'places',
+            )
             .map((view) => {
               const viewLabel =
-                (view as Record<string, string | null>)[
-                  `name_plural_${lang}`
-                ] ??
-                view?.name_plural_de ??
+                (view.table_name === 'places'
+                  ? ((view as Record<string, string | null>)[
+                      `name_singular_${lang}`
+                    ] ??
+                    view?.name_singular_de)
+                  : ((view as Record<string, string | null>)[
+                      `name_plural_${lang}`
+                    ] ??
+                    view?.name_plural_de)) ??
                 view.table_view_id
               return (
                 <SwitchField

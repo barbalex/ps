@@ -108,6 +108,7 @@ const TABLE_CONFIG: Record<string, CheckConfig> = {
   table_views: projectDirect(),
   field_groups: projectDirect(),
   field_sorts: projectDirect(),
+  form_designs: projectDirect(),
   subproject_report_designs: projectDirect(),
   project_reports: projectDirect(),
   project_report_designs: projectDirect(),

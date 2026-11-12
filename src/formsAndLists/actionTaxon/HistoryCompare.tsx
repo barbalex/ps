@@ -28,7 +28,9 @@ import type { FieldChangeData } from '../../components/shared/fieldChange.ts'
 export const ActionTaxonHistoryCompare = (_: {
   from:
     | '/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/actions/$actionId_/taxa/$actionTaxonId_/histories/$actionTaxonHistoryId'
+    | '/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/table-views/$tableViewId_/actions/$actionId_/taxa/$actionTaxonId_/histories/$actionTaxonHistoryId'
     | '/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/places/$placeId2_/actions/$actionId_/taxa/$actionTaxonId_/histories/$actionTaxonHistoryId'
+    | '/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/places/$placeId2_/table-views/$tableViewId_/actions/$actionId_/taxa/$actionTaxonId_/histories/$actionTaxonHistoryId'
 }) => {
   const { formatMessage } = useIntl()
   const quantityLabel = formatMessage({ id: 'gRVMng', defaultMessage: 'Menge' })
@@ -41,10 +43,11 @@ export const ActionTaxonHistoryCompare = (_: {
     subprojectId,
     placeId,
     placeId2,
+    tableViewId,
   } = useParams({ strict: false })
   const actionTaxonPath = placeId2
-    ? `/data/projects/${projectId}/subprojects/${subprojectId}/places/${placeId}/places/${placeId2}/actions/${actionId}/taxa/${actionTaxonId}`
-    : `/data/projects/${projectId}/subprojects/${subprojectId}/places/${placeId}/actions/${actionId}/taxa/${actionTaxonId}`
+    ? `/data/projects/${projectId}/subprojects/${subprojectId}/places/${placeId}/places/${placeId2}${tableViewId ? `/table-views/${tableViewId}` : ''}/actions/${actionId}/taxa/${actionTaxonId}`
+    : `/data/projects/${projectId}/subprojects/${subprojectId}/places/${placeId}${tableViewId ? `/table-views/${tableViewId}` : ''}/actions/${actionId}/taxa/${actionTaxonId}`
   const historyPath = `${actionTaxonPath}/histories`
 
   const addOperation = useSetAtom(addOperationAtom)

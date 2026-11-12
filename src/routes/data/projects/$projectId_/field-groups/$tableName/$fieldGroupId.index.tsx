@@ -1,9 +1,9 @@
 import { createFileRoute } from '@tanstack/react-router'
 
-import { FieldGroup } from '../../../../../formsAndLists/fieldGroup/index.tsx'
+import { FieldGroup } from '../../../../../../formsAndLists/fieldGroup/index.tsx'
 
 export const Route = createFileRoute(
-  '/data/projects/$projectId_/field-groups/$fieldGroupId/',
+  '/data/projects/$projectId_/field-groups/$tableName/$fieldGroupId/',
 )({
   component: FieldGroup,
   beforeLoad: ({ params }) => {

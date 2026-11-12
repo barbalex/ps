@@ -13,7 +13,7 @@ export const Header = ({
 }: {
   autoFocusRef?: React.RefObject<HTMLInputElement | null>
 }) => {
-  const { projectId, fieldGroupId } = useParams({ strict: false })
+  const { projectId, tableName, fieldGroupId } = useParams({ strict: false })
   const navigate = useNavigate()
   const addOperation = useSetAtom(addOperationAtom)
   const { formatMessage } = useIntl()
@@ -26,14 +26,19 @@ export const Header = ({
     fieldGroupIdRef.current = fieldGroupId
   }, [fieldGroupId])
 
+  // next/previous stay within the groups of the same table
+  const tableFilter = tableName ? `AND table_name = '${tableName}'` : ''
   const countRes = useLiveQuery(
-    `SELECT COUNT(*) as count FROM field_groups WHERE project_id = $1`,
+    `SELECT COUNT(*) as count FROM field_groups WHERE project_id = $1 ${tableFilter}`,
     [projectId],
   )
   const rowCount = Number(countRes?.rows?.[0]?.count ?? 2)
 
   const addRow = async () => {
-    const id = await createFieldGroup({ projectId: projectId! })
+    const id = await createFieldGroup({
+      projectId: projectId!,
+      tableName: tableName ?? 'checks',
+    })
     if (!id) return
     navigate({
       to: `../${id}`,
@@ -70,7 +75,7 @@ export const Header = ({
   const toNext = async () => {
     try {
       const res = await db.query(
-        `SELECT field_group_id FROM field_groups WHERE project_id = $1 ORDER BY label`,
+        `SELECT field_group_id FROM field_groups WHERE project_id = $1 ${tableFilter} ORDER BY label`,
         [projectId],
       )
       const groups = res?.rows as { field_group_id: string }[]
@@ -91,7 +96,7 @@ export const Header = ({
   const toPrevious = async () => {
     try {
       const res = await db.query(
-        `SELECT field_group_id FROM field_groups WHERE project_id = $1 ORDER BY label`,
+        `SELECT field_group_id FROM field_groups WHERE project_id = $1 ${tableFilter} ORDER BY label`,
         [projectId],
       )
       const groups = res?.rows as { field_group_id: string }[]

@@ -36,7 +36,14 @@ export const useFieldGroupNavData = ({ projectId, fieldGroupId }: Props) => {
   const loading = res === undefined
 
   const nav: NavData | undefined = res?.rows?.[0]
-  const parentArray = ['data', 'projects', projectId, 'field-groups']
+  const parentArray = [
+    'data',
+    'projects',
+    projectId,
+    'field-groups',
+    // groups live under their table: /field-groups/<tableName>/<fieldGroupId>
+    nav?.table_name ?? 'checks',
+  ]
   const parentUrl = `/${parentArray.join('/')}`
   const ownArray = [...parentArray, fieldGroupId]
   const ownUrl = `/${ownArray.join('/')}`

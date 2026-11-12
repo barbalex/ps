@@ -714,7 +714,10 @@ its own breadcrumbs, its own list form and edit form — parallel to the
 - **Columns**: an optional field group (`field_group_id`) selects the
   columns — the edit form then renders only the group's fields, in the
   usual form order. The list labels are unaffected (they are built from
-  `label_by`).
+  `label_by`). Fields of groups used by a view are **reserved**: they
+  only render in the views whose group contains them, not in the plain
+  form of the table (nor in groupless views). Design mode ignores the
+  reservation — designers always see all fields.
 
 Examples (apflora):
 
@@ -723,13 +726,37 @@ Examples (apflora):
   **Freiwilligen-Kontrollen** (`data.typ = 'Freiwilligen-Kontrolle'`)
   instead of one combined "Kontrollen" node
 - planned: **EK Biotop** — a view on checks combining a row filter with
-  the "Biotop" field group (only the biotope columns of the form);
-  **Art Idealbiotop** — a view on subprojects showing only the
-  Idealbiotop field group (needs views on tables other than checks,
-  see below)
+  the "Biotop" field group (only the biotope columns of the form)
 
-Currently only views on `checks` are implemented (`table_views.table_name`
-is prepared for other tables).
+Implemented runtimes:
+
+- `checks` — full runtime (see below): view nodes under places, view
+  lists, view check forms with sub-entities, place-level enablement
+- `actions` — full runtime like checks: route subtree
+  `.../places/<placeId>/table-views/<tableViewId>/actions/**` (both
+  levels), nav hooks `useTableActionsNavData`/`useTableActionNavData`,
+  `createAction` presets the view's filter values, the action form shows
+  only the view's field group, row labels follow `label_by`. Enabled per
+  place level via the same `place_levels.table_views` map (the switches
+  in the place level form list the views of checks, actions and places)
+- `subprojects` — single-row runtime: every view on `subprojects` renders
+  as a leaf node under the subproject in the nav tree (always, no
+  enablement map — apflora's "Idealbiotop" is simply there), its url
+  `.../subprojects/<subprojectId>/table-views/<tableViewId>` opens the
+  view's form on the subproject row: the Jsonb renderer with the view's
+  field group (`SubprojectTableView`). No row filter/label_by — the view
+  form hides them for single-row tables
+  (`singleRowTableViewTables` in `src/modules/tableViewTables.ts`)
+- `places` — single-row runtime per place: views on `places` render as
+  leaf nodes under each place (url
+  `.../places/<placeId>/table-views/<tableViewId>`, level 2 mirrors),
+  opening the view's field group form on the place row
+  (`PlaceTableView`). Which levels show them comes from the same
+  `place_levels.table_views` map — a view enabled on level 2 appears
+  under every level-2 place. The field group should contain fields of
+  the matching place level (fields are per level)
+
+Not implemented: `projects` (removed from the tables list again).
 
 ## Data model
 
@@ -767,8 +794,12 @@ is prepared for other tables).
   - `table_name`: the table the grouped fields belong to (`checks`)
   - `name`: e.g. "Biotop"
   - `sorted_field_ids`: `field_id`s (of the project's `fields` rows), in
-    form order; not a foreign key (arrays cannot reference), ids of
-    deleted fields are ignored when rendering
+    form order, stored as **jsonb** — temporal_tables cannot version
+    array-typed columns (it fails with a nonsensical "is of type uuid[]
+    but ... is of type uuid[]" error, see
+    https://dba.stackexchange.com/questions/163340/); no foreign key, ids
+    of deleted fields are ignored when rendering. NB: `field_sorts`
+    keeps its `uuid[]` because it carries no versioning trigger
   - has a history table (`field_groups_history`) and the standard
     project-scoped write permission
 - **`place_levels.table_views`** (jsonb, renamed from
@@ -794,12 +825,16 @@ The route subtrees are copies of the `checks` subtrees (the codebase
 duplicates level 1/2 by hand as well). The config lives under
 `/data/projects/<projectId>/table-views/` — the list of tables views can be
 built on (`src/modules/tableViewTables.ts`: checks, actions, places,
-subprojects, projects), per table `/table-views/<tableName>/` the table's
+subprojects), per table `/table-views/<tableName>/` the table's
 views (drag rows to sort them — persisted as `sort`; the Sortierwert field
 in the view form remains as manual fallback), and
 `/table-views/<tableName>/<tableViewId>/` the view form (the table is shown
-there, chosen by where the view was created). Field groups live under
-`/data/projects/<projectId>/field-groups/...`.
+there, chosen by where the view was created). Field groups mirror this:
+`/field-groups/` lists the same tables, `/field-groups/<tableName>/` the
+table's groups (created there, with the fields multiselect), and
+`/field-groups/<tableName>/<fieldGroupId>/` the group form. The view
+form's Feldergruppe dropdown links there (especially when the table has
+no group yet).
 
 ## Where things live
 
@@ -812,9 +847,12 @@ there, chosen by where the view was created). Field groups live under
 | Sub-entity nav hooks | `useCheckQuantitiesNavData`, `useCheckTaxaNavData`, `useCheckQuantityNavData`, `useCheckTaxonNavData`, `useFilesNavData`, `useFileNavData` accept an optional `tableViewId` and insert the path segment |
 | Tree nodes | tree configs in `src/components/Tree/virtual/treeConfigs.tsx` (design mode node + one node per enabled view under a place) |
 | View config UI | `src/formsAndLists/tableViewsTables.tsx` (tables list) + `tableViews.tsx` (per-table views list with drag-to-sort) + `tableView/` (entity, also reachable from Project Configuration via `Configuration/TableViewsSection.tsx`) |
-| Field group config UI | `src/formsAndLists/fieldGroups.tsx` + `fieldGroup/` (entity, also reachable via `Configuration/FieldGroupsSection.tsx`) |
+| Field group config UI | `src/formsAndLists/fieldGroupsTables.tsx` (tables list) + `fieldGroups.tsx` (per-table) + `fieldGroup/` (entity, also reachable via `Configuration/FieldGroupsSection.tsx`) |
 | Place level UI | `src/formsAndLists/placeLevel/Form.tsx` renders a switch per view; `placeLevel/index.tsx` maps `table_view_<id>` switches onto the `table_views` jsonb |
 | View checks list + filter | `src/formsAndLists/tableChecks.tsx`, `tableCheck/Filter.tsx` |
+| Subproject view runtime | `src/modules/useSubprojectNavData.ts` (leaf navs `table-views/<id>`), `useSubprojectTableViewNavData.ts`, `subproject/TableView.tsx`, breadcrumbs `SubprojectTableViewFetcher.tsx` |
+| Action views runtime | `src/formsAndLists/tableActions.tsx`, `tableAction/Filter.tsx`, `src/modules/useTableActionsNavData.ts`, `useTableActionNavData.ts`; the plain action components (`action/Header.tsx`, `action/WithAll.tsx`, `actionQuantities.tsx`, `actionTaxa.tsx`, sub-entity hooks, HistoryCompares) are tableViewId-aware |
+| Place view runtime | `src/formsAndLists/place/TableView.tsx`, `src/modules/usePlaceTableViewNavData.ts`, breadcrumbs `PlaceTableViewFetcher.tsx`; leaf navs come from `usePlaceNavData.ts` |
 | Check form | the normal check form components; `check/Header.tsx` and `check/WithAll.tsx` insert the path segment and use the view's singular name as title; `check/WithAll.tsx` resolves the view's field group and passes its field ids down as `fieldIds` |
 | Column restriction | `src/components/shared/Jsonb/index.tsx` accepts `fieldIds`; restricted views render only those fields and hide AddField + the undefined-field warnings |
 | Filter atoms | one per view, created dynamically: `getTableViewFilterAtom(tableViewId)` in `src/store.ts`; the shared `Filter` component accepts `filterAtomOverride`. Storage keys changed with the rename (`tableView-<id>-filterAtom`) — saved view filters reset once |

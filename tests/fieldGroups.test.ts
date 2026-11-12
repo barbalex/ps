@@ -71,7 +71,7 @@ describe('table views with field groups', () => {
     // field group "Biotop": the biotope fields, stored in form order
     await db.exec(`
       INSERT INTO field_groups(field_group_id, project_id, table_name, name, sorted_field_ids) VALUES
-        ('${GROUP}', '${ids.project}', 'checks', 'Biotop', ARRAY['${FIELD_LR_DELARZE}', '${FIELD_KRAUTSCHICHT}']::uuid[]);
+        ('${GROUP}', '${ids.project}', 'checks', 'Biotop', '${JSON.stringify([FIELD_LR_DELARZE, FIELD_KRAUTSCHICHT])}'::jsonb);
     `)
 
     await db.exec(`
@@ -90,12 +90,15 @@ describe('table views with field groups', () => {
   it('a view without a row filter shows all rows', async () => {
     const { db, ids } = fixture
     const res = await db.query<{ id: string }>(
-      viewChecksSql(ids.place, ((
-        await db.query<{ filter: unknown }>(
-          `SELECT filter FROM table_views WHERE table_view_id = $1`,
-          [VIEW_NO_FILTER],
-        )
-      ).rows[0]?.filter ?? []) as TableRowFilter[]),
+      viewChecksSql(
+        ids.place,
+        ((
+          await db.query<{ filter: unknown }>(
+            `SELECT filter FROM table_views WHERE table_view_id = $1`,
+            [VIEW_NO_FILTER],
+          )
+        ).rows[0]?.filter ?? []) as TableRowFilter[],
+      ),
     )
     expect(res.rows.length).toBe(2)
   })
@@ -148,12 +151,104 @@ describe('table views with field groups', () => {
   })
 })
 
+describe('single-row views on subprojects', () => {
+  it('the view page resolves the field group and is bound to its table', async () => {
+    const { db, ids } = fixture
+
+    // fields of the subprojects table
+    await db.exec(`
+      INSERT INTO fields(field_id, project_id, table_name, name, field_label) VALUES
+        ('7a000000-0000-7000-8000-000000000001', '${ids.project}', 'subprojects', 'bearbeitung', 'Bearbeitung'),
+        ('7a000000-0000-7000-8000-000000000002', '${ids.project}', 'subprojects', 'idealbiotop_boden', 'Idealbiotop: Boden');
+      INSERT INTO field_groups(field_group_id, project_id, table_name, name, sorted_field_ids) VALUES
+        ('7b000000-0000-7000-8000-000000000001', '${ids.project}', 'subprojects', 'Idealbiotop', '${JSON.stringify(['7a000000-0000-7000-8000-000000000002'])}'::jsonb);
+      INSERT INTO table_views(table_view_id, project_id, table_name, name_singular_de, name_plural_de, filter, field_group_id, sort) VALUES
+        ('7c000000-0000-7000-8000-000000000001', '${ids.project}', 'subprojects', 'Idealbiotop', 'Idealbiotop', NULL, '7b000000-0000-7000-8000-000000000001', 1);
+      UPDATE subprojects SET data = '{"bearbeitung":"kein AP","idealbiotop_boden":"kalkreich"}'::jsonb WHERE subproject_id = '${ids.subproject}';
+    `)
+
+    // the query the subproject view page runs (SubprojectTableView)
+    const res = await db.query<{
+      sorted_field_ids: string[] | null
+    }>(
+      `SELECT fg.sorted_field_ids
+       FROM table_views tv
+       LEFT JOIN field_groups fg ON fg.field_group_id = tv.field_group_id
+       WHERE tv.table_view_id = $1 AND tv.table_name = 'subprojects'`,
+      ['7c000000-0000-7000-8000-000000000001'],
+    )
+    expect(res.rows[0]?.sorted_field_ids).toEqual([
+      '7a000000-0000-7000-8000-000000000002',
+    ])
+
+    // the restricted form shows only the group's field of the row's data
+    const dataRes = await db.query<{ data: Record<string, unknown> }>(
+      `SELECT data FROM subprojects WHERE subproject_id = $1`,
+      [ids.subproject],
+    )
+    const data = dataRes.rows[0]?.data ?? {}
+    const shown = Object.keys(data).filter(
+      (key) =>
+        (res.rows[0]?.sorted_field_ids ?? []).some(
+          (fieldId) => fieldId === '7a000000-0000-7000-8000-000000000002',
+        ) && key === 'idealbiotop_boden',
+    )
+    expect(shown).toEqual(['idealbiotop_boden'])
+
+    // a view of another table never belongs under a subproject
+    const wrongTable = await db.query<{ sorted_field_ids: string[] | null }>(
+      `SELECT fg.sorted_field_ids
+       FROM table_views tv
+       LEFT JOIN field_groups fg ON fg.field_group_id = tv.field_group_id
+       WHERE tv.table_view_id = $1 AND tv.table_name = 'subprojects'`,
+      [VIEW_WITH_GROUP],
+    )
+    expect(wrongTable.rows.length).toBe(0)
+  })
+})
+
+describe("reserved fields: a view's group fields leave the plain form", () => {
+  it('the reservation query returns exactly the fields of view-backed groups', async () => {
+    const { db, ids } = fixture
+
+    // one group referenced by a view (reserved), one unreferenced (not)
+    await db.exec(`
+      INSERT INTO field_groups(field_group_id, project_id, table_name, name, sorted_field_ids) VALUES
+        ('7d000000-0000-7000-8000-000000000001', '${ids.project}', 'subprojects', 'Referenced', '${JSON.stringify(['7a000000-0000-7000-8000-000000000001', '7a000000-0000-7000-8000-000000000002'])}'::jsonb),
+        ('7d000000-0000-7000-8000-000000000002', '${ids.project}', 'subprojects', 'Not referenced', '${JSON.stringify(['7a000000-0000-7000-8000-000000000001'])}'::jsonb);
+      INSERT INTO table_views(table_view_id, project_id, table_name, name_singular_de, name_plural_de, field_group_id, sort) VALUES
+        ('7e000000-0000-7000-8000-000000000001', '${ids.project}', 'subprojects', 'Referenced view', 'Referenced views', '7d000000-0000-7000-8000-000000000001', 2);
+    `)
+
+    // the query Jsonb runs for the plain form
+    const res = await db.query<{ field_id: string }>(
+      `SELECT DISTINCT jsonb_array_elements_text(fg.sorted_field_ids) AS field_id
+       FROM field_groups fg
+       JOIN table_views tv ON tv.field_group_id = fg.field_group_id
+       WHERE fg.project_id = $1 AND fg.table_name = $2`,
+      [ids.project, 'subprojects'],
+    )
+    expect(res.rows.map((r) => r.field_id).sort()).toEqual([
+      '7a000000-0000-7000-8000-000000000001',
+      '7a000000-0000-7000-8000-000000000002',
+    ])
+
+    // cleanup so later describes see the previous state
+    await db.exec(`
+      DELETE FROM table_views WHERE table_view_id = '7e000000-0000-7000-8000-000000000001';
+      DELETE FROM field_groups WHERE field_group_id IN ('7d000000-0000-7000-8000-000000000001', '7d000000-0000-7000-8000-000000000002');
+    `)
+  })
+})
+
 describe('healing: filtered_views -> table_views', () => {
   it('renames an old database and preserves data', async () => {
     const { db, ids } = fixture
 
-    // simulate a database from before the rename
+    // simulate a database from before the rename; form_designs (which
+    // references table_views) belongs to the newer schema and goes too
     await db.exec(`
+      DROP TABLE IF EXISTS form_designs;
       DROP TABLE table_views;
       ALTER TABLE place_levels DROP COLUMN IF EXISTS table_views;
       CREATE TABLE filtered_views(

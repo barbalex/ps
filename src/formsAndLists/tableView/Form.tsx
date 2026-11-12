@@ -1,13 +1,14 @@
 import { useMemo } from 'react'
 import { useLiveQuery } from '@electric-sql/pglite-react'
 import { useIntl } from 'react-intl'
+import { Link } from '@tanstack/react-router'
 import * as fluentUiReactComponents from '@fluentui/react-components'
 const { Dropdown, Field, Option, Input } = fluentUiReactComponents
 
 import { TextField } from '../../components/shared/TextField.tsx'
 import { Section } from '../../components/shared/Section.tsx'
 import { SectionDescription } from '../../components/shared/SectionDescription.tsx'
-import { tableViewTables, tableViewTableLabel } from '../../modules/tableViewTables.ts'
+import { tableViewTables, tableViewTableLabel, singleRowTableViewTables } from '../../modules/tableViewTables.ts'
 import type TableViews from '../../models/public/TableViews.ts'
 import type { TableRowFilter } from '../../store.ts'
 
@@ -26,6 +27,11 @@ export const TableViewForm = ({
   validations?: Record<string, { state: 'error'; message: string }>
 }) => {
   const { formatMessage } = useIntl()
+  // views on single-row tables (subprojects, projects) are forms on the
+  // entity itself: row filter and row labels do not apply
+  const isSingleRowTable = singleRowTableViewTables.has(
+    (row.table_name ?? 'checks') as string,
+  )
 
   return (
     <>
@@ -128,11 +134,19 @@ export const TableViewForm = ({
         })}
       >
         <SectionDescription>
-          {formatMessage({
-            id: 'xG8wQ2',
-            defaultMessage:
-              'Optional: einen Zeilen-Filter setzen (nur Zeilen, die ihm entsprechen) und/oder eine Feldergruppe wählen (nur diese Spalten zeigen). Beides leer = alle Zeilen und Spalten.',
-          })}
+          {formatMessage(
+            isSingleRowTable
+              ? {
+                  id: 'kW2xR6',
+                  defaultMessage:
+                    'Optional: eine Feldergruppe wählen (nur diese Spalten zeigen). Leer = alle Spalten.',
+                }
+              : {
+                  id: 'xG8wQ2',
+                  defaultMessage:
+                    'Optional: einen Zeilen-Filter setzen (nur Zeilen, die ihm entsprechen) und/oder eine Feldergruppe wählen (nur diese Spalten zeigen). Beides leer = alle Zeilen und Spalten.',
+                },
+          )}
         </SectionDescription>
         <Field
           label={formatMessage({
@@ -152,9 +166,11 @@ export const TableViewForm = ({
             ))}
           </Dropdown>
         </Field>
-        <FilterEditor row={row} onChange={onChange} />
+        {!isSingleRowTable && <FilterEditor row={row} onChange={onChange} />}
         <FieldGroupEditor row={row} onChange={onChange} />
-        <LabelByEditor row={row} onChange={onChange} />
+        {!isSingleRowTable && (
+          <LabelByEditor row={row} onChange={onChange} />
+        )}
         <TextField
           label={formatMessage({ id: 'Pq7nWk', defaultMessage: 'Sortierwert' })}
           name="sort"
@@ -243,6 +259,42 @@ const FieldGroupEditor = ({
           </Option>
         ))}
       </Dropdown>
+      {fieldGroups.length === 0 ? (
+        <SectionDescription>
+          {formatMessage({
+            id: 'qD6fG4',
+            defaultMessage:
+              'Für diese Tabelle gibt es noch keine Feldergruppe. Feldergruppen werden pro Tabelle erstellt und bündeln deren Felder.',
+          })}{' '}
+          <Link
+            to={`/data/projects/${projectId}/field-groups/${tableName}` as string}
+            style={{ fontSize: 'small' }}
+          >
+            {formatMessage({
+              id: 'rE7gH5',
+              defaultMessage: 'Feldergruppe für diese Tabelle erstellen →',
+            })}
+          </Link>
+        </SectionDescription>
+      ) : singleRowTableViewTables.has(tableName) && !selectedGroupId ? (
+        <SectionDescription>
+          {formatMessage({
+            id: 'tG9iJ7',
+            defaultMessage:
+              'Ohne Feldergruppe entspricht diese Ansicht dem Formular des Teil-Projekts. Üblicherweise wählt man eine Feldergruppe.',
+          })}
+        </SectionDescription>
+      ) : (
+        <Link
+          to={`/data/projects/${projectId}/field-groups/${tableName}` as string}
+          style={{ fontSize: 'small' }}
+        >
+          {formatMessage({
+            id: 'sF8hI6',
+            defaultMessage: 'Feldergruppen dieser Tabelle verwalten →',
+          })}
+        </Link>
+      )}
     </Field>
   )
 }

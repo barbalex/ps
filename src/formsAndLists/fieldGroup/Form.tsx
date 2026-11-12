@@ -6,6 +6,7 @@ const { Dropdown, Field, Option } = fluentUiReactComponents
 import { TextField } from '../../components/shared/TextField.tsx'
 import { Section } from '../../components/shared/Section.tsx'
 import { SectionDescription } from '../../components/shared/SectionDescription.tsx'
+import { tableViewTables, tableViewTableLabel } from '../../modules/tableViewTables.ts'
 import type FieldGroups from '../../models/public/FieldGroups.ts'
 
 import '../../form.css'
@@ -40,6 +41,31 @@ export const FieldGroupForm = ({
           validationState={validations?.name?.state}
           validationMessage={validations?.name?.message}
         />
+        <Field
+          label={formatMessage({
+            id: 'hJ9sD2',
+            defaultMessage: 'Tabelle',
+          })}
+        >
+          <Dropdown
+            value={tableViewTableLabel(
+              (row.table_name ?? 'checks') as string,
+              formatMessage,
+            )}
+            selectedOptions={[(row.table_name ?? 'checks') as string]}
+            disabled
+          >
+            {tableViewTables.map(({ tableName, label }) => (
+              <Option
+                key={tableName}
+                value={tableName}
+                text={formatMessage(label)}
+              >
+                {formatMessage(label)}
+              </Option>
+            ))}
+          </Dropdown>
+        </Field>
       </Section>
       <Section
         title={formatMessage({ id: 'cR7tE2', defaultMessage: 'Felder' })}

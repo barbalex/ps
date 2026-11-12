@@ -36,8 +36,12 @@ import { TableViewsFetcher } from './TableViewsFetcher.tsx'
 import { TableViewFetcher } from './TableViewFetcher.tsx'
 import { FieldGroupsFetcher } from './FieldGroupsFetcher.tsx'
 import { FieldGroupFetcher } from './FieldGroupFetcher.tsx'
+import { SubprojectTableViewFetcher } from './SubprojectTableViewFetcher.tsx'
 import { TableChecksFetcher } from './TableChecksFetcher.tsx'
 import { TableCheckFetcher } from './TableCheckFetcher.tsx'
+import { TableActionsFetcher } from './TableActionsFetcher.tsx'
+import { TableActionFetcher } from './TableActionFetcher.tsx'
+import { PlaceTableViewFetcher } from './PlaceTableViewFetcher.tsx'
 import { CheckQuantitiesFetcher } from './CheckQuantitiesFetcher.tsx'
 import { CheckQuantityFetcher } from './CheckQuantityFetcher.tsx'
 import { CheckTaxaFetcher } from './CheckTaxaFetcher.tsx'
@@ -225,6 +229,15 @@ export const FetcherRouter = ({ fetcherName, params, ...other }: Props) => {
       if (!params.projectId || !params.fieldGroupId) return null
       return <FieldGroupFetcher params={paramsExact} {...other} />
     }
+    case 'useSubprojectTableViewNavData': {
+      if (
+        !params.projectId ||
+        !params.subprojectId ||
+        !params.tableViewId
+      )
+        return null
+      return <SubprojectTableViewFetcher params={paramsExact} {...other} />
+    }
     case 'useTableChecksNavData': {
       if (
         !params.projectId ||
@@ -234,6 +247,37 @@ export const FetcherRouter = ({ fetcherName, params, ...other }: Props) => {
       )
         return null
       return <TableChecksFetcher params={paramsExact} {...other} />
+    }
+    case 'useTableActionsNavData': {
+      if (
+        !params.projectId ||
+        !params.subprojectId ||
+        !params.placeId ||
+        !params.tableViewId
+      )
+        return null
+      return <TableActionsFetcher params={paramsExact} {...other} />
+    }
+    case 'useTableActionNavData': {
+      if (
+        !params.projectId ||
+        !params.subprojectId ||
+        !params.placeId ||
+        !params.tableViewId ||
+        !params.actionId
+      )
+        return null
+      return <TableActionFetcher params={paramsExact} {...other} />
+    }
+    case 'usePlaceTableViewNavData': {
+      if (
+        !params.projectId ||
+        !params.subprojectId ||
+        !params.placeId ||
+        !params.tableViewId
+      )
+        return null
+      return <PlaceTableViewFetcher params={paramsExact} {...other} />
     }
     case 'useTableCheckNavData': {
       if (

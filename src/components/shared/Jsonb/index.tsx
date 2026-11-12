@@ -6,7 +6,7 @@
 // 4. build input depending on field properties
 import { usePGlite, useLiveQuery } from '@electric-sql/pglite-react'
 import { useLocation, useParams } from '@tanstack/react-router'
-import { useSetAtom } from 'jotai'
+import { useAtom, useSetAtom } from 'jotai'
 import type { Atom, WritableAtom } from 'jotai'
 
 import { getValueFromChange } from '../../../modules/getValueFromChange.ts'
@@ -15,7 +15,7 @@ import { accountTables } from '../../../formsAndLists/field/accountTables.ts'
 import { AddField } from './AddField.tsx'
 import { WidgetsFromDataFieldsDefined } from './WidgetsFromDataFieldsDefined/index.tsx'
 import { filterAtomNameFromTableAndLevel } from '../../../modules/filterAtomNameFromTableAndLevel.ts'
-import { addOperationAtom, store } from '../../../store.ts'
+import { addOperationAtom, designingAtom, store } from '../../../store.ts'
 
 import type Fields from '../../../models/public/Fields.ts'
 import type FieldTypes from '../../../models/public/FieldTypes.ts'
@@ -62,28 +62,51 @@ export const Jsonb = ({
 
   const useProjectId = projectId && table !== 'projects'
   const sql = `
-      SELECT 
+      SELECT
         fields.*,
         field_types.name as field_type,
         widget_types.name as widget_type
-      FROM fields 
+      FROM fields
         INNER JOIN field_types USING (field_type_id)
         INNER JOIN widget_types USING (widget_type_id)
         LEFT JOIN unnest(
             ARRAY(SELECT sorted_field_ids FROM field_sorts WHERE table_name = fields.table_name and project_id = fields.project_id)
           ) WITH ORDINALITY t(field_id, ord) USING (field_id)
-      WHERE 
-        fields.table_name = $1 
+      WHERE
+        fields.table_name = $1
         and fields.project_id ${useProjectId ? `= '${projectId}'` : 'IS NULL'}
-        ${table === 'places' ? ` and level = $2` : ''} 
+        ${table === 'places' ? ` and level = $2` : ''}
       ORDER BY t.ord`
   const params = table === 'places' ? [table, placeId2 ? 2 : 1] : [table]
   const res = useLiveQuery(sql, params)
   const allFields = (res?.rows ?? []) as unknown as FieldsWithTypes[]
+
+  // fields of groups used by a view of this table are reserved: they only
+  // render in those views, not in the plain form. Designers still see all.
+  const [designingMap] = useAtom(designingAtom)
+  const designing = designingMap[projectId ?? ''] ?? false
+  const resReservedFieldIds = useLiveQuery<{ field_id: string }>(
+    useProjectId
+      ? `SELECT DISTINCT jsonb_array_elements_text(fg.sorted_field_ids) AS field_id
+         FROM field_groups fg
+         JOIN table_views tv ON tv.field_group_id = fg.field_group_id
+         WHERE fg.project_id = $1 AND fg.table_name = $2`
+      : `SELECT NULL AS field_id WHERE false`,
+    useProjectId ? [projectId, table] : [],
+  )
+  const reservedFieldIds = new Set(
+    (resReservedFieldIds?.rows ?? []).map((row) => row.field_id),
+  )
+
   // a table view with a field group shows only the group's fields
-  const fields = fieldIds
-    ? allFields.filter((field) => fieldIds.includes(field.field_id))
-    : allFields
+  let fields: FieldsWithTypes[]
+  if (fieldIds) {
+    fields = allFields.filter((field) => fieldIds.includes(field.field_id))
+  } else if (designing || reservedFieldIds.size === 0) {
+    fields = allFields
+  } else {
+    fields = allFields.filter((field) => !reservedFieldIds.has(field.field_id))
+  }
 
   // TODO: return if value has not changed
   const onChange = async (
