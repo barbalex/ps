@@ -1568,6 +1568,36 @@ COMMENT ON COLUMN table_views.sort IS 'Sort order of the views in navigation';
 COMMENT ON TABLE table_views IS 'Named views on tables, separating rows by an optional filter and/or columns by an optional field group. Example: two views on checks: "Feld-Kontrollen" (typ = Kontrolle) and "Freiwilligen-Kontrollen" (typ = Freiwilligen-Kontrolle). Enabled per place level via place_levels.table_views';
 
 --------------------------------------------------------------
+-- form_designs
+--
+CREATE TABLE IF NOT EXISTS form_designs(
+  form_design_id uuid PRIMARY KEY DEFAULT uuidv7(),
+  project_id uuid NOT NULL REFERENCES projects(project_id) ON DELETE CASCADE ON UPDATE CASCADE DEFERRABLE INITIALLY DEFERRED,
+  table_name text NOT NULL,
+  table_view_id uuid DEFAULT NULL REFERENCES table_views(table_view_id) ON DELETE CASCADE ON UPDATE CASCADE DEFERRABLE INITIALLY DEFERRED,
+  active boolean NOT NULL DEFAULT FALSE,
+  design jsonb DEFAULT NULL,
+  sys_period tstzrange DEFAULT NULL,
+  created_at timestamptz NOT NULL DEFAULT now(),
+  updated_at timestamptz NOT NULL DEFAULT now(),
+  updated_by text DEFAULT NULL
+);
+
+CREATE INDEX IF NOT EXISTS form_designs_project_id_idx ON form_designs USING btree(project_id);
+CREATE INDEX IF NOT EXISTS form_designs_table_name_idx ON form_designs USING btree(table_name);
+CREATE INDEX IF NOT EXISTS form_designs_table_view_id_idx ON form_designs USING btree(table_view_id);
+-- one design per form target: the plain form of a table (table_view_id
+-- NULL) or one table view
+CREATE UNIQUE INDEX IF NOT EXISTS form_designs_one_per_target_idx
+ON form_designs (project_id, table_name, coalesce(table_view_id, '00000000-0000-0000-0000-000000000000'::uuid));
+
+COMMENT ON COLUMN form_designs.table_name IS 'Table whose form is designed. Example: "checks"';
+COMMENT ON COLUMN form_designs.table_view_id IS 'Optional table view whose form is designed. Null = the plain form of table_name. Preset: NULL';
+COMMENT ON COLUMN form_designs.active IS 'Whether the designed form replaces the auto-generated one. False = the auto-generated form is in use. Preset: false';
+COMMENT ON COLUMN form_designs.design IS 'JSON design of the form (Puck)';
+COMMENT ON TABLE form_designs IS 'Self-designed data entry forms replacing the auto-generated one, stored as JSON (Puck). One design per form target (plain form of a table or a table view); "active" toggles between the auto-generated and the designed form';
+
+--------------------------------------------------------------
 --observation_imports
 --
 CREATE TYPE observation_imports_geometry_methods_enum AS ENUM ('coordinates', 'geojson');

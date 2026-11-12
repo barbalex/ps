@@ -9,7 +9,8 @@ import { designingAtom, languageAtom } from '../../store.ts'
 import { RadioGroupField } from '../../components/shared/RadioGroupField.tsx'
 import { TextField } from '../../components/shared/TextField.tsx'
 import { SwitchField } from '../../components/shared/SwitchField.tsx'
-import { Jsonb } from '../../components/shared/Jsonb/index.tsx'
+import { JsonbOrFormDesign } from '../../components/shared/FormDesign/index.tsx'
+import { WithFormDesign } from '../../components/shared/FormDesign/WithFormDesign.tsx'
 import { DropdownField } from '../../components/shared/DropdownField.tsx'
 import { EditingGeometry } from '../../components/shared/EditingGeometry.tsx'
 import { jsonbDataFromRow } from '../../modules/jsonbDataFromRow.ts'
@@ -65,108 +66,116 @@ export const PlaceForm = ({
   const parentPlaceWhere = `level = 1 and subproject_id = '${subprojectId}'`
 
   const content = (
-    <>
-      {!isFilter && designing && (
-        <RadioGroupField
-          label={formatMessage({ id: 'bDeHkI', defaultMessage: 'Stufe' })}
-          name="level"
-          list={[1, 2] as unknown as string[]}
-          value={(row.level ?? '') as unknown as string}
+    <WithFormDesign
+      table="places"
+      idField="place_id"
+      id={row.place_id as string}
+      data={jsonbData}
+      from={from}
+    >
+      <>
+        {!isFilter && designing && (
+          <RadioGroupField
+            label={formatMessage({ id: 'bDeHkI', defaultMessage: 'Stufe' })}
+            name="level"
+            list={[1, 2] as unknown as string[]}
+            value={(row.level ?? '') as unknown as string}
+            onChange={onChange}
+            validationState={validations?.level?.state}
+            validationMessage={validations?.level?.message}
+          />
+        )}
+        <TextField
+          label={formatMessage({
+            id: 'bPlaceNameLabel',
+            defaultMessage: 'Name',
+          })}
+          name="name"
+          value={row.name as string | number | undefined}
           onChange={onChange}
-          validationState={validations?.level?.state}
-          validationMessage={validations?.level?.message}
+          autoFocus
+          ref={autoFocusRef}
+          validationState={validations?.name?.state}
+          validationMessage={validations?.name?.message}
         />
-      )}
-      <TextField
-        label={formatMessage({
-          id: 'bPlaceNameLabel',
-          defaultMessage: 'Name',
-        })}
-        name="name"
-        value={row.name as string | number | undefined}
-        onChange={onChange}
-        autoFocus
-        ref={autoFocusRef}
-        validationState={validations?.name?.state}
-        validationMessage={validations?.name?.message}
-      />
-      <TextField
-        label={formatMessage(
-          {
-            id: 'bEmMrR',
-            defaultMessage: 'Seit welchem Jahr existiert die {nameSingular}?',
-          },
-          { nameSingular },
-        )}
-        name="since"
-        value={row.since as string | number | undefined}
-        type="number"
-        onChange={onChange}
-        validationState={validations?.since?.state}
-        validationMessage={validations?.since?.message}
-      />
-      <TextField
-        label={formatMessage(
-          {
-            id: 'bEnNsS',
-            defaultMessage:
-              'Bis zu welchem Jahr existierte die {nameSingular}?',
-          },
-          { nameSingular },
-        )}
-        name="until"
-        value={row.until as string | number | undefined}
-        type="number"
-        onChange={onChange}
-        validationState={validations?.until?.state}
-        validationMessage={validations?.until?.message}
-      />
-      {!isFilter && (
-        <>
-          {row.level === 2 && (
-            <DropdownField
-              label={formatMessage({
-                id: 'bElLqQ',
-                defaultMessage: 'Übergeordneter Ort',
-              })}
-              name="parent_id"
-              idField="place_id"
-              table="places"
-              where={parentPlaceWhere}
-              value={row.parent_id ?? ''}
-              onChange={onChange}
-              autoFocus
-              ref={autoFocusRef}
-              validationState={validations?.parent_id?.state}
-              validationMessage={validations?.parent_id?.message}
-            />
+        <TextField
+          label={formatMessage(
+            {
+              id: 'bEmMrR',
+              defaultMessage: 'Seit welchem Jahr existiert die {nameSingular}?',
+            },
+            { nameSingular },
           )}
-        </>
-      )}
-      <Jsonb
-        table="places"
-        idField="place_id"
-        id={row.place_id as string}
-        data={jsonbData}
-        orIndex={orIndex}
-        from={from}
-      />
-      <SwitchField
-        label={formatMessage({
-          id: 'bEpPuU',
-          defaultMessage: 'Relevant für Berichte',
-        })}
-        name="relevant_for_reports"
-        value={row.relevant_for_reports as never}
-        onChange={onChange}
-        validationState={validations?.relevant_for_reports?.state}
-        validationMessage={validations?.relevant_for_reports?.message}
-      />
-      <EditingGeometry
-        row={row as Parameters<typeof EditingGeometry>[0]['row']}
-        table="places"
-      />
-    </>
+          name="since"
+          value={row.since as string | number | undefined}
+          type="number"
+          onChange={onChange}
+          validationState={validations?.since?.state}
+          validationMessage={validations?.since?.message}
+        />
+        <TextField
+          label={formatMessage(
+            {
+              id: 'bEnNsS',
+              defaultMessage:
+                'Bis zu welchem Jahr existierte die {nameSingular}?',
+            },
+            { nameSingular },
+          )}
+          name="until"
+          value={row.until as string | number | undefined}
+          type="number"
+          onChange={onChange}
+          validationState={validations?.until?.state}
+          validationMessage={validations?.until?.message}
+        />
+        {!isFilter && (
+          <>
+            {row.level === 2 && (
+              <DropdownField
+                label={formatMessage({
+                  id: 'bElLqQ',
+                  defaultMessage: 'Übergeordneter Ort',
+                })}
+                name="parent_id"
+                idField="place_id"
+                table="places"
+                where={parentPlaceWhere}
+                value={row.parent_id ?? ''}
+                onChange={onChange}
+                autoFocus
+                ref={autoFocusRef}
+                validationState={validations?.parent_id?.state}
+                validationMessage={validations?.parent_id?.message}
+              />
+            )}
+          </>
+        )}
+        <JsonbOrFormDesign
+          table="places"
+          idField="place_id"
+          id={row.place_id as string}
+          data={jsonbData}
+          orIndex={orIndex}
+          from={from}
+        />
+        <SwitchField
+          label={formatMessage({
+            id: 'bEpPuU',
+            defaultMessage: 'Relevant für Berichte',
+          })}
+          name="relevant_for_reports"
+          value={row.relevant_for_reports as never}
+          onChange={onChange}
+          validationState={validations?.relevant_for_reports?.state}
+          validationMessage={validations?.relevant_for_reports?.message}
+        />
+        <EditingGeometry
+          row={row as Parameters<typeof EditingGeometry>[0]['row']}
+          table="places"
+        />
+      </>
+    </WithFormDesign>
   )
 
   if (!withContainer) return content

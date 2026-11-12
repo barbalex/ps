@@ -4,6 +4,7 @@ import type { Config, Data } from '@puckeditor/core'
 import { DesignEditorLayout } from './DesignEditorLayout.tsx'
 import { PuckDrawerItem } from './PuckDrawerItem.tsx'
 import { PuckCheckboxField } from './PuckCheckboxField.tsx'
+import { PuckImageField } from './FormDesign/PuckImageField.tsx'
 
 type Props = {
   config: Config
@@ -37,7 +38,7 @@ export const PuckEditor = ({
     iframe={{ enabled: false }}
     overrides={{
       drawerItem: PuckDrawerItem,
-      fieldTypes: { checkbox: PuckCheckboxField },
+      fieldTypes: { checkbox: PuckCheckboxField, image: PuckImageField },
     }}
   >
     <DesignEditorLayout

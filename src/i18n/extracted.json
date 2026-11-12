@@ -1286,6 +1286,66 @@
   "bFbBcC": {
     "defaultMessage": "Wenn aktiviert, steht das Diagramm in jedem Teilprojekt des Projekts zur Verfügung und wird dort mit den Daten des jeweiligen Teilprojekts berechnet"
   },
+  "bFgHiA": {
+    "defaultMessage": "Layout"
+  },
+  "bFhIjB": {
+    "defaultMessage": "Raster"
+  },
+  "bFiJkC": {
+    "defaultMessage": "Titel"
+  },
+  "bFjKlD": {
+    "defaultMessage": "Bild"
+  },
+  "bFkLmE": {
+    "defaultMessage": "Abstand"
+  },
+  "bFlMnF": {
+    "defaultMessage": "Seitenumbruch"
+  },
+  "bFmNoG": {
+    "defaultMessage": "Design nicht gespeichert"
+  },
+  "bFnOpH": {
+    "defaultMessage": "Das Formular-Design konnte nicht gespeichert werden ({error}). Der Editor zeigt weiter Ihre ungespeicherten Änderungen."
+  },
+  "bFoPqI": {
+    "defaultMessage": "Eigenes Formular verwenden"
+  },
+  "bFpQrJ": {
+    "defaultMessage": "Fertig"
+  },
+  "bFqRsK": {
+    "defaultMessage": "Nicht im Formular platziert (für Benutzer unsichtbar): {names}"
+  },
+  "bFrStL": {
+    "defaultMessage": "Felder und Layout-Bausteine in das Formular ziehen"
+  },
+  "bFsTuM": {
+    "defaultMessage": "Zwischen automatisch generiertem und eigenem Formular wechseln (für alle)"
+  },
+  "bFtUvN": {
+    "defaultMessage": "Eigenes Formular"
+  },
+  "bFuVwO": {
+    "defaultMessage": "Formular gestalten"
+  },
+  "bFvWxP": {
+    "defaultMessage": "Formular drucken"
+  },
+  "bFwXyQ": {
+    "defaultMessage": "Formular-Design konnte nicht erstellt werden"
+  },
+  "bFxYzR": {
+    "defaultMessage": "Formular-Design konnte nicht gespeichert werden"
+  },
+  "bFyZsS": {
+    "defaultMessage": "Zurück"
+  },
+  "bFzAtT": {
+    "defaultMessage": "Drucken"
+  },
   "bGeHcI": {
     "defaultMessage": "Bausteine"
   },

@@ -2650,8 +2650,57 @@ BEGIN
 			AND tgrelid = 'field_groups'::regclass
 	) THEN
 		CREATE TRIGGER versioning_field_groups_trigger
-		BEFORE INSERT OR UPDATE OR DELETE ON field_groups
-		FOR EACH ROW EXECUTE PROCEDURE versioning('sys_period', 'field_groups_history', true);
+			BEFORE INSERT OR UPDATE OR DELETE ON field_groups
+			FOR EACH ROW EXECUTE PROCEDURE versioning('sys_period', 'field_groups_history', true);
+	END IF;
+END
+$$;
+
+--------------------------------------------------------------
+-- form_designs -> form_designs_history
+-- Retention: 5 years
+--
+ALTER TABLE form_designs
+ADD COLUMN IF NOT EXISTS sys_period tstzrange;
+
+UPDATE form_designs
+SET sys_period = tstzrange(updated_at, NULL, '[)')
+WHERE sys_period IS NULL;
+
+ALTER TABLE form_designs
+ALTER COLUMN sys_period SET NOT NULL;
+
+COMMENT ON COLUMN form_designs.sys_period IS 'System period maintained by temporal_tables for auditing and historic queries.';
+
+CREATE TABLE IF NOT EXISTS form_designs_history (
+	LIKE form_designs INCLUDING DEFAULTS
+) PARTITION BY RANGE (updated_at);
+
+ALTER TABLE form_designs_history OWNER TO partman_user;
+
+COMMENT ON TABLE form_designs_history IS 'System-versioned history of form_designs. Managed by temporal_tables and partitioned yearly by updated_at.';
+COMMENT ON COLUMN form_designs_history.sys_period IS 'System period written by temporal_tables. lower(sys_period) is when the row version became current, upper(sys_period) when it stopped being current.';
+
+CREATE INDEX IF NOT EXISTS form_designs_history_updated_at_idx
+ON form_designs_history USING btree (updated_at);
+
+CREATE INDEX IF NOT EXISTS form_designs_history_form_design_id_updated_at_idx
+ON form_designs_history (form_design_id, updated_at);
+
+CREATE INDEX IF NOT EXISTS form_designs_history_sys_period_idx
+ON form_designs_history USING gist (sys_period);
+
+DO $$
+BEGIN
+	IF NOT EXISTS (
+		SELECT 1
+		FROM pg_trigger
+		WHERE tgname = 'versioning_form_designs_trigger'
+			AND tgrelid = 'form_designs'::regclass
+	) THEN
+		CREATE TRIGGER versioning_form_designs_trigger
+			BEFORE INSERT OR UPDATE OR DELETE ON form_designs
+			FOR EACH ROW EXECUTE PROCEDURE versioning('sys_period', 'form_designs_history', true);
 	END IF;
 END
 $$;
@@ -3135,6 +3184,23 @@ WHERE NOT EXISTS (
 	SELECT 1
 	FROM partman.part_config
 	WHERE parent_table = 'public.field_groups_history'
+);
+
+SELECT partman.create_parent(
+	p_parent_table := 'public.form_designs_history',
+	p_control := 'updated_at',
+	p_interval := '1 year',
+	p_type := 'range',
+	p_premake := 4,
+	p_start_partition := to_char(date_trunc('year', CURRENT_TIMESTAMP), 'YYYY-MM-DD HH24:MI:SS'),
+	p_default_table := true,
+	p_automatic_maintenance := 'on',
+	p_jobmon := false
+)
+WHERE NOT EXISTS (
+	SELECT 1
+	FROM partman.part_config
+	WHERE parent_table = 'public.form_designs_history'
 );
 
 SELECT partman.create_parent(
@@ -3838,6 +3904,13 @@ SET jobmon = false,
 	retention_keep_table = false,
 	retention_keep_index = false
 WHERE parent_table = 'public.field_groups_history';
+
+UPDATE partman.part_config
+SET jobmon = false,
+	retention = '5 years',
+	retention_keep_table = false,
+	retention_keep_index = false
+WHERE parent_table = 'public.form_designs_history';
 
 UPDATE partman.part_config
 SET jobmon = false,

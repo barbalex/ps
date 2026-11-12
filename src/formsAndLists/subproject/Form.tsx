@@ -2,7 +2,8 @@ import { useIntl } from 'react-intl'
 import type Subprojects from '../../models/public/Subprojects.ts'
 
 import { TextField } from '../../components/shared/TextField.tsx'
-import { Jsonb } from '../../components/shared/Jsonb/index.tsx'
+import { JsonbOrFormDesign } from '../../components/shared/FormDesign/index.tsx'
+import { WithFormDesign } from '../../components/shared/FormDesign/WithFormDesign.tsx'
 import type { FieldChangeHandler } from '../../components/shared/fieldChange.ts'
 
 type Props = {
@@ -25,7 +26,13 @@ export const SubprojectForm = ({
   const { formatMessage } = useIntl()
 
   return (
-    <>
+    <WithFormDesign
+      table="subprojects"
+      idField="subproject_id"
+      id={row.subproject_id}
+      data={(row.data ?? {}) as Record<string, unknown>}
+      from={from}
+    >
       <TextField
         label={formatMessage({ id: 'XkV5yZ', defaultMessage: 'Name' })}
         name="name"
@@ -45,7 +52,7 @@ export const SubprojectForm = ({
         validationState={validations?.start_year?.state}
         validationMessage={validations?.start_year?.message}
       />
-      <Jsonb
+      <JsonbOrFormDesign
         table="subprojects"
         idField="subproject_id"
         id={row.subproject_id}
@@ -53,6 +60,6 @@ export const SubprojectForm = ({
         orIndex={orIndex}
         from={from}
       />
-    </>
+    </WithFormDesign>
   )
 }
