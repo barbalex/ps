@@ -1,7 +1,9 @@
 import { useEffect, useState } from 'react'
 import { RouterProvider } from '@tanstack/react-router'
-import * as fluentUiReactComponents from '@fluentui/react-components'
-const { FluentProvider } = fluentUiReactComponents
+// from the individual package, not the @fluentui/react-components barrel:
+// any import from the barrel keeps re-export bindings to every fluent
+// package alive, pulling the whole suite into the eager entry chunk
+import { FluentProvider } from '@fluentui/react-provider'
 import { Provider as JotaiProvider, useAtomValue } from 'jotai'
 import { IntlProvider, useIntl } from 'react-intl'
 

@@ -197,14 +197,33 @@ export default defineConfig({
             // no react-icons group: a single chunk holding every icon in the
             // app loads eagerly as soon as the app shell needs one icon.
             // without the group, icons bundle with the components using them
-            // no vendor-fluent group either, for the same reason: it merged
-            // every fluent package used anywhere (carousel, tree, table,
-            // datepicker, ...) into one chunk the app shell loads eagerly.
-            // fluent modules now bundle with the components using them; the
-            // shell's fluent core lands in shared eager chunks
             {
               name: 'vendor-intl',
               test: /react-intl|@formatjs\//,
+            },
+            // vendor-fluent claims every fluent package the eager shell does
+            // not itself use (table, tree, carousel, combobox, dialog, ...).
+            // Without the group these were hoisted into the eager entry chunk
+            // as shared modules of the route chunks: ~500 KB gzipped of fluent
+            // code loaded before first paint. Three things make the group
+            // work where an earlier, simpler vendor-fluent group made the
+            // shell load everything eagerly:
+            // - the negative lookahead keeps the core the shell needs
+            //   (provider, button, theme, tokens/tabster via utilities,
+            //   jsx-runtime, ...) out of the group
+            // - includeDependenciesRecursively: false stops the group from
+            //   claiming the shared fluent core as a dependency of the
+            //   captured packages (which would make the entry statically
+            //   import the whole group)
+            // - the eager files import from the individual packages
+            //   (@fluentui/react-provider, -button, -theme), never from the
+            //   @fluentui/react-components barrel: any barrel import — even
+            //   a single destructured component — keeps re-export bindings
+            //   to every fluent package alive
+            {
+              name: 'vendor-fluent',
+              test: /node_modules\/@fluentui\/(react-(?!jsx-runtime(?:[/]|$)|provider(?:[/]|$)|utilities(?:[/]|$)|shared-contexts(?:[/]|$)|tabster(?:[/]|$)|theme(?:[/]|$)|icons(?:[/]|$)|motion(?:[/]|$)|aria(?:[/]|$)|overflow(?:[/]|$)|button(?:[/]|$)|spinner(?:[/]|$)|link(?:[/]|$)|text(?:[/]|$)|divider(?:[/]|$)|field(?:[/]|$)|badge(?:[/]|$))[^/]+)\//,
+              includeDependenciesRecursively: false,
             },
             {
               name: 'vendor-maps',

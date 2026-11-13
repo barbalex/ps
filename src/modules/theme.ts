@@ -1,6 +1,9 @@
-import * as fluentUiReactComponents from '@fluentui/react-components'
-import type { BrandVariants, Theme } from '@fluentui/react-components'
-const { createLightTheme, createDarkTheme } = fluentUiReactComponents
+// from the individual packages, not the @fluentui/react-components barrel:
+// this module is part of the eager entry, and any import from the barrel
+// keeps re-export bindings to every fluent package alive — pulling the
+// whole suite into the entry chunk
+import { createLightTheme, createDarkTheme } from '@fluentui/react-theme'
+import type { BrandVariants, Theme } from '@fluentui/react-theme'
 
 const brandRamp: BrandVariants = {
   10: '#020400',
