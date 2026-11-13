@@ -192,7 +192,7 @@ export default defineConfig({
             // (react-leaflet's dependency dragged react-dom into vendor-maps)
             {
               name: 'vendor-react',
-              test: /node_modules\/(react|react-dom|react-is|react-error-boundary|react-transition-group)\//,
+              test: /node_modules\/(react|react-dom|react-is|react-error-boundary|react-transition-group|use-sync-external-store)\//,
             },
             // no react-icons group: a single chunk holding every icon in the
             // app loads eagerly as soon as the app shell needs one icon.
@@ -201,29 +201,35 @@ export default defineConfig({
               name: 'vendor-intl',
               test: /react-intl|@formatjs\//,
             },
-            // vendor-fluent claims every fluent package the eager shell does
-            // not itself use (table, tree, carousel, combobox, dialog, ...).
-            // Without the group these were hoisted into the eager entry chunk
-            // as shared modules of the route chunks: ~500 KB gzipped of fluent
-            // code loaded before first paint. Three things make the group
-            // work where an earlier, simpler vendor-fluent group made the
-            // shell load everything eagerly:
-            // - the negative lookahead keeps the core the shell needs
-            //   (provider, button, theme, tokens/tabster via utilities,
-            //   jsx-runtime, ...) out of the group
-            // - includeDependenciesRecursively: false stops the group from
-            //   claiming the shared fluent core as a dependency of the
-            //   captured packages (which would make the entry statically
-            //   import the whole group)
-            // - the eager files import from the individual packages
-            //   (@fluentui/react-provider, -button, -theme), never from the
-            //   @fluentui/react-components barrel: any barrel import — even
-            //   a single destructured component — keeps re-export bindings
-            //   to every fluent package alive
+            // vendor-fluent-core claims the fluent infrastructure the eager
+            // shell uses (provider, button, theme, tokens, tabster, griffel,
+            // motion, ...) BEFORE the heavy vendor-fluent group: groups
+            // capture dependencies recursively, so without this group the
+            // vendor-fluent group below would claim the shared core — and
+            // since the entry needs the core, the whole fluent suite would
+            // become eager. Keeping core and heavy packages acyclic across
+            // chunks (heavy → core, never core → heavy) also avoids the
+            // cross-chunk initialization-order crashes that splitting
+            // fluent packages naively produced (module-level token reads
+            // like tokens.durationFast evaluated against not-yet-initialized
+            // bindings).
+            {
+              name: 'vendor-fluent-core',
+              test: /node_modules\/(@fluentui\/(jsx-runtime|react-provider|react-utilities|react-shared-contexts|react-tabster|react-theme|tokens|react-icons|react-motion|react-motion-components-preview|react-aria|react-overflow|priority-overflow|keyboard-keys|react-button|react-spinner|react-link|react-text|react-divider|react-field|react-badge)|@griffel\/|node_modules\/(tabster|keyborg)|@emotion\/hash|rtl-css-js|stylis)\//,
+            },
+            // vendor-fluent claims every other fluent package (table, tree,
+            // carousel, combobox, dialog, ...). Without a group these were
+            // hoisted into the eager entry chunk as shared modules of the
+            // route chunks: ~500 KB gzipped of fluent code loaded before
+            // first paint. The group stays lazy as long as no eager code
+            // imports from it — the eager files (App, NotFoundRoot,
+            // RouterErrorBoundary, theme.ts) import from the individual
+            // core packages, never from the @fluentui/react-components
+            // barrel: any barrel import keeps re-export bindings to every
+            // fluent package alive.
             {
               name: 'vendor-fluent',
-              test: /node_modules\/@fluentui\/(react-(?!jsx-runtime(?:[/]|$)|provider(?:[/]|$)|utilities(?:[/]|$)|shared-contexts(?:[/]|$)|tabster(?:[/]|$)|theme(?:[/]|$)|icons(?:[/]|$)|motion(?:[/]|$)|aria(?:[/]|$)|overflow(?:[/]|$)|button(?:[/]|$)|spinner(?:[/]|$)|link(?:[/]|$)|text(?:[/]|$)|divider(?:[/]|$)|field(?:[/]|$)|badge(?:[/]|$))[^/]+)\//,
-              includeDependenciesRecursively: false,
+              test: /node_modules\/@fluentui\//,
             },
             {
               name: 'vendor-maps',

@@ -98,6 +98,18 @@ Findings from the 2026-11-13 performance review. Work off one by one.
   arktype `validateSearch` schemas (`_layout.auth`, `data`, observation-import
   tab) replaced by plain validators — the params are only set programmatically
   with proper types. Entry chunk 118 → 73 KB gz, eager total 344 → 299 KB gz.
+  **Post-deploy fix (branch: `fix/vendor-fluent-motion`):** the production
+  build crashed (`tokens.durationFast` / `fontFamilyBase` of undefined) —
+  `includeDependenciesRecursively: false` produced chunks whose cross-chunk
+  bindings were uninitialized at module evaluation. Replaced with a
+  `vendor-fluent-core` group (recursive capture, claims the shared fluent
+  infrastructure + griffel/tabster/embla deps BEFORE the heavy group) so
+  heavy→core chunk edges stay acyclic; `use-sync-external-store` moved into
+  vendor-react (fluent's recursive capture had claimed it, dragging vendor-fluent
+  eager via vendor-tanstack). Eager total 375 KB gz. Verified by serving the
+  built bundle on localhost:5176 against the dev backend and driving a real
+  login + deep tree in Chromium — the e2e suite runs against the dev server
+  where chunking does not exist, so it cannot catch this class of bug.
   `cpexcel.full` (171 KB gz, SheetJS legacy codepages) is inside the lazily
   loaded xlsx chunk; dropping it entirely is a product decision (legacy .xls
   imports in non-UTF8 encodings).
