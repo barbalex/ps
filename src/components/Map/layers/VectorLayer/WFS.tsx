@@ -6,14 +6,14 @@ import { useMap, useMapEvents } from 'react-leaflet'
 import * as L from 'leaflet'
 import XMLViewer from 'react-xml-viewer'
 import { MdClose } from 'react-icons/md'
-import * as ReactDOMServer from 'react-dom/server'
-import * as icons from 'react-icons/md'
+import { useDebouncedCallback } from 'use-debounce'
 import proj4 from 'proj4'
 import reproject from 'reproject'
 import { usePGlite } from '@electric-sql/pglite-react'
 import { useSetAtom } from 'jotai'
 
 import { ProgressiveGeoJSON } from '../ProgressiveGeoJSON.tsx'
+import { cachedMarkerIconHtml } from '../markerIconHtml.tsx'
 
 import type Crs from '../../../../models/public/Crs.ts'
 import type LayerPresentations from '../../../../models/public/LayerPresentations.ts'
@@ -45,36 +45,47 @@ const xmlTheme = {
   attributeValueColor: '#2ECC40',
 }
 
+type Bbox = { minX: number; minY: number; maxX: number; maxY: number }
+
 const bboxFromBounds = ({
   bounds,
   defaultCrs,
 }: {
   bounds: L.LatLngBounds
   defaultCrs?: Crs | undefined
-}) => {
+}): Bbox => {
   const ne = bounds.getNorthEast()
   const sw = bounds.getSouthWest()
   const usesDefaultCrs = !!defaultCrs && defaultCrs.code !== 'EPSG:4326'
 
   const [swX, swY] =
-    usesDefaultCrs && defaultCrs
-      ? proj4('EPSG:4326', defaultCrs.proj4!, [sw.lng, sw.lat])
-      : [sw.lng, sw.lat]
+    usesDefaultCrs && defaultCrs ?
+      proj4('EPSG:4326', defaultCrs.proj4!, [sw.lng, sw.lat])
+    : [sw.lng, sw.lat]
   const [neX, neY] =
-    usesDefaultCrs && defaultCrs
-      ? proj4('EPSG:4326', defaultCrs.proj4!, [ne.lng, ne.lat])
-      : [ne.lng, ne.lat]
+    usesDefaultCrs && defaultCrs ?
+      proj4('EPSG:4326', defaultCrs.proj4!, [ne.lng, ne.lat])
+    : [ne.lng, ne.lat]
 
   const minX = Math.min(swX, neX)
   const maxX = Math.max(swX, neX)
   const minY = Math.min(swY, neY)
   const maxY = Math.max(swY, neY)
 
+  // 10 % padding: pans that stay inside the padded window need no refetch
   const padX = (maxX - minX) * 0.1
   const padY = (maxY - minY) * 0.1
 
-  return `${minX - padX},${minY - padY},${maxX + padX},${maxY + padY}`
+  return {
+    minX: minX - padX,
+    minY: minY - padY,
+    maxX: maxX + padX,
+    maxY: maxY + padY,
+  }
 }
+
+const bboxToString = (bbox: Bbox) =>
+  `${bbox.minX},${bbox.minY},${bbox.maxX},${bbox.maxY}`
 
 type WfsService = {
   url: string
@@ -115,12 +126,15 @@ export const WFS = ({ layer, layerPresentation }: Props) => {
   // extract the relevant parts for db.crs.code:
   const wfsDefaultCrsArray = wfsService.default_crs?.split(':').slice(-3)
   const wfsDefaultCrsCode =
-    wfsDefaultCrsArray?.length === 3
-      ? [wfsDefaultCrsArray[0], wfsDefaultCrsArray[2]].join(':')
-      : 'EPSG:4326'
+    wfsDefaultCrsArray?.length === 3 ?
+      [wfsDefaultCrsArray[0], wfsDefaultCrsArray[2]].join(':')
+    : 'EPSG:4326'
 
   const [zoom, setZoom] = useState(map.getZoom())
   const [lastBbox, setLastBbox] = useState<string | null>(null)
+  // the padded bbox and zoom of the last successful fetch — used to skip
+  // refetches when the viewport only moved within the fetched window
+  const lastFetchRef = useRef<{ bbox: Bbox; zoom: number } | null>(null)
 
   const [data, setData] = useState<
     GeoJSON.FeatureCollection | null | undefined
@@ -133,7 +147,7 @@ export const WFS = ({ layer, layerPresentation }: Props) => {
       const defaultCrs = resCrs?.rows?.[0] as Crs | undefined
       removeNotifs()
       const bbox = bboxFromBounds({ bounds: map.getBounds(), defaultCrs })
-      setLastBbox(bbox)
+      const fetchZoom = map.getZoom()
       const notificationId = (await addNotification({
         title: `Lade Vektor-Karte '${layer.label}'...`,
         intent: 'info',
@@ -141,10 +155,9 @@ export const WFS = ({ layer, layerPresentation }: Props) => {
       } as Parameters<typeof addNotification>[0])) as string
       notificationIds.current = [notificationId, ...notificationIds.current]
       let res
-      const outputFormat = wfsService.info_format
-        ?.toLowerCase?.()
-        .includes('json')
-        ? wfsService.info_format
+      const outputFormat =
+        wfsService.info_format?.toLowerCase?.().includes('json') ?
+          wfsService.info_format
         : 'application/json'
       const params = {
         service: 'WFS',
@@ -155,7 +168,7 @@ export const WFS = ({ layer, layerPresentation }: Props) => {
         outputFormat,
         // seems that bbox expects the layers default crs
         // if not, returns 0 features
-        bbox,
+        bbox: bboxToString(bbox),
       }
       try {
         res = await httpGet(wfsService.url, params)
@@ -192,6 +205,10 @@ export const WFS = ({ layer, layerPresentation }: Props) => {
         })
       }
       removeNotifs()
+      // remember the fetched window only after success — a failed fetch
+      // must retry on the next viewport change
+      lastFetchRef.current = { bbox, zoom: fetchZoom }
+      setLastBbox(bboxToString(bbox))
       // ISSUE: The only way querying by bbox seems to work is by using the layers default crs
       // BUT: the server returns the data in the layer's default crs too...
       // SOLUTION: reproject the data to EPSG:4326
@@ -207,24 +224,26 @@ export const WFS = ({ layer, layerPresentation }: Props) => {
         | undefined
       const dataToProject = sourceData?.features ? sourceData : null
       const responseCrsName = sourceData?.crs?.properties?.name
-      const responseEpsg = responseCrsName?.includes('EPSG')
-        ? `EPSG:${responseCrsName.split(':').at(-1)}`
+      const responseEpsg =
+        responseCrsName?.includes('EPSG') ?
+          `EPSG:${responseCrsName.split(':').at(-1)}`
         : null
       const sourceCrsCode = responseEpsg ?? wfsDefaultCrsCode
-      const sourceCrsRes = sourceCrsCode
-        ? await db.query(`SELECT * FROM crs WHERE code = $1`, [sourceCrsCode])
+      const sourceCrsRes =
+        sourceCrsCode ?
+          await db.query(`SELECT * FROM crs WHERE code = $1`, [sourceCrsCode])
         : null
       const sourceCrs =
         (sourceCrsRes?.rows?.[0] as Crs | undefined) ?? defaultCrs
 
       const reprojectedData =
-        dataToProject && sourceCrs?.proj4 && sourceCrsCode !== 'EPSG:4326'
-          ? reproject.reproject(
-              dataToProject,
-              sourceCrs.proj4,
-              '+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs',
-            )
-          : dataToProject
+        dataToProject && sourceCrs?.proj4 && sourceCrsCode !== 'EPSG:4326' ?
+          reproject.reproject(
+            dataToProject,
+            sourceCrs.proj4,
+            '+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs',
+          )
+        : dataToProject
 
       setData(
         (reprojectedData ??
@@ -248,18 +267,47 @@ export const WFS = ({ layer, layerPresentation }: Props) => {
     ],
   )
 
+  // refetch on viewport changes, debounced; skipped when the new viewport
+  // lies within the padded bbox of the last fetch at the same zoom (pans
+  // within the fetched window need no new request; zoom changes always
+  // refetch because of server-side feature limits)
+  const fetchIfViewportLeftWindow = useDebouncedCallback(() => {
+    const last = lastFetchRef.current
+    if (last && last.zoom === map.getZoom()) {
+      const b = map.getBounds()
+      const ne = b.getNorthEast()
+      const sw = b.getSouthWest()
+      // compare in 4326 — containment is checked against a fetch window in
+      // the same projection only when no reprojected crs is in play; with a
+      // projected crs a lat/lng check is a safe approximation for the small
+      // padding involved (and simply triggers a refetch when unsure)
+      if (
+        sw.lng >= last.bbox.minX &&
+        sw.lat >= last.bbox.minY &&
+        ne.lng <= last.bbox.maxX &&
+        ne.lat <= last.bbox.maxY
+      ) {
+        return
+      }
+    }
+    fetchData()
+  }, 600)
+
+  // moveend covers pans, drags and zooms (leaflet fires it after zoomend)
   useMapEvents({
-    moveend: () => fetchData(),
-    dragend: () => fetchData(),
-    zoomend: () => {
-      setZoom(map.getZoom())
-      fetchData()
-    },
+    moveend: () => fetchIfViewportLeftWindow(),
+    zoomend: () => setZoom(map.getZoom()),
   })
 
   useEffect(() => {
     fetchData()
   }, [fetchData])
+
+  // notif cleanup after commit — writing atoms during render is a side
+  // effect (and re-ran on every render)
+  useEffect(() => {
+    removeNotifs()
+  }, [removeNotifs, data])
 
   // include only if zoom between min_zoom and max_zoom
   if (
@@ -279,7 +327,6 @@ export const WFS = ({ layer, layerPresentation }: Props) => {
     return null
   }
 
-  removeNotifs()
   // TODO: await not possible here
   // if (
   //   data?.length + 1 >=
@@ -337,35 +384,37 @@ export const WFS = ({ layer, layerPresentation }: Props) => {
             })
           }
 
-          const IconComponent =
-            icons[display.marker_symbol as keyof typeof icons]
           const markerIconStyle = {
             '--marker-color': display.color ?? '#cc756b',
             '--marker-size': `${display.marker_size ?? 16}px`,
           } as React.CSSProperties
+          const html = cachedMarkerIconHtml({
+            symbol: display.marker_symbol,
+            className: `${styles.markerIcon} ${styles.markerIconSized}`,
+            style: markerIconStyle,
+          })
 
-          return IconComponent
-            ? new L.Marker(latlng, {
+          return html ?
+              new L.Marker(latlng, {
                 geomanIgnore: true,
-                icon: new L.DivIcon({
-                  html: ReactDOMServer.renderToString(
-                    <IconComponent
-                      className={`${styles.markerIcon} ${styles.markerIconSized}`}
-                      style={markerIconStyle}
-                    />,
-                  ),
-                }),
+                icon: new L.DivIcon({ html }),
               })
             : new L.Marker(latlng, { geomanIgnore: true })
         }}
       />
-      <Dialog onOpenChange={() => setError(null)} open={!!error}>
+      <Dialog
+        onOpenChange={() => setError(null)}
+        open={!!error}
+      >
         <DialogSurface>
           <DialogBody>
             <DialogTitle>Error fetching data for vector layer</DialogTitle>
             <DialogContent className={styles.dialogContent}>
               <div className={styles.xmlViewer}>
-                <XMLViewer xml={error as string} theme={xmlTheme} />
+                <XMLViewer
+                  xml={error as string}
+                  theme={xmlTheme}
+                />
               </div>
             </DialogContent>
             <DialogActions>

@@ -1,12 +1,11 @@
-import { useState, useRef } from 'react'
+import { useState, useRef, useMemo } from 'react'
 import { useMapEvent, useMapEvents, useMap } from 'react-leaflet'
 import * as L from 'leaflet'
-import * as ReactDOMServer from 'react-dom/server'
-import * as icons from 'react-icons/md'
 import { useAtomValue, useSetAtom } from 'jotai'
 import type { Feature, FeatureCollection } from 'geojson'
 
 import { ProgressiveGeoJSON } from '../ProgressiveGeoJSON.tsx'
+import { cachedMarkerIconHtml } from '../markerIconHtml.tsx'
 
 import { vectorLayerDisplayToProperties } from '../../../../modules/vectorLayerDisplayToProperties.ts'
 import { propertyValueToText } from '../../../../modules/displayByProperty.ts'
@@ -127,9 +126,29 @@ export const TableLayer = ({
     handleMouseUp: (e: L.LeafletMouseEvent) => void
   } | null>(null)
   useMapEvents({
-    pointermove: (e) => draggingRef.current?.trackCursor(e as L.LeafletMouseEvent),
-    pointerup: (e) => draggingRef.current?.handleMouseUp(e as L.LeafletMouseEvent),
+    pointermove: (e) =>
+      draggingRef.current?.trackCursor(e as L.LeafletMouseEvent),
+    pointerup: (e) =>
+      draggingRef.current?.handleMouseUp(e as L.LeafletMouseEvent),
   })
+
+  // Create a stable key that changes when data content changes
+  // For assignment lines, include place_ids to detect reassignments
+  // (before the early returns below — hooks must not be conditional)
+  const dataKey = useMemo(
+    () =>
+      data
+        .map((fc) =>
+          fc.features
+            ?.map(
+              (f) =>
+                `${f.properties?.observation_id || ''}_${f.properties?.place_id || ''}`,
+            )
+            .join(','),
+        )
+        .join('|'),
+    [data],
+  )
 
   if (!firstDisplay) return null
   if (!layer) return null
@@ -146,19 +165,6 @@ export const TableLayer = ({
     return null
   if (!data?.length) return null
 
-  // Create a stable key that changes when data content changes
-  // For assignment lines, include place_ids to detect reassignments
-  const dataKey = data
-    .map((fc) =>
-      fc.features
-        ?.map(
-          (f) =>
-            `${f.properties?.observation_id || ''}_${f.properties?.place_id || ''}`,
-        )
-        .join(','),
-    )
-    .join('|')
-
   return (
     <ErrorBoundary layer={layer}>
       <ProgressiveGeoJSON
@@ -174,9 +180,13 @@ export const TableLayer = ({
             presentation: layerPresentation,
           })
           const style =
-            !absenceStyledByDisplays &&
-            feature?.properties?.absence === true ?
-              { ...baseStyle, color: ABSENCE_COLOR, fillColor: 'transparent', fillOpacity: 0 }
+            !absenceStyledByDisplays && feature?.properties?.absence === true ?
+              {
+                ...baseStyle,
+                color: ABSENCE_COLOR,
+                fillColor: 'transparent',
+                fillOpacity: 0,
+              }
             : baseStyle
           if (
             activeId &&
@@ -215,9 +225,9 @@ export const TableLayer = ({
               interactive: true,
               // not editable via leaflet-geoman; only DrawControl geometry is
               geomanIgnore: true,
-              ...(isDraggable
-                ? { className: 'draggable-hitbox' }
-                : { className: 'clickable-hitbox' }),
+              ...(isDraggable ?
+                { className: 'draggable-hitbox' }
+              : { className: 'clickable-hitbox' }),
             }) as CircleMarkerWithMeta
             // Store vector layer label on clickableCircle too
             clickableCircle.vectorLayerLabel = label
@@ -226,21 +236,28 @@ export const TableLayer = ({
 
             // Create the visible circle (non-interactive so clicks pass through)
             const visualCircle = new L.CircleMarker(latlng, {
-            ...displayToUse,
-            geomanIgnore: true,
-            // absences: hollow red
-            ...(!absenceStyledByDisplays &&
-            feature?.properties?.absence === true ?
-              { color: ABSENCE_COLOR, fillColor: 'transparent', fillOpacity: 0 }
-            : {}),
-            radius: visualRadius,
-            interactive: false,
-            bubblingMouseEvents: false,
-            // the active object glows yellow like lines/polygons do
-            className: isActiveFeature
-              ? `non-interactive-visual ${styles.activeHalo}`
-              : 'non-interactive-visual',
-          } as L.CircleMarkerOptions) as CircleMarkerWithMeta
+              ...displayToUse,
+              geomanIgnore: true,
+              // absences: hollow red
+              ...((
+                !absenceStyledByDisplays &&
+                feature?.properties?.absence === true
+              ) ?
+                {
+                  color: ABSENCE_COLOR,
+                  fillColor: 'transparent',
+                  fillOpacity: 0,
+                }
+              : {}),
+              radius: visualRadius,
+              interactive: false,
+              bubblingMouseEvents: false,
+              // the active object glows yellow like lines/polygons do
+              className:
+                isActiveFeature ?
+                  `non-interactive-visual ${styles.activeHalo}`
+                : 'non-interactive-visual',
+            } as L.CircleMarkerOptions) as CircleMarkerWithMeta
             // Mark as internal layer
             visualCircle._isInternal = true
 
@@ -336,9 +353,6 @@ export const TableLayer = ({
             return marker
           }
 
-          const IconComponent =
-            icons[displayToUse.marker_symbol as keyof typeof icons]
-
           const markerSize = displayToUse.marker_size ?? 16
           const clickRadius = Math.max(markerSize / 2 + 5, 10)
 
@@ -350,42 +364,46 @@ export const TableLayer = ({
             interactive: true,
             // not editable via leaflet-geoman; only DrawControl geometry is
             geomanIgnore: true,
-            ...(isDraggable
-              ? { className: 'draggable-hitbox' }
-              : { className: 'clickable-hitbox' }),
+            ...(isDraggable ?
+              { className: 'draggable-hitbox' }
+            : { className: 'clickable-hitbox' }),
           }) as CircleMarkerWithMeta
           clickableCircle.vectorLayerLabel = label
           clickableCircle._isInternal = true
 
+          const markerColor =
+            !absenceStyledByDisplays && feature?.properties?.absence === true ?
+              ABSENCE_COLOR
+            : (displayToUse.color ?? '#cc756b')
           const markerIconStyle = {
-            '--marker-color':
-              !absenceStyledByDisplays &&
-              feature?.properties?.absence === true ?
-                ABSENCE_COLOR
-              : (displayToUse.color ?? '#cc756b'),
+            '--marker-color': markerColor,
             '--marker-size': `${markerSize}px`,
             // absences: faded
-            ...(!absenceStyledByDisplays &&
-            feature?.properties?.absence === true ?
+            ...((
+              !absenceStyledByDisplays && feature?.properties?.absence === true
+            ) ?
               { opacity: '0.5' }
             : {}),
           } as React.CSSProperties
 
-          const marker = (IconComponent
-            ? new L.Marker(latlng, {
+          const iconHtml = cachedMarkerIconHtml({
+            symbol: displayToUse.marker_symbol,
+            className: `${styles.markerIcon} ${styles.markerIconSized}${
+              isActiveFeature ? ` ${styles.activeHalo}` : ''
+            }`,
+            style: markerIconStyle,
+          })
+
+          const marker = (
+            iconHtml ?
+              new L.Marker(latlng, {
                 icon: new L.DivIcon({
                   // Keep runtime values as CSS variables while moving declarations to CSS module.
                   // This removes static inline styling from JSX.
-                  html: ReactDOMServer.renderToString(
-                    <IconComponent
-                      className={`${styles.markerIcon} ${styles.markerIconSized}${
-                        isActiveFeature ? ` ${styles.activeHalo}` : ''
-                      }`}
-                      style={markerIconStyle}
-                    />,
-                  ),
-                  className: isDraggable
-                    ? 'draggable marker-icon-clickable'
+                  html: iconHtml,
+                  className:
+                    isDraggable ?
+                      'draggable marker-icon-clickable'
                     : 'marker-icon-clickable',
                   iconSize: [markerSize, markerSize],
                   iconAnchor: [markerSize / 2, markerSize / 2],

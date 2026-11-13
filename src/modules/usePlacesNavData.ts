@@ -7,6 +7,7 @@ import { useIntl } from 'react-intl'
 import { filterStringFromFilter } from './filterStringFromFilter.ts'
 import { buildNavLabel } from './buildNavLabel.ts'
 import { getPlaceFallbackNames } from './placeNameFallback.ts'
+import { useNavRollups } from './navRollupsContext.ts'
 import {
   places1FilterAtom,
   places2FilterAtom,
@@ -25,15 +26,11 @@ type NavDataOpen = {
   label: string | null
   count_unfiltered: number
   count_filtered: number
-  name_singular: string
-  name_plural: string
 }
 
 type NavDataClosed = {
   count_unfiltered: number
   count_filtered: number
-  name_singular: string
-  name_plural: string
 }
 
 export const usePlacesNavData = ({
@@ -62,27 +59,27 @@ export const usePlacesNavData = ({
   const filterString = filterStringFromFilter(filter, 'places')
   const isFiltered = !!filterString
 
-  const projectTypeRes = useLiveQuery(
-    `SELECT type, places_order_by FROM projects WHERE project_id = $1`,
-    [projectId],
-  )
-  const projectType = projectTypeRes?.rows?.[0]?.type as
-    | string
-    | null
-    | undefined
+  // shared lookups (see NavDataProvider) instead of per-sibling queries for
+  // the projects row and the place_levels names
+  const rollups = useNavRollups()
+  const project = rollups.projectRow(projectId)
+  const levelNames = rollups.placeLevel(projectId, placeId ? 2 : 1)
+
+  const projectType = project?.type
   // configured place ordering: names of data fields, applied before the
   // label fallback. Values may come as jsonb array, comma string or
   // postgres array literal, depending on who wrote them
-  const placesOrderByRaw = projectTypeRes?.rows?.[0]?.places_order_by
-  const placesOrderBy: string[] = Array.isArray(placesOrderByRaw)
-    ? placesOrderByRaw.map(String).filter(Boolean)
-    : typeof placesOrderByRaw === 'string'
-      ? placesOrderByRaw
-          .replace(/^\{|\}$/g, '')
-          .split(',')
-          .map((field) => field.trim())
-          .filter(Boolean)
-      : []
+  const placesOrderByRaw = project?.places_order_by
+  const placesOrderBy: string[] =
+    Array.isArray(placesOrderByRaw) ?
+      placesOrderByRaw.map(String).filter(Boolean)
+    : typeof placesOrderByRaw === 'string' ?
+      placesOrderByRaw
+        .replace(/^\{|\}$/g, '')
+        .split(',')
+        .map((field) => field.trim())
+        .filter(Boolean)
+    : []
   // numeric values sort numerically ("2" < "10"), text values lexically
   const orderBySql = [
     ...placesOrderBy.flatMap((field) => [
@@ -92,25 +89,23 @@ export const usePlacesNavData = ({
     'label',
   ].join(', ')
 
-  const sql = isOpen
-    ? `
+  const sql =
+    isOpen ?
+      `
       WITH
         count_unfiltered AS (SELECT count(*) FROM places WHERE subproject_id = '${subprojectId}' AND parent_id ${
           placeId ? `= '${placeId}'` : `IS NULL`
         }),
         count_filtered AS (SELECT count(*) FROM places WHERE subproject_id = '${subprojectId}' AND parent_id ${
           placeId ? `= '${placeId}'` : `IS NULL`
-        } ${isFiltered ? ` AND ${filterString}` : ''}),
-        names AS (SELECT name_singular_${language}, name_plural_${language} FROM place_levels WHERE project_id = '${projectId}' and level = ${placeId ? 2 : 1})
+        } ${isFiltered ? ` AND ${filterString}` : ''})
       SELECT
         place_id AS id,
         label,
         count_unfiltered.count AS count_unfiltered,
-        count_filtered.count AS count_filtered,
-        names.name_singular_${language} AS name_singular,
-        names.name_plural_${language} AS name_plural
-      FROM places, count_unfiltered, count_filtered, names
-      WHERE 
+        count_filtered.count AS count_filtered
+      FROM places, count_unfiltered, count_filtered
+      WHERE
         places.subproject_id = '${subprojectId}'
         AND places.parent_id ${placeId ? `= '${placeId}'` : `IS NULL`}
         ${isFiltered ? ` AND ${filterString}` : ''}
@@ -123,14 +118,11 @@ export const usePlacesNavData = ({
         }),
         count_filtered AS (SELECT count(*) FROM places WHERE subproject_id = '${subprojectId}' and parent_id ${
           placeId ? `= '${placeId}'` : `IS NULL`
-        } ${isFiltered ? ` AND ${filterString}` : ''}),
-        names AS (SELECT name_singular_${language}, name_plural_${language} FROM place_levels WHERE project_id = '${projectId}' and level = ${placeId ? 2 : 1})
+        } ${isFiltered ? ` AND ${filterString}` : ''})
       SELECT
         count_unfiltered.count AS count_unfiltered,
-        count_filtered.count AS count_filtered,
-        names.name_singular_${language} AS name_singular,
-        names.name_plural_${language} AS name_plural
-      FROM count_unfiltered, count_filtered, names
+        count_filtered.count AS count_filtered
+      FROM count_unfiltered, count_filtered
     `
   const res = useLiveQuery(sql)
 
@@ -140,11 +132,11 @@ export const usePlacesNavData = ({
   const loading = res === undefined
 
   const nameSingular =
-    (res?.rows?.[0]?.name_singular as string | undefined) ??
-    fallbackNames.singular
+    (levelNames?.[`name_singular_${language}` as const] as
+      string | null | undefined) ?? fallbackNames.singular
   const namePlural =
-    (res?.rows?.[0]?.name_plural as string | undefined) ??
-    fallbackNames.plural
+    (levelNames?.[`name_plural_${language}` as const] as
+      string | null | undefined) ?? fallbackNames.plural
 
   const navs = (res?.rows ?? []) as NavDataOpen[] | NavDataClosed[]
   const countUnfiltered = navs[0]?.count_unfiltered ?? 0

@@ -12,11 +12,10 @@ import {
   languageAtom,
   designingAtom,
 } from '../store.ts'
+import { useNavRollups } from './navRollupsContext.ts'
 import { buildNavLabel } from './buildNavLabel.ts'
 import { filterStringFromFilter } from './filterStringFromFilter.ts'
-import { subprojectNameSingularExpr } from './subprojectNameCols.ts'
 import { getPlaceFallbackNames } from './placeNameFallback.ts'
-import { filesScopeWhere } from './filesScopeWhere.ts'
 
 type Props = {
   projectId: string
@@ -26,36 +25,6 @@ type Props = {
 type NavData = {
   id: string
   label: string | null
-  name_singular?: string | null
-  places_count_filtered?: number | null
-  places_count_unfiltered?: number | null
-  place_name_plural?: string | null
-  subproject_reports?: boolean | null
-  subproject_reports_count_filtered?: number | null
-  subproject_reports_count_unfiltered?: number | null
-  goals?: boolean | null
-  goals_count_filtered?: number | null
-  goals_count_unfiltered?: number | null
-  occurrences?: boolean | null
-  observation_imports_count?: number | null
-  observations_to_assess_count?: number | null
-  observations_not_to_assign_count?: number | null
-  taxa?: boolean | null
-  subproject_taxa_count?: number | null
-  subproject_taxa_in_subproject?: boolean | null
-  subproject_roles_count?: number | null
-  subproject_roles_in_subproject?: boolean | null
-  subproject_reports_in_subproject?: boolean | null
-  files_count_filtered?: number | null
-  files_count_unfiltered?: number | null
-  files_active_subprojects?: boolean | null
-  subproject_qc_assignments_count?: number | null
-  subproject_qcs_run_count?: number | null
-  subproject_export_assignments_count?: number | null
-  subproject_exports_run_count?: number | null
-  subproject_files_in_subproject?: boolean | null
-  charts?: boolean | null
-  charts_count?: number | null
 }
 
 export const useSubprojectNavData = ({ projectId, subprojectId }: Props) => {
@@ -94,116 +63,67 @@ export const useSubprojectNavData = ({ projectId, subprojectId }: Props) => {
   )
   const filesIsFiltered = !!filesFilterString
 
-  const sql = `
-      WITH 
-        places_count_unfiltered AS (SELECT count(*) FROM places WHERE subproject_id = '${subprojectId}' AND parent_id IS NULL),
-        places_count_filtered AS (SELECT count(*) FROM places WHERE subproject_id = '${subprojectId}' AND parent_id IS NULL ${placesIsFiltered ? ` AND ${placesFilterString}` : ''} ),
-        place_name_plural AS (SELECT name_plural_${language} FROM place_levels WHERE project_id = '${projectId}' AND level = 1),
-        subproject_reports_count_unfiltered AS (SELECT count(*) FROM subproject_reports WHERE subproject_id = '${subprojectId}'),
-        subproject_reports_count_filtered AS (SELECT count(*) FROM subproject_reports WHERE subproject_id = '${subprojectId}' ${subprojectReportsIsFiltered ? ` AND ${subprojectReportsFilterString}` : ''}),
-        goals_count_unfiltered AS (SELECT count(*) FROM goals WHERE subproject_id = '${subprojectId}'),
-        goals_count_filtered AS (SELECT count(*) FROM goals WHERE subproject_id = '${subprojectId}' ${goalsIsFiltered ? ` AND ${goalsFilterString}` : ''}),
-        observation_imports_count AS (SELECT count(*) FROM observation_imports WHERE subproject_id = '${subprojectId}'),
-        observations_to_assess_count AS (SELECT count(*) FROM observations o INNER JOIN observation_imports oi ON o.observation_import_id = oi.observation_import_id WHERE oi.subproject_id = '${subprojectId}' AND o.not_to_assign IS NOT TRUE AND o.place_id IS NULL),
-        observations_not_to_assign_count AS (SELECT count(*) FROM observations o INNER JOIN observation_imports oi ON o.observation_import_id = oi.observation_import_id WHERE oi.subproject_id = '${subprojectId}' AND o.not_to_assign IS TRUE AND o.place_id IS NULL),
-        subproject_taxa_count AS (SELECT count(*) FROM subproject_taxa WHERE subproject_id = '${subprojectId}'),
-        subproject_roles_count AS (SELECT count(*) FROM subproject_roles WHERE subproject_id = '${subprojectId}'),
-        files_count_unfiltered AS (SELECT count(*) FROM files WHERE ${filesScopeWhere({ subprojectId })}),
-        files_count_filtered AS (SELECT count(*) FROM files WHERE ${filesScopeWhere({ subprojectId })} ${filesIsFiltered ? ` AND ${filesFilterString}` : ''}),
-        -- own charts plus the project's chart templates for all subprojects
-        -- (same scope as useChartsNavData for a subproject)
-        charts_count AS (SELECT count(*) FROM charts WHERE subproject_id = '${subprojectId}' OR (for_subprojects AND project_id = '${projectId}' AND subproject_id IS NULL)),
-        subproject_qc_assignments_count AS (SELECT count(*) FROM (SELECT qa.qc_assignment_id FROM qc_assignments qa JOIN qcs q ON q.qcs_id = qa.qc_id WHERE qa.subproject_id = '${subprojectId}' AND q.level = 'subproject' UNION ALL SELECT pqa.project_qc_assignment_id FROM project_qc_assignments pqa WHERE pqa.subproject_id = '${subprojectId}') t),
-        subproject_qcs_run_count AS (SELECT count(*) FROM qc_assignments qa JOIN qcs q ON q.qcs_id = qa.qc_id WHERE qa.subproject_id = '${subprojectId}' AND q.level = 'subproject'),
-        subproject_export_assignments_count AS (SELECT count(*) FROM (SELECT ea.export_assignment_id FROM export_assignments ea JOIN exports e ON e.exports_id = ea.exports_id WHERE ea.subproject_id = '${subprojectId}' AND e.level = 'subproject' UNION ALL SELECT pea.project_export_assignment_id FROM project_export_assignments pea WHERE pea.subproject_id = '${subprojectId}') t),
-        subproject_exports_run_count AS (SELECT count(*) FROM export_assignments ea JOIN exports e ON e.exports_id = ea.exports_id WHERE ea.subproject_id = '${subprojectId}' AND e.level = 'subproject')
-      SELECT
-        sp.subproject_id AS id,
-        sp.label, 
-        ${subprojectNameSingularExpr(language, 'p')} AS name_singular,
-        p.subproject_reports AS subproject_reports,
-        p.goals AS goals,
-        p.occurrences AS occurrences,
-        p.taxa AS taxa,
-        p.subproject_taxa_in_subproject AS subproject_taxa_in_subproject,
-        p.charts AS charts,
-        p.subproject_roles_in_subproject AS subproject_roles_in_subproject,
-        p.subproject_reports_in_subproject AS subproject_reports_in_subproject,
-        p.files_active_subprojects AS files_active_subprojects,
-        p.subproject_files_in_subproject AS subproject_files_in_subproject,
-        places_count_unfiltered.count AS places_count_unfiltered,
-        places_count_filtered.count AS places_count_filtered,
-        place_name_plural.name_plural_${language} AS place_name_plural,
-        subproject_reports_count_unfiltered.count AS subproject_reports_count_unfiltered,
-        subproject_reports_count_filtered.count AS subproject_reports_count_filtered,
-        goals_count_unfiltered.count AS goals_count_unfiltered,
-        goals_count_filtered.count AS goals_count_filtered,
-        observation_imports_count.count AS observation_imports_count,
-        observations_to_assess_count.count AS observations_to_assess_count,
-        observations_not_to_assign_count.count AS observations_not_to_assign_count,
-        subproject_taxa_count.count AS subproject_taxa_count,
-        subproject_roles_count.count AS subproject_roles_count,
-        files_count_unfiltered.count AS files_count_unfiltered,
-        files_count_filtered.count AS files_count_filtered,
-        charts_count.count AS charts_count,
-        subproject_qc_assignments_count.count AS subproject_qc_assignments_count,
-        subproject_qcs_run_count.count AS subproject_qcs_run_count,
-        subproject_export_assignments_count.count AS subproject_export_assignments_count,
-        subproject_exports_run_count.count AS subproject_exports_run_count
-      FROM 
-        subprojects sp
-        INNER JOIN projects p ON p.project_id = sp.project_id, 
-        places_count_unfiltered, 
-        places_count_filtered,
-        place_name_plural,
-        subproject_reports_count_unfiltered,
-        subproject_reports_count_filtered,
-        goals_count_unfiltered,
-        goals_count_filtered,
-        observation_imports_count,
-        observations_to_assess_count,
-        observations_not_to_assign_count,
-        subproject_taxa_count,
-        subproject_roles_count,
-        files_count_unfiltered,
-        files_count_filtered,
-        charts_count,
-        subproject_qc_assignments_count,
-        subproject_qcs_run_count,
-        subproject_export_assignments_count,
-        subproject_exports_run_count
-      WHERE sp.subproject_id = '${subprojectId}'`
+  // counts come from the shared rollups (see NavDataProvider); the only
+  // per-node query left is the subproject's own row
+  const rollups = useNavRollups()
+  const project = rollups.projectRow(projectId)
 
-  const res = useLiveQuery<NavData>(sql)
-  const loading = res === undefined
-  const nav: NavData | undefined = res?.rows?.[0]
-
-  // single-row table views on the subproject (e.g. apflora's
-  // "Idealbiotop"): leaf nodes under the subproject, always rendered
-  const resTableViews = useLiveQuery<{
-    table_view_id: string
-    name_singular_de: string | null
-    name_singular_en: string | null
-    name_singular_fr: string | null
-    name_singular_it: string | null
-  }>(
-    `SELECT table_view_id,
-        name_singular_de, name_singular_en, name_singular_fr, name_singular_it
-     FROM table_views
-     WHERE project_id = $1 AND table_name = 'subprojects'
-     ORDER BY sort, label`,
-    [projectId],
+  const resOwnRow = useLiveQuery<NavData>(
+    `SELECT subproject_id AS id, label
+     FROM subprojects
+     WHERE subproject_id = $1`,
+    [subprojectId],
   )
-  const tableViews = resTableViews?.rows ?? []
+  const nav: NavData | undefined = resOwnRow?.rows?.[0]
 
-  const projectTypeRes = useLiveQuery<{ type: string | null }>(
-    `SELECT type FROM projects WHERE project_id = $1`,
-    [projectId],
+  const places = rollups.subprojectCount(subprojectId, 'places')
+  const subprojectReports = rollups.subprojectCount(
+    subprojectId,
+    'subproject_reports',
   )
-  const projectType = projectTypeRes?.rows?.[0]?.type
+  const goals = rollups.subprojectCount(subprojectId, 'goals')
+  const observationImports = rollups.subprojectCount(
+    subprojectId,
+    'observation_imports',
+  )
+  const observationsToAssess = rollups.subprojectCount(
+    subprojectId,
+    'observations_to_assess',
+  )
+  const observationsNotToAssign = rollups.subprojectCount(
+    subprojectId,
+    'observations_not_to_assign',
+  )
+  const subprojectTaxa = rollups.subprojectCount(
+    subprojectId,
+    'subproject_taxa',
+  )
+  const subprojectRoles = rollups.subprojectCount(
+    subprojectId,
+    'subproject_roles',
+  )
+  const files = rollups.subprojectCount(subprojectId, 'files')
+  // own charts plus the project's chart templates for all subprojects
+  const chartsCount =
+    (rollups.subprojectCount(subprojectId, 'charts_own')?.count ?? 0) +
+    (rollups.projectCount(projectId, 'subproject_charts')?.count ?? 0)
+  const qc = rollups.subprojectQcCounts(subprojectId)
+  const exportsCounts = rollups.subprojectExportCounts(subprojectId)
 
+  const tableViews = rollups.tableViews(projectId)
+
+  const projectType = project?.type
+  const placeLevel1 = rollups.placeLevel(projectId, 1)
+  const placeNamePlural =
+    placeLevel1?.[`name_plural_${language}` as const] ?? undefined
+
+  const loading = rollups.loading || resOwnRow === undefined
+
+  // the singular name lives on the project row (like the original query,
+  // which selected it from projects with alias 'p'); the rollup already
+  // resolved the language fallback in SQL
   const subprojectNameSingular =
-    nav?.name_singular ??
+    project?.subproject_name_singular_current ??
     formatMessage({ id: 'gxCh0c', defaultMessage: 'Teilprojekt' })
 
   const parentArray = ['data', 'projects', projectId, 'subprojects']
@@ -216,8 +136,9 @@ export const useSubprojectNavData = ({ projectId, subprojectId }: Props) => {
   const isActive = isEqual(urlPath, ownArray)
 
   const notFound = !loading && !nav
-  const label = notFound
-    ? formatMessage({ id: 'p+ORxp', defaultMessage: 'Nicht gefunden' })
+  const label =
+    notFound ?
+      formatMessage({ id: 'p+ORxp', defaultMessage: 'Nicht gefunden' })
     : (nav?.label ?? nav?.id)
 
   const navData = {
@@ -238,116 +159,116 @@ export const useSubprojectNavData = ({ projectId, subprojectId }: Props) => {
         label: buildNavLabel({
           loading,
           isFiltered: placesIsFiltered,
-          countFiltered: nav?.places_count_filtered ?? 0,
-          countUnfiltered: nav?.places_count_unfiltered ?? 0,
+          countFiltered: places?.filtered ?? 0,
+          countUnfiltered: places?.count ?? 0,
           namePlural:
-            nav?.place_name_plural ??
+            (placeNamePlural as string | null | undefined) ??
             getPlaceFallbackNames(projectType, 1, formatMessage).plural,
         }),
       },
-      ...(designing || (nav?.subproject_reports ?? true)
-        ? [
-            ...(nav?.subproject_reports_in_subproject === false
-              ? [
-                  {
-                    id: 'reports',
-                    label: buildNavLabel({
-                      loading,
-                      isFiltered: subprojectReportsIsFiltered,
-                      countFiltered:
-                        nav?.subproject_reports_count_filtered ?? 0,
-                      countUnfiltered:
-                        nav?.subproject_reports_count_unfiltered ?? 0,
-                      namePlural: formatMessage({
-                        id: 'CiJ0SG',
-                        defaultMessage: 'Berichte',
-                      }),
-                    }),
-                  },
-                ]
-              : []),
-          ]
-        : []),
-      ...(designing || (nav?.goals ?? true)
-        ? [
-            {
-              id: 'goals',
-              label: buildNavLabel({
-                loading,
-                isFiltered: goalsIsFiltered,
-                countFiltered: nav?.goals_count_filtered ?? 0,
-                countUnfiltered: nav?.goals_count_unfiltered ?? 0,
-                namePlural: formatMessage({
-                  id: '3srcwg',
-                  defaultMessage: 'Ziele',
+      ...(designing || (project?.subproject_reports ?? true) ?
+        [
+          ...(project?.subproject_reports_in_subproject === false ?
+            [
+              {
+                id: 'reports',
+                label: buildNavLabel({
+                  loading,
+                  isFiltered: subprojectReportsIsFiltered,
+                  countFiltered: subprojectReports?.filtered ?? 0,
+                  countUnfiltered: subprojectReports?.count ?? 0,
+                  namePlural: formatMessage({
+                    id: 'CiJ0SG',
+                    defaultMessage: 'Berichte',
+                  }),
                 }),
+              },
+            ]
+          : []),
+        ]
+      : []),
+      ...(designing || (project?.goals ?? true) ?
+        [
+          {
+            id: 'goals',
+            label: buildNavLabel({
+              loading,
+              isFiltered: goalsIsFiltered,
+              countFiltered: goals?.filtered ?? 0,
+              countUnfiltered: goals?.count ?? 0,
+              namePlural: formatMessage({
+                id: '3srcwg',
+                defaultMessage: 'Ziele',
               }),
-            },
-          ]
-        : []),
-      ...(designing || (nav?.occurrences ?? true)
-        ? [
-            {
-              id: 'observation-imports',
-              label: buildNavLabel({
-                loading,
-                countFiltered: nav?.observation_imports_count ?? 0,
-                countUnfiltered: nav?.observation_imports_count ?? 0,
-                namePlural: formatMessage({
-                  id: 'C7apNr',
-                  defaultMessage: 'Beobachtungs-Importe',
-                }),
+            }),
+          },
+        ]
+      : []),
+      ...(designing || (project?.occurrences ?? true) ?
+        [
+          {
+            id: 'observation-imports',
+            label: buildNavLabel({
+              loading,
+              countFiltered: observationImports?.count ?? 0,
+              countUnfiltered: observationImports?.count ?? 0,
+              namePlural: formatMessage({
+                id: 'C7apNr',
+                defaultMessage: 'Beobachtungs-Importe',
               }),
-            },
-            {
-              id: 'observations-to-assess',
-              label: buildNavLabel({
-                loading,
-                countFiltered: nav?.observations_to_assess_count ?? 0,
-                countUnfiltered: nav?.observations_to_assess_count ?? 0,
-                namePlural: formatMessage({
-                  id: 'BEylmv',
-                  defaultMessage: 'Beobachtungen zu beurteilen',
-                }),
+            }),
+          },
+          {
+            id: 'observations-to-assess',
+            label: buildNavLabel({
+              loading,
+              countFiltered: observationsToAssess?.count ?? 0,
+              countUnfiltered: observationsToAssess?.count ?? 0,
+              namePlural: formatMessage({
+                id: 'BEylmv',
+                defaultMessage: 'Beobachtungen zu beurteilen',
               }),
-            },
-            {
-              id: 'observations-not-to-assign',
-              label: buildNavLabel({
-                loading,
-                countFiltered: nav?.observations_not_to_assign_count ?? 0,
-                countUnfiltered: nav?.observations_not_to_assign_count ?? 0,
-                namePlural: formatMessage({
-                  id: 'slC/ul',
-                  defaultMessage: 'Beobachtungen nicht zuzuordnen',
-                }),
+            }),
+          },
+          {
+            id: 'observations-not-to-assign',
+            label: buildNavLabel({
+              loading,
+              countFiltered: observationsNotToAssign?.count ?? 0,
+              countUnfiltered: observationsNotToAssign?.count ?? 0,
+              namePlural: formatMessage({
+                id: 'slC/ul',
+                defaultMessage: 'Beobachtungen nicht zuzuordnen',
               }),
-            },
-          ]
-        : []),
-      ...((designing || (nav?.taxa ?? true)) &&
-      nav?.subproject_taxa_in_subproject === false
-        ? [
-            {
-              id: 'taxa',
-              label: buildNavLabel({
-                loading,
-                countFiltered: nav?.subproject_taxa_count ?? 0,
-                countUnfiltered: nav?.subproject_taxa_count ?? 0,
-                namePlural: formatMessage({
-                  id: '7sVbg1',
-                  defaultMessage: 'Taxa',
-                }),
+            }),
+          },
+        ]
+      : []),
+      ...((
+        (designing || (project?.taxa ?? true)) &&
+        project?.subproject_taxa_in_subproject === false
+      ) ?
+        [
+          {
+            id: 'taxa',
+            label: buildNavLabel({
+              loading,
+              countFiltered: subprojectTaxa?.count ?? 0,
+              countUnfiltered: subprojectTaxa?.count ?? 0,
+              namePlural: formatMessage({
+                id: '7sVbg1',
+                defaultMessage: 'Taxa',
               }),
-            },
-          ]
-        : []),
+            }),
+          },
+        ]
+      : []),
       {
         id: 'qc-assignments',
         label: buildNavLabel({
           loading,
-          countFiltered: nav?.subproject_qc_assignments_count ?? 0,
-          countUnfiltered: nav?.subproject_qc_assignments_count ?? 0,
+          countFiltered: qc.assignments,
+          countUnfiltered: qc.assignments,
           namePlural: formatMessage({
             id: 'subprojectQcs.title',
             defaultMessage: 'Qualitätskontrollen: wählen',
@@ -358,92 +279,94 @@ export const useSubprojectNavData = ({ projectId, subprojectId }: Props) => {
         id: 'qcs-run',
         label: buildNavLabel({
           loading,
-          countFiltered: nav?.subproject_qcs_run_count ?? 0,
-          countUnfiltered: nav?.subproject_qcs_run_count ?? 0,
+          countFiltered: qc.run,
+          countUnfiltered: qc.run,
           namePlural: formatMessage({
             id: 'subprojectQcsRun.title',
             defaultMessage: 'Qualitätskontrollen: ausführen',
           }),
         }),
       },
-      ...(designing
-        ? [
-            {
-              id: 'export-assignments',
-              label: buildNavLabel({
-                loading,
-                countFiltered: nav?.subproject_export_assignments_count ?? 0,
-                countUnfiltered: nav?.subproject_export_assignments_count ?? 0,
-                namePlural: formatMessage({
-                  id: 'subprojectExports.title',
-                  defaultMessage: 'Exporte: wählen',
-                }),
+      ...(designing ?
+        [
+          {
+            id: 'export-assignments',
+            label: buildNavLabel({
+              loading,
+              countFiltered: exportsCounts.assignments,
+              countUnfiltered: exportsCounts.assignments,
+              namePlural: formatMessage({
+                id: 'subprojectExports.title',
+                defaultMessage: 'Exporte: wählen',
               }),
-            },
-            {
-              id: 'exports-run',
-              label: buildNavLabel({
-                loading,
-                countFiltered: nav?.subproject_exports_run_count ?? 0,
-                countUnfiltered: nav?.subproject_exports_run_count ?? 0,
-                namePlural: formatMessage({
-                  id: 'subprojectExportsRun.title',
-                  defaultMessage: 'Exporte: ausführen',
-                }),
+            }),
+          },
+          {
+            id: 'exports-run',
+            label: buildNavLabel({
+              loading,
+              countFiltered: exportsCounts.run,
+              countUnfiltered: exportsCounts.run,
+              namePlural: formatMessage({
+                id: 'subprojectExportsRun.title',
+                defaultMessage: 'Exporte: ausführen',
               }),
-            },
-          ]
-        : []),
-      ...(designing && nav?.subproject_roles_in_subproject === false
-        ? [
-            {
-              id: 'users',
-              label: buildNavLabel({
-                loading,
-                countFiltered: nav?.subproject_roles_count ?? 0,
-                countUnfiltered: nav?.subproject_roles_count ?? 0,
-                namePlural: formatMessage({
-                  id: 'eZ3yEB',
-                  defaultMessage: 'Benutzer',
-                }),
+            }),
+          },
+        ]
+      : []),
+      ...(designing && project?.subproject_roles_in_subproject === false ?
+        [
+          {
+            id: 'users',
+            label: buildNavLabel({
+              loading,
+              countFiltered: subprojectRoles?.count ?? 0,
+              countUnfiltered: subprojectRoles?.count ?? 0,
+              namePlural: formatMessage({
+                id: 'eZ3yEB',
+                defaultMessage: 'Benutzer',
               }),
-            },
-          ]
-        : []),
-      ...((designing || (nav?.files_active_subprojects ?? true)) &&
-      nav?.subproject_files_in_subproject === false
-        ? [
-            {
-              id: 'files',
-              label: buildNavLabel({
-                loading,
-                isFiltered: filesIsFiltered,
-                countFiltered: nav?.files_count_filtered ?? 0,
-                countUnfiltered: nav?.files_count_unfiltered ?? 0,
-                namePlural: formatMessage({
-                  id: 'mn58Sh',
-                  defaultMessage: 'Dateien',
-                }),
+            }),
+          },
+        ]
+      : []),
+      ...((
+        (designing || (project?.files_active_subprojects ?? true)) &&
+        project?.subproject_files_in_subproject === false
+      ) ?
+        [
+          {
+            id: 'files',
+            label: buildNavLabel({
+              loading,
+              isFiltered: filesIsFiltered,
+              countFiltered: files?.filtered ?? 0,
+              countUnfiltered: files?.count ?? 0,
+              namePlural: formatMessage({
+                id: 'mn58Sh',
+                defaultMessage: 'Dateien',
               }),
-            },
-          ]
-        : []),
-      ...(designing || (nav?.charts ?? true)
-        ? [
-            {
-              id: 'charts',
-              label: buildNavLabel({
-                loading,
-                countFiltered: nav?.charts_count ?? 0,
-                countUnfiltered: nav?.charts_count ?? 0,
-                namePlural: formatMessage({
-                  id: 'ZPEO8P',
-                  defaultMessage: 'Diagramme',
-                }),
+            }),
+          },
+        ]
+      : []),
+      ...(designing || (project?.charts ?? true) ?
+        [
+          {
+            id: 'charts',
+            label: buildNavLabel({
+              loading,
+              countFiltered: chartsCount,
+              countUnfiltered: chartsCount,
+              namePlural: formatMessage({
+                id: 'ZPEO8P',
+                defaultMessage: 'Diagramme',
               }),
-            },
-          ]
-        : []),
+            }),
+          },
+        ]
+      : []),
       ...tableViews.map((view) => ({
         // multi-segment id: entityChildren turns it into a formLink row
         // navigating to .../subprojects/<id>/table-views/<tableViewId>

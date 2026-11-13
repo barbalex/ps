@@ -5,46 +5,34 @@ import { useSetAtom } from 'jotai'
 import { firstRunDbInitAtom, sqlInitializingAtom } from '../store.ts'
 import { bootTrace } from '../modules/bootTrace.ts'
 
-export const SqlInitializer = () => {
-  const db = usePGlite()
-  const setSqlInitializing = useSetAtom(sqlInitializingAtom)
-  const setFirstRunDbInit = useSetAtom(firstRunDbInitAtom)
+/**
+ * The whole routine this component runs — the heal/alter/trigger script, the
+ * layer_presentations dedup scan, several idempotent sql files — used to
+ * execute on EVERY page load. It now runs only when the sql sources changed:
+ * a hash over everything it would execute is stamped into a local-only meta
+ * table, and an unchanged stamp skips the routine entirely (one cheap SELECT
+ * instead of hundreds of statements per boot).
+ *
+ * The stamp is written only after every statement succeeded, so a partial
+ * run retries on the next load. Changing any of the sql sources (or the
+ * scripts below) changes the hash and re-runs the routine once.
+ */
 
-  useEffect(() => {
-    const run = async () => {
-      bootTrace('SqlInitializer start')
-      try {
-        // 1. initialize pgLite db
-        const resultProjectsTableExists = await db.query<{ exists: boolean }>(
-          `
-          SELECT EXISTS (
-            SELECT FROM pg_tables
-            WHERE  schemaname = 'public'
-            AND    tablename  = 'projects'
-          )
-        `,
-        )
-        const projectsTableExists = resultProjectsTableExists?.rows?.[0]?.exists
+const SQL_INIT_STAMP_KEY = 'sql_init_sources_hash'
 
-        const resultLayerPresentationsTableExists = await db.query<{
-          exists: boolean
-        }>(
-          `
-          SELECT EXISTS (
-            SELECT FROM pg_tables
-            WHERE  schemaname = 'public'
-            AND    tablename  = 'layer_presentations'
-          )
-        `,
-        )
-        const layerPresentationsTableExists =
-          resultLayerPresentationsTableExists?.rows?.[0]?.exists
+// FNV-1a 32-bit — change detection for the sql sources, not security
+const hashString = (str: string): string => {
+  let h = 0x811c9dc5
+  for (let i = 0; i < str.length; i++) {
+    h ^= str.charCodeAt(i)
+    h = Math.imul(h, 0x01000193)
+  }
+  return (h >>> 0).toString(16)
+}
 
-        // Always run: remove duplicate layer_presentations per vector_layer_id
-        // (can be created by a previous bug; trigger prevents new ones)
-        if (layerPresentationsTableExists) {
-          try {
-            await db.exec(`
+// remove duplicate layer_presentations per vector_layer_id (can be created
+// by a previous bug; trigger prevents new ones)
+const dedupLayerPresentationsSql = `
             DELETE FROM layer_presentations
             WHERE layer_presentation_id NOT IN (
               SELECT DISTINCT ON (vector_layer_id) layer_presentation_id
@@ -53,28 +41,12 @@ export const SqlInitializer = () => {
               ORDER BY vector_layer_id, active DESC, layer_presentation_id
             )
             AND vector_layer_id IS NOT NULL
-          `)
-          } catch (error) {
-            console.error('Error deduplicating layer_presentations:', error)
-          }
-        }
+          `
 
-        // this is probably not needed
-          if (projectsTableExists) {
-            // the filtered_views -> table_views rename (2026-11): heal local
-            // databases created before the schema caught up. Fresh databases
-            // get the new schema from createTables.sql; the field_groups FK
-            // needs projects to exist, hence inside this branch.
-            const healTableViewRenameSql = (
-              await import(`../sql/healFilteredViewsRename.sql?raw`)
-            ).default
-            try {
-              await db.exec(healTableViewRenameSql)
-            } catch (error) {
-              console.error('Error executing healTableViewRenameSql:', error)
-            }
-            try {
-            await db.exec(`
+// heals local databases created before the schema caught up: column
+// renames, added columns, label triggers — extracted verbatim, previously
+// inline below
+const healExistingDbSql = `
             -- the users→roles rename (2026-08) missed these flag columns;
             -- heal local databases created before the schema caught up
             DO $$
@@ -178,6 +150,10 @@ export const SqlInitializer = () => {
             UPDATE layer_presentations SET project_id = wl.project_id FROM wms_layers wl WHERE layer_presentations.wms_layer_id = wl.wms_layer_id AND layer_presentations.project_id IS NULL;
             UPDATE layer_presentations SET project_id = vl.project_id FROM vector_layers vl WHERE layer_presentations.vector_layer_id = vl.vector_layer_id AND layer_presentations.project_id IS NULL;
             ALTER TABLE IF EXISTS crs ADD COLUMN IF NOT EXISTS sys_period tstzrange DEFAULT NULL;
+            -- composite indices for the nav-data queries (2026-11): fresh
+            -- databases get them from createTables.sql
+            CREATE INDEX IF NOT EXISTS place_levels_project_id_level_idx ON place_levels USING btree(project_id, level);
+            CREATE INDEX IF NOT EXISTS charts_project_id_for_subprojects_idx ON charts USING btree(project_id, for_subprojects);
             ALTER TABLE IF EXISTS places ADD COLUMN IF NOT EXISTS name text DEFAULT NULL;
 
             CREATE OR REPLACE FUNCTION subproject_taxon_label_trigger()
@@ -477,36 +453,146 @@ export const SqlInitializer = () => {
             AFTER UPDATE OF goals_label_by ON projects
             FOR EACH ROW
             EXECUTE PROCEDURE projects_goals_label_trigger();
-          `)
-          } catch (error) {
-            console.error(
-              'Error installing sync duplicate-guard triggers:',
-              error,
-            )
-          }
+          `
 
-          const syncIgnoreDuplicateInsertTriggersSql = (
-            await import(`../sql/syncIgnoreDuplicateInsertTriggers.sql?raw`)
-          ).default
+export const SqlInitializer = () => {
+  const db = usePGlite()
+  const setSqlInitializing = useSetAtom(sqlInitializingAtom)
+  const setFirstRunDbInit = useSetAtom(firstRunDbInitAtom)
+
+  useEffect(() => {
+    const run = async () => {
+      bootTrace('SqlInitializer start')
+      try {
+        // every sql source this initializer can run, loaded up front: they
+        // make up the version stamp
+        const [
+          healTableViewRenameSql,
+          syncIgnoreDuplicateInsertTriggersSql,
+          syncReplaceStaleUniqueRowsSql,
+          immutableDateSql,
+          uuidv7Sql,
+          createTablesSql,
+          triggersSql,
+          repairNestedGeometriesRaw,
+        ] = await Promise.all([
+          import(`../sql/healFilteredViewsRename.sql?raw`).then(
+            (m) => m.default,
+          ),
+          import(`../sql/syncIgnoreDuplicateInsertTriggers.sql?raw`).then(
+            (m) => m.default,
+          ),
+          import(`../sql/syncReplaceStaleUniqueRows.sql?raw`).then(
+            (m) => m.default,
+          ),
+          import(`../sql/immutableDate.sql?raw`).then((m) => m.default),
+          import(`../sql/uuidv7.sql?raw`).then((m) => m.default),
+          import(`../sql/createTables.sql?raw`).then((m) => m.default),
+          import(`../sql/triggers.sql?raw`).then((m) => m.default),
+          // the geometry repair is part of the initialization too: changes
+          // to it must re-run the routine
+          import(`../modules/repairNestedGeometries.ts?raw`).then(
+            (m) => m.default,
+          ),
+        ])
+        const sourcesHash = hashString(
+          [
+            dedupLayerPresentationsSql,
+            healTableViewRenameSql,
+            healExistingDbSql,
+            syncIgnoreDuplicateInsertTriggersSql,
+            syncReplaceStaleUniqueRowsSql,
+            immutableDateSql,
+            uuidv7Sql,
+            createTablesSql,
+            triggersSql,
+            repairNestedGeometriesRaw,
+          ].join('\n;\n'),
+        )
+
+        // local-only meta table — never part of any electric sync shape
+        await db.exec(
+          `CREATE TABLE IF NOT EXISTS _ps_local_meta(key text PRIMARY KEY, value text)`,
+        )
+        const stampRes = await db.query<{ value: string | null }>(
+          `SELECT value FROM _ps_local_meta WHERE key = $1`,
+          [SQL_INIT_STAMP_KEY],
+        )
+        if (stampRes?.rows?.[0]?.value === sourcesHash) {
+          bootTrace('SqlInitializer skipped (sql sources unchanged)')
+          setSqlInitializing(false)
+          return
+        }
+
+        // stamp only when every statement succeeded — a partial run must
+        // retry on the next load
+        let allStatementsSucceeded = true
+        const exec = async (sql: string, label: string) => {
           try {
-            await db.exec(syncIgnoreDuplicateInsertTriggersSql)
+            await db.exec(sql)
           } catch (error) {
-            console.error(
-              'Error executing syncIgnoreDuplicateInsertTriggersSql:',
-              error,
-            )
+            allStatementsSucceeded = false
+            console.error(`Error executing ${label}:`, error)
           }
-          const syncReplaceStaleUniqueRowsSql = (
-            await import(`../sql/syncReplaceStaleUniqueRows.sql?raw`)
-          ).default
+        }
+        const stamp = async () => {
+          if (!allStatementsSucceeded) return
           try {
-            await db.exec(syncReplaceStaleUniqueRowsSql)
-          } catch (error) {
-            console.error(
-              'Error executing syncReplaceStaleUniqueRowsSql:',
-              error,
+            await db.query(
+              `INSERT INTO _ps_local_meta(key, value) VALUES ($1, $2)
+               ON CONFLICT (key) DO UPDATE SET value = excluded.value`,
+              [SQL_INIT_STAMP_KEY, sourcesHash],
             )
+          } catch (error) {
+            console.error('Error storing sql init stamp:', error)
           }
+        }
+
+        const resultProjectsTableExists = await db.query<{ exists: boolean }>(
+          `
+          SELECT EXISTS (
+            SELECT FROM pg_tables
+            WHERE  schemaname = 'public'
+            AND    tablename  = 'projects'
+          )
+        `,
+        )
+        const projectsTableExists = resultProjectsTableExists?.rows?.[0]?.exists
+
+        const resultLayerPresentationsTableExists = await db.query<{
+          exists: boolean
+        }>(
+          `
+          SELECT EXISTS (
+            SELECT FROM pg_tables
+            WHERE  schemaname = 'public'
+            AND    tablename  = 'layer_presentations'
+          )
+        `,
+        )
+        const layerPresentationsTableExists =
+          resultLayerPresentationsTableExists?.rows?.[0]?.exists
+
+        // remove duplicate layer_presentations per vector_layer_id
+        if (layerPresentationsTableExists) {
+          await exec(dedupLayerPresentationsSql, 'layer_presentations dedup')
+        }
+
+        if (projectsTableExists) {
+          // heal existing local databases
+          await exec(healTableViewRenameSql, 'healTableViewRenameSql')
+          await exec(
+            healExistingDbSql,
+            'healExistingDbSql (duplicate-guard triggers et al)',
+          )
+          await exec(
+            syncIgnoreDuplicateInsertTriggersSql,
+            'syncIgnoreDuplicateInsertTriggersSql',
+          )
+          await exec(
+            syncReplaceStaleUniqueRowsSql,
+            'syncReplaceStaleUniqueRowsSql',
+          )
 
           // flatten nested GeometryCollections created by older versions of
           // the draw control — ST_AsGeoJSON fails on them
@@ -516,9 +602,11 @@ export const SqlInitializer = () => {
             )
             await repairNestedGeometries(db)
           } catch (error) {
+            allStatementsSucceeded = false
             console.error('Error repairing nested geometries:', error)
           }
 
+          await stamp()
           bootTrace('SqlInitializer done (existing db)')
           setSqlInitializing(false)
           return
@@ -526,64 +614,28 @@ export const SqlInitializer = () => {
 
         // need to create functions, tables and triggers
         setFirstRunDbInit(true)
-        const immutableDateSql = (await import(`../sql/immutableDate.sql?raw`))
-          .default
-        try {
-          await db.exec(immutableDateSql)
-        } catch (error) {
-          console.error('Error executing immutableDateSql:', error)
-        }
-        const uuidv7Sql = (await import(`../sql/uuidv7.sql?raw`)).default
-        try {
-          await db.exec(uuidv7Sql)
-        } catch (error) {
-          console.error('Error executing uuidv7Sql:', error)
-        }
-        try {
-          await db.exec(`CREATE EXTENSION IF NOT EXISTS postgis;`)
-        } catch (error) {
-          console.error('Error creating postgis extension:', error)
-        }
-        try {
-          await db.exec(`CREATE EXTENSION IF NOT EXISTS pg_uuidv7;`)
-        } catch (error) {
-          console.error('Error creating pg_uuidv7 extension:', error)
-        }
-        const createSql = (await import(`../sql/createTables.sql?raw`)).default
-        try {
-          await db.exec(createSql)
-        } catch (error) {
-          console.error('Error executing createSql:', error)
-        }
-        const triggersSql = (await import(`../sql/triggers.sql?raw`)).default
-        try {
-          await db.exec(triggersSql)
-        } catch (error) {
-          console.error('Error executing triggersSql:', error)
-        }
-        const syncIgnoreDuplicateInsertTriggersSql = (
-          await import(`../sql/syncIgnoreDuplicateInsertTriggers.sql?raw`)
-        ).default
-        try {
-          await db.exec(syncIgnoreDuplicateInsertTriggersSql)
-        } catch (error) {
-          console.error(
-            'Error executing syncIgnoreDuplicateInsertTriggersSql:',
-            error,
-          )
-        }
-        const syncReplaceStaleUniqueRowsSql = (
-          await import(`../sql/syncReplaceStaleUniqueRows.sql?raw`)
-        ).default
-        try {
-          await db.exec(syncReplaceStaleUniqueRowsSql)
-        } catch (error) {
-          console.error(
-            'Error executing syncReplaceStaleUniqueRowsSql:',
-            error,
-          )
-        }
+        await exec(immutableDateSql, 'immutableDateSql')
+        await exec(uuidv7Sql, 'uuidv7Sql')
+        await exec(
+          `CREATE EXTENSION IF NOT EXISTS postgis;`,
+          'postgis extension',
+        )
+        await exec(
+          `CREATE EXTENSION IF NOT EXISTS pg_uuidv7;`,
+          'pg_uuidv7 extension',
+        )
+        await exec(createTablesSql, 'createTables.sql')
+        await exec(triggersSql, 'triggers.sql')
+        await exec(
+          syncIgnoreDuplicateInsertTriggersSql,
+          'syncIgnoreDuplicateInsertTriggersSql',
+        )
+        await exec(
+          syncReplaceStaleUniqueRowsSql,
+          'syncReplaceStaleUniqueRowsSql',
+        )
 
+        await stamp()
         bootTrace('SqlInitializer done')
         setSqlInitializing(false)
       } catch (error) {

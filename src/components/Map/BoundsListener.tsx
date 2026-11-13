@@ -49,10 +49,12 @@ export const BoundsListener = () => {
     saveCenterAndZoom()
   }, [onMoveOrZoom, saveCenterAndZoom])
 
-  // Set up event listeners to save on user interaction
+  // Set up event listeners to save on user interaction.
+  // viewport bounds are written on moveend/zoomend only: they are needed by
+  // click-time consumers (WFS loading in the layers drawer), and a per-frame
+  // `move`/`zoom` write re-rendered every subscriber on each animation frame
+  // of a pan
   useMapEvents({
-    move: onMoveOrZoom,
-    zoom: onMoveOrZoom,
     moveend: onMoveEndOrZoomEnd,
     zoomend: onMoveEndOrZoomEnd,
   })
@@ -70,11 +72,10 @@ export const BoundsListener = () => {
         try {
           // Force the view regardless of current state
           // `reset` is a valid leaflet setView option but missing from ZoomPanOptions
-          map.setView(
-            storedCenter as LatLngTuple,
-            storedZoom,
-            { animate: false, reset: true } as ZoomPanOptions,
-          )
+          map.setView(storedCenter as LatLngTuple, storedZoom, {
+            animate: false,
+            reset: true,
+          } as ZoomPanOptions)
 
           // Retry if zoom didn't stick (seems to happen on initial load)
           setTimeout(() => {
