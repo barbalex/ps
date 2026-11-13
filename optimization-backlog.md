@@ -149,10 +149,14 @@ Findings from the 2026-11-13 performance review. Work off one by one.
     is incompatible with React Compiler memoization (documented in
     [Tree/index.tsx](src/components/Tree/index.tsx)), and Registrar dispatches
     dynamic hooks (`config.hook(params, nav)`) which the compiler cannot prove.
-  - Observation lists are not virtualized — **assessed, not done:** the lists
-    render simple anchor rows via the shared `Row` component; virtualizing them
-    is a product-level UI change (scroll container, filters, mobile behavior)
-    worth doing deliberately, not as a perf side quest.
+  - Observation lists are not virtualized — **done (branch:
+    `perf/virtualize-observations`):** the Observations list (assigned,
+    to-assess, not-to-assign) is virtualized with @tanstack/react-virtual
+    (rows are fixed 50 px, overscan 15 like the tree). Only visible rows +
+    overscan mount; previously every `Row` (4 hooks + swipe handlers)
+    mounted and re-rendered on each live-query update after every
+    observation write. content-visibility in the CSS already skipped
+    painting, but not React work.
   - `SwitchField` commits per toggle → full form re-render after the live-query
     round trip — **left as is:** commits are the app's write model (every field
     type works this way; text inputs merely buffer until blur, switches have no
