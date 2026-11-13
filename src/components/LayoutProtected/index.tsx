@@ -1,4 +1,4 @@
-import { createRef, useEffect } from 'react'
+import { useEffect, useRef } from 'react'
 import { useAtomValue } from 'jotai'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import * as UC from '@uploadcare/file-uploader'
@@ -73,7 +73,10 @@ declare module 'react' {
 
 // memoizing this component creates error
 export const LayoutProtected = () => {
-  const uploaderRef = createRef<HTMLElement>()
+  // useRef, not createRef: createRef builds a NEW ref object every render,
+  // so consumers of UploaderContext re-rendered on every layout change and
+  // the web component's ref binding churned. useRef keeps one stable object.
+  const uploaderRef = useRef<HTMLElement | null>(null)
   const mapIsMaximized = useAtomValue(mapMaximizedAtom)
 
   useEffect(() => {
