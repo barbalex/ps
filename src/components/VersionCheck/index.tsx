@@ -75,15 +75,19 @@ const dropCachesAndWorker = async () => {
  * banner compares the running version against /version.json (emitted
  * by vite.config.ts, never cached by sw or Netlify) and offers a
  * cache-clearing reload. Stale clients otherwise fail silently against
- * the api. Ported from apflora (apf2), including:
+ * the api. Ported from apflora (apf2).
  *
- * The reload fires immediately: awaiting the cleanup first kept the
- * button looking dead for up to a minute (a big precache, a worker
- * mid-install). The cleanup runs in the background instead; if the
- * reload still lands on the stale bundle (the dying worker can serve
- * one more navigation from the precache), the started bundle finishes
- * the cleanup and reloads again. The handshake state survives reloads
- * in localStorage and gives up after MAX_UPDATE_ATTEMPTS.
+ * The cleanup must complete before the reload: the worker controls
+ * the navigation until its unregistration resolved, and a reload
+ * racing the cleanup was served a stale index.html whose hashed
+ * chunks were already gone from the dying precache and the server —
+ * the module then failed on the text/html index.html fallback and
+ * the handshake in this bundle could never run. The updating banner
+ * covers the wait (deleting the precache takes a moment); if a
+ * reload still lands on a stale bundle (older deployments fired the
+ * reload immediately), the started bundle finishes the cleanup and
+ * reloads again. The handshake state survives reloads in
+ * localStorage and gives up after MAX_UPDATE_ATTEMPTS.
  *
  * A dismissed banner only hides it for as long as this bundle runs —
  * stale clients degrade the shared api for everyone, so the update is
@@ -105,15 +109,18 @@ export const VersionCheck = () => {
     isUpdateInFlight(readPendingUpdate()),
   )
 
-  const update = (target: string) => {
+  const update = async (target: string) => {
     // mark the update as in flight before anything async: this context
     // dies with the reload and the next bundle must be able to tell
     // whether it is the target already or still stale
     writePendingUpdate({ target, attempts: 0, startedAt: Date.now() })
     setUpdating(true)
-    // the cleanup must not delay the reload — it can take up to a
-    // minute for a big precache, which made the button look dead
-    void dropCachesAndWorker()
+    // the cleanup must complete before the reload: reloading while
+    // the dying worker still controlled the navigation served a
+    // stale index.html whose hashed chunks no longer existed — the
+    // module failed on the index.html fallback and this bundle could
+    // not run its recovery. The updating banner covers the wait.
+    await dropCachesAndWorker()
     window.location.reload()
   }
 
@@ -164,7 +171,7 @@ export const VersionCheck = () => {
       if (document.visibilityState === 'visible') {
         void check()
       } else if (pendingVersionRef.current) {
-        update(pendingVersionRef.current)
+        void update(pendingVersionRef.current)
       }
     }
     document.addEventListener('visibilitychange', onVisible)
@@ -218,7 +225,9 @@ export const VersionCheck = () => {
         <button
           type="button"
           className={styles.button}
-          onClick={() => update(availableVersion)}
+          onClick={() => {
+            void update(availableVersion)
+          }}
         >
           {formatMessage({
             id: 'versionCheckUpdateNow',
