@@ -1,5 +1,8 @@
-import * as fluentUiReactComponents from '@fluentui/react-components'
-const { Button } = fluentUiReactComponents
+// from the individual package, not the @fluentui/react-components barrel:
+// any import from the barrel keeps re-export bindings to every fluent
+// package alive, pulling the whole suite into the eager entry chunk (this
+// is the router's default error component)
+import { Button } from '@fluentui/react-button'
 
 import styles from './RouterErrorBoundary.module.css'
 
