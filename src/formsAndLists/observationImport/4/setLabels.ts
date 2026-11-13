@@ -14,6 +14,10 @@ type Props = {
   observationImportId: string
 }
 
+// rows per bulk UPDATE: one parameterized statement via unnest instead of
+// one round-trip per observation
+const CHUNK_SIZE = 500
+
 export const setLabels = async ({
   labelCreation,
   observationImportId,
@@ -32,7 +36,6 @@ export const setLabels = async ({
   )
   const observations = (res?.rows ?? []) as Observations[]
 
-  // Register background task
   backgroundTasks.add(
     taskId,
     intl?.formatMessage({
@@ -42,49 +45,47 @@ export const setLabels = async ({
     observations.length,
   )
 
-  // Process in batches to allow UI updates
-  const batchSize = 50
-  let processed = 0
-
   try {
-    for (let i = 0; i < observations.length; i += batchSize) {
-      const batch = observations.slice(i, i + batchSize)
+    // build all labels in js first, then write them in bulk
+    const updates: { observation_id: string; label: string }[] = []
 
-      for (const observation of batch) {
-        // Build the label from label_creation structure
-        const labelParts = labelCreation.map((element) => {
-          if (element.type === 'separator') {
-            return element.value || ''
-          }
-          // type === 'field'
-          return (
-            (observation.data as Record<string, unknown> | null)?.[
-              element.value
-            ] || ''
-          )
-        })
-        const label = labelParts.join('')
-
-        await db.query(
-          `UPDATE observations SET label = $1 WHERE observation_id = $2`,
-          [label, observation.observation_id],
+    for (const observation of observations) {
+      const labelParts = labelCreation.map((element) => {
+        if (element.type === 'separator') {
+          return element.value
+        }
+        // type === 'field'
+        return (
+          (observation.data as Record<string, unknown> | null)?.[
+            element.value
+          ] || ''
         )
+      })
+      updates.push({
+        observation_id: observation.observation_id,
+        label: labelParts.join(''),
+      })
+    }
 
-        store.set(addOperationAtom, {
-          table: 'observations',
-          rowIdName: 'observation_id',
-          rowId: observation.observation_id,
-          operation: 'update',
-          draft: { label },
-          prev: { ...observation },
-        })
+    for (let i = 0; i < updates.length; i += CHUNK_SIZE) {
+      const chunk = updates.slice(i, i + CHUNK_SIZE)
+      await db.query(
+        `UPDATE observations AS o SET label = v.label
+         FROM (SELECT * FROM unnest($1::uuid[], $2::text[]) AS v(observation_id, label)) AS v
+         WHERE o.observation_id = v.observation_id`,
+        [chunk.map((u) => u.observation_id), chunk.map((u) => u.label)],
+      )
+      backgroundTasks.updateProgress(taskId, i + chunk.length)
+    }
 
-        processed++
-        backgroundTasks.updateProgress(taskId, processed)
-      }
-
-      // Small delay to allow UI to update
-      await new Promise((resolve) => setTimeout(resolve, 10))
+    // one queued operation instead of one per row: upsertMany updates the
+    // given columns for the given ids server-side
+    if (updates.length) {
+      store.set(addOperationAtom, {
+        table: 'observations',
+        operation: 'upsertMany',
+        draft: updates,
+      })
     }
 
     backgroundTasks.complete(taskId)
