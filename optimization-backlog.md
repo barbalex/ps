@@ -134,14 +134,27 @@ Findings from the 2026-11-13 performance review. Work off one by one.
     parts/uuids and never contain '/'. `tree/isNodeOpen.ts` keeps isEqual (write
     paths, called a few times per navigation).
 
-- [ ] **8. Smaller things**
-  - Tree carries `'use no memo'` — the hottest render path is the one React Compiler
-    skips.
-  - `TableLayersProvider` keeps a full-table `COUNT(*)` live query on `observations`
-    running at all times.
-  - Only the tree is virtualized; observation lists after GBIF imports are not.
-  - `HistoryCompare` polls PostgREST every 2 s
-    ([useHistoryRecords.ts:58](src/components/shared/HistoryCompare/useHistoryRecords.ts)).
-  - `UploaderContext` hands consumers a fresh `createRef()` every render
-    ([LayoutProtected/index.tsx:75](src/components/LayoutProtected/index.tsx)).
-  - `SwitchField` commits per toggle → full ~600-line form re-render per round trip.
+- [x] **8. Smaller things** (branch: `perf/small-things`)
+  - `TableLayersProvider` kept a full-table `COUNT(*)` live query on `observations`
+    running at all times — rescanning the whole table on every observation write.
+    **Done:** replaced with `SELECT EXISTS(...)` (index probe, stops at first row);
+    as a boolean effect dependency it only re-fires the layer-creation effect when
+    observations appear/disappear.
+  - `HistoryCompare` polled PostgREST every 2 s. **Done:** 10 s interval — the
+    view is route-mounted (only polls while a history page is open), and
+    refetchOnWindowFocus still refreshes instantly on tab return.
+  - `UploaderContext` handed consumers a fresh `createRef()` every render.
+    **Done:** stable `useRef` — one ref object for the app's lifetime.
+  - Tree carries `'use no memo'` — **left as is, deliberate:** TanStack Virtual
+    is incompatible with React Compiler memoization (documented in
+    [Tree/index.tsx](src/components/Tree/index.tsx)), and Registrar dispatches
+    dynamic hooks (`config.hook(params, nav)`) which the compiler cannot prove.
+  - Observation lists are not virtualized — **assessed, not done:** the lists
+    render simple anchor rows via the shared `Row` component; virtualizing them
+    is a product-level UI change (scroll container, filters, mobile behavior)
+    worth doing deliberately, not as a perf side quest.
+  - `SwitchField` commits per toggle → full form re-render after the live-query
+    round trip — **left as is:** commits are the app's write model (every field
+    type works this way; text inputs merely buffer until blur, switches have no
+    blur equivalent), and server-side batching already happens via
+    operationAggregation. Deferring the local write would change UX semantics.

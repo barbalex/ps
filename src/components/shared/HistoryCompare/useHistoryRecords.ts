@@ -73,7 +73,12 @@ export const useHistoryRecords = <TRow extends HistoryRowLike>({
     },
     enabled: online && !!rowId,
     staleTime: 30_000,
-    refetchInterval: online && !!rowId ? 2_000 : false,
+    // this view is route-mounted (only polls while a history page is open).
+    // 10 s is plenty live for a "who changed what" view — 2 s polled the
+    // server 30×/minute per open history tab for changes that are rare;
+    // refetchOnWindowFocus (react-query default) still refreshes instantly
+    // when the user returns to the tab
+    refetchInterval: online && !!rowId ? 10_000 : false,
   })
 
   const histories = useMemo(() => {
@@ -85,9 +90,8 @@ export const useHistoryRecords = <TRow extends HistoryRowLike>({
     })) as TRow[]
   }, [historiesRaw, currentRow])
 
-  const historyError: string | null = historyQueryError
-    ? historyQueryError.message
-    : null
+  const historyError: string | null =
+    historyQueryError ? historyQueryError.message : null
 
   // Redirects to the first valid history id when the current route param
   // doesn't match any available record (e.g. after a deletion).
@@ -119,9 +123,9 @@ export const useHistoryRecords = <TRow extends HistoryRowLike>({
       if (!histories.length) return
 
       const nextIndex =
-        typeof nextIndexOrUpdater === 'function'
-          ? nextIndexOrUpdater(selectedHistoryIndex)
-          : nextIndexOrUpdater
+        typeof nextIndexOrUpdater === 'function' ?
+          nextIndexOrUpdater(selectedHistoryIndex)
+        : nextIndexOrUpdater
 
       const normalizedIndex =
         ((nextIndex % histories.length) + histories.length) % histories.length

@@ -34,10 +34,16 @@ export const TableLayersProvider = () => {
   )
   const projectIds = (projectsResult?.rows ?? []).map((p) => p.project_id)
 
-  const observationCountResult = useLiveQuery<{ count: number }>(
-    `SELECT COUNT(*) FROM observations`,
+  // cheap existence probe instead of COUNT(*): this live query re-runs on
+  // every observation write, and a full-table count on a GBIF-sized table
+  // scanned all rows each time. EXISTS stops at the first row, and as a
+  // boolean dependency it only re-fires the effect below when observations
+  // appear/disappear — the effect itself reads fresh data anyway
+  const observationExistsResult = useLiveQuery<{ has_observations: boolean }>(
+    `SELECT EXISTS(SELECT 1 FROM observations) AS has_observations`,
   )
-  const observationCount: number = observationCountResult?.rows?.[0]?.count ?? 0
+  const hasObservations: boolean =
+    observationExistsResult?.rows?.[0]?.has_observations ?? false
 
   // If there are already queued insert ops for vector_layers for a project,
   // those ops will reach the server and Electric will sync the rows back.
@@ -290,7 +296,7 @@ export const TableLayersProvider = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [
     projects.length,
-    observationCount,
+    hasObservations,
     initialSyncing,
     sqlInitializing,
     firstRender,
