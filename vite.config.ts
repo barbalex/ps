@@ -65,11 +65,41 @@ export default defineConfig({
         // avif included: the hero images are the LCP element and must come
         // from the precache on repeat visits, not from a revalidating fetch
         globPatterns: [
-          '**/*.{js,jsx,ts,tsx,css,html,ico,png,jpg,svg,webp,avif,json,woff2,woff}',
+          '**/*.{js,jsx,ts,tsx,css,html,ico,png,jpg,svg,webp,avif,json,woff2,woff,wasm}',
         ],
         // version.json must always come from the network (see
         // emit-version-json above)
-        globIgnores: ['version.json'],
+        // cold chunks are excluded too: they belong to lazily loaded
+        // features (marker symbol picker icons, xlsx import incl. SheetJS
+        // legacy codepage tables, doc viewer, sql editor) that most visits
+        // never open — and would add ~4.5 MB to the first-visit precache.
+        // They are runtime-cached (CacheFirst) on first use instead, so
+        // offline still works after they have been loaded once.
+        globIgnores: [
+          'version.json',
+          'assets/md-*.js',
+          'assets/xlsx-*.js',
+          'assets/cpexcel.full-*.js',
+          'assets/react-doc-viewer-*.js',
+          'assets/SqlEditorField-*.js',
+        ],
+        // wasm IS precached although the app fetches it at boot anyway:
+        // the precache is the only copy the service worker controls — the
+        // browser's HTTP cache may evict its copy, and without the wasm
+        // there is no offline app at all. Before, offline robustness
+        // depended on HTTP-cache luck.
+        // runtime caching for the excluded cold chunks above (hashed,
+        // immutable URLs — CacheFirst is safe)
+        runtimeCaching: [
+          {
+            urlPattern: /\/assets\/.+\.(js|css|wasm)$/,
+            handler: 'CacheFirst',
+            options: {
+              cacheName: 'assets-on-first-use',
+              cacheableResponse: { statuses: [200] },
+            },
+          },
+        ],
         // On arten-fördern.ch the OAuth callback is a same-origin navigation
         // to /auth/callback/google that the Netlify edge function must proxy
         // to the auth server — without the denylist the navigation fallback
