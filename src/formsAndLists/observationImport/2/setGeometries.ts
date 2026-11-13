@@ -18,6 +18,11 @@ type Props = {
   setNotification: (msg: string) => void
 }
 
+// rows per bulk UPDATE: one parameterized statement via unnest instead of
+// one round-trip per observation (1960 observations were 1960 sequential
+// worker queries, each one invalidating the live queries)
+const CHUNK_SIZE = 500
+
 export const setGeometries = async ({
   observationImport,
   setNotification,
@@ -51,14 +56,12 @@ export const setGeometries = async ({
     [observationImport.crs as string, defs],
   ] as [string, string][])
 
-  // const observations = observationImport?.observations ?? []
   const res = await db.query(
     `SELECT * FROM observations WHERE observation_import_id = $1 AND geometry IS NULL`,
     [observationImport?.observation_import_id],
   )
   const observationsWithoutGeometry = res?.rows as Observations[]
 
-  // Register background task
   backgroundTasks.add(
     taskId,
     intl?.formatMessage({
@@ -68,49 +71,64 @@ export const setGeometries = async ({
     observationsWithoutGeometry.length,
   )
 
-  // Process in batches to allow UI updates
-  const batchSize = 50
-  let processed = 0
-
   try {
-    for (let i = 0; i < observationsWithoutGeometry.length; i += batchSize) {
-      const batch = observationsWithoutGeometry.slice(i, i + batchSize)
+    // project all coordinates in js first, then write them in bulk
+    const updates: {
+      observation_id: string
+      geometry: Record<string, unknown>
+    }[] = []
 
-      for (const o of batch) {
-        const data = o.data as Record<string, unknown>
-        const coordinates = [
-          data[observationImport?.x_coordinate_field as string],
-          data[observationImport?.y_coordinate_field as string],
-        ]
-        const position = proj4(
-          observationImport.crs as string,
-          'EPSG:4326',
-          coordinates as number[],
-        )
-        // TODO: why is reversing needed? is it a bug?
-        const geometry = {
+    for (const o of observationsWithoutGeometry) {
+      const data = o.data as Record<string, unknown>
+      const coordinates = [
+        data[observationImport?.x_coordinate_field as string],
+        data[observationImport?.y_coordinate_field as string],
+      ]
+      // skip rows without usable coordinates (proj4 would produce NaN
+      // points from undefined/null values)
+      if (
+        !Number.isFinite(Number(coordinates[0])) ||
+        !Number.isFinite(Number(coordinates[1]))
+      ) {
+        continue
+      }
+      const position = proj4(
+        observationImport.crs as string,
+        'EPSG:4326',
+        coordinates as number[],
+      )
+      // TODO: why is reversing needed? is it a bug?
+      updates.push({
+        observation_id: o.observation_id,
+        geometry: {
           type: 'GeometryCollection',
           geometries: [{ type: 'Point', coordinates: position.reverse() }],
-        }
-        await db.query(
-          `UPDATE observations SET geometry = ST_GeomFromGeoJSON($1) WHERE observation_id = $2`,
-          [JSON.stringify(geometry), o.observation_id],
-        )
-        store.set(addOperationAtom, {
-          table: 'observations',
-          rowIdName: 'observation_id',
-          rowId: o.observation_id,
-          operation: 'update',
-          draft: { geometry },
-          prev: { ...o },
-        })
+        },
+      })
+    }
 
-        processed++
-        backgroundTasks.updateProgress(taskId, processed)
-      }
+    for (let i = 0; i < updates.length; i += CHUNK_SIZE) {
+      const chunk = updates.slice(i, i + CHUNK_SIZE)
+      await db.query(
+        `UPDATE observations AS o SET geometry = ST_SetSRID(ST_GeomFromGeoJSON(v.geometry::text), 4326)
+         FROM (SELECT * FROM unnest($1::uuid[], $2::jsonb[]) AS v(observation_id, geometry)) AS v
+         WHERE o.observation_id = v.observation_id`,
+        [
+          chunk.map((u) => u.observation_id),
+          chunk.map((u) => JSON.stringify(u.geometry)),
+        ],
+      )
+      backgroundTasks.updateProgress(taskId, i + chunk.length)
+    }
 
-      // Small delay to allow UI to update
-      await new Promise((resolve) => setTimeout(resolve, 10))
+    // one queued operation instead of one per row: upsertMany updates the
+    // given columns for the given ids server-side
+    if (updates.length) {
+      store.set(addOperationAtom, {
+        table: 'observations',
+        operation: 'upsertMany',
+        draft: updates,
+      })
     }
 
     backgroundTasks.complete(taskId)
