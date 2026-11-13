@@ -7,7 +7,7 @@ import {
   fieldTypesFilterAtom,
   widgetTypesFilterAtom,
   widgetsForFieldsFilterAtom,
-  treeOpenNodesAtom,
+  treeOpenNodesSetAtom,
   designingAtom,
   isAppAmin,
   operationsQueueAtom,
@@ -39,7 +39,7 @@ type NavDataFiltered = NavDataUnfiltered & {
 
 export const useDataNavData = () => {
   const { formatMessage } = useIntl()
-  const [openNodes] = useAtom(treeOpenNodesAtom)
+  const [openNodesSet] = useAtom(treeOpenNodesSetAtom)
   const [designing] = useAtom(designingAtom)
   const isAnyDesigning = Object.values(designing).some(Boolean)
   const [isAppAdmin] = useAtom(isAppAmin)
@@ -71,8 +71,8 @@ export const useDataNavData = () => {
         users_count_unfiltered AS (SELECT count(*) FROM users),
         accounts_count_unfiltered AS (SELECT count(*) FROM accounts),
         ${
-          isAnyDesigning
-            ? `
+          isAnyDesigning ?
+            `
             field_types_count_unfiltered AS (SELECT count(*) FROM field_types),
             field_types_count_filtered AS (SELECT count(*) FROM field_types ${fieldTypesIsFiltered ? ` WHERE ${fieldTypesFilterString}` : ''}),
             widget_types_count_unfiltered AS (SELECT count(*) FROM widget_types),
@@ -84,7 +84,7 @@ export const useDataNavData = () => {
             exports_count_unfiltered AS (SELECT count(*) FROM exports),
             root_exports_count_unfiltered AS (SELECT count(*) FROM export_assignments WHERE project_id IS NULL AND subproject_id IS NULL),
           `
-            : ''
+          : ''
         }
         messages_count_unfiltered AS (SELECT count(*) FROM messages)
       SELECT
@@ -93,8 +93,8 @@ export const useDataNavData = () => {
         users_count_unfiltered.count AS users_count_unfiltered,
         accounts_count_unfiltered.count AS accounts_count_unfiltered,
         ${
-          isAnyDesigning
-            ? `
+          isAnyDesigning ?
+            `
               field_types_count_unfiltered.count AS field_types_count_unfiltered,
               field_types_count_filtered.count AS field_types_count_filtered,
               widget_types_count_unfiltered.count AS widget_types_count_unfiltered,
@@ -106,7 +106,7 @@ export const useDataNavData = () => {
               exports_count_unfiltered.count AS exports_count_unfiltered,
               root_exports_count_unfiltered.count AS root_exports_count_unfiltered,
             `
-            : ''
+          : ''
         }
         messages_count_unfiltered.count AS messages_count_unfiltered
       FROM 
@@ -115,8 +115,8 @@ export const useDataNavData = () => {
         users_count_unfiltered,
         accounts_count_unfiltered,
         ${
-          isAnyDesigning
-            ? `
+          isAnyDesigning ?
+            `
               field_types_count_unfiltered,
               field_types_count_filtered,
               widget_types_count_unfiltered,
@@ -128,7 +128,7 @@ export const useDataNavData = () => {
               exports_count_unfiltered,
               root_exports_count_unfiltered,
             `
-            : ''
+          : ''
         }
         messages_count_unfiltered
       `,
@@ -140,7 +140,7 @@ export const useDataNavData = () => {
   const parentUrl = `/${parentArray.join('/')}`
   const ownArray = [...parentArray, row?.id]
   const ownUrl = `/${ownArray.join('/')}`
-  const isOpen = openNodes.some((array) => isEqual(array, ownArray))
+  const isOpen = openNodesSet.has(ownArray.join('/'))
   const urlPath = location.pathname.split('/').filter((p) => p !== '')
   const isInActiveNodeArray = ownArray.every((part, i) => urlPath[i] === part)
   const isActive = isEqual(urlPath, ownArray)
@@ -180,121 +180,120 @@ export const useDataNavData = () => {
           }),
         }),
       },
-      ...(isAnyDesigning
-        ? [
-            ...(isAppAdmin
-              ? [
-                  {
-                    id: 'field-types',
-                    label: buildNavLabel({
-                      loading,
-                      isFiltered: fieldTypesIsFiltered,
-                      countFiltered: row?.field_types_count_filtered ?? 0,
-                      countUnfiltered: row?.field_types_count_unfiltered ?? 0,
-                      namePlural: formatMessage({
-                        id: 'Yx8gIR',
-                        defaultMessage: 'Feld-Typen',
-                      }),
-                    }),
-                  },
-                  {
-                    id: 'widget-types',
-                    label: buildNavLabel({
-                      loading,
-                      isFiltered: widgetTypesIsFiltered,
-                      countFiltered: row?.widget_types_count_filtered ?? 0,
-                      countUnfiltered: row?.widget_types_count_unfiltered ?? 0,
-                      namePlural: formatMessage({
-                        id: 'U55pI0',
-                        defaultMessage: 'Widget-Typen',
-                      }),
-                    }),
-                  },
-                  {
-                    id: 'widgets-for-fields',
-                    label: buildNavLabel({
-                      loading,
-                      isFiltered: widgetsForFieldsIsFiltered,
-                      countFiltered:
-                        row?.widgets_for_fields_count_filtered ?? 0,
-                      countUnfiltered:
-                        row?.widgets_for_fields_count_unfiltered ?? 0,
-                      namePlural: formatMessage({
-                        id: 'bDoJBk',
-                        defaultMessage: 'Widgets für Felder',
-                      }),
-                    }),
-                  },
-                ]
-              : []),
-            {
-              id: 'qcs',
-              label: buildNavLabel({
-                loading,
-                countFiltered: row?.qcs_count_unfiltered ?? 0,
-                namePlural: formatMessage({
-                  id: 'qcs.namePlural',
-                  defaultMessage: 'Qualitätskontrollen',
+      ...(isAnyDesigning ?
+        [
+          ...(isAppAdmin ?
+            [
+              {
+                id: 'field-types',
+                label: buildNavLabel({
+                  loading,
+                  isFiltered: fieldTypesIsFiltered,
+                  countFiltered: row?.field_types_count_filtered ?? 0,
+                  countUnfiltered: row?.field_types_count_unfiltered ?? 0,
+                  namePlural: formatMessage({
+                    id: 'Yx8gIR',
+                    defaultMessage: 'Feld-Typen',
+                  }),
                 }),
-              }),
-            },
-            {
-              id: 'qc-assignments',
-              label: buildNavLabel({
-                loading,
-                countFiltered: row?.root_qcs_count_unfiltered ?? 0,
-                namePlural: formatMessage({
-                  id: 'subprojectQcs.title',
-                  defaultMessage: 'Qualitätskontrollen: wählen',
+              },
+              {
+                id: 'widget-types',
+                label: buildNavLabel({
+                  loading,
+                  isFiltered: widgetTypesIsFiltered,
+                  countFiltered: row?.widget_types_count_filtered ?? 0,
+                  countUnfiltered: row?.widget_types_count_unfiltered ?? 0,
+                  namePlural: formatMessage({
+                    id: 'U55pI0',
+                    defaultMessage: 'Widget-Typen',
+                  }),
                 }),
-              }),
-            },
-            {
-              id: 'qcs-run',
-              label: buildNavLabel({
-                loading,
-                countFiltered: row?.root_qcs_count_unfiltered ?? 0,
-                namePlural: formatMessage({
-                  id: 'subprojectQcsRun.title',
-                  defaultMessage: 'Qualitätskontrollen: ausführen',
+              },
+              {
+                id: 'widgets-for-fields',
+                label: buildNavLabel({
+                  loading,
+                  isFiltered: widgetsForFieldsIsFiltered,
+                  countFiltered: row?.widgets_for_fields_count_filtered ?? 0,
+                  countUnfiltered:
+                    row?.widgets_for_fields_count_unfiltered ?? 0,
+                  namePlural: formatMessage({
+                    id: 'bDoJBk',
+                    defaultMessage: 'Widgets für Felder',
+                  }),
                 }),
+              },
+            ]
+          : []),
+          {
+            id: 'qcs',
+            label: buildNavLabel({
+              loading,
+              countFiltered: row?.qcs_count_unfiltered ?? 0,
+              namePlural: formatMessage({
+                id: 'qcs.namePlural',
+                defaultMessage: 'Qualitätskontrollen',
               }),
-            },
-            {
-              id: 'exports',
-              label: buildNavLabel({
-                loading,
-                countFiltered: row?.exports_count_unfiltered ?? 0,
-                namePlural: formatMessage({
-                  id: 'exports.namePlural',
-                  defaultMessage: 'Exporte',
-                }),
+            }),
+          },
+          {
+            id: 'qc-assignments',
+            label: buildNavLabel({
+              loading,
+              countFiltered: row?.root_qcs_count_unfiltered ?? 0,
+              namePlural: formatMessage({
+                id: 'subprojectQcs.title',
+                defaultMessage: 'Qualitätskontrollen: wählen',
               }),
-            },
-            {
-              id: 'export-assignments',
-              label: buildNavLabel({
-                loading,
-                countFiltered: row?.exports_count_unfiltered ?? 0,
-                namePlural: formatMessage({
-                  id: 'rootExports.title',
-                  defaultMessage: 'Exporte: wählen',
-                }),
+            }),
+          },
+          {
+            id: 'qcs-run',
+            label: buildNavLabel({
+              loading,
+              countFiltered: row?.root_qcs_count_unfiltered ?? 0,
+              namePlural: formatMessage({
+                id: 'subprojectQcsRun.title',
+                defaultMessage: 'Qualitätskontrollen: ausführen',
               }),
-            },
-            {
-              id: 'exports-run',
-              label: buildNavLabel({
-                loading,
-                countFiltered: row?.root_exports_count_unfiltered ?? 0,
-                namePlural: formatMessage({
-                  id: 'rootExportsRun.title',
-                  defaultMessage: 'Exporte: ausführen',
-                }),
+            }),
+          },
+          {
+            id: 'exports',
+            label: buildNavLabel({
+              loading,
+              countFiltered: row?.exports_count_unfiltered ?? 0,
+              namePlural: formatMessage({
+                id: 'exports.namePlural',
+                defaultMessage: 'Exporte',
               }),
-            },
-          ]
-        : []),
+            }),
+          },
+          {
+            id: 'export-assignments',
+            label: buildNavLabel({
+              loading,
+              countFiltered: row?.exports_count_unfiltered ?? 0,
+              namePlural: formatMessage({
+                id: 'rootExports.title',
+                defaultMessage: 'Exporte: wählen',
+              }),
+            }),
+          },
+          {
+            id: 'exports-run',
+            label: buildNavLabel({
+              loading,
+              countFiltered: row?.root_exports_count_unfiltered ?? 0,
+              namePlural: formatMessage({
+                id: 'rootExportsRun.title',
+                defaultMessage: 'Exporte: ausführen',
+              }),
+            }),
+          },
+        ]
+      : []),
       {
         id: 'messages',
         label: buildNavLabel({
@@ -306,21 +305,21 @@ export const useDataNavData = () => {
           }),
         }),
       },
-      ...(operationsQueue.length > 0
-        ? [
-            {
-              id: 'queued-operations',
-              label: buildNavLabel({
-                loading: false,
-                countFiltered: operationsQueue.length,
-                namePlural: formatMessage({
-                  id: 'qo.namePlural',
-                  defaultMessage: 'Ausstehende Operationen',
-                }),
+      ...(operationsQueue.length > 0 ?
+        [
+          {
+            id: 'queued-operations',
+            label: buildNavLabel({
+              loading: false,
+              countFiltered: operationsQueue.length,
+              namePlural: formatMessage({
+                id: 'qo.namePlural',
+                defaultMessage: 'Ausstehende Operationen',
               }),
-            },
-          ]
-        : []),
+            }),
+          },
+        ]
+      : []),
     ],
   }
 

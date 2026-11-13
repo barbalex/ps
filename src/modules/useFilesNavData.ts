@@ -7,7 +7,7 @@ import { useIntl } from 'react-intl'
 import { filterStringFromFilter } from './filterStringFromFilter.ts'
 import { buildNavLabel } from './buildNavLabel.ts'
 import { filesScopeWhere } from './filesScopeWhere.ts'
-import { filesFilterAtom, treeOpenNodesAtom } from '../store.ts'
+import { filesFilterAtom, treeOpenNodesSetAtom } from '../store.ts'
 
 type Props = {
   projectId?: string
@@ -42,7 +42,7 @@ export const useFilesNavData = ({
   checkId,
   tableViewId,
 }: Props) => {
-  const [openNodes] = useAtom(treeOpenNodesAtom)
+  const [openNodesSet] = useAtom(treeOpenNodesSetAtom)
   const location = useLocation()
   const { formatMessage } = useIntl()
 
@@ -53,13 +53,13 @@ export const useFilesNavData = ({
     ...(placeId ? ['places', placeId] : []),
     ...(placeId2 ? ['places', placeId2] : []),
     ...(actionId ? ['actions', actionId] : []),
-    ...(checkId
-      ? [...(tableViewId ? ['table-views', tableViewId] : []), 'checks', checkId]
-      : []),
+    ...(checkId ?
+      [...(tableViewId ? ['table-views', tableViewId] : []), 'checks', checkId]
+    : []),
   ]
   const ownArray = [...parentArray, 'files']
   // needs to work not only works for urlPath, for all opened paths!
-  const isOpen = openNodes.some((array) => isEqual(array, ownArray))
+  const isOpen = openNodesSet.has(ownArray.join('/'))
 
   const scope = filesScopeWhere({
     projectId,
@@ -74,8 +74,9 @@ export const useFilesNavData = ({
   const filterString = filterStringFromFilter(filter)
   const isFiltered = !!filterString
 
-  const sql = isOpen
-    ? `
+  const sql =
+    isOpen ?
+      `
       WITH
         count_unfiltered AS (SELECT count(*) FROM files WHERE ${scope}),
         count_filtered AS (SELECT count(*) FROM files WHERE ${scope} ${isFiltered ? ` AND ${filterString}` : ''})

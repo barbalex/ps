@@ -115,7 +115,8 @@ export const executeOperation = async (o: QueuedOperation) => {
       queryFunction = filters.reduce((q, f) => {
         if (f.function === 'eq') return q.eq(f.column, f.value)
         if (f.function === 'neq') return q.neq(f.column, f.value)
-        if (f.function === 'in') return q.in(f.column, f.value as readonly unknown[])
+        if (f.function === 'in')
+          return q.in(f.column, f.value as readonly unknown[])
         return q
       }, baseQueryFunction)
     } else if (filter?.function === 'eq') {
@@ -208,18 +209,14 @@ export const executeOperation = async (o: QueuedOperation) => {
     const baseQueryFunction = withAuth(postgrestClient.from(table).delete())
     // add filtering
     const queryFunction =
-      rowIdName && rowId
-        ? baseQueryFunction.eq(rowIdName, rowId)
-        : filter?.function === 'eq'
-          ? baseQueryFunction.eq(filter.column, filter.value)
-          : filter?.function === 'neq'
-            ? baseQueryFunction.neq(filter.column, filter.value)
-            : filter?.function === 'in'
-              ? baseQueryFunction.in(
-                  filter.column,
-                  filter.value as readonly unknown[],
-                )
-              : baseQueryFunction
+      rowIdName && rowId ? baseQueryFunction.eq(rowIdName, rowId)
+      : filter?.function === 'eq' ?
+        baseQueryFunction.eq(filter.column, filter.value)
+      : filter?.function === 'neq' ?
+        baseQueryFunction.neq(filter.column, filter.value)
+      : filter?.function === 'in' ?
+        baseQueryFunction.in(filter.column, filter.value as readonly unknown[])
+      : baseQueryFunction
     const { error } = await queryFunction
 
     checkError(error)

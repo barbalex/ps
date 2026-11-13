@@ -6,14 +6,14 @@ import { useIntl } from 'react-intl'
 
 import { buildNavLabel } from './buildNavLabel.ts'
 import {
-  treeOpenNodesAtom,
+  treeOpenNodesSetAtom,
   rootQcsRunLabelFilterAtom,
   rootQcsRunOnlyWithResultsAtom,
   rootQcsRunFilteredCountAtom,
 } from '../store.ts'
 
 export const useRootQcsRunNavData = () => {
-  const [openNodes] = useAtom(treeOpenNodesAtom)
+  const [openNodesSet] = useAtom(treeOpenNodesSetAtom)
   const [labelFilter] = useAtom(rootQcsRunLabelFilterAtom)
   const [onlyWithResults] = useAtom(rootQcsRunOnlyWithResultsAtom)
   const [filteredCount] = useAtom(rootQcsRunFilteredCountAtom)
@@ -24,7 +24,7 @@ export const useRootQcsRunNavData = () => {
   const parentUrl = `/${parentArray.join('/')}`
   const ownArray = [...parentArray, 'qcs-run']
   const ownUrl = `/${ownArray.join('/')}`
-  const isOpen = openNodes.some((array) => isEqual(array, ownArray))
+  const isOpen = openNodesSet.has(ownArray.join('/'))
 
   const res = useLiveQuery<{ count: number }>(
     `SELECT count(*) AS count

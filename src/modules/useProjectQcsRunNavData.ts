@@ -6,7 +6,7 @@ import { useIntl } from 'react-intl'
 
 import { buildNavLabel } from './buildNavLabel.ts'
 import {
-  treeOpenNodesAtom,
+  treeOpenNodesSetAtom,
   projectQcsRunLabelFilterAtom,
   projectQcsRunOnlyWithResultsAtom,
   projectQcsRunFilteredCountAtom,
@@ -17,7 +17,7 @@ type Props = {
 }
 
 export const useProjectQcsRunNavData = ({ projectId }: Props) => {
-  const [openNodes] = useAtom(treeOpenNodesAtom)
+  const [openNodesSet] = useAtom(treeOpenNodesSetAtom)
   const [labelFilter] = useAtom(projectQcsRunLabelFilterAtom)
   const [onlyWithResults] = useAtom(projectQcsRunOnlyWithResultsAtom)
   const [filteredCount] = useAtom(projectQcsRunFilteredCountAtom)
@@ -28,7 +28,7 @@ export const useProjectQcsRunNavData = ({ projectId }: Props) => {
   const parentUrl = `/${parentArray.join('/')}`
   const ownArray = [...parentArray, 'qcs-run']
   const ownUrl = `/${ownArray.join('/')}`
-  const isOpen = openNodes.some((array) => isEqual(array, ownArray))
+  const isOpen = openNodesSet.has(ownArray.join('/'))
 
   const res = useLiveQuery<{ count: number }>(
     `SELECT count(*) AS count

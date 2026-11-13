@@ -67,18 +67,18 @@ export const getOwnVectorLayerLabel = (
     case 'places':
       return pluralName(placeLevel, language) ?? labels.placesLabel
     case 'actions':
-      return singular
-        ? labels.actionsByPlaceLabel(singular)
+      return singular ?
+          labels.actionsByPlaceLabel(singular)
         : labels.actionsLabel
     case 'checks':
       return singular ? labels.checksByPlaceLabel(singular) : labels.checksLabel
     case 'observations_assigned':
-      return singular
-        ? labels.observationsAssignedByPlaceLabel(singular)
+      return singular ?
+          labels.observationsAssignedByPlaceLabel(singular)
         : labels.observationsAssignedLabel
     case 'observations_assigned_lines':
-      return singular
-        ? labels.observationsAssignedLinesLabel(singular)
+      return singular ?
+          labels.observationsAssignedLinesLabel(singular)
         : labels.observationsAssignedLinesLabel(labels.placesLabel)
     case 'observations_to_assess':
       return labels.observationsToAssessLabel

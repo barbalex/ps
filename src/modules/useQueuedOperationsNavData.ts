@@ -5,7 +5,7 @@ import { useIntl } from 'react-intl'
 import dayjs from 'dayjs'
 
 import { buildNavLabel } from './buildNavLabel.ts'
-import { operationsQueueAtom, treeOpenNodesAtom } from '../store.ts'
+import { operationsQueueAtom, treeOpenNodesSetAtom } from '../store.ts'
 
 const parentArray = ['data']
 const parentUrl = `/${parentArray.join('/')}`
@@ -14,11 +14,11 @@ const ownUrl = `/${ownArray.join('/')}`
 
 export const useQueuedOperationsNavData = () => {
   const { formatMessage } = useIntl()
-  const [openNodes] = useAtom(treeOpenNodesAtom)
+  const [openNodesSet] = useAtom(treeOpenNodesSetAtom)
   const location = useLocation()
   const operationsQueue = useAtomValue(operationsQueueAtom)
 
-  const isOpen = openNodes.some((array) => isEqual(array, ownArray))
+  const isOpen = openNodesSet.has(ownArray.join('/'))
   const urlPath = location.pathname.split('/').filter((p) => p !== '')
   const isInActiveNodeArray = ownArray.every((part, i) => urlPath[i] === part)
   const isActive = isEqual(urlPath, ownArray)

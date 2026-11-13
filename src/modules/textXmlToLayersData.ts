@@ -12,11 +12,9 @@ export const textXmlToLayersData = (xml: Document) => {
   const obj = xmlToJson(xml)
   // extract layers
   const featureCollection = obj?.['ogr:FeatureCollection'] as
-    | Record<string, unknown>
-    | undefined
+    Record<string, unknown> | undefined
   const output = featureCollection?.['gml:featureMember'] as
-    | Record<string, unknown>
-    | undefined
+    Record<string, unknown> | undefined
   const layersLabelValueArray = Object.entries(output ?? {}).filter(([key]) =>
     key.toLowerCase().startsWith('ogr:'),
   )

@@ -9,7 +9,7 @@ import { buildNavLabel } from './buildNavLabel.ts'
 import {
   checkReports1FilterAtom,
   checkReports2FilterAtom,
-  treeOpenNodesAtom,
+  treeOpenNodesSetAtom,
 } from '../store.ts'
 
 type Props = {
@@ -37,7 +37,7 @@ export const useCheckReportsNavData = ({
   placeId,
   placeId2,
 }: Props) => {
-  const [openNodes] = useAtom(treeOpenNodesAtom)
+  const [openNodesSet] = useAtom(treeOpenNodesSetAtom)
   const location = useLocation()
   const { formatMessage } = useIntl()
 
@@ -53,7 +53,7 @@ export const useCheckReportsNavData = ({
   ]
   const ownArray = [...parentArray, 'check-reports']
   // needs to work not only works for urlPath, for all opened paths!
-  const isOpen = openNodes.some((array) => isEqual(array, ownArray))
+  const isOpen = openNodesSet.has(ownArray.join('/'))
 
   const [filter] = useAtom(
     placeId2 ? checkReports2FilterAtom : checkReports1FilterAtom,
@@ -61,8 +61,9 @@ export const useCheckReportsNavData = ({
   const filterString = filterStringFromFilter(filter)
   const isFiltered = !!filterString
 
-  const sql = isOpen
-    ? `
+  const sql =
+    isOpen ?
+      `
       WITH
         count_unfiltered AS (SELECT count(*) FROM check_reports WHERE place_id = '${placeId2 ?? placeId}'),
         count_filtered AS (SELECT count(*) FROM check_reports WHERE place_id = '${placeId2 ?? placeId}' ${isFiltered ? ` AND ${filterString}` : ''})

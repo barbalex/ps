@@ -3,7 +3,7 @@ import { useAtom } from 'jotai'
 import { useLocation } from '@tanstack/react-router'
 import { isEqual } from 'es-toolkit'
 
-import { treeOpenNodesAtom } from '../store.ts'
+import { treeOpenNodesSetAtom } from '../store.ts'
 
 type Props = {
   projectId: string
@@ -19,7 +19,7 @@ export const useSubprojectReportDesignNavData = ({
   projectId,
   subprojectReportDesignId,
 }: Props) => {
-  const [openNodes] = useAtom(treeOpenNodesAtom)
+  const [openNodesSet] = useAtom(treeOpenNodesSetAtom)
   const location = useLocation()
 
   const res = useLiveQuery<NavData>(
@@ -39,7 +39,7 @@ export const useSubprojectReportDesignNavData = ({
   const parentUrl = `/${parentArray.join('/')}`
   const ownArray = [...parentArray, subprojectReportDesignId]
   const ownUrl = `/${ownArray.join('/')}`
-  const isOpen = openNodes.some((array) => isEqual(array, ownArray))
+  const isOpen = openNodesSet.has(ownArray.join('/'))
   const urlPath = location.pathname.split('/').filter((p) => p !== '')
   const isInActiveNodeArray = ownArray.every((part, i) => urlPath[i] === part)
   const isActive = isEqual(urlPath, ownArray)

@@ -19,19 +19,19 @@ export const buildNavLabel = ({
   limit?: number
 }) => {
   const intl = store.get(intlAtom)
-  const labelFirst = intl
-    ? intl.formatMessage({ id: 'tZTfvu', defaultMessage: 'erste' })
+  const labelFirst =
+    intl ?
+      intl.formatMessage({ id: 'tZTfvu', defaultMessage: 'erste' })
     : 'erste'
 
-  return isFiltered
-    ? `${namePlural} (${
-        isFiltered
-          ? `${loading ? '...' : formatNumber(countFiltered)}/${
-              loading ? '...' : formatNumber(countUnfiltered)
-            }`
-          : loading
-            ? '...'
-            : formatNumber(countFiltered)
+  return isFiltered ?
+      `${namePlural} (${
+        isFiltered ?
+          `${loading ? '...' : formatNumber(countFiltered)}/${
+            loading ? '...' : formatNumber(countUnfiltered)
+          }`
+        : loading ? '...'
+        : formatNumber(countFiltered)
       }${isLimited ? `, ${labelFirst} ${limit}` : ''})`
     : `${namePlural} (${loading ? '...' : formatNumber(countFiltered)}${isLimited ? `, ${labelFirst} ${limit}` : ''})`
 }

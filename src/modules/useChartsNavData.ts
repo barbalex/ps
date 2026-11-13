@@ -7,7 +7,11 @@ import { useIntl } from 'react-intl'
 import { filterStringFromFilter } from './filterStringFromFilter.ts'
 import { buildNavLabel } from './buildNavLabel.ts'
 import { subprojectNamePluralExpr } from './subprojectNameCols.ts'
-import { chartsFilterAtom, treeOpenNodesAtom, languageAtom } from '../store.ts'
+import {
+  chartsFilterAtom,
+  treeOpenNodesSetAtom,
+  languageAtom,
+} from '../store.ts'
 
 type Props = {
   projectId: string
@@ -41,7 +45,7 @@ export const useChartsNavData = ({
   section,
 }: Props) => {
   const { formatMessage } = useIntl()
-  const [openNodes] = useAtom(treeOpenNodesAtom)
+  const [openNodesSet] = useAtom(treeOpenNodesSetAtom)
   const [filter] = useAtom(chartsFilterAtom)
   const [language] = useAtom(languageAtom)
   const location = useLocation()
@@ -50,8 +54,7 @@ export const useChartsNavData = ({
   // appear alongside the subproject's own charts. On the project itself,
   // the two sections are separate: charts and charts for subprojects
   const whereClause =
-    placeId2 || placeId ?
-      `charts.place_id = '${placeId2 ?? placeId}'`
+    placeId2 || placeId ? `charts.place_id = '${placeId2 ?? placeId}'`
     : subprojectId ?
       `(charts.subproject_id = '${subprojectId}' OR (charts.for_subprojects AND charts.project_id = '${projectId}' AND charts.subproject_id IS NULL))`
     : `charts.project_id = '${projectId}' AND charts.for_subprojects = ${forSubprojects ? 'TRUE' : 'FALSE'}`
@@ -68,7 +71,7 @@ export const useChartsNavData = ({
   const ownArray = [...parentArray, chartsSegment]
   const ownUrl = `/${ownArray.join('/')}`
   // needs to work not only works for urlPath, for all opened paths!
-  const isOpen = openNodes.some((array) => isEqual(array, ownArray))
+  const isOpen = openNodesSet.has(ownArray.join('/'))
 
   // the subprojects section is named after the project's own term for its
   // subprojects (e.g. "Arten-Diagramme")
@@ -79,13 +82,15 @@ export const useChartsNavData = ({
   const subprojectsPlural =
     (nameRes?.rows?.[0]?.name_plural as string | undefined) ??
     formatMessage({ id: 'bEaAfF', defaultMessage: 'Teilprojekte' })
-  const namePlural = forSubprojects ?
+  const namePlural =
+    forSubprojects ?
       formatMessage(
         { id: 'bFcCdD', defaultMessage: '{subprojects}-Diagramme' },
         { subprojects: subprojectsPlural },
       )
     : formatMessage({ id: 'ZPEO8P', defaultMessage: 'Diagramme' })
-  const nameSingular = forSubprojects ?
+  const nameSingular =
+    forSubprojects ?
       formatMessage(
         { id: 'bFdDeE', defaultMessage: '{subprojects}-Diagramm' },
         { subprojects: subprojectsPlural },
@@ -100,8 +105,8 @@ export const useChartsNavData = ({
 
   const sql = `
     ${
-      isOpen
-        ? `
+      isOpen ?
+        `
       WITH
         count_unfiltered AS (SELECT count(*) FROM charts WHERE ${whereClause}),
         count_filtered AS (SELECT count(*) FROM charts WHERE ${whereClause} ${isFiltered ? ` AND ${filterString}` : ''})
@@ -116,7 +121,7 @@ export const useChartsNavData = ({
       ${isFiltered ? ` AND ${filterString}` : ''}
       ORDER BY label
     `
-        : `
+      : `
       WITH
         count_unfiltered AS (SELECT count(*) FROM charts WHERE ${whereClause}),
         count_filtered AS (SELECT count(*) FROM charts WHERE ${whereClause} ${isFiltered ? ` AND ${filterString}` : ''})

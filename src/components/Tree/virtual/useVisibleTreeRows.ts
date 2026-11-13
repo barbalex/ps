@@ -1,8 +1,7 @@
 import { useAtomValue } from 'jotai'
 import { useMemo } from 'react'
-import { isEqual } from 'es-toolkit'
 
-import { treeOpenNodesAtom } from '../../../store.ts'
+import { treeOpenNodesSetAtom } from '../../../store.ts'
 import { treeRegisteredRowsAtom, treeRootRowsAtom } from './atoms.ts'
 import { treeConfigs } from './treeConfigs.tsx'
 import type { TreeRegisteredRow } from './types.ts'
@@ -13,9 +12,6 @@ export interface TreeRow {
   isOpen: boolean
 }
 
-const isRowOpen = (ownArray: string[], openNodes: string[][]): boolean =>
-  openNodes.some((array) => isEqual(array, ownArray))
-
 /**
  * Flattens the visible tree into a row array for the virtualizer:
  * root rows in registration order, then children of open rows.
@@ -25,7 +21,7 @@ const isRowOpen = (ownArray: string[], openNodes: string[][]): boolean =>
 export const useVisibleTreeRows = () => {
   const rootRows = useAtomValue(treeRootRowsAtom)
   const registeredRows = useAtomValue(treeRegisteredRowsAtom)
-  const openNodes = useAtomValue(treeOpenNodesAtom)
+  const openNodesSet = useAtomValue(treeOpenNodesSetAtom)
 
   const rows = useMemo(() => {
     const rows: TreeRow[] = []
@@ -35,7 +31,7 @@ export const useVisibleTreeRows = () => {
       // guard against (stale) registration cycles
       if (visited.has(row.key)) return
       visited.add(row.key)
-      const isOpen = isRowOpen(row.ownArray, openNodes)
+      const isOpen = openNodesSet.has(row.ownArray.join('/'))
       rows.push({ key: row.key, row, isOpen })
       if (!isOpen) return
       for (const child of row.children ?? []) {
@@ -72,7 +68,7 @@ export const useVisibleTreeRows = () => {
     for (const rootRow of rootRows.values()) visit(rootRow)
 
     return rows
-  }, [rootRows, registeredRows, openNodes])
+  }, [rootRows, registeredRows, openNodesSet])
 
   return rows
 }

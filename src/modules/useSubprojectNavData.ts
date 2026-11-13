@@ -1,5 +1,5 @@
 import { useLiveQuery } from '@electric-sql/pglite-react'
-import { useAtom } from 'jotai'
+import { useAtom, useAtomValue } from 'jotai'
 import { isEqual } from 'es-toolkit'
 import { useIntl } from 'react-intl'
 
@@ -8,9 +8,9 @@ import {
   subprojectReportsFilterAtom,
   goalsFilterAtom,
   filesFilterAtom,
-  treeOpenNodesAtom,
+  treeOpenNodesSetAtom,
   languageAtom,
-  designingAtom,
+  isDesigningAtom,
 } from '../store.ts'
 import { useNavRollups } from './navRollupsContext.ts'
 import { buildNavLabel } from './buildNavLabel.ts'
@@ -28,10 +28,9 @@ type NavData = {
 }
 
 export const useSubprojectNavData = ({ projectId, subprojectId }: Props) => {
-  const [openNodes] = useAtom(treeOpenNodesAtom)
+  const [openNodesSet] = useAtom(treeOpenNodesSetAtom)
   const { formatMessage } = useIntl()
-  const [designingMap] = useAtom(designingAtom)
-  const designing = designingMap[projectId] ?? false
+  const designing = useAtomValue(isDesigningAtom(projectId))
   const [placesFilter] = useAtom(places1FilterAtom)
   const [language] = useAtom(languageAtom)
 
@@ -130,7 +129,7 @@ export const useSubprojectNavData = ({ projectId, subprojectId }: Props) => {
   const parentUrl = `/${parentArray.join('/')}`
   const ownArray = [...parentArray, nav?.id]
   const ownUrl = `/${ownArray.join('/')}`
-  const isOpen = openNodes.some((array) => isEqual(array, ownArray))
+  const isOpen = openNodesSet.has(ownArray.join('/'))
   const urlPath = location.pathname.split('/').filter((p) => p !== '')
   const isInActiveNodeArray = ownArray.every((part, i) => urlPath[i] === part)
   const isActive = isEqual(urlPath, ownArray)

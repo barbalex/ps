@@ -6,7 +6,7 @@ import { useIntl } from 'react-intl'
 
 import { filterStringFromFilter } from './filterStringFromFilter.ts'
 import { buildNavLabel } from './buildNavLabel.ts'
-import { languageAtom, qcsFilterAtom, treeOpenNodesAtom } from '../store.ts'
+import { languageAtom, qcsFilterAtom, treeOpenNodesSetAtom } from '../store.ts'
 
 const parentArray = ['data']
 const parentUrl = `/${parentArray.join('/')}`
@@ -26,19 +26,20 @@ type NavDataClosed = {
 }
 
 export const useQcsNavData = () => {
-  const [openNodes] = useAtom(treeOpenNodesAtom)
+  const [openNodesSet] = useAtom(treeOpenNodesSetAtom)
   const location = useLocation()
   const { formatMessage } = useIntl()
 
-  const isOpen = openNodes.some((array) => isEqual(array, ownArray))
+  const isOpen = openNodesSet.has(ownArray.join('/'))
   const [language] = useAtom(languageAtom)
 
   const [filter] = useAtom(qcsFilterAtom)
   const filterString = filterStringFromFilter(filter)
   const isFiltered = !!filterString
 
-  const sql = isOpen
-    ? `
+  const sql =
+    isOpen ?
+      `
       WITH
         count_unfiltered AS (SELECT count(*) FROM qcs),
         count_filtered AS (SELECT count(*) FROM qcs ${isFiltered ? ` WHERE ${filterString}` : ''})

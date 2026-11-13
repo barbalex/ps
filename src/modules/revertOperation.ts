@@ -9,10 +9,11 @@ export const revertOperation = async (o: QueuedOperation) => {
 
   // draft is only an array for *Many operations, which never reach the revert
   // paths below; both branches work with the object shape (see revertOperationInPlace)
-  const { table, rowIdName, rowId, operation, draft, prev } = o as QueuedOperation & {
-    draft: Record<string, unknown>
-    prev: Record<string, unknown>
-  }
+  const { table, rowIdName, rowId, operation, draft, prev } =
+    o as QueuedOperation & {
+      draft: Record<string, unknown>
+      prev: Record<string, unknown>
+    }
 
   // reverting only happens after the app has initialized the db
   const pgliteDb = store.get(pgliteDbAtom)!

@@ -8,9 +8,9 @@ const deMessages = {
   '3oZh5s': 'Beobachtungen nicht zuzuordnen',
   '5xrddR': '{place}: Beobachtungen zugeordnet',
   'OaXR/X': 'Beobachtungen zugeordnet',
-  'WJk01v': '{place}: Kontrollen',
+  WJk01v: '{place}: Kontrollen',
   aeUjud: 'Beobachtungen zu beurteilen',
-  'eJfllL': 'Massnahmen',
+  eJfllL: 'Massnahmen',
   h5g7Kk: 'Orte',
   'oPMDm+': 'Kontrollen',
 } as const
@@ -25,7 +25,8 @@ const messagesByLanguage = {
 const interpolate = (
   template: string,
   values: Record<string, string | number> = {},
-) => template.replace(/\{(\w+)\}/g, (_, key) => String(values[key] ?? `{${key}}`))
+) =>
+  template.replace(/\{(\w+)\}/g, (_, key) => String(values[key] ?? `{${key}}`))
 
 const getMessage = (language: string, id: string, fallback: string) => {
   const messages =

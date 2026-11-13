@@ -5,7 +5,7 @@ import { isEqual } from 'es-toolkit'
 import { useIntl } from 'react-intl'
 
 import { buildNavLabel } from './buildNavLabel.ts'
-import { treeOpenNodesAtom, languageAtom } from '../store.ts'
+import { treeOpenNodesSetAtom, languageAtom } from '../store.ts'
 import { subprojectNameSingularExpr } from './subprojectNameCols.ts'
 
 type Props = {
@@ -18,10 +18,8 @@ type NavData = {
   active: boolean
 }[]
 
-export const useSubprojectReportDesignsNavData = ({
-  projectId,
-}: Props) => {
-  const [openNodes] = useAtom(treeOpenNodesAtom)
+export const useSubprojectReportDesignsNavData = ({ projectId }: Props) => {
+  const [openNodesSet] = useAtom(treeOpenNodesSetAtom)
   const [language] = useAtom(languageAtom)
   const location = useLocation()
   const { formatMessage } = useIntl()
@@ -32,8 +30,8 @@ export const useSubprojectReportDesignsNavData = ({
     label: string | null
     active: boolean | null
   }>(
-    (projectId
-      ? `
+    (projectId ?
+      `
         SELECT
           ${subprojectNameSingularExpr(language, 'p')} AS subproject_name_singular,
           srd.subproject_report_design_id AS id,
@@ -43,7 +41,7 @@ export const useSubprojectReportDesignsNavData = ({
         LEFT JOIN subproject_report_designs srd ON srd.project_id = p.project_id
         WHERE p.project_id = $1
         ORDER BY srd.label`
-      : null) as string,
+    : null) as string,
     projectId ? [projectId] : undefined,
   )
 
@@ -55,19 +53,27 @@ export const useSubprojectReportDesignsNavData = ({
     .filter((row) => row.id !== null)
     .map(({ id, label, active }) => ({ id, label, active })) as NavData
 
-  const nameSingular = subprojectNameSingular
-    ? `${subprojectNameSingular}-${formatMessage({ id: 'bCEhIj', defaultMessage: 'Bericht Design' })}`
-    : formatMessage({ id: 'Vgm3kN', defaultMessage: 'Teilprojekt-Bericht-Design' })
+  const nameSingular =
+    subprojectNameSingular ?
+      `${subprojectNameSingular}-${formatMessage({ id: 'bCEhIj', defaultMessage: 'Bericht Design' })}`
+    : formatMessage({
+        id: 'Vgm3kN',
+        defaultMessage: 'Teilprojekt-Bericht-Design',
+      })
 
-  const namePlural = subprojectNameSingular
-    ? `${subprojectNameSingular}-${formatMessage({ id: 'bCJkLm', defaultMessage: 'Bericht-Designs' })}`
-    : formatMessage({ id: '6GiFz4', defaultMessage: 'Teilprojekt-Bericht-Designs' })
+  const namePlural =
+    subprojectNameSingular ?
+      `${subprojectNameSingular}-${formatMessage({ id: 'bCJkLm', defaultMessage: 'Bericht-Designs' })}`
+    : formatMessage({
+        id: '6GiFz4',
+        defaultMessage: 'Teilprojekt-Bericht-Designs',
+      })
 
   const parentArray = ['data', 'projects', projectId]
   const parentUrl = `/${parentArray.join('/')}`
   const ownArray = [...parentArray, 'subproject-designs']
   const ownUrl = `/${ownArray.join('/')}`
-  const isOpen = openNodes.some((array) => isEqual(array, ownArray))
+  const isOpen = openNodesSet.has(ownArray.join('/'))
   const urlPath = location.pathname.split('/').filter((p) => p !== '')
   const isInActiveNodeArray = ownArray.every((part, i) => urlPath[i] === part)
   const isActive = isEqual(urlPath, ownArray)

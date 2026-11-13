@@ -5,14 +5,14 @@ import { isEqual } from 'es-toolkit'
 import { useIntl } from 'react-intl'
 
 import { buildNavLabel } from './buildNavLabel.ts'
-import { treeOpenNodesAtom } from '../store.ts'
+import { treeOpenNodesSetAtom } from '../store.ts'
 
 type Props = {
   projectId: string
 }
 
 export const useProjectQcAssignmentsNavData = ({ projectId }: Props) => {
-  const [openNodes] = useAtom(treeOpenNodesAtom)
+  const [openNodesSet] = useAtom(treeOpenNodesSetAtom)
   const location = useLocation()
   const { formatMessage } = useIntl()
 
@@ -20,7 +20,7 @@ export const useProjectQcAssignmentsNavData = ({ projectId }: Props) => {
   const parentUrl = `/${parentArray.join('/')}`
   const ownArray = [...parentArray, 'qc-assignments']
   const ownUrl = `/${ownArray.join('/')}`
-  const isOpen = openNodes.some((array) => isEqual(array, ownArray))
+  const isOpen = openNodesSet.has(ownArray.join('/'))
 
   const res = useLiveQuery<{ count: number }>(
     `SELECT count(*) AS count FROM (
@@ -59,8 +59,8 @@ export const useProjectQcAssignmentsNavData = ({ projectId }: Props) => {
       isFiltered: false,
       countFiltered: count,
       countUnfiltered: count,
-        namePlural: formatMessage({
-          id: 'subprojectQcs.title',
+      namePlural: formatMessage({
+        id: 'subprojectQcs.title',
         defaultMessage: 'Qualitätskontrollen: wählen',
       }),
     }),

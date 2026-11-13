@@ -4,7 +4,7 @@ import { useLocation } from '@tanstack/react-router'
 import { isEqual } from 'es-toolkit'
 import { useIntl } from 'react-intl'
 
-import { languageAtom, treeOpenNodesAtom } from '../store.ts'
+import { languageAtom, treeOpenNodesSetAtom } from '../store.ts'
 
 type Props = {
   projectId: string
@@ -16,8 +16,11 @@ type NavData = {
   label: string | null
 }
 
-export const useProjectExportNavData = ({ projectId, projectExportsId }: Props) => {
-  const [openNodes] = useAtom(treeOpenNodesAtom)
+export const useProjectExportNavData = ({
+  projectId,
+  projectExportsId,
+}: Props) => {
+  const [openNodesSet] = useAtom(treeOpenNodesSetAtom)
   const [language] = useAtom(languageAtom)
   const location = useLocation()
   const { formatMessage } = useIntl()
@@ -38,7 +41,7 @@ export const useProjectExportNavData = ({ projectId, projectExportsId }: Props) 
 
   const parentArray = ['data', 'projects', projectId, 'exports']
   const ownArray = [...parentArray, projectExportsId]
-  const isOpen = openNodes.some((array) => isEqual(array, ownArray))
+  const isOpen = openNodesSet.has(ownArray.join('/'))
   const parentUrl = `/${parentArray.join('/')}`
   const ownUrl = `/${ownArray.join('/')}`
   const urlPath = location.pathname.split('/').filter((p) => p !== '')
@@ -46,8 +49,9 @@ export const useProjectExportNavData = ({ projectId, projectExportsId }: Props) 
   const isActive = isEqual(urlPath, ownArray)
 
   const notFound = !!res && !nav
-  const label = notFound
-    ? formatMessage({ id: 'p+ORxp', defaultMessage: 'Nicht gefunden' })
+  const label =
+    notFound ?
+      formatMessage({ id: 'p+ORxp', defaultMessage: 'Nicht gefunden' })
     : (nav?.label ?? nav?.id)
 
   const navData = {

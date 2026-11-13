@@ -6,7 +6,11 @@ import { useIntl } from 'react-intl'
 
 import { filterStringFromFilter } from './filterStringFromFilter.ts'
 import { buildNavLabel } from './buildNavLabel.ts'
-import { languageAtom, projectQcsFilterAtom, treeOpenNodesAtom } from '../store.ts'
+import {
+  languageAtom,
+  projectQcsFilterAtom,
+  treeOpenNodesSetAtom,
+} from '../store.ts'
 
 type Props = {
   projectId: string
@@ -20,7 +24,7 @@ type NavData = {
 }[]
 
 export const useProjectQcsNavData = ({ projectId }: Props) => {
-  const [openNodes] = useAtom(treeOpenNodesAtom)
+  const [openNodesSet] = useAtom(treeOpenNodesSetAtom)
   const [filter] = useAtom(projectQcsFilterAtom)
   const [language] = useAtom(languageAtom)
   const location = useLocation()
@@ -30,7 +34,7 @@ export const useProjectQcsNavData = ({ projectId }: Props) => {
   const parentUrl = `/${parentArray.join('/')}`
   const ownArray = [...parentArray, 'qcs']
   const ownUrl = `/${ownArray.join('/')}`
-  const isOpen = openNodes.some((array) => isEqual(array, ownArray))
+  const isOpen = openNodesSet.has(ownArray.join('/'))
   const urlPath = location.pathname.split('/').filter((p) => p !== '')
   const isInActiveNodeArray = ownArray.every((part, i) => urlPath[i] === part)
   const isActive = isEqual(urlPath, ownArray)
@@ -40,8 +44,9 @@ export const useProjectQcsNavData = ({ projectId }: Props) => {
 
   const labelExpr = `COALESCE(NULLIF(name_${language}, ''), name_de, project_qc_id::text)`
 
-  const sql = isOpen
-    ? `
+  const sql =
+    isOpen ?
+      `
     WITH
       count_unfiltered AS (SELECT count(*) FROM project_qcs WHERE project_id = '${projectId}'),
       count_filtered AS (SELECT count(*) FROM project_qcs WHERE project_id = '${projectId}'${isFiltered ? ` AND ${filterString}` : ''})
