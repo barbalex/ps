@@ -354,6 +354,8 @@ CREATE TABLE IF NOT EXISTS place_levels(
 
 CREATE INDEX IF NOT EXISTS place_levels_project_id_idx ON place_levels USING btree(project_id);
 CREATE INDEX IF NOT EXISTS place_levels_level_idx ON place_levels USING btree(level);
+-- nav data queries place_levels by project AND level together
+CREATE INDEX IF NOT EXISTS place_levels_project_id_level_idx ON place_levels USING btree(project_id, level);
 -- TODO: needed?
 CREATE INDEX IF NOT EXISTS place_levels_name_singular_de_idx ON place_levels USING btree(name_singular_de);
 CREATE INDEX IF NOT EXISTS place_levels_label_idx ON place_levels USING btree(label);
@@ -2016,6 +2018,8 @@ CREATE TABLE IF NOT EXISTS charts(
 
 CREATE INDEX IF NOT EXISTS charts_chart_id_idx ON charts USING btree(chart_id);
 CREATE INDEX IF NOT EXISTS charts_project_id_idx ON charts USING btree(project_id);
+-- nav data rollups count charts by project split by for_subprojects
+CREATE INDEX IF NOT EXISTS charts_project_id_for_subprojects_idx ON charts USING btree(project_id, for_subprojects);
 CREATE INDEX IF NOT EXISTS charts_subproject_id_idx ON charts USING btree(subproject_id);
 CREATE INDEX IF NOT EXISTS charts_place_id_idx ON charts USING btree(place_id);
 CREATE INDEX IF NOT EXISTS charts_label_idx ON charts USING btree(label);

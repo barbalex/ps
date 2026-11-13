@@ -150,6 +150,10 @@ const healExistingDbSql = `
             UPDATE layer_presentations SET project_id = wl.project_id FROM wms_layers wl WHERE layer_presentations.wms_layer_id = wl.wms_layer_id AND layer_presentations.project_id IS NULL;
             UPDATE layer_presentations SET project_id = vl.project_id FROM vector_layers vl WHERE layer_presentations.vector_layer_id = vl.vector_layer_id AND layer_presentations.project_id IS NULL;
             ALTER TABLE IF EXISTS crs ADD COLUMN IF NOT EXISTS sys_period tstzrange DEFAULT NULL;
+            -- composite indices for the nav-data queries (2026-11): fresh
+            -- databases get them from createTables.sql
+            CREATE INDEX IF NOT EXISTS place_levels_project_id_level_idx ON place_levels USING btree(project_id, level);
+            CREATE INDEX IF NOT EXISTS charts_project_id_for_subprojects_idx ON charts USING btree(project_id, for_subprojects);
             ALTER TABLE IF EXISTS places ADD COLUMN IF NOT EXISTS name text DEFAULT NULL;
 
             CREATE OR REPLACE FUNCTION subproject_taxon_label_trigger()
