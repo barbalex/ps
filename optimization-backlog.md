@@ -94,9 +94,10 @@ Findings from the 2026-11-13 performance review. Work off one by one.
     (App, NotFoundRoot, RouterErrorBoundary, theme.ts) now import from the
     individual packages (`@fluentui/react-provider`, `-button`, `-theme`,
     added as direct deps)
-  **Not done:** arktype (140 KB raw) still sits in the entry via
-  `validateSearch` schemas of `_layout.auth`/`data` routes — replacing the 3
-  trivial arktype schemas with plain validators would shave ~30 KB gz.
+  **Done additionally (branch: `perf/arktype-out-of-entry`):** the three
+  arktype `validateSearch` schemas (`_layout.auth`, `data`, observation-import
+  tab) replaced by plain validators — the params are only set programmatically
+  with proper types. Entry chunk 118 → 73 KB gz, eager total 344 → 299 KB gz.
   `cpexcel.full` (171 KB gz, SheetJS legacy codepages) is inside the lazily
   loaded xlsx chunk; dropping it entirely is a product decision (legacy .xls
   imports in non-UTF8 encodings).
