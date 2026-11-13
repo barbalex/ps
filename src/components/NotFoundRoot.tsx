@@ -1,5 +1,8 @@
-import * as fluentUiReactComponents from '@fluentui/react-components'
-const { Button } = fluentUiReactComponents
+// from the individual package, not the @fluentui/react-components barrel:
+// any import from the barrel keeps re-export bindings to every fluent
+// package alive, pulling the whole suite into the eager entry chunk
+// (this is a root-route component)
+import { Button } from '@fluentui/react-button'
 import { Link } from '@tanstack/react-router'
 
 import { Header } from './Layout/Header/index.tsx'

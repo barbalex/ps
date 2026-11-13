@@ -81,11 +81,25 @@ Findings from the 2026-11-13 performance review. Work off one by one.
   against the dev db. Production server db still needs the two CREATE INDEX
   statements applied with the next migration/deploy.
 
-- [ ] **6. Startup shell audit**
-  Eager entry 428 KB gz (~630 KB with vendor chunks before first paint). Fluent core
-  is irreducible, but audit for app code that belongs in route chunks. `cpexcel.full`
-  (171 KB gz, SheetJS legacy codepage tables) droppable unless ancient `.xls` imports
-  in exotic encodings matter.
+- [x] **6. Startup shell audit** (branch: `perf/shell-audit`)
+  Eager entry was 428 KB gz (~630 KB with vendor chunks before first paint); the
+  entry contained the whole Fluent UI suite (table, tree, carousel, combobox, ...)
+  hoisted as shared modules of the route chunks, plus arktype.
+  **Done:** eager closure is now 344 KB gz total (entry 118 KB gz):
+  - a `vendor-fluent` advancedChunks group claims every fluent package the shell
+    does not use (`includeDependenciesRecursively: false`, core excluded via
+    lookahead) — the heavy fluent code became a lazy shared chunk
+  - root: any import from the `@fluentui/react-components` barrel keeps
+    re-export bindings to every fluent package alive. The eager files
+    (App, NotFoundRoot, RouterErrorBoundary, theme.ts) now import from the
+    individual packages (`@fluentui/react-provider`, `-button`, `-theme`,
+    added as direct deps)
+  **Not done:** arktype (140 KB raw) still sits in the entry via
+  `validateSearch` schemas of `_layout.auth`/`data` routes — replacing the 3
+  trivial arktype schemas with plain validators would shave ~30 KB gz.
+  `cpexcel.full` (171 KB gz, SheetJS legacy codepages) is inside the lazily
+  loaded xlsx chunk; dropping it entirely is a product decision (legacy .xls
+  imports in non-UTF8 encodings).
 
 - [ ] **7. Jotai details**
   - `operationsQueueAtom` ([store.ts:711](src/store.ts)) re-serializes the entire write
