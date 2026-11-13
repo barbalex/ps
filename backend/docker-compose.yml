@@ -12,9 +12,7 @@ services:
     env_file:
       - ./.env
     ports:
-      - 54321:5432
-      # make the Postgres database accessible from outside the Docker container on port 5432
-      - 5432:5432
+      - 127.0.0.1:54321:5432
     expose:
       - 5432
     tmpfs:

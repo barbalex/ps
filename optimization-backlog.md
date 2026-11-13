@@ -58,10 +58,18 @@ Findings from the 2026-11-13 performance review. Work off one by one.
     render — idempotent prop-object tweak, not an atom write; fixing it means
     restructuring how WMS opacity is passed down.
 
-- [ ] **4. SqlInitializer re-runs schema surgery on every page load**
+- [x] **4. SqlInitializer re-runs schema surgery on every page load** (branch: `perf/sql-init-stamp`)
   Big ALTER/trigger script plus `DELETE ... DISTINCT ON` dedup scan over
-  `layer_presentations` each load ([SqlInitializer.tsx:47](src/components/SqlInitializer.tsx)).
-  **Fix:** schema-version stamp — skip when version matches.
+  `layer_presentations` each load ([SqlInitializer.tsx](src/components/SqlInitializer.tsx)).
+  **Done:** the whole routine is gated by a content hash (FNV-1a) over every sql
+  source it can run — the inline heal script (extracted to a const, verified
+  byte-identical), the dedup DELETE, all sql files and the geometry repair
+  module. The hash is stamped into a local-only `_ps_local_meta` table; an
+  unchanged stamp skips everything (one SELECT per boot instead of hundreds of
+  statements). The stamp is written only when every statement succeeded, so
+  partial runs retry; changing any sql source re-runs the routine once.
+  Verified in e2e: reload-crash boots once and reloads twice — the two reloads
+  both log the skip.
 
 - [ ] **5. Missing composite indices**
   - `place_levels (project_id, level)` — filtered together in

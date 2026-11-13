@@ -16,7 +16,7 @@ services:
     ports:
       # host port 54321 (not 5432): this stack must coexist with other local
       # projects claiming 5432 (apf2). Ps dev port block: 54321, 3001-3004.
-      - 54321:5432
+      - 127.0.0.1:54321:5432
     expose:
       - 5432
     tmpfs:
