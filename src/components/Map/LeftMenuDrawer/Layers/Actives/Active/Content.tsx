@@ -21,10 +21,7 @@ const {
   TabList,
   Checkbox,
 } = fluentUiReactComponents
-import type {
-  SelectTabData,
-  SelectTabEvent,
-} from '@fluentui/react-components'
+import type { SelectTabData, SelectTabEvent } from '@fluentui/react-components'
 import { BsCheckSquareFill } from 'react-icons/bs'
 import { MdDeleteOutline } from 'react-icons/md'
 import { TbZoomScan, TbTarget } from 'react-icons/tb'
@@ -56,6 +53,7 @@ import {
   draggableLayersAtom,
   droppableLayersAtom,
   languageAtom,
+  store,
 } from '../../../../../../store.ts'
 import { DragHandle } from '../../../../../shared/DragAndDrop/DragHandle.tsx'
 import {
@@ -111,7 +109,6 @@ export const Content = ({
   const addOperation = useSetAtom(addOperationAtom)
   const addNotification = useSetAtom(addNotificationAtom)
   const setMapBounds = useSetAtom(mapBoundsAtom)
-  const mapViewportBounds = useAtomValue(mapViewportBoundsAtom)
 
   const db = usePGlite()
   const [tab, setTab] = useState<TabType>('overall-displays')
@@ -125,16 +122,18 @@ export const Content = ({
   const placeLevels = usePlaceLevels(layer.project_id)
   // Derived display label: own/wfs/upload vector layers compute it (there is no
   // stored label column anymore); wms layers keep their own stored label.
-  const label = isVectorLayer
-    ? getVectorLayerLabel(layer as VectorLayers, language, placeLevels)
+  const label =
+    isVectorLayer ?
+      getVectorLayerLabel(layer as VectorLayers, language, placeLevels)
     : layer.label
 
   // Stable identity key for drag/drop state (same value as in TableLayer)
   const layerNameForState = layer.name as string
 
   // Check if this is an observation layer
-  const tableName = layer.own_table_level
-    ? `${layer.own_table}${layer.own_table_level}`
+  const tableName =
+    layer.own_table_level ?
+      `${layer.own_table}${layer.own_table_level}`
     : layer.own_table
   const isObservationLayer =
     tableName === 'observations_to_assess' ||
@@ -175,7 +174,9 @@ export const Content = ({
   useEffect(() => {
     if (!assignMenuOpen || !isObservationLayer) return
 
-    const placeLayerNames = activePlaceLayers.map((pl) => pl.name).filter(Boolean)
+    const placeLayerNames = activePlaceLayers
+      .map((pl) => pl.name)
+      .filter(Boolean)
 
     const selectedFromStore = droppableLayers.filter((dl) =>
       placeLayerNames.includes(dl),
@@ -360,8 +361,9 @@ export const Content = ({
 
     if (isVectorLayer) {
       // For vector layers (including table layers)
-      const tableName = layer.own_table_level
-        ? `${layer.own_table}${layer.own_table_level}`
+      const tableName =
+        layer.own_table_level ?
+          `${layer.own_table}${layer.own_table_level}`
         : layer.own_table
 
       if (tableName?.startsWith('places')) {
@@ -461,14 +463,19 @@ export const Content = ({
             ?.split(':')
             .slice(-3)
           const wfsDefaultCrsCode =
-            wfsDefaultCrsArray?.length === 3
-              ? [wfsDefaultCrsArray[0], wfsDefaultCrsArray[2]].join(':')
-              : 'EPSG:4326'
+            wfsDefaultCrsArray?.length === 3 ?
+              [wfsDefaultCrsArray[0], wfsDefaultCrsArray[2]].join(':')
+            : 'EPSG:4326'
           const defaultCrsRes = await db.query(
             `SELECT * FROM crs WHERE code = $1`,
             [wfsDefaultCrsCode],
           )
           const defaultCrs = defaultCrsRes?.rows?.[0] as Crs | undefined
+
+          // read at click time instead of subscribing: this component only
+          // needs the bounds here, and a subscription re-rendered this whole
+          // component on every map move
+          const mapViewportBounds = store.get(mapViewportBoundsAtom)
 
           let response
           let bboxParam
@@ -587,48 +594,43 @@ export const Content = ({
           <p className={layerStyles.headerLabel}>{label}</p>
         </div>
         {isObservationLayer &&
-          (activePlaceLayers.length === 1 ? (
+          (activePlaceLayers.length === 1 ?
             // Single place layer: just a button, no menu
             <Button
               icon={
-                isAssigning ? (
+                isAssigning ?
                   <FaStopCircle />
-                ) : (
-                  <FaPlay className={styles.playIcon} />
-                )
+                : <FaPlay className={styles.playIcon} />
               }
               onClick={onClickAssignButton}
               className={`${styles.headerButton}${isAssigning ? ` ${styles.assigningButton}` : ''}`}
               title={
-                isAssigning
-                  ? 'Stop assigning observations'
-                  : 'Assign observations by dragging'
+                isAssigning ?
+                  'Stop assigning observations'
+                : 'Assign observations by dragging'
               }
               appearance="subtle"
               size="small"
               as="a"
             />
-          ) : (
             // Multiple place layers: show menu
-            <Menu
+          : <Menu
               open={assignMenuOpen}
               onOpenChange={(_e, data) => setAssignMenuOpen(data.open)}
             >
               <MenuTrigger disableButtonEnhancement>
                 <Button
                   icon={
-                    isAssigning ? (
+                    isAssigning ?
                       <FaStopCircle />
-                    ) : (
-                      <FaPlay className={styles.playIcon} />
-                    )
+                    : <FaPlay className={styles.playIcon} />
                   }
                   onClick={(e) => e.stopPropagation()}
                   className={`${styles.headerButton}${isAssigning ? ` ${styles.assigningButton}` : ''}`}
                   title={
-                    isAssigning
-                      ? 'Stop assigning observations'
-                      : 'Assign observations by dragging'
+                    isAssigning ?
+                      'Stop assigning observations'
+                    : 'Assign observations by dragging'
                   }
                   appearance="subtle"
                   size="small"
@@ -638,9 +640,9 @@ export const Content = ({
               <MenuPopover>
                 <MenuList>
                   <MenuGroupHeader>
-                    {isAssigning
-                      ? 'Stop assigning?'
-                      : 'Assign to which places?'}
+                    {isAssigning ?
+                      'Stop assigning?'
+                    : 'Assign to which places?'}
                   </MenuGroupHeader>
                   {!isAssigning &&
                     activePlaceLayers.map((placeLayer) => {
@@ -678,8 +680,7 @@ export const Content = ({
                   </MenuItem>
                 </MenuList>
               </MenuPopover>
-            </Menu>
-          ))}
+            </Menu>)}
         {isDroppable && (
           <Button
             icon={<TbTarget />}
@@ -708,7 +709,10 @@ export const Content = ({
         >
           <Tab value="overall-displays">Overall Display</Tab>
           {isVectorLayer && (
-            <Tab value="feature-displays" onClick={onClickFeatureDisplays}>
+            <Tab
+              value="feature-displays"
+              onClick={onClickFeatureDisplays}
+            >
               Feature Displays
             </Tab>
           )}
@@ -718,40 +722,61 @@ export const Content = ({
               <Button
                 size="medium"
                 icon={<MdDeleteOutline />}
-                title={formatMessage({ id: 'layerDeleteBtnTitle', defaultMessage: "Layer {label} löschen" }, { label })}
+                title={formatMessage(
+                  {
+                    id: 'layerDeleteBtnTitle',
+                    defaultMessage: 'Layer {label} löschen',
+                  },
+                  { label },
+                )}
                 className={layerStyles.deleteButton}
               />
             </MenuTrigger>
 
             <MenuPopover>
               <MenuList>
-                <MenuGroupHeader>{formatMessage({ id: 'layerDeleteConfirmHeader', defaultMessage: "Layer {label} löschen?" }, { label })}</MenuGroupHeader>
-                <MenuItem onClick={onDelete}>{formatMessage({ id: 'layerDeleteYes', defaultMessage: 'Ja' })}</MenuItem>
-                <MenuItem>{formatMessage({ id: 'layerDeleteNo', defaultMessage: 'Nein' })}</MenuItem>
+                <MenuGroupHeader>
+                  {formatMessage(
+                    {
+                      id: 'layerDeleteConfirmHeader',
+                      defaultMessage: 'Layer {label} löschen?',
+                    },
+                    { label },
+                  )}
+                </MenuGroupHeader>
+                <MenuItem onClick={onDelete}>
+                  {formatMessage({
+                    id: 'layerDeleteYes',
+                    defaultMessage: 'Ja',
+                  })}
+                </MenuItem>
+                <MenuItem>
+                  {formatMessage({
+                    id: 'layerDeleteNo',
+                    defaultMessage: 'Nein',
+                  })}
+                </MenuItem>
               </MenuList>
             </MenuPopover>
           </Menu>
         </TabList>
         {tab === 'config' &&
-          (isVectorLayer ? (
+          (isVectorLayer ?
             <VectorLayerEditing layer={layer} />
-          ) : (
-            <WmsLayerEditing layer={layer} />
-          ))}
+          : <WmsLayerEditing layer={layer} />)}
         {tab === 'overall-displays' && <LayerPresentationForm layer={layer} />}
         {tab === 'feature-displays' && isVectorLayer && (
           <>
-            {vectorLayerDisplayId ? (
+            {vectorLayerDisplayId ?
               <VectorLayerDisplay
                 vectorLayerDisplayId={vectorLayerDisplayId}
                 {...{ from: pathname }}
               />
-            ) : (
-              <VectorLayerDisplays
+            : <VectorLayerDisplays
                 vectorLayerId={layer.vector_layer_id}
                 {...{ from: pathname }}
               />
-            )}
+            }
           </>
         )}
       </AccordionPanel>
