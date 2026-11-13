@@ -8,10 +8,10 @@
 # empty) and Netlify forwards it to the auth server, which 404s
 # ("Cannot GET /auth/"). Everything else under /auth/* (API calls, the
 # OAuth callback) belongs to the auth server.
+# NB: a rule for /auth/ (trailing slash) is futile — netlify matches it to
+# the /auth/* proxy with an empty splat no matter what comes first; nothing
+# generates /auth/ links, so it stays a 404.
 /auth     /index.html  200
-# netlify drops "from" paths with a trailing slash in rewrites; force a
-# 301 to the canonical path instead
-/auth/    /auth        301!
 /auth/*  https://auth.xn--arten-frdern-bjb.app/auth/:splat  200
 /api/*   https://api.xn--arten-frdern-bjb.app/:splat        200
 
