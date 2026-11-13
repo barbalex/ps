@@ -6,7 +6,7 @@ import { useIntl } from 'react-intl'
 
 import { filterStringFromFilter } from './filterStringFromFilter.ts'
 import { buildNavLabel } from './buildNavLabel.ts'
-import { wmsLayersFilterAtom, treeOpenNodesAtom } from '../store.ts'
+import { wmsLayersFilterAtom, treeOpenNodesSetAtom } from '../store.ts'
 
 type Props = {
   projectId: string
@@ -25,14 +25,14 @@ type NavDataClosed = {
 }
 
 export const useWmsLayersNavData = ({ projectId }: Props) => {
-  const [openNodes] = useAtom(treeOpenNodesAtom)
+  const [openNodesSet] = useAtom(treeOpenNodesSetAtom)
   const location = useLocation()
   const { formatMessage } = useIntl()
 
   const parentArray = ['data', 'projects', projectId]
   const ownArray = [...parentArray, 'wms-layers']
   // needs to work not only works for urlPath, for all opened paths!
-  const isOpen = openNodes.some((array) => isEqual(array, ownArray))
+  const isOpen = openNodesSet.has(ownArray.join('/'))
 
   const [filter] = useAtom(wmsLayersFilterAtom)
   const filterString = filterStringFromFilter(
@@ -41,8 +41,9 @@ export const useWmsLayersNavData = ({ projectId }: Props) => {
   )
   const isFiltered = !!filterString
 
-  const sql = isOpen
-    ? `
+  const sql =
+    isOpen ?
+      `
       WITH
         count_unfiltered AS (SELECT count(*) FROM wms_layers WHERE project_id = '${projectId}'),
         count_filtered AS (SELECT count(*) FROM wms_layers WHERE project_id = '${projectId}' ${isFiltered ? ` AND ${filterString}` : ''})

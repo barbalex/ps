@@ -1,6 +1,9 @@
 import type { PrimitiveType } from 'react-intl'
 
-type FormatMessage = (descriptor: { id: string; defaultMessage: string }, values?: Record<string, PrimitiveType>) => string
+type FormatMessage = (
+  descriptor: { id: string; defaultMessage: string },
+  values?: Record<string, PrimitiveType>,
+) => string
 
 type BuildFieldTableLabelMapParams = {
   formatMessage: FormatMessage
@@ -34,7 +37,13 @@ export const placeScopedFieldTables = new Set([
   'files',
 ])
 
-export const getFieldTableOptionKey = ({ tableName, level }: { tableName?: string | null; level?: number | null }) => {
+export const getFieldTableOptionKey = ({
+  tableName,
+  level,
+}: {
+  tableName?: string | null
+  level?: number | null
+}) => {
   if (!tableName) return ''
   if (level != null && placeScopedFieldTables.has(tableName)) {
     return `${tableName}_${level}`
@@ -96,11 +105,17 @@ export const buildFieldTableLabelMap = ({
     { place: singular2 },
   ),
   action_reports_1: formatMessage(
-    { id: 'field.actionReports', defaultMessage: '{place}: Massnahmen-Berichte' },
+    {
+      id: 'field.actionReports',
+      defaultMessage: '{place}: Massnahmen-Berichte',
+    },
     { place: singular1 },
   ),
   action_reports_2: formatMessage(
-    { id: 'field.actionReports', defaultMessage: '{place}: Massnahmen-Berichte' },
+    {
+      id: 'field.actionReports',
+      defaultMessage: '{place}: Massnahmen-Berichte',
+    },
     { place: singular2 },
   ),
   checks_1: formatMessage(
@@ -137,12 +152,27 @@ export const buildFieldTableLabelMap = ({
   ),
   subprojects: subprojectsLabel,
   goals: formatMessage({ id: 'field.goals', defaultMessage: 'Art: Ziele' }),
-  goal_reports: formatMessage({ id: 'field.goalReports', defaultMessage: 'Art: Ziel-Berichte' }),
-  project_reports: formatMessage({ id: 'field.projectReports', defaultMessage: 'Projekt: Berichte' }),
-  subproject_reports: formatMessage({ id: 'field.subprojectReports', defaultMessage: 'Art: Berichte' }),
+  goal_reports: formatMessage({
+    id: 'field.goalReports',
+    defaultMessage: 'Art: Ziel-Berichte',
+  }),
+  project_reports: formatMessage({
+    id: 'field.projectReports',
+    defaultMessage: 'Projekt: Berichte',
+  }),
+  subproject_reports: formatMessage({
+    id: 'field.subprojectReports',
+    defaultMessage: 'Art: Berichte',
+  }),
   taxa: formatMessage({ id: 'field.taxa', defaultMessage: 'Art: Taxa' }),
-  taxonomies: formatMessage({ id: 'field.taxonomies', defaultMessage: 'Projekt: Taxonomien' }),
-  lists: formatMessage({ id: 'field.lists', defaultMessage: 'Projekt: Listen' }),
+  taxonomies: formatMessage({
+    id: 'field.taxonomies',
+    defaultMessage: 'Projekt: Taxonomien',
+  }),
+  lists: formatMessage({
+    id: 'field.lists',
+    defaultMessage: 'Projekt: Listen',
+  }),
   projects: formatMessage({ id: 'qc.projects', defaultMessage: 'Projekte' }),
 })
 

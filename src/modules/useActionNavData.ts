@@ -1,9 +1,9 @@
 import { useLiveQuery } from '@electric-sql/pglite-react'
-import { useAtom } from 'jotai'
+import { useAtom, useAtomValue } from 'jotai'
 import { isEqual } from 'es-toolkit'
 import { useIntl } from 'react-intl'
 
-import { treeOpenNodesAtom, designingAtom } from '../store.ts'
+import { treeOpenNodesSetAtom, isDesigningAtom } from '../store.ts'
 import { buildNavLabel } from './buildNavLabel.ts'
 
 type Props = {
@@ -30,9 +30,8 @@ export const useActionNavData = ({
   actionId,
 }: Props) => {
   const { formatMessage } = useIntl()
-  const [openNodes] = useAtom(treeOpenNodesAtom)
-  const [designingMap] = useAtom(designingAtom)
-  const isDesigning = designingMap[projectId] ?? false
+  const [openNodesSet] = useAtom(treeOpenNodesSetAtom)
+  const isDesigning = useAtomValue(isDesigningAtom(projectId))
 
   const sql = `
       WITH
@@ -83,14 +82,15 @@ export const useActionNavData = ({
   const parentUrl = `/${parentArray.join('/')}`
   const ownArray = [...parentArray, nav?.id]
   const ownUrl = `/${ownArray.join('/')}`
-  const isOpen = openNodes.some((array) => isEqual(array, ownArray))
+  const isOpen = openNodesSet.has(ownArray.join('/'))
   const urlPath = location.pathname.split('/').filter((p) => p !== '')
   const isInActiveNodeArray = ownArray.every((part, i) => urlPath[i] === part)
   const isActive = isEqual(urlPath, ownArray)
 
   const notFound = !!res && !nav
-  const label = notFound
-    ? formatMessage({ id: 'p+ORxp', defaultMessage: 'Nicht gefunden' })
+  const label =
+    notFound ?
+      formatMessage({ id: 'p+ORxp', defaultMessage: 'Nicht gefunden' })
     : (nav?.label ?? nav?.id)
 
   const navData = {
@@ -105,60 +105,64 @@ export const useActionNavData = ({
     label,
     notFound,
     navs: [
-      ...(!allInline
-        ? [
-            {
-              id: 'action',
-              label: formatMessage({ id: 'upa2nh', defaultMessage: 'Massnahme' }),
-            },
-          ]
-        : []),
-      ...(!quantitiesInAction &&
-      (isDesigning || placeLevel?.action_quantities !== false)
-        ? [
-            {
-              id: 'quantities',
-              label: buildNavLabel({
-                loading,
-                countFiltered: nav?.action_quantities_count ?? 0,
-                namePlural: formatMessage({
-                  id: 'Xuj/Gy',
-                  defaultMessage: 'Mengen',
-                }),
+      ...(!allInline ?
+        [
+          {
+            id: 'action',
+            label: formatMessage({ id: 'upa2nh', defaultMessage: 'Massnahme' }),
+          },
+        ]
+      : []),
+      ...((
+        !quantitiesInAction &&
+        (isDesigning || placeLevel?.action_quantities !== false)
+      ) ?
+        [
+          {
+            id: 'quantities',
+            label: buildNavLabel({
+              loading,
+              countFiltered: nav?.action_quantities_count ?? 0,
+              namePlural: formatMessage({
+                id: 'Xuj/Gy',
+                defaultMessage: 'Mengen',
               }),
-            },
-          ]
-        : []),
-      ...(!taxaInAction && (isDesigning || placeLevel?.action_taxa !== false)
-        ? [
-            {
-              id: 'taxa',
-              label: buildNavLabel({
-                loading,
-                countFiltered: nav?.action_taxa_count ?? 0,
-                namePlural: formatMessage({
-                  id: '7sVbg1',
-                  defaultMessage: 'Taxa',
-                }),
+            }),
+          },
+        ]
+      : []),
+      ...(!taxaInAction && (isDesigning || placeLevel?.action_taxa !== false) ?
+        [
+          {
+            id: 'taxa',
+            label: buildNavLabel({
+              loading,
+              countFiltered: nav?.action_taxa_count ?? 0,
+              namePlural: formatMessage({
+                id: '7sVbg1',
+                defaultMessage: 'Taxa',
               }),
-            },
-          ]
-        : []),
-      ...(!filesInAction && (isDesigning || placeLevel?.action_files !== false)
-        ? [
-            {
-              id: 'files',
-              label: buildNavLabel({
-                loading,
-                countFiltered: nav?.files_count ?? 0,
-                namePlural: formatMessage({
-                  id: 'mn58Sh',
-                  defaultMessage: 'Dateien',
-                }),
+            }),
+          },
+        ]
+      : []),
+      ...((
+        !filesInAction && (isDesigning || placeLevel?.action_files !== false)
+      ) ?
+        [
+          {
+            id: 'files',
+            label: buildNavLabel({
+              loading,
+              countFiltered: nav?.files_count ?? 0,
+              namePlural: formatMessage({
+                id: 'mn58Sh',
+                defaultMessage: 'Dateien',
               }),
-            },
-          ]
-        : []),
+            }),
+          },
+        ]
+      : []),
     ],
   }
 

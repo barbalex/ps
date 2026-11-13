@@ -6,7 +6,7 @@ import { useIntl } from 'react-intl'
 
 import { buildNavLabel } from './buildNavLabel.ts'
 import {
-  treeOpenNodesAtom,
+  treeOpenNodesSetAtom,
   qcsRunLabelFilterAtom,
   qcsRunOnlyWithResultsAtom,
   qcsRunFilteredCountAtom,
@@ -21,7 +21,7 @@ export const useSubprojectQcsRunNavData = ({
   projectId,
   subprojectId,
 }: Props) => {
-  const [openNodes] = useAtom(treeOpenNodesAtom)
+  const [openNodesSet] = useAtom(treeOpenNodesSetAtom)
   const [labelFilter] = useAtom(qcsRunLabelFilterAtom)
   const [onlyWithResults] = useAtom(qcsRunOnlyWithResultsAtom)
   const [filteredCount] = useAtom(qcsRunFilteredCountAtom)
@@ -38,7 +38,7 @@ export const useSubprojectQcsRunNavData = ({
   const parentUrl = `/${parentArray.join('/')}`
   const ownArray = [...parentArray, 'qcs-run']
   const ownUrl = `/${ownArray.join('/')}`
-  const isOpen = openNodes.some((array) => isEqual(array, ownArray))
+  const isOpen = openNodesSet.has(ownArray.join('/'))
 
   const res = useLiveQuery<{ count: number }>(
     `SELECT count(*) AS count FROM qc_assignments qa JOIN qcs q ON q.qcs_id = qa.qc_id WHERE qa.subproject_id = $1 AND q.level = 'subproject'`,

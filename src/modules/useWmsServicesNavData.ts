@@ -6,7 +6,7 @@ import { useIntl } from 'react-intl'
 
 import { filterStringFromFilter } from './filterStringFromFilter.ts'
 import { buildNavLabel } from './buildNavLabel.ts'
-import { wmsServicesFilterAtom, treeOpenNodesAtom } from '../store.ts'
+import { wmsServicesFilterAtom, treeOpenNodesSetAtom } from '../store.ts'
 
 type Props = {
   projectId: string
@@ -25,22 +25,23 @@ type NavDataClosed = {
 }[]
 
 export const useWmsServicesNavData = ({ projectId }: Props) => {
-  const [openNodes] = useAtom(treeOpenNodesAtom)
+  const [openNodesSet] = useAtom(treeOpenNodesSetAtom)
   const [filter] = useAtom(wmsServicesFilterAtom)
   const location = useLocation()
   const { formatMessage } = useIntl()
 
   const parentArray = ['data', 'projects', projectId]
   const ownArray = [...parentArray, 'wms-services']
-  const isOpen = openNodes.some((array) => isEqual(array, ownArray))
+  const isOpen = openNodesSet.has(ownArray.join('/'))
   const filterString = filterStringFromFilter(
     filter as Record<string, unknown> & typeof filter,
     '',
   )
   const isFiltered = !!filterString
 
-  const sql = isOpen
-    ? `
+  const sql =
+    isOpen ?
+      `
       WITH
         count_unfiltered AS (SELECT count(*) FROM wms_services WHERE project_id = '${projectId}'),
         count_filtered AS (SELECT count(*) FROM wms_services WHERE project_id = '${projectId}' ${isFiltered ? ` AND ${filterString}` : ''})

@@ -24,12 +24,12 @@ const deleteIndexedDbDatabase = (dbName: string) =>
 const deleteAppIndexedDbDatabases = async () => {
   const fallbackDbNames = ['ps', 'idb://ps']
   const discoveredDbNames =
-    typeof indexedDB !== 'undefined' && 'databases' in indexedDB
-      ? await indexedDB
-          .databases()
-          .then((dbs) => dbs.map((db) => db.name).filter(Boolean) as string[])
-          .catch(() => [])
-      : []
+    typeof indexedDB !== 'undefined' && 'databases' in indexedDB ?
+      await indexedDB
+        .databases()
+        .then((dbs) => dbs.map((db) => db.name).filter(Boolean) as string[])
+        .catch(() => [])
+    : []
 
   const dbNamesToDelete = [
     ...new Set([...fallbackDbNames, ...discoveredDbNames]),

@@ -14,7 +14,7 @@ import {
   actionReports1FilterAtom,
   actionReports2FilterAtom,
   filesFilterAtom,
-  treeOpenNodesAtom,
+  treeOpenNodesSetAtom,
   languageAtom,
 } from '../store.ts'
 import type { TableRowFilter } from '../store.ts'
@@ -57,7 +57,7 @@ export const usePlaceNavData = ({
   placeId,
   placeId2,
 }: Props) => {
-  const [openNodes] = useAtom(treeOpenNodesAtom)
+  const [openNodesSet] = useAtom(treeOpenNodesSetAtom)
   const [language] = useAtom(languageAtom)
   const { formatMessage } = useIntl()
 
@@ -162,9 +162,7 @@ export const usePlaceNavData = ({
     [projectId],
   )
   const projectType = projectTypeRes?.rows?.[0]?.type as
-    | string
-    | null
-    | undefined
+    string | null | undefined
 
   const resPlaceLevel = useLiveQuery(
     `SELECT place_files, place_files_in_place, table_views, checks, check_reports, actions, action_reports, observations FROM place_levels WHERE project_id = $1 AND level = $2`,
@@ -215,16 +213,16 @@ export const usePlaceNavData = ({
     table_view_id: string
     count: number
   }>(
-    enabledTableViewsWithCounts.length > 0
-      ? enabledTableViewsWithCounts
-          .map((view) => {
-            const viewFilterString = filterStringFromFilter(
-              (view.filter ?? []) as TableRowFilter[],
-            )
-            return `SELECT '${view.table_view_id}' AS table_view_id, (SELECT count(*) FROM ${view.table_name} WHERE place_id = '${placeId2 ?? placeId}'${viewFilterString ? ` AND (${viewFilterString})` : ''}) AS count`
-          })
-          .join(' UNION ALL ')
-      : `SELECT 1 AS table_view_id, 0 AS count WHERE false`,
+    enabledTableViewsWithCounts.length > 0 ?
+      enabledTableViewsWithCounts
+        .map((view) => {
+          const viewFilterString = filterStringFromFilter(
+            (view.filter ?? []) as TableRowFilter[],
+          )
+          return `SELECT '${view.table_view_id}' AS table_view_id, (SELECT count(*) FROM ${view.table_name} WHERE place_id = '${placeId2 ?? placeId}'${viewFilterString ? ` AND (${viewFilterString})` : ''}) AS count`
+        })
+        .join(' UNION ALL ')
+    : `SELECT 1 AS table_view_id, 0 AS count WHERE false`,
   )
   const viewCounts = new Map(
     (viewCountsRes?.rows ?? []).map((r) => [r.table_view_id, Number(r.count)]),
@@ -252,14 +250,15 @@ export const usePlaceNavData = ({
   const parentUrl = `/${parentArray.join('/')}`
   const ownArray = [...parentArray, nav?.id]
   const ownUrl = `/${ownArray.join('/')}`
-  const isOpen = openNodes.some((array) => isEqual(array, ownArray))
+  const isOpen = openNodesSet.has(ownArray.join('/'))
   const urlPath = location.pathname.split('/').filter((p) => p !== '')
   const isInActiveNodeArray = ownArray.every((part, i) => urlPath[i] === part)
   const isActive = isEqual(urlPath, ownArray)
 
   const notFound = !!res && !nav
-  const label = notFound
-    ? formatMessage({ id: 'p+ORxp', defaultMessage: 'Nicht gefunden' })
+  const label =
+    notFound ?
+      formatMessage({ id: 'p+ORxp', defaultMessage: 'Nicht gefunden' })
     : (nav?.label ?? nav?.id)
 
   const navData = {
@@ -276,62 +275,70 @@ export const usePlaceNavData = ({
     nameSingular,
     navs: [
       { id: 'place', label: nameSingular },
-      ...(!placeId2
-        ? [
-            {
-              id: 'places',
-              label: buildNavLabel({
-                loading,
-                isFiltered: placesIsFiltered,
-                countFiltered: nav?.places_count_filtered ?? 0,
-                countUnfiltered: nav?.places_count_unfiltered ?? 0,
-                namePlural: childNamePlural,
+      ...(!placeId2 ?
+        [
+          {
+            id: 'places',
+            label: buildNavLabel({
+              loading,
+              isFiltered: placesIsFiltered,
+              countFiltered: nav?.places_count_filtered ?? 0,
+              countUnfiltered: nav?.places_count_unfiltered ?? 0,
+              namePlural: childNamePlural,
+            }),
+          },
+        ]
+      : []),
+      ...(placeLevel?.checks ?
+        [
+          {
+            id: 'checks',
+            label: buildNavLabel({
+              loading,
+              isFiltered: checksIsFiltered,
+              countFiltered: nav?.checks_count_filtered ?? 0,
+              countUnfiltered: nav?.checks_count_unfiltered ?? 0,
+              namePlural: formatMessage({
+                id: 'oPMDm+',
+                defaultMessage: 'Kontrollen',
               }),
-            },
-          ]
-        : []),
-      ...((placeLevel?.checks) ? [{
-        id: 'checks',
-        label: buildNavLabel({
-          loading,
-          isFiltered: checksIsFiltered,
-          countFiltered: nav?.checks_count_filtered ?? 0,
-          countUnfiltered: nav?.checks_count_unfiltered ?? 0,
-          namePlural: formatMessage({
-            id: 'oPMDm+',
-            defaultMessage: 'Kontrollen',
-          }),
-        }),
-      }] : []),
+            }),
+          },
+        ]
+      : []),
       ...enabledTableViews
         .filter((view) => view.table_name === 'checks')
         .map((view) => ({
-        id: `table-views/${view.table_view_id}/checks`,
-        label: buildNavLabel({
-          loading,
-          countFiltered: viewCounts.get(view.table_view_id) ?? 0,
-          namePlural:
-            view?.[`name_plural_${language}`] ??
-            view?.name_plural_de ??
-            formatMessage({
-              id: 'oPMDm+',
-              defaultMessage: 'Kontrollen',
-            }),
-        }),
-      })),
-      ...((placeLevel?.actions) ? [{
-        id: 'actions',
-        label: buildNavLabel({
-          loading,
-          isFiltered: actionsIsFiltered,
-          countFiltered: nav?.actions_count_filtered ?? 0,
-          countUnfiltered: nav?.actions_count_unfiltered ?? 0,
-          namePlural: formatMessage({
-            id: 'eJfllL',
-            defaultMessage: 'Massnahmen',
+          id: `table-views/${view.table_view_id}/checks`,
+          label: buildNavLabel({
+            loading,
+            countFiltered: viewCounts.get(view.table_view_id) ?? 0,
+            namePlural:
+              view?.[`name_plural_${language}`] ??
+              view?.name_plural_de ??
+              formatMessage({
+                id: 'oPMDm+',
+                defaultMessage: 'Kontrollen',
+              }),
           }),
-        }),
-      }] : []),
+        })),
+      ...(placeLevel?.actions ?
+        [
+          {
+            id: 'actions',
+            label: buildNavLabel({
+              loading,
+              isFiltered: actionsIsFiltered,
+              countFiltered: nav?.actions_count_filtered ?? 0,
+              countUnfiltered: nav?.actions_count_unfiltered ?? 0,
+              namePlural: formatMessage({
+                id: 'eJfllL',
+                defaultMessage: 'Massnahmen',
+              }),
+            }),
+          },
+        ]
+      : []),
       ...enabledTableViews
         .filter((view) => view.table_name === 'actions')
         .map((view) => ({
@@ -358,43 +365,55 @@ export const usePlaceNavData = ({
             view?.name_singular_de ??
             view.table_view_id,
         })),
-      ...((placeLevel?.check_reports) ? [{
-        id: 'check-reports',
-        label: buildNavLabel({
-          loading,
-          isFiltered: checkReportsIsFiltered,
-          countFiltered: nav?.check_reports_count_filtered ?? 0,
-          countUnfiltered: nav?.check_reports_count_unfiltered ?? 0,
-          namePlural: formatMessage({
-            id: 'CiJ0SG',
-            defaultMessage: 'Kontroll-Berichte',
-          }),
-        }),
-      }] : []),
-      ...((placeLevel?.action_reports) ? [{
-        id: 'action-reports',
-        label: buildNavLabel({
-          loading,
-          isFiltered: actionReportsIsFiltered,
-          countFiltered: nav?.action_reports_count_filtered ?? 0,
-          countUnfiltered: nav?.action_reports_count_unfiltered ?? 0,
-          namePlural: formatMessage({
-            id: 'mARBts',
-            defaultMessage: 'Massnahmen-Berichte',
-          }),
-        }),
-      }] : []),
-      ...((placeLevel?.observations) ? [{
-        id: 'observations',
-        label: buildNavLabel({
-          loading,
-          countFiltered: nav?.observations_count ?? 0,
-          namePlural: formatMessage({
-            id: 'OaXR/X',
-            defaultMessage: 'Beobachtungen zugeordnet',
-          }),
-        }),
-      }] : []),
+      ...(placeLevel?.check_reports ?
+        [
+          {
+            id: 'check-reports',
+            label: buildNavLabel({
+              loading,
+              isFiltered: checkReportsIsFiltered,
+              countFiltered: nav?.check_reports_count_filtered ?? 0,
+              countUnfiltered: nav?.check_reports_count_unfiltered ?? 0,
+              namePlural: formatMessage({
+                id: 'CiJ0SG',
+                defaultMessage: 'Kontroll-Berichte',
+              }),
+            }),
+          },
+        ]
+      : []),
+      ...(placeLevel?.action_reports ?
+        [
+          {
+            id: 'action-reports',
+            label: buildNavLabel({
+              loading,
+              isFiltered: actionReportsIsFiltered,
+              countFiltered: nav?.action_reports_count_filtered ?? 0,
+              countUnfiltered: nav?.action_reports_count_unfiltered ?? 0,
+              namePlural: formatMessage({
+                id: 'mARBts',
+                defaultMessage: 'Massnahmen-Berichte',
+              }),
+            }),
+          },
+        ]
+      : []),
+      ...(placeLevel?.observations ?
+        [
+          {
+            id: 'observations',
+            label: buildNavLabel({
+              loading,
+              countFiltered: nav?.observations_count ?? 0,
+              namePlural: formatMessage({
+                id: 'OaXR/X',
+                defaultMessage: 'Beobachtungen zugeordnet',
+              }),
+            }),
+          },
+        ]
+      : []),
       {
         id: 'users',
         label: buildNavLabel({
@@ -406,23 +425,23 @@ export const usePlaceNavData = ({
           }),
         }),
       },
-      ...(showFiles && !filesInPlace
-        ? [
-            {
-              id: 'files',
-              label: buildNavLabel({
-                loading,
-                isFiltered: filesIsFiltered,
-                countFiltered: nav?.files_count_filtered ?? 0,
-                countUnfiltered: nav?.files_count_unfiltered ?? 0,
-                namePlural: formatMessage({
-                  id: 'mn58Sh',
-                  defaultMessage: 'Dateien',
-                }),
+      ...(showFiles && !filesInPlace ?
+        [
+          {
+            id: 'files',
+            label: buildNavLabel({
+              loading,
+              isFiltered: filesIsFiltered,
+              countFiltered: nav?.files_count_filtered ?? 0,
+              countUnfiltered: nav?.files_count_unfiltered ?? 0,
+              namePlural: formatMessage({
+                id: 'mn58Sh',
+                defaultMessage: 'Dateien',
               }),
-            },
-          ]
-        : []),
+            }),
+          },
+        ]
+      : []),
     ],
   }
 

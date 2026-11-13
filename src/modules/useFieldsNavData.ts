@@ -13,7 +13,11 @@ import {
   getFieldTableOptionKey,
   resolveFieldTableContext,
 } from './fieldTableLabel.ts'
-import { fieldsFilterAtom, languageAtom, treeOpenNodesAtom } from '../store.ts'
+import {
+  fieldsFilterAtom,
+  languageAtom,
+  treeOpenNodesSetAtom,
+} from '../store.ts'
 
 type Props = {
   projectId?: string
@@ -43,42 +47,39 @@ type FormatMessage = (
 
 export const useFieldsNavData = ({ projectId, accountId, userId }: Props) => {
   const { formatMessage } = useIntl()
-  const [openNodes] = useAtom(treeOpenNodesAtom)
+  const [openNodesSet] = useAtom(treeOpenNodesSetAtom)
   const [language] = useAtom(languageAtom)
   const location = useLocation()
 
-  const whereScope = projectId
-    ? `project_id = '${projectId}'`
-    : accountId
-      ? `project_id IS NULL AND account_id = '${accountId}'`
-      : 'project_id IS NULL'
-  const fieldsSegment = projectId
-    ? 'fields'
-    : accountId
-      ? 'project-fields'
-      : 'fields'
+  const whereScope =
+    projectId ? `project_id = '${projectId}'`
+    : accountId ? `project_id IS NULL AND account_id = '${accountId}'`
+    : 'project_id IS NULL'
+  const fieldsSegment =
+    projectId ? 'fields'
+    : accountId ? 'project-fields'
+    : 'fields'
 
   const parentArray = [
     'data',
-    ...(projectId
-      ? ['projects', projectId]
-      : accountId
-        ? userId
-          ? ['users', userId, 'accounts', accountId]
-          : ['accounts', accountId]
-        : []),
+    ...(projectId ? ['projects', projectId]
+    : accountId ?
+      userId ? ['users', userId, 'accounts', accountId]
+      : ['accounts', accountId]
+    : []),
   ]
 
   const ownArray = [...parentArray, fieldsSegment]
   // needs to work not only works for urlPath, for all opened paths!
-  const isOpen = openNodes.some((array) => isEqual(array, ownArray))
+  const isOpen = openNodesSet.has(ownArray.join('/'))
 
   const [filter] = useAtom(fieldsFilterAtom)
   const filterString = filterStringFromFilter(filter)
   const isFiltered = !!filterString
 
-  const sql = isOpen
-    ? `
+  const sql =
+    isOpen ?
+      `
       WITH
         count_unfiltered AS (SELECT count(*) FROM fields WHERE ${whereScope}),
         count_filtered AS (SELECT count(*) FROM fields WHERE ${whereScope}${isFiltered ? ` AND ${filterString}` : ''})
@@ -126,12 +127,10 @@ export const useFieldsNavData = ({ projectId, accountId, userId }: Props) => {
 
   const navsRaw = (res?.rows ?? []) as NavDataOpen | NavDataClosed
 
-  const level1Row = projectId
-    ? placeLevelsRes?.rows?.find((r) => r.level === 1)
-    : undefined
-  const level2Row = projectId
-    ? placeLevelsRes?.rows?.find((r) => r.level === 2)
-    : undefined
+  const level1Row =
+    projectId ? placeLevelsRes?.rows?.find((r) => r.level === 1) : undefined
+  const level2Row =
+    projectId ? placeLevelsRes?.rows?.find((r) => r.level === 2) : undefined
 
   const tableContext = resolveFieldTableContext({
     formatMessage: formatMessage as FormatMessage,
@@ -161,8 +160,9 @@ export const useFieldsNavData = ({ projectId, accountId, userId }: Props) => {
     plural2: tableContext.plural2,
   })
 
-  const navs: NavDataOpen | NavDataClosed = isOpen
-    ? (navsRaw as NavDataOpen).map((row) => {
+  const navs: NavDataOpen | NavDataClosed =
+    isOpen ?
+      (navsRaw as NavDataOpen).map((row) => {
         const key = getFieldTableOptionKey({
           tableName: row.table_name,
           level: row.level,
@@ -203,15 +203,17 @@ export const useFieldsNavData = ({ projectId, accountId, userId }: Props) => {
       isFiltered,
       countFiltered,
       countUnfiltered,
-      namePlural: accountId
-        ? formatMessage({
+      namePlural:
+        accountId ?
+          formatMessage({
             id: 'field.projectFieldsPlural',
             defaultMessage: 'Project Fields',
           })
         : formatMessage({ id: 'I+dTZE', defaultMessage: 'Felder' }),
     }),
-    nameSingular: accountId
-      ? formatMessage({
+    nameSingular:
+      accountId ?
+        formatMessage({
           id: 'field.projectFieldSingular',
           defaultMessage: 'Project Field',
         })

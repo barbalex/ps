@@ -4,7 +4,7 @@ import { useLocation } from '@tanstack/react-router'
 import { isEqual } from 'es-toolkit'
 import { useIntl } from 'react-intl'
 
-import { treeOpenNodesAtom, languageAtom } from '../store.ts'
+import { treeOpenNodesSetAtom, languageAtom } from '../store.ts'
 
 type Props = {
   projectId: string
@@ -35,7 +35,7 @@ export const usePlaceTableViewNavData = ({
   placeId2,
   tableViewId,
 }: Props) => {
-  const [openNodes] = useAtom(treeOpenNodesAtom)
+  const [openNodesSet] = useAtom(treeOpenNodesSetAtom)
   const [language] = useAtom(languageAtom)
   const location = useLocation()
   const { formatMessage } = useIntl()
@@ -64,15 +64,16 @@ export const usePlaceTableViewNavData = ({
   const ownArray = [...parentArray, 'table-views', tableViewId]
   const ownUrl = `/${ownArray.join('/')}`
   // needs to work not only works for urlPath, for all opened paths!
-  const isOpen = openNodes.some((array) => isEqual(array, ownArray))
+  const isOpen = openNodesSet.has(ownArray.join('/'))
   const urlPath = location.pathname.split('/').filter((p) => p !== '')
   const isInActiveNodeArray = ownArray.every((part, i) => urlPath[i] === part)
   const isActive = isEqual(urlPath, ownArray)
 
   // a view of another table never belongs under a place
   const notFound = !!res && (!view || view.table_name !== 'places')
-  const label = notFound
-    ? formatMessage({ id: 'p+ORxp', defaultMessage: 'Nicht gefunden' })
+  const label =
+    notFound ?
+      formatMessage({ id: 'p+ORxp', defaultMessage: 'Nicht gefunden' })
     : (view?.[`name_singular_${language}`] ??
       view?.name_singular_de ??
       view?.table_view_id)

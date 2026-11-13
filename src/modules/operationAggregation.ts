@@ -53,12 +53,7 @@ type AggregatedUpdate = {
 export const isAggregatableUpdate = (
   op: Pick<
     QueuedOperation,
-    | 'operation'
-    | 'rowIdName'
-    | 'rowId'
-    | 'filter'
-    | 'filters'
-    | 'draft'
+    'operation' | 'rowIdName' | 'rowId' | 'filter' | 'filters' | 'draft'
   >,
 ): boolean =>
   op.operation === 'update' &&
@@ -80,7 +75,10 @@ let enqueueOperations: ((ops: QueuedOperation[]) => void) | null = null
 
 const persist = () => {
   try {
-    window.localStorage.setItem(STORAGE_KEY, JSON.stringify([...buffer.values()]))
+    window.localStorage.setItem(
+      STORAGE_KEY,
+      JSON.stringify([...buffer.values()]),
+    )
   } catch {
     // private mode, disabled storage or no window (tests): flushes still
     // work, only the crash heal degrades
@@ -141,10 +139,7 @@ export const flushAggregatedUpdates = () => flushRows()
 
 /** buffers one field edit (already applied to PGlite) for a later merged flush */
 export const registerAggregatedUpdate = (
-  op: Pick<
-    QueuedOperation,
-    'table' | 'rowIdName' | 'rowId' | 'draft' | 'prev'
-  >,
+  op: Pick<QueuedOperation, 'table' | 'rowIdName' | 'rowId' | 'draft' | 'prev'>,
 ) => {
   const key = `${op.table}/${op.rowId}`
   const draft = op.draft as Record<string, unknown>

@@ -28,12 +28,10 @@ export const vectorLayerDisplayToProperties = ({
   if (!display) return {}
 
   // opacity needs to be converted from percent to decimal
-  const lPOpacity = presentation!.opacity_percent
-    ? presentation!.opacity_percent / 100
-    : 1
-  const displayFillOpacity = display.fill_opacity_percent
-    ? display.fill_opacity_percent / 100
-    : 1
+  const lPOpacity =
+    presentation!.opacity_percent ? presentation!.opacity_percent / 100 : 1
+  const displayFillOpacity =
+    display.fill_opacity_percent ? display.fill_opacity_percent / 100 : 1
 
   const style = {
     ...(typeof display.stroke === 'number' && { stroke: display.stroke === 1 }),

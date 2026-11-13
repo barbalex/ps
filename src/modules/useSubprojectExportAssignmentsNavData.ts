@@ -5,7 +5,7 @@ import { isEqual } from 'es-toolkit'
 import { useIntl } from 'react-intl'
 
 import { buildNavLabel } from './buildNavLabel.ts'
-import { treeOpenNodesAtom } from '../store.ts'
+import { treeOpenNodesSetAtom } from '../store.ts'
 
 type Props = {
   projectId: string
@@ -16,7 +16,7 @@ export const useSubprojectExportAssignmentsNavData = ({
   projectId,
   subprojectId,
 }: Props) => {
-  const [openNodes] = useAtom(treeOpenNodesAtom)
+  const [openNodesSet] = useAtom(treeOpenNodesSetAtom)
   const location = useLocation()
   const { formatMessage } = useIntl()
 
@@ -30,7 +30,7 @@ export const useSubprojectExportAssignmentsNavData = ({
   const parentUrl = `/${parentArray.join('/')}`
   const ownArray = [...parentArray, 'export-assignments']
   const ownUrl = `/${ownArray.join('/')}`
-  const isOpen = openNodes.some((array) => isEqual(array, ownArray))
+  const isOpen = openNodesSet.has(ownArray.join('/'))
 
   const res = useLiveQuery<{ count: number }>(
     `SELECT count(*) AS count FROM (

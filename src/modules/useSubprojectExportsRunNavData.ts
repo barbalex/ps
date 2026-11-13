@@ -6,7 +6,7 @@ import { useIntl } from 'react-intl'
 
 import { buildNavLabel } from './buildNavLabel.ts'
 import {
-  treeOpenNodesAtom,
+  treeOpenNodesSetAtom,
   subprojectExportsRunLabelFilterAtom,
   subprojectExportsRunFilteredCountAtom,
 } from '../store.ts'
@@ -20,7 +20,7 @@ export const useSubprojectExportsRunNavData = ({
   projectId,
   subprojectId,
 }: Props) => {
-  const [openNodes] = useAtom(treeOpenNodesAtom)
+  const [openNodesSet] = useAtom(treeOpenNodesSetAtom)
   const [labelFilter] = useAtom(subprojectExportsRunLabelFilterAtom)
   const [filteredCount] = useAtom(subprojectExportsRunFilteredCountAtom)
   const location = useLocation()
@@ -36,7 +36,7 @@ export const useSubprojectExportsRunNavData = ({
   const parentUrl = `/${parentArray.join('/')}`
   const ownArray = [...parentArray, 'exports-run']
   const ownUrl = `/${ownArray.join('/')}`
-  const isOpen = openNodes.some((array) => isEqual(array, ownArray))
+  const isOpen = openNodesSet.has(ownArray.join('/'))
 
   const res = useLiveQuery<{ count: number }>(
     `SELECT count(*) AS count

@@ -6,7 +6,7 @@ import { useIntl } from 'react-intl'
 
 import { filterStringFromFilter } from './filterStringFromFilter.ts'
 import { buildNavLabel } from './buildNavLabel.ts'
-import { subprojectUsersFilterAtom, treeOpenNodesAtom } from '../store.ts'
+import { subprojectUsersFilterAtom, treeOpenNodesSetAtom } from '../store.ts'
 
 type Props = {
   projectId: string
@@ -24,7 +24,7 @@ export const useSubprojectUsersNavData = ({
   projectId,
   subprojectId,
 }: Props) => {
-  const [openNodes] = useAtom(treeOpenNodesAtom)
+  const [openNodesSet] = useAtom(treeOpenNodesSetAtom)
   const [filter] = useAtom(subprojectUsersFilterAtom)
   const location = useLocation()
   const { formatMessage } = useIntl()
@@ -43,10 +43,11 @@ export const useSubprojectUsersNavData = ({
     subprojectId,
     'users',
   ]
-  const isOpen = openNodes.some((array) => isEqual(array, ownArray))
+  const isOpen = openNodesSet.has(ownArray.join('/'))
 
-  const sql = isOpen
-    ? `
+  const sql =
+    isOpen ?
+      `
       WITH
         count_unfiltered AS (SELECT count(*) FROM subproject_roles WHERE subproject_id = '${subprojectId}'),
         count_filtered AS (SELECT count(*) FROM subproject_roles WHERE subproject_id = '${subprojectId}' ${isFiltered ? ` AND ${filterString}` : ''})
@@ -103,7 +104,10 @@ export const useSubprojectUsersNavData = ({
       namePlural: formatMessage({ id: 'eZ3yEB', defaultMessage: 'Benutzer' }),
       isFiltered,
     }),
-    nameSingular: formatMessage({ id: '1M9eWP', defaultMessage: 'Teilprojekt-Benutzer' }),
+    nameSingular: formatMessage({
+      id: '1M9eWP',
+      defaultMessage: 'Teilprojekt-Benutzer',
+    }),
     navs,
   }
 

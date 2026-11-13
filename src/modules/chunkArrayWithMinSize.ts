@@ -6,8 +6,9 @@ export const chunkArrayWithMinSize = <T>(
 ) => {
   const remainder = arr.length % chunkSize
   const isLastChunkTooSmall = remainder < minChunkSize
-  const totalChunks = isLastChunkTooSmall
-    ? Math.floor(arr.length / chunkSize)
+  const totalChunks =
+    isLastChunkTooSmall ?
+      Math.floor(arr.length / chunkSize)
     : Math.ceil(arr.length / chunkSize)
 
   return Array.from({ length: totalChunks }, (_, i) => {

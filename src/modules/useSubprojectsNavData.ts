@@ -8,7 +8,7 @@ import { filterStringFromFilter } from './filterStringFromFilter.ts'
 import { buildNavLabel } from './buildNavLabel.ts'
 import {
   subprojectsFilterAtom,
-  treeOpenNodesAtom,
+  treeOpenNodesSetAtom,
   languageAtom,
 } from '../store.ts'
 import {
@@ -37,14 +37,14 @@ type NavDataClosed = {
 }
 
 export const useSubprojectsNavData = ({ projectId }: Props) => {
-  const [openNodes] = useAtom(treeOpenNodesAtom)
+  const [openNodesSet] = useAtom(treeOpenNodesSetAtom)
   const location = useLocation()
   const { formatMessage } = useIntl()
 
   const parentArray = ['data', 'projects', projectId]
   const ownArray = [...parentArray, 'subprojects']
   // needs to work not only works for urlPath, for all opened paths!
-  const isOpen = openNodes.some((array) => isEqual(array, ownArray))
+  const isOpen = openNodesSet.has(ownArray.join('/'))
 
   const [filter] = useAtom(subprojectsFilterAtom)
   const [language] = useAtom(languageAtom)
@@ -54,8 +54,9 @@ export const useSubprojectsNavData = ({ projectId }: Props) => {
   )
   const isFiltered = !!filterString
 
-  const sql = isOpen
-    ? `
+  const sql =
+    isOpen ?
+      `
       WITH 
         count_unfiltered AS (SELECT count(*) FROM subprojects WHERE project_id = '${projectId}'),
         count_filtered AS (SELECT count(*) FROM subprojects WHERE project_id = '${projectId}' ${isFiltered ? ` AND ${filterString}` : ''})

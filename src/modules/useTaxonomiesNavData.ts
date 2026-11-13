@@ -6,7 +6,7 @@ import { useIntl } from 'react-intl'
 
 import { filterStringFromFilter } from './filterStringFromFilter.ts'
 import { buildNavLabel } from './buildNavLabel.ts'
-import { taxonomiesFilterAtom, treeOpenNodesAtom } from '../store.ts'
+import { taxonomiesFilterAtom, treeOpenNodesSetAtom } from '../store.ts'
 
 type Props = {
   projectId: string
@@ -20,7 +20,7 @@ type NavData = {
 }
 
 export const useTaxonomiesNavData = ({ projectId }: Props) => {
-  const [openNodes] = useAtom(treeOpenNodesAtom)
+  const [openNodesSet] = useAtom(treeOpenNodesSetAtom)
   const [filter] = useAtom(taxonomiesFilterAtom)
   const location = useLocation()
   const { formatMessage } = useIntl()
@@ -30,13 +30,14 @@ export const useTaxonomiesNavData = ({ projectId }: Props) => {
   const ownArray = [...parentArray, 'taxonomies']
   const ownUrl = `/${ownArray.join('/')}`
   // needs to work not only works for urlPath, for all opened paths!
-  const isOpen = openNodes.some((array) => isEqual(array, ownArray))
+  const isOpen = openNodesSet.has(ownArray.join('/'))
 
   const filterString = filterStringFromFilter(filter)
   const isFiltered = !!filterString
 
-  const sql = isOpen
-    ? `
+  const sql =
+    isOpen ?
+      `
     WITH
       count_unfiltered AS (SELECT count(*) FROM taxonomies WHERE project_id = '${projectId}'),
       count_filtered AS (SELECT count(*) FROM taxonomies WHERE project_id = '${projectId}' ${isFiltered ? ` AND ${filterString}` : ''})

@@ -24,9 +24,9 @@ export const useElementSize = <E extends HTMLElement>({
       height: entry.contentRect.height,
     }
     setSize((prev) =>
-      prev.width !== next.width || (height && prev.height !== next.height)
-        ? next
-        : prev,
+      prev.width !== next.width || (height && prev.height !== next.height) ?
+        next
+      : prev,
     )
   }, delay)
 

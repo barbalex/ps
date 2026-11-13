@@ -11,7 +11,7 @@ import {
   getFieldTableOptionKey,
   resolveFieldTableContext,
 } from './fieldTableLabel.ts'
-import { treeOpenNodesAtom } from '../store.ts'
+import { treeOpenNodesSetAtom } from '../store.ts'
 import { languageAtom } from '../store.ts'
 
 type Props = {
@@ -34,22 +34,25 @@ type FormatMessage = (
   values?: Record<string, PrimitiveType>,
 ) => string
 
-export const useFieldNavData = ({ projectId, accountId, userId, fieldId }: Props) => {
+export const useFieldNavData = ({
+  projectId,
+  accountId,
+  userId,
+  fieldId,
+}: Props) => {
   const { formatMessage } = useIntl()
-  const [openNodes] = useAtom(treeOpenNodesAtom)
+  const [openNodesSet] = useAtom(treeOpenNodesSetAtom)
   const [language] = useAtom(languageAtom)
   const location = useLocation()
 
-  const whereScope = projectId
-    ? `project_id = '${projectId}'`
-    : accountId
-      ? `project_id IS NULL AND account_id = '${accountId}'`
-      : 'project_id IS NULL'
-  const fieldsSegment = projectId
-    ? 'fields'
-    : accountId
-      ? 'project-fields'
-      : 'fields'
+  const whereScope =
+    projectId ? `project_id = '${projectId}'`
+    : accountId ? `project_id IS NULL AND account_id = '${accountId}'`
+    : 'project_id IS NULL'
+  const fieldsSegment =
+    projectId ? 'fields'
+    : accountId ? 'project-fields'
+    : 'fields'
 
   const res = useLiveQuery(
     `
@@ -87,12 +90,10 @@ export const useFieldNavData = ({ projectId, accountId, userId, fieldId }: Props
 
   const nav = res?.rows?.[0] as NavData | undefined
 
-  const level1Row = projectId
-    ? placeLevelsRes?.rows?.find((r) => r.level === 1)
-    : undefined
-  const level2Row = projectId
-    ? placeLevelsRes?.rows?.find((r) => r.level === 2)
-    : undefined
+  const level1Row =
+    projectId ? placeLevelsRes?.rows?.find((r) => r.level === 1) : undefined
+  const level2Row =
+    projectId ? placeLevelsRes?.rows?.find((r) => r.level === 2) : undefined
 
   const tableContext = resolveFieldTableContext({
     formatMessage: formatMessage as FormatMessage,
@@ -124,18 +125,16 @@ export const useFieldNavData = ({ projectId, accountId, userId, fieldId }: Props
 
   const parentArray = [
     'data',
-    ...(projectId
-      ? ['projects', projectId]
-      : accountId
-        ? userId
-          ? ['users', userId, 'accounts', accountId]
-          : ['accounts', accountId]
-        : []),
+    ...(projectId ? ['projects', projectId]
+    : accountId ?
+      userId ? ['users', userId, 'accounts', accountId]
+      : ['accounts', accountId]
+    : []),
     fieldsSegment,
   ]
   const ownArray = [...parentArray, nav?.id]
   // needs to work not only works for urlPath, for all opened paths!
-  const isOpen = openNodes.some((array) => isEqual(array, ownArray))
+  const isOpen = openNodesSet.has(ownArray.join('/'))
   const urlPath = location.pathname.split('/').filter((p) => p !== '')
   const parentUrl = `/${parentArray.join('/')}`
   const ownUrl = `/${ownArray.join('/')}`
@@ -149,8 +148,9 @@ export const useFieldNavData = ({ projectId, accountId, userId, fieldId }: Props
     level: nav?.level,
   })
   const tableLabel = tableLabelMap[tableKey] ?? nav?.table_name ?? tableKey
-  const label = notFound
-    ? formatMessage({ id: 'p+ORxp', defaultMessage: 'Nicht gefunden' })
+  const label =
+    notFound ?
+      formatMessage({ id: 'p+ORxp', defaultMessage: 'Nicht gefunden' })
     : buildFieldNavItemLabel({
         tableLabel,
         fieldName: nav?.name,
@@ -167,8 +167,9 @@ export const useFieldNavData = ({ projectId, accountId, userId, fieldId }: Props
     urlPath,
     label,
     notFound,
-    nameSingular: accountId
-      ? formatMessage({
+    nameSingular:
+      accountId ?
+        formatMessage({
           id: 'field.projectFieldSingular',
           defaultMessage: 'Project Field',
         })

@@ -18,8 +18,9 @@ export const httpGet = async <T = unknown>(
   url: string
   data: T
 }> => {
-  const search = params
-    ? `${url.includes('?') ? '&' : '?'}${new URLSearchParams(params as Record<string, string>)}`
+  const search =
+    params ?
+      `${url.includes('?') ? '&' : '?'}${new URLSearchParams(params as Record<string, string>)}`
     : ''
   const res = await fetch(`${url}${search}`)
   const text = await res.text()

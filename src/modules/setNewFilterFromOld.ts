@@ -23,13 +23,10 @@ export const setNewFilterFromOld = ({
   if (value !== undefined && value !== null && value !== '') {
     // radio inputs select exact enum values — wrap so SQL uses = instead of ILIKE
     const coercedValue =
-      targetType === 'radio' && typeof value === 'string'
-        ? { $eq: value }
-        : useValueUnchanged
-          ? value
-          : !isNaN(value as number)
-            ? parseFloat(value as string)
-            : value
+      targetType === 'radio' && typeof value === 'string' ? { $eq: value }
+      : useValueUnchanged ? value
+      : !isNaN(value as number) ? parseFloat(value as string)
+      : value
     newOrFilter[name] = coercedValue
   } else {
     delete newOrFilter[name]
@@ -40,15 +37,14 @@ export const setNewFilterFromOld = ({
   const createNewOrFilters = orFilters.length === 0 && !newOrFilterIsEmpty
   // console.log('setNewFilterFromOld 4', { createNewOrFilters })
 
-  const newFilterWithEmptys = createNewOrFilters
-    ? [newOrFilter]
-    : !newOrFilterIsEmpty
-      ? isAppending
-        ? [...orFilters, newOrFilter]
-        : // replace the existing or filter
-          orFilters.map((f, i) => (i === orIndex ? newOrFilter : f))
-      : // remove the existing or filter
-        orFilters.filter((_f, i) => i !== orIndex)
+  const newFilterWithEmptys =
+    createNewOrFilters ? [newOrFilter]
+    : !newOrFilterIsEmpty ?
+      isAppending ? [...orFilters, newOrFilter]
+        // replace the existing or filter
+      : orFilters.map((f, i) => (i === orIndex ? newOrFilter : f))
+      // remove the existing or filter
+    : orFilters.filter((_f, i) => i !== orIndex)
   // console.log('setNewFilterFromOld 5', { newFilterWithEmptys })
   const newFilterWithoutEmptys = newFilterWithEmptys.filter(
     (f) => Object.keys(f).length > 0,

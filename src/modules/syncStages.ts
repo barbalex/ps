@@ -117,7 +117,10 @@ const stronglyConnectedComponents = (
           Math.min(lowlinks.get(table)!, lowlinks.get(parent)!),
         )
       } else if (onStack.has(parent)) {
-        lowlinks.set(table, Math.min(lowlinks.get(table)!, indices.get(parent)!))
+        lowlinks.set(
+          table,
+          Math.min(lowlinks.get(table)!, indices.get(parent)!),
+        )
       }
     }
     if (lowlinks.get(table) === indices.get(table)) {

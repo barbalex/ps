@@ -9,7 +9,7 @@ import { buildNavLabel } from './buildNavLabel.ts'
 import {
   actionReports1FilterAtom,
   actionReports2FilterAtom,
-  treeOpenNodesAtom,
+  treeOpenNodesSetAtom,
 } from '../store.ts'
 
 type Props = {
@@ -37,7 +37,7 @@ export const useActionReportsNavData = ({
   placeId,
   placeId2,
 }: Props) => {
-  const [openNodes] = useAtom(treeOpenNodesAtom)
+  const [openNodesSet] = useAtom(treeOpenNodesSetAtom)
   const location = useLocation()
   const { formatMessage } = useIntl()
 
@@ -52,7 +52,7 @@ export const useActionReportsNavData = ({
     ...(placeId2 ? ['places', placeId2] : []),
   ]
   const ownArray = [...parentArray, 'action-reports']
-  const isOpen = openNodes.some((array) => isEqual(array, ownArray))
+  const isOpen = openNodesSet.has(ownArray.join('/'))
 
   const [filter] = useAtom(
     placeId2 ? actionReports2FilterAtom : actionReports1FilterAtom,
@@ -60,8 +60,9 @@ export const useActionReportsNavData = ({
   const filterString = filterStringFromFilter(filter)
   const isFiltered = !!filterString
 
-  const sql = isOpen
-    ? `
+  const sql =
+    isOpen ?
+      `
       WITH
         count_unfiltered AS (SELECT count(*) FROM action_reports WHERE place_id = '${placeId2 ?? placeId}'),
         count_filtered AS (SELECT count(*) FROM action_reports WHERE place_id = '${placeId2 ?? placeId}' ${isFiltered ? ` AND ${filterString}` : ''})

@@ -9,7 +9,7 @@ import { buildNavLabel } from './buildNavLabel.ts'
 import {
   observationsNotToAssignFilterAtom,
   observationsToAssessFilterAtom,
-  treeOpenNodesAtom,
+  treeOpenNodesSetAtom,
 } from '../store.ts'
 
 type Props = {
@@ -40,17 +40,16 @@ export const useObservationsNavData = ({
   isToAssess = false,
   isNotToAssign = false,
 }: Props) => {
-  const [openNodes] = useAtom(treeOpenNodesAtom)
+  const [openNodesSet] = useAtom(treeOpenNodesSetAtom)
   const [filterToAssess] = useAtom(observationsToAssessFilterAtom)
   const [filterNotToAssign] = useAtom(observationsNotToAssignFilterAtom)
   const location = useLocation()
   const { formatMessage } = useIntl()
 
-  const filter = isToAssess
-    ? filterToAssess
-    : isNotToAssign
-      ? filterNotToAssign
-      : []
+  const filter =
+    isToAssess ? filterToAssess
+    : isNotToAssign ? filterNotToAssign
+    : []
   const filterString = filterStringFromFilter(filter, 'o')
   const isFiltered = !!filterString
 
@@ -75,19 +74,17 @@ export const useObservationsNavData = ({
   const parentUrl = `/${parentArray.join('/')}`
   const ownArray = [
     ...parentArray,
-    ...(isToAssess
-      ? ['observations-to-assess']
-      : isNotToAssign
-        ? ['observations-not-to-assign']
-        : ['observations']),
+    ...(isToAssess ? ['observations-to-assess']
+    : isNotToAssign ? ['observations-not-to-assign']
+    : ['observations']),
   ]
   const ownUrl = `/${ownArray.join('/')}`
   // needs to work not only works for urlPath, for all opened paths!
-  const isOpen = openNodes.some((array) => isEqual(array, ownArray))
+  const isOpen = openNodesSet.has(ownArray.join('/'))
 
   const res = useLiveQuery<NavData[number]>(
-    isOpen
-      ? `
+    isOpen ?
+      `
     WITH
       count_unfiltered AS (
         SELECT count(*)
@@ -115,7 +112,7 @@ export const useObservationsNavData = ({
     WHERE ${baseFilter}
     ${isFiltered ? ` AND ${filterString}` : ''}
     ORDER BY label`
-      : `
+    : `
     WITH
       count_unfiltered AS (
         SELECT count(*)
@@ -145,34 +142,36 @@ export const useObservationsNavData = ({
   const urlPath = location.pathname.split('/').filter((p) => p !== '')
   const isInActiveNodeArray = ownArray.every((part, i) => urlPath[i] === part)
   const isActive = isEqual(urlPath, ownArray)
-  const namePlural = isToAssess
-    ? formatMessage({
+  const namePlural =
+    isToAssess ?
+      formatMessage({
         id: 'BEylmv',
         defaultMessage: 'Beobachtungen zu beurteilen',
       })
-    : isNotToAssign
-      ? formatMessage({
-          id: 'slC/ul',
-          defaultMessage: 'Beobachtungen nicht zuzuordnen',
-        })
-      : formatMessage({
-          id: 'OaXR/X',
-          defaultMessage: 'Beobachtungen zugeordnet',
-        })
-  const nameSingular = isToAssess
-    ? formatMessage({
+    : isNotToAssign ?
+      formatMessage({
+        id: 'slC/ul',
+        defaultMessage: 'Beobachtungen nicht zuzuordnen',
+      })
+    : formatMessage({
+        id: 'OaXR/X',
+        defaultMessage: 'Beobachtungen zugeordnet',
+      })
+  const nameSingular =
+    isToAssess ?
+      formatMessage({
         id: 'tfUHK5',
         defaultMessage: 'Beobachtung zu beurteilen',
       })
-    : isNotToAssign
-      ? formatMessage({
-          id: 'aanYYz',
-          defaultMessage: 'Beobachtung nicht zuzuordnen',
-        })
-      : formatMessage({
-          id: 'gKq4qF',
-          defaultMessage: 'zugeordnete Beobachtung',
-        })
+    : isNotToAssign ?
+      formatMessage({
+        id: 'aanYYz',
+        defaultMessage: 'Beobachtung nicht zuzuordnen',
+      })
+    : formatMessage({
+        id: 'gKq4qF',
+        defaultMessage: 'zugeordnete Beobachtung',
+      })
 
   const navData = {
     isInActiveNodeArray,

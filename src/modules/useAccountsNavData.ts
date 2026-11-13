@@ -6,7 +6,7 @@ import { useIntl } from 'react-intl'
 
 import { filterStringFromFilter } from './filterStringFromFilter.ts'
 import { buildNavLabel } from './buildNavLabel.ts'
-import { accountsFilterAtom, treeOpenNodesAtom } from '../store.ts'
+import { accountsFilterAtom, treeOpenNodesSetAtom } from '../store.ts'
 
 type Props = {
   userId?: string
@@ -24,36 +24,36 @@ type NavData = {
 
 export const useAccountsNavData = ({ userId }: Props = {}) => {
   const { formatMessage } = useIntl()
-  const [openNodes] = useAtom(treeOpenNodesAtom)
+  const [openNodesSet] = useAtom(treeOpenNodesSetAtom)
   const [filter] = useAtom(accountsFilterAtom)
   const location = useLocation()
 
   const scopeFilter = userId ? `user_id = '${userId}'` : null
-  const scopedFilter = scopeFilter
-    ? filter.map((orFilter) => ({ ...orFilter, user_id: userId }))
+  const scopedFilter =
+    scopeFilter ?
+      filter.map((orFilter) => ({ ...orFilter, user_id: userId }))
     : filter
 
   const filterString = filterStringFromFilter(scopedFilter)
   const isFiltered = !!filterString
 
   const resolvedParentArray = userId ? ['data', 'users', userId] : parentArray
-  const resolvedOwnArray = userId
-    ? ['data', 'users', userId, 'accounts']
-    : ownArray
+  const resolvedOwnArray =
+    userId ? ['data', 'users', userId, 'accounts'] : ownArray
   const resolvedParentUrl = `/${resolvedParentArray.join('/')}`
   const resolvedOwnUrl = `/${resolvedOwnArray.join('/')}`
 
   // needs to work not only works for urlPath, for all opened paths!
-  const isOpen = openNodes.some((array) => isEqual(array, resolvedOwnArray))
+  const isOpen = openNodesSet.has(resolvedOwnArray.join('/'))
 
-  const whereClause = isFiltered
-    ? `WHERE ${filterString}`
-    : scopeFilter
-      ? `WHERE ${scopeFilter}`
-      : ''
+  const whereClause =
+    isFiltered ? `WHERE ${filterString}`
+    : scopeFilter ? `WHERE ${scopeFilter}`
+    : ''
 
-  const sql = isOpen
-    ? `
+  const sql =
+    isOpen ?
+      `
       WITH
         count_unfiltered AS (SELECT count(*) FROM accounts ${scopeFilter ? ` WHERE ${scopeFilter}` : ''}),
         count_filtered AS (SELECT count(*) FROM accounts ${whereClause})

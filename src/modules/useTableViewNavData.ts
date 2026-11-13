@@ -4,7 +4,7 @@ import { useLocation } from '@tanstack/react-router'
 import { isEqual } from 'es-toolkit'
 import { useIntl } from 'react-intl'
 
-import { treeOpenNodesAtom, languageAtom } from '../store.ts'
+import { treeOpenNodesSetAtom, languageAtom } from '../store.ts'
 
 type Props = {
   projectId: string
@@ -20,11 +20,8 @@ type NavData = {
   table_name: string | null
 }
 
-export const useTableViewNavData = ({
-  projectId,
-  tableViewId,
-}: Props) => {
-  const [openNodes] = useAtom(treeOpenNodesAtom)
+export const useTableViewNavData = ({ projectId, tableViewId }: Props) => {
+  const [openNodesSet] = useAtom(treeOpenNodesSetAtom)
   const [language] = useAtom(languageAtom)
   const location = useLocation()
   const { formatMessage } = useIntl()
@@ -55,17 +52,16 @@ export const useTableViewNavData = ({
   const ownArray = [...parentArray, tableViewId]
   const ownUrl = `/${ownArray.join('/')}`
   // needs to work not only works for urlPath, for all opened paths!
-  const isOpen = openNodes.some((array) => isEqual(array, ownArray))
+  const isOpen = openNodesSet.has(ownArray.join('/'))
   const urlPath = location.pathname.split('/').filter((p) => p !== '')
   const isInActiveNodeArray = ownArray.every((part, i) => urlPath[i] === part)
   const isActive = isEqual(urlPath, ownArray)
 
   const notFound = !!res && !nav
-  const label = notFound
-    ? formatMessage({ id: 'p+ORxp', defaultMessage: 'Nicht gefunden' })
-    : (nav?.[`name_plural_${language}`] ??
-      nav?.name_plural_de ??
-      nav?.id)
+  const label =
+    notFound ?
+      formatMessage({ id: 'p+ORxp', defaultMessage: 'Nicht gefunden' })
+    : (nav?.[`name_plural_${language}`] ?? nav?.name_plural_de ?? nav?.id)
 
   const navData = {
     isInActiveNodeArray,

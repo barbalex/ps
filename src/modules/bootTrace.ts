@@ -21,7 +21,9 @@ export const recordBootError = (label: string, detail: unknown) => {
 }
 
 if (import.meta.env.DEV && typeof window !== 'undefined') {
-  window.addEventListener('error', (e) => recordBootError('window-error', e.message))
+  window.addEventListener('error', (e) =>
+    recordBootError('window-error', e.message),
+  )
   window.addEventListener('unhandledrejection', (e) =>
     recordBootError('unhandled-rejection', e.reason),
   )
@@ -45,7 +47,9 @@ if (import.meta.env.DEV && typeof window !== 'undefined') {
           painted = true
           const routerState = (
             window as unknown as {
-              __router__?: { state?: { status?: string; location?: { pathname?: string } } }
+              __router__?: {
+                state?: { status?: string; location?: { pathname?: string } }
+              }
             }
           ).__router__?.state
           const el = document.createElement('div')

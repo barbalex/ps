@@ -3,7 +3,7 @@ import { isEqual } from 'es-toolkit'
 import { useAtom } from 'jotai'
 import { useIntl } from 'react-intl'
 
-import { treeOpenNodesAtom } from '../store.ts'
+import { treeOpenNodesSetAtom } from '../store.ts'
 
 type Props = {
   projectId_: string
@@ -18,10 +18,8 @@ declare const projectId_: string | undefined
 declare const subprojectId_: string | undefined
 declare const goalId_: string | undefined
 
-export const useGoalReportReportNavData = ({
-  goalReportId_,
-}: Props) => {
-  const [openNodes] = useAtom(treeOpenNodesAtom)
+export const useGoalReportReportNavData = ({ goalReportId_ }: Props) => {
+  const [openNodesSet] = useAtom(treeOpenNodesSetAtom)
   const { formatMessage } = useIntl()
 
   const goalReportId = goalReportId_?.replace(/_/g, '-')
@@ -48,14 +46,15 @@ export const useGoalReportReportNavData = ({
   const parentUrl = `/${parentArray.join('/')}`
   const ownArray = [...parentArray, 'report']
   const ownUrl = `/${ownArray.join('/')}`
-  const isOpen = openNodes.some((array) => isEqual(array, ownArray))
+  const isOpen = openNodesSet.has(ownArray.join('/'))
   const urlPath = location.pathname.split('/').filter((p) => p !== '')
   const isInActiveNodeArray = ownArray.every((part, i) => urlPath[i] === part)
   const isActive = isEqual(urlPath, ownArray)
 
   const notFound = !!goalReportQuery && !goalReport
-  const label = notFound
-    ? formatMessage({ id: 'p+ORxp', defaultMessage: 'Nicht gefunden' })
+  const label =
+    notFound ?
+      formatMessage({ id: 'p+ORxp', defaultMessage: 'Nicht gefunden' })
     : formatMessage({ id: 'Z8jucQ', defaultMessage: 'Bericht' })
 
   const navData = {

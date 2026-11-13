@@ -4,7 +4,7 @@ import { useLocation } from '@tanstack/react-router'
 import { isEqual } from 'es-toolkit'
 import { useIntl } from 'react-intl'
 
-import { treeOpenNodesAtom, languageAtom } from '../store.ts'
+import { treeOpenNodesSetAtom, languageAtom } from '../store.ts'
 import { buildNavLabel } from './buildNavLabel.ts'
 import { getVectorLayerLabel } from './vectorLayerLabel.ts'
 import type VectorLayers from '../models/public/VectorLayers.ts'
@@ -23,7 +23,7 @@ type NavData = {
 }
 
 export const useVectorLayerNavData = ({ projectId, vectorLayerId }: Props) => {
-  const [openNodes] = useAtom(treeOpenNodesAtom)
+  const [openNodesSet] = useAtom(treeOpenNodesSetAtom)
   const [language] = useAtom(languageAtom)
   const location = useLocation()
   const { formatMessage } = useIntl()
@@ -64,14 +64,15 @@ export const useVectorLayerNavData = ({ projectId, vectorLayerId }: Props) => {
   const ownArray = [...parentArray, nav?.id]
   const ownUrl = `/${ownArray.join('/')}`
   // needs to work not only works for urlPath, for all opened paths!
-  const isOpen = openNodes.some((array) => isEqual(array, ownArray))
+  const isOpen = openNodesSet.has(ownArray.join('/'))
   const urlPath = location.pathname.split('/').filter((p) => p !== '')
   const isInActiveNodeArray = ownArray.every((part, i) => urlPath[i] === part)
   const isActive = isEqual(urlPath, ownArray)
 
   const notFound = !!res && !nav
-  const label = notFound
-    ? formatMessage({ id: 'p+ORxp', defaultMessage: 'Nicht gefunden' })
+  const label =
+    notFound ?
+      formatMessage({ id: 'p+ORxp', defaultMessage: 'Nicht gefunden' })
     : getVectorLayerLabel(
         { ...nav, vector_layer_id: nav?.id } as VectorLayers,
         language,
@@ -89,15 +90,24 @@ export const useVectorLayerNavData = ({ projectId, vectorLayerId }: Props) => {
     label,
     name: nav?.name,
     notFound,
-    nameSingular: formatMessage({ id: 'fN0sZQ', defaultMessage: 'Vektor-Ebene' }),
+    nameSingular: formatMessage({
+      id: 'fN0sZQ',
+      defaultMessage: 'Vektor-Ebene',
+    }),
     navs: [
-      { id: 'vector-layer', label: formatMessage({ id: 'fN0sZQ', defaultMessage: 'Vektor-Ebene' }) },
+      {
+        id: 'vector-layer',
+        label: formatMessage({ id: 'fN0sZQ', defaultMessage: 'Vektor-Ebene' }),
+      },
       {
         id: 'displays',
         label: buildNavLabel({
           loading,
           countFiltered: nav?.vector_layer_displays_count_unfiltered ?? 0,
-          namePlural: formatMessage({ id: 'yM1M0B', defaultMessage: 'Anzeigen' }),
+          namePlural: formatMessage({
+            id: 'yM1M0B',
+            defaultMessage: 'Anzeigen',
+          }),
         }),
       },
     ],

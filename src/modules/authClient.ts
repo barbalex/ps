@@ -35,9 +35,9 @@ const getProductionAuthBaseUrl = () => {
 }
 
 export const getAuthBaseUrl = () =>
-  isLocalDevHost()
-    ? `http://${window.location.hostname}:3003`
-    : getProductionAuthBaseUrl()
+  isLocalDevHost() ?
+    `http://${window.location.hostname}:3003`
+  : getProductionAuthBaseUrl()
 
 export const authClient = createAuthClient({
   /** The base URL of the server (optional if you're using the same domain) */
