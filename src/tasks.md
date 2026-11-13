@@ -52,6 +52,12 @@ dark mode not well implemented for: file upload?
 
 ---
 
+do we need a 'how to build/update production' documentation to prevent agents from having to find out themselves?
+
+---
+
+do we need a 'how to deploy' documentation to prevent agents from having to find out themselves?
+
 ---
 
 first: finish table_views:
