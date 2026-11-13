@@ -71,10 +71,15 @@ Findings from the 2026-11-13 performance review. Work off one by one.
   Verified in e2e: reload-crash boots once and reloads twice — the two reloads
   both log the skip.
 
-- [ ] **5. Missing composite indices**
+- [x] **5. Missing composite indices** (branch: `perf/composite-indices`)
   - `place_levels (project_id, level)` — filtered together in
     places/subproject/check navData, only single-column indices exist.
   - `charts (project_id, for_subprojects)`.
+  **Done:** added to `backend/db/init/04_createTables.sql` (mirrored via sync-sql)
+  and to the SqlInitializer heal script so existing local databases get them too
+  (the hash stamp re-runs the heal once). Index usability verified with EXPLAIN
+  against the dev db. Production server db still needs the two CREATE INDEX
+  statements applied with the next migration/deploy.
 
 - [ ] **6. Startup shell audit**
   Eager entry 428 KB gz (~630 KB with vendor chunks before first paint). Fluent core
