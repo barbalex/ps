@@ -4,7 +4,7 @@ import { useLocation } from '@tanstack/react-router'
 import { isEqual } from 'es-toolkit'
 import { useIntl } from 'react-intl'
 
-import { treeOpenNodesAtom } from '../store.ts'
+import { treeOpenNodesSetAtom } from '../store.ts'
 import { buildNavLabel } from './buildNavLabel.ts'
 import type Accounts from '../models/public/Accounts.ts'
 
@@ -21,7 +21,7 @@ type Props = {
 
 export const useAccountNavData = ({ accountId, userId }: Props) => {
   const { formatMessage } = useIntl()
-  const [openNodes] = useAtom(treeOpenNodesAtom)
+  const [openNodesSet] = useAtom(treeOpenNodesSetAtom)
   const location = useLocation()
 
   const res = useLiveQuery(
@@ -60,7 +60,7 @@ export const useAccountNavData = ({ accountId, userId }: Props) => {
   const ownArray = [...parentArray, nav?.id]
   const ownUrl = `/${ownArray.join('/')}`
   // needs to work not only works for urlPath, for all opened paths!
-  const isOpen = openNodes.some((array) => isEqual(array, ownArray))
+  const isOpen = openNodesSet.has(ownArray.join('/'))
   const isInActiveNodeArray = ownArray.every((part, i) => urlPath[i] === part)
   const isActive = isEqual(urlPath, ownArray)
 

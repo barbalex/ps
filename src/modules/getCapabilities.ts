@@ -3,10 +3,7 @@ import WMSCapabilities from 'wms-capabilities'
 import { httpGet } from './httpGet.ts'
 import { xmlToJson } from './xmlToJson.ts'
 import { setShortTermOnlineFromFetchError } from './setShortTermOnlineFromFetchError.ts'
-import {
-  addNotificationAtom,
-  store,
-} from '../store.ts'
+import { addNotificationAtom, store } from '../store.ts'
 
 export const getCapabilities = async ({
   url,
@@ -18,7 +15,9 @@ export const getCapabilities = async ({
   // Example url to get: https://wms.zh.ch/FnsSVOZHWMS?service=WMS&request=GetCapabilities
   let res
   try {
-    res = await httpGet<string>(`${url}?service=${service}&request=GetCapabilities`)
+    res = await httpGet<string>(
+      `${url}?service=${service}&request=GetCapabilities`,
+    )
   } catch (error) {
     // the request failed on the network level, i.e. net::ERR_NAME_NOT_RESOLVED or being offline
     setShortTermOnlineFromFetchError(error)
@@ -57,9 +56,9 @@ export const getCapabilities = async ({
   }
 
   if (service === 'WMS')
-    return new (WMSCapabilities as unknown as new () => WMSCapabilities)().parse(
-      res.data,
-    )
+    return new (
+      WMSCapabilities as unknown as new () => WMSCapabilities
+    )().parse(res.data)
 
   // is WFS
   // could WMSCapabilities be used for WFS?: new WMSCapabilities(xmlString).toJSON();

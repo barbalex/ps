@@ -20,9 +20,8 @@ export const xmlToJson = (xml: Node): Record<string, unknown> => {
       obj['@attributes'] = {}
       for (let j = 0; j < attributes.length; j++) {
         const attribute = attributes.item(j)!
-        ;(obj['@attributes'] as Record<string, unknown>)[
-          attribute.nodeName
-        ] = attribute.nodeValue
+        ;(obj['@attributes'] as Record<string, unknown>)[attribute.nodeName] =
+          attribute.nodeValue
       }
     }
   } else if (xml.nodeType == 3) {

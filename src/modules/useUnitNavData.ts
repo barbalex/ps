@@ -4,7 +4,7 @@ import { useLocation } from '@tanstack/react-router'
 import { isEqual } from 'es-toolkit'
 import { useIntl } from 'react-intl'
 
-import { treeOpenNodesAtom } from '../store.ts'
+import { treeOpenNodesSetAtom } from '../store.ts'
 
 type Props = {
   projectId: string
@@ -17,7 +17,7 @@ type NavData = {
 }
 
 export const useUnitNavData = ({ projectId, unitId }: Props) => {
-  const [openNodes] = useAtom(treeOpenNodesAtom)
+  const [openNodesSet] = useAtom(treeOpenNodesSetAtom)
   const location = useLocation()
   const { formatMessage } = useIntl()
 
@@ -40,7 +40,7 @@ export const useUnitNavData = ({ projectId, unitId }: Props) => {
   const parentArray = ['data', 'projects', projectId, 'units']
   const ownArray = [...parentArray, unitId]
   // needs to work not only works for urlPath, for all opened paths!
-  const isOpen = openNodes.some((array) => isEqual(array, ownArray))
+  const isOpen = openNodesSet.has(ownArray.join('/'))
   const parentUrl = `/${parentArray.join('/')}`
   const ownUrl = `/${ownArray.join('/')}`
   const urlPath = location.pathname.split('/').filter((p) => p !== '')
@@ -48,8 +48,9 @@ export const useUnitNavData = ({ projectId, unitId }: Props) => {
   const isActive = isEqual(urlPath, ownArray)
 
   const notFound = !!res && !nav
-  const label = notFound
-    ? formatMessage({ id: 'p+ORxp', defaultMessage: 'Nicht gefunden' })
+  const label =
+    notFound ?
+      formatMessage({ id: 'p+ORxp', defaultMessage: 'Nicht gefunden' })
     : (nav?.label ?? nav?.id)
 
   const navData = {

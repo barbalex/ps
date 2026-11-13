@@ -94,21 +94,33 @@ Findings from the 2026-11-13 performance review. Work off one by one.
     (App, NotFoundRoot, RouterErrorBoundary, theme.ts) now import from the
     individual packages (`@fluentui/react-provider`, `-button`, `-theme`,
     added as direct deps)
-  **Not done:** arktype (140 KB raw) still sits in the entry via
-  `validateSearch` schemas of `_layout.auth`/`data` routes — replacing the 3
-  trivial arktype schemas with plain validators would shave ~30 KB gz.
+  **Done additionally (branch: `perf/arktype-out-of-entry`):** the three
+  arktype `validateSearch` schemas (`_layout.auth`, `data`, observation-import
+  tab) replaced by plain validators — the params are only set programmatically
+  with proper types. Entry chunk 118 → 73 KB gz, eager total 344 → 299 KB gz.
   `cpexcel.full` (171 KB gz, SheetJS legacy codepages) is inside the lazily
   loaded xlsx chunk; dropping it entirely is a product decision (legacy .xls
   imports in non-UTF8 encodings).
 
-- [ ] **7. Jotai details**
-  - `operationsQueueAtom` ([store.ts:711](src/store.ts)) re-serializes the entire write
-    queue to localStorage on every queued op.
-  - `designingAtom` is one `Record<projectId, boolean>` → any toggle re-renders every
-    subscriber.
-  - `isRowOpen` deep-compares every row against every open node
-    ([useVisibleTreeRows.ts:16](src/components/Tree/virtual/useVisibleTreeRows.ts)) —
-    O(rows × open nodes); use a `Set` of joined paths.
+- [x] **7. Jotai details** (branch: `perf/jotai-details`)
+  - `operationsQueueAtom` ([store.ts](src/store.ts)) re-serialized the entire write
+    queue to localStorage on every queued op. **Done:** the queue's storage
+    coalesces writes per microtask — bulk imports enqueue many operations in one
+    tick (previously O(n²) bytes re-serialization) and persist once per burst,
+    still before paint/yield. Falls back to memory-only where localStorage is
+    unavailable (node/tests), matching jotai's default fallback.
+  - `designingAtom` is one `Record<projectId, boolean>` → any toggle re-rendered
+    every subscriber. **Done:** `isDesigningAtom(projectId)` factory returns
+    memoized derived boolean atoms; the per-node nav hooks (the hot subscribers)
+    use it. Form-page readers keep subscribing to the record (rare toggle,
+    negligible).
+  - `isRowOpen` deep-compared every row against every open node
+    ([useVisibleTreeRows.ts](src/components/Tree/virtual/useVisibleTreeRows.ts)) —
+    O(rows × open nodes) with `isEqual`. **Done:** derived
+    `treeOpenNodesSetAtom` (Set of joined paths); all ~146 nav hooks and the tree
+    row flattener do `set.has(path.join('/'))` instead. Path segments are url
+    parts/uuids and never contain '/'. `tree/isNodeOpen.ts` keeps isEqual (write
+    paths, called a few times per navigation).
 
 - [ ] **8. Smaller things**
   - Tree carries `'use no memo'` — the hottest render path is the one React Compiler

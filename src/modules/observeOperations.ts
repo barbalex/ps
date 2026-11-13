@@ -67,23 +67,23 @@ export const observeOperations = () =>
     // observe's Effect type is synchronous; this async effect is
     // fire-and-forget at runtime (a returned Promise is never a Cleanup)
     (async (get: Getter & { peek: Getter }) => {
-    // Guard: if a network send is already in-flight, skip this trigger.
-    // Without this, rapid queue changes (e.g. "activate all") cause the same
-    // oldest operation to be sent multiple times before it is removed, producing 409s.
-    if (isProcessing) return
+      // Guard: if a network send is already in-flight, skip this trigger.
+      // Without this, rapid queue changes (e.g. "activate all") cause the same
+      // oldest operation to be sent multiple times before it is removed, producing 409s.
+      if (isProcessing) return
 
-    // always tracked so the periodic tick re-runs this effect
-    void get(operationsRetryTickAtom)
+      // always tracked so the periodic tick re-runs this effect
+      void get(operationsRetryTickAtom)
 
-    const online = get(shortTermOnlineAtom)
-    const operations = get(operationsQueueAtom)
-    if (!online) return
-    if (!operations.length) return
+      const online = get(shortTermOnlineAtom)
+      const operations = get(operationsQueueAtom)
+      if (!online) return
+      if (!operations.length) return
 
-    if (applyOperationsRpcEnabled()) {
-      return await processBatch(operations)
-    }
-    return await processOneByOne(operations)
+      if (applyOperationsRpcEnabled()) {
+        return await processBatch(operations)
+      }
+      return await processOneByOne(operations)
     }) as unknown as Effect,
     store,
   )
@@ -100,7 +100,10 @@ const processBatch = async (operations: QueuedOperation[]) => {
   } catch (error) {
     isProcessing = false
     const err = error as { code?: string; message?: string }
-    if (err?.code === '28000' || err?.message?.toLowerCase?.().includes('jwt')) {
+    if (
+      err?.code === '28000' ||
+      err?.message?.toLowerCase?.().includes('jwt')
+    ) {
       invalidatePostgrestToken()
       store.set(addNotificationAtom, {
         intent: 'error',
@@ -201,113 +204,113 @@ const processBatch = async (operations: QueuedOperation[]) => {
 
 /** the per-operation fallback path (localStorage 'ps-apply-operations'='off') */
 const processOneByOne = async (operations: QueuedOperation[]) => {
-    // loops operations
-    // runs operation
-    // Process oldest operation first so dependent operations (e.g. insert
-    // before update) are sent to the server in the correct order.
-    const firstOperation = operations.at(-1)
-    if (!firstOperation) return
+  // loops operations
+  // runs operation
+  // Process oldest operation first so dependent operations (e.g. insert
+  // before update) are sent to the server in the correct order.
+  const firstOperation = operations.at(-1)
+  if (!firstOperation) return
 
-    isProcessing = true
-    try {
-      await executeOperation(firstOperation)
-    } catch (error) {
-      // Release the lock BEFORE any queue mutation so the observer can pick up
-      // the next operation immediately when removeOperation fires.
-      isProcessing = false
-      // postgrest-js errors carry code/message/hint/details
-      const err = error as {
-        code?: string
-        message?: string
-        hint?: string
-        details?: string
-      }
-      if (err?.code === '23505') {
-        // duplicate key value violates unique constraint
-        // The row is already present on server, so this operation is effectively done.
-        return finishOperation(firstOperation)
-      }
-
-      if (err?.message?.includes('Update matched 0 rows')) {
-        // The row no longer exists on the server (e.g. deleted by another user).
-        // Drop the update — there is nothing to update.
-        console.warn(
-          'observeOperations, update target gone — discarding operation:',
-          firstOperation,
-        )
-        return finishOperation(firstOperation)
-      }
-
-      console.error('observeOperations, error executing operation:', error)
-      const lcMessage = err.message?.toLowerCase?.()
-      // if auth error: get new auth token
-      // TODO: ensure if clause is correct
-      if (lcMessage?.includes('jwt')) {
-        // Token is invalid or expired — clear the cache so the next retry fetches a fresh one
-        invalidatePostgrestToken()
-        console.log(
-          'observeOperations, JWT error: invalidating token cache for retry',
-        )
-        return store.set(addNotificationAtom, {
-          intent: 'error',
-          title: 'Authentication error',
-          body: 'Please log out and log back in to continue syncing your changes.',
-        })
-      } else if (
-        err?.code === '42501' ||
-        lcMessage?.includes('permission denied') ||
-        lcMessage?.includes('insufficient privilege')
-      ) {
-        // Server rejected the write due to insufficient role — revert optimistic change
-        const hint = err?.hint ?? err?.details ?? ''
-        const hintText = hint ? ` ${hint}` : ''
-        store.set(addNotificationAtom, {
-          intent: 'error',
-          title: 'Not authorized',
-          body: `You do not have permission to ${firstOperation.operation} in "${firstOperation.table}". The change has been reverted.${hintText}`,
-        })
-        await revertOperation(firstOperation)
-        return finishOperation(firstOperation)
-      } else if (lcMessage?.includes('uniqueness violation')) {
-        console.log(
-          'There is a conflict with exact same changes - ingoring the error thrown',
-        )
-        store.set(addNotificationAtom, {
-          intent: 'info',
-          title: 'Conflict detected',
-          body: `This edit already exists on the server. Your change is thus ignored.`,
-        })
-
-        return revertOperation(firstOperation)
-      } else if (err?.code === '22P02') {
-        // Malformed value (e.g. a null id serialized into a filter).
-        // This operation can never succeed — drop it so it doesn't block
-        // the queue. The local change stays; the user should redo the edit.
-        console.error(
-          'observeOperations, dropping malformed operation:',
-          firstOperation,
-        )
-        store.set(addNotificationAtom, {
-          intent: 'error',
-          title: 'Change not synced',
-          body: `A change in "${firstOperation.table}" was malformed and could not be synced. It was removed from the queue — please redo the edit.`,
-        })
-        return finishOperation(firstOperation)
-      }
-
-      // if network error: return, setting shortTermOnline false
-      // else: unknown error — the operation stays queued and the retry tick
-      // re-sends it. Tell the user once it keeps failing
-      noteFailedOperation(
-        firstOperation,
-        err?.message ?? 'unknown error',
-        'one-by-one',
-      )
-      return
-    }
-    // Release lock BEFORE queue mutation so the observer sees isProcessing = false
-    // when it fires on the queue change caused by removeOperation.
+  isProcessing = true
+  try {
+    await executeOperation(firstOperation)
+  } catch (error) {
+    // Release the lock BEFORE any queue mutation so the observer can pick up
+    // the next operation immediately when removeOperation fires.
     isProcessing = false
-    // if successful: return remove operation
-    return finishOperation(firstOperation)
+    // postgrest-js errors carry code/message/hint/details
+    const err = error as {
+      code?: string
+      message?: string
+      hint?: string
+      details?: string
+    }
+    if (err?.code === '23505') {
+      // duplicate key value violates unique constraint
+      // The row is already present on server, so this operation is effectively done.
+      return finishOperation(firstOperation)
+    }
+
+    if (err?.message?.includes('Update matched 0 rows')) {
+      // The row no longer exists on the server (e.g. deleted by another user).
+      // Drop the update — there is nothing to update.
+      console.warn(
+        'observeOperations, update target gone — discarding operation:',
+        firstOperation,
+      )
+      return finishOperation(firstOperation)
+    }
+
+    console.error('observeOperations, error executing operation:', error)
+    const lcMessage = err.message?.toLowerCase?.()
+    // if auth error: get new auth token
+    // TODO: ensure if clause is correct
+    if (lcMessage?.includes('jwt')) {
+      // Token is invalid or expired — clear the cache so the next retry fetches a fresh one
+      invalidatePostgrestToken()
+      console.log(
+        'observeOperations, JWT error: invalidating token cache for retry',
+      )
+      return store.set(addNotificationAtom, {
+        intent: 'error',
+        title: 'Authentication error',
+        body: 'Please log out and log back in to continue syncing your changes.',
+      })
+    } else if (
+      err?.code === '42501' ||
+      lcMessage?.includes('permission denied') ||
+      lcMessage?.includes('insufficient privilege')
+    ) {
+      // Server rejected the write due to insufficient role — revert optimistic change
+      const hint = err?.hint ?? err?.details ?? ''
+      const hintText = hint ? ` ${hint}` : ''
+      store.set(addNotificationAtom, {
+        intent: 'error',
+        title: 'Not authorized',
+        body: `You do not have permission to ${firstOperation.operation} in "${firstOperation.table}". The change has been reverted.${hintText}`,
+      })
+      await revertOperation(firstOperation)
+      return finishOperation(firstOperation)
+    } else if (lcMessage?.includes('uniqueness violation')) {
+      console.log(
+        'There is a conflict with exact same changes - ingoring the error thrown',
+      )
+      store.set(addNotificationAtom, {
+        intent: 'info',
+        title: 'Conflict detected',
+        body: `This edit already exists on the server. Your change is thus ignored.`,
+      })
+
+      return revertOperation(firstOperation)
+    } else if (err?.code === '22P02') {
+      // Malformed value (e.g. a null id serialized into a filter).
+      // This operation can never succeed — drop it so it doesn't block
+      // the queue. The local change stays; the user should redo the edit.
+      console.error(
+        'observeOperations, dropping malformed operation:',
+        firstOperation,
+      )
+      store.set(addNotificationAtom, {
+        intent: 'error',
+        title: 'Change not synced',
+        body: `A change in "${firstOperation.table}" was malformed and could not be synced. It was removed from the queue — please redo the edit.`,
+      })
+      return finishOperation(firstOperation)
+    }
+
+    // if network error: return, setting shortTermOnline false
+    // else: unknown error — the operation stays queued and the retry tick
+    // re-sends it. Tell the user once it keeps failing
+    noteFailedOperation(
+      firstOperation,
+      err?.message ?? 'unknown error',
+      'one-by-one',
+    )
+    return
+  }
+  // Release lock BEFORE queue mutation so the observer sees isProcessing = false
+  // when it fires on the queue change caused by removeOperation.
+  isProcessing = false
+  // if successful: return remove operation
+  return finishOperation(firstOperation)
 }

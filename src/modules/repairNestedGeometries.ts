@@ -11,9 +11,9 @@ const flattenGeometries = (
   geometries: GeoJSON.Geometry[],
 ): GeoJSON.Geometry[] =>
   geometries.flatMap((geometry) =>
-    geometry.type === 'GeometryCollection'
-      ? flattenGeometries(geometry.geometries)
-      : [geometry],
+    geometry.type === 'GeometryCollection' ?
+      flattenGeometries(geometry.geometries)
+    : [geometry],
   )
 
 const toGeometryCollection = (geometries: GeoJSON.Geometry[]) => ({
@@ -40,7 +40,9 @@ const GEOMETRY_TABLES = [
 
 // Flattens every geometry that contains nested GeometryCollections, so that
 // ST_AsGeoJSON works on all rows again. No-op (SELECT-only) when clean.
-export const repairNestedGeometries = async (db: QueryableDb): Promise<void> => {
+export const repairNestedGeometries = async (
+  db: QueryableDb,
+): Promise<void> => {
   for (const { table, idName } of GEOMETRY_TABLES) {
     // ST_Dump flattens recursively, so a dump with more rows than the
     // top-level member count means the geometry contains nested collections
@@ -59,9 +61,7 @@ export const repairNestedGeometries = async (db: QueryableDb): Promise<void> => 
         leaves.rows as { geometry: GeoJSON.Geometry | null }[]
       )
         .map((leaf) => leaf.geometry)
-        .filter(
-          (geometry): geometry is GeoJSON.Geometry => geometry !== null,
-        )
+        .filter((geometry): geometry is GeoJSON.Geometry => geometry !== null)
       if (!geometries.length) continue
       await db.query(
         `UPDATE ${table} SET geometry = ST_GeomFromGeoJSON($1) WHERE ${idName} = $2`,

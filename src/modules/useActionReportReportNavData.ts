@@ -3,7 +3,7 @@ import { isEqual } from 'es-toolkit'
 import { useAtom } from 'jotai'
 import { useIntl } from 'react-intl'
 
-import { treeOpenNodesAtom } from '../store.ts'
+import { treeOpenNodesSetAtom } from '../store.ts'
 
 type Props = {
   projectId: string
@@ -20,7 +20,7 @@ export const useActionReportReportNavData = ({
   placeId2,
   actionReportId,
 }: Props) => {
-  const [openNodes] = useAtom(treeOpenNodesAtom)
+  const [openNodesSet] = useAtom(treeOpenNodesSetAtom)
   const { formatMessage } = useIntl()
 
   const actionReportQuery = useLiveQuery(/* sql */ `
@@ -46,14 +46,15 @@ export const useActionReportReportNavData = ({
   const parentUrl = `/${parentArray.join('/')}`
   const ownArray = [...parentArray, 'report']
   const ownUrl = `/${ownArray.join('/')}`
-  const isOpen = openNodes.some((array) => isEqual(array, ownArray))
+  const isOpen = openNodesSet.has(ownArray.join('/'))
   const urlPath = location.pathname.split('/').filter((p) => p !== '')
   const isInActiveNodeArray = ownArray.every((part, i) => urlPath[i] === part)
   const isActive = isEqual(urlPath, ownArray)
 
   const notFound = !!actionReportQuery && !actionReport
-  const label = notFound
-    ? formatMessage({ id: 'p+ORxp', defaultMessage: 'Nicht gefunden' })
+  const label =
+    notFound ?
+      formatMessage({ id: 'p+ORxp', defaultMessage: 'Nicht gefunden' })
     : formatMessage({ id: 'Z8jucQ', defaultMessage: 'Bericht' })
 
   const navData = {

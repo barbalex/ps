@@ -1,9 +1,9 @@
 import { useLiveQuery } from '@electric-sql/pglite-react'
-import { useAtom } from 'jotai'
+import { useAtom, useAtomValue } from 'jotai'
 import { isEqual } from 'es-toolkit'
 import { useIntl } from 'react-intl'
 
-import { treeOpenNodesAtom, designingAtom } from '../store.ts'
+import { treeOpenNodesSetAtom, isDesigningAtom } from '../store.ts'
 import { useNavRollups } from './navRollupsContext.ts'
 import { buildNavLabel } from './buildNavLabel.ts'
 
@@ -31,9 +31,8 @@ export const useCheckNavData = ({
   checkId,
 }: Props) => {
   const { formatMessage } = useIntl()
-  const [openNodes] = useAtom(treeOpenNodesAtom)
-  const [designingMap] = useAtom(designingAtom)
-  const isDesigning = designingMap[projectId] ?? false
+  const [openNodesSet] = useAtom(treeOpenNodesSetAtom)
+  const isDesigning = useAtomValue(isDesigningAtom(projectId))
 
   const sql = `
       WITH
@@ -80,7 +79,7 @@ export const useCheckNavData = ({
   const parentUrl = `/${parentArray.join('/')}`
   const ownArray = [...parentArray, nav?.id]
   const ownUrl = `/${ownArray.join('/')}`
-  const isOpen = openNodes.some((array) => isEqual(array, ownArray))
+  const isOpen = openNodesSet.has(ownArray.join('/'))
   const urlPath = location.pathname.split('/').filter((p) => p !== '')
   const isInActiveNodeArray = ownArray.every((part, i) => urlPath[i] === part)
   const isActive = isEqual(urlPath, ownArray)

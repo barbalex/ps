@@ -10,8 +10,14 @@ export const tableViewTables: {
   tableName: string
   label: { id: string; defaultMessage: string }
 }[] = [
-  { tableName: 'checks', label: { id: 'oPMDm+', defaultMessage: 'Kontrollen' } },
-  { tableName: 'actions', label: { id: 'pH7MgC', defaultMessage: 'Massnahmen' } },
+  {
+    tableName: 'checks',
+    label: { id: 'oPMDm+', defaultMessage: 'Kontrollen' },
+  },
+  {
+    tableName: 'actions',
+    label: { id: 'pH7MgC', defaultMessage: 'Massnahmen' },
+  },
   {
     tableName: 'places',
     label: { id: 'nK8tR4', defaultMessage: 'Orte' },

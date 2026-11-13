@@ -44,12 +44,12 @@ export const deleteIdbDatabases = async () => {
   if (typeof indexedDB === 'undefined') return
   const fallback = ['ps', '/ps']
   const discovered =
-    'databases' in indexedDB
-      ? await indexedDB
-          .databases()
-          .then((dbs) => dbs.map((d) => d.name).filter(Boolean) as string[])
-          .catch(() => [])
-      : []
+    'databases' in indexedDB ?
+      await indexedDB
+        .databases()
+        .then((dbs) => dbs.map((d) => d.name).filter(Boolean) as string[])
+        .catch(() => [])
+    : []
   const toDelete = [...new Set([...fallback, ...discovered])].filter((n) =>
     /ps|pglite|electric/i.test(n),
   )

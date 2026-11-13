@@ -28,7 +28,8 @@ export const APPLY_OPERATIONS_BATCH_SIZE = 50
 
 export type AppliedOperation = {
   op_index: number
-  status: 'applied' | 'duplicate' | 'no-row' | 'permission' | 'rejected' | 'error'
+  status:
+    'applied' | 'duplicate' | 'no-row' | 'permission' | 'rejected' | 'error'
   detail: string | null
 }
 
@@ -79,6 +80,12 @@ export const applyOperations = async (ops: QueuedOperation[]) => {
     const row = (data as AppliedOperation[] | null)?.find(
       (r) => r.op_index === index,
     )
-    return row ?? { op_index: index, status: 'error' as const, detail: 'missing result row' }
+    return (
+      row ?? {
+        op_index: index,
+        status: 'error' as const,
+        detail: 'missing result row',
+      }
+    )
   })
 }

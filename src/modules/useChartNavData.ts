@@ -3,7 +3,7 @@ import { useAtom } from 'jotai'
 import { isEqual } from 'es-toolkit'
 import { useIntl } from 'react-intl'
 
-import { treeOpenNodesAtom } from '../store.ts'
+import { treeOpenNodesSetAtom } from '../store.ts'
 import { buildNavLabel } from './buildNavLabel.ts'
 
 type Props = {
@@ -20,9 +20,14 @@ type NavData = {
   chart_subjects_count: number
 }
 
-export const useChartNavData = ({ projectId, subprojectId, chartId, section }: Props) => {
+export const useChartNavData = ({
+  projectId,
+  subprojectId,
+  chartId,
+  section,
+}: Props) => {
   const { formatMessage } = useIntl()
-  const [openNodes] = useAtom(treeOpenNodesAtom)
+  const [openNodesSet] = useAtom(treeOpenNodesSetAtom)
 
   const sql = `
       WITH
@@ -50,14 +55,15 @@ export const useChartNavData = ({ projectId, subprojectId, chartId, section }: P
   const parentUrl = `/${parentArray.join('/')}`
   const ownArray = [...parentArray, nav?.id]
   const ownUrl = `/${ownArray.join('/')}`
-  const isOpen = openNodes.some((array) => isEqual(array, ownArray))
+  const isOpen = openNodesSet.has(ownArray.join('/'))
   const urlPath = location.pathname.split('/').filter((p) => p !== '')
   const isInActiveNodeArray = ownArray.every((part, i) => urlPath[i] === part)
   const isActive = isEqual(urlPath, ownArray)
 
   const notFound = !!res && !nav
-  const label = notFound
-    ? formatMessage({ id: 'p+ORxp', defaultMessage: 'Nicht gefunden' })
+  const label =
+    notFound ?
+      formatMessage({ id: 'p+ORxp', defaultMessage: 'Nicht gefunden' })
     : (nav?.label ?? nav?.id)
 
   const navData = {

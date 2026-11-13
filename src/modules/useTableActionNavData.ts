@@ -4,7 +4,7 @@ import { useLocation } from '@tanstack/react-router'
 import { isEqual } from 'es-toolkit'
 import { useIntl } from 'react-intl'
 
-import { treeOpenNodesAtom, languageAtom } from '../store.ts'
+import { treeOpenNodesSetAtom, languageAtom } from '../store.ts'
 
 type Props = {
   projectId: string
@@ -40,7 +40,7 @@ export const useTableActionNavData = ({
   actionId,
 }: Props) => {
   const { formatMessage } = useIntl()
-  const [openNodes] = useAtom(treeOpenNodesAtom)
+  const [openNodesSet] = useAtom(treeOpenNodesSetAtom)
   const [language] = useAtom(languageAtom)
   const location = useLocation()
 
@@ -100,14 +100,15 @@ export const useTableActionNavData = ({
   const parentUrl = `/${parentArray.join('/')}`
   const ownArray = [...parentArray, nav?.action_id]
   const ownUrl = `/${ownArray.join('/')}`
-  const isOpen = openNodes.some((array) => isEqual(array, ownArray))
+  const isOpen = openNodesSet.has(ownArray.join('/'))
   const urlPath = location.pathname.split('/').filter((p) => p !== '')
   const isInActiveNodeArray = ownArray.every((part, i) => urlPath[i] === part)
   const isActive = isEqual(urlPath, ownArray)
 
   const notFound = !!res && !nav
-  const label = notFound
-    ? formatMessage({ id: 'p+ORxp', defaultMessage: 'Nicht gefunden' })
+  const label =
+    notFound ?
+      formatMessage({ id: 'p+ORxp', defaultMessage: 'Nicht gefunden' })
     : (nav?.label ?? nav?.action_id)
 
   const navData = {

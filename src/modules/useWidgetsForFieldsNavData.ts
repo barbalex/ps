@@ -6,7 +6,7 @@ import { useIntl } from 'react-intl'
 
 import { filterStringFromFilter } from './filterStringFromFilter.ts'
 import { buildNavLabel } from './buildNavLabel.ts'
-import { widgetsForFieldsFilterAtom, treeOpenNodesAtom } from '../store.ts'
+import { widgetsForFieldsFilterAtom, treeOpenNodesSetAtom } from '../store.ts'
 
 const parentArray = ['data']
 const parentUrl = `/${parentArray.join('/')}`
@@ -26,19 +26,20 @@ type NavDataClosed = {
 }
 
 export const useWidgetsForFieldsNavData = () => {
-  const [openNodes] = useAtom(treeOpenNodesAtom)
+  const [openNodesSet] = useAtom(treeOpenNodesSetAtom)
   const location = useLocation()
   const { formatMessage } = useIntl()
 
   // needs to work not only works for urlPath, for all opened paths!
-  const isOpen = openNodes.some((array) => isEqual(array, ownArray))
+  const isOpen = openNodesSet.has(ownArray.join('/'))
 
   const [filter] = useAtom(widgetsForFieldsFilterAtom)
   const filterString = filterStringFromFilter(filter)
   const isFiltered = !!filterString
 
-  const sql = isOpen
-    ? `
+  const sql =
+    isOpen ?
+      `
       WITH
         count_unfiltered AS (SELECT count(*) FROM widgets_for_fields),
         count_filtered AS (SELECT count(*) FROM widgets_for_fields ${isFiltered ? ` WHERE ${filterString}` : ''})

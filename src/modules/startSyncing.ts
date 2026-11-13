@@ -269,7 +269,9 @@ export const startSyncing = async (userId: string) => {
         if (Date.now() - stageStart < 60_000) return
         clearInterval(diagTimer)
         const pending = Object.entries(sync.streams)
-          .filter(([, stream]) => !(stream as { isUpToDate?: boolean }).isUpToDate)
+          .filter(
+            ([, stream]) => !(stream as { isUpToDate?: boolean }).isUpToDate,
+          )
           .map(([name]) => name)
         console.warn(
           `startSyncing: stage ${index + 1}/${levels.length} not up to date after 60s, still syncing: ${pending.join(', ')}`,

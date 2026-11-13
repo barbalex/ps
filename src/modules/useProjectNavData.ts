@@ -1,4 +1,4 @@
-import { useAtom } from 'jotai'
+import { useAtom, useAtomValue } from 'jotai'
 import { isEqual } from 'es-toolkit'
 import { useIntl } from 'react-intl'
 
@@ -11,8 +11,8 @@ import {
   listsFilterAtom,
   unitsFilterAtom,
   fieldsFilterAtom,
-  treeOpenNodesAtom,
-  designingAtom,
+  treeOpenNodesSetAtom,
+  isDesigningAtom,
 } from '../store.ts'
 import { useNavRollups } from './navRollupsContext.ts'
 import { buildNavLabel } from './buildNavLabel.ts'
@@ -27,10 +27,9 @@ export const useProjectNavData = ({
   projectId,
   forBreadcrumb = false,
 }: Props) => {
-  const [openNodes] = useAtom(treeOpenNodesAtom)
+  const [openNodesSet] = useAtom(treeOpenNodesSetAtom)
   const { formatMessage } = useIntl()
-  const [designingMap] = useAtom(designingAtom)
-  const designing = designingMap[projectId] ?? false
+  const designing = useAtomValue(isDesigningAtom(projectId))
 
   const [subprojectsFilter] = useAtom(subprojectsFilterAtom)
   const subprojectsFilterString = filterStringFromFilter(subprojectsFilter)
@@ -104,7 +103,7 @@ export const useProjectNavData = ({
   const parentUrl = `/${parentArray.join('/')}`
   const ownArray = [...parentArray, nav?.project_id]
   const ownUrl = `/${ownArray.join('/')}`
-  const isOpen = openNodes.some((array) => isEqual(array, ownArray))
+  const isOpen = openNodesSet.has(ownArray.join('/'))
   const urlPath = location.pathname.split('/').filter((p) => p !== '')
   const isInActiveNodeArray = ownArray.every((part, i) => urlPath[i] === part)
   const isActive = isEqual(urlPath, ownArray)

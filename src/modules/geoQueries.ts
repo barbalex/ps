@@ -58,11 +58,9 @@ export const nearestPlaces = async (
   },
 ): Promise<PlaceWithDistanceRow[]> => {
   const levelCondition =
-    level === 'places1'
-      ? 'AND parent_id IS NULL'
-      : level === 'places2'
-        ? 'AND parent_id IS NOT NULL'
-        : ''
+    level === 'places1' ? 'AND parent_id IS NULL'
+    : level === 'places2' ? 'AND parent_id IS NOT NULL'
+    : ''
   // degree prefilter so the GiST index prunes candidates before the
   // geodesic distance computation; factor 2 covers the longitude shrink
   // of a meters figure up to about 60° latitude
@@ -143,9 +141,7 @@ export const queryExtent = async (
   }
 }
 
-export const unionExtents = (
-  extents: (Extent | null)[],
-): Extent | null => {
+export const unionExtents = (extents: (Extent | null)[]): Extent | null => {
   const valid = extents.filter((extent): extent is Extent => extent !== null)
   if (!valid.length) return null
   return {

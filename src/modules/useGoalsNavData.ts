@@ -6,7 +6,7 @@ import { useIntl } from 'react-intl'
 
 import { filterStringFromFilter } from './filterStringFromFilter.ts'
 import { buildNavLabel } from './buildNavLabel.ts'
-import { goalsFilterAtom, treeOpenNodesAtom } from '../store.ts'
+import { goalsFilterAtom, treeOpenNodesSetAtom } from '../store.ts'
 
 type Props = {
   projectId: string
@@ -26,7 +26,7 @@ type NavDataClosed = {
 }[]
 
 export const useGoalsNavData = ({ projectId, subprojectId }: Props) => {
-  const [openNodes] = useAtom(treeOpenNodesAtom)
+  const [openNodesSet] = useAtom(treeOpenNodesSetAtom)
   const location = useLocation()
   const { formatMessage } = useIntl()
 
@@ -39,14 +39,15 @@ export const useGoalsNavData = ({ projectId, subprojectId }: Props) => {
   ]
   const ownArray = [...parentArray, 'goals']
   // needs to work not only works for urlPath, for all opened paths!
-  const isOpen = openNodes.some((array) => isEqual(array, ownArray))
+  const isOpen = openNodesSet.has(ownArray.join('/'))
 
   const [filter] = useAtom(goalsFilterAtom)
   const filterString = filterStringFromFilter(filter, 'goals')
   const isFiltered = !!filterString
 
-  const sql = isOpen
-    ? `
+  const sql =
+    isOpen ?
+      `
       WITH
         count_unfiltered AS (SELECT count(*) FROM goals WHERE subproject_id = '${subprojectId}'),
         count_filtered AS (SELECT count(*) FROM goals WHERE subproject_id = '${subprojectId}' ${isFiltered ? ` AND ${filterString}` : ''})

@@ -1,9 +1,9 @@
 import { useLiveQuery } from '@electric-sql/pglite-react'
-import { useAtom } from 'jotai'
+import { useAtom, useAtomValue } from 'jotai'
 import { isEqual } from 'es-toolkit'
 import { useIntl } from 'react-intl'
 
-import { treeOpenNodesAtom, designingAtom } from '../store.ts'
+import { treeOpenNodesSetAtom, isDesigningAtom } from '../store.ts'
 import { buildNavLabel } from './buildNavLabel.ts'
 
 type Props = {
@@ -27,9 +27,8 @@ export const useActionReportNavData = ({
   placeId2,
   actionReportId,
 }: Props) => {
-  const [openNodes] = useAtom(treeOpenNodesAtom)
-  const [designingMap] = useAtom(designingAtom)
-  const isDesigning = designingMap[projectId] ?? false
+  const [openNodesSet] = useAtom(treeOpenNodesSetAtom)
+  const isDesigning = useAtomValue(isDesigningAtom(projectId))
   const { formatMessage } = useIntl()
 
   const sql = `
@@ -69,14 +68,15 @@ export const useActionReportNavData = ({
   const parentUrl = `/${parentArray.join('/')}`
   const ownArray = [...parentArray, nav?.id]
   const ownUrl = `/${ownArray.join('/')}`
-  const isOpen = openNodes.some((array) => isEqual(array, ownArray))
+  const isOpen = openNodesSet.has(ownArray.join('/'))
   const urlPath = location.pathname.split('/').filter((p) => p !== '')
   const isInActiveNodeArray = ownArray.every((part, i) => urlPath[i] === part)
   const isActive = isEqual(urlPath, ownArray)
 
   const notFound = !!res && !nav
-  const label = notFound
-    ? formatMessage({ id: 'p+ORxp', defaultMessage: 'Nicht gefunden' })
+  const label =
+    notFound ?
+      formatMessage({ id: 'p+ORxp', defaultMessage: 'Nicht gefunden' })
     : (nav?.label ?? nav?.id)
 
   const navData = {
@@ -91,29 +91,29 @@ export const useActionReportNavData = ({
     label,
     notFound,
     navs:
-      placeLevel?.action_report_quantities_in_report === false
-        ? [
-            {
-              id: 'report',
-              label: formatMessage({ id: 'Z8jucQ', defaultMessage: 'Bericht' }),
-            },
-            ...(isDesigning || placeLevel?.action_report_quantities !== false
-              ? [
-                  {
-                    id: 'quantities',
-                    label: buildNavLabel({
-                      loading,
-                      countFiltered: nav?.place_action_report_quantities_count ?? 0,
-                      namePlural: formatMessage({
-                        id: 'Xuj/Gy',
-                        defaultMessage: 'Mengen',
-                      }),
-                    }),
-                  },
-                ]
-              : []),
-          ]
-        : [],
+      placeLevel?.action_report_quantities_in_report === false ?
+        [
+          {
+            id: 'report',
+            label: formatMessage({ id: 'Z8jucQ', defaultMessage: 'Bericht' }),
+          },
+          ...(isDesigning || placeLevel?.action_report_quantities !== false ?
+            [
+              {
+                id: 'quantities',
+                label: buildNavLabel({
+                  loading,
+                  countFiltered: nav?.place_action_report_quantities_count ?? 0,
+                  namePlural: formatMessage({
+                    id: 'Xuj/Gy',
+                    defaultMessage: 'Mengen',
+                  }),
+                }),
+              },
+            ]
+          : []),
+        ]
+      : [],
   }
 
   return { navData, loading }

@@ -8,7 +8,7 @@ import { filterStringFromFilter } from './filterStringFromFilter.ts'
 import { buildNavLabel } from './buildNavLabel.ts'
 import {
   getTableViewFilterAtom,
-  treeOpenNodesAtom,
+  treeOpenNodesSetAtom,
   languageAtom,
 } from '../store.ts'
 import type { TableRowFilter } from '../store.ts'
@@ -51,7 +51,7 @@ export const useTableActionsNavData = ({
   tableViewId,
 }: Props) => {
   const { formatMessage } = useIntl()
-  const [openNodes] = useAtom(treeOpenNodesAtom)
+  const [openNodesSet] = useAtom(treeOpenNodesSetAtom)
   const [language] = useAtom(languageAtom)
   const location = useLocation()
 
@@ -66,15 +66,10 @@ export const useTableActionsNavData = ({
     ...(placeId2 ? ['places', placeId2] : []),
   ]
   const parentUrl = `/${parentArray.join('/')}`
-  const ownArray = [
-    ...parentArray,
-    'table-views',
-    tableViewId,
-    'actions',
-  ]
+  const ownArray = [...parentArray, 'table-views', tableViewId, 'actions']
   const ownUrl = `/${ownArray.join('/')}`
   // needs to work not only works for urlPath, for all opened paths!
-  const isOpen = openNodes.some((array) => isEqual(array, ownArray))
+  const isOpen = openNodesSet.has(ownArray.join('/'))
 
   const resView = useLiveQuery<ViewData>(
     `SELECT * FROM table_views WHERE table_view_id = $1`,
@@ -102,8 +97,9 @@ export const useTableActionsNavData = ({
     )
     .join('')}`
 
-  const sql = isOpen
-    ? `
+  const sql =
+    isOpen ?
+      `
       WITH
         count_unfiltered AS (SELECT count(*) FROM actions WHERE place_id = '${placeId2 ?? placeId}'${hasViewFilter ? ` AND (${viewFilterString})` : ''}),
         count_filtered AS (SELECT count(*) FROM actions WHERE place_id = '${placeId2 ?? placeId}'${hasViewFilter ? ` AND (${viewFilterString})` : ''}${isFiltered ? ` AND (${filterString})` : ''})

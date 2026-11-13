@@ -5,7 +5,7 @@ import { useIntl } from 'react-intl'
 
 import { filterStringFromFilter } from './filterStringFromFilter.ts'
 import { buildNavLabel } from './buildNavLabel.ts'
-import { projectsFilterAtom, treeOpenNodesAtom } from '../store.ts'
+import { projectsFilterAtom, treeOpenNodesSetAtom } from '../store.ts'
 
 const parentArray = ['data']
 const parentUrl = `/${parentArray.join('/')}`
@@ -73,14 +73,14 @@ const getNavData = ({
 export const useProjectsNavData = (params?: Props) => {
   const forBreadcrumb = params?.forBreadcrumb ?? false
   const { formatMessage } = useIntl()
-  const [openNodes] = useAtom(treeOpenNodesAtom)
+  const [openNodesSet] = useAtom(treeOpenNodesSetAtom)
 
   const [filter] = useAtom(projectsFilterAtom)
   const filterString = filterStringFromFilter(filter, 'projects')
   const isFiltered = !!filterString
 
   // needs to work not only works for urlPath, for all opened paths!
-  const isOpen = openNodes.some((array) => isEqual(array, ownArray))
+  const isOpen = openNodesSet.has(ownArray.join('/'))
   const withNavs = !forBreadcrumb || isOpen
 
   // console.log('useProjectsNavData', {
@@ -90,8 +90,9 @@ export const useProjectsNavData = (params?: Props) => {
   //   isOpen,
   // })
 
-  const sql = withNavs
-    ? `
+  const sql =
+    withNavs ?
+      `
       WITH
         count_unfiltered AS (SELECT count(*) FROM projects),
         count_filtered AS (SELECT count(*) FROM projects${isFiltered ? ` WHERE ${filterString}` : ''})

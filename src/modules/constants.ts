@@ -430,22 +430,17 @@ export const constants = {
   titleRowHeight: 52,
   mobileViewMaxWidth: 999,
   getPostgrestUri: () =>
-    isLocalDevHost()
-      ? `http://${window.location.hostname}:3002`
-      : isPromoteSpeciesHost()
-        ? 'https://api.promote-species.app'
-        : isArtenFoerdernChHost()
-          ? `${window.location.origin}/api`
-          : 'https://api.arten-fördern.app',
+    isLocalDevHost() ? `http://${window.location.hostname}:3002`
+    : isPromoteSpeciesHost() ? 'https://api.promote-species.app'
+    : isArtenFoerdernChHost() ? `${window.location.origin}/api`
+    : 'https://api.arten-fördern.app',
   // set 3001 to go via caddy, 3004 to go directly to electric backend
   getElectricUri: () =>
-    isLocalDevHost()
-      ? `https://${window.location.hostname}:3001/v1/shape`
-      : isPromoteSpeciesHost()
-        ? 'https://sync.promote-species.app/v1/shape'
-        : 'https://sync.arten-fördern.app/v1/shape',
+    isLocalDevHost() ? `https://${window.location.hostname}:3001/v1/shape`
+    : isPromoteSpeciesHost() ? 'https://sync.promote-species.app/v1/shape'
+    : 'https://sync.arten-fördern.app/v1/shape',
   getAppUri: () =>
-    isLocalDevHost()
-      ? `http://${window.location.hostname}:${window.location.port}`
-      : `https://${window.location.hostname}`,
+    isLocalDevHost() ?
+      `http://${window.location.hostname}:${window.location.port}`
+    : `https://${window.location.hostname}`,
 }

@@ -21,8 +21,9 @@ export const getValueFromChange = (
       if (data?.value === null) return { value: null, name, targetType }
       // numbers need to be converted to numbers
       return {
-        value: !isNaN(data?.value as unknown as number)
-          ? parseFloat(data?.value as string)
+        value:
+          !isNaN(data?.value as unknown as number) ?
+            parseFloat(data?.value as string)
           : data?.value,
         name,
         targetType,

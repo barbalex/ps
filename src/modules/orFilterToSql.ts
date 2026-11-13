@@ -57,9 +57,9 @@ export const orFilterToSql = (
     return `${columnDescriptor} = ${value}`
   })
   const sql =
-    whereClauses.length > 1
-      ? `(${whereClauses.join(' AND ')})`
-      : whereClauses.join(' AND ')
+    whereClauses.length > 1 ?
+      `(${whereClauses.join(' AND ')})`
+    : whereClauses.join(' AND ')
 
   return sql
 }
