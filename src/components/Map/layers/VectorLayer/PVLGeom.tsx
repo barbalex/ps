@@ -4,12 +4,12 @@ import { useMapEvent, useMap } from 'react-leaflet'
 import * as L from 'leaflet'
 import * as ReactDOMServer from 'react-dom/server'
 import { useDebouncedCallback } from 'use-debounce'
-import * as icons from 'react-icons/md'
 import { usePGlite } from '@electric-sql/pglite-react'
 import { useSetAtom } from 'jotai'
 import type { GeoJSON } from 'geojson'
 
 import { ProgressiveGeoJSON } from '../ProgressiveGeoJSON.tsx'
+import { cachedMarkerIconHtml } from '../markerIconHtml.tsx'
 
 import { vectorLayerDisplayToProperties } from '../../../../modules/vectorLayerDisplayToProperties.ts'
 import { Popup } from '../../Popup.tsx'
@@ -147,6 +147,12 @@ export const PVLGeom = ({ layer, display }: Props) => {
     fetchDataDebounced({ bounds: map.getBounds() as LatLngBoundsWithInternals })
   }, [fetchDataDebounced, map])
 
+  // notif cleanup after commit — writing atoms during render is a side
+  // effect (and re-ran on every render)
+  useEffect(() => {
+    removeNotifs()
+  }, [removeNotifs, data])
+
   useEffect(() => {
     // goal: remove own notifs when (de-)activating layer
     removeNotifs()
@@ -170,32 +176,8 @@ export const PVLGeom = ({ layer, display }: Props) => {
   )
     return null
 
-  removeNotifs()
-  // TODO: this can not work
-  // if (
-  //   data?.length === (layer.max_features ?? 1000) &&
-  //   !notificationIds.current.length
-  // ) {
-  //   const res = await createNotification({
-  //     title: `Zuviele Geometrien`,
-  //     body: `Die maximale Anzahl Features von ${
-  //       layer.max_features ?? 1000
-  //     } für Vektor-Karte '${layer.label}' wurde geladen. Zoomen sie näher ran`,
-  //     intent: 'warning',
-  //     timeout: 10000,
-  //     db,
-  //   })
-  //   const notificationData = res?.rows?.[0]
-  //   notificationIds.current = [
-  //     notificationData.id,
-  //     ...notificationIds.current,
-  //   ]
-  // }
-
   if (!data?.length) return null
   if (!display) return null
-
-  const mapSize = map.getSize()
 
   return (
     <ErrorBoundary layer={layer as { label: string | null }}>
@@ -226,10 +208,17 @@ export const PVLGeom = ({ layer, display }: Props) => {
               ][],
             },
           ]
-          const popupContent = ReactDOMServer.renderToString(
-            <Popup layersData={layersData} mapSize={mapSize} />,
+          // lazy popup: rendered when the popup opens, not per feature at
+          // layer creation (thousands of bindPopup calls with pre-rendered
+          // html)
+          _layer.bindPopup(() =>
+            ReactDOMServer.renderToString(
+              <Popup
+                layersData={layersData}
+                mapSize={map.getSize()}
+              />,
+            ),
           )
-          _layer.bindPopup(popupContent)
         }}
         pointToLayer={(_geoJsonPoint, latlng) => {
           // TODO: add font-weight setting
@@ -240,25 +229,20 @@ export const PVLGeom = ({ layer, display }: Props) => {
               radius: display.circle_marker_radius ?? 8,
             } as L.CircleMarkerOptions)
           }
-          const Component =
-            icons[display.marker_symbol as keyof typeof icons] ?? icons.MdPlace
           const markerIconStyle = {
             '--marker-size': `${display?.marker_size ?? 16}px`,
             ...(display?.color ? { '--marker-color': display.color } : {}),
           } as React.CSSProperties
+          const html = cachedMarkerIconHtml({
+            symbol: display.marker_symbol ?? 'MdPlace',
+            className: `${styles.markerIcon} ${styles.markerIconSized}`,
+            style: markerIconStyle,
+          })
           return new L.Marker(latlng, {
             geomanIgnore: true,
-            icon: new L.DivIcon({
-              html: ReactDOMServer.renderToString(
-                <Component
-                  className={`${styles.markerIcon} ${styles.markerIconSized}`}
-                  style={markerIconStyle}
-                />,
-              ),
-            }),
-            opacity: display.opacity_percent
-              ? display.opacity_percent / 100
-              : 0,
+            ...(html ? { icon: new L.DivIcon({ html }) } : {}),
+            opacity:
+              display.opacity_percent ? display.opacity_percent / 100 : 0,
           })
         }}
       />

@@ -34,17 +34,29 @@ Findings from the 2026-11-13 performance review. Work off one by one.
   including the wasm now. Verified against a `vite preview` build: wasm in precache,
   cold chunks absent, offline-sync e2e passes.
 
-- [ ] **3. Map pan path**
-  - `mapViewportBoundsAtom` written every animation frame
-    ([BoundsListener.tsx:53](src/components/Map/BoundsListener.tsx)); subscriber
-    [Active/Content.tsx:114](src/components/Map/LeftMenuDrawer/Layers/Actives/Active/Content.tsx)
-    (760 lines) only reads bounds inside a click handler → re-render per frame.
-  - WFS refetch on every `moveend`, no debounce, no bbox-overlap check, full-GeoJSON
-    reprojection each time
-    ([WFS.tsx:220-258](src/components/Map/layers/VectorLayer/WFS.tsx)).
-  - `ReactDOMServer.renderToString` per point marker in
-    TableLayer.tsx:379, PVLGeom.tsx:229/252, WFS.tsx:351.
-  - Jotai atom writes in render bodies (WFS.tsx:282, PVLGeom.tsx:173).
+- [x] **3. Map pan path** (branch: `perf/map-pan-path`)
+  - `mapViewportBoundsAtom` was written every animation frame
+    ([BoundsListener.tsx](src/components/Map/BoundsListener.tsx)); its only
+    subscriber ([Active/Content.tsx](src/components/Map/LeftMenuDrawer/Layers/Actives/Active/Content.tsx),
+    760 lines) reads bounds only inside a click handler → re-render per frame.
+    **Done:** atom written on moveend/zoomend only; Content reads it at click time
+    via `store.get()`.
+  - WFS refetched on every `moveend` (plus `dragend`/`zoomend` — up to 3× per
+    interaction), no debounce, no bbox-overlap check, full-GeoJSON reprojection
+    each time ([WFS.tsx](src/components/Map/layers/VectorLayer/WFS.tsx)).
+    **Done:** single debounced (600 ms) moveend handler; refetch skipped when the
+    viewport stays inside the padded bbox of the last successful fetch at the
+    same zoom.
+  - `ReactDOMServer.renderToString` per point marker (TableLayer, PVLGeom, WFS)
+    and per feature popup (PVLGeom).
+    **Done:** marker icons cached per variant in
+    [markerIconHtml.tsx](src/components/Map/layers/markerIconHtml.tsx); PVLGeom
+    popups render lazily on open; TableLayer's dataKey memoized.
+  - Jotai atom writes in render bodies (WFS.tsx, PVLGeom.tsx). **Done:** moved
+    into effects.
+  - Remaining (left as is): `Layer.tsx:143` mutates `wmsLayer.opacity` during
+    render — idempotent prop-object tweak, not an atom write; fixing it means
+    restructuring how WMS opacity is passed down.
 
 - [ ] **4. SqlInitializer re-runs schema surgery on every page load**
   Big ALTER/trigger script plus `DELETE ... DISTINCT ON` dedup scan over
