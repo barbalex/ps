@@ -22,14 +22,17 @@ Findings from the 2026-11-13 performance review. Work off one by one.
   Follow-up idea (not done): roll up the per-parent child counts in
   usePlacesNavData/useObservationsNavData etc. the same way.
 
-- [ ] **2. Service worker precaches the wrong things**
-  Precache hoards 22.9 MB up front — including the 410 KB gz marker-icon chunk and
+- [x] **2. Service worker precaches the wrong things** (branch: `perf/sw-precache`)
+  Precache hoarded 22.9 MB up front — including the 410 KB gz marker-icon chunk and
   xlsx/doc-viewer chunks a first-time visitor never opens — while the ~9.7 MB PGlite
-  wasm that actually makes the app work offline is *not* precached
-  ([vite.config.ts:67](vite.config.ts) globPatterns has no `wasm`; wasm survives only
+  wasm that actually makes the app work offline was *not* precached
+  ([vite.config.ts:67](vite.config.ts) globPatterns had no `wasm`; wasm survived only
   via Netlify's immutable HTTP cache, which the browser may evict).
-  **Fix:** precache the wasm; move cold chunks (md icons, xlsx, SqlEditorField,
-  react-doc-viewer) to idle-time/runtime caching.
+  **Done:** wasm precached (all three PGlite wasm files); cold chunks (md icons,
+  xlsx + cpexcel, react-doc-viewer, SqlEditorField — 3.7 MB raw) excluded from
+  precache and runtime-cached CacheFirst on first use. Precache total 22.9 → 19.3 MB
+  including the wasm now. Verified against a `vite preview` build: wasm in precache,
+  cold chunks absent, offline-sync e2e passes.
 
 - [ ] **3. Map pan path**
   - `mapViewportBoundsAtom` written every animation frame
