@@ -3,7 +3,6 @@ import {
   redirect,
   stripSearchParams,
 } from '@tanstack/react-router'
-import { type } from 'arktype'
 
 import { AuthAndDb } from '../../components/AuthAndDb.tsx'
 import { Initiating } from '../../components/Initiating.tsx'
@@ -24,13 +23,18 @@ const defaultValues = {
   onlyForm: false,
 }
 
-const schema = type({
-  onlyForm: 'boolean = false',
+// plain validator instead of an arktype schema: this route's search segment
+// is part of the eager entry chunk, and arktype + @ark/schema (~30 KB gz)
+// came along with it. The param is only ever set programmatically (as a
+// proper boolean), so permissive coercion is safe.
+type DataSearch = { onlyForm?: boolean }
+const validateSearch = (search: Record<string, unknown>): DataSearch => ({
+  onlyForm: search.onlyForm === true,
 })
 
 export const Route = createFileRoute('/data')({
   component: AuthAndDb,
-  validateSearch: schema,
+  validateSearch,
   search: {
     // stripSearchParams removes params equal to their defaults from the URL,
     // so `onlyForm` only appears when it is explicitly true
@@ -101,9 +105,9 @@ export const Route = createFileRoute('/data')({
       }
 
       const session =
-        result && typeof result === 'object' && 'data' in result
-          ? (result as { data?: { user?: unknown } | null }).data
-          : (result as { user?: unknown } | null)
+        result && typeof result === 'object' && 'data' in result ?
+          (result as { data?: { user?: unknown } | null }).data
+        : (result as { user?: unknown } | null)
       if (!session?.user)
         throw redirect({
           to: '/auth',

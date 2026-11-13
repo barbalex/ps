@@ -13,9 +13,10 @@ export const Auth = () => {
   useMarkBootDone()
   const { formatMessage } = useIntl()
   const router = useRouter()
-  const { redirect: redirectTo, verificationExpired } = useSearch({
-    from: '/_layout/auth',
-  })
+  const {
+    redirect: redirectTo = '/data/projects',
+    verificationExpired = false,
+  } = useSearch({ from: '/_layout/auth' })
   const [isSignUp, setIsSignUp] = useState(false)
 
   const onLoggedIn = useCallback(
