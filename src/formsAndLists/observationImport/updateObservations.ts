@@ -1,4 +1,3 @@
-import { point, featureCollection } from '@turf/helpers'
 import proj4 from 'proj4'
 import type { PGliteWithLive } from '@electric-sql/pglite/live'
 import { createObservation } from '../../modules/createRows.ts'
@@ -24,6 +23,11 @@ type ExistingObservation = {
   not_to_assign: boolean | null
   comment: string | null
 }
+
+// rows per bulk statement: one parameterized statement via unnest instead of
+// one round-trip per observation (imports of ~2000 observations used to run
+// one INSERT/UPDATE per row, each invalidating the live queries)
+const CHUNK_SIZE = 500
 
 // Helper to calculate geometry from observation data
 const calculateGeometry = (
@@ -53,8 +57,13 @@ const calculateGeometry = (
       'EPSG:4326',
       coordinates as number[],
     )
-    const myPoint = point(position.reverse())
-    return featureCollection([myPoint])
+    // GeometryCollection, like setGeometries writes it: ST_GeomFromGeoJSON
+    // rejects FeatureCollections, and the column is typed
+    // geometry(GeometryCollection, 4326)
+    return {
+      type: 'GeometryCollection',
+      geometries: [{ type: 'Point', coordinates: position.reverse() }],
+    }
   } catch (error) {
     console.error('Error calculating geometry:', error)
     return null
@@ -116,6 +125,60 @@ const setupProj4 = async (observationImport: ObservationImports) => {
   return false
 }
 
+type PreparedRow = {
+  observation: ReturnType<typeof createObservation>
+  idInSource: string | null
+  geometry: Record<string, unknown> | null
+  label: string | null
+}
+
+// compute all rows in js first, then insert them in bulk chunks
+const bulkInsertObservations = async (
+  db: PGliteWithLive,
+  rows: PreparedRow[],
+  onProgress?: (processed: number) => void,
+) => {
+  for (let i = 0; i < rows.length; i += CHUNK_SIZE) {
+    const chunk = rows.slice(i, i + CHUNK_SIZE)
+    await db.query(
+      `INSERT INTO observations (observation_import_id, observation_id, data, id_in_source, geometry, label)
+       SELECT i, o, d, s, ST_SetSRID(ST_GeomFromGeoJSON(g), 4326), l
+       FROM unnest(
+         $1::uuid[], $2::uuid[], $3::jsonb[], $4::text[], $5::jsonb[], $6::text[]
+       ) AS t(i, o, d, s, g, l)`,
+      [
+        chunk.map((r) => r.observation.observation_import_id),
+        chunk.map((r) => r.observation.observation_id),
+        chunk.map((r) => JSON.stringify(r.observation.data)),
+        chunk.map((r) => r.idInSource),
+        chunk.map((r) => (r.geometry ? JSON.stringify(r.geometry) : null)),
+        chunk.map((r) => r.label),
+      ],
+    )
+    onProgress?.(i + chunk.length)
+    // let the ui breathe between chunks
+    await new Promise((r) => setTimeout(r, 0))
+  }
+}
+
+const prepareRow = (
+  observationImport: ObservationImports,
+  data: Record<string, unknown>,
+): PreparedRow => {
+  const observation = createObservation({
+    observationImportId: observationImport.observation_import_id,
+    data,
+  })
+  const idValue =
+    observationImport.id_field ? data?.[observationImport.id_field] : undefined
+  return {
+    observation,
+    idInSource: idValue ? String(idValue) : null,
+    geometry: calculateGeometry(data, observationImport, true),
+    label: calculateLabel(data, observationImport.label_creation),
+  }
+}
+
 /**
  * Handles "replace" operation: deletes all existing observations and creates new ones
  */
@@ -148,12 +211,12 @@ export const replaceObservations = async ({
           }),
           sheetName = workbook.SheetNames[0],
           worksheet = workbook.Sheets[sheetName]
-        const data = utils.sheet_to_json<Record<string, unknown>>(
-          worksheet,
-        ).map((d) => {
-          const { __rowNum__, ...rest } = d
-          return rest
-        })
+        const data = utils
+          .sheet_to_json<Record<string, unknown>>(worksheet)
+          .map((d) => {
+            const { __rowNum__, ...rest } = d
+            return rest
+          })
 
         // Setup proj4 if needed
         await setupProj4(observationImport)
@@ -164,63 +227,50 @@ export const replaceObservations = async ({
           [observationImport.observation_import_id],
         )
 
-        // Insert new observations
-        const observations = data.map((dat) =>
-          createObservation({
-            observationImportId: observationImport.observation_import_id,
-            data: dat,
-          }),
-        )
+        // compute rows (geometry, label, id_in_source) in js first
+        const rows = data.map((dat) => prepareRow(observationImport, dat))
 
         backgroundTasks.add(
           taskId,
-          intl?.formatMessage({ id: 'bgTkRpl', defaultMessage: 'Ersetze Beobachtungen' }) ?? 'Ersetze Beobachtungen',
-          observations.length,
+          intl?.formatMessage({
+            id: 'bgTkRpl',
+            defaultMessage: 'Ersetze Beobachtungen',
+          }) ?? 'Ersetze Beobachtungen',
+          rows.length,
         )
         taskStarted = true
 
-        // Insert into database with geometry and label
-        let processed = 0
-        for (const occ of observations) {
-          const idInSource = observationImport.id_field
-            ? occ.data?.[observationImport.id_field]
-            : null
-          const geometry = calculateGeometry(occ.data!, observationImport, true)
-          const label = calculateLabel(
-            occ.data!,
-            observationImport.label_creation,
-          )
-
-          await db.query(
-            `INSERT INTO observations (observation_import_id, observation_id, data, id_in_source, geometry, label) VALUES ($1, $2, $3, $4, $5, $6)`,
-            [
-              occ.observation_import_id,
-              occ.observation_id,
-              JSON.stringify(occ.data),
-              idInSource ? String(idInSource) : null,
-              geometry,
-              label,
-            ],
-          )
-          processed++
-          backgroundTasks.updateProgress(taskId, processed)
-          if (processed % 50 === 0) {
-            await new Promise((r) => setTimeout(r, 0))
-          }
-        }
+        await bulkInsertObservations(db, rows, (processed) =>
+          backgroundTasks.updateProgress(taskId, processed),
+        )
 
         // Sync to server
         store.set(addOperationAtom, {
           table: 'observations',
-          operation: 'deleteMany',
-          where: {
-            observation_import_id: observationImport.observation_import_id,
+          // a filtered delete — NOT 'deleteMany': the server's
+          // apply_operations and the per-operation fallback only know
+          // 'delete' with a {column, function, value} filter (the previous
+          // 'deleteMany' op was always rejected as an unknown operation,
+          // silently leaving the replaced rows on the server)
+          operation: 'delete',
+          filter: {
+            column: 'observation_import_id',
+            function: 'eq',
+            value: observationImport.observation_import_id,
           },
         } as unknown as Omit<QueuedOperation, 'id' | 'time'>)
         store.set(addOperationAtom, {
           table: 'observations',
           operation: 'insertMany',
-          draft: observations,
+          // include geometry/label/id_in_source so the server gets the same
+          // rows as the local database (the geometry/label computed above
+          // used to be missing from the synced draft)
+          draft: rows.map((r) => ({
+            ...r.observation,
+            id_in_source: r.idInSource,
+            geometry: r.geometry,
+            label: r.label,
+          })),
         })
 
         // re-apply the stored absence rule to the new observations
@@ -231,9 +281,12 @@ export const replaceObservations = async ({
           success: true,
           message:
             intl?.formatMessage(
-              { id: 'oBsRplM', defaultMessage: '{count} Beobachtungen ersetzt' },
-              { count: observations.length },
-            ) ?? `${observations.length} Beobachtungen ersetzt`,
+              {
+                id: 'oBsRplM',
+                defaultMessage: '{count} Beobachtungen ersetzt',
+              },
+              { count: rows.length },
+            ) ?? `${rows.length} Beobachtungen ersetzt`,
         })
       } catch (error) {
         if (taskStarted) backgroundTasks.error(taskId, (error as Error).message)
@@ -282,12 +335,12 @@ export const updateAndExtendObservations = async ({
           }),
           sheetName = workbook.SheetNames[0],
           worksheet = workbook.Sheets[sheetName]
-        const data = utils.sheet_to_json<Record<string, unknown>>(
-          worksheet,
-        ).map((d) => {
-          const { __rowNum__, ...rest } = d
-          return rest
-        })
+        const data = utils
+          .sheet_to_json<Record<string, unknown>>(worksheet)
+          .map((d) => {
+            const { __rowNum__, ...rest } = d
+            return rest
+          })
 
         // Setup proj4 if needed
         await setupProj4(observationImport)
@@ -318,50 +371,74 @@ export const updateAndExtendObservations = async ({
           }
         }
 
-        let updatedCount = 0
-        let addedCount = 0
-        let removedCount = 0
-
         backgroundTasks.add(
           taskId,
-          intl?.formatMessage({ id: 'bgTkUpd', defaultMessage: 'Aktualisiere Beobachtungen' }) ?? 'Aktualisiere Beobachtungen',
+          intl?.formatMessage({
+            id: 'bgTkUpd',
+            defaultMessage: 'Aktualisiere Beobachtungen',
+          }) ?? 'Aktualisiere Beobachtungen',
           newDataMap.size,
         )
         taskStarted = true
 
-        // Update existing and add new
         let processed = 0
+        const reportProgress = () => {
+          processed++
+          backgroundTasks.updateProgress(taskId, processed)
+        }
+
+        // compute the three work sets in js first
+        const toUpdate: {
+          existing: ExistingObservation
+          row: PreparedRow
+        }[] = []
+        const toInsert: PreparedRow[] = []
+        const toRemove: ExistingObservation[] = []
+
         for (const [idInSource, newData] of newDataMap.entries()) {
           const existing = existingMap.get(idInSource)
-
           if (existing) {
-            // Update existing (preserves place_id, not_to_assign, comment)
-            const geometry = calculateGeometry(newData, observationImport, true)
-            const label = calculateLabel(
-              newData,
-              observationImport.label_creation,
-            )
+            toUpdate.push({
+              existing,
+              row: prepareRow(observationImport, newData),
+            })
+          } else {
+            toInsert.push(prepareRow(observationImport, newData))
+          }
+        }
+        for (const [idInSource, existing] of existingMap.entries()) {
+          if (!newDataMap.has(idInSource)) toRemove.push(existing)
+        }
 
-            await db.query(
-              `UPDATE observations SET data = $1, geometry = $2, label = $3, updated_at = now() WHERE observation_id = $4`,
-              [
-                JSON.stringify(newData),
-                geometry,
-                label,
-                existing.observation_id,
-              ],
-            )
-            updatedCount++
-
+        // bulk-update existing (preserves place_id, not_to_assign, comment)
+        for (let i = 0; i < toUpdate.length; i += CHUNK_SIZE) {
+          const chunk = toUpdate.slice(i, i + CHUNK_SIZE)
+          await db.query(
+            `UPDATE observations AS o
+             SET data = v.data, geometry = ST_SetSRID(ST_GeomFromGeoJSON(v.geometry), 4326),
+                 label = v.label, updated_at = now()
+             FROM (SELECT * FROM unnest($1::uuid[], $2::jsonb[], $3::jsonb[], $4::text[]) AS v(id, data, geometry, label)) AS v
+             WHERE o.observation_id = v.id`,
+            [
+              chunk.map((u) => u.existing.observation_id),
+              chunk.map((u) => JSON.stringify(u.row.observation.data)),
+              chunk.map((u) =>
+                u.row.geometry ? JSON.stringify(u.row.geometry) : null,
+              ),
+              chunk.map((u) => u.row.label),
+            ],
+          )
+          // one sync operation per row, like before (keeps prev for revert)
+          for (const { existing, row } of chunk) {
             store.set(addOperationAtom, {
               table: 'observations',
               rowIdName: 'observation_id',
               rowId: existing.observation_id,
               operation: 'update',
               draft: {
-                data: newData,
-                geometry,
-                label,
+                data: row.observation.data,
+                geometry: row.geometry,
+                label: row.label,
                 // Preserve user-set fields
                 place_id: existing.place_id,
                 not_to_assign: existing.not_to_assign,
@@ -369,54 +446,37 @@ export const updateAndExtendObservations = async ({
               },
               prev: existing,
             })
-          } else {
-            // Add new
-            const newOcc = createObservation({
-              observationImportId: observationImport.observation_import_id,
-              data: newData,
-            })
-            const geometry = calculateGeometry(newData, observationImport, true)
-            const label = calculateLabel(
-              newData,
-              observationImport.label_creation,
-            )
-
-            await db.query(
-              `INSERT INTO observations (observation_import_id, observation_id, data, id_in_source, geometry, label) VALUES ($1, $2, $3, $4, $5, $6)`,
-              [
-                newOcc.observation_import_id,
-                newOcc.observation_id,
-                JSON.stringify(newOcc.data),
-                idInSource,
-                geometry,
-                label,
-              ],
-            )
-            addedCount++
-
-            store.set(addOperationAtom, {
-              table: 'observations',
-              operation: 'insert',
-              draft: { ...newOcc, geometry, label },
-            })
+            reportProgress()
           }
-
-          processed++
-          backgroundTasks.updateProgress(taskId, processed)
-          if (processed % 50 === 0) {
-            await new Promise((r) => setTimeout(r, 0))
-          }
+          await new Promise((r) => setTimeout(r, 0))
         }
 
-        // Remove observations not in new data
-        for (const [idInSource, existing] of existingMap.entries()) {
-          if (!newDataMap.has(idInSource)) {
-            await db.query(
-              `DELETE FROM observations WHERE observation_id = $1`,
-              [existing.observation_id],
-            )
-            removedCount++
+        // bulk-insert new
+        for (let i = 0; i < toInsert.length; i += CHUNK_SIZE) {
+          const chunk = toInsert.slice(i, i + CHUNK_SIZE)
+          await bulkInsertObservations(db, chunk)
+          reportProgress()
+        }
+        if (toInsert.length) {
+          store.set(addOperationAtom, {
+            table: 'observations',
+            operation: 'insertMany',
+            draft: toInsert.map((r) => ({
+              ...r.observation,
+              id_in_source: r.idInSource,
+              geometry: r.geometry,
+              label: r.label,
+            })),
+          })
+        }
 
+        // bulk-remove observations not in new data
+        if (toRemove.length) {
+          await db.query(
+            `DELETE FROM observations WHERE observation_id = ANY($1::uuid[])`,
+            [toRemove.map((r) => r.observation_id)],
+          )
+          for (const existing of toRemove) {
             store.set(addOperationAtom, {
               table: 'observations',
               rowIdName: 'observation_id',
@@ -431,13 +491,25 @@ export const updateAndExtendObservations = async ({
         await applyAbsenceRule({ observationImport })
 
         backgroundTasks.complete(taskId)
+        const updatedCount = toUpdate.length
+        const addedCount = toInsert.length
+        const removedCount = toRemove.length
         resolve({
           success: true,
           message:
             intl?.formatMessage(
-              { id: 'oBsUpdM', defaultMessage: 'Aktualisiert: {updated}, hinzugefügt: {added}, entfernt: {removed}' },
-              { updated: updatedCount, added: addedCount, removed: removedCount },
-            ) ?? `Aktualisiert: ${updatedCount}, hinzugefügt: ${addedCount}, entfernt: ${removedCount}`,
+              {
+                id: 'oBsUpdM',
+                defaultMessage:
+                  'Aktualisiert: {updated}, hinzugefügt: {added}, entfernt: {removed}',
+              },
+              {
+                updated: updatedCount,
+                added: addedCount,
+                removed: removedCount,
+              },
+            ) ??
+            `Aktualisiert: ${updatedCount}, hinzugefügt: ${addedCount}, entfernt: ${removedCount}`,
         })
       } catch (error) {
         if (taskStarted) backgroundTasks.error(taskId, (error as Error).message)
@@ -450,4 +522,3 @@ export const updateAndExtendObservations = async ({
     reader.readAsArrayBuffer(file)
   })
 }
-
