@@ -243,8 +243,8 @@ export const One = ({
           })
         }
       />
-      {observations?.length ? (
-        observationImport.id_field ? (
+      {observations?.length ?
+        observationImport.id_field ?
           <div className={styles.updateSection}>
             <h3>
               {formatMessage({
@@ -293,8 +293,7 @@ export const One = ({
               })}
             </p>
           </div>
-        ) : (
-          <div className={styles.observationsImported}>
+        : <div className={styles.observationsImported}>
             <MdDone className={styles.doneIcon} />
             {formatMessage(
               {
@@ -303,16 +302,22 @@ export const One = ({
               },
               { count: formatNumber(observations.length) as string },
             )}
+            <div className={styles.updateHint}>
+              {formatMessage({
+                id: 'oImprtIdHint',
+                defaultMessage:
+                  'Nach dem Setzen eines ID-Felds im Tab «Identifikation» können die Beobachtungen später aktualisiert oder ersetzt werden',
+              })}
+            </div>
           </div>
-        )
-      ) : (
-        <UploadButton
+
+      : <UploadButton
           processData={wrappedProcessData}
           additionalData={{
             observation_import_id: observationImport.observation_import_id,
           }}
         />
-      )}
+      }
 
       {duplicateDialogData && (
         <DuplicateWarningDialog

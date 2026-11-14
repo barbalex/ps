@@ -2246,6 +2246,9 @@
   "oImprt": {
     "defaultMessage": "{count} Beobachtungen importiert"
   },
+  "oImprtIdHint": {
+    "defaultMessage": "Nach dem Setzen eines ID-Felds im Tab «Identifikation» können die Beobachtungen später aktualisiert oder ersetzt werden"
+  },
   "oPMDm+": {
     "defaultMessage": "Kontrollen"
   },
