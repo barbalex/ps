@@ -7,6 +7,7 @@ import {
   shortTermOnlineAtom,
   operationsRetryTickAtom,
   addNotificationAtom,
+  postgrestClientAtom,
   store,
 } from '../store.ts'
 import type { QueuedOperation } from '../store.ts'
@@ -74,6 +75,11 @@ export const observeOperations = () =>
 
       // always tracked so the periodic tick re-runs this effect
       void get(operationsRetryTickAtom)
+
+      // the queue can hydrate (and trigger this effect) before
+      // LayoutProtected's effect has created the PostgREST client — wait
+      // for the retry tick instead of attempting a doomed flush
+      if (!get(postgrestClientAtom)) return
 
       const online = get(shortTermOnlineAtom)
       const operations = get(operationsQueueAtom)
