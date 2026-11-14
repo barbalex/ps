@@ -1,5 +1,5 @@
-import { execFileSync } from 'node:child_process'
 import { test, expect } from '@playwright/test'
+import { psql, ensureUser, grantRoles, login } from './helpers.ts'
 
 /**
  * Covers the raw-data field list on the observation form
@@ -29,13 +29,6 @@ const FIELD_LABELS = [
 const data = Object.fromEntries(
   FIELD_LABELS.map((label, i) => [label, `value${i}`]),
 )
-
-const psql = (query: string): string =>
-  execFileSync(
-    'docker',
-    ['exec', 'ps_db', 'psql', '-U', 'postgres', '-d', 'ps', '-Atc', query],
-    { encoding: 'utf-8' },
-  ).trim()
 
 // locator.dragTo() moves the mouse in one hop, which does not reliably start
 // a native HTML5 drag — move in small steps instead
@@ -74,54 +67,23 @@ async function dragRowOnto(
 }
 
 async function ensureE2eData(): Promise<string> {
-  let userId = psql(`SELECT user_id FROM users WHERE email = '${E2E_EMAIL}'`)
-  if (!userId) {
-    const res = await fetch('http://localhost:3003/auth/sign-up/email', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        Origin: 'http://localhost:5176',
-      },
-      body: JSON.stringify({
-        email: E2E_EMAIL,
-        password: E2E_PASSWORD,
-        name: 'E2E Field DnD Test',
-      }),
-    })
-    if (!res.ok && res.status !== 422) {
-      throw new Error(`sign-up failed: ${res.status} ${await res.text()}`)
-    }
-    userId = psql(`SELECT user_id FROM users WHERE email = '${E2E_EMAIL}'`)
-  }
-  if (!userId) throw new Error(`e2e user ${E2E_EMAIL} not found in dev db`)
+  const userId = await ensureUser({
+    email: E2E_EMAIL,
+    password: E2E_PASSWORD,
+    name: 'E2E Field DnD Test',
+  })
 
-  // e2e users cannot complete the email-verification OTP flow
-  psql(`UPDATE users SET email_verified = TRUE WHERE email = '${E2E_EMAIL}'`)
+  await grantRoles({
+    email: E2E_EMAIL,
+    userId,
+    projectId: PROJECT_ID,
+    role: 'write-all',
+    subprojectIds: [SUBPROJECT_ID],
+    placeIds: [PLACE_ID],
+  })
 
   psql(`
     SET electric.syncing TO 'true';
-
-    INSERT INTO project_users (project_id, email, auth_user_id)
-    VALUES ('${PROJECT_ID}', '${E2E_EMAIL}', '${userId}')
-    ON CONFLICT (project_id, email) DO NOTHING;
-
-    INSERT INTO project_roles (project_id, project_user_id, role)
-    SELECT '${PROJECT_ID}', project_user_id, 'write-all'
-    FROM project_users
-    WHERE project_id = '${PROJECT_ID}' AND email = '${E2E_EMAIL}'
-    ON CONFLICT DO NOTHING;
-
-    INSERT INTO subproject_roles (subproject_id, project_user_id, role)
-    SELECT '${SUBPROJECT_ID}', project_user_id, 'write-all'
-    FROM project_users
-    WHERE project_id = '${PROJECT_ID}' AND email = '${E2E_EMAIL}'
-    ON CONFLICT DO NOTHING;
-
-    INSERT INTO place_roles (place_id, project_user_id, role)
-    SELECT '${PLACE_ID}', project_user_id, 'write-all'
-    FROM project_users
-    WHERE project_id = '${PROJECT_ID}' AND email = '${E2E_EMAIL}'
-    ON CONFLICT DO NOTHING;
 
     -- the electric shape only syncs observations that belong to an
     -- observation_import of one of the user's subprojects
@@ -163,14 +125,12 @@ test.describe('observation raw-data field list', () => {
     const url = `/data/projects/${PROJECT_ID}/subprojects/${SUBPROJECT_ID}/places/${PLACE_ID}/observations/${observationId}`
 
     const pageErrors: string[] = []
-    page.on('pageerror', (err) => pageErrors.push(`${err.name}: ${err.message}`))
+    page.on('pageerror', (err) =>
+      pageErrors.push(`${err.name}: ${err.message}`),
+    )
 
     // login through the real UI
-    await page.goto('/auth')
-    await page.fill('#email', E2E_EMAIL)
-    await page.fill('#password', E2E_PASSWORD)
-    await page.click('button[type="submit"]')
-    await page.waitForURL('**/data/projects**', { timeout: 120_000 })
+    await login(page, E2E_EMAIL, E2E_PASSWORD)
 
     // first visit triggers the initial sync into the local database
     await page.goto(url)
@@ -180,8 +140,8 @@ test.describe('observation raw-data field list', () => {
 
     const order = async () =>
       page.evaluate(() =>
-        Array.from(document.querySelectorAll('[data-field-label]')).map(
-          (el) => el.getAttribute('data-field-label'),
+        Array.from(document.querySelectorAll('[data-field-label]')).map((el) =>
+          el.getAttribute('data-field-label'),
         ),
       )
 
@@ -193,18 +153,26 @@ test.describe('observation raw-data field list', () => {
 
     await expect
       .poll(order, { timeout: 10_000 })
-      .toEqual(['bbbTestField', 'cccTestField', 'aaaTestField', 'dddTestField', 'eeeTestField'])
+      .toEqual([
+        'bbbTestField',
+        'cccTestField',
+        'aaaTestField',
+        'dddTestField',
+        'eeeTestField',
+      ])
 
     // the order persists across a reload (atomWithStorage with getOnInit)
     await page.reload({ waitUntil: 'commit' })
     await expect(fieldRow('aaaTestField')).toBeVisible({ timeout: 180_000 })
-    await expect.poll(order, { timeout: 10_000 }).toEqual([
-      'bbbTestField',
-      'cccTestField',
-      'aaaTestField',
-      'dddTestField',
-      'eeeTestField',
-    ])
+    await expect
+      .poll(order, { timeout: 10_000 })
+      .toEqual([
+        'bbbTestField',
+        'cccTestField',
+        'aaaTestField',
+        'dddTestField',
+        'eeeTestField',
+      ])
 
     // drag it back onto the first row, releasing above its middle
     await dragRowOnto(page, 'aaaTestField', 'bbbTestField', 0.2)

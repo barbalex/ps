@@ -4,6 +4,9 @@ public/wa-sqlite-async.wasm
 public/wa-sqlite-async.mjs
 src/generated
 .env*
+# committed example templates
+!.env.example
+!backend-dev/.env.example
 dropbox_uploader.conf
 .vercel
 .electric_migrations_tmp*

@@ -1,5 +1,5 @@
-import { execFileSync } from 'node:child_process'
 import { test, expect, type Page } from '@playwright/test'
+import { ensureUser, grantRoles, login } from './helpers.ts'
 
 /**
  * Reproduction spec for the "nav tree broken after reload on a deep url" bug:
@@ -17,68 +17,21 @@ const PLACE_ID = '018df4fa-cfb3-739c-bca2-d55dfe876995'
 const PLACE_2_ID = '018e0a2f-3946-7918-80bb-69aba1c20f6d'
 const URL = `/data/projects/${PROJECT_ID}/subprojects/${SUBPROJECT_ID}/places/${PLACE_ID}/places/${PLACE_2_ID}`
 
-const psql = (query: string): string =>
-  execFileSync(
-    'docker',
-    ['exec', 'ps_db', 'psql', '-U', 'postgres', '-d', 'ps', '-Atc', query],
-    { encoding: 'utf-8' },
-  ).trim()
-
 async function ensureE2eData() {
-  let userId = psql(`SELECT user_id FROM users WHERE email = '${E2E_EMAIL}'`)
-  if (!userId) {
-    const res = await fetch('http://localhost:3003/auth/sign-up/email', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        Origin: 'http://localhost:5176',
-      },
-      body: JSON.stringify({
-        email: E2E_EMAIL,
-        password: E2E_PASSWORD,
-        name: 'E2E Navtree Test',
-      }),
-    })
-    if (!res.ok && res.status !== 422) {
-      console.log(`sign-up failed: ${res.status} ${await res.text()}`)
-    }
-    userId = psql(`SELECT user_id FROM users WHERE email = '${E2E_EMAIL}'`)
-  }
-  if (!userId) throw new Error(`e2e user ${E2E_EMAIL} not found in dev db`)
+  const userId = await ensureUser({
+    email: E2E_EMAIL,
+    password: E2E_PASSWORD,
+    name: 'E2E Navtree Test',
+  })
 
-  // e2e users cannot complete the email-verification OTP flow; without this
-  // their sign-in breaks once the sign-up verification window (1 hour) ends
-  psql(`UPDATE users SET email_verified = TRUE WHERE email = '${E2E_EMAIL}'`)
-
-  psql(`
-    SET electric.syncing TO 'true';
-
-    INSERT INTO project_users (project_id, email, auth_user_id)
-    VALUES ('${PROJECT_ID}', '${E2E_EMAIL}', '${userId}')
-    ON CONFLICT (project_id, email) DO NOTHING;
-
-    INSERT INTO project_roles (project_id, project_user_id, role)
-    SELECT '${PROJECT_ID}', project_user_id, 'write-all'
-    FROM project_users
-    WHERE project_id = '${PROJECT_ID}' AND email = '${E2E_EMAIL}'
-    ON CONFLICT DO NOTHING;
-
-    INSERT INTO subproject_roles (subproject_id, project_user_id, role)
-    SELECT '${SUBPROJECT_ID}', project_user_id, 'write-all'
-    FROM project_users
-    WHERE project_id = '${PROJECT_ID}' AND email = '${E2E_EMAIL}'
-    ON CONFLICT DO NOTHING;
-
-    INSERT INTO place_roles (place_id, project_user_id, role)
-    SELECT p.place_id, pu.project_user_id, 'write-all'
-    FROM project_users pu
-    CROSS JOIN (VALUES
-      ('${PLACE_ID}'::uuid),
-      ('${PLACE_2_ID}'::uuid)
-    ) AS p(place_id)
-    WHERE pu.project_id = '${PROJECT_ID}' AND pu.email = '${E2E_EMAIL}'
-    ON CONFLICT DO NOTHING;
-  `)
+  await grantRoles({
+    email: E2E_EMAIL,
+    userId,
+    projectId: PROJECT_ID,
+    role: 'write-all',
+    subprojectIds: [SUBPROJECT_ID],
+    placeIds: [PLACE_ID, PLACE_2_ID],
+  })
 }
 
 const treeState = (page: Page) =>
@@ -124,11 +77,7 @@ test.describe('nav tree after reload on deep url', () => {
     })
 
     // login through the real UI
-    await page.goto('/auth')
-    await page.fill('#email', E2E_EMAIL)
-    await page.fill('#password', E2E_PASSWORD)
-    await page.click('button[type="submit"]')
-    await page.waitForURL('**/data/projects**', { timeout: 120_000 })
+    await login(page, E2E_EMAIL, E2E_PASSWORD)
 
     // go to the deep url (first visit: initial sync)
     const firstLoadStart = Date.now()

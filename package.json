@@ -20,6 +20,7 @@
     "test": "vitest run",
     "test:watch": "vitest",
     "test:e2e": "playwright test",
+    "verify": "npm run lint && npm test && npm run sync-sql:check && npm run i18n:punctuation:check",
     "preview": "vite preview",
     "how-to-install-using-sfw": "sfw npm install -f",
     "ncu using cooldown": "ncu -c 5 -i",
