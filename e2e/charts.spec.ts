@@ -1,5 +1,6 @@
 import { execFileSync } from 'node:child_process'
 import { test, expect } from '@playwright/test'
+import { ensureUser, login } from './helpers.ts'
 
 /**
  * Charts end-to-end against the apflora demo data (Aldrovanda vesiculosa):
@@ -25,38 +26,12 @@ const CHART_TPOPS = 'a1000000-0000-4000-8000-000000000001'
 const CHART_STATUS = 'a2000000-0000-4000-8000-000000000002'
 const CHART_TRIEBE = 'a3000000-0000-4000-8000-000000000003'
 
-const psql = (query: string): string =>
-  execFileSync(
-    'docker',
-    ['exec', 'ps_db', 'psql', '-U', 'postgres', '-d', 'ps', '-Atc', query],
-    { encoding: 'utf8' },
-  ).trim()
-
 async function ensureE2eData() {
-  let userId = psql(`SELECT user_id FROM users WHERE email = '${E2E_EMAIL}'`)
-  if (!userId) {
-    const res = await fetch('http://localhost:3003/auth/sign-up/email', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        Origin: 'http://localhost:5176',
-      },
-      body: JSON.stringify({
-        email: E2E_EMAIL,
-        password: E2E_PASSWORD,
-        name: 'E2E Charts Test',
-      }),
-    })
-    if (!res.ok && res.status !== 422) {
-      console.log(`sign-up failed: ${res.status} ${await res.text()}`)
-    }
-    userId = psql(`SELECT user_id FROM users WHERE email = '${E2E_EMAIL}'`)
-  }
-  if (!userId) throw new Error(`e2e user ${E2E_EMAIL} not found in dev db`)
-
-  // e2e users cannot complete the email-verification OTP flow; without this
-  // their sign-in breaks once the sign-up verification window (1 hour) ends
-  psql(`UPDATE users SET email_verified = TRUE WHERE email = '${E2E_EMAIL}'`)
+  const userId = await ensureUser({
+    email: E2E_EMAIL,
+    password: E2E_PASSWORD,
+    name: 'E2E Charts Test',
+  })
 
   execFileSync(
     'docker',
@@ -127,12 +102,7 @@ test.describe('charts from apflora demo data', () => {
   test('renders the three yearly-report charts', async ({ page }) => {
     test.setTimeout(780_000)
     await ensureE2eData()
-
-    await page.goto('/auth')
-    await page.fill('#email', E2E_EMAIL)
-    await page.fill('#password', E2E_PASSWORD)
-    await page.click('button[type="submit"]')
-    await page.waitForURL('**/data/projects**', { timeout: 120_000 })
+    await login(page, E2E_EMAIL, E2E_PASSWORD)
 
     // wait until the tables the charts read from hold the demo data —
     // charts/chart_subjects sync in a later FK stage than places/checks,

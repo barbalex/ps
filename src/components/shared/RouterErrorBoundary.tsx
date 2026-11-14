@@ -1,8 +1,12 @@
+import { useEffect } from 'react'
+
 // from the individual package, not the @fluentui/react-components barrel:
 // any import from the barrel keeps re-export bindings to every fluent
 // package alive, pulling the whole suite into the eager entry chunk (this
 // is the router's default error component)
 import { Button } from '@fluentui/react-button'
+
+import { reportError } from '../../modules/errorTelemetry.ts'
 
 import styles from './RouterErrorBoundary.module.css'
 
@@ -30,25 +34,31 @@ interface Props {
   error: Error
 }
 
-export const RouterErrorBoundary = ({ error }: Props) => (
-  <div className={styles.container}>
-    <p>Sorry, ein Fehler ist aufgetreten:</p>
-    <pre className={styles.preWrapping}>{error.message}</pre>
-    <div className={styles.buttonContainer}>
-      <Button
-        appearance="primary"
-        onClick={onReload}
-      >
-        neu starten
-      </Button>
+export const RouterErrorBoundary = ({ error }: Props) => {
+  useEffect(() => {
+    void reportError('boundary', error)
+  }, [error])
+
+  return (
+    <div className={styles.container}>
+      <p>Sorry, ein Fehler ist aufgetreten:</p>
+      <pre className={styles.preWrapping}>{error.message}</pre>
+      <div className={styles.buttonContainer}>
+        <Button
+          appearance="primary"
+          onClick={onReload}
+        >
+          neu starten
+        </Button>
+      </div>
+      <div className={styles.buttonContainer}>
+        <Button
+          appearance="secondary"
+          onClick={onReloadWithCacheClear}
+        >
+          Cache leeren und neu starten (neue Anmeldung nötig)
+        </Button>
+      </div>
     </div>
-    <div className={styles.buttonContainer}>
-      <Button
-        appearance="secondary"
-        onClick={onReloadWithCacheClear}
-      >
-        Cache leeren und neu starten (neue Anmeldung nötig)
-      </Button>
-    </div>
-  </div>
-)
+  )
+}

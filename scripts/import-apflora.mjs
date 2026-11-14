@@ -286,7 +286,7 @@ const counts = queryInDb(`
   UNION ALL SELECT 'actions: ' || count(*) FROM actions a JOIN places p USING (place_id) WHERE p.subproject_id IN (SELECT subproject_id FROM subprojects WHERE project_id = '${PROJECT_ID}')
   UNION ALL SELECT 'project roles: ' || count(*) FROM project_roles WHERE project_id = '${PROJECT_ID}'
   UNION ALL SELECT 'place roles: ' || count(*) FROM place_roles WHERE place_id IN (SELECT place_id FROM places WHERE subproject_id IN (SELECT subproject_id FROM subprojects WHERE project_id = '${PROJECT_ID}'))
-  UNION ALL SELECT 'filtered views: ' || count(*) FROM filtered_views WHERE project_id = '${PROJECT_ID}'
+  UNION ALL SELECT 'table views: ' || count(*) FROM table_views WHERE project_id = '${PROJECT_ID}'
 `)
 console.log('\nDone:')
 console.log(counts)

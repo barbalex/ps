@@ -1,0 +1,21 @@
+# Fast feedback gate: lint, unit tests (real SQL schema in in-memory
+# PGlite — no backend needed), SQL-sync and i18n punctuation checks.
+# E2E stays local: it needs Caddy plus the backend-dev docker stack.
+name: CI
+
+on:
+  push:
+    branches: [main, production]
+  pull_request:
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+      - run: npm ci
+      - run: npm run verify

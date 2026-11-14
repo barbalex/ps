@@ -1,5 +1,11 @@
-import { execFileSync } from 'node:child_process'
 import { test, expect } from '@playwright/test'
+import {
+  psql,
+  ensureUser,
+  grantRoles,
+  ensureProjectFixture,
+  login,
+} from './helpers.ts'
 
 /**
  * The one offline-sync smoke test.
@@ -30,99 +36,38 @@ const E2E_PLACE_LEVEL_ID = '60000000-0000-7000-8000-000000000004'
 const E2E_SUBPROJECT_ID = '60000000-0000-7000-8000-000000000002'
 const E2E_PLACE_ID = '60000000-0000-7000-8000-000000000003'
 
-const psql = (query: string): string =>
-  execFileSync(
-    'docker',
-    ['exec', 'ps_db', 'psql', '-U', 'postgres', '-d', 'ps', '-Atc', query],
-    { encoding: 'utf8' },
-  ).trim()
-
-/**
- * Provision the e2e user and a minimal dedicated project.
- * Writes impersonate the dev-db owner via JWT claims so the
- * role-inheritance triggers run as they would for a real designer.
- */
 async function ensureE2eData() {
-  // sign-up (no-op if the user already exists); retry to ride out
-  // better-auth rate limits
-  let userId = ''
-  for (let attempt = 0; attempt < 5 && !userId; attempt++) {
-    if (attempt > 0) await new Promise((r) => setTimeout(r, 5_000))
-    const res = await fetch('http://localhost:3003/auth/sign-up/email', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        Origin: 'http://localhost:5176',
-      },
-      body: JSON.stringify({
-        email: E2E_EMAIL,
-        password: E2E_PASSWORD,
-        name: 'E2E Test',
-      }),
-    })
-    if (!res.ok && res.status !== 422) {
-      console.log('sign-up attempt failed:', res.status, await res.text())
-    }
-    userId = psql(`SELECT user_id FROM users WHERE email = '${E2E_EMAIL}'`)
-  }
-  if (!userId) throw new Error(`e2e user ${E2E_EMAIL} not found in dev db`)
+  const userId = await ensureUser({
+    email: E2E_EMAIL,
+    password: E2E_PASSWORD,
+    name: 'E2E Test',
+  })
 
-  // e2e users cannot complete the email-verification OTP flow; without this
-  // their sign-in breaks once the sign-up verification window (1 hour) ends
-  psql(`UPDATE users SET email_verified = TRUE WHERE email = '${E2E_EMAIL}'`)
-
+  // keep the sync small: only the e2e project, not the demo project
   psql(`
-    -- Build the fixture the way electric sync would write it:
-    -- with triggers bypassed, role rows inserted explicitly
-    -- (write triggers would deadlock: no role exists on a new project yet)
     SET electric.syncing TO 'true';
-
-    -- keep the sync small: only the e2e project, not the demo project
     DELETE FROM project_users
     WHERE email = '${E2E_EMAIL}' AND project_id = '${DEMO_PROJECT_ID}';
-
-    INSERT INTO projects (project_id, name)
-    VALUES ('${E2E_PROJECT_ID}', 'e2e_project')
-    ON CONFLICT DO NOTHING;
-
-    INSERT INTO place_levels (
-      place_level_id, project_id, level, name_singular_de, name_plural_de
-    )
-    VALUES (
-      '${E2E_PLACE_LEVEL_ID}', '${E2E_PROJECT_ID}', 1, 'Population', 'Populationen'
-    )
-    ON CONFLICT DO NOTHING;
-
-    INSERT INTO subprojects (subproject_id, project_id, name)
-    VALUES ('${E2E_SUBPROJECT_ID}', '${E2E_PROJECT_ID}', 'e2e_subproject')
-    ON CONFLICT DO NOTHING;
-
-    INSERT INTO places (place_id, subproject_id, level, name)
-    VALUES ('${E2E_PLACE_ID}', '${E2E_SUBPROJECT_ID}', 1, 'e2e population')
-    ON CONFLICT DO NOTHING;
-
-    INSERT INTO project_users (project_id, email, auth_user_id)
-    VALUES ('${E2E_PROJECT_ID}', '${E2E_EMAIL}', '${userId}')
-    ON CONFLICT (project_id, email) DO NOTHING;
-
-    INSERT INTO project_roles (project_id, project_user_id, role)
-    SELECT '${E2E_PROJECT_ID}', project_user_id, 'write-all'
-    FROM project_users
-    WHERE project_id = '${E2E_PROJECT_ID}' AND email = '${E2E_EMAIL}'
-    ON CONFLICT DO NOTHING;
-
-    INSERT INTO subproject_roles (subproject_id, project_user_id, role)
-    SELECT '${E2E_SUBPROJECT_ID}', project_user_id, 'write-all'
-    FROM project_users
-    WHERE project_id = '${E2E_PROJECT_ID}' AND email = '${E2E_EMAIL}'
-    ON CONFLICT DO NOTHING;
-
-    INSERT INTO place_roles (place_id, project_user_id, role)
-    SELECT '${E2E_PLACE_ID}', project_user_id, 'write-all'
-    FROM project_users
-    WHERE project_id = '${E2E_PROJECT_ID}' AND email = '${E2E_EMAIL}'
-    ON CONFLICT DO NOTHING;
   `)
+
+  await ensureProjectFixture({
+    projectId: E2E_PROJECT_ID,
+    projectName: 'e2e_project',
+    placeLevelId: E2E_PLACE_LEVEL_ID,
+    subprojectId: E2E_SUBPROJECT_ID,
+    subprojectName: 'e2e_subproject',
+    placeId: E2E_PLACE_ID,
+    placeName: 'e2e population',
+  })
+
+  await grantRoles({
+    email: E2E_EMAIL,
+    userId,
+    projectId: E2E_PROJECT_ID,
+    role: 'write-all',
+    subprojectIds: [E2E_SUBPROJECT_ID],
+    placeIds: [E2E_PLACE_ID],
+  })
 }
 
 test.describe('offline sync', () => {
@@ -138,11 +83,7 @@ test.describe('offline sync', () => {
     )
 
     // 1. login through the real UI
-    await page.goto('/auth')
-    await page.fill('#email', E2E_EMAIL)
-    await page.fill('#password', E2E_PASSWORD)
-    await page.click('button[type="submit"]')
-    await page.waitForURL('**/data/projects**')
+    await login(page, E2E_EMAIL, E2E_PASSWORD)
 
     // 2. open the population (first launch builds the local database + initial sync)
     await page.goto(url)
@@ -163,7 +104,8 @@ test.describe('offline sync', () => {
     await context.setOffline(false)
     await expect
       .poll(
-        () => psql(`SELECT name FROM places WHERE place_id = '${E2E_PLACE_ID}'`),
+        () =>
+          psql(`SELECT name FROM places WHERE place_id = '${E2E_PLACE_ID}'`),
         { timeout: 90_000, message: 'offline edit never reached the server' },
       )
       .toBe(newName)
