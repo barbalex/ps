@@ -598,6 +598,7 @@
   "gEo0mY": "Geometry",
   "iDnt0f": "Identification",
   "oImprt": "{count} observations imported",
+  "oImprtIdHint": "Once an ID field is set in the «Identification» tab, the observations can later be updated or replaced",
   "rP0bTn": "Replace",
   "rPsFai": "Replace Failed",
   "rPsUcc": "Replace Successful",

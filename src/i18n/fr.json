@@ -595,6 +595,7 @@
   "gEo0mY": "Géométrie",
   "iDnt0f": "Identification",
   "oImprt": "{count} observations importées",
+  "oImprtIdHint": "Après avoir défini un champ ID dans l'onglet « Identification », les observations peuvent être mises à jour ou remplacées",
   "rP0bTn": "Remplacer",
   "rPsFai": "Remplacement échoué",
   "rPsUcc": "Remplacement réussi",

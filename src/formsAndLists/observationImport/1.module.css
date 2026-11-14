@@ -41,3 +41,14 @@
 .updateDescription strong {
   color: #333;
 }
+
+.updateHint {
+  color: rgba(0, 0, 0, 0.55);
+  font-weight: normal;
+  font-size: 0.9em;
+  margin-top: 4px;
+
+  html[data-theme='dark'] & {
+    color: rgba(255, 255, 255, 0.6);
+  }
+}

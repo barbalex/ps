@@ -595,6 +595,7 @@
   "gEo0mY": "Geometria",
   "iDnt0f": "Identificazione",
   "oImprt": "{count} osservazioni importate",
+  "oImprtIdHint": "Dopo aver impostato un campo ID nella scheda «Identificazione», le osservazioni possono essere aggiornate o sostituite",
   "rP0bTn": "Sostituisci",
   "rPsFai": "Sostituzione fallita",
   "rPsUcc": "Sostituzione riuscita",
