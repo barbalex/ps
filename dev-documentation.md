@@ -1222,3 +1222,30 @@ it on the VM next to `deploy-backend.sh`, then:
 
 Delivery is at-least-once: the watermark file only advances after a
 successful send.
+
+## Nightly backup interaction (production, owner-only)
+
+The nightly backup script is NOT in this repo (it lives on the office
+server, alongside `deploy-backend.sh`) — unlike apf2, which keeps an
+in-repo copy at `backend/db/backup.sh` with the logic below. When the
+production backend is (re)built, make sure this is in place there:
+
+If the backup skips unchanged data via a fingerprint over all tables (the
+apf2 approach: per table the row count plus an order-independent sum of
+row hashes, table list from the catalog), `error_report` MUST be excluded
+from the fingerprint query — client-error telemetry arrives almost daily
+without real data changing, which would defeat the skip and force a full
+dump + upload every night (the table still lands in the dump itself):
+
+```sql
+where n.nspname = 'public'
+  and c.relkind = 'r'
+  and c.relname <> 'error_report'
+```
+
+If the ps backup dumps unconditionally instead, there is no skip decision
+to break; cap the growth with a retention in the same cron, e.g.
+`delete from error_report where created_at < now() - interval '6 months'`.
+
+Consider keeping an in-repo copy of the backup script (like apf2) so this
+stays reviewable.
