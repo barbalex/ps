@@ -360,20 +360,21 @@ historization.
   and erloschen tpops (status 101/202) only in the first year of that
   status. The kontrolliert series counts `check_reports` (apf2: `tpopber`),
 
-  The *Populationen nach Status* chart builds apf2's six A-table series
+  The _Populationen nach Status_ chart builds apf2's six A-table series
   (ursprünglich / angesiedelt vor/nach Beginn AP / erloschen vor/nach /
   Ansaatversuch, with apf2's colors) per historization year, using the
   start year of the subproject's version of that year —
   `pop_nach_status_for_jber` ported 1:1. A `ProgrammInfo` building block
   shows Start Programm (the subproject's start year), Erste Massnahme and
   Erste Kontrolle (the earliest action and check years), like apf2's report
-  header. The *Triebe total* chart ports
+  header. The _Triebe total_ chart ports
   `ap_ausw_pop_menge`: per historization year, every qualifying tpop carries
   its latest zaehlung of the zielrelevant unit up to that year (lookback),
   plus the year's anpflanzung planting when it had no zaehlung; series per
   population, ursprünglich ones translucent green, angesiedelt orange.
   not checks. While offline or before the
   versions arrive, the current local state is used as fallback.
+
 - Demo: the 2020 Aldrovanda report (seeded in `11d_seedApfloraReport.sql`)
   is calculated from the 2020 historizations; compare with the 2025 report
   to see the difference.
@@ -838,28 +839,28 @@ no group yet).
 
 ## Where things live
 
-| Concern | Location |
-|---|---|
-| Tables + history + permissions + allowlist | `backend/db/init/04, 05, 12, 14_*.sql` (source of truth, then `npm run sync-sql`) |
-| Sync shape | `backend/auth/shapeDefinitions.mjs` → `src/modules/shapeDefinitions.mjs` (`table_views`, `field_groups`, and the `table_views` column on `place_levels`) |
-| Client write permission | `src/modules/checkWritePermission.ts` (`table_views: projectDirect()`, `field_groups: projectDirect()`) |
-| Nav data hooks | `src/modules/useTableViewsNavData.ts`, `useTableViewNavData.ts`, `useFieldGroupsNavData.ts`, `useFieldGroupNavData.ts`, `useTableChecksNavData.ts`, `useTableCheckNavData.ts` |
-| Sub-entity nav hooks | `useCheckQuantitiesNavData`, `useCheckTaxaNavData`, `useCheckQuantityNavData`, `useCheckTaxonNavData`, `useFilesNavData`, `useFileNavData` accept an optional `tableViewId` and insert the path segment |
-| Tree nodes | tree configs in `src/components/Tree/virtual/treeConfigs.tsx` (design mode node + one node per enabled view under a place) |
-| View config UI | `src/formsAndLists/tableViewsTables.tsx` (tables list) + `tableViews.tsx` (per-table views list with drag-to-sort) + `tableView/` (entity, also reachable from Project Configuration via `Configuration/TableViewsSection.tsx`) |
-| Field group config UI | `src/formsAndLists/fieldGroupsTables.tsx` (tables list) + `fieldGroups.tsx` (per-table) + `fieldGroup/` (entity, also reachable via `Configuration/FieldGroupsSection.tsx`) |
-| Place level UI | `src/formsAndLists/placeLevel/Form.tsx` renders a switch per view; `placeLevel/index.tsx` maps `table_view_<id>` switches onto the `table_views` jsonb |
-| View checks list + filter | `src/formsAndLists/tableChecks.tsx`, `tableCheck/Filter.tsx` |
-| Subproject view runtime | `src/modules/useSubprojectNavData.ts` (leaf navs `table-views/<id>`), `useSubprojectTableViewNavData.ts`, `subproject/TableView.tsx`, breadcrumbs `SubprojectTableViewFetcher.tsx` |
-| Action views runtime | `src/formsAndLists/tableActions.tsx`, `tableAction/Filter.tsx`, `src/modules/useTableActionsNavData.ts`, `useTableActionNavData.ts`; the plain action components (`action/Header.tsx`, `action/WithAll.tsx`, `actionQuantities.tsx`, `actionTaxa.tsx`, sub-entity hooks, HistoryCompares) are tableViewId-aware |
-| Place view runtime | `src/formsAndLists/place/TableView.tsx`, `src/modules/usePlaceTableViewNavData.ts`, breadcrumbs `PlaceTableViewFetcher.tsx`; leaf navs come from `usePlaceNavData.ts` |
-| Check form | the normal check form components; `check/Header.tsx` and `check/WithAll.tsx` insert the path segment and use the view's singular name as title; `check/WithAll.tsx` resolves the view's field group and passes its field ids down as `fieldIds` |
-| Column restriction | `src/components/shared/Jsonb/index.tsx` accepts `fieldIds`; restricted views render only those fields and hide AddField + the undefined-field warnings |
-| Filter atoms | one per view, created dynamically: `getTableViewFilterAtom(tableViewId)` in `src/store.ts`; the shared `Filter` component accepts `filterAtomOverride`. Storage keys changed with the rename (`tableView-<id>-filterAtom`) — saved view filters reset once |
-| Breadcrumbs | fetcher components `TableView(s)Fetcher.tsx`, `TableCheck(s)Fetcher.tsx`, `FieldGroup(s)Fetcher.tsx` + cases in `FetcherRouter.tsx` |
-| Routes | `src/routes/.../table-views/$tableViewId_/checks/**` (both levels), `.../table-views/**` (config) and `.../field-groups/**` (config) |
-| Row creation | `createTableView`, `createFieldGroup`, `createCheck` + `getDataFromTableView` in `src/modules/createRows.ts` |
-| Tests | `tests/tableViews.test.ts` (real schema, filter semantics, row creation), `tests/fieldGroups.test.ts` (optional filter, field group resolution, column restriction, rename healing) |
+| Concern                                    | Location                                                                                                                                                                                                                                                                                                        |
+| ------------------------------------------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Tables + history + permissions + allowlist | `backend/db/init/04, 05, 12, 14_*.sql` (source of truth, then `npm run sync-sql`)                                                                                                                                                                                                                               |
+| Sync shape                                 | `backend/auth/shapeDefinitions.mjs` → `src/modules/shapeDefinitions.mjs` (`table_views`, `field_groups`, and the `table_views` column on `place_levels`)                                                                                                                                                        |
+| Client write permission                    | `src/modules/checkWritePermission.ts` (`table_views: projectDirect()`, `field_groups: projectDirect()`)                                                                                                                                                                                                         |
+| Nav data hooks                             | `src/modules/useTableViewsNavData.ts`, `useTableViewNavData.ts`, `useFieldGroupsNavData.ts`, `useFieldGroupNavData.ts`, `useTableChecksNavData.ts`, `useTableCheckNavData.ts`                                                                                                                                   |
+| Sub-entity nav hooks                       | `useCheckQuantitiesNavData`, `useCheckTaxaNavData`, `useCheckQuantityNavData`, `useCheckTaxonNavData`, `useFilesNavData`, `useFileNavData` accept an optional `tableViewId` and insert the path segment                                                                                                         |
+| Tree nodes                                 | tree configs in `src/components/Tree/virtual/treeConfigs.tsx` (design mode node + one node per enabled view under a place)                                                                                                                                                                                      |
+| View config UI                             | `src/formsAndLists/tableViewsTables.tsx` (tables list) + `tableViews.tsx` (per-table views list with drag-to-sort) + `tableView/` (entity, also reachable from Project Configuration via `Configuration/TableViewsSection.tsx`)                                                                                 |
+| Field group config UI                      | `src/formsAndLists/fieldGroupsTables.tsx` (tables list) + `fieldGroups.tsx` (per-table) + `fieldGroup/` (entity, also reachable via `Configuration/FieldGroupsSection.tsx`)                                                                                                                                     |
+| Place level UI                             | `src/formsAndLists/placeLevel/Form.tsx` renders a switch per view; `placeLevel/index.tsx` maps `table_view_<id>` switches onto the `table_views` jsonb                                                                                                                                                          |
+| View checks list + filter                  | `src/formsAndLists/tableChecks.tsx`, `tableCheck/Filter.tsx`                                                                                                                                                                                                                                                    |
+| Subproject view runtime                    | `src/modules/useSubprojectNavData.ts` (leaf navs `table-views/<id>`), `useSubprojectTableViewNavData.ts`, `subproject/TableView.tsx`, breadcrumbs `SubprojectTableViewFetcher.tsx`                                                                                                                              |
+| Action views runtime                       | `src/formsAndLists/tableActions.tsx`, `tableAction/Filter.tsx`, `src/modules/useTableActionsNavData.ts`, `useTableActionNavData.ts`; the plain action components (`action/Header.tsx`, `action/WithAll.tsx`, `actionQuantities.tsx`, `actionTaxa.tsx`, sub-entity hooks, HistoryCompares) are tableViewId-aware |
+| Place view runtime                         | `src/formsAndLists/place/TableView.tsx`, `src/modules/usePlaceTableViewNavData.ts`, breadcrumbs `PlaceTableViewFetcher.tsx`; leaf navs come from `usePlaceNavData.ts`                                                                                                                                           |
+| Check form                                 | the normal check form components; `check/Header.tsx` and `check/WithAll.tsx` insert the path segment and use the view's singular name as title; `check/WithAll.tsx` resolves the view's field group and passes its field ids down as `fieldIds`                                                                 |
+| Column restriction                         | `src/components/shared/Jsonb/index.tsx` accepts `fieldIds`; restricted views render only those fields and hide AddField + the undefined-field warnings                                                                                                                                                          |
+| Filter atoms                               | one per view, created dynamically: `getTableViewFilterAtom(tableViewId)` in `src/store.ts`; the shared `Filter` component accepts `filterAtomOverride`. Storage keys changed with the rename (`tableView-<id>-filterAtom`) — saved view filters reset once                                                      |
+| Breadcrumbs                                | fetcher components `TableView(s)Fetcher.tsx`, `TableCheck(s)Fetcher.tsx`, `FieldGroup(s)Fetcher.tsx` + cases in `FetcherRouter.tsx`                                                                                                                                                                             |
+| Routes                                     | `src/routes/.../table-views/$tableViewId_/checks/**` (both levels), `.../table-views/**` (config) and `.../field-groups/**` (config)                                                                                                                                                                            |
+| Row creation                               | `createTableView`, `createFieldGroup`, `createCheck` + `getDataFromTableView` in `src/modules/createRows.ts`                                                                                                                                                                                                    |
+| Tests                                      | `tests/tableViews.test.ts` (real schema, filter semantics, row creation), `tests/fieldGroups.test.ts` (optional filter, field group resolution, column restriction, rename healing)                                                                                                                             |
 
 ## Creating rows through a view
 
@@ -911,6 +912,7 @@ derived ids keep the salt `'filtered_view'` so regenerated seeds match the
 ids already present in seeded databases.
 
 Labels follow apflora.ch (`apf2/sql/apflora/createComputedLabels.sql`):
+
 - Feld-Kontrollen (EK): `typ IS DISTINCT FROM 'Freiwilligen-Kontrolle'`
   (includes Ausgangszustand and rows without typ), rows labeled
   `jahr: typ` (label_by `["typ"]`)
@@ -920,7 +922,7 @@ Labels follow apflora.ch (`apf2/sql/apflora/createComputedLabels.sql`):
   the places label follows via `projects.places_label_by = 'name'`.
   Ordering matches apf2 (`orderBy: [NR_ASC, NAME_ASC]` for pop,
   `[NR_ASC, FLURNAME_ASC]` for tpop) via `projects.places_order_by =
-  'nr,name,flurname'` (consumed in `usePlacesNavData`: each configured data
+'nr,name,flurname'` (consumed in `usePlacesNavData`: each configured data
   field sorts numerically when its value is a number, lexically otherwise,
   label as fallback; fields without a value are skipped — that is how one
   config serves both levels). nr/name/flurname are real fields of the place
@@ -970,7 +972,7 @@ or to restore a deleted project — with its original ids.
 - **In the app:** project header → "Export to SQL dumpfile" writes the
   locally synced rows (`src/modules/projectDump/exportProjectDump.ts`) as one
   `INSERT … SELECT … FROM jsonb_populate_recordset(NULL::table, $ps_dump$[…]$ps_dump$)`
-  statement per table chunk — valid SQL *and* parseable without a SQL
+  statement per table chunk — valid SQL _and_ parseable without a SQL
   parser (`parseProjectDump.ts`). Projects list → "Import from SQL dumpfile"
   uploads the rows to the server through `apply_operations` in FK order
   (`importProjectDump.ts`): the project row first (attached to the chosen
@@ -1170,3 +1172,53 @@ faded markers) as a fallback: when a layer sets
 `display_by_property = 'absence'`, the configured displays replace the
 hardcoded look.
 
+# 11 Error Telemetry
+
+Client errors are collected in `public.error_report` (init file
+[19_errorReport.sql](backend/db/init/19_errorReport.sql), client reporter
+[src/modules/errorTelemetry.ts](src/modules/errorTelemetry.ts)). The setup is
+ported from apflora (apf2).
+
+- **Opt-in, privacy by default:** the reporter is a complete no-op unless
+  `VITE_ERROR_TELEMETRY=true` is set at build time (Netlify env var). In dev
+  nothing is ever sent. The endpoint resolves through
+  `constants.getPostgrestUri()` at runtime, so it is correct on every host
+  (localhost:3002 in dev, same-origin `/api` on arten-fördern.ch,
+  `api.<domain>` otherwise).
+- **Payload:** message, stack, url (path + search), user agent and the
+  bundle version (`__APP_VERSION__` from package.json) — no user identity.
+  The client caps itself at 25 reports per session and 3 per distinct
+  message, and drops benign browser noise (ResizeObserver loop). The table
+  enforces the same discipline server-side: CHECK caps on every field, a
+  `kind` enum (`window.error` | `unhandledrejection` | `boundary` |
+  `manual`), and a trigger that overwrites `id`/`created_at` no matter what
+  the client sends.
+- **Access:** anyone (`web_anon`) may insert; only `ps_manager` may read
+  via PostgREST (mint a JWT with `{"role": "ps_manager"}` signed with
+  `PGRST_JWT_SECRET`; `app_user` has no privileges on the table). psql as
+  postgres always can.
+- **Where errors come from:** global `error`/`unhandledrejection` handlers
+  (installed in `main.tsx`), the root `ErrorBoundary`, the router's
+  `RouterErrorBoundary`, and the map's `MapErrorBoundary` — all reporting
+  with kind `boundary`.
+- **Tests:** `tests/errorTelemetry.test.ts` (reporter module),
+  `tests/errorReport.test.ts` (trigger + CHECKs in PGlite),
+  `e2e/errorReport.spec.ts` (anonymous insert, forced defaults, role
+  denials, `ps_manager` read — against the dev PostgREST).
+
+## Phone notifications (production, owner-only)
+
+New reports notify via a webhook (default ntfy). The repo copy is
+[scripts/notify-error-reports.sh](scripts/notify-error-reports.sh) — install
+it on the VM next to `deploy-backend.sh`, then:
+
+- create `.error-notify.env` (mode 600) next to it with
+  `NOTIFY_URL='https://ntfy.sh/<topic>'` (or any endpoint accepting ntfy
+  semantics: `Title` header + plain-text body)
+- add the cron line from the script header (every 5 minutes)
+- the topic name is the secret — anyone who knows it can read the
+  notifications (which carry only count, release and a 120-char preview;
+  full reports stay in the database)
+
+Delivery is at-least-once: the watermark file only advances after a
+successful send.

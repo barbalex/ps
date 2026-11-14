@@ -11,6 +11,11 @@ const pkg = JSON.parse(readFileSync('./package.json', 'utf8'))
 
 // https://vitejs.dev/config/
 export default defineConfig({
+  // bundle-time version for the (opt-in) error telemetry payload;
+  // declared in src/vite-env.d.ts
+  define: {
+    __APP_VERSION__: JSON.stringify(pkg.version),
+  },
   server: {
     port: 5176,
     // Fail loudly instead of drifting to 5177+: the auth server's CORS

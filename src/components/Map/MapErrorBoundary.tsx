@@ -2,6 +2,7 @@ import type { ReactNode } from 'react'
 import { ErrorBoundary as ErrorBoundaryComponent } from 'react-error-boundary'
 import { useSetAtom } from 'jotai'
 
+import { reportError } from '../../modules/errorTelemetry.ts'
 import { addNotificationAtom } from '../../store.ts'
 
 type Layer = {
@@ -14,13 +15,7 @@ const onReload = () => {
   ;(window.location.reload as (force?: boolean) => void)(true)
 }
 
-const ErrorFallback = ({
-  error,
-  layer,
-}: {
-  error: unknown
-  layer: Layer
-}) => {
+const ErrorFallback = ({ error, layer }: { error: unknown; layer: Layer }) => {
   const addNotification = useSetAtom(addNotificationAtom)
 
   addNotification({
@@ -47,6 +42,7 @@ export const ErrorBoundary = ({
           layer,
         })
       }
+      onError={(error) => void reportError('boundary', error)}
       onReset={onReload}
     >
       {children}

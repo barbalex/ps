@@ -1,7 +1,11 @@
 /// <reference types="vite/client" />
 
+// injected at build time (vite.config.ts define) from package.json version
+declare const __APP_VERSION__: string
+
 interface ImportMetaEnv {
   readonly VITE_APP_ADMIN_EMAILS?: string
+  readonly VITE_ERROR_TELEMETRY?: string
 }
 
 interface ImportMeta {

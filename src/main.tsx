@@ -1,7 +1,11 @@
 // import { StrictMode } from 'react'
 import ReactDOM from 'react-dom/client'
 import { App } from './App.tsx'
+import { installErrorTelemetry } from './modules/errorTelemetry.ts'
 import './style.css'
+
+// no-op unless VITE_ERROR_TELEMETRY=true is set at build time
+installErrorTelemetry()
 
 // TEMPORARY debug aid: render render-crashes visibly instead of a blank screen
 const showError = (label: string, detail: unknown) => {
@@ -12,16 +16,14 @@ const showError = (label: string, detail: unknown) => {
     label +
     ': ' +
     String(
-      detail && typeof detail === 'object' && 'stack' in detail
-        ? (detail as { stack: unknown }).stack
-        : detail,
+      detail && typeof detail === 'object' && 'stack' in detail ?
+        (detail as { stack: unknown }).stack
+      : detail,
     ).slice(0, 2000)
   document.body.appendChild(el)
 }
 window.addEventListener('error', (e) => showError('ERR', e.message))
-window.addEventListener('unhandledrejection', (e) =>
-  showError('REJ', e.reason),
-)
+window.addEventListener('unhandledrejection', (e) => showError('REJ', e.reason))
 
 import { ErrorBoundary } from './components/shared/ErrorBoundary.tsx'
 

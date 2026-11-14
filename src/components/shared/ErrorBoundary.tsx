@@ -3,6 +3,8 @@ import {
   type FallbackProps,
 } from 'react-error-boundary'
 
+import { reportError } from '../../modules/errorTelemetry.ts'
+
 import styles from './ErrorBoundary.module.css'
 
 // This fallback renders outside any provider (it is mounted above App in
@@ -62,6 +64,7 @@ const ErrorFallback = ({ error, componentStack }: Props) => (
 export const ErrorBoundary = ({ children }: { children?: React.ReactNode }) => (
   <ErrorBoundaryComponent
     FallbackComponent={ErrorFallback}
+    onError={(error) => void reportError('boundary', error)}
     onReset={onReload}
   >
     {children}

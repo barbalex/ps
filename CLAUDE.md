@@ -283,12 +283,13 @@ node gbif-import.mjs
 
 No env file is needed for `npm run dev`, `npm run build`, or the unit tests. Vite reads `VITE_*` vars from the root `.env` if present.
 
-| Task                                        | Variable                                      | Notes                                                        |
-| ------------------------------------------- | --------------------------------------------- | ------------------------------------------------------------ |
-| Type generation (`npm run models:generate`) | `KANEL_DATABASE_URL` (or `DATABASE_URL`)      | Root `.env`, read via dotenv                                 |
-| App-admin features in dev                   | `VITE_APP_ADMIN_EMAILS`                       | Comma-separated emails, root `.env`                          |
-| Dev backend stack                           | `backend-dev/.env`                            | Copy from `backend-dev/.env.example`                         |
-| Email verification in dev                   | `REQUIRE_EMAIL_VERIFICATION` (default: false) | `backend-dev/.env`; set `true` to test the verification flow |
+| Task                                        | Variable                                      | Notes                                                                                                     |
+| ------------------------------------------- | --------------------------------------------- | --------------------------------------------------------------------------------------------------------- |
+| Type generation (`npm run models:generate`) | `KANEL_DATABASE_URL` (or `DATABASE_URL`)      | Root `.env`, read via dotenv                                                                              |
+| App-admin features in dev                   | `VITE_APP_ADMIN_EMAILS`                       | Comma-separated emails, root `.env`                                                                       |
+| Dev backend stack                           | `backend-dev/.env`                            | Copy from `backend-dev/.env.example`                                                                      |
+| Email verification in dev                   | `REQUIRE_EMAIL_VERIFICATION` (default: false) | `backend-dev/.env`; set `true` to test the verification flow                                              |
+| Client error telemetry                      | `VITE_ERROR_TELEMETRY`                        | Set `true` in the Netlify env; client errors land in `public.error_report` (see dev-documentation.md §11) |
 
 ---
 
