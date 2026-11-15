@@ -588,7 +588,11 @@ export const Content = ({
               layer.layer_presentation_id ?? '',
               layer.layer_presentation_active === true,
             )}
-            onClick={onChangeActive}
+            onClick={(event) => {
+              // only the visibility toggle, not the accordion header
+              event.stopPropagation()
+              onChangeActive()
+            }}
             className={styles.headerButton}
             // as the accordion header is a button, we need to set this as an a
             // because nested buttons are not allowed

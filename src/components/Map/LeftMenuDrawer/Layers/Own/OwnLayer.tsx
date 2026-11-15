@@ -117,7 +117,11 @@ export const OwnLayer = ({
                 )
               }
               checked={isVisible}
-              onClick={onChange}
+              onClick={(event) => {
+                // only the visibility toggle, not the accordion header
+                event.stopPropagation()
+                onChange()
+              }}
               className={`${styles.labelButton}${isOpen ? ` ${styles.toggleOpen}` : ''}`}
               // as the accordion header is a button, we need to set this as an a
               // because nested buttons are not allowed

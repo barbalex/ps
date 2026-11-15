@@ -84,3 +84,27 @@ test('without the param the design flags apply and toggling materializes them', 
   })
   await expect(toggle).toHaveAttribute('aria-pressed', 'false')
 })
+
+test('the checkbox toggles without opening the form; the label opens it', async ({
+  page,
+}) => {
+  await login(page, 'test@test.ch', 'test-test')
+
+  await page.goto(`${PLACES_URL}?panes=map`)
+  const drawer = page.locator('.map-layers-drawer')
+  await expect(drawer).toBeVisible({ timeout: 60_000 })
+  await page.waitForTimeout(2500)
+
+  // clicking only the checkbox toggles the layer and must not open the
+  // accordion (the form is what the header click is for)
+  const toggle = drawer.locator('[aria-pressed]').first()
+  await toggle.click()
+  await expect(page).toHaveURL(/layers=/, { timeout: 10_000 })
+  await expect(drawer.getByRole('tab', { name: 'Overall Display' })).toHaveCount(0)
+
+  // clicking right of the checkbox (the layer label) opens the form
+  await drawer.locator('p[class*="headerLabel"]').first().click()
+  await expect(
+    drawer.getByRole('tab', { name: 'Overall Display' }),
+  ).toBeVisible({ timeout: 10_000 })
+})
