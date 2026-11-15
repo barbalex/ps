@@ -4,7 +4,8 @@
 //
 // - `f-*`: list filters (modules/useUrlFilter.ts)
 // - `c` / `z`: map center and zoom (modules/useUrlMapViewport.ts)
-const retainedKeys = new Set(['c', 'z'])
+// - `panes`: visible layout panes (modules/useUrlPanes.ts)
+const retainedKeys = new Set(['c', 'z', 'panes'])
 
 export const isRetainedSearchParam = (key: string) =>
   key.startsWith('f-') || retainedKeys.has(key)

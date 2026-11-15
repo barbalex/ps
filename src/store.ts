@@ -261,18 +261,21 @@ export const tabsAtom = atomWithStorage(
 // mount) keeps the toggle buttons and the rendered panes consistent from the
 // very first render: jotai misses store writes that happen between a
 // component's first render and its subscribe (see LayoutProtected comment),
-// so a mount-effect compaction left Main rendering a stale tree pane
-export const effectiveTabsAtom = atom((get) => {
-  const tabs = get(tabsAtom)
-  const isMobileView = get(isMobileViewAtom)
-  const enforceMobileNavigation = get(enforceMobileNavigationAtom)
+// so a mount-effect compaction left Main rendering a stale tree pane.
+// Pure function (also used with url-provided panes, see
+// modules/useUrlPanes.ts).
+export const effectiveTabsOf = (
+  tabs: string[],
+  isMobileView: boolean,
+  enforceMobileNavigation: boolean,
+) => {
   const isNarrowViewport =
     typeof window !== 'undefined' &&
     window.innerWidth < constants.mobileViewMaxWidth
   const useSingleMobileTab =
     isMobileView && (isNarrowViewport || enforceMobileNavigation)
   return useSingleMobileTab ? [pickMobileTab(tabs)] : tabs
-})
+}
 export type TableRowFilter = Record<string, unknown>
 // list filters no longer live in atoms: they are url search params, see
 // modules/useUrlFilter.ts (`f-<key>` params, e.g. `?f-checks1=[…]`)
