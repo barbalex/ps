@@ -29,6 +29,9 @@ const tablesAbovePlaces = [
   'project_qcs',
 ]
 
+export const isTableAbovePlaces = (table: string) =>
+  tablesAbovePlaces.includes(table)
+
 export const filterKeyFromTableAndLevel = ({
   table,
   level,

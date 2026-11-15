@@ -11,7 +11,10 @@ import { FilterHeader } from './Header.tsx'
 import { languageAtom } from '../../../store.ts'
 import type { TableRowFilter } from '../../../store.ts'
 import { OrFilter, type OrFilterRenderProps } from './OrFilter.tsx'
-import { filterKeyFromTableAndLevel } from '../../../modules/filterKeyFromTableAndLevel.ts'
+import {
+  filterKeyFromTableAndLevel,
+  isTableAbovePlaces,
+} from '../../../modules/filterKeyFromTableAndLevel.ts'
 import { useUrlFilter } from '../../../modules/useUrlFilter.ts'
 import { orFilterToSql } from '../../../modules/orFilterToSql.ts'
 import { filterStringFromFilter } from '../../../modules/filterStringFromFilter.ts'
@@ -380,13 +383,17 @@ export const Filter = ({
   })
 
   const [activeTab, setActiveTab] = useState(1)
-  // derive the url filter key from table and level; for places the level
-  // comes from the url (placeId present = level 2)
+  // derive the url filter key from table and level. Below-places tables
+  // have one filter per place level; callers that don't pass level (e.g.
+  // the places filter itself) get it from the url: a placeId in the route
+  // means the list sits below a level-1 place, so its children are level 2
   const resolvedFilterKey =
     filterKeyOverride ??
     filterKeyFromTableAndLevel({
       table: tableName,
-      level,
+      level:
+        level ??
+        (isTableAbovePlaces(tableName) ? undefined : placeId ? 2 : 1),
     })
   const [filter, setFilter] = useUrlFilter(resolvedFilterKey)
   const virtualTabValue = filter.length + 1
