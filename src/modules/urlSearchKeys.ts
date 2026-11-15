@@ -5,6 +5,8 @@
 // - `f-*`: list filters (modules/useUrlFilter.ts)
 // - `c` / `z`: map center and zoom (modules/useUrlMapViewport.ts)
 // - `panes`: visible layout panes (modules/useUrlPanes.ts)
+// - `layers`: the map's render list / layer visibility
+//   (modules/useUrlLayers.ts)
 // - `designing`: design mode for the current session
 //   (modules/useUrlDesigning.ts)
 // - `*Label` / `*OnlyWithResults`: label filter and only-with-results
@@ -13,6 +15,7 @@ const retainedKeys = new Set([
   'c',
   'z',
   'panes',
+  'layers',
   'designing',
   'qcsRunLabel',
   'qcsRunOnlyWithResults',

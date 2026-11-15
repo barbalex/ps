@@ -15,6 +15,7 @@ import {
   type Extent,
 } from '../../modules/geoQueries.ts'
 import { createLayerPresentation } from '../../modules/createRows.ts'
+import { useUrlLayers } from '../../modules/useUrlLayers.ts'
 import {
   mapBoundsAtom,
   addOperationAtom,
@@ -74,10 +75,21 @@ export const LayerMenu = ({ table, level, placeNamePlural }: Props) => {
       : undefined
 
   const showLayer = layerPresentation?.active ?? false
+  // with an active ?layers= override, show/hide is a view action on the
+  // url param (no db write needed) — see modules/useUrlLayers.ts
+  const { isOverridden, setLayerVisible, isLayerVisible } = useUrlLayers()
+  const showLayerView = isLayerVisible(
+    layerPresentation?.layer_presentation_id ?? '',
+    showLayer,
+  )
   const onClickShowLayer = async () => {
     const lpId = layerPresentation?.layer_presentation_id as
       | string
       | undefined
+    if (isOverridden && lpId) {
+      setLayerVisible(lpId, !showLayerView)
+      return
+    }
     if (showLayer) {
       // deactivate
       db.query(
@@ -122,6 +134,9 @@ export const LayerMenu = ({ table, level, placeNamePlural }: Props) => {
     if (newLpId && !mapLayerSorting.includes(newLpId)) {
       setMapLayerSorting([...mapLayerSorting, newLpId])
     }
+    if (isOverridden && newLpId && !showLayerView) {
+      setLayerVisible(newLpId, true)
+    }
   }
 
   const onClickZoomToLayer = async () => {
@@ -151,6 +166,10 @@ export const LayerMenu = ({ table, level, placeNamePlural }: Props) => {
     }
     if (lpId && !mapLayerSorting.includes(lpId)) {
       setMapLayerSorting([...mapLayerSorting, lpId])
+    }
+    // make sure the layer is part of an active override view
+    if (isOverridden && lpId && !showLayerView) {
+      setLayerVisible(lpId, true)
     }
     // get the extent of all geometries in the layer via PostGIS
     // first get all places with level, then all actions/checks/observations with place_id
@@ -212,10 +231,10 @@ export const LayerMenu = ({ table, level, placeNamePlural }: Props) => {
     <>
       <Button
         size="medium"
-        icon={showLayer ? <MdLayersClear /> : <MdLayers />}
+        icon={showLayerView ? <MdLayersClear /> : <MdLayers />}
         onClick={onClickShowLayer}
         title={
-          showLayer
+          showLayerView
             ? formatMessage(
                 {
                   id: 'bCLmNo',

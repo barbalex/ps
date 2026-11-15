@@ -14,16 +14,15 @@ import type {
   SelectTabEvent,
 } from '@fluentui/react-components'
 import { BsSquare } from 'react-icons/bs'
-import { useAtom, useSetAtom } from 'jotai'
-import { usePGlite } from '@electric-sql/pglite-react'
+import { useAtom } from 'jotai'
 import { useLocation } from '@tanstack/react-router'
 
 import { ErrorBoundary } from '../../../../shared/ErrorBoundary.tsx'
 import { createLayerPresentation } from '../../../../../modules/createRows.ts'
+import { useUrlLayers } from '../../../../../modules/useUrlLayers.ts'
 import {
   designingAtom,
   mapDrawerVectorLayerDisplayAtom,
-  addOperationAtom,
 } from '../../../../../store.ts'
 import { VectorLayerEditing } from '../Vector/Editing.tsx'
 import { LayerPresentationForm } from '../LayerPresentationForm.tsx'
@@ -54,16 +53,28 @@ export const OwnLayer = ({
   const { projectId } = useParams({ strict: false })
   const [designingMap] = useAtom(designingAtom)
   const designing = designingMap[projectId ?? ''] ?? false
-  const addOperation = useSetAtom(addOperationAtom)
+  const { setLayerVisible, isLayerVisible } = useUrlLayers()
   const [vectorLayerDisplayId, setVectorLayerDisplayId] = useAtom(
     mapDrawerVectorLayerDisplayAtom,
   )
-  const db = usePGlite()
   const [tab, setTab] = useState<TabType>('overall-displays')
   const { pathname } = useLocation()
 
+  const layerPresentationId = layer.layer_presentations?.[0]?.layer_presentation_id
+  const isVisible = isLayerVisible(
+    layerPresentationId ?? '',
+    layer.layer_presentations?.[0]?.active ?? false,
+  )
+
+  // toggling layer visibility is a view action: it writes the ?layers=
+  // url param (linkable, no permissions needed). Only a layer without a
+  // layer_presentation row needs the db write that creates one.
   const onChange = async () => {
-    if (!layer.layer_presentations?.[0]?.layer_presentation_id) {
+    if (isVisible) {
+      setLayerVisible(layerPresentationId!, false)
+      return
+    }
+    if (!layerPresentationId) {
       // create the missing layer_presentation
       // For table layers (own_table is set), skip operation queue as they are system-managed
       const isTableLayer = !!layer.own_table
@@ -72,31 +83,9 @@ export const OwnLayer = ({
         active: true,
         skipOperationQueue: isTableLayer,
       } as unknown as Parameters<typeof createLayerPresentation>[0])
-    } else {
-      const layerPresentationId =
-        layer.layer_presentations?.[0]?.layer_presentation_id
-      // prev must be the full row: the permission check resolves the role
-      // via vector_layer_id/wms_layer_id and a revert writes updated_at
-      // and updated_by back
-      const lpRes = await db.query(
-        `SELECT * FROM layer_presentations WHERE layer_presentation_id = $1`,
-        [layerPresentationId],
-      )
-      const prev = (lpRes?.rows?.[0] ?? {}) as Record<string, unknown>
-      await db.query(
-        `UPDATE layer_presentations SET active = true WHERE layer_presentation_id = $1`,
-        [layerPresentationId],
-      )
-      // add task to update server and rollback PGlite in case of error
-      addOperation({
-        table: 'layer_presentations',
-        rowIdName: 'layer_presentation_id',
-        rowId: layerPresentationId,
-        operation: 'update',
-        draft: { active: true },
-        prev,
-      })
+      return
     }
+    setLayerVisible(layerPresentationId, true)
   }
 
   const onTabSelect = (_event: SelectTabEvent, data: SelectTabData) =>
@@ -119,7 +108,7 @@ export const OwnLayer = ({
           <div className={layerStyles.headerContainer}>
             <ToggleButton
               icon={<BsSquare className={layerStyles.headerToggleIcon} />}
-              checked={false}
+              checked={isVisible}
               onClick={onChange}
               className={`${styles.labelButton}${isOpen ? ` ${styles.toggleOpen}` : ''}`}
               // as the accordion header is a button, we need to set this as an a
