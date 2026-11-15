@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react'
+import { useBooleanSearchParam, useStringSearchParam } from '../modules/useUrlSearchParam.ts'
 import { useNavigate, Link } from '@tanstack/react-router'
 import { useRootQcsRunNavData } from '../modules/useRootQcsRunNavData.ts'
 import { useLiveQuery } from '@electric-sql/pglite-react'
@@ -10,8 +11,6 @@ import { Loading } from '../components/shared/Loading.tsx'
 import {
   languageAtom,
   rootQcsRunFilteredCountAtom,
-  rootQcsRunLabelFilterAtom,
-  rootQcsRunOnlyWithResultsAtom,
 } from '../store.ts'
 import { Dismiss16Regular, WindowEdit16Regular } from '@fluentui/react-icons'
 import { QcsResultDialog } from '../components/QcsResultDialog/index.tsx'
@@ -168,10 +167,8 @@ export const RootQcsRun = () => {
   const { navData } = useRootQcsRunNavData()
   const { formatMessage } = useIntl()
   const [language] = useAtom(languageAtom)
-  const [onlyWithResults, setOnlyWithResults] = useAtom(
-    rootQcsRunOnlyWithResultsAtom,
-  )
-  const [labelFilter, setLabelFilter] = useAtom(rootQcsRunLabelFilterAtom)
+  const [onlyWithResults, setOnlyWithResults] = useBooleanSearchParam('rootQcsRunOnlyWithResults')
+  const [labelFilter, setLabelFilter] = useStringSearchParam('rootQcsRunLabel')
   const setFilteredCount = useSetAtom(rootQcsRunFilteredCountAtom)
   const navigate = useNavigate()
 

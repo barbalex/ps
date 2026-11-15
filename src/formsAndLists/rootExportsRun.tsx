@@ -1,4 +1,5 @@
 import { useUrlFilter } from '../modules/useUrlFilter.ts'
+import { useStringSearchParam } from '../modules/useUrlSearchParam.ts'
 import { useState, useEffect } from 'react'
 import { usePGlite, useLiveQuery } from '@electric-sql/pglite-react'
 import { useAtom, useSetAtom } from 'jotai'
@@ -9,7 +10,6 @@ import { Loading } from '../components/shared/Loading.tsx'
 import {
   languageAtom,
   rootExportsRunFilteredCountAtom,
-  rootExportsRunLabelFilterAtom,
 } from '../store.ts'
 import { Dismiss16Regular } from '@fluentui/react-icons'
 import { MdMenuBook } from 'react-icons/md'
@@ -127,7 +127,7 @@ export const RootExportsRun = () => {
   const { navData } = useRootExportsRunNavData()
   const { formatMessage } = useIntl()
   const [language] = useAtom(languageAtom)
-  const [labelFilter, setLabelFilter] = useAtom(rootExportsRunLabelFilterAtom)
+  const [labelFilter, setLabelFilter] = useStringSearchParam('rootExportsRunLabel')
   const setFilteredCount = useSetAtom(rootExportsRunFilteredCountAtom)
   const db = usePGlite()
 

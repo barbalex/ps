@@ -5,7 +5,25 @@
 // - `f-*`: list filters (modules/useUrlFilter.ts)
 // - `c` / `z`: map center and zoom (modules/useUrlMapViewport.ts)
 // - `panes`: visible layout panes (modules/useUrlPanes.ts)
-const retainedKeys = new Set(['c', 'z', 'panes'])
+// - `designing`: design mode for the current session
+//   (modules/useUrlDesigning.ts)
+// - `*Label` / `*OnlyWithResults`: label filter and only-with-results
+//   toggle of the qcs/exports run pages (modules/useUrlSearchParam.ts)
+const retainedKeys = new Set([
+  'c',
+  'z',
+  'panes',
+  'designing',
+  'qcsRunLabel',
+  'qcsRunOnlyWithResults',
+  'rootQcsRunLabel',
+  'rootQcsRunOnlyWithResults',
+  'projectQcsRunLabel',
+  'projectQcsRunOnlyWithResults',
+  'rootExportsRunLabel',
+  'projectExportsRunLabel',
+  'subprojectExportsRunLabel',
+])
 
 export const isRetainedSearchParam = (key: string) =>
   key.startsWith('f-') || retainedKeys.has(key)

@@ -1,16 +1,15 @@
 import { Outlet, useLocation, useParams } from '@tanstack/react-router'
 import { useLiveQuery } from '@electric-sql/pglite-react'
-import { useAtom } from 'jotai'
 
 import { ProjectWithFiles } from '../../../../formsAndLists/project/WithFiles.tsx'
-import { designingAtom } from '../../../../store.ts'
+import { useUrlDesigning } from '../../../../modules/useUrlDesigning.ts'
 
 const from = '/data/projects/$projectId_'
 
 export const ProjectLayout = () => {
   const { projectId } = useParams({ strict: false })
-  const [designingMap] = useAtom(designingAtom)
-  const isDesigning = designingMap[projectId ?? ''] ?? false
+  // url param wins, the designingAtom map is the fallback (see the hook)
+  const [isDesigning] = useUrlDesigning(projectId)
   const location = useLocation()
   const res = useLiveQuery(
     `SELECT files_active_projects, project_users_in_project, project_files_in_project, units_in_project, fields_in_project, project_reports_in_project FROM projects WHERE project_id = $1`,

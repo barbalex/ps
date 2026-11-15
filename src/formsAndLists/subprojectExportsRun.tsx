@@ -1,4 +1,5 @@
 import { useUrlFilter } from '../modules/useUrlFilter.ts'
+import { useStringSearchParam } from '../modules/useUrlSearchParam.ts'
 import { useState, useEffect } from 'react'
 import { useParams } from '@tanstack/react-router'
 import { usePGlite, useLiveQuery } from '@electric-sql/pglite-react'
@@ -9,7 +10,6 @@ import * as fluentUiReactComponents from '@fluentui/react-components'
 import { Loading } from '../components/shared/Loading.tsx'
 import {
   languageAtom,
-  subprojectExportsRunLabelFilterAtom,
   subprojectExportsRunFilteredCountAtom,
 } from '../store.ts'
 import { Dismiss16Regular } from '@fluentui/react-icons'
@@ -138,9 +138,7 @@ export const SubprojectExportsRun = (_: { from: string }) => {
   })
   const { formatMessage } = useIntl()
   const [language] = useAtom(languageAtom)
-  const [labelFilter, setLabelFilter] = useAtom(
-    subprojectExportsRunLabelFilterAtom,
-  )
+  const [labelFilter, setLabelFilter] = useStringSearchParam('subprojectExportsRunLabel')
   const setFilteredCount = useSetAtom(subprojectExportsRunFilteredCountAtom)
   const db = usePGlite()
 

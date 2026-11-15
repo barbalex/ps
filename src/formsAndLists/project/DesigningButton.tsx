@@ -1,20 +1,20 @@
 import { MdEdit, MdEditOff } from 'react-icons/md'
 import * as fluentUiReactComponents from '@fluentui/react-components'
 const { ToggleButton, Tooltip } = fluentUiReactComponents
-import { useAtom, useAtomValue } from 'jotai'
+import { useAtomValue } from 'jotai'
 import { useLiveQuery } from '@electric-sql/pglite-react'
 import { useParams } from '@tanstack/react-router'
 
-import { designingAtom, userIdAtom } from '../../store.ts'
+import { useUrlDesigning } from '../../modules/useUrlDesigning.ts'
+import { userIdAtom } from '../../store.ts'
 
 export const DesigningButton = (_props: { from: string }) => {
-  const [designingMap, setDesigningMap] = useAtom(designingAtom)
   const { projectId } = useParams({ strict: false }) as { projectId: string }
-  const designing = designingMap[projectId] ?? false
+  // url param wins, the designingAtom map is the fallback (see the hook)
+  const [designing, setDesigning] = useUrlDesigning(projectId)
   const userId = useAtomValue(userIdAtom)
 
-  const onClickDesigning = () =>
-    setDesigningMap((prev) => ({ ...prev, [projectId]: !prev[projectId] }))
+  const onClickDesigning = () => setDesigning(!designing)
 
   const resultProject = useLiveQuery(
     `

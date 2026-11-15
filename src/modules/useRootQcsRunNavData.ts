@@ -1,4 +1,5 @@
 import { useLiveQuery } from '@electric-sql/pglite-react'
+import { useBooleanSearchParam, useStringSearchParam } from './useUrlSearchParam.ts'
 import { useAtom } from 'jotai'
 import { useLocation } from '@tanstack/react-router'
 import { isEqual } from 'es-toolkit'
@@ -7,15 +8,13 @@ import { useIntl } from 'react-intl'
 import { buildNavLabel } from './buildNavLabel.ts'
 import {
   rootQcsRunFilteredCountAtom,
-  rootQcsRunLabelFilterAtom,
-  rootQcsRunOnlyWithResultsAtom,
   treeOpenNodesSetAtom,
 } from '../store.ts'
 
 export const useRootQcsRunNavData = () => {
   const [openNodesSet] = useAtom(treeOpenNodesSetAtom)
-  const [labelFilter] = useAtom(rootQcsRunLabelFilterAtom)
-  const [onlyWithResults] = useAtom(rootQcsRunOnlyWithResultsAtom)
+  const [labelFilter] = useStringSearchParam('rootQcsRunLabel')
+  const [onlyWithResults] = useBooleanSearchParam('rootQcsRunOnlyWithResults')
   const [filteredCount] = useAtom(rootQcsRunFilteredCountAtom)
   const location = useLocation()
   const { formatMessage } = useIntl()

@@ -280,49 +280,14 @@ export type TableRowFilter = Record<string, unknown>
 // list filters no longer live in atoms: they are url search params, see
 // modules/useUrlFilter.ts (`f-<key>` params, e.g. `?f-checks1=[…]`)
 
-export const qcsRunOnlyWithResultsAtom = atomWithStorage(
-  'qcsRunOnlyWithResults',
-  false,
-)
-export const qcsRunLabelFilterAtom = atomWithStorage('qcsRunLabelFilter', '')
+// filtered counts for the qcs/exports run pages — ephemeral derived values
+// written by the run pages for their header badges (the filter values
+// themselves are url search params, see modules/useUrlSearchParam.ts)
 export const qcsRunFilteredCountAtom = atom<number | null>(null)
-
-export const rootQcsRunOnlyWithResultsAtom = atomWithStorage(
-  'rootQcsRunOnlyWithResults',
-  false,
-)
-export const rootQcsRunLabelFilterAtom = atomWithStorage(
-  'rootQcsRunLabelFilter',
-  '',
-)
 export const rootQcsRunFilteredCountAtom = atom<number | null>(null)
-
-export const projectQcsRunOnlyWithResultsAtom = atomWithStorage(
-  'projectQcsRunOnlyWithResults',
-  false,
-)
-export const projectQcsRunLabelFilterAtom = atomWithStorage(
-  'projectQcsRunLabelFilter',
-  '',
-)
 export const projectQcsRunFilteredCountAtom = atom<number | null>(null)
-
-export const rootExportsRunLabelFilterAtom = atomWithStorage(
-  'rootExportsRunLabelFilter',
-  '',
-)
 export const rootExportsRunFilteredCountAtom = atom<number | null>(null)
-
-export const projectExportsRunLabelFilterAtom = atomWithStorage(
-  'projectExportsRunLabelFilter',
-  '',
-)
 export const projectExportsRunFilteredCountAtom = atom<number | null>(null)
-
-export const subprojectExportsRunLabelFilterAtom = atomWithStorage(
-  'subprojectExportsRunLabelFilter',
-  '',
-)
 export const subprojectExportsRunFilteredCountAtom = atom<number | null>(null)
 
 const SUPPORTED_LANGUAGES = ['en', 'de', 'fr', 'it'] as const
