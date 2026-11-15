@@ -261,62 +261,33 @@ export const tabsAtom = atomWithStorage(
 // mount) keeps the toggle buttons and the rendered panes consistent from the
 // very first render: jotai misses store writes that happen between a
 // component's first render and its subscribe (see LayoutProtected comment),
-// so a mount-effect compaction left Main rendering a stale tree pane
-export const effectiveTabsAtom = atom((get) => {
-  const tabs = get(tabsAtom)
-  const isMobileView = get(isMobileViewAtom)
-  const enforceMobileNavigation = get(enforceMobileNavigationAtom)
+// so a mount-effect compaction left Main rendering a stale tree pane.
+// Pure function (also used with url-provided panes, see
+// modules/useUrlPanes.ts).
+export const effectiveTabsOf = (
+  tabs: string[],
+  isMobileView: boolean,
+  enforceMobileNavigation: boolean,
+) => {
   const isNarrowViewport =
     typeof window !== 'undefined' &&
     window.innerWidth < constants.mobileViewMaxWidth
   const useSingleMobileTab =
     isMobileView && (isNarrowViewport || enforceMobileNavigation)
   return useSingleMobileTab ? [pickMobileTab(tabs)] : tabs
-})
+}
 export type TableRowFilter = Record<string, unknown>
-export const qcsRunOnlyWithResultsAtom = atomWithStorage(
-  'qcsRunOnlyWithResults',
-  false,
-)
-export const qcsRunLabelFilterAtom = atomWithStorage('qcsRunLabelFilter', '')
+// list filters no longer live in atoms: they are url search params, see
+// modules/useUrlFilter.ts (`f-<key>` params, e.g. `?f-checks1=[…]`)
+
+// filtered counts for the qcs/exports run pages — ephemeral derived values
+// written by the run pages for their header badges (the filter values
+// themselves are url search params, see modules/useUrlSearchParam.ts)
 export const qcsRunFilteredCountAtom = atom<number | null>(null)
-
-export const rootQcsRunOnlyWithResultsAtom = atomWithStorage(
-  'rootQcsRunOnlyWithResults',
-  false,
-)
-export const rootQcsRunLabelFilterAtom = atomWithStorage(
-  'rootQcsRunLabelFilter',
-  '',
-)
 export const rootQcsRunFilteredCountAtom = atom<number | null>(null)
-
-export const projectQcsRunOnlyWithResultsAtom = atomWithStorage(
-  'projectQcsRunOnlyWithResults',
-  false,
-)
-export const projectQcsRunLabelFilterAtom = atomWithStorage(
-  'projectQcsRunLabelFilter',
-  '',
-)
 export const projectQcsRunFilteredCountAtom = atom<number | null>(null)
-
-export const rootExportsRunLabelFilterAtom = atomWithStorage(
-  'rootExportsRunLabelFilter',
-  '',
-)
 export const rootExportsRunFilteredCountAtom = atom<number | null>(null)
-
-export const projectExportsRunLabelFilterAtom = atomWithStorage(
-  'projectExportsRunLabelFilter',
-  '',
-)
 export const projectExportsRunFilteredCountAtom = atom<number | null>(null)
-
-export const subprojectExportsRunLabelFilterAtom = atomWithStorage(
-  'subprojectExportsRunLabelFilter',
-  '',
-)
 export const subprojectExportsRunFilteredCountAtom = atom<number | null>(null)
 
 const SUPPORTED_LANGUAGES = ['en', 'de', 'fr', 'it'] as const
@@ -414,10 +385,9 @@ export const mapZoomAtom = atomWithStorage('mapZoom', 13)
 
 // map of id (layer.id, key) and show boolean
 export const showLocalMapAtom = atomWithStorage('showLocalMapAtom', false)
-export const localMapValuesAtom = atomWithStorage<Record<string, boolean>>(
-  'localMapValuesAtom',
-  {},
-)
+// NB: the former localMapValuesAtom (layer visibility per id) was dead
+// state and has been removed; clearLocalSyncedData still clears the stale
+// localStorage key for users who have it persisted
 export const mapHideUiAtom = atomWithStorage('mapHideUiAtom', false)
 export const mapLocateAtom = atomWithStorage('mapLocateAtom', false)
 // TODO:
@@ -531,256 +501,6 @@ export const treeOpenNodesAtom = atomWithStorage<string[][]>(
 export const treeOpenNodesSetAtom = atom<ReadonlySet<string>>(
   (get) => new Set(get(treeOpenNodesAtom).map((node) => node.join('/'))),
 )
-// table filters
-// Using array of or-filters
-// Of objects with keys and value. why? because needs to be shown in the forms
-// key is path i.e. jsonb is: data.key
-export const projectsFilterAtom = atomWithStorage<Record<string, unknown>[]>(
-  'projectsFilterAtom',
-  [],
-)
-export const fieldsFilterAtom = atomWithStorage<TableRowFilter[]>(
-  'fieldsFilterAtom',
-  [],
-)
-export const fieldTypesFilterAtom = atomWithStorage<TableRowFilter[]>(
-  'fieldTypesFilterAtom',
-  [],
-)
-export const accountsFilterAtom = atomWithStorage<TableRowFilter[]>(
-  'accountsFilterAtom',
-  [],
-)
-export const crsFilterAtom = atomWithStorage<TableRowFilter[]>(
-  'crsFilterAtom',
-  [],
-)
-export const widgetTypesFilterAtom = atomWithStorage<TableRowFilter[]>(
-  'widgetTypesFilterAtom',
-  [],
-)
-export const widgetsForFieldsFilterAtom = atomWithStorage<TableRowFilter[]>(
-  'widgetsForFieldsFilterAtom',
-  [],
-)
-export const projectReportsFilterAtom = atomWithStorage<TableRowFilter[]>(
-  'projectReportsFilterAtom',
-  [],
-)
-export const projectUsersFilterAtom = atomWithStorage<TableRowFilter[]>(
-  'projectUsersFilterAtom',
-  [],
-)
-export const wmsLayersFilterAtom = atomWithStorage<TableRowFilter[]>(
-  'wmsLayersFilterAtom',
-  [],
-)
-export const wmsServicesFilterAtom = atomWithStorage<TableRowFilter[]>(
-  'wmsServicesFilterAtom',
-  [],
-)
-export const wfsServicesFilterAtom = atomWithStorage<TableRowFilter[]>(
-  'wfsServicesFilterAtom',
-  [],
-)
-export const vectorLayersFilterAtom = atomWithStorage<TableRowFilter[]>(
-  'vectorLayersFilterAtom',
-  [],
-)
-export const listsFilterAtom = atomWithStorage<TableRowFilter[]>(
-  'listsFilterAtom',
-  [],
-)
-export const taxonomiesFilterAtom = atomWithStorage<TableRowFilter[]>(
-  'taxonomiesFilterAtom',
-  [],
-)
-export const unitsFilterAtom = atomWithStorage<TableRowFilter[]>(
-  'unitsFilterAtom',
-  [],
-)
-export const subprojectsFilterAtom = atomWithStorage<TableRowFilter[]>(
-  'subprojectsFilterAtom',
-  [],
-)
-export const subprojectReportsFilterAtom = atomWithStorage<TableRowFilter[]>(
-  'subprojectReportsFilterAtom',
-  [],
-)
-export const subprojectUsersFilterAtom = atomWithStorage<TableRowFilter[]>(
-  'subprojectUsersFilterAtom',
-  [],
-)
-export const subprojectTaxaFilterAtom = atomWithStorage<TableRowFilter[]>(
-  'subprojectTaxaFilterAtom',
-  [],
-)
-export const chartsFilterAtom = atomWithStorage<TableRowFilter[]>(
-  'chartsFilterAtom',
-  [],
-)
-export const observationImportsFilterAtom = atomWithStorage<TableRowFilter[]>(
-  'observationImportsFilterAtom',
-  [],
-)
-export const observationsToAssessFilterAtom = atomWithStorage<TableRowFilter[]>(
-  'observationsToAssessFilterAtom',
-  [],
-)
-export const observationsNotToAssignFilterAtom = atomWithStorage<
-  TableRowFilter[]
->('observationsNotToAssignFilterAtom', [])
-export const goalsFilterAtom = atomWithStorage<TableRowFilter[]>(
-  'goalsFilterAtom',
-  [],
-)
-export const usersFilterAtom = atomWithStorage<TableRowFilter[]>(
-  'usersFilterAtom',
-  [],
-)
-export const places1FilterAtom = atomWithStorage<TableRowFilter[]>(
-  'places1FilterAtom',
-  [],
-)
-export const places2FilterAtom = atomWithStorage<TableRowFilter[]>(
-  'places2FilterAtom',
-  [],
-)
-export const checks1FilterAtom = atomWithStorage<TableRowFilter[]>(
-  'checks1FilterAtom',
-  [],
-)
-export const checks2FilterAtom = atomWithStorage<TableRowFilter[]>(
-  'checks2FilterAtom',
-  [],
-)
-export const placeUsers1FilterAtom = atomWithStorage<TableRowFilter[]>(
-  'placeUsers1FilterAtom',
-  [],
-)
-export const placeUsers2FilterAtom = atomWithStorage<TableRowFilter[]>(
-  'placeUsers2FilterAtom',
-  [],
-)
-export const actions1FilterAtom = atomWithStorage<TableRowFilter[]>(
-  'actions1FilterAtom',
-  [],
-)
-export const actions2FilterAtom = atomWithStorage<TableRowFilter[]>(
-  'actions2FilterAtom',
-  [],
-)
-export const checkReports1FilterAtom = atomWithStorage<TableRowFilter[]>(
-  'checkReports1FilterAtom',
-  [],
-)
-export const checkReports2FilterAtom = atomWithStorage<TableRowFilter[]>(
-  'checkReports2FilterAtom',
-  [],
-)
-export const actionReports1FilterAtom = atomWithStorage<TableRowFilter[]>(
-  'actionReports1FilterAtom',
-  [],
-)
-export const actionReports2FilterAtom = atomWithStorage<TableRowFilter[]>(
-  'actionReports2FilterAtom',
-  [],
-)
-export const qcsFilterAtom = atomWithStorage<TableRowFilter[]>(
-  'qcsFilterAtom',
-  [],
-)
-export const projectQcsFilterAtom = atomWithStorage<TableRowFilter[]>(
-  'projectQcsFilterAtom',
-  [],
-)
-export const exportsFilterAtom = atomWithStorage<TableRowFilter[]>(
-  'exportsFilterAtom',
-  [],
-)
-export const projectExportsFilterAtom = atomWithStorage<TableRowFilter[]>(
-  'projectExportsFilterAtom',
-  [],
-)
-// TODO: add
-export const filesFilterAtom = atomWithStorage<TableRowFilter[]>(
-  'filesFilterAtom',
-  [],
-)
-// TODO: add more filters
-// filter_vector_layer_displays
-// filter_subproject_chart_subjects
-// filter_place_check_taxa_1
-// filter_place_roles_1
-// filter_place_charts_1
-// filter_place_chart_subjects_1
-// filter_check_quantities_1
-// filter_check_quantities_2
-// filter_place_check_taxa_2
-// filter_place_roles_2
-// filter_place_charts_2
-// filter_place_chart_subjects_2
-
-export const filterAtoms = {
-  projects: projectsFilterAtom,
-  fields: fieldsFilterAtom,
-  fieldTypes: fieldTypesFilterAtom,
-  accounts: accountsFilterAtom,
-  crs: crsFilterAtom,
-  widgetTypes: widgetTypesFilterAtom,
-  widgetsForFields: widgetsForFieldsFilterAtom,
-  projectReports: projectReportsFilterAtom,
-  projectUsers: projectUsersFilterAtom,
-  wmsLayers: wmsLayersFilterAtom,
-  wmsServices: wmsServicesFilterAtom,
-  wfsServices: wfsServicesFilterAtom,
-  vectorLayers: vectorLayersFilterAtom,
-  lists: listsFilterAtom,
-  taxonomies: taxonomiesFilterAtom,
-  units: unitsFilterAtom,
-  subprojects: subprojectsFilterAtom,
-  subprojectReports: subprojectReportsFilterAtom,
-  subprojectUsers: subprojectUsersFilterAtom,
-  subprojectTaxa: subprojectTaxaFilterAtom,
-  charts: chartsFilterAtom,
-  observationImports: observationImportsFilterAtom,
-  observationsToAssess: observationsToAssessFilterAtom,
-  observationsNotToAssign: observationsNotToAssignFilterAtom,
-  goals: goalsFilterAtom,
-  users: usersFilterAtom,
-  places1: places1FilterAtom,
-  places2: places2FilterAtom,
-  checks1: checks1FilterAtom,
-  checks2: checks2FilterAtom,
-  placeUsers1: placeUsers1FilterAtom,
-  placeUsers2: placeUsers2FilterAtom,
-  actions1: actions1FilterAtom,
-  actions2: actions2FilterAtom,
-  checkReports1: checkReports1FilterAtom,
-  checkReports2: checkReports2FilterAtom,
-  actionReports1: actionReports1FilterAtom,
-  actionReports2: actionReports2FilterAtom,
-  files: filesFilterAtom,
-  projectQcs: projectQcsFilterAtom,
-  exports: exportsFilterAtom,
-  projectExports: projectExportsFilterAtom,
-}
-
-// filter atoms for table views are created dynamically, one per view:
-// view ids are runtime data, so the atoms cannot be exported statically
-const tableViewFilterAtoms = new Map<string, typeof checks1FilterAtom>()
-export const getTableViewFilterAtom = (tableViewId: string) => {
-  let filterAtom = tableViewFilterAtoms.get(tableViewId)
-  if (!filterAtom) {
-    filterAtom = atomWithStorage<TableRowFilter[]>(
-      `tableView-${tableViewId}-filterAtom`,
-      [],
-    )
-    tableViewFilterAtoms.set(tableViewId, filterAtom)
-  }
-  return filterAtom
-}
-
 // postgrestClient
 export const postgrestClientAtom = atom<PostgrestClient | null>(null)
 

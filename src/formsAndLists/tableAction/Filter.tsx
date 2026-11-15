@@ -2,7 +2,6 @@ import { useParams } from '@tanstack/react-router'
 
 import { Filter } from '../../components/shared/Filter/index.tsx'
 import { ActionForm } from '../action/Form.tsx'
-import { getTableViewFilterAtom } from '../../store.ts'
 import type Actions from '../../models/public/Actions.ts'
 
 type Props = {
@@ -22,7 +21,7 @@ export const TableActionFilter = ({ from, level }: Props) => {
       from={from}
       level={level}
       tableNameOverride="actions"
-      filterAtomOverride={getTableViewFilterAtom(tableViewId!)}
+      filterKeyOverride={`tableView-${tableViewId}`}
     >
       {({ row, onChange, orIndex }) => (
         <ActionForm

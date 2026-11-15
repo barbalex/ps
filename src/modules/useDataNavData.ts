@@ -1,12 +1,9 @@
+import { useUrlFilter } from './useUrlFilter.ts'
 import { useLiveQuery } from '@electric-sql/pglite-react'
 import { useAtom, useAtomValue } from 'jotai'
 import { isEqual } from 'es-toolkit'
 import { useIntl } from 'react-intl'
 import {
-  projectsFilterAtom,
-  fieldTypesFilterAtom,
-  widgetTypesFilterAtom,
-  widgetsForFieldsFilterAtom,
   treeOpenNodesSetAtom,
   designingAtom,
   isAppAmin,
@@ -45,19 +42,19 @@ export const useDataNavData = () => {
   const [isAppAdmin] = useAtom(isAppAmin)
   const operationsQueue = useAtomValue(operationsQueueAtom)
 
-  const [projectsFilter] = useAtom(projectsFilterAtom)
+  const [projectsFilter] = useUrlFilter('projects')
   const projectsFilterString = filterStringFromFilter(projectsFilter)
   const projectIsFiltered = !!projectsFilterString
 
-  const [fieldTypesFilter] = useAtom(fieldTypesFilterAtom)
+  const [fieldTypesFilter] = useUrlFilter('fieldTypes')
   const fieldTypesFilterString = filterStringFromFilter(fieldTypesFilter)
   const fieldTypesIsFiltered = !!fieldTypesFilterString
 
-  const [widgetTypesFilter] = useAtom(widgetTypesFilterAtom)
+  const [widgetTypesFilter] = useUrlFilter('widgetTypes')
   const widgetTypesFilterString = filterStringFromFilter(widgetTypesFilter)
   const widgetTypesIsFiltered = !!widgetTypesFilterString
 
-  const [widgetsForFieldsFilter] = useAtom(widgetsForFieldsFilterAtom)
+  const [widgetsForFieldsFilter] = useUrlFilter('widgetsForFields')
   const widgetsForFieldsFilterString = filterStringFromFilter(
     widgetsForFieldsFilter,
   )

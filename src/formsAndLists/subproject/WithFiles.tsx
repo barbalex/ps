@@ -1,3 +1,4 @@
+import { useUrlFilter } from '../../modules/useUrlFilter.ts'
 import { useRef, useState, useContext } from 'react'
 import {
   Outlet,
@@ -26,14 +27,7 @@ import {
   createSubprojectReport,
 } from '../../modules/createRows.ts'
 import { AddProjectUserButton } from '../../components/shared/AddProjectUserButton.tsx'
-import {
-  addOperationAtom,
-  designingAtom,
-  filesFilterAtom,
-  languageAtom,
-  subprojectTaxaFilterAtom,
-  subprojectUsersFilterAtom,
-} from '../../store.ts'
+import { addOperationAtom, designingAtom, languageAtom } from '../../store.ts'
 import { subprojectNameSingularExpr } from '../../modules/subprojectNameCols.ts'
 import { filterStringFromFilter } from '../../modules/filterStringFromFilter.ts'
 import { UploaderContext } from '../../UploaderContext.ts'
@@ -63,9 +57,9 @@ export const SubprojectWithFiles = ({ from }: { from: string }) => {
   const [language] = useAtom(languageAtom)
   const [designingMap] = useAtom(designingAtom)
   const isDesigning = designingMap[projectId ?? ''] ?? false
-  const [subprojectTaxaFilter] = useAtom(subprojectTaxaFilterAtom)
-  const [subprojectUsersFilter] = useAtom(subprojectUsersFilterAtom)
-  const [filesFilter] = useAtom(filesFilterAtom)
+  const [subprojectTaxaFilter] = useUrlFilter('subprojectTaxa')
+  const [subprojectUsersFilter] = useUrlFilter('subprojectUsers')
+  const [filesFilter] = useUrlFilter('files')
   const { formatMessage } = useIntl()
   const newLabel = formatMessage({ id: 'Yt5rMs', defaultMessage: 'neu' })
   const [validations, setValidations] = useState<
@@ -180,7 +174,7 @@ export const SubprojectWithFiles = ({ from }: { from: string }) => {
   const onClickAddFile = () => uploaderApi?.initFlow?.()
 
   const subprojectReportHeaderActions =
-    reportsInSubproject && isReportsList ? (
+    reportsInSubproject && isReportsList ?
       <>
         <Button
           size="medium"
@@ -189,10 +183,10 @@ export const SubprojectWithFiles = ({ from }: { from: string }) => {
           onClick={onClickAddSubprojectReport}
         />
       </>
-    ) : undefined
+    : undefined
 
   const subprojectTaxaHeaderActions =
-    showTaxa && taxaInSubproject && isTaxaList ? (
+    showTaxa && taxaInSubproject && isTaxaList ?
       <>
         <FilterButton isFiltered={subprojectTaxaIsFiltered} />
         <Button
@@ -202,10 +196,10 @@ export const SubprojectWithFiles = ({ from }: { from: string }) => {
           onClick={onClickAddSubprojectTaxon}
         />
       </>
-    ) : undefined
+    : undefined
 
   const subprojectUserHeaderActions =
-    isDesigning && usersInSubproject && isUsersList ? (
+    isDesigning && usersInSubproject && isUsersList ?
       <>
         <FilterButton isFiltered={subprojectUsersIsFiltered} />
         <AddProjectUserButton
@@ -217,10 +211,10 @@ export const SubprojectWithFiles = ({ from }: { from: string }) => {
           onUserCreated={(id) => navigate({ to: `${usersUrl}/${id}/` })}
         />
       </>
-    ) : undefined
+    : undefined
 
   const fileHeaderActions =
-    showFiles && isFilesList ? (
+    showFiles && isFilesList ?
       <>
         <FilterButton isFiltered={filesIsFiltered} />
         <Button
@@ -230,7 +224,7 @@ export const SubprojectWithFiles = ({ from }: { from: string }) => {
           onClick={onClickAddFile}
         />
       </>
-    ) : undefined
+    : undefined
 
   const onChange = async (
     e: React.ChangeEvent<HTMLElement>,
@@ -271,7 +265,12 @@ export const SubprojectWithFiles = ({ from }: { from: string }) => {
   if (!res) return <Loading />
 
   if (!row) {
-    return <NotFound table="Subproject" id={subprojectId} />
+    return (
+      <NotFound
+        table="Subproject"
+        id={subprojectId}
+      />
+    )
   }
 
   return (
@@ -281,7 +280,11 @@ export const SubprojectWithFiles = ({ from }: { from: string }) => {
         nameSingular={row?.subproject_name_singular as string | undefined}
         from={from}
       />
-      <div className="form-container" role="tabpanel" aria-labelledby="form">
+      <div
+        className="form-container"
+        role="tabpanel"
+        aria-labelledby="form"
+      >
         <Form
           onChange={onChange}
           row={row as unknown as Subprojects}
@@ -289,7 +292,7 @@ export const SubprojectWithFiles = ({ from }: { from: string }) => {
           from={from}
           validations={validations}
         />
-        {reportsInSubproject ? (
+        {reportsInSubproject ?
           <Section
             title={`${formatMessage({ id: 'CiJ0SG', defaultMessage: 'Berichte' })} (${subprojectReportsCount})`}
             parentUrl={subprojectUrl}
@@ -302,10 +305,8 @@ export const SubprojectWithFiles = ({ from }: { from: string }) => {
             {isReportsOpen &&
               (isReportsList ? <SubprojectReports hideHeader /> : <Outlet />)}
           </Section>
-        ) : (
-          isReportsOpen && <Outlet />
-        )}
-        {showTaxa && taxaInSubproject ? (
+        : isReportsOpen && <Outlet />}
+        {showTaxa && taxaInSubproject ?
           <Section
             title={`${formatMessage({ id: '7sVbg1', defaultMessage: 'Taxa' })} (${subprojectTaxaCount})`}
             parentUrl={subprojectUrl}
@@ -316,16 +317,15 @@ export const SubprojectWithFiles = ({ from }: { from: string }) => {
             headerActions={subprojectTaxaHeaderActions}
           >
             {isTaxaOpen &&
-              (isTaxaList ? (
-                <SubprojectTaxa from={from} hideHeader />
-              ) : (
-                <Outlet />
-              ))}
+              (isTaxaList ?
+                <SubprojectTaxa
+                  from={from}
+                  hideHeader
+                />
+              : <Outlet />)}
           </Section>
-        ) : (
-          isTaxaOpen && <Outlet />
-        )}
-        {isDesigning && usersInSubproject ? (
+        : isTaxaOpen && <Outlet />}
+        {isDesigning && usersInSubproject ?
           <Section
             title={`${formatMessage({ id: 'eZ3yEB', defaultMessage: 'Benutzer' })} (${subprojectUsersCount})`}
             parentUrl={subprojectUrl}
@@ -338,10 +338,8 @@ export const SubprojectWithFiles = ({ from }: { from: string }) => {
             {isUsersOpen &&
               (isUsersList ? <SubprojectUsers hideHeader /> : <Outlet />)}
           </Section>
-        ) : (
-          isUsersOpen && <Outlet />
-        )}
-        {showFiles ? (
+        : isUsersOpen && <Outlet />}
+        {showFiles ?
           <Section
             title={`${formatMessage({ id: 'mn58Sh', defaultMessage: 'Dateien' })} (${filesCount})`}
             parentUrl={subprojectUrl}
@@ -353,9 +351,7 @@ export const SubprojectWithFiles = ({ from }: { from: string }) => {
           >
             {isFilesOpen && <Outlet />}
           </Section>
-        ) : (
-          isFilesOpen && <Outlet />
-        )}
+        : isFilesOpen && <Outlet />}
       </div>
     </div>
   )

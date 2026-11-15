@@ -15,9 +15,9 @@ import { TimeFields } from '../../../TimeFields.tsx'
 import { DateTimeField } from '../../../DateTimeField.tsx'
 import { EditField } from '../EditField.tsx'
 import { getValueFromChange } from '../../../../../modules/getValueFromChange.ts'
-import * as stores from '../../../../../store.ts'
-import { addOperationAtom, store } from '../../../../../store.ts'
-import { filterAtomNameFromTableAndLevel } from '../../../../../modules/filterAtomNameFromTableAndLevel.ts'
+import { addOperationAtom } from '../../../../../store.ts'
+import { filterKeyFromTableAndLevel } from '../../../../../modules/filterKeyFromTableAndLevel.ts'
+import { useUrlFilter } from '../../../../../modules/useUrlFilter.ts'
 import { setNewFilterFromOld } from '../../../../../modules/setNewFilterFromOld.ts'
 import type { FieldsWithTypes } from '../../index.tsx'
 
@@ -56,18 +56,17 @@ export const Widget = ({
     Record<string, { state: 'error'; message: string }>
   >({})
 
-  const filterLevel = table === 'places' ? (placeId ? 2 : 1) : placeId2 ? 2 : 1
-  const filterAtomName = filterAtomNameFromTableAndLevel({
+  const filterLevel =
+    table === 'places' ?
+      placeId ? 2
+      : 1
+    : placeId2 ? 2
+    : 1
+  const filterKey = filterKeyFromTableAndLevel({
     table,
     level: filterLevel,
   })
-  // lookup atoms by name; every entry is a filter atom like projectsFilterAtom
-  const filterAtoms = stores as unknown as Record<
-    string,
-    typeof stores.projectsFilterAtom
-  >
-  const filterAtom = filterAtoms[filterAtomName] ?? stores.projectsFilterAtom
-  const setFilter = useSetAtom(filterAtom)
+  const [filter, setFilter] = useUrlFilter(filterKey)
 
   const onChange = async (
     e: React.ChangeEvent<HTMLElement>,
@@ -94,11 +93,10 @@ export const Widget = ({
     const isFilter = location.pathname.endsWith('filter')
 
     if (isFilter) {
-      const orFilters = store.get(filterAtom)
       const newFilter = setNewFilterFromOld({
         name: `data.${name}`,
         value: val[name],
-        orFilters,
+        orFilters: filter,
         orIndex: orIndex as number,
         targetType: field.field_type as string,
       })
@@ -125,7 +123,6 @@ export const Widget = ({
       return
     }
     setValidations((prev) => {
-       
       const { [name]: _, ...rest } = prev
       return rest
     })

@@ -4,13 +4,10 @@ import { useLocation } from '@tanstack/react-router'
 import { isEqual } from 'es-toolkit'
 import { useIntl } from 'react-intl'
 
+import { useUrlFilter } from './useUrlFilter.ts'
 import { filterStringFromFilter } from './filterStringFromFilter.ts'
 import { buildNavLabel } from './buildNavLabel.ts'
-import {
-  placeUsers1FilterAtom,
-  placeUsers2FilterAtom,
-  treeOpenNodesSetAtom,
-} from '../store.ts'
+import { treeOpenNodesSetAtom } from '../store.ts'
 
 type Props = {
   projectId: string
@@ -36,9 +33,7 @@ export const usePlaceUsersNavData = ({
   const location = useLocation()
   const { formatMessage } = useIntl()
 
-  const [filter] = useAtom(
-    placeId2 ? placeUsers2FilterAtom : placeUsers1FilterAtom,
-  )
+  const [filter] = useUrlFilter(placeId2 ? 'placeUsers2' : 'placeUsers1')
   const filterString = filterStringFromFilter(filter)
   const isFiltered = !!filterString
 

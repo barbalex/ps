@@ -1,3 +1,4 @@
+import { useUrlFilter } from '../../modules/useUrlFilter.ts'
 import { useRef, useState } from 'react'
 import {
   Outlet,
@@ -27,7 +28,6 @@ import { DbDump } from '../appStates/DbDump.tsx'
 import { DeleteAccountDialog } from './DeleteAccountDialog.tsx'
 import {
   addOperationAtom,
-  accountsFilterAtom,
   enforceDesktopNavigationAtom,
   enforceMobileNavigationAtom,
   alwaysShowTreeAtom,
@@ -49,7 +49,7 @@ export const User = () => {
     Record<string, { state: 'error'; message: string }>
   >({})
   const [deleteAccountOpen, setDeleteAccountOpen] = useState(false)
-  const [accountsFilter] = useAtom(accountsFilterAtom)
+  const [accountsFilter] = useUrlFilter('accounts')
 
   const [enforceMobileNavigation, setEnforceMobileNavigation] = useAtom(
     enforceMobileNavigationAtom,
@@ -87,17 +87,18 @@ export const User = () => {
     navigate({ to: `${accountsUrl}/${id}` })
   }
 
-  const accountsHeaderActions = isAccountsList ? (
-    <>
-      <FilterButton isFiltered={accountsIsFiltered} />
-      <Button
-        size="medium"
-        title={newLabel}
-        icon={<FaPlus />}
-        onClick={onClickAddAccount}
-      />
-    </>
-  ) : undefined
+  const accountsHeaderActions =
+    isAccountsList ?
+      <>
+        <FilterButton isFiltered={accountsIsFiltered} />
+        <Button
+          size="medium"
+          title={newLabel}
+          icon={<FaPlus />}
+          onClick={onClickAddAccount}
+        />
+      </>
+    : undefined
 
   const onChange = async (
     e: React.ChangeEvent<HTMLElement>,
@@ -134,7 +135,13 @@ export const User = () => {
   }
 
   if (!res) return <Loading />
-  if (!row) return <NotFound table="User" id={userId} />
+  if (!row)
+    return (
+      <NotFound
+        table="User"
+        id={userId}
+      />
+    )
 
   // When accounts_in_user is false but we are on an accounts route, show
   // the accounts view standalone (same pattern as account form / project-fields)
@@ -247,7 +254,10 @@ export const User = () => {
                 defaultMessage: 'Daten',
               })}
             >
-              <DbDump activeUserId={currentUserId} viewedUserId={userId} />
+              <DbDump
+                activeUserId={currentUserId}
+                viewedUserId={userId}
+              />
               <Button
                 appearance="outline"
                 onClick={() => setDeleteAccountOpen(true)}

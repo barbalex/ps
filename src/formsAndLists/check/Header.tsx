@@ -9,6 +9,7 @@ import { useRef, useEffect } from 'react'
 
 import { filterStringFromFilter } from '../../modules/filterStringFromFilter.ts'
 import type { TableRowFilter } from '../../store.ts'
+import { useUrlPanes } from '../../modules/useUrlPanes.ts'
 
 import {
   createCheck,
@@ -22,7 +23,6 @@ import {
   extentToBoundsWithMargin,
 } from '../../modules/geoQueries.ts'
 import {
-  tabsAtom,
   mapBoundsAtom,
   addNotificationAtom,
   addOperationAtom,
@@ -63,7 +63,7 @@ export const Header = ({
         (tableView?.name_singular_de as string | null))) ||
     formatMessage({ id: 'ZCwpER', defaultMessage: 'Kontrolle' })
 
-  const [tabs, setTabs] = useAtom(tabsAtom)
+  const [tabs, setTabs] = useUrlPanes()
   const [mapLayerSorting, setMapLayerSorting] = useAtom(mapLayerSortingAtom)
   const setMapBounds = useSetAtom(mapBoundsAtom)
   const addNotification = useSetAtom(addNotificationAtom)

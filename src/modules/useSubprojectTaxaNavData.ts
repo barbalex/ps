@@ -1,3 +1,4 @@
+import { useUrlFilter } from './useUrlFilter.ts'
 import { useLiveQuery } from '@electric-sql/pglite-react'
 import { useAtom } from 'jotai'
 import { useLocation } from '@tanstack/react-router'
@@ -6,7 +7,7 @@ import { useIntl } from 'react-intl'
 
 import { filterStringFromFilter } from './filterStringFromFilter.ts'
 import { buildNavLabel } from './buildNavLabel.ts'
-import { subprojectTaxaFilterAtom, treeOpenNodesSetAtom } from '../store.ts'
+import { treeOpenNodesSetAtom } from '../store.ts'
 
 type Props = {
   projectId: string
@@ -25,7 +26,7 @@ export const useSubprojectTaxaNavData = ({
   subprojectId,
 }: Props) => {
   const [openNodesSet] = useAtom(treeOpenNodesSetAtom)
-  const [filter] = useAtom(subprojectTaxaFilterAtom)
+  const [filter] = useUrlFilter('subprojectTaxa')
   const location = useLocation()
   const { formatMessage } = useIntl()
 

@@ -3,15 +3,23 @@ import { useAtom } from 'jotai'
 import { usePGlite } from '@electric-sql/pglite-react'
 
 import { mapLayerSortingAtom } from '../../../store.ts'
+import { useUrlLayers } from '../../../modules/useUrlLayers.ts'
 import { Layer } from './Layer.tsx'
 
 // TODO: text
 export const Layers = () => {
   const [mapLayerSorting, setMapLayerSorting] = useAtom(mapLayerSortingAtom)
   const db = usePGlite()
+  // the render list: the ?layers= url override wins, the sorting atom is
+  // the fallback (see modules/useUrlLayers.ts)
+  const { layers, isOverridden } = useUrlLayers()
 
   useEffect(() => {
     const run = async () => {
+      // an active url override is the render list; leave the sorting
+      // fallback alone while it runs
+      if (isOverridden) return
+
       // if mapLayerSorting is empty, add osm layer
       if (!mapLayerSorting.length) {
         setMapLayerSorting(['aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa'])
@@ -35,11 +43,11 @@ export const Layers = () => {
       }
     }
     run()
-  }, [mapLayerSorting, setMapLayerSorting, db])
+  }, [mapLayerSorting, setMapLayerSorting, db, isOverridden])
 
-  if (!mapLayerSorting.length) return null
+  if (!layers.length) return null
 
-  return mapLayerSorting.map((layerPresentationId, index) => (
+  return layers.map((layerPresentationId, index) => (
     <Layer
       key={layerPresentationId}
       layerPresentationId={layerPresentationId}

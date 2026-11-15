@@ -22,12 +22,12 @@ import {
   extentToBoundsWithMargin,
 } from '../../modules/geoQueries.ts'
 import {
-  tabsAtom,
   mapBoundsAtom,
   addOperationAtom,
   addNotificationAtom,
   mapLayerSortingAtom,
 } from '../../store.ts'
+import { useUrlPanes } from '../../modules/useUrlPanes.ts'
 
 // Fluent UI's TooltipProps requires `relationship`, but it is optional at runtime
 const Tooltip = fluentUiReactComponents.Tooltip as ComponentType<
@@ -54,7 +54,7 @@ export const Header = ({ autoFocusRef, from, nameSingular }: Props) => {
       '/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_' ||
     from ===
       '/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/places/$placeId2_'
-  const [tabs, setTabs] = useAtom(tabsAtom)
+  const [tabs, setTabs] = useUrlPanes()
   const [mapLayerSorting, setMapLayerSorting] = useAtom(mapLayerSortingAtom)
   const setMapBounds = useSetAtom(mapBoundsAtom)
   const addOperation = useSetAtom(addOperationAtom)

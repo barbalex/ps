@@ -52,11 +52,9 @@ dark mode not well implemented for: file upload?
 
 ---
 
-do we need a 'how to build/update production' documentation to prevent agents from having to find out themselves?
-
 ---
 
-do we need a 'how to deploy' documentation to prevent agents from having to find out themselves?
+the places list header on the apflora demo project sits at "Orte (...)" (generic name, loading count) both before and after my changes, while the filter page and tree correctly say "Populationen" — the list header's placeLevel rollup seems to never resolve on that project. Worth a look as its own issue if you see it too
 
 ---
 
@@ -68,8 +66,6 @@ first: finish table_views:
 - children: where do we choose which to use? place children in places config (exists for checks), rest in project config? Is it implemented to add this to the respective configs once a table_view was created?
 
 ---
-
-Save more state in url to make things linkable. What would be a good match?
 
 ---
 

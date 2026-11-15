@@ -20,14 +20,15 @@ import type {
   SelectTabData,
   SelectTabEvent,
 } from '@fluentui/react-components'
-import { BsSquare } from 'react-icons/bs'
+import { BsCheckSquareFill, BsSquare } from 'react-icons/bs'
 import { MdDeleteOutline } from 'react-icons/md'
 import { useAtom, useSetAtom } from 'jotai'
-import { usePGlite } from '@electric-sql/pglite-react'
+import { usePGlite, useLiveQuery } from '@electric-sql/pglite-react'
 import { useIntl } from 'react-intl'
 
 import { ErrorBoundary } from '../../../../shared/ErrorBoundary.tsx'
 import { createLayerPresentation } from '../../../../../modules/createRows.ts'
+import { useUrlLayers } from '../../../../../modules/useUrlLayers.ts'
 import { designingAtom, addOperationAtom } from '../../../../../store.ts'
 import { LayerPresentationForm } from '../LayerPresentationForm.tsx'
 import { WmsLayerEditing } from './Editing.tsx'
@@ -51,8 +52,8 @@ export const WmsLayer = ({ layer, isLast, isOpen }: Props) => {
   const [designingMap] = useAtom(designingAtom)
   const designing = designingMap[projectId ?? ''] ?? false
   const addOperation = useSetAtom(addOperationAtom)
-
   const db = usePGlite()
+  const { setLayerVisible, isLayerVisible, isOverridden } = useUrlLayers()
   const [tab, setTab] = useState<TabType>('overall-displays')
 
   // effect: if layer has no wms_service_id or wms_service_layer_name: set tab to 'config'
@@ -62,40 +63,40 @@ export const WmsLayer = ({ layer, isLast, isOpen }: Props) => {
     }
   }, [layer.wms_service_id, layer.wms_service_layer_name])
 
+  // the layer's presentation, live so a newly created one is reflected
+  const resPresentation = useLiveQuery(
+    `SELECT * FROM layer_presentations WHERE wms_layer_id = $1`,
+    [layer.wms_layer_id],
+  )
+  const presentation = resPresentation?.rows?.[0] as
+    | LayerPresentations
+    | undefined
+  const isVisible = isLayerVisible(
+    presentation?.layer_presentation_id ?? '',
+    presentation?.active === true,
+  )
+
+  // toggling layer visibility is a view action: it writes the ?layers=
+  // url param (linkable, no permissions needed). Only a layer without a
+  // layer_presentation row needs the db write that creates one.
   const onChange = async () => {
-    // 1. check if layer has a presentation
-    const res = await db.query(
-      `SELECT * FROM layer_presentations WHERE wms_layer_id = $1`,
-      [layer.wms_layer_id],
-    )
-    const presentation = res?.rows?.[0] as LayerPresentations | undefined
-    // 2. if not, create one
+    if (isVisible && presentation) {
+      setLayerVisible(presentation.layer_presentation_id, false)
+      return
+    }
     if (!presentation) {
-      await createLayerPresentation({
+      const newLayerPresentationId = await createLayerPresentation({
         wmsLayerId: layer.wms_layer_id,
         active: true,
       } as unknown as Parameters<typeof createLayerPresentation>[0])
+      // with an active ?layers= override the new layer must join it to
+      // become visible (db-active alone is not enough there)
+      if (isOverridden && newLayerPresentationId) {
+        setLayerVisible(newLayerPresentationId, true)
+      }
+      return
     }
-    // 3. if yes, update it
-    else {
-      db.query(
-        `
-        UPDATE layer_presentations
-        SET active = TRUE
-        WHERE layer_presentation_id = $1
-      `,
-        [presentation.layer_presentation_id],
-      )
-      // add task to update server and rollback PGlite in case of error
-      addOperation({
-        table: 'layer_presentations',
-        rowIdName: 'layer_presentation_id',
-        rowId: presentation.layer_presentation_id,
-        operation: 'update',
-        draft: { active: true },
-        prev: { ...presentation },
-      })
-    }
+    setLayerVisible(presentation.layer_presentation_id, true)
   }
 
   const onTabSelect = (_event: SelectTabEvent, data: SelectTabData) =>
@@ -129,9 +130,21 @@ export const WmsLayer = ({ layer, isLast, isOpen }: Props) => {
         >
           <div className={layerStyles.headerContainer}>
             <ToggleButton
-              icon={<BsSquare className={layerStyles.headerToggleIcon} />}
-              checked={false}
-              onClick={onChange}
+              icon={
+                isVisible ? (
+                  <BsCheckSquareFill
+                    className={layerStyles.headerToggleIcon}
+                  />
+                ) : (
+                  <BsSquare className={layerStyles.headerToggleIcon} />
+                )
+              }
+              checked={isVisible}
+              onClick={(event) => {
+                // only the visibility toggle, not the accordion header
+                event.stopPropagation()
+                onChange()
+              }}
               className={`${styles.labelButton}${isOpen ? ` ${styles.toggleOpen}` : ''}`}
               // as the accordion header is a button, we need to set this as an a
               // because nested buttons are not allowed

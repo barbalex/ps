@@ -25,9 +25,8 @@ import {
   mapLocateAtom,
   mapInfoAtom,
   mapShowCenterAtom,
-  mapCenterAtom,
-  mapZoomAtom,
 } from '../../store.ts'
+import { useUrlMapViewport } from '../../modules/useUrlMapViewport.ts'
 import styles from './Map.module.css'
 
 // BottomRightControl receives position/visible props at runtime
@@ -41,8 +40,10 @@ export const Map = () => {
   const mapShowCenter = useAtomValue(mapShowCenterAtom)
   const mapIsLocating = useAtomValue(mapLocateAtom)
   const mapInfo = useAtomValue(mapInfoAtom)
-  const initialCenter = useAtomValue(mapCenterAtom)
-  const initialZoom = useAtomValue(mapZoomAtom)
+  // url params win, localStorage atoms are the fallback (see the hook)
+  const urlViewport = useUrlMapViewport()
+  const initialCenter = urlViewport.center
+  const initialZoom = urlViewport.zoom
 
   const mapRef = useRef<LeafletMap | null>(null)
 

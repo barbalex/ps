@@ -1,13 +1,12 @@
 import { Pane } from 'react-leaflet'
 import { useLiveQuery } from '@electric-sql/pglite-react'
-import { useAtomValue } from 'jotai'
 import { useParams } from '@tanstack/react-router'
 
 import { OsmColor } from './OsmColor.tsx'
 import { WmsLayerComponent } from './WmsLayer/index.tsx'
 import { VectorLayerChooser } from './VectorLayer/index.tsx'
 import { tableLayerToComponent } from './tableLayerToComponent.ts'
-import { mapLayerSortingAtom } from '../../../store.ts'
+import { useUrlLayers } from '../../../modules/useUrlLayers.ts'
 import type LayerPresentations from '../../../models/public/LayerPresentations.ts'
 import type VectorLayers from '../../../models/public/VectorLayers.ts'
 import type VectorLayerDisplays from '../../../models/public/VectorLayerDisplays.ts'
@@ -49,7 +48,9 @@ export const Layer = ({ layerPresentationId, index }: Props) => {
   const { projectId = '99999999-9999-9999-9999-999999999999' } = useParams({
     strict: false,
   })
-  const mapLayerSorting = useAtomValue(mapLayerSortingAtom)
+  // ?layers= override-aware render list and visibility (see the hook);
+  // layers uses it for the pane redraw key too
+  const { layers, isLayerVisible } = useUrlLayers()
   const resWms = useLiveQuery(
     `
     SELECT 
@@ -136,7 +137,10 @@ export const Layer = ({ layerPresentationId, index }: Props) => {
   }
 
   if (!layerPresentation) return null
-  if (!layerPresentation.active) return null
+  // view-time visibility: an active ?layers= override wins over the
+  // layer_presentations.active design flag
+  if (!isLayerVisible(layerPresentationId, layerPresentation.active === true))
+    return null
 
   // // todo: add key, layerPresentationId
   if (wmsLayer) {
@@ -156,7 +160,7 @@ export const Layer = ({ layerPresentationId, index }: Props) => {
     }
     return (
       <Pane
-        key={`${layerPresentationId}/${mapLayerSorting.join()}`}
+        key={`${layerPresentationId}/${layers.join()}`}
         name={wmsLayer.label as string}
         className={styles.pane}
         style={
@@ -177,7 +181,7 @@ export const Layer = ({ layerPresentationId, index }: Props) => {
   if (isWfsLayer) {
     return (
       <Pane
-        key={`${layerPresentationId}/${mapLayerSorting.join()}`}
+        key={`${layerPresentationId}/${layers.join()}`}
         name={vectorLayer.name ?? vectorLayer.vector_layer_id}
         className={styles.pane}
         style={
@@ -215,7 +219,7 @@ export const Layer = ({ layerPresentationId, index }: Props) => {
 
     return (
       <Pane
-        key={`${layerPresentationId}/${mapLayerSorting.join()}`}
+        key={`${layerPresentationId}/${layers.join()}`}
         name={vectorLayer.name ?? vectorLayer.vector_layer_id}
         className={styles.pane}
         style={

@@ -9,14 +9,14 @@ import { useIntl } from 'react-intl'
 
 import {
   docsReturnUrlAtom,
-  effectiveTabsAtom,
   enforceMobileNavigationAtom,
   isMobileViewAtom,
   mapMaximizedAtom,
   MOBILE_TAB_PRIORITY,
   pickMobileTab,
-  tabsAtom,
+  effectiveTabsOf,
 } from '../../../store.ts'
+import { useUrlPanes } from '../../../modules/useUrlPanes.ts'
 import { clearLocalSyncedData } from '../../../modules/clearLocalSyncedData.ts'
 import { constants } from '../../../modules/constants.ts'
 import { Online } from './Online.tsx'
@@ -48,10 +48,15 @@ const MenuBar = MenuBarWithRequiredProps as ComponentType<{
 
 export const Menu = () => {
   const intl = useIntl()
-  const [tabs, setTabs] = useAtom(tabsAtom)
-  const [tabsToDisplay] = useAtom(effectiveTabsAtom)
+  // url panes win, the tabsAtom is the fallback (see the hook)
+  const [tabs, setTabs] = useUrlPanes()
   const [isMobileView] = useAtom(isMobileViewAtom)
   const [enforceMobileNavigation] = useAtom(enforceMobileNavigationAtom)
+  const tabsToDisplay = effectiveTabsOf(
+    tabs,
+    isMobileView,
+    enforceMobileNavigation,
+  )
   const navigate = useNavigate()
   const { pathname } = useLocation()
   const isHome = pathname === '/'
@@ -64,8 +69,8 @@ export const Menu = () => {
 
   const [mapIsMaximized, setMapIsMaximized] = useAtom(mapMaximizedAtom)
 
-  // persist the compacted single tab (the derived effectiveTabsAtom already
-  // renders it; this keeps tabsAtom/localStorage in sync)
+  // persist the compacted single tab (effectiveTabsOf already renders it;
+  // this keeps the panes state/localStorage in sync)
   useEffect(() => {
     if (!isMobileView) return
 

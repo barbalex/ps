@@ -1,3 +1,4 @@
+import { useUrlFilter } from '../../modules/useUrlFilter.ts'
 import { useRef, useState, useContext } from 'react'
 import {
   Outlet,
@@ -29,15 +30,7 @@ import {
   createUnit,
 } from '../../modules/createRows.ts'
 import { AddProjectUserButton } from '../../components/shared/AddProjectUserButton.tsx'
-import {
-  addOperationAtom,
-  designingAtom,
-  fieldsFilterAtom,
-  filesFilterAtom,
-  projectReportsFilterAtom,
-  projectUsersFilterAtom,
-  unitsFilterAtom,
-} from '../../store.ts'
+import { addOperationAtom, designingAtom } from '../../store.ts'
 import { filterStringFromFilter } from '../../modules/filterStringFromFilter.ts'
 import { UploaderContext } from '../../UploaderContext.ts'
 import type Projects from '../../models/public/Projects.ts'
@@ -54,11 +47,11 @@ export const ProjectWithFiles = ({ from }: { from: string }) => {
   const addOperation = useSetAtom(addOperationAtom)
   const [designingMap] = useAtom(designingAtom)
   const isDesigning = designingMap[projectId] ?? false
-  const [projectUsersFilter] = useAtom(projectUsersFilterAtom)
-  const [projectReportsFilter] = useAtom(projectReportsFilterAtom)
-  const [unitsFilter] = useAtom(unitsFilterAtom)
-  const [fieldsFilter] = useAtom(fieldsFilterAtom)
-  const [filesFilter] = useAtom(filesFilterAtom)
+  const [projectUsersFilter] = useUrlFilter('projectUsers')
+  const [projectReportsFilter] = useUrlFilter('projectReports')
+  const [unitsFilter] = useUrlFilter('units')
+  const [fieldsFilter] = useUrlFilter('fields')
+  const [filesFilter] = useUrlFilter('files')
   const { formatMessage } = useIntl()
   const newLabel = formatMessage({ id: 'Yt5rMs', defaultMessage: 'neu' })
   const [validations, setValidations] = useState<
@@ -170,7 +163,7 @@ export const ProjectWithFiles = ({ from }: { from: string }) => {
   const onClickAddFile = () => uploaderApi?.initFlow?.()
 
   const reportHeaderActions =
-    reportsInProject && isReportsList ? (
+    reportsInProject && isReportsList ?
       <>
         <FilterButton isFiltered={projectReportsIsFiltered} />
         <Button
@@ -180,10 +173,10 @@ export const ProjectWithFiles = ({ from }: { from: string }) => {
           onClick={onClickAddProjectReport}
         />
       </>
-    ) : undefined
+    : undefined
 
   const projectUserHeaderActions =
-    isDesigning && usersInProject && isUsersList ? (
+    isDesigning && usersInProject && isUsersList ?
       <>
         <FilterButton isFiltered={projectUsersIsFiltered} />
         <AddProjectUserButton
@@ -191,10 +184,10 @@ export const ProjectWithFiles = ({ from }: { from: string }) => {
           onUserCreated={(id) => navigate({ to: `${usersUrl}/${id}/` })}
         />
       </>
-    ) : undefined
+    : undefined
 
   const fileHeaderActions =
-    showFiles && filesInProject && isFilesList ? (
+    showFiles && filesInProject && isFilesList ?
       <>
         <FilterButton isFiltered={filesIsFiltered} />
         <Button
@@ -204,10 +197,10 @@ export const ProjectWithFiles = ({ from }: { from: string }) => {
           onClick={onClickAddFile}
         />
       </>
-    ) : undefined
+    : undefined
 
   const fieldsHeaderActions =
-    isDesigning && fieldsInProject && isFieldsList ? (
+    isDesigning && fieldsInProject && isFieldsList ?
       <>
         <FilterButton isFiltered={fieldsIsFiltered} />
         <Button
@@ -217,10 +210,10 @@ export const ProjectWithFiles = ({ from }: { from: string }) => {
           onClick={onClickAddField}
         />
       </>
-    ) : undefined
+    : undefined
 
   const unitsHeaderActions =
-    isDesigning && unitsInProject && isUnitsList ? (
+    isDesigning && unitsInProject && isUnitsList ?
       <>
         <FilterButton isFiltered={unitsIsFiltered} />
         <Button
@@ -230,7 +223,7 @@ export const ProjectWithFiles = ({ from }: { from: string }) => {
           onClick={onClickAddUnit}
         />
       </>
-    ) : undefined
+    : undefined
 
   const onChange = async (
     e: React.ChangeEvent<HTMLElement>,
@@ -268,13 +261,25 @@ export const ProjectWithFiles = ({ from }: { from: string }) => {
   if (!res) return <Loading />
 
   if (!row) {
-    return <NotFound table="Project" id={projectId} />
+    return (
+      <NotFound
+        table="Project"
+        id={projectId}
+      />
+    )
   }
 
   return (
     <div className="form-outer-container">
-      <Header autoFocusRef={autoFocusRef} from={from} />
-      <div className="form-container" role="tabpanel" aria-labelledby="form">
+      <Header
+        autoFocusRef={autoFocusRef}
+        from={from}
+      />
+      <div
+        className="form-container"
+        role="tabpanel"
+        aria-labelledby="form"
+      >
         <Form
           onChange={onChange}
           validations={validations}
@@ -282,7 +287,7 @@ export const ProjectWithFiles = ({ from }: { from: string }) => {
           from={from}
           autoFocusRef={autoFocusRef}
         />
-        {showFiles && filesInProject ? (
+        {showFiles && filesInProject ?
           <Section
             title={`${formatMessage({ id: 'mn58Sh', defaultMessage: 'Dateien' })} (${filesCount})`}
             parentUrl={projectUrl}
@@ -293,7 +298,7 @@ export const ProjectWithFiles = ({ from }: { from: string }) => {
             headerActions={fileHeaderActions}
           >
             {isFilesOpen &&
-              (isFilesList ? (
+              (isFilesList ?
                 <Files
                   projectId={projectId}
                   hideTitle
@@ -303,14 +308,10 @@ export const ProjectWithFiles = ({ from }: { from: string }) => {
                   actionId={undefined}
                   checkId={undefined}
                 />
-              ) : (
-                <Outlet />
-              ))}
+              : <Outlet />)}
           </Section>
-        ) : (
-          isFilesOpen && <Outlet />
-        )}
-        {reportsInProject ? (
+        : isFilesOpen && <Outlet />}
+        {reportsInProject ?
           <Section
             title={`${formatMessage({ id: 'rptsInPrj', defaultMessage: 'Berichte' })} (${projectReportsCount})`}
             parentUrl={projectUrl}
@@ -323,10 +324,8 @@ export const ProjectWithFiles = ({ from }: { from: string }) => {
             {isReportsOpen &&
               (isReportsList ? <ProjectReports hideHeader /> : <Outlet />)}
           </Section>
-        ) : (
-          isReportsOpen && <Outlet />
-        )}
-        {isDesigning && usersInProject ? (
+        : isReportsOpen && <Outlet />}
+        {isDesigning && usersInProject ?
           <Section
             title={`${formatMessage({ id: 'eZ3yEB', defaultMessage: 'Benutzer' })} (${projectUsersCount})`}
             parentUrl={projectUrl}
@@ -339,10 +338,8 @@ export const ProjectWithFiles = ({ from }: { from: string }) => {
             {isUsersOpen &&
               (isUsersList ? <ProjectUsers hideHeader /> : <Outlet />)}
           </Section>
-        ) : (
-          isUsersOpen && <Outlet />
-        )}
-        {isDesigning && unitsInProject ? (
+        : isUsersOpen && <Outlet />}
+        {isDesigning && unitsInProject ?
           <Section
             title={`${formatMessage({ id: 'nVkh0Z', defaultMessage: 'Einheiten' })} (${unitsCount})`}
             parentUrl={projectUrl}
@@ -353,16 +350,15 @@ export const ProjectWithFiles = ({ from }: { from: string }) => {
             headerActions={unitsHeaderActions}
           >
             {isUnitsOpen &&
-              (isUnitsList ? (
-                <Units projectId={projectId} hideHeader />
-              ) : (
-                <Outlet />
-              ))}
+              (isUnitsList ?
+                <Units
+                  projectId={projectId}
+                  hideHeader
+                />
+              : <Outlet />)}
           </Section>
-        ) : (
-          isUnitsOpen && <Outlet />
-        )}
-        {isDesigning && fieldsInProject ? (
+        : isUnitsOpen && <Outlet />}
+        {isDesigning && fieldsInProject ?
           <Section
             title={`${formatMessage({ id: 'I+dTZE', defaultMessage: 'Felder' })} (${fieldsCount})`}
             parentUrl={projectUrl}
@@ -373,15 +369,15 @@ export const ProjectWithFiles = ({ from }: { from: string }) => {
             headerActions={fieldsHeaderActions}
           >
             {isFieldsOpen &&
-              (isFieldsList ? (
-                <Fields projectId={projectId} from={from} hideHeader />
-              ) : (
-                <Outlet />
-              ))}
+              (isFieldsList ?
+                <Fields
+                  projectId={projectId}
+                  from={from}
+                  hideHeader
+                />
+              : <Outlet />)}
           </Section>
-        ) : (
-          isFieldsOpen && <Outlet />
-        )}
+        : isFieldsOpen && <Outlet />}
       </div>
     </div>
   )

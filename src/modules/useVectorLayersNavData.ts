@@ -1,3 +1,4 @@
+import { useUrlFilter } from './useUrlFilter.ts'
 import { useLiveQuery } from '@electric-sql/pglite-react'
 import { useAtom } from 'jotai'
 import { useLocation } from '@tanstack/react-router'
@@ -7,11 +8,7 @@ import { useIntl } from 'react-intl'
 import { filterStringFromFilter } from './filterStringFromFilter.ts'
 import { buildNavLabel } from './buildNavLabel.ts'
 import { getVectorLayerLabel } from './vectorLayerLabel.ts'
-import {
-  vectorLayersFilterAtom,
-  treeOpenNodesSetAtom,
-  languageAtom,
-} from '../store.ts'
+import { treeOpenNodesSetAtom, languageAtom } from '../store.ts'
 import type VectorLayers from '../models/public/VectorLayers.ts'
 import type PlaceLevels from '../models/public/PlaceLevels.ts'
 
@@ -42,7 +39,7 @@ export const useVectorLayersNavData = ({ projectId }: Props) => {
   // needs to work not only works for urlPath, for all opened paths!
   const isOpen = openNodesSet.has(ownArray.join('/'))
 
-  const [filter] = useAtom(vectorLayersFilterAtom)
+  const [filter] = useUrlFilter('vectorLayers')
   const filterString = filterStringFromFilter(filter)
   const isFiltered = !!filterString
 

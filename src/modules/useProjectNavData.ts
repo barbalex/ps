@@ -1,19 +1,9 @@
+import { useUrlFilter } from './useUrlFilter.ts'
 import { useAtom, useAtomValue } from 'jotai'
 import { isEqual } from 'es-toolkit'
 import { useIntl } from 'react-intl'
 
-import {
-  subprojectsFilterAtom,
-  projectReportsFilterAtom,
-  wmsLayersFilterAtom,
-  vectorLayersFilterAtom,
-  filesFilterAtom,
-  listsFilterAtom,
-  unitsFilterAtom,
-  fieldsFilterAtom,
-  treeOpenNodesSetAtom,
-  isDesigningAtom,
-} from '../store.ts'
+import { treeOpenNodesSetAtom, isDesigningAtom } from '../store.ts'
 import { useNavRollups } from './navRollupsContext.ts'
 import { buildNavLabel } from './buildNavLabel.ts'
 import { filterStringFromFilter } from './filterStringFromFilter.ts'
@@ -31,36 +21,36 @@ export const useProjectNavData = ({
   const { formatMessage } = useIntl()
   const designing = useAtomValue(isDesigningAtom(projectId))
 
-  const [subprojectsFilter] = useAtom(subprojectsFilterAtom)
+  const [subprojectsFilter] = useUrlFilter('subprojects')
   const subprojectsFilterString = filterStringFromFilter(subprojectsFilter)
   const subprojectIsFiltered = !!subprojectsFilterString
 
-  const [projectReportsFilter] = useAtom(projectReportsFilterAtom)
+  const [projectReportsFilter] = useUrlFilter('projectReports')
   const projectReportsFilterString =
     filterStringFromFilter(projectReportsFilter)
   const projectReportsIsFiltered = !!projectReportsFilterString
 
-  const [wmsLayersFilter] = useAtom(wmsLayersFilterAtom)
+  const [wmsLayersFilter] = useUrlFilter('wmsLayers')
   const wmsLayersFilterString = filterStringFromFilter(wmsLayersFilter)
   const wmsLayersIsFiltered = !!wmsLayersFilterString
 
-  const [vectorLayersFilter] = useAtom(vectorLayersFilterAtom)
+  const [vectorLayersFilter] = useUrlFilter('vectorLayers')
   const vectorLayersFilterString = filterStringFromFilter(vectorLayersFilter)
   const vectorLayersIsFiltered = !!vectorLayersFilterString
 
-  const [filesFilter] = useAtom(filesFilterAtom)
+  const [filesFilter] = useUrlFilter('files')
   const filesFilterString = filterStringFromFilter(filesFilter)
   const filesIsFiltered = !!filesFilterString
 
-  const [listsFilter] = useAtom(listsFilterAtom)
+  const [listsFilter] = useUrlFilter('lists')
   const listsFilterString = filterStringFromFilter(listsFilter)
   const listsIsFiltered = !!listsFilterString
 
-  const [unitsFilter] = useAtom(unitsFilterAtom)
+  const [unitsFilter] = useUrlFilter('units')
   const unitsFilterString = filterStringFromFilter(unitsFilter)
   const unitsIsFiltered = !!unitsFilterString
 
-  const [fieldsFilter] = useAtom(fieldsFilterAtom)
+  const [fieldsFilter] = useUrlFilter('fields')
   const fieldsFilterString = filterStringFromFilter(fieldsFilter)
   const fieldsIsFiltered = !!fieldsFilterString
 

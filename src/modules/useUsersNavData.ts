@@ -1,3 +1,4 @@
+import { useUrlFilter } from './useUrlFilter.ts'
 import { useAtom } from 'jotai'
 import { useLiveQuery } from '@electric-sql/pglite-react'
 import { useLocation } from '@tanstack/react-router'
@@ -6,7 +7,7 @@ import { useIntl } from 'react-intl'
 
 import { filterStringFromFilter } from './filterStringFromFilter.ts'
 import { buildNavLabel } from './buildNavLabel.ts'
-import { usersFilterAtom, treeOpenNodesSetAtom } from '../store.ts'
+import { treeOpenNodesSetAtom } from '../store.ts'
 
 const parentArray = ['data']
 const parentUrl = `/${parentArray.join('/')}`
@@ -23,7 +24,7 @@ type NavData = {
 export const useUsersNavData = () => {
   const { formatMessage } = useIntl()
   const [openNodesSet] = useAtom(treeOpenNodesSetAtom)
-  const [filter] = useAtom(usersFilterAtom)
+  const [filter] = useUrlFilter('users')
   const location = useLocation()
 
   const sanitizedFilter = filter.map((orFilter) =>

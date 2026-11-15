@@ -1,3 +1,4 @@
+import { useUrlFilter } from '../../modules/useUrlFilter.ts'
 import { useRef, useState, useContext } from 'react'
 import {
   useParams,
@@ -19,11 +20,7 @@ import { CheckForm as Form } from './Form.tsx'
 import { Loading } from '../../components/shared/Loading.tsx'
 import { NotFound } from '../../components/NotFound.tsx'
 import { Section } from '../../components/shared/Section.tsx'
-import {
-  addOperationAtom,
-  designingAtom,
-  filesFilterAtom,
-} from '../../store.ts'
+import { addOperationAtom, designingAtom } from '../../store.ts'
 import { FilterButton } from '../../components/shared/FilterButton.tsx'
 import { UploaderContext } from '../../UploaderContext.ts'
 import { filterStringFromFilter } from '../../modules/filterStringFromFilter.ts'
@@ -41,16 +38,10 @@ export const CheckWithAll = ({
   from: string
   allInline?: boolean
 }) => {
-  const {
-    checkId,
-    projectId,
-    placeId,
-    placeId2,
-    tableViewId,
-    subprojectId,
-  } = useParams({
-    strict: false,
-  })
+  const { checkId, projectId, placeId, placeId2, tableViewId, subprojectId } =
+    useParams({
+      strict: false,
+    })
   const addOperation = useSetAtom(addOperationAtom)
   const [designingMap] = useAtom(designingAtom)
   const isDesigning = designingMap[projectId ?? ''] ?? false
@@ -71,17 +62,16 @@ export const CheckWithAll = ({
 
   // a table view with a field group shows only the group's columns
   const fieldGroupRes = useLiveQuery(
-    tableViewId
-      ? `SELECT fg.sorted_field_ids
+    tableViewId ?
+      `SELECT fg.sorted_field_ids
          FROM table_views tv
          LEFT JOIN field_groups fg ON fg.field_group_id = tv.field_group_id
          WHERE tv.table_view_id = $1`
-      : `SELECT 1 AS sorted_field_ids WHERE false`,
+    : `SELECT 1 AS sorted_field_ids WHERE false`,
     tableViewId ? [tableViewId] : [],
   )
   const fieldGroup = fieldGroupRes?.rows?.[0] as
-    | { sorted_field_ids: string[] | null }
-    | undefined
+    { sorted_field_ids: string[] | null } | undefined
   const fieldIds = fieldGroup?.sorted_field_ids ?? undefined
 
   const quantitiesCountRes = useLiveQuery(
@@ -121,7 +111,7 @@ export const CheckWithAll = ({
   )
   const taxaCount = taxaCountRes?.rows?.[0]?.count ?? 0
 
-  const [filesFilter] = useAtom(filesFilterAtom)
+  const [filesFilter] = useUrlFilter('files')
   const filesIsFiltered = !!filterStringFromFilter(filesFilter)
   // the context actually holds a ref to the uploader API
   const uploaderCtx = useContext(UploaderContext) as unknown as {
@@ -145,7 +135,7 @@ export const CheckWithAll = ({
   const isTaxaList = /\/taxa\/?$/.test(location.pathname)
 
   const fileHeaderActions =
-    showFiles && isFilesList ? (
+    showFiles && isFilesList ?
       <>
         <FilterButton isFiltered={filesIsFiltered} />
         <Button
@@ -155,7 +145,7 @@ export const CheckWithAll = ({
           onClick={onClickAddFile}
         />
       </>
-    ) : undefined
+    : undefined
   const checkBaseUrl = `/data/projects/${projectId}/subprojects/${subprojectId}/places/${placeId}${placeId2 ? `/places/${placeId2}` : ''}${tableViewId ? `/table-views/${tableViewId}` : ''}/checks/${checkId}`
   const quantitiesUrl = `${checkBaseUrl}/quantities`
   const filesUrl = `${checkBaseUrl}/files`
@@ -201,7 +191,7 @@ export const CheckWithAll = ({
   }
 
   const quantitiesHeaderActions =
-    showQuantities && isQuantitiesList ? (
+    showQuantities && isQuantitiesList ?
       <Button
         size="medium"
         title={formatMessage({
@@ -211,7 +201,7 @@ export const CheckWithAll = ({
         icon={<FaPlus />}
         onClick={addQuantity}
       />
-    ) : undefined
+    : undefined
 
   const addTaxon = async () => {
     const id = await createCheckTaxon({ checkId: checkId! })
@@ -220,7 +210,7 @@ export const CheckWithAll = ({
   }
 
   const taxaHeaderActions =
-    showTaxa && isTaxaList ? (
+    showTaxa && isTaxaList ?
       <Button
         size="medium"
         title={formatMessage({
@@ -230,15 +220,19 @@ export const CheckWithAll = ({
         icon={<FaPlus />}
         onClick={addTaxon}
       />
-    ) : undefined
+    : undefined
 
   return (
     <div className="form-outer-container">
-      <Header autoFocusRef={autoFocusRef} from={from} allInline={isAllInline} />
+      <Header
+        autoFocusRef={autoFocusRef}
+        from={from}
+        allInline={isAllInline}
+      />
       <div className="form-container">
-        {!res ? (
+        {!res ?
           <Loading />
-        ) : row ? (
+        : row ?
           <>
             <Form
               onChange={onChange}
@@ -248,7 +242,7 @@ export const CheckWithAll = ({
               from={from}
               fieldIds={fieldIds}
             />
-            {showQuantities ? (
+            {showQuantities ?
               <Section
                 title={`${formatMessage({ id: 'Xuj/Gy', defaultMessage: 'Mengen' })} (${quantitiesCount})`}
                 parentUrl={checkUrl}
@@ -260,10 +254,8 @@ export const CheckWithAll = ({
               >
                 {isQuantitiesOpen && <Outlet />}
               </Section>
-            ) : (
-              isQuantitiesOpen && <Outlet />
-            )}
-            {showTaxa ? (
+            : isQuantitiesOpen && <Outlet />}
+            {showTaxa ?
               <Section
                 title={`${formatMessage({ id: '7sVbg1', defaultMessage: 'Taxa' })} (${taxaCount})`}
                 parentUrl={checkUrl}
@@ -275,10 +267,8 @@ export const CheckWithAll = ({
               >
                 {isTaxaOpen && <Outlet />}
               </Section>
-            ) : (
-              isTaxaOpen && <Outlet />
-            )}
-            {showFiles ? (
+            : isTaxaOpen && <Outlet />}
+            {showFiles ?
               <Section
                 title={`${formatMessage({ id: 'mn58Sh', defaultMessage: 'Dateien' })} (${filesCount})`}
                 parentUrl={checkUrl}
@@ -290,13 +280,13 @@ export const CheckWithAll = ({
               >
                 {isFilesOpen && <Outlet />}
               </Section>
-            ) : (
-              isFilesOpen && <Outlet />
-            )}
+            : isFilesOpen && <Outlet />}
           </>
-        ) : (
-          <NotFound table="Check" id={checkId} />
-        )}
+        : <NotFound
+            table="Check"
+            id={checkId}
+          />
+        }
       </div>
     </div>
   )

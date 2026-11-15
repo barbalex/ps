@@ -12,7 +12,7 @@ export const SubprojectTaxonFilter = ({ from }: Props) => {
     <Filter
       from={from}
       tableNameOverride="subproject_taxa"
-      filterAtomNameOverride="subprojectTaxaFilterAtom"
+      filterKeyOverride="subprojectTaxa"
     >
       {({ row, onChange }) => (
         <DropdownField

@@ -1,3 +1,4 @@
+import { useUrlFilter } from './useUrlFilter.ts'
 import { useAtom } from 'jotai'
 import { useLiveQuery } from '@electric-sql/pglite-react'
 import { useLocation } from '@tanstack/react-router'
@@ -6,11 +7,7 @@ import { useIntl } from 'react-intl'
 
 import { filterStringFromFilter } from './filterStringFromFilter.ts'
 import { buildNavLabel } from './buildNavLabel.ts'
-import {
-  exportsFilterAtom,
-  languageAtom,
-  treeOpenNodesSetAtom,
-} from '../store.ts'
+import { languageAtom, treeOpenNodesSetAtom } from '../store.ts'
 
 const parentArray = ['data']
 const parentUrl = `/${parentArray.join('/')}`
@@ -37,7 +34,7 @@ export const useExportsNavData = () => {
   const isOpen = openNodesSet.has(ownArray.join('/'))
   const [language] = useAtom(languageAtom)
 
-  const [filter] = useAtom(exportsFilterAtom)
+  const [filter] = useUrlFilter('exports')
   const filterString = filterStringFromFilter(filter)
   const isFiltered = !!filterString
 

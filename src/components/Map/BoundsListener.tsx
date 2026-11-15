@@ -3,22 +3,18 @@ import { useMap, useMapEvents } from 'react-leaflet'
 import type { LatLngTuple, ZoomPanOptions } from 'leaflet'
 import { useAtomValue, useSetAtom } from 'jotai'
 
-import {
-  mapBoundsAtom,
-  mapViewportBoundsAtom,
-  mapCenterAtom,
-  mapZoomAtom,
-} from '../../store.ts'
+import { mapBoundsAtom, mapViewportBoundsAtom } from '../../store.ts'
+import { useUrlMapViewport } from '../../modules/useUrlMapViewport.ts'
 
 // Problem: when setting bounds from a form query, map is not available
 // Solution: use BoundsListener to set bounds from here where map is available
 export const BoundsListener = () => {
   const mapBounds = useAtomValue(mapBoundsAtom)
   const setMapViewportBounds = useSetAtom(mapViewportBoundsAtom)
-  const storedCenter = useAtomValue(mapCenterAtom)
-  const storedZoom = useAtomValue(mapZoomAtom)
-  const setMapCenter = useSetAtom(mapCenterAtom)
-  const setMapZoom = useSetAtom(mapZoomAtom)
+  // url params win, localStorage atoms are the fallback (see the hook);
+  // panes update the url on moveend, so this view is linkable
+  const { center: currentCenter, zoom: currentZoom, saveViewport } =
+    useUrlMapViewport()
   const map = useMap()
 
   const onMoveOrZoom = useCallback(() => {
@@ -39,10 +35,8 @@ export const BoundsListener = () => {
 
     const center = map.getCenter()
     const zoom = map.getZoom()
-    // Save to persisting atoms
-    setMapCenter([center.lat, center.lng])
-    setMapZoom(zoom)
-  }, [map, setMapCenter, setMapZoom])
+    saveViewport([center.lat, center.lng], zoom)
+  }, [map, saveViewport])
 
   const onMoveEndOrZoomEnd = useCallback(() => {
     onMoveOrZoom()
@@ -66,27 +60,29 @@ export const BoundsListener = () => {
   useEffect(() => {
     isInitializingRef.current = true
 
-    // Restore view from atoms immediately when map is ready
+    // Restore view from the url (or stored fallback) immediately when the
+    // map is ready; re-runs when the url params change, so following a link
+    // with other c/z params moves the map
     map.whenReady(() => {
-      if (storedCenter && storedZoom) {
+      if (currentCenter && currentZoom) {
         try {
           // Force the view regardless of current state
           // `reset` is a valid leaflet setView option but missing from ZoomPanOptions
-          map.setView(storedCenter as LatLngTuple, storedZoom, {
+          map.setView(currentCenter as LatLngTuple, currentZoom, {
             animate: false,
             reset: true,
           } as ZoomPanOptions)
 
           // Retry if zoom didn't stick (seems to happen on initial load)
           setTimeout(() => {
-            if (map.getZoom() !== storedZoom) {
-              map.setZoom(storedZoom, { animate: false })
+            if (map.getZoom() !== currentZoom) {
+              map.setZoom(currentZoom, { animate: false })
             }
           }, 50)
 
           setTimeout(() => {
-            if (map.getZoom() !== storedZoom) {
-              map.setZoom(storedZoom, { animate: false })
+            if (map.getZoom() !== currentZoom) {
+              map.setZoom(currentZoom, { animate: false })
             }
           }, 150)
         } catch (e) {
@@ -104,10 +100,9 @@ export const BoundsListener = () => {
   }, [
     map,
     setMapViewportBounds,
-    setMapCenter,
-    setMapZoom,
-    storedCenter,
-    storedZoom,
+    saveViewport,
+    currentCenter,
+    currentZoom,
     onMoveOrZoom,
   ])
 

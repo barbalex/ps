@@ -22,7 +22,7 @@ const {
   Checkbox,
 } = fluentUiReactComponents
 import type { SelectTabData, SelectTabEvent } from '@fluentui/react-components'
-import { BsCheckSquareFill } from 'react-icons/bs'
+import { BsCheckSquareFill, BsSquare } from 'react-icons/bs'
 import { MdDeleteOutline } from 'react-icons/md'
 import { TbZoomScan, TbTarget } from 'react-icons/tb'
 import { FaPlay, FaStopCircle } from 'react-icons/fa'
@@ -64,6 +64,7 @@ import {
   type Extent,
 } from '../../../../../../modules/geoQueries.ts'
 import { httpGet } from '../../../../../../modules/httpGet.ts'
+import { useUrlLayers } from '../../../../../../modules/useUrlLayers.ts'
 import {
   getVectorLayerLabel,
   usePlaceLevels,
@@ -100,6 +101,7 @@ export const Content = ({
   const { projectId } = useParams({ strict: false })
   const [designingMap] = useAtom(designingAtom)
   const designing = designingMap[projectId ?? ''] ?? false
+  const { setLayerVisible, isLayerVisible } = useUrlLayers()
   const [vectorLayerDisplayId, setVectorLayerDisplayId] = useAtom(
     mapDrawerVectorLayerDisplayAtom,
   )
@@ -225,6 +227,9 @@ export const Content = ({
     layer.wms_service_layer_name,
   ])
 
+  // toggling layer visibility is a view action: hiding an active layer
+  // writes the ?layers= url param (linkable, no permissions needed) and
+  // leaves the layer_presentations.active design flag alone
   const onChangeActive = async () => {
     if (!layer.layer_presentation_id) {
       // if no presentation exists, create notification
@@ -233,25 +238,11 @@ export const Content = ({
         type: 'warning',
       } as Parameters<typeof addNotification>[0])
     }
-    db.query(
-      `UPDATE layer_presentations SET active = false WHERE layer_presentation_id = $1`,
-      [layer.layer_presentation_id],
-    )
-    // get layer_presentation for prev value
-    const lpRes = await db.query(
-      `SELECT * FROM layer_presentations WHERE layer_presentation_id = $1`,
-      [layer.layer_presentation_id],
-    )
-    const prev = (lpRes?.rows?.[0] ?? {}) as Record<string, unknown>
-    // add operation to store on server db
-    addOperation({
-      table: 'layer_presentations',
-      rowIdName: 'layer_presentation_id',
-      rowId: layer.layer_presentation_id,
-      operation: 'update',
-      draft: { active: false },
-      prev,
-    })
+    if (isLayerVisible(layer.layer_presentation_id, true)) {
+      setLayerVisible(layer.layer_presentation_id, false)
+      return
+    }
+    setLayerVisible(layer.layer_presentation_id, true)
   }
 
   const canDrag = layerCount > 1
@@ -583,9 +574,25 @@ export const Content = ({
         {canDrag && <DragHandle ref={dragHandleRef} />}
         <div className={layerStyles.headerContainer}>
           <ToggleButton
-            icon={<BsCheckSquareFill className={styles.headerIcon} />}
-            checked={layer.layer_presentation_active}
-            onClick={onChangeActive}
+            icon={
+              isLayerVisible(
+                layer.layer_presentation_id ?? '',
+                layer.layer_presentation_active === true,
+              ) ? (
+                <BsCheckSquareFill className={styles.headerIcon} />
+              ) : (
+                <BsSquare className={styles.headerIcon} />
+              )
+            }
+            checked={isLayerVisible(
+              layer.layer_presentation_id ?? '',
+              layer.layer_presentation_active === true,
+            )}
+            onClick={(event) => {
+              // only the visibility toggle, not the accordion header
+              event.stopPropagation()
+              onChangeActive()
+            }}
             className={styles.headerButton}
             // as the accordion header is a button, we need to set this as an a
             // because nested buttons are not allowed

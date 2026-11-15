@@ -2,7 +2,6 @@ import { useParams } from '@tanstack/react-router'
 
 import { Filter } from '../../components/shared/Filter/index.tsx'
 import { CheckForm } from '../check/Form.tsx'
-import { getTableViewFilterAtom } from '../../store.ts'
 import type Checks from '../../models/public/Checks.ts'
 
 type Props = {
@@ -22,7 +21,7 @@ export const TableCheckFilter = ({ from, level }: Props) => {
       from={from}
       level={level}
       tableNameOverride="checks"
-      filterAtomOverride={getTableViewFilterAtom(tableViewId!)}
+      filterKeyOverride={`tableView-${tableViewId}`}
     >
       {({ row, onChange, orIndex }) => (
         <CheckForm

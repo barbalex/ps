@@ -1,3 +1,4 @@
+import { useUrlFilter } from '../../modules/useUrlFilter.ts'
 import { useRef, useState, useContext } from 'react'
 import {
   useParams,
@@ -22,11 +23,7 @@ import type { Validations } from './Form.tsx'
 import { Loading } from '../../components/shared/Loading.tsx'
 import { NotFound } from '../../components/NotFound.tsx'
 import { Section } from '../../components/shared/Section.tsx'
-import {
-  addOperationAtom,
-  designingAtom,
-  filesFilterAtom,
-} from '../../store.ts'
+import { addOperationAtom, designingAtom } from '../../store.ts'
 import { FilterButton } from '../../components/shared/FilterButton.tsx'
 import { UploaderContext } from '../../UploaderContext.ts'
 import { filterStringFromFilter } from '../../modules/filterStringFromFilter.ts'
@@ -45,16 +42,10 @@ export const ActionWithAll = ({
   from: string
   allInline?: boolean
 }) => {
-  const {
-    actionId,
-    projectId,
-    placeId,
-    placeId2,
-    tableViewId,
-    subprojectId,
-  } = useParams({
-    strict: false,
-  })
+  const { actionId, projectId, placeId, placeId2, tableViewId, subprojectId } =
+    useParams({
+      strict: false,
+    })
   const addOperation = useSetAtom(addOperationAtom)
   const [designingMap] = useAtom(designingAtom)
   const isDesigning = designingMap[projectId ?? ''] ?? false
@@ -73,17 +64,16 @@ export const ActionWithAll = ({
 
   // a table view with a field group shows only the group's columns
   const fieldGroupRes = useLiveQuery(
-    tableViewId
-      ? `SELECT fg.sorted_field_ids
+    tableViewId ?
+      `SELECT fg.sorted_field_ids
          FROM table_views tv
          LEFT JOIN field_groups fg ON fg.field_group_id = tv.field_group_id
          WHERE tv.table_view_id = $1`
-      : `SELECT 1 AS sorted_field_ids WHERE false`,
+    : `SELECT 1 AS sorted_field_ids WHERE false`,
     tableViewId ? [tableViewId] : [],
   )
   const fieldGroup = fieldGroupRes?.rows?.[0] as
-    | { sorted_field_ids: string[] | null }
-    | undefined
+    { sorted_field_ids: string[] | null } | undefined
   const fieldIds = fieldGroup?.sorted_field_ids ?? undefined
 
   const quantitiesCountRes = useLiveQuery(
@@ -173,7 +163,7 @@ export const ActionWithAll = ({
     location.pathname.includes('/files/')
   const isFilesList = /\/files\/?$/.test(location.pathname)
 
-  const [filesFilter] = useAtom(filesFilterAtom)
+  const [filesFilter] = useUrlFilter('files')
   const filesIsFiltered = !!filterStringFromFilter(filesFilter)
   const uploaderCtx = useContext(UploaderContext) as {
     current?: { getAPI?: () => { initFlow?: () => void } | null } | null
@@ -182,7 +172,7 @@ export const ActionWithAll = ({
   const onClickAddFile = () => uploaderApi?.initFlow?.()
 
   const fileHeaderActions =
-    showFiles && isFilesList ? (
+    showFiles && isFilesList ?
       <>
         <FilterButton isFiltered={filesIsFiltered} />
         <Button
@@ -192,7 +182,7 @@ export const ActionWithAll = ({
           onClick={onClickAddFile}
         />
       </>
-    ) : undefined
+    : undefined
 
   const isTaxaOpen =
     location.pathname.endsWith('/taxa') || location.pathname.includes('/taxa/')
@@ -208,7 +198,7 @@ export const ActionWithAll = ({
   }
 
   const quantitiesHeaderActions =
-    showQuantities && isQuantitiesList ? (
+    showQuantities && isQuantitiesList ?
       <Button
         size="medium"
         title={formatMessage({
@@ -218,7 +208,7 @@ export const ActionWithAll = ({
         icon={<FaPlus />}
         onClick={addQuantity}
       />
-    ) : undefined
+    : undefined
 
   const addTaxon = async () => {
     const id = await createActionTaxon({ actionId: actionId! })
@@ -227,7 +217,7 @@ export const ActionWithAll = ({
   }
 
   const taxaHeaderActions =
-    showTaxa && isTaxaList ? (
+    showTaxa && isTaxaList ?
       <Button
         size="medium"
         title={formatMessage({
@@ -237,15 +227,19 @@ export const ActionWithAll = ({
         icon={<FaPlus />}
         onClick={addTaxon}
       />
-    ) : undefined
+    : undefined
 
   return (
     <div className="form-outer-container">
-      <Header autoFocusRef={autoFocusRef} from={from} allInline={isAllInline} />
+      <Header
+        autoFocusRef={autoFocusRef}
+        from={from}
+        allInline={isAllInline}
+      />
       <div className="form-container">
-        {!res ? (
+        {!res ?
           <Loading />
-        ) : row ? (
+        : row ?
           <>
             <Form
               onChange={onChange}
@@ -255,7 +249,7 @@ export const ActionWithAll = ({
               from={from}
               fieldIds={fieldIds}
             />
-            {showQuantities ? (
+            {showQuantities ?
               <Section
                 title={`${formatMessage({ id: 'Xuj/Gy', defaultMessage: 'Mengen' })} (${quantitiesCount})`}
                 parentUrl={actionUrl}
@@ -267,10 +261,8 @@ export const ActionWithAll = ({
               >
                 {isQuantitiesOpen && <Outlet />}
               </Section>
-            ) : (
-              isQuantitiesOpen && <Outlet />
-            )}
-            {showTaxa ? (
+            : isQuantitiesOpen && <Outlet />}
+            {showTaxa ?
               <Section
                 title={`${formatMessage({ id: '7sVbg1', defaultMessage: 'Taxa' })} (${taxaCount})`}
                 parentUrl={actionUrl}
@@ -282,9 +274,7 @@ export const ActionWithAll = ({
               >
                 {isTaxaOpen && <Outlet />}
               </Section>
-            ) : (
-              isTaxaOpen && <Outlet />
-            )}
+            : isTaxaOpen && <Outlet />}
             {showFiles && (
               <Section
                 title={`${formatMessage({ id: 'mn58Sh', defaultMessage: 'Dateien' })} (${filesCount})`}
@@ -299,12 +289,11 @@ export const ActionWithAll = ({
               </Section>
             )}
           </>
-        ) : (
-          <NotFound
+        : <NotFound
             table={formatMessage({ id: 'upa2nh', defaultMessage: 'Massnahme' })}
             id={actionId}
           />
-        )}
+        }
       </div>
     </div>
   )

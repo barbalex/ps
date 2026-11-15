@@ -1,3 +1,5 @@
+import { useUrlFilter } from '../modules/useUrlFilter.ts'
+import { useStringSearchParam } from '../modules/useUrlSearchParam.ts'
 import { useState, useEffect } from 'react'
 import { useParams } from '@tanstack/react-router'
 import { usePGlite, useLiveQuery } from '@electric-sql/pglite-react'
@@ -8,11 +10,7 @@ import * as fluentUiReactComponents from '@fluentui/react-components'
 import { Loading } from '../components/shared/Loading.tsx'
 import {
   languageAtom,
-  subprojectExportsRunLabelFilterAtom,
   subprojectExportsRunFilteredCountAtom,
-  projectsFilterAtom,
-  subprojectsFilterAtom,
-  places1FilterAtom,
 } from '../store.ts'
 import { Dismiss16Regular } from '@fluentui/react-icons'
 import { MdMenuBook } from 'react-icons/md'
@@ -51,13 +49,14 @@ function HighlightedLabel({
   return (
     <span>
       {parts.map((part, i) =>
-        regex.test(part) ? (
-          <mark key={i} className={styles.highlight}>
+        regex.test(part) ?
+          <mark
+            key={i}
+            className={styles.highlight}
+          >
             {part}
           </mark>
-        ) : (
-          <span key={i}>{part}</span>
-        ),
+        : <span key={i}>{part}</span>,
       )}
     </span>
   )
@@ -98,9 +97,9 @@ async function runAndDownload({
   // Shadow the base table with a filtered CTE so the export SQL automatically
   // queries only rows that match the current app filter.
   const effectiveSql =
-    filterString && baseTable
-      ? `WITH "${baseTable}" AS (\n  SELECT * FROM "${baseTable}" WHERE ${filterString}\n)\n${sql}`
-      : sql
+    filterString && baseTable ?
+      `WITH "${baseTable}" AS (\n  SELECT * FROM "${baseTable}" WHERE ${filterString}\n)\n${sql}`
+    : sql
 
   const result = await db.query(effectiveSql, params)
   const rows = result.rows as Record<string, unknown>[]
@@ -139,9 +138,7 @@ export const SubprojectExportsRun = (_: { from: string }) => {
   })
   const { formatMessage } = useIntl()
   const [language] = useAtom(languageAtom)
-  const [labelFilter, setLabelFilter] = useAtom(
-    subprojectExportsRunLabelFilterAtom,
-  )
+  const [labelFilter, setLabelFilter] = useStringSearchParam('subprojectExportsRunLabel')
   const setFilteredCount = useSetAtom(subprojectExportsRunFilteredCountAtom)
   const db = usePGlite()
 
@@ -149,9 +146,9 @@ export const SubprojectExportsRun = (_: { from: string }) => {
   const [year, setYear] = useState(currentYear)
   const [applyFilter, setApplyFilter] = useState<Record<string, boolean>>({})
 
-  const [projectsFilter] = useAtom(projectsFilterAtom)
-  const [subprojectsFilter] = useAtom(subprojectsFilterAtom)
-  const [places1Filter] = useAtom(places1FilterAtom)
+  const [projectsFilter] = useUrlFilter('projects')
+  const [subprojectsFilter] = useUrlFilter('subprojects')
+  const [places1Filter] = useUrlFilter('places1')
 
   const filtersByTable: Record<string, Record<string, unknown>[]> = {
     projects: projectsFilter,
@@ -213,8 +210,9 @@ export const SubprojectExportsRun = (_: { from: string }) => {
     ...((projectExportsRes?.rows ?? []) as ExportRow[]),
   ].sort((a, b) => (a.label ?? '').localeCompare(b.label ?? ''))
 
-  const labelFilteredExports = labelFilter.trim()
-    ? exportRows.filter((e) =>
+  const labelFilteredExports =
+    labelFilter.trim() ?
+      exportRows.filter((e) =>
         (e.label ?? '').toLowerCase().includes(labelFilter.toLowerCase()),
       )
     : exportRows
@@ -227,9 +225,8 @@ export const SubprojectExportsRun = (_: { from: string }) => {
 
   const handleDownload = async (e: ExportRow, format: ExportFormat) => {
     if (!e.sql) return
-    const filterStr = applyFilter[e.exports_id]
-      ? getFilterString(e.base_table)
-      : undefined
+    const filterStr =
+      applyFilter[e.exports_id] ? getFilterString(e.base_table) : undefined
     try {
       await runAndDownload({
         db,
@@ -292,7 +289,7 @@ export const SubprojectExportsRun = (_: { from: string }) => {
               })}
               appearance="underline"
               contentAfter={
-                labelFilter ? (
+                labelFilter ?
                   <Dismiss16Regular
                     className={styles.clearFilter}
                     onClick={() => setLabelFilter('')}
@@ -301,23 +298,25 @@ export const SubprojectExportsRun = (_: { from: string }) => {
                       defaultMessage: 'Filter leeren',
                     })}
                   />
-                ) : undefined
+                : undefined
               }
             />
           </Field>
         </div>
 
         <div className={styles.exportList}>
-          {labelFilteredExports.length === 0 ? (
+          {labelFilteredExports.length === 0 ?
             <Text>
               {formatMessage({
                 id: 'exportsRun.empty',
                 defaultMessage: 'Keine Exporte vorhanden',
               })}
             </Text>
-          ) : (
-            labelFilteredExports.map((e) => (
-              <div key={e.exports_id} className={styles.exportRow}>
+          : labelFilteredExports.map((e) => (
+              <div
+                key={e.exports_id}
+                className={styles.exportRow}
+              >
                 <Text className={styles.exportLabel}>
                   <HighlightedLabel
                     text={e.label ?? e.exports_id}
@@ -365,7 +364,7 @@ export const SubprojectExportsRun = (_: { from: string }) => {
                 </div>
               </div>
             ))
-          )}
+          }
         </div>
       </div>
     </div>

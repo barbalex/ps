@@ -1,3 +1,4 @@
+import { useUrlFilter } from '../../modules/useUrlFilter.ts'
 import { useRef, useState, useContext } from 'react'
 import {
   useParams,
@@ -22,14 +23,7 @@ import { AddProjectUserButton } from '../../components/shared/AddProjectUserButt
 import { NotFound } from '../../components/NotFound.tsx'
 import { Section } from '../../components/shared/Section.tsx'
 import { FilterButton } from '../../components/shared/FilterButton.tsx'
-import {
-  addOperationAtom,
-  languageAtom,
-  designingAtom,
-  placeUsers1FilterAtom,
-  placeUsers2FilterAtom,
-  filesFilterAtom,
-} from '../../store.ts'
+import { addOperationAtom, languageAtom, designingAtom } from '../../store.ts'
 import { UploaderContext } from '../../UploaderContext.ts'
 import { filterStringFromFilter } from '../../modules/filterStringFromFilter.ts'
 import type Places from '../../models/public/Places.ts'
@@ -50,10 +44,10 @@ export const PlaceWithFiles = ({ from }: { from: string }) => {
   const [language] = useAtom(languageAtom)
   const [designingMap] = useAtom(designingAtom)
   const isDesigning = designingMap[projectId!] ?? false
-  const [placeUsersFilter] = useAtom(
-    placeId2 ? placeUsers2FilterAtom : placeUsers1FilterAtom,
+  const [placeUsersFilter] = useUrlFilter(
+    placeId2 ? 'placeUsers2' : 'placeUsers1',
   )
-  const [filesFilter] = useAtom(filesFilterAtom)
+  const [filesFilter] = useUrlFilter('files')
   const { formatMessage } = useIntl()
   const newLabel = formatMessage({ id: 'Yt5rMs', defaultMessage: 'neu' })
   const [validations, setValidations] = useState<
@@ -145,7 +139,7 @@ export const PlaceWithFiles = ({ from }: { from: string }) => {
   const onClickAddFile = () => uploaderApi?.initFlow?.()
 
   const placeUserHeaderActions =
-    isDesigning && usersInPlace && isUsersList ? (
+    isDesigning && usersInPlace && isUsersList ?
       <>
         <FilterButton isFiltered={placeUsersIsFiltered} />
         <AddProjectUserButton
@@ -157,10 +151,10 @@ export const PlaceWithFiles = ({ from }: { from: string }) => {
           onUserCreated={(id) => navigate({ to: `${usersUrl}/${id}/` })}
         />
       </>
-    ) : undefined
+    : undefined
 
   const fileHeaderActions =
-    showFiles && isFilesList ? (
+    showFiles && isFilesList ?
       <>
         <FilterButton isFiltered={filesIsFiltered} />
         <Button
@@ -170,7 +164,7 @@ export const PlaceWithFiles = ({ from }: { from: string }) => {
           onClick={onClickAddFile}
         />
       </>
-    ) : undefined
+    : undefined
 
   const onChange = async (
     e: React.ChangeEvent<HTMLElement>,
@@ -211,7 +205,12 @@ export const PlaceWithFiles = ({ from }: { from: string }) => {
   if (!res) return <Loading />
 
   if (!row) {
-    return <NotFound table={nameSingular} id={currentPlaceId} />
+    return (
+      <NotFound
+        table={nameSingular}
+        id={currentPlaceId}
+      />
+    )
   }
 
   if (onlyForm) {
@@ -243,7 +242,7 @@ export const PlaceWithFiles = ({ from }: { from: string }) => {
           from={from}
           withContainer={false}
         />
-        {isDesigning && usersInPlace ? (
+        {isDesigning && usersInPlace ?
           <Section
             title={`${formatMessage({ id: 'eZ3yEB', defaultMessage: 'Benutzer' })} (${placeUsersCount})`}
             parentUrl={placeUrl}
@@ -256,10 +255,8 @@ export const PlaceWithFiles = ({ from }: { from: string }) => {
             {isUsersOpen &&
               (isUsersList ? <PlaceUsers hideHeader /> : <Outlet />)}
           </Section>
-        ) : (
-          isUsersOpen && <Outlet />
-        )}
-        {showFiles ? (
+        : isUsersOpen && <Outlet />}
+        {showFiles ?
           <Section
             title={`${formatMessage({ id: 'mn58Sh', defaultMessage: 'Dateien' })} (${filesCount})`}
             parentUrl={placeUrl}
@@ -271,9 +268,7 @@ export const PlaceWithFiles = ({ from }: { from: string }) => {
           >
             {isFilesOpen && <Outlet />}
           </Section>
-        ) : (
-          isFilesOpen && <Outlet />
-        )}
+        : isFilesOpen && <Outlet />}
       </div>
     </div>
   )

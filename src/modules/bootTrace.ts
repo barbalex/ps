@@ -31,6 +31,7 @@ if (import.meta.env.DEV && typeof window !== 'undefined') {
   // blank-screen watchdog: paints a diagnostic panel when #root stays empty
   let blankMs = 0
   let painted = false
+  let panel: HTMLElement | null = null
   window.setInterval(() => {
     try {
       const root = document.getElementById('root')
@@ -41,6 +42,14 @@ if (import.meta.env.DEV && typeof window !== 'undefined') {
         (root.textContent ?? '').trim() !== ''
       // stuck boot splash (router never resolved) counts as blank too
       const splashStuck = !bootDone && performance.now() > 10000
+      if (hasContent && painted && panel) {
+        // the app recovered after a slow boot: the panel must not cover
+        // it forever (it swallowed every click in e2e runs)
+        panel.remove()
+        panel = null
+        painted = false
+        blankMs = 0
+      }
       if ((bootDone && !hasContent) || splashStuck) {
         blankMs += 500
         if (blankMs >= 2000 && !painted) {
@@ -72,6 +81,7 @@ if (import.meta.env.DEV && typeof window !== 'undefined') {
             ...errors.slice(-4),
           ].join('\n')
           document.body.appendChild(el)
+          panel = el
         }
       } else {
         blankMs = 0

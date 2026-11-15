@@ -4,13 +4,10 @@ import { useLocation } from '@tanstack/react-router'
 import { isEqual } from 'es-toolkit'
 import { useIntl } from 'react-intl'
 
+import { useUrlFilter } from './useUrlFilter.ts'
 import { filterStringFromFilter } from './filterStringFromFilter.ts'
 import { buildNavLabel } from './buildNavLabel.ts'
-import {
-  getTableViewFilterAtom,
-  treeOpenNodesSetAtom,
-  languageAtom,
-} from '../store.ts'
+import { treeOpenNodesSetAtom, languageAtom } from '../store.ts'
 import type { TableRowFilter } from '../store.ts'
 
 type Props = {
@@ -83,7 +80,7 @@ export const useTableActionsNavData = ({
   const hasViewFilter = !!viewFilterString
 
   // the user's runtime filter on top of the view
-  const [filter] = useAtom(getTableViewFilterAtom(tableViewId))
+  const [filter] = useUrlFilter(`tableView-${tableViewId}`)
   const filterString = filterStringFromFilter(filter)
   const isFiltered = !!filterString
 

@@ -1,4 +1,5 @@
 import { useLiveQuery } from '@electric-sql/pglite-react'
+import { useBooleanSearchParam, useStringSearchParam } from './useUrlSearchParam.ts'
 import { useAtom } from 'jotai'
 import { useLocation } from '@tanstack/react-router'
 import { isEqual } from 'es-toolkit'
@@ -6,10 +7,8 @@ import { useIntl } from 'react-intl'
 
 import { buildNavLabel } from './buildNavLabel.ts'
 import {
-  treeOpenNodesSetAtom,
-  qcsRunLabelFilterAtom,
-  qcsRunOnlyWithResultsAtom,
   qcsRunFilteredCountAtom,
+  treeOpenNodesSetAtom,
 } from '../store.ts'
 
 type Props = {
@@ -22,8 +21,8 @@ export const useSubprojectQcsRunNavData = ({
   subprojectId,
 }: Props) => {
   const [openNodesSet] = useAtom(treeOpenNodesSetAtom)
-  const [labelFilter] = useAtom(qcsRunLabelFilterAtom)
-  const [onlyWithResults] = useAtom(qcsRunOnlyWithResultsAtom)
+  const [labelFilter] = useStringSearchParam('qcsRunLabel')
+  const [onlyWithResults] = useBooleanSearchParam('qcsRunOnlyWithResults')
   const [filteredCount] = useAtom(qcsRunFilteredCountAtom)
   const location = useLocation()
   const { formatMessage } = useIntl()

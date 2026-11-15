@@ -1,3 +1,4 @@
+import { useUrlFilter } from './useUrlFilter.ts'
 import { useLiveQuery } from '@electric-sql/pglite-react'
 import { useAtom } from 'jotai'
 import { useLocation } from '@tanstack/react-router'
@@ -8,12 +9,7 @@ import { filterStringFromFilter } from './filterStringFromFilter.ts'
 import { buildNavLabel } from './buildNavLabel.ts'
 import { getPlaceFallbackNames } from './placeNameFallback.ts'
 import { useNavRollups } from './navRollupsContext.ts'
-import {
-  places1FilterAtom,
-  places2FilterAtom,
-  treeOpenNodesSetAtom,
-  languageAtom,
-} from '../store.ts'
+import { treeOpenNodesSetAtom, languageAtom } from '../store.ts'
 
 type Props = {
   projectId: string
@@ -55,7 +51,7 @@ export const usePlacesNavData = ({
   // needs to work not only works for urlPath, for all opened paths!
   const isOpen = openNodesSet.has(ownArray.join('/'))
 
-  const [filter] = useAtom(placeId ? places2FilterAtom : places1FilterAtom)
+  const [filter] = useUrlFilter(placeId ? 'places2' : 'places1')
   const filterString = filterStringFromFilter(filter, 'places')
   const isFiltered = !!filterString
 

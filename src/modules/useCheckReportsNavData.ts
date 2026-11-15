@@ -4,13 +4,10 @@ import { useLocation } from '@tanstack/react-router'
 import { isEqual } from 'es-toolkit'
 import { useIntl } from 'react-intl'
 
+import { useUrlFilter } from './useUrlFilter.ts'
 import { filterStringFromFilter } from './filterStringFromFilter.ts'
 import { buildNavLabel } from './buildNavLabel.ts'
-import {
-  checkReports1FilterAtom,
-  checkReports2FilterAtom,
-  treeOpenNodesSetAtom,
-} from '../store.ts'
+import { treeOpenNodesSetAtom } from '../store.ts'
 
 type Props = {
   projectId: string
@@ -55,9 +52,7 @@ export const useCheckReportsNavData = ({
   // needs to work not only works for urlPath, for all opened paths!
   const isOpen = openNodesSet.has(ownArray.join('/'))
 
-  const [filter] = useAtom(
-    placeId2 ? checkReports2FilterAtom : checkReports1FilterAtom,
-  )
+  const [filter] = useUrlFilter(placeId2 ? 'checkReports2' : 'checkReports1')
   const filterString = filterStringFromFilter(filter)
   const isFiltered = !!filterString
 
