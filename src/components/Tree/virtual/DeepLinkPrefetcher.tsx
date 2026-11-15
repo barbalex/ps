@@ -64,6 +64,48 @@ const levelsForPath = (path: string[]): Level[] => {
     const id = path[i + 1]
     if (!id) return levels
 
+    // 'filter' is the filter page of the preceding collection — a static
+    // route segment, not an entity id. Registering it as one would query
+    // e.g. place_id = 'filter' and fail with a uuid syntax error. Each
+    // branch below still registers the collection row (which the filter
+    // page belongs to), then stops the walk.
+    if (id === 'filter') {
+      const collectionParamsForFilter: Record<
+        string,
+        Record<string, unknown>
+      > = {
+        subprojects: { projectId: ids.projectId },
+        checks: placeBase(),
+        actions: placeBase(),
+        goals: { projectId: ids.projectId, subprojectId: ids.subprojectId },
+        'check-reports': placeBase(),
+        'action-reports': placeBase(),
+      }
+      if (folder === 'places' && !ids.placeId2) {
+        const params = ids.placeId
+          ? { ...placeBase(), placeId: ids.placeId, level: i }
+          : {
+              projectId: ids.projectId,
+              subprojectId: ids.subprojectId,
+              level: i,
+            }
+        push(i + 1, 'places', params)
+        return levels
+      }
+      const collection = collectionParamsForFilter[folder]
+      if (collection) {
+        const type =
+          folder === 'subprojects' ? 'subprojects'
+          : folder === 'checks' ? 'checks'
+          : folder === 'actions' ? 'actions'
+          : folder === 'goals' ? 'goals'
+          : folder === 'check-reports' ? 'checkReports'
+          : 'actionReports'
+        push(i + 1, type, collection)
+      }
+      return levels
+    }
+
     if (folder === 'subprojects') {
       push(i + 1, 'subprojects', { projectId: ids.projectId })
       push(i + 2, 'subproject', { projectId: ids.projectId, nav: { id } })
