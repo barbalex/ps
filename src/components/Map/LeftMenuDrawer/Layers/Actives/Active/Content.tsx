@@ -22,7 +22,7 @@ const {
   Checkbox,
 } = fluentUiReactComponents
 import type { SelectTabData, SelectTabEvent } from '@fluentui/react-components'
-import { BsCheckSquareFill } from 'react-icons/bs'
+import { BsCheckSquareFill, BsSquare } from 'react-icons/bs'
 import { MdDeleteOutline } from 'react-icons/md'
 import { TbZoomScan, TbTarget } from 'react-icons/tb'
 import { FaPlay, FaStopCircle } from 'react-icons/fa'
@@ -574,7 +574,16 @@ export const Content = ({
         {canDrag && <DragHandle ref={dragHandleRef} />}
         <div className={layerStyles.headerContainer}>
           <ToggleButton
-            icon={<BsCheckSquareFill className={styles.headerIcon} />}
+            icon={
+              isLayerVisible(
+                layer.layer_presentation_id ?? '',
+                layer.layer_presentation_active === true,
+              ) ? (
+                <BsCheckSquareFill className={styles.headerIcon} />
+              ) : (
+                <BsSquare className={styles.headerIcon} />
+              )
+            }
             checked={isLayerVisible(
               layer.layer_presentation_id ?? '',
               layer.layer_presentation_active === true,

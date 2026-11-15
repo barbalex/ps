@@ -20,7 +20,7 @@ import type {
   SelectTabData,
   SelectTabEvent,
 } from '@fluentui/react-components'
-import { BsSquare } from 'react-icons/bs'
+import { BsCheckSquareFill, BsSquare } from 'react-icons/bs'
 import { MdDeleteOutline } from 'react-icons/md'
 import { useAtom, useSetAtom } from 'jotai'
 import { usePGlite, useLiveQuery } from '@electric-sql/pglite-react'
@@ -125,7 +125,15 @@ export const WmsLayer = ({ layer, isLast, isOpen }: Props) => {
         >
           <div className={layerStyles.headerContainer}>
             <ToggleButton
-              icon={<BsSquare className={layerStyles.headerToggleIcon} />}
+              icon={
+                isVisible ? (
+                  <BsCheckSquareFill
+                    className={layerStyles.headerToggleIcon}
+                  />
+                ) : (
+                  <BsSquare className={layerStyles.headerToggleIcon} />
+                )
+              }
               checked={isVisible}
               onClick={onChange}
               className={`${styles.labelButton}${isOpen ? ` ${styles.toggleOpen}` : ''}`}
