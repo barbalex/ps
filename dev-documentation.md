@@ -1249,3 +1249,62 @@ break; cap the growth with a retention in the same cron, e.g.
 `delete from error_report where created_at < now() - interval '6 months'`.
 
 Keep the backup script in-repo (like apf2) so this stays reviewable.
+
+# 12 URL State (Search Params)
+
+View state lives in url search params so that every view is a shareable
+link and survives reloads. Identity is in routes (as before); everything
+"how you look at it" moved here.
+
+## The plumbing
+
+- **Registry:** [src/modules/urlSearchKeys.ts](src/modules/urlSearchKeys.ts)
+  — `isRetainedSearchParam(key)`. Every param name that must survive
+  navigation is registered there (`f-*` filter params via prefix, plus
+  the explicit keys below).
+- **Route integration:** the `/data` route
+  ([src/routes/data/route.tsx](src/routes/data/route.tsx)) passes
+  retained keys through its `validateSearch` unvalidated (hooks coerce
+  defensively — urls are user-editable) and retains them across
+  navigations via a custom `search` middleware: TanStack Router builds a
+  navigation's search from the destination route's defaults, so without
+  the middleware every link would drop the state. A navigation that sets
+  a retained key (to `undefined` = remove) wins over retention.
+- **Writing:** hooks navigate with `replace: true` — intermediate states
+  (every filter keystroke) must not spam the history.
+
+## The params
+
+| Param(s) | State | Hook | Storage model |
+| --- | --- | --- | --- |
+| `f-<key>` (e.g. `f-checks1`, `f-tableView-<id>`) | list/table-view filters (JSON or-filter array) | `useUrlFilter` | url only |
+| `c`, `z` | map center/zoom | `useUrlMapViewport` | url wins, `mapCenter`/`mapZoom` atoms are the persisted fallback |
+| `panes` | visible layout panes (`tree,data,map`) | `useUrlPanes` | url wins, `tabsAtom` fallback; the default layout produces no param |
+| `layers` | the map's render list (layer_presentation ids + the osm pseudo id `aaaaaaaa-…`), in draw order | `useUrlLayers` | url override; `layer_presentations.active` (db design data) + `mapLayerSorting` are the default |
+| `designing` | design mode (`designing=1`) | `useUrlDesigning` | url wins for the session, the per-project `designingAtom` map persists; the hook mirrors an explicit url value into the map so the atom readers stay unchanged |
+| `<page>Label`, `<page>OnlyWithResults` | label filter / only-with-results toggle of the qcs/exports run pages | `useUrlSearchParam` (`useStringSearchParam`/`useBooleanSearchParam`) | url only |
+
+Deliberately **not** in the url: tree open nodes (the tree mirrors the
+route anyway), and minor toggles like `mapMaximized`/`mapHideUi`.
+
+## `?layers=` semantics
+
+The param is the map's render list. When present it replaces both the
+`layer_presentations.active` design flags and the `mapLayerSorting`
+atom — so a link reproduces the exact layer stack, and view changes need
+no write permission (readers can toggle layers). The drawer's Active
+section sorts by the effective list so drawer order, map order and url
+agree; drag reordering rewrites the param while an override is active.
+The design flags remain the default view and the config forms keep
+writing them.
+
+## Conventions for adding a param
+
+1. Register the key in `urlSearchKeys.ts`.
+2. Read via `useSearch({ strict: false })` and coerce values
+   defensively (hand-crafted links are input).
+3. Write via `navigate({ search: (prev) => ({...prev, key: value}), replace: true })`; set `undefined` to remove.
+4. If it has a localStorage-atom fallback, document which one wins.
+5. Cover it in an e2e spec (`e2e/url-*.spec.ts`) — at minimum
+   set-param-in-url, retention across a navigation, reload, and deep
+   link.
