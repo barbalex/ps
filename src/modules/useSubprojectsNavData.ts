@@ -1,3 +1,4 @@
+import { useUrlFilter } from './useUrlFilter.ts'
 import { useLiveQuery } from '@electric-sql/pglite-react'
 import { useAtom } from 'jotai'
 import { useLocation } from '@tanstack/react-router'
@@ -6,11 +7,7 @@ import { useIntl } from 'react-intl'
 
 import { filterStringFromFilter } from './filterStringFromFilter.ts'
 import { buildNavLabel } from './buildNavLabel.ts'
-import {
-  subprojectsFilterAtom,
-  treeOpenNodesSetAtom,
-  languageAtom,
-} from '../store.ts'
+import { treeOpenNodesSetAtom, languageAtom } from '../store.ts'
 import {
   subprojectNameSingularExpr,
   subprojectNamePluralExpr,
@@ -46,7 +43,7 @@ export const useSubprojectsNavData = ({ projectId }: Props) => {
   // needs to work not only works for urlPath, for all opened paths!
   const isOpen = openNodesSet.has(ownArray.join('/'))
 
-  const [filter] = useAtom(subprojectsFilterAtom)
+  const [filter] = useUrlFilter('subprojects')
   const [language] = useAtom(languageAtom)
   const filterString = filterStringFromFilter(
     filter as Record<string, unknown> & typeof filter,

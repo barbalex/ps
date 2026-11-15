@@ -6,9 +6,9 @@ import { useIntl } from 'react-intl'
 
 import { buildNavLabel } from './buildNavLabel.ts'
 import {
-  treeOpenNodesSetAtom,
-  rootExportsRunLabelFilterAtom,
   rootExportsRunFilteredCountAtom,
+  rootExportsRunLabelFilterAtom,
+  treeOpenNodesSetAtom,
 } from '../store.ts'
 
 export const useRootExportsRunNavData = () => {

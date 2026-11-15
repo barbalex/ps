@@ -4,13 +4,10 @@ import { useLocation } from '@tanstack/react-router'
 import { isEqual } from 'es-toolkit'
 import { useIntl } from 'react-intl'
 
+import { useUrlFilter } from './useUrlFilter.ts'
 import { filterStringFromFilter } from './filterStringFromFilter.ts'
 import { buildNavLabel } from './buildNavLabel.ts'
-import {
-  actionReports1FilterAtom,
-  actionReports2FilterAtom,
-  treeOpenNodesSetAtom,
-} from '../store.ts'
+import { treeOpenNodesSetAtom } from '../store.ts'
 
 type Props = {
   projectId: string
@@ -54,9 +51,7 @@ export const useActionReportsNavData = ({
   const ownArray = [...parentArray, 'action-reports']
   const isOpen = openNodesSet.has(ownArray.join('/'))
 
-  const [filter] = useAtom(
-    placeId2 ? actionReports2FilterAtom : actionReports1FilterAtom,
-  )
+  const [filter] = useUrlFilter(placeId2 ? 'actionReports2' : 'actionReports1')
   const filterString = filterStringFromFilter(filter)
   const isFiltered = !!filterString
 

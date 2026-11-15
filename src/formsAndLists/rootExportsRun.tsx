@@ -1,3 +1,4 @@
+import { useUrlFilter } from '../modules/useUrlFilter.ts'
 import { useState, useEffect } from 'react'
 import { usePGlite, useLiveQuery } from '@electric-sql/pglite-react'
 import { useAtom, useSetAtom } from 'jotai'
@@ -7,11 +8,8 @@ import * as fluentUiReactComponents from '@fluentui/react-components'
 import { Loading } from '../components/shared/Loading.tsx'
 import {
   languageAtom,
-  rootExportsRunLabelFilterAtom,
   rootExportsRunFilteredCountAtom,
-  projectsFilterAtom,
-  subprojectsFilterAtom,
-  places1FilterAtom,
+  rootExportsRunLabelFilterAtom,
 } from '../store.ts'
 import { Dismiss16Regular } from '@fluentui/react-icons'
 import { MdMenuBook } from 'react-icons/md'
@@ -47,13 +45,14 @@ function HighlightedLabel({
   return (
     <span>
       {parts.map((part, i) =>
-        regex.test(part) ? (
-          <mark key={i} className={styles.highlight}>
+        regex.test(part) ?
+          <mark
+            key={i}
+            className={styles.highlight}
+          >
             {part}
           </mark>
-        ) : (
-          <span key={i}>{part}</span>
-        ),
+        : <span key={i}>{part}</span>,
       )}
     </span>
   )
@@ -91,9 +90,9 @@ async function runAndDownload({
   // Shadow the base table with a filtered CTE so the export SQL automatically
   // queries only rows that match the current app filter.
   const effectiveSql =
-    filterString && baseTable
-      ? `WITH "${baseTable}" AS (\n  SELECT * FROM "${baseTable}" WHERE ${filterString}\n)\n${sql}`
-      : sql
+    filterString && baseTable ?
+      `WITH "${baseTable}" AS (\n  SELECT * FROM "${baseTable}" WHERE ${filterString}\n)\n${sql}`
+    : sql
 
   const result = await db.query(effectiveSql, params)
   const rows = result.rows as Record<string, unknown>[]
@@ -136,9 +135,9 @@ export const RootExportsRun = () => {
   const [year, setYear] = useState(currentYear)
   const [applyFilter, setApplyFilter] = useState<Record<string, boolean>>({})
 
-  const [projectsFilter] = useAtom(projectsFilterAtom)
-  const [subprojectsFilter] = useAtom(subprojectsFilterAtom)
-  const [places1Filter] = useAtom(places1FilterAtom)
+  const [projectsFilter] = useUrlFilter('projects')
+  const [subprojectsFilter] = useUrlFilter('subprojects')
+  const [places1Filter] = useUrlFilter('places1')
 
   const filtersByTable: Record<string, Record<string, unknown>[]> = {
     projects: projectsFilter,
@@ -176,8 +175,9 @@ export const RootExportsRun = () => {
 
   const exportRows: ExportRow[] = (exportsRes?.rows ?? []) as ExportRow[]
 
-  const labelFilteredExports = labelFilter.trim()
-    ? exportRows.filter((e) =>
+  const labelFilteredExports =
+    labelFilter.trim() ?
+      exportRows.filter((e) =>
         (e.label ?? '').toLowerCase().includes(labelFilter.toLowerCase()),
       )
     : exportRows
@@ -217,9 +217,7 @@ export const RootExportsRun = () => {
             id: 'exports.openDocs',
             defaultMessage: 'Dokumentation öffnen',
           })}
-          onClick={() =>
-            window.open('/docs/exports', '_blank', 'noreferrer')
-          }
+          onClick={() => window.open('/docs/exports', '_blank', 'noreferrer')}
         />
       </div>
 
@@ -254,7 +252,7 @@ export const RootExportsRun = () => {
               })}
               appearance="underline"
               contentAfter={
-                labelFilter ? (
+                labelFilter ?
                   <Dismiss16Regular
                     className={styles.clearFilter}
                     onClick={() => setLabelFilter('')}
@@ -263,23 +261,25 @@ export const RootExportsRun = () => {
                       defaultMessage: 'Filter leeren',
                     })}
                   />
-                ) : undefined
+                : undefined
               }
             />
           </Field>
         </div>
 
         <div className={styles.exportList}>
-          {labelFilteredExports.length === 0 ? (
+          {labelFilteredExports.length === 0 ?
             <Text>
               {formatMessage({
                 id: 'exportsRun.empty',
                 defaultMessage: 'Keine Exporte vorhanden',
               })}
             </Text>
-          ) : (
-            labelFilteredExports.map((e) => (
-              <div key={e.exports_id} className={styles.exportRow}>
+          : labelFilteredExports.map((e) => (
+              <div
+                key={e.exports_id}
+                className={styles.exportRow}
+              >
                 <Text className={styles.exportLabel}>
                   <HighlightedLabel
                     text={e.label ?? e.exports_id}
@@ -327,7 +327,7 @@ export const RootExportsRun = () => {
                 </div>
               </div>
             ))
-          )}
+          }
         </div>
       </div>
     </div>

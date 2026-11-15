@@ -2,23 +2,21 @@ import * as fluentUiReactComponents from '@fluentui/react-components'
 const { ToggleButton, Button } = fluentUiReactComponents
 import { MdFilterAlt, MdFilterAltOff } from 'react-icons/md'
 import { useNavigate } from '@tanstack/react-router'
-import { useAtom } from 'jotai'
 import { useIntl } from 'react-intl'
 
 import globalStyles from '../../../styles.module.css'
 import styles from './index.module.css'
-import { projectsFilterAtom } from '../../../store.ts'
+import { useUrlFilter } from '../../../modules/useUrlFilter.ts'
 
 type Props = {
   title: string
-  filterAtom: typeof projectsFilterAtom
+  filterKey: string
 }
 
-export const FilterHeader = ({ title = 'Filter', filterAtom }: Props) => {
+export const FilterHeader = ({ title = 'Filter', filterKey }: Props) => {
   const navigate = useNavigate()
   const { formatMessage } = useIntl()
-  // ensure atom exists - got errors when it didn't
-  const [filter, setFilter] = useAtom(filterAtom)
+  const [filter, setFilter] = useUrlFilter(filterKey)
   const isFiltered = filter.length > 0
 
   const onClickBack = () => navigate({ to: '..' })

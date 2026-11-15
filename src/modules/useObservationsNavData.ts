@@ -1,3 +1,4 @@
+import { useUrlFilter } from './useUrlFilter.ts'
 import { useLiveQuery } from '@electric-sql/pglite-react'
 import { useAtom } from 'jotai'
 import { useLocation } from '@tanstack/react-router'
@@ -6,11 +7,7 @@ import { useIntl } from 'react-intl'
 
 import { filterStringFromFilter } from './filterStringFromFilter.ts'
 import { buildNavLabel } from './buildNavLabel.ts'
-import {
-  observationsNotToAssignFilterAtom,
-  observationsToAssessFilterAtom,
-  treeOpenNodesSetAtom,
-} from '../store.ts'
+import { treeOpenNodesSetAtom } from '../store.ts'
 
 type Props = {
   projectId: string
@@ -41,8 +38,8 @@ export const useObservationsNavData = ({
   isNotToAssign = false,
 }: Props) => {
   const [openNodesSet] = useAtom(treeOpenNodesSetAtom)
-  const [filterToAssess] = useAtom(observationsToAssessFilterAtom)
-  const [filterNotToAssign] = useAtom(observationsNotToAssignFilterAtom)
+  const [filterToAssess] = useUrlFilter('observationsToAssess')
+  const [filterNotToAssign] = useUrlFilter('observationsNotToAssign')
   const location = useLocation()
   const { formatMessage } = useIntl()
 

@@ -1,3 +1,4 @@
+import { useUrlFilter } from './useUrlFilter.ts'
 import { useLiveQuery } from '@electric-sql/pglite-react'
 import { useAtom } from 'jotai'
 import { useLocation } from '@tanstack/react-router'
@@ -7,11 +8,7 @@ import { useIntl } from 'react-intl'
 import { filterStringFromFilter } from './filterStringFromFilter.ts'
 import { buildNavLabel } from './buildNavLabel.ts'
 import { subprojectNamePluralExpr } from './subprojectNameCols.ts'
-import {
-  chartsFilterAtom,
-  treeOpenNodesSetAtom,
-  languageAtom,
-} from '../store.ts'
+import { treeOpenNodesSetAtom, languageAtom } from '../store.ts'
 
 type Props = {
   projectId: string
@@ -46,7 +43,7 @@ export const useChartsNavData = ({
 }: Props) => {
   const { formatMessage } = useIntl()
   const [openNodesSet] = useAtom(treeOpenNodesSetAtom)
-  const [filter] = useAtom(chartsFilterAtom)
+  const [filter] = useUrlFilter('charts')
   const [language] = useAtom(languageAtom)
   const location = useLocation()
 

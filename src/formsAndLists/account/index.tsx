@@ -1,3 +1,4 @@
+import { useUrlFilter } from '../../modules/useUrlFilter.ts'
 import { useRef, useState } from 'react'
 import {
   Outlet,
@@ -6,7 +7,7 @@ import {
   useParams,
 } from '@tanstack/react-router'
 import { usePGlite, useLiveQuery } from '@electric-sql/pglite-react'
-import { useAtom, useSetAtom } from 'jotai'
+import { useSetAtom } from 'jotai'
 import { useIntl } from 'react-intl'
 import * as fluentUiReactComponents from '@fluentui/react-components'
 import { FaPlus } from 'react-icons/fa'
@@ -22,7 +23,7 @@ import { Section } from '../../components/shared/Section.tsx'
 import { Fields } from '../fields.tsx'
 import { createField } from '../../modules/createRows.ts'
 import { filterStringFromFilter } from '../../modules/filterStringFromFilter.ts'
-import { addOperationAtom, fieldsFilterAtom } from '../../store.ts'
+import { addOperationAtom } from '../../store.ts'
 import { accountTypeOptions } from '../../modules/constants.ts'
 import styles from './index.module.css'
 import '../../form.css'
@@ -43,7 +44,7 @@ export const Account = () => {
   const location = useLocation()
   const navigate = useNavigate()
   const addOperation = useSetAtom(addOperationAtom)
-  const [fieldsFilter] = useAtom(fieldsFilterAtom)
+  const [fieldsFilter] = useUrlFilter('fields')
   const [validations, setValidations] = useState<Record<string, Validation>>({})
 
   const autoFocusRef = useRef<HTMLInputElement>(null)
@@ -85,7 +86,7 @@ export const Account = () => {
   }
 
   const fieldsHeaderActions =
-    projectFieldsInAccount && isFieldsList ? (
+    projectFieldsInAccount && isFieldsList ?
       <>
         <FilterButton isFiltered={fieldsIsFiltered} />
         <Button
@@ -95,7 +96,7 @@ export const Account = () => {
           onClick={onClickAddField}
         />
       </>
-    ) : undefined
+    : undefined
 
   const onChange = async (
     e: React.ChangeEvent<HTMLElement>,
@@ -163,7 +164,12 @@ export const Account = () => {
   if (!res) return <Loading />
 
   if (!row) {
-    return <NotFound table="Account" id={accountId} />
+    return (
+      <NotFound
+        table="Account"
+        id={accountId}
+      />
+    )
   }
 
   // If project fields are configured to be shown outside the account form,
@@ -212,7 +218,7 @@ export const Account = () => {
           validationState={validations?.period_end?.state}
           validationMessage={validations?.period_end?.message}
         />
-        {projectFieldsInAccount ? (
+        {projectFieldsInAccount ?
           <Section
             title={`${formatMessage({ id: 'field.projectFieldsPlural', defaultMessage: 'Project Fields' })} (${fieldsCount})`}
             parentUrl={accountUrl}
@@ -223,11 +229,14 @@ export const Account = () => {
             headerActions={fieldsHeaderActions}
           >
             {isFieldsOpen &&
-              (isFieldsList ? <Fields from={from} hideHeader /> : <Outlet />)}
+              (isFieldsList ?
+                <Fields
+                  from={from}
+                  hideHeader
+                />
+              : <Outlet />)}
           </Section>
-        ) : (
-          isFieldsOpen && <Outlet />
-        )}
+        : isFieldsOpen && <Outlet />}
       </div>
     </div>
   )

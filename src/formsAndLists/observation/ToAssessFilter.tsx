@@ -9,7 +9,7 @@ export const ObservationToAssessFilter = ({ from }: Props) => (
   <Filter
     from={from}
     tableNameOverride="observations"
-    filterAtomNameOverride="observationsToAssessFilterAtom"
+    filterKeyOverride="observationsToAssess"
   >
     {({ row, onChange }) => (
       <TextField

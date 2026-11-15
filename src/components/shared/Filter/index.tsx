@@ -8,11 +8,11 @@ import { useParams } from '@tanstack/react-router'
 import { useAtom } from 'jotai'
 
 import { FilterHeader } from './Header.tsx'
-import * as stores from '../../../store.ts'
-import { projectsFilterAtom, languageAtom } from '../../../store.ts'
+import { languageAtom } from '../../../store.ts'
 import type { TableRowFilter } from '../../../store.ts'
 import { OrFilter, type OrFilterRenderProps } from './OrFilter.tsx'
-import { filterAtomNameFromTableAndLevel } from '../../../modules/filterAtomNameFromTableAndLevel.ts'
+import { filterKeyFromTableAndLevel } from '../../../modules/filterKeyFromTableAndLevel.ts'
+import { useUrlFilter } from '../../../modules/useUrlFilter.ts'
 import { orFilterToSql } from '../../../modules/orFilterToSql.ts'
 import { filterStringFromFilter } from '../../../modules/filterStringFromFilter.ts'
 import styles from './index.module.css'
@@ -97,9 +97,8 @@ const getFilterStrings = ({
     whereUnfiltered = subprojectFilter
   }
   const whereFilteredString = filterStringFromFilter(workingFilter)
-  const whereUnfilteredString = whereUnfiltered
-    ? orFilterToSql(whereUnfiltered, '')
-    : ''
+  const whereUnfilteredString =
+    whereUnfiltered ? orFilterToSql(whereUnfiltered, '') : ''
 
   return { whereUnfilteredString, whereFilteredString }
 }
@@ -143,165 +142,133 @@ const getTitle = ({
 
   // for tableNameForTitle: replace all underscores with spaces and uppercase all first letters
   const tableNameForTitle =
-    tableName === 'subprojects'
-      ? (subprojectNamePlural ??
-        formatMessage({ id: 'Jou8/E', defaultMessage: 'Teilprojekte' }))
-      : tableName === 'charts'
-        ? formatMessage({ id: 'ZPEO8P', defaultMessage: 'Diagramme' })
-        : tableName === 'goals'
-          ? formatMessage({ id: '3srcwg', defaultMessage: 'Ziele' })
-          : tableName === 'actions'
-            ? formatMessage({ id: 'bDSWXY', defaultMessage: 'Massnahmen' })
-            : tableName === 'checks'
-              ? formatMessage({ id: 'bDQUVW', defaultMessage: 'Kontrollen' })
-              : tableName === 'observation_imports'
-                ? formatMessage({
-                    id: 'C7apNr',
-                    defaultMessage: 'Beobachtungs-Importe',
-                  })
-                : tableName === 'observations'
-                  ? formatMessage({
-                      id: 'yYvnIS',
-                      defaultMessage: 'Beobachtungen',
-                    })
-                  : tableName === 'subproject_reports'
-                    ? `${subprojectNameSingular ?? subprojectSingularFallback}-${reportsLabel}`
-                    : tableName === 'check_reports'
-                      ? `${placeNameSingular ?? placeFallback}-${reportsLabel}`
-                      : tableName === 'action_reports'
-                        ? formatMessage({
-                            id: 'mARBts',
-                            defaultMessage: 'Massnahmen-Berichte',
-                          })
-                        : tableName === 'places'
-                          ? placeNamePlural
-                          : tableName === 'crs'
-                            ? formatMessage({
-                                id: 'OzBS9Z',
-                                defaultMessage: 'KBS',
-                              })
-                            : tableName === 'subproject_roles'
-                              ? `${subprojectNameSingular ?? subprojectSingularFallback}-${usersLabel}`
-                              : tableName === 'subproject_taxa'
-                                ? `${subprojectNameSingular ?? subprojectSingularFallback}-${taxaLabel}`
-                                : tableName === 'place_roles'
-                                  ? `${placeNameSingularForUsers ?? placeFallback}-${usersLabel}`
-                                  : tableName === 'taxonomies'
-                                    ? formatMessage({
-                                        id: 'noT0gR',
-                                        defaultMessage: 'Taxonomien',
-                                      })
-                                    : tableName === 'users'
-                                      ? formatMessage({
-                                          id: 'eZ3yEB',
-                                          defaultMessage: 'Benutzer',
-                                        })
-                                      : tableName === 'wfs_services'
-                                        ? formatMessage({
-                                            id: 'HzltY9',
-                                            defaultMessage: 'WFS-Dienste',
-                                          })
-                                        : tableName === 'wms_layers'
-                                          ? formatMessage({
-                                              id: 'IKLYLz',
-                                              defaultMessage: 'WMS-Ebenen',
-                                            })
-                                          : tableName === 'files'
-                                            ? formatMessage({
-                                                id: 'mn58Sh',
-                                                defaultMessage: 'Dateien',
-                                              })
-                                            : tableName === 'fields'
-                                              ? formatMessage({
-                                                  id: 'I+dTZE',
-                                                  defaultMessage: 'Felder',
-                                                })
-                                              : tableName ===
-                                                  'widgets_for_fields'
-                                                ? formatMessage({
-                                                    id: 'bDoJBk',
-                                                    defaultMessage:
-                                                      'Widgets für Felder',
-                                                  })
-                                                : tableName === 'widget_types'
-                                                  ? formatMessage({
-                                                      id: 'U55pI0',
-                                                      defaultMessage:
-                                                        'Widget-Typen',
-                                                    })
-                                                  : tableName === 'field_types'
-                                                    ? formatMessage({
-                                                        id: 'Yx8gIR',
-                                                        defaultMessage:
-                                                          'Feld-Typen',
-                                                      })
-                                                    : tableName === 'accounts'
-                                                      ? formatMessage({
-                                                          id: '/40i9A',
-                                                          defaultMessage:
-                                                            'Konten',
-                                                        })
-                                                      : tableName === 'projects'
-                                                        ? formatMessage({
-                                                            id: 'x9x+dX',
-                                                            defaultMessage:
-                                                              'Projekte',
-                                                          })
-                                                        : tableName === 'units'
-                                                          ? formatMessage({
-                                                              id: 'nVkh0Z',
-                                                              defaultMessage:
-                                                                'Einheiten',
-                                                            })
-                                                          : tableName ===
-                                                              'lists'
-                                                            ? formatMessage({
-                                                                id: 'zhvWvI',
-                                                                defaultMessage:
-                                                                  'Listen',
-                                                              })
-                                                            : tableName ===
-                                                                'project_users'
-                                                              ? formatMessage({
-                                                                  id: 'gi+ubY',
-                                                                  defaultMessage:
-                                                                    'Projekt-Benutzer',
-                                                                })
-                                                              : tableName ===
-                                                                  'vector_layers'
-                                                                ? formatMessage(
-                                                                    {
-                                                                      id: 'nauDh5',
-                                                                      defaultMessage:
-                                                                        'Vektor-Ebenen',
-                                                                    },
-                                                                  )
-                                                                : tableName ===
-                                                                    'wms_services'
-                                                                  ? formatMessage(
-                                                                      {
-                                                                        id: '0pm66C',
-                                                                        defaultMessage:
-                                                                          'WMS-Dienste',
-                                                                      },
-                                                                    )
-                                                                  : tableName ===
-                                                                      'project_reports'
-                                                                    ? reportsLabel
-                                                                    : tableName
-                                                                        .split(
-                                                                          '_',
-                                                                        )
-                                                                        .map(
-                                                                          (w) =>
-                                                                            w[0].toUpperCase() +
-                                                                            w.slice(
-                                                                              1,
-                                                                            ),
-                                                                        )
-                                                                        .join(
-                                                                          ' ',
-                                                                        )
+    tableName === 'subprojects' ?
+      (subprojectNamePlural ??
+      formatMessage({ id: 'Jou8/E', defaultMessage: 'Teilprojekte' }))
+    : tableName === 'charts' ?
+      formatMessage({ id: 'ZPEO8P', defaultMessage: 'Diagramme' })
+    : tableName === 'goals' ?
+      formatMessage({ id: '3srcwg', defaultMessage: 'Ziele' })
+    : tableName === 'actions' ?
+      formatMessage({ id: 'bDSWXY', defaultMessage: 'Massnahmen' })
+    : tableName === 'checks' ?
+      formatMessage({ id: 'bDQUVW', defaultMessage: 'Kontrollen' })
+    : tableName === 'observation_imports' ?
+      formatMessage({
+        id: 'C7apNr',
+        defaultMessage: 'Beobachtungs-Importe',
+      })
+    : tableName === 'observations' ?
+      formatMessage({
+        id: 'yYvnIS',
+        defaultMessage: 'Beobachtungen',
+      })
+    : tableName === 'subproject_reports' ?
+      `${subprojectNameSingular ?? subprojectSingularFallback}-${reportsLabel}`
+    : tableName === 'check_reports' ?
+      `${placeNameSingular ?? placeFallback}-${reportsLabel}`
+    : tableName === 'action_reports' ?
+      formatMessage({
+        id: 'mARBts',
+        defaultMessage: 'Massnahmen-Berichte',
+      })
+    : tableName === 'places' ? placeNamePlural
+    : tableName === 'crs' ?
+      formatMessage({
+        id: 'OzBS9Z',
+        defaultMessage: 'KBS',
+      })
+    : tableName === 'subproject_roles' ?
+      `${subprojectNameSingular ?? subprojectSingularFallback}-${usersLabel}`
+    : tableName === 'subproject_taxa' ?
+      `${subprojectNameSingular ?? subprojectSingularFallback}-${taxaLabel}`
+    : tableName === 'place_roles' ?
+      `${placeNameSingularForUsers ?? placeFallback}-${usersLabel}`
+    : tableName === 'taxonomies' ?
+      formatMessage({
+        id: 'noT0gR',
+        defaultMessage: 'Taxonomien',
+      })
+    : tableName === 'users' ?
+      formatMessage({
+        id: 'eZ3yEB',
+        defaultMessage: 'Benutzer',
+      })
+    : tableName === 'wfs_services' ?
+      formatMessage({
+        id: 'HzltY9',
+        defaultMessage: 'WFS-Dienste',
+      })
+    : tableName === 'wms_layers' ?
+      formatMessage({
+        id: 'IKLYLz',
+        defaultMessage: 'WMS-Ebenen',
+      })
+    : tableName === 'files' ?
+      formatMessage({
+        id: 'mn58Sh',
+        defaultMessage: 'Dateien',
+      })
+    : tableName === 'fields' ?
+      formatMessage({
+        id: 'I+dTZE',
+        defaultMessage: 'Felder',
+      })
+    : tableName === 'widgets_for_fields' ?
+      formatMessage({
+        id: 'bDoJBk',
+        defaultMessage: 'Widgets für Felder',
+      })
+    : tableName === 'widget_types' ?
+      formatMessage({
+        id: 'U55pI0',
+        defaultMessage: 'Widget-Typen',
+      })
+    : tableName === 'field_types' ?
+      formatMessage({
+        id: 'Yx8gIR',
+        defaultMessage: 'Feld-Typen',
+      })
+    : tableName === 'accounts' ?
+      formatMessage({
+        id: '/40i9A',
+        defaultMessage: 'Konten',
+      })
+    : tableName === 'projects' ?
+      formatMessage({
+        id: 'x9x+dX',
+        defaultMessage: 'Projekte',
+      })
+    : tableName === 'units' ?
+      formatMessage({
+        id: 'nVkh0Z',
+        defaultMessage: 'Einheiten',
+      })
+    : tableName === 'lists' ?
+      formatMessage({
+        id: 'zhvWvI',
+        defaultMessage: 'Listen',
+      })
+    : tableName === 'project_users' ?
+      formatMessage({
+        id: 'gi+ubY',
+        defaultMessage: 'Projekt-Benutzer',
+      })
+    : tableName === 'vector_layers' ?
+      formatMessage({
+        id: 'nauDh5',
+        defaultMessage: 'Vektor-Ebenen',
+      })
+    : tableName === 'wms_services' ?
+      formatMessage({
+        id: '0pm66C',
+        defaultMessage: 'WMS-Dienste',
+      })
+    : tableName === 'project_reports' ? reportsLabel
+    : tableName
+        .split('_')
+        .map((w) => w[0].toUpperCase() + w.slice(1))
+        .join(' ')
 
   return formatMessage(
     { id: 'fBB2cC', defaultMessage: '{name} Filter' },
@@ -343,9 +310,9 @@ type Props = {
   from: string
   children: (renderProps: OrFilterRenderProps) => ReactNode
   tableNameOverride?: string
-  filterAtomNameOverride?: string
-  // table views use one dynamically created filter atom per view
-  filterAtomOverride?: unknown
+  // overrides the url filter key derived from table and level, e.g. for
+  // table views (one filter per view id) or special list pages
+  filterKeyOverride?: string
 }
 
 export const Filter = ({
@@ -353,8 +320,7 @@ export const Filter = ({
   from,
   children,
   tableNameOverride,
-  filterAtomNameOverride,
-  filterAtomOverride,
+  filterKeyOverride,
 }: Props): ReactNode => {
   // from is a route id string; the literal union is too large to name here
   const params = useParams({ from: from as never }) as Record<
@@ -388,8 +354,7 @@ export const Filter = ({
     [projectId, placeId2 ? 2 : 1],
   )
   const placeLevelForUsers = resPlaceLevelForUsers?.rows?.[0] as
-    | PlaceLevels
-    | undefined
+    PlaceLevels | undefined
   const placeNameSingularForUsers =
     placeLevelForUsers?.[`name_singular_${language}`] ??
     (placeLevelForUsers as { name_singular?: string } | undefined)
@@ -415,37 +380,19 @@ export const Filter = ({
   })
 
   const [activeTab, setActiveTab] = useState(1)
-  // add 1 and 2 when below subproject_id
-  const filterAtomName =
-    filterAtomNameOverride ??
-    filterAtomNameFromTableAndLevel({
+  // derive the url filter key from table and level; for places the level
+  // comes from the url (placeId present = level 2)
+  const resolvedFilterKey =
+    filterKeyOverride ??
+    filterKeyFromTableAndLevel({
       table: tableName,
       level,
     })
-  // ensure atom exists - got errors when it didn't
-  // lookup atoms by name; every entry is a filter atom like projectsFilterAtom
-  const filterAtoms = stores as unknown as Record<
-    string,
-    typeof projectsFilterAtom
-  >
-  // Re-derive filterAtomName if resolution failed (e.g. places without level prop)
-  const resolvedFilterAtomName =
-    filterAtoms[filterAtomName] != null
-      ? filterAtomName
-      : filterAtomNameFromTableAndLevel({
-          table: tableName,
-          level: placeId ? 2 : 1,
-        })
-  const filterAtom =
-    (filterAtomOverride as typeof projectsFilterAtom | undefined) ??
-    filterAtoms[resolvedFilterAtomName] ??
-    projectsFilterAtom
-  const [filter, setFilter] = useAtom(filterAtom)
+  const [filter, setFilter] = useUrlFilter(resolvedFilterKey)
   const virtualTabValue = filter.length + 1
   const isActiveVirtualTab = activeTab > filter.length
-  const activeRealFilter = !isActiveVirtualTab
-    ? filter[activeTab - 1]
-    : undefined
+  const activeRealFilter =
+    !isActiveVirtualTab ? filter[activeTab - 1] : undefined
   const activeRealFilterHasPersistedValue =
     !!activeRealFilter && Object.keys(activeRealFilter).length > 0
   const canAddAnotherFilter =
@@ -535,7 +482,7 @@ export const Filter = ({
         title={`${title} (${isLoading ? `...` : filteredCount}/${
           isLoading ? `...` : totalCount
         })`}
-        filterAtom={filterAtom}
+        filterKey={resolvedFilterKey}
       />
       <TabList
         selectedValue={selectedTabValue}
@@ -544,23 +491,26 @@ export const Filter = ({
       >
         {filter.map((_f, i) => {
           const label =
-            i === filter.length - 1 && filter.length > 1
-              ? orLabel
-              : i === 0
-                ? formatMessage(
-                    { id: 'fCC3dD', defaultMessage: 'Filter {number}' },
-                    { number: i + 1 },
-                  )
-                : formatMessage(
-                    { id: 'fDD4eE', defaultMessage: 'Oder Filter {number}' },
-                    { number: i + 1 },
-                  )
+            i === filter.length - 1 && filter.length > 1 ? orLabel
+            : i === 0 ?
+              formatMessage(
+                { id: 'fCC3dD', defaultMessage: 'Filter {number}' },
+                { number: i + 1 },
+              )
+            : formatMessage(
+                { id: 'fDD4eE', defaultMessage: 'Oder Filter {number}' },
+                { number: i + 1 },
+              )
           const removeLabel = formatMessage(
             { id: 'fFF6gG', defaultMessage: '{label} entfernen' },
             { label },
           )
           return (
-            <Tab key={i} value={i + 1} className={styles.tab}>
+            <Tab
+              key={i}
+              value={i + 1}
+              className={styles.tab}
+            >
               <span className={styles.tabContent}>
                 <span>{label}</span>
                 {filter.length > 1 && (
@@ -625,7 +575,10 @@ export const Filter = ({
           )
         })}
         {canAddAnotherFilter && (
-          <Tab value="add" className={styles.tab}>
+          <Tab
+            value="add"
+            className={styles.tab}
+          >
             {isActiveVirtualTab ? orLabel : '+'}
           </Tab>
         )}

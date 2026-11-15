@@ -1,22 +1,10 @@
+import { useUrlFilter } from './useUrlFilter.ts'
 import { useLiveQuery } from '@electric-sql/pglite-react'
 import { useAtom } from 'jotai'
 import { isEqual } from 'es-toolkit'
 import { useIntl } from 'react-intl'
 
-import {
-  places1FilterAtom,
-  checks1FilterAtom,
-  checks2FilterAtom,
-  actions1FilterAtom,
-  actions2FilterAtom,
-  checkReports1FilterAtom,
-  checkReports2FilterAtom,
-  actionReports1FilterAtom,
-  actionReports2FilterAtom,
-  filesFilterAtom,
-  treeOpenNodesSetAtom,
-  languageAtom,
-} from '../store.ts'
+import { treeOpenNodesSetAtom, languageAtom } from '../store.ts'
 import type { TableRowFilter } from '../store.ts'
 import { buildNavLabel } from './buildNavLabel.ts'
 import { filterStringFromFilter } from './filterStringFromFilter.ts'
@@ -61,35 +49,31 @@ export const usePlaceNavData = ({
   const [language] = useAtom(languageAtom)
   const { formatMessage } = useIntl()
 
-  const [placesFilter] = useAtom(places1FilterAtom)
+  const [placesFilter] = useUrlFilter('places1')
   const placesFilterString = filterStringFromFilter(placesFilter)
   const placesIsFiltered = !!placesFilterString
 
-  const [checksFilter] = useAtom(
-    placeId2 ? checks2FilterAtom : checks1FilterAtom,
-  )
+  const [checksFilter] = useUrlFilter(placeId2 ? 'checks2' : 'checks1')
   const checksFilterString = filterStringFromFilter(checksFilter)
   const checksIsFiltered = !!checksFilterString
 
-  const [actionsFilter] = useAtom(
-    placeId2 ? actions2FilterAtom : actions1FilterAtom,
-  )
+  const [actionsFilter] = useUrlFilter(placeId2 ? 'actions2' : 'actions1')
   const actionsFilterString = filterStringFromFilter(actionsFilter)
   const actionsIsFiltered = !!actionsFilterString
 
-  const [checkReportsFilter] = useAtom(
-    placeId2 ? checkReports2FilterAtom : checkReports1FilterAtom,
+  const [checkReportsFilter] = useUrlFilter(
+    placeId2 ? 'checkReports2' : 'checkReports1',
   )
   const checkReportsFilterString = filterStringFromFilter(checkReportsFilter)
   const checkReportsIsFiltered = !!checkReportsFilterString
 
-  const [actionReportsFilter] = useAtom(
-    placeId2 ? actionReports2FilterAtom : actionReports1FilterAtom,
+  const [actionReportsFilter] = useUrlFilter(
+    placeId2 ? 'actionReports2' : 'actionReports1',
   )
   const actionReportsFilterString = filterStringFromFilter(actionReportsFilter)
   const actionReportsIsFiltered = !!actionReportsFilterString
 
-  const [filesFilter] = useAtom(filesFilterAtom)
+  const [filesFilter] = useUrlFilter('files')
   const filesFilterString = filterStringFromFilter(filesFilter)
   const filesIsFiltered = !!filesFilterString
 

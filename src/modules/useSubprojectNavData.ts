@@ -1,13 +1,10 @@
+import { useUrlFilter } from './useUrlFilter.ts'
 import { useLiveQuery } from '@electric-sql/pglite-react'
 import { useAtom, useAtomValue } from 'jotai'
 import { isEqual } from 'es-toolkit'
 import { useIntl } from 'react-intl'
 
 import {
-  places1FilterAtom,
-  subprojectReportsFilterAtom,
-  goalsFilterAtom,
-  filesFilterAtom,
   treeOpenNodesSetAtom,
   languageAtom,
   isDesigningAtom,
@@ -31,7 +28,7 @@ export const useSubprojectNavData = ({ projectId, subprojectId }: Props) => {
   const [openNodesSet] = useAtom(treeOpenNodesSetAtom)
   const { formatMessage } = useIntl()
   const designing = useAtomValue(isDesigningAtom(projectId))
-  const [placesFilter] = useAtom(places1FilterAtom)
+  const [placesFilter] = useUrlFilter('places1')
   const [language] = useAtom(languageAtom)
 
   const placesFilterString = filterStringFromFilter(
@@ -40,7 +37,7 @@ export const useSubprojectNavData = ({ projectId, subprojectId }: Props) => {
   )
   const placesIsFiltered = !!placesFilterString
 
-  const [subprojectReportsFilter] = useAtom(subprojectReportsFilterAtom)
+  const [subprojectReportsFilter] = useUrlFilter('subprojectReports')
   const subprojectReportsFilterString = filterStringFromFilter(
     subprojectReportsFilter as Record<string, unknown> &
       typeof subprojectReportsFilter,
@@ -48,14 +45,14 @@ export const useSubprojectNavData = ({ projectId, subprojectId }: Props) => {
   )
   const subprojectReportsIsFiltered = !!subprojectReportsFilterString
 
-  const [goalsFilter] = useAtom(goalsFilterAtom)
+  const [goalsFilter] = useUrlFilter('goals')
   const goalsFilterString = filterStringFromFilter(
     goalsFilter as Record<string, unknown> & typeof goalsFilter,
     '',
   )
   const goalsIsFiltered = !!goalsFilterString
 
-  const [filesFilter] = useAtom(filesFilterAtom)
+  const [filesFilter] = useUrlFilter('files')
   const filesFilterString = filterStringFromFilter(
     filesFilter as Record<string, unknown> & typeof filesFilter,
     '',

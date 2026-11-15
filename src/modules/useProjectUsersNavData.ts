@@ -1,3 +1,4 @@
+import { useUrlFilter } from './useUrlFilter.ts'
 import { useLiveQuery } from '@electric-sql/pglite-react'
 import { useAtom } from 'jotai'
 import { useLocation } from '@tanstack/react-router'
@@ -6,7 +7,7 @@ import { useIntl } from 'react-intl'
 
 import { filterStringFromFilter } from './filterStringFromFilter.ts'
 import { buildNavLabel } from './buildNavLabel.ts'
-import { projectUsersFilterAtom, treeOpenNodesSetAtom } from '../store.ts'
+import { treeOpenNodesSetAtom } from '../store.ts'
 
 type Props = {
   projectId: string
@@ -22,7 +23,7 @@ type NavData = {
 export const useProjectUsersNavData = ({ projectId }: Props) => {
   const { formatMessage } = useIntl()
   const [openNodesSet] = useAtom(treeOpenNodesSetAtom)
-  const [filter] = useAtom(projectUsersFilterAtom)
+  const [filter] = useUrlFilter('projectUsers')
   const location = useLocation()
 
   const filterString = filterStringFromFilter(filter)

@@ -1,3 +1,4 @@
+import { useUrlFilter } from '../../../modules/useUrlFilter.ts'
 import { useParams } from '@tanstack/react-router'
 import { useMapEvent, useMap } from 'react-leaflet/hooks'
 import type {
@@ -15,12 +16,7 @@ import { layersDataFromRequestData } from './layersDataFromRequestData.ts'
 import { fetchData } from './fetchData.ts'
 import { filterStringFromFilter } from '../../../modules/filterStringFromFilter.ts'
 import { getVectorLayerLabel } from '../../../modules/vectorLayerLabel.ts'
-import {
-  mapInfoAtom,
-  wmsLayersFilterAtom,
-  vectorLayersFilterAtom,
-  languageAtom,
-} from '../../../store.ts'
+import { mapInfoAtom, languageAtom } from '../../../store.ts'
 import type { MapInfo } from '../../../store.ts'
 import type WfsServices from '../../../models/public/WfsServices.ts'
 import type Crs from '../../../models/public/Crs.ts'
@@ -54,8 +50,8 @@ type WmsLayerRow = {
 
 export const ClickListener = () => {
   const setMapInfo = useSetAtom(mapInfoAtom)
-  const wmsLayersFilter = useAtomValue(wmsLayersFilterAtom)
-  const vectorLayersFilter = useAtomValue(vectorLayersFilterAtom)
+  const [wmsLayersFilter] = useUrlFilter('wmsLayers')
+  const [vectorLayersFilter] = useUrlFilter('vectorLayers')
   const language = useAtomValue(languageAtom)
 
   const { projectId = '99999999-9999-9999-9999-999999999999' } = useParams({
@@ -198,16 +194,16 @@ export const ClickListener = () => {
           label: layer.vectorLayerLabel || 'Unknown Layer',
           featureLabel: featureProps?.label || 'Feature',
           properties,
-          ...(ownTable
-            ? {
-                ownTable,
-                ownId,
-                ownPlaceId,
-                ownSubprojectId,
-                ownParentId,
-                projectId,
-              }
-            : {}),
+          ...(ownTable ?
+            {
+              ownTable,
+              ownId,
+              ownPlaceId,
+              ownSubprojectId,
+              ownParentId,
+              projectId,
+            }
+          : {}),
         })
       }
     })
@@ -327,16 +323,14 @@ export const ClickListener = () => {
         [wfsDefaultCrsCode],
       )
       const defaultCrs = defaultCrsRes?.rows?.[0] as Crs | undefined
-      const [x, y] = proj4(
-        'EPSG:4326',
-        defaultCrs?.proj4 as string,
-        [lng - buffer, lat - buffer],
-      )
-      const [x2, y2] = proj4(
-        'EPSG:4326',
-        defaultCrs?.proj4 as string,
-        [lng + buffer, lat + buffer],
-      )
+      const [x, y] = proj4('EPSG:4326', defaultCrs?.proj4 as string, [
+        lng - buffer,
+        lat - buffer,
+      ])
+      const [x2, y2] = proj4('EPSG:4326', defaultCrs?.proj4 as string, [
+        lng + buffer,
+        lat + buffer,
+      ])
       const params = {
         service: 'WFS',
         request: 'GetFeature',

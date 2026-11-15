@@ -6,10 +6,10 @@ import { useIntl } from 'react-intl'
 
 import { buildNavLabel } from './buildNavLabel.ts'
 import {
-  treeOpenNodesSetAtom,
+  projectQcsRunFilteredCountAtom,
   projectQcsRunLabelFilterAtom,
   projectQcsRunOnlyWithResultsAtom,
-  projectQcsRunFilteredCountAtom,
+  treeOpenNodesSetAtom,
 } from '../store.ts'
 
 type Props = {

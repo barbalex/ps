@@ -1,21 +1,9 @@
+import { useUrlFilter } from '../modules/useUrlFilter.ts'
 import { useMemo, type ReactNode } from 'react'
 import { useLiveQuery } from '@electric-sql/pglite-react'
 import { useAtom } from 'jotai'
 
-import {
-  subprojectsFilterAtom,
-  projectReportsFilterAtom,
-  wmsLayersFilterAtom,
-  vectorLayersFilterAtom,
-  filesFilterAtom,
-  listsFilterAtom,
-  unitsFilterAtom,
-  fieldsFilterAtom,
-  places1FilterAtom,
-  subprojectReportsFilterAtom,
-  goalsFilterAtom,
-  languageAtom,
-} from '../store.ts'
+import { languageAtom } from '../store.ts'
 import { filterStringFromFilter } from '../modules/filterStringFromFilter.ts'
 import {
   subprojectNameSingularExpr,
@@ -88,31 +76,31 @@ const subprojectArm = (
 export const NavDataProvider = ({ children }: { children: ReactNode }) => {
   const [language] = useAtom(languageAtom)
 
-  const [subprojectsFilter] = useAtom(subprojectsFilterAtom)
+  const [subprojectsFilter] = useUrlFilter('subprojects')
   const subprojectsFilterString = filterStringFromFilter(subprojectsFilter)
-  const [projectReportsFilter] = useAtom(projectReportsFilterAtom)
+  const [projectReportsFilter] = useUrlFilter('projectReports')
   const projectReportsFilterString =
     filterStringFromFilter(projectReportsFilter)
-  const [wmsLayersFilter] = useAtom(wmsLayersFilterAtom)
+  const [wmsLayersFilter] = useUrlFilter('wmsLayers')
   const wmsLayersFilterString = filterStringFromFilter(wmsLayersFilter)
-  const [vectorLayersFilter] = useAtom(vectorLayersFilterAtom)
+  const [vectorLayersFilter] = useUrlFilter('vectorLayers')
   const vectorLayersFilterString = filterStringFromFilter(vectorLayersFilter)
-  const [filesFilter] = useAtom(filesFilterAtom)
+  const [filesFilter] = useUrlFilter('files')
   const filesFilterString = filterStringFromFilter(filesFilter)
-  const [listsFilter] = useAtom(listsFilterAtom)
+  const [listsFilter] = useUrlFilter('lists')
   const listsFilterString = filterStringFromFilter(listsFilter)
-  const [unitsFilter] = useAtom(unitsFilterAtom)
+  const [unitsFilter] = useUrlFilter('units')
   const unitsFilterString = filterStringFromFilter(unitsFilter)
-  const [fieldsFilter] = useAtom(fieldsFilterAtom)
+  const [fieldsFilter] = useUrlFilter('fields')
   const fieldsFilterString = filterStringFromFilter(fieldsFilter)
-  const [placesFilter] = useAtom(places1FilterAtom)
+  const [placesFilter] = useUrlFilter('places1')
   const placesFilterString = filterStringFromFilter(placesFilter, '')
-  const [subprojectReportsFilter] = useAtom(subprojectReportsFilterAtom)
+  const [subprojectReportsFilter] = useUrlFilter('subprojectReports')
   const subprojectReportsFilterString = filterStringFromFilter(
     subprojectReportsFilter,
     '',
   )
-  const [goalsFilter] = useAtom(goalsFilterAtom)
+  const [goalsFilter] = useUrlFilter('goals')
   const goalsFilterString = filterStringFromFilter(goalsFilter, '')
 
   const resProjects = useLiveQuery<NavProjectRow>(`

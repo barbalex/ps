@@ -1,3 +1,4 @@
+import { useUrlFilter } from './useUrlFilter.ts'
 import { useAtom } from 'jotai'
 import { useLiveQuery } from '@electric-sql/pglite-react'
 import { useLocation } from '@tanstack/react-router'
@@ -13,11 +14,7 @@ import {
   getFieldTableOptionKey,
   resolveFieldTableContext,
 } from './fieldTableLabel.ts'
-import {
-  fieldsFilterAtom,
-  languageAtom,
-  treeOpenNodesSetAtom,
-} from '../store.ts'
+import { languageAtom, treeOpenNodesSetAtom } from '../store.ts'
 
 type Props = {
   projectId?: string
@@ -73,7 +70,7 @@ export const useFieldsNavData = ({ projectId, accountId, userId }: Props) => {
   // needs to work not only works for urlPath, for all opened paths!
   const isOpen = openNodesSet.has(ownArray.join('/'))
 
-  const [filter] = useAtom(fieldsFilterAtom)
+  const [filter] = useUrlFilter('fields')
   const filterString = filterStringFromFilter(filter)
   const isFiltered = !!filterString
 

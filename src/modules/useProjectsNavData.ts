@@ -1,3 +1,4 @@
+import { useUrlFilter } from './useUrlFilter.ts'
 import { useLiveQuery } from '@electric-sql/pglite-react'
 import { useAtom } from 'jotai'
 import { isEqual } from 'es-toolkit'
@@ -5,7 +6,7 @@ import { useIntl } from 'react-intl'
 
 import { filterStringFromFilter } from './filterStringFromFilter.ts'
 import { buildNavLabel } from './buildNavLabel.ts'
-import { projectsFilterAtom, treeOpenNodesSetAtom } from '../store.ts'
+import { treeOpenNodesSetAtom } from '../store.ts'
 
 const parentArray = ['data']
 const parentUrl = `/${parentArray.join('/')}`
@@ -75,7 +76,7 @@ export const useProjectsNavData = (params?: Props) => {
   const { formatMessage } = useIntl()
   const [openNodesSet] = useAtom(treeOpenNodesSetAtom)
 
-  const [filter] = useAtom(projectsFilterAtom)
+  const [filter] = useUrlFilter('projects')
   const filterString = filterStringFromFilter(filter, 'projects')
   const isFiltered = !!filterString
 

@@ -9,9 +9,9 @@ import * as fluentUiReactComponents from '@fluentui/react-components'
 import { Loading } from '../components/shared/Loading.tsx'
 import {
   languageAtom,
-  qcsRunOnlyWithResultsAtom,
-  qcsRunLabelFilterAtom,
   qcsRunFilteredCountAtom,
+  qcsRunLabelFilterAtom,
+  qcsRunOnlyWithResultsAtom,
 } from '../store.ts'
 import { Dismiss16Regular, WindowEdit16Regular } from '@fluentui/react-icons'
 import { QcsResultDialog } from '../components/QcsResultDialog/index.tsx'
@@ -52,13 +52,14 @@ function HighlightedLabel({
   return (
     <span>
       {parts.map((part, i) =>
-        regex.test(part) ? (
-          <mark key={i} className={styles.highlight}>
+        regex.test(part) ?
+          <mark
+            key={i}
+            className={styles.highlight}
+          >
             {part}
           </mark>
-        ) : (
-          <span key={i}>{part}</span>
-        ),
+        : <span key={i}>{part}</span>,
       )}
     </span>
   )
@@ -102,28 +103,36 @@ function QcCard({
       <CardHeader
         header={
           <Text weight="semibold">
-            <HighlightedLabel text={qc.label ?? qc.qcs_id} term={labelFilter} />
+            <HighlightedLabel
+              text={qc.label ?? qc.qcs_id}
+              term={labelFilter}
+            />
           </Text>
         }
       />
       <div className={styles.cardBody}>
-        {rows.length === 0 ? (
+        {rows.length === 0 ?
           <Text className={styles.emptyText}>
             {formatMessage({
               id: 'subprojectQcsRun.allOk',
               defaultMessage: 'Alles i.O.',
             })}
           </Text>
-        ) : (
-          <ul className={styles.resultList}>
+        : <ul className={styles.resultList}>
             {rows.map((row, i) => {
               const label = row.label ?? String(Object.values(row)[0] ?? '')
               const url = row.url as string | undefined
               return (
-                <li key={i} className={styles.resultItem}>
-                  {url ? (
+                <li
+                  key={i}
+                  className={styles.resultItem}
+                >
+                  {url ?
                     <>
-                      <Link to={url} className={styles.resultLink}>
+                      <Link
+                        to={url}
+                        className={styles.resultLink}
+                      >
                         {label}
                       </Link>
                       <Tooltip
@@ -146,14 +155,12 @@ function QcCard({
                         />
                       </Tooltip>
                     </>
-                  ) : (
-                    <Text>{label}</Text>
-                  )}
+                  : <Text>{label}</Text>}
                 </li>
               )
             })}
           </ul>
-        )}
+        }
       </div>
     </Card>
   )
@@ -217,8 +224,9 @@ export const SubprojectQcsRun = (_: { from: string }) => {
   ].sort((a, b) => (a.label ?? '').localeCompare(b.label ?? ''))
 
   // Filter by label at parent level so unmounted QcCards don't run live queries
-  const labelFilteredQcs = labelFilter.trim()
-    ? qcRows.filter((qc) =>
+  const labelFilteredQcs =
+    labelFilter.trim() ?
+      qcRows.filter((qc) =>
         (qc.label ?? '').toLowerCase().includes(labelFilter.toLowerCase()),
       )
     : qcRows
@@ -268,7 +276,7 @@ export const SubprojectQcsRun = (_: { from: string }) => {
               })}
               appearance="underline"
               contentAfter={
-                labelFilter ? (
+                labelFilter ?
                   <Dismiss16Regular
                     className={styles.clearFilter}
                     onClick={() => setLabelFilter('')}
@@ -277,7 +285,7 @@ export const SubprojectQcsRun = (_: { from: string }) => {
                       defaultMessage: 'Filter leeren',
                     })}
                   />
-                ) : undefined
+                : undefined
               }
             />
           </Field>

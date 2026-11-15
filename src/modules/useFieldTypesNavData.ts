@@ -1,3 +1,4 @@
+import { useUrlFilter } from './useUrlFilter.ts'
 import { useAtom } from 'jotai'
 import { useLiveQuery } from '@electric-sql/pglite-react'
 import { useLocation } from '@tanstack/react-router'
@@ -6,7 +7,7 @@ import { useIntl } from 'react-intl'
 
 import { filterStringFromFilter } from './filterStringFromFilter.ts'
 import { buildNavLabel } from './buildNavLabel.ts'
-import { fieldTypesFilterAtom, treeOpenNodesSetAtom } from '../store.ts'
+import { treeOpenNodesSetAtom } from '../store.ts'
 
 const parentArray = ['data']
 const parentUrl = `/${parentArray.join('/')}`
@@ -33,7 +34,7 @@ export const useFieldTypesNavData = () => {
   // needs to work not only works for urlPath, for all opened paths!
   const isOpen = openNodesSet.has(ownArray.join('/'))
 
-  const [filter] = useAtom(fieldTypesFilterAtom)
+  const [filter] = useUrlFilter('fieldTypes')
   const filterString = filterStringFromFilter(filter)
   const isFiltered = !!filterString
 

@@ -7,15 +7,16 @@
 import { usePGlite, useLiveQuery } from '@electric-sql/pglite-react'
 import { useLocation, useParams } from '@tanstack/react-router'
 import { useAtom, useSetAtom } from 'jotai'
-import type { Atom, WritableAtom } from 'jotai'
 
 import { getValueFromChange } from '../../../modules/getValueFromChange.ts'
 import { TextField } from '../TextField.tsx'
 import { accountTables } from '../../../formsAndLists/field/accountTables.ts'
 import { AddField } from './AddField.tsx'
 import { WidgetsFromDataFieldsDefined } from './WidgetsFromDataFieldsDefined/index.tsx'
-import { filterAtomNameFromTableAndLevel } from '../../../modules/filterAtomNameFromTableAndLevel.ts'
-import { addOperationAtom, designingAtom, store } from '../../../store.ts'
+import { filterKeyFromTableAndLevel } from '../../../modules/filterKeyFromTableAndLevel.ts'
+import { useUrlFilter } from '../../../modules/useUrlFilter.ts'
+import { setNewFilterFromOld } from '../../../modules/setNewFilterFromOld.ts'
+import { addOperationAtom, designingAtom } from '../../../store.ts'
 
 import type Fields from '../../../models/public/Fields.ts'
 import type FieldTypes from '../../../models/public/FieldTypes.ts'
@@ -57,6 +58,15 @@ export const Jsonb = ({
   const { projectId, placeId, placeId2 } = useParams({ strict: false })
   const location = useLocation()
   const db = usePGlite()
+  const filterLevel =
+    table === 'places' ?
+      placeId ? 2
+      : 1
+    : placeId2 ? 2
+    : 1
+  const [filter, setFilter] = useUrlFilter(
+    filterKeyFromTableAndLevel({ table, level: filterLevel }),
+  )
 
   const addOperation = useSetAtom(addOperationAtom)
 
@@ -86,12 +96,12 @@ export const Jsonb = ({
   const [designingMap] = useAtom(designingAtom)
   const designing = designingMap[projectId ?? ''] ?? false
   const resReservedFieldIds = useLiveQuery<{ field_id: string }>(
-    useProjectId
-      ? `SELECT DISTINCT jsonb_array_elements_text(fg.sorted_field_ids) AS field_id
+    useProjectId ?
+      `SELECT DISTINCT jsonb_array_elements_text(fg.sorted_field_ids) AS field_id
          FROM field_groups fg
          JOIN table_views tv ON tv.field_group_id = fg.field_group_id
          WHERE fg.project_id = $1 AND fg.table_name = $2`
-      : `SELECT NULL AS field_id WHERE false`,
+    : `SELECT NULL AS field_id WHERE false`,
     useProjectId ? [projectId, table] : [],
   )
   const reservedFieldIds = new Set(
@@ -129,29 +139,16 @@ export const Jsonb = ({
     }
 
     const isFilter = location.pathname.endsWith('filter')
-    const level = table === 'places' ? (placeId ? 2 : 1) : placeId2 ? 2 : 1
 
     if (isFilter) {
-      // TODO: wait until new db and it's accessing lib. Then implement these queries
-      // when filtering no id is passed for the row
-      // how to filter on jsonb fields?
-      // https://discord.com/channels/933657521581858818/1248997155448819775/1248997155448819775
-      // example from electric-sql discord: https://discord.com/channels/933657521581858818/1246045111478124645
-      // where: { [jsonbFieldName]: { path: ["is_admin"], equals: true } },
-      const filterAtom = filterAtomNameFromTableAndLevel({
-        table,
-        level,
+      const newFilter = setNewFilterFromOld({
+        name: `${jsonFieldName}.${name}`,
+        value: val[name],
+        orFilters: filter,
+        orIndex: orIndex as number,
+        targetType: 'text',
       })
-      // filterAtom is an atom name string; bridge it to the atom types jotai expects
-      const activeFilter = store.get(filterAtom as unknown as Atom<string>)
-      const newFilter = `${
-        activeFilter.length ? `${activeFilter} AND ` : ''
-      }${jsonFieldName}->>'${name}' = '${val[name]}'`
-      store.set(
-        filterAtom as unknown as WritableAtom<string, [string], void>,
-        newFilter,
-      )
-
+      setFilter(newFilter)
       return
     }
     const prevRes = await db.query(
@@ -181,14 +178,15 @@ export const Jsonb = ({
   // (not for restricted views: fields outside the group are expected there)
   const fieldNamesDefined = fields.map((field) => field.name)
   const dataKeys = Object.keys(data)
-  const dataKeysNotDefined = fieldIds
-    ? []
+  const dataKeysNotDefined =
+    fieldIds ?
+      []
     : dataKeys.filter((dataKey) => !fieldNamesDefined.includes(dataKey))
   const isHistory = from?.includes('histories')
 
   return (
     <>
-      {fields.length > 0 ? (
+      {fields.length > 0 ?
         <WidgetsFromDataFieldsDefined
           key="widgetsFromDataFieldsDefined"
           fields={fields}
@@ -202,7 +200,7 @@ export const Jsonb = ({
           ref={ref}
           from={from}
         />
-      ) : null}
+      : null}
       {dataKeysNotDefined.map((dataKey, index) => (
         <TextField
           key={dataKey}
@@ -220,11 +218,11 @@ export const Jsonb = ({
           // if isHistory, don't warn about undefined fields
           validationState={isHistory ? undefined : 'warning'}
           validationMessage={
-            isHistory
-              ? undefined
-              : `This field is not defined for this ${
-                  isAccountTable ? 'account' : 'project'
-                }`
+            isHistory ? undefined : (
+              `This field is not defined for this ${
+                isAccountTable ? 'account' : 'project'
+              }`
+            )
           }
           autoFocus={autoFocus && index === 0 && fields.length === 0}
         />
