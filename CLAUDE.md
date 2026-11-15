@@ -71,6 +71,33 @@ cd backend-dev && docker compose up -d --build  # db, postgrest, electric, auth 
 npm run dev                                     # app on http://localhost:5176
 ```
 
+### Catching Up After a Pull
+
+Run this when returning to the project (e.g. on the notebook) after pulling changes:
+
+```bash
+nvm use                                        # Node 24 (see .nvmrc)
+npm install                                    # also re-applies the node_modules patches (postinstall)
+diff backend-dev/.env.example backend-dev/.env # add any new vars to your local .env (it is gitignored)
+cd backend-dev && docker compose up -d --build # rebuild/restart the dev backend
+npm run verify                                 # lint + unit tests + sync-sql + i18n checks — no backend needed
+npm run dev                                    # app on http://localhost:5176
+```
+
+Depending on what the pull changed:
+
+- **`backend/db/init/` changed**: the docker entrypoint runs init scripts only on an empty volume —
+  rebuild the dev database from scratch with `cd backend-dev && docker compose down -v && docker
+  compose up -d --build`. This wipes dev data; re-import the apflora demo data if you need it
+  (`npm run apflora:import:test`, requires the local apf2 dump).
+- **After a dev-database rebuild**: reset the local browser client too — log out (logout wipes the
+  local synced data) and back in (`test@test.ch` / `test-test`). Smaller schema changes heal
+  themselves on the next load (`src/components/SqlInitializer.tsx`).
+- **`@playwright/test` bumped** and you plan to run e2e: `npx playwright install`.
+- Generated files (`src/sql/`, `src/models/`, `docs/docs/`, `src/routeTree.gen.ts`) are committed or
+  auto-generated on dev — nothing to regenerate. `npm run hooks:install` is one-time per clone (the
+  git config persists) — not needed again.
+
 ---
 
 ## Deployment
