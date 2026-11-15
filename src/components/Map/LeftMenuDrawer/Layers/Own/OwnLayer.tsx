@@ -53,7 +53,7 @@ export const OwnLayer = ({
   const { projectId } = useParams({ strict: false })
   const [designingMap] = useAtom(designingAtom)
   const designing = designingMap[projectId ?? ''] ?? false
-  const { setLayerVisible, isLayerVisible } = useUrlLayers()
+  const { setLayerVisible, isLayerVisible, isOverridden } = useUrlLayers()
   const [vectorLayerDisplayId, setVectorLayerDisplayId] = useAtom(
     mapDrawerVectorLayerDisplayAtom,
   )
@@ -78,11 +78,16 @@ export const OwnLayer = ({
       // create the missing layer_presentation
       // For table layers (own_table is set), skip operation queue as they are system-managed
       const isTableLayer = !!layer.own_table
-      await createLayerPresentation({
+      const newLayerPresentationId = await createLayerPresentation({
         vectorLayerId: layer.vector_layer_id,
         active: true,
         skipOperationQueue: isTableLayer,
       } as unknown as Parameters<typeof createLayerPresentation>[0])
+      // with an active ?layers= override the new layer must join it to
+      // become visible (db-active alone is not enough there)
+      if (isOverridden && newLayerPresentationId) {
+        setLayerVisible(newLayerPresentationId, true)
+      }
       return
     }
     setLayerVisible(layerPresentationId, true)

@@ -53,7 +53,7 @@ export const WmsLayer = ({ layer, isLast, isOpen }: Props) => {
   const designing = designingMap[projectId ?? ''] ?? false
   const addOperation = useSetAtom(addOperationAtom)
   const db = usePGlite()
-  const { setLayerVisible, isLayerVisible } = useUrlLayers()
+  const { setLayerVisible, isLayerVisible, isOverridden } = useUrlLayers()
   const [tab, setTab] = useState<TabType>('overall-displays')
 
   // effect: if layer has no wms_service_id or wms_service_layer_name: set tab to 'config'
@@ -85,10 +85,15 @@ export const WmsLayer = ({ layer, isLast, isOpen }: Props) => {
       return
     }
     if (!presentation) {
-      await createLayerPresentation({
+      const newLayerPresentationId = await createLayerPresentation({
         wmsLayerId: layer.wms_layer_id,
         active: true,
       } as unknown as Parameters<typeof createLayerPresentation>[0])
+      // with an active ?layers= override the new layer must join it to
+      // become visible (db-active alone is not enough there)
+      if (isOverridden && newLayerPresentationId) {
+        setLayerVisible(newLayerPresentationId, true)
+      }
       return
     }
     setLayerVisible(presentation.layer_presentation_id, true)

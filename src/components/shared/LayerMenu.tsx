@@ -117,6 +117,11 @@ export const LayerMenu = ({ table, level, placeNamePlural }: Props) => {
         vectorLayerId: vectorLayerId as never,
         active: true,
       })
+      // with an active ?layers= override the new layer must join it to
+      // become visible (db-active alone is not enough there)
+      if (isOverridden && newLpId) {
+        setLayerVisible(newLpId, true)
+      }
     } else if (newLpId) {
       db.query(
         `UPDATE layer_presentations SET active = TRUE WHERE layer_presentation_id = $1`,

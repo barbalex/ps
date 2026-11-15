@@ -16,6 +16,7 @@ import { usePGlite, useLiveQuery } from '@electric-sql/pglite-react'
 import { ErrorBoundary } from '../../../../shared/ErrorBoundary.tsx'
 import { ActiveLayer } from './Active/index.tsx'
 import { mapLayerSortingAtom } from '../../../../../store.ts'
+import { useUrlLayers } from '../../../../../modules/useUrlLayers.ts'
 import { DragAndDropContext } from './DragAndDropContext.ts'
 import {
   getItemRegistry,
@@ -60,6 +61,9 @@ const openItemsAtom = atom<string[]>([])
 export const ActiveLayers = () => {
   const [mapLayerSorting, setMapLayerSorting] = useAtom(mapLayerSortingAtom)
   const [openItems, setOpenItems] = useAtom(openItemsAtom)
+  // ?layers= override-aware render list (see the hook): reordering writes
+  // the param while an override is active, the sorting atom otherwise
+  const { layers: effectiveLayers, isOverridden, setLayers } = useUrlLayers()
 
   const { projectId = '99999999-9999-9999-9999-999999999999' } = useParams({
     strict: false,
@@ -104,13 +108,15 @@ export const ActiveLayers = () => {
   // + less renders
   // - need to handle different columns
 
-  // sort by mapLayerSorting
+  // sort by the effective render list: with an active ?layers= override
+  // that is the param (so drawer order, map order and url agree); without
+  // one it is mapLayerSorting
   const activeLayers = [...activeWmsLayers, ...activeVectorLayers].sort(
     (a, b) => {
-      const aIndex = mapLayerSorting.findIndex(
+      const aIndex = effectiveLayers.findIndex(
         (ls) => ls === a.layer_presentation_id,
       )
-      const bIndex = mapLayerSorting.findIndex(
+      const bIndex = effectiveLayers.findIndex(
         (ls) => ls === b.layer_presentation_id,
       )
       return aIndex - bIndex
@@ -183,8 +189,32 @@ export const ActiveLayers = () => {
         finishIndex,
       })
       setMapLayerSorting(newLayerSorting)
+
+      // with an active ?layers= override the param is the render list:
+      // apply the new order of the active layers onto it, keeping ids
+      // that are not part of this drawer list (e.g. the osm base layer)
+      // in their slots
+      if (isOverridden) {
+        const activesIds = new Set(layerPresentationIds)
+        const orderedVisibleActives = newLayerSorting.filter((lpId) =>
+          effectiveLayers.includes(lpId),
+        )
+        let i = 0
+        const newEffectiveLayers = effectiveLayers.map((lpId) =>
+          activesIds.has(lpId) && orderedVisibleActives.includes(lpId) ?
+            (orderedVisibleActives[i++] ?? lpId)
+          : lpId,
+        )
+        setLayers(newEffectiveLayers)
+      }
     },
-    [layerPresentationIds, setMapLayerSorting],
+    [
+      layerPresentationIds,
+      setMapLayerSorting,
+      isOverridden,
+      effectiveLayers,
+      setLayers,
+    ],
   )
 
   useEffect(() => {

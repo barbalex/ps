@@ -23,6 +23,47 @@ const LP_ID = psql(
 // the layer must be db-active: without an override it is the default view
 psql(`UPDATE layer_presentations SET active = true WHERE layer_presentation_id = '${LP_ID}'`)
 
+// a second layer for the reorder test; deactivated by default so the
+// other tests keep a single active row
+const LP_ID_2 = psql(
+  `SELECT lp.layer_presentation_id FROM layer_presentations lp
+   JOIN vector_layers vl ON lp.vector_layer_id = vl.vector_layer_id
+   WHERE vl.own_table = 'checks' AND vl.own_table_level = 1
+     AND vl.project_id = '${PROJECT_ID}'`,
+)
+
+// stepped mouse moves: a single hop does not reliably start the drag
+async function dragElementBelow(
+  page: import('@playwright/test').Page,
+  source: import('@playwright/test').Locator,
+  target: import('@playwright/test').Locator,
+) {
+  const srcBox = await source.boundingBox()
+  const dstBox = await target.boundingBox()
+  if (!srcBox || !dstBox) throw new Error('drag rows not found')
+
+  const srcX = srcBox.x + srcBox.width / 2
+  const srcY = srcBox.y + srcBox.height / 2
+  const dstX = dstBox.x + dstBox.width / 2
+  // release below the middle of the target row: land after it
+  const dstY = dstBox.y + dstBox.height * 0.8
+
+  await page.mouse.move(srcX, srcY)
+  await page.mouse.down()
+  const steps = 12
+  for (let i = 1; i <= steps; i++) {
+    await page.mouse.move(
+      srcX + (dstX - srcX) * (i / steps),
+      srcY + (dstY - srcY) * (i / steps),
+    )
+    await page.waitForTimeout(40)
+  }
+  await page.waitForTimeout(100)
+  await page.mouse.up()
+}
+
+psql(`UPDATE layer_presentations SET active = false WHERE layer_presentation_id = '${LP_ID_2}'`)
+
 test.use({ locale: 'de-CH' })
 
 test('the drawer layer toggle writes the url override', async ({ page }) => {
@@ -107,4 +148,32 @@ test('the checkbox toggles without opening the form; the label opens it', async 
   await expect(
     drawer.getByRole('tab', { name: 'Overall Display' }),
   ).toBeVisible({ timeout: 10_000 })
+})
+
+test('drag reordering rewrites the layers param under an override', async ({
+  page,
+}) => {
+  // a second active layer, so reordering has two rows to work with
+  psql(`UPDATE layer_presentations SET active = true WHERE layer_presentation_id = '${LP_ID_2}'`)
+
+  await login(page, 'test@test.ch', 'test-test')
+
+  // override with base layer + the two active layers in a known order
+  await page.goto(
+    `${PLACES_URL}?layers=${OSM_LAYER_ID},${LP_ID},${LP_ID_2}&panes=map`,
+  )
+  const drawer = page.locator('.map-layers-drawer')
+  await expect(drawer).toBeVisible({ timeout: 60_000 })
+  await page.waitForTimeout(2500)
+
+  const handles = drawer.locator('[title="drag to reorder"]')
+  await expect(handles.nth(1)).toBeVisible({ timeout: 30_000 })
+
+  // drag the first active layer below the second: the url override must
+  // reflect the new draw order
+  await dragElementBelow(page, handles.nth(0), handles.nth(1))
+  await expect(page).toHaveURL(
+    new RegExp(`layers=${OSM_LAYER_ID}%2C${LP_ID_2}%2C${LP_ID}(&|$)`),
+    { timeout: 10_000 },
+  )
 })
