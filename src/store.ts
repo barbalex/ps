@@ -417,10 +417,9 @@ export const mapZoomAtom = atomWithStorage('mapZoom', 13)
 
 // map of id (layer.id, key) and show boolean
 export const showLocalMapAtom = atomWithStorage('showLocalMapAtom', false)
-export const localMapValuesAtom = atomWithStorage<Record<string, boolean>>(
-  'localMapValuesAtom',
-  {},
-)
+// NB: the former localMapValuesAtom (layer visibility per id) was dead
+// state and has been removed; clearLocalSyncedData still clears the stale
+// localStorage key for users who have it persisted
 export const mapHideUiAtom = atomWithStorage('mapHideUiAtom', false)
 export const mapLocateAtom = atomWithStorage('mapLocateAtom', false)
 // TODO:

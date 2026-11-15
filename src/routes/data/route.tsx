@@ -11,7 +11,7 @@ import { bootTrace } from '../../modules/bootTrace.ts'
 import { NotFound } from '../../components/NotFound.tsx'
 import { getSession } from '../../modules/authClient.ts'
 import { isVerificationGraceExpired } from '../../modules/emailVerificationGrace.ts'
-import { filterUrlKeyPrefix } from '../../modules/useUrlFilter.ts'
+import { isRetainedSearchParam } from '../../modules/urlSearchKeys.ts'
 import {
   sessionVerifiedAtom,
   store,
@@ -29,27 +29,28 @@ const defaultValues = {
 // is part of the eager entry chunk, and arktype + @ark/schema (~30 KB gz)
 // came along with it. The param is only ever set programmatically (as a
 // proper boolean), so permissive coercion is safe.
-// `f-*` params carry list filters (see modules/useUrlFilter.ts); they are
-// passed through unvalidated — values from hand-crafted links are coerced
-// defensively by useUrlFilter.
+// `f-*` params carry list filters (see modules/useUrlFilter.ts), `c`/`z` the
+// map viewport (see modules/useUrlMapViewport.ts); they are passed through
+// unvalidated — values from hand-crafted links are coerced defensively by
+// their hooks.
 type DataSearch = { onlyForm?: boolean } & Record<string, unknown>
 const validateSearch = (search: Record<string, unknown>): DataSearch => {
   const result: DataSearch = { onlyForm: search.onlyForm === true }
   for (const [key, value] of Object.entries(search)) {
-    if (key.startsWith(filterUrlKeyPrefix)) result[key] = value
+    if (isRetainedSearchParam(key)) result[key] = value
   }
   return result
 }
 
 // Navigations build their search from the destination route's defaults, so
-// without this middleware every link would drop the active filters. Retain
-// the current location's `f-*` params unless the navigation itself set or
-// cleared them (setting a param to undefined clears it and must win).
-const retainFilterParams: SearchMiddleware<DataSearch> = ({ search, next }) => {
+// without this middleware every link would drop the retained view state.
+// Keep the current location's retained params unless the navigation itself
+// set or cleared them (setting a param to undefined clears it and must win).
+const retainViewParams: SearchMiddleware<DataSearch> = ({ search, next }) => {
   const result = next(search)
   const copy: Record<string, unknown> = { ...result }
   for (const [key, value] of Object.entries(search)) {
-    if (key.startsWith(filterUrlKeyPrefix) && !(key in copy)) {
+    if (isRetainedSearchParam(key) && !(key in copy)) {
       copy[key] = value
     }
   }
@@ -62,7 +63,7 @@ export const Route = createFileRoute('/data')({
   search: {
     // stripSearchParams removes params equal to their defaults from the URL,
     // so `onlyForm` only appears when it is explicitly true
-    middlewares: [stripSearchParams(defaultValues), retainFilterParams],
+    middlewares: [stripSearchParams(defaultValues), retainViewParams],
   },
   notFoundComponent: NotFound,
   // Without a pendingComponent the router suspends this route with a null
