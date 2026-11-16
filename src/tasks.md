@@ -56,7 +56,7 @@ dark mode not well implemented for: file upload?
 
 ---
 
-first: finish table_views:
+finish table_views:
 
 - View form: Label rows: use the label tool as for observations?
 
@@ -66,6 +66,8 @@ first: finish table_views:
 ---
 
 ---
+
+done but to test and enhance:
 
 new feature: design an own form to replace auto-generated one
 
