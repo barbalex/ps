@@ -287,6 +287,19 @@ export const auth = betterAuth({
       trustedProxies: ['172.16.0.0/12', '127.0.0.1'],
     },
   },
+  // Brute-force protection: better-auth's built-in limiter, enabled explicitly
+  // instead of relying on the implicit NODE_ENV=production default. Keyed per
+  // client IP + path (Caddy passes the real client IP, see advanced.ipAddress).
+  // Built-in special rules are stricter than the general limit:
+  // /sign-in*, /sign-up*, /change-password, /change-email, /two-factor/* → 3
+  // per 10s; password reset + /email-otp/* → 3 per 60s. In-memory storage is
+  // fine for the single auth instance (no rateLimit table needed).
+  rateLimit: {
+    enabled: true,
+    window: 10,
+    max: 100,
+    storage: 'memory',
+  },
   // joins causing error thus uncommented.
   // TODO: test later and consider re-enabling if it can be made to work
   // experimental: { joins: true },
