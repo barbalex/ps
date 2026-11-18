@@ -40,6 +40,8 @@ COMMENT ON TABLE users IS 'Goal: manage users and authorize them';
 --
 CREATE TABLE IF NOT EXISTS auth_sessions(
   auth_session_id uuid PRIMARY KEY DEFAULT uuidv7(),
+  -- id is expected by better-auth (kept in sync with auth_session_id by trigger)
+  id uuid DEFAULT NULL,
   user_id uuid DEFAULT NULL REFERENCES users(user_id) ON DELETE CASCADE ON UPDATE CASCADE DEFERRABLE INITIALLY DEFERRED,
   token text DEFAULT NULL,
   expires_at timestamptz DEFAULT NULL,
@@ -123,6 +125,8 @@ COMMENT ON COLUMN accounts.projects_label_by IS 'Used to label projects in lists
 --
 CREATE TABLE IF NOT EXISTS auth_verifications(
   auth_verification_id uuid PRIMARY KEY DEFAULT uuidv7(),
+  -- id is expected by better-auth (kept in sync with auth_verification_id by trigger)
+  id uuid DEFAULT NULL,
   identifier text DEFAULT NULL,
   value text DEFAULT NULL,
   expires_at timestamptz DEFAULT NULL,
@@ -140,6 +144,9 @@ CREATE TABLE IF NOT EXISTS auth_two_factors(
   secret text NOT NULL,
   backup_codes text NOT NULL,
   verified boolean DEFAULT TRUE,
+  -- better-auth >= 1.7 brute-force lockout for two-factor verification
+  failed_verification_count integer NOT NULL DEFAULT 0,
+  locked_until timestamptz DEFAULT NULL,
   sys_period tstzrange DEFAULT NULL,
   created_at timestamptz NOT NULL DEFAULT now(),
   updated_at timestamptz NOT NULL DEFAULT now()
@@ -152,6 +159,8 @@ CREATE UNIQUE INDEX IF NOT EXISTS auth_two_factors_user_id_idx ON auth_two_facto
 --
 CREATE TABLE IF NOT EXISTS auth_passkeys(
   auth_passkey_id uuid PRIMARY KEY DEFAULT uuidv7(),
+  -- id is expected by better-auth (kept in sync with auth_passkey_id by trigger)
+  id uuid DEFAULT NULL,
   name text DEFAULT NULL,
   public_key text NOT NULL,
   user_id uuid NOT NULL REFERENCES users(user_id) ON DELETE CASCADE ON UPDATE CASCADE DEFERRABLE INITIALLY DEFERRED,

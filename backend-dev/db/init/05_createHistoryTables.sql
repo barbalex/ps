@@ -20,6 +20,11 @@ WHERE sys_period IS NULL;
 ALTER TABLE users
 ALTER COLUMN sys_period SET NOT NULL;
 
+-- better-auth (>= 1.7) refuses to start when a required column it never
+-- writes has no default; the versioning trigger overwrites this on insert
+ALTER TABLE users
+ALTER COLUMN sys_period SET DEFAULT tstzrange(now(), NULL, '[)');
+
 COMMENT ON COLUMN users.sys_period IS 'System period maintained by temporal_tables for auditing and historic queries.';
 
 CREATE TABLE IF NOT EXISTS users_history (
