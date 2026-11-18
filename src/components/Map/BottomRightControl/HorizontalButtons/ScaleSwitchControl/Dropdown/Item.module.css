@@ -10,3 +10,9 @@
     background-color: lightgray;
   }
 }
+
+:global(html[data-theme='dark']) .item {
+  &:hover {
+    background-color: #3a3a3a;
+  }
+}

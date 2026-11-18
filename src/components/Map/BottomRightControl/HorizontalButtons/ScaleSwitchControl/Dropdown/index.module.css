@@ -6,6 +6,10 @@
   transition: max-height 0.2s ease-in-out;
   position: absolute;
   z-index: 1000;
+  /* outer width matches the trigger button: the --dropdown-width var
+     carries its border-box width */
+  box-sizing: border-box;
+  border-radius: 4px;
 }
 
 .containerPositioned {
@@ -17,4 +21,19 @@
 
 .open {
   border: 1px solid black;
+}
+
+/* click-catcher closing the dropdown; the list sits above it */
+.backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 999;
+}
+
+:global(html[data-theme='dark']) .container {
+  background: #292929;
+}
+
+:global(html[data-theme='dark']) .open {
+  border-color: #4a4a4a;
 }

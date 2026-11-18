@@ -18,7 +18,11 @@
   overflow: hidden;
   text-overflow: ellipsis;
   min-width: 72px;
+  /* equal height with the coordinates box in both layouts (border-box,
+     like the toolbar buttons' look incl. their radius) */
+  box-sizing: border-box;
   height: 30px;
+  border-radius: 4px;
 }
 
 :global(html[data-theme='dark']) .text {
