@@ -1998,7 +1998,7 @@
     "defaultMessage": "Teamwork"
   },
   "initDbHintMsg": {
-    "defaultMessage": "Nur beim ersten Start nötig"
+    "defaultMessage": "Ermöglicht Offline-Arbeit – nur beim ersten Start nötig"
   },
   "initDbMsg": {
     "defaultMessage": "Baue lokale Datenbank"

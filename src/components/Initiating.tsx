@@ -113,7 +113,8 @@ export const Initiating = () => {
         <p className={styles.subtitle}>
           {formatMessage({
             id: 'initDbHintMsg',
-            defaultMessage: 'Nur beim ersten Start nötig',
+            defaultMessage:
+              'Ermöglicht Offline-Arbeit – nur beim ersten Start nötig',
           })}
         </p>
         <div className={styles.steps}>

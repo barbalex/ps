@@ -938,7 +938,7 @@
   "fH8JmQ": "Show files in {subprojectNameSingular}",
   "prepDbStepLabel": "Preparing",
   "initDbMsg": "Building local database",
-  "initDbHintMsg": "Only needed on first launch",
+  "initDbHintMsg": "Enables working offline – only needed on first launch",
   "initDbStepLabel": "Initializing database",
   "syncServerStepLabel": "Syncing with server",
   "syncServerMsg": "Syncing with server",
