@@ -55,9 +55,7 @@ import axios from 'axios'
 import createSubscriber from 'pg-listen'
 
 const connectionString = `postgresql://postgres:${process.env.ELECTRIC_DATABASE_PASSWORD}@ps-pg-1:5432/postgres`
-console.log('connectionString', connectionString)
 const subscriber = createSubscriber({ connectionString })
-console.log('subscriber', subscriber)
 
 subscriber.notifications.on('gbif_download_update', (payload) => {
   // Payload as passed to subscriber.notify() (see below)
