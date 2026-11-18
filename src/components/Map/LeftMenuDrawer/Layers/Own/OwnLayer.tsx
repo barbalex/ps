@@ -56,7 +56,7 @@ export const OwnLayer = ({
   isLast: boolean
   isOpen: boolean
 }) => {
-  const { projectId } = useParams({ strict: false })
+  const { projectId, subprojectId } = useParams({ strict: false })
   const [designingMap] = useAtom(designingAtom)
   const designing = designingMap[projectId ?? ''] ?? false
   const { setLayerVisible, isLayerVisible, isOverridden } = useUrlLayers()
@@ -109,7 +109,13 @@ export const OwnLayer = ({
 
   const onClickZoomToLayer = (event: React.MouseEvent) => {
     event.stopPropagation()
-    void zoomToVectorLayer({ db, layer, addNotification, setMapBounds })
+    void zoomToVectorLayer({
+      db,
+      layer,
+      subprojectId,
+      addNotification,
+      setMapBounds,
+    })
   }
 
   return (

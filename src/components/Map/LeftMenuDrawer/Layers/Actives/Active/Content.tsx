@@ -82,7 +82,7 @@ export const Content = ({
   dragHandleRef: RefObject<HTMLDivElement | null>
 }) => {
   const { formatMessage } = useIntl()
-  const { projectId } = useParams({ strict: false })
+  const { projectId, subprojectId } = useParams({ strict: false })
   const [designingMap] = useAtom(designingAtom)
   const designing = designingMap[projectId ?? ''] ?? false
   const { setLayerVisible, isLayerVisible } = useUrlLayers()
@@ -332,7 +332,13 @@ export const Content = ({
   const onClickZoomToFeatures = (event: MouseEvent) => {
     event.stopPropagation()
     if (!isVectorLayer) return
-    void zoomToVectorLayer({ db, layer, addNotification, setMapBounds })
+    void zoomToVectorLayer({
+      db,
+      layer,
+      subprojectId,
+      addNotification,
+      setMapBounds,
+    })
   }
 
   // drag and drop items by dragging the drag icon

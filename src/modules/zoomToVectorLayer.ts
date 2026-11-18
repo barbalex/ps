@@ -23,6 +23,9 @@ type Props = {
   db: QueryableDb
   // vector_layers row — works for active and own-section layers alike
   layer: VectorLayers
+  // the table layers render scoped to the current subproject; their
+  // extents must scope the same way or the zoom overshoots
+  subprojectId?: string
   addNotification: (notification: {
     title: string
     intent: 'info'
@@ -40,14 +43,19 @@ type Props = {
 export const zoomToVectorLayer = async ({
   db,
   layer,
+  subprojectId,
   addNotification,
   setMapBounds,
 }: Props): Promise<void> => {
   // Get the extent of all geometries of this layer via PostGIS
   let extent: Extent | null
 
-  // own-table layers are vector layers too
+  // own-table layers are vector layers too; their rendering queries
+  // filter by the current subproject, so the extent must too (without
+  // one — project routes — the layers render nothing anyway)
   {
+    const scopeSql = subprojectId ? 'AND s.subproject_id = $2' : ''
+    const scopeParams = subprojectId ? [layer.project_id, subprojectId] : [layer.project_id]
     const tableName =
       layer.own_table_level ?
         `${layer.own_table}${layer.own_table_level}`
@@ -61,8 +69,9 @@ export const zoomToVectorLayer = async ({
          INNER JOIN subprojects s ON p.subproject_id = s.subproject_id
          WHERE s.project_id = $1
          AND p.geometry IS NOT NULL
+         ${scopeSql}
          ${level ? `AND p.parent_id IS ${level === 1 ? 'NULL' : 'NOT NULL'}` : ''}`,
-        [layer.project_id],
+        scopeParams,
       )
     } else if (tableName?.startsWith('actions')) {
       const level = layer.own_table_level
@@ -73,8 +82,9 @@ export const zoomToVectorLayer = async ({
          INNER JOIN subprojects s ON p.subproject_id = s.subproject_id
          WHERE s.project_id = $1
          AND a.geometry IS NOT NULL
+         ${scopeSql}
          ${level ? `AND p.parent_id IS ${level === 1 ? 'NULL' : 'NOT NULL'}` : ''}`,
-        [layer.project_id],
+        scopeParams,
       )
     } else if (tableName?.startsWith('checks')) {
       const level = layer.own_table_level
@@ -85,8 +95,9 @@ export const zoomToVectorLayer = async ({
          INNER JOIN subprojects s ON p.subproject_id = s.subproject_id
          WHERE s.project_id = $1
          AND c.geometry IS NOT NULL
+         ${scopeSql}
          ${level ? `AND p.parent_id IS ${level === 1 ? 'NULL' : 'NOT NULL'}` : ''}`,
-        [layer.project_id],
+        scopeParams,
       )
     } else if (tableName?.startsWith('observations_assigned')) {
       const level = layer.own_table_level
@@ -98,8 +109,9 @@ export const zoomToVectorLayer = async ({
          INNER JOIN subprojects s ON p.subproject_id = s.subproject_id
          WHERE s.project_id = $1
          AND o.geometry IS NOT NULL
+         ${scopeSql}
          ${level ? `AND p.parent_id IS ${level === 1 ? 'NULL' : 'NOT NULL'}` : ''}`,
-        [layer.project_id],
+        scopeParams,
       )
     } else if (tableName === 'observations_to_assess') {
       extent = await queryExtent(
@@ -110,8 +122,9 @@ export const zoomToVectorLayer = async ({
          WHERE s.project_id = $1
          AND o.place_id IS NULL
          AND (o.not_to_assign IS NULL OR o.not_to_assign = FALSE)
-         AND o.geometry IS NOT NULL`,
-        [layer.project_id],
+         AND o.geometry IS NOT NULL
+         ${scopeSql}`,
+        scopeParams,
       )
     } else if (tableName === 'observations_not_to_assign') {
       extent = await queryExtent(
@@ -122,8 +135,9 @@ export const zoomToVectorLayer = async ({
          WHERE s.project_id = $1
          AND o.place_id IS NULL
          AND o.not_to_assign = true
-         AND o.geometry IS NOT NULL`,
-        [layer.project_id],
+         AND o.geometry IS NOT NULL
+         ${scopeSql}`,
+        scopeParams,
       )
     } else if (layer.type === 'wfs') {
       // For WFS layers, get from vector_layer_geoms
