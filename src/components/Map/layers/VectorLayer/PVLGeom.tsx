@@ -54,6 +54,7 @@ type LatLngBoundsWithInternals = L.LatLngBounds & {
 }
 
 type VectorLayerGeomRow = {
+  vector_layer_geom_id: string
   geometry: GeoJSON
   properties: unknown
 }
@@ -66,6 +67,15 @@ export const PVLGeom = ({ layer, display }: Props) => {
   const removeNotification = useSetAtom(removeNotificationAtom)
 
   const [data, setData] = useState<GeoJSON[]>()
+
+  // row ids of the last fetch, per layer: a zoomend refetch often returns
+  // the same rows (zooming in only tightens the bounds) — a new data
+  // array would clear and progressively rebuild the rendered layer
+  // (the overlays blinking out), so equal row sets keep the old identity
+  const lastFetchRef = useRef<{
+    layerId: string | null
+    ids: string[]
+  } | null>(null)
 
   const notificationIds = useRef<string[]>([])
 
@@ -95,6 +105,7 @@ export const PVLGeom = ({ layer, display }: Props) => {
       const resVectorLayerGeoms = await db.query(
         `
         SELECT
+          vector_layer_geom_id,
           geometry,
           properties
         FROM vector_layer_geoms
@@ -124,7 +135,21 @@ export const PVLGeom = ({ layer, display }: Props) => {
       })) as GeoJSON[]
       removeNotifs()
 
-      setData(data)
+      const geomIds = vectorLayerGeoms
+        .map((row) => row.vector_layer_geom_id)
+        .sort()
+      const lastFetch = lastFetchRef.current
+      lastFetchRef.current = {
+        layerId: layer.vector_layer_id ?? null,
+        ids: geomIds,
+      }
+      const sameRowsAsLastFetch =
+        lastFetch?.layerId === (layer.vector_layer_id ?? null) &&
+        lastFetch.ids.length === geomIds.length &&
+        lastFetch.ids.every((id, i) => id === geomIds[i])
+      if (!sameRowsAsLastFetch) {
+        setData(data)
+      }
       setZoom(map.getZoom())
     },
     [
