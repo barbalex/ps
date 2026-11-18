@@ -39,7 +39,10 @@ export const Home = () => {
         <div className={styles.cardContainer}>
           <div className={styles.card}>
             <h3 className={styles.cardTitle}>
-              <FormattedMessage id="h5g7Kk" defaultMessage="Orte" />
+              <FormattedMessage
+                id="h5g7Kk"
+                defaultMessage="Orte"
+              />
             </h3>
             <FormattedMessage
               id="lOK5dy"
@@ -48,7 +51,10 @@ export const Home = () => {
           </div>
           <div className={styles.card}>
             <h3 className={styles.cardTitle}>
-              <FormattedMessage id="3srcwg" defaultMessage="Ziele" />
+              <FormattedMessage
+                id="3srcwg"
+                defaultMessage="Ziele"
+              />
             </h3>
             <FormattedMessage
               id="1yf63B"
@@ -69,7 +75,10 @@ export const Home = () => {
           </div>
           <div className={styles.card}>
             <h3 className={styles.cardTitle}>
-              <FormattedMessage id="eJfllL" defaultMessage="Massnahmen" />
+              <FormattedMessage
+                id="eJfllL"
+                defaultMessage="Massnahmen"
+              />
             </h3>
             <FormattedMessage
               id="HjZkRK"
@@ -78,7 +87,10 @@ export const Home = () => {
           </div>
           <div className={styles.card}>
             <h3 className={styles.cardTitle}>
-              <FormattedMessage id="oPMDm+" defaultMessage="Kontrollen" />
+              <FormattedMessage
+                id="oPMDm+"
+                defaultMessage="Kontrollen"
+              />
             </h3>
             <FormattedMessage
               id="VncgQ7"
@@ -99,7 +111,10 @@ export const Home = () => {
           </div>
           <div className={styles.card}>
             <h3 className={styles.cardTitle}>
-              <FormattedMessage id="CiJ0SG" defaultMessage="Berichte" />
+              <FormattedMessage
+                id="CiJ0SG"
+                defaultMessage="Berichte"
+              />
             </h3>
             <FormattedMessage
               id="pPWZGx"
@@ -108,20 +123,14 @@ export const Home = () => {
           </div>
           <div className={styles.card}>
             <h3 className={styles.cardTitle}>
-              <FormattedMessage id="wO4TnJ" defaultMessage="Biotope fördern" />
+              <FormattedMessage
+                id="wO4TnJ"
+                defaultMessage="Biotope fördern"
+              />
             </h3>
             <FormattedMessage
               id="xP5UoK"
               defaultMessage="arten-fördern.app kann auch Biotope: beschreiben, Ziele definieren, Massnahmen und Kontrollen organisieren, Entwicklung analysieren und berichten."
-            />
-          </div>
-          <div className={styles.card}>
-            <h3 className={styles.cardTitle}>
-              <FormattedMessage id="iaro8o" defaultMessage="Teamwork" />
-            </h3>
-            <FormattedMessage
-              id="04Jmk6"
-              defaultMessage="Daten werden laufend synchronisiert. Mehrere Mitarbeitende können effizient gleichzeitig arbeiten."
             />
           </div>
           <div className={styles.card}>
@@ -150,7 +159,10 @@ export const Home = () => {
           </div>
           <div className={styles.card}>
             <h3 className={styles.cardTitle}>
-              <FormattedMessage id="bC0sCs" defaultMessage="Mobilfähig" />
+              <FormattedMessage
+                id="bC0sCs"
+                defaultMessage="Mobilfähig"
+              />
             </h3>
             <FormattedMessage
               id="CHlBuE"
@@ -159,14 +171,20 @@ export const Home = () => {
           </div>
           <div className={styles.card}>
             <h3 className={styles.cardTitle}>
-              <FormattedMessage id="pfBGqS" defaultMessage="Feldtauglich" />
+              <FormattedMessage
+                id="pfBGqS"
+                defaultMessage="Feldtauglich"
+              />
             </h3>
             <FormattedMessage
               id="OW3d3V"
               defaultMessage="Du bist offline? Einfach {weiterArbeiten}. Wieder online, werden deine Daten synchronisiert."
               values={{
                 weiterArbeiten: (
-                  <Link to={'/docs/offline' as '/docs'} target="_blank">
+                  <Link
+                    to={'/docs/offline' as '/docs'}
+                    target="_blank"
+                  >
                     <FormattedMessage
                       id="OW3d3V.weiterArbeiten"
                       defaultMessage="weiter arbeiten"
@@ -178,14 +196,32 @@ export const Home = () => {
           </div>
           <div className={styles.card}>
             <h3 className={styles.cardTitle}>
-              <FormattedMessage id="SLjrHl" defaultMessage="Zeitmaschine" />
+              <FormattedMessage
+                id="iaro8o"
+                defaultMessage="Teamwork"
+              />
+            </h3>
+            <FormattedMessage
+              id="04Jmk6"
+              defaultMessage="Daten werden laufend synchronisiert. Mehrere Mitarbeitende können effizient gleichzeitig arbeiten."
+            />
+          </div>
+          <div className={styles.card}>
+            <h3 className={styles.cardTitle}>
+              <FormattedMessage
+                id="SLjrHl"
+                defaultMessage="Zeitmaschine"
+              />
             </h3>
             <FormattedMessage
               id="rEN8QI"
               defaultMessage="Haben mehrere Mitarbeitende aus versehen offline die gleichen Daten geändert? Das lässt sich einfach korrigieren. {duSiehst}, wer was wann geändert hat."
               values={{
                 duSiehst: (
-                  <Link to={'/docs/histories' as '/docs'} target="_blank">
+                  <Link
+                    to={'/docs/histories' as '/docs'}
+                    target="_blank"
+                  >
                     <FormattedMessage
                       id="rEN8QI.duSiehst"
                       defaultMessage="Du siehst"
@@ -207,7 +243,10 @@ export const Home = () => {
               defaultMessage="Du kannst arten-fördern.app deinen eigenen Bedürfnissen {anpassen}. Vermisst du eine Funktion? {link}"
               values={{
                 anpassen: (
-                  <Link to={'/docs/configuration' as '/docs'} target="_blank">
+                  <Link
+                    to={'/docs/configuration' as '/docs'}
+                    target="_blank"
+                  >
                     <FormattedMessage
                       id="2hj7nH.anpassen"
                       defaultMessage="anpassen"
@@ -215,7 +254,10 @@ export const Home = () => {
                   </Link>
                 ),
                 link: (
-                  <Link to={'/docs/issues' as '/docs'} target="_blank">
+                  <Link
+                    to={'/docs/issues' as '/docs'}
+                    target="_blank"
+                  >
                     <FormattedMessage
                       id="OogWmh"
                       defaultMessage="Ich bin interessiert!"
@@ -237,7 +279,10 @@ export const Home = () => {
               defaultMessage="Ich helfe dir gerne bei der {erstKonfiguration}, damit dein Team möglichst effizient arbeitet. Profitiere von {link}."
               values={{
                 erstKonfiguration: (
-                  <Link to={'/docs/configuration' as '/docs'} target="_blank">
+                  <Link
+                    to={'/docs/configuration' as '/docs'}
+                    target="_blank"
+                  >
                     <FormattedMessage
                       id="HsHmZy.erstKonfiguration"
                       defaultMessage="Erst-Konfiguration"
@@ -270,7 +315,10 @@ export const Home = () => {
               defaultMessage="Alle {deineDaten} werden auf dein Gerät synchronisiert. Du kannst sie jederzeit exportieren."
               values={{
                 deineDaten: (
-                  <Link to={'/docs/privacy-policy' as '/docs'} target="_blank">
+                  <Link
+                    to={'/docs/privacy-policy' as '/docs'}
+                    target="_blank"
+                  >
                     <FormattedMessage
                       id="9LbkBJ.deineDaten"
                       defaultMessage="deine Daten"
@@ -293,7 +341,10 @@ export const Home = () => {
               values={{
                 br,
                 zahlt: (
-                  <Link to={'/docs/pricing' as '/docs'} target="_blank">
+                  <Link
+                    to={'/docs/pricing' as '/docs'}
+                    target="_blank"
+                  >
                     <FormattedMessage
                       id="9ZCq87.zahlt"
                       defaultMessage="zahlt"
@@ -305,14 +356,20 @@ export const Home = () => {
           </div>
           <div className={styles.card}>
             <h3 className={styles.cardTitle}>
-              <FormattedMessage id="Xd0J7Y" defaultMessage="Open Source" />
+              <FormattedMessage
+                id="Xd0J7Y"
+                defaultMessage="Open Source"
+              />
             </h3>
             <FormattedMessage
               id="yoo7JY"
               defaultMessage="Der Code ist {link}. Du kannst das Projekt jederzeit einsehen, mitgestalten, kopieren und selber weiter entwickeln (lassen)."
               values={{
                 link: (
-                  <a href="/docs/open-source" target="_blank">
+                  <a
+                    href="/docs/open-source"
+                    target="_blank"
+                  >
                     <FormattedMessage
                       id="yoo7JY.offen"
                       defaultMessage="offen"
@@ -324,7 +381,10 @@ export const Home = () => {
           </div>
           <div className={styles.card}>
             <h3 className={styles.cardTitle}>
-              <FormattedMessage id="ZiBLs/" defaultMessage="Hier wird gebaut" />
+              <FormattedMessage
+                id="ZiBLs/"
+                defaultMessage="Hier wird gebaut"
+              />
             </h3>
             <FormattedMessage
               id="zq+cvN"
@@ -343,8 +403,14 @@ export const Home = () => {
               defaultMessage="Du darfst gerne reinschauen, testen und mir deine Eindrücke und Wünsche {link}."
               values={{
                 link: (
-                  <Link to={'/docs/issues' as '/docs'} target="_blank">
-                    <FormattedMessage id="9KB+sP" defaultMessage="mitteilen" />
+                  <Link
+                    to={'/docs/issues' as '/docs'}
+                    target="_blank"
+                  >
+                    <FormattedMessage
+                      id="9KB+sP"
+                      defaultMessage="mitteilen"
+                    />
                   </Link>
                 ),
               }}
@@ -362,7 +428,10 @@ export const Home = () => {
               defaultMessage="...findest du in der {link}."
               values={{
                 link: (
-                  <Link to="/docs" target="_blank">
+                  <Link
+                    to="/docs"
+                    target="_blank"
+                  >
                     <FormattedMessage
                       id="navigationDocs"
                       defaultMessage="Dokumentation"
