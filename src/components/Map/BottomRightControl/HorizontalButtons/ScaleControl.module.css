@@ -1,17 +1,23 @@
 .div {
   /* a ruler: the element's width IS the shown distance — drawn as a
-     measuring line with end ticks and the label above it. Fixed black
-     with a white halo: legible on light map imagery even when the app
-     theme (and thus the inherited text color) is dark, and the halo
-     keeps it visible on dark imagery too */
+     measuring line with end ticks and the label above it. Inside the
+     wide layout's group bar it follows the theme's text color: the
+     bar's solid background (white / #292929) provides the contrast */
   position: relative;
   display: flex;
   align-items: flex-end;
   justify-content: center;
   padding: 0 4px 1px 4px;
-  border-bottom: 2px solid black;
-  color: black;
-  filter: drop-shadow(0 0 1px rgba(255, 255, 255, 0.9));
+  border-bottom: 2px solid currentColor;
+
+  /* narrow: no group bar behind the ruler — it floats over the map,
+     usually light imagery: fixed black with a white halo stays legible
+     even when the app theme (and the inherited text color) is dark */
+  @container map (width <= 700px) {
+    color: black;
+    border-bottom-color: black;
+    filter: drop-shadow(0 0 1px rgba(255, 255, 255, 0.9));
+  }
 }
 
 .div::before,
@@ -21,15 +27,11 @@
   bottom: 0;
   width: 2px;
   height: 7px;
-  background-color: black;
-}
+  background-color: currentColor;
 
-.div::before {
-  left: 0;
-}
-
-.div::after {
-  right: 0;
+  @container map (width <= 700px) {
+    background-color: black;
+  }
 }
 
 .divSized {
