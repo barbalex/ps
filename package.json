@@ -1,6 +1,6 @@
 {
   "name": "ps",
-  "version": "0.1.100",
+  "version": "0.1.101",
   "versionDate": "18.11.2026",
   "author": "Alexander Gabriel",
   "type": "module",
@@ -14,7 +14,7 @@
     "sync-sql": "node scripts/sync-sql.mjs",
     "sync-sql:check": "node scripts/sync-sql.mjs --check",
     "hooks:install": "node scripts/install-git-hooks.mjs",
-    "postinstall": "node scripts/patch-eslint-typescript.mjs && node scripts/patch-pglite-sync.mjs && node scripts/patch-react-leaflet.mjs",
+    "postinstall": "node scripts/patch-eslint-typescript.mjs && node scripts/patch-pglite-sync.mjs && node scripts/patch-react-leaflet.mjs && node scripts/patch-react-doc-viewer.mjs",
     "format": "prettier --write .",
     "lint": "eslint . --max-warnings 0",
     "test": "vitest run",
@@ -125,13 +125,13 @@
     "@types/proj4": "2.19.0",
     "@types/react": "19.3.0",
     "@types/react-dom": "19.3.0",
-    "@typescript-eslint/eslint-plugin": "8.72.2",
-    "@typescript-eslint/parser": "8.72.2",
+    "@typescript-eslint/eslint-plugin": "8.73.0",
+    "@typescript-eslint/parser": "8.73.0",
     "@vitejs/plugin-react": "6.3.0",
     "babel-plugin-react-compiler": "1.0.0",
     "concurrently": "10.0.7",
     "dotenv": "18.0.10",
-    "eslint": "10.14.0",
+    "eslint": "10.15.0",
     "eslint-plugin-import": "2.32.0",
     "eslint-plugin-react-hooks": "7.1.1",
     "eslint-plugin-react-refresh": "0.5.7",
@@ -156,6 +156,15 @@
     "@electric-sql/pglite-sync": {
       "@electric-sql/client": "$@electric-sql/client",
       "@electric-sql/experimental": "$@electric-sql/experimental"
+    },
+    "next": "16.4.6",
+    "lodash": "4.18.1",
+    "brace-expansion@^1.1.7": "1.1.22",
+    "eslint-plugin-import": {
+      "minimatch": "3.1.5"
+    },
+    "@tanstack/eslint-plugin-router": {
+      "@typescript-eslint/utils": "8.73.0"
     }
   },
   "devRemarks": {
