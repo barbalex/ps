@@ -1,0 +1,55 @@
+# Dependabot version updates: keep dependencies fresh so security alerts
+# stop piling up between manual passes. Minor+patch bumps arrive as one
+# grouped PR per directory per week; major bumps stay individual PRs
+# because they need testing. The exact-pin style in package.json is
+# intentional — Dependabot rewrites the pins, review like any other PR.
+# NB: backend/auth and backend-dev/auth are twins — merge both PRs or
+# copy one lockfile over the other to keep them from drifting.
+version: 2
+updates:
+  - package-ecosystem: npm
+    directory: /
+    schedule:
+      interval: weekly
+      day: monday
+    open-pull-requests-limit: 5
+    groups:
+      minor-and-patch:
+        update-types:
+          - minor
+          - patch
+  - package-ecosystem: npm
+    directory: /backend/auth
+    schedule:
+      interval: weekly
+      day: monday
+    groups:
+      minor-and-patch:
+        update-types:
+          - minor
+          - patch
+  - package-ecosystem: npm
+    directory: /backend-dev/auth
+    schedule:
+      interval: weekly
+      day: monday
+    groups:
+      minor-and-patch:
+        update-types:
+          - minor
+          - patch
+  - package-ecosystem: npm
+    directory: /backend-dev/gbif
+    schedule:
+      interval: weekly
+      day: monday
+    groups:
+      minor-and-patch:
+        update-types:
+          - minor
+          - patch
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: weekly
+      day: monday
