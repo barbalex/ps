@@ -8,6 +8,21 @@
   }
 }
 
+/* mirrors the active-section rows' zoom button */
+.headerButton {
+  margin-left: 2px;
+  border: none !important;
+  background-color: transparent !important;
+  min-width: auto !important;
+  width: 32px !important;
+  padding: 0 !important;
+  align-self: center;
+
+  &:hover {
+    background-color: var(--colorNeutralBackground1Hover);
+  }
+}
+
 .accordionItem {
   border-top: calc(var(--top-border-width, 1) * 1px) solid rgba(55, 118, 28, 0.5) !important;
   border-bottom: calc(var(--bottom-border-width, 0) * 1px) solid rgba(55, 118, 28, 0.5) !important;

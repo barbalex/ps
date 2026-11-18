@@ -6,6 +6,7 @@ const {
   AccordionHeader,
   AccordionItem,
   AccordionPanel,
+  Button,
   Tab,
   TabList,
 } = fluentUiReactComponents
@@ -14,14 +15,19 @@ import type {
   SelectTabEvent,
 } from '@fluentui/react-components'
 import { BsCheckSquareFill, BsSquare } from 'react-icons/bs'
-import { useAtom } from 'jotai'
+import { TbZoomScan } from 'react-icons/tb'
+import { useAtom, useSetAtom } from 'jotai'
+import { usePGlite } from '@electric-sql/pglite-react'
 import { useLocation } from '@tanstack/react-router'
 
 import { ErrorBoundary } from '../../../../shared/ErrorBoundary.tsx'
 import { createLayerPresentation } from '../../../../../modules/createRows.ts'
 import { useUrlLayers } from '../../../../../modules/useUrlLayers.ts'
+import { zoomToVectorLayer } from '../../../../../modules/zoomToVectorLayer.ts'
 import {
+  addNotificationAtom,
   designingAtom,
+  mapBoundsAtom,
   mapDrawerVectorLayerDisplayAtom,
 } from '../../../../../store.ts'
 import { VectorLayerEditing } from '../Vector/Editing.tsx'
@@ -50,7 +56,7 @@ export const OwnLayer = ({
   isLast: boolean
   isOpen: boolean
 }) => {
-  const { projectId } = useParams({ strict: false })
+  const { projectId, subprojectId } = useParams({ strict: false })
   const [designingMap] = useAtom(designingAtom)
   const designing = designingMap[projectId ?? ''] ?? false
   const { setLayerVisible, isLayerVisible, isOverridden } = useUrlLayers()
@@ -59,6 +65,9 @@ export const OwnLayer = ({
   )
   const [tab, setTab] = useState<TabType>('overall-displays')
   const { pathname } = useLocation()
+  const db = usePGlite()
+  const addNotification = useSetAtom(addNotificationAtom)
+  const setMapBounds = useSetAtom(mapBoundsAtom)
 
   const layerPresentationId = layer.layer_presentations?.[0]?.layer_presentation_id
   const isVisible = isLayerVisible(
@@ -98,6 +107,17 @@ export const OwnLayer = ({
 
   const onClickFeatureDisplays = () => setVectorLayerDisplayId(null)
 
+  const onClickZoomToLayer = (event: React.MouseEvent) => {
+    event.stopPropagation()
+    void zoomToVectorLayer({
+      db,
+      layer,
+      subprojectId,
+      addNotification,
+      setMapBounds,
+    })
+  }
+
   return (
     <ErrorBoundary>
       <AccordionItem
@@ -134,6 +154,15 @@ export const OwnLayer = ({
             />
             <p className={layerStyles.headerLabel}>{layer.label}</p>
           </div>
+          <Button
+            icon={<TbZoomScan />}
+            onClick={onClickZoomToLayer}
+            className={styles.headerButton}
+            title="Zoom to layer"
+            appearance="subtle"
+            size="small"
+            as="a"
+          />
         </AccordionHeader>
         <AccordionPanel className={layerStyles.panel}>
           <TabList

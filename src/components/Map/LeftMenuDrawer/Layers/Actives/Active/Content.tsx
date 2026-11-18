@@ -31,11 +31,6 @@ import { usePGlite, useLiveQuery } from '@electric-sql/pglite-react'
 import { useLocation } from '@tanstack/react-router'
 import { useParams } from '@tanstack/react-router'
 import { useIntl } from 'react-intl'
-import proj4 from 'proj4'
-import reproject from 'reproject'
-import type { FeatureCollection, Feature } from 'geojson'
-import { bbox } from '@turf/bbox'
-import { featureCollection } from '@turf/helpers'
 
 import { ErrorBoundary } from '../../../../../shared/ErrorBoundary.tsx'
 import { LayerPresentationForm } from '../../LayerPresentationForm.tsx'
@@ -49,29 +44,18 @@ import {
   addOperationAtom,
   addNotificationAtom,
   mapBoundsAtom,
-  mapViewportBoundsAtom,
   draggableLayersAtom,
   droppableLayersAtom,
   languageAtom,
-  store,
 } from '../../../../../../store.ts'
 import { DragHandle } from '../../../../../shared/DragAndDrop/DragHandle.tsx'
-import {
-  extentSelect,
-  queryExtent,
-  extentFromBbox,
-  extentToBoundsWithMargin,
-  type Extent,
-} from '../../../../../../modules/geoQueries.ts'
-import { httpGet } from '../../../../../../modules/httpGet.ts'
+import { zoomToVectorLayer } from '../../../../../../modules/zoomToVectorLayer.ts'
 import { useUrlLayers } from '../../../../../../modules/useUrlLayers.ts'
 import {
   getVectorLayerLabel,
   usePlaceLevels,
 } from '../../../../../../modules/vectorLayerLabel.ts'
 import type VectorLayers from '../../../../../../models/public/VectorLayers.ts'
-import type WfsServices from '../../../../../../models/public/WfsServices.ts'
-import type Crs from '../../../../../../models/public/Crs.ts'
 import type { ActiveLayerRow } from '../index.tsx'
 import layerStyles from '../../index.module.css'
 
@@ -98,7 +82,7 @@ export const Content = ({
   dragHandleRef: RefObject<HTMLDivElement | null>
 }) => {
   const { formatMessage } = useIntl()
-  const { projectId } = useParams({ strict: false })
+  const { projectId, subprojectId } = useParams({ strict: false })
   const [designingMap] = useAtom(designingAtom)
   const designing = designingMap[projectId ?? ''] ?? false
   const { setLayerVisible, isLayerVisible } = useUrlLayers()
@@ -345,220 +329,16 @@ export const Content = ({
     setAssignMenuOpen(false)
   }
 
-  const onClickZoomToFeatures = async (event: MouseEvent) => {
+  const onClickZoomToFeatures = (event: MouseEvent) => {
     event.stopPropagation()
-    // Get the extent of all geometries of this layer via PostGIS
-    let extent: Extent | null = null
-
-    if (isVectorLayer) {
-      // For vector layers (including table layers)
-      const tableName =
-        layer.own_table_level ?
-          `${layer.own_table}${layer.own_table_level}`
-        : layer.own_table
-
-      if (tableName?.startsWith('places')) {
-        const level = layer.own_table_level
-        extent = await queryExtent(
-          db,
-          `SELECT ${extentSelect('p')} FROM places p
-           INNER JOIN subprojects s ON p.subproject_id = s.subproject_id 
-           WHERE s.project_id = $1 
-           AND p.geometry IS NOT NULL
-           ${level ? `AND p.parent_id IS ${level === 1 ? 'NULL' : 'NOT NULL'}` : ''}`,
-          [layer.project_id],
-        )
-      } else if (tableName?.startsWith('actions')) {
-        const level = layer.own_table_level
-        extent = await queryExtent(
-          db,
-          `SELECT ${extentSelect('a')} FROM actions a
-           INNER JOIN places p ON a.place_id = p.place_id 
-           INNER JOIN subprojects s ON p.subproject_id = s.subproject_id 
-           WHERE s.project_id = $1 
-           AND a.geometry IS NOT NULL
-           ${level ? `AND p.parent_id IS ${level === 1 ? 'NULL' : 'NOT NULL'}` : ''}`,
-          [layer.project_id],
-        )
-      } else if (tableName?.startsWith('checks')) {
-        const level = layer.own_table_level
-        extent = await queryExtent(
-          db,
-          `SELECT ${extentSelect('c')} FROM checks c
-           INNER JOIN places p ON c.place_id = p.place_id 
-           INNER JOIN subprojects s ON p.subproject_id = s.subproject_id 
-           WHERE s.project_id = $1 
-           AND c.geometry IS NOT NULL
-           ${level ? `AND p.parent_id IS ${level === 1 ? 'NULL' : 'NOT NULL'}` : ''}`,
-          [layer.project_id],
-        )
-      } else if (tableName?.startsWith('observations_assigned')) {
-        const level = layer.own_table_level
-        extent = await queryExtent(
-          db,
-          `SELECT ${extentSelect('o')} FROM observations o
-           INNER JOIN observation_imports oi ON o.observation_import_id = oi.observation_import_id 
-           INNER JOIN places p ON o.place_id = p.place_id 
-           INNER JOIN subprojects s ON p.subproject_id = s.subproject_id 
-           WHERE s.project_id = $1 
-           AND o.geometry IS NOT NULL
-           ${level ? `AND p.parent_id IS ${level === 1 ? 'NULL' : 'NOT NULL'}` : ''}`,
-          [layer.project_id],
-        )
-      } else if (tableName === 'observations_to_assess') {
-        extent = await queryExtent(
-          db,
-          `SELECT ${extentSelect('o')} FROM observations o
-           INNER JOIN observation_imports oi ON o.observation_import_id = oi.observation_import_id 
-           INNER JOIN subprojects s ON oi.subproject_id = s.subproject_id 
-           WHERE s.project_id = $1 
-           AND o.place_id IS NULL
-           AND (o.not_to_assign IS NULL OR o.not_to_assign = FALSE)
-           AND o.geometry IS NOT NULL`,
-          [layer.project_id],
-        )
-      } else if (tableName === 'observations_not_to_assign') {
-        extent = await queryExtent(
-          db,
-          `SELECT ${extentSelect('o')} FROM observations o
-           INNER JOIN observation_imports oi ON o.observation_import_id = oi.observation_import_id 
-           INNER JOIN subprojects s ON oi.subproject_id = s.subproject_id 
-           WHERE s.project_id = $1 
-           AND o.place_id IS NULL
-           AND o.not_to_assign = true
-           AND o.geometry IS NOT NULL`,
-          [layer.project_id],
-        )
-      } else if (layer.type === 'wfs') {
-        // For WFS layers, get from vector_layer_geoms
-        extent = await queryExtent(
-          db,
-          `SELECT ${extentSelect()} FROM vector_layer_geoms WHERE vector_layer_id = $1`,
-          [layer.vector_layer_id],
-        )
-
-        if (!extent) {
-          const wfsRes = await db.query(
-            `SELECT * FROM wfs_services WHERE wfs_service_id = $1`,
-            [layer.wfs_service_id],
-          )
-          const wfsService = wfsRes?.rows?.[0] as WfsServices | undefined
-          if (!wfsService?.url || !layer.wfs_service_layer_name) {
-            return addNotification({
-              title: 'No geometries found for this layer',
-              intent: 'info',
-            })
-          }
-
-          const wfsDefaultCrsArray = wfsService.default_crs
-            ?.split(':')
-            .slice(-3)
-          const wfsDefaultCrsCode =
-            wfsDefaultCrsArray?.length === 3 ?
-              [wfsDefaultCrsArray[0], wfsDefaultCrsArray[2]].join(':')
-            : 'EPSG:4326'
-          const defaultCrsRes = await db.query(
-            `SELECT * FROM crs WHERE code = $1`,
-            [wfsDefaultCrsCode],
-          )
-          const defaultCrs = defaultCrsRes?.rows?.[0] as Crs | undefined
-
-          // read at click time instead of subscribing: this component only
-          // needs the bounds here, and a subscription re-rendered this whole
-          // component on every map move
-          const mapViewportBounds = store.get(mapViewportBoundsAtom)
-
-          let response
-          let bboxParam
-          if (
-            mapViewportBounds?.swLat !== undefined &&
-            mapViewportBounds?.swLng !== undefined &&
-            mapViewportBounds?.neLat !== undefined &&
-            mapViewportBounds?.neLng !== undefined
-          ) {
-            const { swLat, swLng, neLat, neLng } = mapViewportBounds
-            if (defaultCrs?.proj4 && wfsDefaultCrsCode !== 'EPSG:4326') {
-              const [x1, y1] = proj4('EPSG:4326', defaultCrs.proj4, [
-                swLng,
-                swLat,
-              ])
-              const [x2, y2] = proj4('EPSG:4326', defaultCrs.proj4, [
-                neLng,
-                neLat,
-              ])
-              bboxParam = `${x1},${y1},${x2},${y2}`
-            } else {
-              bboxParam = `${swLng},${swLat},${neLng},${neLat}`
-            }
-          }
-          try {
-            response = await httpGet(wfsService.url, {
-              service: 'WFS',
-              request: 'GetFeature',
-              version: wfsService.version ?? '1.3.0',
-              typeNames: layer.wfs_service_layer_name,
-              outputFormat: wfsService.info_format ?? 'application/json',
-              srsName: wfsDefaultCrsCode,
-              ...(bboxParam ? { bbox: bboxParam } : {}),
-              maxfeatures: layer.max_features ?? 1000,
-            })
-          } catch (error) {
-            console.error('Zoom to WFS layer failed', error)
-            return addNotification({
-              title: 'No geometries found for this layer',
-              intent: 'info',
-            })
-          }
-          if (!response.ok) {
-            console.error(
-              'Zoom to WFS layer failed:',
-              response.status,
-              response.statusText,
-              response.data,
-            )
-            return addNotification({
-              title: 'No geometries found for this layer',
-              intent: 'info',
-            })
-          }
-
-          const data = response.data as { features?: Feature[] } | undefined
-          const rawFeatures = data?.features ?? []
-          if (!rawFeatures.length) {
-            return addNotification({
-              title: 'No geometries found for this layer',
-              intent: 'info',
-            })
-          }
-
-          let fc: FeatureCollection = featureCollection(rawFeatures)
-          if (defaultCrs?.proj4 && wfsDefaultCrsCode !== 'EPSG:4326') {
-            fc = reproject.reproject(
-              fc,
-              defaultCrs.proj4,
-              '+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs',
-            ) as FeatureCollection
-          }
-          extent = extentFromBbox(bbox(fc))
-        }
-      } else {
-        // For uploaded vector layers
-        extent = await queryExtent(
-          db,
-          `SELECT ${extentSelect()} FROM vector_layer_geoms WHERE vector_layer_id = $1`,
-          [layer.vector_layer_id],
-        )
-      }
-    }
-
-    if (!extent) {
-      return addNotification({
-        title: 'No geometries found for this layer',
-        intent: 'info',
-      })
-    }
-
-    setMapBounds(extentToBoundsWithMargin(extent))
+    if (!isVectorLayer) return
+    void zoomToVectorLayer({
+      db,
+      layer,
+      subprojectId,
+      addNotification,
+      setMapBounds,
+    })
   }
 
   // drag and drop items by dragging the drag icon
