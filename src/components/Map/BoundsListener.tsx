@@ -66,25 +66,37 @@ export const BoundsListener = () => {
     map.whenReady(() => {
       if (currentCenter && currentZoom) {
         try {
-          // Force the view regardless of current state
-          // `reset` is a valid leaflet setView option but missing from ZoomPanOptions
-          map.setView(currentCenter as LatLngTuple, currentZoom, {
-            animate: false,
-            reset: true,
-          } as ZoomPanOptions)
+          // Skip redundant restores: every moveend/zoomend round-trips the
+          // current view through the url, which re-runs this effect — a
+          // setView with reset on the unchanged view tears the tile layers
+          // down and repaints them, a visible flicker on zoom end
+          const c = map.getCenter()
+          const viewIsCurrent =
+            Math.abs(c.lat - currentCenter[0]) < 1e-5 &&
+            Math.abs(c.lng - currentCenter[1]) < 1e-5 &&
+            map.getZoom() === currentZoom
 
-          // Retry if zoom didn't stick (seems to happen on initial load)
-          setTimeout(() => {
-            if (map.getZoom() !== currentZoom) {
-              map.setZoom(currentZoom, { animate: false })
-            }
-          }, 50)
+          if (!viewIsCurrent) {
+            // Force the view regardless of current state
+            // `reset` is a valid leaflet setView option but missing from ZoomPanOptions
+            map.setView(currentCenter as LatLngTuple, currentZoom, {
+              animate: false,
+              reset: true,
+            } as ZoomPanOptions)
 
-          setTimeout(() => {
-            if (map.getZoom() !== currentZoom) {
-              map.setZoom(currentZoom, { animate: false })
-            }
-          }, 150)
+            // Retry if zoom didn't stick (seems to happen on initial load)
+            setTimeout(() => {
+              if (map.getZoom() !== currentZoom) {
+                map.setZoom(currentZoom, { animate: false })
+              }
+            }, 50)
+
+            setTimeout(() => {
+              if (map.getZoom() !== currentZoom) {
+                map.setZoom(currentZoom, { animate: false })
+              }
+            }, 150)
+          }
         } catch (e) {
           console.error('Failed to restore map view:', e)
         }
