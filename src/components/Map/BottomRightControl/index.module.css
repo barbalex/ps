@@ -17,13 +17,14 @@
   pointer-events: none;
 
   /* narrow: the bottom menu's contents stack vertically and sit to the
-     left of the toolbar, bottom-aligned; the switch stays below the
-     toolbar — nothing spans the map's bottom edge anymore */
+     left of the toolbar, spanning both rows so their lower border
+     aligns with the hide-ui switch's; nothing spans the map's bottom
+     edge anymore */
   @container map (width <= 700px) {
     grid-template-columns: max-content 40px;
     grid-template-rows: auto 40px;
     grid-template-areas:
       'horizontalbuttons verticalbuttons'
-      '. uibutton';
+      'horizontalbuttons uibutton';
   }
 }

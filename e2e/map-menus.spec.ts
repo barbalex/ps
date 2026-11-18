@@ -36,11 +36,12 @@ const menusGeometry = (page: Page) =>
         height: r.height,
       }
     }
-    const [toolbar, bottomMenu] = [...root.children]
+    const [toolbar, bottomMenu, switchButton] = [...root.children]
     return {
       map: rect(document.querySelector('#map')!),
       root: rect(root),
       toolbar: rect(toolbar),
+      switchButton: rect(switchButton),
       bottomMenu: {
         ...rect(bottomMenu),
         background: getComputedStyle(bottomMenu).backgroundColor,
@@ -66,7 +67,8 @@ test.describe('narrow map', () => {
     await login(page, E2E_EMAIL, E2E_PASSWORD)
     await openMapWithDrawerClosed(page)
 
-    const { map, root, toolbar, bottomMenu } = await menusGeometry(page)
+    const { map, root, toolbar, bottomMenu, switchButton } =
+      await menusGeometry(page)
 
     // the toolbar stays a narrow column at the right edge
     expect(toolbar.width).toBeLessThan(toolbar.height)
@@ -81,6 +83,8 @@ test.describe('narrow map', () => {
     expect(bottomMenu.left).toBeGreaterThan(map.left + 60)
     // no shared group background: each menu carries its own
     expect(bottomMenu.background).toBe('rgba(0, 0, 0, 0)')
+    // the stacked menus' lower border aligns with the switch's
+    expect(Math.abs(bottomMenu.bottom - switchButton.bottom)).toBeLessThanOrEqual(1)
 
     // the cluster stays inside the map area and does not grow past the
     // toolbar's top (the toolbar is its tallest element)
