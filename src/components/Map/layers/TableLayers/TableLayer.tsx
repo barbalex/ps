@@ -1,4 +1,4 @@
-import { useState, useRef, useMemo } from 'react'
+import { useState, useRef, useMemo, useCallback } from 'react'
 import { useMapEvent, useMapEvents, useMap } from 'react-leaflet'
 import * as L from 'leaflet'
 import { useAtomValue, useSetAtom } from 'jotai'
@@ -150,6 +150,22 @@ export const TableLayer = ({
     [data],
   )
 
+  // Stable per-feature identity for ProgressiveGeoJSON's reconciliation:
+  // the table layers rebuild their data arrays on every render — the
+  // zoomend viewport round-trip through the url re-renders the route
+  // tree — and without keys every new array identity would clear and
+  // refill the whole layer: the features blinking after every zoom
+  const featureKey = useCallback((feature: Feature) => {
+    const properties = feature.properties ?? {}
+    const parts = [
+      String(properties.observation_id ?? ''),
+      String(properties.place_id ?? ''),
+      String(properties.check_id ?? ''),
+      String(properties.action_id ?? ''),
+    ]
+    return parts.some((part) => part !== '') ? parts.join('_') : undefined
+  }, [])
+
   if (!firstDisplay) return null
   if (!layer) return null
   // include only if zoom between min_zoom and max_zoom
@@ -170,6 +186,7 @@ export const TableLayer = ({
       <ProgressiveGeoJSON
         resetKey={`${dataKey}/${JSON.stringify(firstDisplay)}/${activeId ?? ''}`}
         data={data}
+        featureKey={featureKey}
         // style by properties, use a function that receives the feature: https://stackoverflow.com/a/66106512/712005
         style={(feature) => {
           // need to choose display to pass in
