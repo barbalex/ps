@@ -48,6 +48,9 @@ services:
       interval: 5s
       timeout: 5s
       retries: 5
+      # first-time init (initdb + ~20 seed scripts) outlasts retries × interval
+      # on a slow VM — failures during start-up must not mark the db unhealthy
+      start_period: 180s
   electric:
     container_name: ps_electric
     image: electricsql/electric:latest

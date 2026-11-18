@@ -53,7 +53,14 @@ RUN apt-get -qq update \
 # mount SQL files directly into the Postgres containers’ initialization directory
 COPY ./init/ /docker-entrypoint-initdb.d/
 
-COPY --from=builder /usr/lib/postgresql/18/lib/ /usr/lib/postgresql/18/lib/
-COPY --from=builder /usr/share/postgresql/18/extension/ /usr/share/postgresql/18/extension/
+# Copy only the extensions built above. Copying the whole directories would also
+# replace the base image's own libraries (e.g. plpgsql.so) with the builder's,
+# which apt may have upgraded to a newer Postgres minor than the final base image
+# ships — the mixed 18.6 server + 18.7 libs then crash initdb with undefined symbols.
+COPY --from=builder /usr/lib/postgresql/18/lib/temporal_tables.so /usr/lib/postgresql/18/lib/
+COPY --from=builder /usr/lib/postgresql/18/lib/pg_partman_bgw.so /usr/lib/postgresql/18/lib/
+COPY --from=builder /usr/share/postgresql/18/extension/temporal_tables* /usr/share/postgresql/18/extension/
+COPY --from=builder /usr/share/postgresql/18/extension/pg_jobmon* /usr/share/postgresql/18/extension/
+COPY --from=builder /usr/share/postgresql/18/extension/pg_partman* /usr/share/postgresql/18/extension/
 
 
