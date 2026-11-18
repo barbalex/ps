@@ -33,7 +33,7 @@ export const Home = () => {
         <h2 className={styles.pageTitle}>
           <FormattedMessage
             id="HomeWasIstDasText"
-            defaultMessage="Naturschutz&shy;fachleute fördern bedrohte Arten und Lebensräume"
+            defaultMessage="Naturschutz­fachleute fördern bedrohte Arten und Lebensräume"
           />
         </h2>
         <div className={styles.cardContainer}>
@@ -154,7 +154,7 @@ export const Home = () => {
             </h3>
             <FormattedMessage
               id="gjvJCk"
-              defaultMessage="arten-fördern.app funktioniert auf jedem Betriebs&shy;system: Windows, Mac­OS, Linux, Android, iOS..."
+              defaultMessage="arten-fördern.app funktioniert auf jedem Betriebs­system: Windows, Mac­OS, Linux, Android, iOS..."
             />
           </div>
           <div className={styles.card}>
