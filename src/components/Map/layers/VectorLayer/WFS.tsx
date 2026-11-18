@@ -131,10 +131,17 @@ export const WFS = ({ layer, layerPresentation }: Props) => {
     : 'EPSG:4326'
 
   const [zoom, setZoom] = useState(map.getZoom())
-  const [lastBbox, setLastBbox] = useState<string | null>(null)
   // the padded bbox and zoom of the last successful fetch — used to skip
   // refetches when the viewport only moved within the fetched window
   const lastFetchRef = useRef<{ bbox: Bbox; zoom: number } | null>(null)
+
+  // stable identity per feature (wfs feature ids): lets
+  // ProgressiveGeoJSON reconcile refetched data without rebuilding
+  const featureKey = useCallback(
+    (feature: GeoJSON.Feature) =>
+      feature.id != null ? String(feature.id) : undefined,
+    [],
+  )
 
   const [data, setData] = useState<
     GeoJSON.FeatureCollection | null | undefined
@@ -208,7 +215,6 @@ export const WFS = ({ layer, layerPresentation }: Props) => {
       // remember the fetched window only after success — a failed fetch
       // must retry on the next viewport change
       lastFetchRef.current = { bbox, zoom: fetchZoom }
-      setLastBbox(bboxToString(bbox))
       // ISSUE: The only way querying by bbox seems to work is by using the layers default crs
       // BUT: the server returns the data in the layer's default crs too...
       // SOLUTION: reproject the data to EPSG:4326
@@ -359,10 +365,11 @@ export const WFS = ({ layer, layerPresentation }: Props) => {
   return (
     <>
       <ProgressiveGeoJSON
-        resetKey={`${lastBbox ?? ''}/${data?.features?.length ?? 0}/${JSON.stringify(display)}/${JSON.stringify(
+        resetKey={`${JSON.stringify(display)}/${JSON.stringify(
           layerPresentation,
         )}`}
         data={data}
+        featureKey={featureKey}
         geomanIgnore={true}
         onEachFeature={(feature, geoLayer) => {
           ;(
