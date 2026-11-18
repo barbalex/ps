@@ -47,15 +47,15 @@ export const ScaleControl = () => {
   }, [map, update])
 
   return (
-    <div className={styles.container}>
-      {/* the line's width IS the shown distance; the label sits beside
-          it, vertically centered — aligned with the neighboring menus'
-          text in the horizontal layout */}
-      <div
-        className={styles.ruler}
-        style={{ '--scale-width': `${width}px` } as React.CSSProperties}
-      />
+    // the element's width IS the shown distance; the label is centered
+    // over the measuring line and vertically centered within the row,
+    // aligned with the neighboring menus' text
+    <div
+      className={styles.container}
+      style={{ '--scale-width': `${width}px` } as React.CSSProperties}
+    >
       <span className={styles.label}>{text}</span>
+      <div className={styles.ruler} />
     </div>
   )
 }

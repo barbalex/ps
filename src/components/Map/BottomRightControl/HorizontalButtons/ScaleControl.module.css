@@ -2,9 +2,16 @@
    both layouts, which is usually light — and the halo keeps it legible
    on dark imagery */
 .container {
+  position: relative;
+  /* stretched to the row's height: the label centers in it, on the
+     same band as the neighboring menus' text, while the line pins to
+     the bottom */
   display: flex;
+  flex-direction: column;
+  justify-content: center;
   align-items: center;
-  column-gap: 4px;
+  padding-bottom: 3px;
+  width: var(--scale-width);
   color: black;
   filter: drop-shadow(0 0 1px rgba(255, 255, 255, 0.9));
 }
@@ -15,8 +22,10 @@
 
 /* a measuring line with end ticks; its width is the shown distance */
 .ruler {
-  position: relative;
-  width: var(--scale-width);
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
   height: 7px;
   border-bottom: 2px solid black;
 }
