@@ -44,17 +44,9 @@ dark mode not well implemented for: file upload?
 
 ---
 
-Map, Scale-tool: 1. works well in light mode. but not in dark mode: white text on white background 2. popup-list is a wee bit wider than the menu button itself 3. popup list does not close when clicking outside
-
----
-
-map: menus boxes for Massstab and Koordinaten should have equal height (vertically and horizontally stacked). Currently in horizontal stack koordinates are higher, in vertical stack Massstab. Also: make it look like the buttons by adding their radius
-
 ---
 
 ---
-
-apflora.Abies alba: Populations Layer in layer tool: zoom to layer is missing. I thought it had been implemented
 
 ---
 
