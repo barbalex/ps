@@ -2,7 +2,7 @@ import type { PGlite } from '@electric-sql/pglite'
 
 // accepts plain PGlite instances as well as the live-extension wrappers
 // that usePGlite() returns
-type QueryableDb = Pick<PGlite, 'query'>
+export type QueryableDb = Pick<PGlite, 'query'>
 
 // Geospatial queries that run inside PGlite's PostGIS extension instead of
 // Turf in JS. Distance is measured on the spheroid by PostGIS (geography)
