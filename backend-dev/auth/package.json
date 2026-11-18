@@ -15,7 +15,7 @@
     "cors": "2.8.6",
     "express": "5.3.0",
     "form-data": "4.0.6",
-    "mailgun.js": "12.1.1",
+    "mailgun.js": "14.1.1",
     "pg": "8.20.0"
   }
 }
