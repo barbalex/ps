@@ -14,6 +14,14 @@
   align-items: stretch;
   padding: 5px;
   column-gap: 5px;
+
+  /* narrow: stack the bottom menu's contents vertically inside the
+     right-edge column (see BottomRightControl/index.module.css) */
+  @container map (width <= 700px) {
+    flex-direction: column;
+    align-items: center;
+    row-gap: 5px;
+  }
 }
 
 :global(html[data-theme='dark']) .container {
