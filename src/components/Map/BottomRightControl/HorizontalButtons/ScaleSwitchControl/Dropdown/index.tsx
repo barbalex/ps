@@ -30,24 +30,29 @@ export const Dropdown = ({
   const dropdownWidth = typeof width === 'number' ? `${width}px` : (width ?? 'auto')
 
   return createPortal(
-    <div
-      style={{
-        '--dropdown-max-height': `${scales.length * 2}em`,
-        '--dropdown-bottom': `${Number(rootHeight ?? 0) - boundingRect.y - 1}px`,
-        '--dropdown-left': `${boundingRect.x}px`,
-        '--dropdown-width': dropdownWidth,
-      } as React.CSSProperties}
-      className={`${styles.container} ${styles.containerPositioned}${open ? ` ${styles.open}` : ''}`}
-    >
-      {scales.map((scale) => (
-        <Item
-          key={scale}
-          scale={scale}
-          close={close}
-          pixelsInMeterWidth={pixelsInMeterWidth}
-        />
-      ))}
-    </div>,
+    // the invisible backdrop behind the list closes the dropdown on any
+    // outside click
+    <>
+      <div className={styles.backdrop} onClick={close} />
+      <div
+        style={{
+          '--dropdown-max-height': `${scales.length * 2}em`,
+          '--dropdown-bottom': `${Number(rootHeight ?? 0) - boundingRect.y - 1}px`,
+          '--dropdown-left': `${boundingRect.x}px`,
+          '--dropdown-width': dropdownWidth,
+        } as React.CSSProperties}
+        className={`${styles.container} ${styles.containerPositioned}${open ? ` ${styles.open}` : ''}`}
+      >
+        {scales.map((scale) => (
+          <Item
+            key={scale}
+            scale={scale}
+            close={close}
+            pixelsInMeterWidth={pixelsInMeterWidth}
+          />
+        ))}
+      </div>
+    </>,
     // insert below root to get all the style configs (font-family etc.)
     document.getElementById('router-container')!,
   )

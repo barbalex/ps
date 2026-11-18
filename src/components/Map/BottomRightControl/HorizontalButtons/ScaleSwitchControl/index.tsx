@@ -62,7 +62,9 @@ export const ScaleSwitchControl = () => {
       <Dropdown
         open={open}
         boundingRect={boundingRect}
-        width={width}
+        /* the measured width is the trigger's content box; the dropdown
+           is border-box and must match the trigger's outer width */
+        width={typeof width === 'number' ? width + 10 : width}
         close={close}
         pixelsInMeterWidth={pixelsInMeterWidth}
       />

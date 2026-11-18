@@ -8,6 +8,11 @@
   border: 1px solid black;
   padding: 2px 4px;
   background: rgba(255, 255, 255, 0.7);
+  /* equal height with the scale switch box in both layouts (border-box,
+     like the toolbar buttons' look incl. their radius) */
+  box-sizing: border-box;
+  height: 30px;
+  border-radius: 4px;
 }
 
 :global(html[data-theme='dark']) .container {
