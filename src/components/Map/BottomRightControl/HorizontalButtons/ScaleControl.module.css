@@ -3,9 +3,11 @@
    on dark imagery */
 .container {
   position: relative;
-  /* stretched to the row's height: the label centers in it, on the
-     same band as the neighboring menus' text, while the line pins to
-     the bottom */
+  /* a compact block, centered within the row's height: the label sits
+     on the same band as the neighboring menus' text and the line
+     follows just below it, near the neighbors' lower borders —
+     instead of pinning to the row's very bottom */
+  align-self: center;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -13,7 +15,14 @@
   padding-bottom: 3px;
   width: var(--scale-width);
   color: black;
-  filter: drop-shadow(0 0 1px rgba(255, 255, 255, 0.9));
+  filter:
+    drop-shadow(0 0 1px rgba(255, 255, 255, 0.95)),
+    drop-shadow(0 0 2.5px rgba(255, 255, 255, 0.8));
+
+  /* narrow: right-aligned in the stacked column */
+  @container map (width <= 700px) {
+    align-self: flex-end;
+  }
 }
 
 .label {
