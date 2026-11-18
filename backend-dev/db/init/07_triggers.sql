@@ -1382,6 +1382,81 @@ BEFORE INSERT OR UPDATE ON auth_accounts
 FOR EACH ROW
 EXECUTE FUNCTION sync_auth_accounts_id_columns();
 
+CREATE OR REPLACE FUNCTION sync_auth_sessions_id_columns()
+RETURNS trigger
+LANGUAGE plpgsql
+AS $$
+BEGIN
+  IF current_setting('electric.syncing', true) = 'true' THEN
+    RETURN NEW;
+  END IF;
+
+  IF NEW.auth_session_id IS NOT NULL AND NEW.id IS NULL THEN
+    NEW.id := NEW.auth_session_id;
+  ELSIF NEW.auth_session_id IS NULL AND NEW.id IS NOT NULL THEN
+    NEW.auth_session_id := NEW.id;
+  END IF;
+
+  RETURN NEW;
+END;
+$$;
+
+DROP TRIGGER IF EXISTS sync_auth_sessions_id_columns_trigger ON auth_sessions;
+CREATE TRIGGER sync_auth_sessions_id_columns_trigger
+BEFORE INSERT OR UPDATE ON auth_sessions
+FOR EACH ROW
+EXECUTE FUNCTION sync_auth_sessions_id_columns();
+
+CREATE OR REPLACE FUNCTION sync_auth_verifications_id_columns()
+RETURNS trigger
+LANGUAGE plpgsql
+AS $$
+BEGIN
+  IF current_setting('electric.syncing', true) = 'true' THEN
+    RETURN NEW;
+  END IF;
+
+  IF NEW.auth_verification_id IS NOT NULL AND NEW.id IS NULL THEN
+    NEW.id := NEW.auth_verification_id;
+  ELSIF NEW.auth_verification_id IS NULL AND NEW.id IS NOT NULL THEN
+    NEW.auth_verification_id := NEW.id;
+  END IF;
+
+  RETURN NEW;
+END;
+$$;
+
+DROP TRIGGER IF EXISTS sync_auth_verifications_id_columns_trigger ON auth_verifications;
+CREATE TRIGGER sync_auth_verifications_id_columns_trigger
+BEFORE INSERT OR UPDATE ON auth_verifications
+FOR EACH ROW
+EXECUTE FUNCTION sync_auth_verifications_id_columns();
+
+CREATE OR REPLACE FUNCTION sync_auth_passkeys_id_columns()
+RETURNS trigger
+LANGUAGE plpgsql
+AS $$
+BEGIN
+  IF current_setting('electric.syncing', true) = 'true' THEN
+    RETURN NEW;
+  END IF;
+
+  IF NEW.auth_passkey_id IS NOT NULL AND NEW.id IS NULL THEN
+    NEW.id := NEW.auth_passkey_id;
+  ELSIF NEW.auth_passkey_id IS NULL AND NEW.id IS NOT NULL THEN
+    NEW.auth_passkey_id := NEW.id;
+  END IF;
+
+  RETURN NEW;
+END;
+$$;
+
+DROP TRIGGER IF EXISTS sync_auth_passkeys_id_columns_trigger ON auth_passkeys;
+CREATE TRIGGER sync_auth_passkeys_id_columns_trigger
+BEFORE INSERT OR UPDATE ON auth_passkeys
+FOR EACH ROW
+EXECUTE FUNCTION sync_auth_passkeys_id_columns();
+
 -- On project INSERT, create the three always-needed own vector layers
 -- (places level 1, actions level 1, checks level 1).
 -- The vector_layers_insert_trigger will then automatically create

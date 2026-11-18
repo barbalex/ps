@@ -10,9 +10,14 @@ import { mapHideUiAtom } from '../../../store.ts'
 import { useElementSize } from '../../../modules/useElementSize.ts'
 import styles from './index.module.css'
 
-type Props = { isNarrow: boolean }
+type Props = { isNarrow: boolean; mapHeight?: number }
 
-export const LeftMenuDrawer = ({ isNarrow }: Props) => {
+// map space kept visible above the narrow drawer: the only close
+// toggle sits at the drawer's top edge (6px offset, ~31px tall), so
+// the drawer must never grow past the map container's top
+const narrowTopSliver = 60
+
+export const LeftMenuDrawer = ({ isNarrow, mapHeight }: Props) => {
   const mapHideUi = useAtomValue(mapHideUiAtom)
 
   const {
@@ -29,10 +34,27 @@ export const LeftMenuDrawer = ({ isNarrow }: Props) => {
     }
   }, [isNarrow, ownHeight, ownWidth])
 
+  const maxNarrowSize =
+    mapHeight === undefined ?
+      undefined
+    : Math.max(mapHeight - narrowTopSliver, 120)
+  const clampNarrow = useCallback(
+    (size: number) => Math.min(size, maxNarrowSize ?? Number.POSITIVE_INFINITY),
+    [maxNarrowSize],
+  )
+  // re-clamp when the map container shrinks (rotating the phone,
+  // toggling the map fullscreen): a drawer opened tall must not
+  // keep its top outside the map area
+  useEffect(() => {
+    if (isNarrow && maxNarrowSize !== undefined && size > maxNarrowSize) {
+      setSize(maxNarrowSize)
+    }
+  }, [isNarrow, maxNarrowSize, size])
+
   const isOpen = size > 40
   const toggleOpen = (e: React.MouseEvent) => {
     e.stopPropagation()
-    const newValue = isOpen ? 5 : isNarrow ? 500 : 380
+    const newValue = isOpen ? 5 : clampNarrow(isNarrow ? 500 : 380)
     setSize(newValue)
   }
 
@@ -52,15 +74,20 @@ export const LeftMenuDrawer = ({ isNarrow }: Props) => {
       if (!isResizing) return
       if (!sidebarRef.current) return
 
+      // narrow: anchor at the map container's bottom edge, not the
+      // window's: the map starts below header and breadcrumbs
       const newSidebarSize = isNarrow
-        ? window.innerHeight - clientY
+        ? clampNarrow(
+            (widthRef.current?.parentElement?.getBoundingClientRect().bottom ??
+              window.innerHeight) - clientY,
+          )
         : clientX - sidebarRef.current.getBoundingClientRect().left
 
       animationFrame.current = requestAnimationFrame(() =>
         setSize(newSidebarSize),
       )
     },
-    [isNarrow, isResizing],
+    [clampNarrow, isNarrow, isResizing, widthRef],
   )
 
   // while resizing, cursor needs to be:

@@ -302,6 +302,11 @@ export const auth = betterAuth({
     // resolve the per-request baseURL from x-forwarded-host when the
     // request arrives through the arten-fördern.ch proxy
     trustedProxyHeaders: true,
+    // Caddy (docker network) appends the real client IP to x-forwarded-for;
+    // trusting it lets rate limiting key per client instead of one shared bucket
+    ipAddress: {
+      trustedProxies: ['172.16.0.0/12', '127.0.0.1'],
+    },
   },
   // joins causing error thus uncommented.
   // TODO: test later and consider re-enabling if it can be made to work
@@ -373,6 +378,8 @@ export const auth = betterAuth({
             secret: 'secret',
             backupCodes: 'backup_codes',
             verified: 'verified',
+            failedVerificationCount: 'failed_verification_count',
+            lockedUntil: 'locked_until',
             createdAt: 'created_at',
             updatedAt: 'updated_at',
           },
