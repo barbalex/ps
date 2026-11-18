@@ -1,8 +1,6 @@
 .container{
   grid-area: horizontalbuttons;
   z-index: 1000;
-  background-color: white;
-  border-radius: 4px;
   margin: 0;
   cursor: auto;
   position: relative;
@@ -12,26 +10,20 @@
   flex-wrap: nowrap;
   flex-direction: row;
   align-items: stretch;
-  padding: 5px;
   column-gap: 5px;
 
+  /* no group background: each menu (scale switch, coordinates) carries
+     its own slight one, the ruler floats with a halo — in both the
+     horizontal and the stacked layout */
+  background-color: transparent;
+  padding: 0;
+
   /* narrow: the menu contents stack vertically (scale, scale switch,
-     coordinates), bottom-aligned to the left of the toolbar — and the
-     group carries no background: each menu keeps its own slight one */
+     coordinates), spanning both rows to the left of the toolbar */
   @container map (width <= 700px) {
     flex-direction: column;
     align-items: flex-end;
     align-self: end;
     row-gap: 5px;
-    background-color: transparent;
-    padding: 0;
-  }
-}
-
-:global(html[data-theme='dark']) .container {
-  background-color: #292929;
-
-  @container map (width <= 700px) {
-    background-color: transparent;
   }
 }

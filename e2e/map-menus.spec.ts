@@ -4,10 +4,10 @@ import { ensureUser, login } from './helpers.ts'
 /**
  * The map menus (BottomRightControl) respond to the map width: the
  * bottom menu (scale, scale switch, coordinates) stays a horizontal
- * bar when the map is wide. On narrow maps it stacks vertically to the
- * left of the toolbar, bottom-aligned, each menu carrying its own
- * slight background instead of a shared group box — so nothing spans
- * the map's bottom edge or grows past the toolbar's top.
+ * row when the map is wide. On narrow maps it stacks vertically to the
+ * left of the toolbar, bottom-aligned with the hide-ui switch. There
+ * is no shared group background in either layout — each menu carries
+ * its own slight one, and the scale ruler floats over the map.
  */
 
 const E2E_EMAIL = process.env.E2E_EMAIL ?? 'zcode-mapmenus@test.ch'
@@ -102,9 +102,11 @@ test.describe('wide map', () => {
 
     const { map, toolbar, bottomMenu } = await menusGeometry(page)
 
-    // the bottom menu spans a wide bar reaching far into the map
+    // the bottom menu spans a wide row reaching far into the map
     expect(bottomMenu.width).toBeGreaterThan(bottomMenu.height)
     expect(bottomMenu.width).toBeGreaterThan(map.width * 0.3)
     expect(toolbar.right).toBeGreaterThan(map.right - 60)
+    // no shared group background here either: each menu carries its own
+    expect(bottomMenu.background).toBe('rgba(0, 0, 0, 0)')
   })
 })

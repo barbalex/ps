@@ -1,39 +1,40 @@
-.div {
-  /* a ruler: the element's width IS the shown distance — drawn as a
-     measuring line with end ticks and the label above it. Inside the
-     wide layout's group bar it follows the theme's text color: the
-     bar's solid background (white / #292929) provides the contrast */
-  position: relative;
+/* black with a white halo: the ruler floats over the map imagery in
+   both layouts, which is usually light — and the halo keeps it legible
+   on dark imagery */
+.container {
   display: flex;
-  align-items: flex-end;
-  justify-content: center;
-  padding: 0 4px 1px 4px;
-  border-bottom: 2px solid currentColor;
-
-  /* narrow: no group bar behind the ruler — it floats over the map,
-     usually light imagery: fixed black with a white halo stays legible
-     even when the app theme (and the inherited text color) is dark */
-  @container map (width <= 700px) {
-    color: black;
-    border-bottom-color: black;
-    filter: drop-shadow(0 0 1px rgba(255, 255, 255, 0.9));
-  }
+  align-items: center;
+  column-gap: 4px;
+  color: black;
+  filter: drop-shadow(0 0 1px rgba(255, 255, 255, 0.9));
 }
 
-.div::before,
-.div::after {
+.label {
+  white-space: nowrap;
+}
+
+/* a measuring line with end ticks; its width is the shown distance */
+.ruler {
+  position: relative;
+  width: var(--scale-width);
+  height: 7px;
+  border-bottom: 2px solid black;
+}
+
+.ruler::before,
+.ruler::after {
   content: '';
   position: absolute;
   bottom: 0;
   width: 2px;
   height: 7px;
-  background-color: currentColor;
-
-  @container map (width <= 700px) {
-    background-color: black;
-  }
+  background-color: black;
 }
 
-.divSized {
-  width: var(--scale-width);
+.ruler::before {
+  left: 0;
+}
+
+.ruler::after {
+  right: 0;
 }
