@@ -2,12 +2,12 @@ import { test, expect, type Page } from '@playwright/test'
 import { ensureUser, login } from './helpers.ts'
 
 /**
- * On narrow layouts the map menus stack into one right-edge column
- * (BottomRightControl): the bottom menu (scale, scale switch,
- * coordinates) used to span the map's bottom edge, where it collided
- * with the layer-drawer toggle, the notifications and the attribution.
- * The stacked column must hug the right edge and stay inside the map
- * area. Wide layouts keep the horizontal bottom bar.
+ * The map menus (BottomRightControl) respond to the map width: the
+ * bottom menu (scale, scale switch, coordinates) stays a horizontal
+ * bar when the map is wide. On narrow maps it stacks vertically to the
+ * left of the toolbar, bottom-aligned, each menu carrying its own
+ * slight background instead of a shared group box — so nothing spans
+ * the map's bottom edge or grows past the toolbar's top.
  */
 
 const E2E_EMAIL = process.env.E2E_EMAIL ?? 'zcode-mapmenus@test.ch'
@@ -20,9 +20,12 @@ const openMapWithDrawerClosed = async (page: Page) => {
   await page.waitForTimeout(700)
 }
 
-const controlsGeometry = (page: Page) =>
+// geometry of the controls cluster: toolbar, bottom menu, hide-ui
+// switch are the three children of .map-own-controls
+const menusGeometry = (page: Page) =>
   page.evaluate(() => {
-    const rect = (el: HTMLElement) => {
+    const root = document.querySelector('#map .map-own-controls')!
+    const rect = (el: Element) => {
       const r = el.getBoundingClientRect()
       return {
         left: r.left,
@@ -33,11 +36,15 @@ const controlsGeometry = (page: Page) =>
         height: r.height,
       }
     }
+    const [toolbar, bottomMenu] = [...root.children]
     return {
-      map: rect(document.querySelector('#map') as HTMLElement),
-      controls: rect(
-        document.querySelector('#map .map-own-controls') as HTMLElement,
-      ),
+      map: rect(document.querySelector('#map')!),
+      root: rect(root),
+      toolbar: rect(toolbar),
+      bottomMenu: {
+        ...rect(bottomMenu),
+        background: getComputedStyle(bottomMenu).backgroundColor,
+      },
     }
   })
 
@@ -53,34 +60,47 @@ test.beforeEach(async () => {
 test.describe('narrow map', () => {
   test.use({ viewport: { width: 390, height: 700 } })
 
-  test('the map menus stack into a right-edge column', async ({ page }) => {
+  test('the bottom menu stacks vertically beside the toolbar', async ({
+    page,
+  }) => {
     await login(page, E2E_EMAIL, E2E_PASSWORD)
     await openMapWithDrawerClosed(page)
 
-    const { map, controls } = await controlsGeometry(page)
+    const { map, root, toolbar, bottomMenu } = await menusGeometry(page)
 
-    // a column, not a bottom-spanning bar
-    expect(controls.width).toBeLessThan(map.width * 0.6)
-    // anchored at the right edge, clear of the bottom-left drawer toggle
-    expect(controls.right).toBeGreaterThan(map.right - 60)
-    expect(controls.left).toBeGreaterThan(map.left + 60)
-    // the whole column stays inside the map area
-    expect(controls.top).toBeGreaterThanOrEqual(map.top - 1)
-    expect(controls.bottom).toBeLessThanOrEqual(map.bottom + 1)
+    // the toolbar stays a narrow column at the right edge
+    expect(toolbar.width).toBeLessThan(toolbar.height)
+    expect(toolbar.right).toBeGreaterThan(map.right - 60)
+
+    // the bottom menu is stacked vertically (multiple rows tall), left
+    // of the toolbar, and does not span the map's bottom edge
+    expect(bottomMenu.height).toBeGreaterThan(60)
+    expect(bottomMenu.width).toBeLessThan(map.width * 0.6)
+    expect(bottomMenu.right).toBeLessThanOrEqual(toolbar.left + 1)
+    // clear of the bottom-left layer-drawer toggle
+    expect(bottomMenu.left).toBeGreaterThan(map.left + 60)
+    // no shared group background: each menu carries its own
+    expect(bottomMenu.background).toBe('rgba(0, 0, 0, 0)')
+
+    // the cluster stays inside the map area and does not grow past the
+    // toolbar's top (the toolbar is its tallest element)
+    expect(root.top).toBeGreaterThanOrEqual(map.top - 1)
+    expect(root.bottom).toBeLessThanOrEqual(map.bottom + 1)
   })
 })
 
 test.describe('wide map', () => {
   test.use({ viewport: { width: 1100, height: 700 } })
 
-  test('the map menus keep the horizontal bottom bar', async ({ page }) => {
+  test('the bottom menu keeps its horizontal bar', async ({ page }) => {
     await login(page, E2E_EMAIL, E2E_PASSWORD)
     await openMapWithDrawerClosed(page)
 
-    const { map, controls } = await controlsGeometry(page)
+    const { map, toolbar, bottomMenu } = await menusGeometry(page)
 
     // the bottom menu spans a wide bar reaching far into the map
-    expect(controls.width).toBeGreaterThan(map.width * 0.3)
-    expect(controls.right).toBeGreaterThan(map.right - 60)
+    expect(bottomMenu.width).toBeGreaterThan(bottomMenu.height)
+    expect(bottomMenu.width).toBeGreaterThan(map.width * 0.3)
+    expect(toolbar.right).toBeGreaterThan(map.right - 60)
   })
 })

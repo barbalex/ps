@@ -5,10 +5,22 @@
   justify-content: center;
   align-items: center;
   padding: 2px 0;
+
+  /* narrow: standalone below the other menus instead of flush at the
+     top of the group bar — close the border and add the same slight
+     background the other menus carry */
+  @container map (width <= 700px) {
+    border-top: 1px solid black;
+    background: rgba(255, 255, 255, 0.7);
+  }
 }
 
 :global(html[data-theme='dark']) .div {
   border-color: #4a4a4a;
+
+  @container map (width <= 700px) {
+    background: rgba(41, 41, 41, 0.7);
+  }
 }
 
 .divSized {
