@@ -1,12 +1,17 @@
 .div {
   /* a ruler: the element's width IS the shown distance — drawn as a
-     measuring line with end ticks and the label above it */
+     measuring line with end ticks and the label above it. Fixed black
+     with a white halo: legible on light map imagery even when the app
+     theme (and thus the inherited text color) is dark, and the halo
+     keeps it visible on dark imagery too */
   position: relative;
   display: flex;
   align-items: flex-end;
   justify-content: center;
   padding: 0 4px 1px 4px;
-  border-bottom: 2px solid currentColor;
+  border-bottom: 2px solid black;
+  color: black;
+  filter: drop-shadow(0 0 1px rgba(255, 255, 255, 0.9));
 }
 
 .div::before,
@@ -16,7 +21,7 @@
   bottom: 0;
   width: 2px;
   height: 7px;
-  background-color: currentColor;
+  background-color: black;
 }
 
 .div::before {
