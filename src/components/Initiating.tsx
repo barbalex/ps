@@ -88,23 +88,6 @@ export const Initiating = () => {
     return (
       <div className={styles.container}>
         <Spinner className={styles.spinnerAlone} />
-        {import.meta.env.DEV && (
-          <div
-            data-boot-flags
-            style={{
-              position: 'fixed',
-              bottom: 8,
-              left: 8,
-              font: '11px monospace',
-              background: '#ff0',
-              padding: '2px 6px',
-              zIndex: 99998,
-            }}
-          >
-            db={String(!!pgliteDb)} sql={String(sqlInitializing)} sync=
-            {String(initialSyncing)} firstRun={String(firstRunDbInit)}
-          </div>
-        )}
       </div>
     )
   }
