@@ -8,14 +8,6 @@
   border: 1px solid black;
   padding: 2px 4px;
   background: rgba(255, 255, 255, 0.7);
-
-  /* narrow: the coordinate inputs and their two buttons wrap into
-     centered rows inside the stacked right-edge column */
-  @container map (width <= 700px) {
-    flex: 0 1 auto;
-    flex-wrap: wrap;
-    row-gap: 2px;
-  }
 }
 
 :global(html[data-theme='dark']) .container {

@@ -54,8 +54,10 @@ type LatLngBoundsWithInternals = L.LatLngBounds & {
 }
 
 type VectorLayerGeomRow = {
+  vector_layer_geom_id: string
   geometry: GeoJSON
   properties: unknown
+  updated_at: string
 }
 
 export const PVLGeom = ({ layer, display }: Props) => {
@@ -66,6 +68,15 @@ export const PVLGeom = ({ layer, display }: Props) => {
   const removeNotification = useSetAtom(removeNotificationAtom)
 
   const [data, setData] = useState<GeoJSON[]>()
+
+  // row ids of the last fetch, per layer: a zoomend refetch often returns
+  // the same rows (zooming in only tightens the bounds) — a new data
+  // array would clear and progressively rebuild the rendered layer
+  // (the overlays blinking out), so equal row sets keep the old identity
+  const lastFetchRef = useRef<{
+    layerId: string | null
+    ids: string[]
+  } | null>(null)
 
   const notificationIds = useRef<string[]>([])
 
@@ -79,6 +90,23 @@ export const PVLGeom = ({ layer, display }: Props) => {
   const map = useMap()
 
   const [zoom, setZoom] = useState<number>(map.getZoom())
+
+  // stable identity per feature (id + updated_at): lets
+  // ProgressiveGeoJSON reconcile refetched data without rebuilding.
+  // leaflet wraps the geometry objects we feed it into features, lifting
+  // only `properties` — the identity fields stay on the wrapped geometry
+  const featureKey = useCallback(
+    (feature: GeoJSON.Feature) => {
+      const geometry = feature.geometry as {
+        vectorLayerGeomId?: string
+        vectorLayerGeomUpdatedAt?: string
+      } | null
+      return geometry ?
+          `${geometry.vectorLayerGeomId}@${geometry.vectorLayerGeomUpdatedAt}`
+        : undefined
+    },
+    [],
+  )
 
   const fetchData = useCallback(
     async ({ bounds }: { bounds: LatLngBoundsWithInternals }) => {
@@ -95,8 +123,10 @@ export const PVLGeom = ({ layer, display }: Props) => {
       const resVectorLayerGeoms = await db.query(
         `
         SELECT
+          vector_layer_geom_id,
           geometry,
-          properties
+          properties,
+          updated_at
         FROM vector_layer_geoms
         WHERE
           vector_layer_id = $1
@@ -121,10 +151,29 @@ export const PVLGeom = ({ layer, display }: Props) => {
       const data = vectorLayerGeoms.map((pvlGeom) => ({
         ...pvlGeom.geometry,
         properties: pvlGeom.properties,
+        // identity for ProgressiveGeoJSON's reconciliation: id + updated_at
+        // so edited geometries count as new while unchanged ones stay
+        // rendered across the zoomend refetches
+        vectorLayerGeomId: pvlGeom.vector_layer_geom_id,
+        vectorLayerGeomUpdatedAt: pvlGeom.updated_at,
       })) as GeoJSON[]
       removeNotifs()
 
-      setData(data)
+      const geomIds = vectorLayerGeoms
+        .map((row) => row.vector_layer_geom_id)
+        .sort()
+      const lastFetch = lastFetchRef.current
+      lastFetchRef.current = {
+        layerId: layer.vector_layer_id ?? null,
+        ids: geomIds,
+      }
+      const sameRowsAsLastFetch =
+        lastFetch?.layerId === (layer.vector_layer_id ?? null) &&
+        lastFetch.ids.length === geomIds.length &&
+        lastFetch.ids.every((id, i) => id === geomIds[i])
+      if (!sameRowsAsLastFetch) {
+        setData(data)
+      }
       setZoom(map.getZoom())
     },
     [
@@ -184,10 +233,9 @@ export const PVLGeom = ({ layer, display }: Props) => {
       <ProgressiveGeoJSON
         resetKey={`${layer.id}/${display.marker_symbol}/${display?.marker_size}/${
           display?.color
-        }/${display?.opacity_percent}/${display?.marker_type}/${
-          data?.length ?? 0
-        }`}
+        }/${display?.opacity_percent}/${display?.marker_type}`}
         data={data}
+        featureKey={featureKey}
         geomanIgnore={true}
         // the group style is applied to every added layer; the opacity prop
         // of react-leaflet's <GeoJSON> (applied via setStyle) folds in here

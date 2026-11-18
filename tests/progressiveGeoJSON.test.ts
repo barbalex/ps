@@ -4,6 +4,8 @@ import type { Feature, FeatureCollection, Geometry } from 'geojson'
 import {
   addProgressively,
   flattenGeoJSON,
+  missingForReconcile,
+  reconcileKey,
 } from '../src/components/Map/layers/progressiveGeoJSON.ts'
 
 const pointFeature = (i: number): Feature => ({
@@ -241,5 +243,62 @@ describe('addProgressively', () => {
 
     expect(addChunk).not.toHaveBeenCalled()
     expect(scheduler.pending()).toBe(0)
+  })
+})
+
+describe('reconciliation helpers', () => {
+  // like PVLGeom: bare geometry objects carrying identity fields, which
+  // leaflet wraps into features (lifting only properties)
+  const bareGeometry = (id: string): Geometry =>
+    ({
+      type: 'GeometryCollection',
+      geometries: [],
+      vectorLayerGeomId: id,
+      vectorLayerGeomUpdatedAt: '2026-11-18',
+    }) as unknown as Geometry
+
+  const wrapped = (id: string): Feature =>
+    ({
+      type: 'Feature',
+      properties: {},
+      geometry: bareGeometry(id),
+    }) as unknown as Feature
+
+  const pvlKey = (feature: Feature) => {
+    const geometry = feature.geometry as {
+      vectorLayerGeomId?: string
+    } | null
+    return geometry?.vectorLayerGeomId
+  }
+
+  it('yields the same key for a bare geometry and its wrapped feature', () => {
+    expect(reconcileKey(bareGeometry('a'), pvlKey)).toBe('a')
+    expect(reconcileKey(wrapped('a'), pvlKey)).toBe('a')
+  })
+
+  it('returns undefined for items without identity', () => {
+    expect(reconcileKey(undefined, pvlKey)).toBeUndefined()
+    expect(
+      reconcileKey({ type: 'Point', coordinates: [0, 0] }, pvlKey),
+    ).toBeUndefined()
+  })
+
+  it('keys real features by their id (wfs shape)', () => {
+    const wfsKey = (feature: Feature) =>
+      feature.id != null ? String(feature.id) : undefined
+    const feature = pointFeature(1) as Feature & { id?: string }
+    feature.id = 'layer.42'
+    expect(reconcileKey(feature, wfsKey)).toBe('layer.42')
+  })
+
+  it('reports only keyless or not-yet-rendered items as missing', () => {
+    const items = [bareGeometry('a'), bareGeometry('b'), bareGeometry('c')]
+    expect(missingForReconcile(items, new Set(['a', 'b']), pvlKey)).toEqual([
+      bareGeometry('c'),
+    ])
+    // everything already rendered: nothing to add
+    expect(missingForReconcile(items, new Set(['a', 'b', 'c']), pvlKey)).toEqual(
+      [],
+    )
   })
 })

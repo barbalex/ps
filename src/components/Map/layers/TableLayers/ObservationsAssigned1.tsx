@@ -1,3 +1,4 @@
+import { useMemo } from 'react'
 import { useParams } from '@tanstack/react-router'
 import { useAtomValue } from 'jotai'
 import { useLiveQuery } from '@electric-sql/pglite-react'
@@ -9,7 +10,9 @@ import type { GeoJsonProperties, GeometryCollection } from 'geojson'
 import { draggableLayersAtom } from '../../../../store.ts'
 import type Observations from '../../../../models/public/Observations.ts'
 
-export const ObservationsAssigned1 = ({ layerPresentation }: {
+export const ObservationsAssigned1 = ({
+  layerPresentation,
+}: {
   layerPresentation: TableLayerProps['layerPresentation']
 }) => {
   const draggableLayers = useAtomValue(draggableLayersAtom)
@@ -31,47 +34,51 @@ export const ObservationsAssigned1 = ({ layerPresentation }: {
   `,
     [subprojectId],
   )
-  const observations: Observations[] = res?.rows ?? []
 
   // geometry is stored as PostGIS GeometryCollection; convert to FeatureCollection for display
   // properties need to go into every feature
-  const data = observations.map(
-    (p: Observations & { bbox?: unknown }) => {
-    // add p's properties to all features:
-    // TODO: make properties more readable for user
-    // Idea: use iframe to open form, see TableLayer
-     
-    const { geometry, bbox, data, ...properties } = p
-    const fc = {
-      type: 'FeatureCollection' as const,
-      features: ((geometry as GeometryCollection | null)?.geometries ?? []).map(
-        (g) => ({
+  // memoized on the live-query result: re-renders (the zoomend viewport
+  // round-trip through the url) must not rebuild the FeatureCollections —
+  // a new data identity reconciles the whole layer
+  const data = useMemo(() => {
+    const observations: Observations[] = res?.rows ?? []
+    return observations.map((p: Observations & { bbox?: unknown }) => {
+      // add p's properties to all features:
+      // TODO: make properties more readable for user
+      // Idea: use iframe to open form, see TableLayer
+
+      const { geometry, bbox, data, ...properties } = p
+      const fc = {
+        type: 'FeatureCollection' as const,
+        features: (
+          (geometry as GeometryCollection | null)?.geometries ?? []
+        ).map((g) => ({
           type: 'Feature' as const,
           geometry: g,
           properties: {} as GeoJsonProperties,
-        }),
-      ),
-    }
-    // row columns apply even when the data jsonb is empty (e.g. absence)
-    fc.features.forEach((f) => {
-      f.properties = properties ?? {}
-    })
-    if (!data) return fc
-    fc.features.forEach((f) => {
-      f.properties = f.properties ?? {}
-      // data is _not_ passed under the data property due to errors created
-      for (const [key, value] of Object.entries(data ?? {})) {
-        // ensure that properties are not overwritten
-        // but also make sure if key is used for styling, it is not changed...
-        if (key in properties) {
-          f.properties[`_${key}`] = properties[key as keyof typeof properties]
-        }
-        f.properties[key] = value
+        })),
       }
-    })
+      // row columns apply even when the data jsonb is empty (e.g. absence)
+      fc.features.forEach((f) => {
+        f.properties = properties ?? {}
+      })
+      if (!data) return fc
+      fc.features.forEach((f) => {
+        f.properties = f.properties ?? {}
+        // data is _not_ passed under the data property due to errors created
+        for (const [key, value] of Object.entries(data ?? {})) {
+          // ensure that properties are not overwritten
+          // but also make sure if key is used for styling, it is not changed...
+          if (key in properties) {
+            f.properties[`_${key}`] = properties[key as keyof typeof properties]
+          }
+          f.properties[key] = value
+        }
+      })
 
-    return fc
-  })
+      return fc
+    })
+  }, [res?.rows])
 
   if (!data?.length) return null
   if (!layerPresentation) return null

@@ -52,6 +52,46 @@ export type ProgressiveAddOptions = {
 }
 
 /**
+ * Mirrors leaflet's asFeature wrapping: the map layers feed bare
+ * geometries (spreading geometry objects and adding fields), while
+ * rendered children always carry a wrapped feature — reconciliation must
+ * produce the same key for both shapes.
+ */
+export const asReconcileFeature = (
+  item: Feature | Geometry | undefined,
+): Feature | undefined =>
+  item ?
+    item.type === 'Feature' ? item
+    : ({ type: 'Feature', geometry: item, properties: {} } as Feature)
+  : undefined
+
+/**
+ * Stable key of a data item or a rendered feature: undefined when the
+ * item has no identity (kept out of reconciliation, refilled instead).
+ */
+export const reconcileKey = (
+  item: Feature | Geometry | undefined,
+  featureKey: (feature: Feature) => string | undefined,
+): string | undefined => {
+  const feature = asReconcileFeature(item)
+  return feature ? featureKey(feature) : undefined
+}
+
+/**
+ * The items reconciliation must (re)add: those without a key or whose
+ * key is not among the already-rendered ones.
+ */
+export const missingForReconcile = (
+  items: (Feature | Geometry)[],
+  existingKeys: ReadonlySet<string>,
+  featureKey: (feature: Feature) => string | undefined,
+): (Feature | Geometry)[] =>
+  items.filter((item) => {
+    const key = reconcileKey(item, featureKey)
+    return key === undefined || !existingKeys.has(key)
+  })
+
+/**
  * Adds items via addChunk in bounded batches per animation frame (the first
  * batch synchronously, so markers appear immediately). addChunk may return
  * false to abort the stream, e.g. when adding a chunk failed.

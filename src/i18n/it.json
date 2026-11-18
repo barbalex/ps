@@ -922,7 +922,7 @@
   "fH8JmQ": "Mostrare i file in {subprojectNameSingular}",
   "prepDbStepLabel": "Preparazione",
   "initDbMsg": "Creazione del database locale",
-  "initDbHintMsg": "Necessario solo al primo avvio",
+  "initDbHintMsg": "Consente di lavorare offline – necessario solo al primo avvio",
   "initDbStepLabel": "Inizializzazione del database",
   "syncServerStepLabel": "Sincronizzazione con il server",
   "syncServerMsg": "Sincronizzazione con il server",

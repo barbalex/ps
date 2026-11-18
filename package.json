@@ -1,6 +1,6 @@
 {
   "name": "ps",
-  "version": "0.1.101",
+  "version": "0.1.102",
   "versionDate": "18.11.2026",
   "author": "Alexander Gabriel",
   "type": "module",
@@ -165,12 +165,19 @@
     },
     "@tanstack/eslint-plugin-router": {
       "@typescript-eslint/utils": "8.73.0"
+    },
+    "@cyntler/react-doc-viewer": {
+      "ajv": "8.20.0"
+    },
+    "workbox-build": {
+      "glob": "14.0.6"
     }
   },
   "devRemarks": {
     "nothing": "now",
     "electric-sql": "pglite-sync 0.6.12 depends on @electric-sql/client and experimental ^1.0.9, which resolve to the ancient 1.0.14 with the stream pause/resume machinery (FetchError: pause-stream crash loops during heavy syncs, see https://github.com/electric-sql/pglite/issues). The override forces pglite-sync onto the root client 1.5.28 / experimental 6.0.28 where that machinery no longer exists; without it npm nests a private 1.0.14 copy under pglite-sync that the root upgrade never reaches. Drop the override once pglite-sync depends on the new versions itself.",
     "tabster": "errors were caused. tabster@8.7.0 bundled its own keyborg@2.6.0 which conflicted with the top-level keyborg@2.14.0 required by @fluentui/react-components — keyborg 2.14 removed getNavigating, so forcing tabster@8.8.0 (which depends on keyborg@^2.14.0) eliminates the nested copy and makes both packages use the same API.",
-    "typescript-eslint": "eslint cannot run on typescript@7 (native) yet, so the overrides pin its peer to typescript@6.0.3 — full details in the header of scripts/patch-eslint-typescript.mjs. Drop overrides + typescript-v6 + postinstall once typescript-eslint supports v7."
+    "typescript-eslint": "eslint cannot run on typescript@7 (native) yet, so the overrides pin its peer to typescript@6.0.3 — full details in the header of scripts/patch-eslint-typescript.mjs. Drop overrides + typescript-v6 + postinstall once typescript-eslint supports v7.",
+    "dependabot-2026-11": "workbox-build 7.4.1 (vite-plugin-pwa) pins glob ^11.1.0, vulnerable to GHSA-3g3m-2fjr-6pw4 (fixed only in glob >= 14.0.2, which is ESM-only — require(esm) works on Node 24, as the rimraf→glob@14 copy already in the tree proves). The override moves workbox-build to glob 14.0.6, which also replaces its nested minimatch@10 with ^11 (GHSA-g3hv-75wg-m249). react-doc-viewer declares ajv ^7.2.4 but never imports it in its dist; the override swaps the unused nested copy for patched 8.20.0 (GHSA-2g4f-4pwh-qvx6). Drop both once workbox-build/doc-viewer depend on patched versions themselves."
   }
 }

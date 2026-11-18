@@ -1,16 +1,58 @@
-.div {
-  border: 1px solid black;
-  border-top: none;
+/* black with a white halo: the ruler floats over the map imagery in
+   both layouts, which is usually light — and the halo keeps it legible
+   on dark imagery */
+.container {
+  position: relative;
+  /* a compact block, centered within the row's height: the label sits
+     on the same band as the neighboring menus' text and the line
+     follows just below it, near the neighbors' lower borders —
+     instead of pinning to the row's very bottom */
+  align-self: center;
   display: flex;
+  flex-direction: column;
   justify-content: center;
   align-items: center;
-  padding: 2px 0;
-}
-
-:global(html[data-theme='dark']) .div {
-  border-color: #4a4a4a;
-}
-
-.divSized {
+  padding-bottom: 3px;
   width: var(--scale-width);
+  color: black;
+  filter:
+    drop-shadow(0 0 1px rgba(255, 255, 255, 0.95)),
+    drop-shadow(0 0 2.5px rgba(255, 255, 255, 0.8));
+
+  /* narrow: right-aligned in the stacked column */
+  @container map (width <= 700px) {
+    align-self: flex-end;
+  }
+}
+
+.label {
+  white-space: nowrap;
+}
+
+/* a measuring line with end ticks; its width is the shown distance */
+.ruler {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 7px;
+  border-bottom: 2px solid black;
+}
+
+.ruler::before,
+.ruler::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  width: 2px;
+  height: 7px;
+  background-color: black;
+}
+
+.ruler::before {
+  left: 0;
+}
+
+.ruler::after {
+  right: 0;
 }

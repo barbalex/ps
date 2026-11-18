@@ -921,7 +921,7 @@
   "fH8JmQ": "Afficher les fichiers dans {subprojectNameSingular}",
   "prepDbStepLabel": "Préparation",
   "initDbMsg": "Création de la base de données locale",
-  "initDbHintMsg": "Nécessaire uniquement au premier démarrage",
+  "initDbHintMsg": "Permet de travailler hors ligne – nécessaire uniquement au premier démarrage",
   "initDbStepLabel": "Initialisation de la base de données",
   "syncServerStepLabel": "Synchronisation avec le serveur",
   "syncServerMsg": "Synchronisation avec le serveur",

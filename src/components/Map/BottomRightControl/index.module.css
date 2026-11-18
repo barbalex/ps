@@ -16,16 +16,15 @@
      measurement); the child wrappers re-enable pointer events */
   pointer-events: none;
 
-  /* narrow: the bottom menu no longer spans the map's bottom edge
-     (where it collides with the layer-drawer toggle, the notifications
-     and the attribution) — both menus stack into one right-edge
-     column, growing upwards from the bottom */
+  /* narrow: the bottom menu's contents stack vertically and sit to the
+     left of the toolbar, spanning both rows so their lower border
+     aligns with the hide-ui switch's; nothing spans the map's bottom
+     edge anymore */
   @container map (width <= 700px) {
-    grid-template-columns: max-content;
-    grid-template-rows: auto auto 40px;
+    grid-template-columns: max-content 40px;
+    grid-template-rows: auto 40px;
     grid-template-areas:
-      'verticalbuttons'
-      'horizontalbuttons'
-      'uibutton';
+      'horizontalbuttons verticalbuttons'
+      'horizontalbuttons uibutton';
   }
 }
