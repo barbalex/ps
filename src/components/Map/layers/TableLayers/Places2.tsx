@@ -1,3 +1,4 @@
+import { useMemo } from 'react'
 import { useLiveQuery } from '@electric-sql/pglite-react'
 import { useLocation, useParams } from '@tanstack/react-router'
 
@@ -6,13 +7,19 @@ import type { TableLayerProps } from './TableLayer.tsx'
 import type { GeoJsonProperties, GeometryCollection } from 'geojson'
 import type Places from '../../../../models/public/Places.ts'
 
-export const Places2 = ({ layerPresentation }: { layerPresentation: TableLayerProps['layerPresentation'] }) => {
+export const Places2 = ({
+  layerPresentation,
+}: {
+  layerPresentation: TableLayerProps['layerPresentation']
+}) => {
   const { pathname } = useLocation()
   const pathParts = pathname.split('/')
   // placeId2 is the second /places/{id} segment in the URL
   const firstPlacesIdx = pathParts.indexOf('places')
-  const secondPlacesIdx = firstPlacesIdx !== -1 ? pathParts.indexOf('places', firstPlacesIdx + 1) : -1
-  const placeId2 = secondPlacesIdx !== -1 ? pathParts[secondPlacesIdx + 1] : undefined
+  const secondPlacesIdx =
+    firstPlacesIdx !== -1 ? pathParts.indexOf('places', firstPlacesIdx + 1) : -1
+  const placeId2 =
+    secondPlacesIdx !== -1 ? pathParts[secondPlacesIdx + 1] : undefined
   const { subprojectId } = useParams({ strict: false })
   // TODO: query only inside current map bounds using places.bbox
   const res = useLiveQuery<Places>(
@@ -21,45 +28,57 @@ export const Places2 = ({ layerPresentation }: { layerPresentation: TableLayerPr
     FROM places WHERE parent_id IS NOT NULL AND subproject_id = $1 AND geometry IS NOT NULL`,
     [subprojectId],
   )
-  const places: Places[] = res?.rows ?? []
 
   // geometry is stored as PostGIS GeometryCollection; convert to FeatureCollection for display
   // properties need to go into every feature
-  const data = places.map((p) => {
-    // add p's properties to all features:
-    // somehow there is a data property with empty object as value???
-    // TODO: make properties more readable for user
-     
-    const { geometry, bbox, data, ...properties } = p
-    const fc = {
-      type: 'FeatureCollection' as const,
-      features: ((geometry as GeometryCollection | null)?.geometries ?? []).map(
-        (g) => ({
+  // memoized on the live-query result: re-renders (the zoomend viewport
+  // round-trip through the url) must not rebuild the FeatureCollections —
+  // a new data identity reconciles the whole layer
+  const data = useMemo(() => {
+    const places: Places[] = res?.rows ?? []
+    return places.map((p) => {
+      // add p's properties to all features:
+      // somehow there is a data property with empty object as value???
+      // TODO: make properties more readable for user
+
+      const { geometry, bbox, data, ...properties } = p
+      const fc = {
+        type: 'FeatureCollection' as const,
+        features: (
+          (geometry as GeometryCollection | null)?.geometries ?? []
+        ).map((g) => ({
           type: 'Feature' as const,
           geometry: g,
           properties: {} as GeoJsonProperties,
-        }),
-      ),
-    }
-    fc.features.forEach((f) => {
-      f.properties = properties ?? {}
-      // data is _not_ passed under the data property due to errors created
-      for (const [key, value] of Object.entries(data ?? {})) {
-        // ensure that properties are not overwritten
-        // but also make sure if key is used for styling, it is not changed...
-        if (key in properties) {
-          f.properties[`_${key}`] = properties[key as keyof typeof properties]
-        }
-        f.properties[key] = value
+        })),
       }
-    })
+      fc.features.forEach((f) => {
+        f.properties = properties ?? {}
+        // data is _not_ passed under the data property due to errors created
+        for (const [key, value] of Object.entries(data ?? {})) {
+          // ensure that properties are not overwritten
+          // but also make sure if key is used for styling, it is not changed...
+          if (key in properties) {
+            f.properties[`_${key}`] = properties[key as keyof typeof properties]
+          }
+          f.properties[key] = value
+        }
+      })
 
-    return fc
-  })
+      return fc
+    })
+  }, [res?.rows])
   // console.log('hello Places2, data:', data)
 
   if (!data?.length) return null
   if (!layerPresentation) return null
 
-  return <TableLayer data={data} layerPresentation={layerPresentation} activeId={placeId2} activeIdField="place_id" />
+  return (
+    <TableLayer
+      data={data}
+      layerPresentation={layerPresentation}
+      activeId={placeId2}
+      activeIdField="place_id"
+    />
+  )
 }

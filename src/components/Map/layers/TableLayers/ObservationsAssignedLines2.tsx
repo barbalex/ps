@@ -1,3 +1,4 @@
+import { useMemo } from 'react'
 import { useParams } from '@tanstack/react-router'
 import { useLiveQuery } from '@electric-sql/pglite-react'
 import { featureCollection, lineString } from '@turf/helpers'
@@ -55,29 +56,41 @@ export const ObservationsAssignedLines2 = ({
   `,
     [subprojectId],
   )
-  const rows = (res?.rows ?? []) as AssignmentRow[]
 
-  const data = rows.flatMap((row) => {
-    const observationCenter = centerCoordinates(row.observation_center)
-    const placeCenter = centerCoordinates(row.place_center)
-    if (!observationCenter || !placeCenter) return []
+  // memoized on the live-query result: re-renders (the zoomend viewport
+  // round-trip through the url) must not rebuild the FeatureCollections —
+  // a new data identity reconciles the whole layer
+  const data = useMemo(() => {
+    const rows = (res?.rows ?? []) as AssignmentRow[]
+    return rows.flatMap((row) => {
+      const observationCenter = centerCoordinates(row.observation_center)
+      const placeCenter = centerCoordinates(row.place_center)
+      if (!observationCenter || !placeCenter) return []
 
-    const observationLabel = row.observation_label ?? row.observation_id
-    const placeLabel = row.place_label ?? row.place_id
+      const observationLabel = row.observation_label ?? row.observation_id
+      const placeLabel = row.place_label ?? row.place_id
 
-    const feature = lineString([observationCenter, placeCenter], {
-      observation_id: row.observation_id,
-      place_id: row.place_id,
-      observation_label: observationLabel,
-      place_label: placeLabel,
-      label: `${observationLabel ?? 'Observation'} → ${placeLabel ?? 'Place'}`,
+      const feature = lineString([observationCenter, placeCenter], {
+        observation_id: row.observation_id,
+        place_id: row.place_id,
+        observation_label: observationLabel,
+        place_label: placeLabel,
+        label: `${observationLabel ?? 'Observation'} → ${placeLabel ?? 'Place'}`,
+      })
+
+      return [featureCollection([feature])]
     })
-
-    return [featureCollection([feature])]
-  })
+  }, [res?.rows])
 
   if (!data?.length) return null
   if (!layerPresentation) return null
 
-  return <TableLayer data={data} layerPresentation={layerPresentation} activeId={activeObservationId} activeIdField="observation_id" />
+  return (
+    <TableLayer
+      data={data}
+      layerPresentation={layerPresentation}
+      activeId={activeObservationId}
+      activeIdField="observation_id"
+    />
+  )
 }

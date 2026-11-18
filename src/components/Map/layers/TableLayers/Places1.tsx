@@ -1,3 +1,4 @@
+import { useMemo } from 'react'
 import { useLiveQuery } from '@electric-sql/pglite-react'
 import { useLocation, useParams } from '@tanstack/react-router'
 
@@ -6,7 +7,11 @@ import type { TableLayerProps } from './TableLayer.tsx'
 import type { GeoJsonProperties, GeometryCollection } from 'geojson'
 import type Places from '../../../../models/public/Places.ts'
 
-export const Places1 = ({ layerPresentation }: { layerPresentation: TableLayerProps['layerPresentation'] }) => {
+export const Places1 = ({
+  layerPresentation,
+}: {
+  layerPresentation: TableLayerProps['layerPresentation']
+}) => {
   const { pathname } = useLocation()
   const pathParts = pathname.split('/')
   const placesIdx = pathParts.indexOf('places')
@@ -23,41 +28,46 @@ export const Places1 = ({ layerPresentation }: { layerPresentation: TableLayerPr
     FROM places WHERE parent_id IS NULL AND subproject_id = $1 AND geometry IS NOT NULL`,
     [subprojectId],
   )
-  const places: Places[] = res?.rows ?? []
 
   // geometry is returned as GeometryCollection JSON via ST_AsGeoJSON; convert to FeatureCollection for display
   // properties need to go into every feature
-  const data = places.map((p) => {
-    // add p's properties to all features:
-    // TODO: make properties more readable for user
-    // Idea: use iframe to open form, see TableLayer
-     
-    const { geometry, bbox, data, ...properties } = p
-    const fc = {
-      type: 'FeatureCollection' as const,
-      features: ((geometry as GeometryCollection | null)?.geometries ?? []).map(
-        (g) => ({
+  // memoized on the live-query result: re-renders (the zoomend viewport
+  // round-trip through the url) must not rebuild the FeatureCollections —
+  // a new data identity reconciles the whole layer
+  const data = useMemo(() => {
+    const places: Places[] = res?.rows ?? []
+    return places.map((p) => {
+      // add p's properties to all features:
+      // TODO: make properties more readable for user
+      // Idea: use iframe to open form, see TableLayer
+
+      const { geometry, bbox, data, ...properties } = p
+      const fc = {
+        type: 'FeatureCollection' as const,
+        features: (
+          (geometry as GeometryCollection | null)?.geometries ?? []
+        ).map((g) => ({
           type: 'Feature' as const,
           geometry: g,
           properties: {} as GeoJsonProperties,
-        }),
-      ),
-    }
-    fc.features.forEach((f) => {
-      f.properties = properties ?? {}
-      // data is _not_ passed under the data property due to errors created
-      for (const [key, value] of Object.entries(data ?? {})) {
-        // ensure that properties are not overwritten
-        // but also make sure if key is used for styling, it is not changed...
-        if (key in properties) {
-          f.properties[`_${key}`] = properties[key as keyof typeof properties]
-        }
-        f.properties[key] = value
+        })),
       }
-    })
+      fc.features.forEach((f) => {
+        f.properties = properties ?? {}
+        // data is _not_ passed under the data property due to errors created
+        for (const [key, value] of Object.entries(data ?? {})) {
+          // ensure that properties are not overwritten
+          // but also make sure if key is used for styling, it is not changed...
+          if (key in properties) {
+            f.properties[`_${key}`] = properties[key as keyof typeof properties]
+          }
+          f.properties[key] = value
+        }
+      })
 
-    return fc
-  })
+      return fc
+    })
+  }, [res?.rows])
 
   if (!data?.length) return null
   if (!layerPresentation) return null
