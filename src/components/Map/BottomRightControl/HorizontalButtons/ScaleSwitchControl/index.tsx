@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import { useMap, useMapEvents } from 'react-leaflet'
 
 import { Dropdown } from './Dropdown/index.tsx'
@@ -30,8 +30,9 @@ export const ScaleSwitchControl = () => {
     setPixelsInMeterWidth(px)
   }, [scale])
 
-  const updateScale = () => {
+  const updateScale = useCallback(() => {
     if (!(map.getSize().x > 0)) return
+    if (pixelsInMeterWidth <= 0) return
 
     const bounds = map.getBounds()
     const centerLat = bounds.getCenter().lat
@@ -41,12 +42,18 @@ export const ScaleSwitchControl = () => {
       map.options.crs!.scale(map.getZoom())
     const scale = Math.round(ratio / 1000) * 1000
     setScale(scale)
-  }
+  }, [map, pixelsInMeterWidth])
 
   useMapEvents({
     moveend: updateScale,
     zoomend: updateScale,
   })
+
+  // initial computation: restoring the persisted view fires no moveend,
+  // so without this the switch keeps its initial "1 : 1" after a reload
+  useEffect(() => {
+    updateScale()
+  }, [updateScale])
 
   const onClick = () => setOpen(!open)
 

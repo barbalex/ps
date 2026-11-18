@@ -13,6 +13,14 @@
   box-sizing: border-box;
   height: 30px;
   border-radius: 4px;
+  /* in the horizontal row the fixed height would sit at the row's top
+     (stretch falls back to flex-start) — center it like its neighbors */
+  align-self: center;
+
+  /* narrow: the stacked column right-aligns its rows */
+  @container map (width <= 700px) {
+    align-self: auto;
+  }
 }
 
 :global(html[data-theme='dark']) .container {
