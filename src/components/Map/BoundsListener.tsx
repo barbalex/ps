@@ -30,18 +30,32 @@ export const BoundsListener = () => {
   }, [map, setMapViewportBounds])
 
   const isInitializingRef = useRef(true)
+
+  // Latest callbacks behind refs: the restore effect below must re-run
+  // only when the url's c/z values actually change. Re-running on a
+  // fresh saveViewport identity (every re-render) raced the router's
+  // async search commit: right after a zoomend the effect still saw the
+  // OLD url params, decided the view was not current and setView'd with
+  // reset back to the old view — then the commit arrived and the effect
+  // jumped forward again: the map visibly flicked away and back on
+  // every zoom end
+  const saveViewportRef = useRef(saveViewport)
+  saveViewportRef.current = saveViewport
+  const onMoveOrZoomRef = useRef(onMoveOrZoom)
+  onMoveOrZoomRef.current = onMoveOrZoom
+
   const saveCenterAndZoom = useCallback(() => {
     if (isInitializingRef.current) return
 
     const center = map.getCenter()
     const zoom = map.getZoom()
-    saveViewport([center.lat, center.lng], zoom)
-  }, [map, saveViewport])
+    saveViewportRef.current([center.lat, center.lng], zoom)
+  }, [map])
 
   const onMoveEndOrZoomEnd = useCallback(() => {
-    onMoveOrZoom()
+    onMoveOrZoomRef.current()
     saveCenterAndZoom()
-  }, [onMoveOrZoom, saveCenterAndZoom])
+  }, [saveCenterAndZoom])
 
   // Set up event listeners to save on user interaction.
   // viewport bounds are written on moveend/zoomend only: they are needed by
@@ -108,15 +122,8 @@ export const BoundsListener = () => {
       }, 500)
     })
 
-    onMoveOrZoom()
-  }, [
-    map,
-    setMapViewportBounds,
-    saveViewport,
-    currentCenter,
-    currentZoom,
-    onMoveOrZoom,
-  ])
+    onMoveOrZoomRef.current()
+  }, [map, currentCenter, currentZoom])
 
   return null
 }
