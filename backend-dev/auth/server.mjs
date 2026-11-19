@@ -1,6 +1,7 @@
 // https://www.better-auth.com/docs/integrations/fastify
 import express from 'express'
 import cors from 'cors'
+import { rateLimit } from 'express-rate-limit'
 import { createHmac, timingSafeEqual } from 'crypto'
 import { toNodeHandler, fromNodeHeaders } from 'better-auth/node'
 import { hashPassword } from '@better-auth/utils/password'
@@ -8,6 +9,16 @@ import { auth, pool } from './auth.mjs' // Your configured Better Auth instance
 import { authorizeShapeRequest } from './shapeDefinitions.mjs'
 
 const app = express()
+
+// Trust exactly the proxy hops we control — the local dev Caddy and the
+// production caddy container on the docker network (same list as
+// advanced.ipAddress.trustedProxies in auth.mjs) — so req.ip resolves to the
+// real client address for the rate limiters below instead of the proxy's.
+// Client-supplied X-Forwarded-For from untrusted sources is ignored; only
+// arten-fördern.ch users arrive via an extra (Netlify) hop and share its
+// egress IP as their bucket.
+app.set('trust proxy', ['loopback', '172.16.0.0/12'])
+
 const port = Number(process.env.PORT ?? 3003)
 const appUrls = [
   'https://promote-species.app',
@@ -80,74 +91,112 @@ app.use(
   }),
 )
 
+// Rate limiting for the custom endpoints. better-auth's built-in limiter
+// (see auth.mjs) only covers the routes handled by better-auth itself; the
+// endpoints below bypass it. Buckets are per client IP and in-memory, which
+// is fine for the single auth instance.
+const rateLimitHandler = (_req, res) => {
+  res.status(429).json({ error: { code: 'RATE_LIMITED' } })
+}
+
+// Session-backed, low-frequency endpoints called by the UI (set-password,
+// two-factor status, postgrest-token). The ceiling is a hammering backstop —
+// generous enough that the e2e suite (all requests from localhost) and
+// users behind a shared NAT never hit it.
+const authActionRateLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  limit: 300,
+  standardHeaders: true,
+  legacyHeaders: false,
+  handler: rateLimitHandler,
+})
+
+// Caddy's forward_auth calls this endpoint for EVERY Electric shape request:
+// ~66 shapes per client, chunked initial snapshots and SSE reconnects, with
+// whole organizations possibly behind one NAT IP. Purely a flood backstop —
+// tripping it on legitimate traffic stalls syncs until the window refills,
+// hence the very generous limit.
+const electricCheckRateLimiter = rateLimit({
+  windowMs: 5 * 60 * 1000,
+  limit: 10_000,
+  standardHeaders: true,
+  legacyHeaders: false,
+  handler: rateLimitHandler,
+})
+
 // Custom endpoint for OAuth-only users to set a password
-app.post('/auth/set-password', express.json(), async (req, res) => {
-  try {
-    const { newPassword } = req.body
+app.post(
+  '/auth/set-password',
+  authActionRateLimiter,
+  express.json(),
+  async (req, res) => {
+    try {
+      const { newPassword } = req.body
 
-    const session = await auth.api.getSession({
-      headers: fromNodeHeaders(req.headers),
-    })
-    const userId = session?.user?.id
-
-    if (!userId) {
-      return res.status(401).json({ error: { code: 'SESSION_INVALID' } })
-    }
-
-    // Check if user has credential account already.
-    const accountsResult = await pool.query(
-      'SELECT auth_account_id, password FROM auth_accounts WHERE user_id = $1 AND provider_id = $2 ORDER BY created_at DESC LIMIT 1',
-      [userId, 'credential'],
-    )
-
-    // Check password requirements
-    if (!newPassword || newPassword.length < 8) {
-      return res.status(400).json({
-        error: { code: 'INVALID_PASSWORD' },
+      const session = await auth.api.getSession({
+        headers: fromNodeHeaders(req.headers),
       })
-    }
+      const userId = session?.user?.id
 
-    const hashedPassword = await hashPassword(newPassword)
+      if (!userId) {
+        return res.status(401).json({ error: { code: 'SESSION_INVALID' } })
+      }
 
-    if (accountsResult.rows.length > 0) {
-      const existing = accountsResult.rows[0]
-      const existingHash = String(existing.password ?? '')
-      const looksLikeBetterAuthHash = /^[a-f0-9]{32}:[a-f0-9]{128}$/i.test(
-        existingHash,
+      // Check if user has credential account already.
+      const accountsResult = await pool.query(
+        'SELECT auth_account_id, password FROM auth_accounts WHERE user_id = $1 AND provider_id = $2 ORDER BY created_at DESC LIMIT 1',
+        [userId, 'credential'],
       )
 
-      if (looksLikeBetterAuthHash) {
+      // Check password requirements
+      if (!newPassword || newPassword.length < 8) {
         return res.status(400).json({
-          error: { code: 'PASSWORD_ALREADY_EXISTS' },
+          error: { code: 'INVALID_PASSWORD' },
         })
       }
 
-      // Repair malformed legacy hash created by older custom endpoint implementation.
+      const hashedPassword = await hashPassword(newPassword)
+
+      if (accountsResult.rows.length > 0) {
+        const existing = accountsResult.rows[0]
+        const existingHash = String(existing.password ?? '')
+        const looksLikeBetterAuthHash = /^[a-f0-9]{32}:[a-f0-9]{128}$/i.test(
+          existingHash,
+        )
+
+        if (looksLikeBetterAuthHash) {
+          return res.status(400).json({
+            error: { code: 'PASSWORD_ALREADY_EXISTS' },
+          })
+        }
+
+        // Repair malformed legacy hash created by older custom endpoint implementation.
+        await pool.query(
+          `UPDATE auth_accounts
+           SET password = $2, updated_at = NOW()
+           WHERE auth_account_id = $1`,
+          [existing.auth_account_id, hashedPassword],
+        )
+
+        return res.json({ ok: true, repaired: true })
+      }
+
       await pool.query(
-        `UPDATE auth_accounts
-         SET password = $2, updated_at = NOW()
-         WHERE auth_account_id = $1`,
-        [existing.auth_account_id, hashedPassword],
+        `INSERT INTO auth_accounts
+         (user_id, provider_id, sso_account_id, password, created_at, updated_at)
+         VALUES ($1, $2, $3, $4, NOW(), NOW())`,
+        [userId, 'credential', userId, hashedPassword],
       )
 
-      return res.json({ ok: true, repaired: true })
+      res.json({ ok: true })
+    } catch (error) {
+      console.error('Set password error:', error)
+      res.status(500).json({ error: { code: 'INTERNAL_ERROR' } })
     }
+  },
+)
 
-    await pool.query(
-      `INSERT INTO auth_accounts
-       (user_id, provider_id, sso_account_id, password, created_at, updated_at)
-       VALUES ($1, $2, $3, $4, NOW(), NOW())`,
-      [userId, 'credential', userId, hashedPassword],
-    )
-
-    res.json({ ok: true })
-  } catch (error) {
-    console.error('Set password error:', error)
-    res.status(500).json({ error: { code: 'INTERNAL_ERROR' } })
-  }
-})
-
-app.get('/auth/two-factor/status', async (req, res) => {
+app.get('/auth/two-factor/status', authActionRateLimiter, async (req, res) => {
   try {
     const session = await auth.api.getSession({
       headers: fromNodeHeaders(req.headers),
@@ -251,46 +300,55 @@ const verifyJwt = (token, secret) => {
 // Electric itself does not know who the caller is: it serves whatever
 // table/where the request names. The shape request must therefore match one
 // of the client's shape definitions with $1 bound to the caller's own user id.
-app.get('/auth/electric/check', (req, res) => {
-  const jwtSecret = process.env.PGRST_JWT_SECRET
-  if (!jwtSecret) {
-    console.error('/auth/electric/check: PGRST_JWT_SECRET not configured')
-    return res.status(500).end()
-  }
-  const authHeader = req.headers.authorization ?? ''
-  const token = authHeader.startsWith('Bearer ') ? authHeader.slice(7) : ''
-  const claims = token ? verifyJwt(token, jwtSecret) : null
-  if (!claims) {
-    return res.status(401).json({ error: 'UNAUTHORIZED' })
-  }
-  const result = authorizeShapeRequest({
-    method: req.headers['x-forwarded-method'],
-    forwardedUri: req.headers['x-forwarded-uri'],
-    userId: claims.user_id,
-  })
-  if (!result.ok) {
-    console.warn(`/auth/electric/check: rejected shape request: ${result.reason}`)
-    return res.status(403).json({ error: 'FORBIDDEN' })
-  }
-  return res.status(200).end()
-})
+app.get(
+  '/auth/electric/check',
+  electricCheckRateLimiter,
+  (req, res) => {
+    const jwtSecret = process.env.PGRST_JWT_SECRET
+    if (!jwtSecret) {
+      console.error('/auth/electric/check: PGRST_JWT_SECRET not configured')
+      return res.status(500).end()
+    }
+    const authHeader = req.headers.authorization ?? ''
+    const token = authHeader.startsWith('Bearer ') ? authHeader.slice(7) : ''
+    const claims = token ? verifyJwt(token, jwtSecret) : null
+    if (!claims) {
+      return res.status(401).json({ error: 'UNAUTHORIZED' })
+    }
+    const result = authorizeShapeRequest({
+      method: req.headers['x-forwarded-method'],
+      forwardedUri: req.headers['x-forwarded-uri'],
+      userId: claims.user_id,
+    })
+    if (!result.ok) {
+      console.warn(`/auth/electric/check: rejected shape request: ${result.reason}`)
+      return res.status(403).json({ error: 'FORBIDDEN' })
+    }
+    return res.status(200).end()
+  },
+)
 
-app.get('/auth/postgrest-token', async (req, res) => {
-  const jwtSecret = process.env.PGRST_JWT_SECRET
-  if (!jwtSecret) {
-    console.error('/auth/postgrest-token: PGRST_JWT_SECRET not configured')
-    return res.status(500).json({ error: 'JWT secret not configured' })
-  }
-  const session = await auth.api.getSession({
-    headers: fromNodeHeaders(req.headers),
-  })
-  if (!session?.user?.id) return res.status(401).json({ error: 'UNAUTHORIZED' })
-  const token = signPostgrestJwt(session.user.id, jwtSecret)
-  // the client caches the token in memory per user; an HTTP cache entry
-  // would outlive an account switch and hand out the previous user's token
-  res.setHeader('Cache-Control', 'no-store')
-  return res.json({ token })
-})
+app.get(
+  '/auth/postgrest-token',
+  authActionRateLimiter,
+  async (req, res) => {
+    const jwtSecret = process.env.PGRST_JWT_SECRET
+    if (!jwtSecret) {
+      console.error('/auth/postgrest-token: PGRST_JWT_SECRET not configured')
+      return res.status(500).json({ error: 'JWT secret not configured' })
+    }
+    const session = await auth.api.getSession({
+      headers: fromNodeHeaders(req.headers),
+    })
+    if (!session?.user?.id)
+      return res.status(401).json({ error: 'UNAUTHORIZED' })
+    const token = signPostgrestJwt(session.user.id, jwtSecret)
+    // the client caches the token in memory per user; an HTTP cache entry
+    // would outlive an account switch and hand out the previous user's token
+    res.setHeader('Cache-Control', 'no-store')
+    return res.json({ token })
+  },
+)
 
 app.all('/auth/*splat', toNodeHandler(auth))
 
