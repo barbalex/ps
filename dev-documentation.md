@@ -1308,3 +1308,99 @@ writing them.
 5. Cover it in an e2e spec (`e2e/url-*.spec.ts`) — at minimum
    set-param-in-url, retention across a navigation, reload, and deep
    link.
+
+# 13 Web App vs Native Apps (Decision, 2026-11-19)
+
+**Decision: stay a web app (installable PWA).** A native app for
+Windows/Mac/Linux/Android/iOS was evaluated and rejected. If native ever
+becomes necessary, *wrap* the existing web app (Capacitor for mobile,
+Tauri for desktop) — never rewrite.
+
+## Why the web wins for this app
+
+- **Deploy cadence:** `npm run deploy` reaches every user in minutes;
+  the project ships patch releases near-daily. App stores add 24–48h
+  review per release (Apple), staged rollouts, and slow hotfixes.
+- **Zero-install collaboration:** deep links to a project/place work for
+  any invited expert without an install step. Native moves that friction
+  to exactly the moment of onboarding.
+- **No version skew:** on the web every client is current, keeping the
+  ElectricSQL sync protocol and PostgREST contract simple. Native apps
+  strand users on old clients for weeks → forced-update machinery and
+  backward-compatible sync APIs we don't want to build.
+- **Offline is already solved:** PGlite + ElectricSQL
+  ([startSyncing.ts](src/modules/startSyncing.ts),
+  [observeOperations.ts](src/modules/observeOperations.ts)) deliver a
+  local Postgres with optimistic writes and queued sync — a stronger
+  offline story than most native apps. The classic native pitch (local
+  data, offline edits, conflict handling) is already in place.
+- **Security is a wash:** permissions are enforced server-side by
+  JWT-checked triggers (42501 rollback). A native client would not be
+  more trusted by the server.
+- **Maintenance reality:** five native targets ≈ 3–5× frontend
+  maintenance (solo project). A cross-platform rewrite (Flutter/RN/MAUI)
+  discards essentially the whole frontend — React, Fluent UI, Leaflet,
+  PGlite-in-browser, Playwright e2e — months to reach parity.
+
+## What native would still buy (the honest list)
+
+1. **Immunity to browser storage eviction** — largely mitigated by PWA
+   install (see below).
+2. **Background sync/push while the app is closed** — web background
+   sync is unreliable/nonexistent on iOS.
+3. **Deeper device integration** — background GPS tracks, EXIF camera,
+   share sheet.
+4. **Store presence/institutional trust** — some agencies perceive
+   store-listed apps as more serious than a URL.
+5. **Smoother offline vector maps** (MapLibre Native) vs Leaflet raster
+   WMS.
+
+None of these justify the costs above today.
+
+## PWA install and data persistence
+
+The app is already installable: `VitePWA` in
+[vite.config.ts](vite.config.ts) (manifest `display: standalone`, SW
+precache incl. the PGlite wasm); SW-driven updates are handled by
+[VersionCheck](src/components/VersionCheck/index.tsx). Boot requests
+persistent storage
+([requestPersistentStorage.ts](src/modules/requestPersistentStorage.ts),
+called from `main.tsx`), and
+[InstallPrompt](src/components/InstallPrompt.tsx) nudges mobile users to
+install: Android shows an install button via the captured
+`beforeinstallprompt` event, iOS shows share-menu instructions (iOS
+never fires the event). The banner is dismissible (30-day snooze,
+localStorage) and hidden when running standalone or in desktop view.
+
+**Yes — installing as a PWA materially changes persistence:**
+
+- **iOS/Safari (the critical case):** Safari's ITP caps script-writable
+  storage at **7 days without user interaction** (clock ticks only on
+  days Safari is used): IndexedDB — the entire synced PGlite database —
+  *and* the service worker registration get erased. **Installed
+  home-screen web apps are exempt** from this cap; their storage is
+  treated like app storage.
+- **Android/Chrome:** no time-based cap, eviction only under disk
+  pressure (least-recently-used first). Installing makes eviction
+  practically a non-issue, and Chrome auto-grants
+  `navigator.storage.persist()` for installed sites.
+- **Caveats:**
+  - On iOS the installed PWA gets a **separate storage partition**:
+    data synced in Safari does *not* carry over. After installing:
+    fresh login + re-sync. Field users should therefore **install
+    first, then sync**.
+  - Uninstalling the PWA wipes its storage. (Logout also wipes local
+    synced data by design.)
+
+## If native ever becomes necessary
+
+Wrap, don't rewrite. The whole stack (React, PGlite WASM, ElectricSQL
+JS client) runs in a webview:
+
+- **Capacitor (Android/iOS):** store presence, background sync, native
+  GPS/camera with ~all code shared. Open points: PGlite persistence
+  driver on native, store compliance (Sign in with Apple alongside
+  GitHub/Google OAuth, in-app account deletion).
+- **Tauri (Windows/Mac/Linux):** small binaries, same webview app.
+  Desktop native is unlikely to ever pay for itself — Linux users in
+  particular will use the web app.

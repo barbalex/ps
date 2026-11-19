@@ -1,0 +1,83 @@
+/* green info banner, same layout as the email-verification banner */
+.container {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 6px;
+  margin: 0;
+  padding: 10px 12px;
+  border: 1px solid #265225;
+  background: #e9f0e9;
+}
+
+@media (max-width: 759px) {
+  .container {
+    flex-direction: column;
+    align-items: stretch;
+  }
+}
+
+.message {
+  margin: 0;
+  font-size: 0.9rem;
+  line-height: 1.4;
+}
+
+.actions {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.hint {
+  margin: 0;
+  font-size: 0.82rem;
+  line-height: 1.4;
+  color: #265225;
+}
+
+.button {
+  border: 1px solid #265225;
+  border-radius: 6px;
+  background: #265225;
+  color: #fff;
+  padding: 6px 10px;
+  cursor: pointer;
+  white-space: nowrap;
+  font-family: inherit;
+  font-size: inherit;
+  font-weight: 600;
+}
+
+.button:hover {
+  background: #316b31;
+}
+
+.dismiss {
+  border: none;
+  background: transparent;
+  color: #265225;
+  font-size: 1.2rem;
+  line-height: 1;
+  padding: 2px 6px;
+  cursor: pointer;
+}
+
+/* dark mode */
+:global(html[data-theme='dark']) .container {
+  background: #1c271c;
+  border-color: #3c6b3c;
+}
+
+:global(html[data-theme='dark']) .hint {
+  color: #9dc79d;
+}
+
+:global(html[data-theme='dark']) .button:hover {
+  background: #316b31;
+}
+
+:global(html[data-theme='dark']) .dismiss {
+  color: #9dc79d;
+}

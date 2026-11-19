@@ -14,6 +14,7 @@ import { Notifications } from '../Notifications/index.tsx'
 import { BackgroundTasks } from '../BackgroundTasks/index.tsx'
 import { Header } from './Header/index.tsx'
 import { EmailVerificationBanner } from '../EmailVerificationBanner.tsx'
+import { InstallPrompt } from '../InstallPrompt.tsx'
 import { TableLayersProvider } from '../TableLayersProvider.tsx'
 import { OwnVectorLayerPropertiesProvider } from '../Map/OwnVectorLayerPropertiesProvider.tsx'
 import { NavDataProvider } from '../NavDataProvider.tsx'
@@ -114,6 +115,7 @@ export const LayoutProtected = () => {
             <>
               <Header />
               <EmailVerificationBanner />
+              <InstallPrompt />
               {!mapIsMaximized && <Breadcrumbs />}
               <Notifications />
             </>
