@@ -11,12 +11,18 @@
 # 301 to arten-fördern.app there and should be retargeted to
 # promote-species.app (or removed, so these rules fire directly).
 https://xn--arten-frdern-bjb.app/sw.js  /sw-kill.js  200!
-https://xn--arten-frdern-bjb.ch/sw.js  /sw-kill.js  200!
-https://xn--arten-frdern-bjb.app/*     https://promote-species.app/:splat 301!
-https://xn--arten-frdern-bjb.ch/*      https://promote-species.app/:splat 301!
-https://www.xn--arten-frdern-bjb.app/* https://promote-species.app/:splat 301!
-https://www.xn--arten-frdern-bjb.ch/*  https://promote-species.app/:splat 301!
-https://www.promote-species.app/*      https://promote-species.app/:splat 301!
+https://xn--arten-frdern-bjb.ch/sw.js   /sw-kill.js  200!
+https://arten-foerdern.app/sw.js        /sw-kill.js  200!
+https://arten-foerdern.ch/sw.js         /sw-kill.js  200!
+https://xn--arten-frdern-bjb.app/*      https://promote-species.app/:splat 301!
+https://xn--arten-frdern-bjb.ch/*       https://promote-species.app/:splat 301!
+https://arten-foerdern.app/*            https://promote-species.app/:splat 301!
+https://arten-foerdern.ch/*             https://promote-species.app/:splat 301!
+https://www.xn--arten-frdern-bjb.app/*  https://promote-species.app/:splat 301!
+https://www.xn--arten-frdern-bjb.ch/*   https://promote-species.app/:splat 301!
+https://www.arten-foerdern.app/*        https://promote-species.app/:splat 301!
+https://www.arten-foerdern.ch/*         https://promote-species.app/:splat 301!
+https://www.promote-species.app/*       https://promote-species.app/:splat 301!
 
 # Proxy backend endpoints same-origin for arten-fördern.ch (Netlify):
 # auth needs same-origin because session cookies can never cross the
