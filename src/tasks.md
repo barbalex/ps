@@ -48,6 +48,8 @@ dark mode not well implemented for: file upload?
 
 ---
 
+lets try to access the production db from pgAdmin
+
 ---
 
 ---
