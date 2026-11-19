@@ -15,3 +15,18 @@
   for = "/version.json"
   [headers.values]
     Cache-Control = "no-cache"
+
+# sw-kill.js is the self-unregistering worker served at the retired
+# origins' /sw.js (see public/_redirects) and must never come from a
+# cache. /sw.js headers matter on those origins too — headers apply to
+# the requested path; on promote-species.app the same rule only makes
+# the real worker's default (max-age=0, must-revalidate) explicit.
+[[headers]]
+  for = "/sw.js"
+  [headers.values]
+    Cache-Control = "no-cache"
+
+[[headers]]
+  for = "/sw-kill.js"
+  [headers.values]
+    Cache-Control = "no-cache"

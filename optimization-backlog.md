@@ -3,36 +3,36 @@
 Findings from the 2026-11-13 performance review. Work off one by one.
 
 - [x] **1. Tree count-query N+1 explosion** (branch: `perf/tree-count-rollups`)
-  Each open tree row mounts a `Registrar` running its own navData hook
-  ([Registrar.tsx:32](src/components/Tree/virtual/Registrar.tsx)), each issuing its own
-  battery of `count(*)` CTEs — 18 per project node
-  ([useProjectNavData.ts:131](src/modules/useProjectNavData.ts)), ~19 per subproject
-  ([useSubprojectNavData.ts:97](src/modules/useSubprojectNavData.ts)), 35 in design mode.
-  Ten open projects ≈ 180 separate live queries, re-running on writes to any touched
-  table; each sibling also re-queries identical SQL (e.g. every `usePlacesNavData`
-  separately live-queries `projects`).
-  **Done:** `NavDataProvider` (mounted in LayoutProtected) runs 11 shared live
-  queries — projects-row lookup, tagged-union count rollups (`GROUP BY
-  project_id` / `GROUP BY subproject_id` with `count(*) FILTER` for filtered
-  variants), composite-grouped counts for files/qc/exports (one scan feeds both
-  levels), `place_levels`, and subproject `table_views`. The nav hooks keep their
-  signatures and consume the rollups via `useNavRollups()`
-  ([navRollupsContext.ts](src/modules/navRollupsContext.ts)); their per-node
-  queries shrank to the node's own row / children list. N × ~20 live queries → 11.
-  Follow-up idea (not done): roll up the per-parent child counts in
-  usePlacesNavData/useObservationsNavData etc. the same way.
+      Each open tree row mounts a `Registrar` running its own navData hook
+      ([Registrar.tsx:32](src/components/Tree/virtual/Registrar.tsx)), each issuing its own
+      battery of `count(*)` CTEs — 18 per project node
+      ([useProjectNavData.ts:131](src/modules/useProjectNavData.ts)), ~19 per subproject
+      ([useSubprojectNavData.ts:97](src/modules/useSubprojectNavData.ts)), 35 in design mode.
+      Ten open projects ≈ 180 separate live queries, re-running on writes to any touched
+      table; each sibling also re-queries identical SQL (e.g. every `usePlacesNavData`
+      separately live-queries `projects`).
+      **Done:** `NavDataProvider` (mounted in LayoutProtected) runs 11 shared live
+      queries — projects-row lookup, tagged-union count rollups (`GROUP BY
+project_id` / `GROUP BY subproject_id` with `count(*) FILTER` for filtered
+      variants), composite-grouped counts for files/qc/exports (one scan feeds both
+      levels), `place_levels`, and subproject `table_views`. The nav hooks keep their
+      signatures and consume the rollups via `useNavRollups()`
+      ([navRollupsContext.ts](src/modules/navRollupsContext.ts)); their per-node
+      queries shrank to the node's own row / children list. N × ~20 live queries → 11.
+      Follow-up idea (not done): roll up the per-parent child counts in
+      usePlacesNavData/useObservationsNavData etc. the same way.
 
 - [x] **2. Service worker precaches the wrong things** (branch: `perf/sw-precache`)
-  Precache hoarded 22.9 MB up front — including the 410 KB gz marker-icon chunk and
-  xlsx/doc-viewer chunks a first-time visitor never opens — while the ~9.7 MB PGlite
-  wasm that actually makes the app work offline was *not* precached
-  ([vite.config.ts:67](vite.config.ts) globPatterns had no `wasm`; wasm survived only
-  via Netlify's immutable HTTP cache, which the browser may evict).
-  **Done:** wasm precached (all three PGlite wasm files); cold chunks (md icons,
-  xlsx + cpexcel, react-doc-viewer, SqlEditorField — 3.7 MB raw) excluded from
-  precache and runtime-cached CacheFirst on first use. Precache total 22.9 → 19.3 MB
-  including the wasm now. Verified against a `vite preview` build: wasm in precache,
-  cold chunks absent, offline-sync e2e passes.
+      Precache hoarded 22.9 MB up front — including the 410 KB gz marker-icon chunk and
+      xlsx/doc-viewer chunks a first-time visitor never opens — while the ~9.7 MB PGlite
+      wasm that actually makes the app work offline was _not_ precached
+      ([vite.config.ts:67](vite.config.ts) globPatterns had no `wasm`; wasm survived only
+      via Netlify's immutable HTTP cache, which the browser may evict).
+      **Done:** wasm precached (all three PGlite wasm files); cold chunks (md icons,
+      xlsx + cpexcel, react-doc-viewer, SqlEditorField — 3.7 MB raw) excluded from
+      precache and runtime-cached CacheFirst on first use. Precache total 22.9 → 19.3 MB
+      including the wasm now. Verified against a `vite preview` build: wasm in precache,
+      cold chunks absent, offline-sync e2e passes.
 
 - [x] **3. Map pan path** (branch: `perf/map-pan-path`)
   - `mapViewportBoundsAtom` was written every animation frame
@@ -59,33 +59,33 @@ Findings from the 2026-11-13 performance review. Work off one by one.
     restructuring how WMS opacity is passed down.
 
 - [x] **4. SqlInitializer re-runs schema surgery on every page load** (branch: `perf/sql-init-stamp`)
-  Big ALTER/trigger script plus `DELETE ... DISTINCT ON` dedup scan over
-  `layer_presentations` each load ([SqlInitializer.tsx](src/components/SqlInitializer.tsx)).
-  **Done:** the whole routine is gated by a content hash (FNV-1a) over every sql
-  source it can run — the inline heal script (extracted to a const, verified
-  byte-identical), the dedup DELETE, all sql files and the geometry repair
-  module. The hash is stamped into a local-only `_ps_local_meta` table; an
-  unchanged stamp skips everything (one SELECT per boot instead of hundreds of
-  statements). The stamp is written only when every statement succeeded, so
-  partial runs retry; changing any sql source re-runs the routine once.
-  Verified in e2e: reload-crash boots once and reloads twice — the two reloads
-  both log the skip.
+      Big ALTER/trigger script plus `DELETE ... DISTINCT ON` dedup scan over
+      `layer_presentations` each load ([SqlInitializer.tsx](src/components/SqlInitializer.tsx)).
+      **Done:** the whole routine is gated by a content hash (FNV-1a) over every sql
+      source it can run — the inline heal script (extracted to a const, verified
+      byte-identical), the dedup DELETE, all sql files and the geometry repair
+      module. The hash is stamped into a local-only `_ps_local_meta` table; an
+      unchanged stamp skips everything (one SELECT per boot instead of hundreds of
+      statements). The stamp is written only when every statement succeeded, so
+      partial runs retry; changing any sql source re-runs the routine once.
+      Verified in e2e: reload-crash boots once and reloads twice — the two reloads
+      both log the skip.
 
 - [x] **5. Missing composite indices** (branch: `perf/composite-indices`)
   - `place_levels (project_id, level)` — filtered together in
     places/subproject/check navData, only single-column indices exist.
   - `charts (project_id, for_subprojects)`.
-  **Done:** added to `backend/db/init/04_createTables.sql` (mirrored via sync-sql)
-  and to the SqlInitializer heal script so existing local databases get them too
-  (the hash stamp re-runs the heal once). Index usability verified with EXPLAIN
-  against the dev db. Production server db still needs the two CREATE INDEX
-  statements applied with the next migration/deploy.
+    **Done:** added to `backend/db/init/04_createTables.sql` (mirrored via sync-sql)
+    and to the SqlInitializer heal script so existing local databases get them too
+    (the hash stamp re-runs the heal once). Index usability verified with EXPLAIN
+    against the dev db. Production server db still needs the two CREATE INDEX
+    statements applied with the next migration/deploy.
 
 - [x] **6. Startup shell audit** (branch: `perf/shell-audit`)
-  Eager entry was 428 KB gz (~630 KB with vendor chunks before first paint); the
-  entry contained the whole Fluent UI suite (table, tree, carousel, combobox, ...)
-  hoisted as shared modules of the route chunks, plus arktype.
-  **Done:** eager closure is now 344 KB gz total (entry 118 KB gz):
+      Eager entry was 428 KB gz (~630 KB with vendor chunks before first paint); the
+      entry contained the whole Fluent UI suite (table, tree, carousel, combobox, ...)
+      hoisted as shared modules of the route chunks, plus arktype.
+      **Done:** eager closure is now 344 KB gz total (entry 118 KB gz):
   - a `vendor-fluent` advancedChunks group claims every fluent package the shell
     does not use (`includeDependenciesRecursively: false`, core excluded via
     lookahead) — the heavy fluent code became a lazy shared chunk
@@ -94,25 +94,25 @@ Findings from the 2026-11-13 performance review. Work off one by one.
     (App, NotFoundRoot, RouterErrorBoundary, theme.ts) now import from the
     individual packages (`@fluentui/react-provider`, `-button`, `-theme`,
     added as direct deps)
-  **Done additionally (branch: `perf/arktype-out-of-entry`):** the three
-  arktype `validateSearch` schemas (`_layout.auth`, `data`, observation-import
-  tab) replaced by plain validators — the params are only set programmatically
-  with proper types. Entry chunk 118 → 73 KB gz, eager total 344 → 299 KB gz.
-  **Post-deploy fix (branch: `fix/vendor-fluent-motion`):** the production
-  build crashed (`tokens.durationFast` / `fontFamilyBase` of undefined) —
-  `includeDependenciesRecursively: false` produced chunks whose cross-chunk
-  bindings were uninitialized at module evaluation. Replaced with a
-  `vendor-fluent-core` group (recursive capture, claims the shared fluent
-  infrastructure + griffel/tabster/embla deps BEFORE the heavy group) so
-  heavy→core chunk edges stay acyclic; `use-sync-external-store` moved into
-  vendor-react (fluent's recursive capture had claimed it, dragging vendor-fluent
-  eager via vendor-tanstack). Eager total 375 KB gz. Verified by serving the
-  built bundle on localhost:5176 against the dev backend and driving a real
-  login + deep tree in Chromium — the e2e suite runs against the dev server
-  where chunking does not exist, so it cannot catch this class of bug.
-  `cpexcel.full` (171 KB gz, SheetJS legacy codepages) is inside the lazily
-  loaded xlsx chunk; dropping it entirely is a product decision (legacy .xls
-  imports in non-UTF8 encodings).
+    **Done additionally (branch: `perf/arktype-out-of-entry`):** the three
+    arktype `validateSearch` schemas (`_layout.auth`, `data`, observation-import
+    tab) replaced by plain validators — the params are only set programmatically
+    with proper types. Entry chunk 118 → 73 KB gz, eager total 344 → 299 KB gz.
+    **Post-deploy fix (branch: `fix/vendor-fluent-motion`):** the production
+    build crashed (`tokens.durationFast` / `fontFamilyBase` of undefined) —
+    `includeDependenciesRecursively: false` produced chunks whose cross-chunk
+    bindings were uninitialized at module evaluation. Replaced with a
+    `vendor-fluent-core` group (recursive capture, claims the shared fluent
+    infrastructure + griffel/tabster/embla deps BEFORE the heavy group) so
+    heavy→core chunk edges stay acyclic; `use-sync-external-store` moved into
+    vendor-react (fluent's recursive capture had claimed it, dragging vendor-fluent
+    eager via vendor-tanstack). Eager total 375 KB gz. Verified by serving the
+    built bundle on localhost:5176 against the dev backend and driving a real
+    login + deep tree in Chromium — the e2e suite runs against the dev server
+    where chunking does not exist, so it cannot catch this class of bug.
+    `cpexcel.full` (171 KB gz, SheetJS legacy codepages) is inside the lazily
+    loaded xlsx chunk; dropping it entirely is a product decision (legacy .xls
+    imports in non-UTF8 encodings).
 
 - [x] **7. Jotai details** (branch: `perf/jotai-details`)
   - `operationsQueueAtom` ([store.ts](src/store.ts)) re-serialized the entire write
@@ -162,3 +162,23 @@ Findings from the 2026-11-13 performance review. Work off one by one.
     type works this way; text inputs merely buffer until blur, switches have no
     blur equivalent), and server-side batching already happens via
     operationAggregation. Deferring the local write would change UX semantics.
+
+- [~] **9. Consolidate every origin onto promote-species.app** (19.11.2026, from
+  the vermehrung.ch www-fix session): the app was reachable on three origins —
+  arten-fördern.app (original, docs/CORS/sync-native), arten-fördern.ch (same-origin
+  /api+/auth proxies) and promote-species.app — plus www aliases 301ing to .app.
+  SW, offline PGlite db and auth session are per-origin, so users split across
+  domains were separate "users" to their browser. Owner decision: canonical =
+  promote-species.app. Done in-repo: `public/_redirects` gained domain-scoped 301s
+  (path+query preserved) plus kill-switch rules serving `public/sw-kill.js` at the
+  retired origins' `/sw.js` — a service worker cannot update through a redirect
+  (its script fetch follows the 301 and fails), so pre-consolidation workers would
+  serve their precache forever; the kill switch wipes the caches and unregisters,
+  the next navigation then lands on canonical (same pattern as vermehrung.ch).
+  `src/main.tsx` canonicalizes retired hosts (punycode hostname set) before boot
+  as defense in depth; `netlify.toml` no-caches sw.js/sw-kill.js. STILL TO SHIP:
+  deploy (npm run deploy), and in the Netlify UI check domain management — the
+  www aliases currently 301 to arten-fördern.app at UI level (UI redirects take
+  precedence over _redirects); retarget them to promote-species.app or remove
+  them so the file rules fire directly. Post-deploy check: arten-fördern.app /
+  .ch → 301 promote-species.app, /sw.js there → 200 kill switch.
