@@ -124,6 +124,22 @@ describe('errorTelemetry', () => {
     expect(fetchMock).not.toHaveBeenCalled()
   })
 
+  it('drops Googlebot SW rejections but keeps other Rejected errors', async () => {
+    const { reportError } = await loadModule()
+    const googlebotRejection = new Error('Rejected')
+    googlebotRejection.stack =
+      'Error: Rejected\n' +
+      '    at wrsParams.serviceWorkers.navigator.serviceWorker.register (<anonymous>:13:648)\n' +
+      '    at https://promote-species.app/registerSW.js:1:98'
+
+    await reportError('unhandledrejection', googlebotRejection)
+    expect(fetchMock).not.toHaveBeenCalled()
+
+    // "Rejected" without the registerSW.js frame is a real error and must pass
+    await reportError('unhandledrejection', new Error('Rejected'))
+    expect(fetchMock).toHaveBeenCalledTimes(1)
+  })
+
   it('installs window handlers that report', async () => {
     const { installErrorTelemetry } = await loadModule()
 

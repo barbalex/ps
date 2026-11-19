@@ -29,6 +29,16 @@ const benignMessages = [
   'ResizeObserver loop limit exceeded',
 ]
 
+// bot-renderer noise, filtered on message AND stack: Google's Web
+// Rendering Service (Googlebot) reports 'serviceWorker' in navigator as
+// true but rejects register() with a bare "Rejected", which the
+// generated registerSW.js never catches — every JS-rendering crawl of
+// "/" lands here as an unhandledrejection. "Rejected" alone is too
+// generic to drop, so the registerSW.js frame must be present too.
+const benignStackRules = [
+  { message: 'Rejected', stackIncludes: 'registerSW.js' },
+]
+
 // hard caps so a broken release cannot flood the collector or loop
 const maxEventsPerSession = 25
 const maxRepeatsPerMessage = 3
@@ -64,15 +74,20 @@ const buildEvent = (
     : (JSON.stringify(error) ?? 'unknown error')
   if (!message) return undefined
   if (benignMessages.some((m) => message.startsWith(m))) return undefined
+  const stack = error instanceof Error ? error.stack : undefined
+  if (
+    benignStackRules.some(
+      (rule) =>
+        message.startsWith(rule.message) && stack?.includes(rule.stackIncludes),
+    )
+  )
+    return undefined
   return {
     release: __APP_VERSION__,
     timestamp: new Date().toISOString(),
     kind,
     message: message.slice(0, maxMessageLength),
-    stack: clip(
-      error instanceof Error ? error.stack : undefined,
-      maxStackLength,
-    ),
+    stack: clip(stack, maxStackLength),
     url: `${window.location.pathname}${window.location.search}`,
     userAgent: navigator.userAgent,
   }
