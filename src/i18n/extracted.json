@@ -2006,6 +2006,18 @@
   "initDbStepLabel": {
     "defaultMessage": "Initialisiere Datenbank"
   },
+  "installPromptBtn": {
+    "defaultMessage": "Installieren"
+  },
+  "installPromptDismiss": {
+    "defaultMessage": "Schliessen"
+  },
+  "installPromptIosHint": {
+    "defaultMessage": "Teilen antippen, dann „Zum Home-Bildschirm hinzufügen“ wählen."
+  },
+  "installPromptMsg": {
+    "defaultMessage": "App installieren – dann bleiben die Daten auf dem Gerät erhalten und die App funktioniert offline."
+  },
   "jA4BeC": {
     "defaultMessage": "...Werte auf mehreren Ort-Stufen"
   },

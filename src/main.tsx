@@ -2,10 +2,15 @@
 import ReactDOM from 'react-dom/client'
 import { App } from './App.tsx'
 import { installErrorTelemetry } from './modules/errorTelemetry.ts'
+import { requestPersistentStorage } from './modules/requestPersistentStorage.ts'
 import './style.css'
 
 // no-op unless VITE_ERROR_TELEMETRY=true is set at build time
 installErrorTelemetry()
+
+// fire-and-forget: marks IndexedDB (the PGlite database) as persistent
+// so browsers don't evict it under storage pressure
+void requestPersistentStorage()
 
 // TEMPORARY debug aid: render render-crashes visibly instead of a blank screen
 const showError = (label: string, detail: unknown) => {
