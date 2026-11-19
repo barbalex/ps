@@ -5,6 +5,29 @@ import { installErrorTelemetry } from './modules/errorTelemetry.ts'
 import { requestPersistentStorage } from './modules/requestPersistentStorage.ts'
 import './style.css'
 
+// consolidate every origin onto promote-species.app (rules in
+// public/_redirects): Netlify 301s fresh visits, but a page served by a
+// retired origin's service worker from its precache never reaches that
+// redirect — and that worker can no longer update (its script fetch
+// follows the origin's 301), so it is unregistered here too. hostname
+// is punycode; localhost and Netlify deploy previews stay untouched
+const retiredHosts = new Set([
+  'xn--arten-frdern-bjb.app',
+  'www.xn--arten-frdern-bjb.app',
+  'xn--arten-frdern-bjb.ch',
+  'www.xn--arten-frdern-bjb.ch',
+])
+if (retiredHosts.has(location.hostname)) {
+  void navigator.serviceWorker
+    ?.getRegistrations()
+    .then((registrations) =>
+      registrations.forEach((registration) => registration.unregister()),
+    )
+  location.replace(
+    `https://promote-species.app${location.pathname}${location.search}${location.hash}`,
+  )
+}
+
 // no-op unless VITE_ERROR_TELEMETRY=true is set at build time
 installErrorTelemetry()
 

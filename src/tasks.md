@@ -48,9 +48,11 @@ dark mode not well implemented for: file upload?
 
 ---
 
-lets try to access the production db from pgAdmin
+lets try to access the production db from pgAdmin. Please explain me how to do this - I tried a few days ago and it didn't work
 
 ---
+
+can we redirect www.xxx to xxx to prevent users using multiple domains? xxx being all the domains we use this project on.
 
 ---
 
