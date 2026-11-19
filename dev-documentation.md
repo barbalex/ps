@@ -1404,3 +1404,39 @@ JS client) runs in a webview:
 - **Tauri (Windows/Mac/Linux):** small binaries, same webview app.
   Desktop native is unlikely to ever pay for itself — Linux users in
   particular will use the web app.
+
+# 14 Production DB Access From pgAdmin (owner-only)
+
+The production database is **not reachable from the internet** — by design.
+`backend/docker-compose.yml` publishes it loopback-only
+(`127.0.0.1:54321:5432`), so any direct pgAdmin connection to the VM times
+out. Access always goes through an SSH tunnel.
+
+The VM address lives in the gitignored `deploy-backend.sh`
+(`PS_DEPLOY_SERVER`) and is intentionally kept out of this public repo.
+SSH key auth to it works non-interactively with the owner's key.
+
+## pgAdmin setup (built-in SSH tunnel, pgAdmin 4 ≥ 7)
+
+1. Fetch the DB password (it only exists on the VM):
+   `ssh "$PS_DEPLOY_SERVER" 'grep ^POSTGRES_PASSWORD= /root/ps/.env'`
+2. Register → Server…, then:
+   - **Connection tab** (host as seen *from the VM*, not from your
+     machine): host `127.0.0.1`, port `54321`, maintenance DB `ps`,
+     username `postgres`, password from step 1
+   - **SSH Tunnel tab:** enable tunneling, tunnel host = the VM, port 22,
+     username from `PS_DEPLOY_SERVER`, authentication via the SSH
+     identity file (passphrase empty)
+3. Save — it connects immediately.
+
+## Gotchas
+
+- **Manual `ssh -L` tunnels need a different local port:** the dev stack
+  occupies `127.0.0.1:54321` locally (same port as production, see
+  CLAUDE.md). Use e.g.
+  `ssh -N -L 15432:127.0.0.1:54321 "$PS_DEPLOY_SERVER"` and point pgAdmin
+  at `localhost:15432` with tunneling disabled. pgAdmin's built-in tunnel
+  avoids the collision entirely.
+- **This connects as the `postgres` superuser on production, and there is
+  no backup pipeline yet** (see §11) — browse and `SELECT` freely, be
+  deliberate about writes.
