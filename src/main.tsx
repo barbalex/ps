@@ -16,6 +16,8 @@ const retiredHosts = new Set([
   'www.xn--arten-frdern-bjb.app',
   'xn--arten-frdern-bjb.ch',
   'www.xn--arten-frdern-bjb.ch',
+  'arten-foerdern.app',
+  'arten-foerdern.ch',
 ])
 if (retiredHosts.has(location.hostname)) {
   void navigator.serviceWorker
