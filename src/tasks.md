@@ -52,8 +52,6 @@ lets try to access the production db from pgAdmin. Please explain me how to do t
 
 ---
 
-can we redirect www.xxx to xxx to prevent users using multiple domains? xxx being all the domains we use this project on.
-
 ---
 
 ---
