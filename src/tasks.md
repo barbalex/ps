@@ -40,13 +40,35 @@ dark mode not well implemented for: file upload?
 
 ---
 
----
+backend deploys are manual
 
 ---
 
----
+migrations
 
 ---
+
+scheduled encrypted backups
+
+---
+
+a tested restore
+
+---
+
+uptime monitoring beyond client error telemetry
+
+---
+
+cost/effort tracking on actions: Reports to funders (e.g. BAFU Aktionsplan) typically require Kosten/Aufwand per measure
+
+---
+
+coordinate rounding for exports/reports
+
+---
+
+Global search across entities
 
 ---
 
@@ -90,8 +112,11 @@ placement of 'Design form'?
 
 completing apflora functionality:
 
-- dropdown lists
+- dropdown lists:
+  - all _werte tables
+  - ae_taxonomies
 - EKF form ui
+- EKF login and work
 - beob
 - biotop in check form
 - exports
@@ -99,6 +124,10 @@ completing apflora functionality:
 - re-import observations while upserting and recognizing own checks
 - prepare and print EKF-Kontrollen
 - plan checks
+- maps: symbology?
+- maps: layers (wms, ...)
+- files
+- quality controls
 - more?
 
 ---
