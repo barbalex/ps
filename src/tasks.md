@@ -42,15 +42,9 @@ dark mode not well implemented for: file upload?
 
 ---
 
-doing: migrations
-
 ---
 
-scheduled encrypted backups
-
 ---
-
-a tested restore
 
 ---
 
@@ -58,15 +52,15 @@ uptime monitoring beyond client error telemetry
 
 ---
 
-cost/effort tracking on actions: Reports to funders (e.g. BAFU Aktionsplan) typically require Kosten/Aufwand per measure
+idea: cost/effort tracking on actions: Reports to funders (e.g. BAFU Aktionsplan) typically require Kosten/Aufwand per measure
 
 ---
 
-coordinate rounding for exports/reports
+idea: coordinate rounding for exports/reports
 
 ---
 
-Global search across entities
+idea: Global search across entities (similar to vermehrung?)
 
 ---
 
