@@ -1144,6 +1144,7 @@ There are no migrations by design: backend-dev (and the preview
 production) are rebuilt from the init files
 (`cd backend-dev && docker compose down -v && docker compose up -d --build`)
 — installed browser clients need a local reset after the backend rebuild.
+This changes at production launch — see §15 for the decision and plan.
 History tables follow automatically on fresh builds (`LIKE <table>
 INCLUDING DEFAULTS` at creation; partman templates are created from the
 parent by `create_parent`).
@@ -1227,11 +1228,12 @@ successful send.
 
 ps currently has NO backup pipeline — production is a preview, and the
 experimental database is rebuilt from scratch rather than backed up. So
-there is no skip decision `error_report` could break today.
+there is no skip decision `error_report` could break today. The full
+design lives in §16; timing and scope of the launch-prep work in §15.
 
 WHEN a backup pipeline is introduced, plan for `error_report` from the
 start: if the backup skips unchanged data via a fingerprint over all
-tables (the apf2 approach — in-repo copy at `backend/db/backup.sh` — per
+tables (the apf2 approach — `../apf2/backend/db/backup.sh` — per
 table the row count plus an order-independent sum of row hashes, table
 list from the catalog), exclude `error_report` from the fingerprint
 query. Client-error telemetry arrives almost daily without real data
@@ -1441,3 +1443,226 @@ non-interactively with the owner's key.
 - **This connects as the `postgres` superuser on production, and there is
   no backup pipeline yet** (see §11) — browse and `SELECT` freely, be
   deliberate about writes.
+
+# 15 Migration System For Production (Decision, 2026-11-20)
+
+**Decision: once production holds data we can't wipe, schema changes move
+to an in-place migration path — a minimal hand-rolled mechanism (~30 lines
+of shell), not a migration framework.** Until then preview keeps
+rebuilding from scratch exactly as today (§2). The mechanism is built as
+launch prep (weeks before launch), rehearsed once against the preview
+production, and the per-change migration discipline starts only at the
+cutover — not now (see "Why nothing starts now" below).
+
+## Why "rebuild from scratch" stops working at launch
+
+- **Data loss is only the headline.** A `--from-scratch` rebuild also
+  forces every installed browser client to log out and back in (logout
+  wipes the local synced data), taking queued offline operations with it.
+  Real users will have queued field-work edits. An in-place migration
+  keeps server data and the sync pipeline standing; schema changes
+  already heal themselves client-side
+  ([SqlInitializer.tsx](src/components/SqlInitializer.tsx)), so users
+  don't even notice.
+- **Backups need it (§11):** restoring a dump requires knowing its schema
+  version — exactly what a `schema_migrations` table records (restore old
+  dump → replay migrations since version X). Without one, restoring means
+  guessing.
+- **Dump data / rebuild / restore is not an alternative.** It only covers
+  additive changes; renames, drops, type changes and data transformations
+  can't be expressed — and we already do those in dev (the users→roles
+  rebuild, the column renames now in SqlInitializer's heal script). It
+  also has the same client-disruption cost as a rebuild.
+- **The init files are not a production bootstrap.** `backend/db/init/`
+  mixes DDL with seeds (09–11d: test data, apflora example data, charts).
+  Re-running all init scripts on a real production database would
+  re-insert demo data — seeds must be split out (or env-gated) before
+  launch anyway.
+
+## The minimal design
+
+1. **The source of truth stays `backend/db/init/`** — it always produces
+   a fresh database at the latest schema. Dev, e2e and the
+   disaster-recovery from-scratch path keep working unchanged.
+2. **Add `backend/db/migrations/NNN_description.sql` plus a
+   `schema_migrations` table**, applied in order, each inside a
+   transaction, skipping already-applied ones — a step in
+   [deploy-backend.sh](deploy-backend.sh) running `psql` against the db
+   container. No drizzle/prisma/dbmate needed.
+3. **From the cutover on, every schema change is written twice:** once in
+   the init files (fresh databases) and once as a migration (existing
+   databases). This dual bookkeeping is the real cost — every migration
+   framework has it (Rails' schema.rb vs. migrations) — and can be
+   squashed away periodically by regenerating the init files. The
+   client-side precedent is SqlInitializer's version stamp +
+   `healExistingDbSql`: that *is* a hand-rolled migration system, for
+   PGlite instead of Postgres. Old heals can eventually be dropped
+   (clients from before that era are expected to have reset), the same
+   way migrations get squashed.
+4. **Invariant to keep:** a database built from the init files must be
+   indistinguishable from one built from init-at-launch + all migrations.
+   If drift ever becomes a worry, a CI schema-fingerprint diff can check
+   it.
+
+## Launch-prep checklist (weeks before launch)
+
+1. **Migration runner:** `migrations/` dir (initially empty),
+   `schema_migrations` table, apply step in deploy-backend.sh — rehearsed
+   once against the preview production, which is free to test on since it
+   is rebuilt anyway. Launch day must not be the runner's first run.
+2. **Backups** (full design in §16; the `error_report` fingerprint
+   exclusion in §11). Start earlier than launch prep if real —
+   non-test — data accumulates in the preview production before then.
+3. **Seeds split out of** (or env-gated in) **the init path.**
+4. **`--from-scratch` demoted to disaster recovery only** (it basically
+   is already).
+5. **Verify ElectricSQL behavior on `ALTER TABLE` of tables with active
+   shapes** — dev practice of restarting the electric container to drop
+   stale snapshots suggests a "restart electric after DDL" step may be
+   needed in the deploy script.
+
+## Why nothing starts now
+
+- The expensive part is the per-change dual bookkeeping; starting it now
+  would double the cost of every schema change for months while rebuilds
+  are still the norm. The cutover can start with an empty migrations
+  directory — init-as-of-launch becomes version 0.
+- The infrastructure (~50 lines total) is cheap, but if built today it
+  would sit untested for months; built as launch prep it is fresh and
+  immediately rehearsed.
+
+# 16 Nightly Encrypted Backups (Decision, 2026-11-20)
+
+**Decision: nightly `pg_dump` on the VM, encrypted with `age` before it
+leaves the VM, uploaded to Nextcloud via rclone — the existing
+NAS → Backblaze chain takes it from there.** The pipeline reuses apf2's
+proven shape (fingerprint skip, `pg_dump -Fc -Z9`, rclone —
+`../apf2/backend/db/backup.sh`) and adds what apf2 lacks: encryption at
+the source, a dead-man's-switch alert, and a restore drill that rides on
+the daily dev-db rebuild. Built as launch prep (§15 checklist item 2),
+not now — the preview production is rebuilt from scratch anyway.
+
+## Why encrypted at the source
+
+The live database is plaintext on the VM regardless — encryption is
+about every hop after it: the Nextcloud instance, the NAS, the Backblaze
+account. apf2 currently lands plaintext dumps in Nextcloud; only the
+NAS → Backblaze leg is encrypted. Encrypting at the source protects all
+hops at once, and the same pattern can be retrofitted onto apf2 later.
+
+## What gets backed up
+
+- `pg_dump -Fc -Z9` of the app database — covers everything: users,
+  sessions, roles, project data, `error_report`. The auth server
+  persists to the same database
+  ([auth.mjs](backend/auth/auth.mjs) uses one `pg` Pool), so there is
+  exactly one database to dump. The schema lives in git
+  (`backend/db/init/`), but the dump is the restore source of truth —
+  production roles and data drift from the init files.
+- `pg_dumpall --globals-only` (roles) and the server's `.env` — without
+  `PGRST_JWT_SECRET` etc. a restored database is useless — bundled into
+  the same encrypted archive.
+- `caddy_data` (TLS certs): one-time copy or skip — `--from-scratch`
+  already keeps the volume, and cert re-issue is not a disaster.
+
+## Skip-if-unchanged
+
+Port apf2's fingerprint (per table the row count plus an
+order-independent sum of row hashes, table list from the catalog):
+dump + upload only when real data changed. The `error_report` exclusion
+is documented in §11.
+
+## Encryption: age
+
+- One `age` keypair. The **public** key lives on the VM (script or
+  `.env`) — holders can only *create* backups.
+- The **private** key never touches the VM, Nextcloud or NAS: notebook +
+  print/USB. This is what makes the backups ransomware-survivable — a
+  wiped or compromised VM cannot decrypt the offsite copies.
+- If the private key is lost, the backups are cryptographically garbage.
+  The offline copies are part of the system — print the key.
+- `age` over GPG: single-purpose, no config sprawl, key material is a
+  short printable string.
+
+## Delivery and retention
+
+- rclone over WebDAV (app password, scoped credentials) into a dedicated
+  Nextcloud folder, e.g. `Backups/ps/`.
+- VM: keep the last ~3 dumps locally for fast restores.
+- Nextcloud folder: 7 daily + 4 weekly + 12 monthly, pruned by the
+  script. The NAS → Backblaze retention applies on top → 3-2-1
+  (dumps on VM, copies on NAS/Nextcloud, encrypted offsite at
+  Backblaze).
+
+## Monitoring
+
+Dead-man's switch (healthchecks.io, free tier): the script pings a URL
+on success; no ping by the expected time → email. A cron job that
+silently fails is worse than no backup. (apf2's host wrapper
+`../apf2/backend/db/host-backup.sh` only logs to a file — known gap,
+fixed here.)
+
+## Restore: the drill is the daily dev rebuild
+
+`npm run dev:reset:from-backup` (to be added next to the scratch
+rebuild):
+
+1. pull the newest `daily-*.age` from Nextcloud (WebDAV creds in the
+   gitignored `backend-dev/.env`, same pattern as today)
+2. decrypt with the age key on the notebook — every run re-proves that
+   *this machine's key* still decrypts *current* backups
+3. `docker compose down -v && up -d --build` — the init scripts create
+   roles, extensions, grants
+4. `pg_restore --clean --if-exists` the dump over the fresh database —
+   roles are cluster-level and survive; schema and data come from the
+   dump. Dev and production build from the same `postgis/postgis:18-3.7`
+   base image, so no version friction
+5. restart the electric container to drop stale shape snapshots (same
+   as the apflora import)
+6. assert a row count on a known table — that assertion *is* the drill
+
+This complements the scratch rebuild, it cannot replace it: a production
+dump carries production's schema, so days with in-flight
+`backend/db/init/` changes need the scratch rebuild. Rule of thumb:
+schema work → scratch rebuild; app logic, real data, or "it's been a
+while" → backup restore. While production is young the two are nearly
+identical; the drill becomes valuable exactly when real data accumulates.
+
+Residual gap: a disaster restore on the VM additionally exercises the
+globals + `.env` path the dev drill skips (init scripts provide the
+roles). Cover with a rare full fire drill (quarterly, and once before
+launch): restore into a scratch compose project on the VM (different
+port), probe, tear down.
+
+## Caveats
+
+- RPO is up to 24 h (nightly dump); offline edits queued in browsers
+  after the dump are lost on restore. PITR via pgBackRest/WAL archiving
+  is a deliberate complexity jump — deferred until proven necessary.
+- Solo-owner design: real user data lands on the dev machine (fine — it
+  is the owner's). If collaborators ever join they do NOT get the key;
+  they keep using scratch rebuilds. That is the key-management model
+  working as intended, not a limitation to work around.
+
+## In-repo layout
+
+deploy-backend.sh already rsyncs all of `backend/` to the VM, so the
+pieces are versioned with the code:
+
+- `backend/backup/backup.sh` — fingerprint, dump, encrypt, upload,
+  prune, ping
+- the dev-reset script above (restore drill)
+- cron on the VM (apf2 pattern: host wrapper + log file, plus the
+  healthcheck ping), installed once over SSH or idempotently by
+  deploy-backend.sh
+- env additions in the server `.env`: `BACKUP_AGE_PUBLIC_KEY`, WebDAV /
+  rclone config, `HEALTHCHECK_URL`
+
+## Why nothing starts now
+
+- The preview production is rebuilt from scratch; there is no data
+  worth backing up yet — same timing as the migration system (§15):
+  built as launch prep so it is fresh and immediately rehearsed, not
+  sitting untested for months.
+- Exception (§15 checklist item 2): start earlier if real, non-test
+  data accumulates in the preview production before launch.

@@ -40,11 +40,9 @@ dark mode not well implemented for: file upload?
 
 ---
 
-backend deploys are manual
-
 ---
 
-migrations
+doing: migrations
 
 ---
 
