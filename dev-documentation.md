@@ -1412,9 +1412,10 @@ The production database is **not reachable from the internet** — by design.
 (`127.0.0.1:54321:5432`), so any direct pgAdmin connection to the VM times
 out. Access always goes through an SSH tunnel.
 
-The VM address lives in the gitignored `deploy-backend.sh`
-(`PS_DEPLOY_SERVER`) and is intentionally kept out of this public repo.
-SSH key auth to it works non-interactively with the owner's key.
+The VM address lives in the gitignored `.deploy-backend.env`
+(`PS_DEPLOY_SERVER`) and in the `PS_DEPLOY_SERVER` repo secret — it is
+intentionally kept out of this public repo. SSH key auth to it works
+non-interactively with the owner's key.
 
 ## pgAdmin setup (built-in SSH tunnel, pgAdmin 4 ≥ 7)
 
