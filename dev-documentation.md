@@ -1589,8 +1589,17 @@ is documented in §11.
 - rclone over WebDAV (app password, scoped credentials) into a dedicated
   Nextcloud folder, e.g. `Backups/ps/`.
 - VM: keep the last ~3 dumps locally for fast restores.
-- Nextcloud folder: 7 daily + 4 weekly + 12 monthly, pruned by the
-  script. The NAS → Backblaze retention applies on top → 3-2-1
+- Nextcloud folder, pruned by the script: 7 daily + 4 weekly +
+  12 monthly + one per calendar year, kept indefinitely. The yearly
+  backup is the first backup *event* of the year — with the fingerprint
+  skip that may not be Jan 1, but any change produces a dump, so it
+  still contains the complete passed year (a year with zero changes has
+  no yearly backup; the previous year's then remains the latest state).
+- The yearly tier is deliberate: reports evaluate the passed year, and
+  apflora once needed every dump since project start (~12 years) to
+  build historization — requirements can surface a decade later, and a
+  full dump per year costs ~nothing.
+- The NAS → Backblaze retention applies on top → 3-2-1
   (dumps on VM, copies on NAS/Nextcloud, encrypted offsite at
   Backblaze).
 
