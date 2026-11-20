@@ -11,11 +11,13 @@ import { execFileSync } from 'node:child_process'
 
 const run = (cmd, args, opts = {}) => {
   console.log(`$ ${cmd} ${args.join(' ')}`)
-  return execFileSync(cmd, args, {
+  // execFileSync returns null when stdout is not piped (watch/auth checks)
+  const output = execFileSync(cmd, args, {
     encoding: 'utf8',
     stdio: ['ignore', 'pipe', 'inherit'],
     ...opts,
-  }).trim()
+  })
+  return output?.trim() ?? ''
 }
 
 const arg = process.argv[2]
