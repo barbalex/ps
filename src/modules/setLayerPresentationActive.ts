@@ -3,10 +3,12 @@ import type LayerPresentations from '../models/public/LayerPresentations.ts'
 
 /**
  * Sets layer_presentations.active: optimistic local update plus a queued
- * operation whose prev is the FULL row read from the db. UI rows often carry
- * only partial presentations ({layer_presentation_id, active}) — using those
- * as prev produced broken reverts (null updated_at) and failed permission
- * checks (no parent ids).
+ * UPSERT of the full row. An upsert (not an update) because presentations
+ * exist that the server never had: the old insert triggers created them
+ * locally without an operation, and table-layer creation used to skip the
+ * queue — an update on those is discarded as "row deleted on the server".
+ * The upsert recreates a missing row instead, healing those clients.
+ * Upserts also bypass the update aggregation, so toggles flush at once.
  */
 export const setLayerPresentationActive = async (
   layerPresentationId: string,
@@ -30,8 +32,7 @@ export const setLayerPresentationActive = async (
     table: 'layer_presentations',
     rowIdName: 'layer_presentation_id',
     rowId: layerPresentationId,
-    operation: 'update',
-    draft: { active },
-    prev: prev ? { ...prev } : undefined,
+    operation: 'upsert',
+    draft: { ...prev, active },
   })
 }

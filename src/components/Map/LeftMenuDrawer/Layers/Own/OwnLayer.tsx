@@ -90,12 +90,12 @@ export const OwnLayer = ({
     // activate: create the missing layer_presentation (already active) or
     // set the design flag, then make the layer render
     if (!layerPresentationId) {
-      // For table layers (own_table is set), skip operation queue as they are system-managed
-      const isTableLayer = !!layer.own_table
+      // queued like every other presentation: the server-side insert
+      // trigger that used to create them is gone, and trigger/skip-queue
+      // rows never synced (updates on them were discarded as no-row)
       const newLayerPresentationId = await createLayerPresentation({
         vectorLayerId: layer.vector_layer_id,
         active: true,
-        skipOperationQueue: isTableLayer,
       } as unknown as Parameters<typeof createLayerPresentation>[0])
       if (newLayerPresentationId) joinRenderList(newLayerPresentationId)
       return

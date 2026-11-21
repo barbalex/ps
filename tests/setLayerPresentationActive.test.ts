@@ -15,7 +15,6 @@ vi.mock('../src/modules/getCapabilities.ts', () => ({
 }))
 
 import { setLayerPresentationActive } from '../src/modules/setLayerPresentationActive.ts'
-import { flushAggregatedUpdates } from '../src/modules/operationAggregation.ts'
 import { operationsQueueAtom, pgliteDbAtom, store } from '../src/store.ts'
 
 let db: PGlite
@@ -43,7 +42,7 @@ beforeEach(() => {
 })
 
 describe('setLayerPresentationActive', () => {
-  it('activates the row and queues an update with the full previous row', async () => {
+  it('activates the row and queues a full-row upsert', async () => {
     await setLayerPresentationActive(PRESENTATION, true)
 
     const row = await db.query<{ active: boolean }>(
@@ -52,20 +51,22 @@ describe('setLayerPresentationActive', () => {
     )
     expect(row.rows[0]?.active).toBe(true)
 
-    // the update is buffered by the operation aggregation (like every
-    // field-edit update) — flush it onto the queue
-    flushAggregatedUpdates()
+    // an upsert (not an update): presentations the server never had —
+    // created by the old insert triggers or with the queue skipped —
+    // must be recreated, not discarded as no-row. Upserts bypass the
+    // update aggregation, so they sit on the queue directly
     const ops = store
       .get(operationsQueueAtom)
       .filter((op) => op.table === 'layer_presentations')
     expect(ops).toHaveLength(1)
-    expect(ops[0]!.operation).toBe('update')
-    expect(ops[0]!.draft).toEqual({ active: true })
-    // the aggregation reduces prev to the edited fields plus audit columns;
-    // the audit columns only exist because the helper read the full row
-    // (partial UI rows as prev broke reverts with null updated_at)
-    expect(ops[0]!.prev?.active).toBe(false)
-    expect(ops[0]!.prev?.updated_at).toBeDefined()
+    expect(ops[0]!.operation).toBe('upsert')
+    // the full row: a missing server row can be recreated from it
+    expect(ops[0]!.draft).toMatchObject({
+      layer_presentation_id: PRESENTATION,
+      active: true,
+      wms_layer_id: wmsLayerId,
+    })
+    expect(ops[0]!.draft?.updated_at).toBeDefined()
   })
 
   it('deactivates again', async () => {
