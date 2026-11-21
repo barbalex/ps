@@ -111,6 +111,12 @@ test.beforeEach(() => {
       AND a.layer_presentation_id < b.layer_presentation_id
       AND a.wms_layer_id IS NOT DISTINCT FROM b.wms_layer_id
       AND a.vector_layer_id IS NOT DISTINCT FROM b.vector_layer_id;
+
+    -- failed runs of the UI-add test leave real unlabeled wms layers
+    -- (the sync escape hatch bypasses the write-permission trigger)
+    SET electric.syncing TO 'true';
+    DELETE FROM wms_layers WHERE project_id = '${PROJECT_ID}' AND label IS NULL;
+    SET electric.syncing TO DEFAULT;
   `)
 })
 
@@ -262,4 +268,64 @@ test('own table layer: checkbox, Active section, pane — and back', async ({
   await expect(
     page.locator(`.leaflet-pane[class*="${OWN_NAME}-pane"]`),
   ).toHaveCount(0)
+})
+
+// the user's flow: a wms layer created through the drawer, activated
+// immediately — racing the server's wms_layers_insert_trigger, which
+// auto-creates its own (inactive) presentation for every new layer
+test('wms layer added through the UI, activated immediately', async ({
+  page,
+}) => {
+  await openDrawer(page)
+  const drawer = page.locator('.map-layers-drawer')
+
+  await page.getByRole('button', { name: 'Add WMS layer' }).click()
+  // the new row appears locally at once, has no label yet (its generated
+  // label is NULL) — the only text-less header carrying a toggle
+  const newRowHeader = page.locator(
+    `//button[.//a[@role='button']][not(normalize-space(.))]`,
+  )
+  await newRowHeader.waitFor({ timeout: 20_000 })
+
+  // activate IMMEDIATELY, before the sync can deliver the server's
+  // auto-created presentation
+  await newRowHeader.locator("a[role='button']").click()
+  await expect(
+    drawer.locator("a[role='button'][aria-pressed='true']"),
+  ).toHaveCount(1, { timeout: 20_000 })
+
+  // diagnostics: capture the operations-queue badge and any notifications
+  // before they expire
+  await page.waitForTimeout(4000)
+  const badge = await page
+    .getByRole('button', { name: /^[0-9]+$/ })
+    .first()
+    .innerText()
+    .catch(() => 'none')
+  const alerts = await page
+    .locator('[role="alert"]')
+    .allTextContents()
+    .catch(() => [])
+  test.info().annotations.push({
+    type: 'diagnostics',
+    description: `queue badge: ${JSON.stringify(badge)}, alerts: ${JSON.stringify(alerts)}`,
+  })
+
+  // exactly one presentation server-side, and it is active
+  const idOf = () =>
+    psql(
+      `SELECT wms_layer_id FROM wms_layers WHERE project_id = '${PROJECT_ID}' AND label IS NULL LIMIT 1`,
+    )
+  await expect
+    .poll(
+      async () => {
+        const id = idOf()
+        if (!id) return 'none'
+        return psql(
+          `SELECT count(*) || '/' || coalesce(bool_or(active)::text, 'false') FROM layer_presentations WHERE wms_layer_id = '${id}'`,
+        )
+      },
+      { timeout: 30_000 },
+    )
+    .toBe('1/true')
 })

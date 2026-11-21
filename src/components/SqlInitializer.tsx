@@ -29,8 +29,10 @@ const hashString = (str: string): string => {
   return (h >>> 0).toString(16)
 }
 
-// remove duplicate layer_presentations per vector_layer_id (can be created
-// by a previous bug; trigger prevents new ones)
+// remove duplicate layer_presentations per vector_layer_id or wms_layer_id
+// (the old insert triggers created rows without operations — they never
+// synced client-side and raced the client's own rows into duplicates).
+// Keeps the active row first, then the newest.
 const dedupLayerPresentationsSql = `
             DELETE FROM layer_presentations
             WHERE layer_presentation_id NOT IN (
@@ -39,7 +41,16 @@ const dedupLayerPresentationsSql = `
               WHERE vector_layer_id IS NOT NULL
               ORDER BY vector_layer_id, active DESC, layer_presentation_id
             )
-            AND vector_layer_id IS NOT NULL
+            AND vector_layer_id IS NOT NULL;
+
+            DELETE FROM layer_presentations
+            WHERE layer_presentation_id NOT IN (
+              SELECT DISTINCT ON (wms_layer_id) layer_presentation_id
+              FROM layer_presentations
+              WHERE wms_layer_id IS NOT NULL
+              ORDER BY wms_layer_id, active DESC, layer_presentation_id
+            )
+            AND wms_layer_id IS NOT NULL;
           `
 
 // remove duplicate service layers per (service, name), keeping the newest

@@ -184,7 +184,12 @@ export const WmsLayer = ({ layer, isLast, isOpen }: Props) => {
           </TabList>
           {tab === 'config' && <WmsLayerEditing layer={layer} />}
           {tab === 'overall-displays' && (
-            <LayerPresentationForm layer={layer} />
+            <LayerPresentationForm
+              layer={{
+                ...layer,
+                layer_presentation_id: presentation?.layer_presentation_id,
+              }}
+            />
           )}
         </AccordionPanel>
       </AccordionItem>

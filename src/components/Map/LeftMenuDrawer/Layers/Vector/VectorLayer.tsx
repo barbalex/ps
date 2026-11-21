@@ -190,7 +190,12 @@ export const VectorLayer = ({
             </Menu>
           </TabList>
           {tab === 'overall-displays' && (
-            <LayerPresentationForm layer={layer} />
+            <LayerPresentationForm
+              layer={{
+                ...layer,
+                layer_presentation_id: presentation?.layer_presentation_id,
+              }}
+            />
           )}
           {tab === 'feature-displays' && (
             <>

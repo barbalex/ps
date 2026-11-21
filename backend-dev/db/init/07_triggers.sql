@@ -818,13 +818,17 @@ EXECUTE PROCEDURE project_users_email_roles_label_trigger();
 
 -- on insert vector_layers if type is in:
 -- places1, places2, actions1, actions2, checks1, checks2, observations_assigned1, observations_assigned2, observations_to_assess, observations_not_to_assign
--- create a corresponding vector_layer_display
+-- create a corresponding vector_layer_display.
+-- NO layer_presentations auto-creation: the client creates them on demand
+-- (createLayerPresentation, as a queued operation). Trigger-created rows
+-- carry no operation — on the client they never sync (activating them
+-- fails with "row deleted on the server"), on the server they race the
+-- client's own row into duplicates.
 CREATE OR REPLACE FUNCTION vector_layers_insert_trigger()
 RETURNS TRIGGER AS $$
 DECLARE
   is_syncing BOOLEAN;
   vld_exists BOOLEAN;
-  lp_exists BOOLEAN;
 BEGIN
   -- Check if electric.syncing is true - defaults to false if not set
   SELECT COALESCE(NULLIF(current_setting('electric.syncing', true), ''), 'false')::boolean INTO is_syncing;
@@ -837,11 +841,6 @@ BEGIN
   IF NOT vld_exists THEN
     INSERT INTO vector_layer_displays (vector_layer_id) VALUES (NEW.vector_layer_id);
   END IF;
-  -- check if layer_presentation already exists
-  SELECT EXISTS(SELECT 1 FROM layer_presentations WHERE vector_layer_id = NEW.vector_layer_id) INTO lp_exists;
-  IF NOT lp_exists THEN
-    INSERT INTO layer_presentations (vector_layer_id, project_id) VALUES (NEW.vector_layer_id, NEW.project_id);
-  END IF;
   RETURN NEW;
 END;
 $$ LANGUAGE plpgsql;
@@ -850,6 +849,12 @@ CREATE OR REPLACE TRIGGER vector_layers_insert_trigger
 AFTER INSERT ON vector_layers
 FOR EACH ROW
 EXECUTE PROCEDURE vector_layers_insert_trigger();
+
+-- the wms_layers auto-create trigger is gone (same reason as above: the
+-- client creates layer_presentations as queued operations). Drop it on
+-- databases that still have it.
+DROP TRIGGER IF EXISTS wms_layers_insert_trigger ON wms_layers;
+DROP FUNCTION IF EXISTS wms_layers_insert_trigger();
 
 -- widgets_for_fields
 -- TODO: enable using an array of column names
@@ -916,34 +921,10 @@ BEFORE INSERT ON layer_presentations
 FOR EACH ROW
 EXECUTE PROCEDURE layer_presentations_set_project_id_trigger();
 
--- on insert wms_layers if type is in:
--- places1, places2, actions1, actions2, checks1, checks2, observations_assigned1, observations_assigned2, observations_to_assess, observations_not_to_assign
--- create a corresponding layer_presentation
-CREATE OR REPLACE FUNCTION wms_layers_insert_trigger()
-RETURNS TRIGGER AS $$
-DECLARE
-  is_syncing BOOLEAN;
-  lp_exists BOOLEAN;
-BEGIN
-  -- Check if electric.syncing is true - defaults to false if not set
-  SELECT COALESCE(NULLIF(current_setting('electric.syncing', true), ''), 'false')::boolean INTO is_syncing;
-  IF is_syncing THEN
-    RETURN OLD;
-  END IF;
-
-  -- check if layer_presentation already exists
-  SELECT EXISTS(SELECT 1 FROM layer_presentations WHERE wms_layer_id = NEW.wms_layer_id) INTO lp_exists;
-  IF NOT lp_exists THEN
-    INSERT INTO layer_presentations (wms_layer_id, project_id) VALUES (NEW.wms_layer_id, NEW.project_id);
-  END IF;
-  RETURN NEW;
-END;
-$$ LANGUAGE plpgsql;
-
-CREATE OR REPLACE TRIGGER wms_layers_insert_trigger
-AFTER INSERT ON wms_layers
-FOR EACH ROW
-EXECUTE PROCEDURE wms_layers_insert_trigger();
+-- wms_layers no longer get an auto-created layer_presentation — the
+-- client creates them on demand as queued operations (see
+-- vector_layers_insert_trigger above for the reasoning). The DROP
+-- statements above clean up databases that still have the old trigger.
 
 -- chart_subjects.label
 CREATE OR REPLACE FUNCTION chart_subjects_label_trigger()
