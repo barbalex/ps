@@ -32,11 +32,82 @@ dark mode not well implemented for: file upload?
 
 ---
 
----
+map, legends: when Sub-Populations is active, Legends says: 'No active Layers'. Should show legends of Sub-Populations. It seems that all own layers legends are not shown
 
 ---
 
+Map, Layers, WMS, Layer dropdown:
+
+1. when the list opens, getting lots of errors of this style: 'Encountered two children with the same key, `ch.bafu.fischerei-aeschen_kernzonen`'
+2. all list items exist twice. After only adding the service once. Same seems to happen with Vectors/WFS
+
 ---
+
+Map, Layers, WMS: activating a layer logs
+'TypeError: TileLayer$1.WMS is not a constructor
+The above error occurred in the <ForwardRef(LeafComponent)> component'
+and the map no more renders
+
+---
+
+Map, Layers, Vectors: activating a layer leads to:
+
+index.js?v=d187995a:1 error: null value in column "updated_at" of relation "layer_presentations" violates not-null constraint
+at pe.Oe (chunk-Y6PULSM7.js?v=d187995a:1:18321)
+at pe.tt (chunk-Y6PULSM7.js?v=d187995a:1:15707)
+at pe.parse (chunk-Y6PULSM7.js?v=d187995a:1:14381)
+at q.Ce (chunk-CTPU3OXM.js?v=d187995a:5:1759)
+at chunk-CTPU3OXM.js?v=d187995a:5:1151
+at pglite.wasm:0x531013
+at pglite.wasm:0x21a29a
+at pglite.wasm:0x221477
+at pglite.wasm:0x2216ac
+at pglite.wasm:0x4dd44f
+(anonymous) @ index.js?v=d187995a:1
+store.ts:612 revertOperationInPlace: error reverting row 01a1fe04-9020-7fff-a4f9-c21c734eb40f in layer_presentations: Error: null value in column "updated_at" of relation "layer_presentations" violates not-null constraint
+at BroadcastChannel.c (index.js?v=d187995a:1:5629)
+revertOperationInPlace @ store.ts:612
+await in revertOperationInPlace
+(anonymous) @ store.ts:649
+await in (anonymous)
+BUILDING_BLOCK_atomWrite @ store-D8kfD8Mh.js?v=d187995a:154
+BUILDING_BLOCK_writeAtomState @ store-D8kfD8Mh.js?v=d187995a:433
+BUILDING_BLOCK_storeSet @ store-D8kfD8Mh.js?v=d187995a:569
+set @ store-D8kfD8Mh.js?v=d187995a:621
+(anonymous) @ useAtom-elOP-fN-.js?v=d187995a:126
+(anonymous) @ VectorLayer.tsx:93
+(anonymous) @ lib-D8izJDj4.js?v=d187995a:71
+(anonymous) @ __resetStyles.esm-DU_4RkOR.js?v=d187995a:85
+(anonymous) @ __resetStyles.esm-DU_4RkOR.js?v=d187995a:113
+(anonymous) @ __resetStyles.esm-DU_4RkOR.js?v=d187995a:85
+executeDispatch @ react-dom_client.js?v=d187995a:9659
+runWithFiberInDEV @ react-dom_client.js?v=d187995a:697
+processDispatchQueue @ react-dom_client.js?v=d187995a:9685
+(anonymous) @ react-dom_client.js?v=d187995a:9954
+batchedUpdates$1 @ react-dom_client.js?v=d187995a:1898
+dispatchEventForPluginEventSystem @ react-dom_client.js?v=d187995a:9758
+dispatchEvent @ react-dom_client.js?v=d187995a:12266
+dispatchDiscreteEvent @ react-dom_client.js?v=d187995a:12248
+
+---
+
+on reload this appears:
+
+BLANK SCREEN WATCHDOG
+mode: root empty after boot done
+
+breadcrumbs:
+303ms beforeLoad start
+343ms beforeLoad done
+1116ms AuthAndDb mount
+1118ms SqlInitializer start
+1397ms SqlInitializer skipped (sql sources unchanged)
+1398ms AuthAndDb mount
+3988ms AuthAndDb mount
+
+router: {"status":"idle","pathname":"/data/projects/0195a101-0000-7000-8000-000000000001/subprojects/017d3472-d75d-7095-82f2-34b3a41b09f2"}
+
+errors:
 
 ---
 
