@@ -36,58 +36,17 @@ map, legends: when Sub-Populations is active, Legends says: 'No active Layers'. 
 
 ---
 
+I added a wms layer. then activated it. it is not rendered on the map. opening "overall display" shows a perpetual spinner
+
+---
+
 I tried to remove a WMS Layer by deleting it here: http://localhost:5176/data/projects/0195a101-0000-7000-8000-000000000001/wms-layers/01a1fe19-8478-742d-b7e0-9e048a22fa9b/wms-layer. Seems it resurrects itself when I open the map, because when trying to re-add it, it can be choosen again in Config > Web Map Service. What should have happended: should have been deleted including its Layers
 
 ---
 
-Map, Layers, WMS:
-
-1. activating a layer logs
-   'TypeError: TileLayer$1.WMS is not a constructor
-   The above error occurred in the <ForwardRef(LeafComponent)> component'
-   and the map no more renders
-2. maybe relating to above: after activating a wms layer and it failing (see above) it remains in the active list although it is no more active
+Map, Layers, Own: Populations. I can activate it, its checkbox shows activation, the layer renders - but it does not move to Active Layers.
 
 ---
-
-Map, Layers, Vectors: activating a layer leads to:
-
-index.js?v=d187995a:1 error: null value in column "updated_at" of relation "layer_presentations" violates not-null constraint
-at pe.Oe (chunk-Y6PULSM7.js?v=d187995a:1:18321)
-at pe.tt (chunk-Y6PULSM7.js?v=d187995a:1:15707)
-at pe.parse (chunk-Y6PULSM7.js?v=d187995a:1:14381)
-at q.Ce (chunk-CTPU3OXM.js?v=d187995a:5:1759)
-at chunk-CTPU3OXM.js?v=d187995a:5:1151
-at pglite.wasm:0x531013
-at pglite.wasm:0x21a29a
-at pglite.wasm:0x221477
-at pglite.wasm:0x2216ac
-at pglite.wasm:0x4dd44f
-(anonymous) @ index.js?v=d187995a:1
-store.ts:612 revertOperationInPlace: error reverting row 01a1fe04-9020-7fff-a4f9-c21c734eb40f in layer_presentations: Error: null value in column "updated_at" of relation "layer_presentations" violates not-null constraint
-at BroadcastChannel.c (index.js?v=d187995a:1:5629)
-revertOperationInPlace @ store.ts:612
-await in revertOperationInPlace
-(anonymous) @ store.ts:649
-await in (anonymous)
-BUILDING_BLOCK_atomWrite @ store-D8kfD8Mh.js?v=d187995a:154
-BUILDING_BLOCK_writeAtomState @ store-D8kfD8Mh.js?v=d187995a:433
-BUILDING_BLOCK_storeSet @ store-D8kfD8Mh.js?v=d187995a:569
-set @ store-D8kfD8Mh.js?v=d187995a:621
-(anonymous) @ useAtom-elOP-fN-.js?v=d187995a:126
-(anonymous) @ VectorLayer.tsx:93
-(anonymous) @ lib-D8izJDj4.js?v=d187995a:71
-(anonymous) @ __resetStyles.esm-DU_4RkOR.js?v=d187995a:85
-(anonymous) @ __resetStyles.esm-DU_4RkOR.js?v=d187995a:113
-(anonymous) @ __resetStyles.esm-DU_4RkOR.js?v=d187995a:85
-executeDispatch @ react-dom_client.js?v=d187995a:9659
-runWithFiberInDEV @ react-dom_client.js?v=d187995a:697
-processDispatchQueue @ react-dom_client.js?v=d187995a:9685
-(anonymous) @ react-dom_client.js?v=d187995a:9954
-batchedUpdates$1 @ react-dom_client.js?v=d187995a:1898
-dispatchEventForPluginEventSystem @ react-dom_client.js?v=d187995a:9758
-dispatchEvent @ react-dom_client.js?v=d187995a:12266
-dispatchDiscreteEvent @ react-dom_client.js?v=d187995a:12248
 
 ---
 
