@@ -93,6 +93,29 @@ const wfsCapabilities = {
               OTHERCRS: [{ '#text': 'EPSG:4326' }],
               OUTPUTFORMATS: { FORMAT: [{ '#text': 'application/json' }] },
             },
+            // 4326 only as the primary crs — no OtherCRS at all
+            {
+              NAME: { '#text': 'test.wfs.default-crs-only' },
+              TITLE: { '#text': 'Default CRS only' },
+              DEFAULTCRS: { '#text': 'urn:ogc:def:crs:EPSG::4326' },
+              OUTPUTFORMATS: { FORMAT: [{ '#text': 'application/json' }] },
+            },
+            // no 4326 anywhere — must not be inserted
+            {
+              NAME: { '#text': 'test.wfs.no-4326' },
+              TITLE: { '#text': 'No 4326' },
+              DEFAULTCRS: { '#text': 'urn:ogc:def:crs:EPSG::2056' },
+              OTHERCRS: [{ '#text': 'EPSG:2056' }],
+              OUTPUTFORMATS: { FORMAT: [{ '#text': 'application/json' }] },
+            },
+            // no acceptable output format — must not be inserted
+            {
+              NAME: { '#text': 'test.wfs.bad-format' },
+              TITLE: { '#text': 'Bad format' },
+              DEFAULTCRS: { '#text': 'urn:ogc:def:crs:EPSG::4326' },
+              OTHERCRS: [{ '#text': 'EPSG:4326' }],
+              OUTPUTFORMATS: { FORMAT: [{ '#text': 'text/csv' }] },
+            },
           ],
         },
       },
@@ -206,7 +229,7 @@ describe('getWfsCapabilitiesData', () => {
 
     expect(
       await layerNames('wfs_service_layers', 'wfs_service_id', WFS_SERVICE),
-    ).toEqual(['test.wfs.one', 'test.wfs.two'])
+    ).toEqual(['test.wfs.default-crs-only', 'test.wfs.one', 'test.wfs.two'])
 
     // one insert operation per layer, not one per racer
     const queuedLayerOps = store
@@ -214,7 +237,7 @@ describe('getWfsCapabilitiesData', () => {
       .filter((op) => op.table === 'wfs_service_layers')
     expect(
       queuedLayerOps.filter((op) => op.operation === 'insert'),
-    ).toHaveLength(2)
+    ).toHaveLength(3)
   })
 
   it('replaces the layers when a second fetch runs after the first completed', async () => {
@@ -230,7 +253,11 @@ describe('getWfsCapabilitiesData', () => {
     await getWfsCapabilitiesData({ vectorLayer, service })
 
     expect(
-      await layerNames('wfs_service_layers', 'wfs_service_id', WFS_SERVICE_AGAIN),
-    ).toEqual(['test.wfs.one', 'test.wfs.two'])
+      await layerNames(
+        'wfs_service_layers',
+        'wfs_service_id',
+        WFS_SERVICE_AGAIN,
+      ),
+    ).toEqual(['test.wfs.default-crs-only', 'test.wfs.one', 'test.wfs.two'])
   })
 })

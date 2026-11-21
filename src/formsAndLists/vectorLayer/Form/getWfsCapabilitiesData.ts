@@ -11,6 +11,18 @@ import type WfsServices from '../../../models/public/WfsServices.ts'
 // loosely typed structure of the parsed capabilities xml
 type CapabilitiesNode = { [key: string]: CapabilitiesNode }
 
+// crs identifiers appear in several forms: 'EPSG:4326' (WFS 1.x),
+// 'urn:ogc:def:crs:EPSG::4326' (WFS 2.0) or
+// 'http://www.opengis.net/def/crs/EPSG/0/4326' — normalize the prefixes,
+// then match 4326 exactly (not 2056 etc.)
+const isCrs4326 = (crs: string | undefined) => {
+  if (!crs) return false
+  const normalized = crs
+    .replace('urn:ogc:def:crs:', '')
+    .replace('http://www.opengis.net/def/crs/EPSG/0/', 'EPSG:')
+  return /^EPSG::?4326$/.test(normalized)
+}
+
 type GetWfsCapabilitiesDataArgs = {
   vectorLayer: VectorLayers
   service: WfsServices
@@ -128,22 +140,24 @@ const getWfsCapabilitiesDataForService = async ({
   }
 
   const acceptableLayers = layers
-    // accept only layers with crs EPSG:4326
-    .filter((l) =>
-      (l.OTHERCRS as unknown as CapabilitiesNode[] | undefined)?.map((o) =>
-        (o?.['#text'] as unknown as string | undefined)?.includes('EPSG:4326'),
-      ),
+    // accept only layers offering EPSG:4326: as their primary crs
+    // (DEFAULTCRS) or among the additional ones (OTHERCRS)
+    .filter(
+      (l) =>
+        isCrs4326(l.DEFAULTCRS?.['#text'] as unknown as string | undefined) ||
+        (l.OTHERCRS as unknown as CapabilitiesNode[] | undefined)?.some((o) =>
+          isCrs4326(o?.['#text'] as unknown as string | undefined),
+        ),
     )
     // accept only layers with acceptable info formats
     .filter((l) =>
-      preferredInfoFormat
-        ? (l.OUTPUTFORMATS?.FORMAT as unknown as CapabilitiesNode[] | undefined)?.map(
-            (f) =>
-              acceptableInfoFormats.includes(
-                f?.['#text'] as unknown as string,
-              ),
-          )
-        : true,
+      preferredInfoFormat ?
+        (
+          l.OUTPUTFORMATS?.FORMAT as unknown as CapabilitiesNode[] | undefined
+        )?.some((f) =>
+          acceptableInfoFormats.includes(f?.['#text'] as unknown as string),
+        )
+      : true,
     )
 
   // replace semantics: another fetch for this service may have populated the
