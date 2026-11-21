@@ -51,6 +51,7 @@ import {
 import { DragHandle } from '../../../../../shared/DragAndDrop/DragHandle.tsx'
 import { zoomToVectorLayer } from '../../../../../../modules/zoomToVectorLayer.ts'
 import { useUrlLayers } from '../../../../../../modules/useUrlLayers.ts'
+import { useLayerActivation } from '../../../../../../modules/useLayerActivation.ts'
 import {
   getVectorLayerLabel,
   usePlaceLevels,
@@ -85,7 +86,8 @@ export const Content = ({
   const { projectId, subprojectId } = useParams({ strict: false })
   const [designingMap] = useAtom(designingAtom)
   const designing = designingMap[projectId ?? ''] ?? false
-  const { setLayerVisible, isLayerVisible } = useUrlLayers()
+  const { isLayerVisible } = useUrlLayers()
+  const { activateLayer, deactivateLayer } = useLayerActivation()
   const [vectorLayerDisplayId, setVectorLayerDisplayId] = useAtom(
     mapDrawerVectorLayerDisplayAtom,
   )
@@ -211,9 +213,10 @@ export const Content = ({
     layer.wms_service_layer_name,
   ])
 
-  // toggling layer visibility is a view action: hiding an active layer
-  // writes the ?layers= url param (linkable, no permissions needed) and
-  // leaves the layer_presentations.active design flag alone
+  // toggling the checkbox fully activates/deactivates the layer — the
+  // layer_presentations.active design flag (what lists it under Active)
+  // plus the render list — like every other layer toggle. A view-only url
+  // toggle here left layers listed under Active with an unchecked box
   const onChangeActive = async () => {
     if (!layer.layer_presentation_id) {
       // if no presentation exists, create notification
@@ -222,11 +225,16 @@ export const Content = ({
         type: 'warning',
       } as Parameters<typeof addNotification>[0])
     }
-    if (isLayerVisible(layer.layer_presentation_id, true)) {
-      setLayerVisible(layer.layer_presentation_id, false)
+    if (
+      isLayerVisible(
+        layer.layer_presentation_id,
+        layer.layer_presentation_active === true,
+      )
+    ) {
+      await deactivateLayer(layer.layer_presentation_id)
       return
     }
-    setLayerVisible(layer.layer_presentation_id, true)
+    await activateLayer(layer.layer_presentation_id)
   }
 
   const canDrag = layerCount > 1

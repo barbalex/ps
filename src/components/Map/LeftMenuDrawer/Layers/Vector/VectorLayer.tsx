@@ -28,13 +28,12 @@ import { useIntl } from 'react-intl'
 
 import { ErrorBoundary } from '../../../../shared/ErrorBoundary.tsx'
 import { createLayerPresentation } from '../../../../../modules/createRows.ts'
-import { setLayerPresentationActive } from '../../../../../modules/setLayerPresentationActive.ts'
+import { useLayerActivation } from '../../../../../modules/useLayerActivation.ts'
 import { useUrlLayers } from '../../../../../modules/useUrlLayers.ts'
 import {
   designingAtom,
   mapDrawerVectorLayerDisplayAtom,
   addOperationAtom,
-  mapLayerSortingAtom,
 } from '../../../../../store.ts'
 import { VectorLayerEditing } from './Editing.tsx'
 import { LayerPresentationForm } from '../LayerPresentationForm.tsx'
@@ -72,8 +71,9 @@ export const VectorLayer = ({
   )
 
   const db = usePGlite()
-  const { isOverridden, setLayerVisible, isLayerVisible } = useUrlLayers()
-  const [mapLayerSorting, setMapLayerSorting] = useAtom(mapLayerSortingAtom)
+  const { isLayerVisible } = useUrlLayers()
+  const { activateLayer, deactivateLayer, joinRenderList } =
+    useLayerActivation()
   const [tab, setTab] = useState<TabType>(() => {
     // if layer has no wfs_service_id or wfs_service_layer_name: default to 'config'
     if (!layer.wfs_service_id || !layer.wfs_service_layer_name) {
@@ -86,44 +86,23 @@ export const VectorLayer = ({
   const presentationId = presentation?.layer_presentation_id
   const isVisible = isLayerVisible(presentationId ?? '', presentation?.active === true)
 
-  // joining the render list is what makes an activated layer actually show:
-  // without a ?layers= override that is the mapLayerSorting atom, with an
-  // active override the layer must join the url list
-  const joinRenderList = (layerPresentationId: string) => {
-    if (isOverridden) {
-      setLayerVisible(layerPresentationId, true)
-    } else if (!mapLayerSorting.includes(layerPresentationId)) {
-      setMapLayerSorting([...mapLayerSorting, layerPresentationId])
-    }
-  }
-  const leaveRenderList = (layerPresentationId: string) => {
-    if (isOverridden) {
-      setLayerVisible(layerPresentationId, false)
-    } else {
-      setMapLayerSorting(
-        mapLayerSorting.filter((id) => id !== layerPresentationId),
-      )
-    }
-  }
-
   const onChange = async () => {
     // deactivate a visible layer: view off and design flag off
     if (isVisible && presentationId) {
-      leaveRenderList(presentationId)
-      await setLayerPresentationActive(presentationId, false)
+      await deactivateLayer(presentationId)
       return
     }
-    // activate: design flag on, then make it render
-    let layerPresentationId = presentationId
-    if (!layerPresentationId) {
-      layerPresentationId = await createLayerPresentation({
+    // activate: create the missing layer_presentation (already active) or
+    // set the design flag, then make the layer render
+    if (!presentationId) {
+      const layerPresentationId = await createLayerPresentation({
         vectorLayerId: layer.vector_layer_id,
         active: true,
       } as unknown as Parameters<typeof createLayerPresentation>[0])
-    } else {
-      await setLayerPresentationActive(layerPresentationId, true)
+      if (layerPresentationId) joinRenderList(layerPresentationId)
+      return
     }
-    if (layerPresentationId) joinRenderList(layerPresentationId)
+    await activateLayer(presentationId)
   }
 
   const onTabSelect = (_event: SelectTabEvent, data: SelectTabData) =>
