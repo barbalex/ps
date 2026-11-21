@@ -1,6 +1,10 @@
 import { v7 as uuidv7 } from 'uuid'
 
 import { getCapabilities } from '../../../../modules/getCapabilities.ts'
+import {
+  beginCapabilitiesFetch,
+  endCapabilitiesFetch,
+} from '../../../../modules/capabilitiesFetchGuard.ts'
 import { addOperationAtom, store, pgliteDbAtom } from '../../../../store.ts'
 import type WmsLayers from '../../../../models/public/WmsLayers.ts'
 import type WmsServices from '../../../../models/public/WmsServices.ts'
@@ -32,13 +36,34 @@ type ServiceData = {
   info_format?: string
 }
 
-export const getWmsCapabilitiesData = async ({
-  wmsLayer,
-  service,
-}: {
+type GetWmsCapabilitiesDataArgs = {
   wmsLayer?: WmsLayers | null
   service: WmsServices
-}) => {
+}
+
+export const getWmsCapabilitiesData = async (
+  args: GetWmsCapabilitiesDataArgs,
+) => {
+  const fetchKey = `wms:${args.service?.wms_service_id}`
+  if (!beginCapabilitiesFetch(fetchKey)) {
+    // another fetch for this service is already populating the layers
+    console.warn(
+      'getWmsCapabilitiesData: returning because a fetch is already in flight for service',
+      args.service?.wms_service_id,
+    )
+    return undefined
+  }
+  try {
+    return await getWmsCapabilitiesDataForService(args)
+  } finally {
+    endCapabilitiesFetch(fetchKey)
+  }
+}
+
+const getWmsCapabilitiesDataForService = async ({
+  wmsLayer,
+  service,
+}: GetWmsCapabilitiesDataArgs) => {
   if (!service?.url) {
     return console.warn(
       'getWmsCapabilitiesData: returning due to missing service.url',
@@ -138,6 +163,24 @@ export const getWmsCapabilitiesData = async ({
     queryable: l.queryable === true,
     legend_url: l.Style?.[0]?.LegendURL?.[0]?.OnlineResource ?? null,
   }))
+
+  // replace semantics: another fetch for this service may have populated the
+  // layers moments ago (AutoFetchCapabilities racing the fetch button runs
+  // sequentially, not concurrently — the in-flight guard cannot catch that).
+  // Delete what is there so repeated fetches converge to one batch.
+  await db.query(
+    `DELETE FROM wms_service_layers WHERE wms_service_id = $1`,
+    [service.wms_service_id],
+  )
+  store.set(addOperationAtom, {
+    table: 'wms_service_layers',
+    filter: {
+      function: 'eq',
+      column: 'wms_service_id',
+      value: service.wms_service_id,
+    },
+    operation: 'delete',
+  })
 
   const values = layersWithIds.map(
     (l) =>

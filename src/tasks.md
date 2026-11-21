@@ -36,17 +36,17 @@ map, legends: when Sub-Populations is active, Legends says: 'No active Layers'. 
 
 ---
 
-Map, Layers, WMS, Layer dropdown:
-
-1. when the list opens, getting lots of errors of this style: 'Encountered two children with the same key, `ch.bafu.fischerei-aeschen_kernzonen`'
-2. all list items exist twice. After only adding the service once. Same seems to happen with Vectors/WFS
+I tried to remove a WMS Layer by deleting it here: http://localhost:5176/data/projects/0195a101-0000-7000-8000-000000000001/wms-layers/01a1fe19-8478-742d-b7e0-9e048a22fa9b/wms-layer. Seems it resurrects itself when I open the map, because when trying to re-add it, it can be choosen again in Config > Web Map Service. What should have happended: should have been deleted including its Layers
 
 ---
 
-Map, Layers, WMS: activating a layer logs
-'TypeError: TileLayer$1.WMS is not a constructor
-The above error occurred in the <ForwardRef(LeafComponent)> component'
-and the map no more renders
+Map, Layers, WMS:
+
+1. activating a layer logs
+   'TypeError: TileLayer$1.WMS is not a constructor
+   The above error occurred in the <ForwardRef(LeafComponent)> component'
+   and the map no more renders
+2. maybe relating to above: after activating a wms layer and it failing (see above) it remains in the active list although it is no more active
 
 ---
 
@@ -91,23 +91,7 @@ dispatchDiscreteEvent @ react-dom_client.js?v=d187995a:12248
 
 ---
 
-on reload this appears:
-
-BLANK SCREEN WATCHDOG
-mode: root empty after boot done
-
-breadcrumbs:
-303ms beforeLoad start
-343ms beforeLoad done
-1116ms AuthAndDb mount
-1118ms SqlInitializer start
-1397ms SqlInitializer skipped (sql sources unchanged)
-1398ms AuthAndDb mount
-3988ms AuthAndDb mount
-
-router: {"status":"idle","pathname":"/data/projects/0195a101-0000-7000-8000-000000000001/subprojects/017d3472-d75d-7095-82f2-34b3a41b09f2"}
-
-errors:
+active layers: need a 'zoom to' button
 
 ---
 

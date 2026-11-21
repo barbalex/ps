@@ -1,5 +1,9 @@
 import { getCapabilities } from '../../../modules/getCapabilities.ts'
 import { createWfsServiceLayer } from '../../../modules/createRows.ts'
+import {
+  beginCapabilitiesFetch,
+  endCapabilitiesFetch,
+} from '../../../modules/capabilitiesFetchGuard.ts'
 import { addOperationAtom, store, pgliteDbAtom } from '../../../store.ts'
 import type VectorLayers from '../../../models/public/VectorLayers.ts'
 import type WfsServices from '../../../models/public/WfsServices.ts'
@@ -7,13 +11,34 @@ import type WfsServices from '../../../models/public/WfsServices.ts'
 // loosely typed structure of the parsed capabilities xml
 type CapabilitiesNode = { [key: string]: CapabilitiesNode }
 
-export const getWfsCapabilitiesData = async ({
-  vectorLayer,
-  service,
-}: {
+type GetWfsCapabilitiesDataArgs = {
   vectorLayer: VectorLayers
   service: WfsServices
-}) => {
+}
+
+export const getWfsCapabilitiesData = async (
+  args: GetWfsCapabilitiesDataArgs,
+) => {
+  const fetchKey = `wfs:${args.service?.wfs_service_id}`
+  if (!beginCapabilitiesFetch(fetchKey)) {
+    // another fetch for this service is already populating the layers
+    console.warn(
+      'getWfsCapabilitiesData: returning because a fetch is already in flight for service',
+      args.service?.wfs_service_id,
+    )
+    return undefined
+  }
+  try {
+    return await getWfsCapabilitiesDataForService(args)
+  } finally {
+    endCapabilitiesFetch(fetchKey)
+  }
+}
+
+const getWfsCapabilitiesDataForService = async ({
+  vectorLayer,
+  service,
+}: GetWfsCapabilitiesDataArgs) => {
   const db = store.get(pgliteDbAtom)
   if (!vectorLayer) throw new Error('vector layer is required')
   if (!service.url) throw new Error('wfs service url is required')
@@ -120,6 +145,23 @@ export const getWfsCapabilitiesData = async ({
           )
         : true,
     )
+
+  // replace semantics: another fetch for this service may have populated the
+  // layers moments ago (AutoFetchCapabilities racing the fetch button runs
+  // sequentially, not concurrently — the in-flight guard cannot catch that).
+  // Delete what is there so repeated fetches converge to one batch.
+  await db.query(`DELETE FROM wfs_service_layers WHERE wfs_service_id = $1`, [
+    service.wfs_service_id,
+  ])
+  store.set(addOperationAtom, {
+    table: 'wfs_service_layers',
+    filter: {
+      function: 'eq',
+      column: 'wfs_service_id',
+      value: service.wfs_service_id,
+    },
+    operation: 'delete',
+  })
 
   for (const l of acceptableLayers) {
     await createWfsServiceLayer({

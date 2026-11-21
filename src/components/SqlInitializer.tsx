@@ -42,6 +42,36 @@ const dedupLayerPresentationsSql = `
             AND vector_layer_id IS NOT NULL
           `
 
+// remove duplicate service layers per (service, name), keeping the newest
+// row (uuidv7 orders by creation time): created by racing capabilities
+// fetches (the manual fetch button vs AutoFetchCapabilities on this or
+// another online client); the unique index in createTables.sql prevents
+// new ones, but existing local databases need the duplicates gone before
+// the index can be created
+const dedupServiceLayersSql = `
+            DO $$
+            BEGIN
+              IF to_regclass('public.wms_service_layers') IS NOT NULL THEN
+                DELETE FROM wms_service_layers a
+                USING wms_service_layers b
+                WHERE a.wms_service_layer_id < b.wms_service_layer_id
+                  AND a.wms_service_id = b.wms_service_id
+                  AND a.name = b.name;
+                CREATE UNIQUE INDEX IF NOT EXISTS wms_service_layers_service_name_idx
+                  ON wms_service_layers (wms_service_id, name);
+              END IF;
+              IF to_regclass('public.wfs_service_layers') IS NOT NULL THEN
+                DELETE FROM wfs_service_layers a
+                USING wfs_service_layers b
+                WHERE a.wfs_service_layer_id < b.wfs_service_layer_id
+                  AND a.wfs_service_id = b.wfs_service_id
+                  AND a.name = b.name;
+                CREATE UNIQUE INDEX IF NOT EXISTS wfs_service_layers_service_name_idx
+                  ON wfs_service_layers (wfs_service_id, name);
+              END IF;
+            END $$;
+          `
+
 // heals local databases created before the schema caught up: column
 // renames, added columns, label triggers — extracted verbatim, previously
 // inline below
@@ -574,6 +604,8 @@ export const SqlInitializer = () => {
         if (layerPresentationsTableExists) {
           await exec(dedupLayerPresentationsSql, 'layer_presentations dedup')
         }
+
+        await exec(dedupServiceLayersSql, 'service layers dedup + unique')
 
         if (projectsTableExists) {
           // heal existing local databases
