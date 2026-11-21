@@ -124,6 +124,32 @@ describe('checkWritePermission — multi-parent and custom tables', () => {
     expect(outsider.allowed).toBe(false)
   })
 
+  // Regression: the map drawer's layer rows carry only layer_presentation_id
+  // and active — the check used to deny those (triggering a broken revert)
+  // instead of resolving the parent layer from the db
+  it('resolves layer_presentations by id when the row is partial', async () => {
+    const insertRes = await fixture.db.query(
+      `INSERT INTO layer_presentations (wms_layer_id, active) VALUES ($1, FALSE) RETURNING layer_presentation_id`,
+      [fixture.ids.wmsLayer],
+    )
+    const layerPresentationId = (
+      insertRes.rows[0] as { layer_presentation_id: string }
+    ).layer_presentation_id
+
+    const writer = await check(fixture.ids.writer, 'layer_presentations', {
+      layer_presentation_id: layerPresentationId,
+      active: false,
+    })
+    expect(writer.allowed).toBe(true)
+    expect(writer.userRole).toBe('write-all')
+
+    const outsider = await check(fixture.ids.outsider, 'layer_presentations', {
+      layer_presentation_id: layerPresentationId,
+      active: false,
+    })
+    expect(outsider.allowed).toBe(false)
+  })
+
   it('checks files by the most specific parent present', async () => {
     // place_id wins over project_id
     const viaPlace = await check(fixture.ids.writer, 'files', {
