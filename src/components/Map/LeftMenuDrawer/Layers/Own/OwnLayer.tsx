@@ -22,6 +22,7 @@ import { useLocation } from '@tanstack/react-router'
 
 import { ErrorBoundary } from '../../../../shared/ErrorBoundary.tsx'
 import { createLayerPresentation } from '../../../../../modules/createRows.ts'
+import { useLayerActivation } from '../../../../../modules/useLayerActivation.ts'
 import { useUrlLayers } from '../../../../../modules/useUrlLayers.ts'
 import { zoomToVectorLayer } from '../../../../../modules/zoomToVectorLayer.ts'
 import {
@@ -59,7 +60,9 @@ export const OwnLayer = ({
   const { projectId, subprojectId } = useParams({ strict: false })
   const [designingMap] = useAtom(designingAtom)
   const designing = designingMap[projectId ?? ''] ?? false
-  const { setLayerVisible, isLayerVisible, isOverridden } = useUrlLayers()
+  const { isLayerVisible } = useUrlLayers()
+  const { activateLayer, deactivateLayer, joinRenderList } =
+    useLayerActivation()
   const [vectorLayerDisplayId, setVectorLayerDisplayId] = useAtom(
     mapDrawerVectorLayerDisplayAtom,
   )
@@ -75,16 +78,18 @@ export const OwnLayer = ({
     layer.layer_presentations?.[0]?.active ?? false,
   )
 
-  // toggling layer visibility is a view action: it writes the ?layers=
-  // url param (linkable, no permissions needed). Only a layer without a
-  // layer_presentation row needs the db write that creates one.
+  // toggling layer activation sets the design flag (layer_presentations.
+  // active — what lists the layer under Active) and joins the render list,
+  // like every other layer toggle
   const onChange = async () => {
-    if (isVisible) {
-      setLayerVisible(layerPresentationId!, false)
+    // deactivate a visible layer: view off and design flag off
+    if (isVisible && layerPresentationId) {
+      await deactivateLayer(layerPresentationId)
       return
     }
+    // activate: create the missing layer_presentation (already active) or
+    // set the design flag, then make the layer render
     if (!layerPresentationId) {
-      // create the missing layer_presentation
       // For table layers (own_table is set), skip operation queue as they are system-managed
       const isTableLayer = !!layer.own_table
       const newLayerPresentationId = await createLayerPresentation({
@@ -92,14 +97,10 @@ export const OwnLayer = ({
         active: true,
         skipOperationQueue: isTableLayer,
       } as unknown as Parameters<typeof createLayerPresentation>[0])
-      // with an active ?layers= override the new layer must join it to
-      // become visible (db-active alone is not enough there)
-      if (isOverridden && newLayerPresentationId) {
-        setLayerVisible(newLayerPresentationId, true)
-      }
+      if (newLayerPresentationId) joinRenderList(newLayerPresentationId)
       return
     }
-    setLayerVisible(layerPresentationId, true)
+    await activateLayer(layerPresentationId)
   }
 
   const onTabSelect = (_event: SelectTabEvent, data: SelectTabData) =>
