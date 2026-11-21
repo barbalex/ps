@@ -3,7 +3,6 @@ import { usePGlite } from '@electric-sql/pglite-react'
 import { useSetAtom } from 'jotai'
 
 import { firstRunDbInitAtom, sqlInitializingAtom } from '../store.ts'
-import { bootTrace } from '../modules/bootTrace.ts'
 
 /**
  * The whole routine this component runs — the heal/alter/trigger script, the
@@ -462,7 +461,6 @@ export const SqlInitializer = () => {
 
   useEffect(() => {
     const run = async () => {
-      bootTrace('SqlInitializer start')
       try {
         // every sql source this initializer can run, loaded up front: they
         // make up the version stamp
@@ -519,7 +517,6 @@ export const SqlInitializer = () => {
           [SQL_INIT_STAMP_KEY],
         )
         if (stampRes?.rows?.[0]?.value === sourcesHash) {
-          bootTrace('SqlInitializer skipped (sql sources unchanged)')
           setSqlInitializing(false)
           return
         }
@@ -607,7 +604,6 @@ export const SqlInitializer = () => {
           }
 
           await stamp()
-          bootTrace('SqlInitializer done (existing db)')
           setSqlInitializing(false)
           return
         }
@@ -636,13 +632,11 @@ export const SqlInitializer = () => {
         )
 
         await stamp()
-        bootTrace('SqlInitializer done')
         setSqlInitializing(false)
       } catch (error) {
         // A rejected query or a failed sql-file import must never leave the
         // app stuck on the "Initializing database" step forever.
         console.error('SqlInitializer failed:', error)
-        bootTrace('SqlInitializer FAILED (caught)')
         setSqlInitializing(false)
       }
     }

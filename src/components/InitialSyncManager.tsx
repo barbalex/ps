@@ -10,7 +10,6 @@ import {
   syncLeaderAtom,
   syncObjectAtom,
 } from '../store.ts'
-import { bootTrace } from '../modules/bootTrace.ts'
 import type { PsSyncObject } from '../modules/startSyncing.ts'
 
 // no stream offset advanced and no stage apply was running for this long:
@@ -40,10 +39,9 @@ const InitialSyncWatcher = () => {
     if (sqlInitializing) return
 
     let released = false
-    const release = (reason: string) => {
+    const release = () => {
       if (released) return
       released = true
-      bootTrace(`initial sync phase released: ${reason}`)
       setInitialSyncing(false)
     }
 
@@ -58,11 +56,11 @@ const InitialSyncWatcher = () => {
     const tick = async () => {
       const syncObject = store.get(syncObjectAtom) as PsSyncObject | null
       if (syncObject?.isApplied) {
-        release('all stages applied')
+        release()
         return
       }
       if (Date.now() - startedAt > HARD_CAP_MS) {
-        release(`${HARD_CAP_MS / 60_000}min hard cap`)
+        release()
         return
       }
       if (syncObject?.isUpToDate && !probing) {
@@ -74,11 +72,7 @@ const InitialSyncWatcher = () => {
         probing = true
         try {
           await db.query(`SELECT 1`)
-          release(
-            syncObject.isApplied ?
-              'all stages applied'
-            : 'up to date, nothing pending',
-          )
+          release()
         } catch {
           probing = false
         }
@@ -99,7 +93,7 @@ const InitialSyncWatcher = () => {
       if (Date.now() - lastProgressAt > INACTIVITY_FALLBACK_MS) {
         // never leave the user on the boot screen forever, whatever went
         // wrong with the sync (server down, hanging streams, …)
-        release(`${INACTIVITY_FALLBACK_MS / 1000}s without sync progress`)
+        release()
         return
       }
       // While offline no sync object is created; local data is all there
@@ -114,11 +108,7 @@ const InitialSyncWatcher = () => {
             `SELECT EXISTS (SELECT 1 FROM projects LIMIT 1) AS exists`,
           )
           if (res.rows[0]?.exists) {
-            release(
-              store.get(onlineAtom) ?
-                'non-leader tab, data present locally'
-              : 'offline, data present locally',
-            )
+            release()
             return
           }
           // offline on a first run without local data: only the inactivity

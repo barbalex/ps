@@ -7,7 +7,6 @@ import type { SearchMiddleware } from '@tanstack/react-router'
 
 import { AuthAndDb } from '../../components/AuthAndDb.tsx'
 import { Initiating } from '../../components/Initiating.tsx'
-import { bootTrace } from '../../modules/bootTrace.ts'
 import { NotFound } from '../../components/NotFound.tsx'
 import { getSession } from '../../modules/authClient.ts'
 import { isVerificationGraceExpired } from '../../modules/emailVerificationGrace.ts'
@@ -75,7 +74,6 @@ export const Route = createFileRoute('/data')({
   pendingMs: 300,
   pendingComponent: () => <Initiating />,
   beforeLoad: async ({ location }) => {
-    bootTrace('beforeLoad start')
     // Start creating PGlite now, parallel with the auth check below; the
     // module and promise caches make repeats free. The detached catch keeps
     // an early redirect below from surfacing an unhandled rejection.
@@ -163,7 +161,6 @@ export const Route = createFileRoute('/data')({
 
     // 2. Ensure a DB instance exists before protected route components mount
     await pgliteReady
-    bootTrace('beforeLoad done')
 
     return { navDataFetcher: 'useDataBreadcrumbData' }
   },
