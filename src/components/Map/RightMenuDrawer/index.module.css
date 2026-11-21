@@ -18,6 +18,9 @@
   @container map (width > 700px) {
     right: 0;
     top: 0;
+    /* without bottom, the drawer sizes against the viewport (100vh) instead
+       of the map container and its last pixels can never be scrolled into view */
+    bottom: 0;
     resize: horizontal;
   }
 }
@@ -49,6 +52,8 @@
 
 .drawerWide {
   width: var(--right-drawer-size);
+  /* fill the container's height (top: 0 + bottom: 0), not the viewport */
+  height: 100%;
 }
 
 .dragging {
