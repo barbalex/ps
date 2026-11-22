@@ -102,6 +102,13 @@ export const AutoFetchCapabilities = () => {
               'Failed to fetch some WMS capabilities',
             )
           }
+          // network errors are transient (the user may be offline) — keep
+          // retrying those. Anything else (http error status, unparseable
+          // capabilities) is terminal: mark the service seen or every
+          // reload retries the fetch forever
+          if (!(error instanceof TypeError)) {
+            seenToAdd.push(key)
+          }
         } finally {
           inFlightRef.current.delete(inFlightKey)
         }
@@ -189,6 +196,9 @@ export const AutoFetchCapabilities = () => {
               taskId,
               'Failed to fetch some WFS capabilities',
             )
+          }
+          if (!(error instanceof TypeError)) {
+            seenToAdd.push(key)
           }
         } finally {
           inFlightRef.current.delete(inFlightKey)

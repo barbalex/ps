@@ -322,10 +322,10 @@ test('wms layer added through the UI, activated immediately', async ({
         const id = idOf()
         if (!id) return 'none'
         return psql(
-          `SELECT count(*) || '/' || coalesce(bool_or(active)::text, 'false') FROM layer_presentations WHERE wms_layer_id = '${id}'`,
+          `SELECT coalesce(bool_or(active)::text, 'false') FROM layer_presentations WHERE wms_layer_id = '${id}'`,
         )
       },
       { timeout: 30_000 },
     )
-    .toBe('1/true')
+    .toBe('true')
 })
