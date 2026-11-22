@@ -110,11 +110,16 @@ export const Content = ({
 
   const placeLevels = usePlaceLevels(layer.project_id)
   // Derived display label: own/wfs/upload vector layers compute it (there is no
-  // stored label column anymore); wms layers keep their own stored label.
+  // stored label column anymore); wms layers keep their own stored label —
+  // which is null while no service layer has been chosen
   const label =
     isVectorLayer ?
       getVectorLayerLabel(layer as VectorLayers, language, placeLevels)
-    : layer.label
+    : (layer.label ||
+      formatMessage({
+        id: 'wmsLayerNoLayerChosen',
+        defaultMessage: 'Kein Layer gewählt',
+      }))
 
   // Stable identity key for drag/drop state (same value as in TableLayer)
   const layerNameForState = layer.name as string
