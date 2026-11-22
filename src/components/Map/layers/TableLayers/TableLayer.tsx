@@ -1,4 +1,4 @@
-import { useState, useRef, useMemo, useCallback } from 'react'
+import { useState, useRef, useCallback } from 'react'
 import { useMapEvent, useMapEvents, useMap } from 'react-leaflet'
 import * as L from 'leaflet'
 import { useAtomValue, useSetAtom } from 'jotai'
@@ -31,6 +31,14 @@ export type TableLayerVectorLayer = VectorLayers & {
 
 export type TableLayerProps = {
   data: FeatureCollection[]
+  /**
+   * Edit signal from the layer's query (max updated_at of the unfiltered
+   * scope). The layer rebuilds when it changes — geometry edits,
+   * reassignments, property changes. Viewport-driven changes of the feature
+   * set must NOT land here: they reconcile in ProgressiveGeoJSON without
+   * blinking, while a changed resetKey tears the layer down.
+   */
+  editVersion?: string | null
   layerPresentation: LayerPresentations & {
     vector_layers: TableLayerVectorLayer
   }
@@ -67,6 +75,7 @@ type LayerWithMeta = L.Layer & {
 
 export const TableLayer = ({
   data,
+  editVersion = null,
   layerPresentation,
   activeId = null,
   activeIdField = null,
@@ -132,29 +141,13 @@ export const TableLayer = ({
       draggingRef.current?.handleMouseUp(e as L.LeafletMouseEvent),
   })
 
-  // Create a stable key that changes when data content changes
-  // For assignment lines, include place_ids to detect reassignments
-  // (before the early returns below — hooks must not be conditional)
-  const dataKey = useMemo(
-    () =>
-      data
-        .map((fc) =>
-          fc.features
-            ?.map(
-              (f) =>
-                `${f.properties?.observation_id || ''}_${f.properties?.place_id || ''}`,
-            )
-            .join(','),
-        )
-        .join('|'),
-    [data],
-  )
-
   // Stable per-feature identity for ProgressiveGeoJSON's reconciliation:
   // the table layers rebuild their data arrays on every render — the
   // zoomend viewport round-trip through the url re-renders the route
   // tree — and without keys every new array identity would clear and
-  // refill the whole layer: the features blinking after every zoom
+  // refill the whole layer: the features blinking after every zoom.
+  // Viewport-filtered refetches reconcile through these keys (features
+  // entering/leaving the envelope), while edits rebuild via editVersion.
   const featureKey = useCallback((feature: Feature) => {
     const properties = feature.properties ?? {}
     const parts = [
@@ -184,7 +177,7 @@ export const TableLayer = ({
   return (
     <ErrorBoundary layer={layer}>
       <ProgressiveGeoJSON
-        resetKey={`${dataKey}/${JSON.stringify(firstDisplay)}/${activeId ?? ''}`}
+        resetKey={`${editVersion ?? ''}/${JSON.stringify(firstDisplay)}/${activeId ?? ''}`}
         data={data}
         featureKey={featureKey}
         // style by properties, use a function that receives the feature: https://stackoverflow.com/a/66106512/712005

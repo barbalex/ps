@@ -13,6 +13,7 @@ const SQL_FILES = [
   'immutableDate.sql',
   'createTables.sql',
   'triggers.sql',
+  'triggersUpdatedAt.sql',
 ] as const
 
 export type TestFixture = {

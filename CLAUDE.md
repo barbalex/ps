@@ -233,6 +233,7 @@ Conceptually: reader (`read-*`) < writer (`write-*`) < designer (`design`) < own
 
 - Swiss projection (LV95) support via `proj4` + `proj4leaflet`
 - Geospatial calculations (distances, extents) run in PostGIS inside PGlite — see `src/modules/geoQueries.ts`; Turf is only used for data that never touches the database (WFS responses, drawn geometries)
+- Map table layers are viewport-culled: their live queries filter with `geometry && ST_MakeEnvelope(...)` (GiST-indexed) against a padded, debounced envelope of the current viewport — see `src/components/Map/layers/viewportEnvelope.ts`. Each query returns `edit_version = max(updated_at)` over its unfiltered scope; TableLayer's `resetKey` uses it so pans reconcile features without rebuilding while edits rebuild
 - WMS capabilities parsing via `wms-capabilities`
 
 ---

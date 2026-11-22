@@ -6,6 +6,11 @@ import { useLiveQuery } from '@electric-sql/pglite-react'
 import { TableLayer } from './TableLayer.tsx'
 import type { TableLayerProps } from './TableLayer.tsx'
 import { useActiveObservationId } from './useActiveObservationId.ts'
+import {
+  useViewportEnvelope,
+  viewportParams,
+  viewportPredicate,
+} from '../viewportEnvelope.ts'
 import type { GeoJsonProperties, GeometryCollection } from 'geojson'
 import { draggableLayersAtom } from '../../../../store.ts'
 import type Observations from '../../../../models/public/Observations.ts'
@@ -18,21 +23,26 @@ export const ObservationsAssigned1 = ({
   const draggableLayers = useAtomValue(draggableLayersAtom)
   const { subprojectId } = useParams({ strict: false })
   const activeObservationId = useActiveObservationId()
+  const envelope = useViewportEnvelope()
 
-  const res = useLiveQuery<Observations>(
+  const res = useLiveQuery<Observations & { edit_version: string | null }>(
     `
     SELECT o.observation_id, o.observation_import_id, o.place_id, o.not_to_assign, o.absence,
       o.comment, o.data, o.id_in_source, ST_AsGeoJSON(o.geometry)::json as geometry,
-      o.label, o.created_at, o.updated_at, o.updated_by
+      o.label, o.created_at, o.updated_at, o.updated_by,
+      (SELECT max(t.updated_at) FROM observations t
+        INNER JOIN observation_imports ti ON t.observation_import_id = ti.observation_import_id
+        INNER JOIN places tp ON t.place_id = tp.place_id
+        WHERE ti.subproject_id = $1 AND tp.parent_id IS NULL AND t.geometry IS NOT NULL) AS edit_version
     FROM observations o
       INNER JOIN observation_imports oi ON o.observation_import_id = oi.observation_import_id
       INNER JOIN places p ON o.place_id = p.place_id
-    WHERE 
+    WHERE
       o.geometry IS NOT NULL
       AND oi.subproject_id = $1
-      AND p.parent_id IS NULL
+      AND p.parent_id IS NULL${viewportPredicate('o.geometry')}
   `,
-    [subprojectId],
+    [subprojectId, ...viewportParams(envelope)],
   )
 
   // geometry is stored as PostGIS GeometryCollection; convert to FeatureCollection for display
@@ -47,7 +57,7 @@ export const ObservationsAssigned1 = ({
       // TODO: make properties more readable for user
       // Idea: use iframe to open form, see TableLayer
 
-      const { geometry, bbox, data, ...properties } = p
+      const { geometry, bbox, data, edit_version, ...properties } = p
       const fc = {
         type: 'FeatureCollection' as const,
         features: (
@@ -95,6 +105,7 @@ export const ObservationsAssigned1 = ({
     <TableLayer
       key={isDraggable as unknown as string}
       data={data}
+      editVersion={res?.rows?.[0]?.edit_version ?? null}
       layerPresentation={layerPresentation}
       activeId={activeObservationId}
       activeIdField="observation_id"

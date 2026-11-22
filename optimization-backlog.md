@@ -182,3 +182,30 @@ project_id` / `GROUP BY subproject_id` with `count(*) FILTER` for filtered
   precedence over _redirects); retarget them to promote-species.app or remove
   them so the file rules fire directly. Post-deploy check: arten-fördern.app /
   .ch → 301 promote-species.app, /sw.js there → 200 kill switch.
+
+- [x] **10. Map table layers load whole subprojects** (branch: main)
+      Every table layer ran one live query per subproject with no spatial filter —
+      all places/checks/actions/observations were ST_AsGeoJSON'd, shipped to JS and
+      rendered (progressively) on every load, however far outside the viewport
+      ([Places1.tsx:24](src/components/Map/layers/TableLayers/Places1.tsx) and 5
+      sibling TODOs).
+      **Done:** layers now bind the map viewport as live-query params and filter in
+      PostGIS inside PGlite with `geometry && ST_MakeEnvelope(...)` on the GiST
+      indexes ([viewportEnvelope.ts](src/components/Map/layers/viewportEnvelope.ts);
+      envelope = padded 10% beyond the viewport, debounced 400 ms, skipped while the
+      viewport stays inside the last emitted window — the WFS fetch-window pattern
+      applied to live queries; NULL params keep the boot window unfiltered). Each
+      query also returns `edit_version = max(updated_at)` over its unfiltered scope:
+      TableLayer's resetKey now uses it instead of the concatenated feature-id list,
+      so pans reconcile features without rebuilding the layer (no blinking) while
+      real edits still rebuild — the old id list also missed pure geometry edits
+      (ids don't change). Two prerequisites uncovered on the way: (1) the client
+      PGlite never had the updated_at bump triggers the server installs in
+      06_triggersUpdatedAt.sql (a dangling pointer comment in 07_triggers.sql said
+      as much) — added as client-only [src/sql/triggersUpdatedAt.sql](src/sql/triggersUpdatedAt.sql)
+      guarded by `electric.syncing` so sync-applied rows keep the server value;
+      SqlInitializer runs it in both branches (hash stamp re-runs once for existing
+      local dbs). (2) assignment lines filter on either endpoint's geometry
+      (`o.geometry && env OR p.geometry && env`) — lines crossing the viewport with
+      both endpoints far outside are culled, fine for the short nearby-assignment
+      lines. Tests: tests/viewportEnvelope.test.ts, tests/viewportFilter.test.ts.

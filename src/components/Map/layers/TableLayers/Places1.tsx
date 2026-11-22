@@ -4,6 +4,11 @@ import { useLocation, useParams } from '@tanstack/react-router'
 
 import { TableLayer } from './TableLayer.tsx'
 import type { TableLayerProps } from './TableLayer.tsx'
+import {
+  useViewportEnvelope,
+  viewportParams,
+  viewportPredicate,
+} from '../viewportEnvelope.ts'
 import type { GeoJsonProperties, GeometryCollection } from 'geojson'
 import type Places from '../../../../models/public/Places.ts'
 
@@ -21,12 +26,14 @@ export const Places1 = ({
   const placeId =
     !hasLevel2Place && placesIdx !== -1 ? pathParts[placesIdx + 1] : undefined
   const { subprojectId } = useParams({ strict: false })
-  // TODO: query only inside current map bounds using places.bbox
-  const res = useLiveQuery<Places>(
+  const envelope = useViewportEnvelope()
+  const res = useLiveQuery<Places & { edit_version: string | null }>(
     `SELECT place_id, subproject_id, parent_id, level, since, until, data,
-      ST_AsGeoJSON(geometry)::json as geometry, bbox, relevant_for_reports, label, created_at, updated_at, updated_by
-    FROM places WHERE parent_id IS NULL AND subproject_id = $1 AND geometry IS NOT NULL`,
-    [subprojectId],
+      ST_AsGeoJSON(geometry)::json as geometry, bbox, relevant_for_reports, label, created_at, updated_at, updated_by,
+      (SELECT max(t.updated_at) FROM places t
+        WHERE t.parent_id IS NULL AND t.subproject_id = $1 AND t.geometry IS NOT NULL) AS edit_version
+    FROM places WHERE parent_id IS NULL AND subproject_id = $1 AND geometry IS NOT NULL${viewportPredicate('places.geometry')}`,
+    [subprojectId, ...viewportParams(envelope)],
   )
 
   // geometry is returned as GeometryCollection JSON via ST_AsGeoJSON; convert to FeatureCollection for display
@@ -41,7 +48,7 @@ export const Places1 = ({
       // TODO: make properties more readable for user
       // Idea: use iframe to open form, see TableLayer
 
-      const { geometry, bbox, data, ...properties } = p
+      const { geometry, bbox, data, edit_version, ...properties } = p
       const fc = {
         type: 'FeatureCollection' as const,
         features: (
@@ -75,6 +82,7 @@ export const Places1 = ({
   return (
     <TableLayer
       data={data}
+      editVersion={res?.rows?.[0]?.edit_version ?? null}
       layerPresentation={layerPresentation}
       activeId={placeId}
       activeIdField="place_id"
