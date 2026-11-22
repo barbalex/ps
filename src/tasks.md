@@ -30,6 +30,8 @@ dark mode not well implemented for: file upload?
 
 ---
 
+WMS Layers not rendering
+
 ---
 
 map, legends: in dark mode labels are black, thus barely discernable
