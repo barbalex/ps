@@ -3140,6 +3140,9 @@
   "wQ9LmN": {
     "defaultMessage": "Dateien in {placeNameSingular} anzeigen"
   },
+  "wmsLayerNoLayerChosen": {
+    "defaultMessage": "Kein Layer gewählt"
+  },
   "x9x+dX": {
     "defaultMessage": "Projekte"
   },

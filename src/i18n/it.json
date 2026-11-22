@@ -1111,6 +1111,7 @@
   "qoHeadingBefore": "prima",
   "qoHeadingAfter": "dopo",
   "layerDeleteBtnTitle": "Elimina layer {label}",
+  "wmsLayerNoLayerChosen": "Nessun layer selezionato",
   "layerDeleteConfirmHeader": "Eliminare il layer {label}?",
   "layerDeleteYes": "Sì",
   "layerDeleteNo": "No",

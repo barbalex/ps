@@ -1125,6 +1125,7 @@
   "qoHeadingBefore": "before",
   "qoHeadingAfter": "after",
   "layerDeleteBtnTitle": "Delete Layer {label}",
+  "wmsLayerNoLayerChosen": "No layer chosen",
   "layerDeleteConfirmHeader": "Delete Layer {label}?",
   "layerDeleteYes": "Yes",
   "layerDeleteNo": "No",

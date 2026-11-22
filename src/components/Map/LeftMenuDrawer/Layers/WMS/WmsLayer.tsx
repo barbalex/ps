@@ -57,6 +57,14 @@ export const WmsLayer = ({ layer, isLast, isOpen }: Props) => {
   const { isLayerVisible } = useUrlLayers()
   const { activateLayer, deactivateLayer, joinRenderList } =
     useLayerActivation()
+  // the stored label is null (or empty) while no service layer has been
+  // chosen
+  const label =
+    layer.label ||
+    formatMessage({
+      id: 'wmsLayerNoLayerChosen',
+      defaultMessage: 'Kein Layer gewählt',
+    })
   const [tab, setTab] = useState<TabType>('overall-displays')
 
   // effect: if layer has no wms_service_id or wms_service_layer_name: set tab to 'config'
@@ -152,7 +160,7 @@ export const WmsLayer = ({ layer, isLast, isOpen }: Props) => {
               // because nested buttons are not allowed
               as="a"
             />
-            <p className={layerStyles.headerLabel}>{layer.label}</p>
+            <p className={layerStyles.headerLabel}>{label}</p>
           </div>
         </AccordionHeader>
         <AccordionPanel className={layerStyles.panel}>
@@ -168,14 +176,14 @@ export const WmsLayer = ({ layer, isLast, isOpen }: Props) => {
                 <Button
                   size="medium"
                   icon={<MdDeleteOutline />}
-                  title={formatMessage({ id: 'layerDeleteBtnTitle', defaultMessage: "Layer {label} löschen" }, { label: layer.label })}
+                  title={formatMessage({ id: 'layerDeleteBtnTitle', defaultMessage: "Layer {label} löschen" }, { label })}
                   className={layerStyles.deleteButton}
                 />
               </MenuTrigger>
 
               <MenuPopover>
                 <MenuList>
-                  <MenuGroupHeader>{formatMessage({ id: 'layerDeleteConfirmHeader', defaultMessage: "Layer {label} löschen?" }, { label: layer.label })}</MenuGroupHeader>
+                  <MenuGroupHeader>{formatMessage({ id: 'layerDeleteConfirmHeader', defaultMessage: "Layer {label} löschen?" }, { label })}</MenuGroupHeader>
                   <MenuItem onClick={onDelete}>{formatMessage({ id: 'layerDeleteYes', defaultMessage: 'Ja' })}</MenuItem>
                   <MenuItem>{formatMessage({ id: 'layerDeleteNo', defaultMessage: 'Nein' })}</MenuItem>
                 </MenuList>
