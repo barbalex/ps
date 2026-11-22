@@ -9,6 +9,7 @@ import {
   sqlInitializingAtom,
 } from '../store.ts'
 import { backgroundTasks } from '../modules/backgroundTasks.ts'
+import { NetworkError } from '../modules/httpGet.ts'
 import { getWmsCapabilitiesData } from '../formsAndLists/wmsLayer/Form/CreateWmsService/getWmsCapabilitiesData.ts'
 import { getWfsCapabilitiesData } from '../formsAndLists/vectorLayer/Form/getWfsCapabilitiesData.ts'
 
@@ -102,11 +103,12 @@ export const AutoFetchCapabilities = () => {
               'Failed to fetch some WMS capabilities',
             )
           }
-          // network errors are transient (the user may be offline) — keep
-          // retrying those. Anything else (http error status, unparseable
-          // capabilities) is terminal: mark the service seen or every
+          // network errors (NetworkError from httpGet: offline, DNS,
+          // CORS-blocked) are transient — keep retrying those. Anything else
+          // (http error status, unparseable capabilities, a crash while
+          // processing them) is terminal: mark the service seen or every
           // reload retries the fetch forever
-          if (!(error instanceof TypeError)) {
+          if (!(error instanceof NetworkError)) {
             seenToAdd.push(key)
           }
         } finally {
@@ -197,7 +199,7 @@ export const AutoFetchCapabilities = () => {
               'Failed to fetch some WFS capabilities',
             )
           }
-          if (!(error instanceof TypeError)) {
+          if (!(error instanceof NetworkError)) {
             seenToAdd.push(key)
           }
         } finally {

@@ -41,9 +41,14 @@ test.beforeAll(async () => {
     VALUES ('${PROJECT_ID}', 'e2e layer activation')
     ON CONFLICT DO NOTHING;
 
+    -- the url must be a same-origin path: the served index.html (200,
+    -- unparseable capabilities) makes AutoFetchCapabilities mark the
+    -- service seen, while an external url failing CORS counts as a
+    -- network error and is retried on every reload, forever.
+    -- Upsert heals dev dbs seeded with the former example.com url.
     INSERT INTO wms_services (wms_service_id, project_id, url)
-    VALUES ('${WMS_SERVICE_ID}', '${PROJECT_ID}', 'https://example.com/e2e-wms')
-    ON CONFLICT DO NOTHING;
+    VALUES ('${WMS_SERVICE_ID}', '${PROJECT_ID}', '/e2e-wms')
+    ON CONFLICT (wms_service_id) DO UPDATE SET url = EXCLUDED.url;
 
     INSERT INTO wms_layers (wms_layer_id, project_id, wms_service_id, wms_service_layer_name, label)
     VALUES ('${WMS_LAYER_ID}', '${PROJECT_ID}', '${WMS_SERVICE_ID}', 'e2e.layer', '${WMS_LABEL}')
@@ -295,12 +300,15 @@ test('wms layer added through the UI, activated immediately', async ({
   ).toHaveCount(1, { timeout: 20_000 })
 
   // diagnostics: capture the operations-queue badge and any notifications
-  // before they expire
+  // before they expire. innerText must be bounded: the badge is gone once
+  // the queue drained (a healthy sync empties it within this wait) and an
+  // unbounded visibility wait would hang the test instead of hitting the
+  // catch
   await page.waitForTimeout(4000)
   const badge = await page
     .getByRole('button', { name: /^[0-9]+$/ })
     .first()
-    .innerText()
+    .innerText({ timeout: 1000 })
     .catch(() => 'none')
   const alerts = await page
     .locator('[role="alert"]')

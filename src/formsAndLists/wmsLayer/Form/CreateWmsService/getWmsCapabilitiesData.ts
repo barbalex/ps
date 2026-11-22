@@ -78,7 +78,9 @@ const getWmsCapabilitiesDataForService = async ({
     service: 'WMS',
   })) as Capabilities | undefined
 
-  if (!capabilities) return undefined
+  // no Capability object: no capabilities at all, or the url served
+  // something that is not a WMS capabilities document (e.g. a website)
+  if (!capabilities?.Capability) return undefined
 
   const imageFormats = capabilities?.Capability?.Request?.GetMap?.Format!.filter(
     (v) => v.toLowerCase().includes('image'),
