@@ -30,7 +30,25 @@ dark mode not well implemented for: file upload?
 
 ---
 
+WMS Layers not rendering
+
 ---
+
+map, legends: in dark mode labels are black, thus barely discernable
+
+---
+
+---
+
+I tried to remove a WMS Layer by deleting it here: http://localhost:5176/data/projects/0195a101-0000-7000-8000-000000000001/wms-layers/01a1fe19-8478-742d-b7e0-9e048a22fa9b/wms-layer. Seems it resurrects itself when I open the map, because when trying to re-add it, it can be choosen again in Config > Web Map Service. What should have happended: should have been deleted including its Layers
+
+---
+
+---
+
+---
+
+active layers: need a 'zoom to' button. Its _not_ needed in WMS, Vectors and Own
 
 ---
 
@@ -42,11 +60,19 @@ dark mode not well implemented for: file upload?
 
 ---
 
----
+uptime monitoring beyond client error telemetry
 
 ---
 
+idea: cost/effort tracking on actions: Reports to funders (e.g. BAFU Aktionsplan) typically require Kosten/Aufwand per measure
+
 ---
+
+idea: coordinate rounding for exports/reports
+
+---
+
+idea: Global search across entities (similar to vermehrung?)
 
 ---
 
@@ -90,8 +116,11 @@ placement of 'Design form'?
 
 completing apflora functionality:
 
-- dropdown lists
+- dropdown lists:
+  - all _werte tables
+  - ae_taxonomies
 - EKF form ui
+- EKF login and work
 - beob
 - biotop in check form
 - exports
@@ -99,6 +128,10 @@ completing apflora functionality:
 - re-import observations while upserting and recognizing own checks
 - prepare and print EKF-Kontrollen
 - plan checks
+- maps: symbology?
+- maps: layers (wms, ...)
+- files
+- quality controls
 - more?
 
 ---

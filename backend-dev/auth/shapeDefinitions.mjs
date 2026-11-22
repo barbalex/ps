@@ -454,6 +454,14 @@ export const shapeDefinitions = {
     columns: ['field_type_id', 'name', 'sort', 'comment', ...auditColumns],
     primaryKey: ['field_type_id'],
   },
+  // global reference data: the proj4 definitions the map needs to build WFS
+  // bboxes and reproject responses. Without it the local crs table is empty,
+  // every WFS request is sent with an unprojected bbox (zero features) and
+  // responses are never reprojected
+  crs: {
+    columns: ['crs_id', 'code', 'name', 'proj4', ...auditColumns],
+    primaryKey: ['crs_id'],
+  },
   widget_types: {
     columns: [
       'widget_type_id',

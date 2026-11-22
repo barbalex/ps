@@ -13,7 +13,8 @@ dropbox_uploader.conf
 
 .DS_Store
 
-deploy-backend.sh
+# owner-machine-only backend deploy target (the VM address stays out of this public repo)
+.deploy-backend.env
 
 dig.log
 et -e

@@ -19,7 +19,7 @@ const ErrorFallback = ({ error, layer }: { error: unknown; layer: Layer }) => {
   const addNotification = useSetAtom(addNotificationAtom)
 
   addNotification({
-    title: `Fehler in Vektor-Layer '${layer.label}'`,
+    title: `Fehler in Layer '${layer.label}'`,
     body: (error as Error).message,
     intent: 'error',
   })

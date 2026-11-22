@@ -1,8 +1,9 @@
-import { useMap, WMSTileLayer } from 'react-leaflet'
+import { useMap } from 'react-leaflet'
 import { useDebouncedCallback } from 'use-debounce'
 
 import type LayerPresentations from '../../../../models/public/LayerPresentations.ts'
 import type WmsLayers from '../../../../models/public/WmsLayers.ts'
+import { WMSTileLayer } from './WMSTileLayer.tsx'
 import { onTileError } from './onTileError.ts'
 
 export type WmsLayerWithServiceInfo = WmsLayers & {

@@ -1,6 +1,7 @@
 import { useAtomValue } from 'jotai'
 
 import type LayerPresentations from '../../../../models/public/LayerPresentations.ts'
+import { ErrorBoundary } from '../../MapErrorBoundary.tsx'
 import { WMS, type WmsLayerWithServiceInfo } from './WMS.tsx'
 import { LocalMap } from './LocalMap.tsx'
 import { showLocalMapAtom } from '../../../../store.ts'
@@ -20,11 +21,15 @@ export const WmsLayerComponent = ({ layerPresentation, layer }: Props) => {
       </>
     )
   } else {
+    // like table and vector layers: contain a crashing WMS layer here so it
+    // notifies instead of unmounting the whole map
     return (
-      <WMS
-        layerPresentation={layerPresentation}
-        layer={layer}
-      />
+      <ErrorBoundary layer={layer}>
+        <WMS
+          layerPresentation={layerPresentation}
+          layer={layer}
+        />
+      </ErrorBoundary>
     )
   }
 }

@@ -1,0 +1,44 @@
+# Deploys the backend by running the committed deploy-backend.sh from here,
+# over SSH. The VM address, deploy key and host key live in repo secrets
+# (PS_DEPLOY_SERVER, PS_DEPLOY_SSH_KEY, PS_DEPLOY_HOST_KEY) so the address
+# never enters this public repo. Deploys committed main only; the destructive
+# --from-scratch mode is interactive-only and refused under CI.
+# Triggered by `npm run deploy-backend` (scripts/deploy-backend.mjs) or the
+# Actions tab. ubuntu-latest ships the rsync + curl deploy-backend.sh needs.
+name: Deploy backend
+
+on:
+  workflow_dispatch:
+    inputs:
+      no_cache:
+        description: pass --no-cache to docker compose build
+        type: boolean
+        default: false
+
+permissions:
+  contents: read
+
+# one deploy at a time — never cancel a running one mid-restart
+concurrency:
+  group: deploy-backend
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: configure ssh
+        env:
+          SSH_KEY: ${{ secrets.PS_DEPLOY_SSH_KEY }}
+          HOST_KEY: ${{ secrets.PS_DEPLOY_HOST_KEY }}
+        run: |
+          mkdir -p ~/.ssh
+          printf '%s\n' "$SSH_KEY" > ~/.ssh/id_ed25519
+          chmod 600 ~/.ssh/id_ed25519
+          # pinned host key from a secret — no runtime keyscan (TOFU)
+          printf '%s\n' "$HOST_KEY" > ~/.ssh/known_hosts
+      - name: deploy
+        env:
+          PS_DEPLOY_SERVER: ${{ secrets.PS_DEPLOY_SERVER }}
+        run: ./deploy-backend.sh ${{ inputs.no_cache == true && '--no-cache' || '' }}

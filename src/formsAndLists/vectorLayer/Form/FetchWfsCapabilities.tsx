@@ -61,8 +61,10 @@ export const FetchWfsCapabilities = ({
       addOperation({
         table: 'wfs_service_layers',
         filter: {
-          wfs_service_id: service.wfs_service_id,
-        } as never,
+          function: 'eq',
+          column: 'wfs_service_id',
+          value: service.wfs_service_id,
+        },
         operation: 'delete',
       })
 

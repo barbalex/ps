@@ -27,6 +27,8 @@ export default interface WmsServiceLayers {
   updated_at: Date;
 
   updated_by: string | null;
+
+  extent: unknown | null;
 }
 
 /** Represents the initializer for the table public.wms_service_layers */
@@ -56,6 +58,8 @@ export interface WmsServiceLayersInitializer {
   updated_at?: Date;
 
   updated_by?: string | null;
+
+  extent?: unknown | null;
 }
 
 /** Represents the mutator for the table public.wms_service_layers */
@@ -82,4 +86,6 @@ export interface WmsServiceLayersMutator {
   updated_at?: Date;
 
   updated_by?: string | null;
+
+  extent?: unknown | null;
 }

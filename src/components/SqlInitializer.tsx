@@ -3,7 +3,6 @@ import { usePGlite } from '@electric-sql/pglite-react'
 import { useSetAtom } from 'jotai'
 
 import { firstRunDbInitAtom, sqlInitializingAtom } from '../store.ts'
-import { bootTrace } from '../modules/bootTrace.ts'
 
 /**
  * The whole routine this component runs — the heal/alter/trigger script, the
@@ -30,8 +29,10 @@ const hashString = (str: string): string => {
   return (h >>> 0).toString(16)
 }
 
-// remove duplicate layer_presentations per vector_layer_id (can be created
-// by a previous bug; trigger prevents new ones)
+// remove duplicate layer_presentations per vector_layer_id or wms_layer_id
+// (the old insert triggers created rows without operations — they never
+// synced client-side and raced the client's own rows into duplicates).
+// Keeps the active row first, then the newest.
 const dedupLayerPresentationsSql = `
             DELETE FROM layer_presentations
             WHERE layer_presentation_id NOT IN (
@@ -40,7 +41,46 @@ const dedupLayerPresentationsSql = `
               WHERE vector_layer_id IS NOT NULL
               ORDER BY vector_layer_id, active DESC, layer_presentation_id
             )
-            AND vector_layer_id IS NOT NULL
+            AND vector_layer_id IS NOT NULL;
+
+            DELETE FROM layer_presentations
+            WHERE layer_presentation_id NOT IN (
+              SELECT DISTINCT ON (wms_layer_id) layer_presentation_id
+              FROM layer_presentations
+              WHERE wms_layer_id IS NOT NULL
+              ORDER BY wms_layer_id, active DESC, layer_presentation_id
+            )
+            AND wms_layer_id IS NOT NULL;
+          `
+
+// remove duplicate service layers per (service, name), keeping the newest
+// row (uuidv7 orders by creation time): created by racing capabilities
+// fetches (the manual fetch button vs AutoFetchCapabilities on this or
+// another online client); the unique index in createTables.sql prevents
+// new ones, but existing local databases need the duplicates gone before
+// the index can be created
+const dedupServiceLayersSql = `
+            DO $$
+            BEGIN
+              IF to_regclass('public.wms_service_layers') IS NOT NULL THEN
+                DELETE FROM wms_service_layers a
+                USING wms_service_layers b
+                WHERE a.wms_service_layer_id < b.wms_service_layer_id
+                  AND a.wms_service_id = b.wms_service_id
+                  AND a.name = b.name;
+                CREATE UNIQUE INDEX IF NOT EXISTS wms_service_layers_service_name_idx
+                  ON wms_service_layers (wms_service_id, name);
+              END IF;
+              IF to_regclass('public.wfs_service_layers') IS NOT NULL THEN
+                DELETE FROM wfs_service_layers a
+                USING wfs_service_layers b
+                WHERE a.wfs_service_layer_id < b.wfs_service_layer_id
+                  AND a.wfs_service_id = b.wfs_service_id
+                  AND a.name = b.name;
+                CREATE UNIQUE INDEX IF NOT EXISTS wfs_service_layers_service_name_idx
+                  ON wfs_service_layers (wfs_service_id, name);
+              END IF;
+            END $$;
           `
 
 // heals local databases created before the schema caught up: column
@@ -155,6 +195,10 @@ const healExistingDbSql = `
             CREATE INDEX IF NOT EXISTS place_levels_project_id_level_idx ON place_levels USING btree(project_id, level);
             CREATE INDEX IF NOT EXISTS charts_project_id_for_subprojects_idx ON charts USING btree(project_id, for_subprojects);
             ALTER TABLE IF EXISTS places ADD COLUMN IF NOT EXISTS name text DEFAULT NULL;
+            -- wms_service_layers gained the WGS84 extent for zoom-to-layer
+            -- (2026-11); heal local databases created before the schema
+            -- caught up
+            ALTER TABLE IF EXISTS wms_service_layers ADD COLUMN IF NOT EXISTS extent jsonb DEFAULT NULL;
 
             CREATE OR REPLACE FUNCTION subproject_taxon_label_trigger()
             RETURNS TRIGGER AS $$
@@ -462,7 +506,6 @@ export const SqlInitializer = () => {
 
   useEffect(() => {
     const run = async () => {
-      bootTrace('SqlInitializer start')
       try {
         // every sql source this initializer can run, loaded up front: they
         // make up the version stamp
@@ -519,7 +562,6 @@ export const SqlInitializer = () => {
           [SQL_INIT_STAMP_KEY],
         )
         if (stampRes?.rows?.[0]?.value === sourcesHash) {
-          bootTrace('SqlInitializer skipped (sql sources unchanged)')
           setSqlInitializing(false)
           return
         }
@@ -578,6 +620,8 @@ export const SqlInitializer = () => {
           await exec(dedupLayerPresentationsSql, 'layer_presentations dedup')
         }
 
+        await exec(dedupServiceLayersSql, 'service layers dedup + unique')
+
         if (projectsTableExists) {
           // heal existing local databases
           await exec(healTableViewRenameSql, 'healTableViewRenameSql')
@@ -607,7 +651,6 @@ export const SqlInitializer = () => {
           }
 
           await stamp()
-          bootTrace('SqlInitializer done (existing db)')
           setSqlInitializing(false)
           return
         }
@@ -636,13 +679,11 @@ export const SqlInitializer = () => {
         )
 
         await stamp()
-        bootTrace('SqlInitializer done')
         setSqlInitializing(false)
       } catch (error) {
         // A rejected query or a failed sql-file import must never leave the
         // app stuck on the "Initializing database" step forever.
         console.error('SqlInitializer failed:', error)
-        bootTrace('SqlInitializer FAILED (caught)')
         setSqlInitializing(false)
       }
     }

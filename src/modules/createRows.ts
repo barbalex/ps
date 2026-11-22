@@ -1785,7 +1785,9 @@ export const createLayerPresentation = async ({
   vectorLayerId = null,
   wmsLayerId = null,
   active = false,
-  transparent = false,
+  // matches the schema default (layer_presentations.transparent): WMS tiles
+  // without the base map shining through are opaque white rectangles
+  transparent = true,
   skipOperationQueue = false, // system-managed table layers shouldn't sync back to server
 }: {
   vectorLayerId?: string | null

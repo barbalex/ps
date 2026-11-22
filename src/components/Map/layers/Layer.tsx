@@ -11,7 +11,6 @@ import type LayerPresentations from '../../../models/public/LayerPresentations.t
 import type VectorLayers from '../../../models/public/VectorLayers.ts'
 import type VectorLayerDisplays from '../../../models/public/VectorLayerDisplays.ts'
 import type WmsLayers from '../../../models/public/WmsLayers.ts'
-import styles from './Layer.module.css'
 
 const paneBaseIndex = 400 // was: 200. then wfs layers covered lower ones
 
@@ -162,10 +161,7 @@ export const Layer = ({ layerPresentationId, index }: Props) => {
       <Pane
         key={`${layerPresentationId}/${layers.join()}`}
         name={wmsLayer.label as string}
-        className={styles.pane}
-        style={
-          { '--pane-z-index': paneBaseIndex - index } as React.CSSProperties
-        }
+        style={{ zIndex: paneBaseIndex - index }}
       >
         <WmsLayerComponent
           key={JSON.stringify(partsToRedrawOn)}
@@ -183,10 +179,7 @@ export const Layer = ({ layerPresentationId, index }: Props) => {
       <Pane
         key={`${layerPresentationId}/${layers.join()}`}
         name={vectorLayer.name ?? vectorLayer.vector_layer_id}
-        className={styles.pane}
-        style={
-          { '--pane-z-index': paneBaseIndex - index } as React.CSSProperties
-        }
+        style={{ zIndex: paneBaseIndex - index }}
       >
         <VectorLayerChooser
           layerPresentation={layerPresentation}
@@ -221,10 +214,7 @@ export const Layer = ({ layerPresentationId, index }: Props) => {
       <Pane
         key={`${layerPresentationId}/${layers.join()}`}
         name={vectorLayer.name ?? vectorLayer.vector_layer_id}
-        className={styles.pane}
-        style={
-          { '--pane-z-index': paneBaseIndex - index } as React.CSSProperties
-        }
+        style={{ zIndex: paneBaseIndex - index }}
       >
         <Component
           key={layerPresentationId}

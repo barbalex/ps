@@ -73,12 +73,14 @@ export const revertOperation = async (o: QueuedOperation) => {
       ...(isUsersTable ? [] : [prev.updated_by]),
       ...whereArgs,
     ]
+    // prev can be partial (UI rows often select only some columns); null
+    // must not overwrite the audit columns — coalesce keeps the stored value
     await pgliteDb.query(
-      `UPDATE ${table} 
-      SET 
-        ${valuesSql} 
-        updated_at = $${draftKeysLength + 1}
-        ${isUsersTable ? '' : `, updated_by = $${draftKeysLength + 2}`}
+      `UPDATE ${table}
+      SET
+        ${valuesSql}
+        updated_at = COALESCE($${draftKeysLength + 1}, updated_at)
+        ${isUsersTable ? '' : `, updated_by = COALESCE($${draftKeysLength + 2}, updated_by)`}
       WHERE ${whereSql}`,
       args,
     )

@@ -1,5 +1,9 @@
 import { getCapabilities } from '../../../modules/getCapabilities.ts'
 import { createWfsServiceLayer } from '../../../modules/createRows.ts'
+import {
+  beginCapabilitiesFetch,
+  endCapabilitiesFetch,
+} from '../../../modules/capabilitiesFetchGuard.ts'
 import { addOperationAtom, store, pgliteDbAtom } from '../../../store.ts'
 import type VectorLayers from '../../../models/public/VectorLayers.ts'
 import type WfsServices from '../../../models/public/WfsServices.ts'
@@ -7,13 +11,46 @@ import type WfsServices from '../../../models/public/WfsServices.ts'
 // loosely typed structure of the parsed capabilities xml
 type CapabilitiesNode = { [key: string]: CapabilitiesNode }
 
-export const getWfsCapabilitiesData = async ({
-  vectorLayer,
-  service,
-}: {
+// crs identifiers appear in several forms: 'EPSG:4326' (WFS 1.x),
+// 'urn:ogc:def:crs:EPSG::4326' (WFS 2.0) or
+// 'http://www.opengis.net/def/crs/EPSG/0/4326' — normalize the prefixes,
+// then match 4326 exactly (not 2056 etc.)
+const isCrs4326 = (crs: string | undefined) => {
+  if (!crs) return false
+  const normalized = crs
+    .replace('urn:ogc:def:crs:', '')
+    .replace('http://www.opengis.net/def/crs/EPSG/0/', 'EPSG:')
+  return /^EPSG::?4326$/.test(normalized)
+}
+
+type GetWfsCapabilitiesDataArgs = {
   vectorLayer: VectorLayers
   service: WfsServices
-}) => {
+}
+
+export const getWfsCapabilitiesData = async (
+  args: GetWfsCapabilitiesDataArgs,
+) => {
+  const fetchKey = `wfs:${args.service?.wfs_service_id}`
+  if (!beginCapabilitiesFetch(fetchKey)) {
+    // another fetch for this service is already populating the layers
+    console.warn(
+      'getWfsCapabilitiesData: returning because a fetch is already in flight for service',
+      args.service?.wfs_service_id,
+    )
+    return undefined
+  }
+  try {
+    return await getWfsCapabilitiesDataForService(args)
+  } finally {
+    endCapabilitiesFetch(fetchKey)
+  }
+}
+
+const getWfsCapabilitiesDataForService = async ({
+  vectorLayer,
+  service,
+}: GetWfsCapabilitiesDataArgs) => {
   const db = store.get(pgliteDbAtom)
   if (!vectorLayer) throw new Error('vector layer is required')
   if (!service.url) throw new Error('wfs service url is required')
@@ -103,23 +140,42 @@ export const getWfsCapabilitiesData = async ({
   }
 
   const acceptableLayers = layers
-    // accept only layers with crs EPSG:4326
-    .filter((l) =>
-      (l.OTHERCRS as unknown as CapabilitiesNode[] | undefined)?.map((o) =>
-        (o?.['#text'] as unknown as string | undefined)?.includes('EPSG:4326'),
-      ),
+    // accept only layers offering EPSG:4326: as their primary crs
+    // (DEFAULTCRS) or among the additional ones (OTHERCRS)
+    .filter(
+      (l) =>
+        isCrs4326(l.DEFAULTCRS?.['#text'] as unknown as string | undefined) ||
+        (l.OTHERCRS as unknown as CapabilitiesNode[] | undefined)?.some((o) =>
+          isCrs4326(o?.['#text'] as unknown as string | undefined),
+        ),
     )
     // accept only layers with acceptable info formats
     .filter((l) =>
-      preferredInfoFormat
-        ? (l.OUTPUTFORMATS?.FORMAT as unknown as CapabilitiesNode[] | undefined)?.map(
-            (f) =>
-              acceptableInfoFormats.includes(
-                f?.['#text'] as unknown as string,
-              ),
-          )
-        : true,
+      preferredInfoFormat ?
+        (
+          l.OUTPUTFORMATS?.FORMAT as unknown as CapabilitiesNode[] | undefined
+        )?.some((f) =>
+          acceptableInfoFormats.includes(f?.['#text'] as unknown as string),
+        )
+      : true,
     )
+
+  // replace semantics: another fetch for this service may have populated the
+  // layers moments ago (AutoFetchCapabilities racing the fetch button runs
+  // sequentially, not concurrently — the in-flight guard cannot catch that).
+  // Delete what is there so repeated fetches converge to one batch.
+  await db.query(`DELETE FROM wfs_service_layers WHERE wfs_service_id = $1`, [
+    service.wfs_service_id,
+  ])
+  store.set(addOperationAtom, {
+    table: 'wfs_service_layers',
+    filter: {
+      function: 'eq',
+      column: 'wfs_service_id',
+      value: service.wfs_service_id,
+    },
+    operation: 'delete',
+  })
 
   for (const l of acceptableLayers) {
     await createWfsServiceLayer({

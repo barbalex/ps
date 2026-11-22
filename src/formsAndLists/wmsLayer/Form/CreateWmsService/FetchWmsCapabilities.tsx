@@ -48,6 +48,8 @@ export const FetchWmsCapabilities = ({
   const onFetchCapabilities = async () => {
     const urlTrimmed = url?.trim?.()
     if (!urlTrimmed) return
+    // ignore double-clicks while a fetch is running (the button keeps focus)
+    if (fetching) return
 
     let service:
       WmsServices | { wms_service_id: string; url: string } | undefined

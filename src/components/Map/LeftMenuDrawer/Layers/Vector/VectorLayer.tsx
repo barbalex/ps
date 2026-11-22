@@ -20,7 +20,7 @@ import type {
   SelectTabData,
   SelectTabEvent,
 } from '@fluentui/react-components'
-import { BsSquare } from 'react-icons/bs'
+import { BsCheckSquareFill, BsSquare } from 'react-icons/bs'
 import { MdDeleteOutline } from 'react-icons/md'
 import { useAtom, useSetAtom } from 'jotai'
 import { usePGlite } from '@electric-sql/pglite-react'
@@ -28,6 +28,8 @@ import { useIntl } from 'react-intl'
 
 import { ErrorBoundary } from '../../../../shared/ErrorBoundary.tsx'
 import { createLayerPresentation } from '../../../../../modules/createRows.ts'
+import { useLayerActivation } from '../../../../../modules/useLayerActivation.ts'
+import { useUrlLayers } from '../../../../../modules/useUrlLayers.ts'
 import {
   designingAtom,
   mapDrawerVectorLayerDisplayAtom,
@@ -69,6 +71,9 @@ export const VectorLayer = ({
   )
 
   const db = usePGlite()
+  const { isLayerVisible } = useUrlLayers()
+  const { activateLayer, deactivateLayer, joinRenderList } =
+    useLayerActivation()
   const [tab, setTab] = useState<TabType>(() => {
     // if layer has no wfs_service_id or wfs_service_layer_name: default to 'config'
     if (!layer.wfs_service_id || !layer.wfs_service_layer_name) {
@@ -77,28 +82,27 @@ export const VectorLayer = ({
     return 'overall-displays'
   })
 
+  const presentation = layer.layer_presentations?.[0]
+  const presentationId = presentation?.layer_presentation_id
+  const isVisible = isLayerVisible(presentationId ?? '', presentation?.active === true)
+
   const onChange = async () => {
-    if (!layer.layer_presentations?.[0]?.layer_presentation_id) {
-      // create the missing layer_presentation
-      await createLayerPresentation({
+    // deactivate a visible layer: view off and design flag off
+    if (isVisible && presentationId) {
+      await deactivateLayer(presentationId)
+      return
+    }
+    // activate: create the missing layer_presentation (already active) or
+    // set the design flag, then make the layer render
+    if (!presentationId) {
+      const layerPresentationId = await createLayerPresentation({
         vectorLayerId: layer.vector_layer_id,
         active: true,
       } as unknown as Parameters<typeof createLayerPresentation>[0])
-    } else {
-      db.query(
-        `UPDATE layer_presentations SET active = TRUE WHERE layer_presentation_id = $1`,
-        [layer.layer_presentations?.[0]?.layer_presentation_id],
-      )
-      // add task to update server and rollback PGlite in case of error
-      addOperation({
-        table: 'layer_presentations',
-        rowIdName: 'layer_presentation_id',
-        rowId: layer.layer_presentations?.[0]?.layer_presentation_id,
-        operation: 'update',
-        draft: { active: true },
-        prev: { ...layer.layer_presentations?.[0] },
-      })
+      if (layerPresentationId) joinRenderList(layerPresentationId)
+      return
     }
+    await activateLayer(presentationId)
   }
 
   const onTabSelect = (_event: SelectTabEvent, data: SelectTabData) =>
@@ -135,8 +139,14 @@ export const VectorLayer = ({
         >
           <div className={layerStyles.headerContainer}>
             <ToggleButton
-              icon={<BsSquare className={layerStyles.headerToggleIcon} />}
-              checked={false}
+              icon={
+                isVisible ? (
+                  <BsCheckSquareFill className={layerStyles.headerToggleIcon} />
+                ) : (
+                  <BsSquare className={layerStyles.headerToggleIcon} />
+                )
+              }
+              checked={isVisible}
               onClick={onChange}
               className={`${styles.labelButton}${isOpen ? ` ${styles.toggleOpen}` : ''}`}
               // as the accordion header is a button, we need to set this as an a
@@ -180,7 +190,12 @@ export const VectorLayer = ({
             </Menu>
           </TabList>
           {tab === 'overall-displays' && (
-            <LayerPresentationForm layer={layer} />
+            <LayerPresentationForm
+              layer={{
+                ...layer,
+                layer_presentation_id: presentation?.layer_presentation_id,
+              }}
+            />
           )}
           {tab === 'feature-displays' && (
             <>

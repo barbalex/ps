@@ -1723,6 +1723,7 @@ CREATE TABLE IF NOT EXISTS wms_service_layers(
   queryable boolean DEFAULT NULL,
   legend_url text DEFAULT NULL,
   legend_image bytea DEFAULT NULL,
+  extent jsonb DEFAULT NULL, -- WGS84 layer extent {xMin,yMin,xMax,yMax} from the capabilities BoundingBox, reprojected where needed; powers zoom-to-layer
   sys_period tstzrange DEFAULT NULL,
   created_at timestamptz NOT NULL DEFAULT now(),
   updated_at timestamptz NOT NULL DEFAULT now(),
@@ -1730,6 +1731,10 @@ CREATE TABLE IF NOT EXISTS wms_service_layers(
 );
 
 CREATE INDEX IF NOT EXISTS wms_service_layers_wms_service_id_idx ON wms_service_layers USING btree(wms_service_id);
+-- one row per layer name and service: capabilities fetches race (the manual
+-- fetch button, AutoFetchCapabilities on every online client), the loser's
+-- insert is rejected instead of duplicating every layer in the dropdown
+CREATE UNIQUE INDEX IF NOT EXISTS wms_service_layers_service_name_idx ON wms_service_layers USING btree(wms_service_id, name);
 
 --------------------------------------------------------------
 -- wms_layers
@@ -1800,6 +1805,8 @@ CREATE TABLE IF NOT EXISTS wfs_service_layers(
 );
 
 CREATE INDEX IF NOT EXISTS wfs_service_layers_wfs_service_id_idx ON wfs_service_layers USING btree(wfs_service_id);
+-- see wms_service_layers_service_name_idx
+CREATE UNIQUE INDEX IF NOT EXISTS wfs_service_layers_service_name_idx ON wfs_service_layers USING btree(wfs_service_id, name);
 
 --------------------------------------------------------------
 -- vector_layers

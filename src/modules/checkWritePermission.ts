@@ -339,19 +339,36 @@ async function checkLayerPresentation(
   const puIds = await projectUserIds(db, userId)
   if (!puIds) return { allowed: false }
 
-  // Both wms_layer and vector_layer belong to a project; check whichever is set
-  if (row.wms_layer_id) {
+  // Both wms_layer and vector_layer belong to a project; check whichever is
+  // set. Partial rows (e.g. the map drawer's layer list carries only
+  // layer_presentation_id and active) resolve their parent from the db —
+  // denying those would block layer activation for users with every right
+  let wmsLayerId = row.wms_layer_id as string | undefined
+  let vectorLayerId = row.vector_layer_id as string | undefined
+  if (!wmsLayerId && !vectorLayerId && row.layer_presentation_id) {
+    const res = await db.query<{
+      wms_layer_id: string | null
+      vector_layer_id: string | null
+    }>(
+      `SELECT wms_layer_id, vector_layer_id FROM layer_presentations WHERE layer_presentation_id = $1`,
+      [row.layer_presentation_id],
+    )
+    wmsLayerId = res.rows[0]?.wms_layer_id ?? undefined
+    vectorLayerId = res.rows[0]?.vector_layer_id ?? undefined
+  }
+
+  if (wmsLayerId) {
     const res = await db.query<{ role: string }>(
       `SELECT pr.role FROM project_roles pr JOIN wms_layers wl ON wl.project_id = pr.project_id WHERE wl.wms_layer_id = $2 AND pr.project_user_id = ANY($1) LIMIT 1`,
-      [puIds, row.wms_layer_id],
+      [puIds, wmsLayerId],
     )
     const role = res.rows[0]?.role
     if (role) return { allowed: hasPermission(role), userRole: role }
   }
-  if (row.vector_layer_id) {
+  if (vectorLayerId) {
     const res = await db.query<{ role: string }>(
       `SELECT pr.role FROM project_roles pr JOIN vector_layers vl ON vl.project_id = pr.project_id WHERE vl.vector_layer_id = $2 AND pr.project_user_id = ANY($1) LIMIT 1`,
-      [puIds, row.vector_layer_id],
+      [puIds, vectorLayerId],
     )
     const role = res.rows[0]?.role
     if (role) return { allowed: hasPermission(role), userRole: role }

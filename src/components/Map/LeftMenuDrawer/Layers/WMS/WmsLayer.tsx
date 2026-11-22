@@ -28,6 +28,7 @@ import { useIntl } from 'react-intl'
 
 import { ErrorBoundary } from '../../../../shared/ErrorBoundary.tsx'
 import { createLayerPresentation } from '../../../../../modules/createRows.ts'
+import { useLayerActivation } from '../../../../../modules/useLayerActivation.ts'
 import { useUrlLayers } from '../../../../../modules/useUrlLayers.ts'
 import { designingAtom, addOperationAtom } from '../../../../../store.ts'
 import { LayerPresentationForm } from '../LayerPresentationForm.tsx'
@@ -53,7 +54,9 @@ export const WmsLayer = ({ layer, isLast, isOpen }: Props) => {
   const designing = designingMap[projectId ?? ''] ?? false
   const addOperation = useSetAtom(addOperationAtom)
   const db = usePGlite()
-  const { setLayerVisible, isLayerVisible, isOverridden } = useUrlLayers()
+  const { isLayerVisible } = useUrlLayers()
+  const { activateLayer, deactivateLayer, joinRenderList } =
+    useLayerActivation()
   const [tab, setTab] = useState<TabType>('overall-displays')
 
   // effect: if layer has no wms_service_id or wms_service_layer_name: set tab to 'config'
@@ -76,27 +79,26 @@ export const WmsLayer = ({ layer, isLast, isOpen }: Props) => {
     presentation?.active === true,
   )
 
-  // toggling layer visibility is a view action: it writes the ?layers=
-  // url param (linkable, no permissions needed). Only a layer without a
-  // layer_presentation row needs the db write that creates one.
+  // toggling layer activation sets the design flag (layer_presentations.
+  // active — what lists the layer under Active) and joins the render list,
+  // like every other layer toggle
   const onChange = async () => {
+    // deactivate a visible layer: view off and design flag off
     if (isVisible && presentation) {
-      setLayerVisible(presentation.layer_presentation_id, false)
+      await deactivateLayer(presentation.layer_presentation_id)
       return
     }
+    // activate: create the missing layer_presentation (already active) or
+    // set the design flag, then make the layer render
     if (!presentation) {
       const newLayerPresentationId = await createLayerPresentation({
         wmsLayerId: layer.wms_layer_id,
         active: true,
       } as unknown as Parameters<typeof createLayerPresentation>[0])
-      // with an active ?layers= override the new layer must join it to
-      // become visible (db-active alone is not enough there)
-      if (isOverridden && newLayerPresentationId) {
-        setLayerVisible(newLayerPresentationId, true)
-      }
+      if (newLayerPresentationId) joinRenderList(newLayerPresentationId)
       return
     }
-    setLayerVisible(presentation.layer_presentation_id, true)
+    await activateLayer(presentation.layer_presentation_id)
   }
 
   const onTabSelect = (_event: SelectTabEvent, data: SelectTabData) =>
@@ -182,7 +184,12 @@ export const WmsLayer = ({ layer, isLast, isOpen }: Props) => {
           </TabList>
           {tab === 'config' && <WmsLayerEditing layer={layer} />}
           {tab === 'overall-displays' && (
-            <LayerPresentationForm layer={layer} />
+            <LayerPresentationForm
+              layer={{
+                ...layer,
+                layer_presentation_id: presentation?.layer_presentation_id,
+              }}
+            />
           )}
         </AccordionPanel>
       </AccordionItem>
