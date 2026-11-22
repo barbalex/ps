@@ -32,7 +32,7 @@ dark mode not well implemented for: file upload?
 
 ---
 
-map, legends: when Sub-Populations is active, Legends says: 'No active Layers'. Should show legends of Sub-Populations. It seems that all own layers legends are not shown
+map, legends: in dark mode labels are black, thus barely discernable
 
 ---
 
@@ -42,13 +42,11 @@ I tried to remove a WMS Layer by deleting it here: http://localhost:5176/data/pr
 
 ---
 
-Map, Layers, Own: Populations. I can activate it, its checkbox shows activation, the layer renders - but it does not move to Active Layers.
-
 ---
 
 ---
 
-active layers: need a 'zoom to' button
+active layers: need a 'zoom to' button. Its _not_ needed in WMS, Vectors and Own
 
 ---
 
