@@ -1,6 +1,8 @@
 import { v7 as uuidv7 } from 'uuid'
+import proj4 from 'proj4'
 
 import { getCapabilities } from '../../../../modules/getCapabilities.ts'
+import type { Extent } from '../../../../modules/geoQueries.ts'
 import {
   beginCapabilitiesFetch,
   endCapabilitiesFetch,
@@ -15,6 +17,7 @@ type CapabilitiesLayer = {
   queryable?: boolean
   CRS?: string[]
   Style?: { LegendURL?: { OnlineResource?: string }[] }[]
+  BoundingBox?: { crs?: string; extent?: number[] }[] | { crs?: string; extent?: number[] }
 }
 
 type Capabilities = {
@@ -39,6 +42,56 @@ type ServiceData = {
 type GetWmsCapabilitiesDataArgs = {
   wmsLayer?: WmsLayers | null
   service: WmsServices
+}
+
+// published area of use (WGS84, [west, south, east, north]) of crs whose
+// projections extrapolate wildly outside it — oblique mercator (LV95/CH1903)
+// is off by ~100km for the over-wide boxes geo.admin.ch advertises
+const AREA_OF_USE_WGS84: Record<string, [number, number, number, number]> = {
+  'EPSG:2056': [5.91, 45.82, 10.49, 47.81],
+  'EPSG:21781': [5.91, 45.82, 10.49, 47.81],
+}
+
+/**
+ * WGS84 extent of a capabilities layer from its BoundingBox elements, or
+ * undefined when none is usable. EPSG:4326 boxes pass through unchanged;
+ * anything the crs table can project (geo.admin.ch advertises only
+ * EPSG:2056/21781) is reprojected via proj4 and clamped to the crs area
+ * of use. Powers zoom-to-layer.
+ */
+export const wgs84ExtentForLayer = (
+  layer: CapabilitiesLayer,
+  crsProj4ByCode: Map<string, string>,
+): Extent | undefined => {
+  const boxes = ([] as { crs?: string; extent?: number[] }[]).concat(
+    layer.BoundingBox ?? [],
+  )
+  const box4326 = boxes.find((b) => b.crs === 'EPSG:4326')
+  if (box4326?.extent) {
+    const [xMin, yMin, xMax, yMax] = box4326.extent
+    return { xMin, yMin, xMax, yMax }
+  }
+  for (const box of boxes) {
+    const proj4Definition = box.crs ? crsProj4ByCode.get(box.crs) : undefined
+    if (!proj4Definition || !box.extent) continue
+    let [xMin, yMin] = proj4(proj4Definition, 'EPSG:4326', [
+      box.extent[0]!,
+      box.extent[1]!,
+    ])
+    let [xMax, yMax] = proj4(proj4Definition, 'EPSG:4326', [
+      box.extent[2]!,
+      box.extent[3]!,
+    ])
+    const areaOfUse = box.crs ? AREA_OF_USE_WGS84[box.crs] : undefined
+    if (areaOfUse) {
+      xMin = Math.max(xMin, areaOfUse[0])
+      yMin = Math.max(yMin, areaOfUse[1])
+      xMax = Math.min(xMax, areaOfUse[2])
+      yMax = Math.min(yMax, areaOfUse[3])
+    }
+    return { xMin, yMin, xMax, yMax }
+  }
+  return undefined
 }
 
 export const getWmsCapabilitiesData = async (
@@ -157,6 +210,13 @@ const getWmsCapabilitiesDataForService = async ({
     v?.CRS?.includes('EPSG:4326'),
   )
 
+  const crsRes = await db.query<{ code: string; proj4: string }>(
+    `SELECT code, proj4 FROM crs WHERE proj4 IS NOT NULL`,
+  )
+  const crsProj4ByCode = new Map(
+    (crsRes?.rows ?? []).map((row) => [row.code, row.proj4]),
+  )
+
   const layersWithIds = layers.map((l) => ({
     wms_service_layer_id: uuidv7(),
     wms_service_id: service.wms_service_id,
@@ -164,6 +224,7 @@ const getWmsCapabilitiesDataForService = async ({
     label: l.Title ?? null,
     queryable: l.queryable === true,
     legend_url: l.Style?.[0]?.LegendURL?.[0]?.OnlineResource ?? null,
+    extent: wgs84ExtentForLayer(l, crsProj4ByCode) ?? null,
   }))
 
   // replace semantics: another fetch for this service may have populated the
@@ -193,9 +254,11 @@ const getWmsCapabilitiesDataForService = async ({
         l.label ? `'${l.label}'` : 'NULL',
         l.queryable,
         l.legend_url ? `'${l.legend_url}'` : 'NULL',
+        // numeric content only: no quote escaping needed
+        l.extent ? `'${JSON.stringify(l.extent)}'` : 'NULL',
       ].join(',')})`,
   )
-  const sql = `INSERT INTO wms_service_layers (wms_service_layer_id, wms_service_id, name, label, queryable, legend_url) VALUES ${values.join(
+  const sql = `INSERT INTO wms_service_layers (wms_service_layer_id, wms_service_id, name, label, queryable, legend_url, extent) VALUES ${values.join(
     ',',
   )}`
 

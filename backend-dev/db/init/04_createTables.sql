@@ -1723,6 +1723,7 @@ CREATE TABLE IF NOT EXISTS wms_service_layers(
   queryable boolean DEFAULT NULL,
   legend_url text DEFAULT NULL,
   legend_image bytea DEFAULT NULL,
+  extent jsonb DEFAULT NULL, -- WGS84 layer extent {xMin,yMin,xMax,yMax} from the capabilities BoundingBox, reprojected where needed; powers zoom-to-layer
   sys_period tstzrange DEFAULT NULL,
   created_at timestamptz NOT NULL DEFAULT now(),
   updated_at timestamptz NOT NULL DEFAULT now(),

@@ -1,4 +1,3 @@
-import proj4 from 'proj4'
 import reproject from 'reproject'
 import type { Feature, FeatureCollection } from 'geojson'
 import { bbox } from '@turf/bbox'
@@ -14,7 +13,6 @@ import {
   type QueryableDb,
 } from './geoQueries.ts'
 import { httpGet } from './httpGet.ts'
-import { mapViewportBoundsAtom, store } from '../store.ts'
 import type VectorLayers from '../models/public/VectorLayers.ts'
 import type WfsServices from '../models/public/WfsServices.ts'
 import type Crs from '../models/public/Crs.ts'
@@ -171,34 +169,10 @@ export const zoomToVectorLayer = async ({
         )
         const defaultCrs = defaultCrsRes?.rows?.[0] as Crs | undefined
 
-        // read at click time instead of subscribing: the caller only
-        // needs the bounds here, and a subscription re-rendered whole
-        // components on every map move
-        const mapViewportBounds = store.get(mapViewportBoundsAtom)
-
+        // no viewport bbox: the point of zooming is to travel to the data,
+        // so the request must not be scoped to where the user happens to
+        // be — max_features still bounds the response
         let response
-        let bboxParam
-        if (
-          mapViewportBounds?.swLat !== undefined &&
-          mapViewportBounds?.swLng !== undefined &&
-          mapViewportBounds?.neLat !== undefined &&
-          mapViewportBounds?.neLng !== undefined
-        ) {
-          const { swLat, swLng, neLat, neLng } = mapViewportBounds
-          if (defaultCrs?.proj4 && wfsDefaultCrsCode !== 'EPSG:4326') {
-            const [x1, y1] = proj4('EPSG:4326', defaultCrs.proj4, [
-              swLng,
-              swLat,
-            ])
-            const [x2, y2] = proj4('EPSG:4326', defaultCrs.proj4, [
-              neLng,
-              neLat,
-            ])
-            bboxParam = `${x1},${y1},${x2},${y2}`
-          } else {
-            bboxParam = `${swLng},${swLat},${neLng},${neLat}`
-          }
-        }
         try {
           response = await httpGet(wfsService.url, {
             service: 'WFS',
@@ -207,7 +181,6 @@ export const zoomToVectorLayer = async ({
             typeNames: layer.wfs_service_layer_name,
             outputFormat: wfsService.info_format ?? 'application/json',
             srsName: wfsDefaultCrsCode,
-            ...(bboxParam ? { bbox: bboxParam } : {}),
             maxfeatures: layer.max_features ?? 1000,
           })
         } catch (error) {

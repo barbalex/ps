@@ -50,6 +50,7 @@ import {
 } from '../../../../../../store.ts'
 import { DragHandle } from '../../../../../shared/DragAndDrop/DragHandle.tsx'
 import { zoomToVectorLayer } from '../../../../../../modules/zoomToVectorLayer.ts'
+import { zoomToWmsLayer } from '../../../../../../modules/zoomToWmsLayer.ts'
 import { useUrlLayers } from '../../../../../../modules/useUrlLayers.ts'
 import { useLayerActivation } from '../../../../../../modules/useLayerActivation.ts'
 import {
@@ -339,6 +340,15 @@ export const Content = ({
 
   const onClickZoomToFeatures = (event: MouseEvent) => {
     event.stopPropagation()
+    if (isWmsLayer) {
+      void zoomToWmsLayer({
+        db,
+        layer,
+        addNotification,
+        setMapBounds,
+      })
+      return
+    }
     if (!isVectorLayer) return
     void zoomToVectorLayer({
       db,

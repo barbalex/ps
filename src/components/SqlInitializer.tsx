@@ -195,6 +195,10 @@ const healExistingDbSql = `
             CREATE INDEX IF NOT EXISTS place_levels_project_id_level_idx ON place_levels USING btree(project_id, level);
             CREATE INDEX IF NOT EXISTS charts_project_id_for_subprojects_idx ON charts USING btree(project_id, for_subprojects);
             ALTER TABLE IF EXISTS places ADD COLUMN IF NOT EXISTS name text DEFAULT NULL;
+            -- wms_service_layers gained the WGS84 extent for zoom-to-layer
+            -- (2026-11); heal local databases created before the schema
+            -- caught up
+            ALTER TABLE IF EXISTS wms_service_layers ADD COLUMN IF NOT EXISTS extent jsonb DEFAULT NULL;
 
             CREATE OR REPLACE FUNCTION subproject_taxon_label_trigger()
             RETURNS TRIGGER AS $$
