@@ -30,11 +30,15 @@ dark mode not well implemented for: file upload?
 
 ---
 
-WMS Layers not rendering
+---
 
 ---
 
-map, legends: in dark mode labels are black, thus barely discernable
+---
+
+http://localhost:5176/data/projects/0195a101-0000-7000-8000-000000000001/wms-layers/01a200e8-2214-7022-bf47-5c843d62fa2f: Auengebiete Layer form is not rendering when navigating by clicking on it in the nav tree. Does when clicking on the list row in the wms layers list located here: http://localhost:5176/data/projects/0195a101-0000-7000-8000-000000000001/wms-layers. I guess the nav tree does not navigate to /wms-layer? could there be more errors of this type? another agent is working on the map
+
+---
 
 ---
 
@@ -47,8 +51,6 @@ I tried to remove a WMS Layer by deleting it here: http://localhost:5176/data/pr
 ---
 
 ---
-
-active layers: need a 'zoom to' button. Its _not_ needed in WMS, Vectors and Own
 
 ---
 
