@@ -36,8 +36,6 @@ map, legends: when Sub-Populations is active, Legends says: 'No active Layers'. 
 
 ---
 
-I added a wms layer. then activated it. it is not rendered on the map. opening "overall display" shows a perpetual spinner
-
 ---
 
 I tried to remove a WMS Layer by deleting it here: http://localhost:5176/data/projects/0195a101-0000-7000-8000-000000000001/wms-layers/01a1fe19-8478-742d-b7e0-9e048a22fa9b/wms-layer. Seems it resurrects itself when I open the map, because when trying to re-add it, it can be choosen again in Config > Web Map Service. What should have happended: should have been deleted including its Layers
