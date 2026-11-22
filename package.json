@@ -1,7 +1,7 @@
 {
   "name": "ps",
-  "version": "0.1.112",
-  "versionDate": "19.11.2026",
+  "version": "0.1.113",
+  "versionDate": "22.11.2026",
   "author": "Alexander Gabriel",
   "type": "module",
   "scripts": {
@@ -138,7 +138,7 @@
     "eslint-plugin-react-refresh": "0.5.8",
     "globals": "17.14.0",
     "kanel": "4.0.6",
-    "marked": "18.2.0",
+    "marked": "18.2.1",
     "typescript": "7.0.2",
     "typescript-v6": "npm:typescript@6.0.3",
     "vite": "8.3.8",
