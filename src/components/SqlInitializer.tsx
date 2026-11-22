@@ -513,6 +513,7 @@ export const SqlInitializer = () => {
           healTableViewRenameSql,
           syncIgnoreDuplicateInsertTriggersSql,
           syncReplaceStaleUniqueRowsSql,
+          triggersUpdatedAtSql,
           immutableDateSql,
           uuidv7Sql,
           createTablesSql,
@@ -528,6 +529,7 @@ export const SqlInitializer = () => {
           import(`../sql/syncReplaceStaleUniqueRows.sql?raw`).then(
             (m) => m.default,
           ),
+          import(`../sql/triggersUpdatedAt.sql?raw`).then((m) => m.default),
           import(`../sql/immutableDate.sql?raw`).then((m) => m.default),
           import(`../sql/uuidv7.sql?raw`).then((m) => m.default),
           import(`../sql/createTables.sql?raw`).then((m) => m.default),
@@ -545,6 +547,7 @@ export const SqlInitializer = () => {
             healExistingDbSql,
             syncIgnoreDuplicateInsertTriggersSql,
             syncReplaceStaleUniqueRowsSql,
+            triggersUpdatedAtSql,
             immutableDateSql,
             uuidv7Sql,
             createTablesSql,
@@ -637,6 +640,12 @@ export const SqlInitializer = () => {
             syncReplaceStaleUniqueRowsSql,
             'syncReplaceStaleUniqueRowsSql',
           )
+          // local edits must bump updated_at like the server's triggers do —
+          // after the heal script so tables it may create are covered too
+          await exec(
+            triggersUpdatedAtSql,
+            'triggersUpdatedAt.sql (updated_at bump on local writes)',
+          )
 
           // flatten nested GeometryCollections created by older versions of
           // the draw control — ST_AsGeoJSON fails on them
@@ -669,6 +678,10 @@ export const SqlInitializer = () => {
         )
         await exec(createTablesSql, 'createTables.sql')
         await exec(triggersSql, 'triggers.sql')
+        await exec(
+          triggersUpdatedAtSql,
+          'triggersUpdatedAt.sql (updated_at bump on local writes)',
+        )
         await exec(
           syncIgnoreDuplicateInsertTriggersSql,
           'syncIgnoreDuplicateInsertTriggersSql',

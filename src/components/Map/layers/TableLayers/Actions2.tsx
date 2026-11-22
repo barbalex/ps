@@ -4,6 +4,11 @@ import { useLocation, useParams } from '@tanstack/react-router'
 
 import { TableLayer } from './TableLayer.tsx'
 import type { TableLayerProps } from './TableLayer.tsx'
+import {
+  useViewportEnvelope,
+  viewportParams,
+  viewportPredicate,
+} from '../viewportEnvelope.ts'
 import type { GeoJsonProperties, GeometryCollection } from 'geojson'
 import type Actions from '../../../../models/public/Actions.ts'
 
@@ -17,20 +22,23 @@ export const Actions2 = ({
   const actionsIdx = pathParts.indexOf('actions')
   const actionId = actionsIdx !== -1 ? pathParts[actionsIdx + 1] : undefined
   const { subprojectId } = useParams({ strict: false })
-  // TODO: query only inside current map bounds using places.bbox
-  const res = useLiveQuery<Actions>(
+  const envelope = useViewportEnvelope()
+  const res = useLiveQuery<Actions & { edit_version: string | null }>(
     `
     SELECT actions.action_id, actions.place_id, actions.date, actions.data,
       ST_AsGeoJSON(actions.geometry)::json as geometry, actions.bbox, actions.relevant_for_reports,
-      actions.label, actions.created_at, actions.updated_at, actions.updated_by
+      actions.label, actions.created_at, actions.updated_at, actions.updated_by,
+      (SELECT max(t.updated_at) FROM actions t
+        INNER JOIN places tp ON t.place_id = tp.place_id
+        WHERE tp.parent_id IS NOT NULL AND tp.subproject_id = $1 AND t.geometry IS NOT NULL) AS edit_version
     FROM actions
       INNER JOIN places ON actions.place_id = places.place_id
     WHERE
       actions.geometry IS NOT NULL
       AND places.parent_id IS NOT NULL
-      AND places.subproject_id = $1
+      AND places.subproject_id = $1${viewportPredicate('actions.geometry')}
   `,
-    [subprojectId],
+    [subprojectId, ...viewportParams(envelope)],
   )
   // console.log('hello Actions2, checks:', checks)
 
@@ -46,7 +54,7 @@ export const Actions2 = ({
       // somehow there is a data property with empty object as value???
       // TODO: make properties more readable for user
 
-      const { geometry, bbox, data, ...properties } = p
+      const { geometry, bbox, data, edit_version, ...properties } = p
       const fc = {
         type: 'FeatureCollection' as const,
         features: (
@@ -84,6 +92,7 @@ export const Actions2 = ({
   return (
     <TableLayer
       data={data}
+      editVersion={res?.rows?.[0]?.edit_version ?? null}
       layerPresentation={layerPresentation}
       activeId={actionId}
       activeIdField="action_id"

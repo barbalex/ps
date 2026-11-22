@@ -6,6 +6,11 @@ import { featureCollection, lineString } from '@turf/helpers'
 import { TableLayer } from './TableLayer.tsx'
 import type { TableLayerProps } from './TableLayer.tsx'
 import { useActiveObservationId } from './useActiveObservationId.ts'
+import {
+  useViewportEnvelope,
+  viewportEitherPredicate,
+  viewportParams,
+} from '../viewportEnvelope.ts'
 
 type AssignmentRow = {
   observation_id: string
@@ -14,6 +19,7 @@ type AssignmentRow = {
   place_id: string
   place_label: string | null
   place_center: { type: string; coordinates: number[] } | null
+  edit_version: string | null
 }
 
 // center of the geometry's bounding box, calculated by PostGIS
@@ -35,6 +41,7 @@ export const ObservationsAssignedLines2 = ({
 }) => {
   const { subprojectId } = useParams({ strict: false })
   const activeObservationId = useActiveObservationId()
+  const envelope = useViewportEnvelope()
 
   const res = useLiveQuery(
     `
@@ -44,7 +51,13 @@ export const ObservationsAssignedLines2 = ({
       ST_AsGeoJSON(ST_Centroid(ST_Envelope(o.geometry)))::json as observation_center,
       p.place_id,
       p.label as place_label,
-      ST_AsGeoJSON(ST_Centroid(ST_Envelope(p.geometry)))::json as place_center
+      ST_AsGeoJSON(ST_Centroid(ST_Envelope(p.geometry)))::json as place_center,
+      GREATEST(
+        (SELECT max(t.updated_at) FROM observations t
+          INNER JOIN observation_imports ti ON t.observation_import_id = ti.observation_import_id
+          WHERE ti.subproject_id = $1),
+        (SELECT max(tp.updated_at) FROM places tp WHERE tp.subproject_id = $1)
+      ) AS edit_version
     FROM observations o
       INNER JOIN observation_imports oi ON o.observation_import_id = oi.observation_import_id
       INNER JOIN places p ON o.place_id = p.place_id
@@ -52,9 +65,9 @@ export const ObservationsAssignedLines2 = ({
       o.geometry IS NOT NULL
       AND p.geometry IS NOT NULL
       AND oi.subproject_id = $1
-      AND p.parent_id IS NOT NULL
+      AND p.parent_id IS NOT NULL${viewportEitherPredicate('o.geometry', 'p.geometry')}
   `,
-    [subprojectId],
+    [subprojectId, ...viewportParams(envelope)],
   )
 
   // memoized on the live-query result: re-renders (the zoomend viewport
@@ -88,6 +101,9 @@ export const ObservationsAssignedLines2 = ({
   return (
     <TableLayer
       data={data}
+      editVersion={
+        (res?.rows?.[0] as AssignmentRow | undefined)?.edit_version ?? null
+      }
       layerPresentation={layerPresentation}
       activeId={activeObservationId}
       activeIdField="observation_id"

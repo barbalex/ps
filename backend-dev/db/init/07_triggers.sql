@@ -2,7 +2,8 @@
 -- https://github.com/electric-sql/pglite/issues/637
 -- https://github.com/electric-sql/electric/blob/main/examples/linearlite/db/migrations-client/01-create_tables.sql#L49-L54
 
--- Note: updated_at triggers are in 04_triggers_updated_at.sql
+-- Note: updated_at triggers are in 06_triggersUpdatedAt.sql (server)
+-- and in src/sql/triggersUpdatedAt.sql (client-only, guards electric.syncing)
 
 -- if observation_imports.label_creation is changed, need to update all labels of observations
 CREATE OR REPLACE FUNCTION observation_imports_label_creation_trigger ()
