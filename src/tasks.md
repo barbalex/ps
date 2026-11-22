@@ -50,6 +50,8 @@ I tried to remove a WMS Layer by deleting it here: http://localhost:5176/data/pr
 
 ---
 
+Viewport culling: pads 10 % per axis now. lets enlarge that to 50%
+
 ---
 
 ---
