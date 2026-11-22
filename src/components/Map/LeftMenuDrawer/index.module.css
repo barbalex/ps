@@ -129,8 +129,10 @@
 
 :global(html[data-theme='dark']) .container {
   background-color: #292929;
+  color: #e6e6e6;
 }
 
 :global(html[data-theme='dark']) .innerContainer {
   background-color: #292929;
+  color: #e6e6e6;
 }

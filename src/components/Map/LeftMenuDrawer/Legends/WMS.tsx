@@ -2,6 +2,7 @@ import { useLiveQuery } from '@electric-sql/pglite-react'
 
 import type WmsLayers from '../../../../models/public/WmsLayers.ts'
 import type WmsServiceLayers from '../../../../models/public/WmsServiceLayers'
+import styles from './WMS.module.css'
 
 export const WmsLegend = ({ layer }: { layer: WmsLayers }) => {
   // need to fetch wms_service_layers with this layers wms_service_layer_name
@@ -10,9 +11,12 @@ export const WmsLegend = ({ layer }: { layer: WmsLayers }) => {
   ])
   const wmsServiceLayer = res?.rows?.[0] as WmsServiceLayers | undefined
 
+  // legend images are transparent PNGs with dark text: give them a light
+  // backdrop so they stay readable on the dark drawer in dark mode
   if (wmsServiceLayer?.legend_image) {
     return (
       <img
+        className={styles.legendImage}
         src={`data:image/png;base64,${btoa(
           String.fromCharCode(
             ...new Uint8Array(wmsServiceLayer?.legend_image as ArrayBuffer),
@@ -22,7 +26,7 @@ export const WmsLegend = ({ layer }: { layer: WmsLayers }) => {
     )
   }
   if (wmsServiceLayer?.legend_url) {
-    return <img src={wmsServiceLayer.legend_url} />
+    return <img className={styles.legendImage} src={wmsServiceLayer.legend_url} />
   }
 
   return 'No legend available'

@@ -1,0 +1,4 @@
+/* legend graphics are transparent PNGs with dark text */
+:global(html[data-theme='dark']) .legendImage {
+  background-color: white;
+}
