@@ -47,6 +47,8 @@ export default interface FilesHistory {
   updated_at: Date;
 
   updated_by: string | null;
+
+  offline: boolean | null;
 }
 
 /**
@@ -101,6 +103,9 @@ export interface FilesHistoryInitializer {
   updated_at?: Date;
 
   updated_by?: string | null;
+
+  /** Default value: false */
+  offline?: boolean | null;
 }
 
 /**
@@ -152,4 +157,6 @@ export interface FilesHistoryMutator {
   updated_at?: Date;
 
   updated_by?: string | null;
+
+  offline?: boolean | null;
 }

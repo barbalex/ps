@@ -82,8 +82,11 @@ export interface UsersInitializer {
    */
   accounts_in_user?: boolean | null;
 
-  /** System period maintained by temporal_tables for auditing and historic queries. */
-  sys_period: string;
+  /**
+   * System period maintained by temporal_tables for auditing and historic queries.
+   * Default value: tstzrange(now(), NULL::timestamp with time zone, '[)'::text)
+   */
+  sys_period?: string;
 
   /** Default value: now() */
   created_at?: Date;

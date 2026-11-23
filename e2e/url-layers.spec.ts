@@ -14,6 +14,23 @@ const SUBPROJECT_ID = '018cfd27-ee92-7000-b678-e75497d6c60e'
 const PLACES_URL = `/data/projects/${PROJECT_ID}/subprojects/${SUBPROJECT_ID}/places`
 const OSM_LAYER_ID = 'aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa'
 
+// self-heal after a dev db rebuild: the demo project's vector layers are
+// recreated by the projects trigger, but their layer_presentations are
+// created by the app on demand — insert the missing ones so the queries
+// below find an id (layer_presentations has no write trigger, so no
+// electric.syncing is needed)
+psql(`
+  INSERT INTO layer_presentations (layer_presentation_id, vector_layer_id, project_id, active)
+  SELECT gen_random_uuid(), vl.vector_layer_id, vl.project_id, true
+  FROM vector_layers vl
+  WHERE vl.project_id = '${PROJECT_ID}'
+    AND vl.own_table IN ('places', 'checks')
+    AND vl.own_table_level = 1
+    AND NOT EXISTS (
+      SELECT 1 FROM layer_presentations lp WHERE lp.vector_layer_id = vl.vector_layer_id
+    )
+`)
+
 // the places level-1 layer presentation of the demo project
 const LP_ID = psql(
   `SELECT lp.layer_presentation_id FROM layer_presentations lp

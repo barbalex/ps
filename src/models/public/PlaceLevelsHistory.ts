@@ -85,6 +85,12 @@ export default interface PlaceLevelsHistory {
   updated_at: Date;
 
   updated_by: string | null;
+
+  place_files_offline: boolean | null;
+
+  action_files_offline: boolean | null;
+
+  check_files_offline: boolean | null;
 }
 
 /**
@@ -202,6 +208,15 @@ export interface PlaceLevelsHistoryInitializer {
   updated_at?: Date;
 
   updated_by?: string | null;
+
+  /** Default value: false */
+  place_files_offline?: boolean | null;
+
+  /** Default value: false */
+  action_files_offline?: boolean | null;
+
+  /** Default value: false */
+  check_files_offline?: boolean | null;
 }
 
 /**
@@ -291,4 +306,10 @@ export interface PlaceLevelsHistoryMutator {
   updated_at?: Date;
 
   updated_by?: string | null;
+
+  place_files_offline?: boolean | null;
+
+  action_files_offline?: boolean | null;
+
+  check_files_offline?: boolean | null;
 }

@@ -1,7 +1,10 @@
 import { useParams } from '@tanstack/react-router'
 import { useLiveQuery } from '@electric-sql/pglite-react'
 import { useIntl } from 'react-intl'
+import { useAtomValue } from 'jotai'
 
+import { offlinePreviewUrl } from '../../modules/offlineFiles.ts'
+import { offlineFilesStatusAtom } from '../../store.ts'
 import { TextFieldInactive } from '../../components/shared/TextFieldInactive.tsx'
 import { Jsonb } from '../../components/shared/Jsonb/index.tsx'
 import { Header } from './Header.tsx'
@@ -30,6 +33,9 @@ export const FileForm = ({
     delay: 300,
     height: false,
   })
+  // effectively offline (OfflineFilesManager): the fixed preview URL is the
+  // one cached on the device — offline, only cached URLs render
+  const isEffectivelyOffline = row.file_id in useAtomValue(offlineFilesStatusAtom)
 
   const content = (
     <div className="form-container">
@@ -37,9 +43,13 @@ export const FileForm = ({
         row.url &&
         width && (
           <img
-            src={`${row.url}-/resize/${Math.floor(
-              width,
-            )}x/-/format/auto/-/quality/smart/`}
+            src={
+              isEffectivelyOffline ?
+                offlinePreviewUrl(row.url)
+              : `${row.url}-/resize/${Math.floor(
+                  width,
+                )}x/-/format/auto/-/quality/smart/`
+            }
             alt={row.name ?? undefined}
           />
         )}

@@ -4,6 +4,7 @@ import { useParams } from '@tanstack/react-router'
 
 import { Background } from './Background.tsx'
 import { backgroundLayers } from './backgroundLayers.ts'
+import { TilesLayer, type TileLayerRow } from './TilesLayer.tsx'
 import { WmsLayerComponent } from './WmsLayer/index.tsx'
 import { VectorLayerChooser } from './VectorLayer/index.tsx'
 import { tableLayerToComponent } from './tableLayerToComponent.ts'
@@ -120,6 +121,17 @@ export const Layer = ({ layerPresentationId, index }: Props) => {
   )
   const layerPresentation = resLP?.rows?.[0] as LayerPresentations | undefined
 
+  const resTile = useLiveQuery(
+    `
+    SELECT tl.*, lp.active, lp.opacity_percent, lp.grayscale, lp.max_zoom, lp.min_zoom
+    FROM tile_layers tl
+      JOIN layer_presentations lp ON tl.tile_layer_id = lp.tile_layer_id
+    WHERE lp.layer_presentation_id = $1
+      AND tl.project_id = $2`,
+    [layerPresentationId, projectId],
+  )
+  const tileLayer = resTile?.rows?.[0] as TileLayerRow | undefined
+
   // console.log('Layer', {
   //   layerPresentationId,
   //   layerPresentation,
@@ -135,6 +147,13 @@ export const Layer = ({ layerPresentationId, index }: Props) => {
   const background = backgroundLayers[layerPresentationId]
   if (background) {
     return <Background key={layerPresentationId} background={background} />
+  }
+
+  // background tile layers behave like the pseudo backgrounds above: being
+  // in the render list IS their visibility, the db flag is irrelevant (it
+  // stays false — they are not listed under Active)
+  if (tileLayer?.is_background) {
+    return <TilesLayer key={layerPresentationId} tileLayer={tileLayer} />
   }
 
   if (!layerPresentation) return null
@@ -176,6 +195,31 @@ export const Layer = ({ layerPresentationId, index }: Props) => {
 
   // TODO: Error when VectorLayerChooser is not commented out
   // [vite] TypeError: Cannot read properties of undefined (reading 'ReactCurrentDispatcher')
+  if (tileLayer) {
+    const opacity = (layerPresentation.opacity_percent ?? 100) / 100
+    return (
+      <Pane
+        key={`${layerPresentationId}/${layers.join()}`}
+        name={tileLayer.label ?? tileLayer.tile_layer_id}
+        style={{ zIndex: paneBaseIndex - index }}
+      >
+        <TilesLayer
+          key={JSON.stringify({
+            url: tileLayer.url_template,
+            subdomains: tileLayer.subdomains,
+            maxNativeZoom: tileLayer.max_native_zoom,
+            maxZoom: layerPresentation.max_zoom,
+            minZoom: layerPresentation.min_zoom,
+            opacity: layerPresentation.opacity_percent,
+            grayscale: layerPresentation.grayscale,
+          })}
+          tileLayer={tileLayer}
+          opacity={opacity}
+        />
+      </Pane>
+    )
+  }
+
   if (isWfsLayer) {
     return (
       <Pane

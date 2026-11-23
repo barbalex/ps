@@ -15,6 +15,10 @@ export default interface AuthTwoFactors {
 
   verified: boolean | null;
 
+  failed_verification_count: number;
+
+  locked_until: Date | null;
+
   sys_period: string | null;
 
   created_at: Date;
@@ -36,6 +40,11 @@ export interface AuthTwoFactorsInitializer {
   /** Default value: true */
   verified?: boolean | null;
 
+  /** Default value: 0 */
+  failed_verification_count?: number;
+
+  locked_until?: Date | null;
+
   sys_period?: string | null;
 
   /** Default value: now() */
@@ -56,6 +65,10 @@ export interface AuthTwoFactorsMutator {
   backup_codes?: string;
 
   verified?: boolean | null;
+
+  failed_verification_count?: number;
+
+  locked_until?: Date | null;
 
   sys_period?: string | null;
 

@@ -7,6 +7,8 @@ export type AuthSessionsAuthSessionId = string & { __brand: 'public.auth_session
 export default interface AuthSessions {
   auth_session_id: AuthSessionsAuthSessionId;
 
+  id: string | null;
+
   user_id: UsersUserId | null;
 
   token: string | null;
@@ -28,6 +30,8 @@ export default interface AuthSessions {
 export interface AuthSessionsInitializer {
   /** Default value: uuidv7() */
   auth_session_id?: AuthSessionsAuthSessionId;
+
+  id?: string | null;
 
   user_id?: UsersUserId | null;
 
@@ -51,6 +55,8 @@ export interface AuthSessionsInitializer {
 /** Represents the mutator for the table public.auth_sessions */
 export interface AuthSessionsMutator {
   auth_session_id?: AuthSessionsAuthSessionId;
+
+  id?: string | null;
 
   user_id?: UsersUserId | null;
 

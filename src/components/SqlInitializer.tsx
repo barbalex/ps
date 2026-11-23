@@ -199,6 +199,34 @@ const healExistingDbSql = `
             -- (2026-11); heal local databases created before the schema
             -- caught up
             ALTER TABLE IF EXISTS wms_service_layers ADD COLUMN IF NOT EXISTS extent jsonb DEFAULT NULL;
+            -- offline file availability (2026-11): heal local databases
+            -- created before the schema caught up. files syncs the offline
+            -- column via Electric — without it the shape would fail to apply
+            ALTER TABLE IF EXISTS files ADD COLUMN IF NOT EXISTS offline boolean DEFAULT FALSE;
+            ALTER TABLE IF EXISTS place_levels ADD COLUMN IF NOT EXISTS place_files_offline boolean DEFAULT FALSE;
+            ALTER TABLE IF EXISTS place_levels ADD COLUMN IF NOT EXISTS action_files_offline boolean DEFAULT FALSE;
+            ALTER TABLE IF EXISTS place_levels ADD COLUMN IF NOT EXISTS check_files_offline boolean DEFAULT FALSE;
+            -- tile layers (2026-11): project-owned raster xyz tile layers,
+            -- background ones feed the Hintergrundkarte section. fresh
+            -- databases get them from createTables.sql
+            CREATE TABLE IF NOT EXISTS tile_layers(
+              tile_layer_id uuid PRIMARY KEY DEFAULT uuidv7(),
+              project_id uuid NOT NULL REFERENCES projects(project_id) ON DELETE CASCADE ON UPDATE CASCADE DEFERRABLE INITIALLY DEFERRED,
+              label text DEFAULT NULL,
+              url_template text DEFAULT NULL,
+              subdomains jsonb DEFAULT NULL,
+              max_native_zoom integer DEFAULT NULL,
+              attribution text DEFAULT NULL,
+              is_background boolean DEFAULT FALSE,
+              sys_period tstzrange DEFAULT NULL,
+              created_at timestamptz NOT NULL DEFAULT now(),
+              updated_at timestamptz NOT NULL DEFAULT now(),
+              updated_by text DEFAULT NULL
+            );
+            CREATE INDEX IF NOT EXISTS tile_layers_project_id_idx ON tile_layers USING btree(project_id);
+            CREATE INDEX IF NOT EXISTS tile_layers_label_idx ON tile_layers USING btree(label);
+            ALTER TABLE IF EXISTS layer_presentations ADD COLUMN IF NOT EXISTS tile_layer_id uuid DEFAULT NULL REFERENCES tile_layers(tile_layer_id) ON DELETE CASCADE ON UPDATE CASCADE DEFERRABLE INITIALLY DEFERRED;
+            CREATE INDEX IF NOT EXISTS layer_presentations_tile_layer_id_idx ON layer_presentations USING btree(tile_layer_id);
 
             CREATE OR REPLACE FUNCTION subproject_taxon_label_trigger()
             RETURNS TRIGGER AS $$

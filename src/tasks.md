@@ -16,7 +16,7 @@ Better-Auth, possible extensions:
 
 ---
 
-dark mode not well implemented for: file upload?
+---
 
 ---
 

@@ -16,6 +16,7 @@
 --   Data tables ..............  write-all, design, or own
 --   project_users/*_roles .. design or own (only triggers set 'own')
 --   projects INSERT ..........  only the owner of the target account
+--   subprojects INSERT .......  design or own on the parent project
 -- ─────────────────────────────────────────────────────────────────────────────
 
 -- ─── Helper: extract user_id from PostgREST JWT ──────────────────────────────
@@ -97,7 +98,8 @@ $$;
 
 -- ─── Role-management helpers (design or higher required) ────────────────────
 
-CREATE OR REPLACE FUNCTION user_can_manage_project_roles(p_project_id uuid, p_user_id uuid)
+-- Returns TRUE when the user has design+ on the given project directly.
+CREATE OR REPLACE FUNCTION user_can_design_project(p_project_id uuid, p_user_id uuid)
 RETURNS boolean LANGUAGE sql STABLE SECURITY DEFINER
 SET search_path = public, pg_temp AS $$
   SELECT EXISTS (
@@ -106,6 +108,12 @@ SET search_path = public, pg_temp AS $$
       AND pr.project_user_id IN (SELECT project_user_id FROM user_project_user_ids(p_user_id))
       AND pr.role >= 'design'::user_roles_enum
   )
+$$;
+
+CREATE OR REPLACE FUNCTION user_can_manage_project_roles(p_project_id uuid, p_user_id uuid)
+RETURNS boolean LANGUAGE sql STABLE SECURITY DEFINER
+SET search_path = public, pg_temp AS $$
+  SELECT user_can_design_project(p_project_id, p_user_id)
 $$;
 
 CREATE OR REPLACE FUNCTION user_can_manage_subproject_roles(p_subproject_id uuid, p_user_id uuid)
@@ -186,6 +194,51 @@ BEGIN
     RAISE EXCEPTION 'Insufficient permissions: writer or higher role required on this project'
       USING ERRCODE = '42501',
             DETAIL  = format('table=projects operation=%s project_id=%s', TG_OP, OLD.project_id),
+            HINT    = 'Contact the project owner to gain write access';
+  END IF;
+
+  RETURN CASE WHEN TG_OP = 'DELETE' THEN OLD ELSE NEW END;
+END;
+$$;
+
+-- For the subprojects table itself.
+-- INSERT: design or own on the parent project required — structuring a
+-- project is designer work; writers may only edit existing subprojects.
+-- UPDATE/DELETE: write-all+ on the parent project required.
+CREATE OR REPLACE FUNCTION enforce_subprojects_write()
+RETURNS trigger LANGUAGE plpgsql SECURITY DEFINER
+SET search_path = public, pg_temp AS $$
+DECLARE
+  v_user_id    uuid;
+  v_project_id uuid;
+BEGIN
+  IF is_electric_sync() THEN
+    RETURN CASE WHEN TG_OP = 'DELETE' THEN OLD ELSE NEW END;
+  END IF;
+
+  v_user_id := get_jwt_user_id();
+  IF v_user_id IS NULL THEN
+    RAISE EXCEPTION 'Authentication required'
+      USING ERRCODE = '42501',
+            HINT = 'A valid session is required to modify data';
+  END IF;
+
+  v_project_id := CASE WHEN TG_OP = 'DELETE' THEN OLD.project_id ELSE NEW.project_id END;
+
+  IF TG_OP = 'INSERT' THEN
+    IF v_project_id IS NULL OR NOT user_can_design_project(v_project_id, v_user_id) THEN
+      RAISE EXCEPTION 'Insufficient permissions: designer or owner role required to create subprojects'
+        USING ERRCODE = '42501',
+              DETAIL  = format('table=subprojects operation=INSERT project_id=%s', v_project_id),
+              HINT    = 'Contact the project owner to gain designer access';
+    END IF;
+    RETURN NEW;
+  END IF;
+
+  IF NOT user_can_write_project(OLD.project_id, v_user_id) THEN
+    RAISE EXCEPTION 'Insufficient permissions: writer or higher role required on this project'
+      USING ERRCODE = '42501',
+            DETAIL  = format('table=subprojects operation=%s project_id=%s', TG_OP, OLD.project_id),
             HINT    = 'Contact the project owner to gain write access';
   END IF;
 
@@ -512,11 +565,11 @@ FOR EACH ROW
 WHEN (pg_trigger_depth() < 1)
 EXECUTE FUNCTION enforce_project_write();
 
-CREATE OR REPLACE TRIGGER enforce_project_write_trigger
+CREATE OR REPLACE TRIGGER enforce_subprojects_write_trigger
 BEFORE INSERT OR UPDATE OR DELETE ON subprojects
 FOR EACH ROW
 WHEN (pg_trigger_depth() < 1)
-EXECUTE FUNCTION enforce_project_write();
+EXECUTE FUNCTION enforce_subprojects_write();
 
 CREATE OR REPLACE TRIGGER enforce_project_write_trigger
 BEFORE INSERT OR UPDATE OR DELETE ON taxonomies
@@ -574,6 +627,12 @@ EXECUTE FUNCTION enforce_project_write();
 
 CREATE OR REPLACE TRIGGER enforce_project_write_trigger
 BEFORE INSERT OR UPDATE OR DELETE ON wms_layers
+FOR EACH ROW
+WHEN (pg_trigger_depth() < 1)
+EXECUTE FUNCTION enforce_project_write();
+
+CREATE OR REPLACE TRIGGER enforce_project_write_trigger
+BEFORE INSERT OR UPDATE OR DELETE ON tile_layers
 FOR EACH ROW
 WHEN (pg_trigger_depth() < 1)
 EXECUTE FUNCTION enforce_project_write();

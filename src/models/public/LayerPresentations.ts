@@ -1,6 +1,7 @@
 import type { WmsLayersWmsLayerId } from './WmsLayers.ts';
 import type { VectorLayersVectorLayerId } from './VectorLayers.ts';
 import type { ProjectsProjectId } from './Projects.ts';
+import type { TileLayersTileLayerId } from './TileLayers.ts';
 
 /** Identifier type for public.layer_presentations */
 export type LayerPresentationsLayerPresentationId = string & { __brand: 'public.layer_presentations' };
@@ -40,6 +41,8 @@ export default interface LayerPresentations {
   updated_at: Date;
 
   updated_by: string | null;
+
+  tile_layer_id: TileLayersTileLayerId | null;
 }
 
 /**
@@ -86,6 +89,8 @@ export interface LayerPresentationsInitializer {
   updated_at?: Date;
 
   updated_by?: string | null;
+
+  tile_layer_id?: TileLayersTileLayerId | null;
 }
 
 /**
@@ -121,4 +126,6 @@ export interface LayerPresentationsMutator {
   updated_at?: Date;
 
   updated_by?: string | null;
+
+  tile_layer_id?: TileLayersTileLayerId | null;
 }

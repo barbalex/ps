@@ -857,6 +857,13 @@ export const Configuration = ({ from }: { from: string }) => {
             validationState={validations?.files_offline?.state}
             validationMessage={validations?.files_offline?.message}
           />
+          <SectionDescription>
+            {formatMessage({
+              id: 'filesOfflineHint',
+              defaultMessage:
+                'Erlaubt Offline-Dateien: Benutzer markieren einzelne Dateien im Datei-Formular, Designer alle Dateien einer Tabelle in der Stufen-Konfiguration. Ohne diese Einstellung werden keine Dateien offline gespeichert.',
+            })}
+          </SectionDescription>
         </Section>
       </div>
     </div>

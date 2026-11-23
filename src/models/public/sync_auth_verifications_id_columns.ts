@@ -1,0 +1,2 @@
+export interface sync_auth_verifications_id_columns_params {
+}

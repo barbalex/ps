@@ -704,6 +704,24 @@ export const removeOperationAtom = atom(
 export const onlineAtom = atom(true)
 export const shortTermOnlineAtom = atom(true)
 
+// offline files (src/modules/offlineFiles.ts + OfflineFilesManager): status
+// per file that is EFFECTIVELY offline (project gate on, and marked via
+// files.offline or a place_levels *_files_offline flag) — absence from the
+// record means not offline. Filled by the manager; read by the file form
+// header toggle, the files list indicator and the status view.
+export type OfflineFileStatus =
+  | 'queued'
+  | 'downloading'
+  | 'cached'
+  | 'error'
+  | 'too-large'
+  | 'no-url'
+export const offlineFilesStatusAtom = atom<Record<string, OfflineFileStatus>>({})
+export const offlineStorageAtom = atom<{
+  usage: number
+  quota: number
+} | null>(null)
+
 // bumped periodically so the operations observer re-runs:
 // a reconnect can happen while a failed operation is still retrying,
 // and that missed atom change would otherwise leave the queue stalled

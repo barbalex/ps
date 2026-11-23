@@ -20,6 +20,7 @@ import { useUrlPanes } from '../../../modules/useUrlPanes.ts'
 import { clearLocalSyncedData } from '../../../modules/clearLocalSyncedData.ts'
 import { constants } from '../../../modules/constants.ts'
 import { Online } from './Online.tsx'
+import { OfflineFiles } from './OfflineFiles.tsx'
 import styles from './Menu.module.css'
 import { UserMenu } from './UserMenu/index.tsx'
 import { Tabs } from './Tabs.tsx'
@@ -212,6 +213,7 @@ export const Menu = () => {
             aria-label={docsLabel}
           />
         </Tooltip>
+        <OfflineFiles width={44} />
         <Online width={44} />
       </MenuBar>
     </div>

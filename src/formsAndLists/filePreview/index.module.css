@@ -6,9 +6,18 @@
 
 .file {
   flex-grow: 1;
+  /* embedded in the parent page (subproject form + files section) no
+     ancestor has a viewport-derived height, so the flex column collapses
+     to the header's height and the doc-viewer / pdf object clip to
+     nothing inside form-outer-container's overflow hidden. Images survive
+     via their intrinsic size; these branches need a floor */
+  min-height: 60vh;
   display: flex;
   flex-direction: column;
+  /* the viewer area keeps a white background in dark mode too — pin the
+     text dark, or the inherited theme color renders white on white */
   background-color: white;
+  color: #242424;
 }
 
 .image {
@@ -29,6 +38,9 @@
 
   div {
     height: 100%;
+    /* the txt renderer pads 30px with content-box sizing and would
+       otherwise overflow its box on every side */
+    box-sizing: border-box;
   }
 }
 

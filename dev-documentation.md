@@ -509,6 +509,7 @@ The user-facing documentation of this model lives in `docs/docsMd/user-roles_{de
 11. Setting lower roles at higher levels after having set higher ones lower down will nuke higher roles at lower levels. That's a problem we will have to live with? Will have to inform users if this happens in projects/subprojects
 12. Owners are recognized by the 'owner' role given (the trigger that sets the owner roles uses above definition of what a user owns)
 13. Only the owner of an account (`accounts.user_id`) can create projects in that account. Enforced in `enforce_projects_write` (backend) and `checkWritePermission` (client)
+14. Only owners and designers of a project can create subprojects in it (writers may edit existing ones). Enforced in `enforce_subprojects_write` (backend) and `checkWritePermission` (client)
 
 ## Implementation
 

@@ -121,6 +121,7 @@ export const PlaceLevelHistoryCompare = () => {
     'name_plural_it',
     'observations',
     'place_files',
+    'place_files_offline',
     'place_roles_in_place',
     'place_files_in_place',
     'checks',
@@ -129,6 +130,7 @@ export const PlaceLevelHistoryCompare = () => {
     'check_taxa',
     'check_taxa_in_check',
     'check_files',
+    'check_files_offline',
     'check_files_in_check',
     'check_reports',
     'check_report_quantities',
@@ -139,6 +141,7 @@ export const PlaceLevelHistoryCompare = () => {
     'action_taxa',
     'action_taxa_in_action',
     'action_files',
+    'action_files_offline',
     'action_files_in_action',
     'action_reports',
     'action_report_quantities',
@@ -168,6 +171,10 @@ export const PlaceLevelHistoryCompare = () => {
         defaultMessage: 'Beobachtungen zugeordnet',
       },
       place_files: { id: 'aB1CdE', defaultMessage: 'Dateien' },
+      place_files_offline: {
+        id: 'placeFilesOffline',
+        defaultMessage: 'Dateien offline verfügbar',
+      },
       place_roles_in_place: {
         id: 'rP1UsQ',
         defaultMessage: 'Benutzer in Ort anzeigen',
@@ -188,6 +195,10 @@ export const PlaceLevelHistoryCompare = () => {
         defaultMessage: 'Taxa in Kontrolle anzeigen',
       },
       check_files: { id: 'kL3MnO', defaultMessage: 'Dateien' },
+      check_files_offline: {
+        id: 'checkFilesOffline',
+        defaultMessage: 'Dateien offline verfügbar',
+      },
       check_files_in_check: {
         id: 'rN5QwT',
         defaultMessage: 'Dateien in Kontrolle anzeigen',
@@ -213,6 +224,10 @@ export const PlaceLevelHistoryCompare = () => {
         defaultMessage: 'Taxa in Massnahme anzeigen',
       },
       action_files: { id: 'fG2HiJ', defaultMessage: 'Dateien' },
+      action_files_offline: {
+        id: 'actionFilesOffline',
+        defaultMessage: 'Dateien offline verfügbar',
+      },
       action_files_in_action: {
         id: 'gH3IjK',
         defaultMessage: 'Dateien in Massnahme anzeigen',

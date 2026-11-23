@@ -19,7 +19,7 @@ export default interface FieldGroups {
   name: string | null;
 
   /** field_ids (fields.field_id) of the group, in form order, as jsonb (temporal_tables cannot version array columns). No foreign key; ids of deleted fields are ignored when rendering */
-  sorted_field_ids: string[] | null;
+  sorted_field_ids: unknown | null;
 
   label: string | null;
 
@@ -50,7 +50,7 @@ export interface FieldGroupsInitializer {
   name?: string | null;
 
   /** field_ids (fields.field_id) of the group, in form order, as jsonb (temporal_tables cannot version array columns). No foreign key; ids of deleted fields are ignored when rendering */
-  sorted_field_ids?: string[] | null;
+  sorted_field_ids?: unknown | null;
 
   /** System period maintained by temporal_tables for auditing and historic queries. */
   sys_period: string;
@@ -80,7 +80,7 @@ export interface FieldGroupsMutator {
   name?: string | null;
 
   /** field_ids (fields.field_id) of the group, in form order, as jsonb (temporal_tables cannot version array columns). No foreign key; ids of deleted fields are ignored when rendering */
-  sorted_field_ids?: string[] | null;
+  sorted_field_ids?: unknown | null;
 
   /** System period maintained by temporal_tables for auditing and historic queries. */
   sys_period?: string;

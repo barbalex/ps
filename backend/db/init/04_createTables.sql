@@ -292,6 +292,7 @@ COMMENT ON COLUMN projects.taxa IS 'Whether subproject taxa are shown. Preset: t
 COMMENT ON COLUMN projects.charts IS 'Whether charts (subproject) are shown. Preset: true.';
 COMMENT ON COLUMN projects.enable_histories IS 'Whether history comparison is enabled for places. Preset: true.';
 COMMENT ON COLUMN projects.data IS 'Room for project specific data, defined in "fields" table';
+COMMENT ON COLUMN projects.files_offline IS 'Gate for offline files: when true, files marked offline (files.offline) or covered by a place_levels offline flag are fetched into the device''s service-worker cache for offline use. Preset: false.';
 COMMENT ON COLUMN projects.files_active_projects IS 'Whether files are used in table projects. Preset: true';
 COMMENT ON COLUMN projects.project_files_in_project IS 'Render files inside the project form? Preset: true';
 COMMENT ON COLUMN projects.project_users_in_project IS 'Render project users inside the project form? Preset: true';
@@ -343,10 +344,13 @@ CREATE TABLE IF NOT EXISTS place_levels(
   place_roles_in_place boolean DEFAULT TRUE,
   place_files boolean DEFAULT TRUE,
   place_files_in_place boolean DEFAULT TRUE,
+  place_files_offline boolean DEFAULT FALSE,
   action_files boolean DEFAULT TRUE,
   action_files_in_action boolean DEFAULT TRUE,
+  action_files_offline boolean DEFAULT FALSE,
   check_files boolean DEFAULT TRUE,
   check_files_in_check boolean DEFAULT TRUE,
+  check_files_offline boolean DEFAULT FALSE,
   -- label depends on language, thus generated in app code
   label text GENERATED ALWAYS AS (
     CASE
@@ -390,6 +394,17 @@ $$;
 ALTER TABLE place_levels
 ADD COLUMN IF NOT EXISTS table_views jsonb DEFAULT NULL;
 
+-- offline file availability per table (2026-11); heal databases created
+-- before the schema caught up
+ALTER TABLE place_levels
+ADD COLUMN IF NOT EXISTS place_files_offline boolean DEFAULT FALSE;
+
+ALTER TABLE place_levels
+ADD COLUMN IF NOT EXISTS action_files_offline boolean DEFAULT FALSE;
+
+ALTER TABLE place_levels
+ADD COLUMN IF NOT EXISTS check_files_offline boolean DEFAULT FALSE;
+
 COMMENT ON COLUMN place_levels.level IS 'level of place: 1, 2';
 COMMENT ON COLUMN place_levels.name_singular_de IS 'German singular name. Preset: "Population"';
 COMMENT ON COLUMN place_levels.name_plural_de IS 'German plural name. Preset: "Populationen"';
@@ -420,6 +435,9 @@ COMMENT ON COLUMN place_levels.action_files IS 'Are files used for actions on th
 COMMENT ON COLUMN place_levels.action_files_in_action IS 'Render files inside the action form? Preset: true';
 COMMENT ON COLUMN place_levels.check_files IS 'Are files used for checks on this level? Preset: false';
 COMMENT ON COLUMN place_levels.check_files_in_check IS 'Render files inside the check form? Preset: true';
+COMMENT ON COLUMN place_levels.place_files_offline IS 'Mark all files of places on this level available offline (requires projects.files_offline). Set by designers. Preset: false.';
+COMMENT ON COLUMN place_levels.action_files_offline IS 'Mark all files of actions on this level available offline (requires projects.files_offline). Set by designers. Preset: false.';
+COMMENT ON COLUMN place_levels.check_files_offline IS 'Mark all files of checks on this level available offline (requires projects.files_offline). Set by designers. Preset: false.';
 COMMENT ON TABLE place_levels IS 'Goal: manage place levels. Enable working with one or two levels. Organize what features are used on which level.';
 
 --------------------------------------------------------------
@@ -1313,6 +1331,7 @@ CREATE TABLE IF NOT EXISTS files(
   url text DEFAULT NULL, -- file-upload-success-event.detail.cdnUrl
   uuid uuid DEFAULT NULL, -- file-upload-success-event.detail.uuid
   preview_uuid uuid DEFAULT NULL, -- https://uploadcare.com/docs/transformations/document-conversion/
+  offline boolean DEFAULT FALSE,
   sys_period tstzrange DEFAULT NULL,
   created_at timestamptz NOT NULL DEFAULT now(),
   updated_at timestamptz NOT NULL DEFAULT now(),
@@ -1332,6 +1351,13 @@ COMMENT ON COLUMN files.data IS 'Room for file specific data, defined in "fields
 COMMENT ON COLUMN files.mimetype IS 'mimetype of file, used to know how to open or preview it';
 COMMENT ON COLUMN files.file IS 'file content';
 COMMENT ON COLUMN files.url IS 'URL of file, if it is saved on a web service';
+
+-- per-file offline availability (2026-11); heal databases created before
+-- the schema caught up
+ALTER TABLE files
+ADD COLUMN IF NOT EXISTS offline boolean DEFAULT FALSE;
+
+COMMENT ON COLUMN files.offline IS 'Marked by writers as available offline; fetched into the device''s service-worker cache (requires projects.files_offline). Preset: false.';
 
 --------------------------------------------------------------
 -- field_types
@@ -1968,6 +1994,38 @@ COMMENT ON COLUMN vector_layer_displays.fill_opacity_percent IS 'Fill opacity. h
 COMMENT ON COLUMN vector_layer_displays.fill_rule IS 'A string that defines how the inside of a shape is determined. https://leafletjs.com/reference.html#path-fillrule. https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/fill-rule';
 
 --------------------------------------------------------------
+-- tile_layers
+--
+-- Goal: Bring your own raster tile layers (xyz url templates, e.g. CARTO,
+-- MapTiler, swisstopo WMTS in EPSG:3857). With is_background the layer is
+-- offered in the Hintergrundkarte section as a base map instead of a
+-- stackable layer. Rendered client-side with leaflet's TileLayer; the url
+-- template may contain {z}/{x}/{y}, {s} and {r} placeholders and api keys.
+CREATE TABLE IF NOT EXISTS tile_layers(
+  tile_layer_id uuid PRIMARY KEY DEFAULT uuidv7(),
+  project_id uuid NOT NULL REFERENCES projects(project_id) ON DELETE CASCADE ON UPDATE CASCADE DEFERRABLE INITIALLY DEFERRED,
+  label text DEFAULT NULL,
+  url_template text DEFAULT NULL,
+  subdomains jsonb DEFAULT NULL, -- array of text, e.g. ["a","b","c","d"]; omitted: leaflet's 'abc' default
+  max_native_zoom integer DEFAULT NULL,
+  attribution text DEFAULT NULL,
+  is_background boolean DEFAULT FALSE,
+  sys_period tstzrange DEFAULT NULL,
+  created_at timestamptz NOT NULL DEFAULT now(),
+  updated_at timestamptz NOT NULL DEFAULT now(),
+  updated_by text DEFAULT NULL
+);
+
+CREATE INDEX IF NOT EXISTS tile_layers_project_id_idx ON tile_layers USING btree(project_id);
+CREATE INDEX IF NOT EXISTS tile_layers_label_idx ON tile_layers USING btree(label);
+
+COMMENT ON TABLE tile_layers IS 'Goal: Bring your own raster tile layers as xyz url templates. Versioned like wms_layers. Added by writers or higher.';
+COMMENT ON COLUMN tile_layers.url_template IS 'Leaflet TileLayer url. Supports {z}/{x}/{y}, {r} (retina) and {s} (subdomains). Api keys are part of the template and therefore public in the client.';
+COMMENT ON COLUMN tile_layers.subdomains IS 'Array of subdomain characters for the {s} placeholder, e.g. ["a","b","c","d"]. Null: leaflet default abc';
+COMMENT ON COLUMN tile_layers.max_native_zoom IS 'Highest zoom level the provider serves tiles for. Leaflet over-zooms beyond it. Null: no limit';
+COMMENT ON COLUMN tile_layers.is_background IS 'If true: offered in the Hintergrundkarte section as a base map (radio semantics, visibility = render list membership). If false: a stackable layer like wms layers';
+
+--------------------------------------------------------------
 -- layer_presentations
 --
 -- need a table to manage layer presentation for all layers (wms and vector)
@@ -1975,6 +2033,7 @@ CREATE TABLE IF NOT EXISTS layer_presentations(
   layer_presentation_id uuid PRIMARY KEY DEFAULT uuidv7(),
   wms_layer_id uuid DEFAULT NULL REFERENCES wms_layers(wms_layer_id) ON DELETE CASCADE ON UPDATE CASCADE DEFERRABLE INITIALLY DEFERRED,
   vector_layer_id uuid DEFAULT NULL REFERENCES vector_layers(vector_layer_id) ON DELETE CASCADE ON UPDATE CASCADE DEFERRABLE INITIALLY DEFERRED,
+  tile_layer_id uuid DEFAULT NULL REFERENCES tile_layers(tile_layer_id) ON DELETE CASCADE ON UPDATE CASCADE DEFERRABLE INITIALLY DEFERRED,
   project_id uuid DEFAULT NULL REFERENCES projects(project_id) ON DELETE CASCADE ON UPDATE CASCADE DEFERRABLE INITIALLY DEFERRED,
   active boolean DEFAULT FALSE,
   opacity_percent integer DEFAULT 100,
@@ -1991,6 +2050,7 @@ CREATE TABLE IF NOT EXISTS layer_presentations(
 
 CREATE INDEX IF NOT EXISTS layer_presentations_wms_layer_id_idx ON layer_presentations USING btree(wms_layer_id);
 CREATE INDEX IF NOT EXISTS layer_presentations_vector_layer_id_idx ON layer_presentations USING btree(vector_layer_id);
+CREATE INDEX IF NOT EXISTS layer_presentations_tile_layer_id_idx ON layer_presentations USING btree(tile_layer_id);
 CREATE INDEX IF NOT EXISTS layer_presentations_project_id_idx ON layer_presentations USING btree(project_id);
 CREATE INDEX IF NOT EXISTS layer_presentations_active_idx ON layer_presentations USING btree(active);
 CREATE INDEX IF NOT EXISTS layer_presentations_grayscale_idx ON layer_presentations(grayscale)

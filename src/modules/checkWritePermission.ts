@@ -98,7 +98,8 @@ const TABLE_CONFIG: Record<string, CheckConfig> = {
   },
 
   // Project-level — direct project_id
-  // subprojects itself is governed by the project (backend: enforce_project_write)
+  // subprojects itself is governed by the project (backend: enforce_subprojects_write);
+  // inserts require design+ via checkSubprojectInsert above
   projects: projectDirect(),
   place_levels: projectDirect(),
   taxonomies: projectDirect(),
@@ -117,6 +118,7 @@ const TABLE_CONFIG: Record<string, CheckConfig> = {
   wms_layers: projectDirect(),
   wfs_services: projectDirect(),
   vector_layers: projectDirect(),
+  tile_layers: projectDirect(),
   project_crs: projectDirect(),
   qc_assignments: projectDirect(),
   export_assignments: projectDesign(),
@@ -150,6 +152,7 @@ const TABLE_CONFIG: Record<string, CheckConfig> = {
   },
 
   // Subproject-level — direct subproject_id
+  // subprojects inserts go through checkSubprojectInsert above
   subprojects: projectDirect(),
   subproject_taxa: subprojectDirect(),
   observation_imports: subprojectDirect(),
@@ -221,6 +224,12 @@ export async function checkWritePermission(
     return checkProjectInsert(db, userId, row)
   }
 
+  // The backend (enforce_subprojects_write) requires design or own on the
+  // parent project to create a subproject; writers may only edit existing ones
+  if (table === 'subprojects' && operation === 'insert') {
+    return checkSubprojectInsert(db, userId, row)
+  }
+
   // Files and charts carry multiple optional parent IDs; check the most specific.
   if (table === 'files' || table === 'charts') {
     return checkMultiParent(db, userId, row)
@@ -273,6 +282,25 @@ async function checkProjectInsert(
     [userId, row.account_id],
   )
   return { allowed: Boolean(res.rows[0]?.allowed) }
+}
+
+// Mirrors the backend's enforce_subprojects_write: creating a subproject
+// requires design or own on its parent project. A missing project_id is
+// denied (every creation flow carries one).
+async function checkSubprojectInsert(
+  db: PGlite,
+  userId: string,
+  row: RowData,
+): Promise<{ allowed: boolean; userRole?: string }> {
+  if (!row.project_id) return { allowed: false }
+  const puIds = await projectUserIds(db, userId)
+  if (!puIds) return { allowed: false }
+  const res = await db.query<{ role: string }>(
+    `SELECT role FROM project_roles WHERE project_id = $2 AND project_user_id = ANY($1) LIMIT 1`,
+    [puIds, row.project_id],
+  )
+  const role = res.rows[0]?.role
+  return { allowed: hasPermission(role, 'design'), userRole: role }
 }
 
 async function checkMultiParent(
@@ -339,22 +367,25 @@ async function checkLayerPresentation(
   const puIds = await projectUserIds(db, userId)
   if (!puIds) return { allowed: false }
 
-  // Both wms_layer and vector_layer belong to a project; check whichever is
-  // set. Partial rows (e.g. the map drawer's layer list carries only
-  // layer_presentation_id and active) resolve their parent from the db —
+  // The wms_layer, vector_layer and tile_layer belong to a project; check
+  // whichever is set. Partial rows (e.g. the map drawer's layer list carries
+  // only layer_presentation_id and active) resolve their parent from the db —
   // denying those would block layer activation for users with every right
   let wmsLayerId = row.wms_layer_id as string | undefined
   let vectorLayerId = row.vector_layer_id as string | undefined
-  if (!wmsLayerId && !vectorLayerId && row.layer_presentation_id) {
+  let tileLayerId = row.tile_layer_id as string | undefined
+  if (!wmsLayerId && !vectorLayerId && !tileLayerId && row.layer_presentation_id) {
     const res = await db.query<{
       wms_layer_id: string | null
       vector_layer_id: string | null
+      tile_layer_id: string | null
     }>(
-      `SELECT wms_layer_id, vector_layer_id FROM layer_presentations WHERE layer_presentation_id = $1`,
+      `SELECT wms_layer_id, vector_layer_id, tile_layer_id FROM layer_presentations WHERE layer_presentation_id = $1`,
       [row.layer_presentation_id],
     )
     wmsLayerId = res.rows[0]?.wms_layer_id ?? undefined
     vectorLayerId = res.rows[0]?.vector_layer_id ?? undefined
+    tileLayerId = res.rows[0]?.tile_layer_id ?? undefined
   }
 
   if (wmsLayerId) {
@@ -369,6 +400,14 @@ async function checkLayerPresentation(
     const res = await db.query<{ role: string }>(
       `SELECT pr.role FROM project_roles pr JOIN vector_layers vl ON vl.project_id = pr.project_id WHERE vl.vector_layer_id = $2 AND pr.project_user_id = ANY($1) LIMIT 1`,
       [puIds, vectorLayerId],
+    )
+    const role = res.rows[0]?.role
+    if (role) return { allowed: hasPermission(role), userRole: role }
+  }
+  if (tileLayerId) {
+    const res = await db.query<{ role: string }>(
+      `SELECT pr.role FROM project_roles pr JOIN tile_layers tl ON tl.project_id = pr.project_id WHERE tl.tile_layer_id = $2 AND pr.project_user_id = ANY($1) LIMIT 1`,
+      [puIds, tileLayerId],
     )
     const role = res.rows[0]?.role
     if (role) return { allowed: hasPermission(role), userRole: role }
