@@ -5,11 +5,11 @@ import { postgis } from '@electric-sql/pglite-postgis'
 /**
  * A real in-memory Postgres loaded with the app's actual SQL schema
  * (the same files ElectricSQL syncs into the browser).
- * Order matters: uuidv7/immutableDate define functions used by
- * generated columns in createTables.sql.
+ * Order matters: immutableDate defines the function used by
+ * generated columns in createTables.sql. uuidv7() is native since
+ * Postgres 18 (both the server image and PGlite are ≥18).
  */
 const SQL_FILES = [
-  'uuidv7.sql',
   'immutableDate.sql',
   'createTables.sql',
   'triggers.sql',

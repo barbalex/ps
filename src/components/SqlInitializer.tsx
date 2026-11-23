@@ -543,7 +543,6 @@ export const SqlInitializer = () => {
           syncReplaceStaleUniqueRowsSql,
           triggersUpdatedAtSql,
           immutableDateSql,
-          uuidv7Sql,
           createTablesSql,
           triggersSql,
           repairNestedGeometriesRaw,
@@ -559,7 +558,6 @@ export const SqlInitializer = () => {
           ),
           import(`../sql/triggersUpdatedAt.sql?raw`).then((m) => m.default),
           import(`../sql/immutableDate.sql?raw`).then((m) => m.default),
-          import(`../sql/uuidv7.sql?raw`).then((m) => m.default),
           import(`../sql/createTables.sql?raw`).then((m) => m.default),
           import(`../sql/triggers.sql?raw`).then((m) => m.default),
           // the geometry repair is part of the initialization too: changes
@@ -577,7 +575,6 @@ export const SqlInitializer = () => {
             syncReplaceStaleUniqueRowsSql,
             triggersUpdatedAtSql,
             immutableDateSql,
-            uuidv7Sql,
             createTablesSql,
             triggersSql,
             repairNestedGeometriesRaw,
@@ -695,14 +692,9 @@ export const SqlInitializer = () => {
         // need to create functions, tables and triggers
         setFirstRunDbInit(true)
         await exec(immutableDateSql, 'immutableDateSql')
-        await exec(uuidv7Sql, 'uuidv7Sql')
         await exec(
           `CREATE EXTENSION IF NOT EXISTS postgis;`,
           'postgis extension',
-        )
-        await exec(
-          `CREATE EXTENSION IF NOT EXISTS pg_uuidv7;`,
-          'pg_uuidv7 extension',
         )
         await exec(createTablesSql, 'createTables.sql')
         await exec(triggersSql, 'triggers.sql')
