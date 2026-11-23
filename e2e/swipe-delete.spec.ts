@@ -1,13 +1,19 @@
 import { test, expect, type Page } from '@playwright/test'
+import type { CDPSession } from '@playwright/test'
 import { ensureUser, grantRoles, login, psql } from './helpers.ts'
 
 /**
- * Swipe-to-delete on list rows (components/shared/Row.tsx).
+ * Swipe-to-delete on list rows (components/shared/Row.tsx), gmail-style:
+ *
+ * - swiping right shows a bin that turns red past the 30% threshold
+ * - releasing below the threshold slides the row back, nothing deleted
+ * - releasing past the threshold deletes: the row collapses (rows below
+ *   slide up, the bin squishes) and the live query removes it
  *
  * Uses a dedicated fixture project (own role) so the delete never touches
- * shared dev data: two check reports on a level-2 place. The row is swiped
- * right with real touch events (CDP), which must open the confirm/cancel
- * overlay; cancel keeps the row, confirm deletes it.
+ * shared dev data: two check reports on a level-2 place, one is deleted.
+ * The gesture is real touch input through CDP, so React's touch handlers
+ * on the row fire.
  */
 
 const E2E_EMAIL = process.env.E2E_EMAIL ?? 'zcode-swipedelete@test.ch'
@@ -78,36 +84,29 @@ test.beforeEach(async () => {
   })
 })
 
-/**
- * A real touch gesture through the input pipeline (not synthetic DOM
- * events), so React's touch handlers on the row fire.
- */
-const swipeRight = async (page: Page, x: number, y: number, dx: number) => {
-  const session = await page.context().newCDPSession(page)
-  await session.send('Input.dispatchTouchEvent', {
-    type: 'touchStart',
-    touchPoints: [{ x, y }],
-  })
-  const steps = 12
-  for (let i = 1; i <= steps; i++) {
-    await session.send('Input.dispatchTouchEvent', {
-      type: 'touchMove',
-      touchPoints: [{ x: x + (dx * i) / steps, y }],
-    })
+/** Real touch gestures through the input pipeline (not synthetic DOM events). */
+const makeTouch = (page: Page) => {
+  let session: CDPSession | null = null
+  const send = async (message: Parameters<CDPSession['send']>[0], args: object) => {
+    session ??= await page.context().newCDPSession(page)
+    await session.send(message, args)
   }
-  await session.send('Input.dispatchTouchEvent', {
-    type: 'touchEnd',
-    touchPoints: [],
-  })
+  return {
+    start: (x: number, y: number) =>
+      send('Input.dispatchTouchEvent', {
+        type: 'touchStart',
+        touchPoints: [{ x, y }],
+      }),
+    move: (x: number, y: number) =>
+      send('Input.dispatchTouchEvent', {
+        type: 'touchMove',
+        touchPoints: [{ x, y }],
+      }),
+    end: () => send('Input.dispatchTouchEvent', { type: 'touchEnd', touchPoints: [] }),
+  }
 }
 
-const swipeRow = async (page: Page, rowLocator: ReturnType<Page['locator']>) => {
-  const box = await rowLocator.boundingBox()
-  if (!box) throw new Error('row has no bounding box')
-  await swipeRight(page, box.x + 10, box.y + box.height / 2, box.width * 0.6)
-}
-
-test('swipe-to-delete removes a place report row after confirm', async ({
+test('short swipe slides back, swipe past the red bin deletes with collapse', async ({
   page,
 }) => {
   await login(page, E2E_EMAIL, E2E_PASSWORD)
@@ -118,22 +117,63 @@ test('swipe-to-delete removes a place report row after confirm', async ({
   await expect(row2021).toBeVisible({ timeout: 120_000 })
   await expect(row2022).toBeVisible()
 
-  // swipe right past the 30% threshold: confirm/cancel overlay appears
-  await swipeRow(page, row2021)
-  const confirmButton = page.getByText('✓')
-  const cancelButton = page.getByText('✕')
-  await expect(confirmButton).toBeVisible()
-  await expect(cancelButton).toBeVisible()
+  const touch = makeTouch(page)
+  const bin = row2021.getByText('🗑️')
+  await expect(bin).toHaveCount(1)
 
-  // cancel keeps the row (and closes the overlay)
-  await cancelButton.click()
-  await expect(confirmButton).toHaveCount(0)
+  // --- release below the threshold: nothing deleted, the row slides back ---
+  let box = (await row2021.boundingBox())!
+  let y = box.y + box.height / 2
+  await touch.start(box.x + 10, y)
+  await touch.move(box.x + 10 + box.width * 0.15, y)
+  // let react commit the move, then the bin must be white
+  // (chrome normalizes 100% to 1 in computed filters)
+  await page.waitForTimeout(150)
+  expect(await bin.evaluate((el) => getComputedStyle(el).filter)).toContain(
+    'grayscale(1)',
+  )
+  await touch.end()
+  await page.waitForTimeout(600) // slide-back transition
   await expect(row2021).toBeVisible()
+  const settled = await row2021.evaluate((el) =>
+    getComputedStyle(el.lastElementChild as Element).transform,
+  )
+  expect(['none', 'matrix(1, 0, 0, 1, 0, 0)']).toContain(settled)
 
-  // swipe again and confirm: the row disappears, the other one stays
-  await swipeRow(page, row2021)
-  await expect(confirmButton).toBeVisible()
-  await confirmButton.click()
+  // --- release past the threshold: bin red, row collapses and is deleted ---
+  const yBefore = (await row2022.boundingBox())!.y
+  box = (await row2021.boundingBox())!
+  y = box.y + box.height / 2
+  await touch.start(box.x + 10, y)
+  await touch.move(box.x + 10 + box.width * 0.2, y)
+  await page.waitForTimeout(150)
+  await touch.move(box.x + 10 + box.width * 0.6, y)
+  // the filter transitions white->red over 0.2s: poll until it settled
+  // (chrome normalizes 100% to 1 in computed filters)
+  await expect
+    .poll(() => bin.evaluate((el) => getComputedStyle(el).filter), {
+      timeout: 2_000,
+    })
+    .toContain('grayscale(0)')
+  await touch.end()
+  // the row collapses (rows below slide up, the bin squishes) and the
+  // live query unmounts it quickly — locator.evaluate auto-waits for the
+  // element instead of throwing once it is gone, so short-circuit it with
+  // a timeout and treat "gone" as fully collapsed
+  await expect
+    .poll(async () => {
+      try {
+        return await row2021.evaluate(
+          (el) => el.getBoundingClientRect().height,
+          undefined,
+          { timeout: 300 },
+        )
+      } catch {
+        return 0
+      }
+    }, { timeout: 5_000 })
+    .toBeLessThan(51)
   await expect(row2021).toHaveCount(0, { timeout: 30_000 })
-  await expect(row2022).toBeVisible()
+  const yAfter = (await row2022.boundingBox())!.y
+  expect(yAfter).toBeLessThan(yBefore)
 })
