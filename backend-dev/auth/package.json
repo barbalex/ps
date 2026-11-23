@@ -10,8 +10,8 @@
     "how-to-install": "npm install -f --package-lock-only"
   },
   "dependencies": {
-    "@better-auth/passkey": "1.7.25",
-    "better-auth": "1.7.25",
+    "@better-auth/passkey": "1.7.27",
+    "better-auth": "1.7.27",
     "cors": "2.8.6",
     "express": "5.3.0",
     "express-rate-limit": "8.7.5",
