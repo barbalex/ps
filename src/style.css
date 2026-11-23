@@ -490,6 +490,15 @@ html[data-theme='dark'] .uploadcare-uploader-config {
   pointer-events: auto !important;
 }
 
+/* toggled by ChooseGeometryButton while the choosing tool is active; like
+   measure-active, the crosshair is authoritative over interactive layers'
+   own pointer cursor — the features stay interactive so the click hit-test
+   keeps working */
+.map-container.choosing-geometry-active,
+.map-container.choosing-geometry-active .leaflet-interactive {
+  cursor: crosshair !important;
+}
+
 /* the remove icon in the tooltip of a completed measurement */
 .measure-tooltip .measure-remove {
   display: inline-flex;

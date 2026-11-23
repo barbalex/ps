@@ -10,7 +10,7 @@ type Props = {
   onClick?: () => void
   imgSrc?: string
   lastHasImages?: boolean
-  onDelete?: () => void
+  onDelete?: () => void | Promise<void>
   isActive?: boolean
 }
 
@@ -25,11 +25,15 @@ export const Row = ({
 }: Props) => {
   const navigate = useNavigate()
   const [swipeOffset, setSwipeOffset] = useState(0)
-  const [showConfirm, setShowConfirm] = useState(false)
   const [isSwiping, setIsSwiping] = useState(false)
+  const [isDeleting, setIsDeleting] = useState(false)
   const [rowWidth, setRowWidth] = useState(0)
   const startXRef = useRef(0)
   const rowRef = useRef<HTMLDivElement>(null)
+  // touchmove updates are deferred by react (continuous event), so the
+  // release decision must read the offset from here, not from state —
+  // otherwise touchend can see a stale offset and miss the threshold
+  const swipeOffsetRef = useRef(0)
 
   const onClickLabel = () => {
     // when used in map drawer, we don't want to navigate
@@ -43,50 +47,49 @@ export const Row = ({
   const handleTouchStart = (e: React.TouchEvent) => {
     if (!onDelete) return
     startXRef.current = e.touches[0].clientX
+    swipeOffsetRef.current = 0
     setRowWidth(rowRef.current?.offsetWidth || 0)
     setIsSwiping(true)
   }
 
   const handleTouchMove = (e: React.TouchEvent) => {
-    if (!onDelete || showConfirm || !isSwiping) return
+    if (!onDelete || !isSwiping) return
     const currentX = e.touches[0].clientX
     const diff = currentX - startXRef.current
 
     // Only allow right swipe
-    setSwipeOffset(diff > 0 ? diff : 0)
+    const offset = diff > 0 ? diff : 0
+    swipeOffsetRef.current = offset
+    setSwipeOffset(offset)
   }
 
   const handleTouchEnd = () => {
     setIsSwiping(false)
     if (!onDelete) return
 
-    const swipePercentage = (swipeOffset / rowWidth) * 100
-
+    // released past the threshold (red bin): gmail-style delete — the row
+    // collapses (rows below slide up, the bin gets squished) and the live
+    // query removes it once the delete lands. if the delete does not land
+    // (e.g. permission denied and reverted), the promise settling slides
+    // the row back open. released before the threshold: nothing deleted,
+    // the row slides back to the resting position.
+    const swipePercentage = (swipeOffsetRef.current / rowWidth) * 100
     if (swipePercentage >= 30) {
-      // Show confirm/cancel buttons
-      setShowConfirm(true)
-      setSwipeOffset(rowWidth * 0.3) // Lock at 30%
-    } else {
-      // Reset if swipe is less than 30%
-      setSwipeOffset(0)
+      setIsDeleting(true)
+      Promise.resolve(onDelete()).finally(() => {
+        setIsDeleting(false)
+        setSwipeOffset(0)
+      })
+      return
     }
+    setSwipeOffset(0)
   }
 
   // e.g. the browser took over the gesture for vertical scrolling —
   // without resetting, the row stays stuck half-swiped
   const handleTouchCancel = () => {
     setIsSwiping(false)
-    setSwipeOffset(0)
-  }
-
-  const handleConfirmDelete = () => {
-    onDelete?.()
-    setShowConfirm(false)
-    setSwipeOffset(0)
-  }
-
-  const handleCancelDelete = () => {
-    setShowConfirm(false)
+    swipeOffsetRef.current = 0
     setSwipeOffset(0)
   }
 
@@ -97,7 +100,12 @@ export const Row = ({
     <div
       ref={rowRef}
       className={`row ${styles.rowContainer}`}
-      style={{ '--swipe-offset': `${swipeOffset}px` } as React.CSSProperties}
+      style={
+        {
+          '--swipe-offset': `${swipeOffset}px`,
+          ...(isDeleting ? { height: 0, '--delete-scale': 0 } : null),
+        } as React.CSSProperties
+      }
       onTouchStart={handleTouchStart}
       onTouchMove={handleTouchMove}
       onTouchEnd={handleTouchEnd}
@@ -112,25 +120,12 @@ export const Row = ({
           </div>
         </div>
       )}
-      {showConfirm && (
-        <div className={styles.confirmContainer}>
-          <button
-            className={styles.confirmButton}
-            onClick={handleConfirmDelete}
-          >
-            ✓
-          </button>
-          <button className={styles.cancelButton} onClick={handleCancelDelete}>
-            ✕
-          </button>
-        </div>
-      )}
       <div
-        className={`${styles.rowContent}${isSwiping || showConfirm ? ` ${styles.rowContentNoTransition}` : ''}${isActive ? ` ${styles.rowContentActive}` : ''}`}
+        className={`${styles.rowContent}${isSwiping ? ` ${styles.rowContentNoTransition}` : ''}${isActive ? ` ${styles.rowContentActive}` : ''}`}
       >
         {imgSrc ? (
           <img
-            onClick={showConfirm ? undefined : onClickImg}
+            onClick={onClickImg}
             src={imgSrc}
             alt={typeof label === 'string' ? label : ''}
             className={styles.img}
@@ -138,11 +133,11 @@ export const Row = ({
             height="50"
           />
         ) : lastHasImages ? (
-          <div onClick={showConfirm ? undefined : onClickImg} className={styles.imgDiv} />
+          <div onClick={onClickImg} className={styles.imgDiv} />
         ) : (
           <div />
         )}
-        <div onClick={showConfirm ? undefined : onClickLabel} className={styles.label}>
+        <div onClick={onClickLabel} className={styles.label}>
           {label}
         </div>
       </div>

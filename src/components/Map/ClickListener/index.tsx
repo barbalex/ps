@@ -1,5 +1,5 @@
 import { useUrlFilter } from '../../../modules/useUrlFilter.ts'
-import { useParams } from '@tanstack/react-router'
+import { useParams, useNavigate } from '@tanstack/react-router'
 import { useMapEvent, useMap } from 'react-leaflet/hooks'
 import type {
   Map as LeafletMap,
@@ -9,14 +9,26 @@ import type {
   LeafletMouseEvent,
 } from 'leaflet'
 import proj4 from 'proj4'
-import { useSetAtom, useAtomValue } from 'jotai'
+import { useSetAtom, useAtomValue, useAtom } from 'jotai'
 import { usePGlite } from '@electric-sql/pglite-react'
+import { useIntl } from 'react-intl'
 
 import { layersDataFromRequestData } from './layersDataFromRequestData.ts'
 import { fetchData } from './fetchData.ts'
 import { filterStringFromFilter } from '../../../modules/filterStringFromFilter.ts'
 import { getVectorLayerLabel } from '../../../modules/vectorLayerLabel.ts'
-import { mapInfoAtom, languageAtom } from '../../../store.ts'
+import { navigateToOwnForm } from '../../../modules/navigateToOwnForm.ts'
+import type { OwnFormTarget } from '../../../modules/navigateToOwnForm.ts'
+import {
+  mapInfoAtom,
+  languageAtom,
+  choosingGeometryAtom,
+  editingPlaceGeometryAtom,
+  editingCheckGeometryAtom,
+  editingActionGeometryAtom,
+  tabsAtom,
+  addNotificationAtom,
+} from '../../../store.ts'
 import type { MapInfo } from '../../../store.ts'
 import type WfsServices from '../../../models/public/WfsServices.ts'
 import type Crs from '../../../models/public/Crs.ts'
@@ -48,11 +60,50 @@ type WmsLayerRow = {
   url: string
 }
 
+// derives the editing/navigation target of a clicked own-table feature.
+// Observations are deliberately absent: their geometry is not user-editable
+// (they are assigned to places by dragging)
+const ownTargetFromProperties = (
+  featureProps: GeoJSON.GeoJsonProperties,
+): OwnFormTarget | undefined => {
+  if (featureProps?.check_id) {
+    return {
+      ownTable: 'check',
+      ownId: featureProps.check_id as string,
+      ownPlaceId: featureProps.place_id as string | undefined,
+    }
+  }
+  if (featureProps?.action_id) {
+    return {
+      ownTable: 'action',
+      ownId: featureProps.action_id as string,
+      ownPlaceId: featureProps.place_id as string | undefined,
+    }
+  }
+  if (featureProps?.place_id) {
+    return {
+      ownTable: 'place',
+      ownId: featureProps.place_id as string,
+      ownSubprojectId: featureProps.subproject_id as string | undefined,
+      ownParentId: (featureProps.parent_id as string | null) ?? undefined,
+    }
+  }
+  return undefined
+}
+
 export const ClickListener = () => {
   const setMapInfo = useSetAtom(mapInfoAtom)
   const [wmsLayersFilter] = useUrlFilter('wmsLayers')
   const [vectorLayersFilter] = useUrlFilter('vectorLayers')
   const language = useAtomValue(languageAtom)
+  const { formatMessage } = useIntl()
+  const navigate = useNavigate()
+  const [choosingGeometry, setChoosingGeometry] = useAtom(choosingGeometryAtom)
+  const setEditingPlaceGeometry = useSetAtom(editingPlaceGeometryAtom)
+  const setEditingCheckGeometry = useSetAtom(editingCheckGeometryAtom)
+  const setEditingActionGeometry = useSetAtom(editingActionGeometryAtom)
+  const [tabs, setTabs] = useAtom(tabsAtom)
+  const addNotification = useSetAtom(addNotificationAtom)
 
   const { projectId = '99999999-9999-9999-9999-999999999999' } = useParams({
     strict: false,
@@ -129,6 +180,40 @@ export const ClickListener = () => {
         }
       }
     }) as unknown as (layer: unknown) => void)
+
+    // Choosing tool active: start editing the first clicked own-table
+    // feature instead of collecting feature info. One editing target at a
+    // time — the choosing click switches targets, the DrawControl remounts
+    // for the new row (its previous edits are persisted on every change).
+    if (choosingGeometry) {
+      const target = clickedLayers
+        .map((layer) => ownTargetFromProperties(layer.feature?.properties))
+        .find((target) => !!target)
+
+      if (!target) {
+        addNotification({
+          intent: 'warning',
+          body: formatMessage({
+            id: 'mapChooseGeometryNotFound',
+            defaultMessage:
+              'Keine Geometrie eines Ortes, einer Kontrolle oder einer Massnahme an dieser Stelle',
+          }),
+        })
+        return
+      }
+
+      setEditingPlaceGeometry(target.ownTable === 'place' ? target.ownId : null)
+      setEditingCheckGeometry(target.ownTable === 'check' ? target.ownId : null)
+      setEditingActionGeometry(
+        target.ownTable === 'action' ? target.ownId : null,
+      )
+      setChoosingGeometry(false)
+      // the info drawer is not part of the choosing flow
+      setMapInfo(null)
+      if (!tabs.includes('map')) setTabs([...tabs, 'map'])
+      await navigateToOwnForm(db, navigate, { ...target, projectId })
+      return
+    }
 
     // Add clicked table layer features to mapInfo
     clickedLayers.forEach((layer) => {
