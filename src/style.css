@@ -428,6 +428,16 @@ html[data-theme='dark'] .uploadcare-uploader-config {
   .non-interactive-visual {
     pointer-events: none !important;
   }
+
+  /* own layers' vector geometries: hit-test the geometry itself, not the
+  painted pixels — with the default (visiblePainted) a polygon whose fill
+  is disabled (or fully transparent fill_color) and a thin or dashed line
+  stroke are not hit-testable, so hovering them keeps the map's grab
+  cursor instead of the pointer. Note: own layers render into their own
+  panes (leaflet-<name>-pane), siblings of the overlay pane */
+  .leaflet-pane svg path.leaflet-interactive {
+    pointer-events: visible;
+  }
 }
 
 /* When geoman is active (drawing, editing, deleting):
@@ -440,8 +450,20 @@ html[data-theme='dark'] .uploadcare-uploader-config {
   .leaflet-overlay-pane svg path,
   .leaflet-overlay-pane svg circle,
   .leaflet-marker-pane .clickable-hitbox,
-  .leaflet-marker-pane .draggable-hitbox {
+  .leaflet-marker-pane .draggable-hitbox,
+  /* the visual marker icons (their hitbox circles above carry the
+  interaction); keeps draggable observation markers from swallowing
+  draw/edit pointer events */
+  .leaflet-marker-pane .marker-icon-clickable {
     pointer-events: none !important;
+    cursor: crosshair !important;
+  }
+
+  /* own layers render into their own panes (siblings of the overlay
+  pane); their interactive paths stay clickable for geoman layer
+  selection, but the crosshair stays authoritative over their pointer
+  cursor */
+  .leaflet-pane svg path.leaflet-interactive {
     cursor: crosshair !important;
   }
 }
@@ -454,15 +476,16 @@ html[data-theme='dark'] .uploadcare-uploader-config {
 }
 
 /* toggled by MeasureButton while a measurement is being taken */
-.map-container.measure-active {
+.map-container.measure-active,
+/* interactive layers regained pointer events (the legend preview no longer
+   disables them globally); keep the crosshair authoritative over their own
+   pointer cursor while measuring */
+.map-container.measure-active .leaflet-interactive {
   cursor: crosshair !important;
 }
 
-/* the legend preview (Legends/Vector/display.css) globally disables
-   pointer events on .leaflet-interactive to keep its sample geometry
-   inert — which also makes the completed measurement's tooltip inert.
-   Re-enable it there so the remove icon is clickable; higher
-   specificity beats that rule's !important */
+/* the completed measurement's tooltip must stay clickable so its remove
+   icon works */
 .map-container .measure-tooltip.leaflet-interactive {
   pointer-events: auto !important;
 }

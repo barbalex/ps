@@ -1,6 +1,7 @@
 import { useParams, useNavigate } from '@tanstack/react-router'
 
 import { createPlace, createVectorLayer } from '../modules/createRows.ts'
+import { useDeleteRow } from '../modules/deleteRow.ts'
 import { ListHeader } from '../components/ListHeader.tsx'
 import { Row } from '../components/shared/Row.tsx'
 import { LayerMenu } from '../components/shared/LayerMenu.tsx'
@@ -36,6 +37,8 @@ export const Places = ({ from }: Props) => {
     placeId,
   })
   const { navs, label, nameSingular, namePlural } = navData
+
+  const deleteRow = useDeleteRow()
 
   const add = async () => {
     const placeIdNew = await createPlace({
@@ -85,10 +88,9 @@ export const Places = ({ from }: Props) => {
               key={id}
               to={id}
               label={label ?? id}
-              onDelete={() => {
-                // Handle deletion here
-                console.log('Delete item')
-              }}
+              onDelete={() =>
+                deleteRow({ table: 'places', rowIdName: 'place_id', rowId: id })
+              }
             />
           ))
         }

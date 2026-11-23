@@ -7,6 +7,34 @@
   padding: 0 10px;
   height: var(--layout-header-height);
 }
+.left {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 10px;
+  min-width: 0;
+}
+
+.homeLink {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  flex-shrink: 0;
+  color: white;
+  border-radius: 4px;
+  font-size: 20px;
+
+  &:hover {
+    filter: brightness(85%);
+  }
+
+  /* the title link doubles as the home link on wide screens */
+  @media (min-width: 650px) {
+    display: none;
+  }
+}
 .title {
   display: flex;
   flex-direction: column;

@@ -13,4 +13,11 @@
 .mapContainer {
   width: 20px;
   height: 20px;
+  /* keep the sample geometry inert (no hover cursor, no click).
+  Scoped on purpose: as a global rule it disabled pointer events on every
+  interactive layer of the main map — lines/polygons lost their pointer
+  cursor and could not be selected for editing */
+  :global(.leaflet-interactive) {
+    pointer-events: none !important;
+  }
 }

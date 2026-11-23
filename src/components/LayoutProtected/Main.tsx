@@ -1,17 +1,10 @@
 import { Outlet, useSearch } from '@tanstack/react-router'
 import { Allotment } from 'allotment'
-import { useAtomValue } from 'jotai'
 import { lazy, Suspense } from 'react'
 import 'allotment/dist/style.css'
 
 import { Tree } from '../Tree/index.tsx'
-import {
-  enforceMobileNavigationAtom,
-  isMobileViewAtom,
-  mapMaximizedAtom,
-  effectiveTabsOf,
-} from '../../store.ts'
-import { useUrlPanes } from '../../modules/useUrlPanes.ts'
+import { usePaneVisibility } from './usePaneVisibility.ts'
 import styles from './Main.module.css'
 
 const MapContainer = lazy(() =>
@@ -19,27 +12,14 @@ const MapContainer = lazy(() =>
 )
 
 export const Main = () => {
-  const mapMaximized = useAtomValue(mapMaximizedAtom)
-  const isMobileView = useAtomValue(isMobileViewAtom)
-  const enforceMobileNavigation = useAtomValue(enforceMobileNavigationAtom)
-  // url panes win, the tabsAtom is the fallback (see the hook);
-  // effectiveTabsOf applies the mobile single-tab rule at read time, so on
-  // mobile only the preferred pane (data > map > tree) renders from the very
-  // first render — no stale tree pane while the panes state catches up
-  const [panes] = useUrlPanes()
-  const tabs = effectiveTabsOf(panes, isMobileView, enforceMobileNavigation)
+  const { treeVisible, dataVisible, mapVisible } = usePaneVisibility()
 
   // onlyForm is a query parameter that allows the user to view a form without the rest of the app
   // used for popups inside the map
   const { onlyForm } = useSearch({ strict: false })
 
-  const mapMaximizedAndVisible = (mapMaximized && tabs.includes('map')) ?? false
-
   if (onlyForm) return <Outlet />
 
-  const treeVisible = !mapMaximizedAndVisible && tabs.includes('tree')
-  const dataVisible = !mapMaximizedAndVisible && tabs.includes('data')
-  const mapVisible = tabs.includes('map')
   const visibleCount = [treeVisible, dataVisible, mapVisible].filter(
     Boolean,
   ).length

@@ -3,6 +3,8 @@
   overflow: hidden;
   display: flex;
   flex-shrink: 0;
+  /* horizontal swipes stay ours, vertical scrolling stays the browser's */
+  touch-action: pan-y;
 }
 
 .rowContent {
