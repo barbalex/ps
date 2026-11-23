@@ -1112,6 +1112,8 @@
   "layerDeleteConfirmHeader": "Supprimer la couche {label}?",
   "layerDeleteYes": "Oui",
   "layerDeleteNo": "Non",
+  "layerShowInMapBtnTitle": "Afficher la couche sur la carte",
+  "layerRemoveFromMapBtnTitle": "Retirer la couche de la carte",
   "deleteAccountBtn": "Supprimer le compte",
   "deleteAccountTitle": "Supprimer le compte",
   "deleteAccountWarning": "La suppression de ton compte supprime définitivement toutes tes données et ne peut pas être annulée.",

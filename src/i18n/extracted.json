@@ -2132,6 +2132,12 @@
   "layerDeleteYes": {
     "defaultMessage": "Ja"
   },
+  "layerRemoveFromMapBtnTitle": {
+    "defaultMessage": "Ebene aus Karte entfernen"
+  },
+  "layerShowInMapBtnTitle": {
+    "defaultMessage": "Ebene in Karte anzeigen"
+  },
   "logoutCancelBtn": {
     "defaultMessage": "Abbrechen"
   },

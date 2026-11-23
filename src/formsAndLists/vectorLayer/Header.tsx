@@ -14,6 +14,7 @@ import { useRef, useEffect } from 'react'
 import { createVectorLayer } from '../../modules/createRows.ts'
 import { FormHeader } from '../../components/FormHeader/index.tsx'
 import { HistoryToggleButton } from '../../components/shared/HistoryCompare/HistoryToggleButton.tsx'
+import { ShowLayerInMapButton } from '../../components/shared/ShowLayerInMapButton.tsx'
 import {
   tabsAtom,
   draggableLayersAtom,
@@ -233,6 +234,7 @@ export const Header = ({
       tableName="vector layer"
       siblings={
         <>
+          <ShowLayerInMapButton vectorLayerId={row.vector_layer_id} />
           <HistoryToggleButton
             historiesPath={`${basePath}/histories`}
             formPath={formPath}
