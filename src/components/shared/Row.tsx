@@ -26,6 +26,7 @@ export const Row = ({
   const navigate = useNavigate()
   const [swipeOffset, setSwipeOffset] = useState(0)
   const [showConfirm, setShowConfirm] = useState(false)
+  const [isSwiping, setIsSwiping] = useState(false)
   const [rowWidth, setRowWidth] = useState(0)
   const startXRef = useRef(0)
   const rowRef = useRef<HTMLDivElement>(null)
@@ -43,20 +44,20 @@ export const Row = ({
     if (!onDelete) return
     startXRef.current = e.touches[0].clientX
     setRowWidth(rowRef.current?.offsetWidth || 0)
+    setIsSwiping(true)
   }
 
   const handleTouchMove = (e: React.TouchEvent) => {
-    if (!onDelete || showConfirm) return
+    if (!onDelete || showConfirm || !isSwiping) return
     const currentX = e.touches[0].clientX
     const diff = currentX - startXRef.current
 
     // Only allow right swipe
-    if (diff > 0) {
-      setSwipeOffset(diff)
-    }
+    setSwipeOffset(diff > 0 ? diff : 0)
   }
 
   const handleTouchEnd = () => {
+    setIsSwiping(false)
     if (!onDelete) return
 
     const swipePercentage = (swipeOffset / rowWidth) * 100
@@ -69,6 +70,13 @@ export const Row = ({
       // Reset if swipe is less than 30%
       setSwipeOffset(0)
     }
+  }
+
+  // e.g. the browser took over the gesture for vertical scrolling —
+  // without resetting, the row stays stuck half-swiped
+  const handleTouchCancel = () => {
+    setIsSwiping(false)
+    setSwipeOffset(0)
   }
 
   const handleConfirmDelete = () => {
@@ -93,6 +101,7 @@ export const Row = ({
       onTouchStart={handleTouchStart}
       onTouchMove={handleTouchMove}
       onTouchEnd={handleTouchEnd}
+      onTouchCancel={handleTouchCancel}
     >
       {onDelete && (
         <div className={styles.deleteBackground}>
@@ -117,11 +126,11 @@ export const Row = ({
         </div>
       )}
       <div
-        className={`${styles.rowContent}${showConfirm ? ` ${styles.rowContentNoTransition}` : ''}${isActive ? ` ${styles.rowContentActive}` : ''}`}
+        className={`${styles.rowContent}${isSwiping || showConfirm ? ` ${styles.rowContentNoTransition}` : ''}${isActive ? ` ${styles.rowContentActive}` : ''}`}
       >
         {imgSrc ? (
           <img
-            onClick={onClickImg}
+            onClick={showConfirm ? undefined : onClickImg}
             src={imgSrc}
             alt={typeof label === 'string' ? label : ''}
             className={styles.img}
@@ -129,11 +138,11 @@ export const Row = ({
             height="50"
           />
         ) : lastHasImages ? (
-          <div onClick={onClickImg} className={styles.imgDiv} />
+          <div onClick={showConfirm ? undefined : onClickImg} className={styles.imgDiv} />
         ) : (
           <div />
         )}
-        <div onClick={onClickLabel} className={styles.label}>
+        <div onClick={showConfirm ? undefined : onClickLabel} className={styles.label}>
           {label}
         </div>
       </div>

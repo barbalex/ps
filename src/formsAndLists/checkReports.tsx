@@ -1,6 +1,7 @@
 import { useParams, useNavigate } from '@tanstack/react-router'
 
 import { createCheckReport } from '../modules/createRows.ts'
+import { useDeleteRow } from '../modules/deleteRow.ts'
 import { ListHeader } from '../components/ListHeader.tsx'
 import { Row } from '../components/shared/Row.tsx'
 import { FilterButton } from '../components/shared/FilterButton.tsx'
@@ -21,6 +22,8 @@ export const CheckReports = (_: { from?: string }) => {
     placeId2,
   })
   const { navs, label, nameSingular } = navData
+
+  const deleteRow = useDeleteRow()
 
   const add = async () => {
     const id = await createCheckReport({
@@ -47,7 +50,18 @@ export const CheckReports = (_: { from?: string }) => {
           <Loading />
         ) : (
           navs.map(({ id, label }) => (
-            <Row key={id} to={id} label={label ?? id} />
+            <Row
+              key={id}
+              to={id}
+              label={label ?? id}
+              onDelete={() =>
+                deleteRow({
+                  table: 'check_reports',
+                  rowIdName: 'place_check_report_id',
+                  rowId: id,
+                })
+              }
+            />
           ))
         )}
       </div>

@@ -1,6 +1,7 @@
 import { useParams, useNavigate } from '@tanstack/react-router'
 
 import { createGoal } from '../modules/createRows.ts'
+import { useDeleteRow } from '../modules/deleteRow.ts'
 import { useGoalsNavData } from '../modules/useGoalsNavData.ts'
 import { ListHeader } from '../components/ListHeader.tsx'
 import { Row } from '../components/shared/Row.tsx'
@@ -16,6 +17,8 @@ export const Goals = () => {
   const { loading, navData, isFiltered } = useGoalsNavData({
     projectId: projectId!,    subprojectId: subprojectId!,  })
   const { navs, label, nameSingular } = navData
+
+  const deleteRow = useDeleteRow()
 
   const add = async () => {
     const id = await createGoal({
@@ -46,6 +49,9 @@ export const Goals = () => {
                 key={id}
                 label={label ?? id}
                 to={id}
+                onDelete={() =>
+                  deleteRow({ table: 'goals', rowIdName: 'goal_id', rowId: id })
+                }
               />
             ),
           )

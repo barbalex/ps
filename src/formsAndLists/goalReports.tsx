@@ -1,6 +1,7 @@
 import { useParams, useNavigate } from '@tanstack/react-router'
 
 import { createGoalReport } from '../modules/createRows.ts'
+import { useDeleteRow } from '../modules/deleteRow.ts'
 import { useGoalReportsNavData } from '../modules/useGoalReportsNavData.ts'
 import { ListHeader } from '../components/ListHeader.tsx'
 import { Row } from '../components/shared/Row.tsx'
@@ -15,6 +16,8 @@ export const GoalReports = ({ hideHeader = false }) => {
   const { loading, navData } = useGoalReportsNavData({
     projectId: projectId!,    subprojectId: subprojectId!,    goalId: goalId!,  })
   const { navs, label, nameSingular } = navData
+
+  const deleteRow = useDeleteRow()
 
   const add = async () => {
     const id = await createGoalReport({
@@ -42,6 +45,13 @@ export const GoalReports = ({ hideHeader = false }) => {
               key={id}
               label={label ?? id}
               to={`${reportsBaseUrl}/${id}/`}
+              onDelete={() =>
+                deleteRow({
+                  table: 'goal_reports',
+                  rowIdName: 'goal_report_id',
+                  rowId: id,
+                })
+              }
             />
           ))
         }

@@ -1,6 +1,7 @@
 import { useParams, useNavigate } from '@tanstack/react-router'
 
 import { createAction } from '../modules/createRows.ts'
+import { useDeleteRow } from '../modules/deleteRow.ts'
 import { useActionsNavData } from '../modules/useActionsNavData.ts'
 import { ListHeader } from '../components/ListHeader.tsx'
 import { Row } from '../components/shared/Row.tsx'
@@ -18,6 +19,8 @@ export const Actions = ({ from }: { from: string }) => {
     projectId: projectId!,    subprojectId: subprojectId!,    placeId: placeId!,    placeId2,
   })
   const { navs, label, nameSingular } = navData
+
+  const deleteRow = useDeleteRow()
 
   const add = async () => {
     const id = await createAction({
@@ -47,7 +50,14 @@ export const Actions = ({ from }: { from: string }) => {
           <Loading />
         ) : (
           navs.map(({ id, label }) => (
-            <Row key={id} label={label ?? id} to={id} />
+            <Row
+              key={id}
+              label={label ?? id}
+              to={id}
+              onDelete={() =>
+                deleteRow({ table: 'actions', rowIdName: 'action_id', rowId: id })
+              }
+            />
           ))
         )}
       </div>
