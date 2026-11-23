@@ -1,5 +1,4 @@
 import { useEffect, useRef } from 'react'
-import { useAtomValue } from 'jotai'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import * as UC from '@uploadcare/file-uploader'
 UC.defineComponents(UC)
@@ -22,13 +21,13 @@ import { ObservationAssignChooser } from '../ObservationAssignChooser/index.tsx'
 import { ChooseAccountForProject } from '../ChooseAccountForProject/index.tsx'
 import { ConfirmDeleteAccount } from '../ConfirmDeleteAccount/index.tsx'
 import { IsDesktopViewSetter } from '../shared/IsDesktopViewSetter.tsx'
+import { usePaneVisibility } from './usePaneVisibility.ts'
 import { ApiDetector } from '../ApiDetector.tsx'
 import { AppAdminDetector } from '../AppAdminDetector.tsx'
 import { TreeOpenNodesSetter } from '../TreeOpenNodesSetter.tsx'
 import { OperationsObserver } from '../OperationsObserver.tsx'
 import { AutoFetchCapabilities } from '../AutoFetchCapabilities.tsx'
 import { OfflineFilesManager } from '../OfflineFilesManager.tsx'
-import { mapMaximizedAtom } from '../../store.ts'
 
 const tanstackQueryClient = new QueryClient()
 
@@ -79,7 +78,10 @@ export const LayoutProtected = () => {
   // so consumers of UploaderContext re-rendered on every layout change and
   // the web component's ref binding churned. useRef keeps one stable object.
   const uploaderRef = useRef<HTMLElement | null>(null)
-  const mapIsMaximized = useAtomValue(mapMaximizedAtom)
+  // breadcrumbs only make sense with the nav tree or data pane on screen;
+  // with the map alone (maximized or as the single pane, e.g. on mobile)
+  // they are hidden
+  const { treeVisible, dataVisible } = usePaneVisibility()
 
   useEffect(() => {
     createPostgrestClient()
@@ -117,7 +119,7 @@ export const LayoutProtected = () => {
               <Header />
               <EmailVerificationBanner />
               <InstallPrompt />
-              {!mapIsMaximized && <Breadcrumbs />}
+              {(treeVisible || dataVisible) && <Breadcrumbs />}
               <Notifications />
             </>
           )}
