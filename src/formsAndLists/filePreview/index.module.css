@@ -48,3 +48,59 @@
   height: 0;
   overflow: hidden;
 }
+
+.audio {
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* markdown preview (renderers.tsx): flat selectors — the build has no
+   postcss nesting */
+.markdown {
+  height: 100%;
+  overflow: auto;
+  padding: 30px;
+  line-height: 1.5;
+  box-sizing: border-box;
+}
+
+.markdown img {
+  max-width: 100%;
+}
+
+.markdown table {
+  border-collapse: collapse;
+}
+
+.markdown th,
+.markdown td {
+  border: 1px solid #d1d1d1;
+  padding: 4px 8px;
+  text-align: left;
+}
+
+.markdown code {
+  background: #f0f0f0;
+  padding: 1px 4px;
+  border-radius: 3px;
+}
+
+.markdown pre {
+  background: #f0f0f0;
+  padding: 12px;
+  overflow: auto;
+}
+
+.markdown pre code {
+  background: none;
+  padding: 0;
+}
+
+.markdown blockquote {
+  border-left: 3px solid #d1d1d1;
+  margin: 0;
+  padding-left: 12px;
+  color: #616161;
+}
