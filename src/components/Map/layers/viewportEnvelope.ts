@@ -5,7 +5,7 @@ import { useDebouncedCallback } from 'use-debounce'
 import { mapViewportBoundsAtom, type ViewportBounds } from '../../../store.ts'
 
 /** How far the query envelope extends beyond the viewport, per axis. */
-export const VIEWPORT_PAD_FACTOR = 0.1
+export const VIEWPORT_PAD_FACTOR = 0.5
 
 /** Debounce for envelope updates after moveend/zoomend — rapid zooming must
  * not re-run every table layer's live query per zoom step. */

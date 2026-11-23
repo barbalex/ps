@@ -192,7 +192,8 @@ project_id` / `GROUP BY subproject_id` with `count(*) FILTER` for filtered
       **Done:** layers now bind the map viewport as live-query params and filter in
       PostGIS inside PGlite with `geometry && ST_MakeEnvelope(...)` on the GiST
       indexes ([viewportEnvelope.ts](src/components/Map/layers/viewportEnvelope.ts);
-      envelope = padded 10% beyond the viewport, debounced 400 ms, skipped while the
+      envelope = padded 50% beyond the viewport (initially 10%, enlarged to
+      match apflora.ch), debounced 400 ms, skipped while the
       viewport stays inside the last emitted window — the WFS fetch-window pattern
       applied to live queries; NULL params keep the boot window unfiltered). Each
       query also returns `edit_version = max(updated_at)` over its unfiltered scope:
