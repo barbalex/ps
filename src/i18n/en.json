@@ -1386,5 +1386,7 @@
   "placeFilesOffline": "Files available offline",
   "checkFilesOffline": "Files available offline",
   "actionFilesOffline": "Files available offline",
-  "filesOfflineHint": "Enables offline files: users mark individual files in the file form, designers mark all files of a table in the level configuration. Without this setting no files are stored offline."
+  "filesOfflineHint": "Enables offline files: users mark individual files in the file form, designers mark all files of a table in the level configuration. Without this setting no files are stored offline.",
+  "undoDeleteText": "{name} deleted",
+  "undoDeleteUndo": "Undo"
 }

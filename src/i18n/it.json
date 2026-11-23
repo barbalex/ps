@@ -1390,5 +1390,7 @@
   "placeFilesOffline": "File disponibili offline",
   "checkFilesOffline": "File disponibili offline",
   "actionFilesOffline": "File disponibili offline",
-  "filesOfflineHint": "Abilita i file offline: gli utenti contrassegnano i singoli file nel modulo del file, i designer contrassegnano tutti i file di una tabella nella configurazione dei livelli. Senza questa impostazione nessun file viene salvato offline."
+  "filesOfflineHint": "Abilita i file offline: gli utenti contrassegnano i singoli file nel modulo del file, i designer contrassegnano tutti i file di una tabella nella configurazione dei livelli. Senza questa impostazione nessun file viene salvato offline.",
+  "undoDeleteText": "{name} eliminato",
+  "undoDeleteUndo": "Annulla"
 }
