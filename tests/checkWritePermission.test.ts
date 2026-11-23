@@ -286,14 +286,24 @@ describe('checkWritePermission — anchor-table inserts (create flows)', () => {
     expect(res.userRole).toBe('read-all')
   })
 
-  it('checks subprojects against the project role (as the backend does)', async () => {
+  it('requires design or own on the project to create a subproject (as the backend does)', async () => {
+    const designer = await check(
+      fixture.ids.designer,
+      'subprojects',
+      { subproject_id: 'new-subproject', project_id: fixture.ids.project },
+      'insert',
+    )
+    expect(designer.allowed).toBe(true)
+
+    // a writer may edit subprojects but not create them
     const writer = await check(
       fixture.ids.writer,
       'subprojects',
       { subproject_id: 'new-subproject', project_id: fixture.ids.project },
       'insert',
     )
-    expect(writer.allowed).toBe(true)
+    expect(writer.allowed).toBe(false)
+    expect(writer.userRole).toBe('write-all')
 
     // outsider only has a subproject-level role, not a project role
     const outsider = await check(
@@ -304,6 +314,25 @@ describe('checkWritePermission — anchor-table inserts (create flows)', () => {
     )
     expect(outsider.allowed).toBe(false)
     expect(outsider.userRole).toBeUndefined()
+  })
+
+  it('denies creating a subproject without a project', async () => {
+    const res = await check(
+      fixture.ids.designer,
+      'subprojects',
+      { subproject_id: 'new-subproject' },
+      'insert',
+    )
+    expect(res.allowed).toBe(false)
+  })
+
+  it('still allows a project writer to update an existing subproject', async () => {
+    const res = await check(fixture.ids.writer, 'subprojects', {
+      subproject_id: fixture.ids.subproject,
+      project_id: fixture.ids.project,
+    })
+    expect(res.allowed).toBe(true)
+    expect(res.userRole).toBe('write-all')
   })
 })
 

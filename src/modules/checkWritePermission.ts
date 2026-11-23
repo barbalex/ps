@@ -98,7 +98,8 @@ const TABLE_CONFIG: Record<string, CheckConfig> = {
   },
 
   // Project-level — direct project_id
-  // subprojects itself is governed by the project (backend: enforce_project_write)
+  // subprojects itself is governed by the project (backend: enforce_subprojects_write);
+  // inserts require design+ via checkSubprojectInsert above
   projects: projectDirect(),
   place_levels: projectDirect(),
   taxonomies: projectDirect(),
@@ -150,6 +151,7 @@ const TABLE_CONFIG: Record<string, CheckConfig> = {
   },
 
   // Subproject-level — direct subproject_id
+  // subprojects inserts go through checkSubprojectInsert above
   subprojects: projectDirect(),
   subproject_taxa: subprojectDirect(),
   observation_imports: subprojectDirect(),
@@ -221,6 +223,12 @@ export async function checkWritePermission(
     return checkProjectInsert(db, userId, row)
   }
 
+  // The backend (enforce_subprojects_write) requires design or own on the
+  // parent project to create a subproject; writers may only edit existing ones
+  if (table === 'subprojects' && operation === 'insert') {
+    return checkSubprojectInsert(db, userId, row)
+  }
+
   // Files and charts carry multiple optional parent IDs; check the most specific.
   if (table === 'files' || table === 'charts') {
     return checkMultiParent(db, userId, row)
@@ -273,6 +281,25 @@ async function checkProjectInsert(
     [userId, row.account_id],
   )
   return { allowed: Boolean(res.rows[0]?.allowed) }
+}
+
+// Mirrors the backend's enforce_subprojects_write: creating a subproject
+// requires design or own on its parent project. A missing project_id is
+// denied (every creation flow carries one).
+async function checkSubprojectInsert(
+  db: PGlite,
+  userId: string,
+  row: RowData,
+): Promise<{ allowed: boolean; userRole?: string }> {
+  if (!row.project_id) return { allowed: false }
+  const puIds = await projectUserIds(db, userId)
+  if (!puIds) return { allowed: false }
+  const res = await db.query<{ role: string }>(
+    `SELECT role FROM project_roles WHERE project_id = $2 AND project_user_id = ANY($1) LIMIT 1`,
+    [puIds, row.project_id],
+  )
+  const role = res.rows[0]?.role
+  return { allowed: hasPermission(role, 'design'), userRole: role }
 }
 
 async function checkMultiParent(
