@@ -2,7 +2,8 @@ import { Pane } from 'react-leaflet'
 import { useLiveQuery } from '@electric-sql/pglite-react'
 import { useParams } from '@tanstack/react-router'
 
-import { OsmColor } from './OsmColor.tsx'
+import { Background } from './Background.tsx'
+import { backgroundLayers } from './backgroundLayers.ts'
 import { WmsLayerComponent } from './WmsLayer/index.tsx'
 import { VectorLayerChooser } from './VectorLayer/index.tsx'
 import { tableLayerToComponent } from './tableLayerToComponent.ts'
@@ -131,8 +132,9 @@ export const Layer = ({ layerPresentationId, index }: Props) => {
   //   isTableLayer,
   // })
 
-  if (layerPresentationId === 'aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa') {
-    return <OsmColor key="aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa" />
+  const background = backgroundLayers[layerPresentationId]
+  if (background) {
+    return <Background key={layerPresentationId} background={background} />
   }
 
   if (!layerPresentation) return null

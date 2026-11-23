@@ -2186,6 +2186,18 @@
   "mRw0sX": {
     "defaultMessage": "und {count} weitere Zeilen..."
   },
+  "mapBackgroundLayerDarkMatter": {
+    "defaultMessage": "Dark Matter (dunkel)"
+  },
+  "mapBackgroundLayerOsm": {
+    "defaultMessage": "OpenStreetMap"
+  },
+  "mapBackgroundLayerPositron": {
+    "defaultMessage": "Positron (hell)"
+  },
+  "mapBackgroundLayersTitle": {
+    "defaultMessage": "Hintergrundkarte"
+  },
   "mapExportPng": {
     "defaultMessage": "Karte als PNG speichern"
   },

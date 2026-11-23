@@ -1355,5 +1355,9 @@
   "bFwXyQ": "Le design du formulaire n'a pas pu être créé",
   "bFxYzR": "Le design du formulaire n'a pas pu être enregistré",
   "bFyZsS": "Retour",
-  "bFzAtT": "Imprimer"
+  "bFzAtT": "Imprimer",
+  "mapBackgroundLayersTitle": "Carte de fond",
+  "mapBackgroundLayerOsm": "OpenStreetMap",
+  "mapBackgroundLayerPositron": "Positron (clair)",
+  "mapBackgroundLayerDarkMatter": "Dark Matter (sombre)"
 }

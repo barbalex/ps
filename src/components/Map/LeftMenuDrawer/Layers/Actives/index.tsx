@@ -17,6 +17,7 @@ import { ErrorBoundary } from '../../../../shared/ErrorBoundary.tsx'
 import { ActiveLayer } from './Active/index.tsx'
 import { mapLayerSortingAtom } from '../../../../../store.ts'
 import { useUrlLayers } from '../../../../../modules/useUrlLayers.ts'
+import { isBackgroundLayerId } from '../../../layers/backgroundLayers.ts'
 import { DragAndDropContext } from './DragAndDropContext.ts'
 import {
   getItemRegistry,
@@ -135,11 +136,11 @@ export const ActiveLayers = () => {
       const missingLayerPresentations = layerPresentationIds.filter(
         (lpId) => !mapLayerSorting.includes(lpId),
       )
-      // don't remove osm: will lead to unlimited re-rendering
+      // don't remove background layers (osm, positron, dark matter):
+      // will lead to unlimited re-rendering
       const removeLayerPresentations = mapLayerSorting.filter(
         (lpId) =>
-          !layerPresentationIds.includes(lpId) &&
-          lpId !== 'aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa', // osm
+          !layerPresentationIds.includes(lpId) && !isBackgroundLayerId(lpId),
       )
       if (
         !missingLayerPresentations.length &&

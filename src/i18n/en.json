@@ -1355,5 +1355,9 @@
   "bFwXyQ": "Form design could not be created",
   "bFxYzR": "Form design could not be saved",
   "bFyZsS": "Back",
-  "bFzAtT": "Print"
+  "bFzAtT": "Print",
+  "mapBackgroundLayersTitle": "Background map",
+  "mapBackgroundLayerOsm": "OpenStreetMap",
+  "mapBackgroundLayerPositron": "Positron (light)",
+  "mapBackgroundLayerDarkMatter": "Dark Matter (dark)"
 }

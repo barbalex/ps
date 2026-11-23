@@ -1359,5 +1359,9 @@
   "bFwXyQ": "Il design del modulo non può essere creato",
   "bFxYzR": "Il design del modulo non può essere salvato",
   "bFyZsS": "Indietro",
-  "bFzAtT": "Stampa"
+  "bFzAtT": "Stampa",
+  "mapBackgroundLayersTitle": "Mappa di base",
+  "mapBackgroundLayerOsm": "OpenStreetMap",
+  "mapBackgroundLayerPositron": "Positron (chiaro)",
+  "mapBackgroundLayerDarkMatter": "Dark Matter (scuro)"
 }
