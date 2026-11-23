@@ -2,6 +2,7 @@ import { describe, it, expect, beforeAll, afterAll, vi } from 'vitest'
 
 import { createTestDb, type TestFixture } from './helpers/createTestDb.ts'
 import { deleteRowFromDb } from '../src/modules/deleteRow.ts'
+import { columnsForRestore } from '../src/modules/undoDelete.ts'
 
 let fixture: TestFixture
 
@@ -58,5 +59,37 @@ describe('deleteRowFromDb', () => {
     expect(addOperation).toHaveBeenCalledWith(
       expect.objectContaining({ operation: 'delete', prev: {} }),
     )
+  })
+})
+
+describe('columnsForRestore', () => {
+  it('keeps only the sync shape columns that exist in prev', () => {
+    // label is GENERATED (never restorable by insert), sys_period is
+    // managed by the history trigger, unknown_col is not part of the shape
+    const prev = {
+      place_check_report_id: 'x',
+      place_id: 'p',
+      year: 2021,
+      data: null,
+      label: '2021',
+      sys_period: '[,)',
+      created_at: 't',
+      updated_at: 't',
+      updated_by: 'me',
+      unknown_col: 1,
+    }
+    expect(columnsForRestore('check_reports', prev)).toEqual([
+      'place_check_report_id',
+      'place_id',
+      'year',
+      'data',
+      'created_at',
+      'updated_at',
+      'updated_by',
+    ])
+  })
+
+  it('returns empty for tables without a sync shape', () => {
+    expect(columnsForRestore('no_such_table', { a: 1 })).toEqual([])
   })
 })

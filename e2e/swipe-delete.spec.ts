@@ -106,6 +106,20 @@ const makeTouch = (page: Page) => {
   }
 }
 
+/** full swipe right past the 30% threshold on the given row (deletes on release) */
+const swipeRow = async (page: Page, rowLocator: ReturnType<Page['locator']>) => {
+  const touch = makeTouch(page)
+  const box = await rowLocator.boundingBox()
+  if (!box) throw new Error('row has no bounding box')
+  const y = box.y + box.height / 2
+  await touch.start(box.x + 10, y)
+  await touch.move(box.x + 10 + box.width * 0.2, y)
+  await page.waitForTimeout(150)
+  await touch.move(box.x + 10 + box.width * 0.6, y)
+  await page.waitForTimeout(200) // let the bin's red filter transition settle
+  await touch.end()
+}
+
 test('short swipe slides back, swipe past the red bin deletes with collapse', async ({
   page,
 }) => {
@@ -176,4 +190,35 @@ test('short swipe slides back, swipe past the red bin deletes with collapse', as
   await expect(row2021).toHaveCount(0, { timeout: 30_000 })
   const yAfter = (await row2022.boundingBox())!.y
   expect(yAfter).toBeLessThan(yBefore)
+})
+
+test.describe('mobile undo bar', () => {
+  // isMobileView derives from window width (constants.mobileViewMaxWidth)
+  test.use({ viewport: { width: 500, height: 800 } })
+
+  test('undo restores the deleted row', async ({ page }) => {
+    await login(page, E2E_EMAIL, E2E_PASSWORD)
+    await page.goto(listUrl)
+
+    const row2021 = page.locator('.list-container .row', { hasText: '2021' })
+    const row2022 = page.locator('.list-container .row', { hasText: '2022' })
+    await expect(row2021).toBeVisible({ timeout: 120_000 })
+    await expect(row2022).toBeVisible()
+
+    await swipeRow(page, row2021)
+    await expect(row2021).toHaveCount(0, { timeout: 30_000 })
+
+    // the undo bar slides up from the bottom, naming the deleted row
+    const bar = page.getByTestId('undo-delete-bar')
+    await expect(bar).toBeVisible()
+    await expect(bar).toContainText('2021')
+
+    // undo: the row comes back, the bar slides down
+    await bar.getByRole('button').click()
+    await expect(row2021).toBeVisible({ timeout: 30_000 })
+    await expect(row2022).toBeVisible()
+    await expect(bar).toHaveAttribute('data-visible', 'false', {
+      timeout: 10_000,
+    })
+  })
 })

@@ -12,6 +12,7 @@ import { MdClose as CloseIcon } from 'react-icons/md'
 import { useSetAtom, useAtomValue } from 'jotai'
 
 import { Notification as NotificationComponent } from './Notification.tsx'
+import { UndoDeleteBar } from '../UndoDeleteBar.tsx'
 import {
   notificationsAtom,
   removeNotificationAtom,
@@ -40,6 +41,7 @@ export const Notifications: React.FC = () => {
 
   return (
     <>
+      <UndoDeleteBar />
       {firstFourNotifications.length > 0 && (
         <div className={styles.container}>
           {firstFourNotifications.map((n) => (

@@ -1386,5 +1386,7 @@
   "placeFilesOffline": "Fichiers disponibles hors ligne",
   "checkFilesOffline": "Fichiers disponibles hors ligne",
   "actionFilesOffline": "Fichiers disponibles hors ligne",
-  "filesOfflineHint": "Active les fichiers hors ligne: les utilisateurs marquent des fichiers individuels dans le formulaire de fichier, les designers marquent tous les fichiers d'une table dans la configuration des niveaux. Sans ce réglage, aucun fichier n'est enregistré hors ligne."
+  "filesOfflineHint": "Active les fichiers hors ligne: les utilisateurs marquent des fichiers individuels dans le formulaire de fichier, les designers marquent tous les fichiers d'une table dans la configuration des niveaux. Sans ce réglage, aucun fichier n'est enregistré hors ligne.",
+  "undoDeleteText": "{name} supprimé",
+  "undoDeleteUndo": "Annuler"
 }

@@ -3113,6 +3113,12 @@
   "uT5VwX": {
     "defaultMessage": "Typ"
   },
+  "undoDeleteText": {
+    "defaultMessage": "{name} gelöscht"
+  },
+  "undoDeleteUndo": {
+    "defaultMessage": "Rückgängig"
+  },
   "upa2nh": {
     "defaultMessage": "Massnahme"
   },
