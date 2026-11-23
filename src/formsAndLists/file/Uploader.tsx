@@ -154,16 +154,24 @@ export const Uploader = ({
       width: event.detail.fileInfo?.imageInfo?.width ?? null,
       height: event.detail.fileInfo?.imageInfo?.height ?? null,
     }
+    // file rows carry the ids of all their ancestors (filesScopeWhere): the
+    // sync shapes scope by project_id AND the more specific columns, so a row
+    // with only the most specific id set matches no shape at all — it never
+    // reaches other browsers and is dropped even from this one on the next
+    // shape re-snapshot (which clears and refills the table)
+    if (projectId) {
+      fileInput.projectId = projectId
+    }
+    if (subprojectId) {
+      fileInput.subprojectId = subprojectId
+    }
+    if (placeId) {
+      fileInput.placeId = placeId
+    }
     if (actionId) {
       fileInput.actionId = actionId
     } else if (checkId) {
       fileInput.checkId = checkId
-    } else if (placeId) {
-      fileInput.placeId = placeId
-    } else if (subprojectId) {
-      fileInput.subprojectId = subprojectId
-    } else if (projectId) {
-      fileInput.projectId = projectId
     }
     const fileId = await createFile(fileInput)
     await waitForFile(fileId)

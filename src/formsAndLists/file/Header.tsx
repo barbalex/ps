@@ -120,15 +120,15 @@ export const Header = ({
         fileId,
       ])
       const prev = (prevRes?.rows?.[0] ?? {}) as Record<string, unknown>
-      db.query(`DELETE FROM files WHERE file_id = $1`, [fileId])
+      await db.query(`DELETE FROM files WHERE file_id = $1`, [fileId])
       addOperation({
-        table: 'file',
+        table: 'files',
         rowIdName: 'file_id',
         rowId: fileId,
         operation: 'delete',
         prev,
       })
-      navigate({ to: '..' })
+      navigate({ to: isPreview ? ('../..' as '..') : '..' })
     } catch (error) {
       console.error(error)
     }

@@ -37,16 +37,21 @@ export const Delete = ({
 }: Props) => {
   const { formatMessage } = useIntl()
 
+  // the button is icon-only: the label makes it accessible (and testable) —
+  // Fluent's tooltip content does not become its accessible name
+  const label =
+    deleteLabel ?? formatMessage({ id: 'Zv6sNt', defaultMessage: 'löschen' })
+
   return (
     <Menu openOnHover={false}>
       <MenuTrigger>
-        <Tooltip
-          content={
-            deleteLabel ??
-            formatMessage({ id: 'Zv6sNt', defaultMessage: 'löschen' })
-          }
-        >
-          <Button size="medium" icon={<FaMinus />} disabled={disabled} />
+        <Tooltip content={label}>
+          <Button
+            size="medium"
+            icon={<FaMinus />}
+            disabled={disabled}
+            aria-label={label}
+          />
         </Tooltip>
       </MenuTrigger>
       <MenuPopover>

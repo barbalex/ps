@@ -142,4 +142,42 @@ test.describe('offline files', () => {
       .poll(() => cacheKeys(page), { timeout: 30_000 })
       .toEqual([])
   })
+
+  // regression: the delete used to queue its operation with table "file"
+  // (singular), which observeOperations drops as an unknown table — the row
+  // vanished locally but survived on the server, reappearing on the next
+  // shape re-snapshot
+  test('deleting a file syncs to the server and navigates back to the list', async ({
+    page,
+  }) => {
+    await ensureE2eData()
+    await login(page, E2E_EMAIL, E2E_PASSWORD)
+
+    await page.goto(FILES_URL)
+    await page.getByText('e2e offline file').click()
+
+    // the trash button in the file's header opens a confirm menu
+    const fileHeader = page.locator('.form-header').filter({
+      has: page.getByRole('button', { name: /offline/i }),
+    })
+    await fileHeader
+      .getByRole('button', { name: /^(löschen|delete)$/i })
+      .click()
+    await page.getByRole('menuitem', { name: /^(ja|yes)$/i }).click()
+
+    // back up to the files list
+    await expect(page).toHaveURL(new RegExp(`${E2E_PLACE_ID}/files$`))
+    await expect(page.getByText('e2e offline file')).toBeHidden()
+
+    // the operation must reach Postgres (flushes after the ~5s row debounce)
+    await expect
+      .poll(
+        () =>
+          psql(
+            `SELECT count(*) FROM files WHERE file_id = '${E2E_FILE_ID}'`,
+          ),
+        { timeout: 30_000 },
+      )
+      .toBe('0')
+  })
 })

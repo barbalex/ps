@@ -121,28 +121,41 @@ describe('planReconcile', () => {
     uuid: uuid(n),
     url: cdnUrl(n),
     size,
+    mimetype: 'image/png',
   })
 
   it('plans downloads for missing urls and deletions for orphaned cache entries', () => {
     const rows = [file(3001), file(3002, OFFLINE_FILE_MAX_SIZE + 1)]
-    const cachedUrls = [cdnUrl(3003), ...urlsOfOfflineFile(cdnUrl(3004))]
+    const cachedUrls = [
+      cdnUrl(3003),
+      ...urlsOfOfflineFile(cdnUrl(3004), 'image/png'),
+    ]
 
     const plan = planReconcile(rows, cachedUrls, true)
     expect(plan.statuses[uuid(3001)]).toBe('downloading')
     expect(plan.statuses[uuid(3002)]).toBe('too-large')
     expect(plan.toDownload).toEqual([
-      { fileId: uuid(3001), urls: urlsOfOfflineFile(cdnUrl(3001)) },
+      { fileId: uuid(3001), urls: urlsOfOfflineFile(cdnUrl(3001), 'image/png') },
     ])
     // entries of files that are no longer (or never were) effective
     expect(plan.toDelete).toEqual([
       cdnUrl(3003),
-      ...urlsOfOfflineFile(cdnUrl(3004)),
+      ...urlsOfOfflineFile(cdnUrl(3004), 'image/png'),
     ])
   })
 
   it('queues downloads while offline and reports files without url', () => {
     const plan = planReconcile(
-      [{ file_id: uuid(3001), uuid: uuid(3001), url: null, size: null }, file(3002)],
+      [
+        {
+          file_id: uuid(3001),
+          uuid: uuid(3001),
+          url: null,
+          size: null,
+          mimetype: null,
+        },
+        file(3002),
+      ],
       [],
       false,
     )
@@ -155,10 +168,23 @@ describe('planReconcile', () => {
   it('marks fully cached files as cached', () => {
     const plan = planReconcile(
       [file(3001)],
-      urlsOfOfflineFile(cdnUrl(3001)),
+      urlsOfOfflineFile(cdnUrl(3001), 'image/png'),
       true,
     )
     expect(plan.statuses[uuid(3001)]).toBe('cached')
+    expect(plan.toDownload).toEqual([])
+  })
+
+  it('caches only the plain url for non-image files and caches them without transforms', () => {
+    const textFile = { ...file(3005), mimetype: 'text/plain' }
+    // image transforms 400 on Uploadcare for text files — they must not be
+    // planned, or the file's status could never reach cached
+    expect(urlsOfOfflineFile(textFile.url, textFile.mimetype)).toEqual([
+      cdnUrl(3005),
+    ])
+
+    const plan = planReconcile([textFile], [cdnUrl(3005)], true)
+    expect(plan.statuses[uuid(3005)]).toBe('cached')
     expect(plan.toDownload).toEqual([])
   })
 })
@@ -171,16 +197,19 @@ describe('url helpers', () => {
     expect(offlinePreviewUrl(cdnUrl(1))).toBe(
       `${cdnUrl(1)}-/preview/1600x1600/-/format/auto/-/quality/smart/`,
     )
-    expect(urlsOfOfflineFile(cdnUrl(1))).toEqual([
+    expect(urlsOfOfflineFile(cdnUrl(1), 'image/jpeg')).toEqual([
       offlineThumbUrl(cdnUrl(1)),
       offlinePreviewUrl(cdnUrl(1)),
       cdnUrl(1),
     ])
   })
 
-  it('parses the uploadcare uuid from a transform url', () => {
+  it('parses the uploadcare uuid from both cdn domains', () => {
     expect(uuidFromUrl(cdnUrl(1))).toBe(uuid(1))
     expect(uuidFromUrl(`${cdnUrl(1)}-/resize/x50/`)).toBe(uuid(1))
+    expect(
+      uuidFromUrl(`https://4ctwp64477.ucarecd.net/${uuid(2)}/-/preview/2x2/`),
+    ).toBe(uuid(2))
     expect(uuidFromUrl('https://example.com/x')).toBeNull()
   })
 })

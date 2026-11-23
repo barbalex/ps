@@ -61,9 +61,16 @@ registerRoute(
 // service worker must not import app code; keep them in sync.
 const OFFLINE_FILES_CACHE = 'offline-files'
 
-registerRoute(/^https:\/\/ucarecdn\.com\//, async ({ request, url }) => {
-  const cache = await caches.open(OFFLINE_FILES_CACHE)
-  const cached = await cache.match(url.href)
-  if (cached) return cached
-  return fetch(request)
-})
+// Uploadcare delivers from the classic ucarecdn.com and the current
+// per-project <project>.ucarecd.net domains (the cdnUrls the uploader
+// hands out) — the cache must serve both, or marked files stay unfetched
+// offline on new projects
+registerRoute(
+  /^https:\/\/(?:ucarecdn\.com|[\w-]+\.ucarecd\.net)\//,
+  async ({ request, url }) => {
+    const cache = await caches.open(OFFLINE_FILES_CACHE)
+    const cached = await cache.match(url.href)
+    if (cached) return cached
+    return fetch(request)
+  },
+)

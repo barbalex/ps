@@ -19,18 +19,31 @@ export const offlineThumbUrl = (url: string): string =>
 export const offlinePreviewUrl = (url: string): string =>
   `${url}-/preview/1600x1600/-/format/auto/-/quality/smart/`
 
-export const urlsOfOfflineFile = (url: string): string[] => [
-  offlineThumbUrl(url),
-  offlinePreviewUrl(url),
-  url,
-]
+// Thumb and preview are image transforms: Uploadcare rejects them (400) for
+// every other mimetype (text, pdf, office documents), which would keep the
+// file's status on downloading forever and re-attempt both URLs on every
+// reconcile. Non-image files render from their plain URL (DocViewer, pdf
+// object embed), so that is the only URL they need offline.
+export const urlsOfOfflineFile = (
+  url: string,
+  mimetype?: string | null,
+): string[] =>
+  mimetype?.includes('image') ?
+    [offlineThumbUrl(url), offlinePreviewUrl(url), url]
+  : [url]
 
-// the Uploadcare cdnUrl is https://ucarecdn.com/<uuid>/...: the uuid groups
-// a file's cache entries and identifies orphans during cleanup
+// the Uploadcare cdnUrl is https://ucarecdn.com/<uuid>/ (classic) or
+// https://<project>.ucarecd.net/<uuid>/ (current delivery domain): the uuid
+// groups a file's cache entries and identifies orphans during cleanup
 export const uuidFromUrl = (url: string): string | null =>
-  /^https:\/\/ucarecdn\.com\/([^/]+)\//.exec(url)?.[1] ?? null
+  /^https:\/\/(?:ucarecdn\.com|[\w-]+\.ucarecd\.net)\/([^/]+)\//.exec(
+    url,
+  )?.[1] ?? null
 
-export type EffectiveOfflineFile = Pick<Files, 'file_id' | 'uuid' | 'url' | 'size'>
+export type EffectiveOfflineFile = Pick<
+  Files,
+  'file_id' | 'uuid' | 'url' | 'size' | 'mimetype'
+>
 
 // Effectively offline = the project gate (projects.files_offline) is on AND
 // the file is marked (files.offline) or covered by its table's flag
@@ -40,13 +53,14 @@ export type EffectiveOfflineFile = Pick<Files, 'file_id' | 'uuid' | 'url' | 'siz
 // Files attached directly to a project or subproject have no table flag;
 // only their own mark applies.
 export const effectiveOfflineFilesSql = `
-  SELECT t.file_id, t.uuid, t.url, t.size
+  SELECT t.file_id, t.uuid, t.url, t.size, t.mimetype
   FROM (
     SELECT
       f.file_id,
       f.uuid,
       f.url,
       f.size,
+      f.mimetype,
       f.offline,
       CASE
         WHEN f.place_id IS NOT NULL THEN pl1.place_files_offline
@@ -119,7 +133,7 @@ export const planReconcile = (
   const urlsByFile = new Map<string, string[]>()
   for (const row of rows) {
     if (!row.url) continue
-    const urls = urlsOfOfflineFile(row.url)
+    const urls = urlsOfOfflineFile(row.url, row.mimetype)
     for (const url of urls) desiredUrls.add(url)
     urlsByFile.set(row.file_id, urls)
   }
