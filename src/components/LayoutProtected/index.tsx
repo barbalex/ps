@@ -27,6 +27,7 @@ import { AppAdminDetector } from '../AppAdminDetector.tsx'
 import { TreeOpenNodesSetter } from '../TreeOpenNodesSetter.tsx'
 import { OperationsObserver } from '../OperationsObserver.tsx'
 import { AutoFetchCapabilities } from '../AutoFetchCapabilities.tsx'
+import { OfflineFilesManager } from '../OfflineFilesManager.tsx'
 import { mapMaximizedAtom } from '../../store.ts'
 
 const tanstackQueryClient = new QueryClient()
@@ -130,6 +131,7 @@ export const LayoutProtected = () => {
           <AppAdminDetector />
           <AutoFetchCapabilities />
           <OperationsObserver />
+          <OfflineFilesManager />
           <Main />
           {/* TreeOpenNodesSetter must come after Main: jotai's useAtomValueRaw
             subscribes in an effect and misses store writes that happen between

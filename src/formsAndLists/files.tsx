@@ -2,7 +2,15 @@ import { useContext } from 'react'
 import * as fluentUiReactComponents from '@fluentui/react-components'
 const { Button } = fluentUiReactComponents
 import { FaPlus } from 'react-icons/fa'
+import {
+  MdDownloadDone,
+  MdDownloading,
+  MdFileDownload,
+  MdErrorOutline,
+  MdInfoOutline,
+} from 'react-icons/md'
 import { useIntl } from 'react-intl'
+import { useAtomValue } from 'jotai'
 
 import { ListHeader } from '../components/ListHeader.tsx'
 import { Row } from '../components/shared/Row.tsx'
@@ -11,8 +19,20 @@ import { FilterButton } from '../components/shared/FilterButton.tsx'
 import { useFilesNavData } from '../modules/useFilesNavData.ts'
 import { Uploader } from './file/Uploader.tsx'
 import { UploaderContext } from '../UploaderContext.ts'
+import { offlineFilesStatusAtom } from '../store.ts'
 
 import '../form.css'
+
+// per-row offline state (OfflineFilesManager): only effectively offline
+// files appear in the record
+const offlineStatusIcons = {
+  cached: <MdDownloadDone />,
+  downloading: <MdDownloading />,
+  queued: <MdFileDownload />,
+  error: <MdErrorOutline />,
+  'too-large': <MdInfoOutline />,
+  'no-url': null,
+} as const
 
 export const Files = ({
   projectId,
@@ -56,6 +76,7 @@ export const Files = ({
   const { formatMessage } = useIntl()
   const api = uploaderCtx?.current?.getAPI?.()
   const onClickAdd = () => api?.initFlow?.()
+  const offlineStatuses = useAtomValue(offlineFilesStatusAtom)
 
   // TODO: get uploader css locally if it should be possible to upload files
   // offline to SQLite
@@ -100,10 +121,25 @@ export const Files = ({
                 imgSrc = `${url}-/resize/x50/-/format/auto/-/quality/smart/`
               }
 
+              const offlineStatus = offlineStatuses[id]
+              const offlineIcon = offlineStatusIcons[offlineStatus]
+              const labelContent =
+                offlineIcon ?
+                  <>
+                    {label ?? id}
+                    <span
+                      style={{ marginLeft: 6, display: 'inline-flex' }}
+                      title={offlineStatus}
+                    >
+                      {offlineIcon}
+                    </span>
+                  </>
+                : label ?? id
+
               return (
                 <Row
                   key={id}
-                  label={label ?? id}
+                  label={labelContent}
                   to={id}
                   imgSrc={imgSrc}
                   lastHasImages={true}

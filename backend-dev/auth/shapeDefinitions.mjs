@@ -107,10 +107,13 @@ export const shapeDefinitions = {
       'check_taxa_in_check',
       'check_files',
       'check_files_in_check',
+      'check_files_offline',
       'table_views',
       'observations',
       'place_roles_in_place',
       'place_files_in_place',
+      'place_files_offline',
+      'action_files_offline',
       ...auditColumns,
     ],
     where: `project_id IN (${projectIdsOfUser})`,
@@ -443,6 +446,7 @@ export const shapeDefinitions = {
       'url',
       'uuid',
       'preview_uuid',
+      'offline',
       ...auditColumns,
     ],
     // files created below a place also carry place_id, so actions/checks
@@ -555,6 +559,10 @@ export const shapeDefinitions = {
     where: `project_id IN (${projectIdsOfUser})`,
     primaryKey: ['wms_layer_id'],
   },
+  tile_layers: {
+    where: `project_id IN (${projectIdsOfUser})`,
+    primaryKey: ['tile_layer_id'],
+  },
   wfs_services: {
     columns: [
       'wfs_service_id',
@@ -611,6 +619,7 @@ export const shapeDefinitions = {
       'layer_presentation_id',
       'wms_layer_id',
       'vector_layer_id',
+      'tile_layer_id',
       'project_id',
       'active',
       'opacity_percent',

@@ -5,6 +5,8 @@ export type AuthVerificationsAuthVerificationId = string & { __brand: 'public.au
 export default interface AuthVerifications {
   auth_verification_id: AuthVerificationsAuthVerificationId;
 
+  id: string | null;
+
   identifier: string | null;
 
   value: string | null;
@@ -22,6 +24,8 @@ export default interface AuthVerifications {
 export interface AuthVerificationsInitializer {
   /** Default value: uuidv7() */
   auth_verification_id?: AuthVerificationsAuthVerificationId;
+
+  id?: string | null;
 
   identifier?: string | null;
 
@@ -41,6 +45,8 @@ export interface AuthVerificationsInitializer {
 /** Represents the mutator for the table public.auth_verifications */
 export interface AuthVerificationsMutator {
   auth_verification_id?: AuthVerificationsAuthVerificationId;
+
+  id?: string | null;
 
   identifier?: string | null;
 

@@ -2,18 +2,19 @@ import { useContext, useRef, useEffect } from 'react'
 import { useParams, useNavigate, useLocation } from '@tanstack/react-router'
 import * as fluentUiReactComponents from '@fluentui/react-components'
 const { Button } = fluentUiReactComponents
-import { MdPreview, MdEditNote } from 'react-icons/md'
+import { MdPreview, MdEditNote, MdFileDownload, MdDownloadDone, MdDownloading } from 'react-icons/md'
 import { useIntl } from 'react-intl'
 
-import { usePGlite } from '@electric-sql/pglite-react'
-import { useSetAtom } from 'jotai'
+import { usePGlite, useLiveQuery } from '@electric-sql/pglite-react'
+import { useAtomValue, useSetAtom } from 'jotai'
 
 import { FormHeader } from '../../components/FormHeader/index.tsx'
 import { UploaderContext } from '../../UploaderContext.ts'
 import { FullscreenControl } from './FullscreenControl.tsx'
 import { HistoryToggleButton } from '../../components/shared/HistoryCompare/HistoryToggleButton.tsx'
-import { addOperationAtom } from '../../store.ts'
+import { addOperationAtom, offlineFilesStatusAtom } from '../../store.ts'
 import { filesScopeWhere } from '../../modules/filesScopeWhere.ts'
+import { setFileOffline } from '../../modules/setFileOffline.ts'
 import type Files from '../../models/public/Files.ts'
 
 export const Header = ({
@@ -47,6 +48,44 @@ export const Header = ({
   const projectBasePath = `/data/projects/${projectId}/files/${fileId}`
   const { formatMessage } = useIntl()
   const addOperation = useSetAtom(addOperationAtom)
+
+  // offline availability: the mark (files.offline) plus the project gate;
+  // hidden entirely while the gate is off
+  const resOfflineRow = useLiveQuery(
+    `SELECT offline, url FROM files WHERE file_id = $1`,
+    [fileId],
+  )
+  const offlineRow = resOfflineRow?.rows?.[0] as
+    | { offline: boolean | null; url: string | null }
+    | undefined
+  const resGate = useLiveQuery(
+    `SELECT files_offline FROM projects WHERE project_id = $1`,
+    [projectId],
+  )
+  const gateOn = resGate?.rows?.[0]?.files_offline === true
+  const offlineStatus = useAtomValue(offlineFilesStatusAtom)[fileId ?? '']
+
+  const offlineTitle =
+    offlineStatus === 'downloading'
+      ? formatMessage({
+          id: 'offlineFileDownloadingTitle',
+          defaultMessage: 'Datei wird für offline gespeichert …',
+        })
+      : offlineRow?.offline ?
+        formatMessage({
+          id: 'offlineFileOnTitle',
+          defaultMessage: 'Datei offline verfügbar (Klick: wieder entfernen)',
+        })
+      : formatMessage({
+          id: 'offlineFileOffTitle',
+          defaultMessage: 'Datei offline verfügbar machen',
+        })
+
+  const onClickOffline = () => {
+    if (!fileId || !offlineRow?.url) return
+    void setFileOffline(fileId, !offlineRow.offline)
+  }
+
 
   const onClickPreview = () => {
     if (isPreview) {
@@ -167,6 +206,21 @@ export const Header = ({
       tableName="file"
       siblings={
         <>
+          {gateOn && !!offlineRow?.url && (
+            <Button
+              title={offlineTitle}
+              icon={
+                offlineStatus === 'downloading' ? (
+                  <MdDownloading />
+                ) : offlineRow.offline ? (
+                  <MdDownloadDone />
+                ) : (
+                  <MdFileDownload />
+                )
+              }
+              onClick={onClickOffline}
+            />
+          )}
           <Button
             title={
               isPreview

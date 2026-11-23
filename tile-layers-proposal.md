@@ -1,8 +1,13 @@
 # Proposal: project owners add their own base tile layers
 
-Status: proposal, not yet implemented. The hardcoded background maps (OSM /
-Positron / Dark Matter, `src/components/Map/layers/backgroundLayers.ts`) ship
-separately and stay as they are.
+Status: **implemented (options B + C)**. A dedicated `tile_layers` table
+(option B) plus an `is_background` flag that feeds the drawer's
+Hintergrundkarte chooser (option C) — see `backend/db/init/04_createTables.sql`
+and `src/components/Map/LeftMenuDrawer/Layers/Tile/`. E2e:
+`e2e/tile-layers.spec.ts`. The hardcoded background maps (OSM / Positron /
+Dark Matter, `src/components/Map/layers/backgroundLayers.ts`) stay as they
+are. Fiord Color can now be added by any project owner as a tile layer once
+they have a MapTiler key — no further code needed.
 
 ## Goal
 

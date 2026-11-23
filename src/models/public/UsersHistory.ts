@@ -61,8 +61,11 @@ export interface UsersHistoryInitializer {
   /** Default value: false */
   accounts_in_user?: boolean | null;
 
-  /** System period written by temporal_tables. lower(sys_period) is when the row version became current, upper(sys_period) when it stopped being current. */
-  sys_period: string;
+  /**
+   * System period written by temporal_tables. lower(sys_period) is when the row version became current, upper(sys_period) when it stopped being current.
+   * Default value: tstzrange(now(), NULL::timestamp with time zone, '[)'::text)
+   */
+  sys_period?: string;
 
   /** Default value: now() */
   created_at?: Date;

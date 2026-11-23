@@ -911,6 +911,8 @@ BEGIN
       SELECT project_id INTO NEW.project_id FROM wms_layers WHERE wms_layer_id = NEW.wms_layer_id;
     ELSIF NEW.vector_layer_id IS NOT NULL THEN
       SELECT project_id INTO NEW.project_id FROM vector_layers WHERE vector_layer_id = NEW.vector_layer_id;
+    ELSIF NEW.tile_layer_id IS NOT NULL THEN
+      SELECT project_id INTO NEW.project_id FROM tile_layers WHERE tile_layer_id = NEW.tile_layer_id;
     END IF;
   END IF;
   RETURN NEW;

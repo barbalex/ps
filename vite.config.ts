@@ -65,7 +65,18 @@ export default defineConfig({
       },
     },
     VitePWA({
-      workbox: {
+      // custom service worker (src/sw.ts) instead of GenerateSW: the
+      // offline-files route must serve the marked files from the
+      // 'offline-files' cache WITHOUT opportunistically caching every CDN
+      // response the app fetches — GenerateSW's declarative CacheFirst would
+      // cache everything, and unmarking a file could then never free its
+      // space. Precache manifest, navigation fallback and the cold-chunk
+      // route replicate what GenerateSW produced before.
+      strategies: 'injectManifest',
+      // the custom service worker source (filename is the output name)
+      srcDir: 'src',
+      filename: 'sw.ts',
+      injectManifest: {
         sourcemap: true,
         // avif included: the hero images are the LCP element and must come
         // from the precache on repeat visits, not from a revalidating fetch
@@ -93,26 +104,6 @@ export default defineConfig({
         // browser's HTTP cache may evict its copy, and without the wasm
         // there is no offline app at all. Before, offline robustness
         // depended on HTTP-cache luck.
-        // runtime caching for the excluded cold chunks above (hashed,
-        // immutable URLs — CacheFirst is safe)
-        runtimeCaching: [
-          {
-            urlPattern: /\/assets\/.+\.(js|css|wasm)$/,
-            handler: 'CacheFirst',
-            options: {
-              cacheName: 'assets-on-first-use',
-              cacheableResponse: { statuses: [200] },
-            },
-          },
-        ],
-        // On arten-fördern.ch the OAuth callback is a same-origin navigation
-        // to /auth/callback/google that the Netlify edge function must proxy
-        // to the auth server — without the denylist the navigation fallback
-        // serves the precached SPA shell instead, the authorization code never
-        // reaches the backend and the router shows its 404 page. '/auth'
-        // itself (the SPA login page, no trailing slash) keeps the fallback.
-        navigateFallback: 'index.html',
-        navigateFallbackDenylist: [/^\/auth\//],
         maximumFileSizeToCacheInBytes: 1000000000,
       },
       registerType: 'autoUpdate',

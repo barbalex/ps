@@ -83,7 +83,7 @@ export default interface PlaceLevels {
 
   check_taxa_in_check: boolean | null;
 
-  /** Map of table_view_id -> boolean: whether this filtered view is used on this place level. Preset: NULL (no view enabled) */
+  /** Map of table_view_id -> boolean: whether this table view is used on this place level. Preset: NULL (no view enabled) */
   table_views: unknown | null;
 
   /** Are observations used? Preset: true */
@@ -120,6 +120,12 @@ export default interface PlaceLevels {
   updated_at: Date;
 
   updated_by: string | null;
+
+  place_files_offline: boolean | null;
+
+  action_files_offline: boolean | null;
+
+  check_files_offline: boolean | null;
 }
 
 /**
@@ -246,7 +252,7 @@ export interface PlaceLevelsInitializer {
   /** Default value: true */
   check_taxa_in_check?: boolean | null;
 
-  /** Map of table_view_id -> boolean: whether this filtered view is used on this place level. Preset: NULL (no view enabled) */
+  /** Map of table_view_id -> boolean: whether this table view is used on this place level. Preset: NULL (no view enabled) */
   table_views?: unknown | null;
 
   /**
@@ -307,6 +313,15 @@ export interface PlaceLevelsInitializer {
   updated_at?: Date;
 
   updated_by?: string | null;
+
+  /** Default value: false */
+  place_files_offline?: boolean | null;
+
+  /** Default value: false */
+  action_files_offline?: boolean | null;
+
+  /** Default value: false */
+  check_files_offline?: boolean | null;
 }
 
 /**
@@ -389,7 +404,7 @@ export interface PlaceLevelsMutator {
 
   check_taxa_in_check?: boolean | null;
 
-  /** Map of table_view_id -> boolean: whether this filtered view is used on this place level. Preset: NULL (no view enabled) */
+  /** Map of table_view_id -> boolean: whether this table view is used on this place level. Preset: NULL (no view enabled) */
   table_views?: unknown | null;
 
   /** Are observations used? Preset: true */
@@ -424,4 +439,10 @@ export interface PlaceLevelsMutator {
   updated_at?: Date;
 
   updated_by?: string | null;
+
+  place_files_offline?: boolean | null;
+
+  action_files_offline?: boolean | null;
+
+  check_files_offline?: boolean | null;
 }

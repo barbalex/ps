@@ -37,6 +37,7 @@ type Props = {
   layer: {
     layer_presentation_id?: string
     wms_layer_id?: string | null
+    tile_layer_id?: string | null
   }
 }
 
@@ -104,7 +105,7 @@ export const LayerPresentationForm = ({ layer }: Props) => {
           value={row.opacity_percent as number}
           onChange={onChange}
         />
-        {layer.wms_layer_id && (
+        {(layer.wms_layer_id || layer.tile_layer_id) && (
           <>
             <SwitchField
               label="Transparent"

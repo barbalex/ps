@@ -1,8 +1,10 @@
 import { useIntl } from 'react-intl'
+import { useParams } from '@tanstack/react-router'
 import * as fluentUiReactComponents from '@fluentui/react-components'
 const { Button } = fluentUiReactComponents
 import { BsCheckSquareFill, BsSquare } from 'react-icons/bs'
 import { useAtom } from 'jotai'
+import { useLiveQuery } from '@electric-sql/pglite-react'
 
 import { ErrorBoundary } from '../../../../shared/ErrorBoundary.tsx'
 import { useUrlLayers } from '../../../../../modules/useUrlLayers.ts'
@@ -17,45 +19,67 @@ import {
 import layerStyles from '../index.module.css'
 import styles from './index.module.css'
 
+// labels for the drawer's pseudo background layers, keyed by id
+const labels: Record<string, { id: string; defaultMessage: string }> = {
+  [defaultBackgroundLayerId]: {
+    id: 'mapBackgroundLayerOsm',
+    defaultMessage: 'OpenStreetMap',
+  },
+  [POSITRON_LAYER_PRESENTATION_ID]: {
+    id: 'mapBackgroundLayerPositron',
+    defaultMessage: 'Positron (hell)',
+  },
+  [DARK_MATTER_LAYER_PRESENTATION_ID]: {
+    id: 'mapBackgroundLayerDarkMatter',
+    defaultMessage: 'Dark Matter (dunkel)',
+  },
+}
+
 export const BackgroundLayers = () => {
   const { formatMessage } = useIntl()
+  const { projectId = '99999999-9999-9999-9999-999999999999' } = useParams({
+    strict: false,
+  })
   const { layers: effectiveLayers, isOverridden, setLayers } = useUrlLayers()
   const [mapLayerSorting, setMapLayerSorting] = useAtom(mapLayerSortingAtom)
 
-  // the chosen background is whichever background id the effective render
-  // list contains; if none (e.g. a hand-crafted ?layers= link), the default
-  // counts as chosen
-  const currentId =
-    effectiveLayers.find(isBackgroundLayerId) ?? defaultBackgroundLayerId
+  // background tile layers of the project (tile_layers with is_background):
+  // their presentation is created with the layer, so they can be listed here
+  const resTileBackgrounds = useLiveQuery(
+    `
+    SELECT tl.label, lp.layer_presentation_id
+    FROM tile_layers tl
+      JOIN layer_presentations lp ON tl.tile_layer_id = lp.tile_layer_id
+    WHERE tl.project_id = $1
+      AND tl.is_background = TRUE
+    ORDER BY coalesce(tl.label, tl.tile_layer_id::text)`,
+    [projectId],
+  )
+  const tileBackgrounds = (resTileBackgrounds?.rows ?? []) as unknown as {
+    label: string | null
+    layer_presentation_id: string
+  }[]
+  const tileBackgroundIds = tileBackgrounds.map(
+    (tb) => tb.layer_presentation_id,
+  )
 
-  // the labels must be inline for formatjs extract to find them
-  const labelFor = (id: string) => {
-    switch (id) {
-      case POSITRON_LAYER_PRESENTATION_ID:
-        return formatMessage({
-          id: 'mapBackgroundLayerPositron',
-          defaultMessage: 'Positron (hell)',
-        })
-      case DARK_MATTER_LAYER_PRESENTATION_ID:
-        return formatMessage({
-          id: 'mapBackgroundLayerDarkMatter',
-          defaultMessage: 'Dark Matter (dunkel)',
-        })
-      default:
-        return formatMessage({
-          id: 'mapBackgroundLayerOsm',
-          defaultMessage: 'OpenStreetMap',
-        })
-    }
-  }
+  // the chosen background is whichever background id (pseudo or tile layer)
+  // the effective render list contains; if none (e.g. a hand-crafted
+  // ?layers= link), the default counts as chosen
+  const currentId =
+    effectiveLayers.find(
+      (id) => isBackgroundLayerId(id) || tileBackgroundIds.includes(id),
+    ) ?? defaultBackgroundLayerId
 
   const pick = (id: string) => {
     if (id === currentId) return
     // replace the current background id with the picked one; if the list
     // has none, append the picked one at the end (lowest pane = base)
+    const isBackgroundId = (ls: string) =>
+      isBackgroundLayerId(ls) || tileBackgroundIds.includes(ls)
     const swap = (list: string[]) =>
-      list.some(isBackgroundLayerId) ?
-        list.map((ls) => (isBackgroundLayerId(ls) ? id : ls))
+      list.some(isBackgroundId) ?
+        list.map((ls) => (isBackgroundId(ls) ? id : ls))
       : [...list, id]
     // an active ?layers= override is the render list: write the param like
     // the other layer toggles do, the sorting atom otherwise
@@ -91,7 +115,30 @@ export const BackgroundLayers = () => {
               onClick={() => pick(id)}
             >
               <span className={layerStyles.headerLabel}>
-                {labelFor(id)}
+                {formatMessage(labels[id])}
+              </span>
+            </Button>
+          ))}
+          {tileBackgrounds.map((tb) => (
+            <Button
+              key={tb.layer_presentation_id}
+              appearance="transparent"
+              className={styles.row}
+              icon={
+                tb.layer_presentation_id === currentId ? (
+                  <BsCheckSquareFill className={layerStyles.headerToggleIcon} />
+                ) : (
+                  <BsSquare className={layerStyles.headerToggleIcon} />
+                )
+              }
+              onClick={() => pick(tb.layer_presentation_id)}
+            >
+              <span className={layerStyles.headerLabel}>
+                {tb.label ||
+                  formatMessage({
+                    id: 'tileLayerNoName',
+                    defaultMessage: 'Tile-Layer ohne Name',
+                  })}
               </span>
             </Button>
           ))}

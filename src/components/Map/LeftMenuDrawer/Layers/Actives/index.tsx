@@ -28,6 +28,7 @@ import layersStyles from '../index.module.css'
 import styles from './index.module.css'
 import type WmsLayers from '../../../../../models/public/WmsLayers.ts'
 import type VectorLayers from '../../../../../models/public/VectorLayers.ts'
+import type TileLayers from '../../../../../models/public/TileLayers.ts'
 import type LayerPresentations from '../../../../../models/public/LayerPresentations.ts'
 
 // rows built by the queries below:
@@ -48,12 +49,20 @@ type LayerRowCommon = {
   wms_layer_id?: WmsLayers['wms_layer_id']
   wms_service_id?: WmsLayers['wms_service_id']
   wms_service_layer_name?: string | null
+  tile_layer_id?: TileLayers['tile_layer_id']
+  url_template?: TileLayers['url_template']
+  is_background?: TileLayers['is_background']
 }
 export type ActiveWmsLayerRow = WmsLayers &
   LayerRowCommon & { layer_type: 'wms' }
 export type ActiveVectorLayerRow = VectorLayers &
   LayerRowCommon & { layer_type: 'vector' }
-export type ActiveLayerRow = ActiveWmsLayerRow | ActiveVectorLayerRow
+export type ActiveTileLayerRow = TileLayers &
+  LayerRowCommon & { layer_type: 'tile' }
+export type ActiveLayerRow =
+  | ActiveWmsLayerRow
+  | ActiveVectorLayerRow
+  | ActiveTileLayerRow
 
 // what accordion items are open
 // needs to be controlled to prevent opening when layer is deactivated
@@ -104,6 +113,34 @@ export const ActiveLayers = () => {
   )
   const activeVectorLayers = (resVectorLayers?.rows ?? []) as unknown as ActiveVectorLayerRow[]
 
+  const resTileLayers = useLiveQuery(
+    `
+    SELECT tl.*, lp.layer_presentation_id, lp.active as layer_presentation_active, 'tile' as layer_type
+    FROM tile_layers tl
+      JOIN layer_presentations lp ON tl.tile_layer_id = lp.tile_layer_id
+        AND lp.active = TRUE
+    WHERE tl.project_id = $1
+      AND tl.is_background = FALSE`,
+    [projectId],
+  )
+  const activeTileLayers = (resTileLayers?.rows ?? []) as unknown as ActiveTileLayerRow[]
+
+  // background tile layers render via render list membership alone (like
+  // the osm pseudo layer): their presentation ids must survive the
+  // mapLayerSorting sync below even though they are not active
+  const resTileBackgrounds = useLiveQuery(
+    `
+    SELECT lp.layer_presentation_id
+    FROM tile_layers tl
+      JOIN layer_presentations lp ON tl.tile_layer_id = lp.tile_layer_id
+    WHERE tl.project_id = $1
+      AND tl.is_background = TRUE`,
+    [projectId],
+  )
+  const tileBackgroundPresentationIds: string[] = (
+    (resTileBackgrounds?.rows ?? []) as { layer_presentation_id: string }[]
+  ).map((r) => r.layer_presentation_id)
+
   // union queries?
   // + faster querying
   // + less renders
@@ -112,7 +149,11 @@ export const ActiveLayers = () => {
   // sort by the effective render list: with an active ?layers= override
   // that is the param (so drawer order, map order and url agree); without
   // one it is mapLayerSorting
-  const activeLayers = [...activeWmsLayers, ...activeVectorLayers].sort(
+  const activeLayers = [
+    ...activeWmsLayers,
+    ...activeVectorLayers,
+    ...activeTileLayers,
+  ].sort(
     (a, b) => {
       const aIndex = effectiveLayers.findIndex(
         (ls) => ls === a.layer_presentation_id,
@@ -130,6 +171,17 @@ export const ActiveLayers = () => {
   // add missing layer's layer_presentation_id's to mapLayerSorting
   // remove layer_presentation_id's that are not in activeLayers
   useEffect(() => {
+    // wait for all live queries to have resolved: syncing the atom from a
+    // half-loaded state (queries still undefined) wipes ids the not-yet
+    // loaded keep-sets should have protected — e.g. a freshly picked
+    // background tile layer
+    if (
+      !resWmsLayers ||
+      !resVectorLayers ||
+      !resTileLayers ||
+      !resTileBackgrounds
+    )
+      return
     if (!layerPresentationIds.length) return
 
     const run = async () => {
@@ -140,7 +192,9 @@ export const ActiveLayers = () => {
       // will lead to unlimited re-rendering
       const removeLayerPresentations = mapLayerSorting.filter(
         (lpId) =>
-          !layerPresentationIds.includes(lpId) && !isBackgroundLayerId(lpId),
+          !layerPresentationIds.includes(lpId) &&
+          !isBackgroundLayerId(lpId) &&
+          !tileBackgroundPresentationIds.includes(lpId),
       )
       if (
         !missingLayerPresentations.length &&
@@ -159,7 +213,16 @@ export const ActiveLayers = () => {
       setMapLayerSorting(newLayerSorting)
     }
     run()
-  }, [layerPresentationIds, mapLayerSorting, setMapLayerSorting])
+  }, [
+    layerPresentationIds,
+    mapLayerSorting,
+    setMapLayerSorting,
+    tileBackgroundPresentationIds,
+    resWmsLayers,
+    resVectorLayers,
+    resTileLayers,
+    resTileBackgrounds,
+  ])
 
   const [registry] = useState(getItemRegistry)
 
@@ -322,7 +385,7 @@ export const ActiveLayers = () => {
             {activeLayers.length ? (
               activeLayers?.map((l, index) => (
                 <ActiveLayer
-                  key={l.wms_layer_id ?? l.vector_layer_id}
+                  key={l.wms_layer_id ?? l.vector_layer_id ?? l.tile_layer_id}
                   layer={l}
                   index={index}
                   layerCount={activeLayers.length}

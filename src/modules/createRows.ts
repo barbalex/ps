@@ -1574,6 +1574,51 @@ export const createWmsLayer = async ({ projectId }: { projectId: string }) => {
   return wms_layer_id
 }
 
+// tile layers always get their layer_presentation right away: background
+// tile layers must render for viewers without write access, so choosing
+// them in the Hintergrundkarte section stays pure view state
+export const createTileLayer = async ({ projectId }: { projectId: string }) => {
+  const db = store.get(pgliteDbAtom)!
+  const tile_layer_id = uuidv7()
+  await db.query(
+    `INSERT INTO tile_layers (tile_layer_id, project_id) VALUES ($1, $2)`,
+    [tile_layer_id, projectId],
+  )
+
+  store.set(addOperationAtom, {
+    table: 'tile_layers',
+    operation: 'insert',
+    draft: {
+      tile_layer_id,
+      project_id: projectId,
+    },
+  })
+
+  const layer_presentation_id = uuidv7()
+  await db.query(
+    `INSERT INTO layer_presentations (layer_presentation_id, tile_layer_id, project_id) VALUES ($1, $2, $3)`,
+    [layer_presentation_id, tile_layer_id, projectId],
+  )
+
+  store.set(addOperationAtom, {
+    table: 'layer_presentations',
+    operation: 'insert',
+    draft: {
+      layer_presentation_id,
+      tile_layer_id,
+      project_id: projectId,
+      active: false,
+      opacity_percent: 100,
+      grayscale: false,
+      transparent: true,
+      max_zoom: 19,
+      min_zoom: 0,
+    },
+  })
+
+  return tile_layer_id
+}
+
 export const createVectorLayer = async ({
   projectId,
   type = null,
@@ -1784,6 +1829,7 @@ export const createVectorLayerDisplay = async ({
 export const createLayerPresentation = async ({
   vectorLayerId = null,
   wmsLayerId = null,
+  tileLayerId = null,
   active = false,
   // matches the schema default (layer_presentations.transparent): WMS tiles
   // without the base map shining through are opaque white rectangles
@@ -1792,6 +1838,7 @@ export const createLayerPresentation = async ({
 }: {
   vectorLayerId?: string | null
   wmsLayerId?: string | null
+  tileLayerId?: string | null
   active?: boolean
   transparent?: boolean
   skipOperationQueue?: boolean
@@ -1813,18 +1860,25 @@ export const createLayerPresentation = async ({
       [wmsLayerId],
     )
     projectId = res?.rows?.[0]?.project_id ?? null
+  } else if (tileLayerId) {
+    const res = await db.query<{ project_id: string }>(
+      `SELECT project_id FROM tile_layers WHERE tile_layer_id = $1`,
+      [tileLayerId],
+    )
+    projectId = res?.rows?.[0]?.project_id ?? null
   }
 
   await db.query(
     `
     INSERT INTO layer_presentations
-    (layer_presentation_id, vector_layer_id, wms_layer_id, project_id, active, opacity_percent, grayscale, transparent, max_zoom, min_zoom)
-    VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)
+    (layer_presentation_id, vector_layer_id, wms_layer_id, tile_layer_id, project_id, active, opacity_percent, grayscale, transparent, max_zoom, min_zoom)
+    VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11)
   `,
     [
       layer_presentation_id,
       vectorLayerId,
       wmsLayerId,
+      tileLayerId,
       projectId,
       active,
       100,
@@ -1844,6 +1898,7 @@ export const createLayerPresentation = async ({
         layer_presentation_id,
         vector_layer_id: vectorLayerId,
         wms_layer_id: wmsLayerId,
+        tile_layer_id: tileLayerId,
         project_id: projectId,
         active,
         opacity_percent: 100,

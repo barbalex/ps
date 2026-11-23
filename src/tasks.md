@@ -38,7 +38,7 @@ Better-Auth, possible extensions:
 
 ---
 
-lets ensure only owners can create projects and designers and owners subprojects. Maybe that is already implemented? Another agent is working on map wmts layers
+---
 
 ---
 

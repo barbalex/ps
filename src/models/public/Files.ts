@@ -60,6 +60,9 @@ export default interface Files {
   updated_at: Date;
 
   updated_by: string | null;
+
+  /** Marked by writers as available offline; fetched into the device's service-worker cache (requires projects.files_offline). Preset: false. */
+  offline: boolean | null;
 }
 
 /**
@@ -116,6 +119,12 @@ export interface FilesInitializer {
   updated_at?: Date;
 
   updated_by?: string | null;
+
+  /**
+   * Marked by writers as available offline; fetched into the device's service-worker cache (requires projects.files_offline). Preset: false.
+   * Default value: false
+   */
+  offline?: boolean | null;
 }
 
 /**
@@ -169,4 +178,7 @@ export interface FilesMutator {
   updated_at?: Date;
 
   updated_by?: string | null;
+
+  /** Marked by writers as available offline; fetched into the device's service-worker cache (requires projects.files_offline). Preset: false. */
+  offline?: boolean | null;
 }

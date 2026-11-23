@@ -1,7 +1,10 @@
 import { lazy, Suspense, useRef } from 'react'
 import { useParams } from '@tanstack/react-router'
 import { useLiveQuery } from '@electric-sql/pglite-react'
+import { useAtomValue } from 'jotai'
 
+import { offlinePreviewUrl } from '../../modules/offlineFiles.ts'
+import { offlineFilesStatusAtom } from '../../store.ts'
 import { Header } from '../file/Header.tsx'
 import { Uploader } from '../file/Uploader.tsx'
 import { Loading } from '../../components/shared/Loading.tsx'
@@ -25,6 +28,11 @@ export const FilePreview = ({ from }: { from: string }) => {
   const row: Files | undefined = res?.rows?.[0] as Files | undefined
 
   const { width, height, ref } = useElementSize<HTMLDivElement>({ delay: 300 })
+  // effectively offline (OfflineFilesManager): render the fixed preview URL
+  // that is cached on the device
+  const offlineStatuses = useAtomValue(offlineFilesStatusAtom)
+  const isEffectivelyOffline =
+    row !== undefined && row.file_id in offlineStatuses
 
   if (!res) return <Loading />
 
@@ -69,9 +77,13 @@ export const FilePreview = ({ from }: { from: string }) => {
       <div className={styles.file} ref={ref}>
         {isImage && row.url && width && (
           <img
-            src={`${row.url}-/preview/${Math.floor(width)}x${Math.floor(
-              height!,
-            )}/-/format/auto/-/quality/smart/`}
+            src={
+              isEffectivelyOffline ?
+                offlinePreviewUrl(row.url)
+              : `${row.url}-/preview/${Math.floor(width)}x${Math.floor(
+                  height!,
+                )}/-/format/auto/-/quality/smart/`
+            }
             alt={row.name ?? undefined}
             width={width}
             height={

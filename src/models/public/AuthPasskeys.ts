@@ -7,6 +7,8 @@ export type AuthPasskeysAuthPasskeyId = string & { __brand: 'public.auth_passkey
 export default interface AuthPasskeys {
   auth_passkey_id: AuthPasskeysAuthPasskeyId;
 
+  id: string | null;
+
   name: string | null;
 
   public_key: string;
@@ -36,6 +38,8 @@ export default interface AuthPasskeys {
 export interface AuthPasskeysInitializer {
   /** Default value: uuidv7() */
   auth_passkey_id?: AuthPasskeysAuthPasskeyId;
+
+  id?: string | null;
 
   name?: string | null;
 
@@ -69,6 +73,8 @@ export interface AuthPasskeysInitializer {
 /** Represents the mutator for the table public.auth_passkeys */
 export interface AuthPasskeysMutator {
   auth_passkey_id?: AuthPasskeysAuthPasskeyId;
+
+  id?: string | null;
 
   name?: string | null;
 

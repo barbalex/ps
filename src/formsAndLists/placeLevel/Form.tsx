@@ -225,6 +225,19 @@ export const PlaceLevelForm = ({
             validationState={validations?.place_files?.state}
             validationMessage={validations?.place_files?.message}
           />
+          {Boolean(row.place_files) && (
+            <SwitchField
+              label={formatMessage({
+                id: 'placeFilesOffline',
+                defaultMessage: 'Dateien offline verfügbar',
+              })}
+              name="place_files_offline"
+              value={Boolean(row.place_files_offline ?? false)}
+              onChange={onChange}
+              validationState={validations?.place_files_offline?.state}
+              validationMessage={validations?.place_files_offline?.message}
+            />
+          )}
           <SwitchField
             label={formatMessage(
               {
@@ -372,6 +385,19 @@ export const PlaceLevelForm = ({
               {row.check_files && (
                 <SwitchField
                   label={formatMessage({
+                    id: 'checkFilesOffline',
+                    defaultMessage: 'Dateien offline verfügbar',
+                  })}
+                  name="check_files_offline"
+                  value={Boolean(row.check_files_offline ?? false)}
+                  onChange={onChange}
+                  validationState={validations?.check_files_offline?.state}
+                  validationMessage={validations?.check_files_offline?.message}
+                />
+              )}
+              {row.check_files && (
+                <SwitchField
+                  label={formatMessage({
                     id: 'rN5QwT',
                     defaultMessage: 'Dateien in Kontrolle anzeigen',
                   })}
@@ -513,6 +539,21 @@ export const PlaceLevelForm = ({
                 validationState={validations?.action_files?.state}
                 validationMessage={validations?.action_files?.message}
               />
+              {row.action_files && (
+                <SwitchField
+                  label={formatMessage({
+                    id: 'actionFilesOffline',
+                    defaultMessage: 'Dateien offline verfügbar',
+                  })}
+                  name="action_files_offline"
+                  value={Boolean(row.action_files_offline ?? false)}
+                  onChange={onChange}
+                  validationState={validations?.action_files_offline?.state}
+                  validationMessage={
+                    validations?.action_files_offline?.message
+                  }
+                />
+              )}
               {row.action_files && (
                 <SwitchField
                   label={formatMessage({

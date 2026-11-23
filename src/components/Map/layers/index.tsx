@@ -31,11 +31,13 @@ export const Layers = () => {
       }
 
       const res = await db.query(
-        `SELECT COUNT(wms_layer_id) FROM layer_presentations where layer_presentation_id = ANY($1)`,
+        `SELECT COUNT(*) FROM layer_presentations where layer_presentation_id = ANY($1)`,
         [mapLayerSorting],
       )
       const wmsLayersCount = (res.rows[0] as { count: number }).count
-      // if no wms layer is present, add the default background
+      // if no real layer presentation is present, add the default background
+      // (COUNT(*): the id any(*) matches decides, not a column value — tile
+      // presentations have no wms_layer_id to count)
       if (
         !wmsLayersCount &&
         !mapLayerSorting.some((id) => isBackgroundLayerId(id))

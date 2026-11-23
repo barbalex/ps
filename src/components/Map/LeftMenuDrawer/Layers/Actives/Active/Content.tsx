@@ -36,6 +36,7 @@ import { ErrorBoundary } from '../../../../../shared/ErrorBoundary.tsx'
 import { LayerPresentationForm } from '../../LayerPresentationForm.tsx'
 import { VectorLayerEditing } from '../../Vector/Editing.tsx'
 import { WmsLayerEditing } from '../../WMS/Editing.tsx'
+import { TileLayerEditing } from '../../Tile/Editing.tsx'
 import { VectorLayerDisplays } from '../../../../../../formsAndLists/vectorLayerDisplays.tsx'
 import { VectorLayerDisplay } from '../../../../../../formsAndLists/vectorLayerDisplay/index.tsx'
 import {
@@ -107,6 +108,7 @@ export const Content = ({
 
   const isVectorLayer = layer.layer_type === 'vector'
   const isWmsLayer = layer.layer_type === 'wms'
+  const isTileLayer = layer.layer_type === 'tile'
 
   const placeLevels = usePlaceLevels(layer.project_id)
   // Derived display label: own/wfs/upload vector layers compute it (there is no
@@ -115,6 +117,12 @@ export const Content = ({
   const label =
     isVectorLayer ?
       getVectorLayerLabel(layer as VectorLayers, language, placeLevels)
+    : isTileLayer ?
+      (layer.label ||
+      formatMessage({
+        id: 'tileLayerNoName',
+        defaultMessage: 'Tile-Layer ohne Name',
+      }))
     : (layer.label ||
       formatMessage({
         id: 'wmsLayerNoLayerChosen',
@@ -122,7 +130,8 @@ export const Content = ({
       }))
 
   // Stable identity key for drag/drop state (same value as in TableLayer)
-  const layerNameForState = layer.name as string
+  const layerNameForState =
+    (layer.name ?? layer.label ?? layer.tile_layer_id) as string
 
   // Check if this is an observation layer
   const tableName =
@@ -203,7 +212,8 @@ export const Content = ({
     const shouldShowConfig =
       (isVectorLayer &&
         (!layer.wfs_service_id || !layer.wfs_service_layer_name)) ||
-      (isWmsLayer && (!layer.wms_service_id || !layer.wms_service_layer_name))
+      (isWmsLayer && (!layer.wms_service_id || !layer.wms_service_layer_name)) ||
+      (isTileLayer && !layer.url_template)
 
     if (shouldShowConfig) {
       // Use setTimeout to defer the state update
@@ -213,10 +223,12 @@ export const Content = ({
   }, [
     isVectorLayer,
     isWmsLayer,
+    isTileLayer,
     layer.wfs_service_id,
     layer.wfs_service_layer_name,
     layer.wms_service_id,
     layer.wms_service_layer_name,
+    layer.url_template,
   ])
 
   // toggling the checkbox fully activates/deactivates the layer — the
@@ -251,7 +263,19 @@ export const Content = ({
   const onClickFeatureDisplays = () => setVectorLayerDisplayId(null)
 
   const onDelete = () => {
-    if (isVectorLayer) {
+    if (isTileLayer) {
+      db.query(`DELETE FROM tile_layers WHERE tile_layer_id = $1`, [
+        layer.tile_layer_id,
+      ])
+      addOperation({
+        table: 'tile_layers',
+        rowIdName: 'tile_layer_id',
+        rowId: layer.tile_layer_id,
+        operation: 'delete',
+        draft: {},
+        prev: { ...layer },
+      })
+    } else if (isVectorLayer) {
       db.query(`DELETE FROM vector_layers WHERE vector_layer_id = $1`, [
         layer.vector_layer_id,
       ])
@@ -501,15 +525,17 @@ export const Content = ({
             as="a"
           />
         )}
-        <Button
-          icon={<TbZoomScan />}
-          onClick={onClickZoomToFeatures}
-          className={styles.headerButton}
-          title="Zoom to layer"
-          appearance="subtle"
-          size="small"
-          as="a"
-        />
+        {!isTileLayer && (
+          <Button
+            icon={<TbZoomScan />}
+            onClick={onClickZoomToFeatures}
+            className={styles.headerButton}
+            title="Zoom to layer"
+            appearance="subtle"
+            size="small"
+            as="a"
+          />
+        )}
       </AccordionHeader>
       <AccordionPanel className={layerStyles.panel}>
         <TabList
@@ -571,7 +597,9 @@ export const Content = ({
           </Menu>
         </TabList>
         {tab === 'config' &&
-          (isVectorLayer ?
+          (isTileLayer ?
+            <TileLayerEditing layer={layer} />
+          : isVectorLayer ?
             <VectorLayerEditing layer={layer} />
           : <WmsLayerEditing layer={layer} />)}
         {tab === 'overall-displays' && <LayerPresentationForm layer={layer} />}

@@ -632,6 +632,12 @@ WHEN (pg_trigger_depth() < 1)
 EXECUTE FUNCTION enforce_project_write();
 
 CREATE OR REPLACE TRIGGER enforce_project_write_trigger
+BEFORE INSERT OR UPDATE OR DELETE ON tile_layers
+FOR EACH ROW
+WHEN (pg_trigger_depth() < 1)
+EXECUTE FUNCTION enforce_project_write();
+
+CREATE OR REPLACE TRIGGER enforce_project_write_trigger
 BEFORE INSERT OR UPDATE OR DELETE ON wfs_services
 FOR EACH ROW
 WHEN (pg_trigger_depth() < 1)

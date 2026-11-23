@@ -1939,6 +1939,55 @@ END
 $$;
 
 --------------------------------------------------------------
+-- tile_layers -> tile_layers_history
+-- Retention: 5 years
+--
+ALTER TABLE tile_layers
+ADD COLUMN IF NOT EXISTS sys_period tstzrange;
+
+UPDATE tile_layers
+SET sys_period = tstzrange(updated_at, NULL, '[)')
+WHERE sys_period IS NULL;
+
+ALTER TABLE tile_layers
+ALTER COLUMN sys_period SET NOT NULL;
+
+COMMENT ON COLUMN tile_layers.sys_period IS 'System period maintained by temporal_tables for auditing and historic queries.';
+
+CREATE TABLE IF NOT EXISTS tile_layers_history (
+	LIKE tile_layers INCLUDING DEFAULTS
+) PARTITION BY RANGE (updated_at);
+
+ALTER TABLE tile_layers_history OWNER TO partman_user;
+
+COMMENT ON TABLE tile_layers_history IS 'System-versioned history of tile_layers. Managed by temporal_tables and partitioned yearly by updated_at.';
+COMMENT ON COLUMN tile_layers_history.sys_period IS 'System period written by temporal_tables. lower(sys_period) is when the row version became current, upper(sys_period) when it stopped being current.';
+
+CREATE INDEX IF NOT EXISTS tile_layers_history_updated_at_idx
+ON tile_layers_history USING btree (updated_at);
+
+CREATE INDEX IF NOT EXISTS tile_layers_history_id_updated_at_idx
+ON tile_layers_history USING btree (tile_layer_id, updated_at);
+
+CREATE INDEX IF NOT EXISTS tile_layers_history_sys_period_idx
+ON tile_layers_history USING gist (sys_period);
+
+DO $$
+BEGIN
+	IF NOT EXISTS (
+		SELECT 1
+		FROM pg_trigger
+		WHERE tgname = 'versioning_tile_layers_trigger'
+			AND tgrelid = 'tile_layers'::regclass
+	) THEN
+		CREATE TRIGGER versioning_tile_layers_trigger
+		BEFORE INSERT OR UPDATE OR DELETE ON tile_layers
+		FOR EACH ROW EXECUTE PROCEDURE versioning('sys_period', 'tile_layers_history', true);
+	END IF;
+END
+$$;
+
+--------------------------------------------------------------
 -- wfs_services -> wfs_services_history
 -- Retention: 5 years
 --
@@ -3614,6 +3663,23 @@ WHERE NOT EXISTS (
 	SELECT 1
 	FROM partman.part_config
 	WHERE parent_table = 'public.wms_layers_history'
+);
+
+SELECT partman.create_parent(
+	p_parent_table := 'public.tile_layers_history',
+	p_control := 'updated_at',
+	p_interval := '1 year',
+	p_type := 'range',
+	p_premake := 4,
+	p_start_partition := to_char(date_trunc('year', CURRENT_TIMESTAMP), 'YYYY-MM-DD HH24:MI:SS'),
+	p_default_table := true,
+	p_automatic_maintenance := 'on',
+	p_jobmon := false
+)
+WHERE NOT EXISTS (
+	SELECT 1
+	FROM partman.part_config
+	WHERE parent_table = 'public.tile_layers_history'
 );
 
 SELECT partman.create_parent(
