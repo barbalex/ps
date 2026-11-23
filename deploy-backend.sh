@@ -58,11 +58,15 @@ echo "==> syncing backend/ to $SERVER:$REMOTE_DIR"
 # 11b_seedApfloraExampleData.sql once broke a from-scratch rebuild). The
 # excludes protect BOTH sides: local secrets/node_modules are never shipped,
 # and rsync never deletes excluded files on the receiver, so the server's
-# .env survives --delete.
+# .env survives --delete. 11b is gitignored (local apf2 dump data) so CI
+# deploys never carry it — without the exclude every CI deploy would delete
+# it from the server and the next from-scratch rebuild would fail (chart
+# subjects reference units seeded only by 11b).
 rsync -az --delete \
   --exclude '.env*' \
   --exclude 'node_modules/' \
   --exclude '.DS_Store' \
+  --exclude 'db/init/11b_seedApfloraExampleData.sql' \
   backend/ "$SERVER:$REMOTE_DIR/"
 
 # -n keeps this pre-check from stealing stdin — without it a piped answer
