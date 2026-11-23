@@ -1115,6 +1115,8 @@
   "layerDeleteConfirmHeader": "Eliminare il layer {label}?",
   "layerDeleteYes": "Sì",
   "layerDeleteNo": "No",
+  "layerShowInMapBtnTitle": "Mostra il layer sulla mappa",
+  "layerRemoveFromMapBtnTitle": "Rimuovi il layer dalla mappa",
   "deleteAccountBtn": "Elimina account",
   "deleteAccountTitle": "Elimina account",
   "deleteAccountWarning": "L'eliminazione del tuo account rimuove definitivamente tutti i tuoi dati e non può essere annullata.",
@@ -1357,5 +1359,9 @@
   "bFwXyQ": "Il design del modulo non può essere creato",
   "bFxYzR": "Il design del modulo non può essere salvato",
   "bFyZsS": "Indietro",
-  "bFzAtT": "Stampa"
+  "bFzAtT": "Stampa",
+  "mapBackgroundLayersTitle": "Mappa di base",
+  "mapBackgroundLayerOsm": "OpenStreetMap",
+  "mapBackgroundLayerPositron": "Positron (chiaro)",
+  "mapBackgroundLayerDarkMatter": "Dark Matter (scuro)"
 }

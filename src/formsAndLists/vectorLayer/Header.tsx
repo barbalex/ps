@@ -14,6 +14,7 @@ import { useRef, useEffect } from 'react'
 import { createVectorLayer } from '../../modules/createRows.ts'
 import { FormHeader } from '../../components/FormHeader/index.tsx'
 import { HistoryToggleButton } from '../../components/shared/HistoryCompare/HistoryToggleButton.tsx'
+import { ShowLayerInMapButton } from '../../components/shared/ShowLayerInMapButton.tsx'
 import {
   tabsAtom,
   draggableLayersAtom,
@@ -76,6 +77,15 @@ export const Header = ({
   // Stable identity key for drag/drop state (matches the layer's `name`)
   const layerNameForState = row.name
   const isDraggable = draggableLayers.includes(layerNameForState as string)
+
+  // assigning observations to places only exists for own layers built on the
+  // places or observations tables — not for wfs/upload layers.
+  // own_table is only set on own layers, so it doubles as the own-layer test.
+  // A layer already dragging keeps its stop button even when it would not get
+  // a start button: draggableLayers persists in localStorage and must always
+  // offer a way out.
+  const canAssign =
+    row.own_table === 'places' || row.own_table?.startsWith('observations')
 
   const onClickToggleAssign = () => {
     const newDraggableLayers = isDraggable
@@ -224,6 +234,7 @@ export const Header = ({
       tableName="vector layer"
       siblings={
         <>
+          <ShowLayerInMapButton vectorLayerId={row.vector_layer_id} />
           <HistoryToggleButton
             historiesPath={`${basePath}/histories`}
             formPath={formPath}
@@ -231,40 +242,41 @@ export const Header = ({
             rowIdField="vector_layer_id"
             rowId={vectorLayerId}
           />
-          {isDraggable ? (
-            <Button
-              size="medium"
-              icon={<TreasureMapLinePulsating />}
-              onClick={onClickToggleAssign}
-              title={formatMessage({
-                id: 'Il2JmO',
-                defaultMessage: 'Zuweisung stoppen',
-              })}
-            />
-          ) : (
-            <Menu>
-              <MenuTrigger disableButtonEnhancement>
-                <Button
-                  size="medium"
-                  icon={<TreasureMapLine />}
-                  title={formatMessage({
-                    id: 'Hk1IlN',
-                    defaultMessage: 'Zuweisung starten',
-                  })}
-                />
-              </MenuTrigger>
-              <MenuPopover>
-                <MenuList>
-                  <MenuItem onClick={onClickAssignToPlaces1}>
-                    {places1Name}
-                  </MenuItem>
-                  <MenuItem onClick={onClickAssignToPlaces2}>
-                    {places2Name}
-                  </MenuItem>
-                </MenuList>
-              </MenuPopover>
-            </Menu>
-          )}
+          {(canAssign || isDraggable) &&
+            (isDraggable ? (
+              <Button
+                size="medium"
+                icon={<TreasureMapLinePulsating />}
+                onClick={onClickToggleAssign}
+                title={formatMessage({
+                  id: 'Il2JmO',
+                  defaultMessage: 'Zuweisung stoppen',
+                })}
+              />
+            ) : (
+              <Menu>
+                <MenuTrigger disableButtonEnhancement>
+                  <Button
+                    size="medium"
+                    icon={<TreasureMapLine />}
+                    title={formatMessage({
+                      id: 'Hk1IlN',
+                      defaultMessage: 'Zuweisung starten',
+                    })}
+                  />
+                </MenuTrigger>
+                <MenuPopover>
+                  <MenuList>
+                    <MenuItem onClick={onClickAssignToPlaces1}>
+                      {places1Name}
+                    </MenuItem>
+                    <MenuItem onClick={onClickAssignToPlaces2}>
+                      {places2Name}
+                    </MenuItem>
+                  </MenuList>
+                </MenuPopover>
+              </Menu>
+            ))}
         </>
       }
     />

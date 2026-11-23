@@ -4,6 +4,10 @@ import { usePGlite } from '@electric-sql/pglite-react'
 
 import { mapLayerSortingAtom } from '../../../store.ts'
 import { useUrlLayers } from '../../../modules/useUrlLayers.ts'
+import {
+  defaultBackgroundLayerId,
+  isBackgroundLayerId,
+} from './backgroundLayers.ts'
 import { Layer } from './Layer.tsx'
 
 // TODO: text
@@ -20,9 +24,9 @@ export const Layers = () => {
       // fallback alone while it runs
       if (isOverridden) return
 
-      // if mapLayerSorting is empty, add osm layer
+      // if mapLayerSorting is empty, add the default background layer
       if (!mapLayerSorting.length) {
-        setMapLayerSorting(['aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa'])
+        setMapLayerSorting([defaultBackgroundLayerId])
         return
       }
 
@@ -31,15 +35,12 @@ export const Layers = () => {
         [mapLayerSorting],
       )
       const wmsLayersCount = (res.rows[0] as { count: number }).count
-      // if no wms layer is present, add osm
+      // if no wms layer is present, add the default background
       if (
         !wmsLayersCount &&
-        !mapLayerSorting.includes('aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa')
+        !mapLayerSorting.some((id) => isBackgroundLayerId(id))
       ) {
-        setMapLayerSorting([
-          ...mapLayerSorting,
-          'aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa',
-        ])
+        setMapLayerSorting([...mapLayerSorting, defaultBackgroundLayerId])
       }
     }
     run()

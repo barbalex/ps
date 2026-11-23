@@ -7,6 +7,7 @@ import { useIntl } from 'react-intl'
 import { createWmsLayer } from '../../modules/createRows.ts'
 import { FormHeader } from '../../components/FormHeader/index.tsx'
 import { HistoryToggleButton } from '../../components/shared/HistoryCompare/HistoryToggleButton.tsx'
+import { ShowLayerInMapButton } from '../../components/shared/ShowLayerInMapButton.tsx'
 import { addOperationAtom } from '../../store.ts'
 
 export const Header = ({
@@ -111,13 +112,16 @@ export const Header = ({
       toPrevious={toPrevious}
       tableName="wms layer"
       siblings={
-        <HistoryToggleButton
-          historiesPath={`${basePath}/histories`}
-          formPath={`${basePath}/wms-layer`}
-          historyTable="wms_layers_history"
-          rowIdField="wms_layer_id"
-          rowId={wmsLayerId}
-        />
+        <>
+          {wmsLayerId && <ShowLayerInMapButton wmsLayerId={wmsLayerId} />}
+          <HistoryToggleButton
+            historiesPath={`${basePath}/histories`}
+            formPath={`${basePath}/wms-layer`}
+            historyTable="wms_layers_history"
+            rowIdField="wms_layer_id"
+            rowId={wmsLayerId}
+          />
+        </>
       }
     />
   )

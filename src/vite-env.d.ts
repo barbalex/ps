@@ -6,6 +6,8 @@ declare const __APP_VERSION__: string
 interface ImportMetaEnv {
   readonly VITE_APP_ADMIN_EMAILS?: string
   readonly VITE_ERROR_TELEMETRY?: string
+  readonly VITE_CARTO_BASEMAPS_KEY?: string
+  readonly VITE_CARTO_BASEMAPS_KEY_LOCALHOST?: string
 }
 
 interface ImportMeta {

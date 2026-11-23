@@ -2,10 +2,11 @@ import { test, expect } from '@playwright/test'
 import { psql, login } from './helpers.ts'
 
 /**
- * Layer visibility is view state in the ?layers= url param
- * (modules/useUrlLayers.ts): the param is the map's render list and
- * overrides the layer_presentations.active design flags. The drawer
- * toggles write it; a deep link reproduces the layer stack.
+ * Layer visibility is view state: the ?layers= url param is the map's render
+ * list and overrides the layer_presentations.active design flags. With an
+ * override active the drawer toggles write the param; without one they write
+ * the mapLayerSorting atom (the render list fallback, useLayerActivation.ts)
+ * and leave the url alone — the param is for overrides and shareable links.
  */
 
 const PROJECT_ID = '018cfcf7-6424-7000-a100-851c5cc2c878'
@@ -103,57 +104,91 @@ test('the drawer layer toggle writes the url override', async ({ page }) => {
   await expect(toggle).toHaveAttribute('aria-pressed', 'false')
 })
 
-test('without the param the design flags apply and toggling materializes them', async ({
+test('without the param the design flags apply; toggling writes the sorting atom, not the url', async ({
   page,
 }) => {
+  // a second active layer keeps the drawer's atom-sync effect running (it
+  // early-returns while NO layer is active), so hiding the first layer is
+  // observable in the atom
+  psql(`UPDATE layer_presentations SET active = true WHERE layer_presentation_id = '${LP_ID}'`)
+  psql(`UPDATE layer_presentations SET active = true WHERE layer_presentation_id = '${LP_ID_2}'`)
+
   await login(page, 'test@test.ch', 'test-test')
 
   await page.goto(`${PLACES_URL}?panes=map`)
   const drawer = page.locator('.map-layers-drawer')
   await expect(drawer).toBeVisible({ timeout: 60_000 })
-  await page.waitForTimeout(2500)
+  // wait for the sync to deliver the seeded flags: until then the drawer
+  // lists no active rows and the first toggle belongs to an Own row
+  await expect(
+    drawer.locator("a[role='button'][aria-pressed='true']"),
+  ).toHaveCount(2, { timeout: 60_000 })
 
-  const toggle = drawer.locator('[aria-pressed]').first()
-  await expect(toggle).toHaveAttribute('aria-pressed', 'true', {
-    timeout: 30_000,
-  })
-
-  // hiding writes the current view into the url (minus this layer)
-  await toggle.click()
-  await expect(page).toHaveURL(new RegExp(`layers=${OSM_LAYER_ID}(&|$)`), {
-    timeout: 10_000,
-  })
-  await expect(toggle).toHaveAttribute('aria-pressed', 'false')
+  // hiding flips the design flag and removes the layer from the render
+  // list — the mapLayerSorting atom, not the url (no override is active).
+  // the hidden row leaves the drawer; poll the atom because the drawer's
+  // sync effect briefly re-adds ids until its live query catches up
+  await drawer.locator("a[role='button'][aria-pressed]").first().click()
+  await expect(
+    drawer.locator("a[role='button'][aria-pressed='true']"),
+  ).toHaveCount(1, { timeout: 20_000 })
+  await expect(page).not.toHaveURL(/layers=/)
+  await expect
+    .poll(
+      () =>
+        page.evaluate(() =>
+          window.localStorage.getItem('mapLayerSortingAtom'),
+        ),
+      { timeout: 10_000 },
+    )
+    .not.toContain(LP_ID)
+  const sorting = await page.evaluate(() =>
+    window.localStorage.getItem('mapLayerSortingAtom'),
+  )
+  expect(sorting).toContain(OSM_LAYER_ID)
 })
 
 test('the checkbox toggles without opening the form; the label opens it', async ({
   page,
 }) => {
+  // two active layers: hiding one removes its row, the other remains as
+  // the target for the label click
+  psql(`UPDATE layer_presentations SET active = true WHERE layer_presentation_id = '${LP_ID}'`)
+  psql(`UPDATE layer_presentations SET active = true WHERE layer_presentation_id = '${LP_ID_2}'`)
+
   await login(page, 'test@test.ch', 'test-test')
 
   await page.goto(`${PLACES_URL}?panes=map`)
   const drawer = page.locator('.map-layers-drawer')
   await expect(drawer).toBeVisible({ timeout: 60_000 })
-  await page.waitForTimeout(2500)
+  await expect(
+    drawer.locator("a[role='button'][aria-pressed='true']"),
+  ).toHaveCount(2, { timeout: 60_000 })
 
-  // clicking only the checkbox toggles the layer and must not open the
-  // accordion (the form is what the header click is for)
-  const toggle = drawer.locator('[aria-pressed]').first()
-  await toggle.click()
-  await expect(page).toHaveURL(/layers=/, { timeout: 10_000 })
+  // clicking only the checkbox deactivates the layer (its row leaves the
+  // Active list) and must not open the accordion; without an override the
+  // toggle writes the sorting atom, leaving the url alone
+  await drawer.locator("a[role='button'][aria-pressed]").first().click()
+  await expect(
+    drawer.locator("a[role='button'][aria-pressed='true']"),
+  ).toHaveCount(1, { timeout: 20_000 })
+  await expect(page).not.toHaveURL(/layers=/)
   await expect(drawer.getByRole('tab', { name: 'Overall Display' })).toHaveCount(0)
 
-  // clicking right of the checkbox (the layer label) opens the form
+  // clicking right of the checkbox (the remaining layer's label) opens the form
   await drawer.locator('p[class*="headerLabel"]').first().click()
-  await expect(
-    drawer.getByRole('tab', { name: 'Overall Display' }),
-  ).toBeVisible({ timeout: 10_000 })
+  await expect(drawer.getByRole('tab', { name: 'Overall Display' })).toBeVisible({
+    timeout: 10_000,
+  })
 })
 
 test('drag reordering rewrites the layers param under an override', async ({
   page,
 }) => {
   // a second active layer, so reordering has two rows to work with
+  // (earlier tests toggled the first one off — queued flips may or may not
+  // have reached the server, so set both explicitly)
+  psql(`UPDATE layer_presentations SET active = true WHERE layer_presentation_id = '${LP_ID}'`)
   psql(`UPDATE layer_presentations SET active = true WHERE layer_presentation_id = '${LP_ID_2}'`)
 
   await login(page, 'test@test.ch', 'test-test')

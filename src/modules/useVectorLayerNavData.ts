@@ -19,6 +19,9 @@ type NavData = {
   id: string
   name: string | null
   label: string | null
+  type: VectorLayers['type']
+  own_table: VectorLayers['own_table']
+  own_table_level: VectorLayers['own_table_level']
   vector_layer_displays_count_unfiltered: number
 }
 
@@ -89,6 +92,9 @@ export const useVectorLayerNavData = ({ projectId, vectorLayerId }: Props) => {
     ownUrl,
     label,
     name: nav?.name,
+    type: nav?.type,
+    own_table: nav?.own_table,
+    own_table_level: nav?.own_table_level,
     notFound,
     nameSingular: formatMessage({
       id: 'fN0sZQ',

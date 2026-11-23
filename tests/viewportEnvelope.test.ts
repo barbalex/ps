@@ -17,16 +17,14 @@ const bounds = (
 ) => ({ swLng, swLat, neLng, neLat })
 
 describe('padBounds', () => {
-  it('pads each axis by 10% of its extent', () => {
-    expect(padBounds(bounds(8.5, 47.3, 8.6, 47.4))).toEqual(
-      bounds(8.49, 47.29, 8.61, 47.41),
-    )
+  it('pads each axis by 50% of its extent', () => {
+    // whole numbers keep the arithmetic exact: 1° per axis -> 2° total
+    expect(padBounds(bounds(8, 47, 9, 48))).toEqual(bounds(7.5, 46.5, 9.5, 48.5))
   })
 
   it('supports a custom factor', () => {
-    // whole numbers keep the arithmetic exact
-    expect(padBounds(bounds(8, 47, 9, 48), 0.5)).toEqual(
-      bounds(7.5, 46.5, 9.5, 48.5),
+    expect(padBounds(bounds(8, 47, 9, 48), 0.1)).toEqual(
+      bounds(7.9, 46.9, 9.1, 48.1),
     )
   })
 
