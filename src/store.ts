@@ -436,6 +436,12 @@ export const drawingOnMapAtom = atom(
     !!get(editingCheckGeometryAtom) ||
     !!get(editingActionGeometryAtom),
 )
+// True while the choosing tool is active: the next click on a geometry of an
+// own layer (places/checks/actions) starts editing that geometry
+export const choosingGeometryAtom = atomWithStorage<boolean>(
+  'choosingGeometryAtom',
+  false,
+)
 // The layers that are currently draggable. Any of: observations-to-assess, observations-not-to-assign, observations-assigned-1, observations-assigned-2
 export const draggableLayersAtom = atomWithStorage<string[]>(
   'draggableLayersAtom',

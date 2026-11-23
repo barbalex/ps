@@ -2198,6 +2198,15 @@
   "mapBackgroundLayersTitle": {
     "defaultMessage": "Hintergrundkarte"
   },
+  "mapChooseGeometry": {
+    "defaultMessage": "Geometrie wählen, um sie zu bearbeiten"
+  },
+  "mapChooseGeometryNotFound": {
+    "defaultMessage": "Keine Geometrie eines Ortes, einer Kontrolle oder einer Massnahme an dieser Stelle"
+  },
+  "mapChooseGeometryStop": {
+    "defaultMessage": "Geometrie-Auswahl beenden"
+  },
   "mapExportPng": {
     "defaultMessage": "Karte als PNG speichern"
   },

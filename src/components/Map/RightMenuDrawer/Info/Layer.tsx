@@ -22,6 +22,7 @@ import {
   queryExtent,
   extentToBoundsWithMargin,
 } from '../../../../modules/geoQueries.ts'
+import { navigateToOwnForm } from '../../../../modules/navigateToOwnForm.ts'
 import styles from './Layer.module.css'
 
 const { Button } = fluentUiReactComponents
@@ -70,83 +71,14 @@ export const Layer = ({ layerData }: Props) => {
 
   const onNavigate = async () => {
     if (!ownTable || !ownId) return
-    if (ownTable === 'place') {
-      if (ownParentId) {
-        navigate({
-          to: '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/places/$placeId2/place',
-          params: {
-            projectId: projectId!,
-            subprojectId: ownSubprojectId!,
-            placeId: ownParentId,
-            placeId2: ownId,
-          },
-        })
-      } else {
-        navigate({
-          to: '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/place',
-          params: {
-            projectId: projectId!,
-            subprojectId: ownSubprojectId!,
-            placeId: ownId,
-          },
-        })
-      }
-    } else {
-      const placeRes = await db.query(
-        `SELECT subproject_id, parent_id FROM places WHERE place_id = $1`,
-        [ownPlaceId],
-      )
-      const place = placeRes?.rows?.[0] as
-        { subproject_id: string; parent_id: string | null } | undefined
-      if (!place) return
-      if (ownTable === 'check') {
-        if (place.parent_id) {
-          navigate({
-            to: '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/places/$placeId2/checks/$checkId/check',
-            params: {
-              projectId: projectId!,
-              subprojectId: place.subproject_id,
-              placeId: place.parent_id,
-              placeId2: ownPlaceId!,
-              checkId: ownId,
-            },
-          })
-        } else {
-          navigate({
-            to: '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/checks/$checkId/check',
-            params: {
-              projectId: projectId!,
-              subprojectId: place.subproject_id,
-              placeId: ownPlaceId!,
-              checkId: ownId,
-            },
-          })
-        }
-      } else if (ownTable === 'action') {
-        if (place.parent_id) {
-          navigate({
-            to: '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/places/$placeId2/actions/$actionId/action',
-            params: {
-              projectId: projectId!,
-              subprojectId: place.subproject_id,
-              placeId: place.parent_id,
-              placeId2: ownPlaceId!,
-              actionId: ownId,
-            },
-          })
-        } else {
-          navigate({
-            to: '/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/actions/$actionId/action',
-            params: {
-              projectId: projectId!,
-              subprojectId: place.subproject_id,
-              placeId: ownPlaceId!,
-              actionId: ownId,
-            },
-          })
-        }
-      }
-    }
+    await navigateToOwnForm(db, navigate, {
+      ownTable,
+      ownId,
+      ownPlaceId,
+      ownSubprojectId,
+      ownParentId,
+      projectId: projectId!,
+    })
   }
 
   const tableName =

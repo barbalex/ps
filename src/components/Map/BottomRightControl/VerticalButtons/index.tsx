@@ -9,6 +9,7 @@ import { useIntl } from 'react-intl'
 
 import { LocatingButton } from './LocatingButton.tsx'
 import { EditingGeometryButton } from './EditingGeometryButton.tsx'
+import { ChooseGeometryButton } from './ChooseGeometryButton.tsx'
 import { MeasureButton } from './MeasureButton.tsx'
 import { ExportPngButton } from './ExportPngButton.tsx'
 import { PrintButton } from './PrintButton.tsx'
@@ -55,6 +56,7 @@ export const VerticalButtons = () => {
         className={styles.toolbar}
       >
         <EditingGeometryButton />
+        <ChooseGeometryButton />
         <LocatingButton />
         <ToolbarButton
           name="zoom_in"
