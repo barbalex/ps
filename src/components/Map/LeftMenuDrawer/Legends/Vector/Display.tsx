@@ -3,7 +3,6 @@ import { MapContainer, Rectangle } from 'react-leaflet'
 
 import type VectorLayerDisplays from '../../../../../models/public/VectorLayerDisplays.ts'
 import { vectorLayerDisplayToProperties } from '../../../../../modules/vectorLayerDisplayToProperties.ts'
-import './display.css'
 import styles from './Display.module.css'
 
 // idea: use a leaflet map to display: a rectangle, line and point
