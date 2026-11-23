@@ -29,7 +29,14 @@ export const VectorLayerList = ({ from }: { from: string }) => {
       <Header
         from={from}
         row={
-          { label, name, vector_layer_id: vectorLayerId } as unknown as VectorLayers
+          {
+            label,
+            name,
+            vector_layer_id: vectorLayerId,
+            type: navData.type,
+            own_table: navData.own_table,
+            own_table_level: navData.own_table_level,
+          } as unknown as VectorLayers
         }
       />
       <div className="list-container">
