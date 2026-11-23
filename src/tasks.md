@@ -46,6 +46,8 @@ I tried to remove a WMS Layer by deleting it here: http://localhost:5176/data/pr
 
 ---
 
+file upload. I am looking at http://localhost:5176/data/projects/0195a101-0000-7000-8000-000000000001/subprojects/017d3472-d75d-7a4f-8040-dfdd5df00bdb/files. There is now an 'Upload file' button _under_ the list header. It is redundant as there is also a 'new' button in the header. Can the one under the header be removed loosing anything? If so lets do it
+
 ---
 
 ---

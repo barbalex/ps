@@ -1,7 +1,13 @@
+/* !important is required: uploadcare's own css sets display with the
+   specificity hack :where(...):not(#\#):not(#\#), which beats plain
+   id/type selectors. Hiding uc-simple-btn only removes the widget's
+   inline "Upload file" button/drop area — the upload modals are siblings
+   of it inside #uploader and keep working (opened via initFlow from the
+   header "new" buttons) */
 #uploader > uc-simple-btn {
-  display: none;
+  display: none !important;
 }
 
 uc-copyright {
-  display: none;
+  display: none !important;
 }

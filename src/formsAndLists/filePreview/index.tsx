@@ -10,6 +10,7 @@ import { Uploader } from '../file/Uploader.tsx'
 import { Loading } from '../../components/shared/Loading.tsx'
 import { NotFound } from '../../components/NotFound.tsx'
 import { useElementSize } from '../../modules/useElementSize.ts'
+import { audioMimetypes, markdownMimetypes } from './mimetypes.ts'
 import type Files from '../../models/public/Files.ts'
 
 import '../../form.css'
@@ -17,8 +18,9 @@ import '@cyntler/react-doc-viewer/dist/index.css'
 import styles from './index.module.css'
 
 // the viewer is only used for a handful of mime types (images and PDFs use
-// native elements) and pulls a large bundle, so it loads on demand
-const DocViewer = lazy(() => import('@cyntler/react-doc-viewer'))
+// native elements) and pulls a large bundle, so it loads on demand — the
+// default export is the wrapper that also registers the custom renderers
+const DocViewer = lazy(() => import('./Viewer.tsx'))
 
 export const FilePreview = ({ from }: { from: string }) => {
   const { fileId } = useParams({ strict: false })
@@ -56,9 +58,13 @@ export const FilePreview = ({ from }: { from: string }) => {
       'application/vnd.ms-powerpoint',
       'application/vnd.openxmlformats-officedocument.presentationml.presentation',
       'text/plain',
+      ...markdownMimetypes,
+      ...audioMimetypes,
       'application/vnd.ms-excel',
       'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
       'video/mp4',
+      'video/quicktime',
+      'video/x-msvideo',
     ].includes(row.mimetype)
   const isNotViewable = !isImage && !isPdf && !isReactDocViewable
 
