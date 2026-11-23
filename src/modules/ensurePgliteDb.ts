@@ -12,9 +12,9 @@ let creatingDbPromise: Promise<PGliteWorker> | null = null
 // query work never block the UI thread. pglite-worker.ts registers the real
 // extensions on the worker-side instance; the factories passed here attach
 // the client-side namespaces, whose methods become RPC calls to the worker.
-// Only live and electric have client-side namespaces — postgis/pg_uuidv7 are
-// emscripten extensions and only provide SQL functions that run worker-side
-// (their factories throw when set up on the worker client).
+// Only live and electric have client-side namespaces — postgis is an
+// emscripten extension and only provides SQL functions that run worker-side
+// (its factory throws when set up on the worker client).
 // NB: briefly reverted once — with @electric-sql/client 1.0.14 the stream
 // pause/resume storm stalled the worker's query lock for ~2 minutes at a
 // time; client 1.5.28 removed that machinery, which is believed to have
@@ -35,9 +35,18 @@ const createDb = () => {
   })
 }
 
-const isWasmAbort = (err: unknown) =>
+// Recoverable open failures: a corrupted data dir aborts the WASM runtime,
+// and a PGlite release that bumped the bundled Postgres major version (e.g.
+// 0.5.x PG18 → 0.6.x PG19) cannot open the old data dir at all — PGlite
+// throws a plain "failed to initialize properly" Error (no in-place major
+// upgrade exists). Both are healed by wiping IndexedDB and starting over;
+// the server resyncs everything (unsynced offline operations are lost, the
+// same tradeoff the corruption path already accepts).
+const isRecoverableOpenFailure = (err: unknown) =>
   err instanceof Error &&
-  (err.message.includes('Aborted') || err.name === 'RuntimeError')
+  (err.message.includes('Aborted') ||
+    err.name === 'RuntimeError' ||
+    err.message.includes('PGlite failed to initialize properly'))
 
 /** Delete all IndexedDB databases that look like they belong to this app. */
 export const deleteIdbDatabases = async () => {
@@ -72,10 +81,11 @@ export const ensurePgliteDb = async () => {
   if (!creatingDbPromise) {
     creatingDbPromise = createDb()
       .catch(async (err) => {
-        if (isWasmAbort(err)) {
+        if (isRecoverableOpenFailure(err)) {
           console.warn(
-            'PGlite WASM aborted on open — local database may be corrupted. ' +
-              'Deleting IndexedDB and retrying…',
+            'PGlite failed to open the local database (corrupted, or written ' +
+              'by an older Postgres major version). Deleting IndexedDB and ' +
+              'retrying…',
             err,
           )
           await deleteIdbDatabases()
