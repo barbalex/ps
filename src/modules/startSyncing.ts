@@ -17,6 +17,7 @@ import { fetchPostgrestToken } from './fetchPostgrestToken.ts'
 import { dependencyLevels, untilUpToDate } from './syncStages.ts'
 import { armSyncErrorRecovery, syncRecovered } from './syncErrorRecovery.ts'
 import { shapeDefinitions } from './shapeDefinitions.mjs'
+import { mapColumnsByTable } from './mapColumns.ts'
 
 /** the aggregate sync object stored in syncObjectAtom */
 export type PsSyncObject = SyncShapesToTablesResult & {
@@ -37,30 +38,6 @@ type ElectricDb = PGlite & {
 }
 
 const url = constants.getElectricUri()
-
-// Per-table row transforms; not part of the server-validated shape definition.
-// change.value is the change row (see MapColumnsFn in @electric-sql/pglite-sync)
-const mapColumnsByTable: Record<
-  string,
-  (change: { value: Record<string, unknown> }) => Record<string, unknown>
-> = {
-  goal_reports: (change) => ({
-    goal_report_id: change.value.goal_report_id,
-    goal_id: change.value.goal_id,
-    label: change.value.label,
-    created_at: change.value.created_at,
-    updated_at: change.value.updated_at,
-    updated_by: change.value.updated_by,
-    data:
-      !change.value.data ? '{}'
-      : (
-        typeof change.value.data === 'string' &&
-        !change.value.data.trim().startsWith('{')
-      ) ?
-        JSON.stringify(change.value.data)
-      : change.value.data,
-  }),
-}
 
 // Bypass browser HTTP cache for shape requests so stale offset=-1 snapshots
 // (which survive a site-storage clear) never cause an expired-handle replay bug
