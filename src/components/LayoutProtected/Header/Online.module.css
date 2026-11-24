@@ -7,6 +7,9 @@
 }
 
 .button {
+  /* white for the green header bar; the hamburger overflow menu overrides
+     this via the higher-specificity !important rules on .menuContent button */
+  color: white !important;
   background-color: rgba(38, 82, 37, 0);
   border: none;
   &:hover {
@@ -18,7 +21,8 @@
 .icon {
   position: relative;
   top: 2px;
-  color: white;
+  /* no color: inherits the button color — white in the header, the menu's
+     themed text color inside the hamburger overflow menu */
 }
 
 .badge {
