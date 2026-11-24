@@ -44,6 +44,23 @@ npm run test:e2e     # Playwright e2e — requires the dev stack running and Cad
 - `E2E_EMAIL` / `E2E_PASSWORD` env vars override the account a spec uses (each spec has its own default)
 - The charts spec needs the apflora demo data in the dev db: `npm run apflora:import:test` (the import restarts the electric container to drop stale shape snapshots)
 
+### Testing sync as an agent
+
+- `e2e/offline-sync.spec.ts` is THE sync test: it provisions its own user, edits a place while the
+  browser is offline, asserts the edit reconciles to Postgres via ElectricSQL, and survives a
+  reload. Run it alone: `npx playwright test e2e/offline-sync.spec.ts` (dev stack must be up; the
+  web server starts itself if missing). Don't write your own sync check from scratch — if this spec
+  is green, Electric → PGlite sync works.
+- Playwright drives headless Chromium with `ignoreHTTPSErrors: true` — no Caddy CA / browser
+  certificate setup is needed for e2e. Trusting Caddy's root CA manually (chrome://settings) is
+  only for opening the app in a real desktop browser.
+- Don't run two e2e suites at once — they share the dev database and fixtures, and concurrent
+  runs used to wipe each other's trace artifacts (passing tests failing with
+  `browserContext.close: ENOENT`). Each run now gets its own `test-results/run-*` outputDir and a
+  lock in `test-results/.run-lock` makes a second run fail fast with a clear message
+  (`PS_E2E_ALLOW_CONCURRENT=1` overrides). If a run fails with that ENOENT again, check for a
+  concurrent `playwright`/`test-server` process before debugging the app.
+
 ### Database & Types
 
 ```bash
@@ -89,7 +106,7 @@ Depending on what the pull changed:
 
 - **`backend/db/init/` changed**: the docker entrypoint runs init scripts only on an empty volume —
   rebuild the dev database from scratch with `cd backend-dev && docker compose down -v && docker
-  compose up -d --build`. This wipes dev data; re-import the apflora demo data if you need it
+compose up -d --build`. This wipes dev data; re-import the apflora demo data if you need it
   (`npm run apflora:import:test`, requires the local apf2 dump).
 - **After a dev-database rebuild**: reset the local browser client too — log out (logout wipes the
   local synced data) and back in (`test@test.ch` / `test-test`). Smaller schema changes heal
@@ -104,7 +121,7 @@ Depending on what the pull changed:
 ## Deployment
 
 - **Frontend:** `npm run deploy` (from main, see Common Commands) — bumps the version, pushes main, updates the `production` branch; Netlify builds and deploys it. Nothing else to do.
-- **Backend:** `npm run deploy-backend` — triggers the *Deploy backend* GitHub Actions workflow, which runs the committed `deploy-backend.sh` over SSH (VM address and keys live in repo secrets, or the gitignored `.deploy-backend.env` for local runs; the address never enters this public repo). Deploys committed `main` only — run `./deploy-backend.sh` locally to ship uncommitted `backend/` changes. The production DB is experimental and is rebuilt from scratch rather than migrated (see dev-documentation.md §15 for when this changes). `--from-scratch` (wipes the DB, no backups exist) is owner-only, interactive, over SSH — agents must never run it.
+- **Backend:** `npm run deploy-backend` — triggers the _Deploy backend_ GitHub Actions workflow, which runs the committed `deploy-backend.sh` over SSH (VM address and keys live in repo secrets, or the gitignored `.deploy-backend.env` for local runs; the address never enters this public repo). Deploys committed `main` only — run `./deploy-backend.sh` locally to ship uncommitted `backend/` changes. The production DB is experimental and is rebuilt from scratch rather than migrated (see dev-documentation.md §15 for when this changes). `--from-scratch` (wipes the DB, no backups exist) is owner-only, interactive, over SSH — agents must never run it.
 
 ---
 
@@ -312,14 +329,14 @@ node gbif-import.mjs
 
 No env file is needed for `npm run dev`, `npm run build`, or the unit tests. Vite reads `VITE_*` vars from the root `.env` if present.
 
-| Task                                        | Variable                                      | Notes                                                                                                     |
-| ------------------------------------------- | --------------------------------------------- | --------------------------------------------------------------------------------------------------------- |
-| Type generation (`npm run models:generate`) | `KANEL_DATABASE_URL` (or `DATABASE_URL`)      | Root `.env`, read via dotenv                                                                              |
-| App-admin features in dev                   | `VITE_APP_ADMIN_EMAILS`                       | Comma-separated emails, root `.env`                                                                       |
-| Dev backend stack                           | `backend-dev/.env`                            | Copy from `backend-dev/.env.example`                                                                      |
+| Task                                        | Variable                                                                    | Notes                                                                                                                                                                             |
+| ------------------------------------------- | --------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Type generation (`npm run models:generate`) | `KANEL_DATABASE_URL` (or `DATABASE_URL`)                                    | Root `.env`, read via dotenv                                                                                                                                                      |
+| App-admin features in dev                   | `VITE_APP_ADMIN_EMAILS`                                                     | Comma-separated emails, root `.env`                                                                                                                                               |
+| Dev backend stack                           | `backend-dev/.env`                                                          | Copy from `backend-dev/.env.example`                                                                                                                                              |
 | CARTO basemap tiles (background maps)       | `VITE_CARTO_BASEMAPS_KEY` (prod), `VITE_CARTO_BASEMAPS_KEY_LOCALHOST` (dev) | Keys are issued per allowed referer (promote-species.app / localhost). Prod: Netlify env; dev: root `.env`. Without a key CARTO tiles render with an "API key required" watermark |
-| Email verification in dev                   | `REQUIRE_EMAIL_VERIFICATION` (default: false) | `backend-dev/.env`; set `true` to test the verification flow                                              |
-| Client error telemetry                      | `VITE_ERROR_TELEMETRY`                        | Set `true` in the Netlify env; client errors land in `public.error_report` (see dev-documentation.md §11) |
+| Email verification in dev                   | `REQUIRE_EMAIL_VERIFICATION` (default: false)                               | `backend-dev/.env`; set `true` to test the verification flow                                                                                                                      |
+| Client error telemetry                      | `VITE_ERROR_TELEMETRY`                                                      | Set `true` in the Netlify env; client errors land in `public.error_report` (see dev-documentation.md §11)                                                                         |
 
 ---
 
