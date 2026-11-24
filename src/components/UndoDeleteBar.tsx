@@ -7,14 +7,13 @@ import {
   undoDeleteRow,
   type UndoDeleteContext,
 } from '../modules/undoDelete.ts'
-import { isMobileViewAtom } from '../store.ts'
 import styles from './UndoDeleteBar.module.css'
 
-// gmail-style undo bar for swipe-to-delete, mobile only: slides up from the
-// bottom when a row is deleted, auto-hides after a few seconds
+// gmail-style undo bar for swipe-to-delete and form-header deletes:
+// slides up from the bottom when a row is deleted, auto-hides after a few
+// seconds — on all viewports (bottom-left snackbar on wide screens)
 export const UndoDeleteBar: React.FC = () => {
   const ctx = useAtomValue(undoDeleteAtom)
-  const isMobileView = useAtomValue(isMobileViewAtom)
   const { formatMessage } = useIntl()
   const [visible, setVisible] = useState(false)
   // keep the last context around so the bar can slide down with content
@@ -29,7 +28,6 @@ export const UndoDeleteBar: React.FC = () => {
     return () => clearTimeout(timer)
   }, [ctx])
 
-  if (!isMobileView) return null
   const display = ctx ?? lastCtxRef.current
   if (!display) return null
 
