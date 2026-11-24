@@ -200,6 +200,11 @@ test('short swipe slides back, swipe past the red bin deletes with collapse', as
   await expect(row2021).toHaveCount(0, { timeout: 30_000 })
   const yAfter = (await row2022.boundingBox())!.y
   expect(yAfter).toBeLessThan(yBefore)
+
+  // the undo bar is not mobile-only: it also slides up on desktop
+  const desktopBar = page.getByTestId('undo-delete-bar')
+  await expect(desktopBar).toBeVisible()
+  await expect(desktopBar).toContainText('2021')
 })
 
 test.describe('mobile undo bar', () => {
