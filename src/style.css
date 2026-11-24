@@ -543,6 +543,19 @@ html[data-theme='dark'] .leaflet-tooltip {
   border-color: #4a4a4a !important;
 }
 
+/* geoman's tool icons are svg background images with a baked-in grey fill,
+   so they don't inherit the button's color: render them white */
+html[data-theme='dark'] .leaflet-geoman-buttons-control-button {
+  & > .leaflet-geoman-control-icon {
+    filter: brightness(0) invert(1);
+  }
+
+  /* keep geoman's dimming of disabled tools */
+  &.leaflet-geoman-disabled > .leaflet-geoman-control-icon {
+    filter: brightness(0) invert(1) opacity(0.6);
+  }
+}
+
 html[data-theme='dark'] .leaflet-control-attribution {
   background: rgba(43, 43, 43, 0.8);
   color: #ccc;
