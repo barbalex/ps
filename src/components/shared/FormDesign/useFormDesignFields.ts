@@ -1,6 +1,7 @@
 import { useLiveQuery } from '@electric-sql/pglite-react'
 import { useParams } from '@tanstack/react-router'
 
+import { placeScopedFieldTables } from '../../../modules/fieldTableLabel.ts'
 import type { FieldsWithTypes } from '../Jsonb/index.tsx'
 
 /**
@@ -31,12 +32,14 @@ export const useFormDesignFields = ({
       WHERE
         fields.table_name = $1
         and fields.project_id ${useProjectId ? `= '${projectId}'` : 'IS NULL'}
-        ${table === 'places' ? ` and level = $2` : ''}
+        ${placeScopedFieldTables.has(table) ? ` and level = $2` : ''}
       ORDER BY t.ord`
   const res = useLiveQuery<FieldsWithTypes>(
     enabled ? sql : `SELECT * FROM fields WHERE false`,
     enabled ?
-      ((table === 'places' ? [table, placeId2 ? 2 : 1] : [table]) as never[])
+      ((placeScopedFieldTables.has(table) ?
+        [table, placeId2 ? 2 : 1]
+      : [table]) as never[])
     : [],
   )
   return res?.rows ?? []
