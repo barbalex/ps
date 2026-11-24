@@ -51,6 +51,21 @@ export const getFieldTableOptionKey = ({
   return tableName
 }
 
+/**
+ * Fields of place-scoped tables exist once per place level under the same
+ * name. Surfaces addressing fields by name (view filters, label_by) want
+ * each name only once — this keeps the first row per name. Fields without
+ * a name can't be addressed by name and are dropped.
+ */
+export const uniqFieldsByName = <T extends { name: string | null }>(
+  fields: T[],
+): T[] =>
+  fields.filter(
+    (field, index, all) =>
+      field.name != null &&
+      all.findIndex((f) => f.name === field.name) === index,
+  )
+
 export const resolveFieldTableContext = ({
   formatMessage,
   projectType,
