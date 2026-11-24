@@ -168,3 +168,13 @@ export async function login(
   await page.click('button[type="submit"]')
   await page.waitForURL('**/data/projects**', { timeout })
 }
+
+/**
+ * Close the map's layer drawer if it is open. It is open by default on wide
+ * maps and closed on narrow ones (Map/LeftMenuDrawer) — a closed drawer
+ * renders no "Close Layer Menu" toggle, only the one to open it.
+ */
+export async function closeLayerDrawerIfOpen(page: Page): Promise<void> {
+  const close = page.locator('button[title="Close Layer Menu"]')
+  if (await close.count()) await close.click()
+}

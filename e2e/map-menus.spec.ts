@@ -1,5 +1,5 @@
 import { test, expect, type Page } from '@playwright/test'
-import { ensureUser, login } from './helpers.ts'
+import { closeLayerDrawerIfOpen, ensureUser, login } from './helpers.ts'
 
 /**
  * The map menus (BottomRightControl) respond to the map width: the
@@ -16,7 +16,8 @@ const E2E_PASSWORD = process.env.E2E_PASSWORD ?? 'e2e-test-password-123'
 const openMapWithDrawerClosed = async (page: Page) => {
   await page.goto('/data/projects?panes=map')
   await page.waitForSelector('.map-layers-drawer', { timeout: 60_000 })
-  await page.locator('button[title="Close Layer Menu"]').click()
+  // already closed on narrow maps
+  await closeLayerDrawerIfOpen(page)
   await page.waitForTimeout(700)
 }
 
