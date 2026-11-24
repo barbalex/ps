@@ -99,6 +99,9 @@ export const Layer = ({ layerPresentationId, index }: Props) => {
           'fill_opacity_percent', vld.fill_opacity_percent,
           'fill_rule', vld.fill_rule
         )
+        -- the display without a value first: features whose value has no
+        -- display are drawn with the first one
+        ORDER BY vld.display_property_value NULLS FIRST
       ) FILTER (WHERE vld.vector_layer_display_id IS NOT NULL) as vector_layer_displays
     FROM 
       vector_layers vl 

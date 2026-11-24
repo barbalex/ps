@@ -32,6 +32,8 @@ const {
 } = fluentUiReactComponents
 
 import { vectorLayerDisplayToProperties } from '../../../../modules/vectorLayerDisplayToProperties.ts'
+import { displayFromFeature } from '../../../../modules/displayByProperty.ts'
+import { rememberWfsFeatureValues } from '../../../../modules/wfsDisplayByProperty.ts'
 import { setShortTermOnlineFromFetchError } from '../../../../modules/setShortTermOnlineFromFetchError.ts'
 import { httpGet } from '../../../../modules/httpGet.ts'
 import {
@@ -111,7 +113,7 @@ export const WFS = ({ layer, layerPresentation }: Props) => {
   const [error, setError] = useState<string | null | undefined>(undefined)
   const notificationIds = useRef<string[]>([])
 
-  const display = layer.vector_layer_displays?.[0]
+  const firstDisplay = layer.vector_layer_displays?.[0]
   const wfsService = layer.wfs_services!
 
   const removeNotifs = useCallback(() => {
@@ -251,11 +253,13 @@ export const WFS = ({ layer, layerPresentation }: Props) => {
           )
         : dataToProject
 
-      setData(
-        (reprojectedData ??
-          sourceData ??
-          null) as GeoJSON.FeatureCollection | null,
-      )
+      const nextData = (reprojectedData ??
+        sourceData ??
+        null) as GeoJSON.FeatureCollection | null
+      // what the layer has loaded is the fallback for reading the values of a
+      // field the service does not deliver
+      rememberWfsFeatureValues(layer.vector_layer_id, nextData?.features)
+      setData(nextData)
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [
@@ -328,8 +332,8 @@ export const WFS = ({ layer, layerPresentation }: Props) => {
   ) {
     return null
   }
-  if (!display) {
-    console.error('VectorLayerWFS, no display:', { layer, display })
+  if (!firstDisplay) {
+    console.error('VectorLayerWFS, no display:', { layer, firstDisplay })
     return null
   }
 
@@ -365,7 +369,7 @@ export const WFS = ({ layer, layerPresentation }: Props) => {
   return (
     <>
       <ProgressiveGeoJSON
-        resetKey={`${JSON.stringify(display)}/${JSON.stringify(
+        resetKey={`${JSON.stringify(layer.vector_layer_displays)}/${JSON.stringify(
           layerPresentation,
         )}`}
         data={data}
@@ -378,11 +382,25 @@ export const WFS = ({ layer, layerPresentation }: Props) => {
           feature.properties = feature.properties ?? {}
           feature.properties.label = 'Feature'
         }}
-        style={vectorLayerDisplayToProperties({
-          vectorLayerDisplay: display,
-          presentation: layerPresentation,
-        })}
-        pointToLayer={(_geoJsonPoint, latlng) => {
+        // one display per value of display_by_property: each feature is drawn
+        // with the display of its value
+        style={(feature) =>
+          vectorLayerDisplayToProperties({
+            vectorLayerDisplay: displayFromFeature(
+              layer.vector_layer_displays,
+              layer.display_by_property,
+              feature,
+            ),
+            presentation: layerPresentation,
+          })
+        }
+        pointToLayer={(feature, latlng) => {
+          const display =
+            displayFromFeature(
+              layer.vector_layer_displays,
+              layer.display_by_property,
+              feature,
+            ) ?? firstDisplay
           if (display.marker_type === 'circle') {
             return new L.CircleMarker(latlng, {
               ...(display as unknown as L.CircleMarkerOptions),

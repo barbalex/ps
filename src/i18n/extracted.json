@@ -3209,6 +3209,42 @@
   "vectorLayer.section.label.description": {
     "defaultMessage": "Die Bezeichnung der Ebene in allen Sprachen. Fehlt eine Sprache, wird Deutsch verwendet."
   },
+  "vectorLayer.wfs.created": {
+    "defaultMessage": "Neue Anzeigen: {count}"
+  },
+  "vectorLayer.wfs.displayByHint": {
+    "defaultMessage": "Die Werte werden vom WFS gelesen. Neue Werte erscheinen nach «Felder und Werte neu lesen» als eigene Anzeige"
+  },
+  "vectorLayer.wfs.fieldsReRead": {
+    "defaultMessage": "Felder neu gelesen"
+  },
+  "vectorLayer.wfs.fieldsUnreadable": {
+    "defaultMessage": "Die Felder des WFS konnten nicht gelesen werden"
+  },
+  "vectorLayer.wfs.noneCreated": {
+    "defaultMessage": "Keine neuen Werte"
+  },
+  "vectorLayer.wfs.reading": {
+    "defaultMessage": "Lese Felder und Werte vom WFS…"
+  },
+  "vectorLayer.wfs.readingFields": {
+    "defaultMessage": "Felder werden gelesen…"
+  },
+  "vectorLayer.wfs.reRead": {
+    "defaultMessage": "Felder und Werte neu lesen"
+  },
+  "vectorLayer.wfs.tooManyValues": {
+    "defaultMessage": "Das Feld «{field}» hat mehr als {max} verschiedene Werte. Bitte ein Feld mit weniger Werten wählen."
+  },
+  "vectorLayer.wfs.valuesIncomplete": {
+    "defaultMessage": "Der WFS liefert die Werte nicht vollständig"
+  },
+  "vectorLayer.wfs.valuesIncompleteBody": {
+    "defaultMessage": "Verwendet wurden die Werte der aktuell geladenen Objekte. Fehlende Werte kannst du als Anzeige von Hand ergänzen."
+  },
+  "vectorLayer.wfs.valuesUnreadable": {
+    "defaultMessage": "Die Werte des Felds «{field}» konnten nicht gelesen werden"
+  },
   "versionCheckBanner": {
     "defaultMessage": "Eine neue Version ({availableVersion}) von Arten fördern ist verfügbar. Die laufende Version ({appVersion}) ist veraltet und kann Fehler verursachen."
   },
