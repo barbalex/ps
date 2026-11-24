@@ -112,7 +112,8 @@ const propertiesOf = (feature: Element): [string, unknown][] => {
       continue
     }
     // gml:name, gml:description, gml:boundedBy
-    if (GML_NAMESPACES.includes(child.namespaceURI)) continue
+    if (child.namespaceURI && GML_NAMESPACES.includes(child.namespaceURI))
+      continue
     // arcgis: the crs of the geometry
     if (name === 'crs' && child.namespaceURI === ESRI_NAMESPACE) continue
     // the geometry and other structured values

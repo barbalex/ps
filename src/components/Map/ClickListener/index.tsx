@@ -72,12 +72,13 @@ const addLayersData = (
   }
 }
 
-// derives the editing/navigation target of a clicked own-table feature.
-// Observations are deliberately absent: their geometry is not user-editable
-// (they are assigned to places by dragging)
+// derives the editing/navigation target of a clicked own-table feature —
+// without the project, which comes from the route. Observations are
+// deliberately absent: their geometry is not user-editable (they are assigned
+// to places by dragging)
 const ownTargetFromProperties = (
-  featureProps: GeoJSON.GeoJsonProperties,
-): OwnFormTarget | undefined => {
+  featureProps: GeoJSON.GeoJsonProperties | undefined,
+): Omit<OwnFormTarget, 'projectId'> | undefined => {
   if (featureProps?.check_id) {
     return {
       ownTable: 'check',

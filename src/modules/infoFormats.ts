@@ -48,5 +48,10 @@ export const infoFormatCandidates = ({
 }): (string | undefined)[] => {
   // what the service has, then the defaults — in case its list is wrong
   const own = rankedInfoFormats([infoFormat, ...(infoFormats ?? [])])
-  return [...own, ...fallback.filter((format) => !own.includes(format))]
+  return [
+    ...own,
+    ...fallback.filter(
+      (format) => format === undefined || !own.includes(format),
+    ),
+  ]
 }
