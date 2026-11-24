@@ -1,13 +1,12 @@
 import { useParams, useNavigate } from '@tanstack/react-router'
 import { usePGlite } from '@electric-sql/pglite-react'
-import { useSetAtom } from 'jotai'
 import { useRef, useEffect } from 'react'
 import { useIntl } from 'react-intl'
 
 import { createTaxonomy } from '../../modules/createRows.ts'
 import { FormHeader } from '../../components/FormHeader/index.tsx'
 import { HistoryToggleButton } from '../../components/shared/HistoryCompare/HistoryToggleButton.tsx'
-import { addOperationAtom } from '../../store.ts'
+import { useRequestRowDelete } from '../../modules/deleteRow.ts'
 
 export const Header = ({ autoFocusRef, from }: { autoFocusRef?: React.RefObject<HTMLInputElement | null>; from?: string; label?: string }) => {
   const isForm =
@@ -15,7 +14,7 @@ export const Header = ({ autoFocusRef, from }: { autoFocusRef?: React.RefObject<
   const { projectId, taxonomyId } = useParams({ strict: false })
   const basePath = `/data/projects/${projectId}/taxonomies/${taxonomyId}`
   const navigate = useNavigate()
-  const addOperation = useSetAtom(addOperationAtom)
+  const requestDelete = useRequestRowDelete()
   const { formatMessage } = useIntl()
 
   const db = usePGlite()
@@ -37,29 +36,13 @@ export const Header = ({ autoFocusRef, from }: { autoFocusRef?: React.RefObject<
     autoFocusRef?.current?.focus()
   }
 
-  const deleteRow = async () => {
-    try {
-      const prevRes = await db.query(
-        `SELECT * FROM taxonomies WHERE taxonomy_id = $1`,
-        [taxonomyId],
-      )
-      const prev = (prevRes?.rows?.[0] ?? {}) as Record<string, unknown>
-      await db.query(`DELETE FROM taxonomies WHERE taxonomy_id = $1`, [
-        taxonomyId,
-      ])
-      addOperation({
-        table: 'taxonomies',
-        rowIdName: 'taxonomy_id',
-        rowId: taxonomyId,
-        operation: 'delete',
-        prev,
-      })
-      navigate({ to: isForm ? ('../..' as '..') : '..' })
-    } catch (error) {
-      console.error('Error deleting taxonomy:', error)
-      // Could add a toast notification here
-    }
-  }
+  const deleteRow = () =>
+    requestDelete({
+      table: 'taxonomies',
+      rowIdName: 'taxonomy_id',
+      rowId: taxonomyId!,
+      navigateTo: isForm ? ('../..' as '..') : '..',
+    })
 
   const toNext = async () => {
     try {

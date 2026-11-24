@@ -1,18 +1,17 @@
 import { useParams, useNavigate } from '@tanstack/react-router'
 import { usePGlite, useLiveQuery } from '@electric-sql/pglite-react'
-import { useSetAtom } from 'jotai'
 import { useRef, useEffect } from 'react'
 import { useIntl } from 'react-intl'
 
 import { createSubprojectTaxon } from '../../modules/createRows.ts'
 import { FormHeader } from '../../components/FormHeader/index.tsx'
 import { HistoryToggleButton } from '../../components/shared/HistoryCompare/HistoryToggleButton.tsx'
-import { addOperationAtom } from '../../store.ts'
+import { useRequestRowDelete } from '../../modules/deleteRow.ts'
 
 export const Header = ({ autoFocusRef }: { autoFocusRef?: React.RefObject<HTMLInputElement | null> }) => {
   const { subprojectId, subprojectTaxonId, projectId } = useParams({ strict: false })
   const navigate = useNavigate()
-  const addOperation = useSetAtom(addOperationAtom)
+  const requestDelete = useRequestRowDelete()
   const { formatMessage } = useIntl()
   const title = formatMessage({ id: 'OSk4zO', defaultMessage: 'Taxon' })
 
@@ -45,30 +44,13 @@ export const Header = ({ autoFocusRef }: { autoFocusRef?: React.RefObject<HTMLIn
     autoFocusRef?.current?.focus()
   }
 
-  const deleteRow = async () => {
-    try {
-      const prevRes = await db.query(
-        `SELECT * FROM subproject_taxa WHERE subproject_taxon_id = $1`,
-        [subprojectTaxonId],
-      )
-      const prev = (prevRes?.rows?.[0] ?? {}) as Record<string, unknown>
-      await db.query(
-        `DELETE FROM subproject_taxa WHERE subproject_taxon_id = $1`,
-        [subprojectTaxonId],
-      )
-      addOperation({
-        table: 'subproject_taxa',
-        rowIdName: 'subproject_taxon_id',
-        rowId: subprojectTaxonId,
-        operation: 'delete',
-        prev,
-      })
-      navigate({ to: '..' })
-    } catch (error) {
-      console.error('Error deleting subproject taxon:', error)
-      // Could add a toast notification here
-    }
-  }
+  const deleteRow = () =>
+    requestDelete({
+      table: 'subproject_taxa',
+      rowIdName: 'subproject_taxon_id',
+      rowId: subprojectTaxonId!,
+      navigateTo: '..',
+    })
 
   const toNext = async () => {
     try {

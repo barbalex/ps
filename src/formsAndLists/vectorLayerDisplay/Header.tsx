@@ -7,10 +7,8 @@ import { useIntl } from 'react-intl'
 import { FormHeader } from '../../components/FormHeader/index.tsx'
 import { createVectorLayerDisplay } from '../../modules/createRows.ts'
 import { HistoryToggleButton } from '../../components/shared/HistoryCompare/HistoryToggleButton.tsx'
-import {
-  mapDrawerVectorLayerDisplayAtom,
-  addOperationAtom,
-} from '../../store.ts'
+import { useRequestRowDelete } from '../../modules/deleteRow.ts'
+import { mapDrawerVectorLayerDisplayAtom } from '../../store.ts'
 
 export const Header = ({
   vectorLayerDisplayId: vectorLayerDisplayIdFromProps,
@@ -19,10 +17,10 @@ export const Header = ({
   vectorLayerDisplayId?: string
   autoFocusRef?: React.RefObject<HTMLInputElement | null>
 }) => {
-  const addOperation = useSetAtom(addOperationAtom)
   const setMapLayerDrawerVectorLayerDisplayId = useSetAtom(
     mapDrawerVectorLayerDisplayAtom,
   )
+  const requestDelete = useRequestRowDelete()
   const params = useParams({ strict: false })
   const vectorLayerDisplayId =
     vectorLayerDisplayIdFromProps ?? params.vectorLayerDisplayId
@@ -76,33 +74,19 @@ export const Header = ({
     autoFocusRef?.current?.focus()
   }
 
-  const deleteRow = async () => {
-    try {
-      const prevRes = await db.query(
-        `SELECT * FROM vector_layer_displays WHERE vector_layer_display_id = $1`,
-        [vectorLayerDisplayId],
-      )
-      const prev = (prevRes?.rows?.[0] ?? {}) as Record<string, unknown>
-      await db.query(
-        `DELETE FROM vector_layer_displays WHERE vector_layer_display_id = $1`,
-        [vectorLayerDisplayId],
-      )
-      addOperation({
-        table: 'vector_layer_displays',
-        rowIdName: 'vector_layer_display_id',
-        rowId: vectorLayerDisplayId,
-        operation: 'delete',
-        prev,
-      })
-      if (vectorLayerDisplayIdFromProps) {
-        setMapLayerDrawerVectorLayerDisplayId(null)
-        return
-      }
-      navigate({ to: '../..' as '..' })
-    } catch (error) {
-      console.error('Error deleting vector layer display:', error)
-    }
-  }
+  const deleteRow = () =>
+    requestDelete({
+      table: 'vector_layer_displays',
+      rowIdName: 'vector_layer_display_id',
+      rowId: vectorLayerDisplayId!,
+      // opened from the map drawer: stay in the drawer instead of navigating
+      navigateTo: vectorLayerDisplayIdFromProps ? undefined : ('../..' as '..'),
+      afterDelete: () => {
+        if (vectorLayerDisplayIdFromProps) {
+          setMapLayerDrawerVectorLayerDisplayId(null)
+        }
+      },
+    })
 
   const toNext = async () => {
     try {

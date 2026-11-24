@@ -1,12 +1,11 @@
 import { useParams, useNavigate } from '@tanstack/react-router'
 import { usePGlite, useLiveQuery } from '@electric-sql/pglite-react'
-import { useSetAtom } from 'jotai'
 import { useRef, useEffect } from 'react'
 
 import { createSubproject } from '../../modules/createRows.ts'
 import { FormHeader } from '../../components/FormHeader/index.tsx'
 import { HistoryToggleButton } from '../../components/shared/HistoryCompare/HistoryToggleButton.tsx'
-import { addOperationAtom } from '../../store.ts'
+import { useRequestRowDelete } from '../../modules/deleteRow.ts'
 
 export const Header = ({
   autoFocusRef,
@@ -21,7 +20,7 @@ export const Header = ({
     from === '/data/projects/$projectId_/subprojects/$subprojectId_/subproject'
   const { projectId, subprojectId } = useParams({ strict: false })
   const navigate = useNavigate()
-  const addOperation = useSetAtom(addOperationAtom)
+  const requestDelete = useRequestRowDelete()
 
   const db = usePGlite()
   const basePath = `/data/projects/${projectId}/subprojects/${subprojectId}`
@@ -55,29 +54,13 @@ export const Header = ({
     autoFocusRef?.current?.focus()
   }
 
-  const deleteRow = async () => {
-    try {
-      const prevRes = await db.query(
-        `SELECT * FROM subprojects WHERE subproject_id = $1`,
-        [subprojectId],
-      )
-      const prev = (prevRes?.rows?.[0] ?? {}) as Record<string, unknown>
-      await db.query(`DELETE FROM subprojects WHERE subproject_id = $1`, [
-        subprojectId,
-      ])
-      addOperation({
-        table: 'subprojects',
-        rowIdName: 'subproject_id',
-        rowId: subprojectId,
-        operation: 'delete',
-        prev,
-      })
-      navigate({ to: isForm ? ('../..' as '..') : '..' })
-    } catch (error) {
-      console.error('Error deleting subproject:', error)
-      // Could add a toast notification here
-    }
-  }
+  const deleteRow = () =>
+    requestDelete({
+      table: 'subprojects',
+      rowIdName: 'subproject_id',
+      rowId: subprojectId!,
+      navigateTo: isForm ? ('../..' as '..') : '..',
+    })
 
   const toNext = async () => {
     try {

@@ -1,6 +1,6 @@
 import { useParams, useNavigate } from '@tanstack/react-router'
 import { usePGlite, useLiveQuery } from '@electric-sql/pglite-react'
-import { useSetAtom, useAtom } from 'jotai'
+import { useAtom } from 'jotai'
 import { useRef, useEffect } from 'react'
 import { useIntl } from 'react-intl'
 import * as fluentUiReactComponents from '@fluentui/react-components'
@@ -11,13 +11,14 @@ const { Button } = fluentUiReactComponents
 import { AddProjectUserButton } from '../../components/shared/AddProjectUserButton.tsx'
 import { FormHeader } from '../../components/FormHeader/index.tsx'
 import { HistoryToggleButton } from '../../components/shared/HistoryCompare/HistoryToggleButton.tsx'
-import { addOperationAtom, languageAtom } from '../../store.ts'
+import { languageAtom } from '../../store.ts'
+import { useRequestRowDelete } from '../../modules/deleteRow.ts'
 import { subprojectNameSingularExpr } from '../../modules/subprojectNameCols.ts'
 
 export const Header = ({ autoFocusRef }: { autoFocusRef?: React.RefObject<HTMLInputElement | null> }) => {
   const { projectId, subprojectId, subprojectUserId } = useParams({ strict: false })
   const navigate = useNavigate()
-  const addOperation = useSetAtom(addOperationAtom)
+  const requestDelete = useRequestRowDelete()
   const { formatMessage } = useIntl()
   const [language] = useAtom(languageAtom)
 
@@ -39,30 +40,13 @@ export const Header = ({ autoFocusRef }: { autoFocusRef?: React.RefObject<HTMLIn
     subprojectUserIdRef.current = subprojectUserId
   }, [subprojectUserId])
 
-  const deleteRow = async () => {
-    try {
-      const prevRes = await db.query(
-        `SELECT * FROM subproject_roles WHERE subproject_role_id = $1`,
-        [subprojectUserId],
-      )
-      const prev = (prevRes?.rows?.[0] ?? {}) as Record<string, unknown>
-      await db.query(
-        `DELETE FROM subproject_roles WHERE subproject_role_id = $1`,
-        [subprojectUserId],
-      )
-      addOperation({
-        table: 'subproject_roles',
-        rowIdName: 'subproject_role_id',
-        rowId: subprojectUserId,
-        operation: 'delete',
-        prev,
-      })
-      navigate({ to: '..' })
-    } catch (error) {
-      console.error('Error deleting subproject user:', error)
-      // Could add a toast notification here
-    }
-  }
+  const deleteRow = () =>
+    requestDelete({
+      table: 'subproject_roles',
+      rowIdName: 'subproject_role_id',
+      rowId: subprojectUserId!,
+      navigateTo: '..',
+    })
 
   const toNext = async () => {
     try {

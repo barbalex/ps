@@ -1,18 +1,17 @@
 import { useParams, useNavigate } from '@tanstack/react-router'
 import { usePGlite, useLiveQuery } from '@electric-sql/pglite-react'
-import { useSetAtom } from 'jotai'
 import { useRef, useEffect } from 'react'
 import { useIntl } from 'react-intl'
 
 import { createListValue } from '../../modules/createRows.ts'
 import { FormHeader } from '../../components/FormHeader/index.tsx'
 import { HistoryToggleButton } from '../../components/shared/HistoryCompare/HistoryToggleButton.tsx'
-import { addOperationAtom } from '../../store.ts'
+import { useRequestRowDelete } from '../../modules/deleteRow.ts'
 
 export const Header = ({ autoFocusRef }: { autoFocusRef?: React.RefObject<HTMLInputElement | null> }) => {
   const { projectId, listId, listValueId } = useParams({ strict: false })
   const navigate = useNavigate()
-  const addOperation = useSetAtom(addOperationAtom)
+  const requestDelete = useRequestRowDelete()
   const { formatMessage } = useIntl()
 
   const db = usePGlite()
@@ -40,28 +39,13 @@ export const Header = ({ autoFocusRef }: { autoFocusRef?: React.RefObject<HTMLIn
     autoFocusRef?.current?.focus()
   }
 
-  const deleteRow = async () => {
-    try {
-      const prevRes = await db.query(
-        `SELECT * FROM list_values WHERE list_value_id = $1`,
-        [listValueId],
-      )
-      const prev = (prevRes?.rows?.[0] ?? {}) as Record<string, unknown>
-      await db.query(`DELETE FROM list_values WHERE list_value_id = $1`, [
-        listValueId,
-      ])
-      addOperation({
-        table: 'list_values',
-        rowIdName: 'list_value_id',
-        rowId: listValueId,
-        operation: 'delete',
-        prev,
-      })
-      navigate({ to: '..' })
-    } catch (error) {
-      console.error(error)
-    }
-  }
+  const deleteRow = () =>
+    requestDelete({
+      table: 'list_values',
+      rowIdName: 'list_value_id',
+      rowId: listValueId!,
+      navigateTo: '..',
+    })
 
   const toNext = async () => {
     try {

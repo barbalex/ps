@@ -1,6 +1,6 @@
 import { useParams, useNavigate, useLocation } from '@tanstack/react-router'
 import { usePGlite, useLiveQuery } from '@electric-sql/pglite-react'
-import { useSetAtom, useAtom } from 'jotai'
+import { useAtom } from 'jotai'
 import * as fluentUiReactComponents from '@fluentui/react-components'
 const { Button } = fluentUiReactComponents
 import {
@@ -14,7 +14,8 @@ import { useIntl } from 'react-intl'
 import { createSubprojectReport } from '../../modules/createRows.ts'
 import { FormHeader } from '../../components/FormHeader/index.tsx'
 import { HistoryToggleButton } from '../../components/shared/HistoryCompare/HistoryToggleButton.tsx'
-import { addOperationAtom, languageAtom } from '../../store.ts'
+import { languageAtom } from '../../store.ts'
+import { useRequestRowDelete } from '../../modules/deleteRow.ts'
 import { subprojectNameSingularExpr } from '../../modules/subprojectNameCols.ts'
 
 export const Header = ({
@@ -28,7 +29,7 @@ export const Header = ({
   })
   const navigate = useNavigate()
   const location = useLocation()
-  const addOperation = useSetAtom(addOperationAtom)
+  const requestDelete = useRequestRowDelete()
   const { formatMessage } = useIntl()
   const [language] = useAtom(languageAtom)
 
@@ -90,30 +91,13 @@ export const Header = ({
     autoFocusRef?.current?.focus()
   }
 
-  const deleteRow = async () => {
-    try {
-      const prevRes = await db.query(
-        `SELECT * FROM subproject_reports WHERE subproject_report_id = $1`,
-        [subprojectReportId],
-      )
-      const prev = (prevRes?.rows?.[0] ?? {}) as Record<string, unknown>
-      await db.query(
-        `DELETE FROM subproject_reports WHERE subproject_report_id = $1`,
-        [subprojectReportId],
-      )
-      addOperation({
-        table: 'subproject_reports',
-        rowIdName: 'subproject_report_id',
-        rowId: subprojectReportId,
-        operation: 'delete',
-        prev,
-      })
-      navigate({ to: `..` })
-    } catch (error) {
-      console.error('Error deleting subproject report:', error)
-      // Could add a toast notification here
-    }
-  }
+  const deleteRow = () =>
+    requestDelete({
+      table: 'subproject_reports',
+      rowIdName: 'subproject_report_id',
+      rowId: subprojectReportId!,
+      navigateTo: '..',
+    })
 
   const toNext = async () => {
     try {

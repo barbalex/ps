@@ -1,13 +1,12 @@
 import { useParams, useNavigate } from '@tanstack/react-router'
 import { useLiveQuery, usePGlite } from '@electric-sql/pglite-react'
-import { useSetAtom } from 'jotai'
 import { useRef, useEffect } from 'react'
 import { useIntl } from 'react-intl'
 
 import { createPlaceLevel } from '../../modules/createRows.ts'
 import { FormHeader } from '../../components/FormHeader/index.tsx'
 import { HistoryToggleButton } from '../../components/shared/HistoryCompare/HistoryToggleButton.tsx'
-import { addOperationAtom } from '../../store.ts'
+import { useRequestRowDelete } from '../../modules/deleteRow.ts'
 
 interface Props {
   autoFocusRef: React.RefObject<HTMLInputElement>
@@ -18,7 +17,7 @@ export const Header = ({ autoFocusRef }: Props) => {
   const { projectId, placeLevelId } = useParams({ strict: false })
   const basePath = `/data/projects/${projectId}/place-levels/${placeLevelId}`
   const navigate = useNavigate()
-  const addOperation = useSetAtom(addOperationAtom)
+  const requestDelete = useRequestRowDelete()
   const { formatMessage } = useIntl()
 
   const db = usePGlite()
@@ -45,28 +44,13 @@ export const Header = ({ autoFocusRef }: Props) => {
     autoFocusRef?.current?.focus()
   }
 
-  const deleteRow = async () => {
-    try {
-      const prevRes = await db.query(
-        `SELECT * FROM place_levels WHERE place_level_id = $1`,
-        [placeLevelId],
-      )
-      const prev = (prevRes?.rows?.[0] ?? {}) as Record<string, unknown>
-      await db.query(`DELETE FROM place_levels WHERE place_level_id = $1`, [
-        placeLevelId,
-      ])
-      addOperation({
-        table: 'place_levels',
-        rowIdName: 'place_level_id',
-        rowId: placeLevelId,
-        operation: 'delete',
-        prev,
-      })
-      navigate({ to: '..' })
-    } catch (error) {
-      console.error(error)
-    }
-  }
+  const deleteRow = () =>
+    requestDelete({
+      table: 'place_levels',
+      rowIdName: 'place_level_id',
+      rowId: placeLevelId!,
+      navigateTo: '..',
+    })
 
   const toNext = async () => {
     try {

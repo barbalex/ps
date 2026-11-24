@@ -1,18 +1,14 @@
 import { useParams, useNavigate } from '@tanstack/react-router'
-import { usePGlite } from '@electric-sql/pglite-react'
-import { useSetAtom } from 'jotai'
 
 import { createMessage } from '../../modules/createRows.ts'
 import { FormHeader } from '../../components/FormHeader/index.tsx'
-import { addOperationAtom } from '../../store.ts'
+import { useRequestRowDelete } from '../../modules/deleteRow.ts'
 
 
 export const Header = () => {
   const { messageId } = useParams({ strict: false })
   const navigate = useNavigate()
-  const addOperation = useSetAtom(addOperationAtom)
-
-  const db = usePGlite()
+  const requestDelete = useRequestRowDelete()
 
   const addRow = async () => {
     const id = await createMessage()
@@ -23,26 +19,13 @@ export const Header = () => {
     })
   }
 
-  const deleteRow = async () => {
-    try {
-      const prevRes = await db.query(
-        `SELECT * FROM messages WHERE message_id = $1`,
-        [messageId],
-      )
-      const prev = (prevRes?.rows?.[0] ?? {}) as Record<string, unknown>
-      db.query(`DELETE FROM messages WHERE message_id = $1`, [messageId])
-      addOperation({
-        table: 'messages',
-        rowIdName: 'message_id',
-        rowId: messageId,
-        operation: 'delete',
-        prev,
-      })
-      navigate({ to: `/data/messages` })
-    } catch (error) {
-      console.error(error)
-    }
-  }
+  const deleteRow = () =>
+    requestDelete({
+      table: 'messages',
+      rowIdName: 'message_id',
+      rowId: messageId!,
+      navigateTo: '/data/messages',
+    })
 
   return (
     <FormHeader

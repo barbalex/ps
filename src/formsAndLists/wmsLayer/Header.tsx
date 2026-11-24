@@ -1,6 +1,5 @@
 import { useNavigate } from '@tanstack/react-router'
 import { usePGlite } from '@electric-sql/pglite-react'
-import { useSetAtom } from 'jotai'
 import { useRef, useEffect } from 'react'
 import { useIntl } from 'react-intl'
 
@@ -8,7 +7,7 @@ import { createWmsLayer } from '../../modules/createRows.ts'
 import { FormHeader } from '../../components/FormHeader/index.tsx'
 import { HistoryToggleButton } from '../../components/shared/HistoryCompare/HistoryToggleButton.tsx'
 import { ShowLayerInMapButton } from '../../components/shared/ShowLayerInMapButton.tsx'
-import { addOperationAtom } from '../../store.ts'
+import { useRequestRowDelete } from '../../modules/deleteRow.ts'
 
 export const Header = ({
   projectId,
@@ -20,7 +19,7 @@ export const Header = ({
   autoFocusRef?: React.RefObject<HTMLInputElement | null>
 }) => {
   const navigate = useNavigate()
-  const addOperation = useSetAtom(addOperationAtom)
+  const requestDelete = useRequestRowDelete()
   const { formatMessage } = useIntl()
   const basePath = `/data/projects/${projectId}/wms-layers/${wmsLayerId}`
 
@@ -42,28 +41,13 @@ export const Header = ({
     autoFocusRef?.current?.focus()
   }
 
-  const deleteRow = async () => {
-    try {
-      const prevRes = await db.query(
-        `SELECT * FROM wms_layers WHERE wms_layer_id = $1`,
-        [wmsLayerId],
-      )
-      const prev = (prevRes?.rows?.[0] ?? {}) as Record<string, unknown>
-      await db.query(`DELETE FROM wms_layers WHERE wms_layer_id = $1`, [
-        wmsLayerId,
-      ])
-      addOperation({
-        table: 'wms_layers',
-        rowIdName: 'wms_layer_id',
-        rowId: wmsLayerId,
-        operation: 'delete',
-        prev,
-      })
-      navigate({ to: '../..' as '..' })
-    } catch (error) {
-      console.error('Error deleting wms layer:', error)
-    }
-  }
+  const deleteRow = () =>
+    requestDelete({
+      table: 'wms_layers',
+      rowIdName: 'wms_layer_id',
+      rowId: wmsLayerId!,
+      navigateTo: '../..' as '..',
+    })
 
   const toNext = async () => {
     try {

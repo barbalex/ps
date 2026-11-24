@@ -1,19 +1,18 @@
 import { useParams, useNavigate } from '@tanstack/react-router'
 import { usePGlite } from '@electric-sql/pglite-react'
-import { useSetAtom } from 'jotai'
 import { useRef, useEffect } from 'react'
 import { useIntl } from 'react-intl'
 
 import { createWidgetType } from '../../modules/createRows.ts'
 import { FormHeader } from '../../components/FormHeader/index.tsx'
-import { addOperationAtom } from '../../store.ts'
+import { useRequestRowDelete } from '../../modules/deleteRow.ts'
 
 
 export const Header = ({ autoFocusRef }: { autoFocusRef?: React.RefObject<HTMLInputElement | null> }) => {
   const { formatMessage } = useIntl()
   const { widgetTypeId } = useParams({ strict: false })
   const navigate = useNavigate()
-  const addOperation = useSetAtom(addOperationAtom)
+  const requestDelete = useRequestRowDelete()
 
   const db = usePGlite()
 
@@ -30,27 +29,13 @@ export const Header = ({ autoFocusRef }: { autoFocusRef?: React.RefObject<HTMLIn
     autoFocusRef?.current?.focus()
   }
 
-  const deleteRow = async () => {
-    try {
-      const prevRes = await db.query(
-        `SELECT * FROM widget_types WHERE widget_type_id = $1`,
-        [widgetTypeId],
-      )
-      const prev = (prevRes?.rows?.[0] ?? {}) as Record<string, unknown>
-      const sql = `DELETE FROM widget_types WHERE widget_type_id = $1`
-      await db.query(sql, [widgetTypeId])
-      addOperation({
-        table: 'widget_types',
-        rowIdName: 'widget_type_id',
-        rowId: widgetTypeId,
-        operation: 'delete',
-        prev,
-      })
-      navigate({ to: `..` })
-    } catch (error) {
-      console.error('Error deleting widget type:', error)
-    }
-  }
+  const deleteRow = () =>
+    requestDelete({
+      table: 'widget_types',
+      rowIdName: 'widget_type_id',
+      rowId: widgetTypeId!,
+      navigateTo: '..',
+    })
 
   const toNext = async () => {
     try {

@@ -1,6 +1,5 @@
 import { useParams, useNavigate } from '@tanstack/react-router'
 import { usePGlite } from '@electric-sql/pglite-react'
-import { useSetAtom } from 'jotai'
 import { useRef, useEffect } from 'react'
 
 import { useIntl } from 'react-intl'
@@ -8,12 +7,12 @@ import { useIntl } from 'react-intl'
 import { createGoalReport } from '../../modules/createRows.ts'
 import { FormHeader } from '../../components/FormHeader/index.tsx'
 import { HistoryToggleButton } from '../../components/shared/HistoryCompare/HistoryToggleButton.tsx'
-import { addOperationAtom } from '../../store.ts'
+import { useRequestRowDelete } from '../../modules/deleteRow.ts'
 
 export const Header = ({ autoFocusRef }: { autoFocusRef?: React.RefObject<HTMLInputElement | null>; from?: string }) => {
   const { projectId, subprojectId, goalId, goalReportId } = useParams({ strict: false })
   const navigate = useNavigate()
-  const addOperation = useSetAtom(addOperationAtom)
+  const requestDelete = useRequestRowDelete()
 
   const db = usePGlite()
   const { formatMessage } = useIntl()
@@ -36,28 +35,13 @@ export const Header = ({ autoFocusRef }: { autoFocusRef?: React.RefObject<HTMLIn
     autoFocusRef?.current?.focus()
   }
 
-  const deleteRow = async () => {
-    try {
-      const prevRes = await db.query(
-        `SELECT * FROM goal_reports WHERE goal_report_id = $1`,
-        [goalReportId],
-      )
-      const prev = (prevRes?.rows?.[0] ?? {}) as Record<string, unknown>
-      db.query(`DELETE FROM goal_reports WHERE goal_report_id = $1`, [
-        goalReportId,
-      ])
-      addOperation({
-        table: 'goal_reports',
-        rowIdName: 'goal_report_id',
-        rowId: goalReportId,
-        operation: 'delete',
-        prev,
-      })
-      navigate({ to: `..` })
-    } catch (error) {
-      console.error(error)
-    }
-  }
+  const deleteRow = () =>
+    requestDelete({
+      table: 'goal_reports',
+      rowIdName: 'goal_report_id',
+      rowId: goalReportId!,
+      navigateTo: '..',
+    })
 
   const toNext = async () => {
     try {

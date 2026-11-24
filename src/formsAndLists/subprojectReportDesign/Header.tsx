@@ -1,5 +1,5 @@
 import { useParams, useNavigate } from '@tanstack/react-router'
-import { useSetAtom, useAtom } from 'jotai'
+import { useAtom } from 'jotai'
 import { usePGlite, useLiveQuery } from '@electric-sql/pglite-react'
 import { useRef, useEffect } from 'react'
 import { useIntl } from 'react-intl'
@@ -7,11 +7,12 @@ import { useIntl } from 'react-intl'
 import { createSubprojectReportDesign } from '../../modules/createRows.ts'
 import { FormHeader } from '../../components/FormHeader/index.tsx'
 import { HistoryToggleButton } from '../../components/shared/HistoryCompare/HistoryToggleButton.tsx'
-import { addOperationAtom, languageAtom } from '../../store.ts'
+import { languageAtom } from '../../store.ts'
+import { useRequestRowDelete } from '../../modules/deleteRow.ts'
 import { subprojectNameSingularExpr } from '../../modules/subprojectNameCols.ts'
 
 export const Header = ({ autoFocusRef }: { autoFocusRef?: React.RefObject<HTMLInputElement | null>; from?: string }) => {
-  const addOperation = useSetAtom(addOperationAtom)
+  const requestDelete = useRequestRowDelete()
   const { projectId, subprojectReportDesignId } = useParams({ strict: false })
   const basePath = `/data/projects/${projectId}/subproject-designs/${subprojectReportDesignId}`
   const navigate = useNavigate()
@@ -53,25 +54,13 @@ export const Header = ({ autoFocusRef }: { autoFocusRef?: React.RefObject<HTMLIn
     autoFocusRef?.current?.focus()
   }
 
-  const deleteRow = async () => {
-    const prevRes = await db.query(
-      `SELECT * FROM subproject_report_designs WHERE subproject_report_design_id = $1`,
-      [subprojectReportDesignId],
-    )
-    const prev = (prevRes?.rows?.[0] ?? {}) as Record<string, unknown>
-    await db.query(
-      `DELETE FROM subproject_report_designs WHERE subproject_report_design_id = $1`,
-      [subprojectReportDesignId],
-    )
-    addOperation({
+  const deleteRow = () =>
+    requestDelete({
       table: 'subproject_report_designs',
       rowIdName: 'subproject_report_design_id',
-      rowId: subprojectReportDesignId,
-      operation: 'delete',
-      prev,
+      rowId: subprojectReportDesignId!,
+      navigateTo: '..',
     })
-    navigate({ to: `..` })
-  }
 
   const toNext = async () => {
     try {

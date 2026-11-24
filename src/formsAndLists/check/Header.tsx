@@ -28,6 +28,7 @@ import {
   addOperationAtom,
   mapLayerSortingAtom,
 } from '../../store.ts'
+import { useRequestRowDelete } from '../../modules/deleteRow.ts'
 
 export const Header = ({
   autoFocusRef,
@@ -68,6 +69,7 @@ export const Header = ({
   const setMapBounds = useSetAtom(mapBoundsAtom)
   const addNotification = useSetAtom(addNotificationAtom)
   const addOperation = useSetAtom(addOperationAtom)
+  const requestDelete = useRequestRowDelete()
   const navigate = useNavigate()
 
   const db = usePGlite()
@@ -120,26 +122,13 @@ export const Header = ({
     autoFocusRef?.current?.focus()
   }
 
-  const deleteRow = async () => {
-    try {
-      const prevRes = await db.query(
-        `SELECT * FROM checks WHERE check_id = $1`,
-        [checkId],
-      )
-      const prev = (prevRes?.rows?.[0] ?? {}) as Record<string, unknown>
-      await db.query(`DELETE FROM checks WHERE check_id = $1`, [checkId])
-      addOperation({
-        table: 'checks',
-        rowIdName: 'check_id',
-        rowId: checkId,
-        operation: 'delete',
-        prev,
-      })
-      navigate({ to: isForm ? ('../..' as '..') : '..' })
-    } catch (error) {
-      console.error('Error deleting check:', error)
-    }
-  }
+  const deleteRow = () =>
+    requestDelete({
+      table: 'checks',
+      rowIdName: 'check_id',
+      rowId: checkId!,
+      navigateTo: isForm ? ('../..' as '..') : '..',
+    })
 
   const toNext = async () => {
     try {

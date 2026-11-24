@@ -1,12 +1,11 @@
 import { useParams, useNavigate } from '@tanstack/react-router'
 import { usePGlite, useLiveQuery } from '@electric-sql/pglite-react'
-import { useSetAtom } from 'jotai'
 import { useRef, useEffect } from 'react'
 
 import { createCheckQuantity } from '../../modules/createRows.ts'
 import { FormHeader } from '../../components/FormHeader/index.tsx'
 import { HistoryToggleButton } from '../../components/shared/HistoryCompare/HistoryToggleButton.tsx'
-import { addOperationAtom } from '../../store.ts'
+import { useRequestRowDelete } from '../../modules/deleteRow.ts'
 import { useIntl } from 'react-intl'
 
 export const Header = ({
@@ -24,7 +23,7 @@ export const Header = ({
     checkQuantityId,
   } = useParams({ strict: false })
   const navigate = useNavigate()
-  const addOperation = useSetAtom(addOperationAtom)
+  const requestDelete = useRequestRowDelete()
   const { formatMessage } = useIntl()
   const quantityTitle = formatMessage({ id: 'TmPR2+', defaultMessage: 'Menge' })
   const basePath = placeId2
@@ -55,29 +54,13 @@ export const Header = ({
     autoFocusRef?.current?.focus()
   }
 
-  const deleteRow = async () => {
-    try {
-      const prevRes = await db.query(
-        'SELECT * FROM check_quantities WHERE check_quantity_id = $1',
-        [checkQuantityId],
-      )
-      const prev = (prevRes?.rows?.[0] ?? {}) as Record<string, unknown>
-      await db.query(
-        'DELETE FROM check_quantities WHERE check_quantity_id = $1',
-        [checkQuantityId],
-      )
-      addOperation({
-        table: 'check_quantities',
-        rowIdName: 'check_quantity_id',
-        rowId: checkQuantityId,
-        operation: 'delete',
-        prev,
-      })
-      navigate({ to: '..' })
-    } catch (error) {
-      console.error('Error deleting check value:', error)
-    }
-  }
+  const deleteRow = () =>
+    requestDelete({
+      table: 'check_quantities',
+      rowIdName: 'check_quantity_id',
+      rowId: checkQuantityId!,
+      navigateTo: '..',
+    })
 
   const toNext = async () => {
     try {

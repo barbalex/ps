@@ -1,13 +1,12 @@
 import { useParams, useNavigate } from '@tanstack/react-router'
 import { usePGlite, useLiveQuery } from '@electric-sql/pglite-react'
-import { useSetAtom } from 'jotai'
 import { useRef, useEffect } from 'react'
 import { useIntl } from 'react-intl'
 
 import { createActionReportQuantity } from '../../modules/createRows.ts'
 import { FormHeader } from '../../components/FormHeader/index.tsx'
 import { HistoryToggleButton } from '../../components/shared/HistoryCompare/HistoryToggleButton.tsx'
-import { addOperationAtom } from '../../store.ts'
+import { useRequestRowDelete } from '../../modules/deleteRow.ts'
 
 export const Header = ({ autoFocusRef }: { autoFocusRef?: React.RefObject<HTMLInputElement | null>; from?: string }) => {
   const {
@@ -22,7 +21,7 @@ export const Header = ({ autoFocusRef }: { autoFocusRef?: React.RefObject<HTMLIn
   const basePath = placeId2
     ? `/data/projects/${projectId}/subprojects/${subprojectId}/places/${placeId}/places/${placeId2}/action-reports/${actionReportId}/quantities/${actionReportQuantityId}`
     : `/data/projects/${projectId}/subprojects/${subprojectId}/places/${placeId}/action-reports/${actionReportId}/quantities/${actionReportQuantityId}`
-  const addOperation = useSetAtom(addOperationAtom)
+  const requestDelete = useRequestRowDelete()
   const { formatMessage } = useIntl()
 
   const db = usePGlite()
@@ -48,29 +47,13 @@ export const Header = ({ autoFocusRef }: { autoFocusRef?: React.RefObject<HTMLIn
     autoFocusRef?.current?.focus()
   }
 
-  const deleteRow = async () => {
-    try {
-      const prevRes = await db.query(
-        'SELECT * FROM action_report_quantities WHERE place_action_report_quantity_id = $1',
-        [actionReportQuantityId],
-      )
-      const prev = (prevRes?.rows?.[0] ?? {}) as Record<string, unknown>
-      await db.query(
-        'DELETE FROM action_report_quantities WHERE place_action_report_quantity_id = $1',
-        [actionReportQuantityId],
-      )
-      addOperation({
-        table: 'action_report_quantities',
-        rowIdName: 'place_action_report_quantity_id',
-        rowId: actionReportQuantityId,
-        operation: 'delete',
-        prev,
-      })
-      navigate({ to: '..' })
-    } catch (error) {
-      console.error('Error deleting place action report quantity:', error)
-    }
-  }
+  const deleteRow = () =>
+    requestDelete({
+      table: 'action_report_quantities',
+      rowIdName: 'place_action_report_quantity_id',
+      rowId: actionReportQuantityId!,
+      navigateTo: '..',
+    })
 
   const toNext = async () => {
     try {

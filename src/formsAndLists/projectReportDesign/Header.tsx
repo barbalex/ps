@@ -1,5 +1,4 @@
 import { useParams, useNavigate } from '@tanstack/react-router'
-import { useSetAtom } from 'jotai'
 import { usePGlite } from '@electric-sql/pglite-react'
 import { useRef, useEffect } from 'react'
 import { useIntl } from 'react-intl'
@@ -7,10 +6,10 @@ import { useIntl } from 'react-intl'
 import { createProjectReportDesign } from '../../modules/createRows.ts'
 import { FormHeader } from '../../components/FormHeader/index.tsx'
 import { HistoryToggleButton } from '../../components/shared/HistoryCompare/HistoryToggleButton.tsx'
-import { addOperationAtom } from '../../store.ts'
+import { useRequestRowDelete } from '../../modules/deleteRow.ts'
 
 export const Header = ({ autoFocusRef }: { autoFocusRef?: React.RefObject<HTMLInputElement | null>; from?: string }) => {
-  const addOperation = useSetAtom(addOperationAtom)
+  const requestDelete = useRequestRowDelete()
   const { projectId, projectReportDesignId } = useParams({ strict: false })
   const basePath = `/data/projects/${projectId}/designs/${projectReportDesignId}`
   const navigate = useNavigate()
@@ -35,25 +34,13 @@ export const Header = ({ autoFocusRef }: { autoFocusRef?: React.RefObject<HTMLIn
     autoFocusRef?.current?.focus()
   }
 
-  const deleteRow = async () => {
-    const prevRes = await db.query(
-      `SELECT * FROM project_report_designs WHERE project_report_design_id = $1`,
-      [projectReportDesignId],
-    )
-    const prev = (prevRes?.rows?.[0] ?? {}) as Record<string, unknown>
-    await db.query(
-      `DELETE FROM project_report_designs WHERE project_report_design_id = $1`,
-      [projectReportDesignId],
-    )
-    addOperation({
+  const deleteRow = () =>
+    requestDelete({
       table: 'project_report_designs',
       rowIdName: 'project_report_design_id',
-      rowId: projectReportDesignId,
-      operation: 'delete',
-      prev,
+      rowId: projectReportDesignId!,
+      navigateTo: '..',
     })
-    navigate({ to: `..` })
-  }
 
   const toNext = async () => {
     try {

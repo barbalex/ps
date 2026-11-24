@@ -1,6 +1,5 @@
 import { useParams, useNavigate, useLocation } from '@tanstack/react-router'
 import { usePGlite, useLiveQuery } from '@electric-sql/pglite-react'
-import { useSetAtom } from 'jotai'
 import * as fluentUiReactComponents from '@fluentui/react-components'
 const { Button } = fluentUiReactComponents
 import {
@@ -14,7 +13,7 @@ import { useIntl } from 'react-intl'
 import { createProjectReport } from '../../modules/createRows.ts'
 import { FormHeader } from '../../components/FormHeader/index.tsx'
 import { HistoryToggleButton } from '../../components/shared/HistoryCompare/HistoryToggleButton.tsx'
-import { addOperationAtom } from '../../store.ts'
+import { useRequestRowDelete } from '../../modules/deleteRow.ts'
 
 export const Header = ({
   autoFocusRef,
@@ -26,7 +25,7 @@ export const Header = ({
   const basePath = `/data/projects/${projectId}/reports/${projectReportId}`
   const navigate = useNavigate()
   const location = useLocation()
-  const addOperation = useSetAtom(addOperationAtom)
+  const requestDelete = useRequestRowDelete()
   const { formatMessage } = useIntl()
 
   const isPrintView = location.pathname.endsWith('/print')
@@ -72,30 +71,13 @@ export const Header = ({
     autoFocusRef?.current?.focus()
   }
 
-  const deleteRow = async () => {
-    try {
-      const prevRes = await db.query(
-        `SELECT * FROM project_reports WHERE project_report_id = $1`,
-        [projectReportId],
-      )
-      const prev = (prevRes?.rows?.[0] ?? {}) as Record<string, unknown>
-      await db.query(
-        `DELETE FROM project_reports WHERE project_report_id = $1`,
-        [projectReportId],
-      )
-      addOperation({
-        table: 'project_reports',
-        rowIdName: 'project_report_id',
-        rowId: projectReportId,
-        operation: 'delete',
-        prev,
-      })
-      navigate({ to: '..' })
-    } catch (error) {
-      console.error('Error deleting project report:', error)
-      // Could add a toast notification here
-    }
-  }
+  const deleteRow = () =>
+    requestDelete({
+      table: 'project_reports',
+      rowIdName: 'project_report_id',
+      rowId: projectReportId!,
+      navigateTo: '..',
+    })
 
   const toNext = async () => {
     try {

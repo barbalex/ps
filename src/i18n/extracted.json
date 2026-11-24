@@ -1616,6 +1616,18 @@
   "deleteAccountWarning": {
     "defaultMessage": "Das Löschen deines Kontos entfernt alle deine Daten dauerhaft und kann nicht rückgängig gemacht werden."
   },
+  "deleteCascadeCancel": {
+    "defaultMessage": "Abbrechen"
+  },
+  "deleteCascadeConfirm": {
+    "defaultMessage": "Löschen"
+  },
+  "deleteCascadeText": {
+    "defaultMessage": "{name} löschen? Auch {count, plural, one {# untergeordneter Eintrag} other {# untergeordnete Einträge}} werden gelöscht."
+  },
+  "deleteCascadeTitle": {
+    "defaultMessage": "Wirklich löschen?"
+  },
   "docSingular": {
     "defaultMessage": "Doc"
   },

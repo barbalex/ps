@@ -13,6 +13,7 @@ import { useSetAtom, useAtomValue } from 'jotai'
 
 import { Notification as NotificationComponent } from './Notification.tsx'
 import { UndoDeleteBar } from '../UndoDeleteBar.tsx'
+import { DeleteCascadeDialog } from '../DeleteCascadeDialog.tsx'
 import {
   notificationsAtom,
   removeNotificationAtom,
@@ -42,6 +43,7 @@ export const Notifications: React.FC = () => {
   return (
     <>
       <UndoDeleteBar />
+      <DeleteCascadeDialog />
       {firstFourNotifications.length > 0 && (
         <div className={styles.container}>
           {firstFourNotifications.map((n) => (
