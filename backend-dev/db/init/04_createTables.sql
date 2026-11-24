@@ -748,7 +748,7 @@ ALTER TABLE projects ADD CONSTRAINT projects_place_action_reports_default_unit_i
 CREATE TABLE IF NOT EXISTS places(
   place_id uuid PRIMARY KEY DEFAULT uuidv7(),
   subproject_id uuid DEFAULT NULL REFERENCES subprojects(subproject_id) ON DELETE CASCADE ON UPDATE CASCADE DEFERRABLE INITIALLY DEFERRED,
-  parent_id uuid DEFAULT NULL REFERENCES places(place_id) ON DELETE NO action ON UPDATE CASCADE DEFERRABLE INITIALLY DEFERRED,
+  parent_id uuid DEFAULT NULL REFERENCES places(place_id) ON DELETE CASCADE ON UPDATE CASCADE DEFERRABLE INITIALLY DEFERRED,
   level integer DEFAULT 1,
   name text DEFAULT NULL,
   since integer DEFAULT NULL,

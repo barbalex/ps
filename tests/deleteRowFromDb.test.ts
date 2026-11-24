@@ -102,6 +102,10 @@ describe('cascade capture + undo restore', () => {
   const placeId = '30000000-0000-7000-8000-0000000000e5'
   const checkId = '70000000-0000-7000-8000-0000000000e6'
   const quantityId = '70000000-0000-7000-8000-0000000000e7'
+  // level-2 child place with its own check: the parent_id FK cascades,
+  // so deleting the level-1 place takes the whole subtree with it
+  const childPlaceId = '30000000-0000-7000-8000-0000000000e8'
+  const childCheckId = '70000000-0000-7000-8000-0000000000e9'
 
   beforeAll(async () => {
     await fixture.db.exec(`
@@ -111,6 +115,10 @@ describe('cascade capture + undo restore', () => {
         ('${checkId}', '${placeId}');
       INSERT INTO check_quantities (check_quantity_id, check_id, quantity_integer) VALUES
         ('${quantityId}', '${checkId}', 42);
+      INSERT INTO places (place_id, subproject_id, parent_id, level, name) VALUES
+        ('${childPlaceId}', '${fixture.ids.subproject}', '${placeId}', 2, 'cascade roundtrip child');
+      INSERT INTO checks (check_id, place_id) VALUES
+        ('${childCheckId}', '${childPlaceId}');
     `)
     // undoDeleteRow reads the db from the store
     store.set(pgliteDbAtom, fixture.db)
@@ -134,10 +142,19 @@ describe('cascade capture + undo restore', () => {
     expect(tables[0]).toBe('places')
     expect(tables).toContain('checks')
     expect(tables).toContain('check_quantities')
-    // children come after their parents
-    expect(tables.indexOf('check_quantities')).toBeGreaterThan(
-      tables.indexOf('checks'),
+    expect(tables).toContain('places') // the level-2 child place cascades too
+    // children come after their parents: the child place's checks must sit
+    // behind the child place
+    const levels = closure.flatMap((l, level) =>
+      l.rows.map(() => ({ table: l.table, level })),
     )
+    const childPlaceLevel = levels.find(
+      (x) => x.table === 'places' && x.level > 0,
+    )!.level
+    const childCheckLevel = levels.filter(
+      (x) => x.table === 'checks' && x.level > childPlaceLevel,
+    ).length
+    expect(childCheckLevel).toBeGreaterThan(0)
   })
 
   it('deleting cascades locally and undo restores every level', async () => {
@@ -147,10 +164,12 @@ describe('cascade capture + undo restore', () => {
       rowId: placeId,
     })
 
-    // the local delete cascades: all three rows are gone
+    // the local delete cascades: the whole subtree is gone
     await fixture.db.query(`DELETE FROM places WHERE place_id = $1`, [placeId])
     expect(await countWhere('places', 'place_id', placeId)).toBe(0)
+    expect(await countWhere('places', 'place_id', childPlaceId)).toBe(0)
     expect(await countWhere('checks', 'check_id', checkId)).toBe(0)
+    expect(await countWhere('checks', 'check_id', childCheckId)).toBe(0)
     expect(await countWhere('check_quantities', 'check_quantity_id', quantityId)).toBe(0)
 
     await undoDeleteRow({
@@ -163,9 +182,11 @@ describe('cascade capture + undo restore', () => {
       time: 1,
     })
 
-    // parent, child and grandchild are restored
+    // parent, child place, checks and grandchild are restored
     expect(await countWhere('places', 'place_id', placeId)).toBe(1)
+    expect(await countWhere('places', 'place_id', childPlaceId)).toBe(1)
     expect(await countWhere('checks', 'check_id', checkId)).toBe(1)
+    expect(await countWhere('checks', 'check_id', childCheckId)).toBe(1)
     expect(await countWhere('check_quantities', 'check_quantity_id', quantityId)).toBe(1)
 
     // compensating insert ops are queued for sync (parent + both children;
