@@ -26,10 +26,10 @@ import {
   editingPlaceGeometryAtom,
   editingCheckGeometryAtom,
   editingActionGeometryAtom,
-  tabsAtom,
   addNotificationAtom,
 } from '../../../store.ts'
 import type { MapInfo } from '../../../store.ts'
+import { useUrlPanes } from '../../../modules/useUrlPanes.ts'
 import type WfsServices from '../../../models/public/WfsServices.ts'
 import type Crs from '../../../models/public/Crs.ts'
 import type VectorLayers from '../../../models/public/VectorLayers.ts'
@@ -115,7 +115,7 @@ export const ClickListener = () => {
   const setEditingPlaceGeometry = useSetAtom(editingPlaceGeometryAtom)
   const setEditingCheckGeometry = useSetAtom(editingCheckGeometryAtom)
   const setEditingActionGeometry = useSetAtom(editingActionGeometryAtom)
-  const [tabs, setTabs] = useAtom(tabsAtom)
+  const [tabs, setTabs] = useUrlPanes()
   const addNotification = useSetAtom(addNotificationAtom)
 
   const { projectId = '99999999-9999-9999-9999-999999999999' } = useParams({

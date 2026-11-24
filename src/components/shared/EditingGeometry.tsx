@@ -6,11 +6,11 @@ import { useIntl } from 'react-intl'
 import { SwitchField } from './SwitchField.tsx'
 import type { FieldChangeData } from './fieldChange.ts'
 import {
-  tabsAtom,
   editingPlaceGeometryAtom,
   editingActionGeometryAtom,
   editingCheckGeometryAtom,
 } from '../../store.ts'
+import { useUrlPanes } from '../../modules/useUrlPanes.ts'
 // TODO:
 // maybe generalize this component for all geometry editing
 // and move it to the shared folder
@@ -35,7 +35,7 @@ export const EditingGeometry = ({ row, table }: Props) => {
   const [editingActionGeometry, setEditingActionGeometry] = useAtom(
     editingActionGeometryAtom,
   )
-  const [tabs, setTabs] = useAtom(tabsAtom)
+  const [tabs, setTabs] = useUrlPanes()
 
   const onChange = async (_e: unknown, data?: FieldChangeData) => {
     // 1. if checked, show map if not already shown
