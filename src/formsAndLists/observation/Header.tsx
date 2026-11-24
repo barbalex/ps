@@ -17,8 +17,8 @@ import {
   queryExtent,
   extentToBoundsWithMargin,
 } from '../../modules/geoQueries.ts'
+import { useUrlPanes } from '../../modules/useUrlPanes.ts'
 import {
-  tabsAtom,
   mapBoundsAtom,
   addOperationAtom,
   addNotificationAtom,
@@ -42,7 +42,7 @@ export const Header = ({
     useParams({ strict: false })
   const navigate = useNavigate()
   const { formatMessage } = useIntl()
-  const [tabs, setTabs] = useAtom(tabsAtom)
+  const [tabs, setTabs] = useUrlPanes()
   const [mapLayerSorting, setMapLayerSorting] = useAtom(mapLayerSortingAtom)
   const setMapBounds = useSetAtom(mapBoundsAtom)
   const addOperation = useSetAtom(addOperationAtom)

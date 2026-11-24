@@ -16,10 +16,10 @@ import {
 } from '../../modules/geoQueries.ts'
 import { createLayerPresentation } from '../../modules/createRows.ts'
 import { useUrlLayers } from '../../modules/useUrlLayers.ts'
+import { useUrlPanes } from '../../modules/useUrlPanes.ts'
 import {
   mapBoundsAtom,
   addOperationAtom,
-  tabsAtom,
   addNotificationAtom,
   mapLayerSortingAtom,
 } from '../../store.ts'
@@ -37,7 +37,7 @@ export const LayerMenu = ({ table, level, placeNamePlural }: Props) => {
   const setMapBounds = useSetAtom(mapBoundsAtom)
   const addOperation = useSetAtom(addOperationAtom)
   const addNotification = useSetAtom(addNotificationAtom)
-  const [tabs, setTabs] = useAtom(tabsAtom)
+  const [tabs, setTabs] = useUrlPanes()
   const [mapLayerSorting, setMapLayerSorting] = useAtom(mapLayerSortingAtom)
   const { formatMessage } = useIntl()
 
