@@ -1,6 +1,6 @@
 import { useNavigate, useSearch } from '@tanstack/react-router'
 import { useAtom } from 'jotai'
-import { useMemo } from 'react'
+import { useCallback, useMemo } from 'react'
 
 import { tabsAtom } from '../store.ts'
 
@@ -8,6 +8,9 @@ import { tabsAtom } from '../store.ts'
 // ?panes=tree,data — url params win when present, the tabsAtom
 // (localStorage) remains as the persisted fallback. Toggling panes writes
 // both; the default layout produces no param.
+//
+// This hook is the only way to change the panes. Writing tabsAtom directly
+// has no visible effect while ?panes= names the panes: the url wins.
 
 const VALID_PANES = ['tree', 'data', 'map'] as const
 type Pane = (typeof VALID_PANES)[number]
@@ -36,22 +39,29 @@ export const useUrlPanes = () => {
   const urlPanes = useMemo(() => parsePanes(search.panes), [search.panes])
   const panes = urlPanes ?? (tabs as Pane[])
 
-  const setPanes = (nextPanes: string[]) => {
-    setTabs(nextPanes)
-    const isDefault =
-      nextPanes.length === DEFAULT_PANES.length &&
-      nextPanes.every((pane, i) => pane === DEFAULT_PANES[i])
-    navigate(
-      {
+  // stable on purpose: the navigation lands asynchronously, so the panes a
+  // caller reads only change a render or two after it called setPanes. A new
+  // setter every render made effects that depend on one — the header's
+  // mobile compaction — run again on each of those renders and navigate all
+  // over, until React stopped the loop ("Maximum update depth exceeded")
+  const setPanes = useCallback(
+    (nextPanes: string[]) => {
+      setTabs(nextPanes)
+      const isDefault =
+        nextPanes.length === DEFAULT_PANES.length &&
+        nextPanes.every((pane, i) => pane === DEFAULT_PANES[i])
+      navigate({
         // undefined (or the default layout) removes the param
         search: (prev: Record<string, unknown>) => ({
           ...prev,
           panes: isDefault ? undefined : nextPanes.join(','),
         }),
         replace: true,
-      } as unknown as Parameters<typeof navigate>[0],
-    )
-  }
+      } as unknown as Parameters<typeof navigate>[0])
+    },
+    // navigate is stable (see tanstack's useNavigate), jotai setters are too
+    [navigate, setTabs],
+  )
 
   return [panes, setPanes] as const
 }
