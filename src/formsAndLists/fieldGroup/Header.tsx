@@ -1,12 +1,11 @@
 import { useParams, useNavigate } from '@tanstack/react-router'
 import { usePGlite, useLiveQuery } from '@electric-sql/pglite-react'
-import { useSetAtom } from 'jotai'
 import { useRef, useEffect } from 'react'
 import { useIntl } from 'react-intl'
 
 import { createFieldGroup } from '../../modules/createRows.ts'
 import { FormHeader } from '../../components/FormHeader/index.tsx'
-import { addOperationAtom } from '../../store.ts'
+import { useRequestRowDelete } from '../../modules/deleteRow.ts'
 
 export const Header = ({
   autoFocusRef,
@@ -15,7 +14,7 @@ export const Header = ({
 }) => {
   const { projectId, tableName, fieldGroupId } = useParams({ strict: false })
   const navigate = useNavigate()
-  const addOperation = useSetAtom(addOperationAtom)
+  const requestDelete = useRequestRowDelete()
   const { formatMessage } = useIntl()
 
   const db = usePGlite()
@@ -47,30 +46,13 @@ export const Header = ({
     autoFocusRef?.current?.focus()
   }
 
-  const deleteRow = async () => {
-    try {
-      const prevRes = await db.query(
-        `SELECT * FROM field_groups WHERE field_group_id = $1`,
-        [fieldGroupId],
-      )
-      const prev = (prevRes?.rows?.[0] ?? {}) as Record<string, unknown>
-      await db.query(
-        `DELETE FROM field_groups WHERE field_group_id = $1`,
-        [fieldGroupId],
-      )
-      addOperation({
-        table: 'field_groups',
-        rowIdName: 'field_group_id',
-        rowId: fieldGroupId,
-        operation: 'delete',
-        prev,
-      })
-      // views referencing the group lose it (ON DELETE SET NULL)
-      navigate({ to: '..' })
-    } catch (error) {
-      console.error('Error deleting field group:', error)
-    }
-  }
+  const deleteRow = () =>
+    requestDelete({
+      table: 'field_groups',
+      rowIdName: 'field_group_id',
+      rowId: fieldGroupId!,
+      navigateTo: '..',
+    })
 
   const toNext = async () => {
     try {

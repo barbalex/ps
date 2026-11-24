@@ -1,16 +1,13 @@
 import { useParams, useNavigate } from '@tanstack/react-router'
-import { useAtom, useSetAtom } from 'jotai'
+import { useAtom } from 'jotai'
 import { usePGlite, useLiveQuery } from '@electric-sql/pglite-react'
 import { useRef, useEffect } from 'react'
 import { useIntl } from 'react-intl'
 
 import { createChartSubject } from '../../modules/createRows.ts'
 import { FormHeader } from '../../components/FormHeader/index.tsx'
-import {
-  designingAtom,
-  addOperationAtom,
-  addNotificationAtom,
-} from '../../store.ts'
+import { designingAtom } from '../../store.ts'
+import { useRequestRowDelete } from '../../modules/deleteRow.ts'
 
 // TODO: if not editing, hide add and remove buttons
 export const Header = ({
@@ -19,8 +16,7 @@ export const Header = ({
   autoFocusRef?: React.RefObject<HTMLInputElement | null>
 }) => {
   const { formatMessage } = useIntl()
-  const addOperation = useSetAtom(addOperationAtom)
-  const addNotification = useSetAtom(addNotificationAtom)
+  const requestDelete = useRequestRowDelete()
 
   const { chartId, chartSubjectId, projectId } = useParams({ strict: false })
   const [designingMap] = useAtom(designingAtom)
@@ -51,36 +47,13 @@ export const Header = ({
     autoFocusRef?.current?.focus()
   }
 
-  const deleteRow = async () => {
-    const prevRes = await db.query(
-      `SELECT * FROM chart_subjects WHERE chart_subject_id = $1`,
-      [chartSubjectId],
-    )
-    const prev = (prevRes?.rows?.[0] ?? {}) as Record<string, unknown>
-    // await and guard: a failed local delete (e.g. a foreign key violation)
-    // must not queue the server delete and navigate away as if it had worked
-    try {
-      await db.query(`DELETE FROM chart_subjects WHERE chart_subject_id = $1`, [
-        chartSubjectId,
-      ])
-    } catch (error) {
-      console.error('chartSubject Header, delete failed:', error)
-      addNotification({
-        intent: 'error',
-        title: 'Delete failed',
-        body: error instanceof Error ? error.message : 'The row could not be deleted.',
-      })
-      return
-    }
-    addOperation({
+  const deleteRow = () =>
+    requestDelete({
       table: 'chart_subjects',
       rowIdName: 'chart_subject_id',
-      rowId: chartSubjectId,
-      operation: 'delete',
-      prev,
+      rowId: chartSubjectId!,
+      navigateTo: '..',
     })
-    navigate({ to: '..' })
-  }
 
   const toNext = async () => {
     const res = await db.query(

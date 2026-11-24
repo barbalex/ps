@@ -25,6 +25,7 @@ import {
   addNotificationAtom,
   mapLayerSortingAtom,
 } from '../../store.ts'
+import { useRequestRowDelete } from '../../modules/deleteRow.ts'
 
 export const Header = ({
   autoFocusRef,
@@ -46,6 +47,7 @@ export const Header = ({
   const setMapBounds = useSetAtom(mapBoundsAtom)
   const addOperation = useSetAtom(addOperationAtom)
   const addNotification = useSetAtom(addNotificationAtom)
+  const requestDelete = useRequestRowDelete()
 
   const { projectId, subprojectId, placeId, placeId2, tableViewId, actionId } = useParams({ strict: false })
 
@@ -119,26 +121,13 @@ export const Header = ({
     autoFocusRef?.current?.focus()
   }
 
-  const deleteRow = async () => {
-    try {
-      const prevRes = await db.query(
-        'SELECT * FROM actions WHERE action_id = $1',
-        [actionId],
-      )
-      const prev = (prevRes?.rows?.[0] ?? {}) as Record<string, unknown>
-      await db.query('DELETE FROM actions WHERE action_id = $1', [actionId])
-      addOperation({
-        table: 'actions',
-        rowIdName: 'action_id',
-        rowId: actionId,
-        operation: 'delete',
-        prev,
-      })
-      navigate({ to: isForm ? ('../..' as '..') : '..' })
-    } catch (error) {
-      console.error('Error deleting action:', error)
-    }
-  }
+  const deleteRow = () =>
+    requestDelete({
+      table: 'actions',
+      rowIdName: 'action_id',
+      rowId: actionId!,
+      navigateTo: isForm ? ('../..' as '..') : '..',
+    })
 
   const toNext = async () => {
     try {

@@ -1,6 +1,6 @@
 import { useParams, useNavigate } from '@tanstack/react-router'
 import { usePGlite, useLiveQuery } from '@electric-sql/pglite-react'
-import { useSetAtom, useAtom } from 'jotai'
+import { useAtom } from 'jotai'
 import { useRef, useEffect } from 'react'
 import { useIntl } from 'react-intl'
 import * as fluentUiReactComponents from '@fluentui/react-components'
@@ -11,14 +11,15 @@ const { Button } = fluentUiReactComponents
 import { AddProjectUserButton } from '../../components/shared/AddProjectUserButton.tsx'
 import { FormHeader } from '../../components/FormHeader/index.tsx'
 import { HistoryToggleButton } from '../../components/shared/HistoryCompare/HistoryToggleButton.tsx'
-import { addOperationAtom, languageAtom } from '../../store.ts'
+import { languageAtom } from '../../store.ts'
+import { useRequestRowDelete } from '../../modules/deleteRow.ts'
 
 export const Header = ({ autoFocusRef }: { autoFocusRef?: React.RefObject<HTMLInputElement | null>; from?: string }) => {
   const { formatMessage } = useIntl()
   const { projectId, subprojectId, placeId, placeId2, placeUserId } =
     useParams({ strict: false })
   const navigate = useNavigate()
-  const addOperation = useSetAtom(addOperationAtom)
+  const requestDelete = useRequestRowDelete()
   const [language] = useAtom(languageAtom)
 
   const resPlaceLevel = useLiveQuery(
@@ -45,28 +46,13 @@ export const Header = ({ autoFocusRef }: { autoFocusRef?: React.RefObject<HTMLIn
   }, [placeUserId])
 
 
-  const deleteRow = async () => {
-    try {
-      const prevRes = await db.query(
-        `SELECT * FROM place_roles WHERE place_role_id = $1`,
-        [placeUserId],
-      )
-      const prev = (prevRes?.rows?.[0] ?? {}) as Record<string, unknown>
-      await db.query(`DELETE FROM place_roles WHERE place_role_id = $1`, [
-        placeUserId,
-      ])
-      addOperation({
-        table: 'place_roles',
-        rowIdName: 'place_role_id',
-        rowId: placeUserId,
-        operation: 'delete',
-        prev,
-      })
-      navigate({ to: '..' })
-    } catch (error) {
-      console.error(error)
-    }
-  }
+  const deleteRow = () =>
+    requestDelete({
+      table: 'place_roles',
+      rowIdName: 'place_role_id',
+      rowId: placeUserId!,
+      navigateTo: '..',
+    })
 
   const toNext = async () => {
     try {

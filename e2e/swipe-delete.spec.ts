@@ -27,6 +27,10 @@ const PLACE1_ID = 'e2e00000-0000-7000-8000-000000000005'
 const PLACE2_ID = 'e2e00000-0000-7000-8000-000000000006'
 const REPORT_2021_ID = 'e2e00000-0000-7000-8000-000000000007'
 const REPORT_2022_ID = 'e2e00000-0000-7000-8000-000000000008'
+// the 2020 report carries a quantity, so deleting it cascades and must
+// trigger the confirm dialog
+const REPORT_2020_ID = 'e2e00000-0000-7000-8000-000000000009'
+const QUANTITY_ID = 'e2e00000-0000-7000-8000-00000000000a'
 
 const listUrl =
   `/data/projects/${PROJECT_ID}/subprojects/${SUBPROJECT_ID}` +
@@ -69,7 +73,13 @@ test.beforeEach(async () => {
     INSERT INTO check_reports (place_check_report_id, place_id, year)
     VALUES
       ('${REPORT_2021_ID}', '${PLACE2_ID}', 2021),
-      ('${REPORT_2022_ID}', '${PLACE2_ID}', 2022)
+      ('${REPORT_2022_ID}', '${PLACE2_ID}', 2022),
+      ('${REPORT_2020_ID}', '${PLACE2_ID}', 2020)
+    ON CONFLICT DO NOTHING;
+
+    INSERT INTO check_report_quantities
+      (place_check_report_quantity_id, place_check_report_id, quantity_integer)
+    VALUES ('${QUANTITY_ID}', '${REPORT_2020_ID}', 7)
     ON CONFLICT DO NOTHING;
   `)
   await grantRoles({
@@ -220,5 +230,48 @@ test.describe('mobile undo bar', () => {
     await expect(bar).toHaveAttribute('data-visible', 'false', {
       timeout: 10_000,
     })
+  })
+
+  test('cascade confirm dialog guards child rows and undo restores them', async ({
+    page,
+  }) => {
+    await login(page, E2E_EMAIL, E2E_PASSWORD)
+
+    // warm-up: the quantity must have synced before the swipe, otherwise
+    // the cascade capture sees no children and skips the dialog. its own
+    // list is the ui-visible proof that it arrived.
+    await page.goto(
+      `${listUrl}/${REPORT_2020_ID}/quantities`,
+    )
+    await expect(
+      page.locator('.list-container .row').first(),
+    ).toBeVisible({ timeout: 120_000 })
+
+    await page.goto(listUrl)
+    // the 2020 report has a quantity: swiping it must ask before deleting
+    const row2020 = page.locator('.list-container .row', { hasText: '2020' })
+    await expect(row2020).toBeVisible({ timeout: 120_000 })
+
+    await swipeRow(page, row2020)
+    const dialog = page.getByRole('dialog')
+    await expect(dialog).toBeVisible()
+    await expect(dialog).toContainText('2020')
+
+    // cancel: the row slides back open, nothing deleted
+    await dialog.getByRole('button', { name: 'Abbrechen' }).click()
+    await expect(dialog).toBeHidden()
+    await expect(row2020).toBeVisible()
+
+    // confirm: the row goes away
+    await swipeRow(page, row2020)
+    await expect(dialog).toBeVisible()
+    await dialog.getByRole('button', { name: 'Löschen' }).click()
+    await expect(row2020).toHaveCount(0, { timeout: 30_000 })
+
+    // undo restores the report and its quantity
+    const bar = page.getByTestId('undo-delete-bar')
+    await expect(bar).toBeVisible()
+    await bar.getByRole('button').click()
+    await expect(row2020).toBeVisible({ timeout: 30_000 })
   })
 })

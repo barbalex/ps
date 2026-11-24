@@ -1,12 +1,11 @@
 import { useParams, useNavigate } from '@tanstack/react-router'
 import { usePGlite } from '@electric-sql/pglite-react'
-import { useSetAtom } from 'jotai'
 import { useRef, useEffect } from 'react'
 import { useIntl } from 'react-intl'
 
 import { createQc } from '../../modules/createRows.ts'
 import { FormHeader } from '../../components/FormHeader/index.tsx'
-import { addOperationAtom } from '../../store.ts'
+import { useRequestRowDelete } from '../../modules/deleteRow.ts'
 
 export const Header = ({
   autoFocusRef,
@@ -16,7 +15,7 @@ export const Header = ({
   const { formatMessage } = useIntl()
   const { qcsId } = useParams({ strict: false })
   const navigate = useNavigate()
-  const addOperation = useSetAtom(addOperationAtom)
+  const requestDelete = useRequestRowDelete()
 
   const db = usePGlite()
 
@@ -31,25 +30,13 @@ export const Header = ({
     autoFocusRef?.current?.focus()
   }
 
-  const deleteRow = async () => {
-    try {
-      const prevRes = await db.query(`SELECT * FROM qcs WHERE qcs_id = $1`, [
-        qcsId,
-      ])
-      const prev = (prevRes?.rows?.[0] ?? {}) as Record<string, unknown>
-      await db.query(`DELETE FROM qcs WHERE qcs_id = $1`, [qcsId])
-      addOperation({
-        table: 'qcs',
-        rowIdName: 'qcs_id',
-        rowId: qcsId,
-        operation: 'delete',
-        prev,
-      })
-      navigate({ to: `..` })
-    } catch (error) {
-      console.error('Error deleting qc:', error)
-    }
-  }
+  const deleteRow = () =>
+    requestDelete({
+      table: 'qcs',
+      rowIdName: 'qcs_id',
+      rowId: qcsId!,
+      navigateTo: '..',
+    })
 
   const toNext = async () => {
     try {

@@ -1,6 +1,5 @@
 import { useParams, useNavigate } from '@tanstack/react-router'
 import { usePGlite } from '@electric-sql/pglite-react'
-import { useSetAtom } from 'jotai'
 import { useRef, useEffect } from 'react'
 import { useIntl } from 'react-intl'
 import * as fluentUiReactComponents from '@fluentui/react-components'
@@ -11,13 +10,13 @@ const { Button } = fluentUiReactComponents
 import { AddProjectUserButton } from '../../components/shared/AddProjectUserButton.tsx'
 import { FormHeader } from '../../components/FormHeader/index.tsx'
 import { HistoryToggleButton } from '../../components/shared/HistoryCompare/HistoryToggleButton.tsx'
-import { addOperationAtom } from '../../store.ts'
+import { useRequestRowDelete } from '../../modules/deleteRow.ts'
 
 
 export const Header = ({ autoFocusRef }: { autoFocusRef?: React.RefObject<HTMLInputElement | null> }) => {
   const { projectId, projectUserId } = useParams({ strict: false })
   const navigate = useNavigate()
-  const addOperation = useSetAtom(addOperationAtom)
+  const requestDelete = useRequestRowDelete()
   const { formatMessage } = useIntl()
   const basePath = `/data/projects/${projectId}/users/${projectUserId}`
 
@@ -31,29 +30,13 @@ export const Header = ({ autoFocusRef }: { autoFocusRef?: React.RefObject<HTMLIn
   }, [projectUserId])
 
 
-  const deleteRow = async () => {
-    try {
-      const prevRes = await db.query(
-        `SELECT * FROM project_users WHERE project_user_id = $1`,
-        [projectUserId],
-      )
-      const prev = (prevRes?.rows?.[0] ?? {}) as Record<string, unknown>
-      await db.query(`DELETE FROM project_users WHERE project_user_id = $1`, [
-        projectUserId,
-      ])
-      addOperation({
-        table: 'project_users',
-        rowIdName: 'project_user_id',
-        rowId: projectUserId,
-        operation: 'delete',
-        prev,
-      })
-      navigate({ to: '..' })
-    } catch (error) {
-      console.error('Error deleting project user:', error)
-      // Could add a toast notification here
-    }
-  }
+  const deleteRow = () =>
+    requestDelete({
+      table: 'project_users',
+      rowIdName: 'project_user_id',
+      rowId: projectUserId!,
+      navigateTo: '..',
+    })
 
   const toNext = async () => {
     try {

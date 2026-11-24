@@ -1616,6 +1616,18 @@
   "deleteAccountWarning": {
     "defaultMessage": "Das Löschen deines Kontos entfernt alle deine Daten dauerhaft und kann nicht rückgängig gemacht werden."
   },
+  "deleteCascadeCancel": {
+    "defaultMessage": "Abbrechen"
+  },
+  "deleteCascadeConfirm": {
+    "defaultMessage": "Löschen"
+  },
+  "deleteCascadeText": {
+    "defaultMessage": "{name} löschen? Auch {count, plural, one {# untergeordneter Eintrag} other {# untergeordnete Einträge}} werden gelöscht."
+  },
+  "deleteCascadeTitle": {
+    "defaultMessage": "Wirklich löschen?"
+  },
   "docSingular": {
     "defaultMessage": "Doc"
   },
@@ -2343,7 +2355,7 @@
     "defaultMessage": "{downloading} werden geladen, {queued} warten, {error} fehlgeschlagen, {tooLarge} zu gross"
   },
   "offlineFilesHint": {
-    "defaultMessage": "Einzelne Dateien markierst du im Datei-Formular, alle Dateien einer Tabelle in der Stufen-Konfiguration (Design-Modus)."
+    "defaultMessage": "Um Dateien offline verfügbar zu machen, markiere einzelne Dateien im Datei-Formular oder alle Dateien einer Tabelle in der Stufen-Konfiguration (Design-Modus)."
   },
   "offlineFilesStorage": {
     "defaultMessage": "Speicherplatz der App auf diesem Gerät: {usage} von {quota}"

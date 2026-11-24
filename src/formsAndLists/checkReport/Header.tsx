@@ -1,13 +1,12 @@
 import { useParams, useNavigate } from '@tanstack/react-router'
 import { usePGlite, useLiveQuery } from '@electric-sql/pglite-react'
-import { useSetAtom } from 'jotai'
 import { useRef, useEffect } from 'react'
 import { useIntl } from 'react-intl'
 
 import { createCheckReport } from '../../modules/createRows.ts'
 import { FormHeader } from '../../components/FormHeader/index.tsx'
 import { HistoryToggleButton } from '../../components/shared/HistoryCompare/HistoryToggleButton.tsx'
-import { addOperationAtom } from '../../store.ts'
+import { useRequestRowDelete } from '../../modules/deleteRow.ts'
 
 export const Header = ({
   autoFocusRef,
@@ -18,7 +17,7 @@ export const Header = ({
   const { projectId, subprojectId, placeId, placeId2, checkReportId } =
     useParams({ strict: false })
   const navigate = useNavigate()
-  const addOperation = useSetAtom(addOperationAtom)
+  const requestDelete = useRequestRowDelete()
   const { formatMessage } = useIntl()
 
   const db = usePGlite()
@@ -59,29 +58,13 @@ export const Header = ({
     autoFocusRef?.current?.focus()
   }
 
-  const deleteRow = async () => {
-    try {
-      const prevRes = await db.query(
-        `SELECT * FROM check_reports WHERE place_check_report_id = $1`,
-        [checkReportId],
-      )
-      const prev = (prevRes?.rows?.[0] ?? {}) as Record<string, unknown>
-      db.query(
-        `DELETE FROM check_reports WHERE place_check_report_id = $1`,
-        [checkReportId],
-      )
-      addOperation({
-        table: 'check_reports',
-        rowIdName: 'place_check_report_id',
-        rowId: checkReportId,
-        operation: 'delete',
-        prev,
-      })
-      navigate({ to: `..` })
-    } catch (error) {
-      console.error(error)
-    }
-  }
+  const deleteRow = () =>
+    requestDelete({
+      table: 'check_reports',
+      rowIdName: 'place_check_report_id',
+      rowId: checkReportId!,
+      navigateTo: '..',
+    })
 
   const toNext = async () => {
     try {

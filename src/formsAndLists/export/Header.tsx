@@ -1,13 +1,12 @@
 import { useParams, useNavigate } from '@tanstack/react-router'
 import { usePGlite } from '@electric-sql/pglite-react'
-import { useSetAtom } from 'jotai'
 import { useRef, useEffect } from 'react'
 import { useIntl } from 'react-intl'
 
 import { createExport } from '../../modules/createRows.ts'
 import { FormHeader } from '../../components/FormHeader/index.tsx'
 import { HistoryToggleButton } from '../../components/shared/HistoryCompare/HistoryToggleButton.tsx'
-import { addOperationAtom } from '../../store.ts'
+import { useRequestRowDelete } from '../../modules/deleteRow.ts'
 import * as fluentUiReactComponents from '@fluentui/react-components'
 import { MdMenuBook } from 'react-icons/md'
 
@@ -21,7 +20,7 @@ export const Header = ({
   const { formatMessage } = useIntl()
   const { exportsId } = useParams({ strict: false })
   const navigate = useNavigate()
-  const addOperation = useSetAtom(addOperationAtom)
+  const requestDelete = useRequestRowDelete()
 
   const db = usePGlite()
 
@@ -38,23 +37,13 @@ export const Header = ({
     autoFocusRef?.current?.focus()
   }
 
-  const deleteRow = async () => {
-    try {
-      const prevRes = await db.query(`SELECT * FROM exports WHERE exports_id = $1`, [exportsId])
-      const prev = (prevRes?.rows?.[0] ?? {}) as Record<string, unknown>
-      await db.query(`DELETE FROM exports WHERE exports_id = $1`, [exportsId])
-      addOperation({
-        table: 'exports',
-        rowIdName: 'exports_id',
-        rowId: exportsId,
-        operation: 'delete',
-        prev,
-      })
-      navigate({ to: `..` })
-    } catch (error) {
-      console.error('Error deleting export:', error)
-    }
-  }
+  const deleteRow = () =>
+    requestDelete({
+      table: 'exports',
+      rowIdName: 'exports_id',
+      rowId: exportsId!,
+      navigateTo: '..',
+    })
 
   const toNext = async () => {
     try {

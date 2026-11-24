@@ -1,13 +1,12 @@
 import { useParams, useNavigate } from '@tanstack/react-router'
 import { usePGlite, useLiveQuery } from '@electric-sql/pglite-react'
-import { useSetAtom } from 'jotai'
 import { useRef, useEffect } from 'react'
 import { useIntl } from 'react-intl'
 
 import { createField } from '../../modules/createRows.ts'
 import { FormHeader } from '../../components/FormHeader/index.tsx'
 import { HistoryToggleButton } from '../../components/shared/HistoryCompare/HistoryToggleButton.tsx'
-import { addOperationAtom } from '../../store.ts'
+import { useRequestRowDelete } from '../../modules/deleteRow.ts'
 
 export const Header = ({
   autoFocusRef,
@@ -18,7 +17,7 @@ export const Header = ({
   const { formatMessage } = useIntl()
   const { projectId, userId, accountId, fieldId } = useParams({ strict: false })
   const navigate = useNavigate()
-  const addOperation = useSetAtom(addOperationAtom)
+  const requestDelete = useRequestRowDelete()
   const basePath = projectId
     ? `/data/projects/${projectId}/fields/${fieldId}`
     : `/data/users/${userId}/accounts/${accountId}/project-fields/${fieldId}`
@@ -50,26 +49,13 @@ export const Header = ({
     autoFocusRef?.current?.focus()
   }
 
-  const deleteRow = async () => {
-    try {
-      const prevRes = await db.query(
-        `SELECT * FROM fields WHERE field_id = $1`,
-        [fieldId],
-      )
-      const prev = (prevRes?.rows?.[0] ?? {}) as Record<string, unknown>
-      await db.query(`DELETE FROM fields WHERE field_id = $1`, [fieldId])
-      addOperation({
-        table: 'fields',
-        rowIdName: 'field_id',
-        rowId: fieldId,
-        operation: 'delete',
-        prev,
-      })
-      navigate({ to: '..' })
-    } catch (error) {
-      console.error('Error deleting field:', error)
-    }
-  }
+  const deleteRow = () =>
+    requestDelete({
+      table: 'fields',
+      rowIdName: 'field_id',
+      rowId: fieldId!,
+      navigateTo: '..',
+    })
 
   const toNext = async () => {
     try {

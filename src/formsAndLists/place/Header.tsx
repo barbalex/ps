@@ -27,6 +27,7 @@ import {
   addNotificationAtom,
   mapLayerSortingAtom,
 } from '../../store.ts'
+import { useRequestRowDelete } from '../../modules/deleteRow.ts'
 import { useUrlPanes } from '../../modules/useUrlPanes.ts'
 
 // Fluent UI's TooltipProps requires `relationship`, but it is optional at runtime
@@ -59,6 +60,7 @@ export const Header = ({ autoFocusRef, from, nameSingular }: Props) => {
   const setMapBounds = useSetAtom(mapBoundsAtom)
   const addOperation = useSetAtom(addOperationAtom)
   const addNotification = useSetAtom(addNotificationAtom)
+  const requestDelete = useRequestRowDelete()
   const navigate = useNavigate()
   const { projectId, subprojectId, placeId, placeId2 } = useParams({ strict: false })
 
@@ -112,28 +114,13 @@ export const Header = ({ autoFocusRef, from, nameSingular }: Props) => {
     autoFocusRef?.current?.focus()
   }
 
-  const deleteRow = async () => {
-    try {
-      const prevRes = await db.query(
-        `SELECT * FROM places WHERE place_id = $1`,
-        [placeId2 ?? placeId],
-      )
-      const prev = (prevRes?.rows?.[0] ?? {}) as Record<string, unknown>
-      await db.query(`DELETE FROM places WHERE place_id = $1`, [
-        placeId2 ?? placeId,
-      ])
-      addOperation({
-        table: 'places',
-        rowIdName: 'place_id',
-        rowId: placeId2 ?? placeId,
-        operation: 'delete',
-        prev,
-      })
-      navigate({ to: isForm ? ('../..' as '..') : '..' })
-    } catch (error) {
-      console.error(error)
-    }
-  }
+  const deleteRow = () =>
+    requestDelete({
+      table: 'places',
+      rowIdName: 'place_id',
+      rowId: (placeId2 ?? placeId)!,
+      navigateTo: isForm ? ('../..' as '..') : '..',
+    })
 
   const toNext = async () => {
     try {

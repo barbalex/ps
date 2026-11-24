@@ -1,20 +1,19 @@
 import { useParams, useNavigate } from '@tanstack/react-router'
 import { usePGlite, useLiveQuery } from '@electric-sql/pglite-react'
-import { useSetAtom } from 'jotai'
 import { useRef, useEffect } from 'react'
 import { useIntl } from 'react-intl'
 
 import { createProjectQc } from '../../modules/createRows.ts'
 import { FormHeader } from '../../components/FormHeader/index.tsx'
 import { HistoryToggleButton } from '../../components/shared/HistoryCompare/HistoryToggleButton.tsx'
-import { addOperationAtom } from '../../store.ts'
+import { useRequestRowDelete } from '../../modules/deleteRow.ts'
 
 
 export const Header = ({ autoFocusRef }: { autoFocusRef?: React.RefObject<HTMLInputElement | null> }) => {
   const { projectId, projectQcId } = useParams({ strict: false })
   const basePath = `/data/projects/${projectId}/qcs/${projectQcId}`
   const navigate = useNavigate()
-  const addOperation = useSetAtom(addOperationAtom)
+  const requestDelete = useRequestRowDelete()
   const { formatMessage } = useIntl()
 
   const db = usePGlite()
@@ -39,28 +38,13 @@ export const Header = ({ autoFocusRef }: { autoFocusRef?: React.RefObject<HTMLIn
     autoFocusRef?.current?.focus()
   }
 
-  const deleteRow = async () => {
-    try {
-      const prevRes = await db.query(
-        `SELECT * FROM project_qcs WHERE project_qc_id = $1`,
-        [projectQcId],
-      )
-      const prev = (prevRes?.rows?.[0] ?? {}) as Record<string, unknown>
-      await db.query(`DELETE FROM project_qcs WHERE project_qc_id = $1`, [
-        projectQcId,
-      ])
-      addOperation({
-        table: 'project_qcs',
-        rowIdName: 'project_qc_id',
-        rowId: projectQcId,
-        operation: 'delete',
-        prev,
-      })
-      navigate({ to: '..' })
-    } catch (error) {
-      console.error('Error deleting project qc:', error)
-    }
-  }
+  const deleteRow = () =>
+    requestDelete({
+      table: 'project_qcs',
+      rowIdName: 'project_qc_id',
+      rowId: projectQcId!,
+      navigateTo: '..',
+    })
 
   const toNext = async () => {
     try {

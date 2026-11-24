@@ -1,4 +1,6 @@
 import * as fluentUiReactComponents from '@fluentui/react-components'
+import type { TooltipProps } from '@fluentui/react-components'
+import type { ComponentType } from 'react'
 const {
   Button,
   Dialog,
@@ -12,8 +14,16 @@ import { useState } from 'react'
 import { useAtomValue } from 'jotai'
 import { MdCloudDownload } from 'react-icons/md'
 import { useIntl } from 'react-intl'
+import styles from './Menu.module.css'
 
 import { offlineFilesStatusAtom, offlineStorageAtom } from '../../../store.ts'
+
+// Fluent UI's TooltipProps requires `relationship`, but it is optional at runtime
+const Tooltip = fluentUiReactComponents.Tooltip as ComponentType<
+  Omit<TooltipProps, 'relationship'> & {
+    relationship?: TooltipProps['relationship']
+  }
+>
 
 // Header button + dialog: the device's offline file status — what is cached
 // (per-file marks and designers' per-table marks, see offline-files-proposal.md)
@@ -41,15 +51,21 @@ export const OfflineFiles = ({ width }: { width?: number }) => {
 
   return (
     <>
-      <Button
-        size="medium"
-        appearance="transparent"
-        icon={<MdCloudDownload />}
-        onClick={() => setOpen(true)}
-        style={width ? { width } : undefined}
-        aria-label={title}
-      />
-      <Dialog open={open} onOpenChange={(_, data) => setOpen(data.open)}>
+      <Tooltip content={title}>
+        <Button
+          size="medium"
+          appearance="transparent"
+          icon={<MdCloudDownload />}
+          onClick={() => setOpen(true)}
+          className={styles.button}
+          style={width ? { width } : undefined}
+          aria-label={title}
+        />
+      </Tooltip>
+      <Dialog
+        open={open}
+        onOpenChange={(_, data) => setOpen(data.open)}
+      >
         <DialogSurface>
           <DialogBody>
             <DialogTitle>{title}</DialogTitle>
@@ -95,12 +111,15 @@ export const OfflineFiles = ({ width }: { width?: number }) => {
                 {formatMessage({
                   id: 'offlineFilesHint',
                   defaultMessage:
-                    'Einzelne Dateien markierst du im Datei-Formular, alle Dateien einer Tabelle in der Stufen-Konfiguration (Design-Modus).',
+                    'Um Dateien offline verfügbar zu machen, markiere einzelne Dateien im Datei-Formular oder alle Dateien einer Tabelle in der Stufen-Konfiguration (Design-Modus).',
                 })}
               </p>
             </DialogContent>
             <DialogActions>
-              <Button appearance="secondary" onClick={() => setOpen(false)}>
+              <Button
+                appearance="secondary"
+                onClick={() => setOpen(false)}
+              >
                 {formatMessage({
                   id: 'offlineFilesClose',
                   defaultMessage: 'Schliessen',

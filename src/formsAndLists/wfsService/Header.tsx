@@ -1,12 +1,11 @@
 import { useParams, useNavigate } from '@tanstack/react-router'
-import { usePGlite, useLiveQuery } from '@electric-sql/pglite-react'
-import { useSetAtom } from 'jotai'
+import { useLiveQuery } from '@electric-sql/pglite-react'
 import { useIntl } from 'react-intl'
 
 import { createWfsService } from '../../modules/createRows.ts'
 import { FormHeader } from '../../components/FormHeader/index.tsx'
 import { HistoryToggleButton } from '../../components/shared/HistoryCompare/HistoryToggleButton.tsx'
-import { addOperationAtom } from '../../store.ts'
+import { useRequestRowDelete } from '../../modules/deleteRow.ts'
 
 interface Props {
   autoFocusRef?: React.RefObject<HTMLInputElement | null>
@@ -21,8 +20,7 @@ export const Header = ({ autoFocusRef, from }: Props) => {
   const { projectId, wfsServiceId } = useParams({ strict: false })
   const basePath = `/data/projects/${projectId}/wfs-services/${wfsServiceId}`
   const navigate = useNavigate()
-  const addOperation = useSetAtom(addOperationAtom)
-  const db = usePGlite()
+  const requestDelete = useRequestRowDelete()
   const { formatMessage } = useIntl()
 
   const countRes = useLiveQuery(
@@ -53,28 +51,13 @@ export const Header = ({ autoFocusRef, from }: Props) => {
     autoFocusRef?.current?.focus()
   }
 
-  const deleteRow = async () => {
-    try {
-      const prevRes = await db.query(
-        `SELECT * FROM wfs_services WHERE wfs_service_id = $1`,
-        [wfsServiceId],
-      )
-      const prev = (prevRes?.rows?.[0] ?? {}) as Record<string, unknown>
-      await db.query(`DELETE FROM wfs_services WHERE wfs_service_id = $1`, [
-        wfsServiceId,
-      ])
-      addOperation({
-        table: 'wfs_services',
-        rowIdName: 'wfs_service_id',
-        rowId: wfsServiceId,
-        operation: 'delete',
-        prev,
-      })
-      navigate({ to: isForm ? ('../..' as '..') : '..' })
-    } catch (error) {
-      console.error(error)
-    }
-  }
+  const deleteRow = () =>
+    requestDelete({
+      table: 'wfs_services',
+      rowIdName: 'wfs_service_id',
+      rowId: wfsServiceId!,
+      navigateTo: isForm ? ('../..' as '..') : '..',
+    })
 
   const toNext = () => {
     const next = rows[(ownIndex + 1) % len]

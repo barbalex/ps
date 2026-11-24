@@ -1,19 +1,18 @@
 import { useParams, useNavigate } from '@tanstack/react-router'
 import { usePGlite, useLiveQuery } from '@electric-sql/pglite-react'
-import { useSetAtom } from 'jotai'
 import { useRef, useEffect } from 'react'
 import { useIntl } from 'react-intl'
 
 import { createWidgetForField } from '../../modules/createRows.ts'
 import { FormHeader } from '../../components/FormHeader/index.tsx'
-import { addOperationAtom } from '../../store.ts'
+import { useRequestRowDelete } from '../../modules/deleteRow.ts'
 
 
 export const Header = ({ autoFocusRef }: { autoFocusRef?: React.RefObject<HTMLInputElement | null> }) => {
   const { formatMessage } = useIntl()
   const { widgetForFieldId } = useParams({ strict: false })
   const navigate = useNavigate()
-  const addOperation = useSetAtom(addOperationAtom)
+  const requestDelete = useRequestRowDelete()
 
   const db = usePGlite()
 
@@ -35,27 +34,13 @@ export const Header = ({ autoFocusRef }: { autoFocusRef?: React.RefObject<HTMLIn
     autoFocusRef?.current?.focus()
   }
 
-  const deleteRow = async () => {
-    try {
-      const prevRes = await db.query(
-        `SELECT * FROM widgets_for_fields WHERE widget_for_field_id = $1`,
-        [widgetForFieldId],
-      )
-      const prev = (prevRes?.rows?.[0] ?? {}) as Record<string, unknown>
-      const sql = `DELETE FROM widgets_for_fields WHERE widget_for_field_id = $1`
-      await db.query(sql, [widgetForFieldId])
-      addOperation({
-        table: 'widgets_for_fields',
-        rowIdName: 'widget_for_field_id',
-        rowId: widgetForFieldId,
-        operation: 'delete',
-        prev,
-      })
-      navigate({ to: `/data/widgets-for-fields` })
-    } catch (error) {
-      console.error('Error deleting widget for field:', error)
-    }
-  }
+  const deleteRow = () =>
+    requestDelete({
+      table: 'widgets_for_fields',
+      rowIdName: 'widget_for_field_id',
+      rowId: widgetForFieldId!,
+      navigateTo: '/data/widgets-for-fields',
+    })
 
   const toNext = async () => {
     try {

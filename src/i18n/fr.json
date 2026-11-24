@@ -1378,7 +1378,7 @@
   "offlineFilesCountCached": "{count} fichiers enregistrés hors ligne",
   "offlineFilesCountWorking": "{downloading} en cours de téléchargement, {queued} en attente, {error} en échec, {tooLarge} trop grands",
   "offlineFilesStorage": "Espace de stockage de l'app sur cet appareil: {usage} sur {quota}",
-  "offlineFilesHint": "Marquez des fichiers individuels dans le formulaire de fichier, ou tous les fichiers d'une table dans la configuration des niveaux (mode design).",
+  "offlineFilesHint": "Pour rendre des fichiers disponibles hors ligne, marquez des fichiers individuels dans le formulaire de fichier, ou tous les fichiers d'une table dans la configuration des niveaux (mode design).",
   "offlineFilesClose": "Fermer",
   "offlineFileDownloadingTitle": "Le fichier est enregistré pour une utilisation hors ligne …",
   "offlineFileOnTitle": "Fichier disponible hors ligne (cliquer pour retirer)",
@@ -1388,5 +1388,9 @@
   "actionFilesOffline": "Fichiers disponibles hors ligne",
   "filesOfflineHint": "Active les fichiers hors ligne: les utilisateurs marquent des fichiers individuels dans le formulaire de fichier, les designers marquent tous les fichiers d'une table dans la configuration des niveaux. Sans ce réglage, aucun fichier n'est enregistré hors ligne.",
   "undoDeleteText": "{name} supprimé",
-  "undoDeleteUndo": "Annuler"
+  "undoDeleteUndo": "Annuler",
+  "deleteCascadeTitle": "Vraiment supprimer?",
+  "deleteCascadeText": "Supprimer {name}? {count, plural, one {# entrée subordonnée} other {# entrées subordonnées}} seront aussi supprimées.",
+  "deleteCascadeCancel": "Annuler",
+  "deleteCascadeConfirm": "Supprimer"
 }

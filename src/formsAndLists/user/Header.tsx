@@ -1,5 +1,4 @@
 import { useParams, useNavigate } from '@tanstack/react-router'
-import { useSetAtom } from 'jotai'
 import { usePGlite } from '@electric-sql/pglite-react'
 import { useRef, useEffect } from 'react'
 import { useIntl } from 'react-intl'
@@ -10,13 +9,13 @@ const { Button } = fluentUiReactComponents
 
 import { createUser } from '../../modules/createRows.ts'
 import { FormHeader } from '../../components/FormHeader/index.tsx'
-import { addOperationAtom } from '../../store.ts'
+import { useRequestRowDelete } from '../../modules/deleteRow.ts'
 
 export const Header = ({ autoFocusRef }: { autoFocusRef?: React.RefObject<HTMLInputElement | null> }) => {
   const { formatMessage } = useIntl()
   const { userId } = useParams({ strict: false })
   const navigate = useNavigate()
-  const addOperation = useSetAtom(addOperationAtom)
+  const requestDelete = useRequestRowDelete()
 
   const db = usePGlite()
 
@@ -35,27 +34,13 @@ export const Header = ({ autoFocusRef }: { autoFocusRef?: React.RefObject<HTMLIn
     autoFocusRef?.current?.focus()
   }
 
-  const deleteRow = async () => {
-    try {
-      const prevRes = await db.query(`SELECT * FROM users WHERE user_id = $1`, [
-        userId,
-      ])
-      const prev = (prevRes?.rows?.[0] ?? {}) as Record<string, unknown>
-      const sql = `DELETE FROM users WHERE user_id = $1`
-      await db.query(sql, [userId])
-      addOperation({
-        table: 'users',
-        rowIdName: 'user_id',
-        rowId: userId,
-        operation: 'delete',
-        prev,
-      })
-      navigate({ to: `..` })
-    } catch (error) {
-      console.error('Error deleting user:', error)
-      // Could add a toast notification here
-    }
-  }
+  const deleteRow = () =>
+    requestDelete({
+      table: 'users',
+      rowIdName: 'user_id',
+      rowId: userId!,
+      navigateTo: '..',
+    })
 
   const toNext = async () => {
     try {

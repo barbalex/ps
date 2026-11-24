@@ -1382,7 +1382,7 @@
   "offlineFilesCountCached": "{count} file salvati offline",
   "offlineFilesCountWorking": "{downloading} in scaricamento, {queued} in attesa, {error} non riusciti, {tooLarge} troppo grandi",
   "offlineFilesStorage": "Spazio di archiviazione dell'app su questo dispositivo: {usage} di {quota}",
-  "offlineFilesHint": "Contrassegna i singoli file nel modulo del file oppure tutti i file di una tabella nella configurazione dei livelli (modalità design).",
+  "offlineFilesHint": "Per rendere i file disponibili offline, contrassegna i singoli file nel modulo del file oppure tutti i file di una tabella nella configurazione dei livelli (modalità design).",
   "offlineFilesClose": "Chiudi",
   "offlineFileDownloadingTitle": "Salvataggio del file per l'uso offline …",
   "offlineFileOnTitle": "File disponibile offline (clic per rimuovere)",
@@ -1392,5 +1392,9 @@
   "actionFilesOffline": "File disponibili offline",
   "filesOfflineHint": "Abilita i file offline: gli utenti contrassegnano i singoli file nel modulo del file, i designer contrassegnano tutti i file di una tabella nella configurazione dei livelli. Senza questa impostazione nessun file viene salvato offline.",
   "undoDeleteText": "{name} eliminato",
-  "undoDeleteUndo": "Annulla"
+  "undoDeleteUndo": "Annulla",
+  "deleteCascadeTitle": "Eliminare davvero?",
+  "deleteCascadeText": "Eliminare {name}? Verranno eliminate anche {count, plural, one {# voce subordinata} other {# voci subordinate}}.",
+  "deleteCascadeCancel": "Annulla",
+  "deleteCascadeConfirm": "Elimina"
 }

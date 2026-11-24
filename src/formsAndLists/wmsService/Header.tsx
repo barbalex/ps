@@ -1,13 +1,12 @@
 import { useParams, useNavigate } from '@tanstack/react-router'
-import { usePGlite, useLiveQuery } from '@electric-sql/pglite-react'
-import { useSetAtom } from 'jotai'
+import { useLiveQuery } from '@electric-sql/pglite-react'
 
 import { useIntl } from 'react-intl'
 
 import { createWmsService } from '../../modules/createRows.ts'
 import { FormHeader } from '../../components/FormHeader/index.tsx'
 import { HistoryToggleButton } from '../../components/shared/HistoryCompare/HistoryToggleButton.tsx'
-import { addOperationAtom } from '../../store.ts'
+import { useRequestRowDelete } from '../../modules/deleteRow.ts'
 
 interface Props {
   autoFocusRef?: React.RefObject<HTMLInputElement | null>
@@ -23,8 +22,7 @@ export const Header = ({ autoFocusRef, from }: Props) => {
   const { projectId, wmsServiceId } = useParams({ strict: false })
   const basePath = `/data/projects/${projectId}/wms-services/${wmsServiceId}`
   const navigate = useNavigate()
-  const addOperation = useSetAtom(addOperationAtom)
-  const db = usePGlite()
+  const requestDelete = useRequestRowDelete()
 
   const countRes = useLiveQuery(
     `SELECT COUNT(*) as count FROM wms_services WHERE project_id = '${projectId}'`,
@@ -53,28 +51,13 @@ export const Header = ({ autoFocusRef, from }: Props) => {
     autoFocusRef?.current?.focus()
   }
 
-  const deleteRow = async () => {
-    try {
-      const prevRes = await db.query(
-        `SELECT * FROM wms_services WHERE wms_service_id = $1`,
-        [wmsServiceId],
-      )
-      const prev = (prevRes?.rows?.[0] ?? {}) as Record<string, unknown>
-      await db.query(`DELETE FROM wms_services WHERE wms_service_id = $1`, [
-        wmsServiceId,
-      ])
-      addOperation({
-        table: 'wms_services',
-        rowIdName: 'wms_service_id',
-        rowId: wmsServiceId,
-        operation: 'delete',
-        prev,
-      })
-      navigate({ to: isForm ? ('../..' as '..') : '..' })
-    } catch (error) {
-      console.error(error)
-    }
-  }
+  const deleteRow = () =>
+    requestDelete({
+      table: 'wms_services',
+      rowIdName: 'wms_service_id',
+      rowId: wmsServiceId!,
+      navigateTo: isForm ? ('../..' as '..') : '..',
+    })
 
   const toNext = () => {
     const next = rows[(ownIndex + 1) % len]

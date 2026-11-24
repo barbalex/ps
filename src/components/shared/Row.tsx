@@ -10,7 +10,7 @@ type Props = {
   onClick?: () => void
   imgSrc?: string
   lastHasImages?: boolean
-  onDelete?: () => void | Promise<void>
+  onDelete?: () => void | Promise<unknown>
   isActive?: boolean
 }
 

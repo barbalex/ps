@@ -1,18 +1,17 @@
 import { useParams, useNavigate } from '@tanstack/react-router'
 import { usePGlite, useLiveQuery } from '@electric-sql/pglite-react'
-import { useSetAtom } from 'jotai'
 import { useRef, useEffect } from 'react'
 import { useIntl } from 'react-intl'
 
 import { createTableView } from '../../modules/createRows.ts'
 import { FormHeader } from '../../components/FormHeader/index.tsx'
-import { addOperationAtom } from '../../store.ts'
+import { useRequestRowDelete } from '../../modules/deleteRow.ts'
 
 
 export const Header = ({ autoFocusRef }: { autoFocusRef?: React.RefObject<HTMLInputElement | null> }) => {
   const { projectId, tableName, tableViewId } = useParams({ strict: false })
   const navigate = useNavigate()
-  const addOperation = useSetAtom(addOperationAtom)
+  const requestDelete = useRequestRowDelete()
   const { formatMessage } = useIntl()
 
   const db = usePGlite()
@@ -45,34 +44,20 @@ export const Header = ({ autoFocusRef }: { autoFocusRef?: React.RefObject<HTMLIn
     autoFocusRef?.current?.focus()
   }
 
-  const deleteRow = async () => {
-    try {
-      const prevRes = await db.query(
-        `SELECT * FROM table_views WHERE table_view_id = $1`,
-        [tableViewId],
-      )
-      const prev = (prevRes?.rows?.[0] ?? {}) as Record<string, unknown>
-      await db.query(
-        `DELETE FROM table_views WHERE table_view_id = $1`,
-        [tableViewId],
-      )
-      addOperation({
-        table: 'table_views',
-        rowIdName: 'table_view_id',
-        rowId: tableViewId,
-        operation: 'delete',
-        prev,
-      })
-      // remove the deleted view from the enabled maps on place levels
-      await db.query(
-        `UPDATE place_levels SET table_views = table_views - $1 WHERE project_id = $2`,
-        [tableViewId, projectId],
-      )
-      navigate({ to: '..' })
-    } catch (error) {
-      console.error('Error deleting filtered view:', error)
-    }
-  }
+  const deleteRow = () =>
+    requestDelete({
+      table: 'table_views',
+      rowIdName: 'table_view_id',
+      rowId: tableViewId!,
+      navigateTo: '..',
+      afterDelete: async () => {
+        // remove the deleted view from the enabled maps on place levels
+        await db.query(
+          `UPDATE place_levels SET table_views = table_views - $1 WHERE project_id = $2`,
+          [tableViewId, projectId],
+        )
+      },
+    })
 
   const toNext = async () => {
     try {

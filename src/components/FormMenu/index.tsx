@@ -52,7 +52,9 @@ export const FormMenu = ({
   const { formatMessage } = useIntl()
 
   return (
-    <MenuBar collapseOffset={20}>
+    // collect overflow from the left: the row-navigation actions at the right
+    // end (previous/add/delete/next) are the most used and should stay visible
+    <MenuBar collapseOffset={20} collapseFrom="left">
       {!!siblings && siblings}
       {!!toPrevious && (
         <Tooltip

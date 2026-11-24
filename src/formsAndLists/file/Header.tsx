@@ -6,13 +6,14 @@ import { MdPreview, MdEditNote, MdFileDownload, MdDownloadDone, MdDownloading } 
 import { useIntl } from 'react-intl'
 
 import { usePGlite, useLiveQuery } from '@electric-sql/pglite-react'
-import { useAtomValue, useSetAtom } from 'jotai'
+import { useAtomValue } from 'jotai'
 
 import { FormHeader } from '../../components/FormHeader/index.tsx'
 import { UploaderContext } from '../../UploaderContext.ts'
 import { FullscreenControl } from './FullscreenControl.tsx'
 import { HistoryToggleButton } from '../../components/shared/HistoryCompare/HistoryToggleButton.tsx'
-import { addOperationAtom, offlineFilesStatusAtom } from '../../store.ts'
+import { offlineFilesStatusAtom } from '../../store.ts'
+import { useRequestRowDelete } from '../../modules/deleteRow.ts'
 import { filesScopeWhere } from '../../modules/filesScopeWhere.ts'
 import { setFileOffline } from '../../modules/setFileOffline.ts'
 import type Files from '../../models/public/Files.ts'
@@ -47,7 +48,7 @@ export const Header = ({
     `/data/projects/${projectId}/subprojects/${subprojectId}/files/${fileId}`
   const projectBasePath = `/data/projects/${projectId}/files/${fileId}`
   const { formatMessage } = useIntl()
-  const addOperation = useSetAtom(addOperationAtom)
+  const requestDelete = useRequestRowDelete()
 
   // offline availability: the mark (files.offline) plus the project gate;
   // hidden entirely while the gate is off
@@ -114,25 +115,13 @@ export const Header = ({
 
   const addRow = () => api?.initFlow?.()
 
-  const deleteRow = async () => {
-    try {
-      const prevRes = await db.query(`SELECT * FROM files WHERE file_id = $1`, [
-        fileId,
-      ])
-      const prev = (prevRes?.rows?.[0] ?? {}) as Record<string, unknown>
-      await db.query(`DELETE FROM files WHERE file_id = $1`, [fileId])
-      addOperation({
-        table: 'files',
-        rowIdName: 'file_id',
-        rowId: fileId,
-        operation: 'delete',
-        prev,
-      })
-      navigate({ to: isPreview ? ('../..' as '..') : '..' })
-    } catch (error) {
-      console.error(error)
-    }
-  }
+  const deleteRow = () =>
+    requestDelete({
+      table: 'files',
+      rowIdName: 'file_id',
+      rowId: fileId!,
+      navigateTo: isPreview ? ('../..' as '..') : '..',
+    })
 
   // same scope as the files list this file was opened from
   const scope = filesScopeWhere({

@@ -1,13 +1,12 @@
 import { useParams, useNavigate } from '@tanstack/react-router'
 import { usePGlite, useLiveQuery } from '@electric-sql/pglite-react'
-import { useSetAtom } from 'jotai'
 import { useRef, useEffect } from 'react'
 import { useIntl } from 'react-intl'
 
 import { createActionQuantity } from '../../modules/createRows.ts'
 import { FormHeader } from '../../components/FormHeader/index.tsx'
 import { HistoryToggleButton } from '../../components/shared/HistoryCompare/HistoryToggleButton.tsx'
-import { addOperationAtom } from '../../store.ts'
+import { useRequestRowDelete } from '../../modules/deleteRow.ts'
 
 export const Header = ({
   autoFocusRef,
@@ -18,7 +17,7 @@ export const Header = ({
   const { projectId, subprojectId, placeId, placeId2, actionId, actionQuantityId } =
     useParams({ strict: false })
   const navigate = useNavigate()
-  const addOperation = useSetAtom(addOperationAtom)
+  const requestDelete = useRequestRowDelete()
   const { formatMessage } = useIntl()
   const basePath = placeId2
     ? `/data/projects/${projectId}/subprojects/${subprojectId}/places/${placeId}/places/${placeId2}/actions/${actionId}/quantities/${actionQuantityId}`
@@ -53,28 +52,13 @@ export const Header = ({
     autoFocusRef?.current?.focus()
   }
 
-  const deleteRow = async () => {
-    try {
-      const resPrev = await db.query(
-        'SELECT * FROM action_quantities WHERE action_quantity_id = $1',
-        [actionQuantityId],
-      )
-      const prev = (resPrev?.rows?.[0] ?? {}) as Record<string, unknown>
-      await db.query('DELETE FROM action_quantities WHERE action_quantity_id = $1', [
-        actionQuantityId,
-      ])
-      addOperation({
-        table: 'action_quantities',
-        rowIdName: 'action_quantity_id',
-        rowId: actionQuantityId,
-        operation: 'delete',
-        prev,
-      })
-      navigate({ to: '..' })
-    } catch (error) {
-      console.error('Error deleting action value:', error)
-    }
-  }
+  const deleteRow = () =>
+    requestDelete({
+      table: 'action_quantities',
+      rowIdName: 'action_quantity_id',
+      rowId: actionQuantityId!,
+      navigateTo: '..',
+    })
 
   const toNext = async () => {
     try {

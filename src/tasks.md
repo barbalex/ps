@@ -42,11 +42,11 @@ Better-Auth, possible extensions:
 
 ---
 
-I tried to remove a WMS Layer by deleting it here: http://localhost:5176/data/projects/0195a101-0000-7000-8000-000000000001/wms-layers/01a1fe19-8478-742d-b7e0-9e048a22fa9b/wms-layer. Seems it resurrects itself when I open the map, because when trying to re-add it, it can be choosen again in Config > Web Map Service. What should have happended: should have been deleted including its Layers
+I tried to remove a WMS Layer by deleting it here: http://localhost:5176/data/projects/0195a101-0000-7000-8000-000000000001/wms-layers/01a1fe19-8478-742d-b7e0-9e048a22fa9b/wms-layer. Seems it resurrects itself when I open the map, because when trying to re-add it, it can be choosen again in Config > Web Map Service (or in the WMS Layer form in 'Web Map Service'), even though it is no more listed under http://localhost:5176/data/projects/018cfcf7-6424-7000-a100-851c5cc2c878/wfs-services. What is going on? What should have happended: should have been deleted including its Layers
 
 ---
 
-file upload. I am looking at http://localhost:5176/data/projects/0195a101-0000-7000-8000-000000000001/subprojects/017d3472-d75d-7a4f-8040-dfdd5df00bdb/files. There is now an 'Upload file' button _under_ the list header. It is redundant as there is also a 'new' button in the header. Can the one under the header be removed loosing anything? If so lets do it
+adding points, circles and rectangles works. but not polygons or lines. neither editing outlines nor deleting geometries. Because: when activating these functions, the cursor becomes/remains a hand and subsequently does not work
 
 ---
 
