@@ -114,8 +114,10 @@ BEGIN
     v_key_counter := v_key_counter + 1;
     v_key := 'p' || v_key_counter;
     IF v_cond.op = 'in' THEN
+      -- ARRAY(SELECT …): the function's column has no name to refer to
+      -- without an alias (array_agg(x) failed with: column "x" does not exist)
       v_conditions := v_conditions || format(
-        '%I = ANY((SELECT array_agg(x) FROM jsonb_array_elements_text($%s->''%s''))::%s[])',
+        '%I = ANY(ARRAY(SELECT jsonb_array_elements_text($%s->''%s''))::%s[])',
         v_cond.col, p_param_index, v_key, v_type);
     ELSE
       v_conditions := v_conditions || format('%I %s ($%s->>''%s'')::%s', v_cond.col,

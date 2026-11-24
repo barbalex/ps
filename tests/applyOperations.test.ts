@@ -150,6 +150,38 @@ describe('apply_operations', () => {
     expect(row.rows[0]?.updated_by).toBe('writer@example.com')
   })
 
+  it('deletes the rows of an in filter', async () => {
+    const { db } = ctx
+    const time = '2026-09-28T10:00:00Z'
+    const idsToDelete = [
+      '70000000-0000-7000-8000-000000000002',
+      '70000000-0000-7000-8000-000000000003',
+    ]
+    const kept = '70000000-0000-7000-8000-000000000004'
+    await apply(
+      db,
+      [...idsToDelete, kept].map((id, index) => ({
+        table: 'places', operation: 'insert', rowIdName: 'place_id', rowId: id,
+        draft: { parent_id: PLACE, subproject_id: ctx.ids.subproject, level: 2, name: `in filter test ${index}` },
+        time,
+      })),
+    )
+    // the client queues the delete of several rows with their ids (a jsonb
+    // array) — used wherever it created rows itself, e.g. map displays
+    const results = await apply(db, [
+      { table: 'places', operation: 'delete',
+        filter: { function: 'in', column: 'place_id', value: idsToDelete }, time },
+    ])
+    expect(results.map((r) => [r.status, r.detail])).toEqual([
+      ['applied', '2 rows'],
+    ])
+    const left = await db.query<{ place_id: string }>(
+      `SELECT place_id FROM places WHERE place_id = ANY($1)`,
+      [[...idsToDelete, kept]],
+    )
+    expect(left.rows.map((r) => r.place_id)).toEqual([kept])
+  })
+
   it('requires an authenticated user', async () => {
     const { db } = ctx
     await db.exec(claimsOf(null))
