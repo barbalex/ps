@@ -525,6 +525,25 @@ const healExistingDbSql = `
             AFTER UPDATE OF goals_label_by ON projects
             FOR EACH ROW
             EXECUTE PROCEDURE projects_goals_label_trigger();
+
+            -- places.parent_id gained ON DELETE CASCADE (2026-11): deleting
+            -- a level-1 place takes its level-2 child places with it. heal
+            -- local databases whose constraint still says NO ACTION (fresh
+            -- databases get the cascade from createTables.sql)
+            DO $$
+            BEGIN
+              IF EXISTS (
+                SELECT 1 FROM pg_constraint
+                WHERE conname = 'places_parent_id_fkey'
+                  AND conrelid = 'places'::regclass
+                  AND confdeltype <> 'c'
+              ) THEN
+                ALTER TABLE places DROP CONSTRAINT places_parent_id_fkey;
+                ALTER TABLE places ADD CONSTRAINT places_parent_id_fkey
+                  FOREIGN KEY (parent_id) REFERENCES places(place_id)
+                  ON DELETE CASCADE ON UPDATE CASCADE DEFERRABLE INITIALLY DEFERRED;
+              END IF;
+            END $$;
           `
 
 export const SqlInitializer = () => {
