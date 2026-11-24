@@ -62,6 +62,10 @@ type Props = {
   grow?: boolean
   // begin collapsing slightly before touching neighboring title/content
   collapseOffset?: number
+  // which end gives way to the hamburger first when space runs out:
+  // 'right' (default) overflows the rightmost menus, 'left' the leftmost —
+  // pass 'left' when the most used menus sit at the right end (e.g. FormMenu)
+  collapseFrom?: 'left' | 'right'
 }
 
 // possible improvement:
@@ -82,6 +86,7 @@ export const MenuBar = ({
   grow = true,
   // begin collapsing slightly before touching neighboring title/content
   collapseOffset = 0,
+  collapseFrom = 'right',
 }: Props) => {
   const isTopHeaderVariant = !showBorder && !grow
 
@@ -162,7 +167,13 @@ export const MenuBar = ({
       const nextMenus: MenuChild[] = []
       let widthSum = 0
 
-      for (const child of visibleChildren) {
+      // fill from the end that should stay visible, then restore visual order
+      const childrenInFillOrder =
+        collapseFrom === 'left'
+          ? [...visibleChildren].reverse()
+          : visibleChildren
+
+      for (const child of childrenInFillOrder) {
         const width = getChildBaseWidth(child)
         const widthWithGap = width + (nextButtons.length > 0 ? buttonGap : 0)
 
@@ -175,9 +186,14 @@ export const MenuBar = ({
         widthSum += widthWithGap
       }
 
+      if (collapseFrom === 'left') {
+        nextButtons.reverse()
+        nextMenus.reverse()
+      }
+
       return { nextButtons, nextMenus }
     },
-    [getChildBaseWidth, visibleChildren],
+    [getChildBaseWidth, visibleChildren, collapseFrom],
   )
 
   // this was quite some work to get right
@@ -216,6 +232,15 @@ export const MenuBar = ({
       }
 
       // Keep at least two actions in the overflow menu so the hamburger is meaningful.
+      // Move the visible button adjacent to the hamburger so it stays next to
+      // the collapsed actions it borders and the popover keeps visual order.
+      if (collapseFrom === 'left') {
+        // hamburger renders left of the buttons → first button is adjacent
+        const [adjacentButton, ...adjustedButtons] = nextButtons
+        const adjustedMenus = [...nextMenus, adjacentButton]
+        setLayout(adjustedButtons, adjustedMenus)
+        return
+      }
       const adjustedButtons = nextButtons.slice(0, -1)
       const adjustedMenus = [nextButtons.at(-1), ...nextMenus].filter(
         Boolean,
@@ -304,6 +329,30 @@ export const MenuBar = ({
     observer.observe(outerContainerRef.current)
   }, [rerenderer, observer, outerContainerRef])
 
+  const hamburger =
+    !!menus.length && (
+      <Menu className="menubar-menu">
+        <MenuTrigger>
+          <Tooltip content="More Actions">
+            <Button
+              size="medium"
+              icon={<FaBars />}
+              className={`${styles.button} ${isTopHeaderVariant ? styles.topHeaderHamburgerButton : ''}`}
+            />
+          </Tooltip>
+        </MenuTrigger>
+        <MenuPopover className={styles.menuPopover}>
+          <MenuList
+            // GOAL: close menu on click on menu item
+            // TODO: prevents more menu opening on very narrow screens
+            className={`${styles.menuContent} menubar-more-menus`}
+          >
+            {menus}
+          </MenuList>
+        </MenuPopover>
+      </Menu>
+    )
+
   return (
     <div
       ref={outerContainerRef}
@@ -328,29 +377,11 @@ export const MenuBar = ({
         }
         className={`${styles.stylingContainer} ${styles.stylingContainerSized}`}
       >
+        {/* collapseFrom='left' renders the hamburger left of the buttons,
+            where the collapsed actions used to sit */}
+        {collapseFrom === 'left' && hamburger}
         <div className={globalStyles.controls}>{buttons}</div>
-        {!!menus.length && (
-          <Menu className="menubar-menu">
-            <MenuTrigger>
-              <Tooltip content="More Actions">
-                <Button
-                  size="medium"
-                  icon={<FaBars />}
-                  className={`${styles.button} ${isTopHeaderVariant ? styles.topHeaderHamburgerButton : ''}`}
-                />
-              </Tooltip>
-            </MenuTrigger>
-            <MenuPopover className={styles.menuPopover}>
-              <MenuList
-                // GOAL: close menu on click on menu item
-                // TODO: prevents more menu opening on very narrow screens
-                className={`${styles.menuContent} menubar-more-menus`}
-              >
-                {menus}
-              </MenuList>
-            </MenuPopover>
-          </Menu>
-        )}
+        {collapseFrom !== 'left' && hamburger}
       </div>
     </div>
   )
