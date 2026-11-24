@@ -42,7 +42,7 @@ export const Places1 = ({
   // round-trip through the url) must not rebuild the FeatureCollections —
   // a new data identity reconciles the whole layer
   const data = useMemo(() => {
-    const places: Places[] = res?.rows ?? []
+    const places = res?.rows ?? []
     return places.map((p) => {
       // add p's properties to all features:
       // TODO: make properties more readable for user

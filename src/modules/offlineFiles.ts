@@ -145,7 +145,7 @@ export const planReconcile = (
       statuses[row.file_id] = 'no-url'
       continue
     }
-    if ((row.size ?? 0) > OFFLINE_FILE_MAX_SIZE) {
+    if (Number(row.size ?? 0) > OFFLINE_FILE_MAX_SIZE) {
       statuses[row.file_id] = 'too-large'
       continue
     }

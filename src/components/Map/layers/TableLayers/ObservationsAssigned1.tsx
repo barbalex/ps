@@ -15,6 +15,12 @@ import type { GeoJsonProperties, GeometryCollection } from 'geojson'
 import { draggableLayersAtom } from '../../../../store.ts'
 import type Observations from '../../../../models/public/Observations.ts'
 
+// the live query's row: the model plus the viewport bbox and edit_version
+type ObservationRow = Observations & {
+  bbox?: unknown
+  edit_version: string | null
+}
+
 export const ObservationsAssigned1 = ({
   layerPresentation,
 }: {
@@ -25,7 +31,7 @@ export const ObservationsAssigned1 = ({
   const activeObservationId = useActiveObservationId()
   const envelope = useViewportEnvelope()
 
-  const res = useLiveQuery<Observations & { edit_version: string | null }>(
+  const res = useLiveQuery<ObservationRow>(
     `
     SELECT o.observation_id, o.observation_import_id, o.place_id, o.not_to_assign, o.absence,
       o.comment, o.data, o.id_in_source, ST_AsGeoJSON(o.geometry)::json as geometry,
@@ -51,8 +57,8 @@ export const ObservationsAssigned1 = ({
   // round-trip through the url) must not rebuild the FeatureCollections —
   // a new data identity reconciles the whole layer
   const data = useMemo(() => {
-    const observations: Observations[] = res?.rows ?? []
-    return observations.map((p: Observations & { bbox?: unknown }) => {
+    const observations: ObservationRow[] = res?.rows ?? []
+    return observations.map((p: ObservationRow) => {
       // add p's properties to all features:
       // TODO: make properties more readable for user
       // Idea: use iframe to open form, see TableLayer

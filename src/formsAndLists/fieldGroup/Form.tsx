@@ -137,7 +137,10 @@ const FieldsEditor = ({
       : base
   }
 
-  const selectedIds = row.sorted_field_ids ?? []
+  // a uuid array (jsonb since older databases were migrated): it arrives as
+  // an array either way, but the column is typed unknown
+  const selectedIds: string[] =
+    Array.isArray(row.sorted_field_ids) ? row.sorted_field_ids : []
 
   const setSelectedIds = (ids: string[]) => {
     onChange(

@@ -48,7 +48,7 @@ export const Actions2 = ({
   // round-trip through the url) must not rebuild the FeatureCollections —
   // a new data identity reconciles the whole layer
   const data = useMemo(() => {
-    const actions: Actions[] = res?.rows ?? []
+    const actions = res?.rows ?? []
     return actions.map((p) => {
       // add p's properties to all features:
       // somehow there is a data property with empty object as value???
