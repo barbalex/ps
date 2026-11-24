@@ -2,6 +2,7 @@ import { v7 as uuidv7 } from 'uuid'
 import proj4 from 'proj4'
 
 import { getCapabilities } from '../../../../modules/getCapabilities.ts'
+import { rankedInfoFormats } from '../../../../modules/infoFormats.ts'
 import type { Extent } from '../../../../modules/geoQueries.ts'
 import {
   beginCapabilitiesFetch,
@@ -154,28 +155,10 @@ const getWmsCapabilitiesDataForService = async ({
   serviceData.info_formats =
     capabilities?.Capability?.Request?.GetFeatureInfo?.Format ?? null
 
-  // set info_format if undefined
-  if (!service.info_format && serviceData.info_formats?.length) {
-    // for values see: https://docs.geoserver.org/stable/en/user/services/wms/reference.html#getfeatureinfo
-    const preferedFormat =
-      serviceData.info_formats.find(
-        (v) => v?.toLowerCase?.() === 'application/vnd.ogc.gml',
-      ) ??
-      serviceData.info_formats.find((v) =>
-        v?.toLowerCase?.().includes('application/vnd.ogc.gml'),
-      ) ??
-      serviceData.info_formats.find((v) =>
-        v?.toLowerCase?.().includes('text/plain'),
-      ) ??
-      serviceData.info_formats.find((v) =>
-        v?.toLowerCase?.().includes('application/json'),
-      ) ??
-      serviceData.info_formats.find((v) =>
-        v?.toLowerCase?.().includes('text/javascript'),
-      ) ??
-      serviceData.info_formats.find((v) =>
-        v?.toLowerCase?.().includes('text/html'),
-      )
+  // set info_format if undefined: the format to ask for first. The click listener
+  // falls back through the other advertised ones when the server rejects it
+  if (!service.info_format) {
+    const [preferedFormat] = rankedInfoFormats(serviceData.info_formats ?? [])
     if (preferedFormat) {
       serviceData.info_format = preferedFormat
     }

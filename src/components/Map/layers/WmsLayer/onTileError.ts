@@ -9,8 +9,8 @@ type WmsLayerForTileError = {
   wms_services?: {
     url: string
     version: string | null
-    info_format: string | null
   } | null
+  wms_services_image_format?: string | null
   wms_service_layer_name?: string | null
   label?: string | null
 }
@@ -28,7 +28,8 @@ export const onTileError = async (
     request: 'GetMap',
     version: layer.wms_services!.version,
     layers: layer.wms_service_layer_name,
-    format: layer.wms_services!.info_format,
+    // the format of the map images — like the request that failed
+    format: layer.wms_services_image_format,
     crs: 'EPSG:4326',
     width: mapSize.x,
     height: mapSize.y,
