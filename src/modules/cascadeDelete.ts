@@ -95,8 +95,12 @@ export const captureCascadeClosure = async (
   const rootRow = rootRes.rows[0] as Record<string, unknown> | undefined
   if (!rootRow) return []
 
-  const pkOf = (table: string, row: Record<string, unknown>): string =>
-    `${table}:${inferPkColumn(table, row) ?? JSON.stringify(row)}`
+  // visited keys must carry the pk VALUE — inferPkColumn only names the
+  // column; a name-only key would make every row of a table collide
+  const pkOf = (table: string, row: Record<string, unknown>): string => {
+    const pk = inferPkColumn(table, row)
+    return `${table}:${pk != null ? row[pk] : JSON.stringify(row)}`
+  }
 
   const visited = new Set([pkOf(root.table, rootRow)])
   const levels: CascadeLevel[] = [{ table: root.table, rows: [rootRow] }]
