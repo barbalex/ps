@@ -1378,7 +1378,7 @@
   "offlineFilesCountCached": "{count} files stored offline",
   "offlineFilesCountWorking": "{downloading} downloading, {queued} waiting, {error} failed, {tooLarge} too large",
   "offlineFilesStorage": "App storage on this device: {usage} of {quota}",
-  "offlineFilesHint": "Mark single files in the file form, or all files of a table in the level configuration (design mode).",
+  "offlineFilesHint": "To make files available offline, mark single files in the file form, or all files of a table in the level configuration (design mode).",
   "offlineFilesClose": "Close",
   "offlineFileDownloadingTitle": "File is being saved for offline use …",
   "offlineFileOnTitle": "File available offline (click to remove)",
