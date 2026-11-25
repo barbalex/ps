@@ -6,23 +6,20 @@ import { useIntl } from 'react-intl'
 import { treeOpenNodesSetAtom } from '../store.ts'
 
 type Props = {
-  projectId_: string
-  subprojectId_: string
-  goalId_: string
-  goalReportId_: string
+  projectId: string
+  subprojectId: string
+  goalId: string
+  goalReportId: string
 }
 
-// TODO: pre-existing bug: these are used in parentArray below but never
-// destructured from Props. Declared ambient so typing changes no runtime.
-declare const projectId_: string | undefined
-declare const subprojectId_: string | undefined
-declare const goalId_: string | undefined
-
-export const useGoalReportReportNavData = ({ goalReportId_ }: Props) => {
+export const useGoalReportReportNavData = ({
+  projectId,
+  subprojectId,
+  goalId,
+  goalReportId,
+}: Props) => {
   const [openNodesSet] = useAtom(treeOpenNodesSetAtom)
   const { formatMessage } = useIntl()
-
-  const goalReportId = goalReportId_?.replace(/_/g, '-')
 
   const goalReportQuery = useLiveQuery(/* sql */ `
     SELECT
@@ -35,13 +32,13 @@ export const useGoalReportReportNavData = ({ goalReportId_ }: Props) => {
   const parentArray = [
     'data',
     'projects',
-    projectId_,
+    projectId,
     'subprojects',
-    subprojectId_,
+    subprojectId,
     'goals',
-    goalId_,
+    goalId,
     'reports',
-    goalReportId_,
+    goalReportId,
   ]
   const parentUrl = `/${parentArray.join('/')}`
   const ownArray = [...parentArray, 'report']
