@@ -36,6 +36,8 @@ export default interface TemplatePublicFilesHistory {
 
   preview_uuid: string | null;
 
+  offline: boolean | null;
+
   sys_period: string;
 
   created_at: Date;
@@ -83,6 +85,8 @@ export interface TemplatePublicFilesHistoryInitializer {
 
   preview_uuid?: string | null;
 
+  offline?: boolean | null;
+
   sys_period: string;
 
   created_at: Date;
@@ -129,6 +133,8 @@ export interface TemplatePublicFilesHistoryMutator {
   uuid?: string | null;
 
   preview_uuid?: string | null;
+
+  offline?: boolean | null;
 
   sys_period?: string;
 

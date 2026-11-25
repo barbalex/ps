@@ -64,13 +64,19 @@ export default interface TemplatePublicPlaceLevelsHistory {
 
   place_files_in_place: boolean | null;
 
+  place_files_offline: boolean | null;
+
   action_files: boolean | null;
 
   action_files_in_action: boolean | null;
 
+  action_files_offline: boolean | null;
+
   check_files: boolean | null;
 
   check_files_in_check: boolean | null;
+
+  check_files_offline: boolean | null;
 
   label: string | null;
 
@@ -149,13 +155,19 @@ export interface TemplatePublicPlaceLevelsHistoryInitializer {
 
   place_files_in_place?: boolean | null;
 
+  place_files_offline?: boolean | null;
+
   action_files?: boolean | null;
 
   action_files_in_action?: boolean | null;
 
+  action_files_offline?: boolean | null;
+
   check_files?: boolean | null;
 
   check_files_in_check?: boolean | null;
+
+  check_files_offline?: boolean | null;
 
   label?: string | null;
 
@@ -234,13 +246,19 @@ export interface TemplatePublicPlaceLevelsHistoryMutator {
 
   place_files_in_place?: boolean | null;
 
+  place_files_offline?: boolean | null;
+
   action_files?: boolean | null;
 
   action_files_in_action?: boolean | null;
 
+  action_files_offline?: boolean | null;
+
   check_files?: boolean | null;
 
   check_files_in_check?: boolean | null;
+
+  check_files_offline?: boolean | null;
 
   label?: string | null;
 

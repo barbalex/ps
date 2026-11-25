@@ -17,6 +17,8 @@ export default interface WmsServiceLayersHistory {
 
   legend_image: unknown | null;
 
+  extent: unknown | null;
+
   /** System period written by temporal_tables. lower(sys_period) is when the row version became current, upper(sys_period) when it stopped being current. */
   sys_period: string;
 
@@ -46,6 +48,8 @@ export interface WmsServiceLayersHistoryInitializer {
   legend_url?: string | null;
 
   legend_image?: unknown | null;
+
+  extent?: unknown | null;
 
   /** System period written by temporal_tables. lower(sys_period) is when the row version became current, upper(sys_period) when it stopped being current. */
   sys_period: string;
@@ -77,6 +81,8 @@ export interface WmsServiceLayersHistoryMutator {
   legend_url?: string | null;
 
   legend_image?: unknown | null;
+
+  extent?: unknown | null;
 
   /** System period written by temporal_tables. lower(sys_period) is when the row version became current, upper(sys_period) when it stopped being current. */
   sys_period?: string;

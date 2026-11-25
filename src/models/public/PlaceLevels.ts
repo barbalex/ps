@@ -98,17 +98,26 @@ export default interface PlaceLevels {
   /** Render files inside the place form? Preset: true */
   place_files_in_place: boolean | null;
 
+  /** Mark all files of places on this level available offline (requires projects.files_offline). Set by designers. Preset: false. */
+  place_files_offline: boolean | null;
+
   /** Are files used for actions on this level? Preset: false */
   action_files: boolean | null;
 
   /** Render files inside the action form? Preset: true */
   action_files_in_action: boolean | null;
 
+  /** Mark all files of actions on this level available offline (requires projects.files_offline). Set by designers. Preset: false. */
+  action_files_offline: boolean | null;
+
   /** Are files used for checks on this level? Preset: false */
   check_files: boolean | null;
 
   /** Render files inside the check form? Preset: true */
   check_files_in_check: boolean | null;
+
+  /** Mark all files of checks on this level available offline (requires projects.files_offline). Set by designers. Preset: false. */
+  check_files_offline: boolean | null;
 
   label: string | null;
 
@@ -120,12 +129,6 @@ export default interface PlaceLevels {
   updated_at: Date;
 
   updated_by: string | null;
-
-  place_files_offline: boolean | null;
-
-  action_files_offline: boolean | null;
-
-  check_files_offline: boolean | null;
 }
 
 /**
@@ -280,6 +283,12 @@ export interface PlaceLevelsInitializer {
   place_files_in_place?: boolean | null;
 
   /**
+   * Mark all files of places on this level available offline (requires projects.files_offline). Set by designers. Preset: false.
+   * Default value: false
+   */
+  place_files_offline?: boolean | null;
+
+  /**
    * Are files used for actions on this level? Preset: false
    * Default value: true
    */
@@ -290,6 +299,12 @@ export interface PlaceLevelsInitializer {
    * Default value: true
    */
   action_files_in_action?: boolean | null;
+
+  /**
+   * Mark all files of actions on this level available offline (requires projects.files_offline). Set by designers. Preset: false.
+   * Default value: false
+   */
+  action_files_offline?: boolean | null;
 
   /**
    * Are files used for checks on this level? Preset: false
@@ -303,6 +318,12 @@ export interface PlaceLevelsInitializer {
    */
   check_files_in_check?: boolean | null;
 
+  /**
+   * Mark all files of checks on this level available offline (requires projects.files_offline). Set by designers. Preset: false.
+   * Default value: false
+   */
+  check_files_offline?: boolean | null;
+
   /** System period maintained by temporal_tables for auditing and historic queries. */
   sys_period: string;
 
@@ -313,15 +334,6 @@ export interface PlaceLevelsInitializer {
   updated_at?: Date;
 
   updated_by?: string | null;
-
-  /** Default value: false */
-  place_files_offline?: boolean | null;
-
-  /** Default value: false */
-  action_files_offline?: boolean | null;
-
-  /** Default value: false */
-  check_files_offline?: boolean | null;
 }
 
 /**
@@ -419,17 +431,26 @@ export interface PlaceLevelsMutator {
   /** Render files inside the place form? Preset: true */
   place_files_in_place?: boolean | null;
 
+  /** Mark all files of places on this level available offline (requires projects.files_offline). Set by designers. Preset: false. */
+  place_files_offline?: boolean | null;
+
   /** Are files used for actions on this level? Preset: false */
   action_files?: boolean | null;
 
   /** Render files inside the action form? Preset: true */
   action_files_in_action?: boolean | null;
 
+  /** Mark all files of actions on this level available offline (requires projects.files_offline). Set by designers. Preset: false. */
+  action_files_offline?: boolean | null;
+
   /** Are files used for checks on this level? Preset: false */
   check_files?: boolean | null;
 
   /** Render files inside the check form? Preset: true */
   check_files_in_check?: boolean | null;
+
+  /** Mark all files of checks on this level available offline (requires projects.files_offline). Set by designers. Preset: false. */
+  check_files_offline?: boolean | null;
 
   /** System period maintained by temporal_tables for auditing and historic queries. */
   sys_period?: string;
@@ -439,10 +460,4 @@ export interface PlaceLevelsMutator {
   updated_at?: Date;
 
   updated_by?: string | null;
-
-  place_files_offline?: boolean | null;
-
-  action_files_offline?: boolean | null;
-
-  check_files_offline?: boolean | null;
 }

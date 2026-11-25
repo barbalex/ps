@@ -39,6 +39,8 @@ export default interface FilesHistory {
 
   preview_uuid: string | null;
 
+  offline: boolean | null;
+
   /** System period written by temporal_tables. lower(sys_period) is when the row version became current, upper(sys_period) when it stopped being current. */
   sys_period: string;
 
@@ -47,8 +49,6 @@ export default interface FilesHistory {
   updated_at: Date;
 
   updated_by: string | null;
-
-  offline: boolean | null;
 }
 
 /**
@@ -93,6 +93,9 @@ export interface FilesHistoryInitializer {
 
   preview_uuid?: string | null;
 
+  /** Default value: false */
+  offline?: boolean | null;
+
   /** System period written by temporal_tables. lower(sys_period) is when the row version became current, upper(sys_period) when it stopped being current. */
   sys_period: string;
 
@@ -103,9 +106,6 @@ export interface FilesHistoryInitializer {
   updated_at?: Date;
 
   updated_by?: string | null;
-
-  /** Default value: false */
-  offline?: boolean | null;
 }
 
 /**
@@ -149,6 +149,8 @@ export interface FilesHistoryMutator {
 
   preview_uuid?: string | null;
 
+  offline?: boolean | null;
+
   /** System period written by temporal_tables. lower(sys_period) is when the row version became current, upper(sys_period) when it stopped being current. */
   sys_period?: string;
 
@@ -157,6 +159,4 @@ export interface FilesHistoryMutator {
   updated_at?: Date;
 
   updated_by?: string | null;
-
-  offline?: boolean | null;
 }

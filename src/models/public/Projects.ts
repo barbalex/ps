@@ -117,6 +117,7 @@ export default interface Projects {
   /** Room for project specific data, defined in "fields" table */
   data: unknown | null;
 
+  /** Gate for offline files: when true, files marked offline (files.offline) or covered by a place_levels offline flag are fetched into the device's service-worker cache for offline use. Preset: false. */
   files_offline: boolean | null;
 
   /** Whether files are used in table projects. Preset: true */
@@ -317,7 +318,10 @@ export interface ProjectsInitializer {
   /** Room for project specific data, defined in "fields" table */
   data?: unknown | null;
 
-  /** Default value: false */
+  /**
+   * Gate for offline files: when true, files marked offline (files.offline) or covered by a place_levels offline flag are fetched into the device's service-worker cache for offline use. Preset: false.
+   * Default value: false
+   */
   files_offline?: boolean | null;
 
   /**
@@ -519,6 +523,7 @@ export interface ProjectsMutator {
   /** Room for project specific data, defined in "fields" table */
   data?: unknown | null;
 
+  /** Gate for offline files: when true, files marked offline (files.offline) or covered by a place_levels offline flag are fetched into the device's service-worker cache for offline use. Preset: false. */
   files_offline?: boolean | null;
 
   /** Whether files are used in table projects. Preset: true */
