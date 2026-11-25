@@ -5,6 +5,7 @@ import { useAtomValue, useSetAtom } from 'jotai'
 import type { Feature, FeatureCollection } from 'geojson'
 
 import { ProgressiveGeoJSON } from '../ProgressiveGeoJSON.tsx'
+import { markSnapTarget } from '../../DrawControl/vectorSnapping.ts'
 import { cachedMarkerIconHtml } from '../markerIconHtml.tsx'
 
 import { vectorLayerDisplayToProperties } from '../../../../modules/vectorLayerDisplayToProperties.ts'
@@ -169,6 +170,7 @@ export const TableLayer = ({
   return (
     <ErrorBoundary layer={layer}>
       <ProgressiveGeoJSON
+        geomanIgnore
         resetKey={`${editVersion ?? ''}/${JSON.stringify(firstDisplay)}/${activeId ?? ''}`}
         data={data}
         featureKey={featureKey}
@@ -496,6 +498,7 @@ export const TableLayer = ({
         onEachFeature={(feature, geoLayer) => {
           if (!feature) return
           if (geoLayer) {
+            markSnapTarget(geoLayer, feature.properties?.label || label || '', activeIdField ? feature.properties?.[activeIdField] : undefined)
             ;(geoLayer as LayerWithMeta).vectorLayerLabel = label
           }
           // Table layer data is shown in the Info sidebar via ClickListener

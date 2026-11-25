@@ -1958,6 +1958,27 @@
   "gX5HzJ": {
     "defaultMessage": "Bericht-Mengen im Bericht anzeigen"
   },
+  "geometryDone": {
+    "defaultMessage": "Fertig"
+  },
+  "geometryEditingRecord": {
+    "defaultMessage": "Geometrie bearbeiten: {name}"
+  },
+  "geometryHistoryChanged": {
+    "defaultMessage": "Die Geometrie wurde inzwischen geändert. Bearbeitung erneut öffnen."
+  },
+  "geometryNudgeHint": {
+    "defaultMessage": "Geometrie anklicken oder ziehen. Pfeiltasten: 0,3 mm auf der Karte; mit Umschalt: 2 mm."
+  },
+  "geometryRedo": {
+    "defaultMessage": "Wiederholen"
+  },
+  "geometrySnapTarget": {
+    "defaultMessage": "Fangziel"
+  },
+  "geometrySnapping": {
+    "defaultMessage": "Objektfang"
+  },
   "gi+ubY": {
     "defaultMessage": "Projekt-Benutzer"
   },

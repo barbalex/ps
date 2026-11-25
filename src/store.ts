@@ -620,11 +620,12 @@ export const addOperationAtom = atom(
       // the caller verified the permission itself, before a local change
       // destroyed what the check reads (a project delete cascades its roles)
       skipPermissionCheck?: boolean
+      separateEdit?: boolean
     },
   ) => {
     const db = get(pgliteDbAtom)
     const userId = get(userIdAtom)
-    const { skipPermissionCheck, ...opFields } = opDraft
+    const { skipPermissionCheck, separateEdit, ...opFields } = opDraft
 
     const operation: QueuedOperation = {
       id: uuidv7(),
@@ -653,12 +654,13 @@ export const addOperationAtom = atom(
           intent: 'error',
           duration: 10000,
         })
+        if (separateEdit) throw new Error(body)
         return
       }
     }
 
     // console.log('store.addOperationAtom, operation:', operation)
-    if (isAggregatableUpdate(opFields)) {
+    if (!separateEdit && isAggregatableUpdate(opFields)) {
       // aggregate field edits into one operation per row and form session,
       // flushed when the session ends (form blur, navigation, tab hide,
       // page close, ~5s of inactivity) — see modules/operationAggregation.ts

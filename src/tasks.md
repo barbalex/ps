@@ -15,9 +15,9 @@ Geometry editing roadmap (in priority order):
 - [x] 1. Place or move a point precisely: paste an X/Y pair in the coordinate system selected in the map coordinates tool, or pan beneath a crosshair. Preview, then explicitly apply to the edited record. Available while editing a place, check or action with no geometry or one point.
 - [x] 2. Capture a GPS position with its reported horizontal accuracy. In **Place point precisely**, select **Capture GPS position**, review the accuracy circle and radius in metres, then apply. A manual geometry edit clears the stored accuracy.
   - [x] **Average 5 GPS fixes**: stand still while the editor collects five fresh positions, then review and apply their mean. The saved radius covers all five reported accuracy circles. Cancellation or timeout saves nothing.
-- [ ] 3. Undo/redo geometry edits as new edits without erasing history. Name the record being edited and provide a clear Done action.
-- [ ] 4. Move an entire line or polygon without moving each vertex separately.
-- [ ] 5. Snap to vector vertices or boundaries, show the snap target, and allow temporarily disabling snapping.
+- [x] 3. Undo/redo completed geometry edits within the current record's editing session. Each undo or redo saves a new version, including the bounding box and GPS accuracy. A new edit clears redo. The map names the record being edited; **Done** closes the session.
+- [x] 4. Move a point, line or polygon: choose **Drag Layers**, then click or drag the shape. The selected shape has a dashed outline. Arrow keys move it by 0.3 mm on the rendered map (Shift+arrow: 2 mm), so zooming in gives finer ground steps. Turn off **Drag Layers** to undo or redo.
+- [x] 5. While drawing or editing vertices, snap to visible vector points, vertices and boundaries. A ring and label show the target. Hold Alt while moving to bypass snapping, or toggle **Snapping** before starting a tool (also works on touch screens).
 - [ ] 6. Walk a transect or perimeter: start/pause GPS recording, preview and simplify, then save.
 - Later for habitats: reshape boundary segments, cut holes, and flag invalid geometries. Decide how dependent records should be handled before implementing split/merge.
 

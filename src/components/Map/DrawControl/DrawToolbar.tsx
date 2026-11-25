@@ -25,7 +25,7 @@ export const DrawToolbar = ({ language }: { language: Language }) => {
       drawText: false,
       drawCircle: true,
       editMode: true,
-      dragMode: false,
+      dragMode: true,
       cutPolygon: false,
       removalMode: true,
       rotateMode: false,

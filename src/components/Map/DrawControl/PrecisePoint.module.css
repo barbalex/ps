@@ -1,4 +1,4 @@
-.control {
+.session {
   position: absolute;
   z-index: 1000;
   top: 8px;
@@ -33,6 +33,17 @@
   flex-wrap: wrap;
   gap: 6px;
   margin-top: 8px;
+}
+
+.control {
+  margin-top: 6px;
+}
+
+.session > span {
+  display: block;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
 }
 
 .crosshair {

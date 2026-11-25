@@ -468,16 +468,19 @@ html[data-theme='dark'] .uploadcare-uploader-config {
   }
 }
 
-/* In edit mode Geoman drags a point by its path, not a vertex handle.
-   Let the editable point receive the drag through the display layers. */
+/* Let editable shapes receive whole-layer drags through the display layers.
+   Point editing also uses the path rather than a vertex handle. */
 .map-container.geoman-active:has(.geometry-editing.leaflet-geoman-draggable) {
+  .geometry-nudge-target {
+    stroke-dasharray: 6 3;
+  }
   .leaflet-pane svg .leaflet-interactive:not(.geometry-editing),
   .leaflet-marker-icon.marker-icon-clickable {
     pointer-events: none !important;
   }
 
   .leaflet-overlay-pane svg .geometry-editing.leaflet-geoman-draggable {
-    pointer-events: visible !important;
+    pointer-events: visiblePainted !important;
     cursor: grab !important;
   }
 }

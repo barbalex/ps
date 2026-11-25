@@ -79,7 +79,9 @@ test.beforeAll(async () => {
       ('${PRECISE_PLACE_ID}', '${SUBPROJECT_ID}', 1, 'E2ePrecisePoint')
       ON CONFLICT DO NOTHING;
     -- The sync duplicate-insert trigger runs before ON CONFLICT.
-    UPDATE places SET geometry = NULL, bbox = NULL WHERE place_id = '${PRECISE_PLACE_ID}';
+    UPDATE places SET geometry = NULL, bbox = NULL, gps_accuracy_m = NULL WHERE place_id = '${PRECISE_PLACE_ID}';
+    UPDATE places SET geometry = ST_GeomFromGeoJSON('{"type":"GeometryCollection","geometries":[{"type":"Point","coordinates":[${LNG},${LAT}]}]}')
+      WHERE place_id = '${PLACE_ID}';
 
     -- active presentation: the default view (no ?layers= override) shows
     -- the layer, so no drawer interaction is needed
@@ -110,6 +112,7 @@ test.beforeAll(async () => {
 })
 
 const openMap = async (page: Page, zoom = 17) => {
+  psql(`SET electric.syncing TO 'true'; UPDATE layer_presentations SET active = TRUE WHERE layer_presentation_id = '${PRESENTATION_ID}';`)
   await login(page, E2E_EMAIL, E2E_PASSWORD)
   await page.goto(
     `/data/projects/${PROJECT_ID}/subprojects/${SUBPROJECT_ID}?panes=map&c=${LAT}%2C${LNG}&z=${zoom}`,
@@ -300,6 +303,12 @@ test('precise placement previews without writing and moves the same point on App
   await place.click()
   await apply.click()
   await expect.poll(storedPoint, { timeout: 30_000 }).toBe('2600000/1200000')
+  await page.getByRole('button', { name: 'Undo', exact: true }).click()
+  await expect(page.locator('.geometry-editing')).toHaveCount(0)
+  await expect.poll(storedPoint, { timeout: 30_000 }).toBe('')
+  await page.getByRole('button', { name: 'Redo', exact: true }).click()
+  await expect(page.locator('.geometry-editing')).toHaveCount(1)
+  await expect.poll(storedPoint, { timeout: 30_000 }).toBe('2600000/1200000')
   await place.click()
   await input.fill('2600100, 1200020')
   await preview.click()
@@ -348,8 +357,35 @@ test('GPS preview saves the fix and reported accuracy only on Apply', async ({ p
   await page.locator('button[name="edit_geometry"]').click()
   await place.click()
   await expect(page.getByText('Saved GPS accuracy: ±8.25 m')).toBeVisible()
+  const undo = page.getByRole('button', { name: 'Undo', exact: true })
+  const redo = page.getByRole('button', { name: 'Redo', exact: true })
+  const versions = () => Number(psql(`SELECT count(*) FROM places_history WHERE place_id = '${PRECISE_PLACE_ID}'`))
+  const initialVersions = versions()
+  await expect(page.getByText('Editing geometry: E2ePrecisePoint')).toBeVisible()
+  await expect(undo).toBeDisabled()
   await apply.click()
   await expect.poll(stored, { timeout: 30_000 }).toBe('')
+  await undo.click()
+  await expect.poll(stored, { timeout: 30_000 }).toBe(`POINT(${LNG} ${LAT})/8.25`)
+  await expect(page.locator('.geometry-editing')).toHaveCount(1)
+  await redo.click()
+  await expect.poll(stored, { timeout: 30_000 }).toBe('')
+  await expect.poll(versions, { timeout: 30_000 }).toBe(initialVersions + 3)
+  await undo.click()
+  await place.click()
+  await expect(page.getByText('Saved GPS accuracy: ±8.25 m')).toBeVisible()
+  await apply.click()
+  await expect(redo).toBeDisabled()
+  const listenerWarnings: string[] = []
+  page.on('console', message => {
+    if (message.type() === 'warning' && message.text().includes('wrong listener type'))
+      listenerWarnings.push(message.text())
+  })
+  await page.getByRole('button', { name: 'Done', exact: true }).click()
+  await expect(page.locator('.geometry-editing')).toHaveCount(0)
+  expect(listenerWarnings).toEqual([])
+  await page.locator('button[name="edit_geometry"]').click()
+  await expect(undo).toBeDisabled()
   await context.setGeolocation(null)
   await place.click()
   await capture.click()
@@ -393,4 +429,129 @@ test('GPS averaging previews five fresh fixes across the date line before persis
   expect(stored()).toBe(before)
   await apply.click()
   await expect.poll(stored, { timeout: 30_000 }).toBe('180.00000/0.00000/25.24')
+})
+
+for (const shape of ['point', 'line', 'polygon'] as const) {
+  test(`dragging a whole ${shape} translates every vertex and can be undone`, async ({
+    page,
+  }) => {
+    const wkt =
+      shape === 'point' ? 'POINT(8.54 47.37)'
+      : shape === 'line' ?
+        'LINESTRING(8.5395 47.37,8.54 47.37,8.5405 47.37)'
+      : 'POLYGON((8.5395 47.3698,8.5405 47.3698,8.54 47.3702,8.5395 47.3698))'
+    const id = PRECISE_PLACE_ID
+    const zoom = shape === 'polygon' ? 16 : 17
+    psql(
+      `SET electric.syncing TO 'true'; UPDATE places SET geometry = ST_GeomFromText('GEOMETRYCOLLECTION(${wkt},POINT(8.542 47.37))',4326), gps_accuracy_m = NULL WHERE place_id = '${id}';`,
+    )
+    await page.addInitScript(() => localStorage.setItem('language', '"en"'))
+    await login(page, E2E_EMAIL, E2E_PASSWORD)
+    await page.goto(
+      `/data/projects/${PROJECT_ID}/subprojects/${SUBPROJECT_ID}/places/${id}/place?panes=map&c=${LAT}%2C${LNG}&z=${zoom}`,
+    )
+    await closeLayerDrawerIfOpen(page)
+    await page.locator('button[name="edit_geometry"]').click()
+    const drag = page.getByRole('button', { name: 'Drag Layers', exact: true })
+    await expect(page.locator('.geometry-editing')).toHaveCount(2, {
+      timeout: 60_000,
+    })
+    await closeLayerDrawerIfOpen(page)
+    // Measure the free drag, not a snap to another visible fixture.
+    await page.getByRole('button', { name: 'Snapping', exact: true }).click()
+    await drag.click({ timeout: 10_000 })
+    const path = page
+      .locator('.geometry-editing.leaflet-geoman-draggable')
+      .first()
+    const bounds = await path.boundingBox()
+    if (!bounds) throw new Error(`Editable ${shape} not visible`)
+    const x = bounds.x + bounds.width / 2
+    const y = bounds.y + bounds.height / 2
+    const historyCount = () =>
+      Number(
+        psql(`SELECT count(*) FROM places_history WHERE place_id = '${id}'`),
+      )
+    const before = historyCount()
+    await page.mouse.move(x, y)
+    await page.mouse.down()
+    await page.mouse.move(x + 40, y, { steps: 10 })
+    await page.mouse.up()
+    const matches = (pixels: number) =>
+      psql(`SELECT ST_OrderingEquals(
+              ST_SnapToGrid(ST_GeometryN(geometry,1), 0.000001),
+              ST_SnapToGrid(ST_Translate(ST_GeomFromText('${wkt}',4326), ${pixels} * 360.0 / (256 * 2^${zoom}), 0), 0.000001))
+              AND ST_AsText(ST_GeometryN(geometry,2)) = 'POINT(8.542 47.37)'
+              FROM places WHERE place_id = '${id}'`)
+    await expect.poll(() => matches(40), { timeout: 30_000 }).toBe('t')
+    await expect.poll(historyCount).toBe(before + 1)
+    if (shape === 'point') {
+      await drag.click()
+      await drag.click()
+      await page.mouse.click(x + 40, y)
+    }
+    await expect(page.locator('.geometry-nudge-target')).toHaveCount(1)
+    await page.keyboard.press('ArrowRight')
+    const fine = 0.3 * 96 / 25.4
+    await expect.poll(() => matches(40 + fine), { timeout: 30_000 }).toBe('t')
+    await page.keyboard.press('Shift+ArrowLeft')
+    await expect.poll(() => matches(40 + fine - 2 * 96 / 25.4), { timeout: 30_000 }).toBe('t')
+    await drag.click()
+    const undo = page.getByRole('button', { name: 'Undo', exact: true })
+    await undo.click()
+    await expect.poll(() => matches(40 + fine)).toBe('t')
+    await undo.click()
+    await expect.poll(() => matches(40)).toBe('t')
+    await undo.click()
+    await expect.poll(() => matches(0), { timeout: 30_000 }).toBe('t')
+  })
+}
+
+test('draw snaps to visible polygon vertices and edges unless bypassed', async ({ page }) => {
+  psql(`SET electric.syncing TO 'true';
+    UPDATE places SET geometry = ST_GeomFromText('GEOMETRYCOLLECTION(POLYGON((8.539 47.3695,8.541 47.3695,8.541 47.3705,8.539 47.3705,8.539 47.3695)))',4326),
+      bbox = '[8.539,47.3695,8.541,47.3705]' WHERE place_id = '${PLACE_ID}';
+    UPDATE places SET geometry = NULL, bbox = NULL WHERE place_id = '${PRECISE_PLACE_ID}';
+    UPDATE layer_presentations SET active = TRUE WHERE layer_presentation_id = '${PRESENTATION_ID}';`)
+  await page.addInitScript(() => localStorage.setItem('language', '"en"'))
+  await login(page, E2E_EMAIL, E2E_PASSWORD)
+  await page.goto(`/data/projects/${PROJECT_ID}/subprojects/${SUBPROJECT_ID}/places/${PRECISE_PLACE_ID}/place?panes=map&c=${LAT}%2C${LNG}&z=17`)
+  await page.locator('button[name="edit_geometry"]').click()
+  const polygon = page.locator(`.leaflet-pane[class*="${OWN_NAME}-pane"] svg path`).first()
+  await expect(polygon).toBeVisible({ timeout: 60_000 })
+  await closeLayerDrawerIfOpen(page)
+  const draw = page.getByRole('button', { name: 'Draw Marker', exact: true })
+  const toggle = page.getByRole('button', { name: 'Snapping', exact: true })
+  const ring = page.locator('.geometry-snap-target')
+  const bounds = await polygon.boundingBox()
+  if (!bounds) throw new Error('Reference polygon not visible')
+  const top = bounds.y - 7
+  const stored = (n: number) => `ST_GeometryN(geometry,${n})`
+  const check = (sql: string) => psql(`SELECT ${sql} FROM places WHERE place_id = '${PRECISE_PLACE_ID}'`)
+  await draw.click()
+  await page.mouse.move(bounds.x - 5, top)
+  await expect(ring).toBeVisible()
+  await expect(page.locator('.leaflet-tooltip').filter({ hasText: PLACE_LABEL })).toBeVisible()
+  await page.mouse.click(bounds.x - 5, top)
+  await expect.poll(() => check(`ST_AsText(${stored(1)})`), { timeout: 30_000 }).toBe('POINT(8.539 47.3705)')
+  const start = async () => { if (await toggle.isEnabled()) await draw.click() }
+  await start()
+  const middle = bounds.x + bounds.width / 2
+  await page.mouse.move(middle, top)
+  await expect(ring).toBeVisible()
+  await page.mouse.click(middle, top)
+  await expect.poll(() => check(`abs(ST_Y(${stored(2)}) - 47.3705) < 0.000001 AND abs(ST_X(${stored(2)}) - 8.54) < 0.00002`), { timeout: 30_000 }).toBe('t')
+  await start()
+  await page.keyboard.down('Alt')
+  await page.mouse.move(middle + 35, top)
+  await expect(ring).toHaveCount(0)
+  await page.mouse.click(middle + 35, top)
+  await page.keyboard.up('Alt')
+  await expect.poll(() => check(`ST_Y(${stored(3)}) > 47.37053`), { timeout: 30_000 }).toBe('t')
+  if (!(await toggle.isEnabled())) await draw.click()
+  await toggle.click()
+  await draw.click()
+  await page.mouse.move(middle - 35, top)
+  await expect(ring).toHaveCount(0)
+  await page.mouse.click(middle - 35, top)
+  await expect.poll(() => check(`ST_Y(${stored(4)}) > 47.37053`), { timeout: 30_000 }).toBe('t')
 })
