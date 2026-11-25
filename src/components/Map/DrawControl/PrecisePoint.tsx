@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'react'
+import { createPortal } from 'react-dom'
 import { Circle, CircleMarker, useMap } from 'react-leaflet'
 import { DomEvent, LatLng } from 'leaflet'
 import { useIntl } from 'react-intl'
@@ -367,14 +368,18 @@ const PointPanel = ({
           </>
         }
       </div>
-      {open && gpsState === 'idle' && !input.trim() && (
-        <span
-          aria-hidden="true"
-          className={styles.crosshair}
-        >
-          +
-        </span>
-      )}
+      {open &&
+        gpsState === 'idle' &&
+        !input.trim() &&
+        createPortal(
+          <span
+            aria-hidden="true"
+            className={styles.crosshair}
+          >
+            +
+          </span>,
+          map.getContainer(),
+        )}
       {preview && typeof gpsState === 'number' && (
         <Circle
           center={preview}

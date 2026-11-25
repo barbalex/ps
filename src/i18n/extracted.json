@@ -1958,6 +1958,18 @@
   "gX5HzJ": {
     "defaultMessage": "Bericht-Mengen im Bericht anzeigen"
   },
+  "geometryDone": {
+    "defaultMessage": "Fertig"
+  },
+  "geometryEditingRecord": {
+    "defaultMessage": "Geometrie bearbeiten: {name}"
+  },
+  "geometryHistoryChanged": {
+    "defaultMessage": "Die Geometrie wurde inzwischen geändert. Bearbeitung erneut öffnen."
+  },
+  "geometryRedo": {
+    "defaultMessage": "Wiederholen"
+  },
   "gi+ubY": {
     "defaultMessage": "Projekt-Benutzer"
   },

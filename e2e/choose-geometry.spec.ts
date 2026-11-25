@@ -79,7 +79,9 @@ test.beforeAll(async () => {
       ('${PRECISE_PLACE_ID}', '${SUBPROJECT_ID}', 1, 'E2ePrecisePoint')
       ON CONFLICT DO NOTHING;
     -- The sync duplicate-insert trigger runs before ON CONFLICT.
-    UPDATE places SET geometry = NULL, bbox = NULL WHERE place_id = '${PRECISE_PLACE_ID}';
+    UPDATE places SET geometry = NULL, bbox = NULL, gps_accuracy_m = NULL WHERE place_id = '${PRECISE_PLACE_ID}';
+    UPDATE places SET geometry = ST_GeomFromGeoJSON('{"type":"GeometryCollection","geometries":[{"type":"Point","coordinates":[${LNG},${LAT}]}]}')
+      WHERE place_id = '${PLACE_ID}';
 
     -- active presentation: the default view (no ?layers= override) shows
     -- the layer, so no drawer interaction is needed
@@ -110,6 +112,7 @@ test.beforeAll(async () => {
 })
 
 const openMap = async (page: Page, zoom = 17) => {
+  psql(`SET electric.syncing TO 'true'; UPDATE layer_presentations SET active = TRUE WHERE layer_presentation_id = '${PRESENTATION_ID}';`)
   await login(page, E2E_EMAIL, E2E_PASSWORD)
   await page.goto(
     `/data/projects/${PROJECT_ID}/subprojects/${SUBPROJECT_ID}?panes=map&c=${LAT}%2C${LNG}&z=${zoom}`,
@@ -300,6 +303,12 @@ test('precise placement previews without writing and moves the same point on App
   await place.click()
   await apply.click()
   await expect.poll(storedPoint, { timeout: 30_000 }).toBe('2600000/1200000')
+  await page.getByRole('button', { name: 'Undo', exact: true }).click()
+  await expect(page.locator('.geometry-editing')).toHaveCount(0)
+  await expect.poll(storedPoint, { timeout: 30_000 }).toBe('')
+  await page.getByRole('button', { name: 'Redo', exact: true }).click()
+  await expect(page.locator('.geometry-editing')).toHaveCount(1)
+  await expect.poll(storedPoint, { timeout: 30_000 }).toBe('2600000/1200000')
   await place.click()
   await input.fill('2600100, 1200020')
   await preview.click()
@@ -348,8 +357,29 @@ test('GPS preview saves the fix and reported accuracy only on Apply', async ({ p
   await page.locator('button[name="edit_geometry"]').click()
   await place.click()
   await expect(page.getByText('Saved GPS accuracy: ±8.25 m')).toBeVisible()
+  const undo = page.getByRole('button', { name: 'Undo', exact: true })
+  const redo = page.getByRole('button', { name: 'Redo', exact: true })
+  const versions = () => Number(psql(`SELECT count(*) FROM places_history WHERE place_id = '${PRECISE_PLACE_ID}'`))
+  const initialVersions = versions()
+  await expect(page.getByText('Editing geometry: E2ePrecisePoint')).toBeVisible()
+  await expect(undo).toBeDisabled()
   await apply.click()
   await expect.poll(stored, { timeout: 30_000 }).toBe('')
+  await undo.click()
+  await expect.poll(stored, { timeout: 30_000 }).toBe(`POINT(${LNG} ${LAT})/8.25`)
+  await expect(page.locator('.geometry-editing')).toHaveCount(1)
+  await redo.click()
+  await expect.poll(stored, { timeout: 30_000 }).toBe('')
+  await expect.poll(versions, { timeout: 30_000 }).toBe(initialVersions + 3)
+  await undo.click()
+  await place.click()
+  await expect(page.getByText('Saved GPS accuracy: ±8.25 m')).toBeVisible()
+  await apply.click()
+  await expect(redo).toBeDisabled()
+  await page.getByRole('button', { name: 'Done', exact: true }).click()
+  await expect(page.locator('.geometry-editing')).toHaveCount(0)
+  await page.locator('button[name="edit_geometry"]').click()
+  await expect(undo).toBeDisabled()
   await context.setGeolocation(null)
   await place.click()
   await capture.click()
