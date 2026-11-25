@@ -544,6 +544,70 @@ const healExistingDbSql = `
                   ON DELETE CASCADE ON UPDATE CASCADE DEFERRABLE INITIALLY DEFERRED;
               END IF;
             END $$;
+
+            -- goal_reports gained the report year (2026-11): the goal report
+            -- form was empty — the table had no year column (unlike every
+            -- other report table) and projects usually define no fields for
+            -- it. heal local databases created before the schema caught up.
+            -- goal_reports_history is created via LIKE goal_reports, so it
+            -- needs the column too or the versioning trigger breaks on goal
+            -- report updates
+            ALTER TABLE IF EXISTS goal_reports ADD COLUMN IF NOT EXISTS year integer DEFAULT DATE_PART('year', now()::date);
+            ALTER TABLE IF EXISTS goal_reports_history ADD COLUMN IF NOT EXISTS year integer;
+            CREATE INDEX IF NOT EXISTS goal_reports_year_idx ON goal_reports USING btree(year);
+
+            CREATE OR REPLACE FUNCTION goal_reports_label_trigger()
+            RETURNS TRIGGER AS $$
+            DECLARE
+              is_syncing BOOLEAN;
+              _subproject_id uuid;
+              _project_id uuid;
+              _project_goal_reports_label_by TEXT;
+            BEGIN
+              SELECT COALESCE(NULLIF(current_setting('electric.syncing', true), ''), 'false')::boolean INTO is_syncing;
+              IF is_syncing THEN
+                RETURN OLD;
+              END IF;
+
+              if NEW.goal_id is null then
+                _subproject_id := null;
+              else
+                select goals.subproject_id INTO _subproject_id from goals where goals.goal_id = NEW.goal_id;
+              end if;
+
+              if _subproject_id is null then
+                _project_id := null;
+              else
+                select subprojects.project_id INTO _project_id from subprojects where subprojects.subproject_id = _subproject_id;
+              end if;
+
+              if _project_id is null then
+                _project_goal_reports_label_by := null;
+              else
+                select projects.goal_reports_label_by INTO _project_goal_reports_label_by from projects where projects.project_id = _project_id;
+              end if;
+
+              UPDATE goal_reports SET label =
+              CASE
+                WHEN _project_goal_reports_label_by IS NULL THEN coalesce(NEW.year::text, NEW.goal_report_id::text)
+                WHEN _project_goal_reports_label_by = 'goal_id' THEN NEW.goal_id::text
+                WHEN NEW.data -> _project_goal_reports_label_by IS NULL THEN coalesce(NEW.year::text, NEW.goal_report_id::text)
+                ELSE NEW.data ->> _project_goal_reports_label_by
+              END
+              WHERE goal_reports.goal_report_id = NEW.goal_report_id;
+              RETURN NEW;
+            END;
+            $$ LANGUAGE plpgsql;
+
+            DROP TRIGGER IF EXISTS goal_reports_label_trigger ON goal_reports;
+
+            CREATE TRIGGER goal_reports_label_trigger
+            AFTER INSERT OR UPDATE OF data, year ON goal_reports
+            FOR EACH ROW
+            EXECUTE PROCEDURE goal_reports_label_trigger();
+
+            -- relabel goal reports that still carry the uuid fallback label
+            UPDATE goal_reports SET label = coalesce(year::text, goal_report_id::text) WHERE label = goal_report_id::text;
           `
 
 export const SqlInitializer = () => {

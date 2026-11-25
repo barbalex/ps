@@ -1154,6 +1154,7 @@ COMMENT ON TABLE goals IS 'What is to be achieved in the subproject in this year
 CREATE TABLE IF NOT EXISTS goal_reports(
   goal_report_id uuid PRIMARY KEY DEFAULT uuidv7(),
   goal_id uuid DEFAULT NULL REFERENCES goals(goal_id) ON DELETE CASCADE ON UPDATE CASCADE DEFERRABLE INITIALLY DEFERRED,
+  year integer DEFAULT DATE_PART('year', now()::date),
   data jsonb DEFAULT NULL,
   label text DEFAULT NULL,
   sys_period tstzrange DEFAULT NULL,
@@ -1163,9 +1164,11 @@ CREATE TABLE IF NOT EXISTS goal_reports(
 );
 
 CREATE INDEX IF NOT EXISTS goal_reports_goal_id_idx ON goal_reports USING btree(goal_id);
+CREATE INDEX IF NOT EXISTS goal_reports_year_idx ON goal_reports USING btree(year);
 CREATE INDEX IF NOT EXISTS goal_reports_label_idx ON goal_reports USING btree(label);
 
 COMMENT ON TABLE goal_reports IS 'Reporting on the success of goals.';
+COMMENT ON COLUMN goal_reports.year IS 'Year of report. Preset: current year';
 COMMENT ON COLUMN goal_reports.data IS 'Room for goal report specific data, defined in "fields" table';
 
 --------------------------------------------------------------

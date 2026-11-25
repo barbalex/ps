@@ -446,9 +446,9 @@ BEGIN
 
   UPDATE goal_reports SET label = 
   CASE 
-    WHEN _project_goal_reports_label_by IS NULL THEN NEW.goal_report_id::text
+    WHEN _project_goal_reports_label_by IS NULL THEN coalesce(NEW.year::text, NEW.goal_report_id::text)
     WHEN _project_goal_reports_label_by = 'goal_id' THEN NEW.goal_id::text
-    WHEN NEW.data -> _project_goal_reports_label_by IS NULL THEN NEW.goal_report_id::text
+    WHEN NEW.data -> _project_goal_reports_label_by IS NULL THEN coalesce(NEW.year::text, NEW.goal_report_id::text)
     ELSE NEW.data ->> _project_goal_reports_label_by
   END
   WHERE goal_reports.goal_report_id = NEW.goal_report_id;
@@ -458,7 +458,7 @@ $$ LANGUAGE plpgsql;
 
 
 CREATE OR REPLACE TRIGGER goal_reports_label_trigger
-AFTER INSERT OR UPDATE OF data ON goal_reports
+AFTER INSERT OR UPDATE OF data, year ON goal_reports
 FOR EACH ROW
 EXECUTE PROCEDURE goal_reports_label_trigger();
 
