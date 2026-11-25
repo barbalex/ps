@@ -102,10 +102,10 @@ test.beforeAll(async () => {
   })
 })
 
-const openMap = async (page: Page) => {
+const openMap = async (page: Page, zoom = 17) => {
   await login(page, E2E_EMAIL, E2E_PASSWORD)
   await page.goto(
-    `/data/projects/${PROJECT_ID}/subprojects/${SUBPROJECT_ID}?panes=map&c=${LAT}%2C${LNG}&z=17`,
+    `/data/projects/${PROJECT_ID}/subprojects/${SUBPROJECT_ID}?panes=map&c=${LAT}%2C${LNG}&z=${zoom}`,
   )
   // the own layer's pane exists but stays zero-size (like every custom
   // pane — see layer-activation.spec.ts); the place's clickable circle is
@@ -127,6 +127,35 @@ const activateChooseTool = async (
     page.locator('.map-container.choosing-geometry-active'),
   ).toHaveCount(1)
 }
+
+test('clicking near the edge of a place marker shows its info at low zoom', async ({ page }) => {
+  const serviceUrl = 'http://localhost:5176/e2e-incomplete-wfs'
+  const serviceId = 'a0b0c0d0-0000-7000-8000-00000000e3e8'
+  const layerId = 'a0b0c0d0-0000-7000-8000-00000000e3e9'
+  psql(`
+    SET electric.syncing TO 'true';
+    INSERT INTO wfs_services (wfs_service_id, project_id, url)
+    VALUES ('${serviceId}', '${PROJECT_ID}', '${serviceUrl}') ON CONFLICT DO NOTHING;
+    INSERT INTO wfs_service_layers (wfs_service_layer_id, wfs_service_id, name)
+    VALUES ('a0b0c0d0-0000-7000-8000-00000000e3eb', '${serviceId}', 'available') ON CONFLICT DO NOTHING;
+    INSERT INTO vector_layers (vector_layer_id, project_id, type, wfs_service_id)
+    VALUES ('${layerId}', '${PROJECT_ID}', 'wfs', '${serviceId}') ON CONFLICT DO NOTHING;
+    INSERT INTO layer_presentations (layer_presentation_id, vector_layer_id, project_id, active)
+    VALUES ('a0b0c0d0-0000-7000-8000-00000000e3ea', '${layerId}', '${PROJECT_ID}', TRUE) ON CONFLICT DO NOTHING;
+  `)
+  const featureRequests: string[] = []
+  await page.route(`${serviceUrl}**`, (route) => {
+    const url = new URL(route.request().url())
+    if (url.searchParams.get('request') === 'GetFeature') featureRequests.push(url.href)
+    return route.fulfill({ json: { type: 'FeatureCollection', features: [] } })
+  })
+  await openMap(page, 10)
+  const hitbox = await page.locator('.clickable-hitbox').first().boundingBox()
+  if (!hitbox) throw new Error('Place marker is not visible')
+  await page.mouse.click(hitbox.x + hitbox.width - 2, hitbox.y + hitbox.height / 2)
+  await expect(page.locator('.map-info-drawer')).toContainText(PLACE_ID)
+  expect(featureRequests).toEqual([])
+})
 
 test('choosing a geometry starts editing it', async ({ page }) => {
   // The app language, not the German browser locale, determines tool labels.
@@ -165,6 +194,25 @@ test('choosing a geometry starts editing it', async ({ page }) => {
   await expect(page.getByRole('tooltip', { name: 'Cancel' })).toBeVisible()
   await cancel.press('Enter')
   await expect(cancel).toBeHidden()
+
+  await page.getByRole('button', { name: 'Edit Layers', exact: true }).click()
+  const point = page.locator('.geometry-editing.leaflet-geoman-draggable')
+  await expect(point).toBeVisible()
+  const bounds = await point.boundingBox()
+  if (!bounds) throw new Error('Editable point is not visible')
+  const x = bounds.x + bounds.width / 2
+  const y = bounds.y + bounds.height / 2
+  await page.mouse.move(x, y)
+  await page.mouse.down()
+  await page.mouse.move(x + 60, y, { steps: 12 })
+  await page.mouse.up()
+  // Moving 60 pixels east at zoom 17 changes longitude, not latitude.
+  await expect.poll(() => psql(`
+    SELECT ST_NumGeometries(geometry) = 1 AND
+      abs(ST_X(ST_GeometryN(geometry, 1)) - ${LNG + 60 * 360 / (256 * 2 ** 17)}) < 0.00002 AND
+      abs(ST_Y(ST_GeometryN(geometry, 1)) - ${LAT}) < 0.00002
+    FROM places WHERE place_id = '${PLACE_ID}'
+  `), { timeout: 30_000 }).toBe('t')
 })
 
 test('clicking a spot without geometry warns and keeps the mode', async ({

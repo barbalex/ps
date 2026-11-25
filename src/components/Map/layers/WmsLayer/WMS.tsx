@@ -1,4 +1,3 @@
-import { useMap } from 'react-leaflet'
 import { useDebouncedCallback } from 'use-debounce'
 
 import type LayerPresentations from '../../../../models/public/LayerPresentations.ts'
@@ -11,11 +10,6 @@ export type WmsLayerWithServiceInfo = WmsLayers & {
   wms_services_url?: string | null
   wms_services_image_format?: string | null
   wms_services_version?: string | null
-  wms_services?: {
-    url: string
-    version: string | null
-    info_format: string | null
-  } | null
   opacity?: number
 }
 
@@ -25,12 +19,7 @@ type Props = {
 }
 
 export const WMS = ({ layerPresentation, layer }: Props) => {
-  const map = useMap()
-
-  const onTileErrorDebounced = useDebouncedCallback(
-    onTileError.bind(this, map, layer),
-    600,
-  )
+  const onTileErrorDebounced = useDebouncedCallback(onTileError, 600)
 
   // TODO:
   // leaflet calls server internally
@@ -49,7 +38,14 @@ export const WMS = ({ layerPresentation, layer }: Props) => {
       transparent={layerPresentation.transparent === true}
       // exceptions="inimage"
       eventHandlers={{
-        tileerror: onTileErrorDebounced,
+        tileerror: ({ tile }) => {
+          if (tile instanceof HTMLImageElement) {
+            onTileErrorDebounced(
+              tile.src,
+              layer.label ?? layer.wms_service_layer_name ?? 'WMS',
+            )
+          }
+        },
       }}
     />
   )

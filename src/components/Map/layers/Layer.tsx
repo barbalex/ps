@@ -224,6 +224,10 @@ export const Layer = ({ layerPresentationId, index }: Props) => {
   }
 
   if (isWfsLayer) {
+    if (
+      !vectorLayer.wfs_service_layer_name?.trim() ||
+      !vectorLayer.wfs_services?.url?.trim()
+    ) return null
     return (
       <Pane
         key={`${layerPresentationId}/${layers.join()}`}

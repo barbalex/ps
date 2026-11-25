@@ -3,6 +3,7 @@ import { useParams, useNavigate } from '@tanstack/react-router'
 import { useMapEvent, useMap } from 'react-leaflet/hooks'
 import type {
   Map as LeafletMap,
+  CircleMarker,
   LatLng,
   LatLngBounds,
   Layer,
@@ -42,10 +43,7 @@ type MapWithDragState = LeafletMap & { _isDraggingObservation?: boolean }
 // a leaflet Layer extended with custom fields for click detection and labels
 type ClickableLayer = Layer & {
   _isInternal?: boolean
-  _clickableCircle?: {
-    getLatLng?: () => LatLng
-    options: { radius?: number }
-  }
+  _clickableCircle?: CircleMarker
   feature?: GeoJSON.Feature
   vectorLayerLabel?: string | null
   getBounds?: () => LatLngBounds
@@ -168,17 +166,10 @@ export const ClickListener = () => {
 
       // Handle layer groups with circle markers (from TableLayer)
       if (layer._clickableCircle && layer.feature) {
-        const clickableCircle = layer._clickableCircle
-        if (clickableCircle.getLatLng) {
-          const layerLatLng = clickableCircle.getLatLng()
-          const distance = map.distance(event.latlng, layerLatLng)
-          // Check if click is within the clickable circle's radius
-          const clickRadius = clickableCircle.options.radius || 10
-          // Convert radius from pixels to meters approximately
-          const radiusMeters = clickRadius * (bufferMeters / 10)
-          if (distance <= radiusMeters) {
-            clickedLayers.push(layer)
-          }
+        const circle = layer._clickableCircle
+        const center = map.latLngToContainerPoint(circle.getLatLng())
+        if (event.containerPoint.distanceTo(center) <= circle.getRadius()) {
+          clickedLayers.push(layer)
         }
       } else if (layer.feature && layer.getBounds) {
         // Check if the clicked point is within this layer's bounds
@@ -397,12 +388,13 @@ export const ClickListener = () => {
 
     // loop through vector layers and get infos
     for (const layer of activeVectorLayers) {
+      if (layer.type !== 'wfs' || !layer.wfs_service_layer_name?.trim()) continue
       const res = await db.query(
         `SELECT * FROM wfs_services WHERE wfs_service_id = $1`,
         [layer.wfs_service_id],
       )
       const wfsService = await (res?.rows?.[0] as WfsServices | undefined)
-      if (!wfsService) continue
+      if (!wfsService?.url?.trim()) continue
       // default_crs is of the form: "urn:ogc:def:crs:EPSG::4326"
       // extract the relevant parts for db.crs.code:
       const wfsDefaultCrsArray = wfsService.default_crs?.split(':').slice(-3)

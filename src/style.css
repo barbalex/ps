@@ -468,6 +468,20 @@ html[data-theme='dark'] .uploadcare-uploader-config {
   }
 }
 
+/* In edit mode Geoman drags a point by its path, not a vertex handle.
+   Let the editable point receive the drag through the display layers. */
+.map-container.geoman-active:has(.geometry-editing.leaflet-geoman-draggable) {
+  .leaflet-pane svg .leaflet-interactive:not(.geometry-editing),
+  .leaflet-marker-icon.marker-icon-clickable {
+    pointer-events: none !important;
+  }
+
+  .leaflet-overlay-pane svg .geometry-editing.leaflet-geoman-draggable {
+    pointer-events: visible !important;
+    cursor: grab !important;
+  }
+}
+
 /* Toggled by DrawControl while geoman's removal mode is on. Deleting works by
    clicking the geometry itself, so — unlike above — the editable geometry's
    paths (.geometry-editing, set by DrawControl) must be hit-testable again.
