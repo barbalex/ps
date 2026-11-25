@@ -36,6 +36,8 @@ export default interface Actions {
   updated_at: Date;
 
   updated_by: string | null;
+
+  gps_accuracy_m: number | null;
 }
 
 /**
@@ -79,6 +81,8 @@ export interface ActionsInitializer {
   updated_at?: Date;
 
   updated_by?: string | null;
+
+  gps_accuracy_m?: number | null;
 }
 
 /**
@@ -112,4 +116,6 @@ export interface ActionsMutator {
   updated_at?: Date;
 
   updated_by?: string | null;
+
+  gps_accuracy_m?: number | null;
 }

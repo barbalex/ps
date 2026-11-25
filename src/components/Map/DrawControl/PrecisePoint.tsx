@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react'
-import { CircleMarker, useMap } from 'react-leaflet'
+import { Circle, CircleMarker, useMap } from 'react-leaflet'
 import { DomEvent, LatLng } from 'leaflet'
 import { useIntl } from 'react-intl'
 import * as fluentUiReactComponents from '@fluentui/react-components'
@@ -10,15 +10,18 @@ import styles from './PrecisePoint.module.css'
 
 const { Button, Field, Input } = fluentUiReactComponents
 
-type Props = { apply: (position: LatLng) => Promise<void> }
+type Props = {
+  apply: (position: LatLng, accuracy?: number | null) => Promise<void>
+  savedAccuracy: number | null
+}
 
-export const PrecisePoint = ({ apply }: Props) => {
+export const PrecisePoint = (props: Props) => {
   const crs = useMapCoordinatesCrs()
   return (
     crs && (
       <PointPanel
         key={`${crs.code}:${crs.projection}`}
-        apply={apply}
+        {...props}
         {...crs}
       />
     )
@@ -27,6 +30,7 @@ export const PrecisePoint = ({ apply }: Props) => {
 
 const PointPanel = ({
   apply,
+  savedAccuracy,
   code,
   projection,
 }: Props & { code: string; projection: string | null }) => {
@@ -36,20 +40,70 @@ const PointPanel = ({
   const [input, setInput] = useState('')
   const [preview, setPreview] = useState<LatLng | null>(null)
   const [saving, setSaving] = useState(false)
+  const [gpsState, setGpsState] = useState<
+    'idle' | 'pending' | 'failed' | number
+  >('idle')
+  const gpsRequest = useRef<symbol | null>(null)
   const [error, setError] = useState('')
   const ref = useRef<HTMLDivElement>(null)
   useEffect(() => {
     const element = ref.current!
     DomEvent.disableClickPropagation(element)
     DomEvent.disableScrollPropagation(element)
+    return () => {
+      gpsRequest.current = null
+    }
   }, [])
 
   const reset = () => {
+    gpsRequest.current = null
+    setGpsState('idle')
     setOpen(false)
     setInput('')
     setPreview(null)
     setError('')
   }
+  const capture = () => {
+    const request = Symbol()
+    gpsRequest.current = request
+    setInput('')
+    setPreview(null)
+    setError('')
+    setGpsState('pending')
+    const fail = (message: string) => {
+      if (request !== gpsRequest.current) return
+      setGpsState('failed')
+      setError(message)
+    }
+    const noFix = formatMessage({
+      id: 'gpsNoFix',
+      defaultMessage: 'Keine Position mit gültiger Genauigkeit verfügbar.',
+    })
+    if (!navigator.geolocation) return fail(noFix)
+    navigator.geolocation.getCurrentPosition(
+      ({ coords: { latitude, longitude, accuracy } }) => {
+        if (request !== gpsRequest.current) return
+        if (
+          ![latitude, longitude, accuracy].every(Number.isFinite) ||
+          Math.abs(latitude) > 90 ||
+          Math.abs(longitude) > 180 ||
+          accuracy < 0
+        )
+          return fail(noFix)
+        const position = new LatLng(latitude, longitude)
+        setPreview(position)
+        setGpsState(accuracy)
+        map.setView(position, map.getZoom(), { animate: false })
+      },
+      (cause) => fail(cause.message || noFix),
+      { enableHighAccuracy: true, maximumAge: 0, timeout: 20000 },
+    )
+  }
+  const cannotApply =
+    saving ||
+    gpsState === 'pending' ||
+    gpsState === 'failed' ||
+    (!!input.trim() && !preview)
   const showPreview = () => {
     const pair = input
       .trim()
@@ -93,10 +147,13 @@ const PointPanel = ({
     map.setView(position, map.getZoom(), { animate: false })
   }
   const save = async () => {
-    if (saving || (input.trim() && !preview)) return
+    if (cannotApply) return
     setSaving(true)
     try {
-      await apply(preview ?? map.getCenter().wrap())
+      await apply(
+        preview ?? map.getCenter().wrap(),
+        typeof gpsState === 'number' ? gpsState : null,
+      )
       reset()
     } catch (cause) {
       setError(cause instanceof Error ? cause.message : String(cause))
@@ -145,6 +202,8 @@ const PointPanel = ({
                   : 'X / Y'
                 }
                 onChange={(event) => {
+                  gpsRequest.current = null
+                  setGpsState('idle')
                   setInput(event.target.value)
                   setPreview(null)
                   setError('')
@@ -154,7 +213,43 @@ const PointPanel = ({
                 }}
               />
             </Field>
+            <div role="status">
+              {gpsState === 'pending' &&
+                formatMessage({
+                  id: 'gpsWaiting',
+                  defaultMessage: 'Position wird ermittelt…',
+                })}
+              {typeof gpsState === 'number' &&
+                formatMessage(
+                  {
+                    id: 'gpsAccuracy',
+                    defaultMessage:
+                      'Horizontale Genauigkeit: ±{meters, number} m',
+                  },
+                  { meters: gpsState },
+                )}
+              {gpsState === 'idle' &&
+                savedAccuracy !== null &&
+                formatMessage(
+                  {
+                    id: 'gpsSavedAccuracy',
+                    defaultMessage:
+                      'Gespeicherte GPS-Genauigkeit: ±{meters, number} m',
+                  },
+                  { meters: savedAccuracy },
+                )}
+            </div>
             <div className={styles.actions}>
+              <Button
+                type="button"
+                disabled={saving || gpsState === 'pending'}
+                onClick={capture}
+              >
+                {formatMessage({
+                  id: 'gpsUseLocation',
+                  defaultMessage: 'GPS-Position erfassen',
+                })}
+              </Button>
               {!!input.trim() && (
                 <Button
                   type="button"
@@ -170,7 +265,7 @@ const PointPanel = ({
               <Button
                 appearance="primary"
                 type="button"
-                disabled={saving || (!!input.trim() && !preview)}
+                disabled={cannotApply}
                 onClick={save}
               >
                 {formatMessage({
@@ -189,13 +284,22 @@ const PointPanel = ({
           </>
         }
       </div>
-      {open && !input.trim() && (
+      {open && gpsState === 'idle' && !input.trim() && (
         <span
           aria-hidden="true"
           className={styles.crosshair}
         >
           +
         </span>
+      )}
+      {preview && typeof gpsState === 'number' && (
+        <Circle
+          center={preview}
+          radius={gpsState}
+          interactive={false}
+          geomanIgnore
+          pathOptions={{ color: '#125daa', weight: 1, fillOpacity: 0.1 }}
+        />
       )}
       {preview && (
         <CircleMarker

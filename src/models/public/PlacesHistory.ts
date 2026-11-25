@@ -35,6 +35,8 @@ export default interface PlacesHistory {
   updated_at: Date;
 
   updated_by: string | null;
+
+  gps_accuracy_m: number | null;
 }
 
 /**
@@ -80,6 +82,8 @@ export interface PlacesHistoryInitializer {
   updated_at?: Date;
 
   updated_by?: string | null;
+
+  gps_accuracy_m?: number | null;
 }
 
 /**
@@ -119,4 +123,6 @@ export interface PlacesHistoryMutator {
   updated_at?: Date;
 
   updated_by?: string | null;
+
+  gps_accuracy_m?: number | null;
 }

@@ -27,6 +27,8 @@ export default interface ActionsHistory {
   updated_at: Date;
 
   updated_by: string | null;
+
+  gps_accuracy_m: number | null;
 }
 
 /**
@@ -64,6 +66,8 @@ export interface ActionsHistoryInitializer {
   updated_at?: Date;
 
   updated_by?: string | null;
+
+  gps_accuracy_m?: number | null;
 }
 
 /**
@@ -95,4 +99,6 @@ export interface ActionsHistoryMutator {
   updated_at?: Date;
 
   updated_by?: string | null;
+
+  gps_accuracy_m?: number | null;
 }
