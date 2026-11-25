@@ -555,3 +555,68 @@ test('draw snaps to visible polygon vertices and edges unless bypassed', async (
   await page.mouse.click(middle - 35, top)
   await expect.poll(() => check(`ST_Y(${stored(4)}) > 47.37053`), { timeout: 30_000 }).toBe('t')
 })
+
+test('walk tracks preview, resume with a choice, simplify and append as one edit', async ({ page }) => {
+  const id = PRECISE_PLACE_ID
+  psql(`SET electric.syncing TO 'true'; UPDATE places SET geometry = ST_GeomFromText('GEOMETRYCOLLECTION(POINT(8 47))',4326), bbox = '[8,47,8,47]' WHERE place_id = '${id}'`)
+  await page.addInitScript(() => {
+    localStorage.setItem('language', '"en"')
+    let controller: AbortController
+    Object.defineProperties(navigator.geolocation, {
+      watchPosition: { value: (success: (fix: {coords: {latitude: number; longitude: number}; timestamp: number}) => void) => {
+        controller = new AbortController()
+        window.addEventListener('test-walk-fix', event => {
+          const [longitude, latitude] = (event as CustomEvent<number[]>).detail
+          success({ coords: { longitude, latitude }, timestamp: performance.now() })
+        }, { signal: controller.signal })
+        return 1
+      } },
+      clearWatch: { value: () => controller.abort() },
+    })
+  })
+  await login(page, E2E_EMAIL, E2E_PASSWORD)
+  await page.goto(`/data/projects/${PROJECT_ID}/subprojects/${SUBPROJECT_ID}/places/${id}/place?panes=map`)
+  await page.locator('button[name="edit_geometry"]').click()
+  const button = (name: string) => page.getByRole('button', { name, exact: true })
+  const fix = (lng: number, lat = 47) => page.evaluate(coords => {
+    window.dispatchEvent(new CustomEvent('test-walk-fix', { detail: coords }))
+  }, [lng, lat])
+  const stored = () => psql(`SELECT ST_AsText(geometry,6) FROM places WHERE place_id = '${id}'`)
+  const initial = 'GEOMETRYCOLLECTION(POINT(8 47))'
+  await button('Record GPS track').click({ timeout: 60_000 })
+  await button('Start GPS recording').click()
+  await fix(8.1)
+  await fix(8.1001)
+  await button('Pause recording').click()
+  await fix(9)
+  await expect(page.getByRole('status').filter({ hasText: '2 points in 1 part' })).toBeVisible()
+  await button('Resume recording').click()
+  await button('Connect to last point').click()
+  await fix(8.1002)
+  await button('Pause recording').click()
+  await button('Resume recording').click()
+  await button('Start separate part').click()
+  await fix(8.2)
+  await fix(8.2001)
+  await button('Pause recording').click()
+  await page.getByRole('checkbox', { name: 'Simplify (1 m tolerance)' }).check()
+  await expect(page.getByRole('status').filter({ hasText: '4 points in 2 parts' })).toBeVisible()
+  expect(stored()).toBe(initial)
+  await button('Save track').click()
+  await expect.poll(stored, { timeout: 30_000 }).toBe('GEOMETRYCOLLECTION(POINT(8 47),LINESTRING(8.1 47,8.1002 47),LINESTRING(8.2 47,8.2001 47))')
+  await button('Undo').click()
+  await expect.poll(stored, { timeout: 30_000 }).toBe(initial)
+  await button('Record GPS track').click()
+  await button('Perimeter').click()
+  await button('Start GPS recording').click()
+  await fix(8)
+  await fix(8.001)
+  await button('Pause recording').click()
+  await expect(button('Save track')).toBeDisabled()
+  await button('Resume recording').click()
+  await button('Connect to last point').click()
+  await fix(8.001, 47.001)
+  await button('Pause recording').click()
+  await button('Save track').click()
+  await expect.poll(stored, { timeout: 30_000 }).toBe('GEOMETRYCOLLECTION(POINT(8 47),POLYGON((8 47,8.001 47,8.001 47.001,8 47)))')
+})

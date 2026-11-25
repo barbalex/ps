@@ -22,6 +22,7 @@ import {
 } from '../../../store.ts'
 import styles from './PrecisePoint.module.css'
 import { DrawToolbar } from './DrawToolbar.tsx'
+import { WalkTrack, type TrackGeometry } from './WalkTrack.tsx'
 import { showVectorSnapping } from './vectorSnapping.ts'
 import { PrecisePoint } from './PrecisePoint.tsx'
 import { flattenToGeometryCollection } from '../../../modules/repairNestedGeometries.ts'
@@ -121,6 +122,8 @@ export const DrawControlComponent = ({
   )
   const { formatMessage } = useIntl()
   const [label, setLabel] = useState('')
+  const [walking, setWalking] = useState(false)
+  const saveTrack = useRef<(parts: TrackGeometry[]) => Promise<void>>(null)
   const [history, setHistory] = useState({ undo: false, redo: false })
   const [busy, setBusy] = useState(false)
   const [replaying, setReplaying] = useState(false)
@@ -414,6 +417,30 @@ export const DrawControlComponent = ({
     }
     drawLayer.on('layeradd layerremove', refreshPointTool)
 
+    saveTrack.current = async (parts) => {
+      const layers = parts.map((g) =>
+        g.type === 'Polygon' ?
+          new L.Polygon(
+            g.coordinates.map((ring) =>
+              ring.map(([lng, lat]) => new L.LatLng(lat, lng)),
+            ),
+            EDITING_STYLE,
+          )
+        : new L.Polyline(
+            g.coordinates.map(([lng, lat]) => new L.LatLng(lat, lng)),
+            EDITING_STYLE,
+          ),
+      )
+      const fc = drawLayer.toGeoJSON(false) as GeoJSON.FeatureCollection
+      fc.features.push(...layers.map((layer) => layer.toGeoJSON(false)))
+      await onEdit(fc)
+      if (!map.hasLayer(drawLayer)) return
+      for (const layer of layers) {
+        wireLayerEvents(layer)
+        drawLayer.addLayer(layer)
+      }
+    }
+
     const showSnapshot = ({ geometry, gps_accuracy_m }: Snapshot) => {
       loaded = false
       drawLayer.clearLayers()
@@ -545,6 +572,7 @@ export const DrawControlComponent = ({
 
     return () => {
       stopSnapping()
+      saveTrack.current = null
       container.removeEventListener('keydown', nudge, true)
       map.off('geoman:globaldragmodetoggled', onDragMode)
       if (geoman.globalDrawModeEnabled()) geoman.disableDraw()
@@ -580,10 +608,12 @@ export const DrawControlComponent = ({
 
   return (
     <>
-      <DrawToolbar
-        key={language}
-        language={language}
-      />
+      {!walking && (
+        <DrawToolbar
+          key={language}
+          language={language}
+        />
+      )}
       <div
         ref={panel}
         className={styles.session}
@@ -606,54 +636,75 @@ export const DrawControlComponent = ({
             })}
           </div>
         )}
-        <div className={styles.actions}>
-          <Button
-            size="small"
-            appearance={snapping ? 'primary' : 'secondary'}
-            disabled={modeActive}
-            aria-pressed={snapping}
-            onClick={() => setSnapping((value) => !value)}
-          >
-            {formatMessage({
-              id: 'geometrySnapping',
-              defaultMessage: 'Objektfang',
-            })}
-          </Button>
-          <Button
-            size="small"
-            disabled={busy || modeActive || !history.undo}
-            onClick={() => replay.current?.('undo')}
-          >
-            {formatMessage({
-              id: 'undoDeleteUndo',
-              defaultMessage: 'Rückgängig',
-            })}
-          </Button>
-          <Button
-            size="small"
-            disabled={busy || modeActive || !history.redo}
-            onClick={() => replay.current?.('redo')}
-          >
-            {formatMessage({
-              id: 'geometryRedo',
-              defaultMessage: 'Wiederholen',
-            })}
-          </Button>
-          <Button
-            size="small"
-            appearance="primary"
-            disabled={busy}
-            onClick={() => finish(null)}
-          >
-            {formatMessage({ id: 'geometryDone', defaultMessage: 'Fertig' })}
-          </Button>
-        </div>
-        {!modeActive && !replaying && placePoint && (
-          <PrecisePoint
-            apply={placePoint}
-            savedAccuracy={savedAccuracy}
+        {walking && saveTrack.current ?
+          <WalkTrack
+            apply={saveTrack.current}
+            close={() => setWalking(false)}
           />
-        )}
+        : <>
+            <div className={styles.actions}>
+              <Button
+                size="small"
+                disabled={!label || busy || modeActive}
+                onClick={() => setWalking(true)}
+              >
+                {formatMessage({
+                  id: 'walkTrack',
+                  defaultMessage: 'GPS-Spur aufnehmen',
+                })}
+              </Button>
+              <Button
+                size="small"
+                appearance={snapping ? 'primary' : 'secondary'}
+                disabled={modeActive}
+                aria-pressed={snapping}
+                onClick={() => setSnapping((value) => !value)}
+              >
+                {formatMessage({
+                  id: 'geometrySnapping',
+                  defaultMessage: 'Objektfang',
+                })}
+              </Button>
+              <Button
+                size="small"
+                disabled={busy || modeActive || !history.undo}
+                onClick={() => replay.current?.('undo')}
+              >
+                {formatMessage({
+                  id: 'undoDeleteUndo',
+                  defaultMessage: 'Rückgängig',
+                })}
+              </Button>
+              <Button
+                size="small"
+                disabled={busy || modeActive || !history.redo}
+                onClick={() => replay.current?.('redo')}
+              >
+                {formatMessage({
+                  id: 'geometryRedo',
+                  defaultMessage: 'Wiederholen',
+                })}
+              </Button>
+              <Button
+                size="small"
+                appearance="primary"
+                disabled={busy}
+                onClick={() => finish(null)}
+              >
+                {formatMessage({
+                  id: 'geometryDone',
+                  defaultMessage: 'Fertig',
+                })}
+              </Button>
+            </div>
+            {!modeActive && !replaying && placePoint && (
+              <PrecisePoint
+                apply={placePoint}
+                savedAccuracy={savedAccuracy}
+              />
+            )}
+          </>
+        }
       </div>
     </>
   )
