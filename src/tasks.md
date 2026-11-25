@@ -48,8 +48,6 @@ Better-Auth, possible extensions:
 
 ---
 
-Edit geometry in forms: make it a menu in the form header instead of the current input. When clicking on it and if a geometry already exists, the map should open (works already when clicking the Edit input) and zoom to the current object (not working now). The button should make clear if a geometry already exists. not sure how that is best done
-
 ---
 
 Top appbar menu: online Menu not visible in hamburger menu in light mode, icon should be black instead of white. It's white thus fine in dark mode
