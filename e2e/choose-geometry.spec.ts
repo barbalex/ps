@@ -457,6 +457,8 @@ for (const shape of ['point', 'line', 'polygon'] as const) {
       timeout: 60_000,
     })
     await closeLayerDrawerIfOpen(page)
+    // Measure the free drag, not a snap to another visible fixture.
+    await page.getByRole('button', { name: 'Snapping', exact: true }).click()
     await drag.click({ timeout: 10_000 })
     const path = page
       .locator('.geometry-editing.leaflet-geoman-draggable')
@@ -503,3 +505,53 @@ for (const shape of ['point', 'line', 'polygon'] as const) {
     await expect.poll(() => matches(0), { timeout: 30_000 }).toBe('t')
   })
 }
+
+test('draw snaps to visible polygon vertices and edges unless bypassed', async ({ page }) => {
+  psql(`SET electric.syncing TO 'true';
+    UPDATE places SET geometry = ST_GeomFromText('GEOMETRYCOLLECTION(POLYGON((8.539 47.3695,8.541 47.3695,8.541 47.3705,8.539 47.3705,8.539 47.3695)))',4326),
+      bbox = '[8.539,47.3695,8.541,47.3705]' WHERE place_id = '${PLACE_ID}';
+    UPDATE places SET geometry = NULL, bbox = NULL WHERE place_id = '${PRECISE_PLACE_ID}';
+    UPDATE layer_presentations SET active = TRUE WHERE layer_presentation_id = '${PRESENTATION_ID}';`)
+  await page.addInitScript(() => localStorage.setItem('language', '"en"'))
+  await login(page, E2E_EMAIL, E2E_PASSWORD)
+  await page.goto(`/data/projects/${PROJECT_ID}/subprojects/${SUBPROJECT_ID}/places/${PRECISE_PLACE_ID}/place?panes=map&c=${LAT}%2C${LNG}&z=17`)
+  await page.locator('button[name="edit_geometry"]').click()
+  const polygon = page.locator(`.leaflet-pane[class*="${OWN_NAME}-pane"] svg path`).first()
+  await expect(polygon).toBeVisible({ timeout: 60_000 })
+  await closeLayerDrawerIfOpen(page)
+  const draw = page.getByRole('button', { name: 'Draw Marker', exact: true })
+  const toggle = page.getByRole('button', { name: 'Snapping', exact: true })
+  const ring = page.locator('.geometry-snap-target')
+  const bounds = await polygon.boundingBox()
+  if (!bounds) throw new Error('Reference polygon not visible')
+  const top = bounds.y - 7
+  const stored = (n: number) => `ST_GeometryN(geometry,${n})`
+  const check = (sql: string) => psql(`SELECT ${sql} FROM places WHERE place_id = '${PRECISE_PLACE_ID}'`)
+  await draw.click()
+  await page.mouse.move(bounds.x - 5, top)
+  await expect(ring).toBeVisible()
+  await expect(page.locator('.leaflet-tooltip').filter({ hasText: PLACE_LABEL })).toBeVisible()
+  await page.mouse.click(bounds.x - 5, top)
+  await expect.poll(() => check(`ST_AsText(${stored(1)})`), { timeout: 30_000 }).toBe('POINT(8.539 47.3705)')
+  const start = async () => { if (await toggle.isEnabled()) await draw.click() }
+  await start()
+  const middle = bounds.x + bounds.width / 2
+  await page.mouse.move(middle, top)
+  await expect(ring).toBeVisible()
+  await page.mouse.click(middle, top)
+  await expect.poll(() => check(`abs(ST_Y(${stored(2)}) - 47.3705) < 0.000001 AND abs(ST_X(${stored(2)}) - 8.54) < 0.00002`), { timeout: 30_000 }).toBe('t')
+  await start()
+  await page.keyboard.down('Alt')
+  await page.mouse.move(middle + 35, top)
+  await expect(ring).toHaveCount(0)
+  await page.mouse.click(middle + 35, top)
+  await page.keyboard.up('Alt')
+  await expect.poll(() => check(`ST_Y(${stored(3)}) > 47.37053`), { timeout: 30_000 }).toBe('t')
+  if (!(await toggle.isEnabled())) await draw.click()
+  await toggle.click()
+  await draw.click()
+  await page.mouse.move(middle - 35, top)
+  await expect(ring).toHaveCount(0)
+  await page.mouse.click(middle - 35, top)
+  await expect.poll(() => check(`ST_Y(${stored(4)}) > 47.37053`), { timeout: 30_000 }).toBe('t')
+})

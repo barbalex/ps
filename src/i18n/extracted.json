@@ -1973,6 +1973,12 @@
   "geometryRedo": {
     "defaultMessage": "Wiederholen"
   },
+  "geometrySnapTarget": {
+    "defaultMessage": "Fangziel"
+  },
+  "geometrySnapping": {
+    "defaultMessage": "Objektfang"
+  },
   "gi+ubY": {
     "defaultMessage": "Projekt-Benutzer"
   },

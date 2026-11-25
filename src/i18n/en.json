@@ -1428,6 +1428,8 @@
   "undoDeleteUndo": "Undo",
   "geometryRedo": "Redo",
   "geometryDone": "Done",
+  "geometrySnapping": "Snapping",
+  "geometrySnapTarget": "Snap target",
   "geometryNudgeHint": "Click or drag a shape. Arrow keys: 0.3 mm on the map; Shift+arrow: 2 mm.",
   "geometryEditingRecord": "Editing geometry: {name}",
   "geometryHistoryChanged": "The geometry has changed. Reopen the editor.",

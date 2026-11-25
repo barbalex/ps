@@ -9,6 +9,7 @@ import { useSetAtom } from 'jotai'
 import type { GeoJSON } from 'geojson'
 
 import { ProgressiveGeoJSON } from '../ProgressiveGeoJSON.tsx'
+import { markSnapTarget } from '../../DrawControl/vectorSnapping.ts'
 import { cachedMarkerIconHtml } from '../markerIconHtml.tsx'
 
 import { vectorLayerDisplayToProperties } from '../../../../modules/vectorLayerDisplayToProperties.ts'
@@ -247,6 +248,7 @@ export const PVLGeom = ({ layer, display }: Props) => {
           opacity: display.opacity_percent ? display.opacity_percent / 100 : 0,
         }}
         onEachFeature={(feature, _layer) => {
+          markSnapTarget(_layer, layer.label || '')
           const layersData = [
             {
               label: layer.label,

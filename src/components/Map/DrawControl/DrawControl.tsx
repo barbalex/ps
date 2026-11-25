@@ -22,6 +22,7 @@ import {
 } from '../../../store.ts'
 import styles from './PrecisePoint.module.css'
 import { DrawToolbar } from './DrawToolbar.tsx'
+import { showVectorSnapping } from './vectorSnapping.ts'
 import { PrecisePoint } from './PrecisePoint.tsx'
 import { flattenToGeometryCollection } from '../../../modules/repairNestedGeometries.ts'
 
@@ -98,6 +99,17 @@ export const DrawControlComponent = ({
   const [savedAccuracy, setSavedAccuracy] = useState<number | null>(null)
   const [modeActive, setModeActive] = useState(false)
   const [dragActive, setDragActive] = useState(false)
+  const [snapping, setSnapping] = useState(true)
+  useEffect(() => {
+    const geoman = map.geoman
+    if (!geoman) return
+    const previous = geoman.getGlobalOptions().allowSnapping ?? true
+    if (previous === snapping) return
+    geoman.setGlobalOptions({ allowSnapping: snapping })
+    return () => {
+      geoman.setGlobalOptions({ allowSnapping: previous })
+    }
+  }, [map, snapping])
 
   const db = usePGlite()
   const addOperation = useSetAtom(addOperationAtom)
@@ -157,6 +169,12 @@ export const DrawControlComponent = ({
 
     const drawLayer = new L.FeatureGroup()
     map.addLayer(drawLayer)
+    const stopSnapping = showVectorSnapping(
+      map,
+      drawLayer,
+      activeId,
+      formatMessage({ id: 'geometrySnapTarget', defaultMessage: 'Fangziel' }),
+    )
 
     const write = async (draft: Snapshot, expected?: Snapshot) => {
       const deadline = performance.now() + 3000
@@ -526,6 +544,7 @@ export const DrawControlComponent = ({
     map.on('geoman:globalremovalmodetoggled', setRemovalActive)
 
     return () => {
+      stopSnapping()
       container.removeEventListener('keydown', nudge, true)
       map.off('geoman:globaldragmodetoggled', onDragMode)
       if (geoman.globalDrawModeEnabled()) geoman.disableDraw()
@@ -588,6 +607,18 @@ export const DrawControlComponent = ({
           </div>
         )}
         <div className={styles.actions}>
+          <Button
+            size="small"
+            appearance={snapping ? 'primary' : 'secondary'}
+            disabled={modeActive}
+            aria-pressed={snapping}
+            onClick={() => setSnapping((value) => !value)}
+          >
+            {formatMessage({
+              id: 'geometrySnapping',
+              defaultMessage: 'Objektfang',
+            })}
+          </Button>
           <Button
             size="small"
             disabled={busy || modeActive || !history.undo}

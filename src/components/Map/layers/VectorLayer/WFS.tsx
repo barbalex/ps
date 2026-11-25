@@ -13,6 +13,7 @@ import { usePGlite } from '@electric-sql/pglite-react'
 import { useSetAtom } from 'jotai'
 
 import { ProgressiveGeoJSON } from '../ProgressiveGeoJSON.tsx'
+import { markSnapTarget } from '../../DrawControl/vectorSnapping.ts'
 import { cachedMarkerIconHtml } from '../markerIconHtml.tsx'
 
 import type Crs from '../../../../models/public/Crs.ts'
@@ -376,6 +377,7 @@ export const WFS = ({ layer, layerPresentation }: Props) => {
         featureKey={featureKey}
         geomanIgnore={true}
         onEachFeature={(feature, geoLayer) => {
+          markSnapTarget(geoLayer, layer.label || '')
           ;(
             geoLayer as L.Layer & { vectorLayerLabel?: string }
           ).vectorLayerLabel = layer.label || 'WFS Layer'

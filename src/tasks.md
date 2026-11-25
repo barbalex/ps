@@ -17,7 +17,7 @@ Geometry editing roadmap (in priority order):
   - [x] **Average 5 GPS fixes**: stand still while the editor collects five fresh positions, then review and apply their mean. The saved radius covers all five reported accuracy circles. Cancellation or timeout saves nothing.
 - [x] 3. Undo/redo completed geometry edits within the current record's editing session. Each undo or redo saves a new version, including the bounding box and GPS accuracy. A new edit clears redo. The map names the record being edited; **Done** closes the session.
 - [x] 4. Move a point, line or polygon: choose **Drag Layers**, then click or drag the shape. The selected shape has a dashed outline. Arrow keys move it by 0.3 mm on the rendered map (Shift+arrow: 2 mm), so zooming in gives finer ground steps. Turn off **Drag Layers** to undo or redo.
-- [ ] 5. Snap to vector vertices or boundaries, show the snap target, and allow temporarily disabling snapping.
+- [x] 5. While drawing or editing vertices, snap to visible vector points, vertices and boundaries. A ring and label show the target. Hold Alt while moving to bypass snapping, or toggle **Snapping** before starting a tool (also works on touch screens).
 - [ ] 6. Walk a transect or perimeter: start/pause GPS recording, preview and simplify, then save.
 - Later for habitats: reshape boundary segments, cut holes, and flag invalid geometries. Decide how dependent records should be handled before implementing split/merge.
 

@@ -1428,6 +1428,8 @@
   "undoDeleteUndo": "Annuler",
   "geometryRedo": "Rétablir",
   "geometryDone": "Terminé",
+  "geometrySnapping": "Accrochage",
+  "geometrySnapTarget": "Cible d’accrochage",
   "geometryNudgeHint": "Cliquez sur une géométrie ou déplacez-la. Flèches: 0,3 mm sur la carte; Maj+flèche: 2 mm.",
   "geometryEditingRecord": "Modification de la géométrie: {name}",
   "geometryHistoryChanged": "La géométrie a changé. Rouvrez l’éditeur.",
