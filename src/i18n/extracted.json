@@ -1967,6 +1967,18 @@
   "gpsAccuracy": {
     "defaultMessage": "Horizontale Genauigkeit: ±{meters, number} m"
   },
+  "gpsAverage": {
+    "defaultMessage": "{count} GPS-Positionen mitteln"
+  },
+  "gpsAverageProgress": {
+    "defaultMessage": "Stillstehen: {count} von {total} GPS-Positionen erfasst."
+  },
+  "gpsAverageRadius": {
+    "defaultMessage": "Mittelwert aus {count} Positionen. Radius einschliesslich aller Genauigkeitskreise: {meters, number} m"
+  },
+  "gpsAverageTimeout": {
+    "defaultMessage": "Nicht genügend aktuelle Positionen erhalten. Bitte erneut versuchen."
+  },
   "gpsNoFix": {
     "defaultMessage": "Keine Position mit gültiger Genauigkeit verfügbar."
   },

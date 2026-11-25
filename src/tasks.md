@@ -14,7 +14,7 @@ Geometry editing roadmap (in priority order):
 
 - [x] 1. Place or move a point precisely: paste an X/Y pair in the coordinate system selected in the map coordinates tool, or pan beneath a crosshair. Preview, then explicitly apply to the edited record. Available while editing a place, check or action with no geometry or one point.
 - [x] 2. Capture a GPS position with its reported horizontal accuracy. In **Place point precisely**, select **Capture GPS position**, review the accuracy circle and radius in metres, then apply. A manual geometry edit clears the stored accuracy.
-  - [ ] Later: support averaging several fixes.
+  - [x] **Average 5 GPS fixes**: stand still while the editor collects five fresh positions, then review and apply their mean. The saved radius covers all five reported accuracy circles. Cancellation or timeout saves nothing.
 - [ ] 3. Undo/redo geometry edits as new edits without erasing history. Name the record being edited and provide a clear Done action.
 - [ ] 4. Move an entire line or polygon without moving each vertex separately.
 - [ ] 5. Snap to vector vertices or boundaries, show the snap target, and allow temporarily disabling snapping.

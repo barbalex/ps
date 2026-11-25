@@ -356,3 +356,41 @@ test('GPS preview saves the fix and reported accuracy only on Apply', async ({ p
   await expect(capture).toBeEnabled()
   await expect(apply).toBeDisabled()
 })
+
+test('GPS averaging previews five fresh fixes across the date line before persisting', async ({ page }) => {
+  await page.addInitScript(() => localStorage.setItem('language', '"en"'))
+  await login(page, E2E_EMAIL, E2E_PASSWORD)
+  await page.goto(`/data/projects/${PROJECT_ID}/subprojects/${SUBPROJECT_ID}/places/${PRECISE_PLACE_ID}/place?panes=map`)
+  await closeLayerDrawerIfOpen(page)
+  await page.locator('button[name="edit_geometry"]').click()
+  await page.getByRole('button', { name: 'Place point precisely' }).click({ timeout: 60_000 })
+  await page.evaluate(() => {
+    let index = 0
+    let firstTimestamp = 0
+    const longitudes = [179.9998, 0, 179.9999, 180, -179.9999, -179.9998]
+    Object.defineProperty(navigator.geolocation, 'getCurrentPosition', {
+      value: (success: (fix: { coords: Pick<GeolocationCoordinates, 'latitude' | 'longitude' | 'accuracy'>; timestamp: number }) => void) => {
+        if (!index) firstTimestamp = Date.now()
+        const longitude = longitudes[index]
+        const timestamp = index === 1 ? firstTimestamp : Date.now()
+        index++
+        success({
+          coords: { latitude: 0, longitude, accuracy: 3 },
+          timestamp,
+        })
+      },
+    })
+  })
+  const apply = page.getByRole('button', { name: 'Apply point' })
+  const stored = () => psql(`SELECT concat_ws('/', abs(ST_X(ST_GeometryN(geometry,1)))::numeric(9,5),
+    ST_Y(ST_GeometryN(geometry,1))::numeric(9,5), round(gps_accuracy_m::numeric,2))
+    FROM places WHERE place_id = '${PRECISE_PLACE_ID}'`)
+  const before = stored()
+  await page.getByRole('button', { name: 'Average 5 GPS fixes' }).click()
+  await expect(page.getByText('Stand still: collected 1 of 5 GPS fixes.')).toBeVisible()
+  await expect(apply).toBeDisabled()
+  await expect(page.getByText(/Average of 5 fixes\. Radius covering all accuracy circles: 25\.239 m/)).toBeVisible({ timeout: 15_000 })
+  expect(stored()).toBe(before)
+  await apply.click()
+  await expect.poll(stored, { timeout: 30_000 }).toBe('180.00000/0.00000/25.24')
+})

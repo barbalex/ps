@@ -6,6 +6,7 @@ import * as fluentUiReactComponents from '@fluentui/react-components'
 import proj4 from 'proj4'
 
 import { useMapCoordinatesCrs } from '../../../modules/useMapCoordinatesCrs.ts'
+import { averageGpsFixes, GPS_FIX_COUNT } from './averageGpsFixes.ts'
 import styles from './PrecisePoint.module.css'
 
 const { Button, Field, Input } = fluentUiReactComponents
@@ -43,7 +44,8 @@ const PointPanel = ({
   const [gpsState, setGpsState] = useState<
     'idle' | 'pending' | 'failed' | number
   >('idle')
-  const gpsRequest = useRef<symbol | null>(null)
+  const [averageCount, setAverageCount] = useState<number | null>(null)
+  const gpsRequest = useRef<AbortController | null>(null)
   const [error, setError] = useState('')
   const ref = useRef<HTMLDivElement>(null)
   useEffect(() => {
@@ -51,27 +53,32 @@ const PointPanel = ({
     DomEvent.disableClickPropagation(element)
     DomEvent.disableScrollPropagation(element)
     return () => {
-      gpsRequest.current = null
+      gpsRequest.current?.abort()
     }
   }, [])
 
   const reset = () => {
-    gpsRequest.current = null
+    gpsRequest.current?.abort()
+    setAverageCount(null)
     setGpsState('idle')
     setOpen(false)
     setInput('')
     setPreview(null)
     setError('')
   }
-  const capture = () => {
-    const request = Symbol()
+  const capture = (average: boolean) => {
+    gpsRequest.current?.abort()
+    const request = new AbortController()
     gpsRequest.current = request
+    setAverageCount(average ? 0 : null)
     setInput('')
     setPreview(null)
     setError('')
     setGpsState('pending')
     const fail = (message: string) => {
-      if (request !== gpsRequest.current) return
+      if (request.signal.aborted) return
+      request.abort()
+      setAverageCount(null)
       setGpsState('failed')
       setError(message)
     }
@@ -80,24 +87,64 @@ const PointPanel = ({
       defaultMessage: 'Keine Position mit gültiger Genauigkeit verfügbar.',
     })
     if (!navigator.geolocation) return fail(noFix)
-    navigator.geolocation.getCurrentPosition(
-      ({ coords: { latitude, longitude, accuracy } }) => {
-        if (request !== gpsRequest.current) return
-        if (
-          ![latitude, longitude, accuracy].every(Number.isFinite) ||
-          Math.abs(latitude) > 90 ||
-          Math.abs(longitude) > 180 ||
-          accuracy < 0
-        )
-          return fail(noFix)
-        const position = new LatLng(latitude, longitude)
-        setPreview(position)
-        setGpsState(accuracy)
-        map.setView(position, map.getZoom(), { animate: false })
-      },
-      (cause) => fail(cause.message || noFix),
-      { enableHighAccuracy: true, maximumAge: 0, timeout: 20000 },
-    )
+    const fixes: { position: LatLng; accuracy: number }[] = []
+    const started = Date.now()
+    let latest = started - 1
+    let next: number
+    if (average) {
+      const deadline = window.setTimeout(
+        () =>
+          fail(
+            formatMessage({
+              id: 'gpsAverageTimeout',
+              defaultMessage:
+                'Nicht genügend aktuelle Positionen erhalten. Bitte erneut versuchen.',
+            }),
+          ),
+        60000,
+      )
+      request.signal.addEventListener(
+        'abort',
+        () => {
+          window.clearTimeout(deadline)
+          window.clearTimeout(next)
+        },
+        { once: true },
+      )
+    }
+    const read = () =>
+      navigator.geolocation.getCurrentPosition(
+        ({ coords: { latitude, longitude, accuracy }, timestamp }) => {
+          if (request.signal.aborted) return
+          if (
+            ![latitude, longitude, accuracy].every(Number.isFinite) ||
+            Math.abs(latitude) > 90 ||
+            Math.abs(longitude) > 180 ||
+            accuracy < 0
+          )
+            return fail(noFix)
+          let fix = { position: new LatLng(latitude, longitude), accuracy }
+          if (average) {
+            if (timestamp > latest) {
+              latest = timestamp
+              fixes.push(fix)
+              setAverageCount(fixes.length)
+            }
+            if (fixes.length < GPS_FIX_COUNT) {
+              next = window.setTimeout(read, 1000)
+              return
+            }
+            fix = averageGpsFixes(fixes)
+          }
+          request.abort()
+          setPreview(fix.position)
+          setGpsState(fix.accuracy)
+          map.setView(fix.position, map.getZoom(), { animate: false })
+        },
+        (cause) => fail(cause.message || noFix),
+        { enableHighAccuracy: true, maximumAge: 0, timeout: 20000 },
+      )
+    read()
   }
   const cannotApply =
     saving ||
@@ -202,7 +249,8 @@ const PointPanel = ({
                   : 'X / Y'
                 }
                 onChange={(event) => {
-                  gpsRequest.current = null
+                  gpsRequest.current?.abort()
+                  setAverageCount(null)
                   setGpsState('idle')
                   setInput(event.target.value)
                   setPreview(null)
@@ -215,11 +263,33 @@ const PointPanel = ({
             </Field>
             <div role="status">
               {gpsState === 'pending' &&
+                averageCount !== null &&
+                formatMessage(
+                  {
+                    id: 'gpsAverageProgress',
+                    defaultMessage:
+                      'Stillstehen: {count} von {total} GPS-Positionen erfasst.',
+                  },
+                  { count: averageCount, total: GPS_FIX_COUNT },
+                )}
+              {gpsState === 'pending' &&
+                averageCount === null &&
                 formatMessage({
                   id: 'gpsWaiting',
                   defaultMessage: 'Position wird ermittelt…',
                 })}
               {typeof gpsState === 'number' &&
+                averageCount !== null &&
+                formatMessage(
+                  {
+                    id: 'gpsAverageRadius',
+                    defaultMessage:
+                      'Mittelwert aus {count} Positionen. Radius einschliesslich aller Genauigkeitskreise: {meters, number} m',
+                  },
+                  { count: averageCount, meters: gpsState },
+                )}
+              {typeof gpsState === 'number' &&
+                averageCount === null &&
                 formatMessage(
                   {
                     id: 'gpsAccuracy',
@@ -243,12 +313,25 @@ const PointPanel = ({
               <Button
                 type="button"
                 disabled={saving || gpsState === 'pending'}
-                onClick={capture}
+                onClick={() => capture(false)}
               >
                 {formatMessage({
                   id: 'gpsUseLocation',
                   defaultMessage: 'GPS-Position erfassen',
                 })}
+              </Button>
+              <Button
+                type="button"
+                disabled={saving || gpsState === 'pending'}
+                onClick={() => capture(true)}
+              >
+                {formatMessage(
+                  {
+                    id: 'gpsAverage',
+                    defaultMessage: '{count} GPS-Positionen mitteln',
+                  },
+                  { count: GPS_FIX_COUNT },
+                )}
               </Button>
               {!!input.trim() && (
                 <Button
