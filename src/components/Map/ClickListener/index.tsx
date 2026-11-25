@@ -19,6 +19,7 @@ import { filterStringFromFilter } from '../../../modules/filterStringFromFilter.
 import { getVectorLayerLabel } from '../../../modules/vectorLayerLabel.ts'
 import { navigateToOwnForm } from '../../../modules/navigateToOwnForm.ts'
 import type { OwnFormTarget } from '../../../modules/navigateToOwnForm.ts'
+import { wfsRequestVersion } from '../../../modules/wfsRequestVersion.ts'
 import {
   mapInfoAtom,
   languageAtom,
@@ -427,7 +428,7 @@ export const ClickListener = () => {
         params: {
           service: 'WFS',
           request: 'GetFeature',
-          version: wfsService.version ?? '1.3.0',
+          version: wfsRequestVersion(wfsService.version),
           layers: layer.wfs_service_layer_name,
           typeNames: layer.wfs_service_layer_name,
           // bbox needs to be in default_crs:

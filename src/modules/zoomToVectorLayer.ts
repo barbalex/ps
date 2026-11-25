@@ -13,6 +13,7 @@ import {
   type QueryableDb,
 } from './geoQueries.ts'
 import { httpGet } from './httpGet.ts'
+import { wfsRequestVersion } from './wfsRequestVersion.ts'
 import type VectorLayers from '../models/public/VectorLayers.ts'
 import type WfsServices from '../models/public/WfsServices.ts'
 import type Crs from '../models/public/Crs.ts'
@@ -177,7 +178,7 @@ export const zoomToVectorLayer = async ({
           response = await httpGet(wfsService.url, {
             service: 'WFS',
             request: 'GetFeature',
-            version: wfsService.version ?? '1.3.0',
+            version: wfsRequestVersion(wfsService.version),
             typeNames: layer.wfs_service_layer_name,
             outputFormat: wfsService.info_format ?? 'application/json',
             srsName: wfsDefaultCrsCode,
