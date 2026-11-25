@@ -2,10 +2,13 @@ import { useEffect, useRef, useState } from 'react'
 import { CircleMarker, useMap } from 'react-leaflet'
 import { DomEvent, LatLng } from 'leaflet'
 import { useIntl } from 'react-intl'
+import * as fluentUiReactComponents from '@fluentui/react-components'
 import proj4 from 'proj4'
 
 import { useMapCoordinatesCrs } from '../../../modules/useMapCoordinatesCrs.ts'
 import styles from './PrecisePoint.module.css'
+
+const { Button, Field, Input } = fluentUiReactComponents
 
 type Props = { apply: (position: LatLng) => Promise<void> }
 
@@ -120,8 +123,8 @@ const PointPanel = ({
             })}
           </button>
         : <>
-            <label>
-              {formatMessage(
+            <Field
+              label={formatMessage(
                 {
                   id: 'precisePointHint',
                   defaultMessage:
@@ -129,7 +132,10 @@ const PointPanel = ({
                 },
                 { crs: code },
               )}
-              <input
+              validationMessage={error || undefined}
+              validationState={error ? 'error' : 'none'}
+            >
+              <Input
                 value={input}
                 disabled={saving}
                 placeholder={
@@ -147,11 +153,10 @@ const PointPanel = ({
                   if (event.key === 'Enter' && input.trim()) showPreview()
                 }}
               />
-            </label>
-            {error && <div role="alert">{error}</div>}
+            </Field>
             <div className={styles.actions}>
               {!!input.trim() && (
-                <button
+                <Button
                   type="button"
                   disabled={saving}
                   onClick={showPreview}
@@ -160,9 +165,10 @@ const PointPanel = ({
                     id: 'precisePointPreview',
                     defaultMessage: 'Vorschau',
                   })}
-                </button>
+                </Button>
               )}
-              <button
+              <Button
+                appearance="primary"
                 type="button"
                 disabled={saving || (!!input.trim() && !preview)}
                 onClick={save}
@@ -171,14 +177,14 @@ const PointPanel = ({
                   id: 'precisePointApply',
                   defaultMessage: 'Punkt übernehmen',
                 })}
-              </button>
-              <button
+              </Button>
+              <Button
                 type="button"
                 disabled={saving}
                 onClick={reset}
               >
                 {formatMessage({ id: 'cancel', defaultMessage: 'Abbrechen' })}
-              </button>
+              </Button>
             </div>
           </>
         }

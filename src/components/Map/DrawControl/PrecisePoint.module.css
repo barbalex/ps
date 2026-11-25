@@ -13,17 +13,26 @@
   box-shadow: 0 1px 4px #0005;
 }
 
-.control input {
-  display: block;
-  box-sizing: border-box;
-  width: 100%;
-  margin: 4px 0;
+.control > button {
+  background: transparent;
+  border: none;
+  color: inherit;
+  cursor: pointer;
+}
+
+:global(html[data-theme='light']) .control > button {
+  color: black;
+}
+
+.control > button:hover {
+  text-decoration: underline;
 }
 
 .actions {
   display: flex;
   flex-wrap: wrap;
-  gap: 4px;
+  gap: 6px;
+  margin-top: 8px;
 }
 
 .crosshair {
