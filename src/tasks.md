@@ -16,7 +16,7 @@ Geometry editing roadmap (in priority order):
 - [x] 2. Capture a GPS position with its reported horizontal accuracy. In **Place point precisely**, select **Capture GPS position**, review the accuracy circle and radius in metres, then apply. A manual geometry edit clears the stored accuracy.
   - [x] **Average 5 GPS fixes**: stand still while the editor collects five fresh positions, then review and apply their mean. The saved radius covers all five reported accuracy circles. Cancellation or timeout saves nothing.
 - [x] 3. Undo/redo completed geometry edits within the current record's editing session. Each undo or redo saves a new version, including the bounding box and GPS accuracy. A new edit clears redo. The map names the record being edited; **Done** closes the session.
-- [ ] 4. Move an entire line or polygon without moving each vertex separately.
+- [x] 4. Move an entire line or polygon: choose **Drag Layers** in the geometry editor, then drag the line or the filled area of the polygon. Release to save; turn off **Drag Layers** to undo or redo.
 - [ ] 5. Snap to vector vertices or boundaries, show the snap target, and allow temporarily disabling snapping.
 - [ ] 6. Walk a transect or perimeter: start/pause GPS recording, preview and simplify, then save.
 - Later for habitats: reshape boundary segments, cut holes, and flag invalid geometries. Decide how dependent records should be handled before implementing split/merge.

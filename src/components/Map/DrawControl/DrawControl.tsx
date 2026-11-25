@@ -378,6 +378,7 @@ export const DrawControlComponent = ({
     const anyGeomanModeActive = () =>
       geoman.globalDrawModeEnabled() ||
       geoman.globalEditModeEnabled() ||
+      geoman.globalDragModeEnabled() ||
       geoman.globalRemovalModeEnabled()
     const setActive = (e: L.LeafletEvent) => {
       const enabled = (e as unknown as { enabled: boolean }).enabled
@@ -402,6 +403,7 @@ export const DrawControlComponent = ({
     map.on('geoman:drawend', onDrawEnd)
     map.on('geoman:globaldrawmodetoggled', setActive)
     map.on('geoman:globaleditmodetoggled', setActive)
+    map.on('geoman:globaldragmodetoggled', setActive)
     map.on('geoman:globalremovalmodetoggled', setActive)
     // The removal mode deletes by clicking the geometry itself: let CSS make
     // the editable paths hit-testable again while it is on
@@ -418,6 +420,7 @@ export const DrawControlComponent = ({
     return () => {
       geoman.disableDraw()
       geoman.disableGlobalEditMode()
+      if (geoman.globalDragModeEnabled()) geoman.disableGlobalDragMode()
       geoman.disableGlobalRemovalMode()
       replay.current = null
       drawLayer.off('layeradd layerremove', refreshPointTool)
@@ -428,6 +431,7 @@ export const DrawControlComponent = ({
       map.off('geoman:drawend', onDrawEnd)
       map.off('geoman:globaldrawmodetoggled', setActive)
       map.off('geoman:globaleditmodetoggled', setActive)
+      map.off('geoman:globaldragmodetoggled', setActive)
       map.off('geoman:globalremovalmodetoggled', setActive)
       map.off('geoman:globalremovalmodetoggled', setRemovalActive)
       map.removeLayer(drawLayer)

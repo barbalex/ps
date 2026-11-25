@@ -424,3 +424,58 @@ test('GPS averaging previews five fresh fixes across the date line before persis
   await apply.click()
   await expect.poll(stored, { timeout: 30_000 }).toBe('180.00000/0.00000/25.24')
 })
+
+for (const shape of ['line', 'polygon'] as const) {
+  test(`dragging a whole ${shape} translates every vertex and can be undone`, async ({
+    page,
+  }) => {
+    const wkt =
+      shape === 'line' ?
+        'LINESTRING(8.5395 47.37,8.54 47.37,8.5405 47.37)'
+      : 'POLYGON((8.5395 47.3698,8.5405 47.3698,8.54 47.3702,8.5395 47.3698))'
+    const id = PRECISE_PLACE_ID
+    psql(
+      `SET electric.syncing TO 'true'; UPDATE places SET geometry = ST_Collect(ST_GeomFromText('${wkt}',4326), ST_GeomFromText('POINT(8.542 47.37)',4326)), gps_accuracy_m = NULL WHERE place_id = '${id}';`,
+    )
+    await page.addInitScript(() => localStorage.setItem('language', '"en"'))
+    await login(page, E2E_EMAIL, E2E_PASSWORD)
+    await page.goto(
+      `/data/projects/${PROJECT_ID}/subprojects/${SUBPROJECT_ID}/places/${id}/place?panes=map&c=${LAT}%2C${LNG}&z=17`,
+    )
+    await closeLayerDrawerIfOpen(page)
+    await page.locator('button[name="edit_geometry"]').click()
+    const drag = page.getByRole('button', { name: 'Drag Layers', exact: true })
+    await expect(page.locator('.geometry-editing')).toHaveCount(2, {
+      timeout: 60_000,
+    })
+    await closeLayerDrawerIfOpen(page)
+    await drag.click({ timeout: 10_000 })
+    const path = page
+      .locator('.geometry-editing.leaflet-geoman-draggable')
+      .first()
+    const bounds = await path.boundingBox()
+    if (!bounds) throw new Error(`Editable ${shape} not visible`)
+    const x = bounds.x + bounds.width / 2
+    const y = bounds.y + bounds.height / 2
+    const historyCount = () =>
+      Number(
+        psql(`SELECT count(*) FROM places_history WHERE place_id = '${id}'`),
+      )
+    const before = historyCount()
+    await page.mouse.move(x, y)
+    await page.mouse.down()
+    await page.mouse.move(x + 40, y, { steps: 10 })
+    await page.mouse.up()
+    const matches = (pixels: number) =>
+      psql(`SELECT ST_OrderingEquals(
+              ST_SnapToGrid(ST_GeometryN(geometry,1), 0.000001),
+              ST_SnapToGrid(ST_Translate(ST_GeomFromText('${wkt}',4326), ${pixels} * 360.0 / (256 * 2^17), 0), 0.000001))
+              AND ST_AsText(ST_GeometryN(geometry,2)) = 'POINT(8.542 47.37)'
+              FROM places WHERE place_id = '${id}'`)
+    await expect.poll(() => matches(40), { timeout: 30_000 }).toBe('t')
+    await expect.poll(historyCount).toBe(before + 1)
+    await drag.click()
+    await page.getByRole('button', { name: 'Undo', exact: true }).click()
+    await expect.poll(() => matches(0), { timeout: 30_000 }).toBe('t')
+  })
+}
