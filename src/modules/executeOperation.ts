@@ -6,15 +6,17 @@ import {
 } from '../store.ts'
 import type { QueuedOperation } from '../store.ts'
 import {
-  fetchPostgrestToken,
   invalidatePostgrestToken,
+  requirePostgrestToken,
 } from './fetchPostgrestToken.ts'
 
 export const executeOperation = async (o: QueuedOperation) => {
   if (!o) return
 
   const username = store.get(userEmailAtom) ?? 'unknown'
-  const token = await fetchPostgrestToken()
+  // without a token the operation is kept, not sent: PostgREST would run it
+  // as web_anon and deny it
+  const token = await requirePostgrestToken()
   const postgrestClient = store.get(postgrestClientAtom)
   if (!postgrestClient) {
     console.warn('No PostgREST client available')
@@ -30,7 +32,7 @@ export const executeOperation = async (o: QueuedOperation) => {
   const withAuth = <T extends { setHeader: (k: string, v: string) => T }>(
     builder: T,
   ): T => {
-    if (token) builder.setHeader('Authorization', `Bearer ${token}`)
+    builder.setHeader('Authorization', `Bearer ${token}`)
     return builder
   }
 

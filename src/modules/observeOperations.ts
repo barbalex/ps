@@ -19,7 +19,10 @@ import {
 } from './applyOperations.ts'
 import { revertOperation } from './revertOperation.ts'
 import { removeOperation } from './removeOperation.ts'
-import { invalidatePostgrestToken } from './fetchPostgrestToken.ts'
+import {
+  invalidatePostgrestToken,
+  isPostgrestTokenUnavailableError,
+} from './fetchPostgrestToken.ts'
 
 // returns unobserve function
 // https://jotai.org/docs/extensions/effect
@@ -105,6 +108,19 @@ const processBatch = async (operations: QueuedOperation[]) => {
     results = await applyOperations(batch)
   } catch (error) {
     isProcessing = false
+    if (isPostgrestTokenUnavailableError(error)) {
+      // nothing was sent (see applyOperations): the batch stays queued and
+      // the retry tick sends it once there is a token again
+      console.warn(
+        'observeOperations, no auth token, keeping the batch queued:',
+        error.message,
+      )
+      // offline is what the online state already says
+      if (error.reason !== 'network') {
+        noteFailedOperation(batch.at(-1)!, error.message, 'batch')
+      }
+      return
+    }
     const err = error as { code?: string; message?: string }
     if (
       err?.code === '28000' ||
