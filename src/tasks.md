@@ -29,6 +29,8 @@ References: [QGIS editing](https://docs.qgis.org/latest/en/docs/user_manual/work
 
 ---
 
+enable choosing crs in map coordinates tool
+
 ---
 
 ---
@@ -90,6 +92,8 @@ idea: Global search across entities (similar to vermehrung?)
 ---
 
 ---
+
+is it possible to work map-centric, i.e.: click on geometries and edit their forms without having to leave the map?
 
 ---
 
