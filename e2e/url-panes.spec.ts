@@ -64,3 +64,39 @@ test('a deep link opens the panes from the url', async ({ page }) => {
   await expect(page.getByRole('toolbar', { name: 'active tabs' }).getByRole('button', { name: 'Daten' })).toHaveAttribute('aria-pressed', 'false')
   await expect(page.getByRole('toolbar', { name: 'active tabs' }).getByRole('button', { name: 'Karte' })).toHaveAttribute('aria-pressed', 'true')
 })
+
+test('a narrow viewport compacts to one pane, also with a panes url', async ({
+  page,
+}) => {
+  // on narrow viewports the header compacts to a single pane and writes it
+  // to the url. While a panes param named several panes that write only
+  // landed after a navigation, and the compaction re-fired on every render
+  // until it did — locking the app up ("Maximum update depth exceeded")
+  const updateDepthErrors: string[] = []
+  page.on('console', (message) => {
+    if (message.type() === 'error' && message.text().includes('Maximum update depth')) {
+      updateDepthErrors.push(message.text())
+    }
+  })
+
+  await login(page, E2E_EMAIL, E2E_PASSWORD)
+  // a desktop layout named by the url: two panes
+  await page.goto('/data/users?panes=tree,data')
+  const toolbar = page.getByRole('toolbar', { name: 'active tabs' })
+  await expect(toolbar.getByRole('button', { name: 'Karte' })).toHaveAttribute('aria-pressed', 'false')
+  await expect(page.locator('.allotment-tree')).toBeVisible()
+
+  // the viewport goes narrow: only the data pane remains, and the url says so
+  await page.setViewportSize({ width: 390, height: 844 })
+  await expect(page).toHaveURL(/[?&]panes=data(&|$)/)
+  await expect(page.locator('.allotment-tree')).toHaveCount(0)
+  await expect(page.locator('.allotment-data')).toBeVisible()
+
+  // the app still reacts
+  await toolbar.getByRole('button', { name: 'Karte' }).click()
+  await expect(page.locator('#map .leaflet-container')).toBeVisible({
+    timeout: 60_000,
+  })
+
+  expect(updateDepthErrors).toEqual([])
+})

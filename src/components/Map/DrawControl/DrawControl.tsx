@@ -24,6 +24,15 @@ Geoman.initialize()
 // ClickListener can ignore map clicks and CSS can adapt the cursor.
 const GEOMAN_ACTIVE_CLASS = 'geoman-active'
 
+// Toggled on the map container while geoman's removal mode is active: unlike
+// drawing and vertex editing, deleting works by clicking the geometry itself,
+// so its paths must be hit-testable again (see style.css)
+const GEOMAN_REMOVAL_ACTIVE_CLASS = 'geoman-removal-active'
+
+// class on the paths of the editable geometry — style.css scopes the
+// hit-testing of the removal mode to it
+const EDITING_CLASS = 'geometry-editing'
+
 // Persists the draw layer across component unmounts so drawn geometry
 // stays visible on the map after drawing mode is deactivated.
 let _persistentDrawLayer: L.FeatureGroup | null = null
@@ -34,6 +43,7 @@ const EDITING_STYLE: L.PathOptions = {
   fillColor: 'orange',
   fillOpacity: 0.2,
   weight: 3,
+  className: EDITING_CLASS,
 }
 
 // Leaflet default path style — used to revert when editing mode ends.
@@ -47,6 +57,11 @@ const DEFAULT_STYLE: L.PathOptions = {
 const applyEditingStyle = (layer: L.Layer) => {
   if (typeof (layer as L.Path).setStyle === 'function') {
     ;(layer as L.Path).setStyle(EDITING_STYLE)
+    // leaflet applies options.className only when it creates the path
+    // element, so a layer that is already on the map needs the class added
+    // directly (layer groups forward setStyle but have no element)
+    const element = (layer as L.Path).getElement?.()
+    element?.classList.add(EDITING_CLASS)
   }
 }
 
@@ -91,6 +106,31 @@ export const DrawControlComponent = ({
             ? 'actions'
             : null
 
+      // query previous geometry for the operation log
+      const prevRes = await db.query(
+        `SELECT ST_AsGeoJSON(geometry)::json as geometry, bbox FROM ${tableName} WHERE ${activeIdName} = $1`,
+        [activeId],
+      )
+      const row = prevRes?.rows?.[0] ?? {}
+
+      // deleting the last geometry leaves none: store that like for a row
+      // that never had one
+      if (!featureCollection!.features.length) {
+        db.query(
+          `UPDATE ${tableName} SET geometry = NULL, bbox = NULL WHERE ${activeIdName} = $1`,
+          [activeId],
+        )
+        addOperation({
+          table: tableName!,
+          rowIdName: activeIdName!,
+          rowId: activeId as string,
+          operation: 'update',
+          draft: { geometry: null, bbox: null },
+          prev: { ...row },
+        })
+        return
+      }
+
       const bbox = getBbox(featureCollection!)
 
       // Convert FeatureCollection to GeometryCollection for the PostGIS
@@ -98,13 +138,6 @@ export const DrawControlComponent = ({
       // contain the previously loaded collection as a single feature
       const geometryCollection =
         flattenToGeometryCollection(featureCollection!.features)
-
-      // query previous geometry for the operation log
-      const prevRes = await db.query(
-        `SELECT ST_AsGeoJSON(geometry)::json as geometry, bbox FROM ${tableName} WHERE ${activeIdName} = $1`,
-        [activeId],
-      )
-      const row = prevRes?.rows?.[0] ?? {}
 
       db.query(
         `UPDATE ${tableName} SET geometry = ST_GeomFromGeoJSON($1), bbox = $2 WHERE ${activeIdName} = $3`,
@@ -142,6 +175,14 @@ export const DrawControlComponent = ({
     // Persist when geoman's removal mode removes a layer from the draw layer
     drawLayer.on('layerremove', persist)
 
+    // geoman's removal mode only takes the clicked layer off the map — it
+    // doesn't know about the draw layer, so drop it there too
+    const onRemove = (e: L.LeafletEvent) => {
+      const layer = (e as unknown as { layer: L.Layer }).layer
+      if (drawLayer.hasLayer(layer)) drawLayer.removeLayer(layer)
+    }
+    map.on('geoman:remove', onRemove)
+
     // geoman:edit fires on every vertex move; persist only when a layer's
     // edit session ends (geoman:update) or a drag ends, to keep the
     // operation log free of intermediate states
@@ -176,14 +217,23 @@ export const DrawControlComponent = ({
             // package's GeoJsonObject, but the values are compatible
             const geojsonArg =
               geometry as unknown as ConstructorParameters<typeof L.GeoJSON>[0]
-            new L.GeoJSON(geojsonArg, {
-              pointToLayer: (_feature, latlng) =>
-                new L.CircleMarker(latlng, EDITING_STYLE),
-            }).eachLayer((layer) => {
+            // L.GeoJSON nests the members of a GeometryCollection in an inner
+            // layer group. The draw layer holds the geometry layers
+            // themselves, like drawn ones — geoman's removal mode takes them
+            // out one by one
+            const addGeometryLayers = (layer: L.Layer) => {
+              if (layer instanceof L.LayerGroup) {
+                layer.eachLayer(addGeometryLayers)
+                return
+              }
               applyEditingStyle(layer)
               wireLayerEvents(layer)
               drawLayer.addLayer(layer)
-            })
+            }
+            new L.GeoJSON(geojsonArg, {
+              pointToLayer: (_feature, latlng) =>
+                new L.CircleMarker(latlng, EDITING_STYLE),
+            }).eachLayer(addGeometryLayers)
           } catch {
             // ignore invalid geometry
           }
@@ -214,7 +264,10 @@ export const DrawControlComponent = ({
       let layer = (e as unknown as { layer: L.Layer }).layer
       // L.Marker doesn't support setStyle; replace with a circleMarker so
       // the orange edit style (and its revert) works uniformly for all types.
+      // geoman added the marker to the map itself — take it off again, it
+      // would otherwise stay there on top of the circleMarker
       if (layer instanceof L.Marker) {
+        map.removeLayer(layer)
         layer = new L.CircleMarker(layer.getLatLng(), EDITING_STYLE)
       } else {
         applyEditingStyle(layer)
@@ -253,6 +306,17 @@ export const DrawControlComponent = ({
     map.on('geoman:globaldrawmodetoggled', setActive)
     map.on('geoman:globaleditmodetoggled', setActive)
     map.on('geoman:globalremovalmodetoggled', setActive)
+    // The removal mode deletes by clicking the geometry itself: let CSS make
+    // the editable paths hit-testable again while it is on
+    const setRemovalActive = (e: L.LeafletEvent) => {
+      map
+        .getContainer()
+        .classList.toggle(
+          GEOMAN_REMOVAL_ACTIVE_CLASS,
+          (e as unknown as { enabled: boolean }).enabled,
+        )
+    }
+    map.on('geoman:globalremovalmodetoggled', setRemovalActive)
 
     return () => {
       // Keep drawLayer on the map so drawn geometry stays visible after
@@ -262,12 +326,15 @@ export const DrawControlComponent = ({
       drawLayer.off('layerremove', persist)
       geoman.removeControls()
       map.off('geoman:create', onCreate)
+      map.off('geoman:remove', onRemove)
       map.off('geoman:drawstart', onDrawStart)
       map.off('geoman:drawend', onDrawEnd)
       map.off('geoman:globaldrawmodetoggled', setActive)
       map.off('geoman:globaleditmodetoggled', setActive)
       map.off('geoman:globalremovalmodetoggled', setActive)
+      map.off('geoman:globalremovalmodetoggled', setRemovalActive)
       map.getContainer().classList.remove(GEOMAN_ACTIVE_CLASS)
+      map.getContainer().classList.remove(GEOMAN_REMOVAL_ACTIVE_CLASS)
     }
   }, [map, onEdit, db, editingPlace, editingCheck, editingAction])
 

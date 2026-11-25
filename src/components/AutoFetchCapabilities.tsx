@@ -1,24 +1,24 @@
 import { useEffect, useMemo, useRef } from 'react'
 import { usePGlite, useLiveQuery } from '@electric-sql/pglite-react'
-import { useAtom, useAtomValue } from 'jotai'
+import { useAtomValue } from 'jotai'
 
+import { initialSyncingAtom, sqlInitializingAtom } from '../store.ts'
 import {
-  initialSyncingAtom,
-  seenWfsServiceKeysAtom,
-  seenWmsServiceKeysAtom,
-  sqlInitializingAtom,
-} from '../store.ts'
-import { backgroundTasks } from '../modules/backgroundTasks.ts'
-import { NetworkError } from '../modules/httpGet.ts'
+  fetchPendingCapabilities,
+  seenWmsKey,
+  seenWfsKey,
+} from '../modules/autoFetchCapabilities.ts'
 import { getWmsCapabilitiesData } from '../formsAndLists/wmsLayer/Form/CreateWmsService/getWmsCapabilitiesData.ts'
 import { getWfsCapabilitiesData } from '../formsAndLists/vectorLayer/Form/getWfsCapabilitiesData.ts'
+
+// Fetches capabilities on every app load for services that sync in without
+// layers (created on another device or by another user) — once per browser
+// per service, see modules/autoFetchCapabilities.ts
 
 export const AutoFetchCapabilities = () => {
   const db = usePGlite()
   const initialSyncing = useAtomValue(initialSyncingAtom)
   const sqlInitializing = useAtomValue(sqlInitializingAtom)
-  const [seenWmsKeys, setSeenWmsKeys] = useAtom(seenWmsServiceKeysAtom)
-  const [seenWfsKeys, setSeenWfsKeys] = useAtom(seenWfsServiceKeysAtom)
   const inFlightRef = useRef(new Set<string>())
 
   const wmsRes = useLiveQuery<{
@@ -45,187 +45,74 @@ export const AutoFetchCapabilities = () => {
     if (sqlInitializing || initialSyncing) return
     if (!db || !wmsServices.length) return
 
-    const run = async () => {
-      const seenToAdd: string[] = []
-      const pendingServices = wmsServices.filter((service) => {
-        const url = service.url?.trim?.()
-        if (!url) return false
-        const key = `${service.wms_service_id}|${url}`
-        return !seenWmsKeys.includes(key)
-      })
-      const taskId = 'auto-fetch-wms-capabilities'
-
-      if (pendingServices.length) {
-        backgroundTasks.add(
-          taskId,
-          'Fetching WMS capabilities',
-          pendingServices.length,
-        )
-      }
-      let progress = 0
-
-      for (const service of pendingServices) {
-        const url = service.url?.trim?.()
-        if (!url) continue
-        const key = `${service.wms_service_id}|${url}`
-        const inFlightKey = `wms:${key}`
-        if (seenWmsKeys.includes(key) || inFlightRef.current.has(inFlightKey)) {
-          continue
-        }
-
-        inFlightRef.current.add(inFlightKey)
-        try {
-          const res = await db.query<{ count: number | string }>(
-            `SELECT count(*) AS count FROM wms_service_layers WHERE wms_service_id = $1`,
-            [service.wms_service_id],
-          )
-          const count = Number(res?.rows?.[0]?.count ?? 0)
-          if (count === 0) {
-            await getWmsCapabilitiesData({
-              wmsLayer: {
-                wms_layer_id: null,
-                wms_service_id: service.wms_service_id,
-                project_id: service.project_id,
-              },
-              service: { ...service, url },
-            } as unknown as Parameters<typeof getWmsCapabilitiesData>[0])
-          }
-          seenToAdd.push(key)
-          progress += 1
-          if (pendingServices.length) {
-            backgroundTasks.updateProgress(taskId, progress)
-          }
-        } catch (error) {
-          console.error('AutoFetchCapabilities: WMS fetch failed', error)
-          if (pendingServices.length) {
-            backgroundTasks.error(
-              taskId,
-              'Failed to fetch some WMS capabilities',
-            )
-          }
-          // network errors (NetworkError from httpGet: offline, DNS,
-          // CORS-blocked) are transient — keep retrying those. Anything else
-          // (http error status, unparseable capabilities, a crash while
-          // processing them) is terminal: mark the service seen or every
-          // reload retries the fetch forever
-          if (!(error instanceof NetworkError)) {
-            seenToAdd.push(key)
-          }
-        } finally {
-          inFlightRef.current.delete(inFlightKey)
-        }
-      }
-
-      if (seenToAdd.length) {
-        const merged = [...new Set([...seenWmsKeys, ...seenToAdd])]
-        setSeenWmsKeys(merged)
-      }
-
-      if (pendingServices.length) {
-        backgroundTasks.complete(taskId)
-      }
-    }
-
-    run()
-  }, [
-    db,
-    initialSyncing,
-    sqlInitializing,
-    wmsServices,
-    seenWmsKeys,
-    setSeenWmsKeys,
-  ])
+    void fetchPendingCapabilities({
+      db,
+      inFlight: inFlightRef.current,
+      taskId: 'auto-fetch-wms-capabilities',
+      taskName: 'Fetching WMS capabilities',
+      failureMessage: 'Failed to fetch some WMS capabilities',
+      layerTable: 'wms_service_layers',
+      serviceIdColumn: 'wms_service_id',
+      services: wmsServices
+        .map((service) => ({
+          id: service.wms_service_id,
+          url: service.url?.trim?.() ?? '',
+          projectId: service.project_id,
+        }))
+        .filter((service) => service.url),
+      seenKeyOf: (service) => seenWmsKey(service.id, service.url),
+      fetchCapabilities: (service) =>
+        getWmsCapabilitiesData({
+          wmsLayer: {
+            wms_layer_id: null,
+            wms_service_id: service.id,
+            project_id: service.projectId,
+          },
+          service: {
+            wms_service_id: service.id,
+            url: service.url,
+            project_id: service.projectId,
+          },
+        } as unknown as Parameters<typeof getWmsCapabilitiesData>[0]),
+    })
+  }, [db, initialSyncing, sqlInitializing, wmsServices])
 
   useEffect(() => {
     if (sqlInitializing || initialSyncing) return
     if (!db || !wfsServices.length) return
 
-    const run = async () => {
-      const seenToAdd: string[] = []
-      const pendingServices = wfsServices.filter((service) => {
-        const url = service.url?.trim?.()
-        if (!url) return false
-        const key = `${service.wfs_service_id}|${url}`
-        return !seenWfsKeys.includes(key)
-      })
-      const taskId = 'auto-fetch-wfs-capabilities'
-
-      if (pendingServices.length) {
-        backgroundTasks.add(
-          taskId,
-          'Fetching WFS capabilities',
-          pendingServices.length,
-        )
-      }
-      let progress = 0
-
-      for (const service of pendingServices) {
-        const url = service.url?.trim?.()
-        if (!url) continue
-        const key = `${service.wfs_service_id}|${url}`
-        const inFlightKey = `wfs:${key}`
-        if (seenWfsKeys.includes(key) || inFlightRef.current.has(inFlightKey)) {
-          continue
-        }
-
-        inFlightRef.current.add(inFlightKey)
-        try {
-          const res = await db.query<{ count: number | string }>(
-            `SELECT count(*) AS count FROM wfs_service_layers WHERE wfs_service_id = $1`,
-            [service.wfs_service_id],
-          )
-          const count = Number(res?.rows?.[0]?.count ?? 0)
-          if (count === 0) {
-            await getWfsCapabilitiesData({
-              vectorLayer: {
-                vector_layer_id: null,
-                wfs_service_id: service.wfs_service_id,
-                project_id: service.project_id,
-                wfs_service_layer_name: null,
-              },
-              service: { ...service, url },
-            } as unknown as Parameters<typeof getWfsCapabilitiesData>[0])
-          }
-          seenToAdd.push(key)
-          progress += 1
-          if (pendingServices.length) {
-            backgroundTasks.updateProgress(taskId, progress)
-          }
-        } catch (error) {
-          console.error('AutoFetchCapabilities: WFS fetch failed', error)
-          if (pendingServices.length) {
-            backgroundTasks.error(
-              taskId,
-              'Failed to fetch some WFS capabilities',
-            )
-          }
-          if (!(error instanceof NetworkError)) {
-            seenToAdd.push(key)
-          }
-        } finally {
-          inFlightRef.current.delete(inFlightKey)
-        }
-      }
-
-      if (seenToAdd.length) {
-        const merged = [...new Set([...seenWfsKeys, ...seenToAdd])]
-        setSeenWfsKeys(merged)
-      }
-
-      if (pendingServices.length) {
-        backgroundTasks.complete(taskId)
-      }
-    }
-
-    run()
-  }, [
-    db,
-    initialSyncing,
-    sqlInitializing,
-    wfsServices,
-    seenWfsKeys,
-    setSeenWfsKeys,
-  ])
+    void fetchPendingCapabilities({
+      db,
+      inFlight: inFlightRef.current,
+      taskId: 'auto-fetch-wfs-capabilities',
+      taskName: 'Fetching WFS capabilities',
+      failureMessage: 'Failed to fetch some WFS capabilities',
+      layerTable: 'wfs_service_layers',
+      serviceIdColumn: 'wfs_service_id',
+      services: wfsServices
+        .map((service) => ({
+          id: service.wfs_service_id,
+          url: service.url?.trim?.() ?? '',
+          projectId: service.project_id,
+        }))
+        .filter((service) => service.url),
+      seenKeyOf: (service) => seenWfsKey(service.id, service.url),
+      fetchCapabilities: (service) =>
+        getWfsCapabilitiesData({
+          vectorLayer: {
+            vector_layer_id: null,
+            wfs_service_id: service.id,
+            project_id: service.projectId,
+            wfs_service_layer_name: null,
+          },
+          service: {
+            wfs_service_id: service.id,
+            url: service.url,
+            project_id: service.projectId,
+          },
+        } as unknown as Parameters<typeof getWfsCapabilitiesData>[0]),
+    })
+  }, [db, initialSyncing, sqlInitializing, wfsServices])
 
   return null
 }

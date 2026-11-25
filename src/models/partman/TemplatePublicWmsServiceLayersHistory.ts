@@ -14,6 +14,8 @@ export default interface TemplatePublicWmsServiceLayersHistory {
 
   legend_image: unknown | null;
 
+  extent: unknown | null;
+
   sys_period: string;
 
   created_at: Date;
@@ -39,6 +41,8 @@ export interface TemplatePublicWmsServiceLayersHistoryInitializer {
 
   legend_image?: unknown | null;
 
+  extent?: unknown | null;
+
   sys_period: string;
 
   created_at: Date;
@@ -63,6 +67,8 @@ export interface TemplatePublicWmsServiceLayersHistoryMutator {
   legend_url?: string | null;
 
   legend_image?: unknown | null;
+
+  extent?: unknown | null;
 
   sys_period?: string;
 

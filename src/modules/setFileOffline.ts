@@ -31,6 +31,7 @@ export const setFileOffline = async (fileId: string, offline: boolean) => {
     column: 'offline',
     newValue: offline,
     draft: { offline },
-    prev,
+    // Files is an interface: only an object literal satisfies the record type
+    prev: { ...prev },
   })
 }

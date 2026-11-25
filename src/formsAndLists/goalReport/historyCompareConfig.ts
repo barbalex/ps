@@ -11,4 +11,4 @@ export const excludedRestoreFields = new Set([
   'deleted',
 ])
 
-export const preferredOrder = ['data']
+export const preferredOrder = ['year', 'data']

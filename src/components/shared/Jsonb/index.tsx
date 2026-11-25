@@ -14,6 +14,7 @@ import { accountTables } from '../../../formsAndLists/field/accountTables.ts'
 import { AddField } from './AddField.tsx'
 import { WidgetsFromDataFieldsDefined } from './WidgetsFromDataFieldsDefined/index.tsx'
 import { filterKeyFromTableAndLevel } from '../../../modules/filterKeyFromTableAndLevel.ts'
+import { placeScopedFieldTables } from '../../../modules/fieldTableLabel.ts'
 import { useUrlFilter } from '../../../modules/useUrlFilter.ts'
 import { setNewFilterFromOld } from '../../../modules/setNewFilterFromOld.ts'
 import { addOperationAtom, designingAtom } from '../../../store.ts'
@@ -85,9 +86,11 @@ export const Jsonb = ({
       WHERE
         fields.table_name = $1
         and fields.project_id ${useProjectId ? `= '${projectId}'` : 'IS NULL'}
-        ${table === 'places' ? ` and level = $2` : ''}
+        ${placeScopedFieldTables.has(table) ? ` and level = $2` : ''}
       ORDER BY t.ord`
-  const params = table === 'places' ? [table, placeId2 ? 2 : 1] : [table]
+  const params = placeScopedFieldTables.has(table) ?
+    [table, placeId2 ? 2 : 1]
+  : [table]
   const res = useLiveQuery(sql, params)
   const allFields = (res?.rows ?? []) as unknown as FieldsWithTypes[]
 
@@ -231,7 +234,9 @@ export const Jsonb = ({
         <AddField
           key="addField"
           tableName={table}
-          level={placeId2 ? 2 : 1}
+          level={
+            placeScopedFieldTables.has(table) ? (placeId2 ? 2 : 1) : undefined
+          }
           from={from}
         />
       )}

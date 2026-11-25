@@ -1030,13 +1030,26 @@ Three creation paths, all idempotent:
    - `place_levels_create_vector_layers_trigger`: on INSERT of a level-2
      `place_levels` row (or UPDATE of its `level`/`actions`/`checks`):
      `places_2` always; `actions_2` when `actions`; `checks_2` when `checks`.
-   - `vector_layers_insert_trigger`: on every layer INSERT, adds one
-     `vector_layer_displays` row and one `layer_presentations` row.
+   - `vector_layers_insert_trigger`: on every layer INSERT, adds the one
+     `vector_layer_displays` row a layer needs to be drawn — except for a
+     layer a client inserts itself (path 2). Those are direct inserts in an
+     app session (JWT claims set), and the client brings the display as a
+     queued operation. A trigger-made row carries no operation: in a client's
+     database it never reached the server, where the trigger made the real
+     one for the synced insert — the layer had two displays on the client
+     that created it. `dedupeVectorLayerDisplays`
+     (`src/modules/`) leaves such a layer with one, there and on the server:
+     it keeps the newest, deletes the others and upserts the kept one, so
+     whichever of them the server had, it ends up with that one.
+     `TableLayersProvider` runs it once the sync is done.
    - **All three skip while `electric.syncing` is set** (Electric's own
      writes, seeds, imports).
-2. **Client-side safety nets** (`createVectorLayer` in
-   `src/modules/createRows.ts` dedups by name before inserting, so calling it
-   again is free):
+2. **Client-side** (`createVectorLayer` in `src/modules/createRows.ts` —
+   dedups by name before inserting, so calling it again is free). It creates
+   the layer and its display as two queued operations; the local insert runs
+   with `electric.syncing` set, so the trigger makes no second display.
+   - new wfs layers: the add buttons of the vector layers list, the layer
+     form's header and the map drawer
    - creating a place ensures the level's places layer exists
      (`src/formsAndLists/places.tsx`, `src/formsAndLists/place/Header.tsx`)
    - `src/components/TableLayersProvider.tsx` creates the observation layers
@@ -1161,10 +1174,11 @@ built-in column (`absence` on observation layers);
 value (extracted from the typed `value_*` column the widgets write into
 `data`), other fields one per distinct value. Values are stored as text.
 `Layer.tsx` aggregates `display_property_value` with the displays,
-`TableLayer`'s `displayFromFeature` picks the display whose value matches the
+`displayFromFeature` (`src/modules/displayByProperty.ts`, used by `TableLayer`
+and the wfs layer) picks the display whose value matches the
 feature's property (raw jsonb booleans/numbers are compared via their text
-representation — `propertyValueToText` in
-`src/modules/displayByProperty.ts`, which also holds the `own_table` →
+representation — `propertyValueToText` in the same module, which also holds
+the `own_table` →
 `fields.table_name` mapping: observation layers style the `observations`
 table; the assigned-lines layer has fixed properties and no fields). The
 display form has a "Wert der Eigenschaft" field to edit the value.
@@ -1173,6 +1187,44 @@ Absence styling remains hardcoded in `TableLayer` (hollow red circles /
 faded markers) as a fallback: when a layer sets
 `display_by_property = 'absence'`, the configured displays replace the
 hardcoded look.
+
+### WFS layers
+
+WFS layers (`type = 'wfs'`) are displayed by a field too — but their fields and
+values are not in the db, the service delivers them
+(`src/modules/wfsDisplayByProperty.ts`):
+
+- **Fields:** `DescribeFeatureType` returns the layer's schema; its element
+  names minus the geometry are the dropdown's options. The parameter is
+  `typeName` on wfs 1.x and `typeNames` on 2.0 — 1.x services ignore the
+  latter and answer a schema without the layer. The fields are cached in
+  `vector_layers.properties` once the layer is chosen, and reset when another
+  layer is chosen (`LayersDropdown`).
+- **Values:** `GetPropertyValue` (wfs 2.0, optional) delivers the values of
+  one field without the geometries, paged with `startindex`/`count`. Services
+  that do not offer it fall back to the values of the features the layer has
+  loaded (`rememberWfsFeatureValues`, published by `WFS.tsx` after every
+  fetch) — a part only.
+- A field with more than 30 distinct values (`WFS_MAX_DISPLAY_VALUES`) is
+  refused. The values are read before anything is written, so the layer stays
+  as it was.
+
+`vectorLayer/Form/syncWfsLayerDisplays.ts` brings this to the layer. Choosing
+a field stores `display_by_property` and creates the missing displays
+(`syncVectorLayerDisplaysForValues`). When the values were read completely,
+the displays of the values the field does not have are dropped — switching
+the field replaces the previous field's displays. The button "Felder und Werte
+neu lesen" reads the schema and the values anew (the service's data changes):
+it adds displays for new values and removes none, so a display styled in
+advance for a value still to come survives. `WFS.tsx` draws each feature with
+the display of its value; features whose value has no display yet use the
+layer's first display — `Layer.tsx` orders the valueless display first for
+that.
+
+Ending the display by a field — clearing it, or choosing another wfs layer —
+goes through `clearVectorLayerDisplaysByValue`: it deletes the valued displays
+and leaves the one without a value — that is the layer's look again —, or
+creates one when none is left.
 
 # 11 Error Telemetry
 

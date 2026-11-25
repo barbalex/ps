@@ -13,12 +13,13 @@ import { useSetAtom, useAtomValue, useAtom } from 'jotai'
 import { usePGlite } from '@electric-sql/pglite-react'
 import { useIntl } from 'react-intl'
 
-import { layersDataFromRequestData } from './layersDataFromRequestData.ts'
-import { fetchData } from './fetchData.ts'
+import { fetchFeatureInfo } from './fetchFeatureInfo.ts'
+import type { LayersDatum } from './layersDataFromRequestData.ts'
 import { filterStringFromFilter } from '../../../modules/filterStringFromFilter.ts'
 import { getVectorLayerLabel } from '../../../modules/vectorLayerLabel.ts'
 import { navigateToOwnForm } from '../../../modules/navigateToOwnForm.ts'
 import type { OwnFormTarget } from '../../../modules/navigateToOwnForm.ts'
+import { wfsRequestVersion } from '../../../modules/wfsRequestVersion.ts'
 import {
   mapInfoAtom,
   languageAtom,
@@ -26,10 +27,10 @@ import {
   editingPlaceGeometryAtom,
   editingCheckGeometryAtom,
   editingActionGeometryAtom,
-  tabsAtom,
   addNotificationAtom,
 } from '../../../store.ts'
 import type { MapInfo } from '../../../store.ts'
+import { useUrlPanes } from '../../../modules/useUrlPanes.ts'
 import type WfsServices from '../../../models/public/WfsServices.ts'
 import type Crs from '../../../models/public/Crs.ts'
 import type VectorLayers from '../../../models/public/VectorLayers.ts'
@@ -56,16 +57,29 @@ type WmsLayerRow = {
   wms_service_layer_name: string | null
   label: string | null
   info_format: string | null
+  info_formats: string[] | null
   version: string | null
   url: string
 }
 
-// derives the editing/navigation target of a clicked own-table feature.
-// Observations are deliberately absent: their geometry is not user-editable
-// (they are assigned to places by dragging)
+// the entries of one response, labelled with the layer they came from
+const addLayersData = (
+  layersData: LayersDatum[],
+  entries: LayersDatum[] | undefined,
+  label: string | null | undefined,
+) => {
+  for (const entry of entries ?? []) {
+    layersData.push({ ...entry, label: label || entry.label })
+  }
+}
+
+// derives the editing/navigation target of a clicked own-table feature —
+// without the project, which comes from the route. Observations are
+// deliberately absent: their geometry is not user-editable (they are assigned
+// to places by dragging)
 const ownTargetFromProperties = (
-  featureProps: GeoJSON.GeoJsonProperties,
-): OwnFormTarget | undefined => {
+  featureProps: GeoJSON.GeoJsonProperties | undefined,
+): Omit<OwnFormTarget, 'projectId'> | undefined => {
   if (featureProps?.check_id) {
     return {
       ownTable: 'check',
@@ -102,7 +116,7 @@ export const ClickListener = () => {
   const setEditingPlaceGeometry = useSetAtom(editingPlaceGeometryAtom)
   const setEditingCheckGeometry = useSetAtom(editingCheckGeometryAtom)
   const setEditingActionGeometry = useSetAtom(editingActionGeometryAtom)
-  const [tabs, setTabs] = useAtom(tabsAtom)
+  const [tabs, setTabs] = useUrlPanes()
   const addNotification = useSetAtom(addNotificationAtom)
 
   const { projectId = '99999999-9999-9999-9999-999999999999' } = useParams({
@@ -310,6 +324,7 @@ export const ClickListener = () => {
           wl.wms_service_layer_name,
           wl.label,
           ws.info_format, 
+          ws.info_formats,
           ws.version, 
           ws.url
         FROM wms_layers wl 
@@ -326,47 +341,39 @@ export const ClickListener = () => {
     const wmsLayers = (resWmsLayers?.rows ?? []) as WmsLayerRow[]
 
     // loop through wms layers and get infos
-    for await (const layer of wmsLayers) {
+    for (const layer of wmsLayers) {
       const {
         version,
         url,
         wms_service_layer_name,
         info_format,
+        info_formats,
         label: wmsLayerLabel,
       } = layer
-      // in raw queries, jsonb columns need to be parsed
-      const params = {
-        request: 'GetFeatureInfo',
-        service: 'WMS',
-        version: version ?? '1.3.0',
-        crs: 'EPSG:4326',
-        layers: wms_service_layer_name,
-        query_layers: wms_service_layer_name,
-        info_format: info_format ?? 'application/vnd.ogc.gml',
-        x: Math.round(event.containerPoint.x),
-        y: Math.round(event.containerPoint.y),
-        width: mapSize.x,
-        height: mapSize.y,
-        bbox: `${boundsCorners._southWest.lat},${boundsCorners._southWest.lng},${boundsCorners._northEast.lat},${boundsCorners._northEast.lng}`,
-      }
-      const requestData = await fetchData({
+      const layersData = await fetchFeatureInfo({
         url,
-        params,
+        params: {
+          request: 'GetFeatureInfo',
+          service: 'WMS',
+          version: version ?? '1.3.0',
+          crs: 'EPSG:4326',
+          layers: wms_service_layer_name,
+          query_layers: wms_service_layer_name,
+          x: Math.round(event.containerPoint.x),
+          y: Math.round(event.containerPoint.y),
+          width: mapSize.x,
+          height: mapSize.y,
+          bbox: `${boundsCorners._southWest.lat},${boundsCorners._southWest.lng},${boundsCorners._northEast.lat},${boundsCorners._northEast.lng}`,
+        },
+        formatParam: 'info_format',
+        serviceKey: `wms:${url}`,
+        infoFormat: info_format,
+        infoFormats: info_formats,
+        // what to ask for when the capabilities list none
+        fallback: ['application/json', 'application/vnd.ogc.gml', 'text/plain'],
         layerLabel: wmsLayerLabel,
       })
-      if (requestData) {
-        const beforeLength = mapInfo.layers.length
-        layersDataFromRequestData({
-          layersData: mapInfo.layers,
-          // GetFeatureInfo responses are text payloads (gml/xml/json/plain)
-          requestData: requestData as string,
-          infoFormat: info_format,
-        })
-        // Set the label for all newly added layers
-        for (let i = beforeLength; i < mapInfo.layers.length; i++) {
-          mapInfo.layers[i].label = wmsLayerLabel || mapInfo.layers[i].label
-        }
-      }
+      addLayersData(mapInfo.layers, layersData, wmsLayerLabel)
     }
     // 4. Vector Layers from WFS with no downloaded data
     const filterStringVl = filterStringFromFilter(vectorLayersFilter, 'vl')
@@ -389,7 +396,7 @@ export const ClickListener = () => {
     // (buffer already calculated above for click detection)
 
     // loop through vector layers and get infos
-    for await (const layer of activeVectorLayers) {
+    for (const layer of activeVectorLayers) {
       const res = await db.query(
         `SELECT * FROM wfs_services WHERE wfs_service_id = $1`,
         [layer.wfs_service_id],
@@ -399,54 +406,44 @@ export const ClickListener = () => {
       // default_crs is of the form: "urn:ogc:def:crs:EPSG::4326"
       // extract the relevant parts for db.crs.code:
       const wfsDefaultCrsArray = wfsService.default_crs?.split(':').slice(-3)
-      const wfsDefaultCrsCode = [
-        wfsDefaultCrsArray![0],
-        wfsDefaultCrsArray![2],
-      ].join(':')
+      const wfsDefaultCrsCode =
+        wfsDefaultCrsArray?.length === 3 ?
+          [wfsDefaultCrsArray[0], wfsDefaultCrsArray[2]].join(':')
+        : 'EPSG:4326'
       const defaultCrsRes = await db.query(
         `SELECT * FROM crs WHERE code = $1`,
         [wfsDefaultCrsCode],
       )
       const defaultCrs = defaultCrsRes?.rows?.[0] as Crs | undefined
-      const [x, y] = proj4('EPSG:4326', defaultCrs?.proj4 as string, [
-        lng - buffer,
-        lat - buffer,
-      ])
-      const [x2, y2] = proj4('EPSG:4326', defaultCrs?.proj4 as string, [
-        lng + buffer,
-        lat + buffer,
-      ])
-      const params = {
-        service: 'WFS',
-        request: 'GetFeature',
-        version: wfsService.version ?? '1.3.0',
-        layers: layer.wfs_service_layer_name,
-        typeNames: layer.wfs_service_layer_name,
-        outputFormat: wfsService.info_format ?? 'application/vnd.ogc.gml',
-        // bbox needs to be in default_crs:
-        bbox: `${x},${y},${x2},${y2}`,
-        // cql_filter: `INTERSECTS(geom, POINT (${lng} ${lat}))`, // did not work
-      }
+      // a crs unknown to the crs table leaves the coordinates in 4326
+      const toDefaultCrs = (coordinates: [number, number]): [number, number] =>
+        defaultCrs?.proj4 ?
+          proj4('EPSG:4326', defaultCrs.proj4, coordinates)
+        : coordinates
+      const [x, y] = toDefaultCrs([lng - buffer, lat - buffer])
+      const [x2, y2] = toDefaultCrs([lng + buffer, lat + buffer])
       const layerLabel = getVectorLayerLabel(layer, language, undefined)
-      const requestData = await fetchData<{
-        features: GeoJSON.Feature[]
-      }>({
+      const layersData = await fetchFeatureInfo({
         url: wfsService.url!,
-        params,
+        params: {
+          service: 'WFS',
+          request: 'GetFeature',
+          version: wfsRequestVersion(wfsService.version),
+          layers: layer.wfs_service_layer_name,
+          typeNames: layer.wfs_service_layer_name,
+          // bbox needs to be in default_crs:
+          bbox: `${x},${y},${x2},${y2}`,
+          // cql_filter: `INTERSECTS(geom, POINT (${lng} ${lat}))`, // did not work
+        },
+        formatParam: 'outputFormat',
+        serviceKey: `wfs:${wfsService.url}`,
+        infoFormat: wfsService.info_format,
+        infoFormats: wfsService.info_formats as string[] | null,
+        // no format asked for: the server answers with its default gml
+        fallback: [undefined],
         layerLabel,
       })
-      const features = requestData?.features.map((f) => ({
-        label: layerLabel,
-        featureLabel: 'Feature',
-        properties: Object.entries(f.properties ?? {}),
-      }))
-      if (requestData) {
-        layersDataFromRequestData({
-          layersData: mapInfo.layers,
-          requestData: features!,
-          infoFormat: 'labelPropertiesArray',
-        })
-      }
+      addLayersData(mapInfo.layers, layersData, layerLabel)
     }
 
     // console.log('ClickListener, mapInfo:', mapInfo)

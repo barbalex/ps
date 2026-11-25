@@ -1,33 +1,15 @@
 import { useParams, useNavigate } from '@tanstack/react-router'
 import { useIntl } from 'react-intl'
-import { TbZoomScan } from 'react-icons/tb'
-import * as fluentUiReactComponents from '@fluentui/react-components'
-const { Button } = fluentUiReactComponents
-import { useAtom, useSetAtom } from 'jotai'
 import { usePGlite, useLiveQuery } from '@electric-sql/pglite-react'
 import { useRef, useEffect } from 'react'
 
 import { filterStringFromFilter } from '../../modules/filterStringFromFilter.ts'
 import type { TableRowFilter } from '../../store.ts'
-import { useUrlPanes } from '../../modules/useUrlPanes.ts'
 
-import {
-  createCheck,
-  createLayerPresentation,
-} from '../../modules/createRows.ts'
+import { createCheck } from '../../modules/createRows.ts'
 import { FormHeader } from '../../components/FormHeader/index.tsx'
+import { Geometry } from '../../components/FormMenu/Geometry.tsx'
 import { HistoryToggleButton } from '../../components/shared/HistoryCompare/HistoryToggleButton.tsx'
-import {
-  extentSelect,
-  queryExtent,
-  extentToBoundsWithMargin,
-} from '../../modules/geoQueries.ts'
-import {
-  mapBoundsAtom,
-  addNotificationAtom,
-  addOperationAtom,
-  mapLayerSortingAtom,
-} from '../../store.ts'
 import { useRequestRowDelete } from '../../modules/deleteRow.ts'
 
 export const Header = ({
@@ -64,11 +46,6 @@ export const Header = ({
         (tableView?.name_singular_de as string | null))) ||
     formatMessage({ id: 'ZCwpER', defaultMessage: 'Kontrolle' })
 
-  const [tabs, setTabs] = useUrlPanes()
-  const [mapLayerSorting, setMapLayerSorting] = useAtom(mapLayerSortingAtom)
-  const setMapBounds = useSetAtom(mapBoundsAtom)
-  const addNotification = useSetAtom(addNotificationAtom)
-  const addOperation = useSetAtom(addOperationAtom)
   const requestDelete = useRequestRowDelete()
   const navigate = useNavigate()
 
@@ -80,14 +57,6 @@ export const Header = ({
   useEffect(() => {
     checkIdRef.current = checkId
   }, [checkId])
-
-  // mirrors queryExtent returning null: no geometry or an empty one
-  // (e.g. GeometryCollection without parts) can not be zoomed to
-  const geometryRes = useLiveQuery(
-    `SELECT (geometry IS NOT NULL AND NOT ST_IsEmpty(geometry)) AS has_geometry FROM checks WHERE check_id = $1`,
-    [checkId],
-  )
-  const hasGeometry = geometryRes?.rows?.[0]?.has_geometry === true
 
   // the view's static filter narrows counts and sibling navigation
   const viewFilterString = tableViewId
@@ -180,75 +149,6 @@ export const Header = ({
     }
   }
 
-  const alertNoGeometry = () =>
-    addNotification({
-      title: formatMessage({ id: 'bCWAXB', defaultMessage: 'Keine Geometrie' }),
-      body: formatMessage({
-        id: 'fOO5pP',
-        defaultMessage:
-          'Um auf eine Kontrolle zu zoomen, erstelle zuerst die Geometrie',
-      }),
-      intent: 'error',
-    })
-
-  const onClickZoomTo = async () => {
-    const extent = await queryExtent(
-      db,
-      `SELECT ${extentSelect()} FROM checks WHERE check_id = $1`,
-      [checkId],
-    )
-    if (!extent) return alertNoGeometry()
-
-    // 1. show map if not happening
-    if (!tabs.includes('map')) setTabs([...tabs, 'map'])
-
-    // 2. activate layer if not active
-    const level = placeId2 ? 2 : 1
-    const layerRes = await db.query(
-      `SELECT vl.vector_layer_id AS vl_vector_layer_id, lp.*
-      FROM vector_layers vl
-        LEFT JOIN layer_presentations lp ON lp.vector_layer_id = vl.vector_layer_id
-      WHERE vl.project_id = $1 AND vl.own_table = 'checks' AND vl.own_table_level = $2
-      ORDER BY lp.active DESC, lp.layer_presentation_id
-      LIMIT 1`,
-      [projectId, level],
-    )
-    const layerRow = layerRes?.rows?.[0] as
-      | {
-          vl_vector_layer_id?: string
-          layer_presentation_id?: string
-          active?: boolean
-        }
-      | undefined
-    const vectorLayerId: string | undefined = layerRow?.vl_vector_layer_id
-    let lpId: string | undefined = layerRow?.layer_presentation_id
-    if (!lpId && vectorLayerId) {
-      lpId = await createLayerPresentation({
-        vectorLayerId: vectorLayerId as never,
-        active: true,
-      })
-    } else if (lpId && !layerRow?.active) {
-      await db.query(
-        `UPDATE layer_presentations SET active = true WHERE layer_presentation_id = $1`,
-        [lpId],
-      )
-      addOperation({
-        table: 'layer_presentations',
-        rowIdName: 'layer_presentation_id',
-        rowId: lpId,
-        operation: 'update',
-        draft: { active: true },
-        prev: { ...layerRow },
-      })
-    }
-    if (lpId && !mapLayerSorting.includes(lpId)) {
-      setMapLayerSorting([...mapLayerSorting, lpId])
-    }
-
-    // 3. zoom to check
-    setMapBounds(extentToBoundsWithMargin(extent))
-  }
-
   return (
     <FormHeader
       title={checkTitle}
@@ -261,23 +161,10 @@ export const Header = ({
       tableName={checkTitle}
       siblings={
         <>
-          <Button
-            size="medium"
-            icon={<TbZoomScan />}
-            onClick={onClickZoomTo}
-            disabled={!hasGeometry}
-            title={
-              hasGeometry
-                ? formatMessage({
-                    id: 'fNN4oO',
-                    defaultMessage: 'Zur Kontrolle in Karte zoomen',
-                  })
-                : formatMessage({
-                    id: 'fOO5pP',
-                    defaultMessage:
-                      'Um auf eine Kontrolle zu zoomen, erstelle zuerst die Geometrie',
-                  })
-            }
+          <Geometry
+            table="checks"
+            rowId={checkId}
+            level={placeId2 ? 2 : 1}
           />
           <HistoryToggleButton
             historiesPath={`${basePath}/histories`}

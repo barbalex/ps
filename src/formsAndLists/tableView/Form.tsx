@@ -9,6 +9,7 @@ import { TextField } from '../../components/shared/TextField.tsx'
 import { Section } from '../../components/shared/Section.tsx'
 import { SectionDescription } from '../../components/shared/SectionDescription.tsx'
 import { tableViewTables, tableViewTableLabel, singleRowTableViewTables } from '../../modules/tableViewTables.ts'
+import { uniqFieldsByName } from '../../modules/fieldTableLabel.ts'
 import type TableViews from '../../models/public/TableViews.ts'
 import type { TableRowFilter } from '../../store.ts'
 
@@ -320,11 +321,15 @@ const FilterEditor = ({
     `SELECT name, field_label, list_id FROM fields WHERE project_id = $1 AND table_name = $2 ORDER BY field_label`,
     [projectId, tableName],
   )
-  const fields = (resFields?.rows ?? []) as {
-    name: string
-    field_label: string | null
-    list_id: string | null
-  }[]
+  // a view is not bound to one place level — fields of several levels share
+  // the name, and the filter addresses fields by name: show each name once
+  const fields = uniqFieldsByName(
+    (resFields?.rows ?? []) as {
+      name: string
+      field_label: string | null
+      list_id: string | null
+    }[],
+  )
 
   // current filter -> field name, operator and value
   const { fieldName, operator, value } = useMemo(() => {
@@ -486,10 +491,14 @@ const LabelByEditor = ({
     `SELECT name, field_label FROM fields WHERE project_id = $1 AND table_name = $2 ORDER BY field_label`,
     [projectId, tableName],
   )
-  const fields = (resFields?.rows ?? []) as {
-    name: string
-    field_label: string | null
-  }[]
+  // a view is not bound to one place level — fields of several levels share
+  // the name, and label_by addresses fields by name: show each name once
+  const fields = uniqFieldsByName(
+    (resFields?.rows ?? []) as {
+      name: string
+      field_label: string | null
+    }[],
+  )
 
   const labelBy = (row.label_by ?? []) as string[]
   const selectedField = labelBy[0] ?? ''

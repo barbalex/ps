@@ -19,6 +19,8 @@ export default interface WmsServiceLayers {
 
   legend_image: unknown | null;
 
+  extent: unknown | null;
+
   /** System period maintained by temporal_tables for auditing and historic queries. */
   sys_period: string;
 
@@ -27,8 +29,6 @@ export default interface WmsServiceLayers {
   updated_at: Date;
 
   updated_by: string | null;
-
-  extent: unknown | null;
 }
 
 /** Represents the initializer for the table public.wms_service_layers */
@@ -48,6 +48,8 @@ export interface WmsServiceLayersInitializer {
 
   legend_image?: unknown | null;
 
+  extent?: unknown | null;
+
   /** System period maintained by temporal_tables for auditing and historic queries. */
   sys_period: string;
 
@@ -58,8 +60,6 @@ export interface WmsServiceLayersInitializer {
   updated_at?: Date;
 
   updated_by?: string | null;
-
-  extent?: unknown | null;
 }
 
 /** Represents the mutator for the table public.wms_service_layers */
@@ -78,6 +78,8 @@ export interface WmsServiceLayersMutator {
 
   legend_image?: unknown | null;
 
+  extent?: unknown | null;
+
   /** System period maintained by temporal_tables for auditing and historic queries. */
   sys_period?: string;
 
@@ -86,6 +88,4 @@ export interface WmsServiceLayersMutator {
   updated_at?: Date;
 
   updated_by?: string | null;
-
-  extent?: unknown | null;
 }

@@ -8,7 +8,7 @@ import { ProgressiveGeoJSON } from '../ProgressiveGeoJSON.tsx'
 import { cachedMarkerIconHtml } from '../markerIconHtml.tsx'
 
 import { vectorLayerDisplayToProperties } from '../../../../modules/vectorLayerDisplayToProperties.ts'
-import { propertyValueToText } from '../../../../modules/displayByProperty.ts'
+import { displayFromFeature } from '../../../../modules/displayByProperty.ts'
 import { useVectorLayerLabel } from '../../../../modules/vectorLayerLabel.ts'
 import { ErrorBoundary } from '../../MapErrorBoundary.tsx'
 import { assignToNearestDroppable } from './assignToNearestDroppable.ts'
@@ -106,22 +106,14 @@ export const TableLayer = ({
   // replaces the hardcoded absence look
   const absenceStyledByDisplays = layer?.display_by_property === 'absence'
 
-  const displayFromFeature = (
-    feature: Feature | undefined,
-  ): VectorLayerDisplays => {
-    // display_by_property is _not_ under the data property
-    // as passing the data object to feature.properties lead to errors
-    // display_property_value is text while property values are raw jsonb
-    // (booleans, numbers) — compare via their text representation
-    const valueText = propertyValueToText(
-      feature?.properties?.[layer?.display_by_property as string],
-    )
-    const displayToUse = (vectorLayerDisplays ?? []).find(
-      (vld) => propertyValueToText(vld.display_property_value) === valueText,
-    )
-
-    return (displayToUse ?? firstDisplay) as VectorLayerDisplays
-  }
+  // display_by_property is _not_ under the data property
+  // as passing the data object to feature.properties lead to errors
+  const displayOfFeature = (feature: Feature | undefined) =>
+    displayFromFeature(
+      vectorLayerDisplays,
+      layer?.display_by_property,
+      feature,
+    ) as VectorLayerDisplays
 
   const map = useMap() as MapWithDragState
   const [zoom, setZoom] = useState(map.getZoom())
@@ -183,7 +175,7 @@ export const TableLayer = ({
         // style by properties, use a function that receives the feature: https://stackoverflow.com/a/66106512/712005
         style={(feature) => {
           // need to choose display to pass in
-          const displayToUse = displayFromFeature(feature)
+          const displayToUse = displayOfFeature(feature)
 
           const baseStyle = vectorLayerDisplayToProperties({
             vectorLayerDisplay: displayToUse,
@@ -214,7 +206,7 @@ export const TableLayer = ({
           return style
         }}
         pointToLayer={(feature, latlng) => {
-          const displayToUse = displayFromFeature(feature)
+          const displayToUse = displayOfFeature(feature)
 
           const isActiveFeature =
             !!activeId &&

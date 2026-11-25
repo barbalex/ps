@@ -7,6 +7,8 @@ export default interface GoalReportsHistory {
 
   goal_id: string | null;
 
+  year: number | null;
+
   data: unknown | null;
 
   label: string | null;
@@ -30,6 +32,9 @@ export interface GoalReportsHistoryInitializer {
   goal_report_id?: string;
 
   goal_id?: string | null;
+
+  /** Default value: date_part('year'::text, (now())::date) */
+  year?: number | null;
 
   data?: unknown | null;
 
@@ -55,6 +60,8 @@ export interface GoalReportsHistoryMutator {
   goal_report_id?: string;
 
   goal_id?: string | null;
+
+  year?: number | null;
 
   data?: unknown | null;
 

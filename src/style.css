@@ -468,6 +468,25 @@ html[data-theme='dark'] .uploadcare-uploader-config {
   }
 }
 
+/* Toggled by DrawControl while geoman's removal mode is on. Deleting works by
+   clicking the geometry itself, so — unlike above — the editable geometry's
+   paths (.geometry-editing, set by DrawControl) must be hit-testable again.
+   Features of own layers are not deletable: they let the click pass through
+   to the geometry below instead of swallowing it */
+.map-container.geoman-removal-active {
+  .leaflet-pane svg path.leaflet-interactive:not(.geometry-editing),
+  .leaflet-pane svg circle.leaflet-interactive:not(.geometry-editing) {
+    pointer-events: none !important;
+    cursor: crosshair !important;
+  }
+
+  .leaflet-overlay-pane svg path.geometry-editing,
+  .leaflet-overlay-pane svg circle.geometry-editing {
+    pointer-events: visible !important;
+    cursor: pointer !important;
+  }
+}
+
 .map-container.col-resize {
   cursor: col-resize;
 }
@@ -541,6 +560,19 @@ html[data-theme='dark'] .leaflet-bar a,
 html[data-theme='dark'] .leaflet-geoman-buttons-control-button,
 html[data-theme='dark'] .leaflet-tooltip {
   border-color: #4a4a4a !important;
+}
+
+/* geoman's tool icons are svg background images with a baked-in grey fill,
+   so they don't inherit the button's color: render them white */
+html[data-theme='dark'] .leaflet-geoman-buttons-control-button {
+  & > .leaflet-geoman-control-icon {
+    filter: brightness(0) invert(1);
+  }
+
+  /* keep geoman's dimming of disabled tools */
+  &.leaflet-geoman-disabled > .leaflet-geoman-control-icon {
+    filter: brightness(0) invert(1) opacity(0.6);
+  }
 }
 
 html[data-theme='dark'] .leaflet-control-attribution {

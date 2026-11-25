@@ -12,7 +12,6 @@ type Props = {
 
 type NavData = {
   id: string
-  label: string | null
 }
 
 export const useVectorLayerVectorLayerNavData = ({
@@ -22,10 +21,12 @@ export const useVectorLayerVectorLayerNavData = ({
   const [openNodesSet] = useAtom(treeOpenNodesSetAtom)
   const { formatMessage } = useIntl()
 
+  // only tells whether the layer exists: the node's label is the static
+  // "Ebene". vector_layers has no label column — its labels are the
+  // localized label_de … label_it, and own layers derive theirs
   const sql = `
       SELECT
-        vector_layer_id AS id,
-        label
+        vector_layer_id AS id
       FROM 
         vector_layers
       WHERE 

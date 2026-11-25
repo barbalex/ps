@@ -1,8 +1,8 @@
 import { store, postgrestClientAtom } from '../store.ts'
 import type { QueuedOperation } from '../store.ts'
 import {
-  fetchPostgrestToken,
   invalidatePostgrestToken,
+  requirePostgrestToken,
 } from './fetchPostgrestToken.ts'
 
 /**
@@ -48,19 +48,21 @@ const toPayload = (o: QueuedOperation) => ({
 /**
  * Applies a batch of operations (oldest first). Returns one result row per
  * operation, in batch order. Throws when the call itself failed (network,
- * JWT, invalid payload) — the whole batch then stays queued.
+ * JWT, invalid payload, no token) — the whole batch then stays queued.
  */
 export const applyOperations = async (ops: QueuedOperation[]) => {
   if (!ops.length) return [] as AppliedOperation[]
 
-  const token = await fetchPostgrestToken()
+  // without a token the batch is kept, not sent: PostgREST would run it as
+  // web_anon and deny it ("permission denied for function apply_operations")
+  const token = await requirePostgrestToken()
   const postgrestClient = store.get(postgrestClientAtom)
   if (!postgrestClient) throw new Error('No PostgREST client available')
 
   const builder = postgrestClient.rpc('apply_operations', {
     p_operations: ops.map(toPayload),
   })
-  if (token) builder.setHeader('Authorization', `Bearer ${token}`)
+  builder.setHeader('Authorization', `Bearer ${token}`)
   const { data, error } = await builder
 
   if (error) {

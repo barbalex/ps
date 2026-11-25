@@ -125,7 +125,7 @@ export const upsertVectorLayerDisplaysForVectorLayer = async ({
   }
 
   if (
-    !((properties ?? []) as string[]).includes(displayByProperty) &&
+    !((properties ?? []) as string[]).includes(displayByProperty!) &&
     existingVectorLayerDisplays.length
   ) {
     // remove all displays before creating new ones
@@ -335,4 +335,98 @@ export const upsertVectorLayerDisplaysForVectorLayer = async ({
   }
 
   return
+}
+
+// One display per value, for layers whose values are not in the db (wfs:
+// they are read from the service). Existing displays are left alone, so their
+// styling survives reading the values again. removeVanished deletes the
+// displays of values that are not among the read ones — for a layer changing
+// the field it is displayed by. Only pass it with completely read values: an
+// incomplete list would delete displays of values that exist
+export const syncVectorLayerDisplaysForValues = async ({
+  vectorLayerId,
+  values,
+  removeVanished,
+}: {
+  vectorLayerId: string
+  // null: the features without a value
+  values: (string | null)[]
+  removeVanished: boolean
+}): Promise<{ created: number; removed: number }> => {
+  const db = store.get(pgliteDbAtom)!
+  const existingRes = await db.query(
+    `SELECT vector_layer_display_id, display_property_value FROM vector_layer_displays WHERE vector_layer_id = $1`,
+    [vectorLayerId],
+  )
+  const existing = (existingRes?.rows ?? []) as Pick<
+    VectorLayerDisplays,
+    'vector_layer_display_id' | 'display_property_value'
+  >[]
+
+  let created = 0
+  for (const value of values) {
+    // leave existing displays unchanged
+    if (existing.some((display) => display.display_property_value === value)) {
+      continue
+    }
+    await createVectorLayerDisplay({
+      vectorLayerId,
+      displayPropertyValue: value,
+    })
+    created++
+  }
+
+  const vanished =
+    removeVanished ?
+      existing.filter(
+        (display) => !values.includes(display.display_property_value),
+      )
+    : []
+  if (vanished.length) await deleteDisplays(vanished.map((display) => display.vector_layer_display_id))
+
+  return { created, removed: vanished.length }
+}
+
+const deleteDisplays = async (ids: string[]) => {
+  const db = store.get(pgliteDbAtom)!
+  await db.query(
+    `DELETE FROM vector_layer_displays WHERE vector_layer_display_id = ANY($1)`,
+    [ids],
+  )
+  store.set(addOperationAtom, {
+    table: 'vector_layer_displays',
+    operation: 'delete',
+    filter: {
+      function: 'in',
+      column: 'vector_layer_display_id',
+      value: ids,
+    },
+  })
+}
+
+/**
+ * Ends displaying a layer by a field: the displays of the field's values are
+ * deleted, the one without a value stays — it is the layer's look again —, or
+ * is created when none is left
+ */
+export const clearVectorLayerDisplaysByValue = async (
+  vectorLayerId: string,
+): Promise<{ created: number; removed: number }> => {
+  const db = store.get(pgliteDbAtom)!
+  const valueDisplaysRes = await db.query(
+    `SELECT vector_layer_display_id FROM vector_layer_displays WHERE vector_layer_id = $1 AND display_property_value IS NOT NULL`,
+    [vectorLayerId],
+  )
+  const idsToDelete = ((valueDisplaysRes?.rows ?? []) as {
+    vector_layer_display_id: string
+  }[]).map((row) => row.vector_layer_display_id)
+  if (idsToDelete.length) await deleteDisplays(idsToDelete)
+
+  const valuelessRes = await db.query(
+    `SELECT 1 FROM vector_layer_displays WHERE vector_layer_id = $1 AND display_property_value IS NULL LIMIT 1`,
+    [vectorLayerId],
+  )
+  const created = valuelessRes?.rows?.length ? 0 : 1
+  if (created) await createVectorLayerDisplay({ vectorLayerId })
+  return { created, removed: idsToDelete.length }
 }

@@ -21,6 +21,14 @@
   }
 }
 
+/* mounted, but the map's width is not measured yet (Map/index.tsx measures
+   right after the first commit): hidden for that one, never painted commit.
+   Showing it from display: none starts no transition — so the drawer does
+   not animate away from the wide layout a narrow map must not flash */
+.unmeasured {
+  display: none;
+}
+
 .innerContainer {
   display: flex;
   height: 100%;

@@ -42,7 +42,7 @@ export const Places2 = ({
   // round-trip through the url) must not rebuild the FeatureCollections —
   // a new data identity reconciles the whole layer
   const data = useMemo(() => {
-    const places: Places[] = res?.rows ?? []
+    const places = res?.rows ?? []
     return places.map((p) => {
       // add p's properties to all features:
       // somehow there is a data property with empty object as value???

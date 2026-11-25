@@ -6,22 +6,18 @@ import { useIntl } from 'react-intl'
 import { treeOpenNodesSetAtom } from '../store.ts'
 
 type Props = {
-  projectId_: string
-  subprojectId_: string
-  goalId_: string
+  projectId: string
+  subprojectId: string
+  goalId: string
 }
 
 export const useGoalGoalNavData = ({
-  projectId_,
-  subprojectId_,
-  goalId_,
+  projectId,
+  subprojectId,
+  goalId,
 }: Props) => {
   const [openNodesSet] = useAtom(treeOpenNodesSetAtom)
   const { formatMessage } = useIntl()
-
-  const projectId = projectId_?.replace(/_/g, '-')
-  const subprojectId = subprojectId_?.replace(/_/g, '-')
-  const goalId = goalId_?.replace(/_/g, '-')
 
   useLiveQuery(/* sql */ `
     SELECT
@@ -48,11 +44,11 @@ export const useGoalGoalNavData = ({
   const parentArray = [
     'data',
     'projects',
-    projectId_,
+    projectId,
     'subprojects',
-    subprojectId_,
+    subprojectId,
     'goals',
-    goalId_,
+    goalId,
   ]
   const parentUrl = `/${parentArray.join('/')}`
   const ownArray = [...parentArray, 'goal']

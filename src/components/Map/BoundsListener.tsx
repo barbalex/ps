@@ -67,17 +67,61 @@ export const BoundsListener = () => {
     zoomend: onMoveEndOrZoomEnd,
   })
 
+  // Latest bounds behind a ref, for the same reason as the callbacks above:
+  // the restore effect below must only re-run when the url's c/z values
+  // change — but on mount it needs to know whether a zoom command is waiting
+  const mapBoundsRef = useRef(mapBounds)
+  mapBoundsRef.current = mapBounds
+
+  // number of zoom commands applied so far (see the restore's retries below)
+  const zoomCommandsRef = useRef(0)
+
+  const setMapBounds = useSetAtom(mapBoundsAtom)
+
   useEffect(() => {
-    if (mapBounds) map.fitBounds(mapBounds)
-  }, [map, mapBounds])
+    if (!mapBounds) return
+    map.fitBounds(mapBounds)
+    zoomCommandsRef.current += 1
+    // the fitted view is the one to keep: it gets persisted on moveend (see
+    // saveCenterAndZoom) — also when a restore is still settling — and
+    // nothing may apply this command again when the map mounts later
+    isInitializingRef.current = false
+    setMapBounds(null)
+  }, [map, mapBounds, setMapBounds])
 
   useEffect(() => {
     isInitializingRef.current = true
+    // read here, not inside whenReady: the effect above consumes a waiting
+    // command (and re-renders) before a deferred whenReady callback would run
+    const zoomCommandWaiting = !!mapBoundsRef.current
 
     // Restore view from the url (or stored fallback) immediately when the
     // map is ready; re-runs when the url params change, so following a link
     // with other c/z params moves the map
     map.whenReady(() => {
+      // A zoom command issued before the map mounted (e.g. a form's "zoom to"
+      // while the map tab was closed) was applied by the effect above on this
+      // very mount. It wins over the restored view, which used to override it.
+      // Nothing was restored that first has to settle, and the fit is not
+      // animated on a fresh map (its moveend came while initializing), so the
+      // fitted view is saved right away
+      if (zoomCommandWaiting) {
+        isInitializingRef.current = false
+        saveCenterAndZoom()
+        return
+      }
+
+      // the retries below re-assert currentZoom a little later; a zoom command
+      // applied in the meantime (a form's "zoom to" landing just after the map
+      // mounted) has moved the map on purpose and must not be undone by them
+      const zoomCommandsAtRestore = zoomCommandsRef.current
+      const retryZoom = () => {
+        if (zoomCommandsRef.current !== zoomCommandsAtRestore) return
+        if (map.getZoom() !== currentZoom) {
+          map.setZoom(currentZoom, { animate: false })
+        }
+      }
+
       if (currentCenter && currentZoom) {
         try {
           // Skip redundant restores: every moveend/zoomend round-trips the
@@ -99,17 +143,8 @@ export const BoundsListener = () => {
             } as ZoomPanOptions)
 
             // Retry if zoom didn't stick (seems to happen on initial load)
-            setTimeout(() => {
-              if (map.getZoom() !== currentZoom) {
-                map.setZoom(currentZoom, { animate: false })
-              }
-            }, 50)
-
-            setTimeout(() => {
-              if (map.getZoom() !== currentZoom) {
-                map.setZoom(currentZoom, { animate: false })
-              }
-            }, 150)
+            setTimeout(retryZoom, 50)
+            setTimeout(retryZoom, 150)
           }
         } catch (e) {
           console.error('Failed to restore map view:', e)
@@ -123,7 +158,7 @@ export const BoundsListener = () => {
     })
 
     onMoveOrZoomRef.current()
-  }, [map, currentCenter, currentZoom])
+  }, [map, currentCenter, currentZoom, saveCenterAndZoom])
 
   return null
 }

@@ -19,6 +19,7 @@ export default interface TileLayersHistory {
 
   is_background: boolean | null;
 
+  /** System period written by temporal_tables. lower(sys_period) is when the row version became current, upper(sys_period) when it stopped being current. */
   sys_period: string;
 
   created_at: Date;
@@ -51,6 +52,7 @@ export interface TileLayersHistoryInitializer {
   /** Default value: false */
   is_background?: boolean | null;
 
+  /** System period written by temporal_tables. lower(sys_period) is when the row version became current, upper(sys_period) when it stopped being current. */
   sys_period: string;
 
   /** Default value: now() */
@@ -83,6 +85,7 @@ export interface TileLayersHistoryMutator {
 
   is_background?: boolean | null;
 
+  /** System period written by temporal_tables. lower(sys_period) is when the row version became current, upper(sys_period) when it stopped being current. */
   sys_period?: string;
 
   created_at?: Date;

@@ -15,8 +15,8 @@ import { createVectorLayer } from '../../modules/createRows.ts'
 import { FormHeader } from '../../components/FormHeader/index.tsx'
 import { HistoryToggleButton } from '../../components/shared/HistoryCompare/HistoryToggleButton.tsx'
 import { ShowLayerInMapButton } from '../../components/shared/ShowLayerInMapButton.tsx'
+import { useUrlPanes } from '../../modules/useUrlPanes.ts'
 import {
-  tabsAtom,
   draggableLayersAtom,
   droppableLayersAtom,
   addOperationAtom,
@@ -40,7 +40,7 @@ export const Header = ({
     from ===
     '/data/projects/$projectId_/vector-layers/$vectorLayerId_/vector-layer'
   const [droppableLayers, setDroppableLayers] = useAtom(droppableLayersAtom)
-  const [tabs, setTabs] = useAtom(tabsAtom)
+  const [tabs, setTabs] = useUrlPanes()
   const [draggableLayers, setDraggableLayers] = useAtom(draggableLayersAtom)
   const addOperation = useSetAtom(addOperationAtom)
   const { projectId, vectorLayerId } = useParams({ strict: false })

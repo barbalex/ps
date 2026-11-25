@@ -5,6 +5,7 @@ import { useIntl } from 'react-intl'
 
 import { useIsFirstRender } from '../../modules/useIsFirstRender.ts'
 import { languageAtom } from '../../store.ts'
+import { placeScopedFieldTables } from '../../modules/fieldTableLabel.ts'
 import type Fields from '../../models/public/Fields.ts'
 import type { FieldChangeData } from '../../components/shared/fieldChange.ts'
 
@@ -32,16 +33,6 @@ type Props = {
 }
 
 type Opt = { id: string; table_name: string; level: number | null }
-
-const placeScopedTables = new Set([
-  'places',
-  'checks',
-  'check_reports',
-  'actions',
-  'action_reports',
-  'observations',
-  'files',
-])
 
 // Options ordered hierarchically (subproject scope → place level 1 → place level 2)
 // mirroring the nav tree order
@@ -250,7 +241,7 @@ export const TableAndLevel = ({
   }
 
   const combinedValue = fieldsRow.table_name
-    ? fieldsRow.level != null && placeScopedTables.has(fieldsRow.table_name)
+    ? fieldsRow.level != null && placeScopedFieldTables.has(fieldsRow.table_name)
       ? `${fieldsRow.table_name}_${fieldsRow.level}`
       : fieldsRow.table_name
     : ''

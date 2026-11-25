@@ -3,7 +3,6 @@ import type Actions from '../../models/public/Actions.ts'
 import { SwitchField } from '../../components/shared/SwitchField.tsx'
 import { JsonbOrFormDesign } from '../../components/shared/FormDesign/index.tsx'
 import { WithFormDesign } from '../../components/shared/FormDesign/WithFormDesign.tsx'
-import { EditingGeometry } from '../../components/shared/EditingGeometry.tsx'
 import { jsonbDataFromRow } from '../../modules/jsonbDataFromRow.ts'
 import type { getValueFromChange } from '../../modules/getValueFromChange.ts'
 import { useIntl } from 'react-intl'
@@ -85,17 +84,6 @@ export const ActionForm = ({
         autoFocus
         ref={autoFocusRef as unknown as React.Ref<HTMLDivElement>}
         fieldIds={fieldIds}
-      />
-      <EditingGeometry
-        row={
-          row as {
-            place_id?: string
-            action_id?: string
-            check_id?: string
-            geometry?: unknown
-          }
-        }
-        table="actions"
       />
     </WithFormDesign>
   )

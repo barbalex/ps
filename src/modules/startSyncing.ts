@@ -13,7 +13,10 @@ import {
   syncObjectAtom,
 } from '../store.ts'
 import { constants } from './constants.ts'
-import { fetchPostgrestToken } from './fetchPostgrestToken.ts'
+import {
+  isPostgrestTokenUnavailableError,
+  requirePostgrestToken,
+} from './fetchPostgrestToken.ts'
 import { dependencyLevels, untilUpToDate } from './syncStages.ts'
 import { armSyncErrorRecovery, syncRecovered } from './syncErrorRecovery.ts'
 import { shapeDefinitions } from './shapeDefinitions.mjs'
@@ -60,15 +63,14 @@ export const startSyncing = async (userId: string) => {
   // Preflight the PostgREST JWT so Caddy's forward_auth gate on the Electric
   // endpoint accepts the shape requests. The token must be the one of THIS
   // user: the auth server rejects shapes whose params[1] is not the caller.
-  const token = await fetchPostgrestToken(userId)
-  if (!token) {
-    throw new Error('startSyncing: no PostgREST token for the signed-in user')
-  }
+  await requirePostgrestToken(userId)
   // Function-valued header so every shape request resolves the CURRENT token
   // from fetchPostgrestToken's expiry-aware cache — a static header would 401
-  // on every long-poll once the 1h PostgREST JWT expires (caddy forward_auth)
+  // on every long-poll once the 1h PostgREST JWT expires (caddy forward_auth).
+  // Never `Bearer null`: without a token the request would only be rejected,
+  // so nothing is sent and the stream retries on its own backoff
   const authHeaders = {
-    Authorization: async () => `Bearer ${await fetchPostgrestToken(userId)}`,
+    Authorization: async () => `Bearer ${await requirePostgrestToken(userId)}`,
   } as unknown as Record<string, string>
 
   try {
@@ -134,6 +136,22 @@ export const startSyncing = async (userId: string) => {
         // not yet applied), and mounted live queries would read the empty
         // table and never be notified of the refill. InitialSyncManager
         // releases once every stage's snapshot is applied (isApplied).
+        return
+      }
+
+      if (isPostgrestTokenUnavailableError(error)) {
+        if (error.reason === 'network') {
+          // offline, like a request that failed on the way out (below)
+          console.warn('Electric: network error detected, marking offline')
+          store.set(onlineAtom, false)
+          return
+        }
+        // the auth server gave no token (rate limit, signed out): nothing is
+        // wrong with the sync — it resumes once there is one again
+        console.warn(
+          'Electric: no auth token, shape request postponed:',
+          error.message,
+        )
         return
       }
 

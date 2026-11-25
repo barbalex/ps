@@ -353,14 +353,9 @@ export const syncPausedAtom = atom(false)
 // persisted: meaningless across page loads.
 export const backgroundSyncingAtom = atom(false)
 
-export const seenWmsServiceKeysAtom = atomWithStorage<string[]>(
-  'seenWmsServiceKeysAtom',
-  [],
-)
-export const seenWfsServiceKeysAtom = atomWithStorage<string[]>(
-  'seenWfsServiceKeysAtom',
-  [],
-)
+// NB: which services were already capability-fetched (AutoFetchCapabilities)
+// moved from localStorage atoms into the local-only _ps_local_meta table —
+// per-service marker rows wipe with the database on logout
 
 export const setSqlInitializingFalseAfterTimeoutAtom = atom(
   null,

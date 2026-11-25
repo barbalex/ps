@@ -3,14 +3,13 @@ import { memo } from 'react'
 import { useGoalGoalNavData } from '../../../modules/useGoalGoalNavData.ts'
 import { FetcherReturner } from './FetcherReturner.tsx'
 
-type Params = {
-  projectId_: string
-  subprojectId_: string
-  goalId_: string
-}
-
 export const GoalGoalFetcher = memo(
-  ({ params, ...other }: { params: Params }) => {
+  ({
+    params,
+    ...other
+  }: {
+    params: Parameters<typeof useGoalGoalNavData>[0]
+  }) => {
     const { navData } = useGoalGoalNavData(params)
 
     return (

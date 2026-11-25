@@ -4,6 +4,7 @@ import { useAtomValue } from 'jotai'
 import { usePGlite, useLiveQuery } from '@electric-sql/pglite-react'
 
 import { createVectorLayer } from '../modules/createRows.ts'
+import { dedupeVectorLayerDisplays } from '../modules/dedupeVectorLayerDisplays.ts'
 import { useFirstRender } from '../modules/useFirstRender.ts'
 import {
   initialSyncingAtom,
@@ -302,6 +303,16 @@ export const TableLayersProvider = () => {
     firstRender,
     pendingVLProjectIds.size,
   ])
+
+  // Layers created on a client used to get two displays without a value (see
+  // modules/dedupeVectorLayerDisplays.ts). Once the sync is done they are left
+  // with one — here and on the server
+  useEffect(() => {
+    if (firstRender || sqlInitializing || initialSyncing) return
+    dedupeVectorLayerDisplays().catch((error) => {
+      console.error('dedupeVectorLayerDisplays failed', error)
+    })
+  }, [firstRender, initialSyncing, sqlInitializing])
 
   return null
 }

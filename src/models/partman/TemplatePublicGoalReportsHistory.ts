@@ -4,6 +4,8 @@ export default interface TemplatePublicGoalReportsHistory {
 
   goal_id: string | null;
 
+  year: number | null;
+
   data: unknown | null;
 
   label: string | null;
@@ -23,6 +25,8 @@ export interface TemplatePublicGoalReportsHistoryInitializer {
 
   goal_id?: string | null;
 
+  year?: number | null;
+
   data?: unknown | null;
 
   label?: string | null;
@@ -41,6 +45,8 @@ export interface TemplatePublicGoalReportsHistoryMutator {
   goal_report_id?: string;
 
   goal_id?: string | null;
+
+  year?: number | null;
 
   data?: unknown | null;
 

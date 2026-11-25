@@ -12,7 +12,6 @@ import { TbZoomScan } from 'react-icons/tb'
 import type { MapInfoLayer } from '../../../../store.ts'
 import {
   mapBoundsAtom,
-  tabsAtom,
   editingPlaceGeometryAtom,
   editingCheckGeometryAtom,
   editingActionGeometryAtom,
@@ -23,6 +22,8 @@ import {
   extentToBoundsWithMargin,
 } from '../../../../modules/geoQueries.ts'
 import { navigateToOwnForm } from '../../../../modules/navigateToOwnForm.ts'
+import { useUrlPanes } from '../../../../modules/useUrlPanes.ts'
+import { SafeHtml } from '../../../shared/SafeHtml.tsx'
 import styles from './Layer.module.css'
 
 const { Button } = fluentUiReactComponents
@@ -58,7 +59,7 @@ export const Layer = ({ layerData }: Props) => {
   const { formatMessage } = useIntl()
   const navigate = useNavigate()
   const setMapBounds = useSetAtom(mapBoundsAtom)
-  const [tabs, setTabs] = useAtom(tabsAtom)
+  const [tabs, setTabs] = useUrlPanes()
   const [editingPlaceGeometry, setEditingPlaceGeometry] = useAtom(
     editingPlaceGeometryAtom,
   )
@@ -214,7 +215,10 @@ export const Layer = ({ layerData }: Props) => {
       <div className={styles.container}>
         <div className={styles.title}>{titleToShow}</div>
         {buttons}
-        <div dangerouslySetInnerHTML={{ __html: html }} />
+        <SafeHtml
+          html={html}
+          className={`${styles.text} ${styles.html}`}
+        />
       </div>
     )
   }

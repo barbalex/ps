@@ -5,6 +5,7 @@ import { useSetAtom } from 'jotai'
 import { useIntl } from 'react-intl'
 
 import { addOperationAtom } from '../../../store.ts'
+import { clearVectorLayerDisplaysByValue } from './upsertVectorLayerDisplaysForVectorLayer.ts'
 import type VectorLayers from '../../../models/public/VectorLayers.ts'
 
 type OnOptionSelect = NonNullable<
@@ -46,8 +47,12 @@ export const LayersDropdown = ({
   )
 
   const onOptionSelect: OnOptionSelect = async (_e, data) => {
+    // choosing the same layer again changes nothing
+    if (data.optionValue === vectorLayer.wfs_service_layer_name) return
+    // the fields and the displays by field values belong to the previous
+    // layer: the fields are read anew, the displays of its values are gone
     await db.query(
-      `UPDATE vector_layers SET wfs_service_layer_name = $1, name = $2, label_de = $3 WHERE vector_layer_id = $4`,
+      `UPDATE vector_layers SET wfs_service_layer_name = $1, name = $2, label_de = $3, properties = NULL, display_by_property = NULL WHERE vector_layer_id = $4`,
       [data.optionValue, data.optionValue, data.optionText, vectorLayer.vector_layer_id],
     )
     addOperation({
@@ -59,9 +64,12 @@ export const LayersDropdown = ({
         wfs_service_layer_name: data.optionValue,
         name: data.optionValue,
         label_de: data.optionText,
+        properties: null,
+        display_by_property: null,
       },
       prev: { ...vectorLayer },
     })
+    clearVectorLayerDisplaysByValue(vectorLayer.vector_layer_id)
   }
 
   const layerLabel = formatMessage({ id: 'JY1Jke', defaultMessage: 'Ebene' })

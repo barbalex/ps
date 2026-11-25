@@ -10,14 +10,25 @@ import { mapHideUiAtom } from '../../../store.ts'
 import { useElementSize } from '../../../modules/useElementSize.ts'
 import styles from './index.module.css'
 
-type Props = { isNarrow: boolean; mapHeight?: number }
+// isNarrow is undefined until MapContainer has measured the map's width,
+// which happens right after the commit the drawer mounts in
+type Props = { isNarrow: boolean | undefined; mapHeight?: number }
 
 // map space kept visible above the narrow drawer: the only close
 // toggle sits at the drawer's top edge (6px offset, ~31px tall), so
 // the drawer must never grow past the map container's top
 const narrowTopSliver = 60
 
-export const LeftMenuDrawer = ({ isNarrow, mapHeight }: Props) => {
+// closed: only the toggle stays reachable
+const closedSize = 5
+
+export const LeftMenuDrawer = ({
+  isNarrow: measuredNarrow,
+  mapHeight,
+}: Props) => {
+  // the commit before the measurement is never painted (the drawer is
+  // hidden for it, see .unmeasured)
+  const isNarrow = measuredNarrow ?? false
   const mapHideUi = useAtomValue(mapHideUiAtom)
 
   const {
@@ -25,11 +36,25 @@ export const LeftMenuDrawer = ({ isNarrow, mapHeight }: Props) => {
     height: ownHeight,
     ref: widthRef,
   } = useElementSize<HTMLDivElement>({ delay: 100 })
-  const [size, setSize] = useState(isNarrow ? 500 : 380)
+  // the default follows the map's width: closed on narrow maps, where it
+  // would cover most of the map. It applies until a size is set explicitly
+  // — by the toggle, a drag or the clamps below — which then survives
+  // narrow ↔ wide changes
+  const [chosenSize, setChosenSize] = useState<number | null>(null)
+  const size = chosenSize ?? (isNarrow ? closedSize : 380)
   // when width falls below 40, set sidebarSize to 5
   useEffect(() => {
     if ((isNarrow && ownHeight! <= 40) || (!isNarrow && ownWidth! <= 40)) {
-      const id = requestAnimationFrame(() => setSize(5))
+      const id = requestAnimationFrame(() =>
+        // the measured size trails the drawer by the debounce — it arrives
+        // ~100ms after a close animation. Leave alone what is closed since
+        // (that keeps the closed default a default) or was opened again
+        setChosenSize((chosenSize) =>
+          chosenSize === null || chosenSize === closedSize || chosenSize > 40 ?
+            chosenSize
+          : closedSize,
+        ),
+      )
       return () => cancelAnimationFrame(id)
     }
   }, [isNarrow, ownHeight, ownWidth])
@@ -47,15 +72,15 @@ export const LeftMenuDrawer = ({ isNarrow, mapHeight }: Props) => {
   // keep its top outside the map area
   useEffect(() => {
     if (isNarrow && maxNarrowSize !== undefined && size > maxNarrowSize) {
-      setSize(maxNarrowSize)
+      setChosenSize(maxNarrowSize)
     }
   }, [isNarrow, maxNarrowSize, size])
 
   const isOpen = size > 40
   const toggleOpen = (e: React.MouseEvent) => {
     e.stopPropagation()
-    const newValue = isOpen ? 5 : clampNarrow(isNarrow ? 500 : 380)
-    setSize(newValue)
+    const newValue = isOpen ? closedSize : clampNarrow(isNarrow ? 500 : 380)
+    setChosenSize(newValue)
   }
 
   const animationFrame = useRef<number>(0)
@@ -76,15 +101,20 @@ export const LeftMenuDrawer = ({ isNarrow, mapHeight }: Props) => {
 
       // narrow: anchor at the map container's bottom edge, not the
       // window's: the map starts below header and breadcrumbs
-      const newSidebarSize = isNarrow
-        ? clampNarrow(
+      const draggedSize =
+        isNarrow ?
+          clampNarrow(
             (widthRef.current?.parentElement?.getBoundingClientRect().bottom ??
               window.innerHeight) - clientY,
           )
         : clientX - sidebarRef.current.getBoundingClientRect().left
+      // never below the closed sliver: dragged past the map's edge the size
+      // went negative, which counts as 'auto' — the drawer showed at its
+      // content width while its toggle offered to open it
+      const newSidebarSize = Math.max(closedSize, draggedSize)
 
       animationFrame.current = requestAnimationFrame(() =>
-        setSize(newSidebarSize),
+        setChosenSize(newSidebarSize),
       )
     },
     [clampNarrow, isNarrow, isResizing, widthRef],
@@ -115,20 +145,23 @@ export const LeftMenuDrawer = ({ isNarrow, mapHeight }: Props) => {
     window.addEventListener('mousemove', resize)
     // these events cant be added to the resizer's events
     // because on dragging the mouse immediately leaves the resizer
-    window.addEventListener('mouseup', stopResizing)
+    // pointerup, not mouseup: released over the map toolbar's top button,
+    // no mouseup reaches the window — the drag never ended and the drawer
+    // kept following the pointer
+    window.addEventListener('pointerup', stopResizing)
     window.addEventListener('mouseleave', stopResizing)
 
     return () => {
       cancelAnimationFrame(animationFrame.current)
       window.removeEventListener('mousemove', resize)
-      window.removeEventListener('mouseup', stopResizing)
+      window.removeEventListener('pointerup', stopResizing)
       window.removeEventListener('mouseleave', stopResizing)
     }
   }, [resize, stopResizing])
 
   return (
     <div
-      className={`${styles.container}${isResizing ? ` ${styles.dragging}` : ''}`}
+      className={`${styles.container}${measuredNarrow === undefined ? ` ${styles.unmeasured}` : ''}${isResizing ? ` ${styles.dragging}` : ''}`}
       // dragging can mark text so we disable pointer events
       ref={widthRef}
     >

@@ -67,13 +67,19 @@ export default interface PlaceLevelsHistory {
 
   place_files_in_place: boolean | null;
 
+  place_files_offline: boolean | null;
+
   action_files: boolean | null;
 
   action_files_in_action: boolean | null;
 
+  action_files_offline: boolean | null;
+
   check_files: boolean | null;
 
   check_files_in_check: boolean | null;
+
+  check_files_offline: boolean | null;
 
   label: string | null;
 
@@ -85,12 +91,6 @@ export default interface PlaceLevelsHistory {
   updated_at: Date;
 
   updated_by: string | null;
-
-  place_files_offline: boolean | null;
-
-  action_files_offline: boolean | null;
-
-  check_files_offline: boolean | null;
 }
 
 /**
@@ -184,17 +184,26 @@ export interface PlaceLevelsHistoryInitializer {
   /** Default value: true */
   place_files_in_place?: boolean | null;
 
+  /** Default value: false */
+  place_files_offline?: boolean | null;
+
   /** Default value: true */
   action_files?: boolean | null;
 
   /** Default value: true */
   action_files_in_action?: boolean | null;
 
+  /** Default value: false */
+  action_files_offline?: boolean | null;
+
   /** Default value: true */
   check_files?: boolean | null;
 
   /** Default value: true */
   check_files_in_check?: boolean | null;
+
+  /** Default value: false */
+  check_files_offline?: boolean | null;
 
   label?: string | null;
 
@@ -208,15 +217,6 @@ export interface PlaceLevelsHistoryInitializer {
   updated_at?: Date;
 
   updated_by?: string | null;
-
-  /** Default value: false */
-  place_files_offline?: boolean | null;
-
-  /** Default value: false */
-  action_files_offline?: boolean | null;
-
-  /** Default value: false */
-  check_files_offline?: boolean | null;
 }
 
 /**
@@ -288,13 +288,19 @@ export interface PlaceLevelsHistoryMutator {
 
   place_files_in_place?: boolean | null;
 
+  place_files_offline?: boolean | null;
+
   action_files?: boolean | null;
 
   action_files_in_action?: boolean | null;
 
+  action_files_offline?: boolean | null;
+
   check_files?: boolean | null;
 
   check_files_in_check?: boolean | null;
+
+  check_files_offline?: boolean | null;
 
   label?: string | null;
 
@@ -306,10 +312,4 @@ export interface PlaceLevelsHistoryMutator {
   updated_at?: Date;
 
   updated_by?: string | null;
-
-  place_files_offline?: boolean | null;
-
-  action_files_offline?: boolean | null;
-
-  check_files_offline?: boolean | null;
 }

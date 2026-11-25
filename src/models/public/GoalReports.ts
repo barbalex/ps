@@ -12,6 +12,9 @@ export default interface GoalReports {
 
   goal_id: GoalsGoalId | null;
 
+  /** Year of report. Preset: current year */
+  year: number | null;
+
   /** Room for goal report specific data, defined in "fields" table */
   data: unknown | null;
 
@@ -36,6 +39,12 @@ export interface GoalReportsInitializer {
   goal_report_id?: GoalReportsGoalReportId;
 
   goal_id?: GoalsGoalId | null;
+
+  /**
+   * Year of report. Preset: current year
+   * Default value: date_part('year'::text, (now())::date)
+   */
+  year?: number | null;
 
   /** Room for goal report specific data, defined in "fields" table */
   data?: unknown | null;
@@ -62,6 +71,9 @@ export interface GoalReportsMutator {
   goal_report_id?: GoalReportsGoalReportId;
 
   goal_id?: GoalsGoalId | null;
+
+  /** Year of report. Preset: current year */
+  year?: number | null;
 
   /** Room for goal report specific data, defined in "fields" table */
   data?: unknown | null;

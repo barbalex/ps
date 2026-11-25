@@ -8,8 +8,8 @@ import {
   editingPlaceGeometryAtom,
   editingCheckGeometryAtom,
   editingActionGeometryAtom,
-  tabsAtom,
 } from '../../../../store.ts'
+import { useUrlPanes } from '../../../../modules/useUrlPanes.ts'
 
 import styles from './index.module.css'
 
@@ -23,7 +23,7 @@ export const EditingGeometryButton = () => {
   const [editingActionGeometry, setEditingActionGeometry] = useAtom(
     editingActionGeometryAtom,
   )
-  const [tabs, setTabs] = useAtom(tabsAtom)
+  const [tabs, setTabs] = useUrlPanes()
 
   const pathArray = useLocation()
     .pathname.split('/')

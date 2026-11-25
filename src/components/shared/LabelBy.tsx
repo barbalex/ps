@@ -2,6 +2,7 @@ import { useLiveQuery } from '@electric-sql/pglite-react'
 import { useParams } from '@tanstack/react-router'
 
 import { DropdownFieldSimpleOptions } from './DropdownFieldSimpleOptions.tsx'
+import { uniqFieldsByName } from '../../modules/fieldTableLabel.ts'
 import '../../form.css'
 import type Fields from '../../models/public/Fields.ts'
 
@@ -32,7 +33,7 @@ export const LabelBy = ({
   const fields = (res?.rows ?? []) as unknown as Fields[]
   // Could add some fields from root here if needed
   const fieldNames = [
-    ...fields.map(({ name }) => name),
+    ...uniqFieldsByName(fields).map(({ name }) => name),
     ...extraFieldNames,
   ].sort() as string[]
 

@@ -45,7 +45,7 @@ export const Actions1 = ({
   // geometry is stored as PostGIS GeometryCollection; convert to
   // FeatureCollection for display; properties go into every feature
   const data = useMemo(() => {
-    const actions: Actions[] = resActions?.rows ?? []
+    const actions = resActions?.rows ?? []
     return actions.map((p) => {
       // add p's properties to all features:
       // somehow there is a data property with empty object as value???

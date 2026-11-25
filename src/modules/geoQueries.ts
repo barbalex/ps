@@ -109,22 +109,18 @@ export const extentSelect = (alias?: string): string =>
     )
     .join(', ')
 
-// runs a query built with extentSelect and returns its extent,
-// or null if no non-empty geometry matched
-export const queryExtent = async (
-  db: QueryableDb,
-  sql: string,
-  params: unknown[] = [],
-): Promise<Extent | null> => {
-  const res = await db.query(sql, params)
-  const row = res?.rows?.[0] as
-    | {
-        x_min?: number | null
-        y_min?: number | null
-        x_max?: number | null
-        y_max?: number | null
-      }
-    | undefined
+// a row of a query built with extentSelect
+export type ExtentRow = {
+  x_min?: number | null
+  y_min?: number | null
+  x_max?: number | null
+  y_max?: number | null
+}
+
+// the extent of an ExtentRow (e.g. from a live query), or null if no
+// non-empty geometry matched — same rule as queryExtent, so that "has an
+// extent" and "can be zoomed to" cannot drift apart
+export const extentFromRow = (row: ExtentRow | undefined): Extent | null => {
   const { x_min, y_min, x_max, y_max } = row ?? {}
   if (
     [x_min, y_min, x_max, y_max].some(
@@ -139,6 +135,17 @@ export const queryExtent = async (
     xMax: x_max!,
     yMax: y_max!,
   }
+}
+
+// runs a query built with extentSelect and returns its extent,
+// or null if no non-empty geometry matched
+export const queryExtent = async (
+  db: QueryableDb,
+  sql: string,
+  params: unknown[] = [],
+): Promise<Extent | null> => {
+  const res = await db.query(sql, params)
+  return extentFromRow(res?.rows?.[0] as ExtentRow | undefined)
 }
 
 export const unionExtents = (extents: (Extent | null)[]): Extent | null => {

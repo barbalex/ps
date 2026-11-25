@@ -1,7 +1,7 @@
 // https://www.better-auth.com/docs/integrations/fastify
 import express from 'express'
 import cors from 'cors'
-import { rateLimit } from 'express-rate-limit'
+import { ipKeyGenerator, rateLimit } from 'express-rate-limit'
 import { createHmac, timingSafeEqual } from 'crypto'
 import { toNodeHandler, fromNodeHeaders } from 'better-auth/node'
 import { hashPassword } from '@better-auth/utils/password'
@@ -87,14 +87,17 @@ app.use(
     },
     methods: ['GET', 'POST', 'PUT', 'DELETE'], // Specify allowed HTTP methods
     allowedHeaders: ['Content-Type', 'Authorization', 'x-app-language'],
+    // let the app read a 429's Retry-After: fetchPostgrestToken waits that
+    // long instead of asking an exhausted budget again
+    exposedHeaders: ['Retry-After'],
     credentials: true, // Allow credentials (cookies, authorization headers, etc.)
   }),
 )
 
 // Rate limiting for the custom endpoints. better-auth's built-in limiter
 // (see auth.mjs) only covers the routes handled by better-auth itself; the
-// endpoints below bypass it. Buckets are per client IP and in-memory, which
-// is fine for the single auth instance.
+// endpoints below bypass it. Buckets are per client IP and route, and
+// in-memory, which is fine for the single auth instance.
 const rateLimitHandler = (_req, res) => {
   res.status(429).json({ error: { code: 'RATE_LIMITED' } })
 }
@@ -105,10 +108,20 @@ const rateLimitHandler = (_req, res) => {
 // users behind a shared NAT never hit it.
 const authActionRateLimiter = rateLimit({
   windowMs: 15 * 60 * 1000,
-  limit: 300,
+  // 1000, where production allows 300: in dev every local client shares a
+  // bucket (they reach the container from the same gateway address), so
+  // automated browser sessions loading the app several times a minute
+  // exhausted 300 within minutes — and with it every client's token fetch
+  // (writes then failed as "permission denied for function
+  // apply_operations")
+  limit: 1000,
   standardHeaders: true,
   legacyHeaders: false,
   handler: rateLimitHandler,
+  // one bucket per route: the two-factor status check runs on every page
+  // load and, sharing the bucket, spent half of the token endpoint's budget
+  keyGenerator: (request) =>
+    `${ipKeyGenerator(request.ip)}:${request.route?.path ?? request.path}`,
 })
 
 // Caddy's forward_auth calls this endpoint for EVERY Electric shape request:

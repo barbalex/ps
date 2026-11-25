@@ -87,8 +87,8 @@ const clearPersistedSyncUiState = () => {
     'mapLayerSortingAtom',
     'mapDrawerVectorLayerDisplayAtom',
     'treeOpenNodesAtom',
-    'seenWmsServiceKeysAtom',
-    'seenWfsServiceKeysAtom',
+    // NB: the former seenWms/seenWfsServiceKeysAtom keys moved into the
+    // local-only _ps_local_meta table, which dies with the IndexedDB below
     'qcsRunOnlyWithResults',
     'qcsRunLabelFilter',
     'rootQcsRunOnlyWithResults',

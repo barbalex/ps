@@ -1,14 +1,13 @@
 import * as fluentUiReactComponents from '@fluentui/react-components'
 const { Button } = fluentUiReactComponents
 import { MdLayers, MdLayersClear } from 'react-icons/md'
-import { useAtom } from 'jotai'
 import { useLiveQuery } from '@electric-sql/pglite-react'
 import { useIntl } from 'react-intl'
 
 import { createLayerPresentation } from '../../modules/createRows.ts'
 import { useLayerActivation } from '../../modules/useLayerActivation.ts'
 import { useUrlLayers } from '../../modules/useUrlLayers.ts'
-import { tabsAtom } from '../../store.ts'
+import { useUrlPanes } from '../../modules/useUrlPanes.ts'
 import type LayerPresentations from '../../models/public/LayerPresentations.ts'
 
 type Props =
@@ -20,7 +19,7 @@ type Props =
 // design flag (layer_presentations.active — what lists the layer under
 // Active) plus membership in the render list, plus the map tab being open.
 export const ShowLayerInMapButton = ({ vectorLayerId, wmsLayerId }: Props) => {
-  const [tabs, setTabs] = useAtom(tabsAtom)
+  const [tabs, setTabs] = useUrlPanes()
   const { formatMessage } = useIntl()
   const { isLayerVisible } = useUrlLayers()
   const { activateLayer, deactivateLayer, joinRenderList } =

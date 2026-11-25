@@ -104,7 +104,8 @@ const FieldsEditor = ({
     `SELECT
       fields.field_id,
       fields.name,
-      fields.field_label
+      fields.field_label,
+      fields.level
     FROM fields
     LEFT JOIN unnest(
         ARRAY(SELECT sorted_field_ids FROM field_sorts WHERE table_name = fields.table_name and project_id = fields.project_id)
@@ -117,11 +118,29 @@ const FieldsEditor = ({
   )
   const fields = (resFields?.rows ?? []) as {
     field_id: string
-    name: string
+    name: string | null
     field_label: string | null
+    level: number | null
   }[]
 
-  const selectedIds = row.sorted_field_ids ?? []
+  // place-scoped tables have a field per place level under the same name:
+  // disambiguate those by their level, keep single fields as they are
+  const nameCounts = new Map<string, number>()
+  for (const field of fields) {
+    nameCounts.set(field.name ?? '', (nameCounts.get(field.name ?? '') ?? 0) + 1)
+  }
+  const levelWord = formatMessage({ id: 'bDeHkI', defaultMessage: 'Stufe' })
+  const optionLabel = (field: (typeof fields)[number]): string => {
+    const base = field.field_label ?? field.name ?? ''
+    return (nameCounts.get(field.name ?? '') ?? 0) > 1 && field.level != null
+      ? `${base} (${levelWord} ${field.level})`
+      : base
+  }
+
+  // a uuid array (jsonb since older databases were migrated): it arrives as
+  // an array either way, but the column is typed unknown
+  const selectedIds: string[] =
+    Array.isArray(row.sorted_field_ids) ? row.sorted_field_ids : []
 
   const setSelectedIds = (ids: string[]) => {
     onChange(
@@ -168,9 +187,9 @@ const FieldsEditor = ({
           <Option
             key={f.field_id}
             value={f.field_id}
-            text={f.field_label ?? f.name}
+            text={optionLabel(f)}
           >
-            {f.field_label ?? f.name}
+            {optionLabel(f)}
           </Option>
         ))}
       </Dropdown>

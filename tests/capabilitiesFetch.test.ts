@@ -20,6 +20,12 @@ vi.mock('../src/modules/getCapabilities.ts', () => ({
 import { getCapabilities } from '../src/modules/getCapabilities.ts'
 import { getWmsCapabilitiesData } from '../src/formsAndLists/wmsLayer/Form/CreateWmsService/getWmsCapabilitiesData.ts'
 import { getWfsCapabilitiesData } from '../src/formsAndLists/vectorLayer/Form/getWfsCapabilitiesData.ts'
+import {
+  fetchPendingCapabilities,
+  seenWmsKey,
+} from '../src/modules/autoFetchCapabilities.ts'
+import { backgroundTasks } from '../src/modules/backgroundTasks.ts'
+import { NetworkError } from '../src/modules/httpGet.ts'
 import { operationsQueueAtom, pgliteDbAtom, store } from '../src/store.ts'
 import type WmsServices from '../src/models/public/WmsServices.ts'
 import type WfsServices from '../src/models/public/WfsServices.ts'
@@ -27,6 +33,10 @@ import type VectorLayers from '../src/models/public/VectorLayers.ts'
 
 const WMS_SERVICE = '70000000-0000-7000-8000-00000000000a'
 const WMS_SERVICE_AGAIN = '70000000-0000-7000-8000-00000000000b'
+const WMS_SERVICE_AUTO = '70000000-0000-7000-8000-00000000000c'
+const WMS_SERVICE_AUTO_SEEN = '70000000-0000-7000-8000-000000000010'
+const WMS_SERVICE_AUTO_LAYERS = '70000000-0000-7000-8000-00000000000d'
+const WMS_SERVICE_AUTO_NETWORK = '70000000-0000-7000-8000-00000000000e'
 const WFS_SERVICE = '80000000-0000-7000-8000-00000000000a'
 const WFS_SERVICE_AGAIN = '80000000-0000-7000-8000-00000000000b'
 
@@ -131,6 +141,18 @@ beforeAll(async () => {
   db = fixture.db
   projectId = fixture.ids.project
   store.set(pgliteDbAtom, db)
+
+  // AutoFetchCapabilities' seen markers live in this local-only table
+  // (created by SqlInitializer in the app, not part of the schema files)
+  await db.exec(
+    `CREATE TABLE IF NOT EXISTS _ps_local_meta(key text PRIMARY KEY, value text)`,
+  )
+
+  // complete/error arm auto-removal timers — stub them so no timers are left
+  // behind, while add/updateProgress keep spying on real calls
+  vi.spyOn(backgroundTasks, 'add')
+  vi.spyOn(backgroundTasks, 'complete').mockImplementation(() => undefined)
+  vi.spyOn(backgroundTasks, 'error').mockImplementation(() => undefined)
 
   vi.mocked(getCapabilities).mockImplementation(async ({ service }) =>
     service === 'WMS' ? wmsCapabilities : wfsCapabilities,
@@ -259,5 +281,126 @@ describe('getWfsCapabilitiesData', () => {
         WFS_SERVICE_AGAIN,
       ),
     ).toEqual(['test.wfs.default-crs-only', 'test.wfs.one', 'test.wfs.two'])
+  })
+})
+
+/**
+ * fetchPendingCapabilities is AutoFetchCapabilities' engine (the component
+ * only wires the live queries): fetch capabilities once per browser for
+ * every service that syncs in without layers. Seen markers live in the
+ * local-only _ps_local_meta table; network errors stay unseen (retried on
+ * the next load), terminal failures are marked seen.
+ */
+describe('fetchPendingCapabilities', () => {
+  const serviceUrl = 'https://example.com/wms'
+
+  const run = async (
+    serviceId: string,
+    fetchCapabilities: ReturnType<typeof vi.fn>,
+  ) => {
+    await fetchPendingCapabilities({
+      db,
+      inFlight: new Set(),
+      taskId: 'auto-fetch-wms-capabilities',
+      taskName: 'Fetching WMS capabilities',
+      failureMessage: 'Failed to fetch some WMS capabilities',
+      layerTable: 'wms_service_layers',
+      serviceIdColumn: 'wms_service_id',
+      services: [{ id: serviceId, url: serviceUrl, projectId }],
+      seenKeyOf: (service) => seenWmsKey(service.id, service.url),
+      fetchCapabilities,
+    })
+  }
+
+  const isSeen = (serviceId: string) =>
+    db
+      .query<{ count: number | string }>(
+        `SELECT count(*) AS count FROM _ps_local_meta WHERE key = $1`,
+        [seenWmsKey(serviceId, serviceUrl)],
+      )
+      .then((res) => Number(res.rows[0]?.count ?? 0) > 0)
+
+  beforeEach(() => {
+    vi.clearAllMocks()
+    // restore the through-implementations cleared by clearAllMocks
+    vi.mocked(getCapabilities).mockImplementation(async ({ service }) =>
+      service === 'WMS' ? wmsCapabilities : wfsCapabilities,
+    )
+  })
+
+  it('fetches an unseen service with zero layers and marks it seen', async () => {
+    await insertWmsService(WMS_SERVICE_AUTO)
+    const fetchCapabilities = vi.fn().mockResolvedValue(undefined)
+
+    await run(WMS_SERVICE_AUTO, fetchCapabilities)
+
+    expect(fetchCapabilities).toHaveBeenCalledTimes(1)
+    expect(fetchCapabilities.mock.calls[0]?.[0]).toMatchObject({
+      id: WMS_SERVICE_AUTO,
+      url: serviceUrl,
+      projectId,
+    })
+    expect(await isSeen(WMS_SERVICE_AUTO)).toBe(true)
+    expect(backgroundTasks.add).toHaveBeenCalledWith(
+      'auto-fetch-wms-capabilities',
+      'Fetching WMS capabilities',
+      1,
+    )
+    expect(backgroundTasks.complete).toHaveBeenCalledWith(
+      'auto-fetch-wms-capabilities',
+    )
+  })
+
+  it('does not fetch again once the service is seen', async () => {
+    await insertWmsService(WMS_SERVICE_AUTO_SEEN)
+    const fetchCapabilities = vi.fn().mockResolvedValue(undefined)
+
+    await run(WMS_SERVICE_AUTO_SEEN, fetchCapabilities)
+    expect(fetchCapabilities).toHaveBeenCalledTimes(1)
+
+    // the next load: the marker exists, nothing is pending anymore
+    vi.clearAllMocks()
+    await run(WMS_SERVICE_AUTO_SEEN, fetchCapabilities)
+
+    // vi.clearAllMocks reset the call count — zero calls means not fetched again
+    expect(fetchCapabilities).toHaveBeenCalledTimes(0)
+    expect(backgroundTasks.add).not.toHaveBeenCalled()
+    expect(backgroundTasks.complete).not.toHaveBeenCalled()
+    expect(await isSeen(WMS_SERVICE_AUTO_SEEN)).toBe(true)
+  })
+
+  it('marks a service that already has layers seen without fetching', async () => {
+    await insertWmsService(WMS_SERVICE_AUTO_LAYERS)
+    await db.query(
+      `INSERT INTO wms_service_layers (wms_service_id, name) VALUES ($1, 'layer.one')`,
+      [WMS_SERVICE_AUTO_LAYERS],
+    )
+    const fetchCapabilities = vi.fn().mockResolvedValue(undefined)
+
+    await run(WMS_SERVICE_AUTO_LAYERS, fetchCapabilities)
+
+    expect(fetchCapabilities).not.toHaveBeenCalled()
+    expect(await isSeen(WMS_SERVICE_AUTO_LAYERS)).toBe(true)
+  })
+
+  it('retries network errors but marks terminal failures seen', async () => {
+    await insertWmsService(WMS_SERVICE_AUTO_NETWORK)
+    const fetchCapabilities = vi
+      .fn()
+      .mockRejectedValueOnce(new NetworkError('Failed to fetch'))
+      .mockRejectedValueOnce(new Error('404 Not Found'))
+
+    // first load: network error — transient, service stays unseen
+    await run(WMS_SERVICE_AUTO_NETWORK, fetchCapabilities)
+    expect(await isSeen(WMS_SERVICE_AUTO_NETWORK)).toBe(false)
+
+    // second load: terminal error — marked seen, no retry on further loads
+    await run(WMS_SERVICE_AUTO_NETWORK, fetchCapabilities)
+    expect(fetchCapabilities).toHaveBeenCalledTimes(2)
+    expect(await isSeen(WMS_SERVICE_AUTO_NETWORK)).toBe(true)
+    expect(backgroundTasks.error).toHaveBeenCalledWith(
+      'auto-fetch-wms-capabilities',
+      'Failed to fetch some WMS capabilities',
+    )
   })
 })

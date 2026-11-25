@@ -1,5 +1,6 @@
 import { getCapabilities } from '../../../modules/getCapabilities.ts'
 import { createWfsServiceLayer } from '../../../modules/createRows.ts'
+import { rankedInfoFormats } from '../../../modules/infoFormats.ts'
 import {
   beginCapabilitiesFetch,
   endCapabilitiesFetch,
@@ -96,15 +97,12 @@ const getWfsCapabilitiesDataForService = async ({
   )
   serviceData.info_formats = acceptableInfoFormats
 
-  const preferredInfoFormat =
-    acceptableInfoFormats.filter((v) =>
-      v?.toLowerCase().includes('geojson'),
-    )[0] ??
-    acceptableInfoFormats.filter((v) =>
-      v?.toLowerCase().includes('application/json'),
-    )[0] ??
-    acceptableInfoFormats[0]
-  serviceData.info_format = preferredInfoFormat
+  // the format to ask for first — rendering needs json. The click listener falls
+  // back through the others (the gml ones included) when the server rejects it
+  const [preferredInfoFormat] = rankedInfoFormats(acceptableInfoFormats)
+  if (preferredInfoFormat) {
+    serviceData.info_format = preferredInfoFormat
+  }
 
   // 3. layers
   let layers = (capabilities?.FEATURETYPELIST?.FEATURETYPE ??
