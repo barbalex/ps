@@ -2489,6 +2489,21 @@
   "prVw0A": {
     "defaultMessage": "Vorschau"
   },
+  "precisePoint": {
+    "defaultMessage": "Punkt genau platzieren"
+  },
+  "precisePointApply": {
+    "defaultMessage": "Punkt übernehmen"
+  },
+  "precisePointHint": {
+    "defaultMessage": "Karte unter das Fadenkreuz schieben oder Koordinaten eingeben ({crs}, X / Y):"
+  },
+  "precisePointInvalid": {
+    "defaultMessage": "Ungültige Koordinaten für {crs}. Reihenfolge: X / Y."
+  },
+  "precisePointPreview": {
+    "defaultMessage": "Vorschau"
+  },
   "prjRptsInPrj": {
     "defaultMessage": "Berichte im Projekt anzeigen"
   },
