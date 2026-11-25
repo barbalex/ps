@@ -2207,6 +2207,12 @@
   "mapBackgroundLayersTitle": {
     "defaultMessage": "Hintergrundkarte"
   },
+  "mapCenterX": {
+    "defaultMessage": "X-Koordinate der Kartenmitte"
+  },
+  "mapCenterY": {
+    "defaultMessage": "Y-Koordinate der Kartenmitte"
+  },
   "mapChooseGeometry": {
     "defaultMessage": "Geometrie wählen, um sie zu bearbeiten"
   },
@@ -2216,11 +2222,26 @@
   "mapChooseGeometryStop": {
     "defaultMessage": "Geometrie-Auswahl beenden"
   },
+  "mapChooseScale": {
+    "defaultMessage": "Kartenmassstab wählen"
+  },
+  "mapCloseLayers": {
+    "defaultMessage": "Ebenenmenü schliessen"
+  },
   "mapExportPng": {
     "defaultMessage": "Karte als PNG speichern"
   },
   "mapExportPngError": {
     "defaultMessage": "Karte konnte nicht gespeichert werden"
+  },
+  "mapHideCenter": {
+    "defaultMessage": "Kartenmitte ausblenden"
+  },
+  "mapHideControls": {
+    "defaultMessage": "Kartenwerkzeuge ausblenden"
+  },
+  "mapLocate": {
+    "defaultMessage": "Eigenen Standort anzeigen"
   },
   "mapMeasure": {
     "defaultMessage": "Distanz und Fläche messen"
@@ -2237,11 +2258,23 @@
   "mapMeasureStop": {
     "defaultMessage": "Messung beenden"
   },
+  "mapOpenLayers": {
+    "defaultMessage": "Ebenenmenü öffnen"
+  },
   "mapPrint": {
     "defaultMessage": "Karte drucken"
   },
   "mapPrintPopupBlocked": {
     "defaultMessage": "Das Druckfenster wurde vom Browser blockiert. Bitte Popups für diese Seite erlauben."
+  },
+  "mapShowCenter": {
+    "defaultMessage": "Kartenmitte anzeigen"
+  },
+  "mapShowControls": {
+    "defaultMessage": "Kartenwerkzeuge einblenden"
+  },
+  "mapStopLocating": {
+    "defaultMessage": "Ortung beenden"
   },
   "mapZoomIn": {
     "defaultMessage": "Heranzoomen"

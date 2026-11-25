@@ -1,5 +1,7 @@
 import { useState, useEffect, useCallback } from 'react'
 import { useMap, useMapEvents } from 'react-leaflet'
+import { Tooltip } from '@fluentui/react-components'
+import { useIntl } from 'react-intl'
 
 import { Dropdown } from './Dropdown/index.tsx'
 import { formatNumber } from '../../../../../modules/formatNumber.ts'
@@ -12,6 +14,7 @@ const getMapWidthForLanInMeters = (currentLan: number) =>
 
 export const ScaleSwitchControl = () => {
   const map = useMap()
+  const { formatMessage } = useIntl()
 
   const [scale, setScale] = useState(1)
 
@@ -57,7 +60,7 @@ export const ScaleSwitchControl = () => {
 
   const onClick = () => setOpen(!open)
 
-  const { ref, width } = useElementSize<HTMLDivElement>({
+  const { ref, width } = useElementSize<HTMLButtonElement>({
     delay: 100,
     height: false,
   })
@@ -75,9 +78,13 @@ export const ScaleSwitchControl = () => {
         close={close}
         pixelsInMeterWidth={pixelsInMeterWidth}
       />
-      <div onClick={onClick} ref={ref} className={styles.text}>
-        {`1 : ${formatNumber(scale)}`}
-      </div>
+      <Tooltip relationship="description" content={formatMessage({
+        id: 'mapChooseScale', defaultMessage: 'Kartenmassstab wählen',
+      })}>
+        <button type="button" aria-expanded={open} onClick={onClick} ref={ref} className={styles.text}>
+          {`1 : ${formatNumber(scale)}`}
+        </button>
+      </Tooltip>
     </div>
   )
 }

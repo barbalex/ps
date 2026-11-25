@@ -175,7 +175,7 @@ export async function login(
  * renders no "Close Layer Menu" toggle, only the one to open it.
  */
 export async function closeLayerDrawerIfOpen(page: Page): Promise<void> {
-  const close = page.locator('button[title="Close Layer Menu"]')
+  const close = page.locator('button[name="layer_menu"][aria-expanded="true"]')
   if (await close.count()) await close.click()
 }
 

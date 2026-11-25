@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
 import type { ComponentProps, FC } from 'react'
 import * as fluentUiReactComponents from '@fluentui/react-components'
-const { ToolbarButton } = fluentUiReactComponents
+const { Tooltip, ToolbarButton } = fluentUiReactComponents
 import { useMap } from 'react-leaflet'
 import { CircleMarker, DomEvent, LayerGroup, Polyline } from 'leaflet'
 import { MdStraighten } from 'react-icons/md'
@@ -328,18 +328,18 @@ export const MeasureButton = () => {
       })
 
   return (
-    <Button
-      name="measure"
-      onClick={toggleMeasuring}
-      aria-label={label}
-      title={label}
-      icon={<MdStraighten />}
-      size="large"
-      className={styles.toolbarButton}
-      // like apf2: the icon signals the active measuring mode by color
-      // (ToolbarToggleButton's checked state is owned by the enclosing
-      // Toolbar, so it cannot reflect the state this component controls)
-      style={measuring ? { color: ACTIVE_COLOR } : undefined}
-    />
+    <Tooltip content={label} relationship="label">
+      <Button
+        name="measure"
+        onClick={toggleMeasuring}
+        icon={<MdStraighten />}
+        size="large"
+        className={styles.toolbarButton}
+        // like apf2: the icon signals the active measuring mode by color
+        // (ToolbarToggleButton's checked state is owned by the enclosing
+        // Toolbar, so it cannot reflect the state this component controls)
+        style={measuring ? { color: ACTIVE_COLOR } : undefined}
+      />
+    </Tooltip>
   )
 }

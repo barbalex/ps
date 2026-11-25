@@ -1,6 +1,6 @@
 import { useEffect } from 'react'
 import * as fluentUiReactComponents from '@fluentui/react-components'
-const { ToolbarToggleButton } = fluentUiReactComponents
+const { Tooltip, ToolbarToggleButton } = fluentUiReactComponents
 import { FaHandPointer } from 'react-icons/fa'
 import { useAtom } from 'jotai'
 import { useMap } from 'react-leaflet'
@@ -54,16 +54,16 @@ export const ChooseGeometryButton = () => {
       })
 
   return (
-    <ToolbarToggleButton
-      name="choose_geometry"
-      value={choosingGeometry as unknown as string}
-      onClick={() => setChoosingGeometry(!choosingGeometry)}
-      aria-label={label}
-      title={label}
-      icon={<FaHandPointer />}
-      size="large"
-      className={styles.toolbarButton}
-      style={choosingGeometry ? { color: ACTIVE_COLOR } : undefined}
-    />
+    <Tooltip content={label} relationship="label">
+      <ToolbarToggleButton
+        name="choose_geometry"
+        value={choosingGeometry as unknown as string}
+        onClick={() => setChoosingGeometry(!choosingGeometry)}
+        icon={<FaHandPointer />}
+        size="large"
+        className={styles.toolbarButton}
+        style={choosingGeometry ? { color: ACTIVE_COLOR } : undefined}
+      />
+    </Tooltip>
   )
 }

@@ -1,5 +1,5 @@
 import * as fluentUiReactComponents from '@fluentui/react-components'
-const { Button, Menu, MenuTrigger, MenuList, MenuPopover, MenuItemRadio } =
+const { Tooltip, Button, Menu, MenuTrigger, MenuList, MenuPopover, MenuItemRadio } =
   fluentUiReactComponents
 import type {
   MenuCheckedValueChangeEvent,
@@ -71,14 +71,14 @@ export const ChooseCrs = () => {
 
   return (
     <Menu checkedValues={checkedValues} onCheckedValueChange={onChange}>
-      <MenuTrigger disableButtonEnhancement>
-        <Button
-          icon={<BsGlobe2 />}
-          aria-label={chooseCrsLabel}
-          title={chooseCrsLabel}
-          size="small"
-        />
-      </MenuTrigger>
+      <Tooltip content={chooseCrsLabel} relationship="label">
+        <MenuTrigger disableButtonEnhancement>
+          <Button
+            icon={<BsGlobe2 />}
+            size="small"
+          />
+        </MenuTrigger>
+      </Tooltip>
       <MenuPopover>
         <MenuList>
           {projectCrs.map((cr) => (
