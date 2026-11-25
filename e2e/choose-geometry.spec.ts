@@ -376,8 +376,14 @@ test('GPS preview saves the fix and reported accuracy only on Apply', async ({ p
   await expect(page.getByText('Saved GPS accuracy: ±8.25 m')).toBeVisible()
   await apply.click()
   await expect(redo).toBeDisabled()
+  const listenerWarnings: string[] = []
+  page.on('console', message => {
+    if (message.type() === 'warning' && message.text().includes('wrong listener type'))
+      listenerWarnings.push(message.text())
+  })
   await page.getByRole('button', { name: 'Done', exact: true }).click()
   await expect(page.locator('.geometry-editing')).toHaveCount(0)
+  expect(listenerWarnings).toEqual([])
   await page.locator('button[name="edit_geometry"]').click()
   await expect(undo).toBeDisabled()
   await context.setGeolocation(null)
@@ -425,22 +431,24 @@ test('GPS averaging previews five fresh fixes across the date line before persis
   await expect.poll(stored, { timeout: 30_000 }).toBe('180.00000/0.00000/25.24')
 })
 
-for (const shape of ['line', 'polygon'] as const) {
+for (const shape of ['point', 'line', 'polygon'] as const) {
   test(`dragging a whole ${shape} translates every vertex and can be undone`, async ({
     page,
   }) => {
     const wkt =
-      shape === 'line' ?
+      shape === 'point' ? 'POINT(8.54 47.37)'
+      : shape === 'line' ?
         'LINESTRING(8.5395 47.37,8.54 47.37,8.5405 47.37)'
       : 'POLYGON((8.5395 47.3698,8.5405 47.3698,8.54 47.3702,8.5395 47.3698))'
     const id = PRECISE_PLACE_ID
+    const zoom = shape === 'polygon' ? 16 : 17
     psql(
-      `SET electric.syncing TO 'true'; UPDATE places SET geometry = ST_Collect(ST_GeomFromText('${wkt}',4326), ST_GeomFromText('POINT(8.542 47.37)',4326)), gps_accuracy_m = NULL WHERE place_id = '${id}';`,
+      `SET electric.syncing TO 'true'; UPDATE places SET geometry = ST_GeomFromText('GEOMETRYCOLLECTION(${wkt},POINT(8.542 47.37))',4326), gps_accuracy_m = NULL WHERE place_id = '${id}';`,
     )
     await page.addInitScript(() => localStorage.setItem('language', '"en"'))
     await login(page, E2E_EMAIL, E2E_PASSWORD)
     await page.goto(
-      `/data/projects/${PROJECT_ID}/subprojects/${SUBPROJECT_ID}/places/${id}/place?panes=map&c=${LAT}%2C${LNG}&z=17`,
+      `/data/projects/${PROJECT_ID}/subprojects/${SUBPROJECT_ID}/places/${id}/place?panes=map&c=${LAT}%2C${LNG}&z=${zoom}`,
     )
     await closeLayerDrawerIfOpen(page)
     await page.locator('button[name="edit_geometry"]').click()
@@ -469,13 +477,29 @@ for (const shape of ['line', 'polygon'] as const) {
     const matches = (pixels: number) =>
       psql(`SELECT ST_OrderingEquals(
               ST_SnapToGrid(ST_GeometryN(geometry,1), 0.000001),
-              ST_SnapToGrid(ST_Translate(ST_GeomFromText('${wkt}',4326), ${pixels} * 360.0 / (256 * 2^17), 0), 0.000001))
+              ST_SnapToGrid(ST_Translate(ST_GeomFromText('${wkt}',4326), ${pixels} * 360.0 / (256 * 2^${zoom}), 0), 0.000001))
               AND ST_AsText(ST_GeometryN(geometry,2)) = 'POINT(8.542 47.37)'
               FROM places WHERE place_id = '${id}'`)
     await expect.poll(() => matches(40), { timeout: 30_000 }).toBe('t')
     await expect.poll(historyCount).toBe(before + 1)
+    if (shape === 'point') {
+      await drag.click()
+      await drag.click()
+      await page.mouse.click(x + 40, y)
+    }
+    await expect(page.locator('.geometry-nudge-target')).toHaveCount(1)
+    await page.keyboard.press('ArrowRight')
+    const fine = 0.3 * 96 / 25.4
+    await expect.poll(() => matches(40 + fine), { timeout: 30_000 }).toBe('t')
+    await page.keyboard.press('Shift+ArrowLeft')
+    await expect.poll(() => matches(40 + fine - 2 * 96 / 25.4), { timeout: 30_000 }).toBe('t')
     await drag.click()
-    await page.getByRole('button', { name: 'Undo', exact: true }).click()
+    const undo = page.getByRole('button', { name: 'Undo', exact: true })
+    await undo.click()
+    await expect.poll(() => matches(40 + fine)).toBe('t')
+    await undo.click()
+    await expect.poll(() => matches(40)).toBe('t')
+    await undo.click()
     await expect.poll(() => matches(0), { timeout: 30_000 }).toBe('t')
   })
 }

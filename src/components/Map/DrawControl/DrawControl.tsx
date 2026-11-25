@@ -81,6 +81,10 @@ type Snapshot = {
 }
 type Step = { before: Snapshot; after: Snapshot }
 
+const isRingList = (
+  coords: L.LatLng[][] | L.LatLng[][][],
+): coords is L.LatLng[][] => coords.every((ring) => L.LineUtil.isFlat(ring))
+
 export const DrawControlComponent = ({
   editingPlace,
   editingCheck,
@@ -93,6 +97,7 @@ export const DrawControlComponent = ({
   >(null)
   const [savedAccuracy, setSavedAccuracy] = useState<number | null>(null)
   const [modeActive, setModeActive] = useState(false)
+  const [dragActive, setDragActive] = useState(false)
 
   const db = usePGlite()
   const addOperation = useSetAtom(addOperationAtom)
@@ -154,42 +159,73 @@ export const DrawControlComponent = ({
     map.addLayer(drawLayer)
 
     const write = async (draft: Snapshot, expected?: Snapshot) => {
-      const step = await db.transaction(async (tx) => {
-        const before = (
-          await tx.query<Snapshot>(
-            `SELECT ${fields} FROM ${tableName} WHERE ${activeIdName} = $1`,
-            [activeId],
-          )
-        ).rows[0]
-        // Sync may have echoed the destination of a replay before its latest
-        // write arrives. Still enqueue the explicit undo/redo in that case.
-        const atDestination = isEqual(before, draft)
-        if (
-          !before ||
-          (expected && !atDestination && !isEqual(before, expected))
-        ) {
-          throw new Error(
-            formatMessage({
-              id: 'geometryHistoryChanged',
-              defaultMessage:
-                'Die Geometrie wurde inzwischen geändert. Bearbeitung erneut öffnen.',
-            }),
-          )
-        }
-        if (!expected && atDestination) return
-        const after = (
-          await tx.query<Snapshot>(
-            `UPDATE ${tableName} SET geometry = ST_GeomFromGeoJSON($1::text), bbox = $2, gps_accuracy_m = $3 WHERE ${activeIdName} = $4 RETURNING ${fields}`,
-            [
-              draft.geometry ? JSON.stringify(draft.geometry) : null,
-              draft.bbox,
-              draft.gps_accuracy_m,
-              activeId,
-            ],
-          )
-        ).rows[0]!
-        return { before: expected ?? before, after }
-      })
+      const deadline = performance.now() + 3000
+      const isSessionVersion = (row: Snapshot, steps: Step[]) =>
+        steps.some(
+          (step) => isEqual(row, step.before) || isEqual(row, step.after),
+        )
+      const attempt = () =>
+        db.transaction(async (tx) => {
+          const before = (
+            await tx.query<Snapshot>(
+              `SELECT ${fields} FROM ${tableName} WHERE ${activeIdName} = $1`,
+              [activeId],
+            )
+          ).rows[0]
+          // Sync may have echoed the destination of a replay before its latest
+          // write arrives. Still enqueue the explicit undo/redo in that case.
+          const atDestination = isEqual(before, draft)
+          if (
+            !before ||
+            (expected && !atDestination && !isEqual(before, expected))
+          ) {
+            // Electric can echo the previous undo before the latest one. Let
+            // sync catch up outside this transaction; never overwrite a conflict.
+            if (
+              before &&
+              performance.now() < deadline &&
+              (isSessionVersion(before, redo) || isSessionVersion(before, undo))
+            )
+              return 'retry' as const
+            throw new Error(
+              formatMessage({
+                id: 'geometryHistoryChanged',
+                defaultMessage:
+                  'Die Geometrie wurde inzwischen geändert. Bearbeitung erneut öffnen.',
+              }),
+            )
+          }
+          // Rapid nudges edit the displayed geometry, even if sync temporarily
+          // puts one of this session's older versions back into PGlite.
+          const displayed = undo.at(-1)?.after
+          const source =
+            expected ??
+            ((
+              displayed &&
+              !isEqual(before, displayed) &&
+              isSessionVersion(before, undo)
+            ) ?
+              displayed
+            : before)
+          if (!expected && isEqual(source, draft)) return
+          const after = (
+            await tx.query<Snapshot>(
+              `UPDATE ${tableName} SET geometry = ST_GeomFromGeoJSON($1::text), bbox = $2, gps_accuracy_m = $3 WHERE ${activeIdName} = $4 RETURNING ${fields}`,
+              [
+                draft.geometry ? JSON.stringify(draft.geometry) : null,
+                draft.bbox,
+                draft.gps_accuracy_m,
+                activeId,
+              ],
+            )
+          ).rows[0]!
+          return { before: source, after }
+        })
+      let step = await attempt()
+      while (step === 'retry') {
+        await new Promise((resolve) => setTimeout(resolve, 100))
+        step = await attempt()
+      }
       if (!step) return
       await addOperation({
         table: tableName,
@@ -226,6 +262,67 @@ export const DrawControlComponent = ({
         void onEdit(drawLayer.toGeoJSON(false) as GeoJSON.FeatureCollection)
     }
 
+    const container = map.getContainer()
+    let selected: L.Polyline | L.CircleMarker | null = null
+    const select = (layer: typeof selected) => {
+      selected?.getElement()?.classList.remove('geometry-nudge-target')
+      selected = layer
+      selected?.getElement()?.classList.add('geometry-nudge-target')
+      if (selected) container.focus({ preventScroll: true })
+    }
+    const nudge = (event: KeyboardEvent) => {
+      if (
+        !selected ||
+        !drawLayer.hasLayer(selected) ||
+        !geoman.globalDragModeEnabled() ||
+        event.target !== container ||
+        event.ctrlKey ||
+        event.altKey ||
+        event.metaKey
+      )
+        return
+      const dx =
+        event.key === 'ArrowRight' ? 1
+        : event.key === 'ArrowLeft' ? -1
+        : 0
+      const dy =
+        event.key === 'ArrowDown' ? 1
+        : event.key === 'ArrowUp' ? -1
+        : 0
+      if (!dx && !dy) return
+      event.preventDefault()
+      event.stopPropagation()
+      const pixels = ((event.shiftKey ? 2 : 0.3) * 96) / 25.4
+      const offset = new L.Point(dx * pixels, dy * pixels)
+      const shift = (position: L.LatLng) => {
+        const moved = map.unproject(map.project(position).add(offset))
+        return new L.LatLng(
+          dy ? moved.lat : position.lat,
+          dx ? moved.lng : position.lng,
+          position.alt,
+        )
+      }
+      if (selected instanceof L.CircleMarker)
+        selected.setLatLng(shift(selected.getLatLng()))
+      else {
+        const coords = selected.getLatLngs()
+        selected.setLatLngs(
+          L.LineUtil.isFlat(coords) ? coords.map(shift)
+          : isRingList(coords) ? coords.map((ring) => ring.map(shift))
+          : coords.map((polygon) => polygon.map((ring) => ring.map(shift))),
+        )
+      }
+      persist()
+    }
+    container.addEventListener('keydown', nudge, true)
+    let draggingMode = false
+    const onDragMode = () => {
+      draggingMode = geoman.globalDragModeEnabled()
+      setDragActive(draggingMode)
+      if (!draggingMode) select(null)
+    }
+    map.on('geoman:globaldragmodetoggled', onDragMode)
+
     // Persist when geoman's removal mode removes a layer from the draw layer
     drawLayer.on('layerremove', persist)
 
@@ -241,7 +338,18 @@ export const DrawControlComponent = ({
     // edit session ends (geoman:update) or a drag ends, to keep the
     // operation log free of intermediate states
     const wireLayerEvents = (layer: L.Layer) => {
-      layer.on('geoman:update', persist)
+      if (layer instanceof L.CircleMarker || layer instanceof L.Polyline) {
+        const selectLayer = () => {
+          if (geoman.globalDragModeEnabled()) select(layer)
+        }
+        const path: L.Path = layer
+        path.on('click', selectLayer)
+        layer.on('geoman:dragend', selectLayer)
+      }
+      layer.on('geoman:update', () => {
+        // Disabling drag also emits update; dragend already saved that edit.
+        if (!draggingMode) persist()
+      })
       layer.on('geoman:dragend', persist)
     }
 
@@ -418,10 +526,12 @@ export const DrawControlComponent = ({
     map.on('geoman:globalremovalmodetoggled', setRemovalActive)
 
     return () => {
-      geoman.disableDraw()
-      geoman.disableGlobalEditMode()
+      container.removeEventListener('keydown', nudge, true)
+      map.off('geoman:globaldragmodetoggled', onDragMode)
+      if (geoman.globalDrawModeEnabled()) geoman.disableDraw()
+      if (geoman.globalEditModeEnabled()) geoman.disableGlobalEditMode()
       if (geoman.globalDragModeEnabled()) geoman.disableGlobalDragMode()
-      geoman.disableGlobalRemovalMode()
+      if (geoman.globalRemovalModeEnabled()) geoman.disableGlobalRemovalMode()
       replay.current = null
       drawLayer.off('layeradd layerremove', refreshPointTool)
       drawLayer.off('layerremove', persist)
@@ -468,6 +578,15 @@ export const DrawControlComponent = ({
             { name: label },
           )}
         </span>
+        {dragActive && (
+          <div>
+            {formatMessage({
+              id: 'geometryNudgeHint',
+              defaultMessage:
+                'Geometrie anklicken oder ziehen. Pfeiltasten: 0,3 mm auf der Karte; mit Umschalt: 2 mm.',
+            })}
+          </div>
+        )}
         <div className={styles.actions}>
           <Button
             size="small"

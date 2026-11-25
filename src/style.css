@@ -471,6 +471,9 @@ html[data-theme='dark'] .uploadcare-uploader-config {
 /* Let editable shapes receive whole-layer drags through the display layers.
    Point editing also uses the path rather than a vertex handle. */
 .map-container.geoman-active:has(.geometry-editing.leaflet-geoman-draggable) {
+  .geometry-nudge-target {
+    stroke-dasharray: 6 3;
+  }
   .leaflet-pane svg .leaflet-interactive:not(.geometry-editing),
   .leaflet-marker-icon.marker-icon-clickable {
     pointer-events: none !important;

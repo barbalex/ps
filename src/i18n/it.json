@@ -1432,6 +1432,7 @@
   "undoDeleteUndo": "Annulla",
   "geometryRedo": "Ripeti",
   "geometryDone": "Fine",
+  "geometryNudgeHint": "Seleziona o trascina una geometria. Frecce: 0,3 mm sulla mappa; Maiusc+freccia: 2 mm.",
   "geometryEditingRecord": "Modifica geometria: {name}",
   "geometryHistoryChanged": "La geometria è cambiata. Riapri l’editor.",
   "deleteCascadeTitle": "Eliminare davvero?",
