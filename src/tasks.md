@@ -46,9 +46,6 @@ I tried to remove a WMS Layer by deleting it here: http://localhost:5176/data/pr
 
 ---
 
-adding
-
-- deleting geometries
 ---
 
 map geometry editing menus: 1. tooltips need translation 2. can we implement the same tooltips as used for instance in the appbar menus?
