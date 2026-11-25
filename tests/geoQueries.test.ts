@@ -1,6 +1,7 @@
 import { describe, it, expect, beforeAll, afterAll } from 'vitest'
 
 import { createTestDb, type TestFixture } from './helpers/createTestDb.ts'
+import { previewPolygonEdit } from '../src/modules/walkPolygonEdit.ts'
 import {
   nearestPlaces,
   PLACES_WITH_DISTANCE_SQL,
@@ -64,6 +65,90 @@ beforeAll(async () => {
 
 afterAll(async () => {
   await fixture.db.close()
+})
+
+describe('recorded polygon edits', () => {
+  const square: GeoJSON.Polygon = {
+    type: 'Polygon',
+    coordinates: [
+      [
+        [8, 47],
+        [8.01, 47],
+        [8.01, 47.01],
+        [8, 47.01],
+        [8, 47],
+      ],
+    ],
+  }
+  const hole: GeoJSON.Polygon = {
+    type: 'Polygon',
+    coordinates: [
+      [
+        [8.001, 47.005],
+        [8.002, 47.005],
+        [8.002, 47.006],
+        [8.001, 47.005],
+      ],
+    ],
+  }
+  const path = (...coordinates: number[][]): GeoJSON.LineString => ({
+    type: 'LineString',
+    coordinates,
+  })
+  it('cuts only a strictly interior hole and preserves it when splitting', async () => {
+    const cut = await previewPolygonEdit(fixture.db, 'hole', square, hole)
+    expect(cut?.shapes[0].coordinates).toHaveLength(2)
+    expect(
+      await previewPolygonEdit(fixture.db, 'hole', square, square),
+    ).toBeNull()
+    const split = await previewPolygonEdit(
+      fixture.db,
+      'split',
+      cut!.shapes[0],
+      path([8.005, 46.999], [8.005, 47.011]),
+    )
+    expect(split?.shapes.map((g) => g.coordinates.length).sort()).toEqual([
+      1, 2,
+    ])
+    expect(
+      await previewPolygonEdit(
+        fixture.db,
+        'split',
+        square,
+        path([8, 47], [8.001, 47.001]),
+      ),
+    ).toBeNull()
+  })
+  it('previews both arcs and snapped joins; rejects distant endpoints', async () => {
+    const walked = path([8.002, 46.99999], [8.004, 46.999], [8.006, 46.99999])
+    const changed = await previewPolygonEdit(
+      fixture.db,
+      'reshape',
+      square,
+      walked,
+    )
+    expect(changed?.removed?.coordinates).toEqual([
+      [8.002, 47],
+      [8.006, 47],
+    ])
+    expect(changed?.shapes[0].coordinates[0]).toContainEqual([8.004, 46.999])
+    const other = await previewPolygonEdit(
+      fixture.db,
+      'reshape',
+      square,
+      walked,
+      true,
+    )
+    expect(other?.removed?.coordinates).toContainEqual([8.01, 47.01])
+    expect(
+      await previewPolygonEdit(
+        fixture.db,
+        'reshape',
+        square,
+        path([7.99, 47], [8.006, 47]),
+      ),
+    ).toBeNull()
+  })
 })
 
 describe('nearestPlaces', () => {

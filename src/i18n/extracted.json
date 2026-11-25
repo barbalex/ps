@@ -3380,6 +3380,9 @@
   "wQ9LmN": {
     "defaultMessage": "Dateien in {placeNameSingular} anzeigen"
   },
+  "walkDraw": {
+    "defaultMessage": "Spur zeichnen"
+  },
   "walkTrack": {
     "defaultMessage": "GPS-Spur aufnehmen"
   },

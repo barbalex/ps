@@ -22,7 +22,12 @@ import {
 } from '../../../store.ts'
 import styles from './PrecisePoint.module.css'
 import { DrawToolbar } from './DrawToolbar.tsx'
-import { WalkTrack, type TrackGeometry } from './WalkTrack.tsx'
+import { WalkTrack, type DrawTrack, type TrackGeometry } from './WalkTrack.tsx'
+import {
+  polygonTargets,
+  replacePolygon,
+  type PolygonTarget,
+} from '../../../modules/walkPolygonEdit.ts'
 import { showVectorSnapping } from './vectorSnapping.ts'
 import { PrecisePoint } from './PrecisePoint.tsx'
 import { flattenToGeometryCollection } from '../../../modules/repairNestedGeometries.ts'
@@ -122,8 +127,13 @@ export const DrawControlComponent = ({
   )
   const { formatMessage } = useIntl()
   const [label, setLabel] = useState('')
-  const [walking, setWalking] = useState(false)
-  const saveTrack = useRef<(parts: TrackGeometry[]) => Promise<void>>(null)
+  const [walkSession, setWalkSession] = useState<{
+    drawTrack?: DrawTrack
+    targets: PolygonTarget[]
+    apply: (parts: TrackGeometry[], target?: PolygonTarget) => Promise<void>
+  } | null>(null)
+  const walking = !!walkSession
+  const openTrack = useRef<(manual?: boolean) => void>(null)
   const [history, setHistory] = useState({ undo: false, redo: false })
   const [busy, setBusy] = useState(false)
   const [replaying, setReplaying] = useState(false)
@@ -179,12 +189,13 @@ export const DrawControlComponent = ({
       formatMessage({ id: 'geometrySnapTarget', defaultMessage: 'Fangziel' }),
     )
 
+    const isSessionVersion = (row: Snapshot, steps: Step[]) =>
+      steps.some(
+        (step) => isEqual(row, step.before) || isEqual(row, step.after),
+      )
+
     const write = async (draft: Snapshot, expected?: Snapshot) => {
       const deadline = performance.now() + 3000
-      const isSessionVersion = (row: Snapshot, steps: Step[]) =>
-        steps.some(
-          (step) => isEqual(row, step.before) || isEqual(row, step.after),
-        )
       const attempt = () =>
         db.transaction(async (tx) => {
           const before = (
@@ -417,28 +428,65 @@ export const DrawControlComponent = ({
     }
     drawLayer.on('layeradd layerremove', refreshPointTool)
 
-    saveTrack.current = async (parts) => {
-      const layers = parts.map((g) =>
-        g.type === 'Polygon' ?
-          new L.Polygon(
-            g.coordinates.map((ring) =>
-              ring.map(([lng, lat]) => new L.LatLng(lat, lng)),
-            ),
-            EDITING_STYLE,
-          )
-        : new L.Polyline(
-            g.coordinates.map(([lng, lat]) => new L.LatLng(lat, lng)),
-            EDITING_STYLE,
-          ),
-      )
-      const fc = drawLayer.toGeoJSON(false) as GeoJSON.FeatureCollection
-      fc.features.push(...layers.map((layer) => layer.toGeoJSON(false)))
-      await onEdit(fc)
-      if (!map.hasLayer(drawLayer)) return
-      for (const layer of layers) {
-        wireLayerEvents(layer)
-        drawLayer.addLayer(layer)
+    let receiveLine: ((points: L.LatLng[]) => void) | null = null
+    const drawTrack: DrawTrack = (receive, end) => {
+      receiveLine = receive
+      map.on('geoman:drawend', end)
+      geoman.enableDraw('Polyline', { continueDrawing: false })
+      return () => {
+        map.off('geoman:drawend', end)
+        if (geoman.globalDrawModeEnabled()) geoman.disableDraw()
+        receiveLine = null
       }
+    }
+    openTrack.current = (manual = false) => {
+      void schedule(async () => {
+        const {
+          rows: [current],
+        } = await db.query<Snapshot>(
+          `SELECT ${fields} FROM ${tableName} WHERE ${activeIdName} = $1`,
+          [activeId],
+        )
+        if (!map.hasLayer(drawLayer)) return
+        if (!current)
+          throw new Error(
+            formatMessage({
+              id: 'geometryHistoryChanged',
+              defaultMessage:
+                'Die Geometrie wurde inzwischen geändert. Bearbeitung erneut öffnen.',
+            }),
+          )
+        // The recorder must target the displayed version even when an older
+        // Electric echo briefly arrives after undo. write rechecks it on save.
+        const original =
+          isSessionVersion(current, undo) || isSessionVersion(current, redo) ?
+            (redo.at(-1)?.before ?? undo.at(-1)?.after ?? current)
+          : current
+        const members = original.geometry?.geometries ?? []
+        setWalkSession({
+          drawTrack: manual ? drawTrack : undefined,
+          targets: polygonTargets(members),
+          apply: (parts: TrackGeometry[], target?: PolygonTarget) =>
+            schedule(async () => {
+              const geometries =
+                target ?
+                  replacePolygon(members, target, parts)
+                : [...members, ...parts]
+              const geometry: GeoJSON.GeometryCollection = {
+                type: 'GeometryCollection',
+                geometries,
+              }
+              const step = await write(
+                { geometry, bbox: getBbox(geometry), gps_accuracy_m: null },
+                original,
+              )
+              if (!step) return
+              undo.push(step)
+              redo.length = 0
+              if (map.hasLayer(drawLayer)) showSnapshot(step.after)
+            }),
+        })
+      })
     }
 
     const showSnapshot = ({ geometry, gps_accuracy_m }: Snapshot) => {
@@ -508,6 +556,12 @@ export const DrawControlComponent = ({
     // A new layer was drawn: move it into the draw layer, style it and persist
     const onCreate = (e: L.LeafletEvent) => {
       let layer = (e as unknown as { layer: L.Layer }).layer
+      if (receiveLine && layer instanceof L.Polyline) {
+        const points = layer.getLatLngs().flat(2)
+        layer.remove()
+        receiveLine(points)
+        return
+      }
       // L.Marker doesn't support setStyle; replace with a circleMarker so
       // the orange edit style (and its revert) works uniformly for all types.
       // geoman added the marker to the map itself — take it off again, it
@@ -572,7 +626,7 @@ export const DrawControlComponent = ({
 
     return () => {
       stopSnapping()
-      saveTrack.current = null
+      openTrack.current = null
       container.removeEventListener('keydown', nudge, true)
       map.off('geoman:globaldragmodetoggled', onDragMode)
       if (geoman.globalDrawModeEnabled()) geoman.disableDraw()
@@ -636,21 +690,31 @@ export const DrawControlComponent = ({
             })}
           </div>
         )}
-        {walking && saveTrack.current ?
+        {walkSession ?
           <WalkTrack
-            apply={saveTrack.current}
-            close={() => setWalking(false)}
+            {...walkSession}
+            close={() => setWalkSession(null)}
           />
         : <>
             <div className={styles.actions}>
               <Button
                 size="small"
                 disabled={!label || busy || modeActive}
-                onClick={() => setWalking(true)}
+                onClick={() => openTrack.current?.()}
               >
                 {formatMessage({
                   id: 'walkTrack',
                   defaultMessage: 'GPS-Spur aufnehmen',
+                })}
+              </Button>
+              <Button
+                size="small"
+                disabled={!label || busy || modeActive}
+                onClick={() => openTrack.current?.(true)}
+              >
+                {formatMessage({
+                  id: 'walkDraw',
+                  defaultMessage: 'Spur zeichnen',
                 })}
               </Button>
               <Button
