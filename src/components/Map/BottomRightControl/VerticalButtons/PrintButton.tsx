@@ -1,6 +1,6 @@
 import type { ComponentProps, FC } from 'react'
 import * as fluentUiReactComponents from '@fluentui/react-components'
-const { Menu, MenuItem, MenuList, MenuPopover, MenuTrigger, ToolbarButton } =
+const { Tooltip, Menu, MenuItem, MenuList, MenuPopover, MenuTrigger, ToolbarButton } =
   fluentUiReactComponents
 import { MdPrint } from 'react-icons/md'
 import { useMap } from 'react-leaflet'
@@ -76,16 +76,16 @@ export const PrintButton = () => {
 
   return (
     <Menu positioning="before">
-      <MenuTrigger disableButtonEnhancement>
-        <Button
-          name="print"
-          aria-label={label}
-          title={label}
-          icon={<MdPrint />}
-          size="large"
-          className={styles.toolbarButton}
-        />
-      </MenuTrigger>
+      <Tooltip content={label} relationship="label">
+        <MenuTrigger disableButtonEnhancement>
+          <Button
+            name="print"
+            icon={<MdPrint />}
+            size="large"
+            className={styles.toolbarButton}
+          />
+        </MenuTrigger>
+      </Tooltip>
       <MenuPopover>
         <MenuList>
           {SIZE_MODES.map((mode) => (

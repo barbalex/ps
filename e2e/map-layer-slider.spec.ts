@@ -83,7 +83,7 @@ test('the layer drawer starts closed and stays inside the map area', async ({
   )
 
   const openAndCloseAgain = async () => {
-    await page.locator('button[title="Open Layer Menu"]').click()
+    await page.locator('button[name="layer_menu"][aria-expanded="false"]').click()
     // open: bigger than the closed sliver …
     await expect.poll(() => drawerSize(page)).toBeGreaterThan(40)
     // … but leaving a sliver of map (with the toggle) above the drawer.
@@ -94,7 +94,7 @@ test('the layer drawer starts closed and stays inside the map area', async ({
       .toBeLessThanOrEqual(mapHeight - 60 + 1)
 
     // the top edge stayed reachable: the drawer can be closed again
-    await page.locator('button[title="Close Layer Menu"]').click()
+    await page.locator('button[name="layer_menu"][aria-expanded="true"]').click()
     await expect.poll(() => drawerSize(page)).toBeLessThanOrEqual(40)
   }
 

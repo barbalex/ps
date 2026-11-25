@@ -1,5 +1,7 @@
 import { useState, useEffect } from 'react'
 import { useMap } from 'react-leaflet'
+import { Tooltip } from '@fluentui/react-components'
+import { useIntl } from 'react-intl'
 
 import { epsgTo4326 } from '../../../../../modules/epsgTo4326.ts'
 import { formatCoordinate } from '../../../../../modules/roundCoordinates.ts'
@@ -15,6 +17,7 @@ export const Inputs = ({
   projectMapPresentationCrs,
 }: Props) => {
   const map = useMap()
+  const { formatMessage } = useIntl()
 
   const [coordinates, setCoordinates] = useState(coordsIn)
   const [focused, setFocused] = useState<'x' | 'y' | null>(null)
@@ -50,6 +53,9 @@ export const Inputs = ({
 
   return (
     <div className={styles.container}>
+      <Tooltip relationship="label" content={formatMessage({
+        id: 'mapCenterX', defaultMessage: 'X-Koordinate der Kartenmitte',
+      })}>
       <input
         type="text"
         name="x"
@@ -60,7 +66,11 @@ export const Inputs = ({
         onChange={onChange}
         onKeyDown={onKeyDown}
       />
+      </Tooltip>
       {`/`}
+      <Tooltip relationship="label" content={formatMessage({
+        id: 'mapCenterY', defaultMessage: 'Y-Koordinate der Kartenmitte',
+      })}>
       <input
         type="text"
         name="y"
@@ -71,6 +81,7 @@ export const Inputs = ({
         onChange={onChange}
         onKeyDown={onKeyDown}
       />
+      </Tooltip>
     </div>
   )
 }

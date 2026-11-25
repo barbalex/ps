@@ -72,7 +72,7 @@ test('dragging the layer drawer shut closes it, also past the map edge', async (
 
   // dragged past the map's left edge — here out of the window; a drag into
   // a pane left of the map ends up at the same x
-  await page.locator('button[title="Open Layer Menu"]').click()
+  await page.locator('button[name="layer_menu"][aria-expanded="false"]').click()
   await expect.poll(() => drawerSize(page)).toBeGreaterThan(40)
   await dragResizerTo(page, left - 40)
   await expect.poll(() => drawerSize(page)).toBe(closedSliver)
@@ -82,10 +82,10 @@ test('dragging the layer drawer shut closes it, also past the map edge', async (
       drawer.evaluate((el) => Math.round(el.getBoundingClientRect().width)),
     )
     .toBeLessThanOrEqual(closedSliver + 1)
-  await expect(page.locator('button[title="Open Layer Menu"]')).toBeVisible()
+  await expect(page.locator('button[name="layer_menu"][aria-expanded="false"]')).toBeVisible()
 
   // and it opens again
-  await page.locator('button[title="Open Layer Menu"]').click()
+  await page.locator('button[name="layer_menu"][aria-expanded="false"]').click()
   await expect.poll(() => drawerSize(page)).toBeGreaterThan(40)
 })
 
@@ -105,6 +105,6 @@ test('the drag is over wherever the pointer is released', async ({ page }) => {
   expect(sizeAtRelease).toBeGreaterThan(sizeBefore)
   await page.mouse.move(600, 300, { steps: 8 })
   await expect.poll(() => drawerSize(page)).toBe(sizeAtRelease)
-  await page.locator('button[title="Close Layer Menu"]').click()
+  await page.locator('button[name="layer_menu"][aria-expanded="true"]').click()
   await expect.poll(() => drawerSize(page)).toBe(closedSliver)
 })

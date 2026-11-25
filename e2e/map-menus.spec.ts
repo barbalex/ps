@@ -95,7 +95,23 @@ test.describe('narrow map', () => {
 })
 
 test.describe('wide map', () => {
-  test.use({ viewport: { width: 1100, height: 700 } })
+  test.use({ locale: 'fr-CH', viewport: { width: 1100, height: 700 } })
+
+  test('map controls show translated tooltips on hover and focus', async ({ page }) => {
+    await login(page, E2E_EMAIL, E2E_PASSWORD)
+    await openMapWithDrawerClosed(page)
+    const toggle = page.getByRole('button', { name: 'Ouvrir le menu des couches' })
+    await toggle.hover()
+    const tooltip = page.getByRole('tooltip', { name: 'Ouvrir le menu des couches' })
+    await expect(tooltip).toBeVisible()
+    await page.keyboard.press('Escape')
+    await expect(tooltip).toBeHidden()
+    const print = page.getByRole('button', { name: 'Imprimer la carte' })
+    await print.focus()
+    await expect(page.getByRole('tooltip', { name: 'Imprimer la carte' })).toBeVisible()
+    await print.press('Enter')
+    await expect(page.getByRole('menu')).toBeVisible()
+  })
 
   test('the bottom menu keeps its horizontal bar', async ({ page }) => {
     await login(page, E2E_EMAIL, E2E_PASSWORD)

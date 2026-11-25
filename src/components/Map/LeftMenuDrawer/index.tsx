@@ -1,8 +1,9 @@
 import { useCallback, useRef, useState, useEffect } from 'react'
 import * as fluentUiReactComponents from '@fluentui/react-components'
-const { InlineDrawer, Button } = fluentUiReactComponents
+const { Tooltip, InlineDrawer, Button } = fluentUiReactComponents
 import { BiSolidLeftArrow, BiSolidRightArrow } from 'react-icons/bi'
 import { useAtomValue } from 'jotai'
+import { useIntl } from 'react-intl'
 
 import { Content } from './Content.tsx'
 import { Resizer } from './Resizer.tsx'
@@ -77,6 +78,10 @@ export const LeftMenuDrawer = ({
   }, [isNarrow, maxNarrowSize, size])
 
   const isOpen = size > 40
+  const { formatMessage } = useIntl()
+  const label = isOpen
+    ? formatMessage({ id: 'mapCloseLayers', defaultMessage: 'Ebenenmenü schliessen' })
+    : formatMessage({ id: 'mapOpenLayers', defaultMessage: 'Ebenenmenü öffnen' })
   const toggleOpen = (e: React.MouseEvent) => {
     e.stopPropagation()
     const newValue = isOpen ? closedSize : clampNarrow(isNarrow ? 500 : 380)
@@ -167,18 +172,21 @@ export const LeftMenuDrawer = ({
     >
       <div className={styles.innerContainer}>
         {!mapHideUi && (
-          <Button
-            onClick={toggleOpen}
-            icon={
-              isOpen ? (
-                <BiSolidLeftArrow className={styles.icon} />
-              ) : (
-                <BiSolidRightArrow className={styles.icon} />
-              )
-            }
-            title={isOpen ? 'Close Layer Menu' : 'Open Layer Menu'}
-            className={`${styles.toggleButton}${isNarrow ? (isOpen ? ` ${styles.toggleButtonNarrowOpen}` : ` ${styles.toggleButtonNarrowClosed}`) : isOpen ? ` ${styles.toggleButtonWideOpen}` : ` ${styles.toggleButtonWideClosed}`}`}
-          />
+          <Tooltip content={label} relationship="label">
+            <Button
+              onClick={toggleOpen}
+              icon={
+                isOpen ? (
+                  <BiSolidLeftArrow className={styles.icon} />
+                ) : (
+                  <BiSolidRightArrow className={styles.icon} />
+                )
+              }
+              name="layer_menu"
+              aria-expanded={isOpen}
+              className={`${styles.toggleButton}${isNarrow ? (isOpen ? ` ${styles.toggleButtonNarrowOpen}` : ` ${styles.toggleButtonNarrowClosed}`) : isOpen ? ` ${styles.toggleButtonWideOpen}` : ` ${styles.toggleButtonWideClosed}`}`}
+            />
+          </Tooltip>
         )}
         <InlineDrawer
           open={!mapHideUi}

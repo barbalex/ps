@@ -1,7 +1,8 @@
 import { useRef, useEffect } from 'react'
 import * as fluentUiReactComponents from '@fluentui/react-components'
-const { Switch } = fluentUiReactComponents
+const { Tooltip, Switch } = fluentUiReactComponents
 import { useAtom } from 'jotai'
+import { useIntl } from 'react-intl'
 import * as L from 'leaflet'
 
 import { mapHideUiAtom } from '../../../store.ts'
@@ -10,6 +11,10 @@ import './uiButton.css'
 
 export const UiButton = () => {
   const [hideMapUi, setHideMapUi] = useAtom(mapHideUiAtom)
+  const { formatMessage } = useIntl()
+  const label = hideMapUi
+    ? formatMessage({ id: 'mapShowControls', defaultMessage: 'Kartenwerkzeuge einblenden' })
+    : formatMessage({ id: 'mapHideControls', defaultMessage: 'Kartenwerkzeuge ausblenden' })
 
   // prevent click propagation on to map
   // https://stackoverflow.com/a/57013052/712005
@@ -23,12 +28,13 @@ export const UiButton = () => {
 
   return (
     <div className={styles.uiButton} ref={ref}>
-      <Switch
-        title={hideMapUi ? 'Show Map UI' : 'Hide Map UI'}
-        checked={hideMapUi}
-        onChange={onChange}
-        className={styles.switch}
-      />
+      <Tooltip content={label} relationship="label">
+        <Switch
+          checked={hideMapUi}
+          onChange={onChange}
+          className={styles.switch}
+        />
+      </Tooltip>
     </div>
   )
 }

@@ -1,7 +1,7 @@
 import { useRef, useEffect } from 'react'
 import type { ComponentProps, FC } from 'react'
 import * as fluentUiReactComponents from '@fluentui/react-components'
-const { Toolbar } = fluentUiReactComponents
+const { Tooltip, Toolbar } = fluentUiReactComponents
 import { FaMinus, FaPlus } from 'react-icons/fa'
 import * as L from 'leaflet'
 import { useMap } from 'react-leaflet'
@@ -58,24 +58,24 @@ export const VerticalButtons = () => {
         <EditingGeometryButton />
         <ChooseGeometryButton />
         <LocatingButton />
-        <ToolbarButton
-          name="zoom_in"
-          onClick={onClickZoomIn}
-          aria-label={zoomInLabel}
-          title={zoomInLabel}
-          icon={<FaPlus />}
-          size="large"
-          className={styles.toolbarButton}
-        />
-        <ToolbarButton
-          name="zoom_out"
-          onClick={onClickZoomOut}
-          aria-label={zoomOutLabel}
-          title={zoomOutLabel}
-          icon={<FaMinus />}
-          size="large"
-          className={styles.toolbarButton}
-        />
+        <Tooltip content={zoomInLabel} relationship="label">
+          <ToolbarButton
+            name="zoom_in"
+            onClick={onClickZoomIn}
+            icon={<FaPlus />}
+            size="large"
+            className={styles.toolbarButton}
+          />
+        </Tooltip>
+        <Tooltip content={zoomOutLabel} relationship="label">
+          <ToolbarButton
+            name="zoom_out"
+            onClick={onClickZoomOut}
+            icon={<FaMinus />}
+            size="large"
+            className={styles.toolbarButton}
+          />
+        </Tooltip>
         <MeasureButton />
         <ExportPngButton />
         <PrintButton />

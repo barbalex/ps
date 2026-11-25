@@ -42,20 +42,11 @@ Better-Auth, possible extensions:
 
 ---
 
-I tried to remove a WMS Layer by deleting it here: http://localhost:5176/data/projects/0195a101-0000-7000-8000-000000000001/wms-layers/01a1fe19-8478-742d-b7e0-9e048a22fa9b/wms-layer. Seems it resurrects itself when I open the map, because when trying to re-add it, it can be choosen again in Config > Web Map Service (or in the WMS Layer form in 'Web Map Service'), even though it is no more listed under http://localhost:5176/data/projects/018cfcf7-6424-7000-a100-851c5cc2c878/wfs-services. What is going on? What should have happended: should have been deleted including its Layers
+---
 
 ---
 
-adding
-
-- deleting geometries
 ---
-
-map geometry editing menus: 1. tooltips need translation 2. can we implement the same tooltips as used for instance in the appbar menus?
-
----
-
-Edit geometry in forms: make it a menu in the form header instead of the current input. When clicking on it and if a geometry already exists, the map should open (works already when clicking the Edit input) and zoom to the current object (not working now). The button should make clear if a geometry already exists. not sure how that is best done
 
 ---
 

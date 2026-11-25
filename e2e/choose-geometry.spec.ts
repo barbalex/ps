@@ -1,5 +1,5 @@
 import { test, expect, type Page } from '@playwright/test'
-import { ensureUser, grantRoles, login, psql } from './helpers.ts'
+import { closeLayerDrawerIfOpen, ensureUser, grantRoles, login, psql } from './helpers.ts'
 
 /**
  * The choosing tool: activated from the map toolbar, one click on a
@@ -116,9 +116,12 @@ const openMap = async (page: Page) => {
   await page.waitForSelector('.clickable-hitbox', { timeout: 60_000 })
 }
 
-const activateChooseTool = async (page: Page) => {
+const activateChooseTool = async (
+  page: Page,
+  name = 'Geometrie wählen, um sie zu bearbeiten',
+) => {
   await page
-    .getByRole('button', { name: 'Geometrie wählen, um sie zu bearbeiten' })
+    .getByRole('button', { name })
     .click()
   await expect(
     page.locator('.map-container.choosing-geometry-active'),
@@ -126,8 +129,10 @@ const activateChooseTool = async (page: Page) => {
 }
 
 test('choosing a geometry starts editing it', async ({ page }) => {
+  // The app language, not the German browser locale, determines tool labels.
+  await page.addInitScript(() => localStorage.setItem('language', '"en"'))
   await openMap(page)
-  await activateChooseTool(page)
+  await activateChooseTool(page, 'Choose a geometry to edit it')
 
   // click the map center — where the seeded point sits
   const map = page.locator('#map .leaflet-container')
@@ -147,6 +152,19 @@ test('choosing a geometry starts editing it', async ({ page }) => {
   await expect(
     page.locator('.map-container.choosing-geometry-active'),
   ).toHaveCount(0)
+
+  await closeLayerDrawerIfOpen(page)
+  const marker = page.getByRole('button', { name: 'Draw Marker', exact: true })
+  await marker.hover({ timeout: 15_000 })
+  await expect(page.getByRole('tooltip', { name: 'Draw Marker' })).toBeVisible()
+  await marker.click()
+  const cancel = page.locator('.leaflet-geoman-toolbar').getByRole('button', {
+    name: 'Cancel', exact: true,
+  })
+  await cancel.focus()
+  await expect(page.getByRole('tooltip', { name: 'Cancel' })).toBeVisible()
+  await cancel.press('Enter')
+  await expect(cancel).toBeHidden()
 })
 
 test('clicking a spot without geometry warns and keeps the mode', async ({

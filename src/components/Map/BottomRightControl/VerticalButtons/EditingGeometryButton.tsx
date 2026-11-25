@@ -1,7 +1,8 @@
 import * as fluentUiReactComponents from '@fluentui/react-components'
-const { ToolbarToggleButton } = fluentUiReactComponents
+const { Tooltip, ToolbarToggleButton } = fluentUiReactComponents
 import { FaDrawPolygon } from 'react-icons/fa'
 import { useAtom } from 'jotai'
+import { useIntl } from 'react-intl'
 import { useLocation } from '@tanstack/react-router'
 
 import {
@@ -51,6 +52,7 @@ export const EditingGeometryButton = () => {
   }
 
   const isEditable = table !== null
+  const { formatMessage } = useIntl()
 
   const isActive =
     (table === 'place' && editingPlaceGeometry === id) ||
@@ -79,17 +81,20 @@ export const EditingGeometryButton = () => {
     }
   }
 
+  const label = isActive
+    ? formatMessage({ id: 'bMapInfoStopEditGeometry', defaultMessage: 'Bearbeiten der Geometrie beenden' })
+    : formatMessage({ id: 'XOi0Ut', defaultMessage: 'Geometrie bearbeiten' })
   return (
-    <ToolbarToggleButton
-      name="edit_geometry"
-      value={isActive as unknown as string}
-      onClick={onClick}
-      disabled={!isEditable}
-      aria-label={isActive ? 'Stop editing geometry' : 'Edit geometry'}
-      title={isActive ? 'Stop editing geometry' : 'Edit geometry'}
-      icon={<FaDrawPolygon />}
-      size="large"
-      className={styles.toolbarButton}
-    />
+    <Tooltip content={label} relationship="label">
+      <ToolbarToggleButton
+        name="edit_geometry"
+        value={isActive as unknown as string}
+        onClick={onClick}
+        disabledFocusable={!isEditable}
+        icon={<FaDrawPolygon />}
+        size="large"
+        className={styles.toolbarButton}
+      />
+    </Tooltip>
   )
 }

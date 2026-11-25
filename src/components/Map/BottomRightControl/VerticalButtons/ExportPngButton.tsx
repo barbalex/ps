@@ -1,6 +1,6 @@
 import type { ComponentProps, FC } from 'react'
 import * as fluentUiReactComponents from '@fluentui/react-components'
-const { ToolbarButton } = fluentUiReactComponents
+const { Tooltip, ToolbarButton } = fluentUiReactComponents
 import { MdGetApp } from 'react-icons/md'
 import { saveAs } from 'file-saver'
 import { useMap } from 'react-leaflet'
@@ -49,14 +49,14 @@ export const ExportPngButton = () => {
   }
 
   return (
-    <Button
-      name="export_png"
-      onClick={() => void savePng()}
-      aria-label={label}
-      title={label}
-      icon={<MdGetApp />}
-      size="large"
-      className={styles.toolbarButton}
-    />
+    <Tooltip content={label} relationship="label">
+      <Button
+        name="export_png"
+        onClick={() => void savePng()}
+        icon={<MdGetApp />}
+        size="large"
+        className={styles.toolbarButton}
+      />
+    </Tooltip>
   )
 }

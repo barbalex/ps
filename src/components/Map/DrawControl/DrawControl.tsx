@@ -7,9 +7,10 @@ import '@geoman-io/leaflet-geoman-free/dist/leaflet-geoman.css'
 import { useMap } from 'react-leaflet'
 import { bbox as getBbox } from '@turf/bbox'
 import { usePGlite } from '@electric-sql/pglite-react'
-import { useSetAtom } from 'jotai'
+import { useAtomValue, useSetAtom } from 'jotai'
 
-import { addOperationAtom } from '../../../store.ts'
+import { addOperationAtom, languageAtom } from '../../../store.ts'
+import { DrawToolbar } from './DrawToolbar.tsx'
 import { flattenToGeometryCollection } from '../../../modules/repairNestedGeometries.ts'
 
 const Geoman = (geomanModule as unknown as {
@@ -83,6 +84,7 @@ export const DrawControlComponent = ({
   editingAction,
 }: Props) => {
   const map = useMap()
+  const language = useAtomValue(languageAtom)
   const drawLayerRef = useRef<L.FeatureGroup | null>(null)
 
   const db = usePGlite()
@@ -241,24 +243,6 @@ export const DrawControlComponent = ({
       })
     }
 
-    geoman.setLang('de')
-
-    geoman.addControls({
-      position: 'topleft',
-      drawMarker: true,
-      drawCircleMarker: false,
-      drawPolyline: true,
-      drawRectangle: true,
-      drawPolygon: true,
-      drawText: false,
-      drawCircle: true,
-      editMode: true,
-      dragMode: false,
-      cutPolygon: false,
-      removalMode: true,
-      rotateMode: false,
-    })
-
     // A new layer was drawn: move it into the draw layer, style it and persist
     const onCreate = (e: L.LeafletEvent) => {
       let layer = (e as unknown as { layer: L.Layer }).layer
@@ -324,7 +308,6 @@ export const DrawControlComponent = ({
       // Revert orange editing style back to default.
       drawLayer.eachLayer(revertEditingStyle)
       drawLayer.off('layerremove', persist)
-      geoman.removeControls()
       map.off('geoman:create', onCreate)
       map.off('geoman:remove', onRemove)
       map.off('geoman:drawstart', onDrawStart)
@@ -338,5 +321,5 @@ export const DrawControlComponent = ({
     }
   }, [map, onEdit, db, editingPlace, editingCheck, editingAction])
 
-  return null
+  return <DrawToolbar key={language} language={language} />
 }
