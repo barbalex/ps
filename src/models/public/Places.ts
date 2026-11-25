@@ -50,6 +50,8 @@ export default interface Places {
   updated_at: Date;
 
   updated_by: string | null;
+
+  gps_accuracy_m: number | null;
 }
 
 /**
@@ -111,6 +113,8 @@ export interface PlacesInitializer {
   updated_at?: Date;
 
   updated_by?: string | null;
+
+  gps_accuracy_m?: number | null;
 }
 
 /**
@@ -160,4 +164,6 @@ export interface PlacesMutator {
   updated_at?: Date;
 
   updated_by?: string | null;
+
+  gps_accuracy_m?: number | null;
 }

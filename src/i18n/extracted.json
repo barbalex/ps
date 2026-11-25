@@ -1964,6 +1964,21 @@
   "gjvJCk": {
     "defaultMessage": "arten-fördern.app funktioniert auf jedem Betriebs­system: Windows, Mac­OS, Linux, Android, iOS..."
   },
+  "gpsAccuracy": {
+    "defaultMessage": "Horizontale Genauigkeit: ±{meters, number} m"
+  },
+  "gpsNoFix": {
+    "defaultMessage": "Keine Position mit gültiger Genauigkeit verfügbar."
+  },
+  "gpsSavedAccuracy": {
+    "defaultMessage": "Gespeicherte GPS-Genauigkeit: ±{meters, number} m"
+  },
+  "gpsUseLocation": {
+    "defaultMessage": "GPS-Position erfassen"
+  },
+  "gpsWaiting": {
+    "defaultMessage": "Position wird ermittelt…"
+  },
   "gw/Eg0": {
     "defaultMessage": "Uuid"
   },

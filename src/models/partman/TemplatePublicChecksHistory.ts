@@ -23,6 +23,8 @@ export default interface TemplatePublicChecksHistory {
   updated_at: Date;
 
   updated_by: string | null;
+
+  gps_accuracy_m: number | null;
 }
 
 /** Represents the initializer for the table partman.template_public_checks_history */
@@ -50,6 +52,8 @@ export interface TemplatePublicChecksHistoryInitializer {
   updated_at: Date;
 
   updated_by?: string | null;
+
+  gps_accuracy_m?: number | null;
 }
 
 /** Represents the mutator for the table partman.template_public_checks_history */
@@ -77,4 +81,6 @@ export interface TemplatePublicChecksHistoryMutator {
   updated_at?: Date;
 
   updated_by?: string | null;
+
+  gps_accuracy_m?: number | null;
 }

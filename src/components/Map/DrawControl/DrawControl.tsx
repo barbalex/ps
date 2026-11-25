@@ -68,14 +68,15 @@ export const DrawControlComponent = ({
 }: Props) => {
   const map = useMap()
   const language = useAtomValue(languageAtom)
-  const [placePoint, setPlacePoint] = useState<((position: L.LatLng) => Promise<void>) | null>(null)
+  const [placePoint, setPlacePoint] = useState<((position: L.LatLng, accuracy?: number | null) => Promise<void>) | null>(null)
+  const [savedAccuracy, setSavedAccuracy] = useState<number | null>(null)
   const [modeActive, setModeActive] = useState(false)
 
   const db = usePGlite()
   const addOperation = useSetAtom(addOperationAtom)
 
   const onEdit = useCallback(
-    async (featureCollection: GeoJSON.FeatureCollection | undefined) => {
+    async (featureCollection: GeoJSON.FeatureCollection | undefined, accuracy: number | null = null) => {
       const activeId = editingPlace ?? editingCheck ?? editingAction
       const activeIdName = editingPlace
         ? 'place_id'
@@ -94,7 +95,7 @@ export const DrawControlComponent = ({
 
       // query previous geometry for the operation log
       const prevRes = await db.query(
-        `SELECT ST_AsGeoJSON(geometry)::json as geometry, bbox FROM ${tableName} WHERE ${activeIdName} = $1`,
+        `SELECT ST_AsGeoJSON(geometry)::json as geometry, bbox, gps_accuracy_m FROM ${tableName} WHERE ${activeIdName} = $1`,
         [activeId],
       )
       const row = prevRes?.rows?.[0] ?? {}
@@ -103,7 +104,7 @@ export const DrawControlComponent = ({
       // that never had one
       if (!featureCollection!.features.length) {
         await db.query(
-          `UPDATE ${tableName} SET geometry = NULL, bbox = NULL WHERE ${activeIdName} = $1`,
+          `UPDATE ${tableName} SET geometry = NULL, bbox = NULL, gps_accuracy_m = NULL WHERE ${activeIdName} = $1`,
           [activeId],
         )
         addOperation({
@@ -111,9 +112,10 @@ export const DrawControlComponent = ({
           rowIdName: activeIdName!,
           rowId: activeId as string,
           operation: 'update',
-          draft: { geometry: null, bbox: null },
+          draft: { geometry: null, bbox: null, gps_accuracy_m: null },
           prev: { ...row },
         })
+        setSavedAccuracy(null)
         return
       }
 
@@ -126,17 +128,18 @@ export const DrawControlComponent = ({
         flattenToGeometryCollection(featureCollection!.features)
 
       await db.query(
-        `UPDATE ${tableName} SET geometry = ST_GeomFromGeoJSON($1), bbox = $2 WHERE ${activeIdName} = $3`,
-        [JSON.stringify(geometryCollection), bbox, activeId],
+        `UPDATE ${tableName} SET geometry = ST_GeomFromGeoJSON($1), bbox = $2, gps_accuracy_m = $4 WHERE ${activeIdName} = $3`,
+        [JSON.stringify(geometryCollection), bbox, activeId, accuracy],
       )
       addOperation({
         table: tableName!,
         rowIdName: activeIdName!,
         rowId: activeId as string,
         operation: 'update',
-        draft: { geometry: geometryCollection, bbox },
+        draft: { geometry: geometryCollection, bbox, gps_accuracy_m: accuracy },
         prev: { ...row },
       })
+      setSavedAccuracy(accuracy)
     },
     [addOperation, db, editingAction, editingCheck, editingPlace],
   )
@@ -178,14 +181,14 @@ export const DrawControlComponent = ({
         setPlacePoint(null)
         return
       }
-      setPlacePoint(() => async (position: L.LatLng) => {
+      setPlacePoint(() => async (position: L.LatLng, accuracy?: number | null) => {
         await onEdit({
           type: 'FeatureCollection',
           features: [{
             type: 'Feature', properties: {},
             geometry: { type: 'Point', coordinates: [position.lng, position.lat] },
           }],
-        })
+        }, accuracy)
         if (!map.hasLayer(drawLayer)) return
         if (point instanceof L.CircleMarker) point.setLatLng(position)
         else {
@@ -210,11 +213,12 @@ export const DrawControlComponent = ({
         ? 'checks'
         : 'actions'
     if (activeId) {
-      db.query(
-        `SELECT ST_AsGeoJSON(geometry)::json as geometry FROM ${tableName} WHERE ${activeIdName} = $1`,
+      db.query<{ geometry: GeoJSON.GeoJsonObject | null; gps_accuracy_m: number | null }>(
+        `SELECT ST_AsGeoJSON(geometry)::json as geometry, gps_accuracy_m FROM ${tableName} WHERE ${activeIdName} = $1`,
         [activeId],
       ).then((result) => {
         if (!map.hasLayer(drawLayer) || !result.rows.length) return
+        setSavedAccuracy(result.rows[0]!.gps_accuracy_m)
         const geometry = (
           result?.rows?.[0] as { geometry?: GeoJSON.GeoJsonObject } | undefined
         )?.geometry
@@ -333,6 +337,6 @@ export const DrawControlComponent = ({
 
   return <>
     <DrawToolbar key={language} language={language} />
-    {!modeActive && placePoint && <PrecisePoint apply={placePoint} />}
+    {!modeActive && placePoint && <PrecisePoint apply={placePoint} savedAccuracy={savedAccuracy} />}
   </>
 }

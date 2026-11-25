@@ -23,6 +23,8 @@ export default interface TemplatePublicActionsHistory {
   updated_at: Date;
 
   updated_by: string | null;
+
+  gps_accuracy_m: number | null;
 }
 
 /** Represents the initializer for the table partman.template_public_actions_history */
@@ -50,6 +52,8 @@ export interface TemplatePublicActionsHistoryInitializer {
   updated_at: Date;
 
   updated_by?: string | null;
+
+  gps_accuracy_m?: number | null;
 }
 
 /** Represents the mutator for the table partman.template_public_actions_history */
@@ -77,4 +81,6 @@ export interface TemplatePublicActionsHistoryMutator {
   updated_at?: Date;
 
   updated_by?: string | null;
+
+  gps_accuracy_m?: number | null;
 }

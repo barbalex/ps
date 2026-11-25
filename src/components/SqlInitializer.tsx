@@ -195,6 +195,12 @@ const healExistingDbSql = `
             CREATE INDEX IF NOT EXISTS place_levels_project_id_level_idx ON place_levels USING btree(project_id, level);
             CREATE INDEX IF NOT EXISTS charts_project_id_for_subprojects_idx ON charts USING btree(project_id, for_subprojects);
             ALTER TABLE IF EXISTS places ADD COLUMN IF NOT EXISTS name text DEFAULT NULL;
+            ALTER TABLE IF EXISTS places ADD COLUMN IF NOT EXISTS gps_accuracy_m double precision;
+            ALTER TABLE IF EXISTS checks ADD COLUMN IF NOT EXISTS gps_accuracy_m double precision;
+            ALTER TABLE IF EXISTS actions ADD COLUMN IF NOT EXISTS gps_accuracy_m double precision;
+            ALTER TABLE IF EXISTS places_history ADD COLUMN IF NOT EXISTS gps_accuracy_m double precision;
+            ALTER TABLE IF EXISTS checks_history ADD COLUMN IF NOT EXISTS gps_accuracy_m double precision;
+            ALTER TABLE IF EXISTS actions_history ADD COLUMN IF NOT EXISTS gps_accuracy_m double precision;
             -- wms_service_layers gained the WGS84 extent for zoom-to-layer
             -- (2026-11); heal local databases created before the schema
             -- caught up
