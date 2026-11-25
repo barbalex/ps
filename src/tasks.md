@@ -46,10 +46,6 @@ Better-Auth, possible extensions:
 
 ---
 
-map geometry editing menus: 1. tooltips need translation 2. can we implement the same tooltips as used for instance in the appbar menus?
-
-Same tooltips for all elements in the map: Open Layer Menu, all the tools on the bottom right
-
 ---
 
 Edit geometry in forms: make it a menu in the form header instead of the current input. When clicking on it and if a geometry already exists, the map should open (works already when clicking the Edit input) and zoom to the current object (not working now). The button should make clear if a geometry already exists. not sure how that is best done
