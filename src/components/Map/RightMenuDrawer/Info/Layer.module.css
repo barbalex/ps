@@ -31,6 +31,23 @@
   color: black;
 }
 
+/* html from a wms keeps its own styles out of the app (see SafeHtml), so the
+   tables and images get theirs here */
+.html table {
+  border-collapse: collapse;
+}
+
+.html th,
+.html td {
+  padding: 2px 6px;
+  border: 1px solid rgba(0, 0, 0, 0.2);
+  text-align: left;
+}
+
+.html img {
+  max-width: 100%;
+}
+
 .label {
   padding: 5px;
   padding-left: 10px;
@@ -65,6 +82,11 @@
 
 :global(html[data-theme='dark']) .text {
   color: #e6e6e6;
+}
+
+:global(html[data-theme='dark']) .html th,
+:global(html[data-theme='dark']) .html td {
+  border-color: rgba(255, 255, 255, 0.2);
 }
 
 :global(html[data-theme='dark']) .label {

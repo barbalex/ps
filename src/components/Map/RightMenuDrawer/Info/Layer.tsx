@@ -23,6 +23,7 @@ import {
 } from '../../../../modules/geoQueries.ts'
 import { navigateToOwnForm } from '../../../../modules/navigateToOwnForm.ts'
 import { useUrlPanes } from '../../../../modules/useUrlPanes.ts'
+import { SafeHtml } from '../../../shared/SafeHtml.tsx'
 import styles from './Layer.module.css'
 
 const { Button } = fluentUiReactComponents
@@ -214,7 +215,10 @@ export const Layer = ({ layerData }: Props) => {
       <div className={styles.container}>
         <div className={styles.title}>{titleToShow}</div>
         {buttons}
-        <div dangerouslySetInnerHTML={{ __html: html }} />
+        <SafeHtml
+          html={html}
+          className={`${styles.text} ${styles.html}`}
+        />
       </div>
     )
   }
