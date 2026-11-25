@@ -1,4 +1,4 @@
-import { useEffect, useCallback, useRef } from 'react'
+import { useEffect, useCallback } from 'react'
 import * as L from 'leaflet'
 // The fork's type declarations only augment the 'leaflet' module (map.geoman,
 // layer events); the runtime default export is not declared, hence the cast.
@@ -34,10 +34,6 @@ const GEOMAN_REMOVAL_ACTIVE_CLASS = 'geoman-removal-active'
 // hit-testing of the removal mode to it
 const EDITING_CLASS = 'geometry-editing'
 
-// Persists the draw layer across component unmounts so drawn geometry
-// stays visible on the map after drawing mode is deactivated.
-let _persistentDrawLayer: L.FeatureGroup | null = null
-
 // Style applied to the editable geometry so it stands out from the rest of the layer.
 const EDITING_STYLE: L.PathOptions = {
   color: 'orange',
@@ -45,14 +41,6 @@ const EDITING_STYLE: L.PathOptions = {
   fillOpacity: 0.2,
   weight: 3,
   className: EDITING_CLASS,
-}
-
-// Leaflet default path style — used to revert when editing mode ends.
-const DEFAULT_STYLE: L.PathOptions = {
-  color: '#3388ff',
-  fillColor: '#3388ff',
-  fillOpacity: 0.2,
-  weight: 3,
 }
 
 const applyEditingStyle = (layer: L.Layer) => {
@@ -63,12 +51,6 @@ const applyEditingStyle = (layer: L.Layer) => {
     // directly (layer groups forward setStyle but have no element)
     const element = (layer as L.Path).getElement?.()
     element?.classList.add(EDITING_CLASS)
-  }
-}
-
-const revertEditingStyle = (layer: L.Layer) => {
-  if (typeof (layer as L.Path).setStyle === 'function') {
-    ;(layer as L.Path).setStyle(DEFAULT_STYLE)
   }
 }
 
@@ -85,7 +67,6 @@ export const DrawControlComponent = ({
 }: Props) => {
   const map = useMap()
   const language = useAtomValue(languageAtom)
-  const drawLayerRef = useRef<L.FeatureGroup | null>(null)
 
   const db = usePGlite()
   const addOperation = useSetAtom(addOperationAtom)
@@ -161,15 +142,8 @@ export const DrawControlComponent = ({
     const geoman = map.geoman
     if (!geoman) return
 
-    // Remove any previously persisted draw layer (from a prior entity or session)
-    if (_persistentDrawLayer && map.hasLayer(_persistentDrawLayer)) {
-      map.removeLayer(_persistentDrawLayer)
-    }
-
     const drawLayer = new L.FeatureGroup()
     map.addLayer(drawLayer)
-    _persistentDrawLayer = drawLayer
-    drawLayerRef.current = drawLayer
 
     const persist = () =>
       onEdit(drawLayer.toGeoJSON() as GeoJSON.FeatureCollection)
@@ -213,7 +187,7 @@ export const DrawControlComponent = ({
         const geometry = (
           result?.rows?.[0] as { geometry?: GeoJSON.GeoJsonObject } | undefined
         )?.geometry
-        if (geometry && drawLayer) {
+        if (geometry && map.hasLayer(drawLayer)) {
           try {
             // leaflet 2's GeoJSON types are narrower than the geojson
             // package's GeoJsonObject, but the values are compatible
@@ -303,10 +277,6 @@ export const DrawControlComponent = ({
     map.on('geoman:globalremovalmodetoggled', setRemovalActive)
 
     return () => {
-      // Keep drawLayer on the map so drawn geometry stays visible after
-      // drawing mode is deactivated. It will be removed on the next mount.
-      // Revert orange editing style back to default.
-      drawLayer.eachLayer(revertEditingStyle)
       drawLayer.off('layerremove', persist)
       map.off('geoman:create', onCreate)
       map.off('geoman:remove', onRemove)
@@ -316,6 +286,7 @@ export const DrawControlComponent = ({
       map.off('geoman:globaleditmodetoggled', setActive)
       map.off('geoman:globalremovalmodetoggled', setActive)
       map.off('geoman:globalremovalmodetoggled', setRemovalActive)
+      map.removeLayer(drawLayer)
       map.getContainer().classList.remove(GEOMAN_ACTIVE_CLASS)
       map.getContainer().classList.remove(GEOMAN_REMOVAL_ACTIVE_CLASS)
     }

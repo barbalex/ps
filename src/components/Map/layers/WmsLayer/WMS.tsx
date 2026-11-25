@@ -21,10 +21,6 @@ type Props = {
 export const WMS = ({ layerPresentation, layer }: Props) => {
   const onTileErrorDebounced = useDebouncedCallback(onTileError, 600)
 
-  // TODO:
-  // leaflet calls server internally
-  // BUT: if call errors, leaflet does not surface the error
-  // instead ALL WMS LAYERS FAIL!!!!!!!!
   return (
     <WMSTileLayer
       url={layer.wms_services_url!}
@@ -39,12 +35,19 @@ export const WMS = ({ layerPresentation, layer }: Props) => {
       // exceptions="inimage"
       eventHandlers={{
         tileerror: ({ tile }) => {
-          if (tile instanceof HTMLImageElement) {
-            onTileErrorDebounced(
-              tile.src,
-              layer.label ?? layer.wms_service_layer_name ?? 'WMS',
-            )
+          if (!(tile instanceof HTMLImageElement) || !tile.isConnected) return
+          // Leaflet clears src when cancelling tiles that left the viewport.
+          const url = tile.getAttribute('src')
+          if (!url) return
+          if (!tile.dataset.wmsRetried) {
+            tile.dataset.wmsRetried = 'true'
+            tile.src = url
+            return
           }
+          onTileErrorDebounced(
+            tile.src,
+            layer.label ?? layer.wms_service_layer_name ?? 'WMS',
+          )
         },
       }}
     />

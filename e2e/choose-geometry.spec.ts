@@ -163,11 +163,10 @@ test('choosing a geometry starts editing it', async ({ page }) => {
   await openMap(page)
   await activateChooseTool(page, 'Choose a geometry to edit it')
 
-  // click the map center — where the seeded point sits
-  const map = page.locator('#map .leaflet-container')
-  const box = await map.boundingBox()
-  expect(box).not.toBeNull()
-  await page.mouse.click(box!.x + box!.width / 2, box!.y + box!.height / 2)
+  const hitbox = page.locator('.clickable-hitbox').first()
+  const box = await hitbox.boundingBox()
+  if (!box) throw new Error('Place marker is not visible')
+  await page.mouse.click(box.x + box.width / 2, box.y + box.height / 2)
 
   // the place form route opened for the chosen row
   await expect(page).toHaveURL(new RegExp(`/places/${PLACE_ID}/place`), {
@@ -202,6 +201,7 @@ test('choosing a geometry starts editing it', async ({ page }) => {
   if (!bounds) throw new Error('Editable point is not visible')
   const x = bounds.x + bounds.width / 2
   const y = bounds.y + bounds.height / 2
+  const startLng = Number(psql(`SELECT ST_X(ST_GeometryN(geometry, 1)) FROM places WHERE place_id = '${PLACE_ID}'`))
   await page.mouse.move(x, y)
   await page.mouse.down()
   await page.mouse.move(x + 60, y, { steps: 12 })
@@ -209,10 +209,34 @@ test('choosing a geometry starts editing it', async ({ page }) => {
   // Moving 60 pixels east at zoom 17 changes longitude, not latitude.
   await expect.poll(() => psql(`
     SELECT ST_NumGeometries(geometry) = 1 AND
-      abs(ST_X(ST_GeometryN(geometry, 1)) - ${LNG + 60 * 360 / (256 * 2 ** 17)}) < 0.00002 AND
+      abs(ST_X(ST_GeometryN(geometry, 1)) - ${startLng + 60 * 360 / (256 * 2 ** 17)}) < 0.00002 AND
       abs(ST_Y(ST_GeometryN(geometry, 1)) - ${LAT}) < 0.00002
     FROM places WHERE place_id = '${PLACE_ID}'
   `), { timeout: 30_000 }).toBe('t')
+  await page.locator('button[name="edit_geometry"]').click()
+  await expect(page.locator('.geometry-editing')).toHaveCount(0)
+  await expect(hitbox).toBeVisible()
+  const moved = await hitbox.boundingBox()
+  if (!moved) throw new Error('Moved place marker is not visible')
+  const clickPlace = () => page.mouse.click(moved.x + moved.width / 2, moved.y + moved.height / 2)
+  await clickPlace()
+  const drawer = page.locator('.map-info-drawer')
+  await expect(drawer).toContainText(PLACE_ID)
+  await drawer.getByTitle('Close').click()
+  await page.locator('button[name="layer_menu"]').click()
+  await page.getByRole('button', { name: 'E2eChooseOrte', exact: true })
+    .locator('[aria-pressed="true"]').click()
+  await expect(hitbox).toHaveCount(0)
+  await closeLayerDrawerIfOpen(page)
+  await clickPlace()
+  await expect(drawer).toContainText('No Data found at this location')
+  await drawer.getByTitle('Close').click()
+  await page.locator('button[name="edit_geometry"]').click()
+  await expect(page.locator('.geometry-editing')).toBeVisible()
+  await page.reload()
+  await expect(page.locator('button[name="edit_geometry"]')).toBeVisible({ timeout: 60_000 })
+  await expect(page.locator('.geometry-editing')).toHaveCount(0)
+  await expect(hitbox).toHaveCount(0)
 })
 
 test('clicking a spot without geometry warns and keeps the mode', async ({

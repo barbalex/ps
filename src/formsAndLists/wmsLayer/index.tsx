@@ -73,9 +73,7 @@ export const WmsLayer = () => {
       draft: { [name]: value },
       prev: { ...row },
     })
-    // TODO:
-    // 1. if name is wms_layer, need to set queryable, legend_url, more?
-    // 2. use wms_layers.queryable in the click listener for the info drawer
+    // TODO: update legend_url when changing the service layer?
     return
   }
 

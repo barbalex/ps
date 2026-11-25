@@ -54,6 +54,10 @@ test.beforeAll(async () => {
     VALUES ('${WMS_LAYER_ID}', '${PROJECT_ID}', '${WMS_SERVICE_ID}', 'e2e.layer', '${WMS_LABEL}')
     ON CONFLICT DO NOTHING;
 
+    INSERT INTO wms_service_layers (wms_service_layer_id, wms_service_id, name, queryable)
+    VALUES ('a0b0c0d0-0000-7000-8000-00000000e2e9', '${WMS_SERVICE_ID}', 'e2e.layer', FALSE)
+    ON CONFLICT DO NOTHING;
+
     INSERT INTO vector_layers (vector_layer_id, project_id, type, name)
     VALUES ('${VECTOR_LAYER_ID}', '${PROJECT_ID}', 'wfs', '${VECTOR_NAME}')
     ON CONFLICT DO NOTHING;
@@ -207,6 +211,24 @@ test('vector layer: checkbox, Active section, pane — and back', async ({
 test('wms layer: checkbox, Active section, pane — and back', async ({
   page,
 }) => {
+  const retriedTiles = new Set<string>()
+  const featureInfoRequests: string[] = []
+  await page.route('**/e2e-wms?**', async (route) => {
+    const url = route.request().url()
+    if (new URL(url).searchParams.get('request') === 'GetFeatureInfo') {
+      featureInfoRequests.push(url)
+      return route.fulfill({ json: { type: 'FeatureCollection', features: [] } })
+    }
+    if (!url.toLowerCase().includes('request=getmap')) return route.continue()
+    if (!retriedTiles.has(url)) {
+      retriedTiles.add(url)
+      return route.abort('connectionreset')
+    }
+    return route.fulfill({
+      contentType: 'image/svg+xml',
+      body: '<svg xmlns="http://www.w3.org/2000/svg" width="256" height="256"/>',
+    })
+  })
   await openDrawer(page)
   const drawer = page.locator('.map-layers-drawer')
 
@@ -218,6 +240,16 @@ test('wms layer: checkbox, Active section, pane — and back', async ({
   await expect(
     page.locator(`.leaflet-pane[class*="${WMS_LABEL}-pane"]`),
   ).toBeAttached()
+  await expect(page.locator('img.leaflet-tile-loaded[src*="/e2e-wms?"]').first()).toBeVisible()
+
+  const map = page.locator('#map .leaflet-container')
+  const box = await map.boundingBox()
+  if (!box) throw new Error('Map is not visible')
+  await page.mouse.click(box.x + box.width / 2, box.y + box.height / 2)
+  const info = page.locator('.map-info-drawer')
+  await expect(info).toContainText('No Data found at this location')
+  expect(featureInfoRequests).toHaveLength(0)
+  await info.getByTitle('Close').click()
 
   await expect
     .poll(

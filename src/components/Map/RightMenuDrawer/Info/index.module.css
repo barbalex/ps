@@ -1,5 +1,6 @@
 .container {
   display: flex;
+  align-self: stretch;
   flex-direction: column;
   /* flex item of the drawer: fill it minus the offset margin below,
      so the scrollable body ends flush with the drawer's visible edge */

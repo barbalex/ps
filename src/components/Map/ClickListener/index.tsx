@@ -32,6 +32,7 @@ import {
 } from '../../../store.ts'
 import type { MapInfo } from '../../../store.ts'
 import { useUrlPanes } from '../../../modules/useUrlPanes.ts'
+import { useUrlLayers } from '../../../modules/useUrlLayers.ts'
 import type WfsServices from '../../../models/public/WfsServices.ts'
 import type Crs from '../../../models/public/Crs.ts'
 import type VectorLayers from '../../../models/public/VectorLayers.ts'
@@ -115,6 +116,7 @@ export const ClickListener = () => {
   const setEditingCheckGeometry = useSetAtom(editingCheckGeometryAtom)
   const setEditingActionGeometry = useSetAtom(editingActionGeometryAtom)
   const [tabs, setTabs] = useUrlPanes()
+  const { layers, isOverridden } = useUrlLayers()
   const addNotification = useSetAtom(addNotificationAtom)
 
   const { projectId = '99999999-9999-9999-9999-999999999999' } = useParams({
@@ -161,8 +163,9 @@ export const ClickListener = () => {
     const bufferMeters = buffer * 111000
 
     map.eachLayer(((layer: ClickableLayer) => {
-      // Skip internal layers (markers that are part of layer groups)
-      if (layer._isInternal) return
+      // Data layers label their feature in onEachFeature. Edit overlays
+      // and child markers aren't independent records for the info drawer.
+      if (layer._isInternal || !('vectorLayerLabel' in layer)) return
 
       // Handle layer groups with circle markers (from TableLayer)
       if (layer._clickableCircle && layer.feature) {
@@ -322,12 +325,20 @@ export const ClickListener = () => {
           INNER JOIN layer_presentations lp ON lp.wms_layer_id = wl.wms_layer_id
           INNER JOIN wms_services ws ON ws.wms_service_id = wl.wms_service_id
         WHERE 
-          lp.active = true 
+          lp.layer_presentation_id = ANY($2::uuid[])
+          AND ($3 OR lp.active)
           AND wl.project_id = $1
-          ${filterString} 
+          AND NULLIF(trim(wl.wms_service_layer_name), '') IS NOT NULL
+          AND NOT EXISTS (
+            SELECT 1 FROM wms_service_layers sl
+            WHERE sl.wms_service_id = wl.wms_service_id
+              AND sl.name = wl.wms_service_layer_name
+              AND sl.queryable IS FALSE
+          )
+          ${filterString ? `AND (${filterString})` : ''}
         ORDER BY wl.label
       `,
-      [projectId],
+      [projectId, layers, isOverridden],
     )
     const wmsLayers = (resWmsLayers?.rows ?? []) as WmsLayerRow[]
 
@@ -372,14 +383,16 @@ export const ClickListener = () => {
       `
         SELECT vl.*
         FROM vector_layers vl
-          INNER JOIN layer_presentations lp ON lp.vector_layer_id = vl.vector_layer_id AND lp.active = true
+          INNER JOIN layer_presentations lp ON lp.vector_layer_id = vl.vector_layer_id
         WHERE
           vl.project_id = $1
+          AND lp.layer_presentation_id = ANY($2::uuid[])
+          AND ($3 OR lp.active)
           AND vl.wfs_service_id IS NOT NULL
-          ${filterStringVl ? ` AND ${filterStringVl}` : ''}
+          ${filterStringVl ? `AND (${filterStringVl})` : ''}
         ORDER BY vl.name
       `,
-      [projectId],
+      [projectId, layers, isOverridden],
     )
     const activeVectorLayers = (resActiveVectorLayers?.rows ??
       []) as VectorLayers[]
