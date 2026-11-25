@@ -60,6 +60,10 @@ const openInfoDrawer = async (page: Page) => {
   }
   await expect(drawer(page)).toBeVisible()
   await expect(resizer(page)).toBeVisible()
+  await expect.poll(() => drawer(page).evaluate((el) =>
+    Math.abs(el.getBoundingClientRect().right -
+      el.querySelector('.fui-DrawerHeader')!.getBoundingClientRect().right),
+  )).toBeLessThanOrEqual(1)
 }
 
 // drags the drawer's resizer to an absolute point

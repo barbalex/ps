@@ -410,20 +410,13 @@ export const mapDrawerVectorLayerDisplayAtom = atomWithStorage<string | null>(
 )
 
 // The id of the place whose geometry is currently being edited
-export const editingPlaceGeometryAtom = atomWithStorage<string | null | false>(
-  'editingPlaceGeometryAtom',
-  false,
-)
+// Editing is a live interaction, not a display preference. Restoring its
+// target on reload draws a separate overlay even if its data layer is off.
+export const editingPlaceGeometryAtom = atom<string | null | false>(false)
 // The id of the check whose geometry is currently being edited
-export const editingCheckGeometryAtom = atomWithStorage<string | null | false>(
-  'editingCheckGeometryAtom',
-  false,
-)
+export const editingCheckGeometryAtom = atom<string | null | false>(false)
 // The id of the action whose geometry is currently being edited
-export const editingActionGeometryAtom = atomWithStorage<string | null | false>(
-  'editingActionGeometryAtom',
-  false,
-)
+export const editingActionGeometryAtom = atom<string | null | false>(false)
 // True when any geometry is being edited on the map
 export const drawingOnMapAtom = atom(
   (get) =>

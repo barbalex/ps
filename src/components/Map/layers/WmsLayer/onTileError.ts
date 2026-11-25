@@ -1,64 +1,32 @@
-// TODO: need to debounce
-import type { Map as LeafletMap } from 'leaflet'
-
-import { xmlToJson } from '../../../../modules/xmlToJson.ts'
-import { httpGet } from '../../../../modules/httpGet.ts'
+import { ogcException } from '../../../../modules/ogcException.ts'
 import { store, addNotificationAtom } from '../../../../store.ts'
 
-type WmsLayerForTileError = {
-  wms_services?: {
-    url: string
-    version: string | null
-  } | null
-  wms_services_image_format?: string | null
-  wms_service_layer_name?: string | null
-  label?: string | null
-}
+export const onTileError = async (url: string, label: string) => {
+  let body: string
+  try {
+    // An image element doesn't expose the WMS exception body. Probe the
+    // same tile, preserving its CRS, bounding box and service parameters.
+    const response = await fetch(url)
+    if (
+      response.ok &&
+      response.headers.get('content-type')?.startsWith('image/')
+    )
+      return
 
-export const onTileError = async (
-  map: LeafletMap,
-  layer: WmsLayerForTileError,
-  ignore: unknown,
-) => {
-  console.log('hello onTileError', { ignore, map, layer })
-  const mapSize = map.getSize()
-  const bbox = map.getBounds().toBBoxString()
-  const res = await httpGet<string>(layer.wms_services!.url, {
-    service: 'WMS',
-    request: 'GetMap',
-    version: layer.wms_services!.version,
-    layers: layer.wms_service_layer_name,
-    // the format of the map images — like the request that failed
-    format: layer.wms_services_image_format,
-    crs: 'EPSG:4326',
-    width: mapSize.x,
-    height: mapSize.y,
-    bbox,
-  })
-  // console.log(`onTileError res.data:`, res.data)
-  const isXML = res.data?.includes('<ServiceException>')
-  // console.log(`onTileError isXML:`, isXML)
-  if (!isXML) return
-
-  const parser = new window.DOMParser()
-  const data = xmlToJson(parser.parseFromString(res.data, 'text/html')) as {
-    HTML?: {
-      BODY?: {
-        SERVICEEXCEPTIONREPORT?: {
-          SERVICEEXCEPTION?: { '#text'?: string }
-        }
-      }
-    }
+    const text = await response.text()
+    const exception =
+      text.trimStart().startsWith('<') ?
+        ogcException(new DOMParser().parseFromString(text, 'text/xml'))
+      : undefined
+    body =
+      exception?.message ??
+      `HTTP ${response.status} ${response.statusText}: Keine Kartenkachel erhalten.`
+  } catch (error) {
+    body = error instanceof Error ? error.message : String(error)
   }
-  // console.log(`onTileError data:`, data)
-  const errorMessage =
-    data?.HTML?.BODY?.SERVICEEXCEPTIONREPORT?.SERVICEEXCEPTION?.['#text']
-  // console.log(`onTileError errorMessage:`, errorMessage)
   store.set(addNotificationAtom, {
-    title: `Fehler beim Laden der Bild-Karte '${layer.label}'. Der WMS-Server meldet`,
-    body: errorMessage,
+    title: `Fehler beim Laden der Bild-Karte '${label}'`,
+    body,
     intent: 'error',
   })
 }
-
-export default onTileError
