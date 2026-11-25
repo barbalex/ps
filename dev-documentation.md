@@ -1030,13 +1030,26 @@ Three creation paths, all idempotent:
    - `place_levels_create_vector_layers_trigger`: on INSERT of a level-2
      `place_levels` row (or UPDATE of its `level`/`actions`/`checks`):
      `places_2` always; `actions_2` when `actions`; `checks_2` when `checks`.
-   - `vector_layers_insert_trigger`: on every layer INSERT, adds one
-     `vector_layer_displays` row and one `layer_presentations` row.
+   - `vector_layers_insert_trigger`: on every layer INSERT, adds the one
+     `vector_layer_displays` row a layer needs to be drawn — except for a
+     layer a client inserts itself (path 2). Those are direct inserts in an
+     app session (JWT claims set), and the client brings the display as a
+     queued operation. A trigger-made row carries no operation: in a client's
+     database it never reached the server, where the trigger made the real
+     one for the synced insert — the layer had two displays on the client
+     that created it. `dedupeVectorLayerDisplays`
+     (`src/modules/`) leaves such a layer with one, there and on the server:
+     it keeps the newest, deletes the others and upserts the kept one, so
+     whichever of them the server had, it ends up with that one.
+     `TableLayersProvider` runs it once the sync is done.
    - **All three skip while `electric.syncing` is set** (Electric's own
      writes, seeds, imports).
-2. **Client-side safety nets** (`createVectorLayer` in
-   `src/modules/createRows.ts` dedups by name before inserting, so calling it
-   again is free):
+2. **Client-side** (`createVectorLayer` in `src/modules/createRows.ts` —
+   dedups by name before inserting, so calling it again is free). It creates
+   the layer and its display as two queued operations; the local insert runs
+   with `electric.syncing` set, so the trigger makes no second display.
+   - new wfs layers: the add buttons of the vector layers list, the layer
+     form's header and the map drawer
    - creating a place ensures the level's places layer exists
      (`src/formsAndLists/places.tsx`, `src/formsAndLists/place/Header.tsx`)
    - `src/components/TableLayersProvider.tsx` creates the observation layers
@@ -1210,10 +1223,8 @@ that.
 
 Ending the display by a field — clearing it, or choosing another wfs layer —
 goes through `clearVectorLayerDisplaysByValue`: it deletes the valued displays
-and never touches the valueless ones. A layer created on a client has two of
-those: the insert trigger's, which never reached the server (it carries no
-operation), and the server's own. Deleting one in favour of its local twin
-would leave the layer without a display for everyone else.
+and leaves the one without a value — that is the layer's look again —, or
+creates one when none is left.
 
 # 11 Error Telemetry
 

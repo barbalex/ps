@@ -1654,37 +1654,74 @@ export const createVectorLayer = async ({
 
   // Create new vector_layer locally
   const vector_layer_id = uuidv7()
-  await db.query(
-    `insert into vector_layers (vector_layer_id, project_id, name, type, own_table, own_table_level, max_features)
-     values ($1, $2, $3, $4, $5, $6, $7)
-     returning *`,
-    [
+  const values = [
+    vector_layer_id,
+    projectId,
+    name,
+    type,
+    ownTable,
+    ownTableLevel,
+    maxFeatures,
+  ]
+
+  // Only queue operations if this is a user-created layer (not system-managed)
+  if (skipOperationQueue) {
+    // not synced: the display the insert trigger creates is all it gets
+    await db.query(
+      `insert into vector_layers (vector_layer_id, project_id, name, type, own_table, own_table_level, max_features)
+       values ($1, $2, $3, $4, $5, $6, $7)
+       returning *`,
+      values,
+    )
+    return vector_layer_id
+  }
+
+  // The insert runs with electric.syncing set, so the insert trigger creates
+  // no vector_layer_display. Such a row carries no operation: it never reaches
+  // the server, where the trigger created the real one for the synced insert
+  // — the layer ended up with two displays on the client that created it.
+  // The display is created below, as a queued operation. (The server's copy
+  // of the trigger creates none for a client's insert either.)
+  await db.transaction(async (tx) => {
+    await tx.exec(`SET LOCAL electric.syncing = 'true'`)
+    await tx.query(
+      `insert into vector_layers (vector_layer_id, project_id, name, type, own_table, own_table_level, max_features)
+       values ($1, $2, $3, $4, $5, $6, $7)
+       returning *`,
+      values,
+    )
+  })
+
+  store.set(addOperationAtom, {
+    table: 'vector_layers',
+    operation: 'insert',
+    draft: {
       vector_layer_id,
-      projectId,
+      project_id: projectId,
       name,
       type,
-      ownTable,
-      ownTableLevel,
-      maxFeatures,
-    ],
-  )
+      own_table: ownTable,
+      own_table_level: ownTableLevel,
+      max_features: maxFeatures,
+    },
+  })
 
-  // Only queue operation if this is a user-created layer (not system-managed)
-  if (!skipOperationQueue) {
-    store.set(addOperationAtom, {
-      table: 'vector_layers',
-      operation: 'insert',
-      draft: {
-        vector_layer_id,
-        project_id: projectId,
-        name,
-        type,
-        own_table: ownTable,
-        own_table_level: ownTableLevel,
-        max_features: maxFeatures,
-      },
-    })
-  }
+  // The layer's display: one without a value, with the table's defaults —
+  // what the insert trigger used to create
+  const vector_layer_display_id = uuidv7()
+  await db.query(
+    `insert into vector_layer_displays (vector_layer_display_id, vector_layer_id)
+     values ($1, $2)`,
+    [vector_layer_display_id, vector_layer_id],
+  )
+  store.set(addOperationAtom, {
+    table: 'vector_layer_displays',
+    operation: 'insert',
+    draft: {
+      vector_layer_display_id,
+      vector_layer_id,
+    },
+  })
 
   return vector_layer_id
 }

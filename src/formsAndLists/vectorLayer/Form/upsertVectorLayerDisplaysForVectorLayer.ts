@@ -125,7 +125,7 @@ export const upsertVectorLayerDisplaysForVectorLayer = async ({
   }
 
   if (
-    !((properties ?? []) as string[]).includes(displayByProperty) &&
+    !((properties ?? []) as string[]).includes(displayByProperty!) &&
     existingVectorLayerDisplays.length
   ) {
     // remove all displays before creating new ones
@@ -406,10 +406,8 @@ const deleteDisplays = async (ids: string[]) => {
 
 /**
  * Ends displaying a layer by a field: the displays of the field's values are
- * deleted, one without a value remains — or is created. The valueless
- * displays are left alone on purpose. A layer created on this client has two
- * of them: the insert trigger's, which never reached the server, and the
- * server's — which must not be deleted in favour of its local twin
+ * deleted, the one without a value stays — it is the layer's look again —, or
+ * is created when none is left
  */
 export const clearVectorLayerDisplaysByValue = async (
   vectorLayerId: string,

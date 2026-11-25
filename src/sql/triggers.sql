@@ -820,6 +820,8 @@ EXECUTE PROCEDURE project_users_email_roles_label_trigger();
 -- on insert vector_layers if type is in:
 -- places1, places2, actions1, actions2, checks1, checks2, observations_assigned1, observations_assigned2, observations_to_assess, observations_not_to_assign
 -- create a corresponding vector_layer_display.
+-- Except for layers a client inserts itself: it creates the display, as a
+-- queued operation (createVectorLayer) — see inside the function.
 -- NO layer_presentations auto-creation: the client creates them on demand
 -- (createLayerPresentation, as a queued operation). Trigger-created rows
 -- carry no operation — on the client they never sync (activating them
@@ -835,6 +837,19 @@ BEGIN
   SELECT COALESCE(NULLIF(current_setting('electric.syncing', true), ''), 'false')::boolean INTO is_syncing;
   IF is_syncing THEN
     RETURN OLD;
+  END IF;
+
+  -- A layer a client inserts itself gets its display from the client, as a
+  -- queued operation. A trigger-made one carries no operation: in the
+  -- client's database it never reaches the server, and here it stands next
+  -- to the client's own row — the layer ended up with two displays on the
+  -- client that created it. Client writes are direct inserts (not made by
+  -- another trigger) in a session with JWT claims. The own layers that a
+  -- project's and a place level's triggers create are no direct inserts:
+  -- they get their display here.
+  IF pg_trigger_depth() = 1
+     AND COALESCE(NULLIF(current_setting('request.jwt.claims', true), ''), '') <> '' THEN
+    RETURN NEW;
   END IF;
 
   -- check if vector_layer_display already exists

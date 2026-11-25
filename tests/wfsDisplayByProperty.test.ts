@@ -1005,8 +1005,7 @@ describe('syncWfsLayerDisplays', () => {
 
   it('never deletes the displays without a value', async () => {
     await insertWfsLayer(9)
-    // a layer created on a client has two of them: the insert trigger's,
-    // which never reached the server, and the server's
+    // a second one without a value: clearing ends the styling by value only
     await db.query(
       `INSERT INTO vector_layer_displays (vector_layer_id) VALUES ($1)`,
       [layerIdOf(9)],
