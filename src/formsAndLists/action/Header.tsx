@@ -1,30 +1,14 @@
 import { useParams, useNavigate } from '@tanstack/react-router'
-import { TbZoomScan } from 'react-icons/tb'
-import * as fluentUiReactComponents from '@fluentui/react-components'
-const { Button } = fluentUiReactComponents
-import { useAtom, useSetAtom } from 'jotai'
 import { usePGlite, useLiveQuery } from '@electric-sql/pglite-react'
 import { useRef, useEffect } from 'react'
 import { useIntl } from 'react-intl'
-import type { GeoJSON } from 'geojson'
 
-import { createAction, createLayerPresentation } from '../../modules/createRows.ts'
+import { createAction } from '../../modules/createRows.ts'
 import { FormHeader } from '../../components/FormHeader/index.tsx'
+import { Geometry } from '../../components/FormMenu/Geometry.tsx'
 import { HistoryToggleButton } from '../../components/shared/HistoryCompare/HistoryToggleButton.tsx'
-import {
-  extentSelect,
-  queryExtent,
-  extentToBoundsWithMargin,
-} from '../../modules/geoQueries.ts'
 import type { TableRowFilter } from '../../store.ts'
-import { useUrlPanes } from '../../modules/useUrlPanes.ts'
 import { filterStringFromFilter } from '../../modules/filterStringFromFilter.ts'
-import {
-  mapBoundsAtom,
-  addOperationAtom,
-  addNotificationAtom,
-  mapLayerSortingAtom,
-} from '../../store.ts'
 import { useRequestRowDelete } from '../../modules/deleteRow.ts'
 
 export const Header = ({
@@ -42,11 +26,6 @@ export const Header = ({
       '/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/actions/$actionId_/action' ||
     from ===
       '/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/places/$placeId2_/actions/$actionId_/action'
-  const [tabs, setTabs] = useUrlPanes()
-  const [mapLayerSorting, setMapLayerSorting] = useAtom(mapLayerSortingAtom)
-  const setMapBounds = useSetAtom(mapBoundsAtom)
-  const addOperation = useSetAtom(addOperationAtom)
-  const addNotification = useSetAtom(addNotificationAtom)
   const requestDelete = useRequestRowDelete()
 
   const { projectId, subprojectId, placeId, placeId2, tableViewId, actionId } = useParams({ strict: false })
@@ -91,15 +70,6 @@ export const Header = ({
     `SELECT COUNT(*) as count FROM actions WHERE place_id = '${placeId2 ?? placeId}'${hasViewFilter ? ` AND (${viewFilterString})` : ''}`,
   )
   const rowCount = (countRes?.rows?.[0]?.count as number | undefined) ?? 2
-
-  const geometryRes = useLiveQuery(
-    `SELECT ST_AsGeoJSON(geometry)::json as geometry FROM actions WHERE action_id = $1`,
-    [actionId],
-  )
-  const geometry = geometryRes?.rows?.[0]?.geometry as GeoJSON | undefined
-  const hasGeometry =
-    !!geometry &&
-    ((geometry as { geometries?: unknown[] }).geometries?.length ?? 0) > 0
 
   const addRow = async () => {
     const id = await createAction({
@@ -173,76 +143,6 @@ export const Header = ({
     }
   }
 
-  const alertNoGeometry = () =>
-    addNotification({
-      title: formatMessage({ id: 'bCWAXB', defaultMessage: 'Keine Geometrie' }),
-      body: formatMessage({
-        id: 'bCXBYC',
-        defaultMessage:
-          'Um auf eine Massnahme zu zoomen, erstelle zuerst die Geometrie',
-      }),
-      intent: 'error',
-    })
-
-  const onClickZoomTo = async () => {
-    if (!hasGeometry) return alertNoGeometry()
-
-    // 1. show map if not already visible
-    if (!tabs.includes('map')) {
-      setTabs([...tabs, 'map'])
-    }
-
-    // 2. activate layer if not active
-    const level = placeId2 ? 2 : 1
-    const layerRes = await db.query<{
-      vl_vector_layer_id: string | null
-      layer_presentation_id: string | null
-      active: boolean | null
-    }>(
-      `SELECT vl.vector_layer_id AS vl_vector_layer_id, lp.*
-      FROM vector_layers vl
-        LEFT JOIN layer_presentations lp ON lp.vector_layer_id = vl.vector_layer_id
-      WHERE vl.project_id = $1 AND vl.own_table = 'actions' AND vl.own_table_level = $2
-      ORDER BY lp.active DESC, lp.layer_presentation_id
-      LIMIT 1`,
-      [projectId, level],
-    )
-    const layerRow = layerRes?.rows?.[0]
-    const vectorLayerId = layerRow?.vl_vector_layer_id
-    let lpId = layerRow?.layer_presentation_id
-    if (!lpId && vectorLayerId) {
-      lpId = await createLayerPresentation({
-        vectorLayerId: vectorLayerId as never,
-        active: true,
-      })
-    } else if (lpId && !layerRow?.active) {
-      await db.query(
-        `UPDATE layer_presentations SET active = true WHERE layer_presentation_id = $1`,
-        [lpId],
-      )
-      addOperation({
-        table: 'layer_presentations',
-        rowIdName: 'layer_presentation_id',
-        rowId: lpId,
-        operation: 'update',
-        draft: { active: true },
-        prev: { ...layerRow },
-      })
-    }
-    if (lpId && !mapLayerSorting.includes(lpId)) {
-      setMapLayerSorting([...mapLayerSorting, lpId])
-    }
-
-    // 3. zoom to action
-    const extent = await queryExtent(
-      db,
-      `SELECT ${extentSelect()} FROM actions WHERE action_id = $1`,
-      [actionId],
-    )
-    if (!extent) return alertNoGeometry()
-    setMapBounds(extentToBoundsWithMargin(extent))
-  }
-
   return (
     <FormHeader
       title={
@@ -258,23 +158,10 @@ export const Header = ({
       tableName="action"
       siblings={
         <>
-          <Button
-            size="medium"
-            icon={<TbZoomScan />}
-            onClick={onClickZoomTo}
-            disabled={!hasGeometry}
-            title={
-              hasGeometry
-                ? formatMessage({
-                    id: 'bCVzWA',
-                    defaultMessage: 'Zur Massnahme in Karte zoomen',
-                  })
-                : formatMessage({
-                    id: 'bCXBYC',
-                    defaultMessage:
-                      'Um auf eine Massnahme zu zoomen, erstelle zuerst die Geometrie',
-                  })
-            }
+          <Geometry
+            table="actions"
+            rowId={actionId}
+            level={placeId2 ? 2 : 1}
           />
           <HistoryToggleButton
             historiesPath={`${basePath}/histories`}

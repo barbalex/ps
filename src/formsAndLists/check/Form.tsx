@@ -2,7 +2,6 @@ import { DateField } from '../../components/shared/DateField.tsx'
 import { SwitchField } from '../../components/shared/SwitchField.tsx'
 import { JsonbOrFormDesign } from '../../components/shared/FormDesign/index.tsx'
 import { WithFormDesign } from '../../components/shared/FormDesign/WithFormDesign.tsx'
-import { EditingGeometry } from '../../components/shared/EditingGeometry.tsx'
 import { jsonbDataFromRow } from '../../modules/jsonbDataFromRow.ts'
 import { useIntl } from 'react-intl'
 import type Checks from '../../models/public/Checks.ts'
@@ -76,17 +75,6 @@ export const CheckForm = ({
         autoFocus
         ref={autoFocusRef as unknown as React.Ref<HTMLDivElement>}
         fieldIds={fieldIds}
-      />
-      <EditingGeometry
-        row={
-          row as unknown as {
-            place_id?: string
-            action_id?: string
-            check_id?: string
-            geometry?: unknown
-          }
-        }
-        table="checks"
       />
     </WithFormDesign>
   )

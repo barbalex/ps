@@ -1404,5 +1404,9 @@
   "deleteCascadeTitle": "Really delete?",
   "deleteCascadeText": "Delete {name}? {count, plural, one {# subordinate entry} other {# subordinate entries}} will also be deleted.",
   "deleteCascadeCancel": "Cancel",
-  "deleteCascadeConfirm": "Delete"
+  "deleteCascadeConfirm": "Delete",
+  "7p1UxO": "Capture",
+  "Q4WpBK": "Capture geometry",
+  "XOi0Ut": "Edit geometry",
+  "uQAMae": "Zoom"
 }

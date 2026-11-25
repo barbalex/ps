@@ -1404,5 +1404,9 @@
   "deleteCascadeTitle": "Vraiment supprimer?",
   "deleteCascadeText": "Supprimer {name}? {count, plural, one {# entrée subordonnée} other {# entrées subordonnées}} seront aussi supprimées.",
   "deleteCascadeCancel": "Annuler",
-  "deleteCascadeConfirm": "Supprimer"
+  "deleteCascadeConfirm": "Supprimer",
+  "7p1UxO": "Créer",
+  "Q4WpBK": "Créer la géométrie",
+  "XOi0Ut": "Modifier la géométrie",
+  "uQAMae": "Zoomer"
 }

@@ -86,6 +86,9 @@
   "7hW8wJ": {
     "defaultMessage": "Operator"
   },
+  "7p1UxO": {
+    "defaultMessage": "Erfassen"
+  },
   "7sVbg1": {
     "defaultMessage": "Taxa"
   },
@@ -470,6 +473,9 @@
   "Ps9QtV": {
     "defaultMessage": "Max. Anzahl Objekte"
   },
+  "Q4WpBK": {
+    "defaultMessage": "Geometrie erfassen"
+  },
   "QMOyrE": {
     "defaultMessage": "Listen-Wert"
   },
@@ -592,6 +598,9 @@
   },
   "X88JDr": {
     "defaultMessage": "WFS-Dienst"
+  },
+  "XOi0Ut": {
+    "defaultMessage": "Geometrie bearbeiten"
   },
   "Xa7YbD": {
     "defaultMessage": "keine Felder gefunden"
@@ -1115,17 +1124,11 @@
   "bCVyAb": {
     "defaultMessage": "Subjekte stapeln?"
   },
-  "bCVzWA": {
-    "defaultMessage": "Zur Massnahme in Karte zoomen"
-  },
   "bCWAXB": {
     "defaultMessage": "Keine Geometrie"
   },
   "bCWzBc": {
     "defaultMessage": "Wenn aktiviert, werden Subjekt-Graphen gestapelt. Wenn nicht, überlagern sie sich"
-  },
-  "bCXBYC": {
-    "defaultMessage": "Um auf eine Massnahme zu zoomen, erstelle zuerst die Geometrie"
   },
   "bCXaBd": {
     "defaultMessage": "Subjekte in separaten Diagrammen darstellen?"
@@ -1834,12 +1837,6 @@
   },
   "fN0sZQ": {
     "defaultMessage": "Vektor-Ebene"
-  },
-  "fNN4oO": {
-    "defaultMessage": "Zur Kontrolle in Karte zoomen"
-  },
-  "fOO5pP": {
-    "defaultMessage": "Um auf eine Kontrolle zu zoomen, erstelle zuerst die Geometrie"
   },
   "fU9oP5": {
     "defaultMessage": "Felder auswählen…"
@@ -3122,6 +3119,9 @@
   "uPx0bO": {
     "defaultMessage": "Bestehende Beobachtungen aktualisieren"
   },
+  "uQAMae": {
+    "defaultMessage": "Zoomen"
+  },
   "uT5VwX": {
     "defaultMessage": "Typ"
   },
@@ -3224,14 +3224,14 @@
   "vectorLayer.wfs.noneCreated": {
     "defaultMessage": "Keine neuen Werte"
   },
+  "vectorLayer.wfs.reRead": {
+    "defaultMessage": "Felder und Werte neu lesen"
+  },
   "vectorLayer.wfs.reading": {
     "defaultMessage": "Lese Felder und Werte vom WFS…"
   },
   "vectorLayer.wfs.readingFields": {
     "defaultMessage": "Felder werden gelesen…"
-  },
-  "vectorLayer.wfs.reRead": {
-    "defaultMessage": "Felder und Werte neu lesen"
   },
   "vectorLayer.wfs.tooManyValues": {
     "defaultMessage": "Das Feld «{field}» hat mehr als {max} verschiedene Werte. Bitte ein Feld mit weniger Werten wählen."

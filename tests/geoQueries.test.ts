@@ -6,9 +6,11 @@ import {
   PLACES_WITH_DISTANCE_SQL,
   extentSelect,
   queryExtent,
+  extentFromRow,
   unionExtents,
   extentFromBbox,
   extentToBoundsWithMargin,
+  type ExtentRow,
 } from '../src/modules/geoQueries.ts'
 import {
   repairNestedGeometries,
@@ -194,6 +196,25 @@ describe('extent helpers', () => {
       `SELECT ${extentSelect()} FROM places WHERE geometry IS NULL`,
     )
     expect(extent).toBeNull()
+  })
+
+  it('extentFromRow reads an extent row the way queryExtent does', async () => {
+    const sql = `SELECT ${extentSelect()} FROM places WHERE place_id = $1`
+    const res = await fixture.db.query(sql, [placeIds.mixed])
+    expect(extentFromRow(res.rows[0] as ExtentRow)).toEqual(
+      await queryExtent(fixture.db, sql, [placeIds.mixed]),
+    )
+
+    // no row, an empty GeometryCollection and a missing geometry: no extent
+    expect(extentFromRow(undefined)).toBeNull()
+    expect(
+      extentFromRow({ x_min: null, y_min: null, x_max: null, y_max: null }),
+    ).toBeNull()
+    expect(
+      extentFromRow({ x_min: 8.5, y_min: 47.3, x_max: null, y_max: 47.4 }),
+    ).toBeNull()
+    const empty = await fixture.db.query(sql, [placeIds.empty])
+    expect(extentFromRow(empty.rows[0] as ExtentRow)).toBeNull()
   })
 
   it('unionExtents merges and ignores nulls', () => {

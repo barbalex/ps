@@ -12,7 +12,6 @@ import { SwitchField } from '../../components/shared/SwitchField.tsx'
 import { JsonbOrFormDesign } from '../../components/shared/FormDesign/index.tsx'
 import { WithFormDesign } from '../../components/shared/FormDesign/WithFormDesign.tsx'
 import { DropdownField } from '../../components/shared/DropdownField.tsx'
-import { EditingGeometry } from '../../components/shared/EditingGeometry.tsx'
 import { jsonbDataFromRow } from '../../modules/jsonbDataFromRow.ts'
 
 import '../../form.css'
@@ -169,10 +168,6 @@ export const PlaceForm = ({
           onChange={onChange}
           validationState={validations?.relevant_for_reports?.state}
           validationMessage={validations?.relevant_for_reports?.message}
-        />
-        <EditingGeometry
-          row={row as Parameters<typeof EditingGeometry>[0]['row']}
-          table="places"
         />
       </>
     </WithFormDesign>

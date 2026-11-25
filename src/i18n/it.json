@@ -1408,5 +1408,9 @@
   "deleteCascadeTitle": "Eliminare davvero?",
   "deleteCascadeText": "Eliminare {name}? Verranno eliminate anche {count, plural, one {# voce subordinata} other {# voci subordinate}}.",
   "deleteCascadeCancel": "Annulla",
-  "deleteCascadeConfirm": "Elimina"
+  "deleteCascadeConfirm": "Elimina",
+  "7p1UxO": "Creare",
+  "Q4WpBK": "Creare la geometria",
+  "XOi0Ut": "Modificare la geometria",
+  "uQAMae": "Zoom"
 }

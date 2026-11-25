@@ -1,41 +1,12 @@
 import { useParams, useNavigate } from '@tanstack/react-router'
-import { TbZoomScan } from 'react-icons/tb'
-import * as fluentUiReactComponents from '@fluentui/react-components'
-import type { TooltipProps } from '@fluentui/react-components'
-import type { ComponentType } from 'react'
-const { Button } = fluentUiReactComponents
-import { useAtom, useSetAtom } from 'jotai'
-import { usePGlite, useLiveQuery } from '@electric-sql/pglite-react'
+import { usePGlite } from '@electric-sql/pglite-react'
 import { useRef, useEffect } from 'react'
-import { useIntl } from 'react-intl'
 
-import {
-  createPlace,
-  createVectorLayer,
-  createLayerPresentation,
-} from '../../modules/createRows.ts'
+import { createPlace, createVectorLayer } from '../../modules/createRows.ts'
 import { FormHeader } from '../../components/FormHeader/index.tsx'
+import { Geometry } from '../../components/FormMenu/Geometry.tsx'
 import { HistoryToggleButton } from '../../components/shared/HistoryCompare/HistoryToggleButton.tsx'
-import {
-  extentSelect,
-  queryExtent,
-  extentToBoundsWithMargin,
-} from '../../modules/geoQueries.ts'
-import {
-  mapBoundsAtom,
-  addOperationAtom,
-  addNotificationAtom,
-  mapLayerSortingAtom,
-} from '../../store.ts'
 import { useRequestRowDelete } from '../../modules/deleteRow.ts'
-import { useUrlPanes } from '../../modules/useUrlPanes.ts'
-
-// Fluent UI's TooltipProps requires `relationship`, but it is optional at runtime
-const Tooltip = fluentUiReactComponents.Tooltip as ComponentType<
-  Omit<TooltipProps, 'relationship'> & {
-    relationship?: TooltipProps['relationship']
-  }
->
 
 interface Props {
   autoFocusRef?: React.RefObject<HTMLInputElement | null>
@@ -45,7 +16,6 @@ interface Props {
 }
 
 export const Header = ({ autoFocusRef, from, nameSingular }: Props) => {
-  const { formatMessage } = useIntl()
   const isForm =
     from ===
       '/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/place' ||
@@ -55,11 +25,6 @@ export const Header = ({ autoFocusRef, from, nameSingular }: Props) => {
       '/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_' ||
     from ===
       '/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/places/$placeId2_'
-  const [tabs, setTabs] = useUrlPanes()
-  const [mapLayerSorting, setMapLayerSorting] = useAtom(mapLayerSortingAtom)
-  const setMapBounds = useSetAtom(mapBoundsAtom)
-  const addOperation = useSetAtom(addOperationAtom)
-  const addNotification = useSetAtom(addNotificationAtom)
   const requestDelete = useRequestRowDelete()
   const navigate = useNavigate()
   const { projectId, subprojectId, placeId, placeId2 } = useParams({ strict: false })
@@ -75,14 +40,6 @@ export const Header = ({ autoFocusRef, from, nameSingular }: Props) => {
   useEffect(() => {
     placeIdRef.current = placeId2 ?? placeId
   }, [placeId, placeId2])
-
-  // mirrors queryExtent returning null: no geometry or an empty one
-  // (e.g. GeometryCollection without parts) can not be zoomed to
-  const geometryRes = useLiveQuery(
-    `SELECT (geometry IS NOT NULL AND NOT ST_IsEmpty(geometry)) AS has_geometry FROM places WHERE place_id = $1`,
-    [placeId2 ?? placeId],
-  )
-  const hasGeometry = geometryRes?.rows?.[0]?.has_geometry === true
 
   const addRow = async () => {
     const resPlace = (await createPlace({
@@ -184,97 +141,6 @@ export const Header = ({ autoFocusRef, from, nameSingular }: Props) => {
     }
   }
 
-  const alertNoGeometry = () =>
-    addNotification({
-      title: formatMessage({ id: 'bCWAXB', defaultMessage: 'Keine Geometrie' }),
-      body: formatMessage(
-        {
-          id: 'bDCGHI',
-          defaultMessage:
-            'Um auf {place} zu zoomen, erstelle zuerst die Geometrie',
-        },
-        { place: nameSingular },
-      ),
-      intent: 'error',
-    })
-
-  const onClickZoomTo = async () => {
-    const extent = await queryExtent(
-      db,
-      `SELECT ${extentSelect()} FROM places WHERE place_id = $1`,
-      [placeId2 ?? placeId],
-    )
-    if (!extent) return alertNoGeometry()
-
-    // 1. show map if not happening
-    if (!tabs.includes('map')) {
-      setTabs([...tabs, 'map'])
-    }
-
-    // 2. activate layer if not active
-    const level = placeId2 ? 2 : 1
-    const layerRes = await db.query(
-      `SELECT vl.vector_layer_id AS vl_vector_layer_id, lp.*
-      FROM vector_layers vl
-        LEFT JOIN layer_presentations lp ON lp.vector_layer_id = vl.vector_layer_id
-      WHERE vl.project_id = $1 AND vl.own_table = 'places' AND vl.own_table_level = $2
-      ORDER BY lp.active DESC, lp.layer_presentation_id
-      LIMIT 1`,
-      [projectId, level],
-    )
-    const layerRow = layerRes?.rows?.[0] as
-      | {
-          vl_vector_layer_id: string
-          layer_presentation_id: string
-          active: boolean | null
-          [key: string]: unknown
-        }
-      | undefined
-    const vectorLayerId: string | undefined = layerRow?.vl_vector_layer_id
-    let lpId: string | undefined = layerRow?.layer_presentation_id
-    if (!lpId && vectorLayerId) {
-      lpId = await createLayerPresentation({ vectorLayerId, active: true })
-    } else if (lpId && !layerRow?.active) {
-      await db.query(
-        `UPDATE layer_presentations SET active = true WHERE layer_presentation_id = $1`,
-        [lpId],
-      )
-      addOperation({
-        table: 'layer_presentations',
-        rowIdName: 'layer_presentation_id',
-        rowId: lpId,
-        operation: 'update',
-        draft: { active: true },
-        prev: { ...(layerRow ?? {}) },
-      })
-    }
-    if (lpId && !mapLayerSorting.includes(lpId)) {
-      setMapLayerSorting([...mapLayerSorting, lpId])
-    }
-
-    // 3. zoom to place
-    setMapBounds(extentToBoundsWithMargin(extent))
-  }
-
-  const zoomButton = (
-    <Button
-      size="medium"
-      icon={<TbZoomScan />}
-      disabled={!hasGeometry}
-      onClick={onClickZoomTo}
-    />
-  )
-  const zoomTooltipContent = hasGeometry
-    ? formatMessage({ id: 'bPlaceZoomTo', defaultMessage: 'zoomen' })
-    : formatMessage(
-        {
-          id: 'bDCGHI',
-          defaultMessage:
-            'Um auf {place} zu zoomen, erstelle zuerst die Geometrie',
-        },
-        { place: nameSingular },
-      )
-
   return (
     <FormHeader
       title={nameSingular ?? 'Place'}
@@ -285,11 +151,11 @@ export const Header = ({ autoFocusRef, from, nameSingular }: Props) => {
       tableName={nameSingular}
       siblings={
         <>
-          <Tooltip content={zoomTooltipContent}>
-            {/* disabled buttons swallow pointer events, so the tooltip
-                needs a wrapper to still open on hover */}
-            {hasGeometry ? zoomButton : <span>{zoomButton}</span>}
-          </Tooltip>
+          <Geometry
+            table="places"
+            rowId={placeId2 ?? placeId}
+            level={placeId2 ? 2 : 1}
+          />
           <HistoryToggleButton
             historiesPath={`${basePath}/histories`}
             formPath={`${basePath}/place`}

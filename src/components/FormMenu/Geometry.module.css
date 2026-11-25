@@ -1,0 +1,5 @@
+/* same signal color as the map toolbar's active modes (ChooseGeometryButton,
+   MeasureButton): marks the trigger while the geometry is being edited */
+.editing {
+  color: #f45942;
+}
