@@ -50,8 +50,6 @@ Better-Auth, possible extensions:
 
 ---
 
-Top appbar menu: online Menu not visible in hamburger menu in light mode, icon should be black instead of white. It's white thus fine in dark mode
-
 ---
 
 ---
