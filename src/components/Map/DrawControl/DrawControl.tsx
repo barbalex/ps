@@ -1,4 +1,4 @@
-import { useEffect, useCallback } from 'react'
+import { useEffect, useCallback, useState } from 'react'
 import * as L from 'leaflet'
 // The fork's type declarations only augment the 'leaflet' module (map.geoman,
 // layer events); the runtime default export is not declared, hence the cast.
@@ -11,6 +11,7 @@ import { useAtomValue, useSetAtom } from 'jotai'
 
 import { addOperationAtom, languageAtom } from '../../../store.ts'
 import { DrawToolbar } from './DrawToolbar.tsx'
+import { PrecisePoint } from './PrecisePoint.tsx'
 import { flattenToGeometryCollection } from '../../../modules/repairNestedGeometries.ts'
 
 const Geoman = (geomanModule as unknown as {
@@ -67,6 +68,8 @@ export const DrawControlComponent = ({
 }: Props) => {
   const map = useMap()
   const language = useAtomValue(languageAtom)
+  const [placePoint, setPlacePoint] = useState<((position: L.LatLng) => Promise<void>) | null>(null)
+  const [modeActive, setModeActive] = useState(false)
 
   const db = usePGlite()
   const addOperation = useSetAtom(addOperationAtom)
@@ -99,7 +102,7 @@ export const DrawControlComponent = ({
       // deleting the last geometry leaves none: store that like for a row
       // that never had one
       if (!featureCollection!.features.length) {
-        db.query(
+        await db.query(
           `UPDATE ${tableName} SET geometry = NULL, bbox = NULL WHERE ${activeIdName} = $1`,
           [activeId],
         )
@@ -122,7 +125,7 @@ export const DrawControlComponent = ({
       const geometryCollection =
         flattenToGeometryCollection(featureCollection!.features)
 
-      db.query(
+      await db.query(
         `UPDATE ${tableName} SET geometry = ST_GeomFromGeoJSON($1), bbox = $2 WHERE ${activeIdName} = $3`,
         [JSON.stringify(geometryCollection), bbox, activeId],
       )
@@ -167,6 +170,33 @@ export const DrawControlComponent = ({
       layer.on('geoman:dragend', persist)
     }
 
+    let loaded = false
+    const refreshPointTool = () => {
+      const layers = drawLayer.getLayers()
+      const point = layers[0]
+      if (!loaded || layers.length > 1 || (point && (!(point instanceof L.CircleMarker) || point instanceof L.Circle))) {
+        setPlacePoint(null)
+        return
+      }
+      setPlacePoint(() => async (position: L.LatLng) => {
+        await onEdit({
+          type: 'FeatureCollection',
+          features: [{
+            type: 'Feature', properties: {},
+            geometry: { type: 'Point', coordinates: [position.lng, position.lat] },
+          }],
+        })
+        if (!map.hasLayer(drawLayer)) return
+        if (point instanceof L.CircleMarker) point.setLatLng(position)
+        else {
+          const marker = new L.CircleMarker(position, EDITING_STYLE)
+          wireLayerEvents(marker)
+          drawLayer.addLayer(marker)
+        }
+      })
+    }
+    drawLayer.on('layeradd layerremove', refreshPointTool)
+
     // Load existing geometry from DB into the draw layer (so it is visible and editable)
     const activeId = editingPlace ?? editingCheck ?? editingAction
     const activeIdName = editingPlace
@@ -184,6 +214,7 @@ export const DrawControlComponent = ({
         `SELECT ST_AsGeoJSON(geometry)::json as geometry FROM ${tableName} WHERE ${activeIdName} = $1`,
         [activeId],
       ).then((result) => {
+        if (!map.hasLayer(drawLayer) || !result.rows.length) return
         const geometry = (
           result?.rows?.[0] as { geometry?: GeoJSON.GeoJsonObject } | undefined
         )?.geometry
@@ -212,8 +243,11 @@ export const DrawControlComponent = ({
             }).eachLayer(addGeometryLayers)
           } catch {
             // ignore invalid geometry
+            return
           }
         }
+        loaded = true
+        refreshPointTool()
       })
     }
 
@@ -246,16 +280,20 @@ export const DrawControlComponent = ({
       geoman.globalRemovalModeEnabled()
     const setActive = (e: L.LeafletEvent) => {
       const enabled = (e as unknown as { enabled: boolean }).enabled
+      setModeActive(enabled || anyGeomanModeActive())
       map
         .getContainer()
         .classList.toggle(GEOMAN_ACTIVE_CLASS, enabled || anyGeomanModeActive())
     }
-    const onDrawStart = () =>
+    const onDrawStart = () => {
+      setModeActive(true)
       map.getContainer().classList.add(GEOMAN_ACTIVE_CLASS)
+    }
     const onDrawEnd = () => {
       // fires on shape completion and on leaving draw mode; keep the class
       // while another geoman mode is still active
       if (!anyGeomanModeActive()) {
+        setModeActive(false)
         map.getContainer().classList.remove(GEOMAN_ACTIVE_CLASS)
       }
     }
@@ -277,6 +315,7 @@ export const DrawControlComponent = ({
     map.on('geoman:globalremovalmodetoggled', setRemovalActive)
 
     return () => {
+      drawLayer.off('layeradd layerremove', refreshPointTool)
       drawLayer.off('layerremove', persist)
       map.off('geoman:create', onCreate)
       map.off('geoman:remove', onRemove)
@@ -292,5 +331,8 @@ export const DrawControlComponent = ({
     }
   }, [map, onEdit, db, editingPlace, editingCheck, editingAction])
 
-  return <DrawToolbar key={language} language={language} />
+  return <>
+    <DrawToolbar key={language} language={language} />
+    {!modeActive && placePoint && <PrecisePoint apply={placePoint} />}
+  </>
 }

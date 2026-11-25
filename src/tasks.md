@@ -10,6 +10,18 @@ Better-Auth, possible extensions:
 
 ---
 
+Geometry editing roadmap (in priority order):
+
+- [x] 1. Place or move a point precisely: paste an X/Y pair in the coordinate system selected in the map coordinates tool, or pan beneath a crosshair. Preview, then explicitly apply to the edited record. Available while editing a place, check or action with no geometry or one point.
+- [ ] 2. Capture a GPS position with its reported accuracy; later support averaging several fixes.
+- [ ] 3. Undo/redo geometry edits as new edits without erasing history. Name the record being edited and provide a clear Done action.
+- [ ] 4. Move an entire line or polygon without moving each vertex separately.
+- [ ] 5. Snap to vector vertices or boundaries, show the snap target, and allow temporarily disabling snapping.
+- [ ] 6. Walk a transect or perimeter: start/pause GPS recording, preview and simplify, then save.
+- Later for habitats: reshape boundary segments, cut holes, and flag invalid geometries. Decide how dependent records should be handled before implementing split/merge.
+
+References: [QGIS editing](https://docs.qgis.org/latest/en/docs/user_manual/working_with_vector/editing_geometry_attributes.html), [QField digitizing](https://docs.qfield.org/how-to/data-collection/digitize/), [Field Maps capture](https://doc.esri.com/en/arcgis-field-maps/latest/use-maps/capture.html).
+
 ---
 
 ---

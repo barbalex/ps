@@ -20,6 +20,7 @@ const OWN_LAYER_ID = 'a0b0c0d0-0000-7000-8000-00000000e3e3'
 const PRESENTATION_ID = 'a0b0c0d0-0000-7000-8000-00000000e3e4'
 const SUBPROJECT_ID = 'a0b0c0d0-0000-7000-8000-00000000e3e5'
 const PLACE_ID = 'a0b0c0d0-0000-7000-8000-00000000e3e6'
+const PRECISE_PLACE_ID = 'a0b0c0d0-0000-7000-8000-00000000e3ec'
 
 // no spaces: the layer name becomes part of the leaflet pane class
 const OWN_NAME = 'E2eChooseOwn'
@@ -74,6 +75,12 @@ test.beforeAll(async () => {
         ST_GeomFromGeoJSON('{"type":"GeometryCollection","geometries":[{"type":"Point","coordinates":[${LNG},${LAT}]}]}'))
       ON CONFLICT (place_id) DO UPDATE SET geometry = EXCLUDED.geometry;
 
+    INSERT INTO places (place_id, subproject_id, level, label) VALUES
+      ('${PRECISE_PLACE_ID}', '${SUBPROJECT_ID}', 1, 'E2ePrecisePoint')
+      ON CONFLICT DO NOTHING;
+    -- The sync duplicate-insert trigger runs before ON CONFLICT.
+    UPDATE places SET geometry = NULL, bbox = NULL WHERE place_id = '${PRECISE_PLACE_ID}';
+
     -- active presentation: the default view (no ?layers= override) shows
     -- the layer, so no drawer interaction is needed
     INSERT INTO layer_presentations (layer_presentation_id, vector_layer_id, project_id, active)
@@ -98,7 +105,7 @@ test.beforeAll(async () => {
     projectId: PROJECT_ID,
     role: 'write-all',
     subprojectIds: [SUBPROJECT_ID],
-    placeIds: [PLACE_ID],
+    placeIds: [PLACE_ID, PRECISE_PLACE_ID],
   })
 })
 
@@ -257,4 +264,58 @@ test('clicking a spot without geometry warns and keeps the mode', async ({
   await expect(
     page.locator('.map-container.choosing-geometry-active'),
   ).toHaveCount(1)
+})
+
+test('precise placement previews without writing and moves the same point on Apply', async ({ page }) => {
+  psql(`SET electric.syncing TO 'true';
+    INSERT INTO project_crs (project_crs_id, project_id, crs_id, code, proj4)
+    SELECT 'a0b0c0d0-0000-7000-8000-00000000e3ed', '${PROJECT_ID}', crs_id, code, proj4
+    FROM crs WHERE code = 'EPSG:2056' ON CONFLICT DO NOTHING;
+    UPDATE projects SET map_presentation_crs = 'EPSG:2056' WHERE project_id = '${PROJECT_ID}';`)
+  await page.setViewportSize({ width: 390, height: 700 })
+  await page.addInitScript(() => localStorage.setItem('language', '"en"'))
+  await login(page, E2E_EMAIL, E2E_PASSWORD)
+  await page.goto(`/data/projects/${PROJECT_ID}/subprojects/${SUBPROJECT_ID}/places/${PRECISE_PLACE_ID}/place?panes=map&c=${LAT}%2C${LNG}&z=17`)
+  await closeLayerDrawerIfOpen(page)
+  await page.locator('button[name="edit_geometry"]').click()
+  const place = page.getByRole('button', { name: 'Place point precisely' })
+  await place.click({ timeout: 60_000 })
+  const input = page.getByPlaceholder('2600000 / 1200000')
+  const apply = page.getByRole('button', { name: 'Apply point' })
+  const preview = page.getByRole('button', { name: 'Preview', exact: true })
+  await input.fill('1200000 / 2600000')
+  await preview.click()
+  await expect(page.getByRole('alert')).toContainText('Invalid coordinates for EPSG:2056')
+  await expect(apply).toBeDisabled()
+  await input.fill("2'600'000 / 1'200'000")
+  await preview.click()
+  await expect(apply).toBeEnabled()
+  await page.getByRole('button', { name: 'Cancel', exact: true }).click()
+  await expect(page.locator('.geometry-editing')).toHaveCount(0)
+  // The preview centered the map on the LV95 origin. Place at that crosshair,
+  // then move by an exact coordinate pair; both writes must reach PostGIS.
+  const storedPoint = () => psql(`SELECT round(ST_X(p)) || '/' || round(ST_Y(p))
+    FROM (SELECT ST_Transform(ST_GeometryN(geometry, 1), 2056) AS p
+      FROM places WHERE place_id = '${PRECISE_PLACE_ID}' AND ST_NumGeometries(geometry) = 1) q`)
+  await place.click()
+  await apply.click()
+  await expect.poll(storedPoint, { timeout: 30_000 }).toBe('2600000/1200000')
+  await place.click()
+  await input.fill('2600100, 1200020')
+  await preview.click()
+  await apply.click()
+  await expect.poll(storedPoint, { timeout: 30_000 }).toBe('2600100/1200020')
+
+  await place.click()
+  await input.fill('2600200, 1200040')
+  await preview.click()
+  psql(`SET electric.syncing TO 'true';
+    UPDATE projects SET map_presentation_crs = NULL WHERE project_id = '${PROJECT_ID}';`)
+  await expect(input).toHaveCount(0)
+  await place.click()
+  await page.getByRole('textbox', { name: /EPSG:4326/ }).fill('-1.23 / 48.56')
+  await preview.click()
+  await apply.click()
+  await expect.poll(() => psql(`SELECT ST_AsText(ST_GeometryN(geometry, 1))
+    FROM places WHERE place_id = '${PRECISE_PLACE_ID}'`), { timeout: 30_000 }).toBe('POINT(-1.23 48.56)')
 })

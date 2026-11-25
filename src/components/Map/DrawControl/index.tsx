@@ -34,21 +34,21 @@ export const DrawControl = () => {
     lastTwoElements === `${editingPlaceGeometry}/place` ||
     (secondToLast === 'places' && last === editingPlaceGeometry)
   ) {
-    return <DrawControlComponent editingPlace={editingPlaceGeometry} />
+    return <DrawControlComponent key={`place/${editingPlaceGeometry}`} editingPlace={editingPlaceGeometry} />
   }
 
   if (
     lastTwoElements === `${editingCheckGeometry}/check` ||
     (secondToLast === 'checks' && last === editingCheckGeometry)
   ) {
-    return <DrawControlComponent editingCheck={editingCheckGeometry} />
+    return <DrawControlComponent key={`check/${editingCheckGeometry}`} editingCheck={editingCheckGeometry} />
   }
 
   if (
     lastTwoElements === `${editingActionGeometry}/action` ||
     (secondToLast === 'actions' && last === editingActionGeometry)
   ) {
-    return <DrawControlComponent editingAction={editingActionGeometry} />
+    return <DrawControlComponent key={`action/${editingActionGeometry}`} editingAction={editingActionGeometry} />
   }
 
   return null
