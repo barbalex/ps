@@ -1,5 +1,5 @@
 import { test, expect } from '@playwright/test'
-import { ensureUser, login } from './helpers.ts'
+import { closeLayerDrawerIfOpen, ensureUser, login } from './helpers.ts'
 
 /**
  * The map viewport lives in the url (?c=lat,lng&z=zoom), see
@@ -30,7 +30,8 @@ test('panning the map puts the viewport into the url', async ({ page }) => {
   await expect(map).toBeVisible({ timeout: 60_000 })
 
   // close the layers drawer so it does not cover the map
-  await page.click('button[title="Close Layer Menu"]', { timeout: 10_000 })
+  // (already closed: next to the data pane the map is narrow)
+  await closeLayerDrawerIfOpen(page)
 
   // wait out the initial-view restore window (BoundsListener suppresses
   // saves for the first ~500ms and retries zoom for 150ms)

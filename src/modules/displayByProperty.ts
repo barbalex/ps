@@ -1,3 +1,6 @@
+import type { Feature } from 'geojson'
+
+import type VectorLayerDisplays from '../models/public/VectorLayerDisplays.ts'
 import type VectorLayerOwnTablesEnum from '../models/public/VectorLayerOwnTablesEnum.ts'
 
 // Configurable per-property styling (vector_layers.display_by_property +
@@ -41,4 +44,23 @@ export const propertyValueToText = (value: unknown): string | null => {
   if (value === null || value === undefined) return null
   if (typeof value === 'object') return JSON.stringify(value)
   return String(value)
+}
+
+// The display a feature is drawn with: the one whose value its property has.
+// Features whose value has no display (it appeared in the data after the
+// displays were created) are drawn with the layer's first display
+export const displayFromFeature = (
+  displays: VectorLayerDisplays[] | null | undefined,
+  displayByProperty: string | null | undefined,
+  feature: Feature | undefined,
+): VectorLayerDisplays | undefined => {
+  const valueText = propertyValueToText(
+    feature?.properties?.[displayByProperty as string],
+  )
+  return (
+    displays?.find(
+      (display) =>
+        propertyValueToText(display.display_property_value) === valueText,
+    ) ?? displays?.[0]
+  )
 }

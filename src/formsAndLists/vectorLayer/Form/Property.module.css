@@ -1,0 +1,5 @@
+/* sits right under the display-by field */
+.reReadButton {
+  margin-top: -12px;
+  margin-bottom: 12px;
+}
