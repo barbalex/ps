@@ -1,5 +1,5 @@
 import { test, expect, type Page } from '@playwright/test'
-import { ensureUser, login } from './helpers.ts'
+import { ensureUser, login, toolbarTopLeft } from './helpers.ts'
 
 /**
  * Dragging the layer drawer's resizer below 40px snaps the drawer shut —
@@ -17,9 +17,8 @@ const drawerSize = (page: Page) =>
   page
     .locator('.map-layers-drawer')
     .getAttribute('style')
-    .then(
-      (style) =>
-        Number(style?.match(/--left-drawer-size:\s*(-?[\d.]+)px/)?.[1] ?? NaN),
+    .then((style) =>
+      Number(style?.match(/--left-drawer-size:\s*(-?[\d.]+)px/)?.[1] ?? NaN),
     )
 
 // only the toggle stays reachable in a closed drawer
@@ -35,14 +34,15 @@ const mapLeft = (page: Page) =>
           .left,
     )
 
-// drags the drawer's resizer to an absolute x position
-const dragResizerTo = async (page: Page, x: number) => {
+// drags the drawer's resizer to an absolute x position, at the resizer's
+// own height unless a y is given
+const dragResizerTo = async (page: Page, x: number, y?: number) => {
   const resizer = page.locator('.map-layers-drawer [class*="resizer"]')
   // hover waits until the resizer is stable — the drawer may still animate
   await resizer.hover()
   const box = (await resizer.boundingBox())!
   await page.mouse.down()
-  await page.mouse.move(x, box.y + box.height / 2, { steps: 12 })
+  await page.mouse.move(x, y ?? box.y + box.height / 2, { steps: 12 })
   await page.mouse.up()
 }
 
@@ -87,4 +87,24 @@ test('dragging the layer drawer shut closes it, also past the map edge', async (
   // and it opens again
   await page.locator('button[title="Open Layer Menu"]').click()
   await expect.poll(() => drawerSize(page)).toBeGreaterThan(40)
+})
+
+test('the drag is over wherever the pointer is released', async ({ page }) => {
+  await login(page, E2E_EMAIL, E2E_PASSWORD)
+  await page.goto('/data/projects?panes=map')
+  const drawer = page.locator('.map-layers-drawer')
+  await expect(drawer).toBeAttached({ timeout: 60_000 })
+  // open by default on a wide map
+  const sizeBefore = await drawerSize(page)
+
+  // released over the toolbar's top button, which swallows the mouseup: the
+  // drawer must not keep following the pointer, and its toggle must work
+  const onButton = await toolbarTopLeft(page)
+  await dragResizerTo(page, onButton.x, onButton.y)
+  const sizeAtRelease = await drawerSize(page)
+  expect(sizeAtRelease).toBeGreaterThan(sizeBefore)
+  await page.mouse.move(600, 300, { steps: 8 })
+  await expect.poll(() => drawerSize(page)).toBe(sizeAtRelease)
+  await page.locator('button[title="Close Layer Menu"]').click()
+  await expect.poll(() => drawerSize(page)).toBe(closedSliver)
 })

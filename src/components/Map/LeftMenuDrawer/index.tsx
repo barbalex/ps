@@ -145,13 +145,16 @@ export const LeftMenuDrawer = ({
     window.addEventListener('mousemove', resize)
     // these events cant be added to the resizer's events
     // because on dragging the mouse immediately leaves the resizer
-    window.addEventListener('mouseup', stopResizing)
+    // pointerup, not mouseup: released over the map toolbar's top button,
+    // no mouseup reaches the window — the drag never ended and the drawer
+    // kept following the pointer
+    window.addEventListener('pointerup', stopResizing)
     window.addEventListener('mouseleave', stopResizing)
 
     return () => {
       cancelAnimationFrame(animationFrame.current)
       window.removeEventListener('mousemove', resize)
-      window.removeEventListener('mouseup', stopResizing)
+      window.removeEventListener('pointerup', stopResizing)
       window.removeEventListener('mouseleave', stopResizing)
     }
   }, [resize, stopResizing])

@@ -178,3 +178,33 @@ export async function closeLayerDrawerIfOpen(page: Page): Promise<void> {
   const close = page.locator('button[title="Close Layer Menu"]')
   if (await close.count()) await close.click()
 }
+
+const toolbar = (page: Page) =>
+  page.locator('#map .map-own-controls > :first-child')
+
+/**
+ * A point just inside the top button of the map's toolbar, near the map's
+ * right edge. A drag released there gets no mouseup — only pointerup does.
+ */
+export async function toolbarTopLeft(page: Page): Promise<Point> {
+  return toolbar(page)
+    .locator('button')
+    .first()
+    .evaluate((el) => {
+      const rect = el.getBoundingClientRect()
+      return { x: rect.left + 8, y: rect.top + 10 }
+    })
+}
+
+/** The centre of the bottom button of the map's toolbar. */
+export async function toolbarBottomCentre(page: Page): Promise<Point> {
+  return toolbar(page)
+    .locator('button')
+    .last()
+    .evaluate((el) => {
+      const rect = el.getBoundingClientRect()
+      return { x: rect.left + rect.width / 2, y: rect.top + rect.height / 2 }
+    })
+}
+
+type Point = { x: number; y: number }
