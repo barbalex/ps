@@ -6,10 +6,22 @@ import { LatLng } from 'leaflet'
 import { CircleMarker, Polygon, Polyline, useMap } from 'react-leaflet'
 
 import styles from './PrecisePoint.module.css'
+import {
+  previewPolygonEdit,
+  type PolygonAction,
+  type PolygonTarget,
+  type PolygonResult,
+} from '../../../modules/walkPolygonEdit.ts'
 
 type Part = LatLng[]
 type Mode = 'line' | 'polygon'
+const latLngs = (coords: GeoJSON.Position[]) =>
+  coords.map(([lng, lat]) => new LatLng(lat, lng))
 export type TrackGeometry = GeoJSON.LineString | GeoJSON.Polygon
+export type DrawTrack = (
+  receive: (points: Part) => void,
+  end: () => void,
+) => () => void
 const options = {
   geomanIgnore: true,
   snapIgnore: true,
@@ -20,16 +32,35 @@ const options = {
 
 export const WalkTrack = ({
   apply,
+  drawTrack,
+  targets,
   close,
 }: {
-  apply: (parts: TrackGeometry[]) => Promise<void>
+  targets: PolygonTarget[]
+  drawTrack?: DrawTrack
+  apply: (parts: TrackGeometry[], target?: PolygonTarget) => Promise<void>
   close: () => void
 }) => {
   const { formatMessage: msg } = useIntl()
   const map = useMap()
   const db = usePGlite()
-  const [mode, setMode] = useState<Mode>('line')
+  const [action, setAction] = useState<Mode | PolygonAction>('line')
+  const mode: Mode =
+    action === 'polygon' || action === 'hole' ? 'polygon' : 'line'
+  const editing = action !== 'line' && action !== 'polygon'
+  const [targetId, setTargetId] = useState(targets.length === 1 ? 0 : -1)
+  const target = targets[targetId]
+  const [otherArc, setOtherArc] = useState(false)
+  const [result, setResult] = useState<PolygonResult | null>(null)
   const [parts, setParts] = useState<Part[]>([])
+  const [drawing, setDrawing] = useState(!!drawTrack)
+  useEffect(() => {
+    if (drawTrack && drawing)
+      return drawTrack(
+        (points) => setParts([points]),
+        () => setDrawing(false),
+      )
+  }, [drawTrack, drawing])
   const [recording, setRecording] = useState(false)
   const [resumeChoice, setResumeChoice] = useState(false)
   const [simplify, setSimplify] = useState(false)
@@ -121,8 +152,29 @@ export const WalkTrack = ({
       'Jeder Abschnitt braucht eine gültige Linie oder ein gültiges Polygon.',
   })
   const [reviewError, setReviewError] = useState('')
+  const hint =
+    action === 'hole' ?
+      msg({
+        id: 'walkHoleHint',
+        defaultMessage:
+          'Ein geschlossener Abschnitt muss vollständig innerhalb des Zielpolygons liegen.',
+      })
+    : action === 'reshape' ?
+      msg({
+        id: 'walkReshapeHint',
+        defaultMessage:
+          'Ein Abschnitt mit zwei Enden innerhalb von 5 m vom Aussenrand. Der rote Rand wird ersetzt.',
+      })
+    : action === 'split' ?
+      msg({
+        id: 'walkSplitHint',
+        defaultMessage:
+          'Ein durchgehender Abschnitt muss das Zielpolygon vollständig durchqueren.',
+      })
+    : ''
   useEffect(() => {
     setReview(null)
+    setResult(null)
     setReviewError('')
     if (recording || !enough) return
     let active = true
@@ -151,10 +203,33 @@ export const WalkTrack = ({
       SELECT ST_AsGeoJSON(shape, 17)::json AS shape, valid AND ST_IsValid(shape) AS valid FROM preview ORDER BY ord`,
       [JSON.stringify(geometries), simplify],
     )
-      .then(({ rows }) => {
+      .then(async ({ rows }) => {
         if (!active) return
-        if (rows.some((row) => !row.valid)) setReviewError(invalid)
-        else setReview(rows.map((row) => row.shape))
+        if (rows.some((row) => !row.valid)) {
+          setReviewError(invalid)
+          return
+        }
+        const shapes = rows.map((row) => row.shape)
+        if (action !== 'line' && action !== 'polygon') {
+          if (!target) return
+          const edited =
+            shapes.length === 1 ?
+              await previewPolygonEdit(
+                db,
+                action,
+                target.polygon,
+                shapes[0],
+                otherArc,
+              )
+            : null
+          if (!active) return
+          if (!edited) {
+            setReviewError(hint)
+            return
+          }
+          setResult(edited)
+        }
+        setReview(shapes)
       })
       .catch((cause) => {
         if (active) setReviewError(String(cause))
@@ -162,12 +237,24 @@ export const WalkTrack = ({
     return () => {
       active = false
     }
-  }, [db, enough, invalid, mode, parts, recording, simplify])
+  }, [
+    action,
+    db,
+    enough,
+    hint,
+    invalid,
+    mode,
+    otherArc,
+    parts,
+    recording,
+    simplify,
+    target,
+  ])
   const save = async () => {
     if (!review || recording || saving) return
     setSaving(true)
     try {
-      await apply(review)
+      await apply(result?.shapes ?? review, editing ? target : undefined)
       close()
     } catch (cause) {
       setError(String(cause))
@@ -186,33 +273,114 @@ export const WalkTrack = ({
   return (
     <>
       <div className={styles.actions}>
-        {!parts.length &&
-          !recording &&
-          (['line', 'polygon'] as const).map((type) => (
+        {!recording &&
+          (!drawTrack || parts.length > 0) &&
+          (
+            [
+              'line',
+              'polygon',
+              ...(parts.length && targets.length ?
+                (['hole', 'reshape', 'split'] as const)
+              : []),
+            ] as const
+          ).map((type) => (
             <Button
               key={type}
               size="small"
-              aria-pressed={mode === type}
-              appearance={mode === type ? 'primary' : 'secondary'}
-              onClick={() => setMode(type)}
+              disabled={saving}
+              aria-pressed={action === type}
+              appearance={action === type ? 'primary' : 'secondary'}
+              onClick={() => {
+                if (type !== action) {
+                  setReview(null)
+                  setResult(null)
+                  setAction(type)
+                }
+              }}
             >
-              {type === 'line' ?
+              {type === 'hole' ?
+                msg({ id: 'walkHole', defaultMessage: 'Loch ausschneiden' })
+              : type === 'reshape' ?
+                msg({ id: 'walkReshape', defaultMessage: 'Rand ersetzen' })
+              : type === 'split' ?
+                msg({ id: 'walkSplit', defaultMessage: 'Polygon teilen' })
+              : parts.length && type === 'line' ?
+                msg({
+                  id: 'walkAsLine',
+                  defaultMessage: 'Als Linie hinzufügen',
+                })
+              : parts.length ?
+                msg({
+                  id: 'walkAsPolygon',
+                  defaultMessage: 'Als Polygon hinzufügen',
+                })
+              : type === 'line' ?
                 msg({ id: 'walkTransect', defaultMessage: 'Transekt' })
               : msg({ id: 'walkPerimeter', defaultMessage: 'Umriss' })}
             </Button>
           ))}
       </div>
+      {editing && !recording && (
+        <>
+          <label>
+            {msg({ id: 'walkTarget', defaultMessage: 'Zielpolygon' })}{' '}
+            <select
+              value={targetId}
+              disabled={saving}
+              onChange={(e) => {
+                setReview(null)
+                setResult(null)
+                setTargetId(Number(e.target.value))
+              }}
+            >
+              <option value={-1}>—</option>
+              {targets.map((_, i) => (
+                <option
+                  key={i}
+                  value={i}
+                >
+                  {i + 1}
+                </option>
+              ))}
+            </select>
+          </label>
+          {!reviewError && <div>{hint}</div>}
+          {action === 'reshape' && (
+            <Checkbox
+              disabled={saving}
+              checked={otherArc}
+              label={msg({
+                id: 'walkOtherArc',
+                defaultMessage: 'Anderen Randabschnitt ersetzen',
+              })}
+              onChange={(_, data) => {
+                setReview(null)
+                setResult(null)
+                setOtherArc(data.checked === true)
+              }}
+            />
+          )}
+        </>
+      )}
       <div role="status">
-        {msg(
-          {
-            id: 'walkProgress',
-            defaultMessage: '{count, plural, one {# Punkt} other {# Punkte}} in {parts, plural, one {# Abschnitt} other {# Abschnitten}}',
-          },
-          {
-            count: preview.reduce((n, part) => n + part.length, 0),
-            parts: parts.length,
-          },
-        )}
+        {drawing ?
+          msg({
+            id: 'walkDrawHint',
+            defaultMessage:
+              'Eckpunkte auf der Karte antippen. Zum Abschliessen den letzten Punkt erneut antippen.',
+          })
+        : msg(
+            {
+              id: 'walkProgress',
+              defaultMessage:
+                '{count, plural, one {# Punkt} other {# Punkte}} in {parts, plural, one {# Abschnitt} other {# Abschnitten}}',
+            },
+            {
+              count: preview.reduce((n, part) => n + part.length, 0),
+              parts: parts.length,
+            },
+          )
+        }
       </div>
       {(error || reviewError) && <div role="alert">{error || reviewError}</div>}
       {!recording && !!parts.length && !enough && <div>{invalid}</div>}
@@ -231,7 +399,22 @@ export const WalkTrack = ({
         />
       )}
       <div className={styles.actions}>
-        {resumeChoice ?
+        {drawTrack ?
+          !drawing && (
+            <Button
+              disabled={saving}
+              onClick={() => {
+                setParts([])
+                setReview(null)
+                setResult(null)
+                setError('')
+                setDrawing(true)
+              }}
+            >
+              {msg({ id: 'walkDraw', defaultMessage: 'Spur zeichnen' })}
+            </Button>
+          )
+        : resumeChoice ?
           <>
             <Button onClick={() => start(false)}>
               {msg({
@@ -240,7 +423,7 @@ export const WalkTrack = ({
               })}
             </Button>
             <Button
-              disabled={!review}
+              disabled={!review || editing}
               onClick={() => start(true)}
             >
               {msg({ id: 'walkSeparate', defaultMessage: 'Neuer Abschnitt' })}
@@ -275,26 +458,66 @@ export const WalkTrack = ({
           {msg({ id: 'cancel', defaultMessage: 'Abbrechen' })}
         </Button>
       </div>
-      {preview.map((part, i) =>
-        part.length === 1 ?
-          <CircleMarker
-            key={i}
-            center={part[0]}
-            radius={5}
-            {...options}
-          />
-        : mode === 'polygon' && part.length >= 3 ?
-          <Polygon
-            key={i}
-            positions={part}
-            {...options}
-          />
-        : <Polyline
-            key={i}
-            positions={part}
-            {...options}
-          />,
+      {editing && target && !recording && (
+        <Polygon
+          positions={target.polygon.coordinates.map(latLngs)}
+          {...options}
+          color="#7e57c2"
+          fill={false}
+        />
       )}
+      {result?.shapes.map((g, i) => (
+        <Polygon
+          key={i}
+          positions={g.coordinates.map(latLngs)}
+          {...options}
+          dashArray=""
+          fillOpacity={0.25}
+        />
+      ))}
+      {result?.removed && (
+        <>
+          <Polyline
+            positions={latLngs(result.removed.coordinates)}
+            {...options}
+            color="#bc3a26"
+            weight={4}
+          />
+          {[
+            result.removed.coordinates[0],
+            result.removed.coordinates.at(-1)!,
+          ].map(([lng, lat], i) => (
+            <CircleMarker
+              key={i}
+              center={[lat, lng]}
+              radius={5}
+              {...options}
+              color="#bc3a26"
+            />
+          ))}
+        </>
+      )}
+      {!result &&
+        preview.map((part, i) =>
+          part.length === 1 ?
+            <CircleMarker
+              key={i}
+              center={part[0]}
+              radius={5}
+              {...options}
+            />
+          : mode === 'polygon' && part.length >= 3 ?
+            <Polygon
+              key={i}
+              positions={part}
+              {...options}
+            />
+          : <Polyline
+              key={i}
+              positions={part}
+              {...options}
+            />,
+        )}
     </>
   )
 }
