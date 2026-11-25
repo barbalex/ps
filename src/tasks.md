@@ -46,9 +46,20 @@ I tried to remove a WMS Layer by deleting it here: http://localhost:5176/data/pr
 
 ---
 
-adding points, circles and rectangles works. but not polygons or lines. neither editing outlines nor deleting geometries. Because: when activating these functions, the cursor becomes/remains a hand and subsequently does not work
+adding
+
+- deleting geometries
+---
+
+map geometry editing menus: 1. tooltips need translation 2. can we implement the same tooltips as used for instance in the appbar menus?
 
 ---
+
+Edit geometry in forms: make it a menu in the form header instead of the current input. When clicking on it and if a geometry already exists, the map should open (works already when clicking the Edit input) and zoom to the current object (not working now). The button should make clear if a geometry already exists. not sure how that is best done
+
+---
+
+Top appbar menu: online Menu not visible in hamburger menu in light mode, icon should be black instead of white. It's white thus fine in dark mode
 
 ---
 
