@@ -58,6 +58,8 @@ export const fetchPendingCapabilities = async ({
   seenKeyOf: (service: ServiceToFetch) => string
   fetchCapabilities: (service: ServiceToFetch) => Promise<unknown>
 }) => {
+  if (!services.length) return
+
   try {
     // snapshot for the pending list and the task's total; the loop re-checks
     // seen per service, so a fetch another run or tab finished meanwhile is

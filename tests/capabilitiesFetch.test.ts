@@ -295,7 +295,7 @@ describe('fetchPendingCapabilities', () => {
   const serviceUrl = 'https://example.com/wms'
 
   const run = async (
-    serviceId: string,
+    serviceId: string | null,
     fetchCapabilities: ReturnType<typeof vi.fn>,
   ) => {
     await fetchPendingCapabilities({
@@ -306,7 +306,8 @@ describe('fetchPendingCapabilities', () => {
       failureMessage: 'Failed to fetch some WMS capabilities',
       layerTable: 'wms_service_layers',
       serviceIdColumn: 'wms_service_id',
-      services: [{ id: serviceId, url: serviceUrl, projectId }],
+      services:
+        serviceId === null ? [] : [{ id: serviceId, url: serviceUrl, projectId }],
       seenKeyOf: (service) => seenWmsKey(service.id, service.url),
       fetchCapabilities,
     })
@@ -326,6 +327,17 @@ describe('fetchPendingCapabilities', () => {
     vi.mocked(getCapabilities).mockImplementation(async ({ service }) =>
       service === 'WMS' ? wmsCapabilities : wfsCapabilities,
     )
+  })
+
+  it('skips the database lookup when no services have a URL', async () => {
+    const query = vi.spyOn(db, 'query')
+    try {
+      await run(null, vi.fn())
+      expect(query).not.toHaveBeenCalled()
+      expect(backgroundTasks.add).not.toHaveBeenCalled()
+    } finally {
+      query.mockRestore()
+    }
   })
 
   it('fetches an unseen service with zero layers and marks it seen', async () => {
