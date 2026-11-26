@@ -139,7 +139,18 @@ export const Row = ({
         ) : (
           <div />
         )}
-        <div onClick={onClickLabel} className={styles.label}>
+        <div
+          onClick={onClickLabel}
+          className={styles.label}
+          role={onClick ? 'button' : undefined}
+          tabIndex={onClick ? 0 : undefined}
+          onKeyDown={onClick ? event => {
+            if (event.key === 'Enter' || event.key === ' ') {
+              event.preventDefault()
+              onClick()
+            }
+          } : undefined}
+        >
           {label}
         </div>
       </div>

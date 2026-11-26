@@ -318,7 +318,8 @@ export const ClickListener = () => {
         const target = ownTargetFromLayer(layer)
         mapInfo.layers.push({
           label: layer.vectorLayerLabel || 'Unknown Layer',
-          featureLabel: layer.feature.properties.label || 'Feature',
+          featureLabel: layer.feature.properties.label || target?.ownId ||
+            (layer.activeIdField === 'observation_id' && layer.feature.properties.observation_id) || 'Feature',
           properties,
           ...(layer.activeIdField === 'observation_id' && {
             ownObservationId: layer.feature.properties.observation_id,

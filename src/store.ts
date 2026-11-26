@@ -86,6 +86,7 @@ export interface MapInfoLayer {
 }
 
 export interface MapInfo {
+  selectedHit?: number
   browsing?: boolean
   lat: number
   lng: number

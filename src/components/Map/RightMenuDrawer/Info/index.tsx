@@ -69,10 +69,30 @@ export const Info = () => {
     setMapInfo(null)
   }
 
-  const layersExist = (mapInfo?.layers?.length ?? 0) > 0
+  // Multipart features and multiple presentations can hit the same record.
+  const seen = new Set<string>()
+  const hits = (mapInfo?.layers ?? []).filter(layer => {
+    const key = layer.ownObservationId ? `observation/${layer.ownObservationId}`
+      : layer.ownTable && layer.ownId ? `${layer.ownTable}/${layer.ownId}` : null
+    if (!key) return true
+    if (seen.has(key)) return false
+    seen.add(key)
+    return true
+  })
+  const selected = mapInfo?.layers[mapInfo?.selectedHit ?? -1]
+  const choose = (layer: MapInfoLayer) => setMapInfo(info =>
+    info && info.layers.includes(layer) ? {
+      ...info, selectedHit: info.layers.indexOf(layer),
+      layers: info.layers.map(hit => hit.formActive ? { ...hit, formActive: false } : hit),
+    } : info,
+  )
+  const back = () => setMapInfo(info => !info ? info : {
+    ...info, selectedHit: undefined, browsing: false,
+    layers: info.layers.map(layer => layer.formActive ? { ...layer, formActive: false } : layer),
+  })
 
   // Group layers by label
-  const groupedLayers = (mapInfo?.layers ?? []).reduce<
+  const groupedLayers = (selected ? [selected] : hits).reduce<
     Record<string, MapInfoLayer[]>
   >((acc, layer) => {
     // A Leaflet marker can retain the label it had before place levels loaded.
@@ -107,13 +127,14 @@ export const Info = () => {
         </DrawerHeader>
         {mapOnly && mapInfo && <Breadcrumbs />}
         <DrawerBody className={styles.body}>
+          {selected && <Button onClick={back}>{formatMessage({ id: 'bFyZsS', defaultMessage: 'Zurück' })}</Button>}
           {mapOnly && mapInfo?.browsing ? <RoutedInfo /> : <>
           <Location
             mapInfo={mapInfo}
             projectMapPresentationCrs={projectMapPresentationCrs}
             projectCrs={projectCrs}
           />
-          {layersExist ?
+          {hits.length ?
             Object.entries(groupedLayers).map(([label, layers]) => (
               <div
                 key={label}
@@ -126,6 +147,7 @@ export const Info = () => {
                   <Layer
                     key={`${label}/${i}`}
                     layerData={layer}
+                    onChoose={!selected && hits.length > 1 && (layer.ownId || layer.ownObservationId) ? () => choose(layer) : undefined}
                   />
                 ))}
               </div>

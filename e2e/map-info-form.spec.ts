@@ -110,7 +110,7 @@ const clickMarker = async (page: Page, count: number) => {
   await page.mouse.click(box.x + box.width / 2, box.y + box.height / 2)
 }
 
-const inspectPlace = async (page: Page, email: string, overview = false) => {
+const inspectPlace = async (page: Page, email: string, overview = false, selectedId = placeId) => {
   await login(page, email, password)
   // These writer scenarios start in the explicitly chosen properties view.
   if (email === writer) await page.evaluate(() => localStorage.setItem('mapInfoPreferForm', 'false'))
@@ -118,15 +118,15 @@ const inspectPlace = async (page: Page, email: string, overview = false) => {
   await page.goto(`${path}?panes=map&c=47.37%2C8.54&z=17`)
   await clickMarker(page, 2)
   const drawer = page.locator('.map-info-drawer')
-  await expect(drawer).toContainText(placeId)
-  // The overlapping observation has a place_id but is not a place hit.
-  await expect(drawer).toContainText(obsId)
-  await expect(drawer.getByRole('button', { name: 'Navigate to form' })).toHaveCount(2)
+  await expect(drawer.locator('.list-container .row')).toHaveCount(2)
+  await expect(drawer.locator('[data-properties-for], .form-container')).toHaveCount(0)
+  await expect(drawer.getByRole('button', { name: 'Navigate to form' })).toHaveCount(0)
   await expect(drawer.getByText('Species: Info forms', {exact: true})).toHaveCount(overview ? 2 : 0)
   if (overview) {
     const heading = drawer.getByText('Species: Info forms', {exact: true}).first().locator('..')
     await expect(heading).toHaveText(/^Species: Info forms.+/)
   }
+  await drawer.locator(`[data-info-for="${selectedId}"]`).getByRole('button').click()
   return drawer
 }
 
@@ -291,6 +291,10 @@ test('reader can inspect and zoom but cannot change the form or geometry', async
 }) => {
   const drawer = await inspectPlace(page, reader, true)
   for (const id of [placeId, obsId]) {
+    if (id === obsId) {
+      await drawer.getByRole('button', { name: 'Back', exact: true }).click()
+      await drawer.locator(`[data-info-for="${obsId}"]`).getByRole('button').click()
+    }
     await expect(drawer.locator(`[data-info-for="${id}"]`).getByRole('button', { name: 'Navigate to form' })).toBeEnabled()
   }
   await expect(drawer.getByRole('button', { name: 'View form' })).toHaveCount(0)
@@ -301,7 +305,7 @@ test('reader can inspect and zoom but cannot change the form or geometry', async
 })
 
 test('observation inspection uses the routed form for assigned and unassigned observations', async ({ page }) => {
-  const drawer = await inspectPlace(page, writer)
+  const drawer = await inspectPlace(page, writer, false, obsId)
   await drawer.locator(`[data-info-for="${obsId}"]`).getByRole('button', { name: 'View form' }).click()
   const comment = drawer.locator('textarea[name=comment]')
   await expect(comment).toBeVisible()
@@ -317,12 +321,13 @@ test('observation inspection uses the routed form for assigned and unassigned ob
 })
 
 test('Info groups place hits by their navigation names even with stale marker labels', async ({ page }) => {
-  await login(page, reader, password)
+  await login(page, writer, password)
   await page.evaluate(({ placeId, childId, projectId }) => {
     localStorage.setItem('mapInfoAtom', JSON.stringify({
       lat: 47.37, lng: 8.54, zoom: 17,
       layers: [
-        { ownId: placeId, featureLabel: 'Parent' },
+        { ownId: placeId, featureLabel: 'Parent', formActive: true },
+        { ownId: childId, ownParentId: placeId, featureLabel: 'Child' },
         { ownId: childId, ownParentId: placeId, featureLabel: 'Child' },
       ].map(hit => ({ ...hit, projectId, ownTable: 'place', label: 'Places', properties: [] })),
     }))
@@ -332,6 +337,15 @@ test('Info groups place hits by their navigation names even with stale marker la
   await expect(drawer.getByText('Populations (1)', { exact: true })).toBeVisible()
   await expect(drawer.getByText('Sub-Populations (1)', { exact: true })).toBeVisible()
   await expect(drawer.getByText('Places (2)', { exact: true })).toHaveCount(0)
+  await expect(drawer.locator('.list-container .row')).toHaveCount(2)
+  await expect(drawer.locator('[data-properties-for], .form-container')).toHaveCount(0)
+  await drawer.getByRole('button', { name: 'Child', exact: true }).click()
+  await expect(drawer.locator('input[name=name]')).toHaveValue('Child place')
+  await expect(page).toHaveURL(url => url.pathname === `${root}/places/${placeId}/places/${childId}/place` && url.searchParams.get('panes') === 'map')
+  await drawer.getByRole('button', { name: 'Back', exact: true }).click()
+  await drawer.getByRole('button', { name: 'Parent', exact: true }).press('Enter')
+  await expect(page).toHaveURL(url => url.pathname === `${root}/places/${placeId}/place`)
+  await expect(drawer.locator('input[name=name]')).toHaveValue(psql(`SELECT name FROM places WHERE place_id = '${placeId}'`))
 })
 
 test('a requested nested check form at latitude zero edits the check, not the current route', async ({

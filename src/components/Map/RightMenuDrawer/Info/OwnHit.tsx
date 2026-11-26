@@ -128,13 +128,14 @@ export const OwnHit = ({
   )
   const insideMapForm = mapOnly && !!objectPath &&
     (pathname === objectPath || pathname.startsWith(`${objectPath}/`))
-  const formShown = row?.can_edit && layer.formActive && (matches || insideMapForm)
+  const [lastShown, setLastShown] = useState<MapInfoLayer | null>(null)
+  const enteringChoice = info?.selectedHit !== undefined && lastShown !== layer
+  const formShown = row?.can_edit && layer.formActive && (matches || (insideMapForm && !enteringChoice))
   const selectRow = useCallback(async () => {
     if (route && !matches) await navigate({ ...route, search: formSearch })
   }, [route, matches, navigate, formSearch])
 
-  // Overlapping hits share one routed editor. Claim it only after this
-  // hit's write permission is known, without displacing another hit.
+  // Open the editor only after this hit's write permission is known.
   useEffect(() => {
     if (!preferForm || !row?.can_edit || layer.formActive) return
     setMapInfo((info) => {
@@ -152,16 +153,15 @@ export const OwnHit = ({
   useEffect(() => {
     if (layer.formActive && row?.can_edit && requested.current !== layer) {
       requested.current = layer
-      if (!insideMapForm && !matches) void selectRow()
+      if ((!insideMapForm || enteringChoice) && !matches) void selectRow()
     }
-  }, [layer, row?.can_edit, insideMapForm, matches, selectRow])
+  }, [layer, row?.can_edit, insideMapForm, enteringChoice, matches, selectRow])
 
   // Navigation can finish before the outlet paints. Only show properties
   // for a confirmed table view, never as the pending editor's fallback.
   const wantsForm = layer.formActive || (
     preferForm && !info?.browsing && !info?.layers.some((item) => item.formActive)
   )
-  const [lastShown, setLastShown] = useState<MapInfoLayer | null>(null)
   useEffect(() => {
     if (formShown) setLastShown(layer)
   }, [formShown, layer])

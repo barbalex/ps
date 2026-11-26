@@ -7,6 +7,8 @@ import type { MapInfoLayer } from '../../../../store.ts'
 import { useOwnLayerScope } from '../../../../modules/useOwnLayerScope.ts'
 import { useNavRollups } from '../../../../modules/navRollupsContext.ts'
 import { SafeHtml } from '../../../shared/SafeHtml.tsx'
+import { Row } from '../../../shared/Row.tsx'
+import { AbsenzBadge } from '../../../shared/AbsenzBadge.tsx'
 import { OwnHit } from './OwnHit.tsx'
 import styles from './Layer.module.css'
 
@@ -76,15 +78,14 @@ const Properties = ({ properties = [], text, json, html, ownId }: LayerData) => 
   )
 }
 
-export const Layer = ({ layerData }: { layerData: LayerData }) => {
+export const Layer = ({ layerData, onChoose }: { layerData: LayerData; onChoose?: () => void }) => {
   const { ownId, ownTable } = layerData
   const id = layerData.ownObservationId ?? ownId
   const table = layerData.ownObservationId ? 'observation' : ownTable
   const { projectId, subprojectId } = useOwnLayerScope()
   const properties = <Properties {...layerData} />
-  return (
-    <div className={styles.container} data-info-for={id}>
-      <div className={styles.title}>
+  const title = (
+    <>
         {projectId &&
           !subprojectId &&
           (ownTable || layerData.ownObservationId) && (
@@ -93,8 +94,21 @@ export const Layer = ({ layerData }: { layerData: LayerData }) => {
               projectId={projectId}
             />
           )}
-        {layerData.featureLabel || layerData.label}
-      </div>
+        {layerData.featureLabel || id || layerData.label}
+    </>
+  )
+  if (onChoose && id) return (
+    <div className="list-container" data-info-for={id}>
+      <Row
+        label={<>{title}{layerData.ownObservationId && layerData.properties.some(([key, value]) => key === 'absence' && value === true) && <AbsenzBadge />}</>}
+        to={id}
+        onClick={onChoose}
+      />
+    </div>
+  )
+  return (
+    <div className={styles.container} data-info-for={id}>
+      <div className={styles.title}>{title}</div>
       {id && table ?
         <OwnHit
           key={`${table}/${id}`}
