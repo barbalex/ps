@@ -119,8 +119,6 @@ similar as done for reports?
 - printable
 - can it also work offline (images?)
 
-please cook up a proposal
-
 ---
 
 placement of 'Design form'?
