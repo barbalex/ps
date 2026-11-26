@@ -497,6 +497,7 @@
   "lVTypeDate": "Data (YYYY-MM-DD)",
   "lVTypeDatetime": "Data e ora (ISO 8601)",
   "lVImportDesc": "Il file deve contenere un semplice elenco di valori — uno per riga, senza intestazione di colonna. Tipo atteso: {type}.",
+  "lVImportNeedsType": "Scegli un tipo di valore nel modulo della lista prima di importare i valori.",
   "lVImportFormats": "Formati supportati: .csv, .tsv, .xlsx, .xls, .ods",
   "lVImportDrop": "Trascina un file qui o clicca per selezionare",
   "tImport": "Importa taxa da file",

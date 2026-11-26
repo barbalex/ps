@@ -2195,8 +2195,26 @@
   "lVImportFormats": {
     "defaultMessage": "Unterstützte Formate: .csv, .tsv, .xlsx, .xls, .ods"
   },
+  "lVImportNeedsType": {
+    "defaultMessage": "Wähle zuerst im Listenformular einen Wert-Typ, um Werte zu importieren."
+  },
   "lVImportTitle": {
     "defaultMessage": "Werte importieren"
+  },
+  "lVTypeDate": {
+    "defaultMessage": "Datum (YYYY-MM-DD)"
+  },
+  "lVTypeDatetime": {
+    "defaultMessage": "Datum und Uhrzeit (ISO 8601)"
+  },
+  "lVTypeInteger": {
+    "defaultMessage": "Ganzzahl (z.B. 1, 2, 3)"
+  },
+  "lVTypeNumeric": {
+    "defaultMessage": "Dezimalzahl (z.B. 1.5, 2.75)"
+  },
+  "lVTypeText": {
+    "defaultMessage": "Text"
   },
   "lVr8Zn": {
     "defaultMessage": "Wert-Typ"

@@ -497,6 +497,7 @@
   "lVTypeDate": "Date (YYYY-MM-DD)",
   "lVTypeDatetime": "Date et heure (ISO 8601)",
   "lVImportDesc": "Le fichier doit contenir une simple liste de valeurs — une par ligne, sans en-tête de colonne. Type attendu: {type}.",
+  "lVImportNeedsType": "Choisissez un type de valeur dans le formulaire de la liste avant d’importer des valeurs.",
   "lVImportFormats": "Formats pris en charge: .csv, .tsv, .xlsx, .xls, .ods",
   "lVImportDrop": "Déposez un fichier ici ou cliquez pour sélectionner",
   "tImport": "Importer des taxons depuis un fichier",

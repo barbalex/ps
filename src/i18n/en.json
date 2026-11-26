@@ -500,6 +500,7 @@
   "lVTypeDate": "Date (YYYY-MM-DD)",
   "lVTypeDatetime": "Date and time (ISO 8601)",
   "lVImportDesc": "The file should contain a simple list of values — one per line, with no column header. Expected type: {type}.",
+  "lVImportNeedsType": "Choose a value type in the list form before importing values.",
   "lVImportFormats": "Supported formats: .csv, .tsv, .xlsx, .xls, .ods",
   "lVImportDrop": "Drop a file here or click to select",
   "tImport": "Import taxa from file",

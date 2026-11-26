@@ -49,14 +49,14 @@ References: [QGIS editing](https://docs.qgis.org/latest/en/docs/user_manual/work
 
 ---
 
-"import from file": currently implemented for taxa (/data/projects/018cfcf7-6424-7000-a100-851c5cc2c878/taxonomies/018cfcf8-9b2a-7000-9c7e-5b0b8b0e2b0e/taxa) and Lists (/data/projects/018cfcf7-6424-7000-a100-851c5cc2c878/lists/018cff3b-a100-7000-b000-000000000001/values), maybe more. where does it make sense to add this feature? The already implmented are the best but I _can_ imagine enabling this for many of the other lists, with these rules:
+"import from file": currently implemented for taxa (/data/projects/018cfcf7-6424-7000-a100-851c5cc2c878/taxonomies/018cfcf8-9b2a-7000-9c7e-5b0b8b0e2b0e/taxa) and Lists (/data/projects/018cfcf7-6424-7000-a100-851c5cc2c878/lists/018cff3b-a100-7000-b000-000000000001/values), maybe more. where does it make sense to add this feature? The already implmented are the best but I _can_ imagine enabling this for many of the other lists:
 
+- subprojects, places, checks, actions, place reports, action reports
+- fields not defined on the table: add to jsonb data
 - only while designing
-- the function, once activated, explains how the data needs to be prepared and only imports after checking for consistency
+- the function, once activated, explains how the data needs to be prepared
 
 ---
-
-lists, import values: in the overlaying window the expected type is left as question: "The file should contain a simple list of values — one per line, with no column header. Expected type: ?."
 
 ---
 
