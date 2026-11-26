@@ -57,17 +57,15 @@ References: [QGIS editing](https://docs.qgis.org/latest/en/docs/user_manual/work
 
 ---
 
-working map-centric:
-
-1. project should be choosable inside map - if user can access more than one
-2. subproject should be choosable inside map - if user can access more than one
-3. own layer have to be able to be rendered on project instead of subproject
+---
 
 ---
 
-background map's checkboxes are grey when checked in light theme. should look same as active layers. actually: I prefer the grey when dark mode is set, so lets change the active layer's checkbox in that case
+subpopulation chooser: can we choose multiple subpopulations? add them to the apps regular filter so it is expressed in the nav tree and in species lists too (or-filters). And vice versa: if multiple species are choosen in the regular (species list) filter, render it that way in this checkbox as well. Not sure if this checkbox is still the ideal way to render this
 
 ---
+
+gitguardian detected a password being pushed: in e2e/map-scope.spec.ts, line 10
 
 ---
 
