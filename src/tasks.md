@@ -49,22 +49,21 @@ References: [QGIS editing](https://docs.qgis.org/latest/en/docs/user_manual/work
 
 ---
 
-"import from file": currently implemented for taxa (/data/projects/018cfcf7-6424-7000-a100-851c5cc2c878/taxonomies/018cfcf8-9b2a-7000-9c7e-5b0b8b0e2b0e/taxa) and Lists (/data/projects/018cfcf7-6424-7000-a100-851c5cc2c878/lists/018cff3b-a100-7000-b000-000000000001/values), maybe more. where does it make sense to add this feature? The already implmented are the best but I _can_ imagine enabling this for many of the other lists:
-
-- subprojects, places, checks, actions, place reports, action reports
-- fields not defined on the table: add to jsonb data
-- only while designing
-- the function, once activated, explains how the data needs to be prepared
+---
 
 ---
 
 ---
 
-would be nice to have an aerial map as additional option for background map: does a map exist that is free of charge for not very high usage and works worldwide?
+map > layers panel > active: the symbols rendered are now from left to right: cluster, zoom to, create. as create only exists for own layers the symbols dont align nicely. lets move create to the left to make them align
 
 ---
 
----
+map, working without other ui:
+
+1. own layer have to be able to be rendered on project instead of subproject
+2. project should be choosable inside map - if user can access more than one
+3. subproject should be choosable inside map - if user can access more than one
 
 ---
 
