@@ -29,8 +29,6 @@ References: [QGIS editing](https://docs.qgis.org/latest/en/docs/user_manual/work
 
 ---
 
-enable choosing crs in map coordinates tool
-
 ---
 
 ---
