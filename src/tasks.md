@@ -37,7 +37,10 @@ References: [QGIS editing](https://docs.qgis.org/latest/en/docs/user_manual/work
 
 ---
 
----
+new box on the landing page:
+
+title: Choose How You Like To Work
+text: To edit your data you can navigate a hierarchical tree. Or using the map, stay permanently inside of it.
 
 ---
 
@@ -60,6 +63,12 @@ References: [QGIS editing](https://docs.qgis.org/latest/en/docs/user_manual/work
 ---
 
 ---
+
+observations: when info panel is in form mode they should also render the same form as in regular forms, for instance like: /data/projects/0195a101-0000-7000-8000-000000000001/subprojects/017d3472-d75d-735d-8197-b6db29e70db3/observations-to-assess/a47f29f8-434e-11e8-ab21-b39199649de7
+
+---
+
+todo: info pane, title of places: should use same naming as in the nav tree and bookmarks. I am seeing 'Places' when it should be 'Sub-Populations'. Hm. not happening any more?
 
 ---
 
