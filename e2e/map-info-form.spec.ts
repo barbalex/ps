@@ -36,6 +36,9 @@ test.beforeAll(async () => {
     SET electric.syncing TO 'true';
     UPDATE projects SET subproject_name_singular = 'Art', subproject_name_singular_en = NULL
       WHERE project_id = '${projectId}';
+    INSERT INTO place_levels (place_level_id, project_id, level, check_quantities, check_quantities_in_check)
+      VALUES ('adae57ff-0000-4000-8000-000000000010','${projectId}',2,true,false)
+      ON CONFLICT (place_level_id) DO UPDATE SET check_quantities_in_check = false;
     INSERT INTO units (unit_id, project_id, name, type)
       VALUES ('adae57ff-0000-4000-8000-00000000000f','${projectId}','Individuals','integer')
       ON CONFLICT DO NOTHING;
@@ -147,6 +150,25 @@ test('pencil edits the selected place in Info without opening the data pane', as
   expect(new URL(page.url()).pathname).toBe(`${root}/places/${placeId}/place`)
   expect(new URL(page.url()).searchParams.get('panes')).toBe('map')
   const files = drawer.getByRole('heading', { name: /^Files \(/ })
+  const childSection = drawer.getByRole('heading', { level: 2, name: /^Sub-Populations \(/ })
+  const nestedList = `${root}/places/${placeId}/places`
+  await expect(childSection).toBeVisible()
+  await childSection.click()
+  await expect(page).toHaveURL(url => url.pathname === nestedList)
+  await expect(name).toHaveValue('Original')
+  await drawer.locator('.list-container').getByText(childId, {exact:true}).click()
+  await expect(name).toHaveValue('Child place')
+  await page.goBack()
+  await expect(name).toHaveValue('Original')
+  await childSection.click()
+  for (const pane of ['Data', 'Tree']) {
+    const toggle = page.getByRole('toolbar', { name: 'active tabs' }).getByRole('button', { name: pane, exact: true })
+    await toggle.click()
+    await expect(name).toHaveValue('Original')
+    await expect(childSection).toHaveCount(0)
+    await toggle.click()
+    await expect(childSection).toBeVisible()
+  }
   await files.click()
   await expect(page).toHaveURL(new RegExp(`/places/${placeId}/files\\?`))
   await expect(name).toHaveValue('Original')

@@ -1,5 +1,6 @@
 import { useNavigate } from '@tanstack/react-router'
 import { useRef, useState } from 'react'
+import { useMapInfoForm } from '../../modules/mapInfoFormContext.ts'
 
 import styles from './Row.module.css'
 
@@ -24,6 +25,7 @@ export const Row = ({
   isActive = false,
 }: Props) => {
   const navigate = useNavigate()
+  const mapForm = useMapInfoForm()
   const [swipeOffset, setSwipeOffset] = useState(0)
   const [isSwiping, setIsSwiping] = useState(false)
   const [isDeleting, setIsDeleting] = useState(false)
@@ -39,10 +41,10 @@ export const Row = ({
     // when used in map drawer, we don't want to navigate
     if (onClick) return onClick()
 
-    navigate({ to })
+    navigate({ to, ...(mapForm && { search: true }) })
   }
 
-  const onClickImg = () => navigate({ to: `${to}/preview` })
+  const onClickImg = () => navigate({ to: `${to}/preview`, ...(mapForm && { search: true }) })
 
   const handleTouchStart = (e: React.TouchEvent) => {
     if (!onDelete) return

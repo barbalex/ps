@@ -1,4 +1,5 @@
 import { useUrlFilter } from '../../modules/useUrlFilter.ts'
+import { useMapInfoForm } from '../../modules/mapInfoFormContext.ts'
 import { useRef, useState, useContext } from 'react'
 import {
   useParams,
@@ -90,11 +91,12 @@ export const CheckWithAll = ({
   const filesInCheck =
     (isDesigning || placeLevel?.check_files !== false) &&
     placeLevel?.check_files_in_check !== false
+  const mapChildren = useMapInfoForm()
   const showQuantities =
-    quantitiesInCheck && (isDesigning || placeLevel?.check_quantities !== false)
+    (mapChildren || quantitiesInCheck) && (isDesigning || placeLevel?.check_quantities !== false)
   const showTaxa =
-    taxaInCheck && (isDesigning || placeLevel?.check_taxa !== false)
-  const showFiles = filesInCheck
+    (mapChildren || taxaInCheck) && (isDesigning || placeLevel?.check_taxa !== false)
+  const showFiles = filesInCheck || (mapChildren && (isDesigning || placeLevel?.check_files !== false))
   const allInlineComputed = quantitiesInCheck && taxaInCheck && filesInCheck
   // allInline prop from parent (CheckIndex) takes precedence when provided
   const isAllInline = allInline ?? allInlineComputed

@@ -29,13 +29,14 @@ import { filterStringFromFilter } from '../../modules/filterStringFromFilter.ts'
 import type Places from '../../models/public/Places.ts'
 import styles from './WithFiles.module.css'
 import { filesScopeWhere } from '../../modules/filesScopeWhere.ts'
+import { MapChildSections } from './MapChildSections.tsx'
 
 import '../../form.css'
 import type { FieldChangeData } from '../../components/shared/fieldChange.ts'
 
 const { Button } = fluentUiReactComponents
 
-export const PlaceWithFiles = ({ from }: { from: string }) => {
+export const PlaceWithFiles = ({ from, mapChildren = false }: { from: string; mapChildren?: boolean }) => {
   const { projectId, subprojectId, placeId, placeId2 } = useParams({
     strict: false,
   })
@@ -110,19 +111,15 @@ export const PlaceWithFiles = ({ from }: { from: string }) => {
   )
   const filesCount = filesCountRes?.rows?.[0]?.count ?? 0
 
-  const isUsersOpen =
-    location.pathname.endsWith('/users') ||
-    location.pathname.includes('/users/')
-  const isUsersList = /\/users\/?$/.test(location.pathname)
-  const isFilesOpen =
-    location.pathname.endsWith('/files') ||
-    location.pathname.includes('/files/')
-  const isFilesList = /\/files\/?$/.test(location.pathname)
-
   const placeBaseUrl = `/data/projects/${projectId}/subprojects/${subprojectId}/places/${placeId}${placeId2 ? `/places/${placeId2}` : ''}`
   const placeUrl = `${placeBaseUrl}/place`
   const usersUrl = `${placeBaseUrl}/users`
   const filesUrl = `${placeBaseUrl}/files`
+  const path = location.pathname.replace(/\/$/, '')
+  const isUsersList = path === usersUrl
+  const isUsersOpen = isUsersList || path.startsWith(`${usersUrl}/`)
+  const isFilesList = path === filesUrl
+  const isFilesOpen = isFilesList || path.startsWith(`${filesUrl}/`)
 
   const placeUsersIsFiltered = !!filterStringFromFilter(placeUsersFilter)
   const filesIsFiltered = !!filterStringFromFilter(filesFilter)
@@ -139,7 +136,7 @@ export const PlaceWithFiles = ({ from }: { from: string }) => {
   const onClickAddFile = () => uploaderApi?.initFlow?.()
 
   const placeUserHeaderActions =
-    isDesigning && usersInPlace && isUsersList ?
+    isDesigning && (mapChildren || usersInPlace) && isUsersList ?
       <>
         <FilterButton isFiltered={placeUsersIsFiltered} />
         <AddProjectUserButton
@@ -242,7 +239,10 @@ export const PlaceWithFiles = ({ from }: { from: string }) => {
           from={from}
           withContainer={false}
         />
-        {isDesigning && usersInPlace ?
+        {mapChildren && (
+          <MapChildSections projectId={projectId!} subprojectId={subprojectId!} placeId={placeId} placeId2={placeId2} />
+        )}
+        {mapChildren || (isDesigning && usersInPlace) ?
           <Section
             title={`${formatMessage({ id: 'eZ3yEB', defaultMessage: 'Benutzer' })} (${placeUsersCount})`}
             parentUrl={placeUrl}

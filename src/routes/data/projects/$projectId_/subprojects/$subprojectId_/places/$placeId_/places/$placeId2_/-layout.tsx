@@ -1,3 +1,4 @@
+import { useMapInfoForm } from '../../../../../../../../../../modules/mapInfoFormContext.ts'
 import { Outlet, useLocation, useParams } from '@tanstack/react-router'
 import { useLiveQuery } from '@electric-sql/pglite-react'
 
@@ -20,6 +21,7 @@ export const PlaceLayout = () => {
   const filesInPlace = res?.rows?.[0]?.place_files_in_place !== false
 
   const baseUrl = `/data/projects/${projectId}/subprojects/${subprojectId}/places/${placeId}/places/${placeId2}`
+  const mapChildren = useMapInfoForm(baseUrl)
   const isPlaceRoute = location.pathname === `${baseUrl}/place`
   const isUsersRoute =
     location.pathname === `${baseUrl}/users` ||
@@ -27,6 +29,10 @@ export const PlaceLayout = () => {
   const isFilesRoute =
     location.pathname === `${baseUrl}/files` ||
     location.pathname.startsWith(`${baseUrl}/files/`)
+
+  if (mapChildren && !location.pathname.startsWith(`${baseUrl}/histories/`)) {
+    return <PlaceWithFiles from={from} mapChildren />
+  }
 
   if (
     (isPlaceRoute && (usersInPlace || (showFiles && filesInPlace))) ||

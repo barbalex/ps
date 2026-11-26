@@ -1,3 +1,4 @@
+import { useMapInfoForm } from '../../../../../../../../../../modules/mapInfoFormContext.ts'
 import { Outlet, useLocation, useParams } from '@tanstack/react-router'
 import { useLiveQuery } from '@electric-sql/pglite-react'
 import { ActionReportWithQuantities } from '../../../../../../../../../../formsAndLists/actionReport/WithQuantities.tsx'
@@ -6,6 +7,7 @@ const from =
   '/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/action-reports/$actionReportId_'
 
 export const ActionReportLayout = () => {
+  const mapChildren = useMapInfoForm()
   const location = useLocation()
   const { projectId } = useParams({ strict: false })
   const res = useLiveQuery(
@@ -17,7 +19,7 @@ export const ActionReportLayout = () => {
   const isReportHistoryRoute =
     location.pathname.includes('/histories/') &&
     !location.pathname.includes('/quantities/')
-  if (quantitiesInReport && !isReportHistoryRoute)
+  if ((mapChildren || quantitiesInReport) && !isReportHistoryRoute)
     return <ActionReportWithQuantities from={from} />
   return <Outlet />
 }

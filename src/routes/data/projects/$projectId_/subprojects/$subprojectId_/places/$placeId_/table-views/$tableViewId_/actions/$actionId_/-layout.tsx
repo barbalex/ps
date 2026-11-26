@@ -1,3 +1,4 @@
+import { useMapInfoForm } from '../../../../../../../../../../../../modules/mapInfoFormContext.ts'
 import { Outlet, useLocation, useParams } from '@tanstack/react-router'
 import { useLiveQuery } from '@electric-sql/pglite-react'
 import { ActionWithAll } from '../../../../../../../../../../../../formsAndLists/action/WithAll.tsx'
@@ -6,6 +7,7 @@ const from =
   '/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/table-views/$tableViewId_/actions/$actionId_'
 
 export const ActionLayout = () => {
+  const mapChildren = useMapInfoForm()
   const location = useLocation()
   const { projectId } = useParams({ strict: false })
   const res = useLiveQuery(
@@ -28,6 +30,8 @@ export const ActionLayout = () => {
       (isFilesRoute && filesInAction)
     : quantitiesInAction || taxaInAction || filesInAction
   const isTaxaListRoute = /\/taxa\/?$/.test(location.pathname)
+  if (mapChildren && !location.pathname.includes('/histories/'))
+    return <ActionWithAll from={from} allInline={allInline} />
   if (isTaxaListRoute && !taxaInAction) return <Outlet />
   if (shouldRenderWithAll)
     return <ActionWithAll from={from} allInline={allInline} />

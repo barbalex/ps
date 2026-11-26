@@ -1115,6 +1115,13 @@ route outlet as the data pane, including configured subforms and their lists
 and detail views. For existing objects, Info
 offers separate controls for editing geometry and opening the form.
 
+On the experimental branch, when the map is the **only** pane, the Info
+editor also presents the object's tree children as collapsible sections.
+Place sections use the configured tree labels and table views; checks,
+actions and reports show enabled child collections even when configured
+as separate tree entries. Opening a section uses the real child route.
+Showing the tree or data pane restores the regular inline configuration.
+
 ## Choosing the project and subproject on the map
 
 The map's Layers drawer lets users switch between accessible projects and

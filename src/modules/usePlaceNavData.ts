@@ -119,9 +119,9 @@ export const usePlaceNavData = ({
         files_count_unfiltered.count AS files_count_unfiltered,
         files_count_filtered.count AS files_count_filtered
       FROM 
-        places,
-        names,
-        child_names,
+        places
+        LEFT JOIN names ON true
+        LEFT JOIN child_names ON true,
         places_count_unfiltered,
         places_count_filtered,
         checks_count_unfiltered,
@@ -232,7 +232,7 @@ export const usePlaceNavData = ({
     'places',
   ]
   const parentUrl = `/${parentArray.join('/')}`
-  const ownArray = [...parentArray, nav?.id]
+  const ownArray = [...parentArray, placeId2 ?? placeId]
   const ownUrl = `/${ownArray.join('/')}`
   const isOpen = openNodesSet.has(ownArray.join('/'))
   const urlPath = location.pathname.split('/').filter((p) => p !== '')

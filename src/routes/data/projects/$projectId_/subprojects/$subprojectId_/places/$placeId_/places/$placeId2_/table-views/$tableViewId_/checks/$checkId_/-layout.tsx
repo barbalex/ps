@@ -1,3 +1,4 @@
+import { useMapInfoForm } from '../../../../../../../../../../../../../../modules/mapInfoFormContext.ts'
 import { Outlet, useLocation, useParams } from '@tanstack/react-router'
 import { useLiveQuery } from '@electric-sql/pglite-react'
 import { CheckWithAll } from '../../../../../../../../../../../../../../formsAndLists/check/WithAll.tsx'
@@ -6,6 +7,7 @@ const from =
   '/data/projects/$projectId_/subprojects/$subprojectId_/places/$placeId_/places/$placeId2_/table-views/$tableViewId_/checks/$checkId_/check'
 
 export const CheckLayout = () => {
+  const mapChildren = useMapInfoForm()
   const location = useLocation()
   const { projectId } = useParams({ strict: false })
   const res = useLiveQuery(
@@ -23,7 +25,7 @@ export const CheckLayout = () => {
     !location.pathname.includes('/quantities/') &&
     !location.pathname.includes('/taxa/') &&
     !location.pathname.includes('/files/')
-  if ((quantitiesInCheck || taxaInCheck || filesInCheck) && !isCheckHistoryRoute)
+  if ((mapChildren || quantitiesInCheck || taxaInCheck || filesInCheck) && !isCheckHistoryRoute)
     return <CheckWithAll from={from} allInline={allInline} />
   return <Outlet />
 }

@@ -15,6 +15,8 @@ import { TbZoomScan } from 'react-icons/tb'
 
 import { Geometry } from '../../../FormMenu/Geometry.tsx'
 import { ownFormRoute } from '../../../../modules/navigateToOwnForm.ts'
+import { useUrlPanes } from '../../../../modules/useUrlPanes.ts'
+import { MapInfoFormRoot } from '../../../../modules/mapInfoFormContext.ts'
 import { useOwnLayerScope } from '../../../../modules/useOwnLayerScope.ts'
 import { roleDependencies } from '../../../../modules/writeAccess.ts'
 import {
@@ -52,6 +54,8 @@ export const OwnHit = ({
   const router = useRouter()
   const navigate = useNavigate()
   const { formSearch } = useOwnLayerScope()
+  const [panes] = useUrlPanes()
+  const mapOnly = panes.length === 1 && panes[0] === 'map'
   const { pathname } = useLocation()
   const setMapInfo = useSetAtom(mapInfoAtom)
   const setMapBounds = useSetAtom(mapBoundsAtom)
@@ -107,7 +111,9 @@ export const OwnHit = ({
     section === 'files' ||
     (table === 'place' ? section === 'users' : section === 'taxa' || section === 'quantities')
   )
-  const formShown = row?.can_edit && layer.formActive && matches
+  const insideMapForm = mapOnly && !!objectPath &&
+    (pathname === objectPath || pathname.startsWith(`${objectPath}/`))
+  const formShown = row?.can_edit && layer.formActive && (matches || insideMapForm)
   const selectRow = async () => {
     if (route && !matches) await navigate({ ...route, search: formSearch })
   }
@@ -118,7 +124,7 @@ export const OwnHit = ({
   useEffect(() => {
     if (layer.formActive && row?.can_edit && requested.current !== layer) {
       requested.current = layer
-      void selectRow()
+      if (!insideMapForm) void selectRow()
     }
   })
 
@@ -194,7 +200,9 @@ export const OwnHit = ({
       </div>
       {formShown ?
         <div className={styles.objectForm}>
-          <Outlet />
+          <MapInfoFormRoot.Provider value={mapOnly ? objectPath : undefined}>
+            <Outlet />
+          </MapInfoFormRoot.Provider>
         </div>
       : children}
     </>
