@@ -14,7 +14,7 @@ import type Places from '../../models/public/Places.ts'
 import '../../form.css'
 import type { FieldChangeData } from '../../components/shared/fieldChange.ts'
 
-export const Place = ({ from, embedded = false }: { from: string; embedded?: boolean }) => {
+export const Place = ({ from }: { from: string }) => {
   const { projectId, placeId, placeId2 } = useParams({ strict: false })
   const { onlyForm } = useSearch({ strict: false })
   const addOperation = useSetAtom(addOperationAtom)
@@ -101,7 +101,7 @@ export const Place = ({ from, embedded = false }: { from: string; embedded?: boo
     return <NotFound table={nameSingular} id={placeId2 ?? placeId} />
   }
 
-  if (onlyForm || embedded) {
+  if (onlyForm) {
     return (
       <Form
         row={row as unknown as Places}

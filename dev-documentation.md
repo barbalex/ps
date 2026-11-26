@@ -1109,7 +1109,9 @@ starts a drawing. It uses the parent selected in the current route if writable;
 otherwise choose a writable parent in the search dialog. Click to place a point,
 or choose a line or area tool. Cancel or press Escape before finishing to leave
 the database unchanged. Finishing the first geometry creates the object and
-opens its regular form in the map's Info drawer. For existing objects, Info
+opens its regular form in the map's Info drawer. The drawer uses the same
+route outlet as the data pane, including configured subforms and their lists
+and detail views. For existing objects, Info
 offers separate controls for editing geometry and opening the form.
 
 ## The active object glows yellow on the map

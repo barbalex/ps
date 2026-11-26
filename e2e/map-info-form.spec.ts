@@ -34,6 +34,9 @@ test.beforeAll(async () => {
   })
   psql(`
     SET electric.syncing TO 'true';
+    INSERT INTO units (unit_id, project_id, name, type)
+      VALUES ('adae57ff-0000-4000-8000-00000000000f','${projectId}','Individuals','integer')
+      ON CONFLICT DO NOTHING;
     UPDATE places SET geometry = ST_GeomFromText('GEOMETRYCOLLECTION(POINT(8.54 47.37))', 4326),
       name = 'Original' WHERE place_id = '${placeId}';
     INSERT INTO places (place_id, subproject_id, parent_id, level, name)
@@ -133,6 +136,12 @@ test('pencil edits the selected place in Info without opening the data pane', as
   await expect(name).toHaveValue('Original')
   expect(new URL(page.url()).pathname).toBe(`${root}/places/${placeId}/place`)
   expect(new URL(page.url()).searchParams.get('panes')).toBe('map')
+  const files = drawer.getByRole('heading', { name: /^Files \(/ })
+  await files.click()
+  await expect(page).toHaveURL(new RegExp(`/places/${placeId}/files\\?`))
+  await expect(name).toHaveValue('Original')
+  await files.click()
+  await expect(page).toHaveURL(new RegExp(`/places/${placeId}/place\\?`))
   await name.fill('Changed in Info')
   await name.press('Tab')
   await pencil.click()
@@ -212,4 +221,17 @@ test('a requested nested check form at latitude zero edits the check, not the cu
       { timeout: 30_000 },
     )
     .toBe('f')
+  await drawer.getByRole('heading', { name: /^Quantities \(/ }).click()
+  await drawer.getByTitle('Add quantity').click()
+  await expect(page).toHaveURL(new RegExp(`/checks/${checkId}/quantities/[^/?]+`))
+  await drawer.getByText('Individuals', { exact: true }).click()
+  const quantity = drawer.locator('input[name="quantity_integer"]')
+  await quantity.fill('23')
+  await quantity.blur()
+  const quantityId = new URL(page.url()).pathname.split('/').filter(Boolean).at(-1)
+  await expect.poll(() => psql(`SELECT quantity_integer FROM check_quantities
+    WHERE check_quantity_id = '${quantityId}' AND check_id = '${checkId}'`), {
+    timeout: 30_000,
+  }).toBe('23')
+  expect(new URL(page.url()).searchParams.get('panes')).toBe('map')
 })

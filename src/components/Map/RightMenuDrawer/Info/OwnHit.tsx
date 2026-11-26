@@ -3,7 +3,7 @@ import { useLiveQuery } from '@electric-sql/pglite-react'
 import { Button } from '@fluentui/react-components'
 import {
   useLocation,
-  useMatches,
+  Outlet,
   useNavigate,
   useParams,
   useRouter,
@@ -14,9 +14,6 @@ import { MdEdit, MdOpenInNew } from 'react-icons/md'
 import { TbZoomScan } from 'react-icons/tb'
 
 import { Geometry } from '../../../FormMenu/Geometry.tsx'
-import { Action } from '../../../../formsAndLists/action/Action.tsx'
-import { Check } from '../../../../formsAndLists/check/Check.tsx'
-import { Place } from '../../../../formsAndLists/place/Place.tsx'
 import { ownFormRoute } from '../../../../modules/navigateToOwnForm.ts'
 import { roleDependencies } from '../../../../modules/writeAccess.ts'
 import {
@@ -35,7 +32,6 @@ import styles from './Layer.module.css'
 
 type OwnTable = NonNullable<MapInfoLayer['ownTable']>
 const tables = { place: 'places', check: 'checks', action: 'actions' } as const
-const forms = { place: Place, check: Check, action: Action }
 
 export const OwnHit = ({
   layer,
@@ -55,9 +51,6 @@ export const OwnHit = ({
   const router = useRouter()
   const navigate = useNavigate()
   const { pathname } = useLocation()
-  const from = useMatches({
-    select: (matches) => matches[matches.length - 1].routeId,
-  })
   const setMapInfo = useSetAtom(mapInfoAtom)
   const setMapBounds = useSetAtom(mapBoundsAtom)
   const userId = useAtomValue(userIdAtom)
@@ -101,10 +94,17 @@ export const OwnHit = ({
     table === 'place' ? (placeId2 ?? placeId)
     : table === 'check' ? checkId
     : actionId
-  const matches =
-    selectedId === id &&
-    !!route &&
-    pathname === router.buildLocation(route).pathname
+  const formPath = route && router.buildLocation(route).pathname
+  const objectPath = formPath?.slice(0, formPath.lastIndexOf('/'))
+  const section = objectPath && pathname.startsWith(`${objectPath}/`)
+    ? pathname.slice(objectPath.length + 1).split('/')[0]
+    : undefined
+  const matches = selectedId === id && !!formPath && (
+    pathname === formPath ||
+    (table !== 'place' && (pathname === objectPath || section === '')) ||
+    section === 'files' ||
+    (table === 'place' ? section === 'users' : section === 'taxa' || section === 'quantities')
+  )
   const formShown = row?.can_edit && layer.formActive && matches
   const selectRow = async () => {
     if (route && !matches) await navigate(route)
@@ -135,7 +135,6 @@ export const OwnHit = ({
         },
     )
   }
-  const Form = forms[table]
   return (
     <>
       <div className={styles.buttons}>
@@ -192,10 +191,9 @@ export const OwnHit = ({
         )}
       </div>
       {formShown ?
-        <Form
-          embedded
-          from={from}
-        />
+        <div className={styles.objectForm}>
+          <Outlet />
+        </div>
       : children}
     </>
   )
