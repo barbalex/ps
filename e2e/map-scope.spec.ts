@@ -1,4 +1,5 @@
-import { expect, test } from '@playwright/test'
+import { randomBytes, randomUUID } from 'node:crypto'
+import { expect, test as base } from '@playwright/test'
 import { ensureUser, grantRoles, login, psql } from './helpers.ts'
 
 const a = 'c2100000-0000-7000-8000-000000000001'
@@ -7,11 +8,29 @@ const first = 'c2100000-0000-7000-8000-000000000011'
 const second = 'c2100000-0000-7000-8000-000000000012'
 const hidden = 'c2100000-0000-7000-8000-000000000013'
 const only = 'c2100000-0000-7000-8000-000000000021'
-const password = 'e2e-map-scope-test'
 const layer = 'c2100000-0000-7000-8000-000000000030'
 const places = [first, second, hidden, only].map((id) =>
   id.replace('c210', 'c211'),
 )
+
+const test = base.extend<{
+  scopeUser: { email: string; userId: string; signIn: () => Promise<void> }
+}>({
+  scopeUser: async ({ page }, runTest) => {
+    const email = `scope-${randomUUID()}@example.com`
+    const password = randomBytes(32).toString('base64url')
+    const userId = await ensureUser({ email, password, name: 'Scope test' })
+    try {
+      await runTest({ email, userId, signIn: () => login(page, email, password) })
+    } finally {
+      psql(`BEGIN;
+        SET LOCAL electric.syncing = true;
+        DELETE FROM project_users WHERE auth_user_id = '${userId}' AND email = '${email}';
+        DELETE FROM users WHERE user_id = '${userId}' AND email = '${email}';
+        COMMIT;`)
+    }
+  },
+})
 
 test.beforeAll(() => {
   psql(`SET electric.syncing = true;
@@ -38,9 +57,8 @@ test.beforeAll(() => {
 
 test('switches map routes with the viewport intact and only offers accessible choices', async ({
   page,
+  scopeUser: { email, signIn, userId },
 }) => {
-  const email = 'scope-multi@example.com'
-  const userId = await ensureUser({ email, password, name: 'Scope multi' })
   await grantRoles({
     email,
     userId,
@@ -55,7 +73,7 @@ test('switches map routes with the viewport intact and only offers accessible ch
     role: 'read-specific',
     subprojectIds: [only],
   })
-  await login(page, email, password)
+  await signIn()
   await page.goto(
     `/data/projects/${a}/subprojects/${first}?panes=map&c=47,8&z=12&layers=aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa`,
   )
@@ -91,9 +109,8 @@ test('switches map routes with the viewport intact and only offers accessible ch
 
 test('with one accessible project the map offers only its subprojects', async ({
   page,
+  scopeUser: { email, signIn, userId },
 }) => {
-  const email = 'scope-single@example.com'
-  const userId = await ensureUser({ email, password, name: 'Scope single' })
   await grantRoles({
     email,
     userId,
@@ -102,7 +119,7 @@ test('with one accessible project the map offers only its subprojects', async ({
     subprojectIds: [first, second],
   })
 
-  await login(page, email, password)
+  await signIn()
   await page.goto('/data/projects?panes=map')
   const drawer = page.locator('.map-layers-drawer')
   await drawer
@@ -118,9 +135,8 @@ test('with one accessible project the map offers only its subprojects', async ({
 
 test('overview renders both accessible subprojects and stays wide when opening a form', async ({
   page,
+  scopeUser: { email, signIn, userId },
 }) => {
-  const email = 'scope-overview@example.com'
-  const userId = await ensureUser({ email, password, name: 'Scope overview' })
   await grantRoles({
     email,
     userId,
@@ -137,7 +153,7 @@ test('overview renders both accessible subprojects and stays wide when opening a
     subprojectIds: [only],
     placeIds: [places[3]],
   })
-  await login(page, email, password)
+  await signIn()
   await page.goto(`/data/projects/${a}?panes=map&c=47.37,8.54&z=17`)
   const survey = page.getByRole('combobox', { name: 'Survey' })
   await page.getByRole('button', { name: 'Cluster point markers' }).click({ timeout: 120_000 })

@@ -415,6 +415,28 @@ test('upload form: append and replace share the converted features', async ({ pa
   }
 })
 
+test('update banner stays above both open map drawers', async ({ page }) => {
+  await openDrawer(page)
+  await page.locator('#map').click()
+  await expect(page.locator('.map-info-drawer').getByText('Info', {exact: true})).toBeVisible()
+  await page.route('**/version.json', route => route.fulfill({ json: { version: 'next-test-version' } }))
+  await page.evaluate(() => document.dispatchEvent(new Event('visibilitychange')))
+  const banner = page.getByRole('alert').filter({ hasText: 'next-test-version' })
+  await expect(banner).toBeVisible()
+  for (const selector of ['.map-layers-drawer', '.map-info-drawer']) {
+    const x = await page.locator(selector).evaluate(el => {
+      const rect = el.getBoundingClientRect()
+      return rect.left + rect.width / 2
+    })
+    await expect.poll(() => banner.evaluate((el, x) => {
+      const rect = el.getBoundingClientRect()
+      return el.contains(document.elementFromPoint(x, rect.top + rect.height / 2))
+    }, x)).toBe(true)
+  }
+  await banner.getByRole('button', { name: 'later' }).click()
+  await expect(banner).toHaveCount(0)
+})
+
 test('own table layer: checkbox, Active section, pane — and back', async ({
   page,
 }) => {
