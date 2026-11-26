@@ -1115,6 +1115,14 @@ route outlet as the data pane, including configured subforms and their lists
 and detail views. For existing objects, Info
 offers separate controls for editing geometry and opening the form.
 
+## Choosing the project and subproject on the map
+
+The map's Layers drawer lets users switch between accessible projects and
+between subprojects of the selected project when there is more than one choice.
+The selection navigates to the project or subproject route, retaining the map
+pane and viewport. Switching projects drops the previous project's layer URL
+override. This does not change the subproject scope of own layers.
+
 ## The active object glows yellow on the map
 
 The object whose form is open (the "active" object of the navigation) is

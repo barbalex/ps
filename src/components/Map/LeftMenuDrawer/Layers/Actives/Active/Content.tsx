@@ -532,6 +532,9 @@ export const Content = ({
             as="a"
           />
         )}
+        {creationTarget && layer.project_id && (
+          <AddToLayer {...creationTarget} projectId={layer.project_id} layerLabel={label} />
+        )}
         {isVectorLayer && layer.own_table !== 'observations_assigned_lines' && (
           <ClusterMenu id={layer.layer_presentation_id} defaultOn={layer.cluster_markers ?? true} />
         )}
@@ -547,9 +550,6 @@ export const Content = ({
               as="a"
             />
           </Tooltip>
-        )}
-        {creationTarget && layer.project_id && (
-          <AddToLayer {...creationTarget} projectId={layer.project_id} layerLabel={label} />
         )}
       </AccordionHeader>
       <AccordionPanel className={layerStyles.panel}>

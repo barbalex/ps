@@ -1,14 +1,12 @@
 import * as fluentUiReactComponents from '@fluentui/react-components'
 const { Tab, TabList } = fluentUiReactComponents
-import type {
-  SelectTabEvent,
-  SelectTabData,
-} from '@fluentui/react-components'
+import type { SelectTabEvent, SelectTabData } from '@fluentui/react-components'
 import { useSearch, useNavigate } from '@tanstack/react-router'
 
 import { ErrorBoundary } from '../../shared/ErrorBoundary.tsx'
 import { Layers } from './Layers/index.tsx'
 import { Legends } from './Legends/index.tsx'
+import { MapScope } from './MapScope.tsx'
 import styles from './Content.module.css'
 
 export const Content = () => {
@@ -35,7 +33,12 @@ export const Content = () => {
           <Tab value="legends">Legends</Tab>
         </TabList>
         <div className={styles.form}>
-          {tab === 'layers' ? <Layers /> : <Legends />}
+          {tab === 'layers' ?
+            <>
+              <MapScope />
+              <Layers />
+            </>
+          : <Legends />}
         </div>
       </div>
     </ErrorBoundary>

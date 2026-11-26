@@ -49,24 +49,23 @@ References: [QGIS editing](https://docs.qgis.org/latest/en/docs/user_manual/work
 
 ---
 
-"import from file": currently implemented for taxa (/data/projects/018cfcf7-6424-7000-a100-851c5cc2c878/taxonomies/018cfcf8-9b2a-7000-9c7e-5b0b8b0e2b0e/taxa) and Lists (/data/projects/018cfcf7-6424-7000-a100-851c5cc2c878/lists/018cff3b-a100-7000-b000-000000000001/values), maybe more. where does it make sense to add this feature? The already implmented are the best but I _can_ imagine enabling this for many of the other lists:
-
-- subprojects, places, checks, actions, place reports, action reports
-- fields not defined on the table: add to jsonb data
-- only while designing
-- the function, once activated, explains how the data needs to be prepared
-
 ---
-
----
-
-would be nice to have an aerial map as additional option for background map: does a map exist that is free of charge for not very high usage and works worldwide?
 
 ---
 
 ---
 
 ---
+
+working map-centric:
+
+1. project should be choosable inside map - if user can access more than one
+2. subproject should be choosable inside map - if user can access more than one
+3. own layer have to be able to be rendered on project instead of subproject
+
+---
+
+background map's checkboxes are grey when checked in light theme. should look same as active layers. actually: I prefer the grey when dark mode is set, so lets change the active layer's checkbox in that case
 
 ---
 
