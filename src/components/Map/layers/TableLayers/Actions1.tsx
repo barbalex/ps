@@ -1,6 +1,7 @@
 import { useMemo } from 'react'
 import { useLiveQuery } from '@electric-sql/pglite-react'
-import { useLocation, useParams } from '@tanstack/react-router'
+import { useLocation } from '@tanstack/react-router'
+import { useOwnLayerScope } from '../../../../modules/useOwnLayerScope.ts'
 
 import { TableLayer } from './TableLayer.tsx'
 import type { TableLayerProps } from './TableLayer.tsx'
@@ -21,7 +22,7 @@ export const Actions1 = ({
   const pathParts = pathname.split('/')
   const actionsIdx = pathParts.indexOf('actions')
   const actionId = actionsIdx !== -1 ? pathParts[actionsIdx + 1] : undefined
-  const { subprojectId } = useParams({ strict: false })
+  const { scopeFilter, scopeId } = useOwnLayerScope()
   const envelope = useViewportEnvelope()
   const resActions = useLiveQuery<Actions & { edit_version: string | null }>(
     `
@@ -30,14 +31,14 @@ export const Actions1 = ({
       actions.label, actions.created_at, actions.updated_at, actions.updated_by,
       (SELECT max(t.updated_at) FROM actions t
         INNER JOIN places tp ON t.place_id = tp.place_id
-        WHERE tp.parent_id IS NULL AND tp.subproject_id = $1 AND t.geometry IS NOT NULL) AS edit_version
+        WHERE tp.parent_id IS NULL AND tp.subproject_id ${scopeFilter} AND t.geometry IS NOT NULL) AS edit_version
     FROM actions
       INNER JOIN places ON actions.place_id = places.place_id
     WHERE
       actions.geometry IS NOT NULL
       AND places.parent_id IS NULL
-      AND places.subproject_id = $1${viewportPredicate('actions.geometry')}`,
-    [subprojectId, ...viewportParams(envelope)],
+      AND places.subproject_id ${scopeFilter}${viewportPredicate('actions.geometry')}`,
+    [scopeId, ...viewportParams(envelope)],
   )
   // memoized on the live-query result: re-renders (the zoomend viewport
   // round-trip through the url) must not rebuild the FeatureCollections —

@@ -30,7 +30,7 @@ import { FaPlay, FaStopCircle } from 'react-icons/fa'
 import { useAtom, useAtomValue, useSetAtom } from 'jotai'
 import { usePGlite, useLiveQuery } from '@electric-sql/pglite-react'
 import { useLocation } from '@tanstack/react-router'
-import { useParams } from '@tanstack/react-router'
+import { useOwnLayerScope } from '../../../../../../modules/useOwnLayerScope.ts'
 import { useIntl } from 'react-intl'
 
 import { ErrorBoundary } from '../../../../../shared/ErrorBoundary.tsx'
@@ -90,7 +90,7 @@ export const Content = ({
   dragHandleRef: RefObject<HTMLDivElement | null>
 }) => {
   const { formatMessage } = useIntl()
-  const { projectId, subprojectId } = useParams({ strict: false })
+  const { projectId, subprojectId } = useOwnLayerScope()
   const [designingMap] = useAtom(designingAtom)
   const designing = designingMap[projectId ?? ''] ?? false
   const { isLayerVisible } = useUrlLayers()

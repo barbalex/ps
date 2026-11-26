@@ -1,5 +1,5 @@
 import { useMemo } from 'react'
-import { useParams } from '@tanstack/react-router'
+import { useOwnLayerScope } from '../../../../modules/useOwnLayerScope.ts'
 import { useAtomValue } from 'jotai'
 import { useLiveQuery } from '@electric-sql/pglite-react'
 
@@ -27,7 +27,7 @@ export const ObservationsAssigned1 = ({
   layerPresentation: TableLayerProps['layerPresentation']
 }) => {
   const draggableLayers = useAtomValue(draggableLayersAtom)
-  const { subprojectId } = useParams({ strict: false })
+  const { scopeFilter, scopeId } = useOwnLayerScope()
   const activeObservationId = useActiveObservationId()
   const envelope = useViewportEnvelope()
 
@@ -39,16 +39,16 @@ export const ObservationsAssigned1 = ({
       (SELECT max(t.updated_at) FROM observations t
         INNER JOIN observation_imports ti ON t.observation_import_id = ti.observation_import_id
         INNER JOIN places tp ON t.place_id = tp.place_id
-        WHERE ti.subproject_id = $1 AND tp.parent_id IS NULL AND t.geometry IS NOT NULL) AS edit_version
+        WHERE ti.subproject_id ${scopeFilter} AND tp.parent_id IS NULL AND t.geometry IS NOT NULL) AS edit_version
     FROM observations o
       INNER JOIN observation_imports oi ON o.observation_import_id = oi.observation_import_id
       INNER JOIN places p ON o.place_id = p.place_id
     WHERE
       o.geometry IS NOT NULL
-      AND oi.subproject_id = $1
+      AND oi.subproject_id ${scopeFilter}
       AND p.parent_id IS NULL${viewportPredicate('o.geometry')}
   `,
-    [subprojectId, ...viewportParams(envelope)],
+    [scopeId, ...viewportParams(envelope)],
   )
 
   // geometry is stored as PostGIS GeometryCollection; convert to FeatureCollection for display

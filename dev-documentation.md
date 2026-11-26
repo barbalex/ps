@@ -1121,7 +1121,12 @@ The map's Layers drawer lets users switch between accessible projects and
 between subprojects of the selected project when there is more than one choice.
 The selection navigates to the project or subproject route, retaining the map
 pane and viewport. Switching projects drops the previous project's layer URL
-override. This does not change the subproject scope of own layers.
+override. At project level, own layers render all locally synced subprojects;
+selecting a subproject narrows both rendering and zoom-to-layer. Opening an
+own feature from the overview retains `mapOverview=<project id>` so its form
+can navigate to the correct subproject without narrowing the map. Selecting a
+scope in the drawer clears that override. Creation still requires a writable
+parent.
 
 ## The active object glows yellow on the map
 

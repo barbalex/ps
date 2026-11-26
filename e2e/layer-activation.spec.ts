@@ -168,7 +168,6 @@ test.beforeEach(() => {
   `)
 })
 
-// the Own section only renders with a subproject in the url
 const openDrawer = async (page: Page, subprojectId?: string) => {
   await login(page, E2E_EMAIL, E2E_PASSWORD)
   const base = subprojectId ?

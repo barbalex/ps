@@ -85,7 +85,7 @@ export const useViewportEnvelope = (): ViewportBounds | null => {
 }
 
 // The envelope for the viewport predicates: $2..$5 bind swLng, swLat, neLng,
-// neLat ($1 stays the subproject id). All NULL disables the filter — the
+// neLat ($1 stays the scope id). All NULL disables the filter — the
 // brief window before the first bounds arrive behaves like the former
 // unfiltered queries. && compares bounding boxes and is served by the
 // geometry columns' GiST indexes, like the prefilter in nearestPlaces.

@@ -13,6 +13,7 @@ import { displayFromFeature } from '../../../../modules/displayByProperty.ts'
 import { useVectorLayerLabel } from '../../../../modules/vectorLayerLabel.ts'
 import { ErrorBoundary } from '../../MapErrorBoundary.tsx'
 import { assignToNearestDroppable } from './assignToNearestDroppable.ts'
+import { useOwnLayerScope } from '../../../../modules/useOwnLayerScope.ts'
 import {
   draggableLayersAtom,
   droppableLayersAtom,
@@ -82,6 +83,7 @@ export const TableLayer = ({
   activeId = null,
   activeIdField = null,
 }: TableLayerProps) => {
+  const { projectId, subprojectId } = useOwnLayerScope()
   const confirmAssigningToSingleTarget = useAtomValue(
     confirmAssigningToSingleTargetAtom,
   )
@@ -154,7 +156,7 @@ export const TableLayer = ({
   }, [])
 
   if (!firstDisplay) return null
-  if (!layer) return null
+  if (!layer || !projectId) return null
   // include only if zoom between min_zoom and max_zoom
   if (
     layerPresentation.min_zoom !== undefined &&
@@ -174,7 +176,7 @@ export const TableLayer = ({
         geomanIgnore
         cluster={layerPresentation.cluster_markers && !isDraggable && !droppableLayers.includes(layerNameForState as string) && layer.own_table !== 'observations_assigned_lines'}
         clusterMaxZoom={layerPresentation.max_zoom}
-        resetKey={`${editVersion ?? ''}/${JSON.stringify(firstDisplay)}/${activeId ?? ''}/${isDraggable}`}
+        resetKey={`${subprojectId ?? projectId}/${editVersion ?? ''}/${JSON.stringify(firstDisplay)}/${activeId ?? ''}/${isDraggable}`}
         data={data}
         featureKey={featureKey}
         // style by properties, use a function that receives the feature: https://stackoverflow.com/a/66106512/712005
@@ -321,6 +323,7 @@ export const TableLayer = ({
                 }, 150)
 
                 assignToNearestDroppable({
+                  scope: { projectId, subprojectId },
                   latLng: e.latlng,
                   observationId: feature.properties?.observation_id,
                   map,
@@ -468,6 +471,7 @@ export const TableLayer = ({
                 map._isDraggingObservation = false
               }, 150)
               assignToNearestDroppable({
+                scope: { projectId, subprojectId },
                 latLng: position,
                 observationId: marker.feature!.properties?.observation_id,
                 map,

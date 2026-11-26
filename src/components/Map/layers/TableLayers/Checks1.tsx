@@ -1,6 +1,7 @@
 import { useMemo } from 'react'
 import { useLiveQuery } from '@electric-sql/pglite-react'
-import { useLocation, useParams } from '@tanstack/react-router'
+import { useLocation } from '@tanstack/react-router'
+import { useOwnLayerScope } from '../../../../modules/useOwnLayerScope.ts'
 
 import { TableLayer } from './TableLayer.tsx'
 import type { TableLayerProps } from './TableLayer.tsx'
@@ -21,7 +22,7 @@ export const Checks1 = ({
   const pathParts = pathname.split('/')
   const checksIdx = pathParts.indexOf('checks')
   const checkId = checksIdx !== -1 ? pathParts[checksIdx + 1] : undefined
-  const { subprojectId } = useParams({ strict: false })
+  const { scopeFilter, scopeId } = useOwnLayerScope()
   const envelope = useViewportEnvelope()
   const res = useLiveQuery<Checks & { edit_version: string | null }>(
     `
@@ -30,15 +31,15 @@ export const Checks1 = ({
       checks.label, checks.created_at, checks.updated_at, checks.updated_by,
       (SELECT max(t.updated_at) FROM checks t
         INNER JOIN places tp ON t.place_id = tp.place_id
-        WHERE tp.parent_id IS NULL AND tp.subproject_id = $1 AND t.geometry IS NOT NULL) AS edit_version
+        WHERE tp.parent_id IS NULL AND tp.subproject_id ${scopeFilter} AND t.geometry IS NOT NULL) AS edit_version
     FROM checks
       INNER JOIN places ON checks.place_id = places.place_id
     WHERE
       checks.geometry IS NOT NULL
       AND places.parent_id IS NULL
-      AND places.subproject_id = $1${viewportPredicate('checks.geometry')}
+      AND places.subproject_id ${scopeFilter}${viewportPredicate('checks.geometry')}
   `,
-    [subprojectId, ...viewportParams(envelope)],
+    [scopeId, ...viewportParams(envelope)],
   )
 
   // geometry is stored as PostGIS GeometryCollection; convert to FeatureCollection for display

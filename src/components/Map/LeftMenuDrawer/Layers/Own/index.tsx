@@ -24,9 +24,8 @@ const openItemsAtom = atom<string[]>([])
 export const OwnLayers = () => {
   const [openItems, setOpenItems] = useAtom(openItemsAtom)
   const [language] = useAtom(languageAtom)
-  const { projectId = '99999999-9999-9999-9999-999999999999', subprojectId } =
+  const { projectId = '99999999-9999-9999-9999-999999999999' } =
     useParams({ strict: false })
-  const hasActiveSubproject = !!subprojectId && subprojectId !== 'undefined'
 
   const db = usePGlite()
   // Show table-based vector layers that are not currently active
@@ -125,8 +124,6 @@ export const OwnLayers = () => {
       </section>
     )
   }
-
-  if (!hasActiveSubproject) return null
 
   return (
     <ErrorBoundary>

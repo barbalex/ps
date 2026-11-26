@@ -32,7 +32,7 @@ const defaultValues = {
 // map viewport (see modules/useUrlMapViewport.ts); they are passed through
 // unvalidated — values from hand-crafted links are coerced defensively by
 // their hooks.
-type DataSearch = { onlyForm?: boolean } & Record<string, unknown>
+type DataSearch = { onlyForm?: boolean; mapOverview?: string } & Record<string, unknown>
 const validateSearch = (search: Record<string, unknown>): DataSearch => {
   const result: DataSearch = { onlyForm: search.onlyForm === true }
   for (const [key, value] of Object.entries(search)) {

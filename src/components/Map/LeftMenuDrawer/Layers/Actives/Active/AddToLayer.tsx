@@ -15,6 +15,7 @@ import {
   type CreationParent,
 } from '../../../../../../modules/mapCreationParents.ts'
 import { userIdAtom } from '../../../../../../store.ts'
+import { useOwnLayerScope } from '../../../../../../modules/useOwnLayerScope.ts'
 import styles from './Content.module.css'
 
 const {
@@ -31,12 +32,13 @@ const {
 type Target = Pick<MapCreation, 'table' | 'level' | 'layerLabel' | 'projectId'>
 
 export const AddToLayer = (target: Target) => {
-  const { projectId, subprojectId, placeId, placeId2 } = useParams({
+  const { projectId, subprojectId } = useOwnLayerScope()
+  const { placeId, placeId2 } = useParams({
     strict: false,
   })
   const userId = useAtomValue(userIdAtom)
   if (!userId || projectId !== target.projectId) return null
-  const route = { subprojectId, placeId, placeId2 }
+  const route = subprojectId ? { subprojectId, placeId, placeId2 } : {}
   return (
     <ParentChoice
       key={[

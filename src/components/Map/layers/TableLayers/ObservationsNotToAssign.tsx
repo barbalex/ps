@@ -1,6 +1,6 @@
 import { useMemo } from 'react'
 import { useLiveQuery } from '@electric-sql/pglite-react'
-import { useParams } from '@tanstack/react-router'
+import { useOwnLayerScope } from '../../../../modules/useOwnLayerScope.ts'
 import { useAtomValue } from 'jotai'
 
 import { TableLayer } from './TableLayer.tsx'
@@ -27,7 +27,7 @@ export const ObservationsNotToAssign = ({
   layerPresentation: TableLayerProps['layerPresentation']
 }) => {
   const draggableLayers = useAtomValue(draggableLayersAtom)
-  const { subprojectId } = useParams({ strict: false })
+  const { scopeFilter, scopeId } = useOwnLayerScope()
   const activeObservationId = useActiveObservationId()
   const envelope = useViewportEnvelope()
   const res = useLiveQuery<ObservationRow>(
@@ -37,17 +37,17 @@ export const ObservationsNotToAssign = ({
       o.label, o.created_at, o.updated_at, o.updated_by,
       (SELECT max(t.updated_at) FROM observations t
         INNER JOIN observation_imports ti ON t.observation_import_id = ti.observation_import_id
-        WHERE ti.subproject_id = $1 AND t.place_id IS NULL
+        WHERE ti.subproject_id ${scopeFilter} AND t.place_id IS NULL
           AND t.not_to_assign = true AND t.geometry IS NOT NULL) AS edit_version
     FROM observations o
       INNER JOIN observation_imports oi ON o.observation_import_id = oi.observation_import_id
     WHERE
-      oi.subproject_id = $1
+      oi.subproject_id ${scopeFilter}
       AND o.place_id IS NULL
       AND o.not_to_assign = true
       AND o.geometry IS NOT NULL${viewportPredicate('o.geometry')}
   `,
-    [subprojectId, ...viewportParams(envelope)],
+    [scopeId, ...viewportParams(envelope)],
   )
 
   // geometry is stored as PostGIS GeometryCollection; convert to FeatureCollection for display

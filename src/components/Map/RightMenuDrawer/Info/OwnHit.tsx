@@ -15,6 +15,7 @@ import { TbZoomScan } from 'react-icons/tb'
 
 import { Geometry } from '../../../FormMenu/Geometry.tsx'
 import { ownFormRoute } from '../../../../modules/navigateToOwnForm.ts'
+import { useOwnLayerScope } from '../../../../modules/useOwnLayerScope.ts'
 import { roleDependencies } from '../../../../modules/writeAccess.ts'
 import {
   extentFromRow,
@@ -50,6 +51,7 @@ export const OwnHit = ({
   })
   const router = useRouter()
   const navigate = useNavigate()
+  const { formSearch } = useOwnLayerScope()
   const { pathname } = useLocation()
   const setMapInfo = useSetAtom(mapInfoAtom)
   const setMapBounds = useSetAtom(mapBoundsAtom)
@@ -107,7 +109,7 @@ export const OwnHit = ({
   )
   const formShown = row?.can_edit && layer.formActive && matches
   const selectRow = async () => {
-    if (route && !matches) await navigate(route)
+    if (route && !matches) await navigate({ ...route, search: formSearch })
   }
 
   // Creation requests the editor before the new row is selected. Wait for
@@ -142,7 +144,7 @@ export const OwnHit = ({
           size="small"
           icon={<MdOpenInNew />}
           disabled={!route}
-          onClick={() => route && navigate(route)}
+          onClick={() => route && navigate({ ...route, search: formSearch })}
           label={formatMessage({
             id: 'bMapInfoNavigateTo',
             defaultMessage: 'Zum Formular navigieren',

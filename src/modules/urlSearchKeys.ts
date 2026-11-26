@@ -16,6 +16,7 @@ const retainedKeys = new Set([
   'z',
   'panes',
   'layers',
+  'mapOverview',
   'designing',
   'qcsRunLabel',
   'qcsRunOnlyWithResults',

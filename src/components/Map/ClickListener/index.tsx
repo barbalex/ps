@@ -2,6 +2,7 @@ import { useUrlFilter } from '../../../modules/useUrlFilter.ts'
 import { useEffect, useRef } from 'react'
 import { mapCreationAtom } from '../../../modules/mapCreation.ts'
 import { useParams, useNavigate } from '@tanstack/react-router'
+import { useOwnLayerScope } from '../../../modules/useOwnLayerScope.ts'
 import { useMapEvent, useMap } from 'react-leaflet/hooks'
 import type {
   Map as LeafletMap,
@@ -142,6 +143,7 @@ export const ClickListener = () => {
   const language = useAtomValue(languageAtom)
   const { formatMessage } = useIntl()
   const navigate = useNavigate()
+  const { formSearch } = useOwnLayerScope()
   const [choosingGeometry, setChoosingGeometry] = useAtom(choosingGeometryAtom)
   const setEditingPlaceGeometry = useSetAtom(editingPlaceGeometryAtom)
   const setEditingCheckGeometry = useSetAtom(editingCheckGeometryAtom)
@@ -257,7 +259,7 @@ export const ClickListener = () => {
       // the info drawer is not part of the choosing flow
       setMapInfo(null)
       if (!tabs.includes('map')) setTabs([...tabs, 'map'])
-      await navigateToOwnForm(db, navigate, { ...target, projectId })
+      await navigateToOwnForm(db, navigate, { ...target, projectId }, formSearch)
       return
     }
 

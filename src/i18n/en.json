@@ -1,4 +1,5 @@
 {
+  "mapAllAccessible": "All accessible",
   "recordImportReload": "The records were created. Reload the app to see them; do not import again.",
   "recordImport": "Import from file",
   "recordImported": "Created {n} records.",

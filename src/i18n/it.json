@@ -1,4 +1,5 @@
 {
+  "mapAllAccessible": "Tutti i sottoprogetti accessibili",
   "versionCheckFailed": "Aggiornamento non riuscito. Puoi continuare a usare la versione attuale e riprovare.",
   "recordImportReload": "I record sono stati creati. Ricarica l’app per vederli, senza ripetere l’importazione.",
   "recordImport": "Importa da file",

@@ -1,6 +1,6 @@
 import { Field, Select } from '@fluentui/react-components'
 import { useLiveQuery } from '@electric-sql/pglite-react'
-import { useNavigate, useParams } from '@tanstack/react-router'
+import { useNavigate } from '@tanstack/react-router'
 import { useAtomValue, useSetAtom } from 'jotai'
 import { useIntl } from 'react-intl'
 
@@ -11,13 +11,14 @@ import {
   userIdAtom,
 } from '../../../store.ts'
 import { mapCreationAtom } from '../../../modules/mapCreation.ts'
+import { useOwnLayerScope } from '../../../modules/useOwnLayerScope.ts'
 import { subprojectNameSingularExpr } from '../../../modules/subprojectNameCols.ts'
 import styles from './Content.module.css'
 
 type Choice = { id: string; label: string }
 
 export const MapScope = () => {
-  const { projectId, subprojectId } = useParams({ strict: false })
+  const { projectId, subprojectId } = useOwnLayerScope()
   const navigate = useNavigate()
   const { formatMessage } = useIntl()
   const userId = useAtomValue(userIdAtom)
@@ -39,20 +40,20 @@ export const MapScope = () => {
     (!projectId && projects.length === 1 ? projects[0] : undefined)
   return (
     <>
-      {projects.length > 1 && (
+      {(projects.length > 1 || (!projectId && projects.length === 1)) && (
         <Field
           className={styles.scopeField}
           label={formatMessage({ id: 'fz2AhZ', defaultMessage: 'Projekt' })}
         >
           <Select
-            value={project?.id ?? ''}
+            value={projectId ?? ''}
             disabled={drawing || !!creating}
             onChange={(_, { value }) => {
               clearInfo(null)
               void navigate({
                 to: '/data/projects/$projectId',
                 params: { projectId: value },
-                search: { layers: undefined },
+                search: { layers: undefined, mapOverview: undefined },
               })
             }}
           >
@@ -104,6 +105,7 @@ function SubprojectScope({
   disabled: boolean
 }) {
   const navigate = useNavigate()
+  const { formatMessage } = useIntl()
   const clearInfo = useSetAtom(mapInfoAtom)
   const subprojects =
     useLiveQuery<Choice>(
@@ -128,15 +130,17 @@ function SubprojectScope({
             void navigate({
               to: '/data/projects/$projectId/subprojects/$subprojectId',
               params: { projectId, subprojectId: value },
+              search: { mapOverview: undefined },
             })
           else
             void navigate({
               to: '/data/projects/$projectId',
               params: { projectId },
+              search: { mapOverview: undefined },
             })
         }}
       >
-        <option value="">—</option>
+        <option value="">{formatMessage({ id: 'mapAllAccessible', defaultMessage: 'Alle zugänglichen' })}</option>
         {subprojects.map((s) => (
           <option
             key={s.id}
