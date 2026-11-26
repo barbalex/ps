@@ -15,6 +15,7 @@ import {
 
 type Props = {
   projectId: string
+  list?: boolean
 }
 
 type NavDataOpen = {
@@ -33,7 +34,7 @@ type NavDataClosed = {
   count_filtered: number
 }
 
-export const useSubprojectsNavData = ({ projectId }: Props) => {
+export const useSubprojectsNavData = ({ projectId, list }: Props) => {
   const [openNodesSet] = useAtom(treeOpenNodesSetAtom)
   const location = useLocation()
   const { formatMessage } = useIntl()
@@ -45,18 +46,16 @@ export const useSubprojectsNavData = ({ projectId }: Props) => {
 
   const [filter] = useUrlFilter('subprojects')
   const [language] = useAtom(languageAtom)
-  const filterString = filterStringFromFilter(
-    filter as Record<string, unknown> & typeof filter,
-    '',
-  )
+  const filterString = filterStringFromFilter(filter)
   const isFiltered = !!filterString
 
+  const condition = isFiltered ? `AND (${filterString})` : ''
   const sql =
-    isOpen ?
+    isOpen || list ?
       `
       WITH 
         count_unfiltered AS (SELECT count(*) FROM subprojects WHERE project_id = '${projectId}'),
-        count_filtered AS (SELECT count(*) FROM subprojects WHERE project_id = '${projectId}' ${isFiltered ? ` AND ${filterString}` : ''})
+        count_filtered AS (SELECT count(*) FROM subprojects WHERE project_id = '${projectId}' ${condition})
       SELECT 
         sp.subproject_id AS id,
         sp.label, 
@@ -64,18 +63,17 @@ export const useSubprojectsNavData = ({ projectId }: Props) => {
         ${subprojectNameSingularExpr(language, 'p')} AS name_singular,
         count_unfiltered.count AS count_unfiltered,
         count_filtered.count AS count_filtered
-      FROM subprojects sp
-        INNER JOIN projects p ON p.project_id = sp.project_id,
-        count_unfiltered, count_filtered
-      WHERE 
-        p.project_id = '${projectId}'
-        ${isFiltered ? ` AND ${filterString}` : ''} 
-      ORDER BY label
+      FROM projects p
+        CROSS JOIN count_unfiltered CROSS JOIN count_filtered
+        LEFT JOIN subprojects sp ON p.project_id = sp.project_id
+        ${isFiltered ? `AND (${filterStringFromFilter(filter, 'sp')})` : ''}
+      WHERE p.project_id = '${projectId}'
+      ORDER BY sp.label
     `
     : `
       WITH 
         count_unfiltered AS (SELECT count(*) FROM subprojects WHERE project_id = '${projectId}'),
-        count_filtered AS (SELECT count(*) FROM subprojects WHERE project_id = '${projectId}' ${isFiltered ? ` AND ${filterString}` : ''} ),
+        count_filtered AS (SELECT count(*) FROM subprojects WHERE project_id = '${projectId}' ${condition}),
         names AS (SELECT ${subprojectNameSingularExpr(language)} AS subproject_name_singular, ${subprojectNamePluralExpr(language)} AS subproject_name_plural FROM projects WHERE project_id = '${projectId}')
       SELECT 
         count_unfiltered.count AS count_unfiltered,
@@ -94,15 +92,19 @@ export const useSubprojectsNavData = ({ projectId }: Props) => {
   const isInActiveNodeArray = ownArray.every((part, i) => urlPath[i] === part)
   const isActive = isEqual(urlPath, ownArray)
 
-  const navs = (res?.rows ?? []) as NavDataOpen[] | NavDataClosed[]
-  const countUnfiltered = navs[0]?.count_unfiltered ?? 0
-  const countFiltered = navs[0]?.count_filtered ?? 0
+  const rows = (res?.rows ?? []) as (NavDataClosed & {
+    id?: string | null
+    label?: string
+  })[]
+  const navs = rows.filter((row): row is NavDataOpen => !!row.id)
+  const countUnfiltered = rows[0]?.count_unfiltered ?? 0
+  const countFiltered = rows[0]?.count_filtered ?? 0
 
   const namePlural =
-    navs[0]?.name_plural ||
+    rows[0]?.name_plural ||
     formatMessage({ id: 'Jou8/E', defaultMessage: 'Teilprojekte' })
   const nameSingular =
-    navs[0]?.name_singular ||
+    rows[0]?.name_singular ||
     formatMessage({ id: 'gxCh0c', defaultMessage: 'Teilprojekt' })
 
   const navData = {

@@ -32,18 +32,19 @@ const {
 type Target = Pick<MapCreation, 'table' | 'level' | 'layerLabel' | 'projectId'>
 
 export const AddToLayer = (target: Target) => {
-  const { projectId, subprojectId } = useOwnLayerScope()
+  const { projectId, subprojectId, filterSql } = useOwnLayerScope()
   const { placeId, placeId2 } = useParams({
     strict: false,
   })
   const userId = useAtomValue(userIdAtom)
   if (!userId || projectId !== target.projectId) return null
-  const route = subprojectId ? { subprojectId, placeId, placeId2 } : {}
+  const route = subprojectId ? { subprojectId, placeId, placeId2 } : { filterSql }
   return (
     <ParentChoice
       key={[
         userId,
         projectId,
+        filterSql,
         subprojectId,
         placeId,
         placeId2,

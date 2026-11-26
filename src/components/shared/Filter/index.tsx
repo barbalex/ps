@@ -83,7 +83,7 @@ const getFilterStrings = ({
     whereUnfiltered = placeFilter
   }
   // tables that need to be filtered by project_id
-  if (['fields'].includes(tableName)) {
+  if (['fields', 'subprojects'].includes(tableName)) {
     const projectFilter = { project_id: projectId ?? null }
     for (const orFilter of workingFilter) {
       Object.assign(orFilter, projectFilter)

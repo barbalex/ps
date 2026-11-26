@@ -3,6 +3,7 @@ import { roleDependencies } from './writeAccess.ts'
 
 type Target = Pick<MapCreation, 'table' | 'level'>
 type Route = {
+  filterSql?: string
   subprojectId?: string
   placeId?: string
   placeId2?: string
@@ -55,7 +56,7 @@ export const parentQuery = (
     : route.placeId
   const params = [projectId, userId, route.subprojectId ?? null]
   const subprojectLabel = `coalesce(nullif(s.label,''), nullif(s.name,''), s.subproject_id::text)`
-  const scope = `s.project_id = $1 AND ($3::uuid IS NULL OR s.subproject_id = $3)`
+  const scope = `s.project_id = $1 AND ($3::uuid IS NULL OR s.subproject_id = $3)${route.filterSql ? ` AND s.subproject_id IN (SELECT subproject_id FROM subprojects WHERE (${route.filterSql}))` : ''}`
   let candidates: string
   if (subprojectParent) {
     candidates = `SELECT s.subproject_id AS id, s.subproject_id, null::uuid AS place_id,

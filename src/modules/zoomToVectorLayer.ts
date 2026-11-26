@@ -24,6 +24,7 @@ type Props = {
   layer: VectorLayers
   // Absent in project overview, including while a feature's form is open.
   subprojectId?: string
+  filterSql?: string
   addNotification: (notification: {
     title: string
     intent: 'info'
@@ -42,6 +43,7 @@ export const zoomToVectorLayer = async ({
   db,
   layer,
   subprojectId,
+  filterSql,
   addNotification,
   setMapBounds,
 }: Props): Promise<void> => {
@@ -49,7 +51,8 @@ export const zoomToVectorLayer = async ({
   let extent: Extent | null
 
   {
-    const scopeSql = subprojectId ? 'AND s.subproject_id = $2' : ''
+    const scopeSql = subprojectId ? 'AND s.subproject_id = $2' : filterSql ?
+      `AND s.subproject_id IN (SELECT subproject_id FROM subprojects WHERE (${filterSql}))` : ''
     const scopeParams = subprojectId ? [layer.project_id, subprojectId] : [layer.project_id]
     const tableName =
       layer.type === 'upload' || layer.type === 'wfs' ? null

@@ -2387,6 +2387,9 @@
   "mapPrintPopupBlocked": {
     "defaultMessage": "Das Druckfenster wurde vom Browser blockiert. Bitte Popups für diese Seite erlauben."
   },
+  "mapReplaceSpeciesRules": {
+    "defaultMessage": "Die Filterregeln durch diese Auswahl ersetzen?"
+  },
   "mapShowCenter": {
     "defaultMessage": "Kartenmitte anzeigen"
   },

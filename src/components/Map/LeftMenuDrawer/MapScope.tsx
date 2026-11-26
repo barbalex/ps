@@ -1,4 +1,5 @@
 import { Field, Select } from '@fluentui/react-components'
+import { useState } from 'react'
 import { useLiveQuery } from '@electric-sql/pglite-react'
 import { useNavigate } from '@tanstack/react-router'
 import { useAtomValue, useSetAtom } from 'jotai'
@@ -13,13 +14,22 @@ import {
 import { mapCreationAtom } from '../../../modules/mapCreation.ts'
 import { useOwnLayerScope } from '../../../modules/useOwnLayerScope.ts'
 import { subprojectNameSingularExpr } from '../../../modules/subprojectNameCols.ts'
+import { useUrlFilter, filterUrlKey } from '../../../modules/useUrlFilter.ts'
+import { filterStringFromFilter } from '../../../modules/filterStringFromFilter.ts'
+import { validate as isUuid } from 'uuid'
 import styles from './Content.module.css'
 
 type Choice = { id: string; label: string }
+const key = filterUrlKey('subprojects')
+const exactChoice = (rule: Record<string, unknown>) =>
+  Object.keys(rule).length === 1 &&
+  typeof rule.subproject_id === 'string' &&
+  isUuid(rule.subproject_id)
 
 export const MapScope = () => {
   const { projectId, subprojectId } = useOwnLayerScope()
   const navigate = useNavigate()
+  const [filter] = useUrlFilter('subprojects')
   const { formatMessage } = useIntl()
   const userId = useAtomValue(userIdAtom)
   const language = useAtomValue(languageAtom)
@@ -53,7 +63,11 @@ export const MapScope = () => {
               void navigate({
                 to: '/data/projects/$projectId',
                 params: { projectId: value },
-                search: { layers: undefined, mapOverview: undefined },
+                search: {
+                  layers: undefined,
+                  mapOverview: undefined,
+                  ...(filter.every(exactChoice) && { [key]: undefined }),
+                },
               })
             }}
           >
@@ -107,49 +121,118 @@ function SubprojectScope({
   const navigate = useNavigate()
   const { formatMessage } = useIntl()
   const clearInfo = useSetAtom(mapInfoAtom)
+  const [filter] = useUrlFilter('subprojects')
+  const sql = filterStringFromFilter(filter)
+  const exactIds =
+    filter.every(exactChoice) ?
+      new Set(filter.map((rule) => rule.subproject_id))
+    : undefined
+  const [search, setSearch] = useState('')
   const subprojects =
-    useLiveQuery<Choice>(
-      `SELECT subproject_id AS id, label FROM subprojects WHERE project_id=$1
+    useLiveQuery<Choice & { matches: boolean }>(
+      `SELECT subproject_id AS id, coalesce(nullif(label,''), nullif(name,''), subproject_id::text) AS label,
+       (${exactIds ? 'false' : sql || 'false'}) AS matches FROM subprojects WHERE project_id=$1
        AND subproject_id IN (SELECT subproject_id FROM subproject_roles
          WHERE project_user_id IN (SELECT project_user_id FROM user_project_user_ids($2)))
      ORDER BY label, id`,
       [projectId, userId],
     )?.rows ?? []
-  if (subprojects.length < 2) return null
+  if (subprojects.length < 2 && !sql) return null
+  const selected = subprojects.filter((s) =>
+    sql ? (exactIds?.has(s.id) ?? s.matches) : s.id === subprojectId,
+  )
+  const ids = selected.map((s) => s.id)
+  const allLabel = formatMessage({
+    id: 'mapAllAccessible',
+    defaultMessage: 'Alle zugänglichen',
+  })
+  const apply = (next: string[]) => {
+    if (disabled) return
+    if (
+      !exactIds &&
+      !window.confirm(
+        formatMessage({
+          id: 'mapReplaceSpeciesRules',
+          defaultMessage: 'Die Filterregeln durch diese Auswahl ersetzen?',
+        }),
+      )
+    )
+      return
+    clearInfo(null)
+    const search = {
+      mapOverview: undefined,
+      [key]:
+        next.length ?
+          next.map((subproject_id) => ({ subproject_id }))
+        : undefined,
+    }
+    if (next.length === 1)
+      void navigate({
+        to: '/data/projects/$projectId/subprojects/$subprojectId',
+        params: { projectId, subprojectId: next[0] },
+        search,
+      })
+    else
+      void navigate({
+        to: '/data/projects/$projectId',
+        params: { projectId },
+        search,
+      })
+  }
+  const visible = subprojects.filter((s) =>
+    s.label.toLocaleLowerCase().includes(search.trim().toLocaleLowerCase()),
+  )
   return (
-    <Field
-      className={styles.scopeField}
-      label={label}
-    >
-      <Select
+    <details className={styles.scopeField}>
+      <summary>
+        {label}:{' '}
+        {selected.length ?
+          selected.map((s) => s.label).join(', ')
+        : sql ?
+          formatMessage({
+            id: 'mapCreateParentNone',
+            defaultMessage: 'Keine Treffer',
+          })
+        : allLabel}
+      </summary>
+      <fieldset
         disabled={disabled}
-        value={subprojectId ?? ''}
-        onChange={(_, { value }) => {
-          clearInfo(null)
-          if (value)
-            void navigate({
-              to: '/data/projects/$projectId/subprojects/$subprojectId',
-              params: { projectId, subprojectId: value },
-              search: { mapOverview: undefined },
-            })
-          else
-            void navigate({
-              to: '/data/projects/$projectId',
-              params: { projectId },
-              search: { mapOverview: undefined },
-            })
-        }}
+        aria-label={label}
+        className={styles.scopeChoices}
       >
-        <option value="">{formatMessage({ id: 'mapAllAccessible', defaultMessage: 'Alle zugänglichen' })}</option>
-        {subprojects.map((s) => (
-          <option
-            key={s.id}
-            value={s.id}
-          >
+        <input
+          type="search"
+          aria-label={formatMessage({
+            id: 'mapCreateParentSearch',
+            defaultMessage: 'Suchen',
+          })}
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
+        />
+        <button
+          type="button"
+          disabled={!sql && !subprojectId}
+          onClick={() => apply([])}
+        >
+          {allLabel}
+        </button>
+        {visible.map((s) => (
+          <label key={s.id}>
+            <input
+              type="checkbox"
+              checked={ids.includes(s.id)}
+              onChange={(e) =>
+                apply(
+                  e.target.checked ?
+                    [...ids, s.id]
+                  : ids.filter((id) => id !== s.id),
+                )
+              }
+            />{' '}
             {s.label}
-          </option>
+          </label>
         ))}
-      </Select>
-    </Field>
+      </fieldset>
+    </details>
   )
 }

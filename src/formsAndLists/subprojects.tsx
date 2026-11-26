@@ -18,7 +18,7 @@ export const Subprojects = () => {
   const navigate = useNavigate()
   const userId = useAtomValue(userIdAtom)
 
-  const { loading, navData, isFiltered } = useSubprojectsNavData({projectId: projectId! })
+  const { loading, navData, isFiltered } = useSubprojectsNavData({projectId: projectId!, list: true })
   const { navs: navsIn, label, nameSingular } = navData
   const navs = navsIn as { id: string; label: string | null }[]
 
