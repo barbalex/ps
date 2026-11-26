@@ -2,6 +2,21 @@
   background-color: rgba(103, 216, 101, 0.1) !important;
 }
 
+.search {
+  width: 100%;
+}
+
+.parentList {
+  list-style: none;
+  padding: 0;
+  & button {
+    width: 100%;
+    justify-content: flex-start;
+    text-align: start;
+    overflow-wrap: anywhere;
+  }
+}
+
 .headerIcon {
   color: rgba(38, 82, 37, 0.9);
 }

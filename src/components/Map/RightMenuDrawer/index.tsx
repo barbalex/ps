@@ -120,7 +120,7 @@ export const RightMenuDrawer = ({ isNarrow }: { isNarrow: boolean }) => {
       ref={rootRef}
     >
       <InlineDrawer
-        open={!!mapInfo?.lat}
+        open={mapInfo != null}
         ref={sidebarRef}
         style={{ '--right-drawer-size': `${sidebarSize}px` } as React.CSSProperties}
         className={`map-info-drawer ${styles.drawer}${isNarrow ? ` ${styles.drawerNarrow}` : ` ${styles.drawerWide}`}`}

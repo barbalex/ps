@@ -604,6 +604,8 @@ All guarded with `WHEN (pg_trigger_depth() < 1)` and skipped when `electric.sync
    - `*_roles` / project data: via `project_user_id IN (SELECT project_user_id FROM project_users WHERE auth_user_id = $1)` (or email match pre-claim)
 3. Server-side permission triggers (`12_writePermissionTriggers.sql`) and the client-side `checkWritePermission.ts` resolve `email -> project_user_id -> role` and check the role at the target scope or an ancestor. `projects` INSERT stays account-owner-only.
 
+The map uses the server's `user_can_write_subproject` and `user_can_write_place` predicates locally to choose writable parents, including offline. Their source is `backend/db/init/11e_writeAccessHelpers.sql`, mirrored to PGlite by `npm run sync-sql`. Live queries calling these functions should include the `roleDependencies` CTE from `src/modules/writeAccess.ts` to react to role changes.
+
 ### App-side consequences
 
 - User pickers inside a project list only that project's `project_users` (directory). "Add user" creates a directory row with just the email — no global `users` row is created for collaborators.
@@ -1101,6 +1103,14 @@ geometries). The Own list in the map drawer
 layers; activating one creates or reuses its `layer_presentations` row.
 Filtered checks views (section 8) have no layers of their own — the normal
 checks layers draw their rows.
+
+On active own place, check and action layers, **+** next to **Zoom to layer**
+starts a drawing. It uses the parent selected in the current route if writable;
+otherwise choose a writable parent in the search dialog. Click to place a point,
+or choose a line or area tool. Cancel or press Escape before finishing to leave
+the database unchanged. Finishing the first geometry creates the object and
+opens its regular form in the map's Info drawer. For existing objects, Info
+offers separate controls for editing geometry and opening the form.
 
 ## The active object glows yellow on the map
 

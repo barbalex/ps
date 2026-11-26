@@ -66,6 +66,8 @@ interface Props {
   rowId: string | undefined
   /** level of the place the row belongs to — picks the table layer to show */
   level: 1 | 2
+  /** DrawControl follows the active row's route. A map hit can be off-route. */
+  selectRow?: () => Promise<void>
 }
 
 /**
@@ -75,7 +77,7 @@ interface Props {
  * editing atom); switching it on opens the map and zooms to the geometry if
  * there is one. "Zoomen" only opens the map and zooms.
  */
-export const Geometry = ({ table, rowId, level }: Props) => {
+export const Geometry = ({ table, rowId, level, selectRow }: Props) => {
   const { formatMessage } = useIntl()
   const { projectId } = useParams({ strict: false })
   const db = usePGlite()
@@ -149,6 +151,7 @@ export const Geometry = ({ table, rowId, level }: Props) => {
     { checkedItems }: MenuCheckedValueChangeData,
   ) => {
     const enabling = checkedItems.includes(EDITING_VALUE)
+    if (enabling) await selectRow?.()
     setEditingId(enabling ? rowId : null)
     if (enabling) await showOnMap()
   }

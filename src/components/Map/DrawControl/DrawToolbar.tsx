@@ -4,7 +4,7 @@ import { useMap } from 'react-leaflet'
 
 import type { Language } from '../../../store.ts'
 
-export const DrawToolbar = ({ language }: { language: Language }) => {
+export const DrawToolbar = ({ language, createOnly = false }: { language: Language; createOnly?: boolean }) => {
   const map = useMap()
   const [tooltip, setTooltip] = useState<{
     target: HTMLElement
@@ -23,11 +23,11 @@ export const DrawToolbar = ({ language }: { language: Language }) => {
       drawRectangle: true,
       drawPolygon: true,
       drawText: false,
-      drawCircle: true,
-      editMode: true,
-      dragMode: true,
+      drawCircle: !createOnly,
+      editMode: !createOnly,
+      dragMode: !createOnly,
       cutPolygon: false,
-      removalMode: true,
+      removalMode: !createOnly,
       rotateMode: false,
     })
 
@@ -65,7 +65,7 @@ export const DrawToolbar = ({ language }: { language: Language }) => {
       controller.abort()
       geoman.removeControls()
     }
-  }, [map, language])
+  }, [map, language, createOnly])
 
   return (
     tooltip && (

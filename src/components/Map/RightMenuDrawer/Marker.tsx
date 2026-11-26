@@ -8,7 +8,7 @@ import type { MapInfo } from '../../../store.ts'
 import styles from './Marker.module.css'
 
 export const InfoMarker = ({ mapInfo }: { mapInfo: MapInfo | null }) => {
-  if (!mapInfo?.lat) return null
+  if (!mapInfo) return null
 
   return (
     <Marker

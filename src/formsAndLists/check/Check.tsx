@@ -13,7 +13,7 @@ import type Checks from '../../models/public/Checks.ts'
 
 import '../../form.css'
 
-export const Check = ({ from }: { from: string }) => {
+export const Check = ({ from, embedded = false }: { from: string; embedded?: boolean }) => {
   const { checkId } = useParams({ strict: false })
   const addOperation = useSetAtom(addOperationAtom)
   const [validations, setValidations] = useState<
@@ -64,7 +64,7 @@ export const Check = ({ from }: { from: string }) => {
 
   return (
     <div className="form-outer-container">
-      <Header autoFocusRef={autoFocusRef} from={from} />
+      {!embedded && <Header autoFocusRef={autoFocusRef} from={from} />}
       <div className="form-container">
         {!res ? (
           <Loading />

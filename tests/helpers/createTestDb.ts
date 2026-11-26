@@ -13,6 +13,7 @@ const SQL_FILES = [
   'immutableDate.sql',
   'createTables.sql',
   'triggers.sql',
+  'writeAccessHelpers.sql',
   'triggersUpdatedAt.sql',
 ] as const
 

@@ -12,6 +12,8 @@ const ids = {
   // child of the fixture's level-1 place
   placeLevel2: '30000000-0000-7000-8000-000000000201',
   check: '70000000-0000-7000-8000-000000000001',
+  nestedCheck: '70000000-0000-7000-8000-000000000002',
+  nestedAction: '70000000-0000-7000-8000-000000000003',
 }
 
 beforeAll(async () => {
@@ -21,7 +23,10 @@ beforeAll(async () => {
       ('${ids.placeLevel2}', '${fixture.ids.subproject}', '${fixture.ids.place}', 2, 'child place');
 
     INSERT INTO checks (check_id, place_id) VALUES
-      ('${ids.check}', '${fixture.ids.place}');
+      ('${ids.check}', '${fixture.ids.place}'),
+      ('${ids.nestedCheck}', '${ids.placeLevel2}');
+    INSERT INTO actions (action_id, place_id) VALUES
+      ('${ids.nestedAction}', '${ids.placeLevel2}');
   `)
 })
 
@@ -125,4 +130,28 @@ describe('navigateToOwnForm', () => {
     })
     expect(fn).not.toHaveBeenCalled()
   })
+
+  it.each(['check', 'action'] as const)(
+    'keeps the complete parent hierarchy when selecting a level-2 %s',
+    async (ownTable) => {
+      const { fn, navigate } = navigateMock()
+      const ownId = ownTable === 'check' ? ids.nestedCheck : ids.nestedAction
+      await navigateToOwnForm(fixture.db, navigate, {
+        ownTable,
+        ownId,
+        ownPlaceId: ids.placeLevel2,
+        projectId: fixture.ids.project,
+      })
+      expect(fn).toHaveBeenCalledWith({
+        to: `/data/projects/$projectId/subprojects/$subprojectId/places/$placeId/places/$placeId2/${ownTable}s/$${ownTable}Id/${ownTable}`,
+        params: {
+          projectId: fixture.ids.project,
+          subprojectId: fixture.ids.subproject,
+          placeId: fixture.ids.place,
+          placeId2: ids.placeLevel2,
+          [`${ownTable}Id`]: ownId,
+        },
+      })
+    },
+  )
 })

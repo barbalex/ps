@@ -1,256 +1,61 @@
-import { Fragment } from 'react'
-import type { ReactNode } from 'react'
+import { Fragment, type ReactNode } from 'react'
 import Linkify from 'linkify-react'
-import { useNavigate } from '@tanstack/react-router'
-import { useAtom, useSetAtom } from 'jotai'
-import { usePGlite, useLiveQuery } from '@electric-sql/pglite-react'
-import * as fluentUiReactComponents from '@fluentui/react-components'
-import { useIntl } from 'react-intl'
-import { MdOpenInNew, MdEdit, MdEditOff } from 'react-icons/md'
-import { TbZoomScan } from 'react-icons/tb'
 
 import type { MapInfoLayer } from '../../../../store.ts'
-import {
-  mapBoundsAtom,
-  editingPlaceGeometryAtom,
-  editingCheckGeometryAtom,
-  editingActionGeometryAtom,
-} from '../../../../store.ts'
-import {
-  extentSelect,
-  queryExtent,
-  extentToBoundsWithMargin,
-} from '../../../../modules/geoQueries.ts'
-import { navigateToOwnForm } from '../../../../modules/navigateToOwnForm.ts'
-import { useUrlPanes } from '../../../../modules/useUrlPanes.ts'
 import { SafeHtml } from '../../../shared/SafeHtml.tsx'
+import { OwnHit } from './OwnHit.tsx'
 import styles from './Layer.module.css'
 
-const { Button } = fluentUiReactComponents
+type LayerData = MapInfoLayer & { html?: string; json?: unknown; text?: string }
 
-type Props = {
-  layerData: MapInfoLayer & {
-    properties?: [string, unknown][]
-    html?: string
-    json?: unknown
-    text?: string
-    projectId?: string
-  }
+const Properties = ({ properties = [], text, json, html }: LayerData) => {
+  if (text) return <div className={styles.text}>{text}</div>
+  if (json)
+    return <pre className={styles.text}>{JSON.stringify(json, null, 2)}</pre>
+  if (html)
+    return (
+      <SafeHtml
+        html={html}
+        className={`${styles.text} ${styles.html}`}
+      />
+    )
+  return (
+    <div className={styles.propertyList}>
+      {properties.map(([key, value], i) => {
+        const stripe = i % 2 === 0 ? ` ${styles.rowEven}` : ''
+        return (
+          <Fragment key={`${i}/${key}`}>
+            <div className={`${styles.label}${stripe}`}>{key}</div>
+            <Linkify options={{ target: '_blank' }}>
+              <div className={`${styles.text}${stripe}`}>
+                {value as ReactNode}
+              </div>
+            </Linkify>
+          </Fragment>
+        )
+      })}
+    </div>
+  )
 }
 
-export const Layer = ({ layerData }: Props) => {
-  const {
-    label,
-    featureLabel,
-    properties = [],
-    html,
-    json,
-    text,
-    ownTable,
-    ownId,
-    ownPlaceId,
-    ownSubprojectId,
-    ownParentId,
-    projectId,
-  } = layerData
-  const titleToShow = featureLabel || label
-
-  const db = usePGlite()
-  const { formatMessage } = useIntl()
-  const navigate = useNavigate()
-  const setMapBounds = useSetAtom(mapBoundsAtom)
-  const [tabs, setTabs] = useUrlPanes()
-  const [editingPlaceGeometry, setEditingPlaceGeometry] = useAtom(
-    editingPlaceGeometryAtom,
-  )
-  const [editingCheckGeometry, setEditingCheckGeometry] = useAtom(
-    editingCheckGeometryAtom,
-  )
-  const [editingActionGeometry, setEditingActionGeometry] = useAtom(
-    editingActionGeometryAtom,
-  )
-
-  const onNavigate = async () => {
-    if (!ownTable || !ownId) return
-    await navigateToOwnForm(db, navigate, {
-      ownTable,
-      ownId,
-      ownPlaceId,
-      ownSubprojectId,
-      ownParentId,
-      projectId: projectId!,
-    })
-  }
-
-  const tableName =
-    ownTable === 'place' ? 'places'
-    : ownTable === 'check' ? 'checks'
-    : 'actions'
-
-  // mirrors queryExtent returning null: no geometry or an empty one
-  // (e.g. GeometryCollection without parts) can not be zoomed to
-  const geometryRes = useLiveQuery(
-    ownTable && ownId ?
-      `SELECT (geometry IS NOT NULL AND NOT ST_IsEmpty(geometry)) AS has_geometry FROM ${tableName} WHERE ${ownTable}_id = $1`
-    : `SELECT 1 WHERE false`,
-    ownTable && ownId ? [ownId] : [],
-  )
-  const hasGeometry = geometryRes?.rows?.[0]?.has_geometry === true
-
-  const onZoomTo = async () => {
-    if (!ownTable || !ownId) return
-    const extent = await queryExtent(
-      db,
-      `SELECT ${extentSelect()} FROM ${tableName} WHERE ${ownTable}_id = $1`,
-      [ownId],
-    )
-    if (!extent) return
-    if (!tabs.includes('map')) setTabs([...tabs, 'map'])
-    setMapBounds(extentToBoundsWithMargin(extent))
-  }
-
-  const isEditing =
-    (ownTable === 'place' && editingPlaceGeometry === ownId) ||
-    (ownTable === 'check' && editingCheckGeometry === ownId) ||
-    (ownTable === 'action' && editingActionGeometry === ownId)
-
-  const onEdit = async () => {
-    if (!ownTable || !ownId) return
-    if (ownTable === 'place') {
-      setEditingPlaceGeometry(isEditing ? null : ownId)
-    } else if (ownTable === 'check') {
-      setEditingCheckGeometry(isEditing ? null : ownId)
-    } else if (ownTable === 'action') {
-      setEditingActionGeometry(isEditing ? null : ownId)
-    }
-    if (!isEditing) {
-      if (!tabs.includes('map')) setTabs([...tabs, 'map'])
-      await onNavigate()
-    }
-  }
-
-  // console.log('Map Info Drawer Layer', { label, properties, html, json, text })
-
-  const editButton =
-    ownTable ?
-      <Button
-        size="small"
-        icon={isEditing ? <MdEditOff /> : <MdEdit />}
-        onClick={onEdit}
-        title={
-          isEditing ?
-            formatMessage({
-              id: 'bMapInfoStopEditGeometry',
-              defaultMessage: 'Bearbeiten der Geometrie beenden',
-            })
-          : formatMessage({
-              id: 'bMapInfoEditGeometry',
-              defaultMessage: 'Geometrie in der Karte bearbeiten',
-            })
-        }
-        appearance={isEditing ? 'primary' : 'secondary'}
-      />
-    : null
-
-  const zoomButton = (
-    <Button
-      size="small"
-      icon={<TbZoomScan />}
-      onClick={onZoomTo}
-      disabled={!hasGeometry}
-      title={
-        hasGeometry ?
-          formatMessage({
-            id: 'bMapInfoZoomTo',
-            defaultMessage: 'Zum Objekt in Karte zoomen',
-          })
-        : formatMessage({
-            id: 'bMapInfoZoomToNoGeometry',
-            defaultMessage:
-              'Um auf ein Objekt zu zoomen, erstelle zuerst die Geometrie',
-          })
-      }
-    />
-  )
-
-  const buttons =
-    ownTable ?
-      <div className={styles.buttons}>
-        <Button
-          size="small"
-          icon={<MdOpenInNew />}
-          onClick={onNavigate}
-          title={formatMessage({
-            id: 'bMapInfoNavigateTo',
-            defaultMessage: 'Zum Formular navigieren',
-          })}
-        />
-        {zoomButton}
-        {editButton}
-      </div>
-    : null
-
-  if (text) {
-    return (
-      <div className={styles.container}>
-        <div className={styles.title}>{titleToShow}</div>
-        {buttons}
-        <div className={styles.text}>{text}</div>
-      </div>
-    )
-  }
-
-  if (json) {
-    return (
-      <div className={styles.container}>
-        <div className={styles.title}>{titleToShow}</div>
-        {buttons}
-        <pre className={styles.text}>{JSON.stringify(json, null, 2)}</pre>
-      </div>
-    )
-  }
-
-  if (html) {
-    return (
-      <div className={styles.container}>
-        <div className={styles.title}>{titleToShow}</div>
-        {buttons}
-        <SafeHtml
-          html={html}
-          className={`${styles.text} ${styles.html}`}
-        />
-      </div>
-    )
-  }
-
+export const Layer = ({ layerData }: { layerData: LayerData }) => {
+  const { ownId, ownTable } = layerData
+  const properties = <Properties {...layerData} />
   return (
     <div className={styles.container}>
-      <div className={styles.title}>{titleToShow}</div>
-      {buttons}
-      <div className={styles.propertyList}>
-        {properties.map((p, i) => {
-          const key = p[0]
-          const value = p[1]
-          const rowClassName = i % 2 === 0 ? styles.rowEven : undefined
-
-          return (
-            <Fragment key={`${i}/${key}`}>
-              <div
-                className={`${styles.label}${rowClassName ? ` ${rowClassName}` : ''}`}
-              >
-                {key}
-              </div>
-              <Linkify options={{ target: '_blank' }}>
-                <div
-                  className={`${styles.text}${rowClassName ? ` ${rowClassName}` : ''}`}
-                >
-                  {value as ReactNode}
-                </div>
-              </Linkify>
-            </Fragment>
-          )
-        })}
+      <div className={styles.title}>
+        {layerData.featureLabel || layerData.label}
       </div>
+      {ownId && ownTable ?
+        <OwnHit
+          key={`${ownTable}/${ownId}`}
+          layer={layerData}
+          id={ownId}
+          table={ownTable}
+        >
+          {properties}
+        </OwnHit>
+      : properties}
     </div>
   )
 }
