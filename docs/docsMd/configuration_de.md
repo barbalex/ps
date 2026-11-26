@@ -28,6 +28,7 @@ Deshalb ist arten-fördern.app stark konfigurierbar:
 - Möglichkeit, Beobachtungen aus jeglicher Quelle zu importieren
 - Einbezug diverser Quellen für Karten-Layer (WMS, WFS, Importe...)
 - Freie Wahl des Koordinaten-Bezugs-Systems, Möglichkeit eigenes zu definieren
+  - Über den Globus neben «Kartenmitte anzeigen» wechseln Sie zwischen WGS84 und den im Projekt konfigurierten Systemen. Im Gestaltungsmodus ändern Sie den Projektstandard, sonst gilt die Auswahl nur für Ihr Konto auf diesem Gerät.
 - Wahl vorbereiteter Qualitätskontrollen, Möglichkeit eigene zu bauen
 - Wahl vorbereiteter Exporte, Möglichkeit eigene zu bauen
 - 4 Sprachig: Deutsch, Französisch, Italienisch, Englisch

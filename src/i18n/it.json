@@ -1,6 +1,9 @@
 {
   "mapCenterX": "Coordinata X del centro della mappa",
   "mapCenterY": "Coordinata Y del centro della mappa",
+  "mapCrsConfigure": "Per utilizzare un altro sistema di riferimento delle coordinate, configuralo prima nel progetto.",
+  "mapCrsPersonal": "Solo per me su questo dispositivo",
+  "mapCrsShared": "Impostazione predefinita del progetto per tutti",
   "mapChooseScale": "Scegli la scala della mappa",
   "mapCloseLayers": "Chiudi il menu dei livelli",
   "mapHideCenter": "Nascondi il centro della mappa",

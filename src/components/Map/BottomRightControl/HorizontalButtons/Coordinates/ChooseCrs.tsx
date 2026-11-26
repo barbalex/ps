@@ -1,96 +1,130 @@
 import * as fluentUiReactComponents from '@fluentui/react-components'
-const { Tooltip, Button, Menu, MenuTrigger, MenuList, MenuPopover, MenuItemRadio } =
-  fluentUiReactComponents
-import type {
-  MenuCheckedValueChangeEvent,
-  MenuCheckedValueChangeData,
-} from '@fluentui/react-components'
 import { BsGlobe2 } from 'react-icons/bs'
-import { useParams } from '@tanstack/react-router'
-import { usePGlite, useLiveQuery } from '@electric-sql/pglite-react'
+import { usePGlite } from '@electric-sql/pglite-react'
 import { useSetAtom } from 'jotai'
 import { useIntl } from 'react-intl'
 
-import { addOperationAtom } from '../../../../../store.ts'
-import type ProjectCrs from '../../../../../models/public/ProjectCrs.ts'
-import type Projects from '../../../../../models/public/Projects.ts'
+import {
+  addNotificationAtom,
+  addOperationAtom,
+  personalMapCrsAtom,
+} from '../../../../../store.ts'
+import type { useMapCoordinatesCrs } from '../../../../../modules/useMapCoordinatesCrs.ts'
 
-export const ChooseCrs = () => {
-  const { projectId = '99999999-9999-9999-9999-999999999999' } = useParams({
-    strict: false,
-  })
+const {
+  Tooltip,
+  Button,
+  Menu,
+  MenuTrigger,
+  MenuList,
+  MenuPopover,
+  MenuItemRadio,
+  MenuGroupHeader,
+  MenuItem,
+} = fluentUiReactComponents
 
+export const ChooseCrs = ({
+  crs,
+}: {
+  crs: NonNullable<ReturnType<typeof useMapCoordinatesCrs>>
+}) => {
   const db = usePGlite()
   const addOperation = useSetAtom(addOperationAtom)
+  const notify = useSetAtom(addNotificationAtom)
+  const setPersonal = useSetAtom(personalMapCrsAtom)
   const { formatMessage } = useIntl()
-  const chooseCrsLabel = formatMessage({
+  const label = formatMessage({
     id: 'Qb3CdE',
     defaultMessage: 'KBS auswählen (Koordinaten-Bezugs-System)',
   })
 
-  const resProjectCrs = useLiveQuery<ProjectCrs>(
-    `SELECT * FROM project_crs WHERE project_id = $1`,
-    [projectId],
-  )
-  const projectCrs: ProjectCrs[] = resProjectCrs?.rows ?? []
-  // fetch project.map_presentation_crs to show the active one
-  const resProject = useLiveQuery<Projects>(
-    `SELECT project_id, map_presentation_crs, updated_at, updated_by FROM projects WHERE project_id = $1`,
-    [projectId],
-  )
-  const project: Projects | undefined = resProject?.rows?.[0]
-  const checkedValues = project?.map_presentation_crs
-    ? { map_presentation_crs: [project.map_presentation_crs] }
-    : { map_presentation_crs: [] }
-
-  const onChange = (
-    _e: MenuCheckedValueChangeEvent,
-    { checkedItems }: MenuCheckedValueChangeData,
-  ) => {
-    // set projects.map_presentation_crs
-    db.query(
-      `UPDATE projects SET map_presentation_crs = $1 WHERE project_id = $2`,
-      [checkedItems?.[0] ?? null, projectId],
-    )
-    addOperation({
-      table: 'projects',
-      rowIdName: 'project_id',
-      rowId: projectId,
-      operation: 'update',
-      draft: { map_presentation_crs: checkedItems?.[0] ?? null },
-      prev: { ...project },
-    })
-    // TODO: make coordinates update
+  const choose = async (code: string) => {
+    if (crs.code === code) return
+    const { key, projectId } = crs
+    if (!crs.shared) {
+      if (key) setPersonal((prev) => ({ ...prev, [key]: code }))
+      return
+    }
+    if (!projectId) return
+    try {
+      const {
+        rows: [prev],
+      } = await db.query<Record<string, unknown>>(
+        'SELECT project_id, map_presentation_crs, updated_at, updated_by FROM projects WHERE project_id = $1',
+        [projectId],
+      )
+      await db.query(
+        'UPDATE projects SET map_presentation_crs = $1 WHERE project_id = $2',
+        [code, projectId],
+      )
+      await addOperation({
+        table: 'projects',
+        rowIdName: 'project_id',
+        rowId: projectId,
+        operation: 'update',
+        draft: { map_presentation_crs: code },
+        prev,
+      })
+    } catch (error) {
+      notify({
+        intent: 'error',
+        body: error instanceof Error ? error.message : String(error),
+      })
+    }
   }
 
-  if (projectId === '99999999-9999-9999-9999-999999999999') return null
-  // single projectCrs: that will be chosen by default
-  // no projectCrs: wgs84 is chosen
-  // so only show menu when there are at least 2 projectCrs
-  if (projectCrs.length < 2) return null
-
   return (
-    <Menu checkedValues={checkedValues} onCheckedValueChange={onChange}>
-      <Tooltip content={chooseCrsLabel} relationship="label">
-        <MenuTrigger disableButtonEnhancement>
+    <Menu
+      checkedValues={{ crs: [crs.code] }}
+      onCheckedValueChange={(_, { checkedItems }) => {
+        if (checkedItems[0]) void choose(checkedItems[0])
+      }}
+    >
+      <MenuTrigger disableButtonEnhancement>
+        <Tooltip
+          content={label}
+          relationship="label"
+        >
           <Button
             icon={<BsGlobe2 />}
             size="small"
+            aria-label={label}
           />
-        </MenuTrigger>
-      </Tooltip>
+        </Tooltip>
+      </MenuTrigger>
       <MenuPopover>
         <MenuList>
-          {projectCrs.map((cr) => (
+          <MenuGroupHeader>
+            {crs.shared ?
+              formatMessage({
+                id: 'mapCrsShared',
+                defaultMessage: 'Projektstandard für alle',
+              })
+            : formatMessage({
+                id: 'mapCrsPersonal',
+                defaultMessage: 'Nur für mich auf diesem Gerät',
+              })
+            }
+          </MenuGroupHeader>
+          {Array.from(crs.options.values(), ({ code, name }) => (
             <MenuItemRadio
-              key={cr.project_crs_id}
-              name="map_presentation_crs"
-              secondaryContent={cr.name}
-              value={cr.code!}
+              key={code}
+              name="crs"
+              value={code}
+              secondaryContent={code}
             >
-              {cr.code}
+              {name ?? code}
             </MenuItemRadio>
           ))}
+          {crs.options.size === 1 && (
+            <MenuItem disabled>
+              {formatMessage({
+                id: 'mapCrsConfigure',
+                defaultMessage:
+                  'Weitere Koordinaten-Bezugs-Systeme müssen zuerst im Projekt konfiguriert werden.',
+              })}
+            </MenuItem>
+          )}
         </MenuList>
       </MenuPopover>
     </Menu>

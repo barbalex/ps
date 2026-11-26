@@ -28,6 +28,7 @@ That is why arten-fördern.app is highly configurable:
 - Ability to import observations from any source
 - Inclusion of various sources for map layers (WMS, WFS, imports...)
 - Free choice of coordinate reference system, ability to define your own
+  - Use the globe beside “Show map center” to switch between WGS84 and the project's configured systems. In design mode, this changes the project default; otherwise, the choice is saved only for your account on this device.
 - Selection of ready-made quality checks, ability to build custom ones
 - Selection of ready-made exports, ability to build custom ones
 - Available in 4 languages: German, French, Italian, English

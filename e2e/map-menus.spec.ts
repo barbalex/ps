@@ -1,5 +1,5 @@
 import { test, expect, type Page } from '@playwright/test'
-import { closeLayerDrawerIfOpen, ensureUser, login } from './helpers.ts'
+import { closeLayerDrawerIfOpen, ensureUser, grantRoles, login, psql } from './helpers.ts'
 
 /**
  * The map menus (BottomRightControl) respond to the map width: the
@@ -57,6 +57,44 @@ test.beforeEach(async () => {
     name: 'E2E Map Menus',
   })
   if (!userId) throw new Error('e2e user missing')
+})
+
+test('coordinate CRS choices are personal unless designing', async ({ page }) => {
+  const projectId = 'a0b0c0d0-0000-7000-8000-00000000ce51'
+  psql(`SET electric.syncing TO 'true';
+    INSERT INTO projects (project_id, name) VALUES ('${projectId}', 'E2E coordinate menu') ON CONFLICT DO NOTHING;
+    UPDATE projects SET map_presentation_crs = NULL WHERE project_id = '${projectId}';
+    DELETE FROM project_crs WHERE project_id = '${projectId}';`)
+  await grantRoles({
+    email: E2E_EMAIL, userId: psql(`SELECT user_id FROM users WHERE email = '${E2E_EMAIL}'`),
+    projectId, role: 'design',
+  })
+  await page.addInitScript(() => localStorage.setItem('language', '"en"'))
+  await login(page, E2E_EMAIL, E2E_PASSWORD)
+  const url = `/data/projects/${projectId}?panes=map&c=47.37%2C8.54&z=15`
+  await page.goto(url)
+  const menu = page.getByRole('button', { name: /Choose CRS/ })
+  const lv95 = page.getByRole('menuitemradio', { name: /EPSG:2056/ })
+  const wgs84 = page.getByRole('menuitemradio', { name: /WGS84/ })
+  const x = page.locator('#map input[name="x"]')
+  const projectDefault = () => psql(`SELECT map_presentation_crs FROM projects WHERE project_id = '${projectId}'`)
+  await menu.click({ timeout: 60_000 })
+  await expect(wgs84).toBeChecked()
+  await expect(page.getByText('To use another coordinate reference system, configure it in the project first.')).toBeVisible()
+  psql(`SET electric.syncing TO 'true';
+    INSERT INTO project_crs (project_id, crs_id, code, name, proj4)
+    SELECT '${projectId}', crs_id, code, name, proj4 FROM crs WHERE code = 'EPSG:2056';`)
+  await lv95.click({ timeout: 60_000 })
+  await expect(x).toHaveValue(/^2'\d{3}'\d{3}$/)
+  await page.reload()
+  await expect(x).toHaveValue(/^2'\d{3}'\d{3}$/, { timeout: 60_000 })
+  expect(projectDefault()).toBe('')
+  await page.goto(`${url}&designing=1`)
+  await menu.click()
+  await expect(page.getByText('Project default for everyone')).toBeVisible()
+  await expect(wgs84).toBeChecked()
+  await lv95.click()
+  await expect.poll(projectDefault, { timeout: 30_000 }).toBe('EPSG:2056')
 })
 
 test.describe('narrow map', () => {
