@@ -8,7 +8,7 @@ import {
   useParams,
   useRouter,
 } from '@tanstack/react-router'
-import { useAtomValue, useSetAtom } from 'jotai'
+import { useAtom, useAtomValue, useSetAtom } from 'jotai'
 import { useIntl } from 'react-intl'
 import { MdEdit, MdOpenInNew } from 'react-icons/md'
 import { TbZoomScan } from 'react-icons/tb'
@@ -28,6 +28,7 @@ import {
 import {
   mapBoundsAtom,
   mapInfoAtom,
+  mapInfoPreferFormAtom,
   userIdAtom,
   type MapInfoLayer,
 } from '../../../../store.ts'
@@ -58,6 +59,7 @@ export const OwnHit = ({
   const mapOnly = mapVisible && !treeVisible && !dataVisible
   const { pathname } = useLocation()
   const setMapInfo = useSetAtom(mapInfoAtom)
+  const [preferForm, setPreferForm] = useAtom(mapInfoPreferFormAtom)
   const setMapBounds = useSetAtom(mapBoundsAtom)
   const userId = useAtomValue(userIdAtom)
   const tableName = tables[table]
@@ -118,8 +120,21 @@ export const OwnHit = ({
     if (route && !matches) await navigate({ ...route, search: formSearch })
   }
 
-  // Creation requests the editor before the new row is selected. Wait for
-  // the local row and permission before selecting it, once per opening.
+  // Overlapping hits share one routed editor. Claim it only after this
+  // hit's write permission is known, without displacing another hit.
+  useEffect(() => {
+    if (!preferForm || !row?.can_edit || layer.formActive) return
+    setMapInfo((info) => {
+      if (!info || info.browsing || !info.layers.includes(layer) ||
+        info.layers.some((item) => item.formActive)) return info
+      return {
+        ...info,
+        layers: info.layers.map((item) => item === layer ? { ...item, formActive: true } : item),
+      }
+    })
+  }, [preferForm, row?.can_edit, layer, setMapInfo])
+
+  // A new hit or creation may request the editor before its route is selected.
   const requested = useRef<MapInfoLayer | null>(null)
   useEffect(() => {
     if (layer.formActive && row?.can_edit && requested.current !== layer) {
@@ -130,6 +145,7 @@ export const OwnHit = ({
 
   const toggleForm = async () => {
     if (!formShown) await selectRow()
+    setPreferForm(!formShown)
     setMapInfo((info) =>
       !info?.layers.includes(layer) ?
         info

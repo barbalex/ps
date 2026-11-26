@@ -13,6 +13,12 @@ const PROJECT_ID = '018cfcf7-6424-7000-a100-851c5cc2c878'
 const SUBPROJECT_ID = '018cfd27-ee92-7000-b678-e75497d6c60e'
 const PLACES_URL = `/data/projects/${PROJECT_ID}/subprojects/${SUBPROJECT_ID}/places`
 const OSM_LAYER_ID = 'aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa'
+const POSITRON_LAYER_ID = 'bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb'
+
+// Other demo layers may also be active. Target the two seeded rows.
+const fixtureRows = (drawer: import('@playwright/test').Locator) =>
+  drawer.locator('section').filter({ has: drawer.page().getByRole('heading', { name: 'Active', exact: true }) })
+    .getByRole('button', { name: /^(Populationen|Population: Kontrollen)$/ })
 
 // self-heal after a dev db rebuild: the demo project's vector layers are
 // recreated by the projects trigger, but their layer_presentations are
@@ -94,7 +100,7 @@ test('the drawer layer toggle writes the url override', async ({ page }) => {
   await expect(drawer).toBeVisible({ timeout: 60_000 })
   await page.waitForTimeout(2500)
 
-  const toggle = drawer.locator('[aria-pressed]').first()
+  const toggle = drawer.getByRole('button', { name: 'Populationen', exact: true }).locator('[aria-pressed]')
   await expect(toggle).toHaveAttribute('aria-pressed', 'false', {
     timeout: 30_000,
   })
@@ -138,16 +144,16 @@ test('without the param the design flags apply; toggling writes the sorting atom
   // wait for the sync to deliver the seeded flags: until then the drawer
   // lists no active rows and the first toggle belongs to an Own row
   await expect(
-    drawer.locator("a[role='button'][aria-pressed='true']"),
+    fixtureRows(drawer).locator("[aria-pressed='true']"),
   ).toHaveCount(2, { timeout: 60_000 })
 
   // hiding flips the design flag and removes the layer from the render
   // list — the mapLayerSorting atom, not the url (no override is active).
   // the hidden row leaves the drawer; poll the atom because the drawer's
   // sync effect briefly re-adds ids until its live query catches up
-  await drawer.locator("a[role='button'][aria-pressed]").first().click()
+  await drawer.getByRole('button', { name: 'Populationen', exact: true }).locator('[aria-pressed]').click()
   await expect(
-    drawer.locator("a[role='button'][aria-pressed='true']"),
+    fixtureRows(drawer).locator("[aria-pressed='true']"),
   ).toHaveCount(1, { timeout: 20_000 })
   await expect(page).not.toHaveURL(/layers=/)
   await expect
@@ -162,7 +168,7 @@ test('without the param the design flags apply; toggling writes the sorting atom
   const sorting = await page.evaluate(() =>
     window.localStorage.getItem('mapLayerSortingAtom'),
   )
-  expect(sorting).toContain(OSM_LAYER_ID)
+  expect(sorting).toContain(POSITRON_LAYER_ID)
 })
 
 test('the checkbox toggles without opening the form; the label opens it', async ({
@@ -179,21 +185,21 @@ test('the checkbox toggles without opening the form; the label opens it', async 
   const drawer = page.locator('.map-layers-drawer')
   await expect(drawer).toBeVisible({ timeout: 60_000 })
   await expect(
-    drawer.locator("a[role='button'][aria-pressed='true']"),
+    fixtureRows(drawer).locator("[aria-pressed='true']"),
   ).toHaveCount(2, { timeout: 60_000 })
 
   // clicking only the checkbox deactivates the layer (its row leaves the
   // Active list) and must not open the accordion; without an override the
   // toggle writes the sorting atom, leaving the url alone
-  await drawer.locator("a[role='button'][aria-pressed]").first().click()
+  await drawer.getByRole('button', { name: 'Populationen', exact: true }).locator('[aria-pressed]').click()
   await expect(
-    drawer.locator("a[role='button'][aria-pressed='true']"),
+    fixtureRows(drawer).locator("[aria-pressed='true']"),
   ).toHaveCount(1, { timeout: 20_000 })
   await expect(page).not.toHaveURL(/layers=/)
   await expect(drawer.getByRole('tab', { name: 'Overall Display' })).toHaveCount(0)
 
   // clicking right of the checkbox (the remaining layer's label) opens the form
-  await drawer.locator('p[class*="headerLabel"]').first().click()
+  await fixtureRows(drawer).getByText('Population: Kontrollen', { exact: true }).click()
   await expect(drawer.getByRole('tab', { name: 'Overall Display' })).toBeVisible({
     timeout: 10_000,
   })
@@ -218,7 +224,7 @@ test('drag reordering rewrites the layers param under an override', async ({
   await expect(drawer).toBeVisible({ timeout: 60_000 })
   await page.waitForTimeout(2500)
 
-  const handles = drawer.locator('[title="drag to reorder"]')
+  const handles = fixtureRows(drawer).locator('[title="drag to reorder"]')
   await expect(handles.nth(1)).toBeVisible({ timeout: 30_000 })
 
   // drag the first active layer below the second: the url override must

@@ -15,6 +15,7 @@ import './style.css'
 import styles from './App.module.css'
 
 import { lightTheme, darkTheme } from './modules/theme.ts'
+import { ThemeBackground, DARK_MATTER_LAYER_PRESENTATION_ID, POSITRON_LAYER_PRESENTATION_ID } from './modules/themeBackground.ts'
 import { markBootDone } from './modules/bootDone.ts'
 import { getMessages } from './modules/i18nMessages.ts'
 import { VersionCheck } from './components/VersionCheck/index.tsx'
@@ -117,7 +118,9 @@ export const App = () => {
             id="router-container"
             className={styles.routerContainer}
           >
-            <RouterProvider router={router} />
+            <ThemeBackground.Provider value={isDark ? DARK_MATTER_LAYER_PRESENTATION_ID : POSITRON_LAYER_PRESENTATION_ID}>
+              <RouterProvider router={router} />
+            </ThemeBackground.Provider>
           </div>
         </FluentProvider>
       </IntlProvider>

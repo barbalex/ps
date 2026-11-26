@@ -1,17 +1,16 @@
-import { useEffect } from 'react'
+import { useContext, useEffect } from 'react'
 import { useAtom } from 'jotai'
 import { usePGlite } from '@electric-sql/pglite-react'
 
 import { mapLayerSortingAtom } from '../../../store.ts'
 import { useUrlLayers } from '../../../modules/useUrlLayers.ts'
-import {
-  defaultBackgroundLayerId,
-  isBackgroundLayerId,
-} from './backgroundLayers.ts'
+import { isBackgroundLayerId } from './backgroundLayers.ts'
+import { ThemeBackground } from '../../../modules/themeBackground.ts'
 import { Layer } from './Layer.tsx'
 
 // TODO: text
 export const Layers = () => {
+  const defaultBackgroundLayerId = useContext(ThemeBackground)
   const [mapLayerSorting, setMapLayerSorting] = useAtom(mapLayerSortingAtom)
   const db = usePGlite()
   // the render list: the ?layers= url override wins, the sorting atom is
@@ -22,11 +21,11 @@ export const Layers = () => {
     const run = async () => {
       // an active url override is the render list; leave the sorting
       // fallback alone while it runs
-      if (isOverridden) return
+      if (isOverridden || mapLayerSorting.some(isBackgroundLayerId)) return
 
       // if mapLayerSorting is empty, add the default background layer
       if (!mapLayerSorting.length) {
-        setMapLayerSorting([defaultBackgroundLayerId])
+        setMapLayerSorting((current) => current.length ? current : [defaultBackgroundLayerId])
         return
       }
 
@@ -38,15 +37,12 @@ export const Layers = () => {
       // if no real layer presentation is present, add the default background
       // (COUNT(*): the id any(*) matches decides, not a column value — tile
       // presentations have no wms_layer_id to count)
-      if (
-        !wmsLayersCount &&
-        !mapLayerSorting.some((id) => isBackgroundLayerId(id))
-      ) {
-        setMapLayerSorting([...mapLayerSorting, defaultBackgroundLayerId])
+      if (!wmsLayersCount) {
+        setMapLayerSorting((current) => current === mapLayerSorting ? [...current, defaultBackgroundLayerId] : current)
       }
     }
     run()
-  }, [mapLayerSorting, setMapLayerSorting, db, isOverridden])
+  }, [mapLayerSorting, setMapLayerSorting, db, isOverridden, defaultBackgroundLayerId])
 
   if (!layers.length) return null
 

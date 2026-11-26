@@ -25,7 +25,6 @@ it.each([
       availableBackgroundId,
       backgroundLayers,
       backgroundLayerIds,
-      defaultBackgroundLayerId,
     } = await import('../src/components/Map/layers/backgroundLayers.ts')
     if (token) {
       expect(backgroundLayerIds).toContain(id)
@@ -34,7 +33,7 @@ it.each([
       )
     } else {
       expect(backgroundLayerIds).not.toContain(id)
-      expect(availableBackgroundId(id)).toBe(defaultBackgroundLayerId)
+      expect(availableBackgroundId(id)).toBe('aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa')
     }
   },
 )

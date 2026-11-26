@@ -1114,6 +1114,9 @@ opens its regular form in the map's Info drawer. The drawer uses the same
 route outlet as the data pane, including configured subforms and their lists
 and detail views. For existing objects, Info
 offers separate controls for editing geometry and opening the form.
+Info remembers the last explicit form/table choice in this browser.
+When form view is preferred, inspecting an editable own object opens its
+form automatically. Read-only and external hits still show their properties.
 
 On the experimental branch, when the map is the **only** pane, the Info
 editor also presents the object's tree children as collapsible sections.
@@ -1435,7 +1438,7 @@ link and survives reloads. Identity is in routes (as before); everything
 | `f-<key>` (e.g. `f-checks1`, `f-tableView-<id>`) | list/table-view filters (JSON or-filter array) | `useUrlFilter` | url only |
 | `c`, `z` | map center/zoom | `useUrlMapViewport` | url wins, `mapCenter`/`mapZoom` atoms are the persisted fallback |
 | `panes` | visible layout panes (`tree,data,map`) | `useUrlPanes` | url wins, `tabsAtom` fallback; the default layout produces no param |
-| `layers` | the map's render list (layer_presentation ids + the osm pseudo id `aaaaaaaa-…`), in draw order | `useUrlLayers` | url override; `layer_presentations.active` (db design data) + `mapLayerSorting` are the default |
+| `layers` | the map's render list (layer presentation IDs and the chosen background ID), in draw order | `useUrlLayers` | URL override; otherwise the design flags and `mapLayerSorting`. Light appearance defaults to Positron, dark to Dark Matter. Changing appearance swaps only the previous theme's background; other selections stay put. |
 | `designing` | design mode (`designing=1`) | `useUrlDesigning` | url wins for the session, the per-project `designingAtom` map persists; the hook mirrors an explicit url value into the map so the atom readers stay unchanged |
 | `<page>Label`, `<page>OnlyWithResults` | label filter / only-with-results toggle of the qcs/exports run pages | `useUrlSearchParam` (`useStringSearchParam`/`useBooleanSearchParam`) | url only |
 

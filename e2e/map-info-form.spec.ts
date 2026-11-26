@@ -82,10 +82,7 @@ test.beforeAll(async () => {
   }
 })
 
-const inspectPlace = async (page: Page, email: string, overview = false) => {
-  await login(page, email, password)
-  const path = overview ? `/data/projects/${projectId}` : `${root}/places`
-  await page.goto(`${path}?panes=map&c=47.37%2C8.54&z=17`)
+const clickOverlappingMarkers = async (page: Page) => {
   await closeLayerDrawerIfOpen(page)
   const markers = page.locator('.clickable-hitbox, .draggable-hitbox')
   await expect(markers).toHaveCount(2, { timeout: 60_000 })
@@ -93,6 +90,13 @@ const inspectPlace = async (page: Page, email: string, overview = false) => {
   await expect(marker).toBeVisible({ timeout: 60_000 })
   const box = (await marker.boundingBox())!
   await page.mouse.click(box.x + box.width / 2, box.y + box.height / 2)
+}
+
+const inspectPlace = async (page: Page, email: string, overview = false) => {
+  await login(page, email, password)
+  const path = overview ? `/data/projects/${projectId}` : `${root}/places`
+  await page.goto(`${path}?panes=map&c=47.37%2C8.54&z=17`)
+  await clickOverlappingMarkers(page)
   const drawer = page.locator('.map-info-drawer')
   await expect(drawer).toContainText(placeId)
   // The overlapping observation has a place_id but is not a place hit.
@@ -193,6 +197,30 @@ test('pencil edits the selected place in Info without opening the data pane', as
   expect(new URL(page.url()).searchParams.get('panes')).toBe('map')
 })
 
+test('Info remembers form and table choices across fresh inspections', async ({ page }) => {
+  const drawer = await inspectPlace(page, writer)
+  const pencil = drawer.getByRole('button', { name: 'View form' })
+  const field = drawer.locator('input[name=name]')
+  await pencil.click()
+  await expect(field).toBeVisible()
+
+  const inspectAgain = async () => {
+    await drawer.getByRole('button', { name: 'Close', exact: true }).click()
+    await page.goto(`${root}/places?panes=map&c=47.37%2C8.54&z=17`)
+    await clickOverlappingMarkers(page)
+  }
+  await inspectAgain()
+  await expect(field).toBeVisible()
+  await expect(pencil).toHaveAttribute('aria-pressed', 'true')
+
+  await pencil.click()
+  await expect(field).toHaveCount(0)
+  await inspectAgain()
+  await expect(pencil).toHaveAttribute('aria-pressed', 'false')
+  await expect(drawer).toContainText(placeId)
+  await expect(field).toHaveCount(0)
+})
+
 test('map-only breadcrumbs open ancestor lists and records inside Info', async ({ page }) => {
   const drawer = await inspectPlace(page, writer)
   const placeName = psql(`SELECT name FROM places WHERE place_id = '${placeId}'`)
@@ -227,6 +255,7 @@ test('New from a level-two place with Files open selects a sibling under the sam
 test('reader can inspect and zoom but cannot change the form or geometry', async ({
   page,
 }) => {
+  await page.addInitScript(() => localStorage.setItem('mapInfoPreferForm', 'true'))
   const drawer = await inspectPlace(page, reader, true)
   await expect(drawer.getByRole('button', { name: 'Navigate to form' })).toBeEnabled()
   await expect(drawer.getByRole('button', { name: 'View form' })).toHaveCount(0)

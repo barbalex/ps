@@ -402,6 +402,7 @@ export const mapLocateAtom = atomWithStorage('mapLocateAtom', false)
 // the info drawer filters all the objects with correct lat, lng and zoom and shows them
 // Information presented, when user clicks on a map. Array of: {label, properties} where properties is an array of [key, value]
 export const mapInfoAtom = atomWithStorage<MapInfo | null>('mapInfoAtom', null)
+export const mapInfoPreferFormAtom = atomWithStorage('mapInfoPreferForm', false)
 export const mapShowCenterAtom = atomWithStorage('mapShowCenterAtom', false)
 export const personalMapCrsAtom = atomWithStorage<Record<string, string>>(
   'personalMapCrs',
@@ -415,6 +416,11 @@ export const personalClusteringAtom = atomWithStorage<Record<string, boolean>>(
 export const mapLayerSortingAtom = atomWithStorage<string[]>(
   'mapLayerSortingAtom',
   [],
+  undefined,
+  { getOnInit: true },
+)
+export const lastThemeBackgroundAtom = atomWithStorage<string | null>(
+  'lastThemeBackground', null, undefined, { getOnInit: true },
 )
 export const mapDrawerVectorLayerDisplayAtom = atomWithStorage<string | null>(
   'mapDrawerVectorLayerDisplayAtom',
