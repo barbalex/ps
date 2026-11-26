@@ -1,5 +1,8 @@
 import { useEffect, useRef, useState } from 'react'
 import * as L from 'leaflet'
+import { MarkerClusterGroup } from 'leaflet.markercluster'
+import 'leaflet.markercluster/dist/MarkerCluster.Default.css'
+import { clusterMembers } from './clusterMembers.ts'
 import type { Feature, Geometry } from 'geojson'
 import { useLeafletContext } from '@react-leaflet/core'
 
@@ -29,6 +32,8 @@ type Props = {
    */
   featureKey?: (feature: Feature) => string | undefined
   chunkSize?: number
+  cluster?: boolean
+  clusterMaxZoom?: number | null
 } & L.GeoJSONOptions &
   /** options leaflet does not know, like geomanIgnore */
   Record<string, unknown>
@@ -48,10 +53,13 @@ export const ProgressiveGeoJSON = ({
   data,
   featureKey,
   chunkSize,
+  cluster = false,
+  clusterMaxZoom,
   ...options
 }: Props) => {
   const context = useLeafletContext()
   const layerRef = useRef<L.GeoJSON | null>(null)
+  const flushRef = useRef<(() => void) | null>(null)
   const optionsRef = useRef(options)
   optionsRef.current = options
   const cancelRef = useRef<(() => void) | null>(null)
@@ -64,13 +72,44 @@ export const ProgressiveGeoJSON = ({
     if (context.pane) layerOptions.pane = context.pane
     const layer = new L.GeoJSON(undefined, layerOptions)
     layerRef.current = layer
-    container.addLayer(layer)
+    const displayed = cluster ? new MarkerClusterGroup<L.Layer>({
+      clusterPane: context.pane,
+      animate: false,
+      showCoverageOnHover: false,
+      ...(clusterMaxZoom != null && {
+        disableClusteringAtZoom: Math.min(clusterMaxZoom, context.map.getMaxZoom()) + 1,
+      }),
+    }) : layer
+    if (displayed instanceof MarkerClusterGroup) {
+      const members = new WeakMap<L.Layer, L.Layer[]>()
+      let pending: L.Layer[] = []
+      let removed: L.Layer[] = []
+      layer.on('layeradd', ({ layer: child }: L.LayerEvent) => {
+        const parts = clusterMembers(child, context.map)
+        members.set(child, parts)
+        pending.push(...parts)
+      })
+      layer.on('layerremove', ({ layer: child }: L.LayerEvent) => {
+        const parts = members.get(child)
+        if (parts) removed.push(...parts)
+        members.delete(child)
+      })
+      flushRef.current = () => {
+        if (removed.length) displayed.removeLayers(removed)
+        if (pending.length) displayed.addLayers(pending)
+        removed = []
+        pending = []
+      }
+    }
+    container.addLayer(displayed)
     return () => {
       cancelRef.current?.()
-      container.removeLayer(layer)
+      container.removeLayer(displayed)
+      if (displayed instanceof MarkerClusterGroup) displayed.clearLayers()
+      flushRef.current = null
       layerRef.current = null
     }
-  }, [resetKey, context])
+  }, [resetKey, context, cluster, clusterMaxZoom])
 
   // (re)fill the layer when it was recreated or the data changed
   useEffect(() => {
@@ -85,6 +124,7 @@ export const ProgressiveGeoJSON = ({
         (chunk) => {
           try {
             layer.addData(chunk)
+            flushRef.current?.()
           } catch (error) {
             // surface through the layer's ErrorBoundary like the old
             // render-time GeoJSON construction did
@@ -125,16 +165,18 @@ export const ProgressiveGeoJSON = ({
         existingKeys.add(key)
       })
       for (const child of stale) layer.removeLayer(child)
+      flushRef.current?.()
       addMissing(missingForReconcile(items, existingKeys, featureKey))
     } else {
       layer.clearLayers()
+      flushRef.current?.()
       addMissing(items)
     }
     return () => {
       cancelRef.current?.()
       cancelRef.current = null
     }
-  }, [data, resetKey, chunkSize, featureKey])
+  }, [data, resetKey, chunkSize, featureKey, context, cluster, clusterMaxZoom])
 
   if (fillError) throw fillError
 

@@ -1547,6 +1547,21 @@
   "chooseAccountForProject": {
     "defaultMessage": "Konto für das neue Projekt wählen"
   },
+  "clusterDefault": {
+    "defaultMessage": "Punktmarker gruppieren (Projektstandard)"
+  },
+  "clusterInherit": {
+    "defaultMessage": "Projektstandard: {value}"
+  },
+  "clusterMarkers": {
+    "defaultMessage": "Punktmarker gruppieren"
+  },
+  "clusterOff": {
+    "defaultMessage": "Einzeln anzeigen"
+  },
+  "clusterOn": {
+    "defaultMessage": "Gruppieren"
+  },
   "colorPickerHexValue": {
     "defaultMessage": "Hex-Wert"
   },
@@ -2365,6 +2380,9 @@
   },
   "mapZoomOut": {
     "defaultMessage": "Herauszoomen"
+  },
+  "mapZoomToLayer": {
+    "defaultMessage": "Auf Layer zoomen"
   },
   "mn58Sh": {
     "defaultMessage": "Dateien"

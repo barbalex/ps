@@ -1,4 +1,10 @@
 {
+  "mapZoomToLayer": "Zoom to layer",
+  "clusterDefault": "Cluster point markers (project default)",
+  "clusterMarkers": "Cluster point markers",
+  "clusterOn": "Cluster",
+  "clusterOff": "Show individually",
+  "clusterInherit": "Project default: {value}",
   "fileDownload": "Download file",
   "fileDownloadFailed": "Could not download file",
   "mapCenterX": "X coordinate of the map center",

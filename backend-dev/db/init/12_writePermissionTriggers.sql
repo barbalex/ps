@@ -598,6 +598,32 @@ FOR EACH ROW
 WHEN (pg_trigger_depth() < 1)
 EXECUTE FUNCTION enforce_project_write();
 
+CREATE OR REPLACE FUNCTION enforce_layer_cluster_default()
+RETURNS trigger LANGUAGE plpgsql SECURITY DEFINER
+SET search_path = public, pg_temp AS $$
+BEGIN
+  IF NOT is_electric_sync() AND NOT user_can_design_project(
+    (SELECT project_id FROM vector_layers WHERE vector_layer_id = NEW.vector_layer_id),
+    get_jwt_user_id()
+  ) THEN
+    RAISE EXCEPTION 'A project designer or owner is required to change the clustering default'
+      USING ERRCODE = '42501';
+  END IF;
+  RETURN NEW;
+END;
+$$;
+REVOKE EXECUTE ON FUNCTION enforce_layer_cluster_default() FROM PUBLIC, web_anon;
+
+CREATE OR REPLACE TRIGGER enforce_layer_cluster_insert
+BEFORE INSERT ON layer_presentations
+FOR EACH ROW WHEN (NOT NEW.cluster_markers)
+EXECUTE FUNCTION enforce_layer_cluster_default();
+
+CREATE OR REPLACE TRIGGER enforce_layer_cluster_update
+BEFORE UPDATE ON layer_presentations
+FOR EACH ROW WHEN (NEW.cluster_markers IS DISTINCT FROM OLD.cluster_markers)
+EXECUTE FUNCTION enforce_layer_cluster_default();
+
 CREATE OR REPLACE TRIGGER enforce_project_write_trigger
 BEFORE INSERT OR UPDATE OR DELETE ON project_reports
 FOR EACH ROW

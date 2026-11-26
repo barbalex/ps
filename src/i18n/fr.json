@@ -1,4 +1,10 @@
 {
+  "mapZoomToLayer": "Zoomer sur la couche",
+  "clusterDefault": "Regrouper les marqueurs (valeur par défaut du projet)",
+  "clusterMarkers": "Regrouper les marqueurs",
+  "clusterOn": "Regrouper",
+  "clusterOff": "Afficher individuellement",
+  "clusterInherit": "Valeur par défaut du projet: {value}",
   "fileDownload": "Télécharger le fichier",
   "fileDownloadFailed": "Impossible de télécharger le fichier",
   "mapCenterX": "Coordonnée X du centre de la carte",

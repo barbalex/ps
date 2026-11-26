@@ -26,6 +26,7 @@ const {
   DialogContent,
   DialogActions,
   Input,
+  Tooltip,
 } = fluentUi
 type Target = Pick<MapCreation, 'table' | 'level' | 'layerLabel' | 'projectId'>
 
@@ -86,20 +87,21 @@ const ParentChoice = ({
   )
   return (
     <>
-      <Button
-        as="a"
-        appearance="subtle"
-        size="small"
-        icon={<TbPlus />}
-        className={styles.headerButton}
-        aria-label={label}
-        title={label}
-        onClick={(event) => {
-          event.stopPropagation()
-          if (query.preferredId === parent.id) choose(parent)
-          else setOpen(true)
-        }}
-      />
+      <Tooltip content={label} relationship="label">
+        <Button
+          as="a"
+          appearance="subtle"
+          size="small"
+          icon={<TbPlus />}
+          className={styles.headerButton}
+          aria-label={label}
+          onClick={(event) => {
+            event.stopPropagation()
+            if (query.preferredId === parent.id) choose(parent)
+            else setOpen(true)
+          }}
+        />
+      </Tooltip>
       {open && (
         <ParentPicker
           query={parentQuery(target, route, target.projectId, userId, true)}

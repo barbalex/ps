@@ -76,7 +76,7 @@ export const Map = () => {
         <MapContainer
           zoomControl={false}
           className={`${styles.mapContainer} map-container`}
-          // maxZoom={22}
+          maxZoom={22}
           // minZoom={0}
           // bounds={bounds}
           center={initialCenter as LatLngTuple}

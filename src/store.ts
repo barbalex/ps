@@ -405,6 +405,10 @@ export const personalMapCrsAtom = atomWithStorage<Record<string, string>>(
   'personalMapCrs',
   {},
 )
+export const personalClusteringAtom = atomWithStorage<Record<string, boolean>>(
+  'personalLayerClustering',
+  {},
+)
 // The order of layers in the map. An array of layer_presentation_ids
 export const mapLayerSortingAtom = atomWithStorage<string[]>(
   'mapLayerSortingAtom',

@@ -157,6 +157,8 @@ export const ClickListener = () => {
   const db = usePGlite()
 
   const onClick = async (event: LeafletMouseEvent) => {
+    if (event.originalEvent.target instanceof Element &&
+      event.originalEvent.target.closest('.marker-cluster')) return
     if (store.get(mapCreationAtom)) return
     const sequence = ++request.current
     // console.log('ClickListener, click event:', { event, projectId })
@@ -260,7 +262,10 @@ export const ClickListener = () => {
     }
 
     // Add clicked table layer features to mapInfo
+    const seen = new Set<GeoJSON.Feature>()
     clickedLayers.forEach((layer) => {
+      if (layer.feature && seen.has(layer.feature)) return
+      if (layer.feature) seen.add(layer.feature)
       if (layer.externalVectorFeature) {
         const props = layer.feature?.properties ?? {}
         mapInfo.layers.push({

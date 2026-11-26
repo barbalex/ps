@@ -1,5 +1,6 @@
 import { usePGlite, useLiveQuery } from '@electric-sql/pglite-react'
-import { useSetAtom } from 'jotai'
+import { useAtomValue, useSetAtom } from 'jotai'
+import { useIntl } from 'react-intl'
 import type { ComponentProps, FC } from 'react'
 
 import { ErrorBoundary } from '../../../shared/ErrorBoundary.tsx'
@@ -10,6 +11,7 @@ import { getValueFromChange } from '../../../../modules/getValueFromChange.ts'
 import { Loading as LoadingBase } from '../../../shared/Loading.tsx'
 import {
   addOperationAtom,
+  userIdAtom,
   addNotificationAtom,
   type AppNotification,
 } from '../../../../store.ts'
@@ -36,6 +38,7 @@ const Loading = LoadingBase as unknown as FC<{
 type Props = {
   layer: {
     layer_presentation_id?: string
+    own_table?: string | null
     wms_layer_id?: string | null
     tile_layer_id?: string | null
   }
@@ -43,20 +46,26 @@ type Props = {
 
 export const LayerPresentationForm = ({ layer }: Props) => {
   const db = usePGlite()
+  const userId = useAtomValue(userIdAtom)
+  const { formatMessage } = useIntl()
   const addOperation = useSetAtom(addOperationAtom)
   const addNotification = useSetAtom(addNotificationAtom)
 
   const res = useLiveQuery(
-    `SELECT * FROM layer_presentations WHERE layer_presentation_id = $1`,
-    [layer.layer_presentation_id],
+    `SELECT lp.*, EXISTS (
+       SELECT 1 FROM project_roles pr WHERE pr.project_id = lp.project_id
+       AND pr.role >= 'design'::user_roles_enum
+       AND pr.project_user_id IN (SELECT project_user_id FROM user_project_user_ids($2))
+     ) AS may_design
+     FROM layer_presentations lp WHERE layer_presentation_id = $1`,
+    [layer.layer_presentation_id, userId],
   )
 
-  const row: LayerPresentations | undefined = res?.rows?.[0] as
-    LayerPresentations | undefined
+  const row = res?.rows?.[0] as (LayerPresentations & { may_design: boolean }) | undefined
 
   // the same handler is passed to SliderField, SwitchField and TextField,
   // whose fluent onChange payloads differ (value: string | number / checked)
-  const onChange = (
+  const onChange = async (
     e: React.ChangeEvent<HTMLElement>,
     data?: { value?: unknown; checked?: unknown },
   ) => {
@@ -67,27 +76,31 @@ export const LayerPresentationForm = ({ layer }: Props) => {
         type: 'warning',
         // 'type' is not part of AppNotification (kept for behavior parity)
       } as Partial<Omit<AppNotification, 'id' | 'time'>>)
+      return
     }
     const { name, value } = getValueFromChange(
       e,
       data as Parameters<typeof getValueFromChange>[1],
     )
     // only change if value has changed: maybe only focus entered and left
-    if (row![name as keyof LayerPresentations] === value) return
+    if (row[name as keyof LayerPresentations] === value) return
 
-    db.query(
-      `UPDATE layer_presentations SET ${name} = $1 WHERE layer_presentation_id = $2`,
-      [value, row?.layer_presentation_id],
-    )
-    // add task to update server and rollback PGlite in case of error
-    addOperation({
-      table: 'layer_presentations',
-      rowIdName: 'layer_presentation_id',
-      rowId: row?.layer_presentation_id,
-      operation: 'update',
-      draft: { [name]: value },
-      prev: { ...row },
-    })
+    try {
+      await db.query(
+        `UPDATE layer_presentations SET ${name} = $1 WHERE layer_presentation_id = $2`,
+        [value, row.layer_presentation_id],
+      )
+      await addOperation({
+        table: 'layer_presentations',
+        rowIdName: 'layer_presentation_id',
+        rowId: row.layer_presentation_id,
+        operation: 'update',
+        draft: { [name]: value },
+        prev: { ...row },
+      })
+    } catch (error) {
+      addNotification({ intent: 'error', body: error instanceof Error ? error.message : String(error) })
+    }
   }
 
   if (!row) return <Loading />
@@ -97,6 +110,14 @@ export const LayerPresentationForm = ({ layer }: Props) => {
   return (
     <ErrorBoundary>
       <div className={`form-container-embedded ${styles.container}`}>
+        {row.vector_layer_id && row.may_design && layer.own_table !== 'observations_assigned_lines' && (
+          <SwitchField
+            label={formatMessage({ id: 'clusterDefault', defaultMessage: 'Punktmarker gruppieren (Projektstandard)' })}
+            name="cluster_markers"
+            value={row.cluster_markers}
+            onChange={onChange}
+          />
+        )}
         <SliderField
           label="Opacity (%)"
           name="opacity_percent"

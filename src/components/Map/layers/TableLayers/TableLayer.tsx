@@ -172,7 +172,9 @@ export const TableLayer = ({
     <ErrorBoundary layer={layer}>
       <ProgressiveGeoJSON
         geomanIgnore
-        resetKey={`${editVersion ?? ''}/${JSON.stringify(firstDisplay)}/${activeId ?? ''}`}
+        cluster={layerPresentation.cluster_markers && !isDraggable && !droppableLayers.includes(layerNameForState as string) && layer.own_table !== 'observations_assigned_lines'}
+        clusterMaxZoom={layerPresentation.max_zoom}
+        resetKey={`${editVersion ?? ''}/${JSON.stringify(firstDisplay)}/${activeId ?? ''}/${isDraggable}`}
         data={data}
         featureKey={featureKey}
         // style by properties, use a function that receives the feature: https://stackoverflow.com/a/66106512/712005

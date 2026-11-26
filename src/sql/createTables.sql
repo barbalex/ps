@@ -2043,6 +2043,7 @@ CREATE TABLE IF NOT EXISTS layer_presentations(
   project_id uuid DEFAULT NULL REFERENCES projects(project_id) ON DELETE CASCADE ON UPDATE CASCADE DEFERRABLE INITIALLY DEFERRED,
   active boolean DEFAULT FALSE,
   opacity_percent integer DEFAULT 100,
+  cluster_markers boolean NOT NULL DEFAULT TRUE,
   transparent boolean DEFAULT TRUE,
   grayscale boolean DEFAULT FALSE,
   max_zoom integer DEFAULT 19,

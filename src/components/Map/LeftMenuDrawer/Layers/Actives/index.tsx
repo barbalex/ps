@@ -37,6 +37,7 @@ import type LayerPresentations from '../../../../../models/public/LayerPresentat
 type LayerRowCommon = {
   layer_presentation_id: string
   layer_presentation_active: boolean
+  cluster_markers?: boolean
   label?: string | null
   name?: string | null
   type?: VectorLayers['type']
@@ -101,6 +102,7 @@ export const ActiveLayers = () => {
     `
     SELECT 
       vector_layers.*,
+      layer_presentations.cluster_markers,
       layer_presentations.layer_presentation_id,
       layer_presentations.active as layer_presentation_active,
       'vector' as layer_type
