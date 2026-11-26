@@ -140,32 +140,28 @@ const stronglyConnectedComponents = (
 }
 
 /**
- * Resolves once the sync object reports every one of its shapes up to date;
- * rejects after timeoutMs. Callers must not start the next level on
+ * Wait for the adapter's post-commit callback, not the stream's receipt
+ * of its up-to-date marker. The database can still be applying that batch.
+ * Rejects after timeoutMs. Callers must not start the next level on
  * rejection: a child level started under a hung parent level produces FK
  * violations that abort the whole sync (syncErrorRecovery would then reload
  * in a loop).
  */
-export const untilUpToDate = (
-  sync: { isUpToDate: boolean },
+export const untilApplied = (
+  isApplied: () => boolean,
   label: string,
   timeoutMs = 5 * 60 * 1000,
 ): Promise<void> =>
   new Promise((resolve, reject) => {
-    if (sync.isUpToDate) return resolve()
+    if (isApplied()) return resolve()
     const startedAt = Date.now()
     const timer = setInterval(() => {
-      if (sync.isUpToDate) {
+      if (isApplied()) {
         clearInterval(timer)
-        return resolve()
-      }
-      if (Date.now() - startedAt > timeoutMs) {
+        resolve()
+      } else if (Date.now() - startedAt >= timeoutMs) {
         clearInterval(timer)
-        reject(
-          new Error(
-            `syncStages: stage ${label} not up to date after ${timeoutMs / 1000}s`,
-          ),
-        )
+        reject(new Error(`syncStages: stage ${label} not committed after ${timeoutMs / 1000}s`))
       }
     }, 500)
   })

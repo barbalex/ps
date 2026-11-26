@@ -17,7 +17,7 @@ import {
   isPostgrestTokenUnavailableError,
   requirePostgrestToken,
 } from './fetchPostgrestToken.ts'
-import { dependencyLevels, untilUpToDate } from './syncStages.ts'
+import { dependencyLevels, untilApplied } from './syncStages.ts'
 import { armSyncErrorRecovery, syncRecovered } from './syncErrorRecovery.ts'
 import { shapeDefinitions } from './shapeDefinitions.mjs'
 import { mapColumnsByTable } from './mapColumns.ts'
@@ -110,18 +110,10 @@ export const startSyncing = async (userId: string) => {
     // sync. Live changes are unaffected: parents exist by then, and the rare
     // same-transaction parent+child insert is caught by the FK error
     // recovery (syncErrorRecovery.ts).
-    let levels: string[][] = [Object.values(shapes).map((s) => s.table)]
-    try {
-      levels = await dependencyLevels(
-        db as PGlite,
-        Object.values(shapes).map((s) => s.table),
-      )
-    } catch (error) {
-      console.warn(
-        'startSyncing: could not derive FK levels, syncing unordered',
-        error,
-      )
-    }
+    const levels = await dependencyLevels(
+      db as PGlite,
+      Object.values(shapes).map((s) => s.table),
+    )
 
     let notifiedUnexpectedStreamError = false
     const onError = (error: unknown) => {
@@ -191,10 +183,14 @@ export const startSyncing = async (userId: string) => {
     // transaction committed, whereas isUpToDate flips as soon as the stream
     // RECEIVED the up-to-date marker — possibly long before the rows exist
     const stageApplied: boolean[] = []
+    let stopped = false
+    const diagTimers: ReturnType<typeof setInterval>[] = []
     // aggregate over the per-level syncs: InitialSyncManager polls
     // isApplied/isApplying, AuthAndDb and clearLocalSyncedData call unsubscribe
     const aggregate: PsSyncObject = {
       unsubscribe: () => {
+        stopped = true
+        for (const timer of diagTimers) clearInterval(timer)
         for (const sync of syncs) sync.unsubscribe()
       },
       get isUpToDate() {
@@ -236,6 +232,7 @@ export const startSyncing = async (userId: string) => {
         // ignores this when resuming persisted state (409 re-snapshots)
         initialInsertMethod: 'json',
         onInitialSync: async () => {
+          if (stopped) return
           stageApplied[index] = true
           if (!isLast) return
           console.log(
@@ -250,6 +247,10 @@ export const startSyncing = async (userId: string) => {
       // Validate sync object
       if (!sync || typeof sync.unsubscribe !== 'function') {
         throw new Error('Invalid sync object returned from syncShapesToTables')
+      }
+      if (stopped) {
+        sync.unsubscribe()
+        return
       }
       syncs.push(sync)
 
@@ -272,12 +273,7 @@ export const startSyncing = async (userId: string) => {
           `startSyncing: stage ${index + 1}/${levels.length} not up to date after 60s, still syncing: ${pending.join(', ')}`,
         )
       }, 1000)
-      aggregate.unsubscribe = () => {
-        clearInterval(diagTimer)
-        for (const sync2 of syncs) sync2.unsubscribe()
-      }
-
-      return sync
+      diagTimers.push(diagTimer)
     }
 
     // subscribe and settle the first level before returning; the remaining
@@ -287,10 +283,11 @@ export const startSyncing = async (userId: string) => {
       void (async () => {
         for (let index = 1; index < levels.length; index++) {
           try {
-            const previous = syncs[index - 1]!
-            await untilUpToDate(previous, `${index}/${levels.length}`)
+            await untilApplied(() => stopped || stageApplied[index - 1] === true, `${index}/${levels.length}`)
+            if (stopped) return
             await startStage(index)
           } catch (error) {
+            if (stopped) return
             // a hung or failed level: the later levels are not started (their
             // parents are missing). Stop the sync so Syncer restarts it from
             // the persisted stage state once the user is online again.

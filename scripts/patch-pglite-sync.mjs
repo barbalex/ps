@@ -28,10 +28,17 @@ for (const file of ['index.js', 'index.cjs']) {
     console.warn(`patch-pglite-sync: ${file} not found, skipping`)
     continue
   }
-  if (source.includes('/* ps:json-column-list */')) {
-    console.log(`patch-pglite-sync: ${file} already patched`)
-    continue
+  // On an unchanged resume the complete watermark equals the saved LSN:
+  // upstream skips the transaction and never calls onInitialSync. Commit
+  // once at that watermark too, but never at the -1 (incomplete) sentinel.
+  if (!source.includes('/* ps:resume-watermark */')) {
+    const called = source.match(/&&!(\w+)&&\w+\.isUpToDate&&\(/)?.[1]
+    const watermark = /(\w+)=(\w+)>(\w+),(\w+)=\2>=\3&&/
+    if (!called || !watermark.test(source)) throw new Error(`Unknown pglite-sync watermark logic in ${file}`)
+    source = source.replace(watermark, `$1=$2>$3||/* ps:resume-watermark */(!${called}&&$2=== $3&&$2>=0n),$4=$2>=$3&&`)
+    writeFileSync(path, source)
   }
+  if (source.includes('/* ps:json-column-list */')) continue
   let count = 0
   const patched = source.replace(pattern, (_m, insert, _schema, _table, rest, cols) => {
     count++
