@@ -67,6 +67,11 @@
   padding: 4px 10px 6px 10px;
 }
 
+/* Info supplies the object's toolbar. Nested forms keep their own headers. */
+.objectForm > :global(.form-outer-container) > :global(.form-header) {
+  display: none;
+}
+
 .rowEven {
   background-color: rgba(0, 0, 0, 0.05);
 }
