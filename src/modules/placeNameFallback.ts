@@ -1,3 +1,6 @@
+import type { NavPlaceLevelRow } from './navRollupsContext.ts'
+import type { Language } from '../store.ts'
+
 type FM = (
   d: { id?: string; defaultMessage: string },
   values?: Record<string, string>,
@@ -36,6 +39,20 @@ export const getPlaceFallbackNames = (
   return {
     singular: formatMessage({ id: 'TZgWxf', defaultMessage: 'Ort' }),
     plural: formatMessage({ id: 'h5g7Kk', defaultMessage: 'Orte' }),
+  }
+}
+
+export const getPlaceLevelNames = (
+  configured: NavPlaceLevelRow | undefined,
+  language: Language,
+  projectType: string | null | undefined,
+  level: 1 | 2,
+  formatMessage: FM,
+) => {
+  const fallback = getPlaceFallbackNames(projectType, level, formatMessage)
+  return {
+    singular: configured?.[`name_singular_${language}`] ?? fallback.singular,
+    plural: configured?.[`name_plural_${language}`] ?? fallback.plural,
   }
 }
 

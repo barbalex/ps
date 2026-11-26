@@ -163,7 +163,7 @@ test('clicking near the edge of a place marker shows its info at low zoom', asyn
   const hitbox = await page.locator('.clickable-hitbox').first().boundingBox()
   if (!hitbox) throw new Error('Place marker is not visible')
   await page.mouse.click(hitbox.x + hitbox.width - 2, hitbox.y + hitbox.height / 2)
-  await expect(page.locator('.map-info-drawer')).toContainText(PLACE_ID)
+  await expect(page.locator(`.map-info-drawer [data-info-for="${PLACE_ID}"]`)).toBeVisible()
   expect(featureRequests).toEqual([])
 })
 
@@ -231,7 +231,7 @@ test('choosing a geometry starts editing it', async ({ page }) => {
   const clickPlace = () => page.mouse.click(moved.x + moved.width / 2, moved.y + moved.height / 2)
   await clickPlace()
   const drawer = page.locator('.map-info-drawer')
-  await expect(drawer).toContainText(PLACE_ID)
+  await expect(drawer.locator(`[data-info-for="${PLACE_ID}"]`)).toBeVisible()
   await drawer.getByTitle('Close').click()
   await page.locator('button[name="layer_menu"]').click()
   await page.getByRole('button', { name: 'E2eChooseOrte', exact: true })

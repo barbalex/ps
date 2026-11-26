@@ -1,6 +1,6 @@
 import { useMapInfoForm } from '../../../../../../../../../../modules/mapInfoFormContext.ts'
 import { Outlet, useLocation, useParams } from '@tanstack/react-router'
-import { useLiveQuery } from '@electric-sql/pglite-react'
+import { useNavRollups } from '../../../../../../../../../../modules/navRollupsContext.ts'
 
 import { PlaceWithFiles } from '../../../../../../../../../../formsAndLists/place/WithFiles.tsx'
 
@@ -12,13 +12,10 @@ export const PlaceLayout = () => {
     strict: false,
   })
   const location = useLocation()
-  const res = useLiveQuery(
-    `SELECT place_roles_in_place, place_files, place_files_in_place FROM place_levels WHERE project_id = $1 AND level = 2`,
-    [projectId],
-  )
-  const usersInPlace = res?.rows?.[0]?.place_roles_in_place !== false
-  const showFiles = res?.rows?.[0]?.place_files !== false
-  const filesInPlace = res?.rows?.[0]?.place_files_in_place !== false
+  const level = useNavRollups().placeLevel(projectId!, 2)
+  const usersInPlace = level?.place_roles_in_place !== false
+  const showFiles = level?.place_files !== false
+  const filesInPlace = level?.place_files_in_place !== false
 
   const baseUrl = `/data/projects/${projectId}/subprojects/${subprojectId}/places/${placeId}/places/${placeId2}`
   const mapChildren = useMapInfoForm(baseUrl)

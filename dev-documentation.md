@@ -1114,13 +1114,19 @@ opens its regular form in the map's Info drawer. The drawer uses the same
 route outlet as the data pane, including configured subforms and their lists
 and detail views. For existing objects, Info
 offers separate controls for editing geometry and opening the form.
-Info remembers the last explicit form/table choice in this browser.
+Info defaults to the form for editable own objects and remembers an explicit
+form/table choice in this browser.
 When form view is preferred, inspecting an editable own object opens its
 form directly, without displaying properties while permissions and navigation
 resolve. Read-only and external hits still show their properties.
 Observation hits use the regular assessment form: unassigned observations
 open under the import's subproject (to assess or not to assign), and assigned
 ones under their place. Changing the assignment keeps the form in Info.
+Place group headings use the navigation tree's current localized plural for
+the hit's place level, even when the map marker predates the naming settings.
+Data and Info forms share a live subscription to the project's field definitions,
+ordering and field-group reservations. Switching records reuses that configuration
+instead of rendering provisional inputs while the same metadata loads again.
 
 On the experimental branch, when the map is the **only** pane, the Info
 editor also presents the object's tree children as collapsible sections.

@@ -5,7 +5,7 @@ import { designingAtom } from '../../../store.ts'
 
 import { FormDesignEditor } from './FormDesignEditor.tsx'
 import { useFormDesignRow } from './useFormDesignRow.ts'
-import { useFormDesignFields } from './useFormDesignFields.ts'
+import { useFormFields } from './useFormFields.ts'
 
 /**
  * Renders the form design editor in place of the WHOLE form (header fields
@@ -47,7 +47,7 @@ export const WithFormDesign = ({
     table,
     tableViewId,
   })
-  const fields = useFormDesignFields({ table, enabled: editorOpen })
+  const fields = useFormFields(table) ?? []
 
   if (editorOpen && designRow) {
     return (

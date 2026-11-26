@@ -45,6 +45,12 @@ test.beforeAll(async () => {
       ON CONFLICT DO NOTHING;
     UPDATE places SET geometry = ST_GeomFromText('GEOMETRYCOLLECTION(POINT(8.54 47.37))', 4326),
       name = 'Original' WHERE place_id = '${placeId}';
+    INSERT INTO fields (field_id, project_id, table_name, level, name, field_label, field_type_id, widget_type_id)
+      SELECT 'adae57ff-0000-4000-8000-000000000015','${projectId}','places',1,'survey_note','Survey note',
+        ft.field_type_id, wt.widget_type_id FROM field_types ft, widget_types wt
+        WHERE ft.name = 'text' AND wt.name = 'text' LIMIT 1 ON CONFLICT DO NOTHING;
+    UPDATE places SET data = coalesce(data, '{}') || '{"survey_note":"Configured field"}'::jsonb
+      WHERE place_id = '${placeId}';
     INSERT INTO places (place_id, subproject_id, parent_id, level, name)
       VALUES ('${childId}','${subprojectId}','${placeId}',2,'Child place') ON CONFLICT DO NOTHING;
     INSERT INTO checks (check_id, place_id) VALUES ('${checkId}','${childId}') ON CONFLICT DO NOTHING;
@@ -106,6 +112,8 @@ const clickMarker = async (page: Page, count: number) => {
 
 const inspectPlace = async (page: Page, email: string, overview = false) => {
   await login(page, email, password)
+  // These writer scenarios start in the explicitly chosen properties view.
+  if (email === writer) await page.evaluate(() => localStorage.setItem('mapInfoPreferForm', 'false'))
   const path = overview ? `/data/projects/${projectId}` : `${root}/places`
   await page.goto(`${path}?panes=map&c=47.37%2C8.54&z=17`)
   await clickMarker(page, 2)
@@ -209,37 +217,38 @@ test('pencil edits the selected place in Info without opening the data pane', as
   expect(new URL(page.url()).searchParams.get('panes')).toBe('map')
 })
 
-test('Info remembers form and table choices across fresh inspections', async ({ page }) => {
-  const drawer = await inspectPlace(page, writer)
+test('Info opens editable hits directly as forms by default and remembers a table override', async ({ page }) => {
+  await login(page, writer, password)
+  const drawer = page.locator('.map-info-drawer')
   const pencil = drawer.locator(`[data-info-for="${placeId}"]`).getByRole('button', { name: 'View form' })
   const field = drawer.locator('input[name=name]')
-  await pencil.click()
-  await expect(field).toBeVisible()
-
-  const reopenMap = async () => {
-    await drawer.getByRole('button', { name: 'Close', exact: true }).click()
+  const openMap = async () => {
     await page.goto(`${root}/places?panes=map&c=47.37%2C8.54&z=17&layers=adae57ff-0000-4000-8000-000000000006`)
   }
-  await reopenMap()
+  await openMap()
   const sawProperties = await page.evaluateHandle((id) => {
     let seen = false
+    let provisionalField = false
     const observer = new MutationObserver(() => {
       if (document.querySelector(`[data-properties-for="${id}"]`)) seen = true
+      if (document.querySelector('.map-info-drawer')?.textContent?.includes('This field is not defined')) provisionalField = true
     })
     observer.observe(document.body, { childList: true, subtree: true })
     return () => {
       observer.disconnect()
-      return seen
+      return { seen, provisionalField }
     }
   }, placeId)
   await clickMarker(page, 1)
   await expect(field).toBeVisible()
-  expect(await sawProperties.evaluate(stop => stop())).toBe(false)
+  await expect(drawer.getByLabel('Survey note', { exact: true })).toHaveValue('Configured field')
+  expect(await sawProperties.evaluate(stop => stop())).toEqual({ seen: false, provisionalField: false })
   await expect(pencil).toHaveAttribute('aria-pressed', 'true')
 
   await pencil.click()
   await expect(field).toHaveCount(0)
-  await reopenMap()
+  await drawer.getByRole('button', { name: 'Close', exact: true }).click()
+  await openMap()
   await clickMarker(page, 1)
   await expect(pencil).toHaveAttribute('aria-pressed', 'false')
   await expect(drawer.locator(`[data-properties-for="${placeId}"]`)).toBeVisible()
@@ -280,7 +289,6 @@ test('New from a level-two place with Files open selects a sibling under the sam
 test('reader can inspect and zoom but cannot change the form or geometry', async ({
   page,
 }) => {
-  await page.addInitScript(() => localStorage.setItem('mapInfoPreferForm', 'true'))
   const drawer = await inspectPlace(page, reader, true)
   for (const id of [placeId, obsId]) {
     await expect(drawer.locator(`[data-info-for="${id}"]`).getByRole('button', { name: 'Navigate to form' })).toBeEnabled()
@@ -306,6 +314,24 @@ test('observation inspection uses the routed form for assigned and unassigned ob
   await drawer.locator('input[name=not_to_assign]').click()
   await expect(page).toHaveURL(url => url.pathname === `${root}/observations-not-to-assign/${assessId}` && url.searchParams.get('panes') === 'map')
   await expect(comment).toBeVisible()
+})
+
+test('Info groups place hits by their navigation names even with stale marker labels', async ({ page }) => {
+  await login(page, reader, password)
+  await page.evaluate(({ placeId, childId, projectId }) => {
+    localStorage.setItem('mapInfoAtom', JSON.stringify({
+      lat: 47.37, lng: 8.54, zoom: 17,
+      layers: [
+        { ownId: placeId, featureLabel: 'Parent' },
+        { ownId: childId, ownParentId: placeId, featureLabel: 'Child' },
+      ].map(hit => ({ ...hit, projectId, ownTable: 'place', label: 'Places', properties: [] })),
+    }))
+  }, { placeId, childId, projectId })
+  await page.goto(`${root}/places?panes=map`)
+  const drawer = page.locator('.map-info-drawer')
+  await expect(drawer.getByText('Populations (1)', { exact: true })).toBeVisible()
+  await expect(drawer.getByText('Sub-Populations (1)', { exact: true })).toBeVisible()
+  await expect(drawer.getByText('Places (2)', { exact: true })).toHaveCount(0)
 })
 
 test('a requested nested check form at latitude zero edits the check, not the current route', async ({

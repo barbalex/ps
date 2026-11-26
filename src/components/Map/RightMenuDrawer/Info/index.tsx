@@ -1,7 +1,8 @@
 import * as fluentUiReactComponents from '@fluentui/react-components'
 const { Button, DrawerBody, DrawerHeader } = fluentUiReactComponents
 import { MdClose } from 'react-icons/md'
-import { useAtom } from 'jotai'
+import { useAtom, useAtomValue } from 'jotai'
+import { useIntl } from 'react-intl'
 import type { MouseEvent } from 'react'
 import { Outlet, useMatches, useParams } from '@tanstack/react-router'
 import { useLiveQuery } from '@electric-sql/pglite-react'
@@ -13,7 +14,9 @@ import { MapInfoFormRoot, MapInfoNavigation } from '../../../../modules/mapInfoF
 import { FormHeader } from '../../../FormHeader/index.tsx'
 import { Location } from './Location.tsx'
 import { Layer } from './Layer.tsx'
-import { mapInfoAtom } from '../../../../store.ts'
+import { languageAtom, mapInfoAtom } from '../../../../store.ts'
+import { useNavRollups } from '../../../../modules/navRollupsContext.ts'
+import { getPlaceLevelNames } from '../../../../modules/placeNameFallback.ts'
 import type { MapInfoLayer } from '../../../../store.ts'
 import styles from './index.module.css'
 import type ProjectCrs from '../../../../models/public/ProjectCrs.ts'
@@ -34,6 +37,9 @@ const RoutedInfo = () => {
 
 export const Info = () => {
   const [mapInfo, setMapInfo] = useAtom(mapInfoAtom)
+  const language = useAtomValue(languageAtom)
+  const { formatMessage } = useIntl()
+  const { placeLevel, projectRow } = useNavRollups()
   const { treeVisible, dataVisible, mapVisible } = usePaneVisibility()
   const mapOnly = mapVisible && !treeVisible && !dataVisible
   const browse = () => setMapInfo((info) => !info || info.browsing ? info : {
@@ -69,7 +75,12 @@ export const Info = () => {
   const groupedLayers = (mapInfo?.layers ?? []).reduce<
     Record<string, MapInfoLayer[]>
   >((acc, layer) => {
-    const label = layer.label || 'Unknown'
+    // A Leaflet marker can retain the label it had before place levels loaded.
+    const level = layer.ownParentId ? 2 : 1
+    const project = layer.projectId ?? projectId
+    const label = layer.ownTable === 'place' ?
+      getPlaceLevelNames(placeLevel(project, level), language, projectRow(project)?.type, level, formatMessage).plural
+    : layer.label || 'Unknown'
     if (!acc[label]) {
       acc[label] = []
     }

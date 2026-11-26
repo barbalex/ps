@@ -30,6 +30,7 @@ import type Places from '../../models/public/Places.ts'
 import styles from './WithFiles.module.css'
 import { filesScopeWhere } from '../../modules/filesScopeWhere.ts'
 import { MapChildSections } from './MapChildSections.tsx'
+import { useNavRollups } from '../../modules/navRollupsContext.ts'
 
 import '../../form.css'
 import type { FieldChangeData } from '../../components/shared/fieldChange.ts'
@@ -72,31 +73,9 @@ export const PlaceWithFiles = ({ from, mapChildren = false }: { from: string; ma
   )
   const row: Places | undefined = res?.rows?.[0] as Places | undefined
 
-  const nameRes = useLiveQuery(
-    `
-    SELECT
-      place_level_id,
-      name_singular_${language},
-      name_plural_${language}
-    FROM place_levels
-    WHERE
-      project_id = $1
-      AND level = $2`,
-    [projectId, placeId2 ? 2 : 1],
-  )
-  const placeLevels = nameRes?.rows ?? []
-  const nameSingular =
-    (placeLevels?.[0]?.[`name_singular_${language}`] as string | undefined) ??
-    'Place'
-  const namePlural =
-    (placeLevels?.[0]?.[`name_plural_${language}`] as string | undefined) ??
-    'Places'
-
-  const placeLevelRes = useLiveQuery(
-    `SELECT place_roles_in_place, place_files FROM place_levels WHERE project_id = $1 AND level = $2`,
-    [projectId, placeId2 ? 2 : 1],
-  )
-  const placeLevel = placeLevelRes?.rows?.[0]
+  const placeLevel = useNavRollups().placeLevel(projectId!, placeId2 ? 2 : 1)
+  const nameSingular = placeLevel?.[`name_singular_${language}`] ?? 'Place'
+  const namePlural = placeLevel?.[`name_plural_${language}`] ?? 'Places'
   const usersInPlace = placeLevel?.place_roles_in_place !== false
   const showFiles = isDesigning || placeLevel?.place_files !== false
 

@@ -12,7 +12,7 @@ import { designingAtom } from '../../../store.ts'
 import { FormFromDesign } from './FormFromDesign.tsx'
 import { FormDesignToolbar } from './FormDesignToolbar.tsx'
 import { useFormDesignRow } from './useFormDesignRow.ts'
-import { useFormDesignFields } from './useFormDesignFields.ts'
+import { useFormFields } from './useFormFields.ts'
 import styles from './FormDesign.module.css'
 
 const { Button } = fluentUiReactComponents
@@ -78,12 +78,7 @@ export const JsonbOrFormDesign = ({
 
   const designApplies = !!designRow?.active && eligible
 
-  // the field list of the table — only queried when a design is rendered;
-  // the auto-generated form queries its own (Jsonb)
-  const fields = useFormDesignFields({
-    table,
-    enabled: eligible && (designApplies || !!formPrint),
-  })
+  const fields = useFormFields(table) ?? []
 
   // print view of the designed form: read-only, with a print button
   if (formPrint && designApplies) {

@@ -4,7 +4,8 @@
 // 2. build own onChange to pass to the fields?
 // 3. loop through fields
 // 4. build input depending on field properties
-import { usePGlite, useLiveQuery } from '@electric-sql/pglite-react'
+import { usePGlite } from '@electric-sql/pglite-react'
+import { useFormFields } from '../FormDesign/useFormFields.ts'
 import { useLocation, useParams } from '@tanstack/react-router'
 import { useAtom, useSetAtom } from 'jotai'
 
@@ -71,54 +72,22 @@ export const Jsonb = ({
 
   const addOperation = useSetAtom(addOperationAtom)
 
-  const useProjectId = projectId && table !== 'projects'
-  const sql = `
-      SELECT
-        fields.*,
-        field_types.name as field_type,
-        widget_types.name as widget_type
-      FROM fields
-        INNER JOIN field_types USING (field_type_id)
-        INNER JOIN widget_types USING (widget_type_id)
-        LEFT JOIN unnest(
-            ARRAY(SELECT sorted_field_ids FROM field_sorts WHERE table_name = fields.table_name and project_id = fields.project_id)
-          ) WITH ORDINALITY t(field_id, ord) USING (field_id)
-      WHERE
-        fields.table_name = $1
-        and fields.project_id ${useProjectId ? `= '${projectId}'` : 'IS NULL'}
-        ${placeScopedFieldTables.has(table) ? ` and level = $2` : ''}
-      ORDER BY t.ord`
-  const params = placeScopedFieldTables.has(table) ?
-    [table, placeId2 ? 2 : 1]
-  : [table]
-  const res = useLiveQuery(sql, params)
-  const allFields = (res?.rows ?? []) as unknown as FieldsWithTypes[]
+  const allFields = useFormFields(table)
 
   // fields of groups used by a view of this table are reserved: they only
   // render in those views, not in the plain form. Designers still see all.
   const [designingMap] = useAtom(designingAtom)
   const designing = designingMap[projectId ?? ''] ?? false
-  const resReservedFieldIds = useLiveQuery<{ field_id: string }>(
-    useProjectId ?
-      `SELECT DISTINCT jsonb_array_elements_text(fg.sorted_field_ids) AS field_id
-         FROM field_groups fg
-         JOIN table_views tv ON tv.field_group_id = fg.field_group_id
-         WHERE fg.project_id = $1 AND fg.table_name = $2`
-    : `SELECT NULL AS field_id WHERE false`,
-    useProjectId ? [projectId, table] : [],
-  )
-  const reservedFieldIds = new Set(
-    (resReservedFieldIds?.rows ?? []).map((row) => row.field_id),
-  )
+  if (!allFields) return null
 
   // a table view with a field group shows only the group's fields
   let fields: FieldsWithTypes[]
   if (fieldIds) {
     fields = allFields.filter((field) => fieldIds.includes(field.field_id))
-  } else if (designing || reservedFieldIds.size === 0) {
+  } else if (designing) {
     fields = allFields
   } else {
-    fields = allFields.filter((field) => !reservedFieldIds.has(field.field_id))
+    fields = allFields.filter((field) => !field.reserved)
   }
 
   // TODO: return if value has not changed
@@ -179,7 +148,7 @@ export const Jsonb = ({
 
   // What if data contains keys not existing in fields? > show but warn
   // (not for restricted views: fields outside the group are expected there)
-  const fieldNamesDefined = fields.map((field) => field.name)
+  const fieldNamesDefined = allFields.map((field) => field.name)
   const dataKeys = Object.keys(data)
   const dataKeysNotDefined =
     fieldIds ?

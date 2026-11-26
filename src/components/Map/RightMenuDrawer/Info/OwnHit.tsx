@@ -149,22 +149,27 @@ export const OwnHit = ({
 
   // A new hit or creation may request the editor before its route is selected.
   const requested = useRef<MapInfoLayer | null>(null)
-  const [handledRequest, setHandledRequest] = useState<MapInfoLayer | null>(null)
   useEffect(() => {
     if (layer.formActive && row?.can_edit && requested.current !== layer) {
       requested.current = layer
-      if (insideMapForm || matches) setHandledRequest(layer)
-      else void selectRow().then(() => setHandledRequest(layer))
+      if (!insideMapForm && !matches) void selectRow()
     }
   }, [layer, row?.can_edit, insideMapForm, matches, selectRow])
 
-  const awaitingForm = (!res || row?.can_edit) && (
-    layer.formActive ? handledRequest !== layer
-    : preferForm && !info?.browsing && !info?.layers.some((item) => item.formActive)
+  // Navigation can finish before the outlet paints. Only show properties
+  // for a confirmed table view, never as the pending editor's fallback.
+  const wantsForm = layer.formActive || (
+    preferForm && !info?.browsing && !info?.layers.some((item) => item.formActive)
   )
+  const [lastShown, setLastShown] = useState<MapInfoLayer | null>(null)
+  useEffect(() => {
+    if (formShown) setLastShown(layer)
+  }, [formShown, layer])
+  // In split view the user can navigate the Data pane away from an
+  // already-open editor. Its map hit remains inspectable.
+  const showProperties = row && (!row.can_edit || !wantsForm || lastShown === layer)
 
-  const toggleForm = async () => {
-    if (!formShown) await selectRow()
+  const toggleForm = () => {
     setPreferForm(!formShown)
     setMapInfo((info) =>
       !info?.layers.includes(layer) ?
@@ -240,7 +245,7 @@ export const OwnHit = ({
             <Outlet />
           </MapInfoFormRoot.Provider>
         </div>
-      : awaitingForm ? null : children}
+      : showProperties ? children : null}
     </>
   )
 }

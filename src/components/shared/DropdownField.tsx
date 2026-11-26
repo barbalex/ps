@@ -53,27 +53,23 @@ export const DropdownField = ({
   const onChangeFake = onChange as unknown as (e: {
     target: { name?: string; value?: string }
   }) => void
-  const res = useLiveQuery(
-    `SELECT * FROM ${table}${
+  const res = useLiveQuery<{ value: string; text: string }>(
+    `SELECT ${idField ?? name} AS value, ${labelField} AS text FROM ${table}${
       where ? ` WHERE ${where}` : ''
     } order by ${orderBy}`,
   )
-  const rows = (res?.rows ?? []) as Record<string, string>[]
-  const options = rows.map((o) => ({
-    text: o[labelField],
-    value: o[idField ?? name],
-  }))
+  const options = res?.rows ?? []
   const selectedOptions = options.filter(({ value: v }) => v === value)
 
   const validationState = validationStateIn
     ? validationStateIn
-    : !options?.length //&& !!value
+    : res && !options.length
       ? 'warning'
       : 'none'
 
   const validationMessage = validationMessageIn
     ? validationMessageIn
-    : !options?.length //&& !!value
+    : res && !options.length
       ? formatMessage(
           {
             id: 'bCOpQr',
