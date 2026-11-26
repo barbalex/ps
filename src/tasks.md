@@ -61,11 +61,7 @@ References: [QGIS editing](https://docs.qgis.org/latest/en/docs/user_manual/work
 
 ---
 
-subpopulation chooser: can we choose multiple subpopulations? add them to the apps regular filter so it is expressed in the nav tree and in species lists too (or-filters). And vice versa: if multiple species are choosen in the regular (species list) filter, render it that way in this checkbox as well. Not sure if this checkbox is still the ideal way to render this
-
 ---
-
-gitguardian detected a password being pushed: in e2e/map-scope.spec.ts, line 10
 
 ---
 
@@ -98,8 +94,6 @@ idea: Global search across entities (similar to vermehrung?)
 ---
 
 ---
-
-is it possible to work map-centric, i.e.: click on geometries and edit their forms without having to leave the map?
 
 ---
 
