@@ -108,16 +108,16 @@ export const FilePreview = ({ from }: { from: string }) => {
             className={styles.object}
           />
         )}
-        {isReactDocViewable && (
+        {isReactDocViewable && row.url && (
           <div className={styles.object}>
             <Suspense fallback={<Loading />}>
               <DocViewer
                 key={width ?? 0}
                 documents={[
                   {
-                    uri: row.url!,
-                    mimeType: row.mimetype ?? undefined,
-                  } as unknown as never,
+                    uri: row.url,
+                    fileType: row.mimetype ?? undefined,
+                  },
                 ]}
                 config={{ header: { disableHeader: true } }}
                 className={styles.docViewer}

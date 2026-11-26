@@ -1,7 +1,6 @@
 // shared between the preview's isReactDocViewable allowlist (index.tsx) and
 // the custom renderers' fileTypes (renderers.tsx) — both must list a
-// mimetype for it to preview, and the DocViewer additionally matches the
-// content-type the CDN serves
+// mimetype for it to preview using the uploaded file's recorded type
 
 export const markdownMimetypes = [
   'text/markdown',

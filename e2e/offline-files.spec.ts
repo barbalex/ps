@@ -91,6 +91,20 @@ async function ensureE2eData() {
 }
 
 test.describe('offline files', () => {
+  test('a text/plain attachment previews its contents', async ({ page }) => {
+    await ensureE2eData()
+    const id = '61000000-0000-7000-8000-000000000006'
+    const url = 'http://localhost:5176/e2e-attachments/text.txt'
+    psql(`SET electric.syncing TO 'true';
+      INSERT INTO files (file_id, project_id, name, url, uuid, mimetype, size)
+      VALUES ('${id}', '${E2E_PROJECT_ID}', 'text.txt', '${url}', '${id}', 'text/plain', 4)
+      ON CONFLICT DO NOTHING;`)
+    await page.route(url, route => route.fulfill({ contentType: 'text/plain', body: 'text' }))
+    await login(page, E2E_EMAIL, E2E_PASSWORD)
+    await page.goto(`/data/projects/${E2E_PROJECT_ID}/files/${id}/preview?panes=data`)
+    await expect(page.getByText('text', { exact: true })).toBeVisible({ timeout: 60_000 })
+  })
+
   test('a marked file is cached and unmarking frees it again', async ({
     page,
   }) => {
