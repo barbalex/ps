@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from 'react'
 import { useIntl } from 'react-intl'
 
 import { version as appVersion } from '../../../package.json'
+import { prepareAppUpdate } from './prepareAppUpdate.ts'
 
 import styles from './index.module.css'
 
@@ -51,43 +52,15 @@ const isUpdateInFlight = (pending: PendingUpdate | null): boolean =>
   Date.now() - pending.startedAt <= GIVE_UP_AFTER_MS
 
 /**
- * Drop the precache and the service worker registration so a reload
- * cannot be served the stale bundle again.
- */
-const dropCachesAndWorker = async () => {
-  try {
-    const cacheKeys = await caches.keys()
-    await Promise.all(cacheKeys.map((key) => caches.delete(key)))
-  } catch {
-    // insecure contexts have no caches api
-  }
-  try {
-    const registration = await navigator.serviceWorker?.getRegistration()
-    await registration?.unregister()
-  } catch {
-    // no service worker: plain reload is enough
-  }
-}
-
-/**
  * The service worker can keep a stale bundle running for days
  * (registerType: 'autoUpdate' only swaps in after a reload). This
  * banner compares the running version against /version.json (emitted
  * by vite.config.ts, never cached by sw or Netlify) and offers a
- * cache-clearing reload. Stale clients otherwise fail silently against
+ * worker update. Stale clients otherwise fail silently against
  * the api. Ported from apflora (apf2).
  *
- * The cleanup must complete before the reload: the worker controls
- * the navigation until its unregistration resolved, and a reload
- * racing the cleanup was served a stale index.html whose hashed
- * chunks were already gone from the dying precache and the server —
- * the module then failed on the text/html index.html fallback and
- * the handshake in this bundle could never run. The updating banner
- * covers the wait (deleting the precache takes a moment); if a
- * reload still lands on a stale bundle (older deployments fired the
- * reload immediately), the started bundle finishes the cleanup and
- * reloads again. The handshake state survives reloads in
- * localStorage and gives up after MAX_UPDATE_ATTEMPTS.
+ * The replacement worker activates before we reload. The handshake survives
+ * reloads in localStorage and gives up after MAX_UPDATE_ATTEMPTS.
  *
  * A dismissed banner only hides it for as long as this bundle runs —
  * stale clients degrade the shared api for everyone, so the update is
@@ -105,49 +78,49 @@ export const VersionCheck = () => {
   )
   // an update started by this or a previous (stale) bundle is in
   // flight; carried across reloads via localStorage
-  const [updating, setUpdating] = useState(() =>
-    isUpdateInFlight(readPendingUpdate()),
-  )
+  const [pending, setPending] = useState(readPendingUpdate)
+  const [updateFailed, setUpdateFailed] = useState(false)
+  const preparing = useRef<Promise<void> | null>(null)
 
-  const update = async (target: string) => {
-    // mark the update as in flight before anything async: this context
-    // dies with the reload and the next bundle must be able to tell
-    // whether it is the target already or still stale
-    writePendingUpdate({ target, attempts: 0, startedAt: Date.now() })
-    setUpdating(true)
-    // the cleanup must complete before the reload: reloading while
-    // the dying worker still controlled the navigation served a
-    // stale index.html whose hashed chunks no longer existed — the
-    // module failed on the index.html fallback and this bundle could
-    // not run its recovery. The updating banner covers the wait.
-    await dropCachesAndWorker()
-    window.location.reload()
+  const update = (target: string) => {
+    if (preparing.current) return
+    const next = { target, attempts: 0, startedAt: Date.now() }
+    writePendingUpdate(next)
+    setUpdateFailed(false)
+    setPending(next)
   }
 
-  // finish an update a previous bundle started: either the reload
-  // already landed on the target bundle (or the handshake gave up) —
-  // only the flag needs dropping — or this bundle is still stale and
-  // the interrupted cleanup is completed before reloading again
   useEffect(() => {
-    const pending = readPendingUpdate()
     if (!pending) return
     if (!isUpdateInFlight(pending)) {
       localStorage.removeItem(UPDATE_PENDING_KEY)
+      setPending(null)
       return
     }
-    writePendingUpdate({ ...pending, attempts: pending.attempts + 1 })
     let active = true
-    void (async () => {
-      // the reload may have cut the previous bundle's background
-      // cleanup short: make sure the precache and worker are really
-      // gone before reloading again
-      await dropCachesAndWorker()
-      if (active) window.location.reload()
-    })()
+    preparing.current ??= prepareAppUpdate(navigator.serviceWorker)
+    void preparing.current.then(
+      () => {
+        if (!active) return
+        writePendingUpdate({ ...pending, attempts: pending.attempts + 1 })
+        window.location.reload()
+      },
+      (error: unknown) => {
+        if (!active) return
+        console.error('App update failed', error)
+        preparing.current = null
+        localStorage.removeItem(UPDATE_PENDING_KEY)
+        pendingVersionRef.current = null
+        setAvailableVersion(pending.target)
+        setDismissed(false)
+        setPending(null)
+        setUpdateFailed(true)
+      },
+    )
     return () => {
       active = false
     }
-  }, [])
+  }, [pending])
 
   useEffect(() => {
     let active = true
@@ -182,7 +155,7 @@ export const VersionCheck = () => {
     }
   }, [])
 
-  if (updating) {
+  if (pending && isUpdateInFlight(pending)) {
     return (
       <div
         className={styles.banner}
@@ -212,14 +185,21 @@ export const VersionCheck = () => {
       role="alert"
     >
       <div className={styles.text}>
-        {formatMessage(
-          {
-            id: 'versionCheckBanner',
+        {updateFailed ?
+          formatMessage({
+            id: 'versionCheckFailed',
             defaultMessage:
-              'Eine neue Version ({availableVersion}) von Arten fördern ist verfügbar. Die laufende Version ({appVersion}) ist veraltet und kann Fehler verursachen.',
-          },
-          { availableVersion, appVersion },
-        )}
+              'Die Aktualisierung ist fehlgeschlagen. Die bisherige Version bleibt verfügbar. Bitte versuchen Sie es erneut.',
+          })
+        : formatMessage(
+            {
+              id: 'versionCheckBanner',
+              defaultMessage:
+                'Eine neue Version ({availableVersion}) von Arten fördern ist verfügbar. Die laufende Version ({appVersion}) ist veraltet und kann Fehler verursachen.',
+            },
+            { availableVersion, appVersion },
+          )
+        }
       </div>
       <div className={styles.actions}>
         <button

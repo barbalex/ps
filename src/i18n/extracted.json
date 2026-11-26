@@ -3500,6 +3500,9 @@
   "versionCheckBanner": {
     "defaultMessage": "Eine neue Version ({availableVersion}) von Arten fördern ist verfügbar. Die laufende Version ({appVersion}) ist veraltet und kann Fehler verursachen."
   },
+  "versionCheckFailed": {
+    "defaultMessage": "Die Aktualisierung ist fehlgeschlagen. Die bisherige Version bleibt verfügbar. Bitte versuchen Sie es erneut."
+  },
   "versionCheckLater": {
     "defaultMessage": "später"
   },
