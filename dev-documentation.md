@@ -1123,7 +1123,12 @@ The selection navigates to the project or subproject route, retaining the map
 pane and viewport. Switching projects drops the previous project's layer URL
 override. At project level, own layers render all locally synced subprojects;
 selecting a subproject narrows both rendering and zoom-to-layer. Opening an
-own feature from the overview retains `mapOverview=<project id>` so its form
+own feature from the overview shows its subproject above the feature name in
+Info (for observations, the import's subproject). The prefix uses the project's
+term in the selected language. If a translation is missing, standard terms
+such as `Art` use their built-in translation; custom terms keep their German name.
+Navigating to its form retains
+`mapOverview=<project id>` so its form
 can navigate to the correct subproject without narrowing the map. Selecting a
 scope in the drawer clears that override. Creation still requires a writable
 parent.

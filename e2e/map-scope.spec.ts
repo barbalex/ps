@@ -145,10 +145,12 @@ test('overview renders both accessible subprojects and stays wide when opening a
   const markers = page.locator('.clickable-hitbox')
   await expect(markers).toHaveCount(2, { timeout: 120_000 })
   await markers.first().click()
+  const info = page.locator('.map-info-drawer')
+  const hitSubproject = await info.getByText(/^Survey: (North|South)$/).innerText()
   await page.getByRole('button', { name: 'Navigate to form' }).click()
   await expect(page).toHaveURL(
     (url) =>
-      url.pathname.includes('/places/') &&
+      url.pathname.includes(`/subprojects/${hitSubproject === 'Survey: North' ? first : second}/places/`) &&
       url.searchParams.get('mapOverview') === a,
   )
   await expect(survey).toHaveValue('')

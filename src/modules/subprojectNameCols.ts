@@ -1,13 +1,22 @@
 import type { Language } from '../store.ts'
+import { projectTypeNames } from './projectTypeNames.ts'
 
-/** SQL expression for the localized subproject singular name, with German fallback */
+/** Older projects may have only the German term, even for built-in names. */
 export const subprojectNameSingularExpr = (
   language: Language,
   tableAlias = '',
 ) => {
   const p = tableAlias ? `${tableAlias}.` : ''
   if (language === 'de') return `${p}subproject_name_singular`
-  return `COALESCE(NULLIF(${p}subproject_name_singular_${language}, ''), ${p}subproject_name_singular)`
+  const column = `subproject_name_singular_${language}` as const
+  const literal = (text: string) => `'${text.replaceAll("'", "''")}'`
+  const defaults = Object.values(projectTypeNames)
+    .map(
+      (names) =>
+        `WHEN ${literal(names.subproject_name_singular)} THEN ${literal(names[column])}`,
+    )
+    .join(' ')
+  return `COALESCE(NULLIF(${p}${column}, ''), CASE ${p}subproject_name_singular ${defaults} ELSE ${p}subproject_name_singular END)`
 }
 
 /** SQL expression for the localized subproject plural name, with German fallback */

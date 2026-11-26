@@ -320,6 +320,9 @@ export const ClickListener = () => {
           label: layer.vectorLayerLabel || 'Unknown Layer',
           featureLabel: layer.feature.properties.label || 'Feature',
           properties,
+          ...(layer.activeIdField === 'observation_id' && {
+            ownObservationId: layer.feature.properties.observation_id,
+          }),
           ...(target && { ...target, projectId }),
         })
       }

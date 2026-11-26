@@ -34,6 +34,8 @@ test.beforeAll(async () => {
   })
   psql(`
     SET electric.syncing TO 'true';
+    UPDATE projects SET subproject_name_singular = 'Art', subproject_name_singular_en = NULL
+      WHERE project_id = '${projectId}';
     INSERT INTO units (unit_id, project_id, name, type)
       VALUES ('adae57ff-0000-4000-8000-00000000000f','${projectId}','Individuals','integer')
       ON CONFLICT DO NOTHING;
@@ -77,9 +79,10 @@ test.beforeAll(async () => {
   }
 })
 
-const inspectPlace = async (page: Page, email: string) => {
+const inspectPlace = async (page: Page, email: string, overview = false) => {
   await login(page, email, password)
-  await page.goto(`${root}/places?panes=map&c=47.37%2C8.54&z=17`)
+  const path = overview ? `/data/projects/${projectId}` : `${root}/places`
+  await page.goto(`${path}?panes=map&c=47.37%2C8.54&z=17`)
   await closeLayerDrawerIfOpen(page)
   const markers = page.locator('.clickable-hitbox, .draggable-hitbox')
   await expect(markers).toHaveCount(2, { timeout: 60_000 })
@@ -92,6 +95,11 @@ const inspectPlace = async (page: Page, email: string) => {
   // The overlapping observation has a place_id but is not a place hit.
   await expect(drawer).toContainText(obsId)
   await expect(drawer.getByRole('button', { name: 'Navigate to form' })).toHaveCount(1)
+  await expect(drawer.getByText('Species: Info forms', {exact: true})).toHaveCount(overview ? 2 : 0)
+  if (overview) {
+    const heading = drawer.getByText('Species: Info forms', {exact: true}).first().locator('..')
+    await expect(heading).toHaveText(/^Species: Info forms.+/)
+  }
   return drawer
 }
 
@@ -179,7 +187,7 @@ test('New from a level-two place with Files open selects a sibling under the sam
 test('reader can inspect and zoom but cannot change the form or geometry', async ({
   page,
 }) => {
-  const drawer = await inspectPlace(page, reader)
+  const drawer = await inspectPlace(page, reader, true)
   await expect(drawer.getByRole('button', { name: 'Navigate to form' })).toBeEnabled()
   await expect(drawer.getByRole('button', { name: 'View form' })).toHaveCount(0)
   await expect(
