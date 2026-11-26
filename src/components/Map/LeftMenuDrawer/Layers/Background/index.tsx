@@ -114,7 +114,7 @@ export const BackgroundLayers = () => {
               className={styles.row}
               icon={
                 id === currentId ? (
-                  <BsCheckSquareFill className={layerStyles.headerToggleIcon} />
+                  <BsCheckSquareFill className={layerStyles.checkedToggleIcon} />
                 ) : (
                   <BsSquare className={layerStyles.headerToggleIcon} />
                 )
@@ -133,7 +133,7 @@ export const BackgroundLayers = () => {
               className={styles.row}
               icon={
                 tb.layer_presentation_id === currentId ? (
-                  <BsCheckSquareFill className={layerStyles.headerToggleIcon} />
+                  <BsCheckSquareFill className={layerStyles.checkedToggleIcon} />
                 ) : (
                   <BsSquare className={layerStyles.headerToggleIcon} />
                 )

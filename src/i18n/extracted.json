@@ -2288,6 +2288,9 @@
   "mRw0sX": {
     "defaultMessage": "und {count} weitere Zeilen..."
   },
+  "mapAllAccessible": {
+    "defaultMessage": "Alle zugänglichen"
+  },
   "mapBackgroundLayersTitle": {
     "defaultMessage": "Hintergrundkarte"
   },

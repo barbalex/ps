@@ -152,6 +152,17 @@ describe('recorded polygon edits', () => {
 })
 
 describe('nearestPlaces', () => {
+  it('only offers assignment targets inside the visible map scope', async () => {
+    const options = { ...TEST_POINT, maxDistanceM: 20 }
+    const { project: projectId, subproject: subprojectId } = fixture.ids
+    const other = '10000000-0000-7000-8000-000000000099'
+    const targets = (scope: { projectId: string; subprojectId?: string }) =>
+      nearestPlaces(fixture.db, { ...options, scope })
+    expect(await targets({ projectId })).toContainEqual(expect.objectContaining({ place_id: placeIds.polygon }))
+    expect(await targets({ projectId, subprojectId })).toContainEqual(expect.objectContaining({ place_id: placeIds.polygon }))
+    expect(await targets({ projectId: other })).toEqual([])
+    expect(await targets({ projectId, subprojectId: other })).toEqual([])
+  })
   it('returns containing place with distance 0, nearest first', async () => {
     const rows = await nearestPlaces(fixture.db, {
       lng: TEST_POINT.lng,

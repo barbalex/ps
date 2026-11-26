@@ -51,12 +51,13 @@ export const navigateToOwnForm = async (
     ownParentId,
     projectId,
   }: OwnFormTarget,
+  search?: { mapOverview?: string },
 ) => {
   const placeId = ownTable === 'place' ? ownId : ownPlaceId
   if (!placeId) return
   if (ownTable === 'place' && ownSubprojectId) {
-    return navigate(
-      ownFormRoute(
+    return navigate({
+      ...ownFormRoute(
         ownTable,
         ownId,
         projectId,
@@ -64,7 +65,8 @@ export const navigateToOwnForm = async (
         placeId,
         ownParentId,
       ),
-    )
+      search,
+    })
   }
   const res = await db.query<{
     subproject_id: string
@@ -77,8 +79,8 @@ export const navigateToOwnForm = async (
   )
   const place = res.rows[0]
   if (place?.subproject_id) {
-    return navigate(
-      ownFormRoute(
+    return navigate({
+      ...ownFormRoute(
         ownTable,
         ownId,
         projectId,
@@ -86,6 +88,7 @@ export const navigateToOwnForm = async (
         placeId,
         place.parent_id,
       ),
-    )
+      search,
+    })
   }
 }

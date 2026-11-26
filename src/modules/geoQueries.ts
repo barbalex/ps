@@ -49,12 +49,14 @@ export const nearestPlaces = async (
     maxDistanceM,
     level = 'both',
     limit = 5,
+    scope,
   }: {
     lng: number
     lat: number
     maxDistanceM: number
     level?: 'places1' | 'places2' | 'both'
     limit?: number
+    scope?: { projectId: string; subprojectId?: string }
   },
 ): Promise<PlaceWithDistanceRow[]> => {
   const levelCondition =
@@ -75,6 +77,7 @@ export const nearestPlaces = async (
     CROSS JOIN generate_series(1, ST_NumGeometries(p.geometry)) AS n
     WHERE p.geometry IS NOT NULL
     ${levelCondition}
+    ${scope ? `AND p.subproject_id IN (SELECT subproject_id FROM subprojects WHERE project_id = $6${scope.subprojectId ? ' AND subproject_id = $7' : ''})` : ''}
       AND p.geometry && ST_Expand(ST_SetSRID(ST_MakePoint($1, $2), 4326), $3)
     GROUP BY p.place_id, p.label
     HAVING min(ST_Distance(
@@ -84,7 +87,8 @@ export const nearestPlaces = async (
     ORDER BY distance_m
     LIMIT $5
     `,
-    [lng, lat, maxDistanceDeg, maxDistanceM, limit],
+    [lng, lat, maxDistanceDeg, maxDistanceM, limit,
+      ...(scope ? [scope.projectId, ...(scope.subprojectId ? [scope.subprojectId] : [])] : [])],
   )
   return (res?.rows ?? []) as PlaceWithDistanceRow[]
 }

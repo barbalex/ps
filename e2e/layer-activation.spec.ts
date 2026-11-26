@@ -168,7 +168,6 @@ test.beforeEach(() => {
   `)
 })
 
-// the Own section only renders with a subproject in the url
 const openDrawer = async (page: Page, subprojectId?: string) => {
   await login(page, E2E_EMAIL, E2E_PASSWORD)
   const base = subprojectId ?
@@ -428,6 +427,16 @@ test('own table layer: checkbox, Active section, pane — and back', async ({
     drawer.locator("a[role='button'][aria-pressed='true']"),
   ).toHaveCount(1, { timeout: 20_000 })
   await expect.poll(() => listedUnderActive(page, OWN_LABEL)).toBe(true)
+  const activeIcon = drawer.locator("a[aria-pressed='true'] svg")
+  const backgroundIcon = drawer.getByRole('button', { name: 'OpenStreetMap', exact: true }).locator('svg')
+  for (const [colorScheme, color] of [
+    ['light', 'rgba(38, 82, 37, 0.9)'],
+    ['dark', 'rgb(164, 164, 164)'],
+  ] as const) {
+    await page.emulateMedia({ colorScheme })
+    await expect(activeIcon).toHaveCSS('color', color)
+    await expect(backgroundIcon).toHaveCSS('color', color)
+  }
   await expect(
     page.locator(`.leaflet-pane[class*="${OWN_NAME}-pane"]`),
   ).toBeAttached()

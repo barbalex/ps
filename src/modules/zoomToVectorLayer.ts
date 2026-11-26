@@ -22,8 +22,7 @@ type Props = {
   db: QueryableDb
   // vector_layers row — works for active and own-section layers alike
   layer: VectorLayers
-  // the table layers render scoped to the current subproject; their
-  // extents must scope the same way or the zoom overshoots
+  // Absent in project overview, including while a feature's form is open.
   subprojectId?: string
   addNotification: (notification: {
     title: string
@@ -49,9 +48,6 @@ export const zoomToVectorLayer = async ({
   // Get the extent of all geometries of this layer via PostGIS
   let extent: Extent | null
 
-  // own-table layers are vector layers too; their rendering queries
-  // filter by the current subproject, so the extent must too (without
-  // one — project routes — the layers render nothing anyway)
   {
     const scopeSql = subprojectId ? 'AND s.subproject_id = $2' : ''
     const scopeParams = subprojectId ? [layer.project_id, subprojectId] : [layer.project_id]
@@ -101,16 +97,20 @@ export const zoomToVectorLayer = async ({
       )
     } else if (tableName?.startsWith('observations_assigned')) {
       const level = layer.own_table_level
+      const lines = layer.own_table === 'observations_assigned_lines'
       extent = await queryExtent(
         db,
-        `SELECT ${extentSelect('o')} FROM observations o
+        `SELECT ${extentSelect()} FROM (
+         SELECT ${lines ? 'ST_Collect(ST_Centroid(ST_Envelope(o.geometry)), ST_Centroid(ST_Envelope(p.geometry)))' : 'o.geometry'} AS geometry
+         FROM observations o
          INNER JOIN observation_imports oi ON o.observation_import_id = oi.observation_import_id
          INNER JOIN places p ON o.place_id = p.place_id
-         INNER JOIN subprojects s ON p.subproject_id = s.subproject_id
+         INNER JOIN subprojects s ON oi.subproject_id = s.subproject_id
          WHERE s.project_id = $1
          AND o.geometry IS NOT NULL
+         ${lines ? 'AND p.geometry IS NOT NULL' : ''}
          ${scopeSql}
-         ${level ? `AND p.parent_id IS ${level === 1 ? 'NULL' : 'NOT NULL'}` : ''}`,
+         ${level ? `AND p.parent_id IS ${level === 1 ? 'NULL' : 'NOT NULL'}` : ''}) scoped`,
         scopeParams,
       )
     } else if (tableName === 'observations_to_assess') {

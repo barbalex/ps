@@ -14,6 +14,7 @@ import { resetObservationMarkerPosition } from './observationMarkers.ts'
 export const assignToNearestDroppable = async ({
   latLng,
   observationId,
+  scope,
   map,
   droppableLayers,
   confirmAssigningToSingleTarget,
@@ -21,6 +22,7 @@ export const assignToNearestDroppable = async ({
 }: {
   latLng: LatLng
   observationId: string
+  scope: { projectId: string; subprojectId?: string }
   map: Map
   droppableLayers: string[]
   confirmAssigningToSingleTarget: boolean
@@ -65,6 +67,7 @@ export const assignToNearestDroppable = async ({
     maxDistanceM,
     level,
     limit: 5,
+    scope,
   })
 
   // Query current assignment to pass to dialog

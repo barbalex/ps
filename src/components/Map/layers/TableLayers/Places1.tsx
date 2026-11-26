@@ -1,6 +1,7 @@
 import { useMemo } from 'react'
 import { useLiveQuery } from '@electric-sql/pglite-react'
-import { useLocation, useParams } from '@tanstack/react-router'
+import { useLocation } from '@tanstack/react-router'
+import { useOwnLayerScope } from '../../../../modules/useOwnLayerScope.ts'
 
 import { TableLayer } from './TableLayer.tsx'
 import type { TableLayerProps } from './TableLayer.tsx'
@@ -25,15 +26,15 @@ export const Places1 = ({
     placesIdx !== -1 && pathParts.indexOf('places', placesIdx + 1) !== -1
   const placeId =
     !hasLevel2Place && placesIdx !== -1 ? pathParts[placesIdx + 1] : undefined
-  const { subprojectId } = useParams({ strict: false })
+  const { scopeFilter, scopeId } = useOwnLayerScope()
   const envelope = useViewportEnvelope()
   const res = useLiveQuery<Places & { edit_version: string | null }>(
     `SELECT place_id, subproject_id, parent_id, level, since, until, data,
       ST_AsGeoJSON(geometry)::json as geometry, bbox, relevant_for_reports, label, created_at, updated_at, updated_by,
       (SELECT max(t.updated_at) FROM places t
-        WHERE t.parent_id IS NULL AND t.subproject_id = $1 AND t.geometry IS NOT NULL) AS edit_version
-    FROM places WHERE parent_id IS NULL AND subproject_id = $1 AND geometry IS NOT NULL${viewportPredicate('places.geometry')}`,
-    [subprojectId, ...viewportParams(envelope)],
+        WHERE t.parent_id IS NULL AND t.subproject_id ${scopeFilter} AND t.geometry IS NOT NULL) AS edit_version
+    FROM places WHERE parent_id IS NULL AND subproject_id ${scopeFilter} AND geometry IS NOT NULL${viewportPredicate('places.geometry')}`,
+    [scopeId, ...viewportParams(envelope)],
   )
 
   // geometry is returned as GeometryCollection JSON via ST_AsGeoJSON; convert to FeatureCollection for display

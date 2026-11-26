@@ -81,6 +81,7 @@ export interface MapInfoLayer {
   ownId?: string
   ownPlaceId?: string
   ownSubprojectId?: string
+  ownObservationId?: string
   ownParentId?: string
 }
 

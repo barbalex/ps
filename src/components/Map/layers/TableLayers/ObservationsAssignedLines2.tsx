@@ -1,5 +1,5 @@
 import { useMemo } from 'react'
-import { useParams } from '@tanstack/react-router'
+import { useOwnLayerScope } from '../../../../modules/useOwnLayerScope.ts'
 import { useLiveQuery } from '@electric-sql/pglite-react'
 import { featureCollection, lineString } from '@turf/helpers'
 
@@ -39,7 +39,7 @@ export const ObservationsAssignedLines2 = ({
 }: {
   layerPresentation: TableLayerProps['layerPresentation']
 }) => {
-  const { subprojectId } = useParams({ strict: false })
+  const { scopeFilter, scopeId } = useOwnLayerScope()
   const activeObservationId = useActiveObservationId()
   const envelope = useViewportEnvelope()
 
@@ -55,8 +55,11 @@ export const ObservationsAssignedLines2 = ({
       GREATEST(
         (SELECT max(t.updated_at) FROM observations t
           INNER JOIN observation_imports ti ON t.observation_import_id = ti.observation_import_id
-          WHERE ti.subproject_id = $1),
-        (SELECT max(tp.updated_at) FROM places tp WHERE tp.subproject_id = $1)
+          WHERE ti.subproject_id ${scopeFilter}),
+        (SELECT max(tp.updated_at) FROM places tp
+          JOIN observations t ON t.place_id = tp.place_id
+          JOIN observation_imports ti ON ti.observation_import_id = t.observation_import_id
+          WHERE ti.subproject_id ${scopeFilter} AND tp.parent_id IS NOT NULL)
       ) AS edit_version
     FROM observations o
       INNER JOIN observation_imports oi ON o.observation_import_id = oi.observation_import_id
@@ -64,10 +67,10 @@ export const ObservationsAssignedLines2 = ({
     WHERE
       o.geometry IS NOT NULL
       AND p.geometry IS NOT NULL
-      AND oi.subproject_id = $1
+      AND oi.subproject_id ${scopeFilter}
       AND p.parent_id IS NOT NULL${viewportEitherPredicate('o.geometry', 'p.geometry')}
   `,
-    [subprojectId, ...viewportParams(envelope)],
+    [scopeId, ...viewportParams(envelope)],
   )
 
   // memoized on the live-query result: re-renders (the zoomend viewport

@@ -22,6 +22,12 @@
   grid-template-columns: minmax(100px, 30%) 1fr;
 }
 
+.subproject {
+  font-size: 0.9em;
+  font-weight: normal;
+  overflow-wrap: anywhere;
+}
+
 .text {
   padding: 5px;
   padding-right: 10px;
