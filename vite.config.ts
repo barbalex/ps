@@ -98,6 +98,8 @@ export default defineConfig({
           'assets/cpexcel.full-*.js',
           'assets/react-doc-viewer-*.js',
           'assets/SqlEditorField-*.js',
+          'assets/gdal3WebAssembly-*',
+          'assets/vectorUpload.worker-*.js',
         ],
         // wasm IS precached although the app fetches it at boot anyway:
         // the precache is the only copy the service worker controls — the

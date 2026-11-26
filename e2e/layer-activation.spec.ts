@@ -17,9 +17,11 @@ const PROJECT_ID = 'a0b0c0d0-0000-7000-8000-00000000e2e1'
 const WMS_SERVICE_ID = 'a0b0c0d0-0000-7000-8000-00000000e2e2'
 const WMS_LAYER_ID = 'a0b0c0d0-0000-7000-8000-00000000e2e3'
 const VECTOR_LAYER_ID = 'a0b0c0d0-0000-7000-8000-00000000e2e4'
+const WFS_SERVICE_ID = 'a0b0c0d0-0000-7000-8000-00000000e2ed'
 const PLACE_LEVEL_ID = 'a0b0c0d0-0000-7000-8000-00000000e2e5'
 const OWN_LAYER_ID = 'a0b0c0d0-0000-7000-8000-00000000e2e6'
 const SUBPROJECT_ID = 'a0b0c0d0-0000-7000-8000-00000000e2e8'
+const UPLOAD_ID = 'a0b0c0d0-0000-7000-8000-00000000e2ea'
 
 // no spaces: the layer name becomes part of the leaflet pane class
 const VECTOR_NAME = 'E2eVec'
@@ -58,8 +60,34 @@ test.beforeAll(async () => {
     VALUES ('a0b0c0d0-0000-7000-8000-00000000e2e9', '${WMS_SERVICE_ID}', 'e2e.layer', FALSE)
     ON CONFLICT DO NOTHING;
 
+    INSERT INTO wfs_services(wfs_service_id, project_id, url, version, default_crs)
+    VALUES ('${WFS_SERVICE_ID}', '${PROJECT_ID}', '/e2e-wfs', '2.0.0', 'EPSG:4326')
+    ON CONFLICT DO NOTHING;
+    INSERT INTO wfs_service_layers(wfs_service_layer_id, wfs_service_id, name)
+    VALUES ('a0b0c0d0-0000-7000-8000-00000000e2ee', '${WFS_SERVICE_ID}', 'e2e.layer')
+    ON CONFLICT DO NOTHING;
     INSERT INTO vector_layers (vector_layer_id, project_id, type, name)
     VALUES ('${VECTOR_LAYER_ID}', '${PROJECT_ID}', 'wfs', '${VECTOR_NAME}')
+    ON CONFLICT DO NOTHING;
+    -- While syncing, a duplicate insert is skipped by a BEFORE trigger,
+    -- before ON CONFLICT DO UPDATE could repair the old unconfigured fixture.
+    UPDATE vector_layers SET wfs_service_id = '${WFS_SERVICE_ID}', wfs_service_layer_name = 'e2e.layer',
+      display_by_property = 'kind'
+    WHERE vector_layer_id = '${VECTOR_LAYER_ID}';
+    INSERT INTO vector_layer_displays (vector_layer_display_id, vector_layer_id, display_property_value, color)
+    VALUES ('a0b0c0d0-0000-7000-8000-00000000e2ef', '${VECTOR_LAYER_ID}', 'test', '#842f62')
+    ON CONFLICT DO NOTHING;
+
+    INSERT INTO vector_layers (vector_layer_id, project_id, type, name, display_by_property)
+    VALUES ('${UPLOAD_ID}', '${PROJECT_ID}', 'upload', 'E2eUpload', 'kind')
+    ON CONFLICT DO NOTHING;
+    INSERT INTO vector_layer_displays (vector_layer_display_id, vector_layer_id, display_property_value, color)
+    VALUES ('a0b0c0d0-0000-7000-8000-00000000e2eb', '${UPLOAD_ID}', 'tree', '#276351')
+    ON CONFLICT DO NOTHING;
+    INSERT INTO vector_layer_geoms (vector_layer_geom_id, vector_layer_id, geometry, properties)
+    VALUES ('a0b0c0d0-0000-7000-8000-00000000e2ec', '${UPLOAD_ID}',
+      ST_GeomFromText('GEOMETRYCOLLECTION(POINT(8.54 47.37),POINT(8.5405 47.37))', 4326),
+      '{"label":"Beech","kind":"tree","metadata":{"height":12},"place_id":"not an own place"}')
     ON CONFLICT DO NOTHING;
 
     INSERT INTO place_levels (
@@ -173,6 +201,12 @@ const toggleOf = (page: Page, label: string) =>
 test('vector layer: checkbox, Active section, pane — and back', async ({
   page,
 }) => {
+  await page.route('**/e2e-wfs?**', (route) => route.fulfill({
+    json: { type: 'FeatureCollection', features: [{
+      type: 'Feature', properties: { kind: 'test' },
+      geometry: { type: 'Point', coordinates: [8.65, 47.40] },
+    }] },
+  }))
   await openDrawer(page)
   const drawer = page.locator('.map-layers-drawer')
 
@@ -181,11 +215,9 @@ test('vector layer: checkbox, Active section, pane — and back', async ({
     drawer.locator("a[role='button'][aria-pressed='true']"),
   ).toHaveCount(1, { timeout: 20_000 })
   await expect.poll(() => listedUnderActive(page, VECTOR_NAME)).toBe(true)
-  // an empty vector layer renders a zero-size pane: it exists, but is
-  // never "visible" in the bounding-box sense
   await expect(
-    page.locator(`.leaflet-pane[class*="${VECTOR_NAME}-pane"]`),
-  ).toBeAttached()
+    page.locator(`.leaflet-${VECTOR_NAME}-pane path[stroke="#842f62"]`),
+  ).toHaveCount(1)
 
   // the design flag reaches the server
   await expect
@@ -269,6 +301,52 @@ test('wms layer: checkbox, Active section, pane — and back', async ({
   await expect(
     page.locator(`.leaflet-pane[class*="${WMS_LABEL}-pane"]`),
   ).toHaveCount(0)
+})
+
+test('upload: activating shows styled parts; clicking inspects one read-only feature', async ({ page }) => {
+  await login(page, E2E_EMAIL, E2E_PASSWORD)
+  await page.goto(`/data/projects/${PROJECT_ID}?panes=map&leftMapDrawerTab=layers&c=47.37,8.54&z=17`)
+  await toggleOf(page, 'E2eUpload').click({ timeout: 60_000 })
+  await expect.poll(() => listedUnderActive(page, 'E2eUpload')).toBe(true)
+  const paths = page.locator('.leaflet-E2eUpload-pane path[stroke="#276351"]')
+  await expect(paths).toHaveCount(2, { timeout: 30_000 })
+  await paths.last().click()
+  const info = page.locator('.map-info-drawer')
+  await expect(info).toContainText('E2eUpload (1)')
+  await expect(info).toContainText('Beech')
+  await expect(info).toContainText('{"height":12}')
+  await expect(info.getByRole('button', { name: /Zum Formular|Navigate to form/i })).toHaveCount(0)
+  await info.getByTitle('Close').click()
+  await toggleOf(page, 'E2eUpload').click()
+  await expect(paths).toHaveCount(0)
+})
+
+test('upload form: append and replace share the converted features', async ({ page }) => {
+  const layerId = 'a0b0c0d0-0000-7000-8000-00000000e2ef'
+  psql(`SET electric.syncing TO 'true';
+    INSERT INTO vector_layers(vector_layer_id, project_id, type, name)
+    VALUES ('${layerId}','${PROJECT_ID}','upload','E2eImport') ON CONFLICT DO NOTHING;
+    DELETE FROM vector_layer_geoms WHERE vector_layer_id = '${layerId}';`)
+  await page.addInitScript(() => localStorage.setItem('language', '"en"'))
+  await login(page, E2E_EMAIL, E2E_PASSWORD)
+  await page.goto(`/data/projects/${PROJECT_ID}/vector-layers/${layerId}/vector-layer?panes=data`)
+  const file = page.getByLabel('Choose GIS file')
+  await expect(file).toBeVisible({timeout: 60_000})
+  const submit = page.getByRole('button', { name: 'Import layer' })
+  const items = () => psql(`SELECT string_agg(properties->>'species', ',' ORDER BY properties->>'species')
+    FROM vector_layer_geoms WHERE vector_layer_id = '${layerId}';`)
+  for (const [species, mode, expected] of [
+    ['orchid','append','orchid'], ['beech','append','beech,orchid'], ['oak','replace','oak'],
+  ]) {
+    await file.setInputFiles({
+      name: 'sites.csv', mimeType: 'text/csv',
+      buffer: Buffer.from(`longitude,latitude,species\n8.54,47.37,${species}\n`),
+    })
+    await page.getByLabel('Existing features').selectOption(mode, { timeout: 30_000 })
+    await submit.click()
+    await expect(page.getByText('Features imported: 1')).toBeVisible({timeout: 30_000})
+    expect(items()).toBe(expected)
+  }
 })
 
 test('own table layer: checkbox, Active section, pane — and back', async ({

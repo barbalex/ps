@@ -210,7 +210,7 @@ export const Content = ({
   // if layer is wfs and has no wfs_service_id or wfs_service_layer_name: set tab to 'config'
   useEffect(() => {
     const shouldShowConfig =
-      (isVectorLayer &&
+      (isVectorLayer && layer.type === 'wfs' &&
         (!layer.wfs_service_id || !layer.wfs_service_layer_name)) ||
       (isWmsLayer && (!layer.wms_service_id || !layer.wms_service_layer_name)) ||
       (isTileLayer && !layer.url_template)
@@ -222,6 +222,7 @@ export const Content = ({
     }
   }, [
     isVectorLayer,
+    layer.type,
     isWmsLayer,
     isTileLayer,
     layer.wfs_service_id,

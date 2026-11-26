@@ -267,6 +267,13 @@ BEGIN
 
   v_project_id := CASE WHEN TG_OP = 'DELETE' THEN OLD.project_id ELSE NEW.project_id END;
 
+  -- Moving a row (e.g. a vector layer with all its imported geometries)
+  -- requires access to the project it leaves as well as the one it enters.
+  IF TG_OP = 'UPDATE' AND NEW.project_id IS DISTINCT FROM OLD.project_id
+     AND OLD.project_id IS NOT NULL AND NOT user_can_write_project(OLD.project_id, v_user_id) THEN
+    RAISE EXCEPTION 'Insufficient permissions on source project' USING ERRCODE = '42501';
+  END IF;
+
   IF v_project_id IS NOT NULL AND NOT user_can_write_project(v_project_id, v_user_id) THEN
     RAISE EXCEPTION 'Insufficient permissions: writer or higher role required on this project'
       USING ERRCODE = '42501',

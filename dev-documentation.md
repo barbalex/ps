@@ -1083,6 +1083,10 @@ labels in an English UI. (This replaced the old
 `updateTableVectorLayerLabels.ts`, which wrote the derived label back into
 `vector_layers.label` on every load, producing spurious pending operations.)
 
+WFS and upload layers use the current language's label, then the German
+label. If neither is filled in, the UI shows the layer name, or the layer ID
+if the name is also blank. Empty and whitespace-only fields count as missing.
+
 ## Rendering
 
 `src/components/Map/layers/tableLayerToComponent.ts` maps `own_table` +
@@ -1225,6 +1229,29 @@ Ending the display by a field — clearing it, or choosing another wfs layer —
 goes through `clearVectorLayerDisplaysByValue`: it deletes the valued displays
 and leaves the one without a value — that is the layer's look again —, or
 creates one when none is left.
+
+### Uploaded vector layers
+
+`src/modules/importVectorFeatures.ts` calls the online `import_vector_features`
+RPC ([SQL](backend/db/init/20_importVectorFeatures.sql)). The target must
+already be synced to the server and have type `upload`. A project `write-all`,
+`design` or `own` role is required. The RPC locks that layer and commits the
+append or replacement, counts, property names and missing styles together.
+Invalid input rolls back the entire import. There is no client-side replay:
+after an ambiguous network failure, check the layer before retrying an append.
+
+Each feature becomes one flat WGS84 geometry collection with its original
+properties. The three geometry counts count features containing that kind
+(a mixed collection can increment more than one count). The existing Electric
+shapes sync the rows and displays to project members, including read-only
+collaborators. The property picker uses the resulting data rather than a WFS
+schema. It preserves the default display and existing styles for matching
+values. As with WFS, it refuses fields with more than 30 distinct values;
+individual labels over 2,000 bytes use the fallback rather than a btree key.
+
+On an existing backend, apply the updated `12_writePermissionTriggers.sql`
+and then `20_importVectorFeatures.sql`; a frontend-only deployment does not
+install the RPC.
 
 # 11 Error Telemetry
 

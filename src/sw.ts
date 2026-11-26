@@ -33,7 +33,7 @@ self.addEventListener('message', (event) => {
 // cold chunks are excluded from the precache (hashed, immutable URLs —
 // CacheFirst is safe): offline still works after they have been loaded once
 registerRoute(
-  /\/assets\/.+\.(js|css|wasm)$/,
+  /\/assets\/.+\.(js|css|wasm|data)$/,
   new CacheFirst({
     cacheName: 'assets-on-first-use',
     plugins: [new CacheableResponsePlugin({ statuses: [200] })],

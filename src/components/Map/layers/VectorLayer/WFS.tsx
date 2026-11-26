@@ -1,9 +1,6 @@
-/**
- * Not sure if this is ever used - data should always be downloaded
- */
 import { useEffect, useState, useCallback, useRef } from 'react'
 import { useMap, useMapEvents } from 'react-leaflet'
-import * as L from 'leaflet'
+import type * as L from 'leaflet'
 import XMLViewer from 'react-xml-viewer'
 import { MdClose } from 'react-icons/md'
 import { useDebouncedCallback } from 'use-debounce'
@@ -12,14 +9,10 @@ import reproject from 'reproject'
 import { usePGlite } from '@electric-sql/pglite-react'
 import { useSetAtom } from 'jotai'
 
-import { ProgressiveGeoJSON } from '../ProgressiveGeoJSON.tsx'
-import { markSnapTarget } from '../../DrawControl/vectorSnapping.ts'
-import { cachedMarkerIconHtml } from '../markerIconHtml.tsx'
+import { VectorFeatures } from './VectorFeatures.tsx'
+import type { VectorProps } from './index.tsx'
 
 import type Crs from '../../../../models/public/Crs.ts'
-import type LayerPresentations from '../../../../models/public/LayerPresentations.ts'
-import type VectorLayers from '../../../../models/public/VectorLayers.ts'
-import type VectorLayerDisplays from '../../../../models/public/VectorLayerDisplays.ts'
 
 import * as fluentUiReactComponents from '@fluentui/react-components'
 const {
@@ -32,8 +25,6 @@ const {
   Button,
 } = fluentUiReactComponents
 
-import { vectorLayerDisplayToProperties } from '../../../../modules/vectorLayerDisplayToProperties.ts'
-import { displayFromFeature } from '../../../../modules/displayByProperty.ts'
 import { rememberWfsFeatureValues } from '../../../../modules/wfsDisplayByProperty.ts'
 import { setShortTermOnlineFromFetchError } from '../../../../modules/setShortTermOnlineFromFetchError.ts'
 import { httpGet } from '../../../../modules/httpGet.ts'
@@ -90,23 +81,7 @@ const bboxFromBounds = ({
 const bboxToString = (bbox: Bbox) =>
   `${bbox.minX},${bbox.minY},${bbox.maxX},${bbox.maxY}`
 
-type WfsService = {
-  url: string
-  version: string | null
-  info_format: string | null
-  default_crs: string | null
-}
-
-type Props = {
-  layer: VectorLayers & {
-    label?: string | null
-    wfs_services?: WfsService
-    vector_layer_displays?: VectorLayerDisplays[] | null
-  }
-  layerPresentation: LayerPresentations
-}
-
-export const WFS = ({ layer, layerPresentation }: Props) => {
+export const WFS = ({ layer, layerPresentation }: VectorProps) => {
   const addNotification = useSetAtom(addNotificationAtom)
   const removeNotification = useSetAtom(removeNotificationAtom)
 
@@ -114,7 +89,6 @@ export const WFS = ({ layer, layerPresentation }: Props) => {
   const [error, setError] = useState<string | null | undefined>(undefined)
   const notificationIds = useRef<string[]>([])
 
-  const firstDisplay = layer.vector_layer_displays?.[0]
   const wfsService = layer.wfs_services!
 
   const removeNotifs = useCallback(() => {
@@ -133,18 +107,9 @@ export const WFS = ({ layer, layerPresentation }: Props) => {
       [wfsDefaultCrsArray[0], wfsDefaultCrsArray[2]].join(':')
     : 'EPSG:4326'
 
-  const [zoom, setZoom] = useState(map.getZoom())
   // the padded bbox and zoom of the last successful fetch — used to skip
   // refetches when the viewport only moved within the fetched window
   const lastFetchRef = useRef<{ bbox: Bbox; zoom: number } | null>(null)
-
-  // stable identity per feature (wfs feature ids): lets
-  // ProgressiveGeoJSON reconcile refetched data without rebuilding
-  const featureKey = useCallback(
-    (feature: GeoJSON.Feature) =>
-      feature.id != null ? String(feature.id) : undefined,
-    [],
-  )
 
   const [data, setData] = useState<
     GeoJSON.FeatureCollection | null | undefined
@@ -181,7 +146,7 @@ export const WFS = ({ layer, layerPresentation }: Props) => {
         bbox: bboxToString(bbox),
       }
       try {
-        res = await httpGet(wfsService.url, params)
+        res = await httpGet(wfsService.url!, params)
       } catch (error) {
         // the request failed on the network level
         setShortTermOnlineFromFetchError(error)
@@ -307,7 +272,6 @@ export const WFS = ({ layer, layerPresentation }: Props) => {
   // moveend covers pans, drags and zooms (leaflet fires it after zoomend)
   useMapEvents({
     moveend: () => fetchIfViewportLeftWindow(),
-    zoomend: () => setZoom(map.getZoom()),
   })
 
   useEffect(() => {
@@ -320,114 +284,12 @@ export const WFS = ({ layer, layerPresentation }: Props) => {
     removeNotifs()
   }, [removeNotifs, data])
 
-  // include only if zoom between min_zoom and max_zoom
-  if (
-    layerPresentation.min_zoom !== undefined &&
-    zoom < layerPresentation.min_zoom!
-  ) {
-    return null
-  }
-  if (
-    layerPresentation.max_zoom !== undefined &&
-    zoom > layerPresentation.max_zoom!
-  ) {
-    return null
-  }
-  if (!firstDisplay) {
-    console.error('VectorLayerWFS, no display:', { layer, firstDisplay })
-    return null
-  }
-
-  // TODO: await not possible here
-  // if (
-  //   data?.length + 1 >=
-  //   (layer.max_features ?? 1000)
-  //   // && !notificationIds.current.length
-  // ) {
-  //   const notif2Res = await createNotification({
-  //     title: `Zuviele Geometrien`,
-  //     body: `Die maximale Anzahl Features von ${
-  //       layer.max_features ?? 1000
-  //     } für Vektor-Karte '${
-  //       layer.label
-  //     }' wurde geladen. Zoomen sie näher ran, damit alle Features geladen werden können.`,
-  //     intent: 'warning',
-  //     timeout: 10000,
-  //     db,
-  //   })
-  //   const notif2 = notif2Res?.rows?.[0]
-  //   notificationIds.current = [
-  //     notif2.id,
-  //     ...notificationIds.current,
-  //   ]
-  // }
-
-  if (!data?.features?.length) {
-    // console.log('VectorLayerWFS, no data, thus returning null')
-    return null
-  }
-
   return (
     <>
-      <ProgressiveGeoJSON
-        resetKey={`${JSON.stringify(layer.vector_layer_displays)}/${JSON.stringify(
-          layerPresentation,
-        )}`}
+      <VectorFeatures
+        layer={layer}
+        layerPresentation={layerPresentation}
         data={data}
-        featureKey={featureKey}
-        geomanIgnore={true}
-        onEachFeature={(feature, geoLayer) => {
-          markSnapTarget(geoLayer, layer.label || '')
-          ;(
-            geoLayer as L.Layer & { vectorLayerLabel?: string }
-          ).vectorLayerLabel = layer.label || 'WFS Layer'
-          feature.properties = feature.properties ?? {}
-          feature.properties.label = 'Feature'
-        }}
-        // one display per value of display_by_property: each feature is drawn
-        // with the display of its value
-        style={(feature) =>
-          vectorLayerDisplayToProperties({
-            vectorLayerDisplay: displayFromFeature(
-              layer.vector_layer_displays,
-              layer.display_by_property,
-              feature,
-            ),
-            presentation: layerPresentation,
-          })
-        }
-        pointToLayer={(feature, latlng) => {
-          const display =
-            displayFromFeature(
-              layer.vector_layer_displays,
-              layer.display_by_property,
-              feature,
-            ) ?? firstDisplay
-          if (display.marker_type === 'circle') {
-            return new L.CircleMarker(latlng, {
-              ...(display as unknown as L.CircleMarkerOptions),
-              geomanIgnore: true,
-              radius: display.circle_marker_radius ?? 8,
-            })
-          }
-
-          const markerIconStyle = {
-            '--marker-color': display.color ?? '#cc756b',
-            '--marker-size': `${display.marker_size ?? 16}px`,
-          } as React.CSSProperties
-          const html = cachedMarkerIconHtml({
-            symbol: display.marker_symbol,
-            className: `${styles.markerIcon} ${styles.markerIconSized}`,
-            style: markerIconStyle,
-          })
-
-          return html ?
-              new L.Marker(latlng, {
-                geomanIgnore: true,
-                icon: new L.DivIcon({ html }),
-              })
-            : new L.Marker(latlng, { geomanIgnore: true })
-        }}
       />
       <Dialog
         onOpenChange={() => setError(null)}

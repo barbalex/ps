@@ -268,7 +268,7 @@ export const Property = ({
     const { value } = getValueFromChange(e, data)
     // the form also renders outside vector-layer routes (map drawer), where
     // params carry no vectorLayerId — the row prop is the source of truth
-    const rowId = vectorLayerId ?? vectorLayer?.vector_layer_id
+    const rowId = vectorLayer?.vector_layer_id ?? vectorLayerId
     const prevRes = await db.query(
       `SELECT * FROM vector_layers WHERE vector_layer_id = $1`,
       [rowId],
@@ -290,6 +290,29 @@ export const Property = ({
       return
     }
 
+    const updated = { ...prev, display_by_property: (value as string) ?? null }
+    if (prev.type === 'upload') {
+      // Check cardinality before committing the new field; an ID column can
+      // have a distinct value (and otherwise a queued display) for every row.
+      const result = await upsertVectorLayerDisplaysForVectorLayer({
+        vectorLayer: updated,
+      })
+      if (result === 'tooManyValues') {
+        addNotification({
+          title: formatMessage(
+            {
+              id: 'vectorLayer.wfs.tooManyValues',
+              defaultMessage:
+                'Das Feld «{field}» hat mehr als {max} verschiedene Werte. Bitte ein Feld mit weniger Werten wählen.',
+            },
+            { field: value as string, max: WFS_MAX_DISPLAY_VALUES },
+          ),
+          intent: 'warning',
+        })
+        return
+      }
+    }
+
     await db.query(
       `UPDATE vector_layers SET display_by_property = $1 WHERE vector_layer_id = $2`,
       [value, rowId],
@@ -306,9 +329,8 @@ export const Property = ({
     })
     // set vector_layer_displays
     // pass the updated row: prev still holds the old display_by_property
-    upsertVectorLayerDisplaysForVectorLayer({
-      vectorLayer: { ...prev, display_by_property: (value as string) ?? null },
-    })
+    if (prev.type !== 'upload')
+      await upsertVectorLayerDisplaysForVectorLayer({ vectorLayer: updated })
   }
 
   // the service's data changes: the fields and the values of the field are
@@ -322,14 +344,14 @@ export const Property = ({
     )
   }
 
-  const wfsOptions =
-    isWfs && wfsFieldsCached ?
+  const cachedPropertyOptions =
+    (isWfs || vectorLayer?.type === 'upload') && wfsFieldsCached ?
       (vectorLayer.properties as string[]).map((name) => ({
         label: name,
         value: name,
       }))
     : []
-  const allOptions = [...options, ...builtInOptions, ...wfsOptions]
+  const allOptions = [...options, ...builtInOptions, ...cachedPropertyOptions]
   // the values of a wfs layer are read live from the service
   const wfsHint =
     isWfs ?

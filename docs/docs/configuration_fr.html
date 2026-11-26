@@ -22,7 +22,11 @@
 <li>Sélection de graphiques prédéfinis, possibilité d&#39;en créer soi-même</li>
 <li>Possibilité de créer des rapports personnalisés au niveau projet et sous-projet, avec intégration des graphiques</li>
 <li>Possibilité d&#39;importer des observations de n&#39;importe quelle source</li>
-<li>Intégration de diverses sources de couches cartographiques (WMS, WFS, imports...)</li>
+<li>Intégration de diverses sources de couches cartographiques (WMS, WFS, imports...)<ul>
+<li>Pour partager un fichier SIG, choisir le type de couche vectorielle <strong>Upload</strong>. Formats : GeoPackage, Shapefile zippé (avec ses fichiers associés), GeoJSON, KML/KMZ, GPX, CSV et géodatabase fichier zippée. Choisir la couche et, pour un CSV, les colonnes X et Y. Vérifier le code EPSG source si demandé ; les coordonnées sont converties en WGS84.</li>
+<li>L’importation nécessite une connexion et des droits d’écriture dans le projet. L’ajout conserve les objets existants ; le remplacement ne les supprime que si l’importation réussit. Après synchronisation, la couche peut être activée, stylisée et interrogée même hors ligne. Limites : 64 Mio par fichier, 256 Mio par archive décompressée.</li>
+</ul>
+</li>
 <li>Choix libre du système de référence de coordonnées, possibilité de définir le sien<ul>
 <li>Le globe à côté de « Afficher le centre de la carte » permet de choisir entre WGS84 et les systèmes configurés dans le projet. En mode conception, ce choix modifie la valeur par défaut du projet ; sinon, il ne s’applique qu’à votre compte sur cet appareil.</li>
 </ul>

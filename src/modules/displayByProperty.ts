@@ -54,13 +54,26 @@ export const displayFromFeature = (
   displayByProperty: string | null | undefined,
   feature: Feature | undefined,
 ): VectorLayerDisplays | undefined => {
-  const valueText = propertyValueToText(
-    feature?.properties?.[displayByProperty as string],
-  )
+  const value =
+    displayByProperty == null ? null : feature?.properties?.[displayByProperty]
+  const valueText = propertyValueToText(value)
   return (
-    displays?.find(
-      (display) =>
-        propertyValueToText(display.display_property_value) === valueText,
-    ) ?? displays?.[0]
+    displays?.find(({ display_property_value: label }) => {
+      if (propertyValueToText(label) === valueText) return true
+      // Uploads use jsonb ->> for their display labels. Normalize PostgreSQL
+      // spacing in arrays/objects and its decimal notation for numbers.
+      if (
+        label &&
+        value != null &&
+        (typeof value === 'object' || typeof value === 'number')
+      ) {
+        try {
+          return propertyValueToText(JSON.parse(label)) === valueText
+        } catch {
+          return false
+        }
+      }
+      return false
+    }) ?? displays?.[0]
   )
 }

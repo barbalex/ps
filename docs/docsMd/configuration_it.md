@@ -27,6 +27,8 @@ Per questo arten-fördern.app è altamente configurabile:
 - Possibilità di creare rapporti personalizzati a livello di progetto e sottoprogetto, con integrazione dei grafici
 - Possibilità di importare osservazioni da qualsiasi fonte
 - Integrazione di diverse fonti per livelli mappa (WMS, WFS, importazioni...)
+  - Per condividere un file GIS, scegliere il tipo **Upload** per un livello vettoriale del progetto. Formati: GeoPackage, Shapefile in ZIP (con i file associati), GeoJSON, KML/KMZ, GPX, CSV e File Geodatabase in ZIP. Scegliere il livello e, per CSV, le colonne X e Y. Verificare il codice EPSG di origine quando richiesto; le coordinate vengono convertite in WGS84.
+  - L’importazione richiede una connessione e permessi di scrittura nel progetto. L’aggiunta conserva gli oggetti esistenti; la sostituzione li elimina solo se l’importazione riesce. Dopo la sincronizzazione il livello si può attivare, stilizzare e interrogare anche offline. Limiti: 64 MiB per file, 256 MiB per archivio decompresso.
 - Scelta libera del sistema di riferimento di coordinate, possibilità di definire il proprio
   - Il globo accanto a «Mostra il centro della mappa» permette di scegliere tra WGS84 e i sistemi configurati nel progetto. In modalità progettazione la scelta modifica il valore predefinito del progetto; altrimenti vale solo per il tuo account su questo dispositivo.
 - Selezione di controlli qualità predefiniti, possibilità di creare i propri

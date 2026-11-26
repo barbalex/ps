@@ -27,6 +27,8 @@ Deshalb ist arten-fördern.app stark konfigurierbar:
 - Möglichkeit, eigene Berichte zu bauen, auf Stufe Projekt und Teil-Projekt, mit Einbezug der Diagramme
 - Möglichkeit, Beobachtungen aus jeglicher Quelle zu importieren
 - Einbezug diverser Quellen für Karten-Layer (WMS, WFS, Importe...)
+  - Bei einer Vektorebene im Projekt **Upload** wählen. Unterstützt werden GeoPackage, Shapefile im ZIP (mit Begleitdateien), GeoJSON, KML/KMZ, GPX, CSV und File Geodatabase im ZIP. Die Quellebene und bei CSV die X- und Y-Spalten auswählen. Bei Bedarf den EPSG-Code der Quelldaten prüfen; die Koordinaten werden nach WGS84 umgerechnet.
+  - Der Import benötigt eine Verbindung und Schreibrechte im Projekt. Beim Hinzufügen bleiben vorhandene Objekte erhalten, beim Ersetzen werden sie erst nach erfolgreichem Import ausgetauscht. Nach der Synchronisation lässt sich die Ebene auch offline aktivieren, gestalten und abfragen. Grenzen: 64 MiB pro Datei, 256 MiB pro entpacktem Archiv.
 - Freie Wahl des Koordinaten-Bezugs-Systems, Möglichkeit eigenes zu definieren
   - Über den Globus neben «Kartenmitte anzeigen» wechseln Sie zwischen WGS84 und den im Projekt konfigurierten Systemen. Im Gestaltungsmodus ändern Sie den Projektstandard, sonst gilt die Auswahl nur für Ihr Konto auf diesem Gerät.
 - Wahl vorbereiteter Qualitätskontrollen, Möglichkeit eigene zu bauen

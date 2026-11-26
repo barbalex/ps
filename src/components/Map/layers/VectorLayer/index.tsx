@@ -1,38 +1,37 @@
-// import { useLiveQuery } from '@electric-sql/pglite-react'
+import { useState } from 'react'
+import { useMap, useMapEvent } from 'react-leaflet'
 
 import type LayerPresentations from '../../../../models/public/LayerPresentations.ts'
+import type VectorLayerDisplays from '../../../../models/public/VectorLayerDisplays.ts'
 import type VectorLayers from '../../../../models/public/VectorLayers.ts'
+import type WfsServices from '../../../../models/public/WfsServices.ts'
 import { WFS } from './WFS.tsx'
-import { PVLGeom as PVLGeomBase } from './PVLGeom.tsx'
+import { Upload } from './Upload.tsx'
 
-type Props = {
-  layer: VectorLayers
+export type VectorProps = {
+  layer: VectorLayers & {
+    label: string
+    vector_layer_displays?: VectorLayerDisplays[] | null
+    wfs_services?: Pick<
+      WfsServices,
+      'url' | 'version' | 'info_format' | 'default_crs'
+    > | null
+  }
   layerPresentation: LayerPresentations
 }
 
-// type-only bridge: this is the only call site and it passes no display
-const PVLGeom = PVLGeomBase as unknown as (props: { layer: VectorLayers }) => React.ReactElement
+export const VectorLayerChooser = (props: VectorProps) => {
+  const map = useMap()
+  const [zoom, setZoom] = useState(map.getZoom())
+  useMapEvent('zoomend', () => setZoom(map.getZoom()))
+  const { min_zoom, max_zoom } = props.layerPresentation
+  if (
+    (min_zoom != null && zoom < min_zoom) ||
+    (max_zoom != null && zoom > max_zoom)
+  )
+    return null
 
-/**
- * This component chooses whether to render
- * from WFS or PVLGeom
- */
-
-// [vite] TypeError: Cannot read properties of undefined (reading 'ReactCurrentDispatcher')
-export const VectorLayerChooser = ({ layer, layerPresentation }: Props) => {
-  // const res = useLiveQuery(
-  //   `SELECT * FROM vector_layer_geoms WHERE vector_layer_id = $1`,
-  //   [layer.vector_layer_id],
-  // )
-  // const vectorLayerGeoms = res?.rows ?? []
-  // const geomCount = vectorLayerGeoms.length
-
-  // TODO: check if there are local geometries
-  const geomCount = 0
-
-  // TODO: pass layerPresentation only when vector layers are not shown directly in Map anymore
-  if (!geomCount)
-    return <WFS layer={layer} layerPresentation={layerPresentation} />
-  // TODO: what is this? Local data / Offline version
-  return <PVLGeom layer={layer} />
+  return props.layer.type === 'upload' ?
+      <Upload {...props} />
+    : <WFS {...props} />
 }

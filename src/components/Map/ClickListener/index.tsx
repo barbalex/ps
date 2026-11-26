@@ -8,6 +8,7 @@ import type {
   LatLngBounds,
   Layer,
   LeafletMouseEvent,
+  Point,
 } from 'leaflet'
 import proj4 from 'proj4'
 import { useSetAtom, useAtomValue, useAtom } from 'jotai'
@@ -47,8 +48,27 @@ type ClickableLayer = Layer & {
   _clickableCircle?: CircleMarker
   feature?: GeoJSON.Feature
   vectorLayerLabel?: string | null
+  externalVectorFeature?: boolean
+  getLayers?: () => ClickableLayer[]
+  _containsPoint?: (point: Point) => boolean
   getBounds?: () => LatLngBounds
   getLatLng?: () => LatLng
+}
+
+// A multipart upload is one inspectable feature, not one hit per child
+// or a hit anywhere inside the bounding box of all its parts.
+const hitsExternalFeature = (
+  layer: ClickableLayer,
+  event: LeafletMouseEvent,
+  map: LeafletMap,
+): boolean => {
+  if (layer.getLayers) {
+    return layer.getLayers().some((part) => hitsExternalFeature(part, event, map))
+  }
+  // Leaflet's own pixel hit-test for paths (including holes and circles).
+  if (layer._containsPoint) return layer._containsPoint(event.layerPoint)
+  return !!layer.getLatLng &&
+    event.containerPoint.distanceTo(map.latLngToContainerPoint(layer.getLatLng())) <= 10
 }
 
 // rows of the wms_layers/layer_presentations/wms_services join below
@@ -168,7 +188,9 @@ export const ClickListener = () => {
       if (layer._isInternal || !('vectorLayerLabel' in layer)) return
 
       // Handle layer groups with circle markers (from TableLayer)
-      if (layer._clickableCircle && layer.feature) {
+      if (layer.externalVectorFeature) {
+        if (hitsExternalFeature(layer, event, map)) clickedLayers.push(layer)
+      } else if (layer._clickableCircle && layer.feature) {
         const circle = layer._clickableCircle
         const center = map.latLngToContainerPoint(circle.getLatLng())
         if (event.containerPoint.distanceTo(center) <= circle.getRadius()) {
@@ -195,6 +217,7 @@ export const ClickListener = () => {
     // for the new row (its previous edits are persisted on every change).
     if (choosingGeometry) {
       const target = clickedLayers
+        .filter((layer) => !layer.externalVectorFeature)
         .map((layer) => ownTargetFromProperties(layer.feature?.properties))
         .find((target) => !!target)
 
@@ -225,6 +248,17 @@ export const ClickListener = () => {
 
     // Add clicked table layer features to mapInfo
     clickedLayers.forEach((layer) => {
+      if (layer.externalVectorFeature) {
+        const props = layer.feature?.properties ?? {}
+        mapInfo.layers.push({
+          label: layer.vectorLayerLabel || 'Unknown Layer',
+          featureLabel: typeof props.label === 'string' ? props.label : 'Feature',
+          properties: Object.entries(props).map(([key, value]) => [
+            key, typeof value === 'string' ? value : JSON.stringify(value),
+          ]),
+        })
+        return
+      }
       if (layer.feature && layer.feature.properties) {
         const entries = Object.entries(layer.feature.properties).filter(
           ([key]) =>
@@ -301,13 +335,7 @@ export const ClickListener = () => {
       }
     })
 
-    // Three types of querying:
-    // 1. WMS Layers
-    // 2. Vector Layers from own tables (type !== 'wfs')
-    // 3. Vector Layers from WFS with downloaded data
-    // 4. Vector Layers from WFS with no downloaded data
-    // TODO: filter own layers and layers with downloaded data
-    // by querying db.vector_layer_geoms using ST_CONTAINS once PostGIS arrives in PgLite
+    // Own and uploaded features have already supplied their local properties.
 
     // 1. WMS Layers
     // TODO: move sort to layer_presentations

@@ -56,7 +56,8 @@ export const zoomToVectorLayer = async ({
     const scopeSql = subprojectId ? 'AND s.subproject_id = $2' : ''
     const scopeParams = subprojectId ? [layer.project_id, subprojectId] : [layer.project_id]
     const tableName =
-      layer.own_table_level ?
+      layer.type === 'upload' || layer.type === 'wfs' ? null
+      : layer.own_table_level ?
         `${layer.own_table}${layer.own_table_level}`
       : layer.own_table
 

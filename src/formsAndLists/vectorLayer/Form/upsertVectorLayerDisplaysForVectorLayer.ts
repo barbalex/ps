@@ -4,6 +4,7 @@ import {
   ownTableToFieldsTable,
 } from '../../../modules/displayByProperty.ts'
 import { addOperationAtom, store, pgliteDbAtom } from '../../../store.ts'
+import { WFS_MAX_DISPLAY_VALUES } from '../../../modules/wfsDisplayByProperty.ts'
 
 import type { PGlite } from '@electric-sql/pglite'
 import type VectorLayers from '../../../models/public/VectorLayers.ts'
@@ -42,10 +43,26 @@ export const upsertVectorLayerDisplaysForVectorLayer = async ({
       `vector_layer_id ${vectorLayer.vector_layer_id} has no type`,
     )
   }
-  // TODO: add this for wfs and upload
+  if (vectorLayer.type === 'upload') {
+    const { vector_layer_id: vectorLayerId, display_by_property: field } =
+      vectorLayer
+    if (field == null) return clearVectorLayerDisplaysByValue(vectorLayerId)
+    const { rows } = await db.query<{ value: string }>(
+      `SELECT DISTINCT properties ->> $2::text AS value
+       FROM vector_layer_geoms WHERE vector_layer_id = $1
+         AND octet_length(properties ->> $2::text) <= 2000 LIMIT $3`,
+      [vectorLayerId, field, WFS_MAX_DISPLAY_VALUES + 1],
+    )
+    if (rows.length > WFS_MAX_DISPLAY_VALUES) return 'tooManyValues'
+    return syncVectorLayerDisplaysForValues({
+      vectorLayerId,
+      values: [...new Set([null, ...rows.map(({ value }) => value)])],
+      removeVanished: true,
+    })
+  }
   if (vectorLayer.type !== 'own') {
     throw new Error(
-      `creating vector_layer_displays for wfs and upload not implemented`,
+      `Expected an own or upload vector layer, got ${vectorLayer.type}`,
     )
   }
 
@@ -143,8 +160,6 @@ export const upsertVectorLayerDisplaysForVectorLayer = async ({
       },
     })
   }
-
-  // TODO: do this for wfs and upload
 
   // get field of displayByPropertyField
   const fieldRes = await db.query(
