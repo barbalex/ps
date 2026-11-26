@@ -1,4 +1,5 @@
-import { useCallback, useEffect, useRef, useState, type ReactNode } from 'react'
+import { useCallback, useContext, useEffect, useRef, useState, type ReactNode } from 'react'
+import { createPortal } from 'react-dom'
 import { useLiveQuery } from '@electric-sql/pglite-react'
 import { TooltipButton } from '../../../shared/TooltipButton.tsx'
 import {
@@ -16,7 +17,8 @@ import { TbZoomScan } from 'react-icons/tb'
 import { Geometry } from '../../../FormMenu/Geometry.tsx'
 import { observationFormRoute, ownFormRoute } from '../../../../modules/navigateToOwnForm.ts'
 import { usePaneVisibility } from '../../../LayoutProtected/usePaneVisibility.ts'
-import { MapInfoFormRoot } from '../../../../modules/mapInfoFormContext.ts'
+import { MapInfoBreadcrumbSlot, MapInfoFormRoot } from '../../../../modules/mapInfoFormContext.ts'
+import { Breadcrumbs } from '../../../LayoutProtected/Breadcrumbs/index.tsx'
 import { useOwnLayerScope } from '../../../../modules/useOwnLayerScope.ts'
 import { roleDependencies } from '../../../../modules/writeAccess.ts'
 import {
@@ -49,6 +51,7 @@ export const OwnHit = ({
   children: ReactNode
 }) => {
   const { formatMessage } = useIntl()
+  const breadcrumbSlot = useContext(MapInfoBreadcrumbSlot)
   const { projectId, placeId, placeId2, checkId, actionId, observationId } = useParams({
     strict: false,
   })
@@ -241,6 +244,7 @@ export const OwnHit = ({
       </div>
       {formShown ?
         <div className={styles.objectForm}>
+          {breadcrumbSlot && createPortal(<Breadcrumbs />, breadcrumbSlot)}
           <MapInfoFormRoot.Provider value={mapOnly ? objectPath : undefined}>
             <Outlet />
           </MapInfoFormRoot.Provider>

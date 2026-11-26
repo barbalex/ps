@@ -3,14 +3,14 @@ const { Button, DrawerBody, DrawerHeader } = fluentUiReactComponents
 import { MdClose } from 'react-icons/md'
 import { useAtom, useAtomValue } from 'jotai'
 import { useIntl } from 'react-intl'
-import type { MouseEvent } from 'react'
+import { useState, type MouseEvent } from 'react'
 import { Outlet, useMatches, useParams } from '@tanstack/react-router'
 import { useLiveQuery } from '@electric-sql/pglite-react'
 
 import { ErrorBoundary } from '../../../shared/ErrorBoundary.tsx'
 import { Breadcrumbs } from '../../../LayoutProtected/Breadcrumbs/index.tsx'
 import { usePaneVisibility } from '../../../LayoutProtected/usePaneVisibility.ts'
-import { MapInfoFormRoot, MapInfoNavigation } from '../../../../modules/mapInfoFormContext.ts'
+import { MapInfoBreadcrumbSlot, MapInfoFormRoot, MapInfoNavigation } from '../../../../modules/mapInfoFormContext.ts'
 import { FormHeader } from '../../../FormHeader/index.tsx'
 import { Location } from './Location.tsx'
 import { Layer } from './Layer.tsx'
@@ -37,6 +37,7 @@ const RoutedInfo = () => {
 }
 
 export const Info = () => {
+  const [breadcrumbSlot, setBreadcrumbSlot] = useState<HTMLDivElement | null>(null)
   const [mapInfo, setMapInfo] = useAtom(mapInfoAtom)
   const language = useAtomValue(languageAtom)
   const { formatMessage } = useIntl()
@@ -144,7 +145,8 @@ export const Info = () => {
             }
           />
         </DrawerHeader>
-        {mapOnly && mapInfo && <Breadcrumbs />}
+        {mapOnly && (mapInfo?.browsing ? <Breadcrumbs /> : <div ref={setBreadcrumbSlot} />)}
+        <MapInfoBreadcrumbSlot.Provider value={mapOnly ? breadcrumbSlot : null}>
         <DrawerBody className={styles.body}>
           {selected && <div className={styles.backOverlay}><Button size="small" onClick={back}>{backLabel}</Button></div>}
           {mapOnly && mapInfo?.browsing ? <RoutedInfo /> : <>
@@ -180,6 +182,7 @@ export const Info = () => {
           : <p className={styles.noData}>No Data found at this location</p>}
           </>}
         </DrawerBody>
+        </MapInfoBreadcrumbSlot.Provider>
       </div>
       </MapInfoNavigation.Provider>
     </ErrorBoundary>
