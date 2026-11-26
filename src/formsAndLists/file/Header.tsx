@@ -1,28 +1,29 @@
-import { useContext, useRef, useEffect } from 'react'
+import { useContext, useRef, useEffect, useState } from 'react'
 import { useParams, useNavigate, useLocation } from '@tanstack/react-router'
 import * as fluentUiReactComponents from '@fluentui/react-components'
 const { Button } = fluentUiReactComponents
-import { MdPreview, MdEditNote, MdFileDownload, MdDownloadDone, MdDownloading } from 'react-icons/md'
+import { MdPreview, MdEditNote, MdFileDownload, MdDownloadDone, MdDownloading, MdOfflinePin } from 'react-icons/md'
+import { saveAs } from 'file-saver'
 import { useIntl } from 'react-intl'
 
 import { usePGlite, useLiveQuery } from '@electric-sql/pglite-react'
-import { useAtomValue } from 'jotai'
+import { useAtomValue, useSetAtom } from 'jotai'
 
 import { FormHeader } from '../../components/FormHeader/index.tsx'
 import { UploaderContext } from '../../UploaderContext.ts'
 import { FullscreenControl } from './FullscreenControl.tsx'
 import { HistoryToggleButton } from '../../components/shared/HistoryCompare/HistoryToggleButton.tsx'
-import { offlineFilesStatusAtom } from '../../store.ts'
+import { addNotificationAtom, offlineFilesStatusAtom } from '../../store.ts'
 import { useRequestRowDelete } from '../../modules/deleteRow.ts'
 import { filesScopeWhere } from '../../modules/filesScopeWhere.ts'
-import { setFileOffline } from '../../modules/setFileOffline.ts'
+import { toggleFileOffline } from '../../modules/toggleFileOffline.ts'
 import type Files from '../../models/public/Files.ts'
 
 export const Header = ({
   row,
   previewRef,
 }: {
-  row?: Files
+  row: Files
   previewRef?: React.RefObject<HTMLElement | null>
   from?: string
 }) => {
@@ -49,16 +50,29 @@ export const Header = ({
   const projectBasePath = `/data/projects/${projectId}/files/${fileId}`
   const { formatMessage } = useIntl()
   const requestDelete = useRequestRowDelete()
+  const notify = useSetAtom(addNotificationAtom)
+  const [downloading, setDownloading] = useState(false)
+
+  const download = async () => {
+    if (!row.url || downloading) return
+    setDownloading(true)
+    try {
+      const response = await fetch(row.url)
+      if (!response.ok) throw new Error(`HTTP ${response.status} ${response.statusText}`)
+      saveAs(await response.blob(), row.name?.trim() || row.file_id)
+    } catch (error) {
+      notify({
+        intent: 'error',
+        title: formatMessage({ id: 'fileDownloadFailed', defaultMessage: 'Datei konnte nicht heruntergeladen werden' }),
+        body: error instanceof Error ? error.message : String(error),
+      })
+    } finally {
+      setDownloading(false)
+    }
+  }
 
   // offline availability: the mark (files.offline) plus the project gate;
   // hidden entirely while the gate is off
-  const resOfflineRow = useLiveQuery(
-    `SELECT offline, url FROM files WHERE file_id = $1`,
-    [fileId],
-  )
-  const offlineRow = resOfflineRow?.rows?.[0] as
-    | { offline: boolean | null; url: string | null }
-    | undefined
   const resGate = useLiveQuery(
     `SELECT files_offline FROM projects WHERE project_id = $1`,
     [projectId],
@@ -72,7 +86,7 @@ export const Header = ({
           id: 'offlineFileDownloadingTitle',
           defaultMessage: 'Datei wird für offline gespeichert …',
         })
-      : offlineRow?.offline ?
+      : row.offline ?
         formatMessage({
           id: 'offlineFileOnTitle',
           defaultMessage: 'Datei offline verfügbar (Klick: wieder entfernen)',
@@ -82,9 +96,12 @@ export const Header = ({
           defaultMessage: 'Datei offline verfügbar machen',
         })
 
-  const onClickOffline = () => {
-    if (!fileId || !offlineRow?.url) return
-    void setFileOffline(fileId, !offlineRow.offline)
+  const onClickOffline = async () => {
+    try {
+      await toggleFileOffline(row.file_id)
+    } catch (error) {
+      notify({ intent: 'error', body: error instanceof Error ? error.message : String(error) })
+    }
   }
 
 
@@ -195,16 +212,23 @@ export const Header = ({
       tableName="file"
       siblings={
         <>
-          {gateOn && !!offlineRow?.url && (
+          <Button
+            title={formatMessage({ id: 'fileDownload', defaultMessage: 'Datei herunterladen' })}
+            icon={<MdFileDownload />}
+            disabled={!row.url || downloading}
+            onClick={download}
+          />
+          {gateOn && !!row.url && (
             <Button
               title={offlineTitle}
+              aria-pressed={!!row.offline}
               icon={
                 offlineStatus === 'downloading' ? (
                   <MdDownloading />
-                ) : offlineRow.offline ? (
+                ) : row.offline ? (
                   <MdDownloadDone />
                 ) : (
-                  <MdFileDownload />
+                  <MdOfflinePin />
                 )
               }
               onClick={onClickOffline}

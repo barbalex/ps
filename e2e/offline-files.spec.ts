@@ -1,4 +1,5 @@
 import { test, expect } from '@playwright/test'
+import { readFile } from 'node:fs/promises'
 import {
   psql,
   ensureUser,
@@ -91,7 +92,7 @@ async function ensureE2eData() {
 }
 
 test.describe('offline files', () => {
-  test('a text/plain attachment previews its contents', async ({ page }) => {
+  test('a text/plain attachment previews and downloads its original contents', async ({ page }) => {
     await ensureE2eData()
     const id = '61000000-0000-7000-8000-000000000006'
     const url = 'http://localhost:5176/e2e-attachments/text.txt'
@@ -103,6 +104,15 @@ test.describe('offline files', () => {
     await login(page, E2E_EMAIL, E2E_PASSWORD)
     await page.goto(`/data/projects/${E2E_PROJECT_ID}/files/${id}/preview?panes=data`)
     await expect(page.getByText('text', { exact: true })).toBeVisible({ timeout: 60_000 })
+    const formUrl = `/data/projects/${E2E_PROJECT_ID}/files/${id}?panes=data`
+    await page.goto(formUrl)
+    const [download] = await Promise.all([
+      page.waitForEvent('download'),
+      page.getByRole('button', { name: /Download file|Datei herunterladen/i }).click(),
+    ])
+    expect(download.suggestedFilename()).toBe('text.txt')
+    expect(await readFile(await download.path(), 'utf8')).toBe('text')
+    await expect(page).toHaveURL(formUrl)
   })
 
   test('a marked file is cached and unmarking frees it again', async ({
@@ -119,18 +129,31 @@ test.describe('offline files', () => {
     // open the file form and mark it offline
     await page.getByText('e2e offline file').click()
     // the toggle's title contains 'offline' in both states and locales
-    await page.getByTitle(/offline/i).first().click()
+    const toggle = page.locator('.form-header button[title*="offline" i][aria-pressed]')
+    await toggle.click()
 
     // the local mark triggers the manager: the file lands in the cache
     await expect
       .poll(() => cacheKeys(page), { timeout: 30_000 })
       .toContain(E2E_FILE_URL)
 
-    // unmark: the cache must not keep the space
-    await page.getByTitle(/offline/i).first().click()
+    const serverState = () => psql(`SELECT offline::text || ':' || updated_at::text FROM files WHERE file_id = '${E2E_FILE_ID}'`)
+    await expect.poll(serverState, { timeout: 30_000 }).toMatch(/^true:/)
+    const before = serverState()
+    // Both handlers see the same rendered props. Two clicks must still
+    // toggle twice, and sync the final mark rather than the stale value.
+    await toggle.evaluate((button: HTMLButtonElement) => { button.click(); button.click() })
+    await expect.poll(() => {
+      const state = serverState()
+      return state !== before && state.startsWith('true:')
+    }, { timeout: 30_000 }).toBe(true)
+
+    await toggle.click()
     await expect
       .poll(() => cacheKeys(page), { timeout: 30_000 })
       .toEqual([])
+    await expect(toggle).toHaveAttribute('aria-pressed', 'false')
+    await expect.poll(serverState, { timeout: 30_000 }).toMatch(/^false:/)
   })
 
   test('the table flag caches all files of the table', async ({ page }) => {

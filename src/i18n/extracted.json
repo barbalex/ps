@@ -1901,6 +1901,12 @@
   "field.taxonomies": {
     "defaultMessage": "Projekt: Taxonomien"
   },
+  "fileDownload": {
+    "defaultMessage": "Datei herunterladen"
+  },
+  "fileDownloadFailed": {
+    "defaultMessage": "Datei konnte nicht heruntergeladen werden"
+  },
   "filesOfflineHint": {
     "defaultMessage": "Erlaubt Offline-Dateien: Benutzer markieren einzelne Dateien im Datei-Formular, Designer alle Dateien einer Tabelle in der Stufen-Konfiguration. Ohne diese Einstellung werden keine Dateien offline gespeichert."
   },

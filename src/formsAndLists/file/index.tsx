@@ -124,7 +124,7 @@ export const File = ({ from }: { from?: string }) => {
         actionId={row.action_id}
         checkId={row.check_id}
       />
-      <Header from={from} />
+      <Header row={row} from={from} />
       <FileForm row={row} from={from!} withContainer={false} />
     </div>
   )
