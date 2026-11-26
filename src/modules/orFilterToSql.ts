@@ -1,5 +1,10 @@
 import { validate as isUuid } from 'uuid'
 
+// PGlite live queries format bound parameters through PostgreSQL format().
+// Keep literal percent signs and $n text out of that formatting pass.
+const literal = (text: string) =>
+  `E'${text.replaceAll('\\', '\\\\').replaceAll("'", "''").replaceAll('%', '\\045').replaceAll('$', '\\044')}'`
+
 export const orFilterToSql = (
   orFilter: Record<string, unknown>,
   tablePrefix: string,
@@ -14,7 +19,10 @@ export const orFilterToSql = (
     // data->>'column' = 'true'
     const isData = column.startsWith('data.')
     const columnName = isData ? column.substring(5) : column
-    let columnDescriptor = isData ? `data ->> '${columnName}'` : columnName
+    let columnDescriptor =
+      isData ?
+        `data ->> ${literal(columnName)}`
+      : `"${columnName.replaceAll('"', '""')}"`
     if (tablePrefix) {
       columnDescriptor = `${tablePrefix}.${columnDescriptor}`
     }
@@ -22,14 +30,14 @@ export const orFilterToSql = (
     if (value !== null && typeof value === 'object' && '$eq' in value) {
       const eqVal = (value as { $eq: unknown }).$eq
       if (typeof eqVal === 'string') {
-        return `${columnDescriptor}::text = '${eqVal}'`
+        return `${columnDescriptor}::text = ${literal(eqVal)}`
       }
     }
     // negated exact match: includes rows where the column is null
     if (value !== null && typeof value === 'object' && '$ne' in value) {
       const neVal = (value as { $ne: unknown }).$ne
       if (typeof neVal === 'string') {
-        return `${columnDescriptor}::text IS DISTINCT FROM '${neVal}'`
+        return `${columnDescriptor}::text IS DISTINCT FROM ${literal(neVal)}`
       }
     }
     if (typeof value === 'string' && isUuid(value)) {
@@ -38,7 +46,7 @@ export const orFilterToSql = (
     // cast text and filter with ilike
     if (typeof value === 'string') {
       // return `${columnDescriptor}::text ILIKE '${value}'`
-      return `${columnDescriptor}::text ILIKE '%${value}%'`
+      return `${columnDescriptor}::text ILIKE ${literal(`%${value}%`)}`
     }
     // set nulls the right way
     if (value === null || value === undefined || value === '') {
@@ -50,11 +58,11 @@ export const orFilterToSql = (
     }
     // correctly cast numbers
     // isNaN coerces its argument, matching the runtime behavior for unknown values
-    if (!isNaN(value as number)) {
+    if (typeof value === 'number' && Number.isFinite(value)) {
       return `${columnDescriptor}::numeric = ${value}`
     }
     // catch all others
-    return `${columnDescriptor} = ${value}`
+    throw new TypeError(`Invalid filter value for ${column}`)
   })
   const sql =
     whereClauses.length > 1 ?

@@ -15,6 +15,15 @@
 
 .scopeField {
   margin: 8px 12px;
+  overflow-wrap: anywhere;
+}
+
+.scopeChoices {
+  display: grid;
+  gap: 4px;
+  margin: 4px 0;
+  max-height: 16rem;
+  overflow: auto;
 }
 
 .tabList {

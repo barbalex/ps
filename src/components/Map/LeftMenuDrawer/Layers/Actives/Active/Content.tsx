@@ -90,7 +90,7 @@ export const Content = ({
   dragHandleRef: RefObject<HTMLDivElement | null>
 }) => {
   const { formatMessage } = useIntl()
-  const { projectId, subprojectId } = useOwnLayerScope()
+  const { projectId, subprojectId, filterSql } = useOwnLayerScope()
   const [designingMap] = useAtom(designingAtom)
   const designing = designingMap[projectId ?? ''] ?? false
   const { isLayerVisible } = useUrlLayers()
@@ -397,6 +397,7 @@ export const Content = ({
       db,
       layer,
       subprojectId,
+      filterSql,
       addNotification,
       setMapBounds,
     })

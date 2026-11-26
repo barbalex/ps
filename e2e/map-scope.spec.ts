@@ -21,7 +21,11 @@ const test = base.extend<{
     const password = randomBytes(32).toString('base64url')
     const userId = await ensureUser({ email, password, name: 'Scope test' })
     try {
-      await runTest({ email, userId, signIn: () => login(page, email, password) })
+      await runTest({
+        email,
+        userId,
+        signIn: () => login(page, email, password),
+      })
     } finally {
       psql(`BEGIN;
         SET LOCAL electric.syncing = true;
@@ -79,18 +83,19 @@ test('switches map routes with the viewport intact and only offers accessible ch
   )
   const drawer = page.locator('.map-layers-drawer')
   const project = drawer.getByRole('combobox', { name: 'Project', exact: true })
-  const survey = drawer.getByRole('combobox', { name: 'Survey' })
+  const survey = drawer.locator('summary')
   await expect(project).toHaveValue(a, { timeout: 120_000 })
-  await expect(survey).toHaveValue(first)
-  await expect(survey.locator('option')).toHaveText([
-    'All accessible',
-    'North',
-    'South',
-  ])
-  await survey.selectOption(second)
+  await expect(survey).toHaveText('Survey: North')
+  await survey.click()
+  await expect(
+    drawer.getByRole('checkbox', { name: 'Restricted' }),
+  ).toHaveCount(0)
+  await drawer.getByRole('checkbox', { name: 'South' }).click()
+  await expect(survey).toHaveText('Survey: North, South')
   await expect(page).toHaveURL(
     (url) =>
-      url.pathname.endsWith(`/subprojects/${second}`) &&
+      url.pathname.endsWith(`/${a}`) &&
+      JSON.parse(url.searchParams.get('f-subprojects')!).length === 2 &&
       url.searchParams.has('layers'),
   )
   await project.selectOption(b)
@@ -104,7 +109,7 @@ test('switches map routes with the viewport intact and only offers accessible ch
   )
   await expect(survey).toHaveCount(0)
   await page.goBack()
-  await expect(survey).toHaveValue(second)
+  await expect(survey).toHaveText('Survey: North, South')
 })
 
 test('with one accessible project the map offers only its subprojects', async ({
@@ -122,9 +127,8 @@ test('with one accessible project the map offers only its subprojects', async ({
   await signIn()
   await page.goto('/data/projects?panes=map')
   const drawer = page.locator('.map-layers-drawer')
-  await drawer
-    .getByRole('combobox', { name: 'Survey' })
-    .selectOption(first, { timeout: 120_000 })
+  await drawer.locator('summary').click({ timeout: 120_000 })
+  await drawer.getByRole('checkbox', { name: 'North' }).click()
   await expect(
     drawer.getByRole('combobox', { name: 'Project', exact: true }),
   ).toHaveCount(0)
@@ -155,24 +159,95 @@ test('overview renders both accessible subprojects and stays wide when opening a
   })
   await signIn()
   await page.goto(`/data/projects/${a}?panes=map&c=47.37,8.54&z=17`)
-  const survey = page.getByRole('combobox', { name: 'Survey' })
-  await page.getByRole('button', { name: 'Cluster point markers' }).click({ timeout: 120_000 })
+  const survey = page.locator('.map-layers-drawer summary')
+  await page
+    .getByRole('button', { name: 'Cluster point markers' })
+    .click({ timeout: 120_000 })
   await page.getByRole('menuitemradio', { name: 'Show individually' }).click()
   const markers = page.locator('.clickable-hitbox')
   await expect(markers).toHaveCount(2, { timeout: 120_000 })
   await markers.first().click()
   const info = page.locator('.map-info-drawer')
-  const hitSubproject = await info.getByText(/^Survey: (North|South)$/).innerText()
+  const hitSubproject = await info
+    .getByText(/^Survey: (North|South)$/)
+    .innerText()
   await page.getByRole('button', { name: 'Navigate to form' }).click()
   await expect(page).toHaveURL(
     (url) =>
-      url.pathname.includes(`/subprojects/${hitSubproject === 'Survey: North' ? first : second}/places/`) &&
-      url.searchParams.get('mapOverview') === a,
+      url.pathname.includes(
+        `/subprojects/${hitSubproject === 'Survey: North' ? first : second}/places/`,
+      ) && url.searchParams.get('mapOverview') === a,
   )
-  await expect(survey).toHaveValue('')
+  await expect(survey).toHaveText('Survey: All accessible')
   await expect(markers).toHaveCount(2)
-  await survey.selectOption(second)
+  await survey.click()
+  await page.getByRole('checkbox', { name: 'South' }).click()
   await expect(markers).toHaveCount(1)
-  await survey.selectOption('')
+  await page.getByRole('button', { name: 'All accessible' }).click()
   await expect(markers).toHaveCount(2)
+})
+
+test('species list and map share OR selections and confirm before replacing rules', async ({
+  page,
+  scopeUser: { email, signIn, userId },
+}) => {
+  await grantRoles({
+    email,
+    userId,
+    projectId: a,
+    role: 'read-specific',
+    subprojectIds: [first, second, hidden],
+    placeIds: places.slice(0, 3),
+  })
+  await signIn()
+  await page.setViewportSize({ width: 2000, height: 950 })
+  const listPath = `/data/projects/${a}/subprojects`
+  await page.goto(`${listPath}/filter?panes=data,map`)
+  const picker = page.locator(
+    '.form-container.filter select[name=subproject_id]',
+  )
+  await picker.selectOption(first, { timeout: 120_000 })
+  await page.getByRole('tab', { name: '+', exact: true }).click()
+  await picker.selectOption(second)
+  const summary = page.locator('.map-layers-drawer summary')
+  await expect(summary).toHaveText('Survey: North, South')
+  await page.goto(`${listPath}${new URL(page.url()).search}`)
+  const rows = page.locator('.list-container')
+  await expect(rows.getByText('North', { exact: true })).toBeVisible()
+  await expect(rows.getByText('South', { exact: true })).toBeVisible()
+  await expect(rows.getByText('Restricted', { exact: true })).toHaveCount(0)
+  await page.goto(`${listPath}/filter?panes=data,map`)
+  const name = page.locator('.form-container.filter input[name=name]')
+  await expect(summary).toHaveText('Survey: All accessible')
+  await name.pressSequentially('th')
+  await expect(page).toHaveURL(
+    (url) =>
+      url.searchParams.get('f-subprojects') ===
+      JSON.stringify([{ name: 'th' }]),
+  )
+  await expect(summary).toHaveText('Survey: North, South')
+  await summary.click()
+  const south = page.getByRole('checkbox', { name: 'South' })
+  page.once('dialog', (d) => d.dismiss())
+  await south.click()
+  await expect(summary).toHaveText('Survey: North, South')
+  page.once('dialog', (d) => d.accept())
+  await south.click()
+  await expect(summary).toHaveText('Survey: North')
+  await expect(page).toHaveURL(
+    (url) =>
+      JSON.stringify(JSON.parse(url.searchParams.get('f-subprojects')!)) ===
+      JSON.stringify([{ subproject_id: first }]),
+  )
+  const restricted = page.getByRole('checkbox', { name: 'Restricted' })
+  if (!(await restricted.isVisible())) await summary.click()
+  await restricted.click()
+  await expect(summary).toHaveText('Survey: North, Restricted')
+  const search = new URL(page.url()).searchParams
+  search.set('panes', 'tree,data,map')
+  await page.goto(`${listPath}?${search}`)
+  await expect(rows.getByText('Restricted', { exact: true })).toBeVisible()
+  await expect(rows.getByText('South', { exact: true })).toHaveCount(0)
+  const tree = page.locator('[data-index]')
+  await expect(tree.getByText(/\(2\/3\)$/)).toBeVisible()
 })

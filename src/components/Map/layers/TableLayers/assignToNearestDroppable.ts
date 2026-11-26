@@ -22,7 +22,7 @@ export const assignToNearestDroppable = async ({
 }: {
   latLng: LatLng
   observationId: string
-  scope: { projectId: string; subprojectId?: string }
+  scope: { projectId: string; subprojectId?: string; filterSql?: string }
   map: Map
   droppableLayers: string[]
   confirmAssigningToSingleTarget: boolean

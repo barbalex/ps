@@ -1118,7 +1118,14 @@ offers separate controls for editing geometry and opening the form.
 ## Choosing the project and subproject on the map
 
 The map's Layers drawer lets users switch between accessible projects and
-between subprojects of the selected project when there is more than one choice.
+select multiple species/subprojects. Its searchable checklist shows each
+selected name even when collapsed. Explicit choices are regular `f-subprojects`
+OR filters by ID, shared with the navigation tree and species list. In the
+regular filter each OR tab can select an exact record or use other fields.
+Rule-based filters show their matching species in the drawer; editing that
+selection asks before replacing the rules. Clearing selects all accessible
+records. A single selection opens its subproject, multiple selections use the
+project view.
 The selection navigates to the project or subproject route, retaining the map
 pane and viewport. Switching projects drops the previous project's layer URL
 override. At project level, own layers render all locally synced subprojects;
