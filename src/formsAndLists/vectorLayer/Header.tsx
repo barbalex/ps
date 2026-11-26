@@ -1,5 +1,5 @@
 /// <reference types="vite-plugin-svgr/client" />
-import { useParams, useNavigate } from '@tanstack/react-router'
+import { useLocation, useParams, useNavigate } from '@tanstack/react-router'
 import TreasureMapLine from '../../images/treasure-map-line.svg?react'
 import TreasureMapLinePulsating from '../../images/treasure-map-line-pulsating.svg?react'
 import * as fluentUiReactComponents from '@fluentui/react-components'
@@ -30,15 +30,12 @@ import type VectorLayers from '../../models/public/VectorLayers.ts'
 export const Header = ({
   autoFocusRef,
   row,
-  from,
 }: {
   autoFocusRef?: React.RefObject<HTMLInputElement | null>
   row: VectorLayers
   from?: string
 }) => {
-  const isForm =
-    from ===
-    '/data/projects/$projectId_/vector-layers/$vectorLayerId_/vector-layer'
+  const { pathname } = useLocation()
   const [droppableLayers, setDroppableLayers] = useAtom(droppableLayersAtom)
   const [tabs, setTabs] = useUrlPanes()
   const [draggableLayers, setDraggableLayers] = useAtom(draggableLayersAtom)
@@ -49,6 +46,9 @@ export const Header = ({
   const [language] = useAtom(languageAtom)
   const basePath = `/data/projects/${projectId}/vector-layers/${vectorLayerId}`
   const formPath = `${basePath}/vector-layer`
+  const collectionPath = `/data/projects/${projectId}/vector-layers`
+  const siblingPath = (id: string) =>
+    `${collectionPath}/${id}${pathname.replace(/\/$/, '') === basePath ? '' : '/vector-layer'}`
 
   const db = usePGlite()
 
@@ -147,17 +147,9 @@ export const Header = ({
 
   const addRow = async () => {
     const vectorLayerId = await createVectorLayer({
-      projectId: projectId!,      type: 'wfs',
+      projectId: projectId!, type: 'wfs',
     })
-    navigate({
-      to: isForm
-        ? `../../${vectorLayerId}/vector-layer`
-        : `../${vectorLayerId}/vector-layer`,
-      params: (prev) => ({
-        ...prev,
-        vectorLayerId,
-      }),
-    })
+    navigate({ to: `${collectionPath}/${vectorLayerId}/vector-layer` })
     autoFocusRef?.current?.focus()
   }
 
@@ -166,7 +158,7 @@ export const Header = ({
       await db.query(`DELETE FROM vector_layers WHERE vector_layer_id = $1`, [
         vectorLayerId,
       ])
-      navigate({ to: isForm ? ('../..' as '..') : '..' })
+      navigate({ to: collectionPath })
     } catch (error) {
       console.error('Error deleting vector layer:', error)
     }
@@ -184,15 +176,7 @@ export const Header = ({
         (p) => p.vector_layer_id === vectorLayerIdRef.current,
       )
       const next = rows[(index + 1) % len]
-      navigate({
-        to: isForm
-          ? `../../${next.vector_layer_id}/vector-layer`
-          : `../${next.vector_layer_id}`,
-        params: (prev) => ({
-          ...prev,
-          vectorLayerId: next.vector_layer_id,
-        }),
-      })
+      navigate({ to: siblingPath(next.vector_layer_id) })
     } catch (error) {
       console.error('Error navigating to next vector layer:', error)
     }
@@ -210,15 +194,7 @@ export const Header = ({
         (p) => p.vector_layer_id === vectorLayerIdRef.current,
       )
       const previous = rows[(index + len - 1) % len]
-      navigate({
-        to: isForm
-          ? `../../${previous.vector_layer_id}/vector-layer`
-          : `../${previous.vector_layer_id}`,
-        params: (prev) => ({
-          ...prev,
-          vectorLayerId: previous.vector_layer_id,
-        }),
-      })
+      navigate({ to: siblingPath(previous.vector_layer_id) })
     } catch (error) {
       console.error('Error navigating to previous vector layer:', error)
     }

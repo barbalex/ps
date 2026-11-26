@@ -42,14 +42,8 @@ export const Header = ({
   const addRow = async () => {
     const subprojectId = await createSubproject({ projectId: projectId! })
     navigate({
-      to:
-        isForm ?
-          `../../${subprojectId}/subproject`
-        : `../${subprojectId}/subproject`,
-      params: (prev) => ({
-        ...prev,
-        subprojectId,
-      }),
+      to: '/data/projects/$projectId/subprojects/$subprojectId/subproject',
+      params: { projectId: projectId!, subprojectId },
     })
     autoFocusRef?.current?.focus()
   }

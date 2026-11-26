@@ -4,6 +4,7 @@ import { useRef, useEffect } from 'react'
 import { useIntl } from 'react-intl'
 
 import { createCheckReport } from '../../modules/createRows.ts'
+import { siblingRecordPath } from '../../modules/siblingRecordPath.ts'
 import { FormHeader } from '../../components/FormHeader/index.tsx'
 import { HistoryToggleButton } from '../../components/shared/HistoryCompare/HistoryToggleButton.tsx'
 import { useRequestRowDelete } from '../../modules/deleteRow.ts'
@@ -48,13 +49,7 @@ export const Header = ({
       placeId: placeId2 ?? placeId!,
     })
     if (!id) return
-    navigate({
-      to: `../${id}`,
-      params: (prev) => ({
-        ...prev,
-        checkReportId: id,
-      }),
-    })
+    navigate({ to: siblingRecordPath(basePath, id) })
     autoFocusRef?.current?.focus()
   }
 

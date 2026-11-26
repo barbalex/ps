@@ -7,6 +7,7 @@ import { filterStringFromFilter } from '../../modules/filterStringFromFilter.ts'
 import type { TableRowFilter } from '../../store.ts'
 
 import { createCheck } from '../../modules/createRows.ts'
+import { siblingRecordPath } from '../../modules/siblingRecordPath.ts'
 import { FormHeader } from '../../components/FormHeader/index.tsx'
 import { Geometry } from '../../components/FormMenu/Geometry.tsx'
 import { HistoryToggleButton } from '../../components/shared/HistoryCompare/HistoryToggleButton.tsx'
@@ -78,16 +79,7 @@ export const Header = ({
       tableViewId,
     })
     if (!id) return
-    navigate({
-      to: allInline
-        ? isForm
-          ? `../../${id}`
-          : `../${id}`
-        : isForm
-          ? `../../${id}/check`
-          : `../${id}/check`,
-      params: (prev) => ({ ...prev, checkId: id }),
-    })
+    navigate({ to: siblingRecordPath(basePath, id, allInline ? undefined : 'check') })
     autoFocusRef?.current?.focus()
   }
 

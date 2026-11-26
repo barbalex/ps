@@ -4,6 +4,7 @@ import { useRef, useEffect } from 'react'
 import { useIntl } from 'react-intl'
 
 import { createAction } from '../../modules/createRows.ts'
+import { siblingRecordPath } from '../../modules/siblingRecordPath.ts'
 import { FormHeader } from '../../components/FormHeader/index.tsx'
 import { Geometry } from '../../components/FormMenu/Geometry.tsx'
 import { HistoryToggleButton } from '../../components/shared/HistoryCompare/HistoryToggleButton.tsx'
@@ -78,16 +79,7 @@ export const Header = ({
       tableViewId,
     })
     if (!id) return
-    navigate({
-      to: allInline
-        ? isForm
-          ? `../../${id}`
-          : `../${id}`
-        : isForm
-          ? `../../${id}/action`
-          : `../${id}/action`,
-      params: (prev) => ({ ...prev, actionId: id }),
-    })
+    navigate({ to: siblingRecordPath(basePath, id, allInline ? undefined : 'action') })
     autoFocusRef?.current?.focus()
   }
 

@@ -1051,7 +1051,8 @@ Three creation paths, all idempotent:
    the layer and its display as two queued operations; the local insert runs
    with `electric.syncing` set, so the trigger makes no second display.
    - new wfs layers: the add buttons of the vector layers list, the layer
-     form's header and the map drawer
+     form's header and the map drawer. The form header opens the new layer at
+     `vector-layers/<new-id>/vector-layer`, also when a display subform is open.
    - creating a place ensures the level's places layer exists
      (`src/formsAndLists/places.tsx`, `src/formsAndLists/place/Header.tsx`)
    - `src/components/TableLayersProvider.tsx` creates the observation layers
