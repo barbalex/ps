@@ -2936,6 +2936,48 @@
   "rX7ZaC": {
     "defaultMessage": "Du kannst hier Standard-Einheiten wählen. Die Standard-Einheit wird bei neuen Datensätzen voreingestellt, kann aber verändert werden. Standardisierung der verwendeten Einheiten ermöglicht es, Daten systematisch zu vergleichen/analysieren. Du musst natürlich auch dafür sorgen, dass die Daten tatsächlich mit diesen Einheiten erfasst werden (Qualitätskontrollen können helfen)."
   },
+  "recordChoose": {
+    "defaultMessage": "Datei wählen"
+  },
+  "recordCreate": {
+    "defaultMessage": "Datensätze erstellen"
+  },
+  "recordDestination": {
+    "defaultMessage": "Ziel: {parent}. Jede Zeile erstellt einen neuen Datensatz. Bestehende Datensätze werden nicht aktualisiert."
+  },
+  "recordImport": {
+    "defaultMessage": "Aus Datei importieren"
+  },
+  "recordImportReload": {
+    "defaultMessage": "Datensätze wurden erstellt. Bitte die App neu laden, nicht erneut importieren."
+  },
+  "recordImportTitle": {
+    "defaultMessage": "{list} importieren"
+  },
+  "recordImported": {
+    "defaultMessage": "{n} Datensätze erstellt."
+  },
+  "recordMapChoose": {
+    "defaultMessage": "Zuordnung wählen"
+  },
+  "recordMapping": {
+    "defaultMessage": "Spalten zuordnen. Zusätzliche Werte in data ändern das Formular nicht."
+  },
+  "recordOnline": {
+    "defaultMessage": "Zum Erstellen ist eine Verbindung nötig. Bei einem Verbindungsabbruch zuerst die Liste prüfen, bevor Sie erneut importieren."
+  },
+  "recordPrepare": {
+    "defaultMessage": "CSV, TSV, XLSX, XLS oder ODS: In der ersten Zeile stehen eindeutige Spaltennamen. Nur das erste Tabellenblatt wird gelesen. Keine IDs angeben. Zahlen ohne Tausendertrennzeichen, Daten als YYYY-MM-DD. Maximal 10 000 Zeilen."
+  },
+  "recordPreview": {
+    "defaultMessage": "Vorschau: {n} neue Datensätze (erste fünf angezeigt)."
+  },
+  "recordSkip": {
+    "defaultMessage": "Überspringen"
+  },
+  "recordTemplate": {
+    "defaultMessage": "Beispielvorlage herunterladen"
+  },
   "rootExports.activateAll": {
     "defaultMessage": "Alle aktivieren"
   },

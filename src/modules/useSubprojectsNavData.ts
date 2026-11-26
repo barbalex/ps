@@ -121,6 +121,7 @@ export const useSubprojectsNavData = ({ projectId }: Props) => {
       namePlural,
     }),
     nameSingular,
+    namePlural,
     navs,
   }
 
