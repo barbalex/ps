@@ -12,6 +12,8 @@ import { mapLayerSortingAtom } from '../../../../../store.ts'
 import {
   POSITRON_LAYER_PRESENTATION_ID,
   DARK_MATTER_LAYER_PRESENTATION_ID,
+  ESRI_IMAGERY_LAYER_PRESENTATION_ID,
+  availableBackgroundId,
   backgroundLayerIds,
   defaultBackgroundLayerId,
   isBackgroundLayerId,
@@ -32,6 +34,10 @@ const labels: Record<string, { id: string; defaultMessage: string }> = {
   [DARK_MATTER_LAYER_PRESENTATION_ID]: {
     id: 'mapBackgroundLayerDarkMatter',
     defaultMessage: 'Dark Matter (dunkel)',
+  },
+  [ESRI_IMAGERY_LAYER_PRESENTATION_ID]: {
+    id: 'mapBackgroundLayerEsriImagery',
+    defaultMessage: 'Satellit / Luftbild (Esri)',
   },
 }
 
@@ -66,10 +72,11 @@ export const BackgroundLayers = () => {
   // the chosen background is whichever background id (pseudo or tile layer)
   // the effective render list contains; if none (e.g. a hand-crafted
   // ?layers= link), the default counts as chosen
-  const currentId =
+  const currentId = availableBackgroundId(
     effectiveLayers.find(
       (id) => isBackgroundLayerId(id) || tileBackgroundIds.includes(id),
-    ) ?? defaultBackgroundLayerId
+    ) ?? defaultBackgroundLayerId,
+  )
 
   const pick = (id: string) => {
     if (id === currentId) return

@@ -8,6 +8,8 @@ interface ImportMetaEnv {
   readonly VITE_ERROR_TELEMETRY?: string
   readonly VITE_CARTO_BASEMAPS_KEY?: string
   readonly VITE_CARTO_BASEMAPS_KEY_LOCALHOST?: string
+  readonly VITE_ESRI_BASEMAPS_KEY?: string
+  readonly VITE_ESRI_BASEMAPS_KEY_LOCALHOST?: string
 }
 
 interface ImportMeta {

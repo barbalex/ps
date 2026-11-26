@@ -1448,6 +1448,7 @@
   "mapBackgroundLayerOsm": "OpenStreetMap",
   "mapBackgroundLayerPositron": "Positron (light)",
   "mapBackgroundLayerDarkMatter": "Dark Matter (dark)",
+  "mapBackgroundLayerEsriImagery": "Satellite / aerial (Esri)",
   "tileLayerNoName": "Tile layer without a name",
   "tileLayerLabel": "Label",
   "tileLayerUrlTemplate": "URL template",
