@@ -1,4 +1,6 @@
 import { useUrlFilter } from '../../../modules/useUrlFilter.ts'
+import { useEffect, useRef } from 'react'
+import { mapCreationAtom } from '../../../modules/mapCreation.ts'
 import { useParams, useNavigate } from '@tanstack/react-router'
 import { useMapEvent, useMap } from 'react-leaflet/hooks'
 import type {
@@ -24,6 +26,7 @@ import type { OwnFormTarget } from '../../../modules/navigateToOwnForm.ts'
 import { wfsRequestVersion } from '../../../modules/wfsRequestVersion.ts'
 import {
   mapInfoAtom,
+  store,
   languageAtom,
   choosingGeometryAtom,
   editingPlaceGeometryAtom,
@@ -48,6 +51,7 @@ type ClickableLayer = Layer & {
   _clickableCircle?: CircleMarker
   feature?: GeoJSON.Feature
   vectorLayerLabel?: string | null
+  activeIdField?: string | null
   externalVectorFeature?: boolean
   getLayers?: () => ClickableLayer[]
   _containsPoint?: (point: Point) => boolean
@@ -96,24 +100,25 @@ const addLayersData = (
 // without the project, which comes from the route. Observations are
 // deliberately absent: their geometry is not user-editable (they are assigned
 // to places by dragging)
-const ownTargetFromProperties = (
-  featureProps: GeoJSON.GeoJsonProperties | undefined,
+const ownTargetFromLayer = (
+  layer: ClickableLayer,
 ): Omit<OwnFormTarget, 'projectId'> | undefined => {
-  if (featureProps?.check_id) {
+  const featureProps = layer.feature?.properties
+  if (layer.activeIdField === 'check_id' && featureProps?.check_id) {
     return {
       ownTable: 'check',
       ownId: featureProps.check_id as string,
       ownPlaceId: featureProps.place_id as string | undefined,
     }
   }
-  if (featureProps?.action_id) {
+  if (layer.activeIdField === 'action_id' && featureProps?.action_id) {
     return {
       ownTable: 'action',
       ownId: featureProps.action_id as string,
       ownPlaceId: featureProps.place_id as string | undefined,
     }
   }
-  if (featureProps?.place_id) {
+  if (layer.activeIdField === 'place_id' && featureProps?.place_id) {
     return {
       ownTable: 'place',
       ownId: featureProps.place_id as string,
@@ -126,6 +131,12 @@ const ownTargetFromProperties = (
 
 export const ClickListener = () => {
   const setMapInfo = useSetAtom(mapInfoAtom)
+  const request = useRef(0)
+  useEffect(() => {
+    const invalidate = () => { request.current++ }
+    const unsubscribe = store.sub(mapCreationAtom, invalidate)
+    return () => { unsubscribe(); invalidate() }
+  }, [])
   const [wmsLayersFilter] = useUrlFilter('wmsLayers')
   const [vectorLayersFilter] = useUrlFilter('vectorLayers')
   const language = useAtomValue(languageAtom)
@@ -146,6 +157,8 @@ export const ClickListener = () => {
   const db = usePGlite()
 
   const onClick = async (event: LeafletMouseEvent) => {
+    if (store.get(mapCreationAtom)) return
+    const sequence = ++request.current
     // console.log('ClickListener, click event:', { event, projectId })
     // vector layers are defined on projects
     if (projectId === '99999999-9999-9999-9999-999999999999') return
@@ -218,7 +231,7 @@ export const ClickListener = () => {
     if (choosingGeometry) {
       const target = clickedLayers
         .filter((layer) => !layer.externalVectorFeature)
-        .map((layer) => ownTargetFromProperties(layer.feature?.properties))
+        .map(ownTargetFromLayer)
         .find((target) => !!target)
 
       if (!target) {
@@ -295,42 +308,12 @@ export const ClickListener = () => {
             return [key, value]
           })
 
-        const featureProps = layer.feature.properties
-        let ownTable: 'place' | 'check' | 'action' | undefined
-        let ownId: string | undefined
-        let ownPlaceId: string | undefined
-        let ownSubprojectId: string | undefined
-        let ownParentId: string | undefined
-
-        if (featureProps?.check_id) {
-          ownTable = 'check'
-          ownId = featureProps.check_id
-          ownPlaceId = featureProps.place_id
-        } else if (featureProps?.action_id) {
-          ownTable = 'action'
-          ownId = featureProps.action_id
-          ownPlaceId = featureProps.place_id
-        } else if (featureProps?.place_id) {
-          ownTable = 'place'
-          ownId = featureProps.place_id
-          ownSubprojectId = featureProps.subproject_id
-          ownParentId = featureProps.parent_id ?? undefined
-        }
-
+        const target = ownTargetFromLayer(layer)
         mapInfo.layers.push({
           label: layer.vectorLayerLabel || 'Unknown Layer',
-          featureLabel: featureProps?.label || 'Feature',
+          featureLabel: layer.feature.properties.label || 'Feature',
           properties,
-          ...(ownTable ?
-            {
-              ownTable,
-              ownId,
-              ownPlaceId,
-              ownSubprojectId,
-              ownParentId,
-              projectId,
-            }
-          : {}),
+          ...(target && { ...target, projectId }),
         })
       }
     })
@@ -480,7 +463,7 @@ export const ClickListener = () => {
     }
 
     // console.log('ClickListener, mapInfo:', mapInfo)
-    setMapInfo(mapInfo)
+    if (sequence === request.current) setMapInfo(mapInfo)
   }
 
   useMapEvent('click', onClick)

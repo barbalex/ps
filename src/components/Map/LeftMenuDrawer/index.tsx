@@ -8,6 +8,7 @@ import { useIntl } from 'react-intl'
 import { Content } from './Content.tsx'
 import { Resizer } from './Resizer.tsx'
 import { mapHideUiAtom } from '../../../store.ts'
+import { mapCreationAtom } from '../../../modules/mapCreation.ts'
 import { useElementSize } from '../../../modules/useElementSize.ts'
 import styles from './index.module.css'
 
@@ -42,6 +43,10 @@ export const LeftMenuDrawer = ({
   // — by the toggle, a drag or the clamps below — which then survives
   // narrow ↔ wide changes
   const [chosenSize, setChosenSize] = useState<number | null>(null)
+  const creating = useAtomValue(mapCreationAtom)
+  useEffect(() => {
+    if (creating && isNarrow) setChosenSize(closedSize)
+  }, [creating, isNarrow])
   const size = chosenSize ?? (isNarrow ? closedSize : 380)
   // when width falls below 40, set sidebarSize to 5
   useEffect(() => {

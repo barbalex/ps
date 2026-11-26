@@ -206,18 +206,54 @@ export const createFile = async ({
   return file_id
 }
 
+type FirstGeometry = {
+  geometry: GeoJSON.GeometryCollection
+  bbox: GeoJSON.BBox
+}
+
+const insertOwnObject = async (
+  table: 'places' | 'checks' | 'actions',
+  rowIdName: 'place_id' | 'check_id' | 'action_id',
+  data: Record<string, unknown>,
+  firstGeometry?: FirstGeometry,
+) => {
+  const db = store.get(pgliteDbAtom)!
+  if (firstGeometry) {
+    const place = table === 'places'
+    const { rows } = await db.query<{ allowed: boolean }>(
+      `SELECT ${place ? 'user_can_write_subproject' : 'user_can_write_place'}($1, $2) AS allowed`,
+      [place ? data.subproject_id : data.place_id, store.get(userIdAtom)],
+    )
+    if (!rows[0]?.allowed)
+      throw new Error('You do not have permission to create this object.')
+  }
+  const draft: Record<string, unknown> = { ...data, ...firstGeometry }
+  const keys = Object.keys(draft)
+  const values = keys.map((key, index) => key === 'geometry' ? `ST_GeomFromGeoJSON($${index + 1}::text)` : `$${index + 1}`)
+  await db.query(
+    `INSERT INTO ${table} (${keys.join(',')}) VALUES (${values.join(',')})`,
+    keys.map((key) => key === 'geometry' || key === 'bbox' ? JSON.stringify(draft[key]) : draft[key]),
+  )
+  await store.set(addOperationAtom, {
+    table, rowIdName, rowId: String(data[rowIdName]), operation: 'insert', draft,
+    separateEdit: !!firstGeometry,
+    skipPermissionCheck: !!firstGeometry,
+  })
+}
+
 export const createPlace = async ({
   projectId,
   subprojectId,
   parentId,
   level,
+  firstGeometry,
 }: {
   projectId: string
   subprojectId: string
   parentId: string | null
   level: number
+  firstGeometry?: FirstGeometry
 }) => {
-  const db = store.get(pgliteDbAtom)!
   // find fields with preset values on the data column
   const presetData = await getPresetData({
     projectId,
@@ -231,24 +267,10 @@ export const createPlace = async ({
     parent_id: parentId,
     level,
 
-    ...presetData,
+    ...(Object.keys(presetData).length ? { data: presetData } : {}),
   }
 
-  const columns = Object.keys(data).join(',')
-  const values = Object.values(data)
-    .map((_, i) => `$${i + 1}`)
-    .join(',')
-
-  await db.query(
-    `insert into places (${columns}) values (${values})`,
-    Object.values(data),
-  )
-
-  store.set(addOperationAtom, {
-    table: 'places',
-    operation: 'insert',
-    draft: data,
-  })
+  await insertOwnObject('places', 'place_id', data, firstGeometry)
 
   return place_id
 }
@@ -951,12 +973,13 @@ export const createCheck = async ({
   projectId,
   placeId,
   tableViewId,
+  firstGeometry,
 }: {
   projectId: string
   placeId: string
   tableViewId?: string
+  firstGeometry?: FirstGeometry
 }) => {
-  const db = store.get(pgliteDbAtom)!
   // find fields with preset values on the data column
   const presetData = await getPresetData({
     projectId,
@@ -981,21 +1004,7 @@ export const createCheck = async ({
     ...(Object.keys(dataJsonb).length > 0 ? { data: dataJsonb } : {}),
     ...viewData.columns,
   }
-  const columns = Object.keys(data).join(',')
-  const values = Object.values(data)
-    .map((_, i) => `$${i + 1}`)
-    .join(',')
-
-  await db.query(
-    `insert into checks (${columns}) values (${values})`,
-    Object.values(data),
-  )
-
-  store.set(addOperationAtom, {
-    table: 'checks',
-    operation: 'insert',
-    draft: data,
-  })
+  await insertOwnObject('checks', 'check_id', data, firstGeometry)
 
   return check_id
 }
@@ -1264,12 +1273,13 @@ export const createAction = async ({
   projectId,
   placeId,
   tableViewId,
+  firstGeometry,
 }: {
   projectId: string
   placeId: string
   tableViewId?: string
+  firstGeometry?: FirstGeometry
 }) => {
-  const db = store.get(pgliteDbAtom)!
   // find fields with preset values on the data column
   const presetData = await getPresetData({ projectId, table: 'actions' })
   // a table view sets the values it filters for
@@ -1292,21 +1302,7 @@ export const createAction = async ({
     ...viewData.columns,
   }
 
-  const columns = Object.keys(data).join(',')
-  const values = Object.values(data)
-    .map((_, i) => `$${i + 1}`)
-    .join(',')
-
-  await db.query(
-    `insert into actions (${columns}) values (${values})`,
-    Object.values(data),
-  )
-
-  store.set(addOperationAtom, {
-    table: 'actions',
-    operation: 'insert',
-    draft: data,
-  })
+  await insertOwnObject('actions', 'action_id', data, firstGeometry)
 
   return action_id
 }

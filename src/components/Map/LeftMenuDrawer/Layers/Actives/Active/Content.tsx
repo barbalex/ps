@@ -33,6 +33,8 @@ import { useParams } from '@tanstack/react-router'
 import { useIntl } from 'react-intl'
 
 import { ErrorBoundary } from '../../../../../shared/ErrorBoundary.tsx'
+import { AddToLayer } from './AddToLayer.tsx'
+import { mapCreationTarget } from '../../../../../../modules/mapCreationParents.ts'
 import { LayerPresentationForm } from '../../LayerPresentationForm.tsx'
 import { VectorLayerEditing } from '../../Vector/Editing.tsx'
 import { WmsLayerEditing } from '../../WMS/Editing.tsx'
@@ -109,6 +111,7 @@ export const Content = ({
   const isVectorLayer = layer.layer_type === 'vector'
   const isWmsLayer = layer.layer_type === 'wms'
   const isTileLayer = layer.layer_type === 'tile'
+  const creationTarget = mapCreationTarget(layer)
 
   const placeLevels = usePlaceLevels(layer.project_id)
   // Derived display label: own/wfs/upload vector layers compute it (there is no
@@ -536,6 +539,9 @@ export const Content = ({
             size="small"
             as="a"
           />
+        )}
+        {creationTarget && layer.project_id && (
+          <AddToLayer {...creationTarget} projectId={layer.project_id} layerLabel={label} />
         )}
       </AccordionHeader>
       <AccordionPanel className={layerStyles.panel}>

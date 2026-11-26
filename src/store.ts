@@ -73,6 +73,8 @@ export interface ViewportBounds {
 
 export interface MapInfoLayer {
   label: string
+  projectId?: string
+  formActive?: boolean
   featureLabel?: string
   properties: [string, unknown][]
   ownTable?: 'place' | 'check' | 'action'

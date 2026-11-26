@@ -72,6 +72,7 @@ type LayerGroupWithMeta = L.LayerGroup & {
 
 type LayerWithMeta = L.Layer & {
   vectorLayerLabel?: string
+  activeIdField?: string | null
 }
 
 export const TableLayer = ({
@@ -500,6 +501,7 @@ export const TableLayer = ({
           if (geoLayer) {
             markSnapTarget(geoLayer, feature.properties?.label || label || '', activeIdField ? feature.properties?.[activeIdField] : undefined)
             ;(geoLayer as LayerWithMeta).vectorLayerLabel = label
+            ;(geoLayer as LayerWithMeta).activeIdField = activeIdField
           }
           // Table layer data is shown in the Info sidebar via ClickListener
           // so we don't bind popups here

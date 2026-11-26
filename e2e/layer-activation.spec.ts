@@ -132,6 +132,7 @@ test.beforeAll(async () => {
     userId,
     projectId: PROJECT_ID,
     role: 'own',
+    subprojectIds: [SUBPROJECT_ID],
   })
 })
 
@@ -383,6 +384,38 @@ test('own table layer: checkbox, Active section, pane — and back', async ({
   await expect(
     page.locator(`.leaflet-pane[class*="${OWN_NAME}-pane"]`),
   ).toHaveCount(0)
+})
+
+test('create on map: cancel creates nothing; drawing opens the new place form', async ({ page }) => {
+  const places = () => psql(`SELECT place_id FROM places WHERE subproject_id = '${SUBPROJECT_ID}' ORDER BY place_id`)
+  const before = places()
+  await page.addInitScript(() => localStorage.setItem('language', '"en"'))
+  await openDrawer(page, SUBPROJECT_ID)
+  await toggleOf(page, OWN_LABEL).click()
+  const add = page.getByLabel(`Add to ${OWN_LABEL}`, { exact: true })
+  await expect(add).toBeVisible({ timeout: 30_000 })
+  await add.click()
+  await expect(page.getByText(/Place a point on the map/)).toBeVisible()
+  await page.keyboard.press('Escape')
+  await expect(page.getByText(/Place a point on the map/)).toBeHidden()
+  expect(places()).toBe(before)
+
+  await add.click()
+  const map = page.locator('#map .leaflet-container')
+  await expect(map).toHaveClass(/geoman-active/)
+  const bounds = await map.boundingBox()
+  if (!bounds) throw new Error('Map is not visible')
+  await map.click({ position: { x: Math.floor(bounds.width * 0.6), y: Math.floor(bounds.height * 0.5) } })
+  const info = page.locator('.map-info-drawer')
+  await expect(info.getByRole('button', { name: 'View form' })).toHaveAttribute('aria-pressed', 'true', { timeout: 30_000 })
+  await expect(page).toHaveURL(/\/places\/[^/]+\/place\?/)
+  const id = new URL(page.url()).pathname.split('/').at(-2)
+  await expect.poll(() => psql(`SELECT ST_NumGeometries(geometry) FROM places WHERE subproject_id = '${SUBPROJECT_ID}' AND place_id = '${id}'`), { timeout: 30_000 }).toBe('1')
+  expect(places().split('\n').filter(row => !before.split('\n').includes(row))).toEqual([id])
+  const name = info.locator('input[name="name"]')
+  await name.fill('Map-created site')
+  await name.blur()
+  await expect.poll(() => psql(`SELECT name FROM places WHERE place_id = '${id}'`), { timeout: 30_000 }).toBe('Map-created site')
 })
 
 // the user's flow: a wms layer created through the drawer, activated

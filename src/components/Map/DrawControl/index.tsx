@@ -1,7 +1,9 @@
-import { useLocation } from '@tanstack/react-router'
+import { useLocation, useParams } from '@tanstack/react-router'
 import { useAtomValue } from 'jotai'
 
 import { DrawControlComponent } from './DrawControl.tsx'
+import { CreateOnMap } from './CreateOnMap.tsx'
+import { mapCreationAtom } from '../../../modules/mapCreation.ts'
 import {
   editingPlaceGeometryAtom,
   editingCheckGeometryAtom,
@@ -15,6 +17,8 @@ import {
 // - the active table is actions AND editingActionGeometry is the id of the active action
 // - maybe later more cases
 export const DrawControl = () => {
+  const creation = useAtomValue(mapCreationAtom)
+  const { projectId } = useParams({ strict: false })
   const editingPlaceGeometry = useAtomValue(editingPlaceGeometryAtom)
   const editingCheckGeometry = useAtomValue(editingCheckGeometryAtom)
   const editingActionGeometry = useAtomValue(editingActionGeometryAtom)
@@ -25,6 +29,7 @@ export const DrawControl = () => {
 
   const lastTwoElements = pathArray.slice(-2).join('/')
 
+  if (creation && creation.projectId === projectId) return <CreateOnMap draft={creation} />
   if (!lastTwoElements) return null
 
   const last = pathArray[pathArray.length - 1]

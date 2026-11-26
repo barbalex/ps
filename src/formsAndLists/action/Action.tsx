@@ -15,7 +15,7 @@ import '../../form.css'
 import type Actions from '../../models/public/Actions.ts'
 import type { FieldChangeData } from '../../components/shared/fieldChange.ts'
 
-export const Action = ({ from }: { from: string }) => {
+export const Action = ({ from, embedded = false }: { from: string; embedded?: boolean }) => {
   const { actionId } = useParams({ strict: false })
   const addOperation = useSetAtom(addOperationAtom)
   const [validations, setValidations] = useState<Validations>({})
@@ -66,7 +66,7 @@ export const Action = ({ from }: { from: string }) => {
 
   return (
     <div className="form-outer-container">
-      <Header autoFocusRef={autoFocusRef} from={from} />
+      {!embedded && <Header autoFocusRef={autoFocusRef} from={from} />}
       <div className="form-container">
         {!res ? (
           <Loading />

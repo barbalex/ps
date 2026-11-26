@@ -249,6 +249,13 @@ export async function checkWritePermission(
   if (table === 'places') {
     return checkPlaces(db, userId, row)
   }
+  if ((table === 'checks' || table === 'actions') && row.place_id) {
+    const res = await db.query<{ allowed: boolean }>(
+      'SELECT user_can_write_place($1, $2) AS allowed',
+      [row.place_id, userId],
+    )
+    return { allowed: res.rows[0].allowed }
+  }
 
   const config = TABLE_CONFIG[table]
   if (!config) {

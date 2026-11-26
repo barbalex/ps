@@ -32,6 +32,7 @@ const frontendMappings = [
   ['01_immutableDate.sql', 'immutableDate.sql'],
   ['04_createTables.sql', 'createTables.sql'],
   ['07_triggers.sql', 'triggers.sql'],
+  ['11e_writeAccessHelpers.sql', 'writeAccessHelpers.sql'],
   [
     '08_syncIgnoreDuplicateInsertTriggers.sql',
     'syncIgnoreDuplicateInsertTriggers.sql',

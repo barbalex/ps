@@ -89,7 +89,7 @@ export const Map = () => {
           <DrawControl />
           <BottomRightControl position="bottomright" visible={true} />
           <BoundsListener />
-          {!!mapInfo?.lat && <InfoMarker mapInfo={mapInfo} />}
+          {mapInfo && <InfoMarker mapInfo={mapInfo} />}
           {mapShowCenter && <CenterMarker />}
         </MapContainer>
       </div>

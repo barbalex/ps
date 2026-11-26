@@ -120,6 +120,8 @@ compose up -d --build`. This wipes dev data; re-import the apflora demo data if 
 
 ## Deployment
 
+For agent-driven releases, use the [release skill](.github/skills/release/SKILL.md) to scope the commit, select the deployment target, and verify what went live.
+
 - **Frontend:** `npm run deploy` (from main, see Common Commands) — bumps the version, pushes main, updates the `production` branch; Netlify builds and deploys it. Nothing else to do.
 - **Backend:** `npm run deploy-backend` — triggers the _Deploy backend_ GitHub Actions workflow, which runs the committed `deploy-backend.sh` over SSH (VM address and keys live in repo secrets, or the gitignored `.deploy-backend.env` for local runs; the address never enters this public repo). Deploys committed `main` only — run `./deploy-backend.sh` locally to ship uncommitted `backend/` changes. The production DB is experimental and is rebuilt from scratch rather than migrated (see dev-documentation.md §15 for when this changes). `--from-scratch` (wipes the DB, no backups exist) is owner-only, interactive, over SSH — agents must never run it.
 
