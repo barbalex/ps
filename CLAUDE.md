@@ -79,9 +79,10 @@ npm run i18n:punctuation:check  # Check i18n punctuation consistency
 
 ### One-time Setup
 
-Prerequisites: Node 24 (see `.nvmrc`), Docker, and the `caddy` binary on PATH.
+Prerequisites: Node 26 (see `.nvmrc`), Docker, and the `caddy` binary on PATH.
 
 ```bash
+nvm install                                     # install and select the Node major from .nvmrc
 npm install                                     # also patches node_modules (see devRemarks in package.json)
 npm run hooks:install                           # git pre-commit hooks (sync-sql + i18n checks)
 cp backend-dev/.env.example backend-dev/.env    # dev-stack env, local-only values
@@ -94,7 +95,7 @@ npm run dev                                     # app on http://localhost:5176
 Run this when returning to the project (e.g. on the notebook) after pulling changes:
 
 ```bash
-nvm use                                        # Node 24 (see .nvmrc)
+nvm use                                        # select the same Node major as CI
 npm install                                    # also re-applies the node_modules patches (postinstall)
 diff backend-dev/.env.example backend-dev/.env # add any new vars to your local .env (it is gitignored)
 cd backend-dev && docker compose up -d --build # rebuild/restart the dev backend

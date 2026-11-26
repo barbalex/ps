@@ -12,6 +12,10 @@ merges.
 
 ## Goal
 
+The **Download file** action in the file form and preview saves the original
+attachment to the user's device. It is separate from making a file available
+offline inside the app and does not require the project's offline-files option.
+
 - **Users** can mark a single file "offline verfügbar" — after that, a preview
   image and the file itself are available on the device with no connectivity.
 - **Owners/designers** can mark **all files of a table** offline with one

@@ -1,4 +1,6 @@
 {
+  "fileDownload": "Scarica il file",
+  "fileDownloadFailed": "Impossibile scaricare il file",
   "mapCenterX": "Coordinata X del centro della mappa",
   "mapCenterY": "Coordinata Y del centro della mappa",
   "mapCreateDraw": "{layer}: posiziona un punto sulla mappa o scegli uno strumento di disegno.",
