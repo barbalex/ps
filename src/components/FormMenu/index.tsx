@@ -79,6 +79,7 @@ export const FormMenu = ({
           <Button
             size="medium"
             icon={<FaPlus />}
+            aria-label={formatMessage({ id: 'Yt5rMs', defaultMessage: 'neu' })}
             onClick={addRow}
             disabled={addRowDisabled}
           />

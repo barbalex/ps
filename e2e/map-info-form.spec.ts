@@ -161,6 +161,19 @@ test('pencil edits the selected place in Info without opening the data pane', as
   expect(new URL(page.url()).searchParams.get('panes')).toBe('map')
 })
 
+test('New from a level-two place with Files open selects a sibling under the same parent', async ({ page }) => {
+  await login(page, writer, password)
+  const collection = `${root}/places/${placeId}/places`
+  await page.goto(`${collection}/${childId}/files?panes=data`)
+  await page.locator('.allotment-data .form-header').first()
+    .getByRole('button', { name: 'new', exact: true }).click({ timeout: 60_000 })
+  await expect.poll(() => new URL(page.url()).pathname).toMatch(
+    new RegExp(`^${collection}/(?!${childId}/)[0-9a-f-]{36}/place$`),
+  )
+  const id = new URL(page.url()).pathname.split('/').at(-2)
+  await expect.poll(() => psql(`SELECT parent_id FROM places WHERE place_id='${id}'`), { timeout: 30_000 }).toBe(placeId)
+})
+
 test('reader can inspect and zoom but cannot change the form or geometry', async ({
   page,
 }) => {

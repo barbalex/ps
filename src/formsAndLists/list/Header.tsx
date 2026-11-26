@@ -43,8 +43,8 @@ export const Header = ({
     const id = await createList({projectId: projectId! })
     if (!id) return
     navigate({
-      to: isForm ? `../../${id}/list` : `../${id}/list`,
-      params: (prev) => ({ ...prev, listId: id }),
+      to: '/data/projects/$projectId/lists/$listId/list',
+      params: { projectId: projectId!, listId: id },
     })
     autoFocusRef?.current?.focus()
   }

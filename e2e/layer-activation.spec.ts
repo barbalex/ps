@@ -322,6 +322,22 @@ test('upload: activating shows styled parts; clicking inspects one read-only fea
   await expect(paths).toHaveCount(0)
 })
 
+test('New in the vector layer header opens a sibling from both the form and an inline display', async ({ page }) => {
+  await page.addInitScript(() => localStorage.setItem('language', '"en"'))
+  await login(page, E2E_EMAIL, E2E_PASSWORD)
+  const collection = `/data/projects/${PROJECT_ID}/vector-layers`
+  for (const tail of ['vector-layer', 'displays/a0b0c0d0-0000-7000-8000-00000000e2ef/vector-layer-display']) {
+    await page.goto(`${collection}/${VECTOR_LAYER_ID}/${tail}?panes=data`)
+    const header = page.locator('.form-header').filter({ has: page.getByRole('heading', { name: 'Vector Layer', exact: true }) })
+    await header.getByRole('button', { name: 'new', exact: true }).click({ timeout: 45_000 })
+    await expect.poll(() => new URL(page.url()).pathname).toMatch(
+      new RegExp(`^${collection}/(?!${VECTOR_LAYER_ID}/)[0-9a-f-]{36}/vector-layer$`),
+    )
+    const id = new URL(page.url()).pathname.split('/').at(-2)
+    await expect.poll(() => psql(`SELECT type FROM vector_layers WHERE project_id='${PROJECT_ID}' AND vector_layer_id='${id}'`), { timeout: 30_000 }).toBe('wfs')
+  }
+})
+
 test('upload form: append and replace share the converted features', async ({ page }) => {
   const layerId = 'a0b0c0d0-0000-7000-8000-00000000e2ef'
   psql(`SET electric.syncing TO 'true';

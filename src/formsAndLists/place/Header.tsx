@@ -3,6 +3,7 @@ import { usePGlite } from '@electric-sql/pglite-react'
 import { useRef, useEffect } from 'react'
 
 import { createPlace, createVectorLayer } from '../../modules/createRows.ts'
+import { siblingRecordPath } from '../../modules/siblingRecordPath.ts'
 import { FormHeader } from '../../components/FormHeader/index.tsx'
 import { Geometry } from '../../components/FormMenu/Geometry.tsx'
 import { HistoryToggleButton } from '../../components/shared/HistoryCompare/HistoryToggleButton.tsx'
@@ -42,13 +43,12 @@ export const Header = ({ autoFocusRef, from, nameSingular }: Props) => {
   }, [placeId, placeId2])
 
   const addRow = async () => {
-    const resPlace = (await createPlace({
+    const newPlaceId = await createPlace({
       projectId: projectId!,
       subprojectId: subprojectId!,
       parentId: placeId2 ? placeId! : null,
       level: placeId2 ? 2 : 1,
-    })) as unknown as { rows?: { place_id: string }[] }
-    const place = resPlace.rows?.[0] as { place_id: string } | undefined
+    })
 
     await createVectorLayer({
       projectId: projectId!,
@@ -58,16 +58,7 @@ export const Header = ({ autoFocusRef, from, nameSingular }: Props) => {
       name: placeId2 ? 'places_2' : 'places_1',
     })
 
-    const idName = placeId2 ? 'placeId2' : 'placeId'
-    navigate({
-      to: isForm
-        ? `../../${place!.place_id}/place`
-        : `../${place!.place_id}/place`,
-      params: (prev) => ({
-        ...prev,
-        [idName]: place!.place_id,
-      }),
-    })
+    navigate({ to: siblingRecordPath(basePath, newPlaceId, 'place') })
     autoFocusRef?.current?.focus()
   }
 

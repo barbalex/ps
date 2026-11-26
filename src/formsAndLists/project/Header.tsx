@@ -47,7 +47,7 @@ export const Header = ({ autoFocusRef, from, label }: Props) => {
 
   const addRow = useAddProject((project_id) => {
     navigate({
-      to: isForm ? `../../${project_id}/project` : `../${project_id}/project`,
+      to: '/data/projects/$projectId/project',
       params: { projectId: project_id },
     })
     autoFocusRef?.current?.focus()
