@@ -55,17 +55,17 @@ References: [QGIS editing](https://docs.qgis.org/latest/en/docs/user_manual/work
 
 ---
 
-map > layers panel > active: the symbols rendered are now from left to right: cluster, zoom to, create. as create only exists for own layers the symbols dont align nicely. lets move create to the left to make them align
+---
+
+working map-centric:
+
+1. project should be choosable inside map - if user can access more than one
+2. subproject should be choosable inside map - if user can access more than one
+3. own layer have to be able to be rendered on project instead of subproject
 
 ---
 
-map, working without other ui:
-
-1. own layer have to be able to be rendered on project instead of subproject
-2. project should be choosable inside map - if user can access more than one
-3. subproject should be choosable inside map - if user can access more than one
-
----
+background map's checkboxes are grey when checked in light theme. should look same as active layers. actually: I prefer the grey when dark mode is set, so lets change the active layer's checkbox in that case
 
 ---
 
