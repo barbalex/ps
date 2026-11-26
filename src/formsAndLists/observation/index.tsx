@@ -1,5 +1,5 @@
 import { useRef, useState } from 'react'
-import { useParams, useNavigate } from '@tanstack/react-router'
+import { useParams, useNavigate, type RouteIds, type RegisteredRouter } from '@tanstack/react-router'
 import { usePGlite, useLiveQuery } from '@electric-sql/pglite-react'
 import { useSetAtom } from 'jotai'
 import { useIntl } from 'react-intl'
@@ -7,6 +7,7 @@ import { useIntl } from 'react-intl'
 import { SwitchField } from '../../components/shared/SwitchField.tsx'
 import { TextArea } from '../../components/shared/TextArea.tsx'
 import { getValueFromChange } from '../../modules/getValueFromChange.ts'
+import { observationFormRoute } from '../../modules/navigateToOwnForm.ts'
 import { Header } from './Header.tsx'
 import { PlaceComboboxWithDistance } from './PlaceComboboxWithDistance.tsx'
 import { Loading } from '../../components/shared/Loading.tsx'
@@ -23,10 +24,10 @@ type Validation = {
   message: string
 }
 
-export const Observation = ({ from }: { from: string }) => {
-  const { projectId, subprojectId, observationId } = useParams({
-    strict: false,
-  })
+type ObservationRoute = Extract<RouteIds<RegisteredRouter['routeTree']>, `${string}/$observationId/`>
+
+export const Observation = ({ from }: { from: ObservationRoute }) => {
+  const { projectId, subprojectId, observationId } = useParams({ from })
   const navigate = useNavigate()
   const addOperation = useSetAtom(addOperationAtom)
   const [validations, setValidations] = useState<Record<string, Validation>>({})
@@ -97,37 +98,15 @@ export const Observation = ({ from }: { from: string }) => {
       draft: { ...data },
       prev: { ...row },
     })
-    // ensure that the combinations of not-to-assign and place_id make sense
-    if (name === 'not_to_assign' && value) {
-      navigate(
-        `/data/projects/${projectId}/subprojects/${subprojectId}/observations-not-to-assign/${observationId}` as never,
-      )
-    }
-    if (name === 'not_to_assign' && !value) {
-      navigate(
-        `/data/projects/${projectId}/subprojects/${subprojectId}/observations-to-assess/${observationId}` as never,
-      )
-    }
-    if (name === 'place_id' && !value) {
-      // navigate to the subproject's observations-to-assess list
-      navigate(
-        `/data/projects/${projectId}/subprojects/${subprojectId}/observations-to-assess/${observationId}` as never,
-      )
-    }
-    if (name === 'place_id' && value) {
-      // navigate to the place's observations-assigned list
-      // this depends on the level of the place
-      const res = await db.query(
-        `SELECT parent_id FROM places WHERE place_id = $1`,
-        [value],
-      )
-      const parentPlaceId = (
-        res?.rows?.[0] as { parent_id: string | null } | undefined
-      )?.parent_id
-      const url = parentPlaceId
-        ? `/data/projects/${projectId}/subprojects/${subprojectId}/places/${parentPlaceId}/places/${value}/observations/${observationId}`
-        : `/data/projects/${projectId}/subprojects/${subprojectId}/places/${value}/observations/${observationId}`
-      navigate(url as never)
+    if (name === 'not_to_assign' || name === 'place_id') {
+      const placeId = name === 'place_id' && typeof value === 'string' && value ? value : null
+      const parentId = placeId ? (await db.query<{ parent_id: string | null }>(
+        `SELECT parent_id FROM places WHERE place_id = $1`, [placeId],
+      )).rows[0]?.parent_id : null
+      await navigate({
+        ...observationFormRoute(projectId, subprojectId, observationId, placeId, parentId ?? null, name === 'not_to_assign' && !!value),
+        search: true,
+      })
     }
   }
 

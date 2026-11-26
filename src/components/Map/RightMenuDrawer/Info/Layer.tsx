@@ -46,7 +46,7 @@ const SubprojectLabel = ({
   )
 }
 
-const Properties = ({ properties = [], text, json, html }: LayerData) => {
+const Properties = ({ properties = [], text, json, html, ownId }: LayerData) => {
   if (text) return <div className={styles.text}>{text}</div>
   if (json)
     return <pre className={styles.text}>{JSON.stringify(json, null, 2)}</pre>
@@ -58,7 +58,7 @@ const Properties = ({ properties = [], text, json, html }: LayerData) => {
       />
     )
   return (
-    <div className={styles.propertyList}>
+    <div className={styles.propertyList} data-properties-for={ownId}>
       {properties.map(([key, value], i) => {
         const stripe = i % 2 === 0 ? ` ${styles.rowEven}` : ''
         return (
@@ -78,10 +78,12 @@ const Properties = ({ properties = [], text, json, html }: LayerData) => {
 
 export const Layer = ({ layerData }: { layerData: LayerData }) => {
   const { ownId, ownTable } = layerData
+  const id = layerData.ownObservationId ?? ownId
+  const table = layerData.ownObservationId ? 'observation' : ownTable
   const { projectId, subprojectId } = useOwnLayerScope()
   const properties = <Properties {...layerData} />
   return (
-    <div className={styles.container}>
+    <div className={styles.container} data-info-for={id}>
       <div className={styles.title}>
         {projectId &&
           !subprojectId &&
@@ -93,12 +95,12 @@ export const Layer = ({ layerData }: { layerData: LayerData }) => {
           )}
         {layerData.featureLabel || layerData.label}
       </div>
-      {ownId && ownTable ?
+      {id && table ?
         <OwnHit
-          key={`${ownTable}/${ownId}`}
+          key={`${table}/${id}`}
           layer={layerData}
-          id={ownId}
-          table={ownTable}
+          id={id}
+          table={table}
         >
           {properties}
         </OwnHit>

@@ -1116,7 +1116,11 @@ and detail views. For existing objects, Info
 offers separate controls for editing geometry and opening the form.
 Info remembers the last explicit form/table choice in this browser.
 When form view is preferred, inspecting an editable own object opens its
-form automatically. Read-only and external hits still show their properties.
+form directly, without displaying properties while permissions and navigation
+resolve. Read-only and external hits still show their properties.
+Observation hits use the regular assessment form: unassigned observations
+open under the import's subproject (to assess or not to assign), and assigned
+ones under their place. Changing the assignment keeps the form in Info.
 
 On the experimental branch, when the map is the **only** pane, the Info
 editor also presents the object's tree children as collapsible sections.

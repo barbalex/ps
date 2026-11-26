@@ -17,6 +17,7 @@ const layerId = 'adae57ff-0000-4000-8000-000000000004'
 const obsLayer = 'adae57ff-0000-4000-8000-00000000000a'
 const obsId = 'adae57ff-0000-4000-8000-00000000000b'
 const obsImport = 'adae57ff-0000-4000-8000-00000000000c'
+const assessId = 'adae57ff-0000-4000-8000-000000000011'
 const writer = 'map-info-form-writer@test.ch'
 const reader = 'map-info-form-reader@test.ch'
 const password = 'e2e-test-password-123'
@@ -65,6 +66,17 @@ test.beforeAll(async () => {
       VALUES ('adae57ff-0000-4000-8000-00000000000d','${obsLayer}','${projectId}',true) ON CONFLICT DO NOTHING;
     INSERT INTO vector_layer_displays (vector_layer_display_id, vector_layer_id)
       VALUES ('adae57ff-0000-4000-8000-00000000000e','${obsLayer}') ON CONFLICT DO NOTHING;
+    INSERT INTO observations (observation_id, observation_import_id, geometry)
+      VALUES ('${assessId}','${obsImport}',ST_GeomFromText('GEOMETRYCOLLECTION(POINT(8.6 47.4))',4326))
+      ON CONFLICT DO NOTHING;
+    UPDATE observations SET not_to_assign = NULL, place_id = NULL WHERE observation_id='${assessId}';
+    INSERT INTO vector_layers (vector_layer_id, project_id, type, name, own_table, own_table_level)
+      VALUES ('adae57ff-0000-4000-8000-000000000012','${projectId}','own','InfoFormsToAssess','observations_to_assess',NULL)
+      ON CONFLICT DO NOTHING;
+    INSERT INTO layer_presentations (layer_presentation_id, vector_layer_id, project_id, active)
+      VALUES ('adae57ff-0000-4000-8000-000000000013','adae57ff-0000-4000-8000-000000000012','${projectId}',true) ON CONFLICT DO NOTHING;
+    INSERT INTO vector_layer_displays (vector_layer_display_id, vector_layer_id)
+      VALUES ('adae57ff-0000-4000-8000-000000000014','adae57ff-0000-4000-8000-000000000012') ON CONFLICT DO NOTHING;
   `)
   for (const [email, role] of [
     [writer, 'write-all'],
@@ -82,10 +94,10 @@ test.beforeAll(async () => {
   }
 })
 
-const clickOverlappingMarkers = async (page: Page) => {
+const clickMarker = async (page: Page, count: number) => {
   await closeLayerDrawerIfOpen(page)
   const markers = page.locator('.clickable-hitbox, .draggable-hitbox')
-  await expect(markers).toHaveCount(2, { timeout: 60_000 })
+  await expect(markers).toHaveCount(count, { timeout: 60_000 })
   const marker = markers.first()
   await expect(marker).toBeVisible({ timeout: 60_000 })
   const box = (await marker.boundingBox())!
@@ -96,12 +108,12 @@ const inspectPlace = async (page: Page, email: string, overview = false) => {
   await login(page, email, password)
   const path = overview ? `/data/projects/${projectId}` : `${root}/places`
   await page.goto(`${path}?panes=map&c=47.37%2C8.54&z=17`)
-  await clickOverlappingMarkers(page)
+  await clickMarker(page, 2)
   const drawer = page.locator('.map-info-drawer')
   await expect(drawer).toContainText(placeId)
   // The overlapping observation has a place_id but is not a place hit.
   await expect(drawer).toContainText(obsId)
-  await expect(drawer.getByRole('button', { name: 'Navigate to form' })).toHaveCount(1)
+  await expect(drawer.getByRole('button', { name: 'Navigate to form' })).toHaveCount(2)
   await expect(drawer.getByText('Species: Info forms', {exact: true})).toHaveCount(overview ? 2 : 0)
   if (overview) {
     const heading = drawer.getByText('Species: Info forms', {exact: true}).first().locator('..')
@@ -145,7 +157,7 @@ test('pencil edits the selected place in Info without opening the data pane', as
   page,
 }) => {
   const drawer = await inspectPlace(page, writer)
-  const pencil = drawer.getByRole('button', { name: 'View form' })
+  const pencil = drawer.locator(`[data-info-for="${placeId}"]`).getByRole('button', { name: 'View form' })
   await pencil.hover()
   await expect(page.getByText('View form', { exact: true })).toBeVisible()
   await pencil.click()
@@ -199,32 +211,45 @@ test('pencil edits the selected place in Info without opening the data pane', as
 
 test('Info remembers form and table choices across fresh inspections', async ({ page }) => {
   const drawer = await inspectPlace(page, writer)
-  const pencil = drawer.getByRole('button', { name: 'View form' })
+  const pencil = drawer.locator(`[data-info-for="${placeId}"]`).getByRole('button', { name: 'View form' })
   const field = drawer.locator('input[name=name]')
   await pencil.click()
   await expect(field).toBeVisible()
 
-  const inspectAgain = async () => {
+  const reopenMap = async () => {
     await drawer.getByRole('button', { name: 'Close', exact: true }).click()
-    await page.goto(`${root}/places?panes=map&c=47.37%2C8.54&z=17`)
-    await clickOverlappingMarkers(page)
+    await page.goto(`${root}/places?panes=map&c=47.37%2C8.54&z=17&layers=adae57ff-0000-4000-8000-000000000006`)
   }
-  await inspectAgain()
+  await reopenMap()
+  const sawProperties = await page.evaluateHandle((id) => {
+    let seen = false
+    const observer = new MutationObserver(() => {
+      if (document.querySelector(`[data-properties-for="${id}"]`)) seen = true
+    })
+    observer.observe(document.body, { childList: true, subtree: true })
+    return () => {
+      observer.disconnect()
+      return seen
+    }
+  }, placeId)
+  await clickMarker(page, 1)
   await expect(field).toBeVisible()
+  expect(await sawProperties.evaluate(stop => stop())).toBe(false)
   await expect(pencil).toHaveAttribute('aria-pressed', 'true')
 
   await pencil.click()
   await expect(field).toHaveCount(0)
-  await inspectAgain()
+  await reopenMap()
+  await clickMarker(page, 1)
   await expect(pencil).toHaveAttribute('aria-pressed', 'false')
-  await expect(drawer).toContainText(placeId)
+  await expect(drawer.locator(`[data-properties-for="${placeId}"]`)).toBeVisible()
   await expect(field).toHaveCount(0)
 })
 
 test('map-only breadcrumbs open ancestor lists and records inside Info', async ({ page }) => {
   const drawer = await inspectPlace(page, writer)
   const placeName = psql(`SELECT name FROM places WHERE place_id = '${placeId}'`)
-  await drawer.getByRole('button', { name: 'View form' }).click()
+  await drawer.locator(`[data-info-for="${placeId}"]`).getByRole('button', { name: 'View form' }).click()
   await expect(drawer.locator('input[name=name]')).toHaveValue(placeName)
   const placesUrl = `${root}/places`
   const placesCrumb = drawer.locator(`a.crumb-label-link[href^="${placesUrl}?"]`)
@@ -257,12 +282,30 @@ test('reader can inspect and zoom but cannot change the form or geometry', async
 }) => {
   await page.addInitScript(() => localStorage.setItem('mapInfoPreferForm', 'true'))
   const drawer = await inspectPlace(page, reader, true)
-  await expect(drawer.getByRole('button', { name: 'Navigate to form' })).toBeEnabled()
+  for (const id of [placeId, obsId]) {
+    await expect(drawer.locator(`[data-info-for="${id}"]`).getByRole('button', { name: 'Navigate to form' })).toBeEnabled()
+  }
   await expect(drawer.getByRole('button', { name: 'View form' })).toHaveCount(0)
   await expect(
     drawer.getByRole('button', { name: 'Edit geometry' }),
   ).toHaveCount(0)
   await expect(drawer.locator('input[name=name]')).toHaveCount(0)
+})
+
+test('observation inspection uses the routed form for assigned and unassigned observations', async ({ page }) => {
+  const drawer = await inspectPlace(page, writer)
+  await drawer.locator(`[data-info-for="${obsId}"]`).getByRole('button', { name: 'View form' }).click()
+  const comment = drawer.locator('textarea[name=comment]')
+  await expect(comment).toBeVisible()
+  await expect(page).toHaveURL(url => url.pathname === `${root}/places/${placeId}/observations/${obsId}`)
+  await drawer.getByRole('button', { name: 'Close', exact: true }).click()
+  await page.goto(`${root}?panes=map&c=47.4%2C8.6&z=17`)
+  await clickMarker(page, 1)
+  await expect(comment).toBeVisible()
+  await expect(page).toHaveURL(url => url.pathname === `${root}/observations-to-assess/${assessId}`)
+  await drawer.locator('input[name=not_to_assign]').click()
+  await expect(page).toHaveURL(url => url.pathname === `${root}/observations-not-to-assign/${assessId}` && url.searchParams.get('panes') === 'map')
+  await expect(comment).toBeVisible()
 })
 
 test('a requested nested check form at latitude zero edits the check, not the current route', async ({

@@ -40,6 +40,31 @@ export const ownFormRoute = (
   } as const
 }
 
+export const observationFormRoute = (
+  projectId: string,
+  subprojectId: string,
+  observationId: string,
+  placeId: string | null,
+  parentId: string | null,
+  notToAssign: boolean | null,
+) => {
+  const root = '/data/projects/$projectId/subprojects/$subprojectId'
+  const params = { projectId, subprojectId, observationId }
+  if (!placeId) return {
+    to: notToAssign ? `${root}/observations-not-to-assign/$observationId`
+      : `${root}/observations-to-assess/$observationId`,
+    params,
+  } as const
+  if (parentId) return {
+    to: `${root}/places/$placeId/places/$placeId2/observations/$observationId`,
+    params: { ...params, placeId: parentId, placeId2: placeId },
+  } as const
+  return {
+    to: `${root}/places/$placeId/observations/$observationId`,
+    params: { ...params, placeId },
+  } as const
+}
+
 export const navigateToOwnForm = async (
   db: QueryableDb,
   navigate: ReturnType<typeof useNavigate>,
