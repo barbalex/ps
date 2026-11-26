@@ -421,7 +421,7 @@ export const Content = ({
                 layer.layer_presentation_id ?? '',
                 layer.layer_presentation_active === true,
               ) ? (
-                <BsCheckSquareFill className={styles.headerIcon} />
+                <BsCheckSquareFill className={layerStyles.checkedToggleIcon} />
               ) : (
                 <BsSquare className={styles.headerIcon} />
               )
