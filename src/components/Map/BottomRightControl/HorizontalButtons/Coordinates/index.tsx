@@ -54,7 +54,7 @@ export const CoordinatesControl = () => {
         projectMapPresentationCrs={crs?.code}
       />
       <ToggleMapCenter />
-      <ChooseCrs />
+      {crs && <ChooseCrs crs={crs} />}
     </div>
   )
 }

@@ -2276,6 +2276,15 @@
   "mapCloseLayers": {
     "defaultMessage": "Ebenenmenü schliessen"
   },
+  "mapCrsConfigure": {
+    "defaultMessage": "Weitere Koordinaten-Bezugs-Systeme müssen zuerst im Projekt konfiguriert werden."
+  },
+  "mapCrsPersonal": {
+    "defaultMessage": "Nur für mich auf diesem Gerät"
+  },
+  "mapCrsShared": {
+    "defaultMessage": "Projektstandard für alle"
+  },
   "mapExportPng": {
     "defaultMessage": "Karte als PNG speichern"
   },

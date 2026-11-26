@@ -399,6 +399,10 @@ export const mapLocateAtom = atomWithStorage('mapLocateAtom', false)
 // Information presented, when user clicks on a map. Array of: {label, properties} where properties is an array of [key, value]
 export const mapInfoAtom = atomWithStorage<MapInfo | null>('mapInfoAtom', null)
 export const mapShowCenterAtom = atomWithStorage('mapShowCenterAtom', false)
+export const personalMapCrsAtom = atomWithStorage<Record<string, string>>(
+  'personalMapCrs',
+  {},
+)
 // The order of layers in the map. An array of layer_presentation_ids
 export const mapLayerSortingAtom = atomWithStorage<string[]>(
   'mapLayerSortingAtom',

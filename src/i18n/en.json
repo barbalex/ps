@@ -1,6 +1,9 @@
 {
   "mapCenterX": "X coordinate of the map center",
   "mapCenterY": "Y coordinate of the map center",
+  "mapCrsConfigure": "To use another coordinate reference system, configure it in the project first.",
+  "mapCrsPersonal": "Just for me on this device",
+  "mapCrsShared": "Project default for everyone",
   "mapChooseScale": "Choose map scale",
   "mapCloseLayers": "Close layer menu",
   "mapHideCenter": "Hide map center",

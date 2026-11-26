@@ -91,6 +91,8 @@ idea: Global search across entities (similar to vermehrung?)
 
 ---
 
+is it possible to work map-centric, i.e.: click on geometries and edit their forms without having to leave the map?
+
 ---
 
 finish table_views:
