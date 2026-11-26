@@ -55,6 +55,8 @@ References: [QGIS editing](https://docs.qgis.org/latest/en/docs/user_manual/work
 
 ---
 
+adding a file text.txt with 'text' inside, trying to preview it: No renderer for file type: text/plain. should work
+
 ---
 
 ---
