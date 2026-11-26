@@ -1,4 +1,7 @@
 {
+  "obsAssignStop": "Termina l’assegnazione delle osservazioni",
+  "obsAssignDrag": "Assegna le osservazioni trascinandole",
+  "obsAssignTarget": "Le osservazioni possono essere rilasciate su questo layer",
   "mapZoomToLayer": "Zoom sul layer",
   "clusterDefault": "Raggruppa i marcatori (impostazione del progetto)",
   "clusterMarkers": "Raggruppa i marcatori",

@@ -21,6 +21,10 @@
   color: rgba(38, 82, 37, 0.9);
 }
 
+:global(html[data-theme='dark']) .headerIcon {
+  color: white;
+}
+
 .headerButton {
   margin-left: 2px;
   border: none !important;

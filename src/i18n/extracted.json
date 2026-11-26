@@ -2465,6 +2465,15 @@
   "obs0Raw": {
     "defaultMessage": "Rohdaten"
   },
+  "obsAssignDrag": {
+    "defaultMessage": "Beobachtungen durch Ziehen zuordnen"
+  },
+  "obsAssignStop": {
+    "defaultMessage": "Zuordnung der Beobachtungen beenden"
+  },
+  "obsAssignTarget": {
+    "defaultMessage": "Beobachtungen können auf diesem Layer abgelegt werden"
+  },
   "offlineFileDownloadingTitle": {
     "defaultMessage": "Datei wird für offline gespeichert …"
   },

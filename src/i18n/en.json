@@ -1,4 +1,7 @@
 {
+  "obsAssignStop": "Stop assigning observations",
+  "obsAssignDrag": "Assign observations by dragging",
+  "obsAssignTarget": "This layer is a drop target for observations",
   "mapZoomToLayer": "Zoom to layer",
   "clusterDefault": "Cluster point markers (project default)",
   "clusterMarkers": "Cluster point markers",

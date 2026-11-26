@@ -128,8 +128,7 @@ test.describe('offline files', () => {
 
     // open the file form and mark it offline
     await page.getByText('e2e offline file').click()
-    // the toggle's title contains 'offline' in both states and locales
-    const toggle = page.locator('.form-header button[title*="offline" i][aria-pressed]')
+    const toggle = page.locator('.form-header').getByRole('button', { name: /offline/i })
     await toggle.click()
 
     // the local mark triggers the manager: the file lands in the cache

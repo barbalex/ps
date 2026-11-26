@@ -1,4 +1,7 @@
 {
+  "obsAssignStop": "Arrêter l’attribution des observations",
+  "obsAssignDrag": "Attribuer les observations par glisser-déposer",
+  "obsAssignTarget": "Les observations peuvent être déposées sur cette couche",
   "mapZoomToLayer": "Zoomer sur la couche",
   "clusterDefault": "Regrouper les marqueurs (valeur par défaut du projet)",
   "clusterMarkers": "Regrouper les marqueurs",

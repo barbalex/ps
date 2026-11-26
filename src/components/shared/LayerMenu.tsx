@@ -1,5 +1,4 @@
-import * as fluentUiReactComponents from '@fluentui/react-components'
-const { Button } = fluentUiReactComponents
+import { TooltipButton } from './TooltipButton.tsx'
 import { MdLayers, MdLayersClear } from 'react-icons/md'
 import { TbZoomScan } from 'react-icons/tb'
 // import { TbMapCog } from 'react-icons/tb'
@@ -234,11 +233,11 @@ export const LayerMenu = ({ table, level, placeNamePlural }: Props) => {
 
   return (
     <>
-      <Button
+      <TooltipButton
         size="medium"
         icon={showLayerView ? <MdLayersClear /> : <MdLayers />}
         onClick={onClickShowLayer}
-        title={
+        label={
           showLayerView
             ? formatMessage(
                 {
@@ -256,11 +255,11 @@ export const LayerMenu = ({ table, level, placeNamePlural }: Props) => {
               )
         }
       />
-      <Button
+      <TooltipButton
         size="medium"
         icon={<TbZoomScan />}
         onClick={onClickZoomToLayer}
-        title={formatMessage(
+        label={formatMessage(
           { id: 'bCMnOp', defaultMessage: 'Auf {places} in Karte zoomen' },
           { places: placeNamePlural ?? tableLabel },
         )}
