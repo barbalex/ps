@@ -16,7 +16,7 @@
   width: var(--scale-width);
   color: black;
   filter:
-    drop-shadow(0 0 1px rgba(255, 255, 255, 0.95)),
+    drop-shadow(0 0 1px rgba(255, 255, 255, 0.95))
     drop-shadow(0 0 2.5px rgba(255, 255, 255, 0.8));
 
   /* narrow: right-aligned in the stacked column */
@@ -26,6 +26,7 @@
 }
 
 .label {
+  font-weight: 700;
   white-space: nowrap;
 }
 

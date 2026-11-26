@@ -1,7 +1,6 @@
 import { useContext, useRef, useEffect, useState } from 'react'
 import { useParams, useNavigate, useLocation } from '@tanstack/react-router'
-import * as fluentUiReactComponents from '@fluentui/react-components'
-const { Button } = fluentUiReactComponents
+import { TooltipButton } from '../../components/shared/TooltipButton.tsx'
 import { MdPreview, MdEditNote, MdFileDownload, MdDownloadDone, MdDownloading, MdOfflinePin } from 'react-icons/md'
 import { saveAs } from 'file-saver'
 import { useIntl } from 'react-intl'
@@ -212,15 +211,15 @@ export const Header = ({
       tableName="file"
       siblings={
         <>
-          <Button
-            title={formatMessage({ id: 'fileDownload', defaultMessage: 'Datei herunterladen' })}
+          <TooltipButton
+            label={formatMessage({ id: 'fileDownload', defaultMessage: 'Datei herunterladen' })}
             icon={<MdFileDownload />}
             disabled={!row.url || downloading}
             onClick={download}
           />
           {gateOn && !!row.url && (
-            <Button
-              title={offlineTitle}
+            <TooltipButton
+              label={offlineTitle}
               aria-pressed={!!row.offline}
               icon={
                 offlineStatus === 'downloading' ? (
@@ -234,8 +233,8 @@ export const Header = ({
               onClick={onClickOffline}
             />
           )}
-          <Button
-            title={
+          <TooltipButton
+            label={
               isPreview
                 ? formatMessage({ id: '9NCbxo', defaultMessage: 'Formular anzeigen' })
                 : formatMessage({ id: 'OOvRTo', defaultMessage: 'Datei anzeigen' })

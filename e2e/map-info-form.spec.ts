@@ -91,7 +91,7 @@ const inspectPlace = async (page: Page, email: string) => {
   await expect(drawer).toContainText(placeId)
   // The overlapping observation has a place_id but is not a place hit.
   await expect(drawer).toContainText(obsId)
-  await expect(drawer.getByTitle('Navigate to form')).toHaveCount(1)
+  await expect(drawer.getByRole('button', { name: 'Navigate to form' })).toHaveCount(1)
   return drawer
 }
 
@@ -130,7 +130,9 @@ test('pencil edits the selected place in Info without opening the data pane', as
   page,
 }) => {
   const drawer = await inspectPlace(page, writer)
-  const pencil = drawer.getByTitle('View form')
+  const pencil = drawer.getByRole('button', { name: 'View form' })
+  await pencil.hover()
+  await expect(page.getByText('View form', { exact: true })).toBeVisible()
   await pencil.click()
   const name = drawer.locator('input[name=name]')
   await expect(name).toHaveValue('Original')
@@ -178,8 +180,8 @@ test('reader can inspect and zoom but cannot change the form or geometry', async
   page,
 }) => {
   const drawer = await inspectPlace(page, reader)
-  await expect(drawer.getByTitle('Navigate to form')).toBeEnabled()
-  await expect(drawer.getByTitle('View form')).toHaveCount(0)
+  await expect(drawer.getByRole('button', { name: 'Navigate to form' })).toBeEnabled()
+  await expect(drawer.getByRole('button', { name: 'View form' })).toHaveCount(0)
   await expect(
     drawer.getByRole('button', { name: 'Edit geometry' }),
   ).toHaveCount(0)

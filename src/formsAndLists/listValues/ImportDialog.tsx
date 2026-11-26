@@ -10,7 +10,8 @@ const {
   Button,
 } = fluentUiReactComponents
 import { useLiveQuery } from '@electric-sql/pglite-react'
-import { useIntl } from 'react-intl'
+import { defineMessages, useIntl } from 'react-intl'
+import type ListValueType from '../../models/public/ListValueTypesEnum.ts'
 
 import styles from './ImportDialog.module.css'
 
@@ -18,24 +19,22 @@ interface Props {
   open: boolean
   listId: string
   onClose: () => void
-  onFileSelected: (file: File, valueType: string | undefined) => void
+  onFileSelected: (file: File, valueType: ListValueType) => void
 }
 
-const VALUE_TYPE_MESSAGE_IDS: Record<string, string> = {
-  integer: 'lVTypeInteger',
-  numeric: 'lVTypeNumeric',
-  text: 'lVTypeText',
-  date: 'lVTypeDate',
-  datetime: 'lVTypeDatetime',
-}
-
-const VALUE_TYPE_DEFAULTS: Record<string, string> = {
-  integer: 'Ganzzahl (z.B. 1, 2, 3)',
-  numeric: 'Dezimalzahl (z.B. 1.5, 2.75)',
-  text: 'Text',
-  date: 'Datum (YYYY-MM-DD)',
-  datetime: 'Datum und Uhrzeit (ISO 8601)',
-}
+const typeMessages = defineMessages({
+  integer: { id: 'lVTypeInteger', defaultMessage: 'Ganzzahl (z.B. 1, 2, 3)' },
+  numeric: {
+    id: 'lVTypeNumeric',
+    defaultMessage: 'Dezimalzahl (z.B. 1.5, 2.75)',
+  },
+  text: { id: 'lVTypeText', defaultMessage: 'Text' },
+  date: { id: 'lVTypeDate', defaultMessage: 'Datum (YYYY-MM-DD)' },
+  datetime: {
+    id: 'lVTypeDatetime',
+    defaultMessage: 'Datum und Uhrzeit (ISO 8601)',
+  },
+})
 
 export const ImportDialog = ({
   open,
@@ -47,14 +46,14 @@ export const ImportDialog = ({
   const fileInputRef = useRef<HTMLInputElement>(null)
   const [isDragging, setIsDragging] = useState(false)
 
-  const res = useLiveQuery(`SELECT value_type FROM lists WHERE list_id = $1`, [
-    listId,
-  ])
-  const valueType: string | undefined =
-    res?.rows?.[0]?.value_type as string | undefined
+  const res = useLiveQuery<{ value_type: ListValueType | null }>(
+    `SELECT value_type FROM lists WHERE list_id = $1`,
+    [listId],
+  )
+  const valueType = res?.rows[0]?.value_type
 
   const handleFile = (file: File | undefined) => {
-    if (!file) return
+    if (!file || !valueType) return
     onFileSelected(file, valueType)
     onClose()
   }
@@ -94,13 +93,6 @@ export const ImportDialog = ({
     handleFile(e.dataTransfer.files?.[0])
   }
 
-  const typeLabel = valueType
-    ? formatMessage({
-        id: VALUE_TYPE_MESSAGE_IDS[valueType] ?? valueType,
-        defaultMessage: VALUE_TYPE_DEFAULTS[valueType] ?? valueType,
-      })
-    : '?'
-
   return (
     <Dialog
       open={open}
@@ -117,46 +109,69 @@ export const ImportDialog = ({
             })}
           </DialogTitle>
           <DialogContent>
-            <p className={styles.description}>
-              {formatMessage(
-                {
-                  id: 'lVImportDesc',
-                  defaultMessage:
-                    'Die Datei soll eine einfache Liste von Werten enthalten – eine pro Zeile, ohne Spaltenüberschrift. Erwarteter Typ: {type}.',
-                },
-                { type: <strong>{typeLabel}</strong> },
-              )}
-            </p>
-            <p className={styles.description}>
-              {formatMessage({
-                id: 'lVImportFormats',
-                defaultMessage:
-                  'Unterstützte Formate: .csv, .tsv, .xlsx, .xls, .ods',
-              })}
-            </p>
-            <input
-              type="file"
-              accept=".csv,.tsv,.xlsx,.xls,.ods"
-              ref={fileInputRef}
-              className={styles.hiddenInput}
-              onChange={onInputChange}
-            />
-            <div
-              className={`${styles.dropZone} ${isDragging ? styles.dragging : ''}`}
-              onClick={onClickDropZone}
-              onDragEnter={onDragEnter}
-              onDragLeave={onDragLeave}
-              onDragOver={onDragOver}
-              onDrop={onDrop}
-            >
-              {formatMessage({
-                id: 'lVImportDrop',
-                defaultMessage: 'Datei hier ablegen oder klicken zum Auswählen',
-              })}
-            </div>
+            {valueType ?
+              <>
+                <p className={styles.description}>
+                  {formatMessage(
+                    {
+                      id: 'lVImportDesc',
+                      defaultMessage:
+                        'Die Datei soll eine einfache Liste von Werten enthalten – eine pro Zeile, ohne Spaltenüberschrift. Erwarteter Typ: {type}.',
+                    },
+                    {
+                      type: (
+                        <strong>
+                          {formatMessage(typeMessages[valueType])}
+                        </strong>
+                      ),
+                    },
+                  )}
+                </p>
+                <p className={styles.description}>
+                  {formatMessage({
+                    id: 'lVImportFormats',
+                    defaultMessage:
+                      'Unterstützte Formate: .csv, .tsv, .xlsx, .xls, .ods',
+                  })}
+                </p>
+                <input
+                  type="file"
+                  accept=".csv,.tsv,.xlsx,.xls,.ods"
+                  ref={fileInputRef}
+                  className={styles.hiddenInput}
+                  onChange={onInputChange}
+                />
+                <div
+                  className={`${styles.dropZone} ${isDragging ? styles.dragging : ''}`}
+                  onClick={onClickDropZone}
+                  onDragEnter={onDragEnter}
+                  onDragLeave={onDragLeave}
+                  onDragOver={onDragOver}
+                  onDrop={onDrop}
+                >
+                  {formatMessage({
+                    id: 'lVImportDrop',
+                    defaultMessage:
+                      'Datei hier ablegen oder klicken zum Auswählen',
+                  })}
+                </div>
+              </>
+            : res && (
+                <p className={styles.description}>
+                  {formatMessage({
+                    id: 'lVImportNeedsType',
+                    defaultMessage:
+                      'Wähle zuerst im Listenformular einen Wert-Typ, um Werte zu importieren.',
+                  })}
+                </p>
+              )
+            }
           </DialogContent>
           <DialogActions>
-            <Button appearance="secondary" onClick={onClose}>
+            <Button
+              appearance="secondary"
+              onClick={onClose}
+            >
               {formatMessage({ id: 'ZSShqa', defaultMessage: 'Abbrechen' })}
             </Button>
           </DialogActions>

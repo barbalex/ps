@@ -6,6 +6,7 @@ import { createSubproject } from '../modules/createRows.ts'
 import { ListHeader } from '../components/ListHeader.tsx'
 import { Row } from '../components/shared/Row.tsx'
 import { FilterButton } from '../components/shared/FilterButton.tsx'
+import { ListRecordImport } from '../components/shared/ListRecordImport.tsx'
 import { Loading } from '../components/shared/Loading.tsx'
 import { useSubprojectsNavData } from '../modules/useSubprojectsNavData.ts'
 import { userIdAtom } from '../store.ts'
@@ -52,7 +53,9 @@ export const Subprojects = () => {
         label={label}
         nameSingular={nameSingular}
         addRow={userMayCreate ? add : undefined}
-        menus={<FilterButton isFiltered={isFiltered} />}
+        menus={<><FilterButton isFiltered={isFiltered} />
+          {userMayCreate && projectId && <ListRecordImport projectId={projectId} plural={navData.namePlural} />}
+        </>}
       />
       <div className="list-container">
         {loading ?

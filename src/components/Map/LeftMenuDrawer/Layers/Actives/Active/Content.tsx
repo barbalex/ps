@@ -34,6 +34,7 @@ import { useParams } from '@tanstack/react-router'
 import { useIntl } from 'react-intl'
 
 import { ErrorBoundary } from '../../../../../shared/ErrorBoundary.tsx'
+import { TooltipButton } from '../../../../../shared/TooltipButton.tsx'
 import { AddToLayer } from './AddToLayer.tsx'
 import { ClusterMenu } from './ClusterMenu.tsx'
 import { mapCreationTarget } from '../../../../../../modules/mapCreationParents.ts'
@@ -158,6 +159,9 @@ export const Content = ({
     isPlaceLayer && droppableLayers.includes(layerNameForState)
 
   const isAssigning = draggableLayers.includes(layerNameForState)
+  const assignLabel = isAssigning
+    ? formatMessage({ id: 'obsAssignStop', defaultMessage: 'Zuordnung der Beobachtungen beenden' })
+    : formatMessage({ id: 'obsAssignDrag', defaultMessage: 'Beobachtungen durch Ziehen zuordnen' })
 
   // Query for active place layers
   const resPlaceLayers = useLiveQuery<ActivePlaceLayer>(
@@ -441,7 +445,7 @@ export const Content = ({
         {isObservationLayer &&
           (activePlaceLayers.length === 1 ?
             // Single place layer: just a button, no menu
-            <Button
+            <TooltipButton
               icon={
                 isAssigning ?
                   <FaStopCircle />
@@ -449,11 +453,7 @@ export const Content = ({
               }
               onClick={onClickAssignButton}
               className={`${styles.headerButton}${isAssigning ? ` ${styles.assigningButton}` : ''}`}
-              title={
-                isAssigning ?
-                  'Stop assigning observations'
-                : 'Assign observations by dragging'
-              }
+              label={assignLabel}
               appearance="subtle"
               size="small"
               as="a"
@@ -464,7 +464,7 @@ export const Content = ({
               onOpenChange={(_e, data) => setAssignMenuOpen(data.open)}
             >
               <MenuTrigger disableButtonEnhancement>
-                <Button
+                <TooltipButton
                   icon={
                     isAssigning ?
                       <FaStopCircle />
@@ -472,11 +472,7 @@ export const Content = ({
                   }
                   onClick={(e) => e.stopPropagation()}
                   className={`${styles.headerButton}${isAssigning ? ` ${styles.assigningButton}` : ''}`}
-                  title={
-                    isAssigning ?
-                      'Stop assigning observations'
-                    : 'Assign observations by dragging'
-                  }
+                  label={assignLabel}
                   appearance="subtle"
                   size="small"
                   as="a"
@@ -527,10 +523,10 @@ export const Content = ({
               </MenuPopover>
             </Menu>)}
         {isDroppable && (
-          <Button
+          <TooltipButton
             icon={<TbTarget />}
             className={`${styles.headerButton} ${styles.droppableButton}`}
-            title="This layer is a drop target for observations"
+            label={formatMessage({ id: 'obsAssignTarget', defaultMessage: 'Beobachtungen können auf diesem Layer abgelegt werden' })}
             appearance="subtle"
             size="small"
             as="a"

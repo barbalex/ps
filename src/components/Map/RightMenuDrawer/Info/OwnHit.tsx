@@ -1,6 +1,6 @@
 import { useEffect, useRef, type ReactNode } from 'react'
 import { useLiveQuery } from '@electric-sql/pglite-react'
-import { Button } from '@fluentui/react-components'
+import { TooltipButton } from '../../../shared/TooltipButton.tsx'
 import {
   useLocation,
   Outlet,
@@ -138,24 +138,24 @@ export const OwnHit = ({
   return (
     <>
       <div className={styles.buttons}>
-        <Button
+        <TooltipButton
           size="small"
           icon={<MdOpenInNew />}
           disabled={!route}
           onClick={() => route && navigate(route)}
-          title={formatMessage({
+          label={formatMessage({
             id: 'bMapInfoNavigateTo',
             defaultMessage: 'Zum Formular navigieren',
           })}
         />
-        <Button
+        <TooltipButton
           size="small"
           icon={<TbZoomScan />}
           disabled={!extent}
           onClick={() =>
             extent && setMapBounds(extentToBoundsWithMargin(extent))
           }
-          title={
+          label={
             extent ?
               formatMessage({
                 id: 'bMapInfoZoomTo',
@@ -176,11 +176,11 @@ export const OwnHit = ({
               level={row.parent_id ? 2 : 1}
               selectRow={selectRow}
             />
-            <Button
+            <TooltipButton
               size="small"
               icon={<MdEdit />}
               onClick={toggleForm}
-              title={formatMessage({
+              label={formatMessage({
                 id: '9NCbxo',
                 defaultMessage: 'Formular anzeigen',
               })}

@@ -2195,8 +2195,26 @@
   "lVImportFormats": {
     "defaultMessage": "Unterstützte Formate: .csv, .tsv, .xlsx, .xls, .ods"
   },
+  "lVImportNeedsType": {
+    "defaultMessage": "Wähle zuerst im Listenformular einen Wert-Typ, um Werte zu importieren."
+  },
   "lVImportTitle": {
     "defaultMessage": "Werte importieren"
+  },
+  "lVTypeDate": {
+    "defaultMessage": "Datum (YYYY-MM-DD)"
+  },
+  "lVTypeDatetime": {
+    "defaultMessage": "Datum und Uhrzeit (ISO 8601)"
+  },
+  "lVTypeInteger": {
+    "defaultMessage": "Ganzzahl (z.B. 1, 2, 3)"
+  },
+  "lVTypeNumeric": {
+    "defaultMessage": "Dezimalzahl (z.B. 1.5, 2.75)"
+  },
+  "lVTypeText": {
+    "defaultMessage": "Text"
   },
   "lVr8Zn": {
     "defaultMessage": "Wert-Typ"
@@ -2464,6 +2482,15 @@
   },
   "obs0Raw": {
     "defaultMessage": "Rohdaten"
+  },
+  "obsAssignDrag": {
+    "defaultMessage": "Beobachtungen durch Ziehen zuordnen"
+  },
+  "obsAssignStop": {
+    "defaultMessage": "Zuordnung der Beobachtungen beenden"
+  },
+  "obsAssignTarget": {
+    "defaultMessage": "Beobachtungen können auf diesem Layer abgelegt werden"
   },
   "offlineFileDownloadingTitle": {
     "defaultMessage": "Datei wird für offline gespeichert …"
@@ -2908,6 +2935,48 @@
   },
   "rX7ZaC": {
     "defaultMessage": "Du kannst hier Standard-Einheiten wählen. Die Standard-Einheit wird bei neuen Datensätzen voreingestellt, kann aber verändert werden. Standardisierung der verwendeten Einheiten ermöglicht es, Daten systematisch zu vergleichen/analysieren. Du musst natürlich auch dafür sorgen, dass die Daten tatsächlich mit diesen Einheiten erfasst werden (Qualitätskontrollen können helfen)."
+  },
+  "recordChoose": {
+    "defaultMessage": "Datei wählen"
+  },
+  "recordCreate": {
+    "defaultMessage": "Datensätze erstellen"
+  },
+  "recordDestination": {
+    "defaultMessage": "Ziel: {parent}. Jede Zeile erstellt einen neuen Datensatz. Bestehende Datensätze werden nicht aktualisiert."
+  },
+  "recordImport": {
+    "defaultMessage": "Aus Datei importieren"
+  },
+  "recordImportReload": {
+    "defaultMessage": "Datensätze wurden erstellt. Bitte die App neu laden, nicht erneut importieren."
+  },
+  "recordImportTitle": {
+    "defaultMessage": "{list} importieren"
+  },
+  "recordImported": {
+    "defaultMessage": "{n} Datensätze erstellt."
+  },
+  "recordMapChoose": {
+    "defaultMessage": "Zuordnung wählen"
+  },
+  "recordMapping": {
+    "defaultMessage": "Spalten zuordnen. Zusätzliche Werte in data ändern das Formular nicht."
+  },
+  "recordOnline": {
+    "defaultMessage": "Zum Erstellen ist eine Verbindung nötig. Bei einem Verbindungsabbruch zuerst die Liste prüfen, bevor Sie erneut importieren."
+  },
+  "recordPrepare": {
+    "defaultMessage": "CSV, TSV, XLSX, XLS oder ODS: In der ersten Zeile stehen eindeutige Spaltennamen. Nur das erste Tabellenblatt wird gelesen. Keine IDs angeben. Zahlen ohne Tausendertrennzeichen, Daten als YYYY-MM-DD. Maximal 10 000 Zeilen."
+  },
+  "recordPreview": {
+    "defaultMessage": "Vorschau: {n} neue Datensätze (erste fünf angezeigt)."
+  },
+  "recordSkip": {
+    "defaultMessage": "Überspringen"
+  },
+  "recordTemplate": {
+    "defaultMessage": "Beispielvorlage herunterladen"
   },
   "rootExports.activateAll": {
     "defaultMessage": "Alle aktivieren"

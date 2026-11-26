@@ -1258,6 +1258,17 @@ releasing the frontend. Existing browser databases add the column on startup.
 
 ### Uploaded vector layers
 
+**Designer spreadsheet imports.** In design mode, project designers and owners
+can import subprojects or places into the open list. Download the example
+workbook, replace the example row, and review the column mapping. Unknown
+headers need an explicit destination (extra JSON text, a mapped field, or
+skip). Blank cells leave defaults in place. No coordinates, IDs or existing
+records are updated. The online [import_list_records RPC](backend/db/init/21_import_list_records.sql)
+validates the parent and writes one batch in a transaction. The importing
+browser inserts the committed rows into PGlite immediately, without queueing
+another server write; Electric continues syncing changes. Apply this server SQL
+before releasing the corresponding frontend.
+
 `src/modules/importVectorFeatures.ts` calls the online `import_vector_features`
 RPC ([SQL](backend/db/init/20_importVectorFeatures.sql)). The target must
 already be synced to the server and have type `upload`. A project `write-all`,
