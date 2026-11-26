@@ -71,6 +71,9 @@ export type NavProjectRow = {
 }
 
 export type NavPlaceLevelRow = {
+  place_roles_in_place: boolean | null
+  place_files: boolean | null
+  place_files_in_place: boolean | null
   name_singular_de: string | null
   name_plural_de: string | null
   name_singular_en: string | null

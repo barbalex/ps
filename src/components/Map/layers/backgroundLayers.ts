@@ -5,10 +5,7 @@
 // Available to every account without seeding because nothing is stored.
 import { OSM_LAYER_PRESENTATION_ID } from '../../../modules/useUrlLayers.ts'
 
-export const POSITRON_LAYER_PRESENTATION_ID =
-  'bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb'
-export const DARK_MATTER_LAYER_PRESENTATION_ID =
-  'cccccccc-cccc-cccc-cccc-cccccccccccc'
+import { POSITRON_LAYER_PRESENTATION_ID, DARK_MATTER_LAYER_PRESENTATION_ID } from '../../../modules/themeBackground.ts'
 export const ESRI_IMAGERY_LAYER_PRESENTATION_ID =
   'dddddddd-dddd-dddd-dddd-dddddddddddd'
 
@@ -72,13 +69,11 @@ export const backgroundLayers: Record<string, BackgroundLayer> = {
   }),
 }
 
-export const defaultBackgroundLayerId = OSM_LAYER_PRESENTATION_ID
-
 export const backgroundLayerIds = Object.keys(backgroundLayers)
 
 // A shared link or saved selection may come from a build with an Esri key.
 export const availableBackgroundId = (id: string) =>
-  id === ESRI_IMAGERY_LAYER_PRESENTATION_ID && !esriKey ? defaultBackgroundLayerId : id
+  id === ESRI_IMAGERY_LAYER_PRESENTATION_ID && !esriKey ? OSM_LAYER_PRESENTATION_ID : id
 
 export const isBackgroundLayerId = (id: string) =>
   Object.hasOwn(backgroundLayers, availableBackgroundId(id))

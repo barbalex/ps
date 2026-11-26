@@ -243,6 +243,8 @@ Conceptually: reader (`read-*`) < writer (`write-*`) < designer (`design`) < own
 **Key files:**
 
 - `src/modules/startSyncing.ts` — Sync orchestration, role-based filters
+- On startup, dependent shapes wait for the parent stage's `onInitialSync`
+  (local transaction committed), not `isUpToDate` (data received).
 - `src/modules/observeOperations.ts` — Operation queue & conflict handling
 
 ---

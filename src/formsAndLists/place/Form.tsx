@@ -2,7 +2,7 @@ import { useParams, useLocation } from '@tanstack/react-router'
 import type Places from '../../models/public/Places.ts'
 import { useIntl } from 'react-intl'
 import { useAtom } from 'jotai'
-import { useLiveQuery } from '@electric-sql/pglite-react'
+import { useNavRollups } from '../../modules/navRollupsContext.ts'
 
 import { designingAtom, languageAtom } from '../../store.ts'
 
@@ -48,13 +48,8 @@ export const PlaceForm = ({
   const [language] = useAtom(languageAtom)
 
   const level = placeId2 || from.includes('/$placeId_/places') ? 2 : 1
-  const nameRes = useLiveQuery(
-    `SELECT name_singular_${language} FROM place_levels WHERE project_id = $1 AND level = $2`,
-    [projectId, level],
-  )
-  const nameSingular =
-    (nameRes?.rows?.[0]?.[`name_singular_${language}`] as string | undefined) ??
-    'Population'
+  const { placeLevel } = useNavRollups()
+  const nameSingular = placeLevel(projectId!, level)?.[`name_singular_${language}`] ?? 'Population'
 
   // need to extract the jsonb data from the row
   // as inside filters it's name is a path

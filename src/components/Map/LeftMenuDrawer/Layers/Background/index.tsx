@@ -7,15 +7,18 @@ import { useAtom } from 'jotai'
 import { useLiveQuery } from '@electric-sql/pglite-react'
 
 import { ErrorBoundary } from '../../../../shared/ErrorBoundary.tsx'
-import { useUrlLayers } from '../../../../../modules/useUrlLayers.ts'
+import { useContext } from 'react'
+import { OSM_LAYER_PRESENTATION_ID, useUrlLayers } from '../../../../../modules/useUrlLayers.ts'
 import { mapLayerSortingAtom } from '../../../../../store.ts'
 import {
   POSITRON_LAYER_PRESENTATION_ID,
   DARK_MATTER_LAYER_PRESENTATION_ID,
+  ThemeBackground,
+} from '../../../../../modules/themeBackground.ts'
+import {
   ESRI_IMAGERY_LAYER_PRESENTATION_ID,
   availableBackgroundId,
   backgroundLayerIds,
-  defaultBackgroundLayerId,
   isBackgroundLayerId,
 } from '../../../layers/backgroundLayers.ts'
 import layerStyles from '../index.module.css'
@@ -23,7 +26,7 @@ import styles from './index.module.css'
 
 // labels for the drawer's pseudo background layers, keyed by id
 const labels: Record<string, { id: string; defaultMessage: string }> = {
-  [defaultBackgroundLayerId]: {
+  [OSM_LAYER_PRESENTATION_ID]: {
     id: 'mapBackgroundLayerOsm',
     defaultMessage: 'OpenStreetMap',
   },
@@ -42,6 +45,7 @@ const labels: Record<string, { id: string; defaultMessage: string }> = {
 }
 
 export const BackgroundLayers = () => {
+  const defaultBackgroundLayerId = useContext(ThemeBackground)
   const { formatMessage } = useIntl()
   const { projectId = '99999999-9999-9999-9999-999999999999' } = useParams({
     strict: false,

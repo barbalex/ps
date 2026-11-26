@@ -6,7 +6,7 @@ import { login } from './helpers.ts'
  * (layers/backgroundLayers.ts): reserved ids in the render list, no db rows.
  * The drawer's Hintergrundkarte section swaps the background id in the
  * effective render list — the mapLayerSorting atom without a ?layers=
- * override, the url param with one. OSM is the default.
+ * override, the url param with one. The default follows the resolved theme.
  */
 
 const PROJECT_ID = '018cfcf7-6424-7000-a100-851c5cc2c878'
@@ -49,18 +49,25 @@ test('a shared imagery selection renders credited Esri tiles or OSM when unconfi
 test('picking a background swaps it in the render list and persists', async ({
   page,
 }) => {
+  await page.emulateMedia({ colorScheme: 'dark' })
   await login(page, 'test@test.ch', 'test-test')
 
   await page.goto(`${PLACES_URL}?panes=map`)
   const drawer = page.locator('.map-layers-drawer')
   await expect(drawer).toBeVisible({ timeout: 60_000 })
 
-  // the default background (osm) renders its tiles
+  // The default follows live system appearance in both directions.
   await expect(
-    page.locator('img.leaflet-tile[src*="tile.openstreetmap.org"]').first(),
+    page.locator('img.leaflet-tile[src*="dark_all"]').first(),
   ).toBeVisible({ timeout: 30_000 })
+  await page.emulateMedia({ colorScheme: 'light' })
+  await expect(page.locator('img.leaflet-tile[src*="light_all"]').first()).toBeVisible()
+  await page.emulateMedia({ colorScheme: 'dark' })
+  await expect(page.locator('img.leaflet-tile[src*="dark_all"]').first()).toBeVisible()
+  await page.emulateMedia({ colorScheme: 'light' })
+  await expect(page.locator('img.leaflet-tile[src*="light_all"]').first()).toBeVisible()
 
-  // pick dark matter: its tiles replace the osm ones and the atom records it
+  // A deliberately contrasting selection survives a reload.
   await drawer
     .getByRole('button', { name: 'Dark Matter (dunkel)' })
     .click()
@@ -83,7 +90,7 @@ test('picking a background swaps it in the render list and persists', async ({
     page.locator('img.leaflet-tile[src*="dark_all"]').first(),
   ).toBeVisible({ timeout: 30_000 })
 
-  // back to the default background
+  // An unrelated choice is preserved on a theme change.
   await drawer.getByRole('button', { name: 'OpenStreetMap' }).click()
   await expect(
     page.locator('img.leaflet-tile[src*="tile.openstreetmap.org"]').first(),
@@ -92,6 +99,9 @@ test('picking a background swaps it in the render list and persists', async ({
     window.localStorage.getItem('mapLayerSortingAtom'),
   )
   expect(sortingAfter).toContain(OSM_LAYER_ID)
+  await page.emulateMedia({ colorScheme: 'dark' })
+  await expect(page.locator('html')).toHaveAttribute('data-theme', 'dark')
+  await expect(page.locator('img.leaflet-tile[src*="tile.openstreetmap.org"]').first()).toBeVisible()
 })
 
 test('picking a background under a ?layers= override writes the param', async ({
@@ -113,6 +123,9 @@ test('picking a background under a ?layers= override writes the param', async ({
   await expect(page).toHaveURL(new RegExp(`layers=${POSITRON_LAYER_ID}(&|$)`), {
     timeout: 10_000,
   })
+  await page.getByRole('button', { name: 'Darstellung: wie System' }).click()
+  await page.getByRole('button', { name: 'Darstellung: hell' }).click()
+  await expect(page).toHaveURL(new RegExp(`layers=${DARK_MATTER_LAYER_ID}(&|$)`))
   await drawer.getByRole('button', { name: 'OpenStreetMap' }).click()
   await expect(page).toHaveURL(
     new RegExp(`layers=${OSM_LAYER_ID}(&|$)`),

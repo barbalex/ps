@@ -299,7 +299,8 @@ export const NavDataProvider = ({ children }: { children: ReactNode }) => {
       name_singular_de, name_plural_de, name_singular_en, name_plural_en,
       name_singular_fr, name_plural_fr, name_singular_it, name_plural_it,
       check_quantities, check_quantities_in_check, check_taxa,
-      check_taxa_in_check, check_files, check_files_in_check
+      check_taxa_in_check, check_files, check_files_in_check,
+      place_roles_in_place, place_files, place_files_in_place
     FROM place_levels
   `)
 

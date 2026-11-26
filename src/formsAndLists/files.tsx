@@ -16,6 +16,7 @@ import { ListHeader } from '../components/ListHeader.tsx'
 import { Row } from '../components/shared/Row.tsx'
 import { Loading } from '../components/shared/Loading.tsx'
 import { FilterButton } from '../components/shared/FilterButton.tsx'
+import { useMapInfoForm } from '../modules/mapInfoFormContext.ts'
 import { useFilesNavData } from '../modules/useFilesNavData.ts'
 import { Uploader } from './file/Uploader.tsx'
 import { UploaderContext } from '../UploaderContext.ts'
@@ -53,6 +54,7 @@ export const Files = ({
   tableViewId?: string
   hideTitle?: boolean
 }) => {
+  const mapChildren = useMapInfoForm()
   const { loading, navData, isFiltered } = useFilesNavData({
     projectId,
     subprojectId,
@@ -82,7 +84,7 @@ export const Files = ({
   // offline to SQLite
   return (
     <div className="list-view">
-      {!hideTitle && (
+      {!hideTitle && !mapChildren && (
         <ListHeader
           label={label}
           nameSingular={nameSingular}

@@ -1114,6 +1114,36 @@ opens its regular form in the map's Info drawer. The drawer uses the same
 route outlet as the data pane, including configured subforms and their lists
 and detail views. For existing objects, Info
 offers separate controls for editing geometry and opening the form.
+Info defaults to the form for editable own objects and remembers an explicit
+form/table choice in this browser.
+When a click hits multiple results, Info shows own objects as selectable list
+rows grouped by layer instead of picking an editor. When the results span
+multiple subprojects, each subproject has its own layer groups. Selecting a
+row opens only that record; the sticky Back button or layer title returns
+to the same results.
+When form view is preferred, inspecting an editable own object opens its
+form directly, without displaying properties while permissions and navigation
+resolve. Read-only and external hits still show their properties.
+Observation hits use the regular assessment form: unassigned observations
+open under the import's subproject (to assess or not to assign), and assigned
+ones under their place. Changing the assignment keeps the form in Info.
+Place group headings use the navigation tree's current localized plural for
+the hit's place level, even when the map marker predates the naming settings.
+Data and Info forms share a live subscription to the project's field definitions,
+ordering and field-group reservations. Switching records reuses that configuration
+instead of rendering provisional inputs while the same metadata loads again.
+
+On the experimental branch, when the map is the **only** pane, the Info
+editor also presents the object's tree children as collapsible sections.
+Place sections use the configured tree labels and table views; checks,
+actions and reports show enabled child collections even when configured
+as separate tree entries. Opening a section uses the real child route.
+Showing the tree or data pane restores the regular inline configuration.
+In map-only mode, opening an object's form shows the regular breadcrumb trail
+below the Info header. Location results and read-only properties have no
+breadcrumbs. Selecting a data breadcrumb opens that list or
+form in the drawer, even outside the original map hit. Clicking a new map
+feature returns the drawer to inspection.
 
 ## Choosing the project and subproject on the map
 
@@ -1424,7 +1454,7 @@ link and survives reloads. Identity is in routes (as before); everything
 | `f-<key>` (e.g. `f-checks1`, `f-tableView-<id>`) | list/table-view filters (JSON or-filter array) | `useUrlFilter` | url only |
 | `c`, `z` | map center/zoom | `useUrlMapViewport` | url wins, `mapCenter`/`mapZoom` atoms are the persisted fallback |
 | `panes` | visible layout panes (`tree,data,map`) | `useUrlPanes` | url wins, `tabsAtom` fallback; the default layout produces no param |
-| `layers` | the map's render list (layer_presentation ids + the osm pseudo id `aaaaaaaa-…`), in draw order | `useUrlLayers` | url override; `layer_presentations.active` (db design data) + `mapLayerSorting` are the default |
+| `layers` | the map's render list (layer presentation IDs and the chosen background ID), in draw order | `useUrlLayers` | URL override; otherwise the design flags and `mapLayerSorting`. Light appearance defaults to Positron, dark to Dark Matter. Changing appearance swaps only the previous theme's background; other selections stay put. |
 | `designing` | design mode (`designing=1`) | `useUrlDesigning` | url wins for the session, the per-project `designingAtom` map persists; the hook mirrors an explicit url value into the map so the atom readers stay unchanged |
 | `<page>Label`, `<page>OnlyWithResults` | label filter / only-with-results toggle of the qcs/exports run pages | `useUrlSearchParam` (`useStringSearchParam`/`useBooleanSearchParam`) | url only |
 

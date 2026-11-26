@@ -8,6 +8,7 @@ import { PlaceForm as Form } from './Form.tsx'
 import { Loading } from '../../components/shared/Loading.tsx'
 import { getValueFromChange } from '../../modules/getValueFromChange.ts'
 import { NotFound } from '../../components/NotFound.tsx'
+import { useNavRollups } from '../../modules/navRollupsContext.ts'
 import { addOperationAtom, languageAtom } from '../../store.ts'
 import type Places from '../../models/public/Places.ts'
 
@@ -38,25 +39,9 @@ export const Place = ({ from }: { from: string }) => {
   )
   const row: Places | undefined = res?.rows?.[0] as Places | undefined
 
-  const nameRes = useLiveQuery(
-    `
-    SELECT 
-      place_level_id, 
-      name_singular_${language}, 
-      name_plural_${language} 
-    FROM place_levels 
-    WHERE 
-      project_id = $1 
-      AND level = $2`,
-    [projectId, placeId2 ? 2 : 1],
-  )
-  const placeLevels = nameRes?.rows ?? []
-  const nameSingular =
-    (placeLevels?.[0]?.[`name_singular_${language}`] as string | undefined) ??
-    'Place'
-  const namePlural =
-    (placeLevels?.[0]?.[`name_plural_${language}`] as string | undefined) ??
-    'Places'
+  const level = useNavRollups().placeLevel(projectId!, placeId2 ? 2 : 1)
+  const nameSingular = level?.[`name_singular_${language}`] ?? 'Place'
+  const namePlural = level?.[`name_plural_${language}`] ?? 'Places'
 
   const onChange = async (
     e: React.ChangeEvent<HTMLElement>,

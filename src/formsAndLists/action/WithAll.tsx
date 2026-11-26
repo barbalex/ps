@@ -23,6 +23,7 @@ import type { Validations } from './Form.tsx'
 import { Loading } from '../../components/shared/Loading.tsx'
 import { NotFound } from '../../components/NotFound.tsx'
 import { Section } from '../../components/shared/Section.tsx'
+import { useMapInfoForm } from '../../modules/mapInfoFormContext.ts'
 import { addOperationAtom, designingAtom } from '../../store.ts'
 import { FilterButton } from '../../components/shared/FilterButton.tsx'
 import { UploaderContext } from '../../UploaderContext.ts'
@@ -98,12 +99,13 @@ export const ActionWithAll = ({
   const filesInAction =
     (isDesigning || placeLevel?.action_files !== false) &&
     placeLevel?.action_files_in_action !== false
+  const mapChildren = useMapInfoForm()
   const showQuantities =
-    quantitiesInAction &&
+    (mapChildren || quantitiesInAction) &&
     (isDesigning || placeLevel?.action_quantities !== false)
   const showTaxa =
-    taxaInAction && (isDesigning || placeLevel?.action_taxa !== false)
-  const showFiles = filesInAction
+    (mapChildren || taxaInAction) && (isDesigning || placeLevel?.action_taxa !== false)
+  const showFiles = filesInAction || (mapChildren && (isDesigning || placeLevel?.action_files !== false))
 
   const allInlineComputed = quantitiesInAction && taxaInAction && filesInAction
   const isAllInline = allInline ?? allInlineComputed
