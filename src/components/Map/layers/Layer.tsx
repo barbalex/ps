@@ -1,6 +1,7 @@
 import { Pane } from 'react-leaflet'
 import { useLiveQuery } from '@electric-sql/pglite-react'
 import { useParams } from '@tanstack/react-router'
+import { useAtomValue } from 'jotai'
 
 import { Background } from './Background.tsx'
 import { backgroundLayers } from './backgroundLayers.ts'
@@ -9,6 +10,8 @@ import { WmsLayerComponent } from './WmsLayer/index.tsx'
 import { VectorLayerChooser } from './VectorLayer/index.tsx'
 import { tableLayerToComponent } from './tableLayerToComponent.ts'
 import { useUrlLayers } from '../../../modules/useUrlLayers.ts'
+import { getVectorLayerLabel } from '../../../modules/vectorLayerLabel.ts'
+import { languageAtom } from '../../../store.ts'
 import type LayerPresentations from '../../../models/public/LayerPresentations.ts'
 import type VectorLayers from '../../../models/public/VectorLayers.ts'
 import type VectorLayerDisplays from '../../../models/public/VectorLayerDisplays.ts'
@@ -31,7 +34,6 @@ type WmsLayerRow = WmsLayers & {
 
 // Row of the vector_layers query with aggregated json columns
 type VectorLayerRow = VectorLayers & {
-  label: string | null
   wfs_services?: {
     url: string | null
     version: string | null
@@ -52,6 +54,7 @@ export const Layer = ({ layerPresentationId, index }: Props) => {
   // ?layers= override-aware render list and visibility (see the hook);
   // layers uses it for the pane redraw key too
   const { layers, isLayerVisible } = useUrlLayers()
+  const language = useAtomValue(languageAtom)
   const resWms = useLiveQuery(
     `
     SELECT 
@@ -116,7 +119,8 @@ export const Layer = ({ layerPresentationId, index }: Props) => {
   )
   const vectorLayer = resVector?.rows?.[0] as VectorLayerRow | undefined
   const isWfsLayer = vectorLayer?.type === 'wfs'
-  const isTableLayer = !!vectorLayer?.type && vectorLayer?.type !== 'wfs'
+  const isUploadLayer = vectorLayer?.type === 'upload'
+  const isTableLayer = !!vectorLayer?.type && !isWfsLayer && !isUploadLayer
 
   const resLP = useLiveQuery(
     `SELECT * FROM layer_presentations WHERE layer_presentation_id = $1`,
@@ -196,8 +200,6 @@ export const Layer = ({ layerPresentationId, index }: Props) => {
     )
   }
 
-  // TODO: Error when VectorLayerChooser is not commented out
-  // [vite] TypeError: Cannot read properties of undefined (reading 'ReactCurrentDispatcher')
   if (tileLayer) {
     const opacity = (layerPresentation.opacity_percent ?? 100) / 100
     return (
@@ -223,10 +225,11 @@ export const Layer = ({ layerPresentationId, index }: Props) => {
     )
   }
 
-  if (isWfsLayer) {
+  if (isWfsLayer || isUploadLayer) {
     if (
-      !vectorLayer.wfs_service_layer_name?.trim() ||
-      !vectorLayer.wfs_services?.url?.trim()
+      isWfsLayer &&
+      (!vectorLayer.wfs_service_layer_name?.trim() ||
+        !vectorLayer.wfs_services?.url?.trim())
     ) return null
     return (
       <Pane
@@ -236,7 +239,7 @@ export const Layer = ({ layerPresentationId, index }: Props) => {
       >
         <VectorLayerChooser
           layerPresentation={layerPresentation}
-          layer={vectorLayer}
+          layer={{ ...vectorLayer, label: getVectorLayerLabel(vectorLayer, language, undefined) }}
         />
       </Pane>
     )
@@ -260,7 +263,7 @@ export const Layer = ({ layerPresentationId, index }: Props) => {
     // TableLayer expects layerPresentation.vector_layers with vector_layer_displays
     const layerPresentationWithVectorLayer = {
       ...layerPresentation,
-      vector_layers: vectorLayer,
+      vector_layers: { ...vectorLayer, label: vectorLayer.name },
     }
 
     return (

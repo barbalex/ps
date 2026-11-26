@@ -52,7 +52,7 @@ export const Info = () => {
     }
     acc[label].push(layer)
     return acc
-  }, {})
+  }, Object.create(null))
 
   return (
     <ErrorBoundary>

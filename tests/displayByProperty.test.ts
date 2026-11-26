@@ -74,6 +74,18 @@ const insertLayer = async (args: {
   )
 }
 
+it('shows a vector layer name or ID when its labels are blank', async () => {
+  const { getVectorLayerLabel } = await import('../src/modules/vectorLayerLabel.ts')
+  const { rows: [layer] } = await db.query<import('../src/models/public/VectorLayers.ts').default>(
+    `INSERT INTO vector_layers (project_id, type, label_en, label_de, name)
+     VALUES ($1, 'upload', '  ', '', 'Wetlands') RETURNING *`,
+    [ids.project],
+  )
+  expect(getVectorLayerLabel(layer, 'en', [])).toBe('Wetlands')
+  expect(getVectorLayerLabel({ ...layer, name: ' ' }, 'en', [])).toBe(layer.vector_layer_id)
+  expect(getVectorLayerLabel({ ...layer, label_de: 'Moore' }, 'en', [])).toBe('Moore')
+})
+
 describe('ownTableToFieldsTable', () => {
   it('maps own_table views to the real table their fields are stored under', () => {
     expect(
@@ -100,6 +112,22 @@ describe('ownTableToFieldsTable', () => {
 })
 
 describe('propertyValueToText', () => {
+  it('matches uploaded structured values even when jsonb text has whitespace', () => {
+    const fallback = { display_property_value: null }
+    const match = { display_property_value: '{"value": [1, 2]}' }
+    expect(
+      displayByProperty.displayFromFeature(
+        [fallback, match] as Parameters<DbModule['displayFromFeature']>[0],
+        'nested',
+        {
+          type: 'Feature',
+          geometry: { type: 'Point', coordinates: [0, 0] },
+          properties: { nested: { value: [1, 2] } },
+        },
+      ),
+    ).toBe(match)
+  })
+
   it('normalizes raw jsonb values to the text display_property_value stores', () => {
     // jsonb booleans never matched the text column before
     expect(displayByProperty.propertyValueToText(true)).toBe('true')
@@ -112,6 +140,43 @@ describe('propertyValueToText', () => {
 })
 
 describe('upsertVectorLayerDisplaysForVectorLayer', () => {
+  it('uses the uploaded rows and preserves the styled fallback when selecting a property', async () => {
+    const id = '42000000-0000-7000-8000-0000000000ff'
+    const key = "Region's label"
+    await db.query(
+      `INSERT INTO vector_layers (vector_layer_id, project_id, type, display_by_property)
+       VALUES ($1, $2, 'upload', $3)`,
+      [id, ids.project, key],
+    )
+    await db.query(
+      `INSERT INTO vector_layer_geoms (vector_layer_id, properties) VALUES ($1, $2), ($1, $2), ($1, '{}')`,
+      [id, JSON.stringify({ [key]: false })],
+    )
+    await db.query(
+      `UPDATE vector_layer_displays SET color = '#123456' WHERE vector_layer_id = $1`,
+      [id],
+    )
+    await upsert({ vectorLayer: await getLayerRow(id) })
+    expect(await getDisplayValues(id)).toEqual(['false', null])
+    expect(
+      (
+        await db.query(
+          `SELECT color FROM vector_layer_displays WHERE vector_layer_id = $1 AND display_property_value IS NULL`,
+          [id],
+        )
+      ).rows,
+    ).toEqual([{ color: '#123456' }])
+    await db.query(
+      `INSERT INTO vector_layer_geoms (vector_layer_id, properties)
+      SELECT $1, jsonb_build_object($2::text, n) FROM generate_series(1,31) n`,
+      [id, key],
+    )
+    expect(await upsert({ vectorLayer: await getLayerRow(id) })).toBe(
+      'tooManyValues',
+    )
+    expect(await getDisplayValues(id)).toEqual(['false', null])
+  })
+
   it('creates one display per list value for a list field (and is idempotent)', async () => {
     const listId = '40000000-0000-7000-8000-000000000001'
     const fieldId = '41000000-0000-7000-8000-000000000001'

@@ -117,7 +117,7 @@ const TABLE_CONFIG: Record<string, CheckConfig> = {
   wms_services: projectDirect(),
   wms_layers: projectDirect(),
   wfs_services: projectDirect(),
-  vector_layers: projectDirect(),
+  vector_layers: { ...projectDirect(), minPermission: 'write-all' },
   tile_layers: projectDirect(),
   project_crs: projectDirect(),
   qc_assignments: projectDirect(),
@@ -143,10 +143,12 @@ const TABLE_CONFIG: Record<string, CheckConfig> = {
     getParentId: (row) => row.wfs_service_id as string,
   },
   vector_layer_geoms: {
+    minPermission: 'write-all',
     sql: `SELECT pr.role FROM project_roles pr JOIN vector_layers vl ON vl.project_id = pr.project_id WHERE vl.vector_layer_id = $2 AND pr.project_user_id = ANY($1) LIMIT 1`,
     getParentId: (row) => row.vector_layer_id as string,
   },
   vector_layer_displays: {
+    minPermission: 'write-all',
     sql: `SELECT pr.role FROM project_roles pr JOIN vector_layers vl ON vl.project_id = pr.project_id WHERE vl.vector_layer_id = $2 AND pr.project_user_id = ANY($1) LIMIT 1`,
     getParentId: (row) => row.vector_layer_id as string,
   },

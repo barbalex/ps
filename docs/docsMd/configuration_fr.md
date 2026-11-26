@@ -27,6 +27,8 @@ C'est pourquoi arten-fördern.app est très fortement configurable:
 - Possibilité de créer des rapports personnalisés au niveau projet et sous-projet, avec intégration des graphiques
 - Possibilité d'importer des observations de n'importe quelle source
 - Intégration de diverses sources de couches cartographiques (WMS, WFS, imports...)
+  - Pour partager un fichier SIG, choisir le type de couche vectorielle **Upload**. Formats : GeoPackage, Shapefile zippé (avec ses fichiers associés), GeoJSON, KML/KMZ, GPX, CSV et géodatabase fichier zippée. Choisir la couche et, pour un CSV, les colonnes X et Y. Vérifier le code EPSG source si demandé ; les coordonnées sont converties en WGS84.
+  - L’importation nécessite une connexion et des droits d’écriture dans le projet. L’ajout conserve les objets existants ; le remplacement ne les supprime que si l’importation réussit. Après synchronisation, la couche peut être activée, stylisée et interrogée même hors ligne. Limites : 64 Mio par fichier, 256 Mio par archive décompressée.
 - Choix libre du système de référence de coordonnées, possibilité de définir le sien
   - Le globe à côté de « Afficher le centre de la carte » permet de choisir entre WGS84 et les systèmes configurés dans le projet. En mode conception, ce choix modifie la valeur par défaut du projet ; sinon, il ne s’applique qu’à votre compte sur cet appareil.
 - Sélection de contrôles qualité prédéfinis, possibilité d'en créer soi-même

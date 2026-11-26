@@ -24,7 +24,8 @@ export const PrecisePoint = (props: Props) => {
       <PointPanel
         key={`${crs.code}:${crs.projection}`}
         {...props}
-        {...crs}
+        code={crs.code}
+        projection={crs.projection}
       />
     )
   )

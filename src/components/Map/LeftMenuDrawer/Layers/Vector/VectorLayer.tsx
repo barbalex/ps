@@ -76,7 +76,7 @@ export const VectorLayer = ({
     useLayerActivation()
   const [tab, setTab] = useState<TabType>(() => {
     // if layer has no wfs_service_id or wfs_service_layer_name: default to 'config'
-    if (!layer.wfs_service_id || !layer.wfs_service_layer_name) {
+    if (layer.type === 'wfs' && (!layer.wfs_service_id || !layer.wfs_service_layer_name)) {
       return 'config'
     }
     return 'overall-displays'

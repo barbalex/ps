@@ -100,13 +100,12 @@ export const getVectorLayerLabel = (
   placeLevels: PlaceLevels[] | undefined,
 ): string => {
   if (!vectorLayer) return ''
-  if (vectorLayer.type === 'own') {
-    return getOwnVectorLayerLabel(vectorLayer, language, placeLevels)
-  }
+  const label = vectorLayer.type === 'own'
+    ? getOwnVectorLayerLabel(vectorLayer, language, placeLevels)
+    : vectorLayer[`label_${language}`]?.trim() || vectorLayer.label_de
   return (
-    vectorLayer[`label_${language}`] ??
-    vectorLayer.label_de ??
-    vectorLayer.name ??
+    label?.trim() ||
+    vectorLayer.name?.trim() ||
     vectorLayer.vector_layer_id
   )
 }

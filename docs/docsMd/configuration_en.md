@@ -27,6 +27,8 @@ That is why arten-fördern.app is highly configurable:
 - Ability to build custom reports at project and sub-project level, incorporating charts
 - Ability to import observations from any source
 - Inclusion of various sources for map layers (WMS, WFS, imports...)
+  - To share a GIS file, choose **Upload** on a project vector layer. Select a GeoPackage, zipped Shapefile (include its sidecars), GeoJSON, KML/KMZ, GPX, CSV or zipped File Geodatabase. Choose the source layer and, for CSV, the X and Y columns. Check the source EPSG code when prompted; coordinates are converted to WGS84.
+  - Importing requires a connection and project write access. **Append** keeps the existing features; **Replace** removes them only if the import succeeds. After sync, activate, style and inspect the layer on the map, including offline. Limits: 64 MiB per file, 256 MiB uncompressed per archive.
 - Free choice of coordinate reference system, ability to define your own
   - Use the globe beside “Show map center” to switch between WGS84 and the project's configured systems. In design mode, this changes the project default; otherwise, the choice is saved only for your account on this device.
 - Selection of ready-made quality checks, ability to build custom ones

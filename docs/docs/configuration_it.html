@@ -22,7 +22,11 @@
 <li>Selezione di grafici predefiniti, possibilità di creare i propri</li>
 <li>Possibilità di creare rapporti personalizzati a livello di progetto e sottoprogetto, con integrazione dei grafici</li>
 <li>Possibilità di importare osservazioni da qualsiasi fonte</li>
-<li>Integrazione di diverse fonti per livelli mappa (WMS, WFS, importazioni...)</li>
+<li>Integrazione di diverse fonti per livelli mappa (WMS, WFS, importazioni...)<ul>
+<li>Per condividere un file GIS, scegliere il tipo <strong>Upload</strong> per un livello vettoriale del progetto. Formati: GeoPackage, Shapefile in ZIP (con i file associati), GeoJSON, KML/KMZ, GPX, CSV e File Geodatabase in ZIP. Scegliere il livello e, per CSV, le colonne X e Y. Verificare il codice EPSG di origine quando richiesto; le coordinate vengono convertite in WGS84.</li>
+<li>L’importazione richiede una connessione e permessi di scrittura nel progetto. L’aggiunta conserva gli oggetti esistenti; la sostituzione li elimina solo se l’importazione riesce. Dopo la sincronizzazione il livello si può attivare, stilizzare e interrogare anche offline. Limiti: 64 MiB per file, 256 MiB per archivio decompresso.</li>
+</ul>
+</li>
 <li>Scelta libera del sistema di riferimento di coordinate, possibilità di definire il proprio<ul>
 <li>Il globo accanto a «Mostra il centro della mappa» permette di scegliere tra WGS84 e i sistemi configurati nel progetto. In modalità progettazione la scelta modifica il valore predefinito del progetto; altrimenti vale solo per il tuo account su questo dispositivo.</li>
 </ul>

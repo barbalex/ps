@@ -2,6 +2,11 @@ import { describe, it, expect, beforeAll, afterAll } from 'vitest'
 
 import { createTestDb, type TestFixture } from './helpers/createTestDb.ts'
 import {
+  uploadFeature,
+  uploadFeaturesSql,
+  type UploadRow,
+} from '../src/components/Map/layers/VectorLayer/uploadFeatures.ts'
+import {
   viewportEitherPredicate,
   viewportParams,
   viewportPredicate,
@@ -103,6 +108,32 @@ beforeAll(async () => {
 
 afterAll(async () => {
   await fixture.db.close()
+})
+
+it('uploads return intersecting features, respect the cap, and refresh a changed row', async () => {
+  const { db, ids } = fixture
+  const { rows: [layer] } = await db.query<{ id: string }>(
+    `INSERT INTO vector_layers(project_id, type) VALUES ($1, 'upload') RETURNING vector_layer_id AS id`,
+    [ids.project],
+  )
+  await db.query(`
+    INSERT INTO vector_layer_geoms(vector_layer_id, geometry, properties)
+    VALUES ($1, ST_GeomFromText('GEOMETRYCOLLECTION(LINESTRING(8 47.37, 9 47.37))', 4326), '{"kind":"line"}'),
+           ($1, ST_GeomFromText('GEOMETRYCOLLECTION(POINT(1 1))', 4326), '{}')`, [layer.id])
+  const read = async (bounds: typeof zurichEnvelope | null, cap = 10) =>
+    (await db.query<UploadRow>(uploadFeaturesSql, [layer.id, ...viewportParams(bounds), cap])).rows.map(uploadFeature)
+  expect(await read(null)).toEqual([])
+  expect(await read(zurichEnvelope, 0)).toEqual([])
+  const visible = await read(zurichEnvelope)
+  expect(visible).toHaveLength(1)
+  expect(visible[0]).toMatchObject({
+    geometry: { type: 'LineString' },
+    properties: { kind: 'line' },
+  })
+  await db.query(`UPDATE vector_layer_geoms SET properties = '{"kind":"updated"}' WHERE vector_layer_id = $1`, [layer.id])
+  const [updated] = await read(zurichEnvelope)
+  expect(updated.properties).toEqual({ kind: 'updated' })
+  expect(updated.id).not.toBe(visible[0].id)
 })
 
 describe('viewportPredicate (places/actions/checks layers)', () => {

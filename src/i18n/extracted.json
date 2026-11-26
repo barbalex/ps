@@ -3350,6 +3350,39 @@
   "vectorLayer.wfs.valuesUnreadable": {
     "defaultMessage": "Die Werte des Felds «{field}» konnten nicht gelesen werden"
   },
+  "vectorUploadAppend": {
+    "defaultMessage": "Behalten und neue Objekte hinzufügen"
+  },
+  "vectorUploadBusy": {
+    "defaultMessage": "Import wird verarbeitet…"
+  },
+  "vectorUploadColumn": {
+    "defaultMessage": "Spalte für {axis}"
+  },
+  "vectorUploadCrs": {
+    "defaultMessage": "Koordinatensystem der Quelldaten (EPSG-Code)"
+  },
+  "vectorUploadDone": {
+    "defaultMessage": "Importierte Objekte: {count}"
+  },
+  "vectorUploadFailed": {
+    "defaultMessage": "Import fehlgeschlagen: {reason}"
+  },
+  "vectorUploadFile": {
+    "defaultMessage": "GIS-Datei auswählen"
+  },
+  "vectorUploadImport": {
+    "defaultMessage": "Ebene importieren"
+  },
+  "vectorUploadMode": {
+    "defaultMessage": "Vorhandene Objekte"
+  },
+  "vectorUploadReplace": {
+    "defaultMessage": "Alle durch die importierten Objekte ersetzen"
+  },
+  "vectorUploadSourceLayer": {
+    "defaultMessage": "Ebene aus der Datei"
+  },
   "versionCheckBanner": {
     "defaultMessage": "Eine neue Version ({availableVersion}) von Arten fördern ist verfügbar. Die laufende Version ({appVersion}) ist veraltet und kann Fehler verursachen."
   },
