@@ -1481,7 +1481,9 @@ None of these justify the costs above today.
 The app is already installable: `VitePWA` in
 [vite.config.ts](vite.config.ts) (manifest `display: standalone`, SW
 precache incl. the PGlite wasm); SW-driven updates are handled by
-[VersionCheck](src/components/VersionCheck/index.tsx). Boot requests
+[VersionCheck](src/components/VersionCheck/index.tsx). The banner lets the
+replacement worker finish precaching and activate before reloading. It does
+not delete the running worker's cache or files marked for offline use. Boot requests
 persistent storage
 ([requestPersistentStorage.ts](src/modules/requestPersistentStorage.ts),
 called from `main.tsx`), and

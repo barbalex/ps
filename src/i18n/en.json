@@ -1400,6 +1400,7 @@
   "versionCheckUpdateNow": "Update app",
   "versionCheckLater": "later",
   "versionCheckUpdating": "Updating app …",
+  "versionCheckFailed": "The update failed. You can keep using the current version and try again.",
   "obs0Abs": "absence",
   "xG8wQ2": "Optional: set a row filter (only rows matching it) and/or choose a field group (show only these columns). Both empty = all rows and columns.",
   "wF4gR8": "Field group (columns)",

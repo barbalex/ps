@@ -1,4 +1,5 @@
 {
+  "versionCheckFailed": "La mise à jour a échoué. Vous pouvez continuer à utiliser la version actuelle et réessayer.",
   "recordImportReload": "Les enregistrements ont été créés. Rechargez l’application pour les voir, sans relancer l’importation.",
   "recordImport": "Importer un fichier",
   "recordImported": "{n} enregistrements créés.",

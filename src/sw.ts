@@ -24,10 +24,10 @@ cleanupOutdatedCaches()
 clientsClaim()
 
 // SKIP_WAITING is sent by workbox-window (registerType 'autoUpdate') and by
-// the version-check banner's cache-clearing reload
+// the version-check banner once the replacement has finished precaching
 self.addEventListener('message', (event) => {
   const data = event.data as { type?: string } | null | undefined
-  if (data?.type === 'SKIP_WAITING') self.skipWaiting()
+  if (data?.type === 'SKIP_WAITING') event.waitUntil(self.skipWaiting())
 })
 
 // cold chunks are excluded from the precache (hashed, immutable URLs —
