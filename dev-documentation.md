@@ -1121,6 +1121,10 @@ Place sections use the configured tree labels and table views; checks,
 actions and reports show enabled child collections even when configured
 as separate tree entries. Opening a section uses the real child route.
 Showing the tree or data pane restores the regular inline configuration.
+In map-only mode, the regular breadcrumb trail sits below the Info header
+instead of above the map. Selecting a data breadcrumb opens that list or
+form in the drawer, even outside the original map hit. Clicking a new map
+feature returns the drawer to inspection.
 
 ## Choosing the project and subproject on the map
 

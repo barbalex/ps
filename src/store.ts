@@ -86,6 +86,7 @@ export interface MapInfoLayer {
 }
 
 export interface MapInfo {
+  browsing?: boolean
   lat: number
   lng: number
   zoom: number

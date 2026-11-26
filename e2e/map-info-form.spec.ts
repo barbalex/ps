@@ -193,6 +193,24 @@ test('pencil edits the selected place in Info without opening the data pane', as
   expect(new URL(page.url()).searchParams.get('panes')).toBe('map')
 })
 
+test('map-only breadcrumbs open ancestor lists and records inside Info', async ({ page }) => {
+  const drawer = await inspectPlace(page, writer)
+  const placeName = psql(`SELECT name FROM places WHERE place_id = '${placeId}'`)
+  await drawer.getByRole('button', { name: 'View form' }).click()
+  await expect(drawer.locator('input[name=name]')).toHaveValue(placeName)
+  const placesUrl = `${root}/places`
+  const placesCrumb = drawer.locator(`a.crumb-label-link[href^="${placesUrl}?"]`)
+  await placesCrumb.click()
+  await expect(page).toHaveURL(url => url.pathname === placesUrl && url.searchParams.get('panes') === 'map')
+  await drawer.locator('.list-container .row').first().click()
+  await expect(drawer.locator('input[name=name]')).toHaveValue(placeName)
+  await page.goBack()
+  await expect(drawer.locator('.list-container .row').first()).toBeVisible()
+  await expect(page.locator('.allotment-data')).toHaveCount(0)
+  await expect(drawer.locator('.crumb-container').first()).toBeVisible()
+  await expect(page.locator('.crumb-container:not(.map-info-drawer *)')).toHaveCount(0)
+})
+
 test('New from a level-two place with Files open selects a sibling under the same parent', async ({ page }) => {
   await login(page, writer, password)
   const collection = `${root}/places/${placeId}/places`

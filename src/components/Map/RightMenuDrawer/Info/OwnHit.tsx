@@ -15,7 +15,7 @@ import { TbZoomScan } from 'react-icons/tb'
 
 import { Geometry } from '../../../FormMenu/Geometry.tsx'
 import { ownFormRoute } from '../../../../modules/navigateToOwnForm.ts'
-import { useUrlPanes } from '../../../../modules/useUrlPanes.ts'
+import { usePaneVisibility } from '../../../LayoutProtected/usePaneVisibility.ts'
 import { MapInfoFormRoot } from '../../../../modules/mapInfoFormContext.ts'
 import { useOwnLayerScope } from '../../../../modules/useOwnLayerScope.ts'
 import { roleDependencies } from '../../../../modules/writeAccess.ts'
@@ -54,8 +54,8 @@ export const OwnHit = ({
   const router = useRouter()
   const navigate = useNavigate()
   const { formSearch } = useOwnLayerScope()
-  const [panes] = useUrlPanes()
-  const mapOnly = panes.length === 1 && panes[0] === 'map'
+  const { treeVisible, dataVisible, mapVisible } = usePaneVisibility()
+  const mapOnly = mapVisible && !treeVisible && !dataVisible
   const { pathname } = useLocation()
   const setMapInfo = useSetAtom(mapInfoAtom)
   const setMapBounds = useSetAtom(mapBoundsAtom)

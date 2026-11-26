@@ -1,5 +1,6 @@
-import type { RefObject } from 'react'
+import { useContext, type MouseEvent, type RefObject } from 'react'
 import { Link, useLocation } from '@tanstack/react-router'
+import { MapInfoNavigation } from '../../../../modules/mapInfoFormContext.ts'
 
 // import { toggleNodeSymbol } from '../../Projekte/TreeContainer/Tree/toggleNodeSymbol.js'
 
@@ -18,6 +19,8 @@ type Props = {
 
 export const Label = ({ navData, outerContainerRef }: Props) => {
   const { pathname } = useLocation()
+  const browseInInfo = useContext(MapInfoNavigation)
+  const dataLink = navData.ownUrl === '/data' || navData.ownUrl?.startsWith('/data/')
 
   // issue: relative paths are not working!!!???
   // also: need to decode pathname (Zähleinheiten...)
@@ -33,7 +36,9 @@ export const Label = ({ navData, outerContainerRef }: Props) => {
   //   ownUrl: navData.ownUrl,
   // })
 
-  const onClick = () => {
+  const onClick = (event: MouseEvent<HTMLAnchorElement>) => {
+    if (event.button !== 0 || event.ctrlKey || event.metaKey || event.shiftKey || event.altKey) return
+    if (dataLink) browseInInfo?.()
     // 1. ensure the clicked element is visible
     const element = outerContainerRef.current
     if (!element) return
@@ -61,6 +66,7 @@ export const Label = ({ navData, outerContainerRef }: Props) => {
     <Link
       className="crumb-label-link"
       to={navData.ownUrl!}
+      {...(browseInInfo && dataLink && { search: true })}
       onClick={onClick}
     >
       {navData.labelShort ?? navData.label}

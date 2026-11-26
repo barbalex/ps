@@ -1,6 +1,6 @@
 import { useNavigate } from '@tanstack/react-router'
-import { useRef, useState } from 'react'
-import { useMapInfoForm } from '../../modules/mapInfoFormContext.ts'
+import { useContext, useRef, useState } from 'react'
+import { MapInfoNavigation } from '../../modules/mapInfoFormContext.ts'
 
 import styles from './Row.module.css'
 
@@ -25,7 +25,7 @@ export const Row = ({
   isActive = false,
 }: Props) => {
   const navigate = useNavigate()
-  const mapForm = useMapInfoForm()
+  const mapForm = useContext(MapInfoNavigation)
   const [swipeOffset, setSwipeOffset] = useState(0)
   const [isSwiping, setIsSwiping] = useState(false)
   const [isDeleting, setIsDeleting] = useState(false)

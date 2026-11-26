@@ -3,10 +3,13 @@ const { Button, DrawerBody, DrawerHeader } = fluentUiReactComponents
 import { MdClose } from 'react-icons/md'
 import { useAtom } from 'jotai'
 import type { MouseEvent } from 'react'
-import { useParams } from '@tanstack/react-router'
+import { Outlet, useMatches, useParams } from '@tanstack/react-router'
 import { useLiveQuery } from '@electric-sql/pglite-react'
 
 import { ErrorBoundary } from '../../../shared/ErrorBoundary.tsx'
+import { Breadcrumbs } from '../../../LayoutProtected/Breadcrumbs/index.tsx'
+import { usePaneVisibility } from '../../../LayoutProtected/usePaneVisibility.ts'
+import { MapInfoFormRoot, MapInfoNavigation } from '../../../../modules/mapInfoFormContext.ts'
 import { FormHeader } from '../../../FormHeader/index.tsx'
 import { Location } from './Location.tsx'
 import { Layer } from './Layer.tsx'
@@ -16,8 +19,28 @@ import styles from './index.module.css'
 import type ProjectCrs from '../../../../models/public/ProjectCrs.ts'
 import type Projects from '../../../../models/public/Projects.ts'
 
+const RoutedInfo = () => {
+  const root = useMatches({
+    select: (matches) => matches.findLast((match) =>
+      /\/\$(placeId2?|checkId|actionId)_$/.test(match.routeId),
+    )?.pathname,
+  })
+  return (
+    <MapInfoFormRoot.Provider value={root}>
+      <Outlet />
+    </MapInfoFormRoot.Provider>
+  )
+}
+
 export const Info = () => {
   const [mapInfo, setMapInfo] = useAtom(mapInfoAtom)
+  const { treeVisible, dataVisible, mapVisible } = usePaneVisibility()
+  const mapOnly = mapVisible && !treeVisible && !dataVisible
+  const browse = () => setMapInfo((info) => !info || info.browsing ? info : {
+    ...info,
+    browsing: true,
+    layers: info.layers.map((layer) => layer.formActive ? { ...layer, formActive: false } : layer),
+  })
   const { projectId = '99999999-9999-9999-9999-999999999999' } = useParams({
     strict: false,
   })
@@ -56,6 +79,7 @@ export const Info = () => {
 
   return (
     <ErrorBoundary>
+      <MapInfoNavigation.Provider value={mapOnly ? browse : undefined}>
       <div className={styles.container}>
         <DrawerHeader className={styles.header}>
           <FormHeader
@@ -70,7 +94,9 @@ export const Info = () => {
             }
           />
         </DrawerHeader>
+        {mapOnly && mapInfo && <Breadcrumbs />}
         <DrawerBody className={styles.body}>
+          {mapOnly && mapInfo?.browsing ? <RoutedInfo /> : <>
           <Location
             mapInfo={mapInfo}
             projectMapPresentationCrs={projectMapPresentationCrs}
@@ -94,8 +120,10 @@ export const Info = () => {
               </div>
             ))
           : <p className={styles.noData}>No Data found at this location</p>}
+          </>}
         </DrawerBody>
       </div>
+      </MapInfoNavigation.Provider>
     </ErrorBoundary>
   )
 }
