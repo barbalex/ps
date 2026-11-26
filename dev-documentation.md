@@ -1117,8 +1117,10 @@ offers separate controls for editing geometry and opening the form.
 Info defaults to the form for editable own objects and remembers an explicit
 form/table choice in this browser.
 When a click hits multiple results, Info shows own objects as selectable list
-rows grouped by layer instead of picking an editor. Selecting a row opens
-only that record; Back returns to the same results.
+rows grouped by layer instead of picking an editor. When the results span
+multiple subprojects, each subproject has its own layer groups. Selecting a
+row opens only that record; the sticky Back button or layer title returns
+to the same results.
 When form view is preferred, inspecting an editable own object opens its
 form directly, without displaying properties while permissions and navigation
 resolve. Read-only and external hits still show their properties.

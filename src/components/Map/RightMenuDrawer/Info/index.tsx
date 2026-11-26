@@ -17,6 +17,7 @@ import { Layer } from './Layer.tsx'
 import { languageAtom, mapInfoAtom } from '../../../../store.ts'
 import { useNavRollups } from '../../../../modules/navRollupsContext.ts'
 import { getPlaceLevelNames } from '../../../../modules/placeNameFallback.ts'
+import { useOwnLayerScope } from '../../../../modules/useOwnLayerScope.ts'
 import type { MapInfoLayer } from '../../../../store.ts'
 import styles from './index.module.css'
 import type ProjectCrs from '../../../../models/public/ProjectCrs.ts'
@@ -91,22 +92,40 @@ export const Info = () => {
     layers: info.layers.map(layer => layer.formActive ? { ...layer, formActive: false } : layer),
   })
 
-  // Group layers by label
-  const groupedLayers = (selected ? [selected] : hits).reduce<
-    Record<string, MapInfoLayer[]>
-  >((acc, layer) => {
+  const { subprojectId } = useOwnLayerScope()
+  const visible = selected ? [selected] : hits
+  const hitKey = (layer: MapInfoLayer) => layer.ownObservationId ? `observation/${layer.ownObservationId}` : `${layer.ownTable}/${layer.ownId}`
+  const lookup = subprojectId ? [] : visible.flatMap(layer =>
+    layer.ownTable || layer.ownObservationId ? [{
+      key: hitKey(layer), sid: layer.ownSubprojectId, oid: layer.ownObservationId,
+      pid: layer.ownTable === 'place' ? layer.ownId : layer.ownPlaceId,
+    }] : [],
+  )
+  const owners = useLiveQuery<{ key: string; id: string; label: string }>(
+    `SELECT h.key, s.subproject_id AS id, coalesce(nullif(s.label,''), nullif(s.name,''), s.subproject_id::text) AS label
+     FROM jsonb_to_recordset($1::jsonb) AS h(key text, sid uuid, oid uuid, pid uuid)
+     LEFT JOIN observations o ON o.observation_id = h.oid
+     LEFT JOIN observation_imports i USING (observation_import_id)
+     LEFT JOIN places p ON p.place_id = h.pid
+     LEFT JOIN places parent ON parent.place_id = p.parent_id
+     JOIN subprojects s ON s.subproject_id = coalesce(i.subproject_id, h.sid, p.subproject_id, parent.subproject_id)
+     WHERE s.project_id = $2`,
+    [JSON.stringify(lookup), projectId],
+  )?.rows ?? []
+  const ownerByHit = new Map(owners.map(owner => [owner.key, owner]))
+  const split = !selected && new Set(owners.map(owner => owner.id)).size > 1
+  const term = projectRow(projectId)?.subproject_name_singular_current ||
+    formatMessage({ id: 'gxCh0c', defaultMessage: 'Teilprojekt' })
+  const groups = Map.groupBy(visible, layer => split ? ownerByHit.get(hitKey(layer))?.id : undefined)
+  const tableLabel = (layer: MapInfoLayer) => {
     // A Leaflet marker can retain the label it had before place levels loaded.
     const level = layer.ownParentId ? 2 : 1
     const project = layer.projectId ?? projectId
-    const label = layer.ownTable === 'place' ?
+    return layer.ownTable === 'place' ?
       getPlaceLevelNames(placeLevel(project, level), language, projectRow(project)?.type, level, formatMessage).plural
     : layer.label || 'Unknown'
-    if (!acc[label]) {
-      acc[label] = []
-    }
-    acc[label].push(layer)
-    return acc
-  }, Object.create(null))
+  }
+  const backLabel = formatMessage({ id: 'bFyZsS', defaultMessage: 'Zurück' })
 
   return (
     <ErrorBoundary>
@@ -127,7 +146,7 @@ export const Info = () => {
         </DrawerHeader>
         {mapOnly && mapInfo && <Breadcrumbs />}
         <DrawerBody className={styles.body}>
-          {selected && <Button onClick={back}>{formatMessage({ id: 'bFyZsS', defaultMessage: 'Zurück' })}</Button>}
+          {selected && <div className={styles.backOverlay}><Button size="small" onClick={back}>{backLabel}</Button></div>}
           {mapOnly && mapInfo?.browsing ? <RoutedInfo /> : <>
           <Location
             mapInfo={mapInfo}
@@ -135,22 +154,28 @@ export const Info = () => {
             projectCrs={projectCrs}
           />
           {hits.length ?
-            Object.entries(groupedLayers).map(([label, layers]) => (
+            Array.from(groups, ([id, group]) => (
+              <section key={id ?? ''}>
+              {id && <h2 className={styles.subprojectHeading}>{term}: {ownerByHit.get(hitKey(group[0]))?.label}</h2>}
+              {Array.from(Map.groupBy(group, tableLabel), ([label, layers]) => (
               <div
                 key={label}
                 className={styles.layerGroup}
               >
-                <div className={styles.groupHeader}>
+                {selected ? <button type="button" className={styles.groupHeader} onClick={back} title={backLabel}>
                   {label} ({layers.length})
-                </div>
+                </button> : <div className={styles.groupHeader}>{label} ({layers.length})</div>}
                 {layers.map((layer, i) => (
                   <Layer
                     key={`${label}/${i}`}
                     layerData={layer}
+                    subprojectLabel={!split && ownerByHit.has(hitKey(layer)) ? `${term}: ${ownerByHit.get(hitKey(layer))?.label}` : undefined}
                     onChoose={!selected && hits.length > 1 && (layer.ownId || layer.ownObservationId) ? () => choose(layer) : undefined}
                   />
                 ))}
               </div>
+              ))}
+              </section>
             ))
           : <p className={styles.noData}>No Data found at this location</p>}
           </>}

@@ -22,6 +22,8 @@ const writer = 'map-info-form-writer@test.ch'
 const reader = 'map-info-form-reader@test.ch'
 const password = 'e2e-test-password-123'
 const root = `/data/projects/${projectId}/subprojects/${subprojectId}`
+const otherSpecies = 'adae57ff-0000-4000-8000-000000000016'
+const otherPlace = 'adae57ff-0000-4000-8000-000000000017'
 
 test.beforeAll(async () => {
   await ensureProjectFixture({
@@ -76,6 +78,11 @@ test.beforeAll(async () => {
       VALUES ('${assessId}','${obsImport}',ST_GeomFromText('GEOMETRYCOLLECTION(POINT(8.6 47.4))',4326))
       ON CONFLICT DO NOTHING;
     UPDATE observations SET not_to_assign = NULL, place_id = NULL WHERE observation_id='${assessId}';
+    INSERT INTO subprojects (subproject_id, project_id, name) VALUES
+      ('${otherSpecies}', '${projectId}', 'Other species') ON CONFLICT DO NOTHING;
+    INSERT INTO places (place_id, subproject_id, level, geometry)
+      SELECT '${otherPlace}', '${otherSpecies}', 1, geometry FROM observations WHERE observation_id='${assessId}'
+      ON CONFLICT DO NOTHING;
     INSERT INTO vector_layers (vector_layer_id, project_id, type, name, own_table, own_table_level)
       VALUES ('adae57ff-0000-4000-8000-000000000012','${projectId}','own','InfoFormsToAssess','observations_to_assess',NULL)
       ON CONFLICT DO NOTHING;
@@ -94,8 +101,8 @@ test.beforeAll(async () => {
       userId,
       projectId,
       role,
-      subprojectIds: [subprojectId],
-      placeIds: [placeId, childId],
+      subprojectIds: [subprojectId, otherSpecies],
+      placeIds: [placeId, childId, otherPlace],
     })
   }
 })
@@ -342,10 +349,29 @@ test('Info groups place hits by their navigation names even with stale marker la
   await drawer.getByRole('button', { name: 'Child', exact: true }).click()
   await expect(drawer.locator('input[name=name]')).toHaveValue('Child place')
   await expect(page).toHaveURL(url => url.pathname === `${root}/places/${placeId}/places/${childId}/place` && url.searchParams.get('panes') === 'map')
-  await drawer.getByRole('button', { name: 'Back', exact: true }).click()
+  const back = drawer.getByRole('button', { name: 'Back', exact: true })
+  const body = drawer.locator('.fui-DrawerBody')
+  await body.evaluate(el => { el.scrollTop = el.scrollHeight })
+  expect(await body.evaluate(el => el.scrollTop)).toBeGreaterThan(0)
+  await expect(back).toBeInViewport()
+  await back.click()
   await drawer.getByRole('button', { name: 'Parent', exact: true }).press('Enter')
   await expect(page).toHaveURL(url => url.pathname === `${root}/places/${placeId}/place`)
   await expect(drawer.locator('input[name=name]')).toHaveValue(psql(`SELECT name FROM places WHERE place_id = '${placeId}'`))
+  await drawer.getByRole('button', { name: 'Populations (1)', exact: true }).click()
+  await expect(drawer.getByRole('button', { name: 'Child', exact: true })).toBeVisible()
+})
+
+test('overview groups overlapping observations and places under their own species', async ({ page }) => {
+  await login(page, reader, password)
+  await page.goto(`/data/projects/${projectId}?panes=map&c=47.4%2C8.6&z=17`)
+  await clickMarker(page, 2)
+  const drawer = page.locator('.map-info-drawer')
+  for (const [species, id] of [['Info forms', assessId], ['Other species', otherPlace]]) {
+    const section = drawer.locator('section').filter({ has: page.getByRole('heading', { name: `Species: ${species}`, exact: true }) })
+    await expect(section.locator('.row')).toHaveCount(1)
+    await expect(section.locator(`[data-info-for="${id}"]`)).toBeVisible()
+  }
 })
 
 test('a requested nested check form at latitude zero edits the check, not the current route', async ({

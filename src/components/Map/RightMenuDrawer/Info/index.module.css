@@ -59,6 +59,38 @@
   backdrop-filter: blur(8px);
 }
 
+.backOverlay {
+  position: sticky;
+  top: 0;
+  z-index: 11;
+  height: 0;
+  display: flex;
+  justify-content: flex-end;
+  align-items: flex-start;
+  pointer-events: none;
+}
+
+.backOverlay > button {
+  margin: 4px;
+  pointer-events: auto;
+}
+
+button.groupHeader {
+  width: 100%;
+  text-align: start;
+  color: inherit;
+  font-family: inherit;
+  border: 0;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+  padding-inline-end: 6em;
+  cursor: pointer;
+}
+
+.subprojectHeading {
+  font-size: 1rem;
+  margin: 10px;
+}
+
 :global(html[data-theme='dark']) .groupHeader {
   background-color: rgba(35, 48, 33, 0.5);
   border-bottom-color: rgba(255, 255, 255, 0.1);
