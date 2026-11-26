@@ -15,8 +15,36 @@ const PLACES_URL = `/data/projects/${PROJECT_ID}/subprojects/${SUBPROJECT_ID}/pl
 const OSM_LAYER_ID = 'aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa'
 const POSITRON_LAYER_ID = 'bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb'
 const DARK_MATTER_LAYER_ID = 'cccccccc-cccc-cccc-cccc-cccccccccccc'
+const ESRI_LAYER_ID = 'dddddddd-dddd-dddd-dddd-dddddddddddd'
 
 test.use({ locale: 'de-CH' })
+
+test('a shared imagery selection renders credited Esri tiles or OSM when unconfigured', async ({page}) => {
+  let requests = 0
+  await page.route('https://ibasemaps-api.arcgis.com/**', async route => {
+    requests++
+    await route.fulfill({ contentType: 'image/png', body: Buffer.from('iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMCAO+jRZkAAAAASUVORK5CYII=', 'base64') })
+  })
+  await login(page, 'test@test.ch', 'test-test')
+  await page.goto(`${PLACES_URL}?layers=${OSM_LAYER_ID}&panes=map`)
+  const drawer = page.locator('.map-layers-drawer')
+  await expect(drawer.getByRole('button', {name:'OpenStreetMap'})).toBeVisible({timeout:60_000})
+  expect(requests).toBe(0)
+  const imagery = drawer.getByRole('button', {name:'Satellit / Luftbild (Esri)'})
+  if (await imagery.count()) {
+    await imagery.click()
+    await expect(page).toHaveURL(new RegExp(`layers=${ESRI_LAYER_ID}(&|$)`))
+    await expect(page.locator('.leaflet-control-attribution')).toContainText('Powered by Esri')
+    await expect.poll(() => requests).toBeGreaterThan(0)
+  } else {
+    await page.goto(`${PLACES_URL}?layers=${ESRI_LAYER_ID}&panes=map`)
+    await expect(page.locator('img.leaflet-tile[src*="tile.openstreetmap.org"]').first()).toBeVisible({timeout:60_000})
+    expect(requests).toBe(0)
+  }
+  await drawer.getByRole('button', {name:'Positron (hell)'}).click()
+  await expect(page).toHaveURL(new RegExp(`layers=${POSITRON_LAYER_ID}(&|$)`))
+  await expect(page.locator('.leaflet-control-attribution')).not.toContainText('Powered by Esri')
+})
 
 test('picking a background swaps it in the render list and persists', async ({
   page,

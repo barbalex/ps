@@ -4,7 +4,7 @@ import { useParams } from '@tanstack/react-router'
 import { useAtomValue } from 'jotai'
 
 import { Background } from './Background.tsx'
-import { backgroundLayers } from './backgroundLayers.ts'
+import { availableBackgroundId, backgroundLayers } from './backgroundLayers.ts'
 import { TilesLayer, type TileLayerRow } from './TilesLayer.tsx'
 import { WmsLayerComponent } from './WmsLayer/index.tsx'
 import { VectorLayerChooser } from './VectorLayer/index.tsx'
@@ -153,7 +153,7 @@ export const Layer = ({ layerPresentationId, index }: Props) => {
   //   isTableLayer,
   // })
 
-  const background = backgroundLayers[layerPresentationId]
+  const background = backgroundLayers[availableBackgroundId(layerPresentationId)]
   if (background) {
     return <Background key={layerPresentationId} background={background} />
   }

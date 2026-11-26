@@ -30,7 +30,7 @@ const waitForTiles = async (container: HTMLElement, timeoutMs = 4000) => {
 
 /**
  * Captures the map as a PNG data URL, with the controls hidden: leaflet's
- * own plus the self-built ones (global class map-own-controls, set on the
+ * own except for attribution, plus the self-built ones (global class map-own-controls, set on the
  * BottomRightControl container). Tiles must be CORS-enabled (all tile
  * servers this app uses are).
  */
@@ -40,7 +40,7 @@ export const captureMap = async (map: LeafletMap): Promise<string> => {
 
   const controlContainers = [
     ...container.querySelectorAll<HTMLElement>(
-      '.leaflet-control-container, .map-own-controls',
+      '.leaflet-control:not(.leaflet-control-attribution), .map-own-controls',
     ),
   ]
   const previousDisplays = controlContainers.map((c) => c.style.display)
