@@ -1,4 +1,10 @@
 {
+  "mapZoomToLayer": "Zoom sul layer",
+  "clusterDefault": "Raggruppa i marcatori (impostazione del progetto)",
+  "clusterMarkers": "Raggruppa i marcatori",
+  "clusterOn": "Raggruppa",
+  "clusterOff": "Mostra singolarmente",
+  "clusterInherit": "Impostazione del progetto: {value}",
   "fileDownload": "Scarica il file",
   "fileDownloadFailed": "Impossibile scaricare il file",
   "mapCenterX": "Coordinata X del centro della mappa",

@@ -185,6 +185,7 @@ const healExistingDbSql = `
             ALTER TABLE IF EXISTS field_sorts ADD COLUMN IF NOT EXISTS sys_period tstzrange DEFAULT NULL;
             ALTER TABLE IF EXISTS vector_layer_geoms ADD COLUMN IF NOT EXISTS sys_period tstzrange DEFAULT NULL;
             ALTER TABLE IF EXISTS layer_presentations ADD COLUMN IF NOT EXISTS sys_period tstzrange DEFAULT NULL;
+            ALTER TABLE IF EXISTS layer_presentations ADD COLUMN IF NOT EXISTS cluster_markers boolean NOT NULL DEFAULT TRUE;
             ALTER TABLE IF EXISTS layer_presentations ADD COLUMN IF NOT EXISTS project_id uuid DEFAULT NULL REFERENCES projects(project_id) ON DELETE CASCADE ON UPDATE CASCADE DEFERRABLE INITIALLY DEFERRED;
             CREATE INDEX IF NOT EXISTS layer_presentations_project_id_idx ON layer_presentations USING btree(project_id);
             UPDATE layer_presentations SET project_id = wl.project_id FROM wms_layers wl WHERE layer_presentations.wms_layer_id = wl.wms_layer_id AND layer_presentations.project_id IS NULL;

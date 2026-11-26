@@ -20,10 +20,11 @@ const {
   Tab,
   TabList,
   Checkbox,
+  Tooltip,
 } = fluentUiReactComponents
 import type { SelectTabData, SelectTabEvent } from '@fluentui/react-components'
 import { BsCheckSquareFill, BsSquare } from 'react-icons/bs'
-import { MdDeleteOutline } from 'react-icons/md'
+import { DeleteLayerTrigger } from '../../DeleteLayerTrigger.tsx'
 import { TbZoomScan, TbTarget } from 'react-icons/tb'
 import { FaPlay, FaStopCircle } from 'react-icons/fa'
 import { useAtom, useAtomValue, useSetAtom } from 'jotai'
@@ -34,6 +35,7 @@ import { useIntl } from 'react-intl'
 
 import { ErrorBoundary } from '../../../../../shared/ErrorBoundary.tsx'
 import { AddToLayer } from './AddToLayer.tsx'
+import { ClusterMenu } from './ClusterMenu.tsx'
 import { mapCreationTarget } from '../../../../../../modules/mapCreationParents.ts'
 import { LayerPresentationForm } from '../../LayerPresentationForm.tsx'
 import { VectorLayerEditing } from '../../Vector/Editing.tsx'
@@ -112,6 +114,10 @@ export const Content = ({
   const isWmsLayer = layer.layer_type === 'wms'
   const isTileLayer = layer.layer_type === 'tile'
   const creationTarget = mapCreationTarget(layer)
+  const zoomLabel = formatMessage({
+    id: 'mapZoomToLayer',
+    defaultMessage: 'Auf Layer zoomen',
+  })
 
   const placeLevels = usePlaceLevels(layer.project_id)
   // Derived display label: own/wfs/upload vector layers compute it (there is no
@@ -397,6 +403,7 @@ export const Content = ({
   return (
     <ErrorBoundary>
       <AccordionHeader
+        button={{ 'aria-label': label }}
         expandIconPosition="end"
         size="extra-large"
         expandIcon={designing ? undefined : null}
@@ -529,16 +536,21 @@ export const Content = ({
             as="a"
           />
         )}
+        {isVectorLayer && layer.own_table !== 'observations_assigned_lines' && (
+          <ClusterMenu id={layer.layer_presentation_id} defaultOn={layer.cluster_markers ?? true} />
+        )}
         {!isTileLayer && (
-          <Button
-            icon={<TbZoomScan />}
-            onClick={onClickZoomToFeatures}
-            className={styles.headerButton}
-            title="Zoom to layer"
-            appearance="subtle"
-            size="small"
-            as="a"
-          />
+          <Tooltip content={zoomLabel} relationship="label">
+            <Button
+              icon={<TbZoomScan />}
+              onClick={onClickZoomToFeatures}
+              className={styles.headerButton}
+              aria-label={zoomLabel}
+              appearance="subtle"
+              size="small"
+              as="a"
+            />
+          </Tooltip>
         )}
         {creationTarget && layer.project_id && (
           <AddToLayer {...creationTarget} projectId={layer.project_id} layerLabel={label} />
@@ -561,20 +573,7 @@ export const Content = ({
           )}
           <Tab value="config">Config</Tab>
           <Menu>
-            <MenuTrigger disableButtonEnhancement>
-              <Button
-                size="medium"
-                icon={<MdDeleteOutline />}
-                title={formatMessage(
-                  {
-                    id: 'layerDeleteBtnTitle',
-                    defaultMessage: 'Layer {label} löschen',
-                  },
-                  { label },
-                )}
-                className={layerStyles.deleteButton}
-              />
-            </MenuTrigger>
+            <DeleteLayerTrigger label={label} />
 
             <MenuPopover>
               <MenuList>

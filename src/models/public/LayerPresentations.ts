@@ -43,6 +43,8 @@ export default interface LayerPresentations {
   updated_at: Date;
 
   updated_by: string | null;
+
+  cluster_markers: boolean;
 }
 
 /**
@@ -91,6 +93,9 @@ export interface LayerPresentationsInitializer {
   updated_at?: Date;
 
   updated_by?: string | null;
+
+  /** Default value: true */
+  cluster_markers?: boolean;
 }
 
 /**
@@ -128,4 +133,6 @@ export interface LayerPresentationsMutator {
   updated_at?: Date;
 
   updated_by?: string | null;
+
+  cluster_markers?: boolean;
 }

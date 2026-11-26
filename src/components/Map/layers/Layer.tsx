@@ -11,7 +11,7 @@ import { VectorLayerChooser } from './VectorLayer/index.tsx'
 import { tableLayerToComponent } from './tableLayerToComponent.ts'
 import { useUrlLayers } from '../../../modules/useUrlLayers.ts'
 import { getVectorLayerLabel } from '../../../modules/vectorLayerLabel.ts'
-import { languageAtom } from '../../../store.ts'
+import { languageAtom, personalClusteringAtom, userIdAtom } from '../../../store.ts'
 import type LayerPresentations from '../../../models/public/LayerPresentations.ts'
 import type VectorLayers from '../../../models/public/VectorLayers.ts'
 import type VectorLayerDisplays from '../../../models/public/VectorLayerDisplays.ts'
@@ -55,6 +55,8 @@ export const Layer = ({ layerPresentationId, index }: Props) => {
   // layers uses it for the pane redraw key too
   const { layers, isLayerVisible } = useUrlLayers()
   const language = useAtomValue(languageAtom)
+  const personalClustering = useAtomValue(personalClusteringAtom)
+  const userId = useAtomValue(userIdAtom)
   const resWms = useLiveQuery(
     `
     SELECT 
@@ -225,6 +227,11 @@ export const Layer = ({ layerPresentationId, index }: Props) => {
     )
   }
 
+  const vectorPresentation = {
+    ...layerPresentation,
+    cluster_markers: personalClustering[`${userId}:${layerPresentationId}`]
+      ?? layerPresentation.cluster_markers,
+  }
   if (isWfsLayer || isUploadLayer) {
     if (
       isWfsLayer &&
@@ -238,7 +245,7 @@ export const Layer = ({ layerPresentationId, index }: Props) => {
         style={{ zIndex: paneBaseIndex - index }}
       >
         <VectorLayerChooser
-          layerPresentation={layerPresentation}
+          layerPresentation={vectorPresentation}
           layer={{ ...vectorLayer, label: getVectorLayerLabel(vectorLayer, language, undefined) }}
         />
       </Pane>
@@ -262,7 +269,7 @@ export const Layer = ({ layerPresentationId, index }: Props) => {
 
     // TableLayer expects layerPresentation.vector_layers with vector_layer_displays
     const layerPresentationWithVectorLayer = {
-      ...layerPresentation,
+      ...vectorPresentation,
       vector_layers: { ...vectorLayer, label: vectorLayer.name },
     }
 

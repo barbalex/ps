@@ -5,10 +5,8 @@ const {
   AccordionHeader,
   AccordionItem,
   AccordionPanel,
-  Button,
   Menu,
   MenuItem,
-  MenuTrigger,
   MenuPopover,
   MenuList,
   MenuGroupHeader,
@@ -21,7 +19,7 @@ import type {
   SelectTabEvent,
 } from '@fluentui/react-components'
 import { BsCheckSquareFill, BsSquare } from 'react-icons/bs'
-import { MdDeleteOutline } from 'react-icons/md'
+import { DeleteLayerTrigger } from '../DeleteLayerTrigger.tsx'
 import { useAtom, useSetAtom } from 'jotai'
 import { usePGlite, useLiveQuery } from '@electric-sql/pglite-react'
 import { useIntl } from 'react-intl'
@@ -172,14 +170,7 @@ export const WmsLayer = ({ layer, isLast, isOpen }: Props) => {
             <Tab value="overall-displays">Overall Display</Tab>
             <Tab value="config">Config</Tab>
             <Menu>
-              <MenuTrigger disableButtonEnhancement>
-                <Button
-                  size="medium"
-                  icon={<MdDeleteOutline />}
-                  title={formatMessage({ id: 'layerDeleteBtnTitle', defaultMessage: "Layer {label} löschen" }, { label })}
-                  className={layerStyles.deleteButton}
-                />
-              </MenuTrigger>
+              <DeleteLayerTrigger label={label} />
 
               <MenuPopover>
                 <MenuList>

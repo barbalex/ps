@@ -29,6 +29,7 @@ const WMS_LABEL = 'E2eWms'
 // own table layer: the label comes from the place level's name_plural
 const OWN_LABEL = 'E2eOwns'
 const OWN_NAME = 'E2eOwnLayer'
+const ownPlaceIds = ['a0b0c0d0-0000-7000-8000-00000000ce01', 'a0b0c0d0-0000-7000-8000-00000000ce02']
 
 test.beforeAll(async () => {
   const userId = await ensureUser({
@@ -126,6 +127,14 @@ test.beforeAll(async () => {
       '${OWN_LAYER_ID}', '${PROJECT_ID}', FALSE
     )
     ON CONFLICT DO NOTHING;
+    INSERT INTO vector_layer_displays (vector_layer_id)
+    SELECT '${OWN_LAYER_ID}' WHERE NOT EXISTS (
+      SELECT 1 FROM vector_layer_displays WHERE vector_layer_id = '${OWN_LAYER_ID}'
+    );
+    INSERT INTO places (place_id, subproject_id, level, geometry)
+    SELECT id::uuid, '${SUBPROJECT_ID}', 1, ST_GeomFromText('GEOMETRYCOLLECTION(POINT(7.43 46.95))', 4326)
+    FROM (VALUES ('${ownPlaceIds[0]}'), ('${ownPlaceIds[1]}')) seed(id)
+    ON CONFLICT DO NOTHING;
   `)
   await grantRoles({
     email: E2E_EMAIL,
@@ -133,6 +142,7 @@ test.beforeAll(async () => {
     projectId: PROJECT_ID,
     role: 'own',
     subprojectIds: [SUBPROJECT_ID],
+    placeIds: ownPlaceIds,
   })
 })
 
@@ -206,6 +216,12 @@ test('vector layer: checkbox, Active section, pane — and back', async ({
     json: { type: 'FeatureCollection', features: [{
       type: 'Feature', properties: { kind: 'test' },
       geometry: { type: 'Point', coordinates: [8.65, 47.40] },
+    }, {
+      type: 'Feature', properties: { kind: 'test' },
+      geometry: { type: 'Point', coordinates: [8.65, 47.40] },
+    }, {
+      type: 'Feature', properties: { kind: 'test' },
+      geometry: { type: 'LineString', coordinates: [[8.65, 47.4], [8.66, 47.41]] },
     }] },
   }))
   await openDrawer(page)
@@ -216,6 +232,7 @@ test('vector layer: checkbox, Active section, pane — and back', async ({
     drawer.locator("a[role='button'][aria-pressed='true']"),
   ).toHaveCount(1, { timeout: 20_000 })
   await expect.poll(() => listedUnderActive(page, VECTOR_NAME)).toBe(true)
+  await expect(page.locator(`.leaflet-${VECTOR_NAME}-pane .marker-cluster`)).toHaveText('2')
   await expect(
     page.locator(`.leaflet-${VECTOR_NAME}-pane path[stroke="#842f62"]`),
   ).toHaveCount(1)
@@ -306,10 +323,43 @@ test('wms layer: checkbox, Active section, pane — and back', async ({
 
 test('upload: activating shows styled parts; clicking inspects one read-only feature', async ({ page }) => {
   await login(page, E2E_EMAIL, E2E_PASSWORD)
-  await page.goto(`/data/projects/${PROJECT_ID}?panes=map&leftMapDrawerTab=layers&c=47.37,8.54&z=17`)
+  await page.goto(`/data/projects/${PROJECT_ID}?panes=map&leftMapDrawerTab=layers&c=47.37,8.54&z=17&designing=1`)
   await toggleOf(page, 'E2eUpload').click({ timeout: 60_000 })
   await expect.poll(() => listedUnderActive(page, 'E2eUpload')).toBe(true)
   const paths = page.locator('.leaflet-E2eUpload-pane path[stroke="#276351"]')
+  const cluster = page.locator('.leaflet-E2eUpload-pane .marker-cluster')
+  await expect(cluster).toHaveText('2', { timeout: 30_000 })
+  await expect(paths).toHaveCount(0)
+  const clusterLabel = /^(Punktmarker gruppieren|Cluster point markers)$/i
+  const menu = page.getByRole('button', { name: clusterLabel })
+  await menu.hover()
+  await expect(page.getByText(clusterLabel, { exact: true })).toBeVisible()
+  await menu.click()
+  await page.getByRole('menuitemradio', { name: /Einzeln anzeigen|Show individually/i }).click()
+  await expect(paths).toHaveCount(2)
+  await page.reload()
+  await expect(paths).toHaveCount(2, { timeout: 30_000 })
+  await page.getByRole('button', { name: 'E2eUpload', exact: true }).click()
+  const projectDefault = page.getByRole('switch', { name: /Punktmarker gruppieren|Cluster point markers/i })
+  await expect(projectDefault).toBeVisible()
+  const deleteLabel = /^(Delete Layer E2eUpload|Layer E2eUpload löschen)$/i
+  const deleteButton = page.getByRole('button', { name: deleteLabel })
+  await deleteButton.hover()
+  await expect(page.getByText(deleteLabel)).toBeVisible()
+  await deleteButton.click()
+  await page.getByRole('menuitem', { name: /^(No|Nein)$/i }).click()
+  const shared = () => psql(`SELECT cluster_markers FROM layer_presentations WHERE vector_layer_id = '${UPLOAD_ID}' AND active`)
+  await projectDefault.click()
+  await expect.poll(shared).toBe('f')
+  await projectDefault.click()
+  await expect.poll(shared).toBe('t')
+  await expect(paths).toHaveCount(2)
+  await page.getByRole('button', { name: 'E2eUpload', exact: true }).click()
+  await menu.click()
+  await page.getByRole('menuitemradio', { name: /Projektstandard|Project default/i }).click()
+  await expect(cluster).toHaveText('2')
+  await cluster.click()
+  await expect(page.locator('.map-info-drawer')).toHaveCount(0)
   await expect(paths).toHaveCount(2, { timeout: 30_000 })
   await paths.last().click()
   const info = page.locator('.map-info-drawer')
@@ -370,6 +420,7 @@ test('own table layer: checkbox, Active section, pane — and back', async ({
   page,
 }) => {
   await openDrawer(page, SUBPROJECT_ID)
+  await page.goto(`/data/projects/${PROJECT_ID}/subprojects/${SUBPROJECT_ID}?panes=map&leftMapDrawerTab=layers&c=46.95,7.43&z=17`)
   const drawer = page.locator('.map-layers-drawer')
 
   await toggleOf(page, OWN_LABEL).click()
@@ -380,6 +431,11 @@ test('own table layer: checkbox, Active section, pane — and back', async ({
   await expect(
     page.locator(`.leaflet-pane[class*="${OWN_NAME}-pane"]`),
   ).toBeAttached()
+  const cluster = page.locator(`.leaflet-${OWN_NAME}-pane .marker-cluster`)
+  await expect(cluster).toHaveText('2')
+  await expect(page.locator('.clickable-hitbox')).toHaveCount(0)
+  await cluster.click()
+  await expect(page.locator('.clickable-hitbox')).toHaveCount(2)
 
   // the design flag reaches the server
   await expect
@@ -392,7 +448,7 @@ test('own table layer: checkbox, Active section, pane — and back', async ({
     )
     .toBe('true')
 
-  await toggleOf(page, OWN_LABEL).click()
+  await drawer.locator("a[role='button'][aria-pressed='true']").click()
   await expect(
     drawer.locator("a[role='button'][aria-pressed='true']"),
   ).toHaveCount(0, { timeout: 20_000 })
@@ -410,6 +466,10 @@ test('create on map: cancel creates nothing; drawing opens the new place form', 
   await toggleOf(page, OWN_LABEL).click()
   const add = page.getByLabel(`Add to ${OWN_LABEL}`, { exact: true })
   await expect(add).toBeVisible({ timeout: 30_000 })
+  await page.getByRole('button', { name: 'Zoom to layer', exact: true }).hover()
+  await expect(page.getByText('Zoom to layer', { exact: true })).toBeVisible()
+  await add.hover()
+  await expect(page.getByText(`Add to ${OWN_LABEL}`, { exact: true })).toBeVisible()
   await add.click()
   await expect(page.getByText(/Place a point on the map/)).toBeVisible()
   await page.keyboard.press('Escape')

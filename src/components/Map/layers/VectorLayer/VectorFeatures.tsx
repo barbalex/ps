@@ -31,6 +31,8 @@ export const VectorFeatures = ({
 
   return (
     <ProgressiveGeoJSON
+      cluster={layerPresentation.cluster_markers}
+      clusterMaxZoom={layerPresentation.max_zoom}
       resetKey={JSON.stringify([
         layer.vector_layer_displays,
         layer.display_by_property,

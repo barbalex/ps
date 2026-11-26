@@ -59,6 +59,23 @@ beforeAll(async () => {
 })
 afterAll(() => db?.close())
 
+it('allows designers but not ordinary writers to change the layer clustering default', async () => {
+  await claim(ids.writer)
+  const { rows: [presentation] } = await db.query<{ layer_presentation_id: string; cluster_markers: boolean }>(
+    'INSERT INTO layer_presentations (vector_layer_id) VALUES ($1) RETURNING layer_presentation_id, cluster_markers',
+    [layer],
+  )
+  expect(presentation.cluster_markers).toBe(true)
+  const disable = () => db.query(
+    'UPDATE layer_presentations SET cluster_markers = false WHERE layer_presentation_id = $1 RETURNING cluster_markers',
+    [presentation.layer_presentation_id],
+  )
+  await expect(disable()).rejects.toMatchObject({ code: '42501' })
+  await claim(ids.designer)
+  expect((await disable()).rows[0]).toEqual({ cluster_markers: false })
+  await claim(ids.writer)
+})
+
 it('keeps one flat WGS84 collection per feature and recomputes counts/fields over the resulting layer', async () => {
   const nested = {
     type: 'GeometryCollection',

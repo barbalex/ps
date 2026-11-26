@@ -1243,6 +1243,19 @@ goes through `clearVectorLayerDisplaysByValue`: it deletes the valued displays
 and leaves the one without a value — that is the layer's look again —, or
 creates one when none is left.
 
+### Marker clustering
+
+Point symbols on own, uploaded and WFS layers cluster separately per layer.
+Designers can change the initially enabled default in **Overall Display**.
+The cluster menu on each active vector layer lets a user follow that default
+or override it on this device. Clicking a cluster zooms in or spreads overlapping
+points. Lines and polygons remain visible; observation assignment temporarily
+shows individual markers on the drag and target layers.
+
+For an existing backend, add `cluster_markers boolean NOT NULL DEFAULT TRUE`
+to `layer_presentations` and apply `12_writePermissionTriggers.sql` before
+releasing the frontend. Existing browser databases add the column on startup.
+
 ### Uploaded vector layers
 
 `src/modules/importVectorFeatures.ts` calls the online `import_vector_features`
