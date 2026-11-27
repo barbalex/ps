@@ -1,3 +1,4 @@
+import { useIntl } from 'react-intl'
 import { useParams } from '@tanstack/react-router'
 import * as fluentUiReactComponents from '@fluentui/react-components'
 const { Button, Accordion } = fluentUiReactComponents
@@ -24,6 +25,7 @@ const openItemsAtom = atom<string[]>([])
 
 // TODO: this component re-renders indefinitely
 export const VectorLayers = () => {
+  const { formatMessage } = useIntl()
   const [openItems, setOpenItems] = useAtom(openItemsAtom)
   const [language] = useAtom(languageAtom)
   const { projectId = '99999999-9999-9999-9999-999999999999' } = useParams({
@@ -95,10 +97,10 @@ export const VectorLayers = () => {
   if (projectId === '99999999-9999-9999-9999-999999999999') {
     return (
       <section>
-        <h2 className={layerStyles.title}>Vectors</h2>
+        <h2 className={layerStyles.title}>{formatMessage({ id: 'mapVectorLayers', defaultMessage: 'Vektorebenen' })}</h2>
         <div className={layerStyles.layerList}>
           <p className={layerStyles.none}>
-            Vector Layers are accessible when a project is active
+            {formatMessage({ id: 'mapChooseProjectForLayers', defaultMessage: 'Projekt wählen, um diese Ebenen zu sehen.' })}
           </p>
         </div>
       </section>
@@ -113,7 +115,7 @@ export const VectorLayers = () => {
   return (
     <ErrorBoundary>
       <section>
-        <h2 className={layerStyles.title}>Vectors</h2>
+        <h2 className={layerStyles.title}>{formatMessage({ id: 'mapVectorLayers', defaultMessage: 'Vektorebenen' })}</h2>
         <Accordion
           multiple
           collapsible
@@ -129,12 +131,12 @@ export const VectorLayers = () => {
                 isOpen={openItems.includes(l.vector_layer_id)}
               />
             ))
-          : <p className={layerStyles.none}>No inactive Vector Layers</p>}
+          : <p className={layerStyles.none}>{formatMessage({ id: 'mapNoInactiveVectors', defaultMessage: 'Keine inaktiven Vektorebenen' })}</p>}
           <Button
             size="small"
             icon={<FaPlus />}
             onClick={addRow}
-            title="Add vector layer"
+            title={formatMessage({ id: 'mapAddVector', defaultMessage: 'Vektorebene hinzufügen' })}
             className={layerStyles.addButton}
           />
         </Accordion>

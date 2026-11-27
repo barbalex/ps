@@ -1,3 +1,4 @@
+import { useIntl } from 'react-intl'
 import { useEffect, useState, useCallback } from 'react'
 import { useParams } from '@tanstack/react-router'
 import * as fluentUiReactComponents from '@fluentui/react-components'
@@ -68,6 +69,7 @@ export type ActiveLayerRow =
 const openItemsAtom = atom<string[]>([])
 
 export const ActiveLayers = () => {
+  const { formatMessage } = useIntl()
   const [mapLayerSorting, setMapLayerSorting] = useAtom(mapLayerSortingAtom)
   const [openItems, setOpenItems] = useAtom(openItemsAtom)
   // ?layers= override-aware render list (see the hook): reordering writes
@@ -336,10 +338,10 @@ export const ActiveLayers = () => {
   if (projectId === '99999999-9999-9999-9999-999999999999') {
     return (
       <section>
-        <h2 className={layersStyles.title}>Active</h2>
+        <h2 className={layersStyles.title}>{formatMessage({ id: 'bB8NpQ', defaultMessage: 'Aktiv' })}</h2>
         <div className={styles.layerList}>
           <p className={styles.noLayers}>
-            Active layers are accessible when a project is active
+            {formatMessage({ id: 'mapChooseProjectForLayers', defaultMessage: 'Projekt wählen, um diese Ebenen zu sehen.' })}
           </p>
         </div>
       </section>
@@ -350,7 +352,7 @@ export const ActiveLayers = () => {
     <ErrorBoundary>
       <DragAndDropContext.Provider value={dragAndDropContextValue}>
         <section>
-          <h2 className={layersStyles.title}>Active</h2>
+          <h2 className={layersStyles.title}>{formatMessage({ id: 'bB8NpQ', defaultMessage: 'Aktiv' })}</h2>
           <Accordion
             multiple
             collapsible
@@ -368,7 +370,7 @@ export const ActiveLayers = () => {
                   isOpen={openItems.includes(l.layer_presentation_id)}
                 />
               ))
-            : <p className={styles.noLayers}>No active layers</p>}
+            : <p className={styles.noLayers}>{formatMessage({ id: 'mapNoActiveLayers', defaultMessage: 'Keine aktiven Ebenen' })}</p>}
           </Accordion>
         </section>
       </DragAndDropContext.Provider>

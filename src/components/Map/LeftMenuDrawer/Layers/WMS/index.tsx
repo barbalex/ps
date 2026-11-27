@@ -1,3 +1,4 @@
+import { useIntl } from 'react-intl'
 import { useParams } from '@tanstack/react-router'
 import * as fluentUiReactComponents from '@fluentui/react-components'
 const { Button, Accordion } = fluentUiReactComponents
@@ -21,6 +22,7 @@ import type LayerPresentations from '../../../../../models/public/LayerPresentat
 const openItemsAtom = atom<string[]>([])
 
 export const WmsLayers = () => {
+  const { formatMessage } = useIntl()
   const [openItems, setOpenItems] = useAtom(openItemsAtom)
   const { projectId = '99999999-9999-9999-9999-999999999999' } = useParams({
     strict: false,
@@ -93,7 +95,7 @@ export const WmsLayers = () => {
         <div className={layerStyles.layerList}>
           <div className={layerStyles.layerList}></div>
           <p className={layerStyles.none}>
-            WMS Layers are accessible when a project is active
+            {formatMessage({ id: 'mapChooseProjectForLayers', defaultMessage: 'Projekt wählen, um diese Ebenen zu sehen.' })}
           </p>
         </div>
       </section>
@@ -125,12 +127,12 @@ export const WmsLayers = () => {
                 isOpen={openItems.includes(l.wms_layer_id)}
               />
             ))
-          : <p className={layerStyles.none}>No inactive WMS Layers</p>}
+          : <p className={layerStyles.none}>{formatMessage({ id: 'mapNoInactiveWms', defaultMessage: 'Keine inaktiven WMS-Ebenen' })}</p>}
           <Button
             size="small"
             icon={<FaPlus />}
             onClick={addRow}
-            title="Add WMS layer"
+            title={formatMessage({ id: 'mapAddWms', defaultMessage: 'WMS-Ebene hinzufügen' })}
             className={layerStyles.addButton}
           />
         </Accordion>

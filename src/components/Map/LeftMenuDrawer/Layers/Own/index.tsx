@@ -1,3 +1,4 @@
+import { useIntl } from 'react-intl'
 import { useParams } from '@tanstack/react-router'
 import * as fluentUiReactComponents from '@fluentui/react-components'
 const { Accordion } = fluentUiReactComponents
@@ -24,6 +25,7 @@ import type PlaceLevels from '../../../../../models/public/PlaceLevels.ts'
 const openItemsAtom = atom<string[]>([])
 
 export const OwnLayers = () => {
+  const { formatMessage } = useIntl()
   const [openItems, setOpenItems] = useAtom(openItemsAtom)
   const [language] = useAtom(languageAtom)
   const { projectId = '99999999-9999-9999-9999-999999999999' } =
@@ -105,10 +107,10 @@ export const OwnLayers = () => {
   if (projectId === '99999999-9999-9999-9999-999999999999') {
     return (
       <section>
-        <h2 className={layerStyles.title}>Own</h2>
+        <h2 className={layerStyles.title}>{formatMessage({ id: 'mapOwnLayers', defaultMessage: 'Eigene Ebenen' })}</h2>
         <div className={layerStyles.layerList}>
           <p className={layerStyles.none}>
-            Own Layers are accessible when a project is active
+            {formatMessage({ id: 'mapChooseProjectForLayers', defaultMessage: 'Projekt wählen, um diese Ebenen zu sehen.' })}
           </p>
         </div>
       </section>
@@ -118,7 +120,7 @@ export const OwnLayers = () => {
   return (
     <ErrorBoundary>
       <section>
-        <h2 className={layerStyles.title}>Own</h2>
+        <h2 className={layerStyles.title}>{formatMessage({ id: 'mapOwnLayers', defaultMessage: 'Eigene Ebenen' })}</h2>
         <Accordion
           multiple
           collapsible
@@ -135,7 +137,7 @@ export const OwnLayers = () => {
               />
             ))
           ) : (
-            <p className={layerStyles.none}>No inactive Own Layers</p>
+            <p className={layerStyles.none}>{formatMessage({ id: 'mapNoInactiveOwn', defaultMessage: 'Keine inaktiven eigenen Ebenen' })}</p>
           )}
         </Accordion>
       </section>

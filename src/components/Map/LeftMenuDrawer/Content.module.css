@@ -18,12 +18,8 @@
   overflow-wrap: anywhere;
 }
 
-.scopeChoices {
-  display: grid;
-  gap: 4px;
-  margin: 4px 0;
-  max-height: 16rem;
-  overflow: auto;
+.scopeCombo {
+  min-width: 0;
 }
 
 .tabList {
