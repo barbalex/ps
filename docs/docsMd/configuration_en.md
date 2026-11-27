@@ -21,6 +21,7 @@ That is why arten-fördern.app is highly configurable:
 - Free naming of place levels
 - Choice of which features are used in which place levels (actions, checks, reports etc.)
 - Ability to add custom fields to many tables
+  - For a boolean, choose **boolean-buttons** when **No** must be distinct from **Not assessed**. New records start as not assessed. In filters, **Not assessed** finds unanswered records; **All** removes the restriction. Use a coded list if more states are needed.
   - For integer or decimal entry fields, designers can set a unit, minimum, maximum and step. All are optional. Bounds are inclusive; steps start at the minimum, or at zero if no minimum is set. For example, a minimum of 0.5 and a step of 1 allow 0.5, 1.5, 2.5 and so on. The unit is displayed, not stored with the number. Changing settings does not rewrite existing records.
   - For a single choice from a long list, use **options-many**. Type part of a label or code, then select a match. Searching does not change the saved value.
   - For several choices from a controlled list, choose **multiselect-few** (checkboxes) or **multiselect-many** (search). Pick a list matching the field type: text, integer or decimal (numeric list). Both widgets store the same array of codes. Filters match any selected value by default; enable **Match all selected values** to require every choice. Geometry exports include codes and a parallel `_label` column in selection order.

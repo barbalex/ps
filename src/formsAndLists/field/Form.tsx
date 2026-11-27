@@ -184,7 +184,7 @@ export const FieldForm = ({
             ))}
           </>
         )}
-      {!multi && (
+      {!multi && widget?.name !== 'boolean-buttons' && (
         <TextField
           label={formatMessage({
             id: 'Ps5mVn',

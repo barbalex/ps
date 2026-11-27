@@ -36,7 +36,7 @@ test('controlled choices store typed arrays offline and restore any/all URL filt
       ('${uuid(9)}','${uuid(6)}',null,0),('${uuid(10)}','${uuid(6)}',null,2.5) ON CONFLICT DO NOTHING;
     INSERT INTO fields (field_id,project_id,table_name,level,name,field_label,field_type_id,widget_type_id,list_id)
     SELECT f.id::uuid,'${projectId}','places',1,f.name,f.name,ft.field_type_id,wt.widget_type_id,f.list::uuid
-    FROM (VALUES ('${uuid(11)}','tags','text','multiselect-few','${uuid(5)}'),('${uuid(12)}','scores','decimal','multiselect-many','${uuid(6)}'))
+    FROM (VALUES ('${uuid(11)}','tags','text','multiselect-few','${uuid(5)}'),('${uuid(12)}','scores','decimal','multiselect-many','${uuid(6)}'),('${uuid(13)}','assessed','boolean','boolean-buttons',null))
     f(id,name,ft,wt,list) JOIN field_types ft ON ft.name=f.ft JOIN widget_types wt ON wt.name=f.wt ON CONFLICT DO NOTHING;
     UPDATE fields SET widget_type_id=(SELECT widget_type_id FROM widget_types WHERE name='multiselect-few') WHERE field_id='${uuid(11)}';
     UPDATE places SET data='{}' WHERE place_id='${placeId}';`)
@@ -82,6 +82,18 @@ test('controlled choices store typed arrays offline and restore any/all URL filt
   await expect.poll(read).toEqual({ tags: ['001', 'A'], scores: [2.5, 0] })
   await first.uncheck()
   await expect.poll(read).toEqual({ tags: ['A'], scores: [2.5, 0] })
+  const assessed = page.getByRole('group', { name: 'assessed', exact: true })
+  const notAssessed = assessed.getByRole('button', {
+    name: /^(Not assessed|Nicht beurteilt)$/,
+  })
+  const no = assessed.getByRole('button', { name: /^(No|Nein)$/ })
+  await expect(notAssessed).toHaveAttribute('aria-pressed', 'true')
+  await assessed.getByRole('button', { name: /^(Yes|Ja)$/ }).click()
+  await expect.poll(read).toMatchObject({ assessed: true })
+  await no.click()
+  await expect.poll(read).toMatchObject({ assessed: false })
+  await notAssessed.click()
+  await expect.poll(read).toMatchObject({ assessed: null })
   await context.setOffline(false)
   await expect
     .poll(
@@ -89,7 +101,7 @@ test('controlled choices store typed arrays offline and restore any/all URL filt
         JSON.parse(psql(`SELECT data FROM places WHERE place_id='${placeId}'`)),
       { timeout: 90000 },
     )
-    .toEqual({ tags: ['A'], scores: [2.5, 0] })
+    .toEqual({ tags: ['A'], scores: [2.5, 0], assessed: null })
   await page.goto(`${root}/filter?panes=form`)
   await first.check()
   await expect(page).toHaveURL(/%24any|\$any/i)
@@ -102,6 +114,18 @@ test('controlled choices store typed arrays offline and restore any/all URL filt
   await expect(all).toBeChecked({ timeout: 60_000 })
   await expect(first).toBeChecked()
   await first.uncheck()
+  await expect(page).not.toHaveURL(/f-places1/)
+  const anyAssessment = assessed.getByRole('button', { name: /^(All|Alle)$/ })
+  await expect(anyAssessment).toHaveAttribute('aria-pressed', 'true')
+  await notAssessed.click()
+  await expect(page).toHaveURL(/data.assessed.*null/)
+  await page.reload()
+  await expect(notAssessed).toHaveAttribute('aria-pressed', 'true', {
+    timeout: 60000,
+  })
+  await no.click()
+  await expect(page).toHaveURL(/data.assessed.*false/)
+  await anyAssessment.click()
   await expect(page).not.toHaveURL(/f-places1/)
 
   await page.goto(`/data/projects/${projectId}/fields/${uuid(11)}?panes=form`)

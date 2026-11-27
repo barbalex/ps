@@ -16,7 +16,7 @@ Custom form fields roadmap (places, checks, actions and other configurable forms
 - [x] Controlled multiselect: checkboxes for short lists, searchable Fluent combobox for long lists. Both store the same array of typed codes. Support contains-any/all filters and export codes plus decoded labels.
 - [x] Searchable single-select for long lists without changing existing values.
 - [x] Numeric field settings: unit, minimum, maximum and step. Decimal entry supports both point and comma.
-- [ ] Explicit Yes / No / Not assessed buttons for nullable booleans. Use a coded list if more states are needed.
+- [x] Explicit Yes / No / Not assessed buttons for nullable booleans. Use a coded list if more states are needed.
 - [ ] Field instructions and conditional follow-ups. Never erase a saved answer merely because its field is hidden.
 
 ---

@@ -1,4 +1,5 @@
 {
+  "booleanNotAssessed": "Not assessed",
   "numericInteger": "Enter a whole number.",
   "numericPositive": "Step must be greater than zero.",
   "numericMin": "Minimum",

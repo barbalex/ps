@@ -1,0 +1,11 @@
+.field {
+  border: 0;
+  padding: 0;
+  margin: 0;
+  min-width: 0;
+}
+.choices {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+}

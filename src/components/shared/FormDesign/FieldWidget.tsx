@@ -4,6 +4,7 @@ import { useSetAtom } from 'jotai'
 
 import { TextField } from '../TextField.tsx'
 import { CheckboxField } from '../CheckboxField.tsx'
+import { NullableBooleanButtons } from '../NullableBooleanButtons.tsx'
 import { SwitchField } from '../SwitchField.tsx'
 import { TextArea } from '../TextArea.tsx'
 import { MarkdownField } from '../MarkdownField.tsx'
@@ -67,7 +68,7 @@ export const FieldWidget = ({ field }: { field: FieldsWithTypes }) => {
   const save = async ({ name, value }: { name: string; value: unknown }) => {
     if (mode !== 'live') return
     // return if value has not changed
-    if (data[name] === value) return
+    if (data[name] === value && field.widget_type !== 'boolean-buttons') return
     try {
       await addOperation(
         await updateCustomField(db, {
@@ -147,6 +148,18 @@ export const FieldWidget = ({ field }: { field: FieldsWithTypes }) => {
             onChange={onChange}
             indeterminate={true}
             {...validationProps}
+          />
+        )
+      case 'boolean-buttons':
+        return (
+          <NullableBooleanButtons
+            key={`${id}:${name}:${mode}`}
+            label={label ?? name}
+            value={data[name]}
+            preview={mode === 'preview'}
+            print={mode === 'print'}
+            validationMessage={validations[name]?.message}
+            onChange={(value) => save({ name, value })}
           />
         )
       case 'markdown':

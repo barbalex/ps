@@ -18,7 +18,7 @@ const getPresetData = async ({
     preset: unknown
   }>(
     `select name, preset from fields where project_id = $1 and table_name = $2 and preset is not null
-     and not exists (select 1 from widget_types w where w.widget_type_id = fields.widget_type_id and w.name in ('multiselect-few','multiselect-many'))`,
+     and not exists (select 1 from widget_types w where w.widget_type_id = fields.widget_type_id and w.name in ('multiselect-few','multiselect-many','boolean-buttons'))`,
     [projectId, table],
   )
   const fieldsWithPresets = fieldsWithPresetsResult?.rows ?? []

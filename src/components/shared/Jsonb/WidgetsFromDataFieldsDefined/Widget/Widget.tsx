@@ -5,6 +5,7 @@ import { useSetAtom } from 'jotai'
 
 import { TextField } from '../../../TextField.tsx'
 import { CheckboxField } from '../../../CheckboxField.tsx'
+import { NullableBooleanButtons } from '../../../NullableBooleanButtons.tsx'
 import { SwitchField } from '../../../SwitchField.tsx'
 import { TextArea } from '../../../TextArea.tsx'
 import { MarkdownField } from '../../../MarkdownField.tsx'
@@ -84,7 +85,7 @@ export const Widget = ({
   }
   const save = async ({ name, value }: { name: string; value: unknown }) => {
     // return if value has not changed
-    if (data[name] === value) return
+    if (data[name] === value && field.widget_type !== 'boolean-buttons') return
     const isFilter = location.pathname.endsWith('filter')
 
     if (isFilter) {
@@ -94,6 +95,7 @@ export const Widget = ({
         orFilters: filter,
         orIndex: orIndex as number,
         targetType: field.field_type as string,
+        keepNull: field.widget_type === 'boolean-buttons',
       })
       setFilter(newFilter)
       return
@@ -198,6 +200,18 @@ export const Widget = ({
           indeterminate={true}
           validationState={validations[name]?.state}
           validationMessage={validations[name]?.message}
+        />
+      )
+    case 'boolean-buttons':
+      return (
+        <NullableBooleanButtons
+          label={label ?? name}
+          value={data[name]}
+          filter={location.pathname.endsWith('filter')}
+          autoFocus={autoFocus}
+          button={<EditField fieldId={field.field_id} />}
+          validationMessage={validations[name]?.message}
+          onChange={(value) => save({ name, value })}
         />
       )
     case 'markdown':

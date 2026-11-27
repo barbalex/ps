@@ -1,4 +1,5 @@
 {
+  "booleanNotAssessed": "Non valutato",
   "numericInteger": "Inserire un numero intero.",
   "numericPositive": "Il passo deve essere maggiore di zero.",
   "numericMin": "Minimo",
