@@ -121,6 +121,8 @@ export default interface ProjectsHistory {
   updated_at: Date;
 
   updated_by: string | null;
+
+  geometry: unknown | null;
 }
 
 /**
@@ -272,6 +274,8 @@ export interface ProjectsHistoryInitializer {
   updated_at?: Date;
 
   updated_by?: string | null;
+
+  geometry?: unknown | null;
 }
 
 /**
@@ -395,4 +399,6 @@ export interface ProjectsHistoryMutator {
   updated_at?: Date;
 
   updated_by?: string | null;
+
+  geometry?: unknown | null;
 }

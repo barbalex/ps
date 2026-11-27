@@ -51,6 +51,7 @@ BEGIN;
 SET LOCAL electric.syncing TO 'true';
 DELETE FROM projects WHERE project_id = '${projectId}';
 ${dump}
+SELECT provision_project_area_layer('${projectId}');
 COMMIT;
 `
 const result = spawnSync(

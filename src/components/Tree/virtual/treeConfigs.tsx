@@ -402,7 +402,7 @@ export const treeConfigs: Record<string, TreeNodeConfig> = {
     children: collectionChildren('formLink', undefined),
   },
   places: {
-    hook: (params) => usePlacesNavData(params).navData,
+    hook: (params) => usePlacesNavData({ ...params, navigation: true }).navData,
     children: collectionChildren('place', undefined),
   },
   place: {

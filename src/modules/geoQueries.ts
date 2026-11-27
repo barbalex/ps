@@ -1,4 +1,5 @@
 import type { PGlite } from '@electric-sql/pglite'
+import { projectAreaFilter, type ProjectAreaMode } from './projectAreaFilter.ts'
 
 // accepts plain PGlite instances as well as the live-extension wrappers
 // that usePGlite() returns
@@ -56,7 +57,7 @@ export const nearestPlaces = async (
     maxDistanceM: number
     level?: 'places1' | 'places2' | 'both'
     limit?: number
-    scope?: { projectId: string; subprojectId?: string; filterSql?: string }
+    scope?: { projectId: string; subprojectId?: string; filterSql?: string; areaMode?: ProjectAreaMode }
   },
 ): Promise<PlaceWithDistanceRow[]> => {
   const levelCondition =
@@ -67,6 +68,7 @@ export const nearestPlaces = async (
   // geodesic distance computation; factor 2 covers the longitude shrink
   // of a meters figure up to about 60° latitude
   const maxDistanceDeg = (maxDistanceM / 111_320) * 2
+  const area = projectAreaFilter(scope?.projectId, scope?.areaMode ?? 'all').matches('p')
   const res = await db.query(
     `
     SELECT p.place_id, p.label, min(ST_Distance(
@@ -77,6 +79,7 @@ export const nearestPlaces = async (
     CROSS JOIN generate_series(1, ST_NumGeometries(p.geometry)) AS n
     WHERE p.geometry IS NOT NULL
     ${levelCondition}
+    ${area ? `AND ${area}` : ''}
     ${scope ? `AND p.subproject_id IN (SELECT subproject_id FROM subprojects WHERE project_id = $6${scope.subprojectId ? ' AND subproject_id = $7' : ''}${scope.filterSql ? ` AND (${scope.filterSql})` : ''})` : ''}
       AND p.geometry && ST_Expand(ST_SetSRID(ST_MakePoint($1, $2), 4326), $3)
     GROUP BY p.place_id, p.label

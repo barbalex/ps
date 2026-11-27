@@ -16,6 +16,9 @@ import {
   addOperationAtom,
   addNotificationAtom,
   languageAtom,
+  userIdAtom,
+  editingProjectGeometryAtom,
+  projectGeometryDraftAtom,
   editingPlaceGeometryAtom,
   editingCheckGeometryAtom,
   editingActionGeometryAtom,
@@ -31,6 +34,13 @@ import {
 import { showVectorSnapping } from './vectorSnapping.ts'
 import { PrecisePoint } from './PrecisePoint.tsx'
 import { flattenToGeometryCollection } from '../../../modules/repairNestedGeometries.ts'
+import {
+  drawingMembers,
+  ProjectAreaPermissionError,
+  projectGeometryField,
+  toProjectGeometry,
+  writeProjectGeometry,
+} from '../../../modules/projectDrawing.ts'
 
 const Geoman = (
   geomanModule as unknown as {
@@ -76,15 +86,16 @@ const applyEditingStyle = (layer: L.Layer) => {
 }
 
 type Props = {
+  editingProject?: string | false | null
   editingPlace?: string | false | null
   editingCheck?: string | false | null
   editingAction?: string | false | null
 }
 
 type Snapshot = {
-  geometry: GeoJSON.GeometryCollection | null
-  bbox: GeoJSON.BBox | null
-  gps_accuracy_m: number | null
+  geometry: GeoJSON.GeometryCollection | GeoJSON.MultiPolygon | null
+  bbox?: GeoJSON.BBox | null
+  gps_accuracy_m?: number | null
 }
 type Step = { before: Snapshot; after: Snapshot }
 
@@ -93,12 +104,14 @@ const isRingList = (
 ): coords is L.LatLng[][] => coords.every((ring) => L.LineUtil.isFlat(ring))
 
 export const DrawControlComponent = ({
+  editingProject,
   editingPlace,
   editingCheck,
   editingAction,
 }: Props) => {
   const map = useMap()
   const language = useAtomValue(languageAtom)
+  const userId = useAtomValue(userIdAtom)
   const [placePoint, setPlacePoint] = useState<
     ((position: L.LatLng, accuracy?: number | null) => Promise<void>) | null
   >(null)
@@ -121,7 +134,8 @@ export const DrawControlComponent = ({
   const addOperation = useSetAtom(addOperationAtom)
   const notify = useSetAtom(addNotificationAtom)
   const finish = useSetAtom(
-    editingPlace ? editingPlaceGeometryAtom
+    editingProject ? editingProjectGeometryAtom
+    : editingPlace ? editingPlaceGeometryAtom
     : editingCheck ? editingCheckGeometryAtom
     : editingActionGeometryAtom,
   )
@@ -133,6 +147,12 @@ export const DrawControlComponent = ({
     apply: (parts: TrackGeometry[], target?: PolygonTarget) => Promise<void>
   } | null>(null)
   const walking = !!walkSession
+  const setProjectGeometryDraft = useSetAtom(projectGeometryDraftAtom)
+  useEffect(() => {
+    if (!editingProject || (!modeActive && !walking)) return
+    setProjectGeometryDraft(editingProject)
+    return () => setProjectGeometryDraft(null)
+  }, [editingProject, modeActive, walking, setProjectGeometryDraft])
   const openTrack = useRef<(manual?: boolean) => void>(null)
   const [history, setHistory] = useState({ undo: false, redo: false })
   const [busy, setBusy] = useState(false)
@@ -143,18 +163,23 @@ export const DrawControlComponent = ({
   useEffect(() => {
     const geoman = map.geoman
     if (!geoman) return
-    const activeId = editingPlace || editingCheck || editingAction
+    const activeId =
+      editingProject || editingPlace || editingCheck || editingAction
     if (!activeId) return
     const activeIdName =
-      editingPlace ? 'place_id'
+      editingProject ? 'project_id'
+      : editingPlace ? 'place_id'
       : editingCheck ? 'check_id'
       : 'action_id'
     const tableName =
-      editingPlace ? 'places'
+      editingProject ? 'projects'
+      : editingPlace ? 'places'
       : editingCheck ? 'checks'
       : 'actions'
     const fields =
-      'ST_AsGeoJSON(geometry, 17)::json as geometry, bbox, gps_accuracy_m'
+      editingProject ? projectGeometryField : (
+        `${projectGeometryField}, bbox, gps_accuracy_m`
+      )
     const undo: Step[] = []
     const redo: Step[] = []
     let loaded = false
@@ -163,7 +188,15 @@ export const DrawControlComponent = ({
     const report = (error: unknown) => {
       notify({
         intent: 'error',
-        body: error instanceof Error ? error.message : String(error),
+        body:
+          error instanceof ProjectAreaPermissionError ?
+            formatMessage({
+              id: 'projectAreaEditDenied',
+              defaultMessage:
+                'Nur Projekt-Designer und -Eigentümer dürfen das Projektgebiet bearbeiten.',
+            })
+          : error instanceof Error ? error.message
+          : String(error),
       })
     }
     const schedule = (work: () => Promise<void>) => {
@@ -240,17 +273,20 @@ export const DrawControlComponent = ({
               displayed
             : before)
           if (!expected && isEqual(source, draft)) return
-          const after = (
-            await tx.query<Snapshot>(
-              `UPDATE ${tableName} SET geometry = ST_GeomFromGeoJSON($1::text), bbox = $2, gps_accuracy_m = $3 WHERE ${activeIdName} = $4 RETURNING ${fields}`,
-              [
-                draft.geometry ? JSON.stringify(draft.geometry) : null,
-                draft.bbox,
-                draft.gps_accuracy_m,
-                activeId,
-              ],
-            )
-          ).rows[0]!
+          const after =
+            editingProject ?
+              await writeProjectGeometry(tx, editingProject, userId, draft.geometry)
+            : (
+                await tx.query<Snapshot>(
+                  `UPDATE ${tableName} SET geometry = ST_GeomFromGeoJSON($1::text), bbox = $2, gps_accuracy_m = $3 WHERE ${activeIdName} = $4 RETURNING ${fields}`,
+                  [
+                    draft.geometry ? JSON.stringify(draft.geometry) : null,
+                    draft.bbox,
+                    draft.gps_accuracy_m,
+                    activeId,
+                  ],
+                )
+              ).rows[0]!
           return { before: source, after }
         })
       let step = await attempt()
@@ -268,22 +304,35 @@ export const DrawControlComponent = ({
         prev: step.before,
         separateEdit: true,
       })
-      setSavedAccuracy(draft.gps_accuracy_m)
+      setSavedAccuracy(draft.gps_accuracy_m ?? null)
       return step
+    }
+    const snapshotFor = (
+      members: GeoJSON.Geometry[],
+      accuracy: number | null = null,
+    ): Snapshot => {
+      if (editingProject) return { geometry: toProjectGeometry(members) }
+      const geometry: GeoJSON.GeometryCollection | null =
+        members.length ?
+          { type: 'GeometryCollection', geometries: members }
+        : null
+      return {
+        geometry,
+        bbox: geometry ? getBbox(geometry) : null,
+        gps_accuracy_m: accuracy,
+      }
     }
     const onEdit = (
       fc: GeoJSON.FeatureCollection,
       accuracy: number | null = null,
     ) =>
       schedule(async () => {
-        const step = await write({
-          geometry:
-            fc.features.length ?
-              flattenToGeometryCollection(fc.features)
-            : null,
-          bbox: fc.features.length ? getBbox(fc) : null,
-          gps_accuracy_m: accuracy,
-        })
+        const step = await write(
+          snapshotFor(
+            flattenToGeometryCollection(fc.features).geometries,
+            accuracy,
+          ),
+        )
         if (step) {
           undo.push(step)
           redo.length = 0
@@ -389,6 +438,7 @@ export const DrawControlComponent = ({
       const layers = drawLayer.getLayers()
       const point = layers[0]
       if (
+        editingProject ||
         !loaded ||
         layers.length > 1 ||
         (point &&
@@ -462,7 +512,7 @@ export const DrawControlComponent = ({
           isSessionVersion(current, undo) || isSessionVersion(current, redo) ?
             (redo.at(-1)?.before ?? undo.at(-1)?.after ?? current)
           : current
-        const members = original.geometry?.geometries ?? []
+        const members = drawingMembers(original.geometry)
         setWalkSession({
           drawTrack: manual ? drawTrack : undefined,
           targets: polygonTargets(members),
@@ -472,14 +522,7 @@ export const DrawControlComponent = ({
                 target ?
                   replacePolygon(members, target, parts)
                 : [...members, ...parts]
-              const geometry: GeoJSON.GeometryCollection = {
-                type: 'GeometryCollection',
-                geometries,
-              }
-              const step = await write(
-                { geometry, bbox: getBbox(geometry), gps_accuracy_m: null },
-                original,
-              )
+              const step = await write(snapshotFor(geometries), original)
               if (!step) return
               undo.push(step)
               redo.length = 0
@@ -492,13 +535,14 @@ export const DrawControlComponent = ({
     const showSnapshot = ({ geometry, gps_accuracy_m }: Snapshot) => {
       loaded = false
       drawLayer.clearLayers()
-      setSavedAccuracy(gps_accuracy_m)
+      setSavedAccuracy(gps_accuracy_m ?? null)
       if (geometry) {
         // leaflet 2's GeoJSON types are narrower than the geojson
         // package's GeoJsonObject, but the values are compatible
-        const geojsonArg = geometry as unknown as ConstructorParameters<
-          typeof L.GeoJSON
-        >[0]
+        const geojsonArg = {
+          type: 'GeometryCollection',
+          geometries: drawingMembers(geometry),
+        } as unknown as ConstructorParameters<typeof L.GeoJSON>[0]
         // L.GeoJSON nests the members of a GeometryCollection in an inner
         // layer group. The draw layer holds the geometry layers
         // themselves, like drawn ones — geoman's removal mode takes them
@@ -560,6 +604,10 @@ export const DrawControlComponent = ({
         const points = layer.getLatLngs().flat(2)
         layer.remove()
         receiveLine(points)
+        return
+      }
+      if (!loaded || (editingProject && !(layer instanceof L.Polygon))) {
+        layer.remove()
         return
       }
       // L.Marker doesn't support setStyle; replace with a circleMarker so
@@ -652,6 +700,8 @@ export const DrawControlComponent = ({
   }, [
     map,
     db,
+    userId,
+    editingProject,
     editingPlace,
     editingCheck,
     editingAction,
@@ -662,10 +712,11 @@ export const DrawControlComponent = ({
 
   return (
     <>
-      {!walking && (
+      {!walking && !!label && (
         <DrawToolbar
           key={language}
           language={language}
+          polygonsOnly={!!editingProject}
         />
       )}
       <div
@@ -693,6 +744,7 @@ export const DrawControlComponent = ({
         {walkSession ?
           <WalkTrack
             {...walkSession}
+            polygonsOnly={!!editingProject}
             close={() => setWalkSession(null)}
           />
         : <>

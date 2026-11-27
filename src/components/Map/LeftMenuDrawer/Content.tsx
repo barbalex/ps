@@ -11,7 +11,7 @@ import styles from './Content.module.css'
 
 export const Content = () => {
   const navigate = useNavigate() as unknown as (options: {
-    search: { leftMapDrawerTab?: unknown }
+    search: (prev: Record<string, unknown>) => Record<string, unknown>
   }) => void | Promise<void>
   // TODO: test
   // leftMapDrawerTab is an unvalidated search param (not in any route search schema)
@@ -19,7 +19,7 @@ export const Content = () => {
     strict: false,
   }) as { leftMapDrawerTab?: string }
   const onTabSelect = (_event: SelectTabEvent, data: SelectTabData) =>
-    navigate({ search: { leftMapDrawerTab: data.value } })
+    navigate({ search: (prev) => ({ ...prev, leftMapDrawerTab: data.value }) })
 
   return (
     <ErrorBoundary>

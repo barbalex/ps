@@ -101,6 +101,7 @@ $$;
 -- INSERT: only the owner of the account (accounts.user_id) may create a
 -- project in it; the insert-owner trigger then makes them owner.
 -- UPDATE/DELETE: write-all+ on the project required.
+-- Changing the project area requires design+; ordinary project edits do not.
 CREATE OR REPLACE FUNCTION enforce_projects_write()
 RETURNS trigger LANGUAGE plpgsql SECURITY DEFINER
 SET search_path = public, pg_temp AS $$
@@ -137,6 +138,12 @@ BEGIN
       USING ERRCODE = '42501',
             DETAIL  = format('table=projects operation=%s project_id=%s', TG_OP, OLD.project_id),
             HINT    = 'Contact the project owner to gain write access';
+  END IF;
+
+  IF TG_OP = 'UPDATE' AND NEW.geometry IS DISTINCT FROM OLD.geometry
+    AND NOT user_can_design_project(OLD.project_id, v_user_id) THEN
+    RAISE EXCEPTION 'Insufficient permissions: designer or owner role required to change the project area'
+      USING ERRCODE = '42501';
   END IF;
 
   RETURN CASE WHEN TG_OP = 'DELETE' THEN OLD ELSE NEW END;

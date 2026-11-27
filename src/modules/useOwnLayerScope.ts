@@ -1,5 +1,6 @@
 import { useParams, useSearch } from '@tanstack/react-router'
 import { useUrlFilter } from './useUrlFilter.ts'
+import { useProjectAreaFilter } from './useProjectAreaFilter.ts'
 import { filterStringFromFilter } from './filterStringFromFilter.ts'
 
 export const useOwnLayerScope = () => {
@@ -11,6 +12,7 @@ export const useOwnLayerScope = () => {
     select: (search) => search.mapOverview,
   })
   const [filter] = useUrlFilter('subprojects')
+  const area = useProjectAreaFilter(projectId)
   const filterSql = filterStringFromFilter(filter)
   const singleRouteSelection =
     filter.length === 1 &&
@@ -26,6 +28,8 @@ export const useOwnLayerScope = () => {
     subprojectId,
     filterSql,
     scopeId: subprojectId ?? projectId ?? null,
+    areaMode: area.mode,
+    areaFilter: (alias: string) => area.mode === 'all' ? '' : ` AND ${area.matches(alias)}`,
     scopeFilter:
       subprojectId ? '= $1' : (
         `IN (SELECT subproject_id FROM subprojects WHERE project_id = $1${filterSql ? ` AND (${filterSql})` : ''})`

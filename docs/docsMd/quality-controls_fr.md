@@ -15,3 +15,5 @@ Le résultat est des listes d'enregistrements suspects qui peuvent être corrig�
 Les contrôles de qualité ne t'interrompent pas pendant la saisie. Tu peux quitter un formulaire même si tous les champs obligatoires n'ont pas été remplis. Mais si tu oublies de le faire, un contrôle de qualité sonnera l'alarme.
 
 Les contrôles de qualité devraient déclencher le moins de fausses alertes possible — idéalement aucune dans des conditions normales.
+
+**Hors du périmètre du projet :** Trois contrôles signalent les lieux, les mesures et les contrôles dont la géométrie se trouve en partie ou entièrement hors du périmètre du projet. Toucher la limite sans la franchir ne déclenche pas d’alerte. Si le projet ou la fiche n’a pas de géométrie, ces contrôles ne signalent rien.

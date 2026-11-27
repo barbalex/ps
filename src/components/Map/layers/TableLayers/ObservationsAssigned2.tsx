@@ -27,7 +27,7 @@ export const ObservationsAssigned2 = ({
   layerPresentation: TableLayerProps['layerPresentation']
 }) => {
   const draggableLayers = useAtomValue(draggableLayersAtom)
-  const { scopeFilter, scopeId } = useOwnLayerScope()
+  const { scopeFilter, scopeId, areaFilter } = useOwnLayerScope()
   const activeObservationId = useActiveObservationId()
   const envelope = useViewportEnvelope()
   const res = useLiveQuery<ObservationRow>(
@@ -44,7 +44,7 @@ export const ObservationsAssigned2 = ({
       INNER JOIN places p ON o.place_id = p.place_id
     WHERE oi.subproject_id ${scopeFilter}
       AND p.parent_id IS NOT NULL
-      AND o.geometry IS NOT NULL${viewportPredicate('o.geometry')}
+      AND o.geometry IS NOT NULL${areaFilter('o')}${viewportPredicate('o.geometry')}
   `,
     [scopeId, ...viewportParams(envelope)],
   )

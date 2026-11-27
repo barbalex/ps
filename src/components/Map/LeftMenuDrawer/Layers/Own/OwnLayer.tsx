@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { useIntl } from 'react-intl'
 import { useParams } from '@tanstack/react-router'
 import * as fluentUiReactComponents from '@fluentui/react-components'
 const {
@@ -21,6 +22,8 @@ import { ErrorBoundary } from '../../../../shared/ErrorBoundary.tsx'
 import { createLayerPresentation } from '../../../../../modules/createRows.ts'
 import { useLayerActivation } from '../../../../../modules/useLayerActivation.ts'
 import { useUrlLayers } from '../../../../../modules/useUrlLayers.ts'
+import { projectAreaTable } from '../../../../../modules/projectAreaLayer.tsx'
+import { ZoomToProjectArea } from '../ZoomToProjectArea.tsx'
 import {
   designingAtom,
   mapDrawerVectorLayerDisplayAtom,
@@ -52,9 +55,11 @@ export const OwnLayer = ({
   isOpen: boolean
 }) => {
   const { projectId } = useParams({ strict: false })
+  const { formatMessage } = useIntl()
   const [designingMap] = useAtom(designingAtom)
   const designing = designingMap[projectId ?? ''] ?? false
-  const { isLayerVisible } = useUrlLayers()
+  const { isLayerVisible, setLayerVisible } = useUrlLayers()
+  const isProjectArea = layer.own_table === projectAreaTable
   const { activateLayer, deactivateLayer, joinRenderList } =
     useLayerActivation()
   const [tab, setTab] = useState<TabType>('overall-displays')
@@ -73,6 +78,10 @@ export const OwnLayer = ({
   // active — what lists the layer under Active) and joins the render list,
   // like every other layer toggle
   const onChange = async () => {
+    if (isProjectArea && !designing && layerPresentationId) {
+      setLayerVisible(layerPresentationId, !isVisible)
+      return
+    }
     // deactivate a visible layer: view off and design flag off
     if (isVisible && layerPresentationId) {
       await deactivateLayer(layerPresentationId)
@@ -106,6 +115,7 @@ export const OwnLayer = ({
         className={`${styles.accordionItem}${isOpen ? ` ${styles.accordionOpen}` : isLast ? ` ${styles.accordionLast}` : ''}`}
       >
         <AccordionHeader
+          button={{ 'aria-label': layer.label }}
           expandIconPosition="end"
           size="extra-large"
           expandIcon={designing ? undefined : null}
@@ -113,6 +123,10 @@ export const OwnLayer = ({
         >
           <div className={layerStyles.headerContainer}>
             <ToggleButton
+              aria-label={formatMessage(
+                { id: 'bCKlMn', defaultMessage: '{places}-Ebene in Karte anzeigen' },
+                { places: layer.label },
+              )}
               icon={
                 isVisible ? (
                   <BsCheckSquareFill
@@ -135,6 +149,7 @@ export const OwnLayer = ({
             />
             <p className={layerStyles.headerLabel}>{layer.label}</p>
           </div>
+          {isProjectArea && <ZoomToProjectArea projectId={layer.project_id} className={styles.headerButton} />}
         </AccordionHeader>
         <AccordionPanel className={layerStyles.panel}>
           <TabList

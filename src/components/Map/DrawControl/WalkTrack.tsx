@@ -35,8 +35,10 @@ export const WalkTrack = ({
   drawTrack,
   targets,
   close,
+  polygonsOnly = false,
 }: {
   targets: PolygonTarget[]
+  polygonsOnly?: boolean
   drawTrack?: DrawTrack
   apply: (parts: TrackGeometry[], target?: PolygonTarget) => Promise<void>
   close: () => void
@@ -44,7 +46,9 @@ export const WalkTrack = ({
   const { formatMessage: msg } = useIntl()
   const map = useMap()
   const db = usePGlite()
-  const [action, setAction] = useState<Mode | PolygonAction>('line')
+  const [action, setAction] = useState<Mode | PolygonAction>(
+    polygonsOnly ? 'polygon' : 'line',
+  )
   const mode: Mode =
     action === 'polygon' || action === 'hole' ? 'polygon' : 'line'
   const editing = action !== 'line' && action !== 'polygon'
@@ -277,7 +281,7 @@ export const WalkTrack = ({
           (!drawTrack || parts.length > 0) &&
           (
             [
-              'line',
+              ...(polygonsOnly ? [] : (['line'] as const)),
               'polygon',
               ...(parts.length && targets.length ?
                 (['hole', 'reshape', 'split'] as const)

@@ -21,7 +21,7 @@ const parseLayers = (value: unknown): string[] | null => {
     .split(',')
     .map((id) => id.trim())
     .filter(Boolean)
-  return ids.length > 0 ? ids : null
+  return ids
 }
 
 export const useUrlLayers = () => {
@@ -40,10 +40,11 @@ export const useUrlLayers = () => {
   const setLayers = (nextLayers: string[]) => {
     navigate(
       {
-        // undefined/empty removes the param: back to the design defaults
+        // An explicitly empty list hides every layer; removing the parameter
+        // altogether restores the project's defaults.
         search: (prev: Record<string, unknown>) => ({
           ...prev,
-          layers: nextLayers.length ? nextLayers.join(',') : undefined,
+          layers: nextLayers.join(','),
         }),
         replace: true,
       } as unknown as Parameters<typeof navigate>[0],
@@ -54,7 +55,7 @@ export const useUrlLayers = () => {
   // materialized into the param first, so the other layers keep their
   // visibility
   const setLayerVisible = (layerPresentationId: string, visible: boolean) => {
-    const base = urlLayers ?? [...mapLayerSorting]
+    const base = layers
     const nextLayers =
       visible ?
         base.includes(layerPresentationId) ? base

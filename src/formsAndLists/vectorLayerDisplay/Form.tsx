@@ -11,6 +11,7 @@ import { MarkerType } from './MarkerType.tsx'
 import { LineCap } from './LineCap.tsx'
 import { LineJoin } from './LineJoin.tsx'
 import { FillRule } from './FillRule.tsx'
+import { projectAreaTable } from '../../modules/projectAreaLayer.tsx'
 
 import type VectorLayerDisplays from '../../models/public/VectorLayerDisplays.ts'
 
@@ -34,11 +35,12 @@ export const VectorLayerDisplayForm = ({
 
   // the value only applies when the layer is styled by a property
   const layerRes = useLiveQuery(
-    `SELECT display_by_property FROM vector_layers WHERE vector_layer_id = $1`,
+    `SELECT display_by_property, own_table FROM vector_layers WHERE vector_layer_id = $1`,
     [row.vector_layer_id],
   )
   const displayByProperty = layerRes?.rows?.[0]?.display_by_property as
     string | null | undefined
+  const hasMarkers = layerRes?.rows?.[0]?.own_table !== projectAreaTable
 
   return (
     <>
@@ -63,11 +65,11 @@ export const VectorLayerDisplayForm = ({
           validationState={validations?.display_property_value?.state}
         />
       : null}
-      <MarkerType
+      {hasMarkers && <MarkerType
         onChange={onChange}
         row={row}
-      />
-      {row.marker_type === 'circle' && (
+      />}
+      {hasMarkers && row.marker_type === 'circle' && (
         <TextField
           name="circle_marker_radius"
           label={formatMessage({
@@ -81,7 +83,7 @@ export const VectorLayerDisplayForm = ({
           validationState={validations?.circle_marker_radius?.state}
         />
       )}
-      {row.marker_type === 'marker' && (
+      {hasMarkers && row.marker_type === 'marker' && (
         <>
           <MarkerSymbolPicker
             onChange={onChange}

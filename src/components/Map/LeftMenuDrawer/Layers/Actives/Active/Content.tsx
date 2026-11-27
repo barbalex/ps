@@ -51,13 +51,18 @@ import {
   addNotificationAtom,
   mapBoundsAtom,
   draggableLayersAtom,
+  editingProjectGeometryAtom,
+  projectGeometryDraftAtom,
   droppableLayersAtom,
   languageAtom,
 } from '../../../../../../store.ts'
 import { DragHandle } from '../../../../../shared/DragAndDrop/DragHandle.tsx'
+import { useProjectLabel } from '../../../../../../modules/navRollupsContext.ts'
 import { zoomToVectorLayer } from '../../../../../../modules/zoomToVectorLayer.ts'
 import { zoomToWmsLayer } from '../../../../../../modules/zoomToWmsLayer.ts'
 import { useUrlLayers } from '../../../../../../modules/useUrlLayers.ts'
+import { projectAreaTable } from '../../../../../../modules/projectAreaLayer.tsx'
+import { ZoomToProjectArea } from '../../ZoomToProjectArea.tsx'
 import { useLayerActivation } from '../../../../../../modules/useLayerActivation.ts'
 import {
   getVectorLayerLabel,
@@ -90,10 +95,10 @@ export const Content = ({
   dragHandleRef: RefObject<HTMLDivElement | null>
 }) => {
   const { formatMessage } = useIntl()
-  const { projectId, subprojectId, filterSql } = useOwnLayerScope()
+  const { projectId, subprojectId, filterSql, areaFilter } = useOwnLayerScope()
   const [designingMap] = useAtom(designingAtom)
   const designing = designingMap[projectId ?? ''] ?? false
-  const { isLayerVisible } = useUrlLayers()
+  const { isLayerVisible, setLayerVisible } = useUrlLayers()
   const { activateLayer, deactivateLayer } = useLayerActivation()
   const [vectorLayerDisplayId, setVectorLayerDisplayId] = useAtom(
     mapDrawerVectorLayerDisplayAtom,
@@ -112,6 +117,9 @@ export const Content = ({
   const { pathname } = useLocation()
 
   const isVectorLayer = layer.layer_type === 'vector'
+  const isProjectArea = layer.own_table === projectAreaTable
+  const [editingProject, setEditingProject] = useAtom(editingProjectGeometryAtom)
+  const projectDraft = useAtomValue(projectGeometryDraftAtom)
   const isWmsLayer = layer.layer_type === 'wms'
   const isTileLayer = layer.layer_type === 'tile'
   const creationTarget = mapCreationTarget(layer)
@@ -121,12 +129,13 @@ export const Content = ({
   })
 
   const placeLevels = usePlaceLevels(layer.project_id)
+  const projectLabel = useProjectLabel(layer.project_id)
   // Derived display label: own/wfs/upload vector layers compute it (there is no
   // stored label column anymore); wms layers keep their own stored label —
   // which is null while no service layer has been chosen
   const label =
     isVectorLayer ?
-      getVectorLayerLabel(layer as VectorLayers, language, placeLevels)
+      getVectorLayerLabel(layer as VectorLayers, language, placeLevels, projectLabel)
     : isTileLayer ?
       (layer.label ||
       formatMessage({
@@ -245,10 +254,7 @@ export const Content = ({
     layer.url_template,
   ])
 
-  // toggling the checkbox fully activates/deactivates the layer — the
-  // layer_presentations.active design flag (what lists it under Active)
-  // plus the render list — like every other layer toggle. A view-only url
-  // toggle here left layers listed under Active with an unchecked box
+  const visible = isLayerVisible(layer.layer_presentation_id, layer.layer_presentation_active === true)
   const onChangeActive = async () => {
     if (!layer.layer_presentation_id) {
       // if no presentation exists, create notification
@@ -257,12 +263,18 @@ export const Content = ({
         type: 'warning',
       } as Parameters<typeof addNotification>[0])
     }
-    if (
-      isLayerVisible(
-        layer.layer_presentation_id,
-        layer.layer_presentation_active === true,
-      )
-    ) {
+    if (isProjectArea && visible && editingProject === layer.project_id) {
+      if (projectDraft === editingProject && !window.confirm(formatMessage({
+        id: 'hideProjectAreaDiscard',
+        defaultMessage: 'Projektgebiet ausblenden und die Bearbeitung beenden? Eine nicht abgeschlossene Zeichnung geht verloren.',
+      }))) return
+      setEditingProject(null)
+    }
+    if (isProjectArea && !designing) {
+      setLayerVisible(layer.layer_presentation_id, !visible)
+      return
+    }
+    if (visible) {
       await deactivateLayer(layer.layer_presentation_id)
       return
     }
@@ -398,6 +410,7 @@ export const Content = ({
       layer,
       subprojectId,
       filterSql,
+      areaFilter,
       addNotification,
       setMapBounds,
     })
@@ -417,20 +430,20 @@ export const Content = ({
         {canDrag && <DragHandle ref={dragHandleRef} />}
         <div className={layerStyles.headerContainer}>
           <ToggleButton
+            aria-label={formatMessage(
+              visible
+                ? { id: 'bCLmNo', defaultMessage: '{places}-Ebene aus Karte entfernen' }
+                : { id: 'bCKlMn', defaultMessage: '{places}-Ebene in Karte anzeigen' },
+              { places: label },
+            )}
             icon={
-              isLayerVisible(
-                layer.layer_presentation_id ?? '',
-                layer.layer_presentation_active === true,
-              ) ? (
+              visible ? (
                 <BsCheckSquareFill className={layerStyles.checkedToggleIcon} />
               ) : (
                 <BsSquare className={styles.headerIcon} />
               )
             }
-            checked={isLayerVisible(
-              layer.layer_presentation_id ?? '',
-              layer.layer_presentation_active === true,
-            )}
+            checked={visible}
             onClick={(event) => {
               // only the visibility toggle, not the accordion header
               event.stopPropagation()
@@ -536,10 +549,11 @@ export const Content = ({
         {creationTarget && layer.project_id && (
           <AddToLayer {...creationTarget} projectId={layer.project_id} layerLabel={label} />
         )}
-        {isVectorLayer && layer.own_table !== 'observations_assigned_lines' && (
+        {isVectorLayer && !isProjectArea && layer.own_table !== 'observations_assigned_lines' && (
           <ClusterMenu id={layer.layer_presentation_id} defaultOn={layer.cluster_markers ?? true} />
         )}
-        {!isTileLayer && (
+        {isProjectArea && <ZoomToProjectArea projectId={layer.project_id} className={styles.headerButton} />}
+        {!isTileLayer && !isProjectArea && (
           <Tooltip content={zoomLabel} relationship="label">
             <Button
               icon={<TbZoomScan />}

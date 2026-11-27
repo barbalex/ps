@@ -39,7 +39,7 @@ export const ObservationsAssignedLines1 = ({
 }: {
   layerPresentation: TableLayerProps['layerPresentation']
 }) => {
-  const { scopeFilter, scopeId } = useOwnLayerScope()
+  const { scopeFilter, scopeId, areaFilter } = useOwnLayerScope()
   const activeObservationId = useActiveObservationId()
   const envelope = useViewportEnvelope()
 
@@ -68,7 +68,7 @@ export const ObservationsAssignedLines1 = ({
       o.geometry IS NOT NULL
       AND p.geometry IS NOT NULL
       AND oi.subproject_id ${scopeFilter}
-      AND p.parent_id IS NULL${viewportEitherPredicate('o.geometry', 'p.geometry')}
+      AND p.parent_id IS NULL${areaFilter('o')}${viewportEitherPredicate('o.geometry', 'p.geometry')}
   `,
     [scopeId, ...viewportParams(envelope)],
   )

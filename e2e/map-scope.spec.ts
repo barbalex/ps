@@ -59,6 +59,64 @@ test.beforeAll(() => {
       VALUES ('c2100000-0000-7000-8000-000000000032','${a}','${layer}',true,false) ON CONFLICT DO NOTHING;`)
 })
 
+test('project area filter is shared by the map, list, tree and project header', async ({
+  page, scopeUser: { email, signIn, userId },
+}) => {
+  const action = randomUUID()
+  try {
+    psql(`SET electric.syncing = true;
+      UPDATE projects SET geometry = ST_Multi(ST_MakeEnvelope(8.5399,47.3699,8.5401,47.3701,4326))
+        WHERE project_id = '${a}';
+      INSERT INTO actions(action_id,place_id,geometry) VALUES ('${action}','${places[0]}',
+        ST_GeomFromText('GEOMETRYCOLLECTION(POINT(8.5402 47.37))',4326));`)
+    await grantRoles({
+      email, userId, projectId: a, role: 'read-specific',
+      subprojectIds: [first], placeIds: [places[0]],
+    })
+    await grantRoles({ email, userId, projectId: b, role: 'read-all' })
+    await page.setViewportSize({ width: 1920, height: 1000 })
+    await signIn()
+    const root = `/data/projects/${a}/subprojects/${first}/places`
+    await page.goto(`${root}?panes=tree,data,map&c=47.37,8.54&z=17`)
+    const drawer = page.locator('.map-layers-drawer')
+    const control = drawer.getByRole('combobox', { name: 'Project area filter', exact: true })
+    const rows = page.locator('.list-container .row')
+    const markers = page.locator('.clickable-hitbox')
+    await expect(control).toBeEnabled({ timeout: 120_000 })
+    const project = drawer.getByRole('combobox', { name: 'Project', exact: true })
+    const projectBounds = await project.boundingBox()
+    const filterBounds = await control.boundingBox()
+    expect(filterBounds?.x).toBe(projectBounds?.x)
+    expect(filterBounds?.width).toBe(projectBounds?.width)
+    await expect(control).toHaveValue('all')
+    await expect(rows).toHaveCount(1, { timeout: 60_000 })
+    await expect(markers).toHaveCount(1)
+    await control.selectOption('outside')
+    await expect(rows).toHaveCount(0)
+    await expect(markers).toHaveCount(0)
+    // Its own geometry is inside, but the tree keeps the ancestor of the outside action.
+    await expect(page.locator(`a[href^="${root}/${places[0]}"]`).first()).toBeVisible()
+    await expect(page.getByText('Project area filter: Outside', { exact: true })).toBeVisible()
+    await control.selectOption('inside')
+    await expect(rows).toHaveCount(1)
+    await expect(markers).toHaveCount(1)
+    await page.goto(`/data/projects/${a}/project?panes=data`)
+    const header = page.locator('.form-header').getByRole('combobox', { name: 'Project area filter' })
+    await expect(header).toHaveValue('inside', { timeout: 60_000 })
+    await header.selectOption('outside')
+    await page.goto(`/data/projects/${b}?panes=map`)
+    await expect(control).toBeDisabled()
+    await expect(control).toHaveValue('all')
+    await page.goto(`/data/projects/${a}?panes=map`)
+    await expect(control).toHaveValue('outside', { timeout: 60_000 })
+    await control.selectOption('all')
+  } finally {
+    psql(`SET electric.syncing = true;
+      DELETE FROM actions WHERE action_id = '${action}';
+      UPDATE projects SET geometry = NULL WHERE project_id = '${a}';`)
+  }
+})
+
 test('switches map routes with the viewport intact and only offers accessible choices', async ({
   page,
   scopeUser: { email, signIn, userId },
@@ -112,6 +170,64 @@ test('switches map routes with the viewport intact and only offers accessible ch
   await expect(survey).toHaveText('Survey: North, South')
 })
 
+test('current project area uses its own display and is only drawn inside its project', async ({
+    page, scopeUser: { email, signIn, userId },
+  }) => {
+    const projectIds = [randomUUID(), randomUUID()]
+    const [current, empty] = projectIds
+    try {
+      psql(`SET electric.syncing = true;
+        INSERT INTO projects(project_id,name,label,geometry) VALUES
+        ('${current}','Internal project name','Boundary A',ST_Multi(ST_MakeEnvelope(6,46,6.1,46.1,4326))),
+        ('${empty}','No boundary',NULL,NULL);
+        SELECT provision_project_area_layer(project_id) FROM projects WHERE project_id IN ('${current}','${empty}');`)
+      for (const projectId of projectIds) {
+        await grantRoles({ email, userId, projectId, role: 'read-all' })
+      }
+      const vl = psql(`SELECT vector_layer_id FROM vector_layers WHERE project_id = '${current}' AND own_table = 'current_project_area'`)
+      const lp = psql(`SELECT layer_presentation_id FROM layer_presentations WHERE vector_layer_id = '${vl}'`)
+      psql(`SET electric.syncing = true;
+        UPDATE vector_layer_displays SET color='#5831a7',fill_color='#156d87',fill_opacity_percent=50 WHERE vector_layer_id='${vl}';
+        UPDATE layer_presentations SET opacity_percent=80 WHERE layer_presentation_id='${lp}'`)
+      await signIn()
+      await page.goto(`/data/projects/${current}?panes=map&layers=${lp}`)
+      const drawer = page.locator('.map-layers-drawer')
+      const label = drawer.getByText('Boundary A area', { exact: true })
+      const row = drawer.locator('.fui-AccordionItem').filter({ has: page.getByText('Boundary A area', { exact: true }) })
+      const toggle = row.locator('[aria-pressed]').first()
+      const path = page.locator('.leaflet-current_project_area-pane path')
+      const active = drawer.locator('section').filter({ has: page.getByRole('heading', { name: 'Active', exact: true }) })
+      const own = drawer.locator('section').filter({ has: page.getByRole('heading', { name: 'Own', exact: true }) })
+      await expect(toggle).toHaveAttribute('aria-pressed','true',{ timeout: 60_000 })
+      await expect(active.getByText('Boundary A area', { exact: true })).toBeVisible()
+      await expect(path).toHaveAttribute('stroke','#5831a7')
+      await expect(path).toHaveAttribute('fill-opacity','0.4')
+      psql(`SET electric.syncing = true;
+        UPDATE layer_presentations SET opacity_percent = 30 WHERE layer_presentation_id = '${lp}'`)
+      await expect(path).toHaveAttribute('fill-opacity','0.15', { timeout: 30_000 })
+      const longitude = () => Number(new URL(page.url()).searchParams.get('c')?.split(',')[1])
+      await expect.poll(longitude).toBeCloseTo(6.05, 2)
+      await toggle.click()
+      await expect(path).toHaveCount(0)
+      await expect(own.getByText('Boundary A area', { exact: true })).toBeVisible()
+      await toggle.click()
+      await expect(path).toHaveAttribute('fill','#156d87')
+      await page.evaluate(() => localStorage.setItem('language', JSON.stringify('de')))
+      await page.reload()
+      await expect(active.getByText('Projektgebiet Boundary A', { exact: true })).toBeVisible({ timeout: 60_000 })
+      await expect(path).toHaveAttribute('fill','#156d87')
+      for (const route of [`/data/projects/${empty}`, '/data/projects']) {
+        await page.goto(`${route}?panes=map&layers=${lp}`)
+        await expect(drawer.getByRole('heading', { name: 'Own', exact: true })).toBeVisible({ timeout: 60_000 })
+        await expect(path).toHaveCount(0)
+        await expect(label).toHaveCount(0)
+      }
+    } finally {
+      psql(`SET electric.syncing = true;
+        DELETE FROM projects WHERE project_id IN (${projectIds.map(id => `'${id}'`).join(',')})`)
+    }
+  })
+
 test('with one accessible project the map offers only its subprojects', async ({
   page,
   scopeUser: { email, signIn, userId },
@@ -123,7 +239,6 @@ test('with one accessible project the map offers only its subprojects', async ({
     role: 'read-specific',
     subprojectIds: [first, second],
   })
-
   await signIn()
   await page.goto('/data/projects?panes=map')
   const drawer = page.locator('.map-layers-drawer')

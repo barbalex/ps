@@ -9,6 +9,7 @@ import {
 } from '../../../../store.ts'
 import type { PlacesToAssignObservationTo } from '../../../../store.ts'
 import { nearestPlaces } from '../../../../modules/geoQueries.ts'
+import type { ProjectAreaMode } from '../../../../modules/projectAreaFilter.ts'
 import { resetObservationMarkerPosition } from './observationMarkers.ts'
 
 export const assignToNearestDroppable = async ({
@@ -22,7 +23,7 @@ export const assignToNearestDroppable = async ({
 }: {
   latLng: LatLng
   observationId: string
-  scope: { projectId: string; subprojectId?: string; filterSql?: string }
+  scope: { projectId: string; subprojectId?: string; filterSql?: string; areaMode: ProjectAreaMode }
   map: Map
   droppableLayers: string[]
   confirmAssigningToSingleTarget: boolean

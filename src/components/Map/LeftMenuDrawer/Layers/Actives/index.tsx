@@ -11,10 +11,11 @@ import { extractClosestEdge } from '@atlaskit/pragmatic-drag-and-drop-hitbox/clo
 import { reorder } from '@atlaskit/pragmatic-drag-and-drop/utils/reorder'
 import { getReorderDestinationIndex } from '@atlaskit/pragmatic-drag-and-drop-hitbox/util/get-reorder-destination-index'
 import { useAtom, atom } from 'jotai'
-import { usePGlite, useLiveQuery } from '@electric-sql/pglite-react'
+import { useLiveQuery } from '@electric-sql/pglite-react'
 
 import { ErrorBoundary } from '../../../../shared/ErrorBoundary.tsx'
 import { ActiveLayer } from './Active/index.tsx'
+import { projectAreaTable, useProjectAreaLayer } from '../../../../../modules/projectAreaLayer.tsx'
 import { mapLayerSortingAtom } from '../../../../../store.ts'
 import { useUrlLayers } from '../../../../../modules/useUrlLayers.ts'
 import { isBackgroundLayerId } from '../../../layers/backgroundLayers.ts'
@@ -29,7 +30,6 @@ import styles from './index.module.css'
 import type WmsLayers from '../../../../../models/public/WmsLayers.ts'
 import type VectorLayers from '../../../../../models/public/VectorLayers.ts'
 import type TileLayers from '../../../../../models/public/TileLayers.ts'
-import type LayerPresentations from '../../../../../models/public/LayerPresentations.ts'
 
 // rows built by the queries below:
 // all columns of the layer plus info of it's active layer_presentation
@@ -61,9 +61,7 @@ export type ActiveVectorLayerRow = VectorLayers &
 export type ActiveTileLayerRow = TileLayers &
   LayerRowCommon & { layer_type: 'tile' }
 export type ActiveLayerRow =
-  | ActiveWmsLayerRow
-  | ActiveVectorLayerRow
-  | ActiveTileLayerRow
+  ActiveWmsLayerRow | ActiveVectorLayerRow | ActiveTileLayerRow
 
 // what accordion items are open
 // needs to be controlled to prevent opening when layer is deactivated
@@ -74,13 +72,13 @@ export const ActiveLayers = () => {
   const [openItems, setOpenItems] = useAtom(openItemsAtom)
   // ?layers= override-aware render list (see the hook): reordering writes
   // the param while an override is active, the sorting atom otherwise
-  const { layers: effectiveLayers, isOverridden, setLayers } = useUrlLayers()
+  const { layers: effectiveLayers, isOverridden, setLayers, isLayerVisible } = useUrlLayers()
 
   const { projectId = '99999999-9999-9999-9999-999999999999' } = useParams({
     strict: false,
   })
 
-  const db = usePGlite()
+  const { available } = useProjectAreaLayer(projectId)
 
   const resWmsLayers = useLiveQuery(
     `
@@ -96,7 +94,8 @@ export const ActiveLayers = () => {
     WHERE wms_layers.project_id = $1`,
     [projectId],
   )
-  const activeWmsLayers = (resWmsLayers?.rows ?? []) as unknown as ActiveWmsLayerRow[]
+  const activeWmsLayers = (resWmsLayers?.rows ??
+    []) as unknown as ActiveWmsLayerRow[]
 
   const resVectorLayers = useLiveQuery(
     `
@@ -109,11 +108,12 @@ export const ActiveLayers = () => {
     FROM vector_layers 
       INNER JOIN layer_presentations 
         ON vector_layers.vector_layer_id = layer_presentations.vector_layer_id 
-        AND layer_presentations.active = TRUE
+        AND (layer_presentations.active OR vector_layers.own_table = '${projectAreaTable}')
       WHERE vector_layers.project_id = $1`,
     [projectId],
   )
-  const activeVectorLayers = (resVectorLayers?.rows ?? []) as unknown as ActiveVectorLayerRow[]
+  const activeVectorLayers = (resVectorLayers?.rows ??
+    []) as unknown as ActiveVectorLayerRow[]
 
   const resTileLayers = useLiveQuery(
     `
@@ -125,7 +125,8 @@ export const ActiveLayers = () => {
       AND tl.is_background = FALSE`,
     [projectId],
   )
-  const activeTileLayers = (resTileLayers?.rows ?? []) as unknown as ActiveTileLayerRow[]
+  const activeTileLayers = (resTileLayers?.rows ??
+    []) as unknown as ActiveTileLayerRow[]
 
   // background tile layers render via render list membership alone (like
   // the osm pseudo layer): their presentation ids must survive the
@@ -151,23 +152,27 @@ export const ActiveLayers = () => {
   // sort by the effective render list: with an active ?layers= override
   // that is the param (so drawer order, map order and url agree); without
   // one it is mapLayerSorting
-  const activeLayers = [
+  const databaseLayers = [
     ...activeWmsLayers,
     ...activeVectorLayers,
     ...activeTileLayers,
-  ].sort(
-    (a, b) => {
-      const aIndex = effectiveLayers.findIndex(
-        (ls) => ls === a.layer_presentation_id,
-      )
-      const bIndex = effectiveLayers.findIndex(
-        (ls) => ls === b.layer_presentation_id,
-      )
-      return aIndex - bIndex
-    },
-  )
+  ]
+  const activeLayers = databaseLayers.filter((layer) =>
+    layer.own_table !== projectAreaTable ||
+    (layer.project_id === projectId && available && isLayerVisible(layer.layer_presentation_id, layer.layer_presentation_active)),
+  ).sort((a, b) => {
+    const aIndex = effectiveLayers.findIndex(
+      (ls) => ls === a.layer_presentation_id,
+    )
+    const bIndex = effectiveLayers.findIndex(
+      (ls) => ls === b.layer_presentation_id,
+    )
+    return aIndex - bIndex
+  })
 
   const layerPresentationIds = activeLayers.map((l) => l.layer_presentation_id)
+  // The URL switches the user's view, not the project's default draw order.
+  const databaseIds = databaseLayers.filter((l) => l.layer_presentation_active).map((l) => l.layer_presentation_id)
 
   // when activeLayers changes, update mapLayerSorting:
   // add missing layer's layer_presentation_id's to mapLayerSorting
@@ -184,17 +189,17 @@ export const ActiveLayers = () => {
       !resTileBackgrounds
     )
       return
-    if (!layerPresentationIds.length) return
+    if (!databaseIds.length) return
 
     const run = async () => {
-      const missingLayerPresentations = layerPresentationIds.filter(
+      const missingLayerPresentations = databaseIds.filter(
         (lpId) => !mapLayerSorting.includes(lpId),
       )
       // don't remove background layers (osm, positron, dark matter):
       // will lead to unlimited re-rendering
       const removeLayerPresentations = mapLayerSorting.filter(
         (lpId) =>
-          !layerPresentationIds.includes(lpId) &&
+          !databaseIds.includes(lpId) &&
           !isBackgroundLayerId(lpId) &&
           !tileBackgroundPresentationIds.includes(lpId),
       )
@@ -216,7 +221,7 @@ export const ActiveLayers = () => {
     }
     run()
   }, [
-    layerPresentationIds,
+    databaseIds,
     mapLayerSorting,
     setMapLayerSorting,
     tileBackgroundPresentationIds,
@@ -254,25 +259,19 @@ export const ActiveLayers = () => {
         startIndex,
         finishIndex,
       })
-      setMapLayerSorting(newLayerSorting)
-
-      // with an active ?layers= override the param is the render list:
-      // apply the new order of the active layers onto it, keeping ids
-      // that are not part of this drawer list (e.g. the osm base layer)
-      // in their slots
-      if (isOverridden) {
-        const activesIds = new Set(layerPresentationIds)
-        const orderedVisibleActives = newLayerSorting.filter((lpId) =>
-          effectiveLayers.includes(lpId),
-        )
-        let i = 0
-        const newEffectiveLayers = effectiveLayers.map((lpId) =>
-          activesIds.has(lpId) && orderedVisibleActives.includes(lpId) ?
-            (orderedVisibleActives[i++] ?? lpId)
-          : lpId,
-        )
-        setLayers(newEffectiveLayers)
-      }
+      // Reorder only overlay slots; leave background layers in place.
+      const activesIds = new Set(layerPresentationIds)
+      const orderedVisibleActives = newLayerSorting.filter((lpId) =>
+        effectiveLayers.includes(lpId),
+      )
+      let i = 0
+      const newEffectiveLayers = effectiveLayers.map((lpId) =>
+        activesIds.has(lpId) && orderedVisibleActives.includes(lpId) ?
+          (orderedVisibleActives[i++] ?? lpId)
+        : lpId,
+      )
+      if (isOverridden) setLayers(newEffectiveLayers)
+      else setMapLayerSorting(newEffectiveLayers)
     },
     [
       layerPresentationIds,
@@ -331,29 +330,8 @@ export const ActiveLayers = () => {
 
   const onToggleItem = (
     _event: AccordionToggleEvent,
-    { value: layerPresentationId, openItems }: AccordionToggleData<string>,
-  ) => {
-    // use setTimeout to let the child checkbox set the layers active status
-    setTimeout(async () => {
-      // fetch layerPresentation's active status
-      const res = await db.query(
-        `SELECT active FROM layer_presentations WHERE layer_presentation_id = $1`,
-        [layerPresentationId],
-      )
-      const isActive: LayerPresentations['active'] | undefined = (
-        res?.rows?.[0] as LayerPresentations | undefined
-      )?.active
-      if (!isActive) {
-        // if not active, remove this item
-        const newOpenItems = openItems.filter(
-          (id) => id !== layerPresentationId,
-        )
-        setOpenItems(newOpenItems)
-        return
-      }
-      setOpenItems(openItems)
-    })
-  }
+    { openItems }: AccordionToggleData<string>,
+  ) => setOpenItems(openItems)
 
   if (projectId === '99999999-9999-9999-9999-999999999999') {
     return (
@@ -368,11 +346,6 @@ export const ActiveLayers = () => {
     )
   }
 
-  // Accordion should NOT toggle when the active-checkbox is clicked
-  // Solution:
-  // use controlled accordion
-  // onToggle: wait 0ms before toggling
-  // do not toggle if that layers presentation is no more active
   return (
     <ErrorBoundary>
       <DragAndDropContext.Provider value={dragAndDropContextValue}>
@@ -384,10 +357,10 @@ export const ActiveLayers = () => {
             openItems={openItems}
             onToggle={onToggleItem}
           >
-            {activeLayers.length ? (
+            {activeLayers.length ?
               activeLayers?.map((l, index) => (
                 <ActiveLayer
-                  key={l.wms_layer_id ?? l.vector_layer_id ?? l.tile_layer_id}
+                  key={l.layer_presentation_id}
                   layer={l}
                   index={index}
                   layerCount={activeLayers.length}
@@ -395,9 +368,7 @@ export const ActiveLayers = () => {
                   isOpen={openItems.includes(l.layer_presentation_id)}
                 />
               ))
-            ) : (
-              <p className={styles.noLayers}>No active layers</p>
-            )}
+            : <p className={styles.noLayers}>No active layers</p>}
           </Accordion>
         </section>
       </DragAndDropContext.Provider>

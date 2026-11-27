@@ -102,7 +102,7 @@ const applyOnServer = async (operations: Operation[]) =>
 beforeAll(async () => {
   const { createTestDb } = await import('./helpers/createTestDb.ts')
   const [clientFixture, serverFixture] = await Promise.all([
-    createTestDb(),
+    createTestDb(['08_syncIgnoreDuplicateInsertTriggers.sql']),
     createTestDb(['12_writePermissionTriggers.sql', '14_applyOperations.sql']),
   ])
   client = clientFixture.db
@@ -159,11 +159,114 @@ describe('vector_layers_insert_trigger', () => {
       expect(ownLayers.rows).toEqual([
         { name: 'actions_1', displays: 1 },
         { name: 'checks_1', displays: 1 },
+        { name: 'current_project_area', displays: 1 },
         { name: 'places_1', displays: 1 },
       ])
     } finally {
       await client.exec(`SET request.jwt.claims TO DEFAULT;`)
     }
+  })
+})
+
+describe('current project area provisioning', () => {
+  const rows = async (db: Db, project: string) =>
+    (
+      await db.query<{
+        vector_layer_id: string
+        vector_layer_display_id: string
+        layer_presentation_id: string
+      }>(
+        `SELECT vl.vector_layer_id, d.vector_layer_display_id, lp.layer_presentation_id,
+                  vl.own_table_level, lp.active, lp.cluster_markers
+           FROM vector_layers vl
+           JOIN vector_layer_displays d USING (vector_layer_id)
+           JOIN layer_presentations lp USING (project_id, vector_layer_id)
+           WHERE vl.project_id = $1 AND vl.own_table = 'current_project_area'
+             AND vl.name = 'current_project_area' AND vl.type = 'own'`,
+        [project],
+      )
+    ).rows
+
+  it('reconciles an offline-created project with the same server layer, style and presentation IDs', async () => {
+    const project = await createRows.createProject(
+      '60000000-0000-7000-8000-000000000001',
+    )
+    expect(queued().map((operation) => operation.table)).toEqual(['projects'])
+    expect(await applyOnServer(queued())).toEqual(['applied: 1 rows'])
+    const clientRows = await rows(client, project)
+    expect(clientRows).toEqual([
+      expect.objectContaining({
+        own_table_level: null,
+        active: true,
+        cluster_markers: false,
+      }),
+    ])
+    const serverRows = await rows(server, project)
+    expect(serverRows).toEqual(clientRows)
+    const ids = serverRows[0]
+    // Electric re-delivers rows the creator already has, by server PK.
+    await client.transaction(async (tx) => {
+      await tx.exec("SET LOCAL electric.syncing = 'true'")
+      await tx.query(
+        `INSERT INTO vector_layers(vector_layer_id, project_id, name) VALUES ($1, $2, 'current_project_area')`,
+        [ids.vector_layer_id, project],
+      )
+      await tx.query(
+        `INSERT INTO vector_layer_displays(vector_layer_display_id, vector_layer_id) VALUES ($1, $2)`,
+        [ids.vector_layer_display_id, ids.vector_layer_id],
+      )
+      await tx.query(
+        `INSERT INTO layer_presentations(layer_presentation_id, vector_layer_id, project_id) VALUES ($1, $2, $3)`,
+        [ids.layer_presentation_id, ids.vector_layer_id, project],
+      )
+    })
+    expect(await rows(client, project)).toEqual(serverRows)
+  })
+
+  it('leaves incoming project inserts to Electric; backfilling twice preserves customized settings', async () => {
+    const remoteProject = '73000000-0000-7000-8000-000000000003'
+    await client.transaction(async (tx) => {
+      await tx.exec("SET LOCAL electric.syncing = 'true'")
+      await tx.query('INSERT INTO projects(project_id) VALUES ($1)', [
+        remoteProject,
+      ])
+      expect(
+        (
+          await tx.query('SELECT FROM vector_layers WHERE project_id = $1', [
+            remoteProject,
+          ])
+        ).rows,
+      ).toHaveLength(0)
+      // Older versions allowed user layers with this same name.
+      await tx.query(
+        `INSERT INTO vector_layers(project_id, name, type) VALUES ($1, 'current_project_area', 'wfs')`,
+        [remoteProject],
+      )
+      await tx.query('SELECT provision_project_area_layer($1)', [remoteProject])
+      await tx.query(
+        'UPDATE layer_presentations SET active = false WHERE project_id = $1',
+        [remoteProject],
+      )
+      await tx.query('SELECT provision_project_area_layer($1)', [remoteProject])
+      expect(
+        (
+          await tx.query(
+            `SELECT active FROM vector_layers JOIN vector_layer_displays USING (vector_layer_id)
+           JOIN layer_presentations USING (project_id, vector_layer_id)
+           WHERE project_id = $1 AND own_table = 'current_project_area'`,
+            [remoteProject],
+          )
+        ).rows,
+      ).toEqual([{ active: false }])
+      expect(
+        (
+          await tx.query(
+            `SELECT type FROM vector_layers WHERE project_id = $1 AND name = 'current_project_area'`,
+            [remoteProject],
+          )
+        ).rows,
+      ).toEqual([{ type: 'wfs' }])
+    })
   })
 })
 

@@ -128,8 +128,8 @@ export const ActiveLayer = ({
         },
         onDrag({ self, source }) {
           const isSource =
-            (source.data.layer as ActiveLayerRow)
-              .layer_presentation_id === element.dataset.presentationId
+            (source.data.layer as ActiveLayerRow).layer_presentation_id ===
+            element.dataset.presentationId
           if (isSource) {
             setClosestEdge(null)
             return
@@ -164,7 +164,11 @@ export const ActiveLayer = ({
     )
   }, [index, instanceId, layer, layerCount, registerItem])
 
-  const accordionClassName = `${styles.accordionItem}${isOpen ? ` ${styles.accordionOpen}` : isLast ? ` ${styles.accordionLast}` : ''}`
+  const accordionClassName = `${styles.accordionItem}${
+    isOpen ? ` ${styles.accordionOpen}`
+    : isLast ? ` ${styles.accordionLast}`
+    : ''
+  }`
 
   // drag and drop items by dragging the drag icon
   // https://atlassian.design/components/pragmatic-drag-and-drop/core-package
@@ -181,7 +185,12 @@ export const ActiveLayer = ({
           layerCount={layerCount}
           dragHandleRef={dragHandleRef}
         />
-        {closestEdge && <DropIndicator edge={closestEdge} gap="1px" />}
+        {closestEdge && (
+          <DropIndicator
+            edge={closestEdge}
+            gap="1px"
+          />
+        )}
       </AccordionItem>
       {draggableState.type === 'preview' &&
         createPortal(

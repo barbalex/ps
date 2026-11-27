@@ -1,4 +1,7 @@
 import { useUrlFilter } from './useUrlFilter.ts'
+import { useProjectAreaFilter } from './useProjectAreaFilter.ts'
+import { andFilters } from './projectAreaFilter.ts'
+import { spatialListQuery } from './spatialListQuery.ts'
 import { useLiveQuery } from '@electric-sql/pglite-react'
 import { useAtom } from 'jotai'
 import { useLocation } from '@tanstack/react-router'
@@ -47,7 +50,8 @@ export const useObservationsNavData = ({
     isToAssess ? filterToAssess
     : isNotToAssign ? filterNotToAssign
     : []
-  const filterString = filterStringFromFilter(filter, 'o')
+  const area = useProjectAreaFilter(projectId)
+  const filterString = andFilters(filterStringFromFilter(filter, 'o'), area.matches('o'))
   const isFiltered = !!filterString
 
   let baseFilter = `oi.subproject_id = '${subprojectId}'`
@@ -80,62 +84,18 @@ export const useObservationsNavData = ({
   const isOpen = openNodesSet.has(ownArray.join('/'))
 
   const res = useLiveQuery<NavData[number]>(
-    isOpen ?
-      `
-    WITH
-      count_unfiltered AS (
-        SELECT count(*)
-        FROM observations o
-        INNER JOIN observation_imports oi ON o.observation_import_id = oi.observation_import_id
-        WHERE ${baseFilter}
-      ),
-      count_filtered AS (
-        SELECT count(*)
-        FROM observations o
-        INNER JOIN observation_imports oi ON o.observation_import_id = oi.observation_import_id
-        WHERE ${baseFilter}
-        ${isFiltered ? ` AND ${filterString}` : ''}
-      )
-    SELECT
-      o.observation_id AS id,
-      o.label,
-      o.absence AS is_absenz,
-      count_unfiltered.count AS count_unfiltered,
-      count_filtered.count AS count_filtered
-    FROM observations o
-      INNER JOIN observation_imports oi ON o.observation_import_id = oi.observation_import_id,
-      count_unfiltered,
-      count_filtered
-    WHERE ${baseFilter}
-    ${isFiltered ? ` AND ${filterString}` : ''}
-    ORDER BY label`
-    : `
-    WITH
-      count_unfiltered AS (
-        SELECT count(*)
-        FROM observations o
-        INNER JOIN observation_imports oi ON o.observation_import_id = oi.observation_import_id
-        WHERE ${baseFilter}
-      ),
-      count_filtered AS (
-        SELECT count(*)
-        FROM observations o
-        INNER JOIN observation_imports oi ON o.observation_import_id = oi.observation_import_id
-        WHERE ${baseFilter}
-        ${isFiltered ? ` AND ${filterString}` : ''}
-      )
-    SELECT
-      count_unfiltered.count AS count_unfiltered,
-      count_filtered.count AS count_filtered
-    FROM count_unfiltered,
-      count_filtered`,
+    spatialListQuery({
+      open: isOpen, select: 'o.observation_id AS id, o.label, o.absence AS is_absenz',
+      from: 'observations o JOIN observation_imports oi USING (observation_import_id)',
+      where: baseFilter, filter: filterString,
+    }),
   )
 
   const loading = res === undefined
 
-  const navs: NavData = res?.rows ?? []
-  const countUnfiltered = navs[0]?.count_unfiltered ?? 0
-  const countFiltered = navs[0]?.count_filtered ?? 0
+  const navs: NavData = res?.rows.filter((row) => row.id) ?? []
+  const countUnfiltered = res?.rows[0]?.count_unfiltered ?? 0
+  const countFiltered = res?.rows[0]?.count_filtered ?? 0
   const urlPath = location.pathname.split('/').filter((p) => p !== '')
   const isInActiveNodeArray = ownArray.every((part, i) => urlPath[i] === part)
   const isActive = isEqual(urlPath, ownArray)

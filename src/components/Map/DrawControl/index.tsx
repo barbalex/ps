@@ -1,11 +1,14 @@
 import { useLocation, useParams } from '@tanstack/react-router'
-import { useAtomValue } from 'jotai'
+import { useAtom, useAtomValue } from 'jotai'
+import { useContext, useEffect } from 'react'
 
 import { DrawControlComponent } from './DrawControl.tsx'
 import { CreateOnMap } from './CreateOnMap.tsx'
 import { mapCreationAtom } from '../../../modules/mapCreation.ts'
+import { ProjectAreasContext } from '../../../modules/projectAreas.ts'
 import {
   editingPlaceGeometryAtom,
+  editingProjectGeometryAtom,
   editingCheckGeometryAtom,
   editingActionGeometryAtom,
 } from '../../../store.ts'
@@ -20,6 +23,8 @@ export const DrawControl = () => {
   const creation = useAtomValue(mapCreationAtom)
   const { projectId } = useParams({ strict: false })
   const editingPlaceGeometry = useAtomValue(editingPlaceGeometryAtom)
+  const [editingProjectGeometry, setEditingProjectGeometry] = useAtom(editingProjectGeometryAtom)
+  const { current } = useContext(ProjectAreasContext)
   const editingCheckGeometry = useAtomValue(editingCheckGeometryAtom)
   const editingActionGeometry = useAtomValue(editingActionGeometryAtom)
 
@@ -28,12 +33,22 @@ export const DrawControl = () => {
     .filter((p) => !!p)
 
   const lastTwoElements = pathArray.slice(-2).join('/')
+  const projectSession = !!editingProjectGeometry && editingProjectGeometry === projectId &&
+    (lastTwoElements === `${projectId}/project` || lastTwoElements === `projects/${projectId}`)
+  useEffect(() => {
+    if (editingProjectGeometry && (!projectSession || current?.can_design === false))
+      setEditingProjectGeometry(null)
+  }, [editingProjectGeometry, projectSession, current?.can_design, setEditingProjectGeometry])
 
   if (creation && creation.projectId === projectId) return <CreateOnMap draft={creation} />
   if (!lastTwoElements) return null
 
   const last = pathArray[pathArray.length - 1]
   const secondToLast = pathArray[pathArray.length - 2]
+
+  if (projectSession && current?.project_id === projectId && current?.can_design) {
+    return <DrawControlComponent key={`project/${editingProjectGeometry}`} editingProject={editingProjectGeometry} />
+  }
 
   if (
     lastTwoElements === `${editingPlaceGeometry}/place` ||

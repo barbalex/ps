@@ -33,6 +33,7 @@ export const ownTableToFieldsTable = (
 
 // real table columns that are not in the fields table but can be styled by
 export const builtInDisplayByProperties: Record<string, string[]> = {
+  current_project_area: ['name', 'label', 'project_id'],
   observations_assigned: ['absence'],
   observations_to_assess: ['absence'],
   observations_not_to_assign: ['absence'],

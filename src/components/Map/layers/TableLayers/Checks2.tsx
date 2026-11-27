@@ -22,7 +22,7 @@ export const Checks2 = ({
   const pathParts = pathname.split('/')
   const checksIdx = pathParts.indexOf('checks')
   const checkId = checksIdx !== -1 ? pathParts[checksIdx + 1] : undefined
-  const { scopeFilter, scopeId } = useOwnLayerScope()
+  const { scopeFilter, scopeId, areaFilter } = useOwnLayerScope()
   const envelope = useViewportEnvelope()
   const res = useLiveQuery<Checks & { edit_version: string | null }>(
     `
@@ -37,7 +37,7 @@ export const Checks2 = ({
     WHERE
       checks.geometry IS NOT NULL
       AND places.parent_id IS NOT NULL
-      AND places.subproject_id ${scopeFilter}${viewportPredicate('checks.geometry')}`,
+      AND places.subproject_id ${scopeFilter}${areaFilter('checks')}${viewportPredicate('checks.geometry')}`,
     [scopeId, ...viewportParams(envelope)],
   )
   // console.log('hello Checks1, checks:', checks)

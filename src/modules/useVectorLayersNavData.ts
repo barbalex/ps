@@ -8,6 +8,7 @@ import { useIntl } from 'react-intl'
 import { filterStringFromFilter } from './filterStringFromFilter.ts'
 import { buildNavLabel } from './buildNavLabel.ts'
 import { getVectorLayerLabel } from './vectorLayerLabel.ts'
+import { useProjectLabel } from './navRollupsContext.ts'
 import { treeOpenNodesSetAtom, languageAtom } from '../store.ts'
 import type VectorLayers from '../models/public/VectorLayers.ts'
 import type PlaceLevels from '../models/public/PlaceLevels.ts'
@@ -32,6 +33,7 @@ export const useVectorLayersNavData = ({ projectId }: Props) => {
   const [openNodesSet] = useAtom(treeOpenNodesSetAtom)
   const [language] = useAtom(languageAtom)
   const location = useLocation()
+  const projectLabel = useProjectLabel(projectId)
   const { formatMessage } = useIntl()
 
   const parentArray = ['data', 'projects', projectId]
@@ -97,6 +99,7 @@ export const useVectorLayersNavData = ({ projectId }: Props) => {
             { ...r, vector_layer_id: r.id } as VectorLayers,
             language,
             placeLevels,
+            projectLabel,
           ),
           count_unfiltered: r.count_unfiltered,
           count_filtered: r.count_filtered,

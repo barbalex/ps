@@ -1,4 +1,13 @@
 {
+  "projectAreaEditDenied": "Solo i progettisti e i proprietari del progetto possono modificarne l’area.",
+  "areaFilterLabel": "Filtro per perimetro del progetto",
+  "areaFilterAll": "Tutti",
+  "areaFilterInside": "All’interno",
+  "areaFilterOutside": "All’esterno",
+  "areaFilterMissing": "Nessun perimetro di progetto definito",
+  "mapCurrentProjectArea": "Area del progetto corrente",
+  "mapNamedProjectArea": "Area del progetto {project}",
+  "hideProjectAreaDiscard": "Nascondere l’area del progetto e terminare la modifica? I disegni non completati andranno persi.",
   "mapReplaceSpeciesRules": "Sostituire le regole del filtro con questa selezione?",
   "mapAllAccessible": "Tutti i sottoprogetti accessibili",
   "versionCheckFailed": "Aggiornamento non riuscito. Puoi continuare a usare la versione attuale e riprovare.",

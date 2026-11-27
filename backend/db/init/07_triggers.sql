@@ -861,10 +861,7 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql;
 
-CREATE OR REPLACE TRIGGER vector_layers_insert_trigger
-AFTER INSERT ON vector_layers
-FOR EACH ROW
-EXECUTE PROCEDURE vector_layers_insert_trigger();
+-- Installed by 08_projectAreaLayer.sql, also on upgrades of existing clients.
 
 -- the wms_layers auto-create trigger is gone (same reason as above: the
 -- client creates layer_presentations as queued operations). Drop it on

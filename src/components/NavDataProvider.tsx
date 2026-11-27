@@ -5,6 +5,8 @@ import { useAtom } from 'jotai'
 
 import { languageAtom } from '../store.ts'
 import { filterStringFromFilter } from '../modules/filterStringFromFilter.ts'
+import { projectAreaModesAtom } from '../modules/useProjectAreaFilter.ts'
+import { andFilters, projectAreaFilter } from '../modules/projectAreaFilter.ts'
 import {
   subprojectNameSingularExpr,
   subprojectNamePluralExpr,
@@ -75,6 +77,7 @@ const subprojectArm = (
 
 export const NavDataProvider = ({ children }: { children: ReactNode }) => {
   const [language] = useAtom(languageAtom)
+  const [areaModes] = useAtom(projectAreaModesAtom)
 
   const [subprojectsFilter] = useUrlFilter('subprojects')
   const subprojectsFilterString = filterStringFromFilter(subprojectsFilter)
@@ -105,6 +108,7 @@ export const NavDataProvider = ({ children }: { children: ReactNode }) => {
 
   const resProjects = useLiveQuery<NavProjectRow>(`
     SELECT project_id, label, type, places_order_by,
+      geometry IS NOT NULL AND NOT ST_IsEmpty(geometry) AS has_project_area,
       wms_layers, vector_layers, project_reports, subproject_reports, goals,
       occurrences, taxa, charts, files_active_projects,
       project_files_in_project, project_users_in_project, units_in_project,
@@ -115,6 +119,23 @@ export const NavDataProvider = ({ children }: { children: ReactNode }) => {
       ${subprojectNamePluralExpr(language)} AS subproject_name_plural_current
     FROM projects
   `)
+
+  // The tree can show multiple projects at once. Apply each active mode to
+  // its own subprojects, not to whichever project happens to own the route.
+  const rollupAreaFilter = (table: 'places' | 'observations') => {
+    const arms = (resProjects?.rows ?? []).flatMap((row) => {
+      const mode = areaModes[row.project_id]
+      if (!row.has_project_area || !mode || mode === 'all') return []
+      const area = projectAreaFilter(row.project_id, mode)
+      const filter = table === 'places' ? area.navigationPlaces(true) : area.matches('o')
+      return [`WHEN '${row.project_id}'::uuid THEN ${filter}`]
+    })
+    if (!arms.length) return ''
+    const alias = table === 'places' ? 'places' : 'oi'
+    return `CASE (SELECT s.project_id FROM subprojects s WHERE s.subproject_id = ${alias}.subproject_id)
+      ${arms.join(' ')} ELSE TRUE END`
+  }
+  const observationsArea = rollupAreaFilter('observations')
 
   const resProjectCounts = useLiveQuery<{
     key: ProjectCountKey
@@ -182,7 +203,7 @@ export const NavDataProvider = ({ children }: { children: ReactNode }) => {
         'places',
         'places',
         'parent_id IS NULL',
-        placesFilterString || 'TRUE',
+        andFilters(placesFilterString, rollupAreaFilter('places')) || 'TRUE',
       ),
       subprojectArm(
         'subproject_reports',
@@ -204,10 +225,14 @@ export const NavDataProvider = ({ children }: { children: ReactNode }) => {
     subproject_id: string
     to_assess: number
     not_to_assign: number
+    to_assess_filtered: number
+    not_to_assign_filtered: number
   }>(`
     SELECT oi.subproject_id,
       count(*) FILTER (WHERE o.not_to_assign IS NOT TRUE AND o.place_id IS NULL)::int AS to_assess,
-      count(*) FILTER (WHERE o.not_to_assign IS TRUE AND o.place_id IS NULL)::int AS not_to_assign
+      count(*) FILTER (WHERE o.not_to_assign IS TRUE AND o.place_id IS NULL)::int AS not_to_assign,
+      count(*) FILTER (WHERE o.not_to_assign IS NOT TRUE AND o.place_id IS NULL ${observationsArea ? `AND ${observationsArea}` : ''})::int AS to_assess_filtered,
+      count(*) FILTER (WHERE o.not_to_assign IS TRUE AND o.place_id IS NULL ${observationsArea ? `AND ${observationsArea}` : ''})::int AS not_to_assign_filtered
     FROM observations o
     INNER JOIN observation_imports oi ON o.observation_import_id = oi.observation_import_id
     GROUP BY oi.subproject_id
@@ -355,11 +380,11 @@ export const NavDataProvider = ({ children }: { children: ReactNode }) => {
       map[r.subproject_id] ??= {}
       map[r.subproject_id]!.observations_to_assess = {
         count: r.to_assess,
-        filtered: r.to_assess,
+        filtered: r.to_assess_filtered,
       }
       map[r.subproject_id]!.observations_not_to_assign = {
         count: r.not_to_assign,
-        filtered: r.not_to_assign,
+        filtered: r.not_to_assign_filtered,
       }
     }
     for (const r of resFilesCounts?.rows ?? []) {

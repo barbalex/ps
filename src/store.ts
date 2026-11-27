@@ -380,8 +380,8 @@ export const mapBoundsAtom = atom<LatLngBoundsExpression | null>(null)
 // - Any spatial queries that need to know what's currently visible
 export const mapViewportBoundsAtom = atom<ViewportBounds | null>(null)
 // center and zoom are used to set the map view to a specific center and zoom level. They are set as [lat, lng] and number respectively
-export const mapCenterAtom = atomWithStorage('mapCenter', [47.4, 8.65])
-export const mapZoomAtom = atomWithStorage('mapZoom', 13)
+export const mapCenterAtom = atomWithStorage<number[] | null>('mapCenter', null, undefined, { getOnInit: true })
+export const mapZoomAtom = atomWithStorage<number | null>('mapZoom', null, undefined, { getOnInit: true })
 
 // map of id (layer.id, key) and show boolean
 export const showLocalMapAtom = atomWithStorage('showLocalMapAtom', false)
@@ -438,9 +438,24 @@ export const editingPlaceGeometryAtom = atom<string | null | false>(false)
 export const editingCheckGeometryAtom = atom<string | null | false>(false)
 // The id of the action whose geometry is currently being edited
 export const editingActionGeometryAtom = atom<string | null | false>(false)
+const editingProjectIdAtom = atom<string | null | false>(false)
+export const projectGeometryDraftAtom = atom<string | null>(null)
+export const editingProjectGeometryAtom = atom(
+  (get) => get(editingProjectIdAtom),
+  (_get, set, id: string | null | false) => {
+    if (id) {
+      set(editingPlaceGeometryAtom, null)
+      set(editingActionGeometryAtom, null)
+      set(editingCheckGeometryAtom, null)
+      set(choosingGeometryAtom, false)
+    }
+    set(editingProjectIdAtom, id)
+  },
+)
 // True when any geometry is being edited on the map
 export const drawingOnMapAtom = atom(
   (get) =>
+    !!get(editingProjectGeometryAtom) ||
     !!get(editingPlaceGeometryAtom) ||
     !!get(editingCheckGeometryAtom) ||
     !!get(editingActionGeometryAtom),

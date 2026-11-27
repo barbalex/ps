@@ -140,6 +140,20 @@ describe('propertyValueToText', () => {
 })
 
 describe('upsertVectorLayerDisplaysForVectorLayer', () => {
+  it('styles only the current project and retains its default polygon style', async () => {
+    const { rows: [layer] } = await db.query<import('../src/models/public/VectorLayers.ts').default>(
+      `SELECT * FROM vector_layers WHERE project_id = $1 AND own_table = 'current_project_area'`,
+      [ids.project],
+    )
+    const id = layer.vector_layer_id
+    await db.query(`UPDATE vector_layer_displays SET fill_color = '#123456' WHERE vector_layer_id = $1`, [id])
+    await upsert({ vectorLayer: { ...layer, display_by_property: 'project_id' } })
+    expect(await getDisplayValues(id)).toEqual([ids.project, null])
+    await upsert({ vectorLayer: { ...layer, display_by_property: null } })
+    expect((await db.query(`SELECT fill_color FROM vector_layer_displays WHERE vector_layer_id = $1`, [id])).rows)
+      .toEqual([{ fill_color: '#123456' }])
+  })
+
   it('uses the uploaded rows and preserves the styled fallback when selecting a property', async () => {
     const id = '42000000-0000-7000-8000-0000000000ff'
     const key = "Region's label"

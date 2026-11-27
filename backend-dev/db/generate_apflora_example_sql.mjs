@@ -734,6 +734,7 @@ emit(`  ON CONFLICT (project_id) DO NOTHING;`)
 emit(
   `UPDATE projects SET places_order_by = 'nr,name,flurname' WHERE project_id = ${q(PROJECT_ID)};`,
 )
+emit(`SELECT provision_project_area_layer(${q(PROJECT_ID)});`)
 
 // place level names in all four languages: the map derives its own layer
 // labels from them ('Populationen', 'Teil-Population: Kontrollen', ...) and

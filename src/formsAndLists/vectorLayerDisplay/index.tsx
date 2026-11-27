@@ -113,7 +113,7 @@ export const VectorLayerDisplay = ({
     return (
       <ErrorBoundary>
         <div className={styles.embeddedHeader}>
-          <Header autoFocusRef={autoFocusRef} />
+          <Header autoFocusRef={autoFocusRef} vectorLayerDisplayId={vectorLayerDisplayIdFromProps} />
         </div>
         <div className="form-container">
           <VectorLayerDisplayForm
@@ -129,7 +129,7 @@ export const VectorLayerDisplay = ({
   return (
     <ErrorBoundary>
       <div className="form-outer-container">
-        <Header autoFocusRef={autoFocusRef} />
+        <Header autoFocusRef={autoFocusRef} vectorLayerDisplayId={vectorLayerDisplayIdFromProps} />
         <div className="form-container">
           <VectorLayerDisplayForm
             row={row}

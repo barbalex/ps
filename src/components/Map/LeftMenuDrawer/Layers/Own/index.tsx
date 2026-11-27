@@ -6,15 +6,17 @@ import type {
   AccordionToggleEvent,
 } from '@fluentui/react-components'
 import { useAtom, atom } from 'jotai'
-import { usePGlite, useLiveQuery } from '@electric-sql/pglite-react'
+import { useLiveQuery } from '@electric-sql/pglite-react'
 
 import { ErrorBoundary } from '../../../../shared/ErrorBoundary.tsx'
 import { OwnLayer, type OwnLayerRow } from './OwnLayer.tsx'
+import { projectAreaTable, useProjectAreaLayer } from '../../../../../modules/projectAreaLayer.tsx'
+import { useUrlLayers } from '../../../../../modules/useUrlLayers.ts'
 import { getVectorLayerLabel } from '../../../../../modules/vectorLayerLabel.ts'
+import { useProjectLabel } from '../../../../../modules/navRollupsContext.ts'
 import { languageAtom } from '../../../../../store.ts'
 import layerStyles from '../index.module.css'
 import type VectorLayers from '../../../../../models/public/VectorLayers.ts'
-import type LayerPresentations from '../../../../../models/public/LayerPresentations.ts'
 import type PlaceLevels from '../../../../../models/public/PlaceLevels.ts'
 
 // what accordion items are open
@@ -27,7 +29,9 @@ export const OwnLayers = () => {
   const { projectId = '99999999-9999-9999-9999-999999999999' } =
     useParams({ strict: false })
 
-  const db = usePGlite()
+  const { available } = useProjectAreaLayer(projectId)
+  const projectLabel = useProjectLabel(projectId)
+  const { isLayerVisible } = useUrlLayers()
   // Show table-based vector layers that are not currently active
   const res = useLiveQuery(
     `
@@ -46,15 +50,16 @@ export const OwnLayers = () => {
     WHERE
       own_table IS NOT NULL
       AND project_id = $1
-      AND NOT EXISTS (
+      AND (own_table = '${projectAreaTable}' OR NOT EXISTS (
         SELECT 1
         FROM layer_presentations
         WHERE
           layer_presentations.vector_layer_id = vector_layers.vector_layer_id
           AND layer_presentations.active
-      )
+      ))
     ORDER BY
       CASE
+        WHEN own_table = '${projectAreaTable}' THEN -1
         WHEN own_table = 'observations_to_assess' THEN 0
         WHEN own_table = 'observations_not_to_assign' THEN 1
         WHEN own_table = 'places' AND own_table_level = 1 THEN 2
@@ -80,37 +85,22 @@ export const OwnLayers = () => {
   const placeLevels = placeLevelsRes?.rows ?? []
   // Attach the derived display label so children can render layer.label
   // and the existing (inactive) presentation so activating reuses it
-  const ownVectorLayers = ((res?.rows ?? []) as unknown as OwnLayerRow[]).map(
+  const ownVectorLayers = ((res?.rows ?? []) as unknown as OwnLayerRow[]).filter((layer) => {
+    if (layer.own_table !== projectAreaTable) return true
+    const presentation = layer.layer_presentations?.[0]
+    return layer.project_id === projectId && available && !!presentation && !isLayerVisible(presentation.layer_presentation_id, presentation.active)
+  }).map(
     (l) => ({
       ...l,
       layer_presentation_id: l.layer_presentations?.[0]?.layer_presentation_id,
-      label: getVectorLayerLabel(l as VectorLayers, language, placeLevels),
+      label: getVectorLayerLabel(l as VectorLayers, language, placeLevels, projectLabel),
     }),
   )
 
   const onToggleItem = (
     _event: AccordionToggleEvent,
-    { value: vectorLayerId, openItems }: AccordionToggleData<string>,
-  ) => {
-    // use setTimeout to let the child checkbox set the layers active status
-    setTimeout(async () => {
-      // fetch layerPresentation's active status
-      const res = await db.query(
-        `SELECT active FROM layer_presentations WHERE vector_layer_id = $1`,
-        [vectorLayerId],
-      )
-      const isActive: LayerPresentations['active'] | undefined = (
-        res?.rows?.[0] as LayerPresentations | undefined
-      )?.active
-      if (isActive) {
-        // if not active, remove this item
-        const newOpenItems = openItems.filter((id) => id !== vectorLayerId)
-        setOpenItems(newOpenItems)
-        return
-      }
-      setOpenItems(openItems)
-    }, 200)
-  }
+    { openItems }: AccordionToggleData<string>,
+  ) => setOpenItems(openItems)
 
   if (projectId === '99999999-9999-9999-9999-999999999999') {
     return (

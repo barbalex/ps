@@ -184,7 +184,6 @@ CREATE UNIQUE INDEX IF NOT EXISTS auth_passkeys_credential_id_idx ON auth_passke
 CREATE TYPE project_types_enum AS ENUM ('species', 'biotope');
 
 -- TODO: add crs for presentation
--- TODO: add geometry
 CREATE TABLE IF NOT EXISTS projects(
   project_id uuid PRIMARY KEY DEFAULT uuidv7(),
   account_id uuid DEFAULT NULL REFERENCES accounts(account_id) ON DELETE CASCADE ON UPDATE CASCADE DEFERRABLE INITIALLY DEFERRED,
@@ -1856,7 +1855,7 @@ CREATE TYPE vector_layer_types_enum AS ENUM (
 CREATE TYPE vector_layer_own_tables_enum AS ENUM (
   'places', 'actions', 'checks',
   'observations_assigned', 'observations_assigned_lines',
-  'observations_to_assess', 'observations_not_to_assign'
+  'observations_to_assess', 'observations_not_to_assign', 'current_project_area'
 );
 
 CREATE TABLE IF NOT EXISTS vector_layers(

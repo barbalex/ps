@@ -3,6 +3,7 @@ import { useLayoutEffect, useState } from 'react'
 import { useElementSize } from '../../modules/useElementSize.ts'
 
 import { Map } from './Map.tsx'
+import { ProjectAreas } from './ProjectAreas.tsx'
 import { RightMenuDrawer } from './RightMenuDrawer/index.tsx'
 import { LeftMenuDrawer } from './LeftMenuDrawer/index.tsx'
 
@@ -38,6 +39,7 @@ export const MapContainer = () => {
       className={styles.container}
       ref={containerRef}
     >
+      <ProjectAreas>
       <LeftMenuDrawer
         // undefined until measured: only for the first commit
         isNarrow={isNarrow ?? isNarrowAtMount}
@@ -47,6 +49,7 @@ export const MapContainer = () => {
       {/* keeps the delayed value: the info drawer fixes its size at mount
           and has always mounted with the one for wide maps */}
       <RightMenuDrawer isNarrow={isNarrow ?? false} />
+      </ProjectAreas>
     </div>
   )
 }

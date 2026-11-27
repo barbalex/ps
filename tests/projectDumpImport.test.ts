@@ -121,4 +121,21 @@ describe('project dump import through apply_operations', () => {
       importProjectDump({ db: source.db, dump, accountId: source.ids.account }),
     ).rejects.toMatchObject({ reason: 'exists' })
   })
+
+  it('keeps the provisioned area layer when restoring a pre-boundary dump', async () => {
+    const project = source.ids.project
+    await source.db.query(`DELETE FROM vector_layers WHERE project_id = $1 AND own_table = 'current_project_area'`, [project])
+    await server.db.query('DELETE FROM projects WHERE project_id = $1', [project])
+    const { parts } = await buildProjectDump(source.db, project)
+    await importProjectDump({
+      db: server.db,
+      dump: parseProjectDump(parts.join('')),
+      accountId: source.ids.account,
+    })
+    expect((await server.db.query(
+      `SELECT active FROM vector_layers JOIN vector_layer_displays USING (vector_layer_id)
+       JOIN layer_presentations USING (project_id, vector_layer_id)
+       WHERE project_id = $1 AND own_table = 'current_project_area'`, [project],
+    )).rows).toEqual([{ active: true }])
+  })
 })

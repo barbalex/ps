@@ -1,10 +1,12 @@
-import { useEffect, useRef, useCallback } from 'react'
+import { useContext, useEffect, useRef, useCallback } from 'react'
 import { useMap, useMapEvents } from 'react-leaflet'
 import type { LatLngTuple, ZoomPanOptions } from 'leaflet'
 import { useAtomValue, useSetAtom } from 'jotai'
 
 import { mapBoundsAtom, mapViewportBoundsAtom } from '../../store.ts'
 import { useUrlMapViewport } from '../../modules/useUrlMapViewport.ts'
+import { ProjectAreasContext } from '../../modules/projectAreas.ts'
+import { extentFromRow, extentToBoundsWithMargin } from '../../modules/geoQueries.ts'
 
 // Problem: when setting bounds from a form query, map is not available
 // Solution: use BoundsListener to set bounds from here where map is available
@@ -13,8 +15,10 @@ export const BoundsListener = () => {
   const setMapViewportBounds = useSetAtom(mapViewportBoundsAtom)
   // url params win, localStorage atoms are the fallback (see the hook);
   // panes update the url on moveend, so this view is linkable
-  const { center: currentCenter, zoom: currentZoom, saveViewport } =
+  const { center: currentCenter, zoom: currentZoom, saveViewport, hasViewport } =
     useUrlMapViewport()
+  const { current } = useContext(ProjectAreasContext)
+  const initialArea = hasViewport ? undefined : current
   const map = useMap()
 
   const onMoveOrZoom = useCallback(() => {
@@ -111,6 +115,14 @@ export const BoundsListener = () => {
         return
       }
 
+      const extent = extentFromRow(initialArea)
+      if (extent && zoomCommandsRef.current === 0) {
+        map.fitBounds(extentToBoundsWithMargin(extent), { animate: false })
+        isInitializingRef.current = false
+        saveCenterAndZoom()
+        return
+      }
+
       // the retries below re-assert currentZoom a little later; a zoom command
       // applied in the meantime (a form's "zoom to" landing just after the map
       // mounted) has moved the map on purpose and must not be undone by them
@@ -158,7 +170,7 @@ export const BoundsListener = () => {
     })
 
     onMoveOrZoomRef.current()
-  }, [map, currentCenter, currentZoom, saveCenterAndZoom])
+  }, [map, currentCenter, currentZoom, saveCenterAndZoom, initialArea])
 
   return null
 }

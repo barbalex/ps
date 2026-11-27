@@ -1,12 +1,16 @@
 import * as fluentUiReactComponents from '@fluentui/react-components'
 const { Tooltip, ToolbarToggleButton } = fluentUiReactComponents
 import { FaDrawPolygon } from 'react-icons/fa'
-import { useAtom } from 'jotai'
+import { useAtom, useSetAtom } from 'jotai'
 import { useIntl } from 'react-intl'
 import { useLocation } from '@tanstack/react-router'
+import { useContext } from 'react'
+import { ProjectAreasContext } from '../../../../modules/projectAreas.ts'
+import { mapCreationAtom } from '../../../../modules/mapCreation.ts'
 
 import {
   editingPlaceGeometryAtom,
+  editingProjectGeometryAtom,
   editingCheckGeometryAtom,
   editingActionGeometryAtom,
 } from '../../../../store.ts'
@@ -15,6 +19,9 @@ import { useUrlPanes } from '../../../../modules/useUrlPanes.ts'
 import styles from './index.module.css'
 
 export const EditingGeometryButton = () => {
+  const { current } = useContext(ProjectAreasContext)
+  const setCreation = useSetAtom(mapCreationAtom)
+  const [editingProject, setEditingProject] = useAtom(editingProjectGeometryAtom)
   const [editingPlaceGeometry, setEditingPlaceGeometry] = useAtom(
     editingPlaceGeometryAtom,
   )
@@ -37,9 +44,12 @@ export const EditingGeometryButton = () => {
   let table: string | null = null
   let id: string | null = null
 
-  if (last === 'place' || last === 'check' || last === 'action') {
+  if (last === 'project' || last === 'place' || last === 'check' || last === 'action') {
     table = last
     id = secondToLast
+  } else if (secondToLast === 'projects') {
+    table = 'project'
+    id = last
   } else if (secondToLast === 'places') {
     table = 'place'
     id = last
@@ -51,10 +61,11 @@ export const EditingGeometryButton = () => {
     id = last
   }
 
-  const isEditable = table !== null
+  const isEditable = table !== null && (table !== 'project' || (current?.project_id === id && current.can_design))
   const { formatMessage } = useIntl()
 
   const isActive =
+    (table === 'project' && editingProject === id) ||
     (table === 'place' && editingPlaceGeometry === id) ||
     (table === 'check' && editingCheckGeometry === id) ||
     (table === 'action' && editingActionGeometry === id)
@@ -69,6 +80,10 @@ export const EditingGeometryButton = () => {
     }
 
     switch (table) {
+      case 'project':
+        if (enabling) setCreation(null)
+        setEditingProject(enabling ? id : null)
+        break
       case 'place':
         setEditingPlaceGeometry(enabling ? id : null)
         break

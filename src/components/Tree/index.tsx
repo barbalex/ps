@@ -11,6 +11,7 @@ import { isEqual } from 'es-toolkit'
 import { Node } from './Node.tsx'
 import { AbsenzBadge } from '../shared/AbsenzBadge.tsx'
 import { Editing } from './Project/Editing.tsx'
+import { ProjectAreaFilter } from '../shared/ProjectAreaFilter.tsx'
 import { Registrar } from './virtual/Registrar.tsx'
 import { DeepLinkPrefetcher } from './virtual/DeepLinkPrefetcher.tsx'
 import { useVisibleTreeRows } from './virtual/useVisibleTreeRows.ts'
@@ -256,8 +257,13 @@ export const Tree = () => {
                 toParams={registered.toParams}
                 onClickButton={onClickButton}
                 sibling={
-                  registered.siblingType === 'editing' ?
-                    <Editing projectId={ownArray[2] ?? ''} />
+                  registered.descriptor?.type === 'project' ?
+                    <>
+                      <ProjectAreaFilter projectId={ownArray[2] ?? ''} indicator />
+                      {registered.siblingType === 'editing' && (
+                        <Editing projectId={ownArray[2] ?? ''} />
+                      )}
+                    </>
                   : undefined
                 }
               />

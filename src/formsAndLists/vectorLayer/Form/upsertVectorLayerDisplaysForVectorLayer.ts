@@ -68,6 +68,22 @@ export const upsertVectorLayerDisplaysForVectorLayer = async ({
 
   const projectId = vectorLayer.project_id
   const table = vectorLayer.own_table
+  if (table === 'current_project_area') {
+    const field = vectorLayer.display_by_property
+    const id = vectorLayer.vector_layer_id
+    if (!field) return clearVectorLayerDisplaysByValue(id)
+    if (!builtInDisplayByProperties.current_project_area.includes(field))
+      throw new Error(`Unknown project area property: ${field}`)
+    const { rows } = await db.query<{ value: string | null }>(
+      `SELECT ${field}::text AS value FROM projects WHERE project_id = $1`,
+      [projectId],
+    )
+    return syncVectorLayerDisplaysForValues({
+      vectorLayerId: id,
+      values: [...new Set([null, ...rows.map(({ value }) => value)])],
+      removeVanished: true,
+    })
+  }
   // fields are stored per real table, not per own_table view
   // (observation layers style the observations table)
   const { tableName, level: fieldsLevel } = ownTableToFieldsTable(
