@@ -2693,6 +2693,9 @@
   "pdExportTitle": {
     "defaultMessage": "In SQL-Dumpdatei exportieren"
   },
+  "pdFormatMenu": {
+    "defaultMessage": "Projekt exportieren"
+  },
   "pdImportDesc": {
     "defaultMessage": "Die Datei muss ein mit dieser App exportierter Projekt-Dump sein (.sql). Das Projekt wird mit seinen ursprünglichen IDs auf den Server geladen und dem gewählten Konto zugeordnet. Zugriffsrechte werden nicht übernommen: Sie werden Eigentümer:in."
   },
@@ -2707,6 +2710,9 @@
   },
   "pdInterruptedTitle": {
     "defaultMessage": "Import unterbrochen"
+  },
+  "pdMissingReferences": {
+    "defaultMessage": "{count} Verweise zeigen auf Datensätze ausserhalb dieses lokalen SQLite-Exports."
   },
   "pfBGqS": {
     "defaultMessage": "Feldtauglich"

@@ -1,4 +1,5 @@
-import { describe, it, expect, beforeAll, afterAll } from 'vitest'
+import { describe, it, expect, beforeAll, afterAll, vi } from 'vitest'
+import { processPdfJob, setupPdfJobs } from '../backend/auth/pdfThumbnails.mjs'
 
 import {
   effectiveOfflineFilesSql,
@@ -13,7 +14,8 @@ import { createTestDb, type TestFixture } from './helpers/createTestDb.ts'
 
 let fixture: TestFixture
 
-const uuid = (n: number) => `00000000-0000-7000-8000-${String(n).padStart(12, '0')}`
+const uuid = (n: number) =>
+  `00000000-0000-7000-8000-${String(n).padStart(12, '0')}`
 const cdnUrl = (n: number) => `https://ucarecdn.com/${uuid(n)}/`
 
 beforeAll(async () => {
@@ -122,6 +124,7 @@ describe('planReconcile', () => {
     url: cdnUrl(n),
     size,
     mimetype: 'image/png',
+    preview_uuid: null,
   })
 
   it('plans downloads for missing urls and deletions for orphaned cache entries', () => {
@@ -135,7 +138,10 @@ describe('planReconcile', () => {
     expect(plan.statuses[uuid(3001)]).toBe('downloading')
     expect(plan.statuses[uuid(3002)]).toBe('too-large')
     expect(plan.toDownload).toEqual([
-      { fileId: uuid(3001), urls: urlsOfOfflineFile(cdnUrl(3001), 'image/png') },
+      {
+        fileId: uuid(3001),
+        urls: urlsOfOfflineFile(cdnUrl(3001), 'image/png'),
+      },
     ])
     // entries of files that are no longer (or never were) effective
     expect(plan.toDelete).toEqual([
@@ -153,6 +159,7 @@ describe('planReconcile', () => {
           url: null,
           size: null,
           mimetype: null,
+          preview_uuid: null,
         },
         file(3002),
       ],
@@ -189,7 +196,89 @@ describe('planReconcile', () => {
   })
 })
 
+describe('backend PDF conversions', () => {
+  it('resumes the saved token and publishes one finished UUID for both copies, never the provisional UUID', async () => {
+    const { db } = fixture
+    await db.exec(setupPdfJobs)
+    const source = uuid(8001),
+      preview = uuid(8002)
+    await db.query(
+      `INSERT INTO files(uuid,mimetype) VALUES ($1,'application/pdf'),($1,'application/pdf')`,
+      [source],
+    )
+    const request = vi
+      .fn()
+      .mockResolvedValueOnce({ result: [{ token: 121, uuid: preview }] })
+      .mockResolvedValueOnce({
+        status: 'processing',
+        result: { uuid: preview },
+      })
+      .mockResolvedValueOnce({ status: 'finished', result: { uuid: preview } })
+    await processPdfJob(db, request)
+    const poll = async () => {
+      await db.query(
+        'UPDATE pdf_thumbnails.jobs SET next_check=now() WHERE uuid=$1',
+        [source],
+      )
+      await processPdfJob(db, request)
+    }
+    await poll()
+    const previews = () =>
+      db
+        .query<{ preview_uuid: string | null }>(
+          'SELECT preview_uuid FROM files WHERE uuid=$1',
+          [source],
+        )
+        .then((r) => r.rows.map((f) => f.preview_uuid))
+    expect(await previews()).toEqual([null, null])
+    await poll()
+    expect(await previews()).toEqual([preview, preview])
+    expect(await processPdfJob(db, request)).toBe(false)
+    expect(request.mock.calls).toEqual([
+      [
+        '/convert/document/',
+        { paths: [`${source}/document/-/format/jpg/-/page/1/`], store: '1' },
+      ],
+      ['/convert/document/status/121/'],
+      ['/convert/document/status/121/'],
+    ])
+  })
+
+  it('does not resubmit an ambiguous POST or publish a broken thumbnail', async () => {
+    const { db } = fixture
+    await db.exec(setupPdfJobs)
+    await db.query(
+      `INSERT INTO files(uuid,mimetype) VALUES ($1,'application/pdf')`,
+      [uuid(8003)],
+    )
+    const request = vi.fn().mockRejectedValue(new Error('timeout'))
+    await expect(processPdfJob(db, request)).rejects.toThrow(
+      'submission not confirmed',
+    )
+    expect(await processPdfJob(db, request)).toBe(false)
+    expect(request).toHaveBeenCalledTimes(1)
+  })
+})
+
 describe('url helpers', () => {
+  it('adds just the converted thumbnail when an already-cached PDF gains a preview', () => {
+    const url = `https://example.ucarecd.net/${uuid(1)}/`
+    const file = {
+      file_id: uuid(10),
+      uuid: uuid(1),
+      url,
+      size: 12,
+      mimetype: 'application/pdf',
+      preview_uuid: uuid(2),
+    }
+    expect(urlsOfOfflineFile(url, file.mimetype)).toEqual([url])
+    expect(planReconcile([file], [url], true).toDownload).toEqual([
+      {
+        fileId: file.file_id,
+        urls: [offlineThumbUrl(`https://example.ucarecd.net/${uuid(2)}/`)],
+      },
+    ])
+  })
   it('builds the fixed thumbnail and preview transforms', () => {
     expect(offlineThumbUrl(cdnUrl(1))).toBe(
       `${cdnUrl(1)}-/resize/x50/-/format/auto/-/quality/smart/`,

@@ -99,7 +99,7 @@ export const useProjectsNavData = (params?: Props) => {
         count_filtered AS (SELECT count(*) FROM projects${isFiltered ? ` WHERE ${filterString}` : ''})
       SELECT
         project_id AS id,
-        label,
+        coalesce(nullif(label, ''), nullif(name, ''), project_id::text) AS label,
         count_unfiltered.count AS count_unfiltered,
         count_filtered.count AS count_filtered
       FROM projects, count_unfiltered, count_filtered

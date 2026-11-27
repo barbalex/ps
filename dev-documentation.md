@@ -964,6 +964,25 @@ Manual equivalent for a single file: `APF2_APPLY_LATER=1
 npm run apflora:generate`, then psql the file with `SET electric.syncing TO
 'true'` first (the write-permission triggers otherwise reject the writes).
 
+### PDF attachment thumbnails
+
+To enable conversion, set `UPLOADCARE_PUBLIC_KEY`
+and `UPLOADCARE_SECRET_KEY` in the auth service's backend environment (never
+`VITE_*`) and recreate the auth container. Use the same Uploadcare project as
+the uploader; it must support [document conversion](https://uploadcare.com/docs/transformations/file-conversion/).
+Enabling this also backfills existing PDFs without a preview and can incur
+conversion/storage charges. No original PDF is uploaded again. Until page one
+is ready the list shows a PDF icon; offline files keep the original and the
+same thumbnail URL used in the list.
+
+The worker creates a private `pdf_thumbnails.jobs` table at startup, records
+the status token, and resumes polling across restarts. On success it sets
+`files.preview_uuid`. Multiple rows for one Uploadcare UUID share one result.
+On a rejected or ambiguous submission or terminal conversion error, check the
+auth log and Uploadcare job state before retrying: removing that source UUID's
+job row permits another billable submission. No provider keys are needed
+for development with conversions disabled.
+
 ### Project dumps (export / import)
 
 A project can be moved as one SQL file — between installations, as a backup,
@@ -973,11 +992,20 @@ or to restore a deleted project — with its original ids.
   order, `projectTableWhere()` builds each table's project scope). Access
   rows (`project_users`, `*_roles`) are part of a dump; history tables,
   global catalogs and account-scoped fields are not.
-- **In the app:** project header → "Export to SQL dumpfile" writes the
+- **SQLite snapshot:** project header → “Export project” → “SQLite (.sqlite)”
+  downloads a database for analysis in SQLite tools, not for in-app restore.
+  It uses the same project tables and local row scope as the SQL dump, including
+  empty tables, and materializes generated labels. UUIDs, dates, JSON and exact
+  decimals are text, geometries are GeoJSON text, file bytes are BLOBs, and
+  foreign keys between exported tables are declared. References to excluded global
+  tables keep their UUID values without a constraint. If a referenced row is
+  missing from the locally synced project, the export warns rather than dropping data.
+- **SQL restore format:** project header → “Export project” → "Export to SQL dumpfile" writes the
   locally synced rows (`src/modules/projectDump/exportProjectDump.ts`) as one
   `INSERT … SELECT … FROM jsonb_populate_recordset(NULL::table, $ps_dump$[…]$ps_dump$)`
   statement per table chunk — valid SQL _and_ parseable without a SQL
-  parser (`parseProjectDump.ts`). Projects list → "Import from SQL dumpfile"
+  parser (`parseProjectDump.ts`). The projects list has no import/export controls;
+  use the restore script below. The underlying in-app import implementation
   uploads the rows to the server through `apply_operations` in FK order
   (`importProjectDump.ts`): the project row first (attached to the chosen
   account; the owner trigger grants the importer the `own` role), then
@@ -1022,6 +1050,10 @@ area to existing PGlite databases without resetting their sync data. Both
 spatial filters and the three project-level quality controls use
 `project_area_matches`: coverage includes the perimeter, partial coverage
 counts as outside, and active modes exclude missing or empty geometries.
+The project header's area-filter button opens All / Inside / Outside. In
+the projects list, choose the project first; the button is highlighted if
+any listed project has an active area filter. Both menus use the same
+per-project setting as the map drawer and the tree.
 
 Vector layers with `type = 'own'` draw the project's own data tables on the
 map: `places`, `actions`, `checks` and the observation tables (`observations_assigned`,

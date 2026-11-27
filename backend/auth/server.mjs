@@ -7,6 +7,7 @@ import { toNodeHandler, fromNodeHeaders } from 'better-auth/node'
 import { hashPassword } from '@better-auth/utils/password'
 import { auth, pool } from './auth.mjs' // Your configured Better Auth instance
 import { authorizeShapeRequest } from './shapeDefinitions.mjs'
+import { startPdfThumbnails } from './pdfThumbnails.mjs'
 
 const app = express()
 
@@ -601,6 +602,7 @@ const startPreviewUserProvisioning = () => {
 
 app.listen(port, () => {
   console.log(`Auth app listening on port ${port}`)
+  startPdfThumbnails(pool)
   startPreviewUserProvisioning()
 })
 

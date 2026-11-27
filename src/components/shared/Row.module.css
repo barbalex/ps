@@ -58,6 +58,8 @@
 }
 
 .imgDiv {
+  display: grid;
+  place-items: center;
   flex-basis: 50px;
   flex-grow: 0;
   background-color: rgba(0, 0, 0, 0.05);

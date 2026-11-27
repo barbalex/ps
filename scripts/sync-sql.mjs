@@ -19,6 +19,7 @@ const frontendModulesDir = path.join(repoRoot, 'src', 'modules')
 // shared between the auth server (shape request authorization) and the
 // client (shape subscriptions): [source, [targets...]]
 const sharedAuthMappings = [
+  ['pdfThumbnails.mjs', [path.join(backendDevAuthDir, 'pdfThumbnails.mjs')]],
   [
     'shapeDefinitions.mjs',
     [

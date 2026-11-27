@@ -10,6 +10,7 @@ type Props = {
   to: string
   onClick?: () => void
   imgSrc?: string
+  imgPlaceholder?: React.ReactNode
   lastHasImages?: boolean
   onDelete?: () => void | Promise<unknown>
   isActive?: boolean
@@ -20,6 +21,7 @@ export const Row = ({
   to,
   onClick,
   imgSrc,
+  imgPlaceholder,
   lastHasImages = false,
   onDelete,
   isActive = false,
@@ -135,7 +137,7 @@ export const Row = ({
             height="50"
           />
         ) : lastHasImages ? (
-          <div onClick={onClickImg} className={styles.imgDiv} />
+          <div onClick={onClickImg} className={styles.imgDiv}>{imgPlaceholder}</div>
         ) : (
           <div />
         )}

@@ -19,18 +19,30 @@ export const offlineThumbUrl = (url: string): string =>
 export const offlinePreviewUrl = (url: string): string =>
   `${url}-/preview/1600x1600/-/format/auto/-/quality/smart/`
 
-// Thumb and preview are image transforms: Uploadcare rejects them (400) for
-// every other mimetype (text, pdf, office documents), which would keep the
-// file's status on downloading forever and re-attempt both URLs on every
-// reconcile. Non-image files render from their plain URL (DocViewer, pdf
-// object embed), so that is the only URL they need offline.
+export const fileThumbnailUrl = (
+  url?: string | null,
+  mimetype?: string | null,
+  previewUuid?: string | null,
+) => {
+  if (!url) return undefined
+  if (mimetype?.includes('image')) return offlineThumbUrl(url)
+  if (mimetype === 'application/pdf' && previewUuid && uuidFromUrl(url))
+    return offlineThumbUrl(new URL(`/${previewUuid}/`, url).href)
+  return undefined
+}
+
 export const urlsOfOfflineFile = (
   url: string,
   mimetype?: string | null,
-): string[] =>
-  mimetype?.includes('image') ?
-    [offlineThumbUrl(url), offlinePreviewUrl(url), url]
-  : [url]
+  previewUuid?: string | null,
+): string[] => {
+  const thumb = fileThumbnailUrl(url, mimetype, previewUuid)
+  return [
+    ...(thumb ? [thumb] : []),
+    ...(mimetype?.includes('image') ? [offlinePreviewUrl(url)] : []),
+    url,
+  ]
+}
 
 // the Uploadcare cdnUrl is https://ucarecdn.com/<uuid>/ (classic) or
 // https://<project>.ucarecd.net/<uuid>/ (current delivery domain): the uuid
@@ -42,7 +54,7 @@ export const uuidFromUrl = (url: string): string | null =>
 
 export type EffectiveOfflineFile = Pick<
   Files,
-  'file_id' | 'uuid' | 'url' | 'size' | 'mimetype'
+  'file_id' | 'uuid' | 'url' | 'size' | 'mimetype' | 'preview_uuid'
 >
 
 // Effectively offline = the project gate (projects.files_offline) is on AND
@@ -53,7 +65,7 @@ export type EffectiveOfflineFile = Pick<
 // Files attached directly to a project or subproject have no table flag;
 // only their own mark applies.
 export const effectiveOfflineFilesSql = `
-  SELECT t.file_id, t.uuid, t.url, t.size, t.mimetype
+  SELECT t.file_id, t.uuid, t.url, t.size, t.mimetype, t.preview_uuid
   FROM (
     SELECT
       f.file_id,
@@ -61,6 +73,7 @@ export const effectiveOfflineFilesSql = `
       f.url,
       f.size,
       f.mimetype,
+      f.preview_uuid,
       f.offline,
       CASE
         WHEN f.place_id IS NOT NULL THEN pl1.place_files_offline
@@ -108,12 +121,7 @@ export const downloadUrlIntoCache = async (
 // pure status computation over the rows the manager reconciled: what the
 // UI should show per file before/without any download work
 export type OfflineFileStatus =
-  | 'queued'
-  | 'downloading'
-  | 'cached'
-  | 'error'
-  | 'too-large'
-  | 'no-url'
+  'queued' | 'downloading' | 'cached' | 'error' | 'too-large' | 'no-url'
 
 export type ReconcilePlan = {
   // per-file status to show immediately
@@ -133,7 +141,7 @@ export const planReconcile = (
   const urlsByFile = new Map<string, string[]>()
   for (const row of rows) {
     if (!row.url) continue
-    const urls = urlsOfOfflineFile(row.url, row.mimetype)
+    const urls = urlsOfOfflineFile(row.url, row.mimetype, row.preview_uuid)
     for (const url of urls) desiredUrls.add(url)
     urlsByFile.set(row.file_id, urls)
   }

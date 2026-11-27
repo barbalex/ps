@@ -1,4 +1,6 @@
 {
+  "pdFormatMenu": "Export project",
+  "pdMissingReferences": "{count} references point to records outside this local SQLite export.",
   "geometryExport": "Export geometries",
   "geometryExportEmpty": "This list contains no geometries.",
   "geometryImport": "Import geometries",
