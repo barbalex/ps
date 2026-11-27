@@ -1,4 +1,4 @@
-import { useAtom, useSetAtom } from 'jotai'
+import { useSetAtom } from 'jotai'
 import { useIntl } from 'react-intl'
 import {
   Button,
@@ -8,11 +8,9 @@ import {
   MenuTrigger,
   MenuPopover,
   MenuList,
-  MenuItem,
   MenuItemRadio,
 } from '@fluentui/react-components'
 import { MdFilterAlt } from 'react-icons/md'
-import { useNavRollups } from '../../modules/navRollupsContext.ts'
 
 import {
   projectAreaModesAtom,
@@ -46,71 +44,36 @@ const useFilterLabels = () => {
   return { label, options, missing }
 }
 
-export function ProjectAreaFilterMenu(
-  props:
-    | { projectId: string }
-    | { projects: { id: string; label: string | null }[] },
-) {
-  const [modes, setModes] = useAtom(projectAreaModesAtom)
-  const { projectRow } = useNavRollups()
+export function ProjectAreaFilterMenu({ projectId }: { projectId: string }) {
+  const { available, mode } = useProjectAreaFilter(projectId)
+  const setModes = useSetAtom(projectAreaModesAtom)
   const { label, options, missing } = useFilterLabels()
-  const projects =
-    'projects' in props ?
-      props.projects
-    : [{ id: props.projectId, label: null }]
-  const available = (id: string) => !!projectRow(id)?.has_project_area
-  const enabled = projects.some((p) => available(p.id))
-  const active = projects.some(
-    (p) => available(p.id) && (modes[p.id] ?? 'all') !== 'all',
-  )
-  const menuFor = (id: string) => (
-    <MenuList checkedValues={{ area: [modes[id] ?? 'all'] }}>
-      {areaModes.map((mode) => (
-        <MenuItemRadio
-          key={mode}
-          name="area"
-          value={mode}
-          onClick={() => setModes((prev) => ({ ...prev, [id]: mode }))}
-        >
-          {options[mode]}
-        </MenuItemRadio>
-      ))}
-    </MenuList>
-  )
+  const active = mode !== 'all'
   return (
     <Menu>
       <MenuTrigger disableButtonEnhancement>
         <Button
           aria-label={label}
-          title={enabled ? label : missing}
+          title={available ? label : missing}
           aria-pressed={active}
           appearance={active ? 'primary' : 'secondary'}
           icon={<MdFilterAlt />}
-          disabled={!enabled}
+          disabled={!available}
         />
       </MenuTrigger>
       <MenuPopover>
-        {'projectId' in props ?
-          menuFor(props.projectId)
-        : <MenuList>
-            {projects.map(({ id, label: projectLabel }) => (
-              <Menu key={id}>
-                <MenuTrigger disableButtonEnhancement>
-                  <MenuItem
-                    disabled={!available(id)}
-                    title={available(id) ? undefined : missing}
-                  >
-                    {projectLabel || id}
-                    {available(id) && modes[id] && modes[id] !== 'all' ?
-                      `: ${options[modes[id]]}`
-                    : ''}
-                  </MenuItem>
-                </MenuTrigger>
-                <MenuPopover>{menuFor(id)}</MenuPopover>
-              </Menu>
-            ))}
-          </MenuList>
-        }
+        <MenuList checkedValues={{ area: [mode] }}>
+          {areaModes.map((value) => (
+            <MenuItemRadio
+              key={value}
+              name="area"
+              value={value}
+              onClick={() => setModes((prev) => ({ ...prev, [projectId]: value }))}
+            >
+              {options[value]}
+            </MenuItemRadio>
+          ))}
+        </MenuList>
       </MenuPopover>
     </Menu>
   )

@@ -4,7 +4,6 @@ import { useAddProject } from '../modules/useAddProject.ts'
 import { ListHeader } from '../components/ListHeader.tsx'
 import { Row } from '../components/shared/Row.tsx'
 import { FilterButton } from '../components/shared/FilterButton.tsx'
-import { ProjectAreaFilterMenu } from '../components/shared/ProjectAreaFilter.tsx'
 import { Loading } from '../components/shared/Loading.tsx'
 import { useProjectsNavData } from '../modules/useProjectsNavData.ts'
 
@@ -30,12 +29,7 @@ export const Projects = () => {
         label={label}
         nameSingular={nameSingular}
         addRow={add}
-        menus={
-          <>
-            <ProjectAreaFilterMenu projects={navs} />
-            <FilterButton isFiltered={isFiltered} />
-          </>
-        }
+        menus={<FilterButton isFiltered={isFiltered} />}
       />
       <div className="list-container">
         {loading ? (
