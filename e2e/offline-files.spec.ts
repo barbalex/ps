@@ -92,6 +92,32 @@ async function ensureE2eData() {
 }
 
 test.describe('offline files', () => {
+  test('a synced PDF preview replaces the icon and joins the original in the offline cache', async ({page}) => {
+    await ensureE2eData()
+    const id = '61000000-0000-7000-8000-000000000007'
+    const preview = '61000000-0000-7000-8000-000000000008'
+    const origin = 'https://test.ucarecd.net'
+    const url = `${origin}/${id}/`
+    const thumb = `${origin}/${preview}/-/resize/x50/-/format/auto/-/quality/smart/`
+    await page.route(`${origin}/**`, route => route.request().url() === thumb
+      ? route.fulfill({ path: 'public/icon_192.png', headers: {'Access-Control-Allow-Origin':'*'} })
+      : route.fulfill({ status: route.request().url() === url ? 200 : 404, contentType:'application/pdf', body:'%PDF-1.4', headers:{'Access-Control-Allow-Origin':'*'} }))
+    try {
+      psql(`SET electric.syncing=true; INSERT INTO files(file_id,project_id,subproject_id,place_id,name,url,uuid,mimetype,size,offline)
+        VALUES ('${id}','${E2E_PROJECT_ID}','${E2E_SUBPROJECT_ID}','${E2E_PLACE_ID}','thumbnail.pdf','${url}','${id}','application/pdf',8,true)`)
+      await login(page,E2E_EMAIL,E2E_PASSWORD)
+      await page.goto(FILES_URL)
+      const row = page.locator('.row').filter({hasText:'thumbnail.pdf'})
+      await expect(row.locator('[aria-label="PDF"]')).toBeVisible({timeout:60_000})
+      await expect.poll(()=>cacheKeys(page)).toContain(url)
+      psql(`SET electric.syncing=true; UPDATE files SET preview_uuid='${preview}' WHERE file_id='${id}'`)
+      await expect(row.locator('img')).toHaveAttribute('src',thumb)
+      await expect.poll(()=>cacheKeys(page)).toEqual(expect.arrayContaining([url,thumb]))
+      await row.locator('img').click()
+      await expect(page.locator('object[type="application/pdf"]')).toHaveAttribute('data',url)
+    } finally { psql(`SET electric.syncing=true; DELETE FROM files WHERE file_id='${id}'`) }
+  })
+
   test('a text/plain attachment previews and downloads its original contents', async ({ page }) => {
     await ensureE2eData()
     const id = '61000000-0000-7000-8000-000000000006'

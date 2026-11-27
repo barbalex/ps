@@ -25,6 +25,7 @@ type NavDataOpen = {
   label: string
   url: string
   mimetype: string
+  preview_uuid: string | null
   count_unfiltered?: number
   count_filtered?: number
 }[]
@@ -86,6 +87,7 @@ export const useFilesNavData = ({
         label,
         url,
         mimetype,
+        preview_uuid,
         count_unfiltered.count AS count_unfiltered,
         count_filtered.count AS count_filtered
       FROM files, count_unfiltered, count_filtered

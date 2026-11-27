@@ -3,7 +3,8 @@ import { useLiveQuery } from '@electric-sql/pglite-react'
 import { useIntl } from 'react-intl'
 import { useAtomValue } from 'jotai'
 
-import { offlinePreviewUrl } from '../../modules/offlineFiles.ts'
+import { fileThumbnailUrl, offlinePreviewUrl } from '../../modules/offlineFiles.ts'
+import { MdPictureAsPdf } from 'react-icons/md'
 import { offlineFilesStatusAtom } from '../../store.ts'
 import { TextFieldInactive } from '../../components/shared/TextFieldInactive.tsx'
 import { Jsonb } from '../../components/shared/Jsonb/index.tsx'
@@ -37,9 +38,19 @@ export const FileForm = ({
   // one cached on the device — offline, only cached URLs render
   const isEffectivelyOffline = row.file_id in useAtomValue(offlineFilesStatusAtom)
 
+  const pdfThumb = row.mimetype === 'application/pdf' && fileThumbnailUrl(row.url, row.mimetype, row.preview_uuid)
   const content = (
     <div className="form-container">
-      {(row.mimetype?.includes('image') || row.mimetype?.includes('pdf')) &&
+      {row.mimetype === 'application/pdf' && (
+        <div>
+          {pdfThumb ? (
+            <img src={pdfThumb} alt={row.name ?? 'PDF'} height={50} />
+          ) : (
+            <MdPictureAsPdf aria-label="PDF" size={24} />
+          )}
+        </div>
+      )}
+      {row.mimetype?.includes('image') &&
         row.url &&
         width && (
           <img

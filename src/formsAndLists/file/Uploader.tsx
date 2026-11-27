@@ -181,51 +181,6 @@ export const Uploader = ({
     // clear the uploader or it will show the last uploaded file when opened next time
     api?.removeAllFiles?.()
 
-    return
-
-    // TODO: if is not an image, create a thumbnail
-    // https://uploadcare.com/docs/transformations/document-conversion/#thumbnails
-    // TODO: oops. as secret key is exposed, this should be done on a server
-    // So on the server:
-    // - watch file inserts
-    // - if file is not an image, create a thumbnail
-    // - then update the file with preview_uuid
-    // try {
-    //   await axios({
-    //     method: 'POST',
-    //     url: 'https://api.uploadcare.com/convert/document/',
-    //     data: {
-    //       paths: [`${event.detail.uuid}/document/-/format/jpeg/-/page/1/`],
-    //       store: 1,
-    //     },
-    //     params,
-    //     headers: {
-    //       'Content-Type': 'application/json',
-    //       Authorization: `Uploadcare.Simple ${YOUR_PUBLIC_KEY}:${YOUR_SECRET_KEY}`,
-    //       Accept: 'application/vnd.uploadcare-v0.7+json',
-    //     },
-    //   })
-    // } catch (error) {
-    //   console.error('Uploader, error when creating thumbnails:', error)
-    //   setShortTermOnlineFromFetchError(error)
-    // }
-    // works for:
-    // - csv > pdf > ?
-    // - doc > thumbnail
-    // - docx > thumbnail
-    // - docm > thumbnail
-    // - md > pdf > ?
-    // - msg > pdf > ?
-    // - odp > pdf > ?
-    // - ods > pdf > ?
-    // - odt > pdf > ?
-    // - pdf > thumbnail
-    // - pps > pdf/png > ?
-    // - ppt > pdf > ?
-    // - pptx > pdf > ?
-    // - txt > pdf > ?
-    // - xls > pdf/png > ?
-    // - xlsx > pdf/png > ?
   }
 
   // somehow this is called multiple times

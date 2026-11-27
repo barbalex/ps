@@ -8,6 +8,7 @@ import {
   MdFileDownload,
   MdErrorOutline,
   MdInfoOutline,
+  MdPictureAsPdf,
 } from 'react-icons/md'
 import { useIntl } from 'react-intl'
 import { useAtomValue } from 'jotai'
@@ -21,6 +22,7 @@ import { useFilesNavData } from '../modules/useFilesNavData.ts'
 import { Uploader } from './file/Uploader.tsx'
 import { UploaderContext } from '../UploaderContext.ts'
 import { offlineFilesStatusAtom } from '../store.ts'
+import { fileThumbnailUrl } from '../modules/offlineFiles.ts'
 
 import '../form.css'
 
@@ -113,15 +115,8 @@ export const Files = ({
         ) : (
           navs
             .filter((nav) => nav.id)
-            .map(({ id, label, url, mimetype }) => {
-              let imgSrc = undefined
-              if (
-                (mimetype?.includes?.('image') ||
-                  mimetype?.includes?.('pdf')) &&
-                url
-              ) {
-                imgSrc = `${url}-/resize/x50/-/format/auto/-/quality/smart/`
-              }
+            .map(({ id, label, url, mimetype, preview_uuid }) => {
+              const imgSrc = fileThumbnailUrl(url, mimetype, preview_uuid)
 
               const offlineStatus = offlineStatuses[id]
               const offlineIcon = offlineStatusIcons[offlineStatus]
@@ -144,6 +139,7 @@ export const Files = ({
                   label={labelContent}
                   to={id}
                   imgSrc={imgSrc}
+                  imgPlaceholder={mimetype === 'application/pdf' ? <MdPictureAsPdf aria-label="PDF" size={24} /> : undefined}
                   lastHasImages={true}
                 />
               )

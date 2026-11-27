@@ -964,6 +964,25 @@ Manual equivalent for a single file: `APF2_APPLY_LATER=1
 npm run apflora:generate`, then psql the file with `SET electric.syncing TO
 'true'` first (the write-permission triggers otherwise reject the writes).
 
+### PDF attachment thumbnails
+
+To enable conversion, set `UPLOADCARE_PUBLIC_KEY`
+and `UPLOADCARE_SECRET_KEY` in the auth service's backend environment (never
+`VITE_*`) and recreate the auth container. Use the same Uploadcare project as
+the uploader; it must support [document conversion](https://uploadcare.com/docs/transformations/file-conversion/).
+Enabling this also backfills existing PDFs without a preview and can incur
+conversion/storage charges. No original PDF is uploaded again. Until page one
+is ready the list shows a PDF icon; offline files keep the original and the
+same thumbnail URL used in the list.
+
+The worker creates a private `pdf_thumbnails.jobs` table at startup, records
+the status token, and resumes polling across restarts. On success it sets
+`files.preview_uuid`. Multiple rows for one Uploadcare UUID share one result.
+On a rejected or ambiguous submission or terminal conversion error, check the
+auth log and Uploadcare job state before retrying: removing that source UUID's
+job row permits another billable submission. No provider keys are needed
+for development with conversions disabled.
+
 ### Project dumps (export / import)
 
 A project can be moved as one SQL file — between installations, as a backup,
