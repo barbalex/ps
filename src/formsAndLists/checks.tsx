@@ -7,7 +7,7 @@ import { ListHeader } from '../components/ListHeader.tsx'
 import { Row } from '../components/shared/Row.tsx'
 import { LayerMenu } from '../components/shared/LayerMenu.tsx'
 import { FilterButton } from '../components/shared/FilterButton.tsx'
-import { GeometryListImport } from '../components/shared/GeometryImport.tsx'
+import { GeometryListTools } from '../components/shared/GeometryImport.tsx'
 import { Loading } from '../components/shared/Loading.tsx'
 
 import '../form.css'
@@ -47,7 +47,7 @@ export const Checks = ({ from }: { from: string }) => {
               from={from}
             />
             <FilterButton isFiltered={isFiltered} />
-            <GeometryListImport table="checks" rowIds={navs.map((row) => row.id)} />
+            <GeometryListTools table="checks" rowIds={navs.map((row) => row.id)} />
           </>
         }
       />

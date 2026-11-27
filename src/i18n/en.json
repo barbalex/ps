@@ -1,10 +1,12 @@
 {
+  "geometryExport": "Export geometries",
+  "geometryExportEmpty": "This list contains no geometries.",
   "geometryImport": "Import geometries",
   "geometryImportUuid": "Target object UUID",
   "geometryImportAppend": "Append geometries to matched objects",
   "geometryImportReplace": "Replace geometries of matched objects",
   "geometryImportList": "Each UUID must match an object in this list. If anything fails, no objects are changed.",
-  "geometryImportObject": "All geometries from the selected file layer will be imported into this object.",
+  "geometryImportObject": "All geometries from the selected layers will be imported together into this object.",
   "mapOwnLayers": "Own",
   "mapTileLayers": "Tiles",
   "mapVectorLayers": "Vectors",

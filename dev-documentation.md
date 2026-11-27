@@ -1403,6 +1403,14 @@ geometry collection with refreshed bounds and no GPS accuracy estimate.
 Apply the RPC on an existing backend before releasing this frontend. As for vector
 uploads, check the objects before retrying an append after a connection loss.
 
+**Geometry exports** read only the displayed IDs with non-empty geometries from
+PGlite. They do not change the database or require a server RPC. GeoPackage,
+GeoJSON, CSV (WKT) and KML keep the native UUID column. The export flattens
+custom `data` fields into `data_<key>` columns, then adds `<column>_label`
+columns for lookups. Labels come from locally available lookup rows; missing
+labels never replace a raw value. A case-insensitive name collision adds `_2`,
+`_3`, etc. Nested custom objects and arrays are represented as JSON text.
+
 # 11 Error Telemetry
 
 Client errors are collected in `public.error_report` (init file

@@ -4,6 +4,7 @@ export type SourceLayer = {
   name: string
   fields: string[]
   csv: boolean
+  csvWkt?: boolean
   needsCrs: boolean
 }
 export type ReadVectorOptions = {
@@ -12,9 +13,9 @@ export type ReadVectorOptions = {
   x: string
   y: string
 }
-export type VectorRequest = { file: File } | { read: ReadVectorOptions }
+export type VectorRequest = { file: File } | { read: ReadVectorOptions } | { geoPackage: File }
 export type VectorResponse =
-  { layers: SourceLayer[] } | { features: Feature[] } | { error: string }
+  { layers: SourceLayer[] } | { features: Feature[] } | { error: string } | { output: Blob }
 
 // One worker per file: replacing the file or leaving the form also releases
 // GDAL's WASM heap, mounted archive, and temporary converted datasets.
@@ -36,6 +37,11 @@ export function openVectorReader() {
       worker.postMessage(message)
     })
   return {
+    geoPackage: async (file: File) => {
+      const result = await request({ geoPackage: file })
+      if (!('output' in result)) throw new Error('Invalid GeoPackage response')
+      return result.output
+    },
     inspect: async (file: File) => {
       const result = await request({ file })
       if (!('layers' in result)) throw new Error('Invalid layer catalogue')
