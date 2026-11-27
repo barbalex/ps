@@ -55,11 +55,18 @@ export const FieldWidget = ({ field }: { field: FieldsWithTypes }) => {
     e: React.ChangeEvent<HTMLElement>,
     dataReturned?: unknown,
   ) => {
-    if (mode !== 'live') return
-    const { name, value } = getValueFromChange(
-      e as Parameters<typeof getValueFromChange>[0],
-      dataReturned as Parameters<typeof getValueFromChange>[1],
+    return save(
+      getValueFromChange(
+        e as Parameters<typeof getValueFromChange>[0],
+        dataReturned as Parameters<typeof getValueFromChange>[1],
+      ),
     )
+  }
+  const save = async ({
+    name,
+    value,
+  }: Pick<ReturnType<typeof getValueFromChange>, 'name' | 'value'>) => {
+    if (mode !== 'live') return
     // return if value has not changed
     if (data[name] === value) return
     // date widgets return a Date object even though it is not in the union
@@ -159,13 +166,16 @@ export const FieldWidget = ({ field }: { field: FieldsWithTypes }) => {
           />
         )
       case 'markdown':
+      case 'rich-text':
         return (
           <MarkdownField
+            key={`${id}:${name}:${field.widget_type}:${mode}`}
+            rich={field.widget_type === 'rich-text'}
             name={name}
             label={label}
             value={value as string}
             print={mode === 'print'}
-            onChange={onChange}
+            onSave={(value) => save({ name, value })}
             {...validationProps}
           />
         )

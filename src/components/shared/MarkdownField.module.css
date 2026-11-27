@@ -35,6 +35,21 @@
   display: none;
 }
 
+.richText > div {
+  min-height: 5em;
+  padding: 4px 8px;
+  border: 1px solid var(--colorNeutralStroke1);
+  border-radius: 4px;
+  overflow-wrap: anywhere;
+}
+
+.richText p {
+  margin-block: 0.4em;
+}
+.richText [contenteditable='false'] {
+  border: none;
+}
+
 .rendered {
   overflow-wrap: anywhere;
   overflow-x: auto;
@@ -46,6 +61,9 @@
 }
 
 @media print {
+  .richText > div {
+    border: none;
+  }
   .editor,
   .controls {
     display: none !important;

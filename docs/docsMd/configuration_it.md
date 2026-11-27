@@ -22,7 +22,8 @@ Per questo arten-fördern.app è altamente configurabile:
 - Scelta delle funzionalità utilizzate per ogni livello di luogo (misure, controlli, rapporti ecc.)
 - Possibilità di aggiungere campi personalizzati in molte tabelle
   - Nei campi Markdown selezionare il testo e usare la barra per titoli, grassetto, corsivo, elenchi o link. Sugli schermi stretti aprire **Altri formati**. Ctrl (Mac: ⌘) + B, I o K applica il grassetto, il corsivo o inserisce un link.
-  - Per le note formattate scegliere **text → markdown**. Scrivere titoli, elenchi o tabelle su più righe e selezionare **Anteprima**. La stampa usa il testo formattato; il dato conserva il Markdown originale. L’HTML non viene eseguito. I campi di testo ricco esistenti restano modificabili come testo semplice.
+  - Scegliere **text → rich-text** per vedere la formattazione mentre si scrive. La barra offre titoli, grassetto, corsivo, elenchi, link, annulla e ripristina. Incollando si mantiene la formattazione supportata. Le note sono salvate in Markdown anche offline e stampate con la loro formattazione.
+  - Scegliere **text → markdown** per modificare direttamente il sorgente Markdown, anche per le tabelle. **Anteprima** mostra il risultato formattato.
 - Definizione e importazione libere di tassonomie
 - Definizione e importazione libere di liste
 - Selezione di grafici predefiniti, possibilità di creare i propri

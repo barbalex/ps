@@ -22,7 +22,8 @@ C'est pourquoi arten-fördern.app est très fortement configurable:
 - Choix des fonctionnalités utilisées pour chaque niveau de lieu (mesures, contrôles, rapports etc.)
 - Possibilité d'ajouter des champs personnalisés dans de nombreuses tables
   - Dans un champ Markdown, sélectionner du texte puis utiliser la barre de mise en forme pour les titres, le gras, l’italique, les listes ou les liens. Sur petit écran, ouvrir **Autres formats**. Ctrl (Mac : ⌘) + B, I ou K applique le gras, l’italique ou insère un lien.
-  - Pour les notes mises en forme, choisir **text → markdown**. Saisir des titres, des listes ou des tableaux sur plusieurs lignes, puis sélectionner **Aperçu**. Le texte mis en forme est imprimé ; le Markdown d’origine est conservé. Le HTML n’est pas exécuté. Les champs de texte riche existants restent modifiables en texte brut.
+  - Choisir **text → rich-text** pour voir la mise en forme pendant la saisie. La barre propose titres, gras, italique, listes, liens, annulation et rétablissement. Le collage conserve la mise en forme prise en charge. Les notes sont enregistrées en Markdown même hors ligne et imprimées avec leur mise en forme.
+  - Choisir **text → markdown** pour modifier directement la source Markdown, y compris les tableaux. **Aperçu** affiche le résultat mis en forme.
 - Définition et import libres de taxonomies
 - Définition et import libres de listes
 - Sélection de graphiques prédéfinis, possibilité d'en créer soi-même

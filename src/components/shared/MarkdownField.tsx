@@ -24,10 +24,12 @@ import {
   TextNumberListLtrRegular,
   LinkRegular,
   MoreHorizontalRegular,
+  ArrowUndoRegular,
+  ArrowRedoRegular,
 } from '@fluentui/react-icons'
 import { useIntl } from 'react-intl'
 
-import type { FieldChangeHandler } from './fieldChange.ts'
+import type { Editor } from '@tiptap/core'
 import {
   applyMarkdownEdit,
   formatMarkdownSelection,
@@ -35,12 +37,14 @@ import {
 import styles from './MarkdownField.module.css'
 
 const Markdown = lazy(() => import('./Markdown.tsx'))
+const RichTextInput = lazy(() => import('./RichTextInput.tsx'))
 
 type Props = {
   label?: string | null
   name: string
   value: string
-  onChange: FieldChangeHandler
+  onSave: (value: string) => void
+  rich?: boolean
   print?: boolean
   autoFocus?: boolean
   ref?: React.Ref<HTMLTextAreaElement>
@@ -53,7 +57,8 @@ export const MarkdownField = ({
   label,
   name,
   value,
-  onChange,
+  onSave,
+  rich,
   print,
   button,
   ref,
@@ -64,8 +69,10 @@ export const MarkdownField = ({
   const { formatMessage } = useIntl()
   const id = useId()
   const [draft, setDraft] = useState(value)
+  const submitted = useRef<string | null>(null)
   const [preview, setPreview] = useState(false)
   const editor = useRef<HTMLTextAreaElement>(null)
+  const richEditor = useRef<Editor | null>(null)
   const mergedRef = useMergedRefs(editor, ref)
   const [link, setLink] = useState<{
     start: number
@@ -78,6 +85,26 @@ export const MarkdownField = ({
     defaultMessage: 'Link einfügen',
   })
   const format = (kind: Parameters<typeof formatMarkdownSelection>[3]) => {
+    if (rich) {
+      const chain = richEditor.current?.chain().focus()
+      if (!chain) return
+      switch (kind) {
+        case 'bold':
+          return chain.toggleBold().run()
+        case 'italic':
+          return chain.toggleItalic().run()
+        case 'paragraph':
+          return chain.clearNodes().setParagraph().run()
+        case 'heading':
+          return chain.setHeading({ level: 2 }).run()
+        case 'subheading':
+          return chain.setHeading({ level: 3 }).run()
+        case 'bullets':
+          return chain.toggleBulletList().run()
+        case 'numbers':
+          return chain.toggleOrderedList().run()
+      }
+    }
     const el = editor.current
     if (el)
       applyMarkdownEdit(
@@ -91,6 +118,19 @@ export const MarkdownField = ({
       )
   }
   const openLink = () => {
+    if (rich && richEditor.current) {
+      if (richEditor.current.state.selection.empty)
+        richEditor.current.commands.extendMarkRange('link')
+      const { state } = richEditor.current
+      const { from, to } = state.selection
+      setLink({
+        start: from,
+        end: to,
+        text: state.doc.textBetween(from, to, ' '),
+        url: richEditor.current.getAttributes('link').href ?? '',
+      })
+      return
+    }
     const el = editor.current
     if (el)
       setLink({
@@ -103,7 +143,31 @@ export const MarkdownField = ({
   const validLink =
     link && URL.canParse(link.url) && /^(https?:\/\/|mailto:)/i.test(link.url)
   const insertLink = () => {
-    if (!validLink || !editor.current) return
+    if (!validLink) return
+    if (rich && richEditor.current) {
+      const instance = richEditor.current
+      const range = { from: link.start, to: link.end }
+      const chain = instance.chain().focus()
+      if (
+        link.text &&
+        instance.state.doc.textBetween(range.from, range.to, ' ') === link.text
+      ) {
+        chain
+          .setTextSelection(range)
+          .setLink({ href: link.url })
+          .setTextSelection(range.to)
+      } else {
+        chain.insertContentAt(range, {
+          type: 'text',
+          text: link.text || link.url,
+          marks: [{ type: 'link', attrs: { href: link.url } }],
+        })
+      }
+      chain.unsetMark('link').run()
+      setLink(null)
+      return
+    }
+    if (!editor.current) return
     const url = new URL(link.url).href.replace(/[()]/g, (c) =>
       c === '(' ? '%28' : '%29',
     )
@@ -162,6 +226,26 @@ export const MarkdownField = ({
       run: () => format('numbers'),
     },
     { label: linkLabel, icon: <LinkRegular />, run: openLink },
+    ...(rich ?
+      [
+        {
+          label: formatMessage({
+            id: 'undoDeleteUndo',
+            defaultMessage: 'Rückgängig',
+          }),
+          icon: <ArrowUndoRegular />,
+          run: () => richEditor.current?.chain().focus().undo().run(),
+        },
+        {
+          label: formatMessage({
+            id: 'geometryRedo',
+            defaultMessage: 'Wiederholen',
+          }),
+          icon: <ArrowRedoRegular />,
+          run: () => richEditor.current?.chain().focus().redo().run(),
+        },
+      ]
+    : []),
   ]
   const actionButton = ({ label, icon, run }: (typeof extra)[number]) => (
     <Button
@@ -175,7 +259,11 @@ export const MarkdownField = ({
       onClick={run}
     />
   )
-  const actionMenu = (label: string, items: typeof headings, more = false) => (
+  const actionMenu = (
+    label: string,
+    items: { label: string; run: () => void }[],
+    more = false,
+  ) => (
     <Menu>
       <MenuTrigger disableButtonEnhancement>
         <Button
@@ -202,7 +290,12 @@ export const MarkdownField = ({
       </MenuPopover>
     </Menu>
   )
-  useEffect(() => setDraft(value), [value])
+  useEffect(() => {
+    // Focusing a toolbar menu blurs and saves the textarea. Its live-query
+    // acknowledgement can arrive after the menu has applied the next edit.
+    if (submitted.current !== value) setDraft(value)
+    submitted.current = null
+  }, [value])
 
   return (
     <Field
@@ -235,20 +328,36 @@ export const MarkdownField = ({
               </span>
             </>
           )}
-          <Button
-            className={styles.preview}
-            size="small"
-            type="button"
-            onClick={() => setPreview(!preview)}
-          >
-            {preview ?
-              formatMessage({ id: 'bCYCZD', defaultMessage: 'Bearbeiten' })
-            : formatMessage({ id: 'prVw0A', defaultMessage: 'Vorschau' })}
-          </Button>
+          {!rich && (
+            <Button
+              className={styles.preview}
+              size="small"
+              type="button"
+              onClick={() => setPreview(!preview)}
+            >
+              {preview ?
+                formatMessage({ id: 'bCYCZD', defaultMessage: 'Bearbeiten' })
+              : formatMessage({ id: 'prVw0A', defaultMessage: 'Vorschau' })}
+            </Button>
+          )}
           {button}
         </div>
       )}
-      {!preview && !print && (
+      {rich && (
+        <Suspense fallback={<pre>{value}</pre>}>
+          <RichTextInput
+            id={id}
+            label={label ?? name}
+            value={value}
+            print={print}
+            autoFocus={autoFocus}
+            editorRef={richEditor}
+            onLink={openLink}
+            onSave={onSave}
+          />
+        </Suspense>
+      )}
+      {!rich && !preview && !print && (
         <Textarea
           id={id}
           name={name}
@@ -267,8 +376,11 @@ export const MarkdownField = ({
             if (key === 'k') openLink()
             else format(key === 'b' ? 'bold' : 'italic')
           }}
-          onBlur={(e) => {
-            if (draft !== value) onChange(e)
+          onBlur={() => {
+            if (draft !== value) {
+              submitted.current = draft
+              onSave(draft)
+            }
           }}
         />
       )}
@@ -329,14 +441,16 @@ export const MarkdownField = ({
           </DialogSurface>
         </Dialog>
       )}
-      <div className={preview || print ? styles.rendered : styles.printOnly}>
-        <Suspense fallback={<pre>{draft}</pre>}>
-          <Markdown
-            source={draft}
-            skipHtml
-          />
-        </Suspense>
-      </div>
+      {!rich && (
+        <div className={preview || print ? styles.rendered : styles.printOnly}>
+          <Suspense fallback={<pre>{draft}</pre>}>
+            <Markdown
+              source={draft}
+              skipHtml
+            />
+          </Suspense>
+        </div>
+      )}
     </Field>
   )
 }

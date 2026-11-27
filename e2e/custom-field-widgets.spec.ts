@@ -17,7 +17,7 @@ const email = 'custom-widgets@test.ch',
 
 test.use({ timezoneId: 'Europe/Zurich' })
 
-test('Markdown preview and print preserve source; decimal and local time persist typed values', async ({
+test('Markdown and rich text round-trip through editing and print; decimal and local time persist typed values', async ({
   page,
 }) => {
   await ensureProjectFixture({
@@ -62,11 +62,13 @@ test('Markdown preview and print preserve source; decimal and local time persist
     }, placeId)
 
   const notes = page.locator('textarea[name="notes"]')
+  const markdownField = page.locator('.fui-Field').filter({ has: notes })
+  const rich = page.getByRole('textbox', { name: 'legacy', exact: true })
   const source = '## Survey\n\n- **First** sighting\n- Second sighting'
   await expect(notes).toBeVisible({ timeout: 90_000 })
   await notes.fill('Iris')
   await notes.press('Control+a')
-  await page.getByRole('button', { name: /^(Bold|Fett)$/ }).click()
+  await markdownField.getByRole('button', { name: /^(Bold|Fett)$/ }).click()
   await expect(notes).toHaveValue('**Iris**')
   expect(
     await notes.evaluate((el) => (el as HTMLTextAreaElement).selectionStart),
@@ -81,7 +83,7 @@ test('Markdown preview and print preserve source; decimal and local time persist
   await notes.press('Control+a')
   const viewport = page.viewportSize()!
   await page.setViewportSize({ width: 390, height: 844 })
-  const more = page.getByRole('button', {
+  const more = markdownField.getByRole('button', {
     name: /More formats|Weitere Formate/,
   })
   await more.click()
@@ -120,6 +122,55 @@ test('Markdown preview and print preserve source; decimal and local time persist
   await expect(page.getByRole('heading', { name: 'Survey' })).toBeVisible()
   await page.emulateMedia({ media: 'screen' })
 
+  await rich.click()
+  await page.context().setOffline(true)
+  await rich.fill('Iris')
+  await rich.press('Control+a')
+  const richField = page.locator('.fui-Field').filter({ has: rich })
+  await richField.getByRole('button', { name: /^(Italic|Kursiv)$/ }).click()
+  await expect(rich.locator('em')).toHaveText('Iris')
+  await rich.press('Control+k')
+  await dialog
+    .getByRole('textbox', { name: 'URL' })
+    .fill('https://example.org/iris')
+  await dialog
+    .getByRole('button', { name: /Insert link|Link einfügen/ })
+    .click()
+  await expect(rich.locator('a')).toHaveText('Iris')
+  await rich.press('Control+a')
+  await rich.press('Backspace')
+  // Keep the following paste separate from typing in native editor history.
+  await rich.blur()
+  await rich.click()
+  await rich.evaluate((el) => {
+    const clipboardData = new DataTransfer()
+    clipboardData.setData(
+      'text/html',
+      '<h2>Inventory</h2><p><strong>Iris</strong> <em>alba</em></p><ul><li>North</li></ul><ol><li>South</li></ol><p><a href="https://example.org/site">Site</a></p>',
+    )
+    el.dispatchEvent(
+      new ClipboardEvent('paste', {
+        bubbles: true,
+        cancelable: true,
+        clipboardData,
+      }),
+    )
+  })
+  await expect(rich.locator('strong')).toHaveText('Iris')
+  await rich.press('Control+z')
+  await expect(rich).not.toContainText('Inventory')
+  await rich.press('Control+Shift+z')
+  await expect(rich.locator('em')).toHaveText('alba')
+  await rich.blur()
+  await expect
+    .poll(data)
+    .toMatchObject({ legacy: expect.stringContaining('**Iris**') })
+  const saved = (await data()).legacy
+  expect(saved).toContain('## Inventory')
+  expect(saved).toContain('[Site](https://example.org/site)')
+  expect(saved).not.toContain('<p>')
+  await page.context().setOffline(false)
+
   const amount = page.locator('input[name="amount"]')
   for (const [input, saved] of [
     ['-1,25', -1.25],
@@ -143,7 +194,7 @@ test('Markdown preview and print preserve source; decimal and local time persist
   }
 
   const design = {
-    content: [5, 6, 7].map((n) => ({
+    content: [5, 6, 9].map((n) => ({
       type: `field_${uuid(n)}`,
       props: { id: `widget-${n}` },
     })),
@@ -152,7 +203,9 @@ test('Markdown preview and print preserve source; decimal and local time persist
   psql(`SET electric.syncing TO 'true';
     INSERT INTO form_designs(form_design_id, project_id, table_name, active, design)
     VALUES ('${uuid(8)}', '${projectId}', 'places', true, '${JSON.stringify(design)}')`)
-  await expect(page.locator('input[name="legacy"]')).toHaveCount(0)
+  await expect(visited).toHaveCount(0)
+  await expect(rich.locator('ul li')).toHaveText('North')
+  await expect(rich.locator('ol li')).toHaveText('South')
   await expect(notes).toHaveValue(source)
   await notes.fill('# Designed form')
   await notes.blur()
@@ -164,6 +217,12 @@ test('Markdown preview and print preserve source; decimal and local time persist
     page.getByRole('heading', { name: 'Designed form' }),
   ).toBeVisible()
   await expect(notes).toHaveCount(0)
+  await expect(rich).toHaveAttribute('contenteditable', 'false')
+  await expect(rich.locator('h2')).toHaveText('Inventory')
+  await expect(rich.locator('a')).toHaveAttribute(
+    'href',
+    'https://example.org/site',
+  )
 
   for (const [fieldId, legacy] of [
     [uuid(5), false],
@@ -178,6 +237,6 @@ test('Markdown preview and print preserve source; decimal and local time persist
     ).toBeVisible()
     await expect(
       page.getByRole('option', { name: 'rich-text', exact: true }),
-    ).toHaveCount(legacy ? 1 : 0)
+    ).toBeVisible()
   }
 })

@@ -21,7 +21,8 @@ Deshalb ist arten-fördern.app stark konfigurierbar:
 - Wahl, in welchen Ort-Stufen welche Fähigkeiten genutzt werden (Massnahmen, Kontrollen, Berichte etc.)
 - Möglichkeit in vielen Tabellen eigene Felder zu ergänzen
   - Im Markdown-Feld Text markieren und mit der Werkzeugleiste Überschriften, Fett- oder Kursivschrift, Listen oder Links einfügen. Auf schmalen Bildschirmen **Weitere Formate** öffnen. Strg (Mac: ⌘) + B, I oder K setzt Fettschrift, Kursivschrift oder einen Link.
-  - Für formatierte Notizen **text → markdown** wählen. Überschriften, Listen oder Tabellen über mehrere Zeilen eingeben und mit **Vorschau** prüfen. Gedruckt wird der formatierte Text; gespeichert bleibt der ursprüngliche Markdown-Text. HTML wird nicht ausgeführt. Bestehende Rich-Text-Felder bleiben als Klartext bearbeitbar.
+  - Mit **text → rich-text** erscheint die Formatierung direkt beim Schreiben. Die Werkzeugleiste bietet Überschriften, Fett- und Kursivschrift, Listen, Links sowie Rückgängig und Wiederholen. Beim Einfügen bleibt die unterstützte Formatierung erhalten. Auch offline werden die Notizen als Markdown gespeichert und formatiert gedruckt.
+  - Mit **text → markdown** lässt sich stattdessen der Markdown-Quelltext direkt bearbeiten, auch für Tabellen. **Vorschau** zeigt die formatierte Fassung.
 - Freie Definition und Import von Taxonomien
 - Freie Definition und Import von Listen
 - Wahl von Standard-Einheiten (aus selber definierten Listen)

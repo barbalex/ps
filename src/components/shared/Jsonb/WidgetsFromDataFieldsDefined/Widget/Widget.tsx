@@ -73,10 +73,17 @@ export const Widget = ({
     e: React.ChangeEvent<HTMLElement>,
     dataReturned?: unknown,
   ) => {
-    const { name, value } = getValueFromChange(
-      e as Parameters<typeof getValueFromChange>[0],
-      dataReturned as Parameters<typeof getValueFromChange>[1],
+    return save(
+      getValueFromChange(
+        e as Parameters<typeof getValueFromChange>[0],
+        dataReturned as Parameters<typeof getValueFromChange>[1],
+      ),
     )
+  }
+  const save = async ({
+    name,
+    value,
+  }: Pick<ReturnType<typeof getValueFromChange>, 'name' | 'value'>) => {
     // return if value has not changed
     if (data[name] === value) return
     // date widgets return a Date object even though it is not in the union
@@ -144,7 +151,8 @@ export const Widget = ({
   const type = field.field_type === 'integer' ? 'number' : 'text'
 
   const filterMarkdown =
-    field.widget_type === 'markdown' && location.pathname.endsWith('filter')
+    (field.widget_type === 'markdown' || field.widget_type === 'rich-text') &&
+    location.pathname.endsWith('filter')
   switch (filterMarkdown ? 'text' : field.widget_type) {
     case 'text':
       return (
@@ -206,12 +214,15 @@ export const Widget = ({
         />
       )
     case 'markdown':
+    case 'rich-text':
       return (
         <MarkdownField
+          key={`${id}:${name}:${field.widget_type}`}
+          rich={field.widget_type === 'rich-text'}
           name={name}
           label={label}
           value={value as string}
-          onChange={onChange}
+          onSave={(value) => save({ name, value })}
           autoFocus={autoFocus}
           ref={ref as React.Ref<HTMLTextAreaElement>}
           button={<EditField fieldId={field.field_id} />}
