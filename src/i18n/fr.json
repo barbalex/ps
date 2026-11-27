@@ -1,4 +1,13 @@
 {
+  "projectAreaEditDenied": "Seuls les concepteurs et les propriétaires du projet peuvent modifier son périmètre.",
+  "areaFilterLabel": "Filtre par périmètre du projet",
+  "areaFilterAll": "Tous",
+  "areaFilterInside": "À l’intérieur",
+  "areaFilterOutside": "À l’extérieur",
+  "areaFilterMissing": "Aucun périmètre de projet défini",
+  "mapCurrentProjectArea": "Périmètre du projet actuel",
+  "mapNamedProjectArea": "Périmètre du projet {project}",
+  "hideProjectAreaDiscard": "Masquer le périmètre du projet et terminer la modification? Tout dessin inachevé sera perdu.",
   "mapReplaceSpeciesRules": "Remplacer les règles de filtrage par cette sélection?",
   "mapAllAccessible": "Tous les sous-projets accessibles",
   "versionCheckFailed": "La mise à jour a échoué. Vous pouvez continuer à utiliser la version actuelle et réessayer.",

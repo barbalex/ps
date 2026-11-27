@@ -1,4 +1,13 @@
 {
+  "projectAreaEditDenied": "Only project designers and owners may edit the project area.",
+  "areaFilterLabel": "Project area filter",
+  "areaFilterAll": "All",
+  "areaFilterInside": "Inside",
+  "areaFilterOutside": "Outside",
+  "areaFilterMissing": "No project area defined",
+  "mapCurrentProjectArea": "Current project area",
+  "mapNamedProjectArea": "{project} area",
+  "hideProjectAreaDiscard": "Hide the project area and end editing? Any unfinished drawing will be lost.",
   "mapReplaceSpeciesRules": "Replace the filter rules with this selection?",
   "mapAllAccessible": "All accessible",
   "recordImportReload": "The records were created. Reload the app to see them; do not import again.",

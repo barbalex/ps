@@ -27,7 +27,7 @@ export const ObservationsAssigned1 = ({
   layerPresentation: TableLayerProps['layerPresentation']
 }) => {
   const draggableLayers = useAtomValue(draggableLayersAtom)
-  const { scopeFilter, scopeId } = useOwnLayerScope()
+  const { scopeFilter, scopeId, areaFilter } = useOwnLayerScope()
   const activeObservationId = useActiveObservationId()
   const envelope = useViewportEnvelope()
 
@@ -46,7 +46,7 @@ export const ObservationsAssigned1 = ({
     WHERE
       o.geometry IS NOT NULL
       AND oi.subproject_id ${scopeFilter}
-      AND p.parent_id IS NULL${viewportPredicate('o.geometry')}
+      AND p.parent_id IS NULL${areaFilter('o')}${viewportPredicate('o.geometry')}
   `,
     [scopeId, ...viewportParams(envelope)],
   )

@@ -15,3 +15,5 @@ Il risultato è un elenco di record sospetti che possono essere corretti uno per
 I controlli di qualità non ti interrompono durante l'inserimento dei dati. È possibile uscire da un modulo anche se non tutti i campi obbligatori sono stati compilati. Ma se ci si dimentica di farlo, si spera che un controllo di qualità lanci l'allarme.
 
 I controlli di qualità dovrebbero generare il minor numero possibile di falsi allarmi — idealmente nessuno in condizioni normali.
+
+**Fuori dall’area del progetto:** Tre controlli segnalano i luoghi, le misure e i controlli la cui geometria si trova in parte o interamente fuori dall’area del progetto. Toccare il confine senza oltrepassarlo non genera una segnalazione. Se manca la geometria del progetto o della scheda, questi controlli non segnalano nulla.

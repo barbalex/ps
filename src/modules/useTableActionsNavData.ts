@@ -6,6 +6,8 @@ import { useIntl } from 'react-intl'
 
 import { useUrlFilter } from './useUrlFilter.ts'
 import { filterStringFromFilter } from './filterStringFromFilter.ts'
+import { useProjectAreaFilter } from './useProjectAreaFilter.ts'
+import { andFilters } from './projectAreaFilter.ts'
 import { buildNavLabel } from './buildNavLabel.ts'
 import { treeOpenNodesSetAtom, languageAtom } from '../store.ts'
 import type { TableRowFilter } from '../store.ts'
@@ -81,7 +83,8 @@ export const useTableActionsNavData = ({
 
   // the user's runtime filter on top of the view
   const [filter] = useUrlFilter(`tableView-${tableViewId}`)
-  const filterString = filterStringFromFilter(filter)
+  const area = useProjectAreaFilter(projectId)
+  const filterString = andFilters(filterStringFromFilter(filter), area.matches('actions'))
   const isFiltered = !!filterString
 
   // rows are labeled in apf2 manner: 4-digit year, then the value of each

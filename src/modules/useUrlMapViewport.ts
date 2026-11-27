@@ -44,11 +44,11 @@ export const useUrlMapViewport = () => {
   )
   const urlZoom = useMemo(() => parseZoom(search.z), [search.z])
   const center = useMemo(
-    () => (urlCenter ?? storedCenter) as [number, number],
+    () => (urlCenter ?? storedCenter ?? [47.4, 8.65]) as [number, number],
     [urlCenter, storedCenter],
   )
   const zoom = useMemo(
-    () => urlZoom ?? storedZoom,
+    () => urlZoom ?? storedZoom ?? 13,
     [urlZoom, storedZoom],
   )
 
@@ -69,6 +69,7 @@ export const useUrlMapViewport = () => {
   }
 
   return {
+    hasViewport: !!(urlCenter || storedCenter || urlZoom !== null || storedZoom !== null),
     urlCenter,
     urlZoom,
     center,

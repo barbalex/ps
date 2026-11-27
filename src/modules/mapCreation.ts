@@ -5,6 +5,7 @@ import {
   editingActionGeometryAtom,
   editingCheckGeometryAtom,
   editingPlaceGeometryAtom,
+  editingProjectGeometryAtom,
   mapInfoAtom,
 } from '../store.ts'
 
@@ -23,6 +24,7 @@ export const mapCreationAtom = atom(
   (_get, set, draft: MapCreation | null) => {
     if (draft) {
       set(choosingGeometryAtom, false)
+      set(editingProjectGeometryAtom, null)
       set(editingPlaceGeometryAtom, null)
       set(editingCheckGeometryAtom, null)
       set(editingActionGeometryAtom, null)

@@ -117,6 +117,8 @@ export default interface TemplatePublicProjectsHistory {
   updated_at: Date;
 
   updated_by: string | null;
+
+  geometry: unknown | null;
 }
 
 /** Represents the initializer for the table partman.template_public_projects_history */
@@ -236,6 +238,8 @@ export interface TemplatePublicProjectsHistoryInitializer {
   updated_at: Date;
 
   updated_by?: string | null;
+
+  geometry?: unknown | null;
 }
 
 /** Represents the mutator for the table partman.template_public_projects_history */
@@ -355,4 +359,6 @@ export interface TemplatePublicProjectsHistoryMutator {
   updated_at?: Date;
 
   updated_by?: string | null;
+
+  geometry?: unknown | null;
 }

@@ -28,7 +28,7 @@ export const ObservationsToAssess = ({
   layerPresentation: TableLayerProps['layerPresentation']
 }) => {
   const draggableLayers = useAtomValue(draggableLayersAtom)
-  const { scopeFilter, scopeId } = useOwnLayerScope()
+  const { scopeFilter, scopeId, areaFilter } = useOwnLayerScope()
   const activeObservationId = useActiveObservationId()
   const envelope = useViewportEnvelope()
   const res = useLiveQuery<ObservationRow>(
@@ -47,7 +47,7 @@ export const ObservationsToAssess = ({
       oi.subproject_id ${scopeFilter}
       AND o.place_id IS NULL
       AND (o.not_to_assign IS NULL OR o.not_to_assign = FALSE)
-      AND o.geometry IS NOT NULL${viewportPredicate('o.geometry')}
+      AND o.geometry IS NOT NULL${areaFilter('o')}${viewportPredicate('o.geometry')}
   `,
     [scopeId, ...viewportParams(envelope)],
   )

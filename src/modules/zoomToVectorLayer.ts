@@ -25,6 +25,7 @@ type Props = {
   // Absent in project overview, including while a feature's form is open.
   subprojectId?: string
   filterSql?: string
+  areaFilter?: (alias: string) => string
   addNotification: (notification: {
     title: string
     intent: 'info'
@@ -44,6 +45,7 @@ export const zoomToVectorLayer = async ({
   layer,
   subprojectId,
   filterSql,
+  areaFilter = () => '',
   addNotification,
   setMapBounds,
 }: Props): Promise<void> => {
@@ -67,7 +69,7 @@ export const zoomToVectorLayer = async ({
         `SELECT ${extentSelect('p')} FROM places p
          INNER JOIN subprojects s ON p.subproject_id = s.subproject_id
          WHERE s.project_id = $1
-         AND p.geometry IS NOT NULL
+         AND p.geometry IS NOT NULL${areaFilter('p')}
          ${scopeSql}
          ${level ? `AND p.parent_id IS ${level === 1 ? 'NULL' : 'NOT NULL'}` : ''}`,
         scopeParams,
@@ -80,7 +82,7 @@ export const zoomToVectorLayer = async ({
          INNER JOIN places p ON a.place_id = p.place_id
          INNER JOIN subprojects s ON p.subproject_id = s.subproject_id
          WHERE s.project_id = $1
-         AND a.geometry IS NOT NULL
+         AND a.geometry IS NOT NULL${areaFilter('a')}
          ${scopeSql}
          ${level ? `AND p.parent_id IS ${level === 1 ? 'NULL' : 'NOT NULL'}` : ''}`,
         scopeParams,
@@ -93,7 +95,7 @@ export const zoomToVectorLayer = async ({
          INNER JOIN places p ON c.place_id = p.place_id
          INNER JOIN subprojects s ON p.subproject_id = s.subproject_id
          WHERE s.project_id = $1
-         AND c.geometry IS NOT NULL
+         AND c.geometry IS NOT NULL${areaFilter('c')}
          ${scopeSql}
          ${level ? `AND p.parent_id IS ${level === 1 ? 'NULL' : 'NOT NULL'}` : ''}`,
         scopeParams,
@@ -110,7 +112,7 @@ export const zoomToVectorLayer = async ({
          INNER JOIN places p ON o.place_id = p.place_id
          INNER JOIN subprojects s ON oi.subproject_id = s.subproject_id
          WHERE s.project_id = $1
-         AND o.geometry IS NOT NULL
+         AND o.geometry IS NOT NULL${areaFilter('o')}
          ${lines ? 'AND p.geometry IS NOT NULL' : ''}
          ${scopeSql}
          ${level ? `AND p.parent_id IS ${level === 1 ? 'NULL' : 'NOT NULL'}` : ''}) scoped`,
@@ -125,7 +127,7 @@ export const zoomToVectorLayer = async ({
          WHERE s.project_id = $1
          AND o.place_id IS NULL
          AND (o.not_to_assign IS NULL OR o.not_to_assign = FALSE)
-         AND o.geometry IS NOT NULL
+         AND o.geometry IS NOT NULL${areaFilter('o')}
          ${scopeSql}`,
         scopeParams,
       )
@@ -138,7 +140,7 @@ export const zoomToVectorLayer = async ({
          WHERE s.project_id = $1
          AND o.place_id IS NULL
          AND o.not_to_assign = true
-         AND o.geometry IS NOT NULL
+         AND o.geometry IS NOT NULL${areaFilter('o')}
          ${scopeSql}`,
         scopeParams,
       )

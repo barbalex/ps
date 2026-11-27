@@ -7,6 +7,7 @@ import { useIntl } from 'react-intl'
 import { treeOpenNodesSetAtom, languageAtom } from '../store.ts'
 import { buildNavLabel } from './buildNavLabel.ts'
 import { getVectorLayerLabel } from './vectorLayerLabel.ts'
+import { useProjectLabel } from './navRollupsContext.ts'
 import type VectorLayers from '../models/public/VectorLayers.ts'
 import type PlaceLevels from '../models/public/PlaceLevels.ts'
 
@@ -29,6 +30,7 @@ export const useVectorLayerNavData = ({ projectId, vectorLayerId }: Props) => {
   const [openNodesSet] = useAtom(treeOpenNodesSetAtom)
   const [language] = useAtom(languageAtom)
   const location = useLocation()
+  const projectLabel = useProjectLabel(projectId)
   const { formatMessage } = useIntl()
 
   const res = useLiveQuery(
@@ -80,6 +82,7 @@ export const useVectorLayerNavData = ({ projectId, vectorLayerId }: Props) => {
         { ...nav, vector_layer_id: nav?.id } as VectorLayers,
         language,
         placeLevels,
+        projectLabel,
       ) || nav?.id
 
   const navData = {

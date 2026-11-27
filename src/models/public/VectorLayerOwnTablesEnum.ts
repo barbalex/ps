@@ -6,6 +6,7 @@ type VectorLayerOwnTablesEnum =
   | 'observations_assigned'
   | 'observations_assigned_lines'
   | 'observations_to_assess'
-  | 'observations_not_to_assign';
+  | 'observations_not_to_assign'
+  | 'current_project_area';
 
 export default VectorLayerOwnTablesEnum;

@@ -29,12 +29,12 @@ export const vectorLayerDisplayToProperties = ({
 
   // opacity needs to be converted from percent to decimal
   const lPOpacity =
-    presentation!.opacity_percent ? presentation!.opacity_percent / 100 : 1
+    (presentation?.opacity_percent ?? 100) / 100
   const displayFillOpacity =
-    display.fill_opacity_percent ? display.fill_opacity_percent / 100 : 1
+    (display.fill_opacity_percent ?? 100) / 100
 
   const style = {
-    ...(typeof display.stroke === 'number' && { stroke: display.stroke === 1 }),
+    ...(display.stroke != null && { stroke: Boolean(display.stroke) }),
     ...(display.color && { color: display.color }),
     ...(typeof display.weight === 'number' && { weight: display.weight }),
     opacity: lPOpacity,
@@ -42,7 +42,7 @@ export const vectorLayerDisplayToProperties = ({
     ...(display.line_join && { lineJoin: display.line_join }),
     ...(display.dash_array && { dashArray: display.dash_array }),
     ...(display.dash_offset && { dashOffset: display.dash_offset }),
-    ...(typeof display.fill === 'number' && { fill: display.fill === 1 }),
+    ...(display.fill != null && { fill: Boolean(display.fill) }),
     ...(display.fill_color && { fillColor: display.fill_color }),
     // opacity can be set both in presentation and display...
     fillOpacity: displayFillOpacity * lPOpacity,

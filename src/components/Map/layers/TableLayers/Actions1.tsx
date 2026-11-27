@@ -22,7 +22,7 @@ export const Actions1 = ({
   const pathParts = pathname.split('/')
   const actionsIdx = pathParts.indexOf('actions')
   const actionId = actionsIdx !== -1 ? pathParts[actionsIdx + 1] : undefined
-  const { scopeFilter, scopeId } = useOwnLayerScope()
+  const { scopeFilter, scopeId, areaFilter } = useOwnLayerScope()
   const envelope = useViewportEnvelope()
   const resActions = useLiveQuery<Actions & { edit_version: string | null }>(
     `
@@ -37,7 +37,7 @@ export const Actions1 = ({
     WHERE
       actions.geometry IS NOT NULL
       AND places.parent_id IS NULL
-      AND places.subproject_id ${scopeFilter}${viewportPredicate('actions.geometry')}`,
+      AND places.subproject_id ${scopeFilter}${areaFilter('actions')}${viewportPredicate('actions.geometry')}`,
     [scopeId, ...viewportParams(envelope)],
   )
   // memoized on the live-query result: re-renders (the zoomend viewport

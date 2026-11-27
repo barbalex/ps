@@ -250,6 +250,9 @@ export const importProjectDump = async ({
 
   const operations: QueuedOperation[] = []
   const deferredUpdates: QueuedOperation[] = []
+  const includesAreaLayer = rowsByTable.get('vector_layers')?.some(
+    (row) => row.own_table === 'current_project_area',
+  )
   let total = 0
   for (const { table } of projectTables) {
     let rows = rowsByTable.get(table)
@@ -281,13 +284,19 @@ export const importProjectDump = async ({
     const selfColumn = self.get(table)
     if (selfColumn && pk) rows = orderByParent(rows, pk, selfColumn)
 
-    if (TRIGGER_DERIVED_TABLES.has(table)) {
+    // Older dumps don't contain the area layer. Keep its freshly provisioned
+    // row/children; the other trigger-created layers all have an own_table.
+    // The area presentation is the only one provisioned by current triggers.
+    if (TRIGGER_DERIVED_TABLES.has(table) && (includesAreaLayer || table === 'vector_layers')) {
       operations.push({
         id: uuidv7(),
         time: new Date().toISOString(),
         table,
         operation: 'delete',
         filter: { column: 'project_id', function: 'eq', value: dump.projectId },
+        ...(!includesAreaLayer && {
+          filters: [{ column: 'own_table', function: 'neq', value: 'current_project_area' }],
+        }),
       })
     }
 

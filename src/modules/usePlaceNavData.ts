@@ -1,4 +1,6 @@
 import { useUrlFilter } from './useUrlFilter.ts'
+import { useProjectAreaFilter } from './useProjectAreaFilter.ts'
+import { andFilters } from './projectAreaFilter.ts'
 import { useLiveQuery } from '@electric-sql/pglite-react'
 import { useAtom } from 'jotai'
 import { isEqual } from 'es-toolkit'
@@ -49,16 +51,17 @@ export const usePlaceNavData = ({
   const [language] = useAtom(languageAtom)
   const { formatMessage } = useIntl()
 
-  const [placesFilter] = useUrlFilter('places1')
-  const placesFilterString = filterStringFromFilter(placesFilter)
+  const area = useProjectAreaFilter(projectId)
+  const [placesFilter] = useUrlFilter('places2')
+  const placesFilterString = andFilters(filterStringFromFilter(placesFilter), area.navigationPlaces(false))
   const placesIsFiltered = !!placesFilterString
 
   const [checksFilter] = useUrlFilter(placeId2 ? 'checks2' : 'checks1')
-  const checksFilterString = filterStringFromFilter(checksFilter)
+  const checksFilterString = andFilters(filterStringFromFilter(checksFilter), area.matches('checks'))
   const checksIsFiltered = !!checksFilterString
 
   const [actionsFilter] = useUrlFilter(placeId2 ? 'actions2' : 'actions1')
-  const actionsFilterString = filterStringFromFilter(actionsFilter)
+  const actionsFilterString = andFilters(filterStringFromFilter(actionsFilter), area.matches('actions'))
   const actionsIsFiltered = !!actionsFilterString
 
   const [checkReportsFilter] = useUrlFilter(
@@ -95,7 +98,7 @@ export const usePlaceNavData = ({
         check_reports_count_filtered AS (SELECT count(*) FROM check_reports WHERE place_id = '${placeId2 ?? placeId}' ${checkReportsIsFiltered ? ` AND ${checkReportsFilterString}` : ''}),
         action_reports_count_unfiltered AS (SELECT count(*) FROM action_reports WHERE place_id = '${placeId2 ?? placeId}'),
         action_reports_count_filtered AS (SELECT count(*) FROM action_reports WHERE place_id = '${placeId2 ?? placeId}' ${actionReportsIsFiltered ? ` AND ${actionReportsFilterString}` : ''}),
-        observations_count AS (SELECT count(*) FROM observations WHERE place_id = '${placeId2 ?? placeId}'),
+        observations_count AS (SELECT count(*) FROM observations WHERE place_id = '${placeId2 ?? placeId}' ${area.mode !== 'all' ? `AND ${area.matches('observations')}` : ''}),
         place_roles_count AS (SELECT count(*) FROM place_roles WHERE place_id = '${placeId2 ?? placeId}'),
         files_count_unfiltered AS (SELECT count(*) FROM files WHERE ${filesScopeWhere({ placeId: placeId2 ?? placeId })}),
         files_count_filtered AS (SELECT count(*) FROM files WHERE ${filesScopeWhere({ placeId: placeId2 ?? placeId })} ${filesIsFiltered ? ` AND ${filesFilterString}` : ''})
@@ -203,7 +206,8 @@ export const usePlaceNavData = ({
           const viewFilterString = filterStringFromFilter(
             (view.filter ?? []) as TableRowFilter[],
           )
-          return `SELECT '${view.table_view_id}' AS table_view_id, (SELECT count(*) FROM ${view.table_name} WHERE place_id = '${placeId2 ?? placeId}'${viewFilterString ? ` AND (${viewFilterString})` : ''}) AS count`
+          const conditions = andFilters(viewFilterString, area.matches(view.table_name!))
+          return `SELECT '${view.table_view_id}' AS table_view_id, (SELECT count(*) FROM ${view.table_name} WHERE place_id = '${placeId2 ?? placeId}'${conditions ? ` AND ${conditions}` : ''}) AS count`
         })
         .join(' UNION ALL ')
     : `SELECT 1 AS table_view_id, 0 AS count WHERE false`,

@@ -510,6 +510,7 @@ The user-facing documentation of this model lives in `docs/docsMd/user-roles_{de
 12. Owners are recognized by the 'owner' role given (the trigger that sets the owner roles uses above definition of what a user owns)
 13. Only the owner of an account (`accounts.user_id`) can create projects in that account. Enforced in `enforce_projects_write` (backend) and `checkWritePermission` (client)
 14. Only owners and designers of a project can create subprojects in it (writers may edit existing ones). Enforced in `enforce_subprojects_write` (backend) and `checkWritePermission` (client)
+15. Only project designers and owners can change or clear `projects.geometry`, the optional WGS84 MultiPolygon project area. This is a column-specific restriction in `enforce_projects_write`, not a change to permissions on other project fields.
 
 ## Implementation
 
@@ -1012,6 +1013,16 @@ child-before-parent across stages and abort the applies.
 
 ## What they are
 
+The current project area is an own `vector_layers` row with
+`own_table = 'current_project_area'` and no place level. It uses ordinary
+feature displays and a layer presentation. Its polygon comes directly
+from the selected project's `geometry`, not from a copy. The
+`projects` Electric shape includes all columns. `04_projectArea.sql` adds the
+area to existing PGlite databases without resetting their sync data. Both
+spatial filters and the three project-level quality controls use
+`project_area_matches`: coverage includes the perimeter, partial coverage
+counts as outside, and active modes exclude missing or empty geometries.
+
 Vector layers with `type = 'own'` draw the project's own data tables on the
 map: `places`, `actions`, `checks` and the observation tables (`observations_assigned`,
 `observations_assigned_lines`, `observations_to_assess`, `observations_not_to_assign`).
@@ -1169,6 +1180,42 @@ Navigating to its form retains
 can navigate to the correct subproject without narrowing the map. Selecting a
 scope in the drawer clears that override. Creation still requires a writable
 parent.
+
+### Project boundaries
+
+Designers and owners can use the geometry button in the project header to
+draw or edit the project area, including disconnected polygons. Under **Own**
+in the Layers panel, the boundary uses the project label (for
+example, **apflora area** in English) and has its own visibility and zoom
+controls. When enabled it appears under **Active**, where dragging its
+handle changes the overlay order. Designers can edit **Overall Display** and
+**Feature Displays** as for other own layers. An empty area is offered only
+to designers and owners. Outside a project the layer is not available. With no
+linked or saved viewport, the map fits the current project's area.
+
+The `current_project_area` own vector layer has no level. Offline project
+creation and server creation derive the same layer, display and presentation
+IDs. Receiving clients install `08_projectAreaLayer.sql` but rely on Electric
+for existing rows. On an existing server, apply this file, then
+`22_backfillProjectAreaLayers.sql` in a separate transaction. Imports or test
+fixtures that insert projects with `electric.syncing = true` can explicitly
+call `provision_project_area_layer(project_id)` as the database owner.
+
+The project header and Layers panel control the same **All / Inside / Outside**
+filter for places, observations, actions and checks. Inside means the whole
+geometry is covered, including the boundary itself. Crossing the boundary
+counts as outside. Records without geometry match neither spatial filter;
+without a project area, no spatial filter applies. The choice is per project
+and lasts for the browser tab's session. Regular lists and map layers match
+each record's own geometry; the tree also retains nonmatching ancestors so
+matching descendants remain reachable. The boundary does not
+restrict data entry. Separate quality controls flag outside places, actions
+and checks.
+
+An existing server database needs the project geometry column and spatial
+functions, write-permission checks and quality-control definitions before the
+dependent frontend is released. Deploying a new container alone does not
+rerun database initialization.
 
 ## The active object glows yellow on the map
 

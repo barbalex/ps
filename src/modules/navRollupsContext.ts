@@ -45,6 +45,7 @@ export type SubprojectCountKey =
 
 export type NavProjectRow = {
   project_id: string
+  has_project_area: boolean
   label: string | null
   type: string | null
   places_order_by: unknown
@@ -132,4 +133,9 @@ export const useNavRollups = (): NavRollups => {
     )
   }
   return rollups
+}
+
+export const useProjectLabel = (projectId?: string) => {
+  const rollups = useNavRollups()
+  return projectId ? rollups.projectRow(projectId)?.label?.trim() : undefined
 }

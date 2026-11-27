@@ -1,4 +1,7 @@
 import { useUrlFilter } from './useUrlFilter.ts'
+import { useProjectAreaFilter } from './useProjectAreaFilter.ts'
+import { andFilters } from './projectAreaFilter.ts'
+import { spatialListQuery } from './spatialListQuery.ts'
 import { useLiveQuery } from '@electric-sql/pglite-react'
 import { useAtom } from 'jotai'
 import { useLocation } from '@tanstack/react-router'
@@ -50,42 +53,22 @@ export const useActionsNavData = ({
   const isOpen = openNodesSet.has(ownArray.join('/'))
 
   const [filter] = useUrlFilter(placeId2 ? 'actions2' : 'actions1')
-  const filterString = filterStringFromFilter(filter)
+  const area = useProjectAreaFilter(projectId)
+  const filterString = andFilters(filterStringFromFilter(filter), area.matches('actions'))
   const isFiltered = !!filterString
 
-  const sql =
-    isOpen ?
-      `
-      WITH
-        count_unfiltered AS (SELECT count(*) FROM actions WHERE place_id = '${placeId2 ?? placeId}'),
-        count_filtered AS (SELECT count(*) FROM actions WHERE place_id = '${placeId2 ?? placeId}'${isFiltered ? ` AND ${filterString}` : ''})
-      SELECT
-        action_id AS id,
-        label,
-        count_unfiltered.count AS count_unfiltered,
-        count_filtered.count AS count_filtered
-      FROM actions, count_unfiltered, count_filtered
-      WHERE place_id = '${placeId2 ?? placeId}'
-        ${isFiltered ? ` AND ${filterString}` : ''}
-      ORDER BY label
-    `
-    : `
-      WITH
-        count_unfiltered AS (SELECT count(*) FROM actions WHERE place_id = '${placeId2 ?? placeId}'),
-        count_filtered AS (SELECT count(*) FROM actions WHERE place_id = '${placeId2 ?? placeId}'${isFiltered ? ` AND ${filterString}` : ''})
-      SELECT
-        count_unfiltered.count AS count_unfiltered,
-        count_filtered.count AS count_filtered
-      FROM count_unfiltered, count_filtered
-    `
+  const sql = spatialListQuery({
+    open: isOpen, select: 'action_id AS id, label', from: 'actions',
+    where: `place_id = '${placeId2 ?? placeId}'`, filter: filterString,
+  })
 
   const res = useLiveQuery<NavData[number]>(sql)
 
   const loading = res === undefined
 
-  const navs: NavData = res?.rows ?? []
-  const countUnfiltered = navs[0]?.count_unfiltered ?? 0
-  const countFiltered = navs[0]?.count_filtered ?? 0
+  const navs: NavData = res?.rows.filter((row) => row.id) ?? []
+  const countUnfiltered = res?.rows[0]?.count_unfiltered ?? 0
+  const countFiltered = res?.rows[0]?.count_filtered ?? 0
 
   const urlPath = location.pathname.split('/').filter((p) => p !== '')
   const isInActiveNodeArray = ownArray.every((part, i) => urlPath[i] === part)

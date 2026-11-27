@@ -167,6 +167,8 @@ export default interface Projects {
   updated_at: Date;
 
   updated_by: string | null;
+
+  geometry: unknown | null;
 }
 
 /**
@@ -409,6 +411,8 @@ export interface ProjectsInitializer {
   updated_at?: Date;
 
   updated_by?: string | null;
+
+  geometry?: unknown | null;
 }
 
 /**
@@ -573,4 +577,6 @@ export interface ProjectsMutator {
   updated_at?: Date;
 
   updated_by?: string | null;
+
+  geometry?: unknown | null;
 }

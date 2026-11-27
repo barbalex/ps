@@ -4,6 +4,29 @@
 
 INSERT INTO qcs (name_de, name_en, name_fr, name_it, level, filter_by_year, sql)
 VALUES
+('Orte ausserhalb des Projektgebiets', 'Places outside the project area', 'Lieux hors du périmètre du projet', 'Luoghi fuori dall’area del progetto', 'project', false, 'SELECT p.label, ''/data/projects/'' || proj.project_id || ''/subprojects/'' || sp.subproject_id || COALESCE(''/places/'' || p.parent_id, '''') || ''/places/'' || p.place_id || ''/place'' AS url
+FROM places p
+LEFT JOIN places parent ON parent.place_id = p.parent_id
+JOIN subprojects sp ON sp.subproject_id = COALESCE(p.subproject_id, parent.subproject_id)
+JOIN projects proj ON proj.project_id = sp.project_id
+WHERE proj.project_id = $1 AND project_area_matches(p.geometry, proj.geometry, ''outside'')
+ORDER BY p.label'),
+('Massnahmen ausserhalb des Projektgebiets', 'Actions outside the project area', 'Actions hors du périmètre du projet', 'Misure fuori dall’area del progetto', 'project', false, 'SELECT a.label, ''/data/projects/'' || proj.project_id || ''/subprojects/'' || sp.subproject_id || COALESCE(''/places/'' || p.parent_id, '''') || ''/places/'' || p.place_id || ''/actions/'' || a.action_id || ''/action'' AS url
+FROM actions a
+JOIN places p ON p.place_id = a.place_id
+LEFT JOIN places parent ON parent.place_id = p.parent_id
+JOIN subprojects sp ON sp.subproject_id = COALESCE(p.subproject_id, parent.subproject_id)
+JOIN projects proj ON proj.project_id = sp.project_id
+WHERE proj.project_id = $1 AND project_area_matches(a.geometry, proj.geometry, ''outside'')
+ORDER BY a.label'),
+('Kontrollen ausserhalb des Projektgebiets', 'Checks outside the project area', 'Contrôles hors du périmètre du projet', 'Controlli fuori dall’area del progetto', 'project', false, 'SELECT c.label, ''/data/projects/'' || proj.project_id || ''/subprojects/'' || sp.subproject_id || COALESCE(''/places/'' || p.parent_id, '''') || ''/places/'' || p.place_id || ''/checks/'' || c.check_id || ''/check'' AS url
+FROM checks c
+JOIN places p ON p.place_id = c.place_id
+LEFT JOIN places parent ON parent.place_id = p.parent_id
+JOIN subprojects sp ON sp.subproject_id = COALESCE(p.subproject_id, parent.subproject_id)
+JOIN projects proj ON proj.project_id = sp.project_id
+WHERE proj.project_id = $1 AND project_area_matches(c.geometry, proj.geometry, ''outside'')
+ORDER BY c.label'),
 ('Projekte ohne Namen', 'Projects without name', 'Projets sans nom', 'Progetti senza nome', 'project', false, 'SELECT p.label, ''/data/projects/'' || p.project_id || ''/project'' AS url
 FROM projects p
 WHERE p.project_id = $1
@@ -145,24 +168,24 @@ WHERE ws.project_id = $1
 FROM wfs_service_layers wsl
 WHERE wsl.wfs_service_id = ws.wfs_service_id)
 ORDER BY ws.label'),
-('Vektor-Ebenen ohne Anzeigen', 'Vector layers without display', 'Couches vectorielles sans affichage', 'Layer vettoriali senza visualizzazione', 'project', false, 'SELECT COALESCE(NULLIF(vl.label_en,''), vl.label_de, vl.name) AS label, ''/data/projects/'' || vl.project_id || ''/vector-layers/'' || vl.vector_layer_id || ''/vector-layer'' AS url
+('Vektor-Ebenen ohne Anzeigen', 'Vector layers without display', 'Couches vectorielles sans affichage', 'Layer vettoriali senza visualizzazione', 'project', false, 'SELECT COALESCE(NULLIF(vl.label_en,''''), vl.label_de, vl.name) AS label, ''/data/projects/'' || vl.project_id || ''/vector-layers/'' || vl.vector_layer_id || ''/vector-layer'' AS url
 FROM vector_layers vl
 WHERE vl.project_id = $1
   AND NOT EXISTS (SELECT 1
 FROM vector_layer_displays vld
 WHERE vld.vector_layer_id = vl.vector_layer_id)
 ORDER BY vl.label_de, vl.name'),
-('Vektor-Ebenen ohne Typ', 'Vector layers without type', 'Couches vectorielles sans type', 'Layer vettoriali senza tipo', 'project', false, 'SELECT COALESCE(NULLIF(vl.label_en,''), vl.label_de, vl.name) AS label, ''/data/projects/'' || vl.project_id || ''/vector-layers/'' || vl.vector_layer_id || ''/vector-layer'' AS url
+('Vektor-Ebenen ohne Typ', 'Vector layers without type', 'Couches vectorielles sans type', 'Layer vettoriali senza tipo', 'project', false, 'SELECT COALESCE(NULLIF(vl.label_en,''''), vl.label_de, vl.name) AS label, ''/data/projects/'' || vl.project_id || ''/vector-layers/'' || vl.vector_layer_id || ''/vector-layer'' AS url
 FROM vector_layers vl
 WHERE vl.project_id = $1
   AND vl.type IS NULL
 ORDER BY vl.label_de, vl.name'),
-('Vektor-Ebenen ohne Name', 'Vector layers without name', 'Couches vectorielles sans nom', 'Layer vettoriali senza nome', 'project', false, 'SELECT COALESCE(NULLIF(vl.label_en,''), vl.label_de, vl.name) AS label, ''/data/projects/'' || vl.project_id || ''/vector-layers/'' || vl.vector_layer_id || ''/vector-layer'' AS url
+('Vektor-Ebenen ohne Name', 'Vector layers without name', 'Couches vectorielles sans nom', 'Layer vettoriali senza nome', 'project', false, 'SELECT COALESCE(NULLIF(vl.label_en,''''), vl.label_de, vl.name) AS label, ''/data/projects/'' || vl.project_id || ''/vector-layers/'' || vl.vector_layer_id || ''/vector-layer'' AS url
 FROM vector_layers vl
 WHERE vl.project_id = $1
   AND vl.name IS NULL
 ORDER BY vl.label_de, vl.name'),
-('Vektor-Ebene ohne «Presentation»', 'Vector layer without presentation', 'Couche vectorielle sans présentation', 'Layer vettoriale senza presentazione', 'project', false, 'SELECT COALESCE(NULLIF(vl.label_en,''), vl.label_de, vl.name) AS label, ''/data/projects/'' || vl.project_id || ''/vector-layers/'' || vl.vector_layer_id || ''/vector-layer'' AS url
+('Vektor-Ebene ohne «Presentation»', 'Vector layer without presentation', 'Couche vectorielle sans présentation', 'Layer vettoriale senza presentazione', 'project', false, 'SELECT COALESCE(NULLIF(vl.label_en,''''), vl.label_de, vl.name) AS label, ''/data/projects/'' || vl.project_id || ''/vector-layers/'' || vl.vector_layer_id || ''/vector-layer'' AS url
 FROM vector_layers vl
 WHERE vl.project_id = $1
   AND vl.display_by_property IS NOT NULL

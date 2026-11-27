@@ -3,6 +3,7 @@ import { useLiveQuery } from '@electric-sql/pglite-react'
 import { useAtom } from 'jotai'
 
 import { getOwnLayerLabels } from './ownLayerLabels.ts'
+import { useProjectLabel } from './navRollupsContext.ts'
 import { languageAtom } from '../store.ts'
 import type { Language } from '../store.ts'
 import type VectorLayers from '../models/public/VectorLayers.ts'
@@ -56,6 +57,7 @@ export const getOwnVectorLayerLabel = (
   vectorLayer: Pick<VectorLayers, 'own_table' | 'own_table_level'>,
   language: Language,
   placeLevels: PlaceLevels[] | undefined,
+  projectLabel?: string,
 ): string => {
   const labels = getOwnLayerLabels(language)
   const placeLevel = placeLevels?.find(
@@ -64,6 +66,8 @@ export const getOwnVectorLayerLabel = (
   const singular = singularName(placeLevel, language)
 
   switch (vectorLayer.own_table) {
+    case 'current_project_area':
+      return labels.projectAreaLabel(projectLabel)
     case 'places':
       return pluralName(placeLevel, language) ?? labels.placesLabel
     case 'actions':
@@ -98,10 +102,11 @@ export const getVectorLayerLabel = (
   vectorLayer: VectorLayers | null | undefined,
   language: Language,
   placeLevels: PlaceLevels[] | undefined,
+  projectLabel?: string,
 ): string => {
   if (!vectorLayer) return ''
   const label = vectorLayer.type === 'own'
-    ? getOwnVectorLayerLabel(vectorLayer, language, placeLevels)
+    ? getOwnVectorLayerLabel(vectorLayer, language, placeLevels, projectLabel)
     : vectorLayer[`label_${language}`]?.trim() || vectorLayer.label_de
   return (
     label?.trim() ||
@@ -126,7 +131,8 @@ export const useVectorLayerLabel = (
 ): string => {
   const [language] = useAtom(languageAtom)
   const placeLevels = usePlaceLevels(projectId)
-  return getVectorLayerLabel(vectorLayer, language, placeLevels)
+  const projectLabel = useProjectLabel(projectId)
+  return getVectorLayerLabel(vectorLayer, language, placeLevels, projectLabel)
 }
 
 /** Map a list of vector layers to their display labels. */
@@ -136,9 +142,10 @@ export const useVectorLayerLabels = (
 ): string[] => {
   const [language] = useAtom(languageAtom)
   const placeLevels = usePlaceLevels(projectId)
+  const projectLabel = useProjectLabel(projectId)
   return useMemo(
     () =>
-      vectorLayers.map((vl) => getVectorLayerLabel(vl, language, placeLevels)),
-    [vectorLayers, language, placeLevels],
+      vectorLayers.map((vl) => getVectorLayerLabel(vl, language, placeLevels, projectLabel)),
+    [vectorLayers, language, placeLevels, projectLabel],
   )
 }

@@ -50,7 +50,7 @@ export const useUrlPanes = () => {
       const isDefault =
         nextPanes.length === DEFAULT_PANES.length &&
         nextPanes.every((pane, i) => pane === DEFAULT_PANES[i])
-      navigate({
+      return navigate({
         // undefined (or the default layout) removes the param
         search: (prev: Record<string, unknown>) => ({
           ...prev,

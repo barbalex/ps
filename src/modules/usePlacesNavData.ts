@@ -1,4 +1,7 @@
 import { useUrlFilter } from './useUrlFilter.ts'
+import { useProjectAreaFilter } from './useProjectAreaFilter.ts'
+import { andFilters } from './projectAreaFilter.ts'
+import { spatialListQuery } from './spatialListQuery.ts'
 import { useLiveQuery } from '@electric-sql/pglite-react'
 import { useAtom } from 'jotai'
 import { useLocation } from '@tanstack/react-router'
@@ -15,6 +18,7 @@ type Props = {
   projectId: string
   subprojectId: string
   placeId?: string
+  navigation?: boolean
 }
 
 type NavDataOpen = {
@@ -33,6 +37,7 @@ export const usePlacesNavData = ({
   projectId,
   subprojectId,
   placeId,
+  navigation = false,
 }: Props) => {
   const [openNodesSet] = useAtom(treeOpenNodesSetAtom)
   const [language] = useAtom(languageAtom)
@@ -52,7 +57,9 @@ export const usePlacesNavData = ({
   const isOpen = openNodesSet.has(ownArray.join('/'))
 
   const [filter] = useUrlFilter(placeId ? 'places2' : 'places1')
-  const filterString = filterStringFromFilter(filter, 'places')
+  const area = useProjectAreaFilter(projectId)
+  const filterString = andFilters(filterStringFromFilter(filter, 'places'),
+    navigation ? area.navigationPlaces(!placeId) : area.matches('places'))
   const isFiltered = !!filterString
 
   // shared lookups (see NavDataProvider) instead of per-sibling queries for
@@ -85,41 +92,12 @@ export const usePlacesNavData = ({
     'label',
   ].join(', ')
 
-  const sql =
-    isOpen ?
-      `
-      WITH
-        count_unfiltered AS (SELECT count(*) FROM places WHERE subproject_id = '${subprojectId}' AND parent_id ${
-          placeId ? `= '${placeId}'` : `IS NULL`
-        }),
-        count_filtered AS (SELECT count(*) FROM places WHERE subproject_id = '${subprojectId}' AND parent_id ${
-          placeId ? `= '${placeId}'` : `IS NULL`
-        } ${isFiltered ? ` AND ${filterString}` : ''})
-      SELECT
-        place_id AS id,
-        label,
-        count_unfiltered.count AS count_unfiltered,
-        count_filtered.count AS count_filtered
-      FROM places, count_unfiltered, count_filtered
-      WHERE
-        places.subproject_id = '${subprojectId}'
-        AND places.parent_id ${placeId ? `= '${placeId}'` : `IS NULL`}
-        ${isFiltered ? ` AND ${filterString}` : ''}
-      ORDER BY ${orderBySql}
-    `
-    : `
-      WITH
-        count_unfiltered AS (SELECT count(*) FROM places WHERE subproject_id = '${subprojectId}' and parent_id ${
-          placeId ? `= '${placeId}'` : `IS NULL`
-        }),
-        count_filtered AS (SELECT count(*) FROM places WHERE subproject_id = '${subprojectId}' and parent_id ${
-          placeId ? `= '${placeId}'` : `IS NULL`
-        } ${isFiltered ? ` AND ${filterString}` : ''})
-      SELECT
-        count_unfiltered.count AS count_unfiltered,
-        count_filtered.count AS count_filtered
-      FROM count_unfiltered, count_filtered
-    `
+  const sql = spatialListQuery({
+    open: isOpen, select: `place_id AS id, label${placesOrderBy.length ? ', data' : ''}`,
+    from: 'places',
+    where: `subproject_id = '${subprojectId}' AND parent_id ${placeId ? `= '${placeId}'` : 'IS NULL'}`,
+    filter: filterString, orderBy: orderBySql,
+  })
   const res = useLiveQuery(sql)
 
   const level = placeId ? 2 : 1
@@ -128,9 +106,10 @@ export const usePlacesNavData = ({
 
   const loading = res === undefined
 
-  const navs = (res?.rows ?? []) as NavDataOpen[] | NavDataClosed[]
-  const countUnfiltered = navs[0]?.count_unfiltered ?? 0
-  const countFiltered = navs[0]?.count_filtered ?? 0
+  const navs = (res?.rows ?? []).filter((row) => row.id) as NavDataOpen[]
+  const counts = res?.rows[0] as NavDataClosed | undefined
+  const countUnfiltered = counts?.count_unfiltered ?? 0
+  const countFiltered = counts?.count_filtered ?? 0
 
   const parentUrl = `/${parentArray.join('/')}`
   const ownUrl = `/${ownArray.join('/')}`

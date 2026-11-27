@@ -1,0 +1,2 @@
+export interface projects_create_area_layer_trigger_params {
+}

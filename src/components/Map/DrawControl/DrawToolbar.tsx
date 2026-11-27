@@ -4,7 +4,7 @@ import { useMap } from 'react-leaflet'
 
 import type { Language } from '../../../store.ts'
 
-export const DrawToolbar = ({ language, createOnly = false }: { language: Language; createOnly?: boolean }) => {
+export const DrawToolbar = ({ language, createOnly = false, polygonsOnly = false }: { language: Language; createOnly?: boolean; polygonsOnly?: boolean }) => {
   const map = useMap()
   const [tooltip, setTooltip] = useState<{
     target: HTMLElement
@@ -17,13 +17,13 @@ export const DrawToolbar = ({ language, createOnly = false }: { language: Langua
     geoman.setLang(language)
     geoman.addControls({
       position: 'topleft',
-      drawMarker: true,
+      drawMarker: !polygonsOnly,
       drawCircleMarker: false,
-      drawPolyline: true,
+      drawPolyline: !polygonsOnly,
       drawRectangle: true,
       drawPolygon: true,
       drawText: false,
-      drawCircle: !createOnly,
+      drawCircle: !createOnly && !polygonsOnly,
       editMode: !createOnly,
       dragMode: !createOnly,
       cutPolygon: false,
@@ -65,7 +65,7 @@ export const DrawToolbar = ({ language, createOnly = false }: { language: Langua
       controller.abort()
       geoman.removeControls()
     }
-  }, [map, language, createOnly])
+  }, [map, language, createOnly, polygonsOnly])
 
   return (
     tooltip && (

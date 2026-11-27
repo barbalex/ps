@@ -1,4 +1,5 @@
 import { Places1 } from './TableLayers/Places1.tsx'
+import { CurrentProjectArea } from './TableLayers/CurrentProjectArea.tsx'
 import { Places2 } from './TableLayers/Places2.tsx'
 import { Checks1 } from './TableLayers/Checks1.tsx'
 import { Checks2 } from './TableLayers/Checks2.tsx'
@@ -12,6 +13,7 @@ import { ObservationsToAssess } from './TableLayers/ObservationsToAssess.tsx'
 import { ObservationsNotToAssign } from './TableLayers/ObservationsNotToAssign.tsx'
 
 export const tableLayerToComponent = {
+  current_project_area: CurrentProjectArea,
   places1: Places1,
   places2: Places2,
   checks1: Checks1,

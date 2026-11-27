@@ -38,6 +38,51 @@ for (const file of ['index.js', 'index.cjs']) {
     source = source.replace(watermark, `$1=$2>$3||/* ps:resume-watermark */(!${called}&&$2=== $3&&$2>=0n),$4=$2>=$3&&`)
     writeFileSync(path, source)
   }
+  // 0.7.0 fires commitUpToLsn without awaiting it, then reads stream
+  // readiness and offsets *inside* the async transaction. Another stream
+  // can advance both while that commit is pending (or even after it fails).
+  if (!source.includes('/* ps:ordered-apply */')) {
+    const replaceOnce = (from, to) => {
+      if (source.split(from).length !== 2) throw new Error(`Unknown pglite-sync apply logic in ${file}: ${from}`)
+      source = source.replace(from, () => to)
+    }
+    const esm = file === 'index.js'
+    const msg = esm ? 'l' : 'p'
+    const errorHandler = esm ? 'a' : 'o'
+    const commit = esm ? 'te' : 'ae'
+    replaceOnce(`return A.subscribe(async ${msg}=>{if(y)return;`, `
+      /* ps:ordered-apply */
+      let queue=Promise.resolve(), failed=false;
+      const caughtUp=new Set(), cursors={...w?.shape_metadata};
+      return A.subscribe(${msg}=>{
+        const received=new Map(${msg}.map(({shape})=>[shape,{
+          handle:A.shapes[shape].shapeHandle,offset:A.shapes[shape].lastOffset
+        }]));
+        queue=queue.then(async ()=>{
+          if(y||failed)return;
+          for(const [shape,cursor] of received)cursors[shape]=cursor;
+          for(const {shape,headers} of ${msg}){
+            if(headers.control==="up-to-date")caughtUp.add(shape);
+            if(headers.control==="must-refetch")caughtUp.delete(shape);
+          }
+    `)
+    replaceOnce('Object.fromEntries(Object.keys(m).map(C=>[C,{handle:A.shapes[C].shapeHandle,offset:A.shapes[C].lastOffset}]))', 'cursors')
+    const saveState = esm ? 'V' : 'z'
+    replaceOnce(`f&&await ${saveState}({pg:O`, `f&&Array.from(j.values()).every(buffer=>buffer.size===0)&&await ${saveState}({pg:O`)
+    replaceOnce('D&&!d&&A.isUpToDate', 'D&&!d&&!y&&caughtUp.size===Object.keys(m).length&&Array.from(j.values()).every(buffer=>buffer.size===0)')
+    const end = `(${esm ? 'c' : 'l'}=>setTimeout(${esm ? 'c' : 'l'})))},${errorHandler})`
+    replaceOnce(`(O||C)&&(${commit}(N),await new Promise${end}`, `
+          if((O||C)&&(d||caughtUp.size===Object.keys(m).length))await ${commit}(N);
+        }).catch(cause=>{
+          failed=true;
+          const error=new Error("Sync apply failed: "+cause,{cause});
+          error.name="SyncApplyError";
+          if(${errorHandler})${errorHandler}(error);else throw error;
+        });
+        return queue;
+      },${errorHandler})`)
+    writeFileSync(path, source)
+  }
   if (source.includes('/* ps:json-column-list */')) continue
   let count = 0
   const patched = source.replace(pattern, (_m, insert, _schema, _table, rest, cols) => {

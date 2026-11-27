@@ -634,6 +634,8 @@ export const SqlInitializer = () => {
           triggersUpdatedAtSql,
           immutableDateSql,
           createTablesSql,
+          projectAreaSql,
+          projectAreaLayerSql,
           triggersSql,
           writeAccessHelpersSql,
           repairNestedGeometriesRaw,
@@ -650,6 +652,8 @@ export const SqlInitializer = () => {
           import(`../sql/triggersUpdatedAt.sql?raw`).then((m) => m.default),
           import(`../sql/immutableDate.sql?raw`).then((m) => m.default),
           import(`../sql/createTables.sql?raw`).then((m) => m.default),
+          import(`../sql/projectArea.sql?raw`).then((m) => m.default),
+          import(`../sql/projectAreaLayer.sql?raw`).then((m) => m.default),
           import(`../sql/triggers.sql?raw`).then((m) => m.default),
           import(`../sql/writeAccessHelpers.sql?raw`).then((m) => m.default),
           // the geometry repair is part of the initialization too: changes
@@ -668,6 +672,8 @@ export const SqlInitializer = () => {
             triggersUpdatedAtSql,
             immutableDateSql,
             createTablesSql,
+            projectAreaSql,
+            projectAreaLayerSql,
             triggersSql,
             writeAccessHelpersSql,
             repairNestedGeometriesRaw,
@@ -749,6 +755,8 @@ export const SqlInitializer = () => {
 
         if (projectsTableExists) {
           // heal existing local databases
+          await exec(projectAreaSql, 'projectArea.sql')
+          await exec(projectAreaLayerSql, 'projectAreaLayer.sql')
           await exec(healTableViewRenameSql, 'healTableViewRenameSql')
           await exec(
             healExistingDbSql,
@@ -795,7 +803,9 @@ export const SqlInitializer = () => {
           'postgis extension',
         )
         await exec(createTablesSql, 'createTables.sql')
+        await exec(projectAreaSql, 'projectArea.sql')
         await exec(triggersSql, 'triggers.sql')
+        await exec(projectAreaLayerSql, 'projectAreaLayer.sql')
         await exec(writeAccessHelpersSql, 'writeAccessHelpers.sql')
         await exec(
           triggersUpdatedAtSql,

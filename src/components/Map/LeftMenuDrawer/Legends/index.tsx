@@ -4,7 +4,10 @@ import { useAtom } from 'jotai'
 
 import { WmsLegend } from './WMS.tsx'
 import { VectorLegend } from './Vector/index.tsx'
-import { mapLayerSortingAtom, languageAtom } from '../../../../store.ts'
+import { languageAtom } from '../../../../store.ts'
+import { useProjectLabel } from '../../../../modules/navRollupsContext.ts'
+import { projectAreaTable, useProjectAreaLayer } from '../../../../modules/projectAreaLayer.tsx'
+import { useUrlLayers } from '../../../../modules/useUrlLayers.ts'
 import {
   getVectorLayerLabel,
   usePlaceLevels,
@@ -32,10 +35,12 @@ type ActiveVectorLayer = VectorLayers & {
 }
 
 export const Legends = () => {
-  const [mapLayerSorting] = useAtom(mapLayerSortingAtom)
+  const { layers, isLayerVisible } = useUrlLayers()
   const [language] = useAtom(languageAtom)
   const { projectId } = useParams({ strict: false })
+  const { available } = useProjectAreaLayer(projectId)
   const placeLevels = usePlaceLevels(projectId)
+  const projectLabel = useProjectLabel(projectId)
 
   const resWmsLayers = useLiveQuery(
     `
@@ -81,25 +86,29 @@ export const Legends = () => {
     FROM vector_layers vl
     INNER JOIN layer_presentations lp ON vl.vector_layer_id = lp.vector_layer_id
     WHERE 
-      lp.active = true
+      (lp.active OR vl.own_table = '${projectAreaTable}')
       ${projectId ? `AND vl.project_id = '${projectId}'` : ''}
     GROUP BY vl.vector_layer_id
   `,
   )
   const activeVectorLayers = (
     (resVectorLayers?.rows ?? []) as unknown as ActiveVectorLayer[]
-  ).map((l) => ({
+  ).filter((layer) => {
+    if (layer.own_table !== projectAreaTable) return true
+    const presentation = layer.layer_presentations?.[0]
+    return layer.project_id === projectId && available && !!presentation && isLayerVisible(presentation.layer_presentation_id, presentation.active)
+  }).map((l) => ({
     ...l,
-    label: getVectorLayerLabel(l, language, placeLevels),
+    label: getVectorLayerLabel(l, language, placeLevels, projectLabel),
   }))
 
-  // sort by mapLayerSorting
+  // Match the draw order, including a personal URL override.
   const activeLayers = [...activeWmsLayers, ...activeVectorLayers].sort(
     (a, b) => {
-      const aIndex = mapLayerSorting.findIndex(
+      const aIndex = layers.findIndex(
         (ls) => ls === a.layer_presentations?.[0]?.layer_presentation_id,
       )
-      const bIndex = mapLayerSorting.findIndex(
+      const bIndex = layers.findIndex(
         (ls) => ls === b.layer_presentations?.[0]?.layer_presentation_id,
       )
       return aIndex - bIndex

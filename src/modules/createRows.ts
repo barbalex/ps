@@ -95,6 +95,8 @@ export const createProject = async (account_id?: string) => {
   // The local projects_insert_owner_trigger creates the directory row
   // (claimed) and the 'own' project role automatically — locally and,
   // after the queued insert syncs, on the server as well.
+  // The area-layer trigger likewise creates the layer, display and
+  // presentation with matching IDs on both sides; do not queue those rows.
 
   return project_id
 }

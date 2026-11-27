@@ -8,6 +8,7 @@ import { SliderField } from '../../../shared/SliderField.tsx'
 import { SwitchField as SwitchFieldBase } from '../../../shared/SwitchField.tsx'
 import { TextField } from '../../../shared/TextField.tsx'
 import { getValueFromChange } from '../../../../modules/getValueFromChange.ts'
+import { projectAreaTable } from '../../../../modules/projectAreaLayer.tsx'
 import { Loading as LoadingBase } from '../../../shared/Loading.tsx'
 import {
   addOperationAtom,
@@ -110,7 +111,7 @@ export const LayerPresentationForm = ({ layer }: Props) => {
   return (
     <ErrorBoundary>
       <div className={`form-container-embedded ${styles.container}`}>
-        {row.vector_layer_id && row.may_design && layer.own_table !== 'observations_assigned_lines' && (
+        {row.vector_layer_id && row.may_design && layer.own_table !== 'observations_assigned_lines' && layer.own_table !== projectAreaTable && (
           <SwitchField
             label={formatMessage({ id: 'clusterDefault', defaultMessage: 'Punktmarker gruppieren (Projektstandard)' })}
             name="cluster_markers"

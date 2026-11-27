@@ -26,14 +26,14 @@ export const Places2 = ({
     firstPlacesIdx !== -1 ? pathParts.indexOf('places', firstPlacesIdx + 1) : -1
   const placeId2 =
     secondPlacesIdx !== -1 ? pathParts[secondPlacesIdx + 1] : undefined
-  const { scopeFilter, scopeId } = useOwnLayerScope()
+  const { scopeFilter, scopeId, areaFilter } = useOwnLayerScope()
   const envelope = useViewportEnvelope()
   const res = useLiveQuery<Places & { edit_version: string | null }>(
     `SELECT place_id, subproject_id, parent_id, level, since, until, data,
       ST_AsGeoJSON(geometry)::json as geometry, bbox, relevant_for_reports, label, created_at, updated_at, updated_by,
       (SELECT max(t.updated_at) FROM places t
         WHERE t.parent_id IS NOT NULL AND t.subproject_id ${scopeFilter} AND t.geometry IS NOT NULL) AS edit_version
-    FROM places WHERE parent_id IS NOT NULL AND subproject_id ${scopeFilter} AND geometry IS NOT NULL${viewportPredicate('places.geometry')}`,
+    FROM places WHERE parent_id IS NOT NULL AND subproject_id ${scopeFilter} AND geometry IS NOT NULL${areaFilter('places')}${viewportPredicate('places.geometry')}`,
     [scopeId, ...viewportParams(envelope)],
   )
 

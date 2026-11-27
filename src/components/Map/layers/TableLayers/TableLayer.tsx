@@ -83,7 +83,7 @@ export const TableLayer = ({
   activeId = null,
   activeIdField = null,
 }: TableLayerProps) => {
-  const { projectId, subprojectId, filterSql } = useOwnLayerScope()
+  const { projectId, subprojectId, filterSql, areaMode } = useOwnLayerScope()
   const confirmAssigningToSingleTarget = useAtomValue(
     confirmAssigningToSingleTargetAtom,
   )
@@ -151,6 +151,7 @@ export const TableLayer = ({
       String(properties.place_id ?? ''),
       String(properties.check_id ?? ''),
       String(properties.action_id ?? ''),
+      String(properties.project_id ?? ''),
     ]
     return parts.some((part) => part !== '') ? parts.join('_') : undefined
   }, [])
@@ -176,7 +177,7 @@ export const TableLayer = ({
         geomanIgnore
         cluster={layerPresentation.cluster_markers && !isDraggable && !droppableLayers.includes(layerNameForState as string) && layer.own_table !== 'observations_assigned_lines'}
         clusterMaxZoom={layerPresentation.max_zoom}
-        resetKey={`${subprojectId ?? projectId}/${filterSql}/${editVersion ?? ''}/${JSON.stringify(firstDisplay)}/${activeId ?? ''}/${isDraggable}`}
+        resetKey={`${subprojectId ?? projectId}/${filterSql}/${areaMode}/${editVersion ?? ''}/${JSON.stringify(vectorLayerDisplays)}/${layer.display_by_property}/${layerPresentation.opacity_percent}/${activeId ?? ''}/${isDraggable}`}
         data={data}
         featureKey={featureKey}
         // style by properties, use a function that receives the feature: https://stackoverflow.com/a/66106512/712005
@@ -323,7 +324,7 @@ export const TableLayer = ({
                 }, 150)
 
                 assignToNearestDroppable({
-                  scope: { projectId, subprojectId, filterSql },
+                  scope: { projectId, subprojectId, filterSql, areaMode },
                   latLng: e.latlng,
                   observationId: feature.properties?.observation_id,
                   map,
@@ -471,7 +472,7 @@ export const TableLayer = ({
                 map._isDraggingObservation = false
               }, 150)
               assignToNearestDroppable({
-                scope: { projectId, subprojectId, filterSql },
+                scope: { projectId, subprojectId, filterSql, areaMode },
                 latLng: position,
                 observationId: marker.feature!.properties?.observation_id,
                 map,

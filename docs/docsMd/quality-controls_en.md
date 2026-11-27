@@ -15,3 +15,5 @@ The result is lists of suspicious records that can be corrected one by one.
 Quality controls do not interrupt you during data entry. You can leave a form even if not all required fields have been filled in. But if you forget to follow up, a quality control will hopefully raise the alarm.
 
 Quality controls should trigger as few false alarms as possible — ideally none at all under normal circumstances.
+
+**Outside the project area:** Three controls flag places, actions and checks whose geometry lies partly or wholly outside the project boundary. Touching the boundary is fine. If the project or the record has no geometry, these controls do not flag it.

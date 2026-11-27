@@ -15,3 +15,5 @@ Das Ergebnis sind Listen von verdächtigen Datensätzen. Sie können nacheinande
 Qualitätskontrollen unterbrechen dich nicht während der Eingabe. Du kannst ein Formular auch verlassen, wenn noch nicht alle erforderlichen Felder ausgefüllt wurden. Aber wenn du vergisst, das nachzuholen, schlägt hoffentlich eine Qualitätskontrolle Alarm.
 
 Qualitätskontrollen sollten aber möglichst wenige, im Normalfall keine falschen Alarme schlagen.
+
+**Ausserhalb des Projektgebiets:** Drei Kontrollen melden Orte, Massnahmen und Kontrollen, deren Geometrie teilweise oder ganz ausserhalb des Projektgebiets liegt. Eine Berührung der Grenze zählt nicht als Überschreitung. Fehlt die Geometrie des Projekts oder des Datensatzes, erfolgt keine Meldung.

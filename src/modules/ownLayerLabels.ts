@@ -1,6 +1,8 @@
+import { createIntl, type IntlShape } from 'react-intl'
 import enMessages from '../i18n/en.json'
 import frMessages from '../i18n/fr.json'
 import itMessages from '../i18n/it.json'
+import { namedProjectAreaLabel, projectAreaLabel } from './projectAreaLayer.tsx'
 
 const deMessages = {
   '1noM6i': '{place}: Massnahmen',
@@ -21,6 +23,20 @@ const messagesByLanguage = {
   fr: frMessages,
   it: itMessages,
 } as const
+
+const formatters = new Map<string, IntlShape>()
+
+const getFormatter = (language: string) => {
+  const cached = formatters.get(language)
+  if (cached) return cached
+  const intl = createIntl({
+    locale: language,
+    defaultLocale: 'de',
+    messages: messagesByLanguage[language as keyof typeof messagesByLanguage],
+  })
+  formatters.set(language, intl)
+  return intl
+}
 
 const interpolate = (
   template: string,
@@ -57,6 +73,10 @@ export const getOwnLayerLabels = (language: string) => {
   )
 
   return {
+    projectAreaLabel: (project?: string) =>
+      project
+        ? getFormatter(language).formatMessage(namedProjectAreaLabel, { project })
+        : getFormatter(language).formatMessage(projectAreaLabel),
     placesLabel,
     actionsLabel,
     checksLabel,

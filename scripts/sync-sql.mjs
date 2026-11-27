@@ -31,7 +31,9 @@ const sharedAuthMappings = [
 const frontendMappings = [
   ['01_immutableDate.sql', 'immutableDate.sql'],
   ['04_createTables.sql', 'createTables.sql'],
+  ['04_projectArea.sql', 'projectArea.sql'],
   ['07_triggers.sql', 'triggers.sql'],
+  ['08_projectAreaLayer.sql', 'projectAreaLayer.sql'],
   ['11e_writeAccessHelpers.sql', 'writeAccessHelpers.sql'],
   [
     '08_syncIgnoreDuplicateInsertTriggers.sql',

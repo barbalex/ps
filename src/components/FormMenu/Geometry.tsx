@@ -15,11 +15,14 @@ import {
   type ExtentRow,
 } from '../../modules/geoQueries.ts'
 import { useLayerActivation } from '../../modules/useLayerActivation.ts'
+import { useUrlLayers } from '../../modules/useUrlLayers.ts'
+import { mapCreationAtom } from '../../modules/mapCreation.ts'
 import { useUrlPanes } from '../../modules/useUrlPanes.ts'
 import {
   editingActionGeometryAtom,
   editingCheckGeometryAtom,
   editingPlaceGeometryAtom,
+  editingProjectGeometryAtom,
   mapBoundsAtom,
 } from '../../store.ts'
 import styles from './Geometry.module.css'
@@ -42,6 +45,7 @@ const Tooltip = TooltipComponent as FC<
 
 // the own tables whose rows carry a user-editable geometry
 const OWN_TABLES = {
+  projects: { idName: 'project_id', editingAtom: editingProjectGeometryAtom },
   places: { idName: 'place_id', editingAtom: editingPlaceGeometryAtom },
   checks: { idName: 'check_id', editingAtom: editingCheckGeometryAtom },
   actions: { idName: 'action_id', editingAtom: editingActionGeometryAtom },
@@ -59,33 +63,45 @@ type OwnTableLayerRow = {
 }
 
 interface Props {
-  /** table of the row whose geometry this menu is about */
-  table: keyof typeof OWN_TABLES
-  /** id of that row: place_id, check_id or action_id. Nothing is rendered
+  /** id of that row. Nothing is rendered
    * without one (the route params are not known yet) */
   rowId: string | undefined
-  /** level of the place the row belongs to — picks the table layer to show */
-  level: 1 | 2
+  editable?: boolean
   /** DrawControl follows the active row's route. A map hit can be off-route. */
   selectRow?: () => Promise<void>
 }
+type GeometryProps = Props &
+  (
+    | { table: 'projects'; level?: never }
+    | { table: Exclude<keyof typeof OWN_TABLES, 'projects'>; level: 1 | 2 }
+  )
 
 /**
- * The place / action / check forms' header menu for the row's geometry.
+ * The project / place / action / check forms' header menu for the row's geometry.
  * The trigger shows whether a geometry exists (slashed polygon: none yet).
  * "Bearbeiten" toggles editing on the map (the DrawControl follows the
  * editing atom); switching it on opens the map and zooms to the geometry if
  * there is one. "Zoomen" only opens the map and zooms.
  */
-export const Geometry = ({ table, rowId, level, selectRow }: Props) => {
+export const Geometry = ({
+  table,
+  rowId,
+  level,
+  selectRow,
+  editable = true,
+}: GeometryProps) => {
   const { formatMessage } = useIntl()
   const { projectId } = useParams({ strict: false })
   const db = usePGlite()
   const [panes, setPanes] = useUrlPanes()
   const { activateLayer, joinRenderList } = useLayerActivation()
+  const { layers, setLayerVisible } = useUrlLayers()
+  const setCreation = useSetAtom(mapCreationAtom)
   const setMapBounds = useSetAtom(mapBoundsAtom)
   const { idName, editingAtom } = OWN_TABLES[table]
-  const [editingId, setEditingId] = useAtom(editingAtom)
+  const [editingId, setEditingId] = useAtom<
+    string | null | false, [string | null], void
+  >(editingAtom)
 
   // the row's extent, live. It is what "zoomen" fits the map to and what
   // says whether a geometry exists (queryExtent's notion: no geometry or an
@@ -104,14 +120,26 @@ export const Geometry = ({ table, rowId, level, selectRow }: Props) => {
   // undefined while the extent is loading: the trigger must not flash
   // "no geometry" for a row that has one
   const hasGeometry = extentRes === undefined ? undefined : extent !== null
+  if (!editable && !hasGeometry) return null
   const isEditing = editingId === rowId
 
   // opens the map and, if the row has a geometry, shows the layer that
   // draws it and fits the map to it
   const showOnMap = async () => {
     // 1. show map if not happening
-    if (!panes.includes('map')) setPanes([...panes, 'map'])
-
+    if (!panes.includes('map')) await setPanes([...panes, 'map'])
+    if (table === 'projects') {
+      const { rows } = await db.query<{ layer_presentation_id: string }>(
+        `SELECT lp.layer_presentation_id FROM vector_layers vl
+         JOIN layer_presentations lp USING (vector_layer_id)
+         WHERE vl.project_id = $1 AND vl.own_table = 'current_project_area'
+         ORDER BY lp.active DESC, lp.layer_presentation_id LIMIT 1`, [rowId],
+      )
+      const presentation = rows[0]?.layer_presentation_id
+      if (presentation && !layers.includes(presentation)) setLayerVisible(presentation, true)
+      if (extent) setMapBounds(extentToBoundsWithMargin(extent))
+      return
+    }
     if (!extent) return
 
     // 2. activate the layer if not active. Best effort: failing here (e.g.
@@ -151,7 +179,11 @@ export const Geometry = ({ table, rowId, level, selectRow }: Props) => {
     { checkedItems }: MenuCheckedValueChangeData,
   ) => {
     const enabling = checkedItems.includes(EDITING_VALUE)
-    if (enabling) await selectRow?.()
+    if (enabling && !editable) return
+    if (enabling) {
+      if (table === 'projects') setCreation(null)
+      await selectRow?.()
+    }
     setEditingId(enabling ? rowId : null)
     if (enabling) await showOnMap()
   }
@@ -161,7 +193,8 @@ export const Geometry = ({ table, rowId, level, selectRow }: Props) => {
   // the button is icon-only: the label makes it accessible (and testable) —
   // Fluent's tooltip content does not become its accessible name
   const triggerLabel =
-    hasGeometry === false ?
+    !editable ? formatMessage({ id: 'uQAMae', defaultMessage: 'Zoomen' })
+    : hasGeometry === false ?
       formatMessage({
         id: 'Q4WpBK',
         defaultMessage: 'Geometrie erfassen',
@@ -197,6 +230,7 @@ export const Geometry = ({ table, rowId, level, selectRow }: Props) => {
       <MenuPopover>
         <MenuList>
           <MenuItemCheckbox
+            disabled={!editable}
             name={EDITING_NAME}
             value={EDITING_VALUE}
             // the item navigates (opens the map): close the menu like the

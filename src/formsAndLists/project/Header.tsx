@@ -8,6 +8,9 @@ import { useIntl } from 'react-intl'
 import { FormHeader } from '../../components/FormHeader/index.tsx'
 import { HistoryToggleButton } from '../../components/shared/HistoryCompare/HistoryToggleButton.tsx'
 import { DesigningButton } from './DesigningButton.tsx'
+import { Geometry } from '../../components/FormMenu/Geometry.tsx'
+import { useMayDesignProject } from '../../modules/useMayDesignProject.ts'
+import { ProjectAreaFilter } from '../../components/shared/ProjectAreaFilter.tsx'
 import { ExportDumpButton } from '../projectDump/ExportDumpButton.tsx'
 import { addOperationAtom, addNotificationAtom, userIdAtom } from '../../store.ts'
 import { useAddProject } from '../../modules/useAddProject.ts'
@@ -32,6 +35,7 @@ export const Header = ({ autoFocusRef, from, label }: Props) => {
   const addOperation = useSetAtom(addOperationAtom)
   const addNotification = useSetAtom(addNotificationAtom)
   const userId = useAtomValue(userIdAtom)
+  const mayDesign = useMayDesignProject(projectId)
 
   const countRes = useLiveQuery(`SELECT COUNT(*) as count FROM projects`)
   const rowCount = (countRes?.rows?.[0]?.count as number | undefined) ?? 2
@@ -154,7 +158,9 @@ export const Header = ({ autoFocusRef, from, label }: Props) => {
       tableName="project"
       siblings={
         <>
-          <DesigningButton from={from} />
+          {projectId && <ProjectAreaFilter projectId={projectId} width={225} />}
+          {mayDesign && <DesigningButton />}
+          <Geometry table="projects" rowId={projectId} editable={mayDesign} />
           {projectId && <ExportDumpButton projectId={projectId} />}
           <HistoryToggleButton
             historiesPath={`${basePath}/histories`}

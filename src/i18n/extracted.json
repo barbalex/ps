@@ -761,6 +761,21 @@
   "anUnEx": {
     "defaultMessage": "Ein Fehler ist aufgetreten"
   },
+  "areaFilterAll": {
+    "defaultMessage": "Alle"
+  },
+  "areaFilterInside": {
+    "defaultMessage": "Innerhalb"
+  },
+  "areaFilterLabel": {
+    "defaultMessage": "Projektgebiet Filter"
+  },
+  "areaFilterMissing": {
+    "defaultMessage": "Kein Projektgebiet erfasst"
+  },
+  "areaFilterOutside": {
+    "defaultMessage": "Ausserhalb"
+  },
   "authConfirmPasswordInput": {
     "defaultMessage": "Passwort bestätigen"
   },
@@ -2048,6 +2063,9 @@
   "hZ9EyU": {
     "defaultMessage": "Französisch: Einzahl"
   },
+  "hideProjectAreaDiscard": {
+    "defaultMessage": "Projektgebiet ausblenden und die Bearbeitung beenden? Eine nicht abgeschlossene Zeichnung geht verloren."
+  },
   "homeMoreInfoText": {
     "defaultMessage": "...findest du in der {link}."
   },
@@ -2345,6 +2363,9 @@
   "mapCrsShared": {
     "defaultMessage": "Projektstandard für alle"
   },
+  "mapCurrentProjectArea": {
+    "defaultMessage": "Aktuelles Projektgebiet"
+  },
   "mapExportPng": {
     "defaultMessage": "Karte als PNG speichern"
   },
@@ -2377,6 +2398,9 @@
   },
   "mapMeasureStop": {
     "defaultMessage": "Messung beenden"
+  },
+  "mapNamedProjectArea": {
+    "defaultMessage": "Projektgebiet {project}"
   },
   "mapOpenLayers": {
     "defaultMessage": "Ebenenmenü öffnen"
@@ -2641,6 +2665,9 @@
   },
   "prjRptsInPrj": {
     "defaultMessage": "Berichte im Projekt anzeigen"
+  },
+  "projectAreaEditDenied": {
+    "defaultMessage": "Nur Projekt-Designer und -Eigentümer dürfen das Projektgebiet bearbeiten."
   },
   "projectExport.baseTable": {
     "defaultMessage": "Basis-Tabelle"

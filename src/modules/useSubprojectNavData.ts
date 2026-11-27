@@ -1,4 +1,5 @@
 import { useUrlFilter } from './useUrlFilter.ts'
+import { useProjectAreaFilter } from './useProjectAreaFilter.ts'
 import { useLiveQuery } from '@electric-sql/pglite-react'
 import { useAtom, useAtomValue } from 'jotai'
 import { isEqual } from 'es-toolkit'
@@ -35,7 +36,8 @@ export const useSubprojectNavData = ({ projectId, subprojectId }: Props) => {
     placesFilter as Record<string, unknown> & typeof placesFilter,
     '',
   )
-  const placesIsFiltered = !!placesFilterString
+  const area = useProjectAreaFilter(projectId)
+  const placesIsFiltered = !!placesFilterString || area.mode !== 'all'
 
   const [subprojectReportsFilter] = useUrlFilter('subprojectReports')
   const subprojectReportsFilterString = filterStringFromFilter(
@@ -218,7 +220,8 @@ export const useSubprojectNavData = ({ projectId, subprojectId }: Props) => {
             id: 'observations-to-assess',
             label: buildNavLabel({
               loading,
-              countFiltered: observationsToAssess?.count ?? 0,
+              isFiltered: area.mode !== 'all',
+              countFiltered: observationsToAssess?.filtered ?? 0,
               countUnfiltered: observationsToAssess?.count ?? 0,
               namePlural: formatMessage({
                 id: 'BEylmv',
@@ -230,7 +233,8 @@ export const useSubprojectNavData = ({ projectId, subprojectId }: Props) => {
             id: 'observations-not-to-assign',
             label: buildNavLabel({
               loading,
-              countFiltered: observationsNotToAssign?.count ?? 0,
+              isFiltered: area.mode !== 'all',
+              countFiltered: observationsNotToAssign?.filtered ?? 0,
               countUnfiltered: observationsNotToAssign?.count ?? 0,
               namePlural: formatMessage({
                 id: 'slC/ul',
