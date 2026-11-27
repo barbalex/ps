@@ -1,4 +1,10 @@
 {
+  "geometryImport": "Importer des géométries",
+  "geometryImportUuid": "UUID de l’objet cible",
+  "geometryImportAppend": "Ajouter les géométries aux objets correspondants",
+  "geometryImportReplace": "Remplacer les géométries des objets correspondants",
+  "geometryImportList": "Chaque UUID doit correspondre à un objet de cette liste. En cas d’erreur, aucun objet n’est modifié.",
+  "geometryImportObject": "Toutes les géométries de la couche choisie seront importées dans cet objet.",
   "mapOwnLayers": "Couches propres",
   "mapTileLayers": "Couches de tuiles",
   "mapVectorLayers": "Couches vectorielles",

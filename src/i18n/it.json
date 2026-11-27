@@ -1,4 +1,10 @@
 {
+  "geometryImport": "Importa geometrie",
+  "geometryImportUuid": "UUID dell’oggetto di destinazione",
+  "geometryImportAppend": "Aggiungi le geometrie agli oggetti corrispondenti",
+  "geometryImportReplace": "Sostituisci le geometrie degli oggetti corrispondenti",
+  "geometryImportList": "Ogni UUID deve corrispondere a un oggetto di questa lista. In caso di errore, nessun oggetto viene modificato.",
+  "geometryImportObject": "Tutte le geometrie del livello selezionato saranno importate in questo oggetto.",
   "mapOwnLayers": "Livelli propri",
   "mapTileLayers": "Livelli a tessere",
   "mapVectorLayers": "Livelli vettoriali",

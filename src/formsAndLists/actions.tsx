@@ -7,6 +7,7 @@ import { ListHeader } from '../components/ListHeader.tsx'
 import { Row } from '../components/shared/Row.tsx'
 import { LayerMenu } from '../components/shared/LayerMenu.tsx'
 import { FilterButton } from '../components/shared/FilterButton.tsx'
+import { GeometryListImport } from '../components/shared/GeometryImport.tsx'
 import { Loading } from '../components/shared/Loading.tsx'
 
 import '../form.css'
@@ -42,6 +43,7 @@ export const Actions = ({ from }: { from: string }) => {
           <>
             <LayerMenu table="actions" level={placeId2 ? 2 : 1} from={from} />
             <FilterButton isFiltered={isFiltered} />
+            <GeometryListImport table="actions" rowIds={navs.map((row) => row.id)} />
           </>
         }
       />
