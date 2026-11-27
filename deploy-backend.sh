@@ -75,6 +75,13 @@ rsync -az --delete \
 ssh -n "$SERVER" "test -f $REMOTE_DIR/.env" \
   || { echo "error: $REMOTE_DIR/.env missing on the server — restore it first" >&2; exit 1; }
 
+# An image build checks the seed, but init scripts do not run on an existing
+# volume. Refuse to bring a legacy, unrestricted demo back online.
+if [ "$FROM_SCRATCH" = 0 ]; then
+  preview_guards=$(ssh -n "$SERVER" "docker exec ps_db psql -XAt -v ON_ERROR_STOP=1 -U postgres -d ps -c \"SELECT count(*) FROM pg_constraint WHERE convalidated AND (conrelid,conname) IN (('public.subprojects'::regclass,'public_apflora_abies_only'),('public.subprojects_history'::regclass,'public_apflora_history_abies_only'))\"")
+  [[ "$preview_guards" = 2 ]] || { echo 'error: public demo scope not verified; see CLAUDE.md before deploying' >&2; exit 1; }
+fi
+
 echo "==> deploying $(git rev-parse --short HEAD)$(git diff --quiet -- backend/ || echo ' + UNCOMMITTED backend/ changes')"
 
 if [ "$FROM_SCRATCH" = 1 ]; then
