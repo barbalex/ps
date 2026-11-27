@@ -44,7 +44,7 @@ function inspectKml(xml: string, name: string) {
     }
     if (features.length)
       kmlSources.push({
-        layer: { name: path, fields: [], csv: false, needsCrs: false },
+        layer: { name: path, fields: [...new Set(features.flatMap((f) => Object.keys(f.properties ?? {})))], csv: false, needsCrs: false },
         features,
       })
   }

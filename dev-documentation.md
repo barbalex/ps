@@ -1394,6 +1394,15 @@ On an existing backend, apply the updated `12_writePermissionTriggers.sql`
 and then `20_importVectorFeatures.sql`; a frontend-only deployment does not
 install the RPC.
 
+**Geometry imports into existing objects.** Projects, places, actions and checks use
+the same file reader as uploaded layers. Their [separate RPC](backend/db/init/23_importOwnGeometries.sql)
+locks the matched objects in UUID order, checks write permissions on each and
+updates them in one transaction. A project boundary requires designer/owner access
+and polygons; overlapping polygons are merged. Other targets store a flat
+geometry collection with refreshed bounds and no GPS accuracy estimate.
+Apply the RPC on an existing backend before releasing this frontend. As for vector
+uploads, check the objects before retrying an append after a connection loss.
+
 # 11 Error Telemetry
 
 Client errors are collected in `public.error_report` (init file

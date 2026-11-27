@@ -5,12 +5,20 @@ import * as fluentUiReactComponents from '@fluentui/react-components'
 import {
   openVectorReader,
   type SourceLayer,
-} from '../../../modules/vectorUpload.ts'
-import { importVectorFeatures } from '../../../modules/importVectorFeatures.ts'
+} from '../../modules/vectorUpload.ts'
+import { importVectorFeatures } from '../../modules/importVectorFeatures.ts'
+import {
+  importOwnGeometries,
+  type GeometryTarget,
+} from '../../modules/importOwnGeometries.ts'
 
 const { Button, Field, Select, Input } = fluentUiReactComponents
 
-export function Upload({ vectorLayerId }: { vectorLayerId: string }) {
+export function GisUpload(
+  props:
+    | { vectorLayerId: string }
+    | { target: GeometryTarget; onBusy: (busy: boolean) => void },
+) {
   const { formatMessage } = useIntl()
   const reader = useRef<ReturnType<typeof openVectorReader> | null>(null)
   const fileInput = useRef<HTMLInputElement>(null)
@@ -19,11 +27,13 @@ export function Upload({ vectorLayerId }: { vectorLayerId: string }) {
   const [x, setX] = useState('')
   const [y, setY] = useState('')
   const [sourceCrs, setSourceCrs] = useState('')
+  const [uuidField, setUuidField] = useState('')
   const [mode, setMode] = useState<'append' | 'replace'>('append')
   const [busy, setBusy] = useState(false)
   const [error, setError] = useState('')
   const [imported, setImported] = useState(0)
   const layer = layers[index]
+  const target = 'target' in props ? props.target : undefined
   useEffect(
     () => () => {
       reader.current?.close()
@@ -35,6 +45,15 @@ export function Upload({ vectorLayerId }: { vectorLayerId: string }) {
   function selectLayer(list: SourceLayer[], i: number) {
     setIndex(i)
     const fields = list[i].fields
+    if (target && 'rowIds' in target) {
+      setUuidField(
+        fields.find(
+          (f) => f.toLowerCase() === `${target.table.slice(0, -1)}_id`,
+        ) ??
+          fields.find((f) => /^(uuid|id)$/i.test(f)) ??
+          '',
+      )
+    }
     setX(fields.find((f) => /^(lon(gitude)?|lng|x|easting)$/i.test(f)) ?? '')
     setY(fields.find((f) => /^(lat(itude)?|y|northing)$/i.test(f)) ?? '')
     setSourceCrs(list[i].csv ? 'EPSG:4326' : '')
@@ -67,12 +86,26 @@ export function Upload({ vectorLayerId }: { vectorLayerId: string }) {
     if (!current) return
     setBusy(true)
     setError('')
+    if ('onBusy' in props) props.onBusy(true)
     try {
       const features = await current.read({ index, x, y, sourceCrs })
       if (reader.current !== current) return
-      await importVectorFeatures({ vectorLayerId, features, mode })
+      let count = features.length
+      if ('target' in props)
+        count = await importOwnGeometries(
+          props.target,
+          features,
+          uuidField,
+          mode,
+        )
+      else
+        await importVectorFeatures({
+          vectorLayerId: props.vectorLayerId,
+          features,
+          mode,
+        })
       if (reader.current !== current) return
-      setImported(features.length)
+      setImported(count)
       setLayers([])
       current.close()
       if (fileInput.current) fileInput.current.value = ''
@@ -80,6 +113,7 @@ export function Upload({ vectorLayerId }: { vectorLayerId: string }) {
       if (reader.current === current)
         setError(e instanceof Error ? e.message : String(e))
     } finally {
+      if ('onBusy' in props) props.onBusy(false)
       if (reader.current === current) setBusy(false)
     }
   }
@@ -92,14 +126,16 @@ export function Upload({ vectorLayerId }: { vectorLayerId: string }) {
         })}
         hint="GeoPackage, Shapefile (.zip), GeoJSON, KML/KMZ, GPX, CSV, File Geodatabase (.gdb.zip) · max. 64 MiB"
       >
-        {(controlProps) => <input
-          {...controlProps}
-          type="file"
-          ref={fileInput}
-          accept=".gpkg,.zip,.geojson,.json,.kml,.kmz,.gpx,.csv"
-          disabled={busy}
-          onChange={(event) => void inspect(event.target.files?.[0])}
-        />}
+        {(controlProps) => (
+          <input
+            {...controlProps}
+            type="file"
+            ref={fileInput}
+            accept=".gpkg,.zip,.geojson,.json,.kml,.kmz,.gpx,.csv"
+            disabled={busy}
+            onChange={(event) => void inspect(event.target.files?.[0])}
+          />
+        )}
       </Field>
       {layer && (
         <>
@@ -163,6 +199,30 @@ export function Upload({ vectorLayerId }: { vectorLayerId: string }) {
               />
             </Field>
           )}
+          {target && 'rowIds' in target && (
+            <Field
+              label={formatMessage({
+                id: 'geometryImportUuid',
+                defaultMessage: 'UUID des Zielobjekts',
+              })}
+            >
+              <Select
+                value={uuidField}
+                disabled={busy}
+                onChange={(_, d) => setUuidField(d.value)}
+              >
+                <option value="">Feature-ID</option>
+                {layer.fields.map((f) => (
+                  <option
+                    key={f}
+                    value={f}
+                  >
+                    {f}
+                  </option>
+                ))}
+              </Select>
+            </Field>
+          )}
           <Field
             label={formatMessage({
               id: 'vectorUploadMode',
@@ -177,17 +237,29 @@ export function Upload({ vectorLayerId }: { vectorLayerId: string }) {
               }
             >
               <option value="append">
-                {formatMessage({
-                  id: 'vectorUploadAppend',
-                  defaultMessage: 'Behalten und neue Objekte hinzufügen',
-                })}
+                {target ?
+                  formatMessage({
+                    id: 'geometryImportAppend',
+                    defaultMessage: 'Geometrien zu den Zielobjekten hinzufügen',
+                  })
+                : formatMessage({
+                    id: 'vectorUploadAppend',
+                    defaultMessage: 'Behalten und neue Objekte hinzufügen',
+                  })
+                }
               </option>
               <option value="replace">
-                {formatMessage({
-                  id: 'vectorUploadReplace',
-                  defaultMessage:
-                    'Alle durch die importierten Objekte ersetzen',
-                })}
+                {target ?
+                  formatMessage({
+                    id: 'geometryImportReplace',
+                    defaultMessage: 'Geometrien der Zielobjekte ersetzen',
+                  })
+                : formatMessage({
+                    id: 'vectorUploadReplace',
+                    defaultMessage:
+                      'Alle durch die importierten Objekte ersetzen',
+                  })
+                }
               </option>
             </Select>
           </Field>
@@ -199,10 +271,16 @@ export function Upload({ vectorLayerId }: { vectorLayerId: string }) {
             }
             onClick={() => void commit()}
           >
-            {formatMessage({
-              id: 'vectorUploadImport',
-              defaultMessage: 'Ebene importieren',
-            })}
+            {target ?
+              formatMessage({
+                id: 'geometryImport',
+                defaultMessage: 'Geometrien importieren',
+              })
+            : formatMessage({
+                id: 'vectorUploadImport',
+                defaultMessage: 'Ebene importieren',
+              })
+            }
           </Button>
         </>
       )}

@@ -10,7 +10,7 @@ import { LayersDropdown } from './LayersDropdown.tsx'
 import { DropdownField } from '../../../components/shared/DropdownField.tsx'
 import { RadioGroupField } from '../../../components/shared/RadioGroupField.tsx'
 import { Property } from './Property.tsx'
-import { Upload } from './Upload.tsx'
+import { GisUpload } from '../../../components/shared/GisUpload.tsx'
 import { CreateWfsService } from './CreateWfsService.tsx'
 import type VectorLayers from '../../../models/public/VectorLayers.ts'
 
@@ -113,7 +113,7 @@ export const VectorLayerForm = ({
           )}
         </>
       )}
-      {row?.type === 'upload' && !isFilter && <Upload key={row.vector_layer_id} vectorLayerId={row.vector_layer_id} />}
+      {row?.type === 'upload' && !isFilter && <GisUpload key={row.vector_layer_id} vectorLayerId={row.vector_layer_id} />}
       {/* Name + localized labels.
           - own layers: label is derived from place_levels (read-only), name is system-set
           - wfs/upload: editable name + per-language label_de/en/fr/it (de fallback) */}

@@ -1,4 +1,6 @@
 import type { ComponentProps, FC } from 'react'
+import { useState } from 'react'
+import { GeometryImportDialog } from '../shared/GeometryImport.tsx'
 import { TbPolygon, TbPolygonOff } from 'react-icons/tb'
 import * as fluentUiReactComponents from '@fluentui/react-components'
 import type { MenuCheckedValueChangeData } from '@fluentui/react-components'
@@ -91,6 +93,7 @@ export const Geometry = ({
   editable = true,
 }: GeometryProps) => {
   const { formatMessage } = useIntl()
+  const [importOpen, setImportOpen] = useState(false)
   const { projectId } = useParams({ strict: false })
   const db = usePGlite()
   const [panes, setPanes] = useUrlPanes()
@@ -205,6 +208,7 @@ export const Geometry = ({
       })
 
   return (
+    <>
     <Menu
       openOnHover={false}
       checkedValues={{
@@ -241,6 +245,9 @@ export const Geometry = ({
               formatMessage({ id: '7p1UxO', defaultMessage: 'Erfassen' })
             : formatMessage({ id: 'bCYCZD', defaultMessage: 'Bearbeiten' })}
           </MenuItemCheckbox>
+          {editable && <MenuItem disabled={isEditing} onClick={() => setImportOpen(true)}>
+            {formatMessage({ id: 'geometryImport', defaultMessage: 'Geometrien importieren' })}
+          </MenuItem>}
           <MenuItem
             disabled={hasGeometry !== true}
             onClick={onClickZoom}
@@ -250,5 +257,7 @@ export const Geometry = ({
         </MenuList>
       </MenuPopover>
     </Menu>
+    {importOpen && editable && <GeometryImportDialog key={rowId} target={{ table, rowId }} close={() => setImportOpen(false)} />}
+    </>
   )
 }

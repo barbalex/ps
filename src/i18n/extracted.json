@@ -2003,6 +2003,24 @@
   "geometryHistoryChanged": {
     "defaultMessage": "Die Geometrie wurde inzwischen geändert. Bearbeitung erneut öffnen."
   },
+  "geometryImport": {
+    "defaultMessage": "Geometrien importieren"
+  },
+  "geometryImportAppend": {
+    "defaultMessage": "Geometrien zu den Zielobjekten hinzufügen"
+  },
+  "geometryImportList": {
+    "defaultMessage": "Jede UUID muss zu einem Objekt dieser Liste gehören. Bei einem Fehler wird nichts geändert."
+  },
+  "geometryImportObject": {
+    "defaultMessage": "Alle Geometrien der gewählten Dateiebene werden in dieses Objekt importiert."
+  },
+  "geometryImportReplace": {
+    "defaultMessage": "Geometrien der Zielobjekte ersetzen"
+  },
+  "geometryImportUuid": {
+    "defaultMessage": "UUID des Zielobjekts"
+  },
   "geometryNudgeHint": {
     "defaultMessage": "Geometrie anklicken oder ziehen. Pfeiltasten: 0,3 mm auf der Karte; mit Umschalt: 2 mm."
   },

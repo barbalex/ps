@@ -4,6 +4,7 @@ import { useAddProject } from '../modules/useAddProject.ts'
 import { ListHeader } from '../components/ListHeader.tsx'
 import { Row } from '../components/shared/Row.tsx'
 import { FilterButton } from '../components/shared/FilterButton.tsx'
+import { GeometryListImport } from '../components/shared/GeometryImport.tsx'
 import { Loading } from '../components/shared/Loading.tsx'
 import { ImportDumpButton } from './projectDump/ImportDumpButton.tsx'
 import { useProjectsNavData } from '../modules/useProjectsNavData.ts'
@@ -33,6 +34,7 @@ export const Projects = () => {
         menus={
           <>
             <ImportDumpButton />
+            <GeometryListImport table="projects" rowIds={navs.map((row) => row.id)} />
             <FilterButton isFiltered={isFiltered} />
           </>
         }
