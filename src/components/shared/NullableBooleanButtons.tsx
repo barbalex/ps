@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { useIntl } from 'react-intl'
 import { ToggleButton } from '@fluentui/react-components'
+import { MdCheck } from 'react-icons/md'
 import styles from './NullableBooleanButtons.module.css'
 
 type Props = {
@@ -69,6 +70,8 @@ export function NullableBooleanButtons({
               key={String(choice.value)}
               type="button"
               checked={selected === choice.value}
+              appearance={selected === choice.value ? 'primary' : 'secondary'}
+              icon={<MdCheck aria-hidden="true" className={styles.checkmark} />}
               autoFocus={autoFocus && index === 0}
               onClick={() =>
                 preview ? setDraft(choice.value) : onChange(choice.value)
