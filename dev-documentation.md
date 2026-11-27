@@ -1004,7 +1004,8 @@ or to restore a deleted project — with its original ids.
   locally synced rows (`src/modules/projectDump/exportProjectDump.ts`) as one
   `INSERT … SELECT … FROM jsonb_populate_recordset(NULL::table, $ps_dump$[…]$ps_dump$)`
   statement per table chunk — valid SQL _and_ parseable without a SQL
-  parser (`parseProjectDump.ts`). Projects list → "Import from SQL dumpfile"
+  parser (`parseProjectDump.ts`). The projects list has no import/export controls;
+  use the restore script below. The underlying in-app import implementation
   uploads the rows to the server through `apply_operations` in FK order
   (`importProjectDump.ts`): the project row first (attached to the chosen
   account; the owner trigger grants the importer the `own` role), then
@@ -1049,6 +1050,10 @@ area to existing PGlite databases without resetting their sync data. Both
 spatial filters and the three project-level quality controls use
 `project_area_matches`: coverage includes the perimeter, partial coverage
 counts as outside, and active modes exclude missing or empty geometries.
+The project header's area-filter button opens All / Inside / Outside. In
+the projects list, choose the project first; the button is highlighted if
+any listed project has an active area filter. Both menus use the same
+per-project setting as the map drawer and the tree.
 
 Vector layers with `type = 'own'` draw the project's own data tables on the
 map: `places`, `actions`, `checks` and the observation tables (`observations_assigned`,

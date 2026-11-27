@@ -83,7 +83,7 @@ export const buildProjectDump = async (
     `-- project_id: ${projectId}\n`,
     `-- name: ${projectName ?? ''}\n`,
     `-- exported: ${new Date().toISOString()}\n`,
-    `-- Restore in the app: Projects › Import from SQL dumpfile. With psql: run\n`,
+    `-- Restore with psql: run\n`,
     `-- inside a transaction with SET LOCAL electric.syncing = 'true' (see\n`,
     `-- scripts/import-project-dump.mjs); tables are in foreign-key order.\n`,
   ]

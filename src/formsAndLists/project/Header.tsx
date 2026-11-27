@@ -10,7 +10,7 @@ import { HistoryToggleButton } from '../../components/shared/HistoryCompare/Hist
 import { DesigningButton } from './DesigningButton.tsx'
 import { Geometry } from '../../components/FormMenu/Geometry.tsx'
 import { useMayDesignProject } from '../../modules/useMayDesignProject.ts'
-import { ProjectAreaFilter } from '../../components/shared/ProjectAreaFilter.tsx'
+import { ProjectAreaFilterMenu } from '../../components/shared/ProjectAreaFilter.tsx'
 import { ExportDumpButton } from '../projectDump/ExportDumpButton.tsx'
 import { addOperationAtom, addNotificationAtom, userIdAtom } from '../../store.ts'
 import { useAddProject } from '../../modules/useAddProject.ts'
@@ -158,7 +158,7 @@ export const Header = ({ autoFocusRef, from, label }: Props) => {
       tableName="project"
       siblings={
         <>
-          {projectId && <ProjectAreaFilter projectId={projectId} width={225} />}
+          {projectId && <ProjectAreaFilterMenu projectId={projectId} />}
           {mayDesign && <DesigningButton />}
           <Geometry table="projects" rowId={projectId} editable={mayDesign} />
           {projectId && <ExportDumpButton projectId={projectId} />}
