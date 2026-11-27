@@ -7,6 +7,7 @@ import {
   initialSyncingAtom,
   onlineAtom,
   pgliteDbAtom,
+  removeNotificationAtom,
   sqlInitializingAtom,
   store,
   syncLeaderAtom,
@@ -14,7 +15,7 @@ import {
   syncPausedAtom,
   updateNotificationAtom,
 } from '../store.ts'
-import { startSyncing } from '../modules/startSyncing.ts'
+import { startSyncing, type PsSyncObject } from '../modules/startSyncing.ts'
 import { gateLiveNotifyTriggers } from '../modules/gateLiveNotifyTriggers.ts'
 import { clearLocalSyncedData } from '../modules/clearLocalSyncedData.ts'
 import { isSyncLeader, watchSyncLeader } from '../modules/syncLeader.ts'
@@ -70,6 +71,11 @@ export const Syncer = () => {
     if (!id) return
     if (isAuthenticated && initialSyncing) return
 
+    if (!(syncObject as PsSyncObject | null)?.isApplied) {
+      store.set(removeNotificationAtom, id)
+      syncNotificationIdRef.current = null
+      return
+    }
     updateNotification({
       id,
       draft: {
@@ -82,7 +88,7 @@ export const Syncer = () => {
       },
     })
     syncNotificationIdRef.current = null
-  }, [formatMessage, initialSyncing, isAuthenticated, updateNotification])
+  }, [formatMessage, initialSyncing, isAuthenticated, syncObject, updateNotification])
 
   // Gate the live extension's notify functions against electric.syncing so
   // sync applies stop re-running every mounted live query (see module doc).

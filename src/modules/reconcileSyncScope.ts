@@ -69,14 +69,14 @@ const fetchSyncScope = async (): Promise<SyncScope> => {
  */
 export const reconcileSyncScope = async (): Promise<PrunedCounts | null> => {
   const db = store.get(pgliteDbAtom)
-  const sync = store.get(syncObjectAtom) as { isUpToDate?: boolean } | null
-  if (!db || !sync?.isUpToDate) return null
+  const sync = store.get(syncObjectAtom) as { isUpToDate?: boolean; isApplied?: boolean } | null
+  if (!db || !sync?.isApplied || !sync.isUpToDate) return null
   if (hasPendingWrites()) return null
 
   const scope = await fetchSyncScope()
 
   // re-check after the round trip
-  if (!store.get(syncObjectAtom) || hasPendingWrites()) return null
+  if (store.get(syncObjectAtom) !== sync || !sync.isApplied || !sync.isUpToDate || hasPendingWrites()) return null
 
   const counts = await db.transaction(async (tx) => {
     // same escape hatch pglite-sync uses: no history/audit triggers, no

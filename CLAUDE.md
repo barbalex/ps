@@ -245,6 +245,9 @@ Conceptually: reader (`read-*`) < writer (`write-*`) < designer (`design`) < own
 - `src/modules/startSyncing.ts` — Sync orchestration, role-based filters
 - On startup, dependent shapes wait for the parent stage's `onInitialSync`
   (local transaction committed), not `isUpToDate` (data received).
+  `scripts/patch-pglite-sync.mjs` serializes batch applies and waits for every
+  shape's snapshot marker before committing the initial stage. A failed
+  apply stops the run without persisting later offsets or reporting success.
 - `src/modules/observeOperations.ts` — Operation queue & conflict handling
 
 ---

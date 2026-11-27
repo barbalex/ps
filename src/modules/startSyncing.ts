@@ -117,6 +117,18 @@ export const startSyncing = async (userId: string) => {
 
     let notifiedUnexpectedStreamError = false
     const onError = (error: unknown) => {
+      if (stopped) return
+      if (error instanceof Error && error.name === 'SyncApplyError') {
+        console.error('Electric sync stopped before advancing its checkpoint:', error)
+        aggregate.unsubscribe()
+        store.set(initialSyncingAtom, false)
+        store.set(addNotificationAtom, {
+          intent: 'error',
+          title: 'Synchronisation error',
+          body: 'Local data could not be synchronised. Reload while online to retry. Do not clear site data if you have unsynced edits.',
+        })
+        return
+      }
       const errorStr = error?.toString() || ''
       const is409 = errorStr.includes('409') || errorStr.includes('Conflict')
 
@@ -194,11 +206,11 @@ export const startSyncing = async (userId: string) => {
         for (const sync of syncs) sync.unsubscribe()
       },
       get isUpToDate() {
-        return allStagesStarted && syncs.every((sync) => sync.isUpToDate)
+        return !stopped && allStagesStarted && syncs.every((sync) => sync.isUpToDate)
       },
       get isApplied() {
         return (
-          allStagesStarted &&
+          !stopped && allStagesStarted &&
           syncs.length === levels.length &&
           syncs.every((_, index) => stageApplied[index] === true)
         )
