@@ -6,6 +6,7 @@ import { TextField } from '../TextField.tsx'
 import { CheckboxField } from '../CheckboxField.tsx'
 import { SwitchField } from '../SwitchField.tsx'
 import { TextArea } from '../TextArea.tsx'
+import { MarkdownField } from '../MarkdownField.tsx'
 import { DropdownField } from '../DropdownField.tsx'
 import { DropdownFieldFromList } from '../DropdownFieldFromList.tsx'
 import { RadioGroupFromList } from '../RadioGroupFromList.tsx'
@@ -48,7 +49,7 @@ export const FieldWidget = ({ field }: { field: FieldsWithTypes }) => {
   const name = field.name!
   const value = data?.[name] ?? ''
   const label = field.field_label ? field.field_label : field.name
-  const type = field.field_type === 'integer' ? 'number' : field.field_type
+  const type = field.field_type === 'integer' ? 'number' : 'text'
 
   const onChange = async (
     e: React.ChangeEvent<HTMLElement>,
@@ -120,7 +121,8 @@ export const FieldWidget = ({ field }: { field: FieldsWithTypes }) => {
             label={label}
             name={name}
             value={value as string | number}
-            type={(type ?? 'text') as 'text' | 'number'}
+            type={type}
+            inputMode={field.field_type === 'decimal' ? 'decimal' : undefined}
             onChange={onChange}
             {...validationProps}
           />
@@ -153,6 +155,17 @@ export const FieldWidget = ({ field }: { field: FieldsWithTypes }) => {
             value={value as boolean | null}
             onChange={onChange}
             indeterminate={true}
+            {...validationProps}
+          />
+        )
+      case 'markdown':
+        return (
+          <MarkdownField
+            name={name}
+            label={label}
+            value={value as string}
+            print={mode === 'print'}
+            onChange={onChange}
             {...validationProps}
           />
         )
@@ -235,7 +248,7 @@ export const FieldWidget = ({ field }: { field: FieldsWithTypes }) => {
             label={label}
             name={name}
             value={value as string | number}
-            type={(type ?? 'text') as 'text' | 'number'}
+            type={type}
             onChange={onChange}
             {...validationProps}
           />

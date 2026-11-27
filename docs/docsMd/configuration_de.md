@@ -20,6 +20,7 @@ Deshalb ist arten-fördern.app stark konfigurierbar:
 - Freie Benennung der Ort-Stufen
 - Wahl, in welchen Ort-Stufen welche Fähigkeiten genutzt werden (Massnahmen, Kontrollen, Berichte etc.)
 - Möglichkeit in vielen Tabellen eigene Felder zu ergänzen
+  - Für formatierte Notizen **text → markdown** wählen. Überschriften, Listen oder Tabellen über mehrere Zeilen eingeben und mit **Vorschau** prüfen. Gedruckt wird der formatierte Text; gespeichert bleibt der ursprüngliche Markdown-Text. HTML wird nicht ausgeführt. Bestehende Rich-Text-Felder bleiben als Klartext bearbeitbar.
 - Freie Definition und Import von Taxonomien
 - Freie Definition und Import von Listen
 - Wahl von Standard-Einheiten (aus selber definierten Listen)

@@ -10,6 +10,17 @@ Better-Auth, possible extensions:
 
 ---
 
+Custom form fields roadmap (places, checks, actions and other configurable forms):
+
+- [x] Fix January and midnight date-time edits and numeric decimal entry. Add Markdown editing, preview and print. Hide rich text for new selections; keep existing fields editable as plain text.
+- [ ] Controlled multiselect: checkboxes for short lists, searchable Fluent combobox for long lists. Both store the same array of typed codes. Support contains-any/all filters and export codes plus decoded labels.
+- [ ] Searchable single-select for long lists without changing existing values.
+- [ ] Numeric field settings: unit, minimum, maximum and step. Decimal entry already supports both point and comma.
+- [ ] Explicit Yes / No / Not assessed buttons for nullable booleans. Use a coded list if more states are needed.
+- [ ] Field instructions and conditional follow-ups. Never erase a saved answer merely because its field is hidden.
+
+---
+
 Geometry editing roadmap (in priority order):
 
 - [x] 1. Place or move a point precisely: paste an X/Y pair in the coordinate system selected in the map coordinates tool, or pan beneath a crosshair. Preview, then explicitly apply to the edited record. Available while editing a place, check or action with no geometry or one point.

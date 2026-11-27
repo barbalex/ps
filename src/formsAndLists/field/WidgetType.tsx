@@ -26,13 +26,14 @@ export const WidgetType = ({
   const normalizedFieldTypeId =
     typeof field_type_id === 'string' ? field_type_id.trim() : field_type_id
 
-  const widgetWhere = normalizedFieldTypeId
-    ? `
+  const widgetWhere =
+    normalizedFieldTypeId ?
+      `
     widget_type_id in (
       SELECT widget_type_id
       FROM widgets_for_fields
       WHERE field_type_id = '${normalizedFieldTypeId}'
-    )
+    )${value === '018ca1a2-2e2a-7fd6-8c57-92654c3201a5' ? '' : " AND name <> 'rich-text'"}
   `
     : '1 = 0'
 

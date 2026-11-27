@@ -1,4 +1,6 @@
 import { useState, useEffect } from 'react'
+import { useIntl } from 'react-intl'
+import { parseDecimal } from '../../modules/parseDecimal.ts'
 import * as fluentUiReactComponents from '@fluentui/react-components'
 const { Input, Field } = fluentUiReactComponents
 type InputProps = React.ComponentProps<typeof Input>
@@ -21,6 +23,7 @@ export const TextField = ({
   label,
   name,
   type = 'text',
+  inputMode,
   onChange: onChangeIn,
   hint,
   validationMessage,
@@ -34,13 +37,17 @@ export const TextField = ({
   tabIndex,
   readOnly,
 }: Props) => {
+  const { formatMessage } = useIntl()
+  const decimal = inputMode === 'decimal'
   const [stateValue, setStateValue] = useState(
     value || value === 0 ? value : '',
   )
 
   useEffect(() => {
-    setStateValue(value || value === 0 ? value : '')
-  }, [value])
+    setStateValue((draft) =>
+      decimal && parseDecimal(String(draft)) === value ? draft : (value ?? ''),
+    )
+  }, [value, decimal])
 
   const onChange = (event: React.ChangeEvent<HTMLInputElement>) =>
     setStateValue(event.target.value)
@@ -49,10 +56,15 @@ export const TextField = ({
   // from key events only the event is available
   const onChangeEvent = onChangeIn as
     ((event: React.SyntheticEvent<HTMLInputElement>) => void) | undefined
+  const invalidDecimal =
+    decimal && parseDecimal(String(stateValue)) === undefined
+  const commit = (event: React.SyntheticEvent<HTMLInputElement>) => {
+    if (!invalidDecimal) onChangeEvent?.(event)
+  }
 
   const onKeyPress = (event: React.KeyboardEvent<HTMLInputElement>) => {
     if (event.key === 'Enter') {
-      onChangeEvent!(event)
+      commit(event)
     }
   }
 
@@ -61,15 +73,22 @@ export const TextField = ({
       '.form-container.filter',
     )
     if (inFilterForm) {
-      onChangeEvent!(event)
+      commit(event)
     }
   }
 
   return (
     <Field
       label={label ?? name ?? '(no label provided)'}
-      validationMessage={validationMessage}
-      validationState={validationState}
+      validationMessage={
+        invalidDecimal ?
+          formatMessage({
+            id: 'decimalInvalid',
+            defaultMessage: 'Bitte eine Dezimalzahl eingeben.',
+          })
+        : validationMessage
+      }
+      validationState={invalidDecimal ? 'error' : validationState}
       hint={hint}
       className={styles.field}
     >
@@ -78,6 +97,7 @@ export const TextField = ({
           name={name}
           value={stateValue as string}
           type={type}
+          inputMode={inputMode}
           placeholder={placeholder}
           appearance="underline"
           autoFocus={autoFocus}
@@ -85,7 +105,7 @@ export const TextField = ({
           onChange={onChange}
           onKeyPress={onKeyPress}
           onKeyUp={onKeyUp}
-          onBlur={onChangeEvent}
+          onBlur={commit}
           disabled={disabled}
           className={styles.input}
           tabIndex={tabIndex}

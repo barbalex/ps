@@ -1,0 +1,30 @@
+.controls {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 4px;
+}
+
+.printOnly {
+  display: none;
+}
+
+.rendered {
+  overflow-wrap: anywhere;
+  overflow-x: auto;
+}
+
+.rendered img,
+.printOnly img {
+  max-width: 100%;
+}
+
+@media print {
+  .editor,
+  .controls {
+    display: none !important;
+  }
+
+  .printOnly {
+    display: block;
+  }
+}

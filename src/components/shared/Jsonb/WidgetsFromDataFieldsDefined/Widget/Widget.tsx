@@ -7,6 +7,7 @@ import { TextField } from '../../../TextField.tsx'
 import { CheckboxField } from '../../../CheckboxField.tsx'
 import { SwitchField } from '../../../SwitchField.tsx'
 import { TextArea } from '../../../TextArea.tsx'
+import { MarkdownField } from '../../../MarkdownField.tsx'
 import { DropdownField } from '../../../DropdownField.tsx'
 import { DropdownFieldFromList } from '../../../DropdownFieldFromList.tsx'
 import { RadioGroupFromList } from '../../../RadioGroupFromList.tsx'
@@ -140,17 +141,19 @@ export const Widget = ({
 
   const value = data?.[name] ?? ''
   const label = field.field_label ? field.field_label : field.name
-  const type = field.field_type === 'integer' ? 'number' : field.field_type
+  const type = field.field_type === 'integer' ? 'number' : 'text'
 
-  // TODO: add: markdown, rich-text, jes-no (rename existing to switch)
-  switch (field.widget_type) {
+  const filterMarkdown =
+    field.widget_type === 'markdown' && location.pathname.endsWith('filter')
+  switch (filterMarkdown ? 'text' : field.widget_type) {
     case 'text':
       return (
         <TextField
           label={label}
           name={name}
           value={value as string | number}
-          type={(type ?? 'text') as 'text' | 'number'}
+          type={type}
+          inputMode={field.field_type === 'decimal' ? 'decimal' : undefined}
           onChange={onChange}
           autoFocus={autoFocus}
           ref={ref as unknown as React.Ref<HTMLInputElement>}
@@ -198,6 +201,20 @@ export const Widget = ({
           ref={ref as unknown as React.Ref<HTMLInputElement>}
           button={<EditField fieldId={field.field_id} />}
           indeterminate={true}
+          validationState={validations[name]?.state}
+          validationMessage={validations[name]?.message}
+        />
+      )
+    case 'markdown':
+      return (
+        <MarkdownField
+          name={name}
+          label={label}
+          value={value as string}
+          onChange={onChange}
+          autoFocus={autoFocus}
+          ref={ref as React.Ref<HTMLTextAreaElement>}
+          button={<EditField fieldId={field.field_id} />}
           validationState={validations[name]?.state}
           validationMessage={validations[name]?.message}
         />
@@ -309,7 +326,7 @@ export const Widget = ({
           label={label}
           name={name}
           value={value as string | number}
-          type={(type ?? 'text') as 'text' | 'number'}
+          type={type}
           onChange={onChange}
           autoFocus={autoFocus}
           ref={ref as unknown as React.Ref<HTMLInputElement>}

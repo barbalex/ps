@@ -1625,6 +1625,9 @@
   "dbDump.failedTitle": {
     "defaultMessage": "Export failed"
   },
+  "decimalInvalid": {
+    "defaultMessage": "Bitte eine Dezimalzahl eingeben."
+  },
   "deleteAccountBtn": {
     "defaultMessage": "Konto löschen"
   },
@@ -1669,21 +1672,6 @@
   },
   "docsList": {
     "defaultMessage": "Dokumentation"
-  },
-  "dtFieldDate": {
-    "defaultMessage": "Datum"
-  },
-  "dtFieldHours": {
-    "defaultMessage": "Stunden"
-  },
-  "dtFieldMinutes": {
-    "defaultMessage": "Minuten"
-  },
-  "dtFieldMustBeSet": {
-    "defaultMessage": "muss gesetzt werden"
-  },
-  "dtFieldSelectDate": {
-    "defaultMessage": "Datum auswählen oder tippen"
   },
   "dupCnl": {
     "defaultMessage": "Import abbrechen"
@@ -2099,6 +2087,12 @@
   "homeMoreInfoTitle": {
     "defaultMessage": "Mehr Infos"
   },
+  "homeWorkflowText": {
+    "defaultMessage": "Du kannst deine Daten im hierarchischen Baum durchsuchen und bearbeiten. Oder du erledigst beides direkt auf der Karte, ohne sie zu verlassen."
+  },
+  "homeWorkflowTitle": {
+    "defaultMessage": "Wähle deine bevorzugte Arbeitsweise"
+  },
   "i43yle": {
     "defaultMessage": "markiert"
   },
@@ -2284,6 +2278,9 @@
   },
   "layerShowInMapBtnTitle": {
     "defaultMessage": "Ebene in Karte anzeigen"
+  },
+  "localTimeInvalid": {
+    "defaultMessage": "Diese Ortszeit existiert nicht."
   },
   "logoutCancelBtn": {
     "defaultMessage": "Abbrechen"

@@ -50,7 +50,7 @@ export const FormFromDesign = ({
   const fieldsKey = fields
     .map(
       (f) =>
-        `${f.field_id}/${f.field_label ?? ''}/${f.name ?? ''}/${f.widget_type ?? ''}/${f.list_id ?? ''}`,
+        `${f.field_id}/${f.field_label ?? ''}/${f.name ?? ''}/${f.field_type ?? ''}/${f.widget_type ?? ''}/${f.list_id ?? ''}`,
     )
     .join('|')
   const labels: FormDesignLabels = {

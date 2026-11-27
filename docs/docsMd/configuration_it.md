@@ -21,6 +21,7 @@ Per questo arten-fördern.app è altamente configurabile:
 - Denominazione libera dei livelli dei luoghi
 - Scelta delle funzionalità utilizzate per ogni livello di luogo (misure, controlli, rapporti ecc.)
 - Possibilità di aggiungere campi personalizzati in molte tabelle
+  - Per le note formattate scegliere **text → markdown**. Scrivere titoli, elenchi o tabelle su più righe e selezionare **Anteprima**. La stampa usa il testo formattato; il dato conserva il Markdown originale. L’HTML non viene eseguito. I campi di testo ricco esistenti restano modificabili come testo semplice.
 - Definizione e importazione libere di tassonomie
 - Definizione e importazione libere di liste
 - Selezione di grafici predefiniti, possibilità di creare i propri
