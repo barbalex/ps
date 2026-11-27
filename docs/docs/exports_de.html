@@ -1,5 +1,5 @@
 <h1>Exporte</h1>
-<p><em>Zuletzt aktualisiert am 8.5.2026</em></p>
+<p><em>Zuletzt aktualisiert am 27.11.2026</em></p>
 <hr>
 <p>Exporte ermöglichen es:</p>
 <ol>
@@ -15,3 +15,19 @@
 <p>Benutzer mit der Rolle &quot;Eigentümer&quot; oder &quot;Designer&quot; können wählen, welche der vorbereiteten Exporte zur Verfügung stehen. Und eigene generieren.</p>
 <p>Exporte gibt es auf Stufe Projekt und Teil-Projekt (Art/Biotop).</p>
 <p>Willst du den Export filtern? Du kannst auf der Basis-Tabelle im Filter-Formular einen beliebigen Filter setzen und diesen dann beim Export anwenden.</p>
+<h2>Ein Projekt in QGIS öffnen</h2>
+<p>Für eine Karte öffnest du das Projekt und wählst in der Kopfzeile <strong>Projekt exportieren → GeoPackage (.gpkg)</strong>. Ziehe die heruntergeladene Datei in QGIS und wähle die gewünschten Layer. Ein GeoPackage ist eine SQLite-Datenbank, in der QGIS die Geometriespalten und ihr Koordinatensystem erkennt. Ein separater SpatiaLite-Export ist nicht nötig.</p>
+<p>Sind alle Orte Punkte, wähle <code>places</code>. Enthält die Tabelle Punkte, Linien und Polygone gemischt, wähle die entsprechenden Layer, etwa <code>places_points</code> oder <code>places_lines</code>. Über <code>place_id</code> kannst du sie mit den Attributen aus <code>places</code> verknüpfen. Orte ohne Geometrie bleiben in der Tabelle, erscheinen aber nicht auf der Karte.</p>
+<h3>Du hast bereits einen SQLite-Export?</h3>
+<p><strong>SQLite (.sqlite)</strong> eignet sich für Abfragen und Tabellenverknüpfungen. Die Geometrien sind als GeoJSON-Text gespeichert, deshalb öffnet QGIS <code>places</code> als Tabelle. So zeigst du die Punkte an, ohne die Datei zu verändern:</p>
+<ol>
+<li>Ziehe die <code>.sqlite</code>-Datei in QGIS, füge die Tabelle <code>places</code> hinzu und benenne den Layer in <code>places_raw</code> um.</li>
+<li>Öffne im Menü <strong>Layer → Layer hinzufügen</strong> den Dialog für virtuelle Layer.</li>
+<li>Füge diese Abfrage ein und klicke auf <strong>Hinzufügen</strong>:</li>
+</ol>
+<pre><code class="language-sql">SELECT p.place_id, p.name,
+       SetSRID(CastToMultiPoint(CollectionExtract(GeomFromGeoJSON(p.geometry), 1)), 4326) AS geom
+FROM places_raw AS p
+WHERE p.geometry IS NOT NULL
+</code></pre>
+<p>Der virtuelle Layer zeigt alle Punktgeometrien in WGS 84 (EPSG:4326). Linien und Polygone werden nicht dargestellt.</p>
