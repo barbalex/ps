@@ -1,4 +1,4 @@
-import { Field, Select } from '@fluentui/react-components'
+import { Combobox, Field, Option, Select } from '@fluentui/react-components'
 import { useState } from 'react'
 import { useLiveQuery } from '@electric-sql/pglite-react'
 import { useNavigate } from '@tanstack/react-router'
@@ -13,7 +13,8 @@ import {
 } from '../../../store.ts'
 import { mapCreationAtom } from '../../../modules/mapCreation.ts'
 import { useOwnLayerScope } from '../../../modules/useOwnLayerScope.ts'
-import { subprojectNameSingularExpr } from '../../../modules/subprojectNameCols.ts'
+import { subprojectNamePluralExpr } from '../../../modules/subprojectNameCols.ts'
+import { ProjectAreaFilter } from '../../shared/ProjectAreaFilter.tsx'
 import { useUrlFilter, filterUrlKey } from '../../../modules/useUrlFilter.ts'
 import { filterStringFromFilter } from '../../../modules/filterStringFromFilter.ts'
 import { validate as isUuid } from 'uuid'
@@ -39,7 +40,7 @@ export const MapScope = () => {
   const projects =
     useLiveQuery<Choice & { subproject_label: string | null }>(
       `SELECT project_id AS id, coalesce(nullif(label,''), nullif(name,''), project_id::text) AS label,
-       ${subprojectNameSingularExpr(language)} AS subproject_label
+       ${subprojectNamePluralExpr(language)} AS subproject_label
      FROM projects WHERE project_id IN (
        SELECT project_id FROM project_roles WHERE project_user_id IN (SELECT project_user_id FROM user_project_user_ids($1))
      ) ORDER BY label, id`,
@@ -88,15 +89,19 @@ export const MapScope = () => {
           </Select>
         </Field>
       )}
+      {projectId && <ProjectAreaFilter projectId={projectId} className={styles.scopeField} />}
       {project && (
         <SubprojectScope
           key={project.id}
           projectId={project.id}
           subprojectId={subprojectId}
-          label={
-            project.subproject_label ||
-            formatMessage({ id: 'gxCh0c', defaultMessage: 'Teilprojekt' })
-          }
+          label={formatMessage(
+            { id: 'mapSubprojectFilter', defaultMessage: '{name} Filter' },
+            {
+              name: project.subproject_label ||
+                formatMessage({ id: 'Jou8/E', defaultMessage: 'Teilprojekte' }),
+            },
+          )}
           userId={userId}
           disabled={drawing || !!creating}
         />
@@ -127,7 +132,7 @@ function SubprojectScope({
     filter.every(exactChoice) ?
       new Set(filter.map((rule) => rule.subproject_id))
     : undefined
-  const [search, setSearch] = useState('')
+  const [search, setSearch] = useState<string | null>(null)
   const subprojects =
     useLiveQuery<Choice & { matches: boolean }>(
       `SELECT subproject_id AS id, coalesce(nullif(label,''), nullif(name,''), subproject_id::text) AS label,
@@ -179,60 +184,38 @@ function SubprojectScope({
         search,
       })
   }
-  const visible = subprojects.filter((s) =>
-    s.label.toLocaleLowerCase().includes(search.trim().toLocaleLowerCase()),
-  )
+  const query = search?.trim().toLocaleLowerCase() ?? ''
+  const visible = subprojects.filter((s) => s.label.toLocaleLowerCase().includes(query))
+  const noMatches = formatMessage({
+    id: 'mapCreateParentNone',
+    defaultMessage: 'Keine Treffer',
+  })
+  const summary = selected.length ? selected.map((s) => s.label).join(', ') : sql ? noMatches : allLabel
   return (
-    <details className={styles.scopeField}>
-      <summary>
-        {label}:{' '}
-        {selected.length ?
-          selected.map((s) => s.label).join(', ')
-        : sql ?
-          formatMessage({
-            id: 'mapCreateParentNone',
-            defaultMessage: 'Keine Treffer',
-          })
-        : allLabel}
-      </summary>
-      <fieldset
+    <Field className={styles.scopeField} label={label}>
+      <Combobox
+        multiselect
+        className={styles.scopeCombo}
         disabled={disabled}
-        aria-label={label}
-        className={styles.scopeChoices}
+        selectedOptions={!sql && !subprojectId ? ['all'] : ids}
+        value={search ?? summary}
+        placeholder={summary}
+        onOpenChange={(_, { open }) => setSearch(open ? '' : null)}
+        onChange={(event) => setSearch(event.target.value)}
+        onOptionSelect={(_, { optionValue, selectedOptions }) => {
+          if (!optionValue) return
+          apply(optionValue === 'all' ? [] : selectedOptions.filter((id) => id !== 'all'))
+          setSearch('')
+        }}
       >
-        <input
-          type="search"
-          aria-label={formatMessage({
-            id: 'mapCreateParentSearch',
-            defaultMessage: 'Suchen',
-          })}
-          value={search}
-          onChange={(e) => setSearch(e.target.value)}
-        />
-        <button
-          type="button"
-          disabled={!sql && !subprojectId}
-          onClick={() => apply([])}
-        >
-          {allLabel}
-        </button>
+        {!query && <Option value="all">{allLabel}</Option>}
         {visible.map((s) => (
-          <label key={s.id}>
-            <input
-              type="checkbox"
-              checked={ids.includes(s.id)}
-              onChange={(e) =>
-                apply(
-                  e.target.checked ?
-                    [...ids, s.id]
-                  : ids.filter((id) => id !== s.id),
-                )
-              }
-            />{' '}
+          <Option key={s.id} value={s.id}>
             {s.label}
-          </label>
+          </Option>
         ))}
-      </fieldset>
-    </details>
+        {query && !visible.length && <Option disabled>{noMatches}</Option>}
+      </Combobox>
+    </Field>
   )
 }

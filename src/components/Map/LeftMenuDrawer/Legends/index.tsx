@@ -1,3 +1,4 @@
+import { useIntl } from 'react-intl'
 import { useLiveQuery } from '@electric-sql/pglite-react'
 import { useParams } from '@tanstack/react-router'
 import { useAtom } from 'jotai'
@@ -35,6 +36,7 @@ type ActiveVectorLayer = VectorLayers & {
 }
 
 export const Legends = () => {
+  const { formatMessage } = useIntl()
   const { layers, isLayerVisible } = useUrlLayers()
   const [language] = useAtom(languageAtom)
   const { projectId } = useParams({ strict: false })
@@ -135,5 +137,5 @@ export const Legends = () => {
           </Container>
         )
       })
-    : <p className={styles.noLayers}>No active layers</p>
+    : <p className={styles.noLayers}>{formatMessage({ id: 'mapNoActiveLayers', defaultMessage: 'Keine aktiven Ebenen' })}</p>
 }

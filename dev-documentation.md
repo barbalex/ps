@@ -1159,8 +1159,10 @@ feature returns the drawer to inspection.
 ## Choosing the project and subproject on the map
 
 The map's Layers drawer lets users switch between accessible projects and
-select multiple species/subprojects. Its searchable checklist shows each
-selected name even when collapsed. Explicit choices are regular `f-subprojects`
+select multiple species/subprojects. The project area filter comes directly below
+the project selector, followed by the filter named for the project's configured
+subproject plural (for example, **Arten Filter**). Type in the Fluent UI multiselect combobox
+to narrow its options. When closed, it shows the selected names. Explicit choices are regular `f-subprojects`
 OR filters by ID, shared with the navigation tree and species list. In the
 regular filter each OR tab can select an exact record or use other fields.
 Rule-based filters show their matching species in the drawer; editing that

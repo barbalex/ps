@@ -515,6 +515,9 @@
   "SelectALayer": {
     "defaultMessage": "Wähle eine Ebene"
   },
+  "SmuSBE": {
+    "defaultMessage": "Ebenen"
+  },
   "SmwFfB": {
     "defaultMessage": "Ziel-Berichte"
   },
@@ -2306,6 +2309,15 @@
   "mRw0sX": {
     "defaultMessage": "und {count} weitere Zeilen..."
   },
+  "mapAddTile": {
+    "defaultMessage": "Kachelebene hinzufügen"
+  },
+  "mapAddVector": {
+    "defaultMessage": "Vektorebene hinzufügen"
+  },
+  "mapAddWms": {
+    "defaultMessage": "WMS-Ebene hinzufügen"
+  },
   "mapAllAccessible": {
     "defaultMessage": "Alle zugänglichen"
   },
@@ -2326,6 +2338,9 @@
   },
   "mapChooseGeometryStop": {
     "defaultMessage": "Geometrie-Auswahl beenden"
+  },
+  "mapChooseProjectForLayers": {
+    "defaultMessage": "Projekt wählen, um diese Ebenen zu sehen."
   },
   "mapChooseScale": {
     "defaultMessage": "Kartenmassstab wählen"
@@ -2381,6 +2396,9 @@
   "mapLayerAdd": {
     "defaultMessage": "Zu {layer} hinzufügen"
   },
+  "mapLegendsTab": {
+    "defaultMessage": "Legenden"
+  },
   "mapLocate": {
     "defaultMessage": "Eigenen Standort anzeigen"
   },
@@ -2402,8 +2420,26 @@
   "mapNamedProjectArea": {
     "defaultMessage": "Projektgebiet {project}"
   },
+  "mapNoActiveLayers": {
+    "defaultMessage": "Keine aktiven Ebenen"
+  },
+  "mapNoInactiveOwn": {
+    "defaultMessage": "Keine inaktiven eigenen Ebenen"
+  },
+  "mapNoInactiveVectors": {
+    "defaultMessage": "Keine inaktiven Vektorebenen"
+  },
+  "mapNoInactiveWms": {
+    "defaultMessage": "Keine inaktiven WMS-Ebenen"
+  },
+  "mapNoTileLayers": {
+    "defaultMessage": "Noch keine Kachelebenen"
+  },
   "mapOpenLayers": {
     "defaultMessage": "Ebenenmenü öffnen"
+  },
+  "mapOwnLayers": {
+    "defaultMessage": "Eigene Ebenen"
   },
   "mapPrint": {
     "defaultMessage": "Karte drucken"
@@ -2422,6 +2458,15 @@
   },
   "mapStopLocating": {
     "defaultMessage": "Ortung beenden"
+  },
+  "mapSubprojectFilter": {
+    "defaultMessage": "{name} Filter"
+  },
+  "mapTileLayers": {
+    "defaultMessage": "Kachelebenen"
+  },
+  "mapVectorLayers": {
+    "defaultMessage": "Vektorebenen"
   },
   "mapZoomIn": {
     "defaultMessage": "Heranzoomen"

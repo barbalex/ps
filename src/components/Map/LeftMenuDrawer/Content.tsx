@@ -1,3 +1,4 @@
+import { useIntl } from 'react-intl'
 import * as fluentUiReactComponents from '@fluentui/react-components'
 const { Tab, TabList } = fluentUiReactComponents
 import type { SelectTabEvent, SelectTabData } from '@fluentui/react-components'
@@ -10,6 +11,7 @@ import { MapScope } from './MapScope.tsx'
 import styles from './Content.module.css'
 
 export const Content = () => {
+  const { formatMessage } = useIntl()
   const navigate = useNavigate() as unknown as (options: {
     search: (prev: Record<string, unknown>) => Record<string, unknown>
   }) => void | Promise<void>
@@ -29,8 +31,8 @@ export const Content = () => {
           onTabSelect={onTabSelect}
           className={styles.tabList}
         >
-          <Tab value="layers">Layers</Tab>
-          <Tab value="legends">Legends</Tab>
+          <Tab value="layers">{formatMessage({ id: 'SmuSBE', defaultMessage: 'Ebenen' })}</Tab>
+          <Tab value="legends">{formatMessage({ id: 'mapLegendsTab', defaultMessage: 'Legenden' })}</Tab>
         </TabList>
         <div className={styles.form}>
           {tab === 'layers' ?

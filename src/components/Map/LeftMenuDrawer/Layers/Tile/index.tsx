@@ -1,3 +1,4 @@
+import { useIntl } from 'react-intl'
 import { useParams } from '@tanstack/react-router'
 import * as fluentUiReactComponents from '@fluentui/react-components'
 const { Accordion, Button } = fluentUiReactComponents
@@ -26,6 +27,7 @@ export type TileLayerRowModel = TileLayersModel & {
 const openItemsAtom = atom<string[]>([])
 
 export const TileLayers = () => {
+  const { formatMessage } = useIntl()
   const [openItems, setOpenItems] = useAtom(openItemsAtom)
   const { projectId = '99999999-9999-9999-9999-999999999999' } = useParams({
     strict: false,
@@ -61,10 +63,10 @@ export const TileLayers = () => {
   if (projectId === '99999999-9999-9999-9999-999999999999') {
     return (
       <section>
-        <h2 className={layerStyles.title}>Tiles</h2>
+        <h2 className={layerStyles.title}>{formatMessage({ id: 'mapTileLayers', defaultMessage: 'Kachelebenen' })}</h2>
         <div className={layerStyles.layerList}>
           <p className={layerStyles.none}>
-            Tile layers are accessible when a project is active
+            {formatMessage({ id: 'mapChooseProjectForLayers', defaultMessage: 'Projekt wählen, um diese Ebenen zu sehen.' })}
           </p>
         </div>
       </section>
@@ -74,7 +76,7 @@ export const TileLayers = () => {
   return (
     <ErrorBoundary>
       <section>
-        <h2 className={layerStyles.title}>Tiles</h2>
+        <h2 className={layerStyles.title}>{formatMessage({ id: 'mapTileLayers', defaultMessage: 'Kachelebenen' })}</h2>
         <Accordion multiple collapsible openItems={openItems} onToggle={onToggleItem}>
           {tileLayers.length ?
             tileLayers.map((l, index) => (
@@ -85,12 +87,12 @@ export const TileLayers = () => {
                 isOpen={openItems.includes(l.tile_layer_id)}
               />
             ))
-          : <p className={layerStyles.none}>No tile layers yet</p>}
+          : <p className={layerStyles.none}>{formatMessage({ id: 'mapNoTileLayers', defaultMessage: 'Noch keine Kachelebenen' })}</p>}
           <Button
             size="small"
             icon={<FaPlus />}
             onClick={addRow}
-            title="Add tile layer"
+            title={formatMessage({ id: 'mapAddTile', defaultMessage: 'Kachelebene hinzufügen' })}
             className={layerStyles.addButton}
           />
         </Accordion>
