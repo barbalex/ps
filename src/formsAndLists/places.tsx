@@ -6,7 +6,7 @@ import { ListHeader } from '../components/ListHeader.tsx'
 import { Row } from '../components/shared/Row.tsx'
 import { LayerMenu } from '../components/shared/LayerMenu.tsx'
 import { FilterButton } from '../components/shared/FilterButton.tsx'
-import { GeometryListImport } from '../components/shared/GeometryImport.tsx'
+import { GeometryListTools } from '../components/shared/GeometryImport.tsx'
 import { ListRecordImport } from '../components/shared/ListRecordImport.tsx'
 import { Loading } from '../components/shared/Loading.tsx'
 import { usePlacesNavData } from '../modules/usePlacesNavData.ts'
@@ -79,7 +79,7 @@ export const Places = ({ from }: Props) => {
               from={from}
             />
             <FilterButton isFiltered={isFiltered} />
-            <GeometryListImport table="places" rowIds={(navs as NavDataOpen).map((row) => row.id)} />
+            <GeometryListTools table="places" rowIds={(navs as NavDataOpen).map((row) => row.id)} />
             <ListRecordImport projectId={projectId} subprojectId={subprojectId} parentId={placeId} plural={namePlural} />
           </>
         }

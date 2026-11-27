@@ -129,7 +129,7 @@ async function inspect(file: File) {
     const api = await gdal()
     const result = await api.open(
       input,
-      csv ? ['HEADERS=YES', 'AUTODETECT_TYPE=YES'] : [],
+      csv ? ['HEADERS=YES', 'AUTODETECT_TYPE=YES', 'GEOM_POSSIBLE_NAMES=WKT'] : [],
     )
     for (const dataset of result.datasets)
       datasets.push({ dataset, prefix: '' })
@@ -147,12 +147,14 @@ async function inspect(file: File) {
     for (const layer of info.layers) {
       if (layer.featureCount === 0 || (!csv && !layer.geometryFields?.length))
         continue
+      const csvWkt = csv && layer.fields.some((f) => f.name.toUpperCase() === 'WKT')
       sources.push({
         dataset,
         ogrName: layer.name,
         layer: {
           name: prefix + (layer.name === 'source' ? file.name : layer.name),
-          csv,
+          csv: csv && !csvWkt,
+          csvWkt,
           fields: layer.fields.map((f) => f.name),
           needsCrs: csv || !layer.geometryFields?.[0]?.coordinateSystem,
         },
@@ -164,6 +166,13 @@ async function inspect(file: File) {
 }
 
 async function handle(request: VectorRequest): Promise<VectorResponse> {
+  if ('geoPackage' in request) {
+    const api = await gdal()
+    const { datasets: [source] } = await api.open(request.geoPackage)
+    const output = await api.ogr2ogr(source, ['-f', 'GPKG', '-nlt', 'GEOMETRY'], 'export')
+    const bytes = await api.getFileBytes(output)
+    return { output: new Blob([new Uint8Array(bytes)], { type: 'application/geopackage+sqlite3' }) }
+  }
   if ('file' in request) return { layers: await inspect(request.file) }
   const { index, x, y, sourceCrs } = request.read
   if (kmlSources[index]) return { features: kmlSources[index].features }

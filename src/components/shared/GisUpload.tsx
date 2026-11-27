@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'react'
+import type { Feature } from 'geojson'
 import { useIntl } from 'react-intl'
 import * as fluentUiReactComponents from '@fluentui/react-components'
 
@@ -12,7 +13,19 @@ import {
   type GeometryTarget,
 } from '../../modules/importOwnGeometries.ts'
 
-const { Button, Field, Select, Input } = fluentUiReactComponents
+const { Button, Checkbox, Field, Select, Input } = fluentUiReactComponents
+
+type LayerChoice = {
+  file: File
+  index: number
+  layer: SourceLayer
+  name: string
+  selected: boolean
+  uuidField: string
+  x: string
+  y: string
+  sourceCrs: string
+}
 
 export function GisUpload(
   props:
@@ -22,17 +35,12 @@ export function GisUpload(
   const { formatMessage } = useIntl()
   const reader = useRef<ReturnType<typeof openVectorReader> | null>(null)
   const fileInput = useRef<HTMLInputElement>(null)
-  const [layers, setLayers] = useState<SourceLayer[]>([])
-  const [index, setIndex] = useState(0)
-  const [x, setX] = useState('')
-  const [y, setY] = useState('')
-  const [sourceCrs, setSourceCrs] = useState('')
-  const [uuidField, setUuidField] = useState('')
+  const [layers, setLayers] = useState<LayerChoice[]>([])
   const [mode, setMode] = useState<'append' | 'replace'>('append')
   const [busy, setBusy] = useState(false)
   const [error, setError] = useState('')
   const [imported, setImported] = useState(0)
-  const layer = layers[index]
+  const selected = layers.filter((c) => c.selected)
   const target = 'target' in props ? props.target : undefined
   useEffect(
     () => () => {
@@ -42,79 +50,127 @@ export function GisUpload(
     [],
   )
 
-  function selectLayer(list: SourceLayer[], i: number) {
-    setIndex(i)
-    const fields = list[i].fields
-    if (target && 'rowIds' in target) {
-      setUuidField(
-        fields.find(
-          (f) => f.toLowerCase() === `${target.table.slice(0, -1)}_id`,
-        ) ??
-          fields.find((f) => /^(uuid|id)$/i.test(f)) ??
-          '',
-      )
-    }
-    setX(fields.find((f) => /^(lon(gitude)?|lng|x|easting)$/i.test(f)) ?? '')
-    setY(fields.find((f) => /^(lat(itude)?|y|northing)$/i.test(f)) ?? '')
-    setSourceCrs(list[i].csv ? 'EPSG:4326' : '')
+  function update(choice: LayerChoice, patch: Partial<LayerChoice>) {
+    setLayers((prev) =>
+      prev.map((c) => (c === choice ? { ...c, ...patch } : c)),
+    )
   }
-  async function inspect(file?: File) {
+  async function inspect(files: File[]) {
     reader.current?.close()
     reader.current = null
     setLayers([])
     setImported(0)
     setError('')
     setMode('append')
-    if (!file) return
-    const current = openVectorReader()
-    reader.current = current
+    if (!files.length) return
     setBusy(true)
-    try {
-      const list = await current.inspect(file)
-      if (reader.current !== current) return
-      selectLayer(list, 0)
-      setLayers(list)
-    } catch (e) {
-      if (reader.current === current)
-        setError(e instanceof Error ? e.message : String(e))
-    } finally {
-      if (reader.current === current) setBusy(false)
+    const choices: LayerChoice[] = []
+    for (const file of files) {
+      const current = openVectorReader()
+      reader.current = current
+      try {
+        const list = await current.inspect(file)
+        if (reader.current !== current) return
+        choices.push(
+          ...list.map((layer, index) => ({
+            file,
+            index,
+            layer,
+            selected: index === 0,
+            name:
+              files.length === 1 || layer.name.startsWith(file.name) ?
+                layer.name
+              : `${file.name} / ${layer.name}`,
+            x:
+              layer.fields.find((f) =>
+                /^(lon(gitude)?|lng|x|easting)$/i.test(f),
+              ) ?? '',
+            y:
+              layer.fields.find((f) => /^(lat(itude)?|y|northing)$/i.test(f)) ??
+              '',
+            uuidField:
+              layer.fields.find(
+                (f) =>
+                  target &&
+                  f.toLowerCase() === `${target.table.slice(0, -1)}_id`,
+              ) ??
+              layer.fields.find((f) => /^(uuid|id)$/i.test(f)) ??
+              '',
+            sourceCrs: layer.csv || layer.csvWkt ? 'EPSG:4326' : '',
+          })),
+        )
+        // Keep at most one GDAL heap alive, even for many separate files.
+        if (files.length > 1) {
+          current.close()
+          reader.current = null
+        }
+      } catch (e) {
+        if (reader.current !== current) return
+        setError(`${file.name}: ${e instanceof Error ? e.message : String(e)}`)
+        current.close()
+        reader.current = null
+        setBusy(false)
+        return
+      }
     }
+    setLayers(choices)
+    setBusy(false)
   }
   async function commit() {
-    const current = reader.current
-    if (!current) return
+    if (!selected.length || busy) return
     setBusy(true)
     setError('')
     if ('onBusy' in props) props.onBusy(true)
     try {
-      const features = await current.read({ index, x, y, sourceCrs })
-      if (reader.current !== current) return
-      let count = features.length
+      const batches: {
+        name: string
+        uuidField: string
+        features: Feature[]
+      }[] = []
+      for (const file of new Set(selected.map((c) => c.file))) {
+        const retained = reader.current
+        const current = retained ?? openVectorReader()
+        reader.current = current
+        try {
+          if (!retained) await current.inspect(file)
+          for (const {
+            index,
+            x,
+            y,
+            sourceCrs,
+            name,
+            uuidField,
+          } of selected.filter((c) => c.file === file)) {
+            const features = await current.read({ index, x, y, sourceCrs })
+            if (reader.current !== current) return
+            batches.push({ name, uuidField, features })
+          }
+        } finally {
+          if (!retained && reader.current === current) {
+            current.close()
+            reader.current = null
+          }
+        }
+      }
+      let count = batches[0].features.length
       if ('target' in props)
-        count = await importOwnGeometries(
-          props.target,
-          features,
-          uuidField,
-          mode,
-        )
+        count = await importOwnGeometries(props.target, batches, mode)
       else
         await importVectorFeatures({
           vectorLayerId: props.vectorLayerId,
-          features,
+          features: batches[0].features,
           mode,
         })
-      if (reader.current !== current) return
       setImported(count)
       setLayers([])
-      current.close()
+      reader.current?.close()
+      reader.current = null
       if (fileInput.current) fileInput.current.value = ''
     } catch (e) {
-      if (reader.current === current)
-        setError(e instanceof Error ? e.message : String(e))
+      setError(e instanceof Error ? e.message : String(e))
     } finally {
       if ('onBusy' in props) props.onBusy(false)
-      if (reader.current === current) setBusy(false)
+      setBusy(false)
     }
   }
   return (
@@ -130,99 +186,146 @@ export function GisUpload(
           <input
             {...controlProps}
             type="file"
+            multiple={!!target}
             ref={fileInput}
             accept=".gpkg,.zip,.geojson,.json,.kml,.kmz,.gpx,.csv"
             disabled={busy}
-            onChange={(event) => void inspect(event.target.files?.[0])}
+            onChange={(event) =>
+              void inspect(Array.from(event.target.files ?? []))
+            }
           />
         )}
       </Field>
-      {layer && (
+      {layers.length > 0 && (
         <>
-          <Field
-            label={formatMessage({
-              id: 'vectorUploadSourceLayer',
-              defaultMessage: 'Ebene aus der Datei',
-            })}
-          >
-            <Select
-              disabled={busy}
-              value={index}
-              onChange={(_, d) => selectLayer(layers, Number(d.value))}
-            >
-              {layers.map((l, i) => (
-                <option
-                  key={i}
-                  value={i}
-                >
-                  {l.name}
-                </option>
-              ))}
-            </Select>
-          </Field>
-          {layer.csv &&
-            (['X', 'Y'] as const).map((axis) => (
-              <Field
-                key={axis}
-                label={formatMessage(
-                  {
-                    id: 'vectorUploadColumn',
-                    defaultMessage: 'Spalte für {axis}',
-                  },
-                  { axis },
-                )}
-              >
-                <Select
-                  disabled={busy}
-                  value={axis === 'X' ? x : y}
-                  onChange={(_, d) => (axis === 'X' ? setX : setY)(d.value)}
-                >
-                  <option value="">—</option>
-                  {layer.fields.map((f) => (
-                    <option key={f}>{f}</option>
-                  ))}
-                </Select>
-              </Field>
-            ))}
-          {layer.needsCrs && (
+          {!target && (
             <Field
               label={formatMessage({
-                id: 'vectorUploadCrs',
-                defaultMessage: 'Koordinatensystem der Quelldaten (EPSG-Code)',
-              })}
-            >
-              <Input
-                disabled={busy}
-                placeholder="EPSG:2056"
-                value={sourceCrs}
-                onChange={(_, d) => setSourceCrs(d.value.trim())}
-              />
-            </Field>
-          )}
-          {target && 'rowIds' in target && (
-            <Field
-              label={formatMessage({
-                id: 'geometryImportUuid',
-                defaultMessage: 'UUID des Zielobjekts',
+                id: 'vectorUploadSourceLayer',
+                defaultMessage: 'Ebene aus der Datei',
               })}
             >
               <Select
-                value={uuidField}
                 disabled={busy}
-                onChange={(_, d) => setUuidField(d.value)}
+                value={selected[0]?.index}
+                onChange={(_, d) =>
+                  setLayers((prev) =>
+                    prev.map((c) => ({
+                      ...c,
+                      selected: c.index === Number(d.value),
+                    })),
+                  )
+                }
               >
-                <option value="">Feature-ID</option>
-                {layer.fields.map((f) => (
+                {layers.map((l, i) => (
                   <option
-                    key={f}
-                    value={f}
+                    key={i}
+                    value={i}
                   >
-                    {f}
+                    {l.name}
                   </option>
                 ))}
               </Select>
             </Field>
           )}
+          {layers.map((choice, i) => {
+            const { layer, x, y, uuidField, sourceCrs } = choice
+            return (
+              <div
+                key={i}
+                role="group"
+                aria-label={choice.name}
+              >
+                {target && layers.length > 1 && (
+                  <Checkbox
+                    label={choice.name}
+                    checked={choice.selected}
+                    disabled={busy}
+                    onChange={(_, d) =>
+                      update(choice, { selected: d.checked === true })
+                    }
+                  />
+                )}
+                {choice.selected && (
+                  <>
+                    {layer.csv &&
+                      (['X', 'Y'] as const).map((axis) => (
+                        <Field
+                          key={axis}
+                          label={formatMessage(
+                            {
+                              id: 'vectorUploadColumn',
+                              defaultMessage: 'Spalte für {axis}',
+                            },
+                            { axis },
+                          )}
+                        >
+                          <Select
+                            disabled={busy}
+                            value={axis === 'X' ? x : y}
+                            onChange={(_, d) =>
+                              update(
+                                choice,
+                                axis === 'X' ? { x: d.value } : { y: d.value },
+                              )
+                            }
+                          >
+                            <option value="">—</option>
+                            {layer.fields.map((f) => (
+                              <option key={f}>{f}</option>
+                            ))}
+                          </Select>
+                        </Field>
+                      ))}
+                    {layer.needsCrs && (
+                      <Field
+                        label={formatMessage({
+                          id: 'vectorUploadCrs',
+                          defaultMessage:
+                            'Koordinatensystem der Quelldaten (EPSG-Code)',
+                        })}
+                      >
+                        <Input
+                          disabled={busy}
+                          placeholder="EPSG:2056"
+                          value={sourceCrs}
+                          onChange={(_, d) =>
+                            update(choice, { sourceCrs: d.value.trim() })
+                          }
+                        />
+                      </Field>
+                    )}
+                    {target && 'rowIds' in target && (
+                      <Field
+                        label={formatMessage({
+                          id: 'geometryImportUuid',
+                          defaultMessage: 'UUID des Zielobjekts',
+                        })}
+                      >
+                        <Select
+                          value={uuidField}
+                          disabled={busy}
+                          onChange={(_, d) =>
+                            update(choice, { uuidField: d.value })
+                          }
+                        >
+                          <option value="">Feature-ID</option>
+                          {layer.fields.map((f) => (
+                            <option
+                              key={f}
+                              value={f}
+                            >
+                              {f}
+                            </option>
+                          ))}
+                        </Select>
+                      </Field>
+                    )}
+                  </>
+                )}
+              </div>
+            )
+          })}
           <Field
             label={formatMessage({
               id: 'vectorUploadMode',
@@ -266,8 +369,12 @@ export function GisUpload(
           <Button
             disabled={
               busy ||
-              (layer.csv && (!x || !y || x === y)) ||
-              (layer.needsCrs && !/^EPSG:[1-9]\d*$/i.test(sourceCrs))
+              !selected.length ||
+              selected.some(
+                ({ layer, x, y, sourceCrs }) =>
+                  (layer.csv && (!x || !y || x === y)) ||
+                  (layer.needsCrs && !/^EPSG:[1-9]\d*$/i.test(sourceCrs)),
+              )
             }
             onClick={() => void commit()}
           >

@@ -17,6 +17,7 @@ import type {
 } from '../../modules/importOwnGeometries.ts'
 import { GisUpload } from './GisUpload.tsx'
 import { TooltipButton } from './TooltipButton.tsx'
+import { GeometryExport } from './GeometryExport.tsx'
 
 export function GeometryImportDialog({
   target,
@@ -53,7 +54,7 @@ export function GeometryImportDialog({
               : formatMessage({
                   id: 'geometryImportObject',
                   defaultMessage:
-                    'Alle Geometrien der gewählten Dateiebene werden in dieses Objekt importiert.',
+                    'Alle Geometrien der gewählten Ebenen werden gemeinsam in dieses Objekt importiert.',
                 })
               }
             </p>
@@ -79,7 +80,7 @@ export function GeometryImportDialog({
   )
 }
 
-export function GeometryListImport({
+export function GeometryListTools({
   table,
   rowIds,
 }: {
@@ -99,6 +100,7 @@ export function GeometryListImport({
         })}
         onClick={() => setOpen(true)}
       />
+      <GeometryExport table={table} rowIds={rowIds} />
       {open && (
         <GeometryImportDialog
           target={{ table, rowIds }}

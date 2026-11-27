@@ -2000,6 +2000,12 @@
   "geometryEditingRecord": {
     "defaultMessage": "Geometrie bearbeiten: {name}"
   },
+  "geometryExport": {
+    "defaultMessage": "Geometrien exportieren"
+  },
+  "geometryExportEmpty": {
+    "defaultMessage": "Die Liste enthält keine Geometrien."
+  },
   "geometryHistoryChanged": {
     "defaultMessage": "Die Geometrie wurde inzwischen geändert. Bearbeitung erneut öffnen."
   },
@@ -2013,7 +2019,7 @@
     "defaultMessage": "Jede UUID muss zu einem Objekt dieser Liste gehören. Bei einem Fehler wird nichts geändert."
   },
   "geometryImportObject": {
-    "defaultMessage": "Alle Geometrien der gewählten Dateiebene werden in dieses Objekt importiert."
+    "defaultMessage": "Alle Geometrien der gewählten Ebenen werden gemeinsam in dieses Objekt importiert."
   },
   "geometryImportReplace": {
     "defaultMessage": "Geometrien der Zielobjekte ersetzen"

@@ -11,25 +11,27 @@ export type GeometryTarget = { table: GeometryTable } & (
 
 export async function importOwnGeometries(
   target: GeometryTarget,
-  features: Feature[],
-  uuidField: string,
+  layers: { name: string; features: Feature[]; uuidField: string }[],
   mode: 'append' | 'replace',
 ) {
   const allowed = 'rowIds' in target ? new Set(target.rowIds) : null
   const rows: Record<string, Geometry[]> = {}
-  for (const [i, feature] of features.entries()) {
-    const raw: unknown =
-      'rowId' in target ? target.rowId
-      : uuidField ? feature.properties?.[uuidField]
-      : feature.id
-    const id = typeof raw === 'string' ? raw.trim().toLowerCase() : ''
-    if (!isUuid(id) || (allowed && !allowed.has(id)))
-      throw new Error(
-        `Feature ${i + 1}: UUID ${id || '—'} does not match an object in this list.`,
-      )
-    if (!feature.geometry)
-      throw new Error(`Feature ${i + 1}: missing geometry.`)
-    ;(rows[id] ??= []).push(feature.geometry)
+  for (const { name, features, uuidField } of layers) {
+    if (!features.length) throw new Error(`${name}: no features.`)
+    for (const [i, feature] of features.entries()) {
+      const raw: unknown =
+        'rowId' in target ? target.rowId
+        : uuidField ? feature.properties?.[uuidField]
+        : feature.id
+      const id = typeof raw === 'string' ? raw.trim().toLowerCase() : ''
+      if (!isUuid(id) || (allowed && !allowed.has(id)))
+        throw new Error(
+          `${name}, feature ${i + 1}: UUID ${id || '—'} does not match an object in this list.`,
+        )
+      if (!feature.geometry)
+        throw new Error(`${name}, feature ${i + 1}: missing geometry.`)
+      ;(rows[id] ??= []).push(feature.geometry)
+    }
   }
   const token = await requirePostgrestToken()
   const client = store.get(postgrestClientAtom)
