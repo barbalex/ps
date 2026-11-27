@@ -1,5 +1,6 @@
 import type { Database } from 'sql.js'
 import type { PGlite } from '@electric-sql/pglite'
+import { quoteIdent } from './exportProjectDump.ts'
 
 // GeoPackage 1.3 core tables. No tile or extension tables are needed.
 export async function initializeGeoPackage(
@@ -52,3 +53,56 @@ export async function initializeGeoPackage(
 export const geoPackageGeometry = (column: string) => `(
   CASE WHEN ST_IsEmpty(${column}) THEN decode('47500011e6100000','hex')
        ELSE decode('47500001e6100000','hex') END || ST_AsBinary(${column},'NDR'))`
+
+const families = {
+  POINT: { number: 1, suffix: 'points' },
+  LINESTRING: { number: 2, suffix: 'lines' },
+  POLYGON: { number: 3, suffix: 'polygons' },
+} as const
+
+// Inspect the exported rows, not just the column typmod. One multipart
+// feature per family and source row keeps UUIDs unique, even for nested collections.
+export async function collectionLayers(
+  tx: Pick<PGlite, 'query'>,
+  table: string,
+  column: string,
+  where: string,
+) {
+  const geom = `t.${quoteIdent(column)}`
+  const { rows } = await tx.query<{ kind: string; multi: boolean }>(`
+    SELECT kind, bool_or(n > 1) AS multi FROM (
+      SELECT t.ctid, GeometryType(d.geom) AS kind, count(*) AS n
+      FROM ${quoteIdent(table)} t CROSS JOIN LATERAL ST_Dump(${geom}) d
+      WHERE (${where}) AND NOT ST_IsEmpty(d.geom) GROUP BY t.ctid, kind
+    ) parts GROUP BY kind ORDER BY kind`)
+  return rows.map(({ kind, multi }) => {
+    if (!Object.hasOwn(families, kind))
+      throw new Error(`Unsupported geometry in ${table}: ${kind}`)
+    const family = families[kind as keyof typeof families]
+    const extracted = `ST_CollectionExtract(${geom},${family.number})`
+    return {
+      name: `${table}_${family.suffix}`,
+      type: multi ? `MULTI${kind}` : kind,
+      sql: multi ? `ST_Multi(${extracted})` : `ST_GeometryN(${extracted},1)`,
+    }
+  })
+}
+
+export function registerGeoPackageTable(
+  sqlite: Database,
+  table: string,
+  column?: string,
+  type?: string,
+) {
+  sqlite.run(
+    'INSERT INTO gpkg_contents(table_name,identifier,data_type,srs_id) VALUES (?,?,?,?)',
+    [table, table, type ? 'features' : 'attributes', type ? 4326 : null],
+  )
+  if (type && column)
+    sqlite.run('INSERT INTO gpkg_geometry_columns VALUES (?,?,?,?,0,0)', [
+      table,
+      column,
+      type,
+      4326,
+    ])
+}

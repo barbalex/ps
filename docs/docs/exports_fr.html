@@ -1,5 +1,5 @@
 <h1>Exports</h1>
-<p><em>Dernière mise à jour: 8 mai 2026</em></p>
+<p><em>Dernière mise à jour: 27 novembre 2026</em></p>
 <hr>
 <p>Les exports permettent de:</p>
 <ol>
@@ -15,3 +15,19 @@
 <p>Les utilisateurs ayant le rôle « Propriétaire » ou « Concepteur » peuvent choisir lesquels des exports préparés sont disponibles — et peuvent en créer de nouveaux.</p>
 <p>Les exports sont disponibles au niveau du projet et du sous-projet (espèce/biotope).</p>
 <p>Tu veux filtrer l&#39;export? Tu peux définir un filtre quelconque sur la table de base dans le formulaire de filtre, puis l&#39;appliquer lors de l&#39;exécution de l&#39;export.</p>
+<h2>Ouvrir un projet dans QGIS</h2>
+<p>Pour créer une carte, ouvre le projet et choisis <strong>Exporter le projet → GeoPackage (.gpkg)</strong> dans son en-tête. Glisse le fichier téléchargé dans QGIS et sélectionne les couches voulues. Un GeoPackage est une base SQLite qui indique à QGIS les colonnes géométriques et leur système de coordonnées. Aucun export SpatiaLite supplémentaire n’est nécessaire.</p>
+<p>Si tous les lieux sont des points, sélectionne <code>places</code>. Si la table contient plusieurs types de géométrie, choisis les couches correspondantes, par exemple <code>places_points</code> ou <code>places_lines</code>. Utilise <code>place_id</code> pour les joindre aux attributs de <code>places</code>. Les lieux sans géométrie restent dans la table mais ne figurent pas sur la carte.</p>
+<h3>Tu as déjà un export SQLite?</h3>
+<p><strong>SQLite (.sqlite)</strong> convient aux requêtes et aux jointures. Les géométries y sont stockées sous forme de texte GeoJSON: QGIS ouvre donc <code>places</code> comme une table. Pour afficher les points sans modifier le fichier:</p>
+<ol>
+<li>Glisse le fichier <code>.sqlite</code> dans QGIS, ajoute la table <code>places</code> et renomme la couche <code>places_raw</code>.</li>
+<li>Dans <strong>Couche → Ajouter une couche</strong>, ouvre le dialogue des couches virtuelles.</li>
+<li>Colle cette requête et clique sur <strong>Ajouter</strong>:</li>
+</ol>
+<pre><code class="language-sql">SELECT p.place_id, p.name,
+       SetSRID(CastToMultiPoint(CollectionExtract(GeomFromGeoJSON(p.geometry), 1)), 4326) AS geom
+FROM places_raw AS p
+WHERE p.geometry IS NOT NULL
+</code></pre>
+<p>La couche virtuelle affiche tous les points en WGS 84 (EPSG:4326), mais ni les lignes ni les polygones.</p>

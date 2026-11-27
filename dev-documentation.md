@@ -1004,6 +1004,11 @@ or to restore a deleted project — with its original ids.
   relational snapshot, with native WGS 84 feature layers and nonspatial attribute
   tables (including rows with no geometry). GeoPackage adds integer `fid` primary
   keys; original UUID keys remain unique and are used for all project relations.
+  Geometry collections of just one family are exported as a QGIS-renderable point,
+  line or polygon layer under the original table name (multipart when needed).
+  For mixed families, the original table keeps every record and its original geometry as EWKB;
+  companion layers such as `places_points` and `places_lines` carry the source
+  UUID for joining attributes. Empty collection tables remain attribute tables.
   Open the file in a GIS such as QGIS. Like SQLite, it is not an app restore format.
 - **SQL restore format:** project header → “Export project” → “SQL dumpfile” writes the
   locally synced rows (`src/modules/projectDump/exportProjectDump.ts`) as one

@@ -1,5 +1,5 @@
 <h1>Esportazioni</h1>
-<p><em>Ultimo aggiornamento: 8 maggio 2026</em></p>
+<p><em>Ultimo aggiornamento: 27 novembre 2026</em></p>
 <hr>
 <p>Le esportazioni consentono di:</p>
 <ol>
@@ -15,3 +15,19 @@
 <p>Gli utenti con il ruolo &quot;Proprietario&quot; o &quot;Designer&quot; possono scegliere quali delle esportazioni predefinite sono disponibili — e possono crearne di proprie.</p>
 <p>Le esportazioni sono disponibili a livello di progetto e sotto-progetto (specie/biotopo).</p>
 <p>Vuoi filtrare l&#39;esportazione? Puoi impostare qualsiasi filtro sulla tabella di base nel modulo di filtro e applicarlo durante l&#39;esecuzione dell&#39;esportazione.</p>
+<h2>Aprire un progetto in QGIS</h2>
+<p>Per creare una mappa, apri il progetto e scegli <strong>Esporta progetto → GeoPackage (.gpkg)</strong> nell’intestazione. Trascina il file scaricato in QGIS e seleziona i layer desiderati. Un GeoPackage è un database SQLite che indica a QGIS le colonne geometriche e il loro sistema di coordinate. Non serve un’esportazione SpatiaLite separata.</p>
+<p>Se tutti i luoghi sono punti, seleziona <code>places</code>. Se la tabella contiene tipi di geometria diversi, scegli i layer corrispondenti, ad esempio <code>places_points</code> o <code>places_lines</code>. Usa <code>place_id</code> per collegarli agli attributi di <code>places</code>. I luoghi senza geometria rimangono nella tabella ma non compaiono sulla mappa.</p>
+<h3>Hai già un’esportazione SQLite?</h3>
+<p><strong>SQLite (.sqlite)</strong> è utile per query e join. Le geometrie sono salvate come testo GeoJSON, quindi QGIS apre <code>places</code> come tabella. Per visualizzare i punti senza modificare il file:</p>
+<ol>
+<li>Trascina il file <code>.sqlite</code> in QGIS, aggiungi la tabella <code>places</code> e rinomina il layer <code>places_raw</code>.</li>
+<li>Nel menu <strong>Layer → Aggiungi layer</strong>, apri la finestra dei layer virtuali.</li>
+<li>Incolla questa query e fai clic su <strong>Aggiungi</strong>:</li>
+</ol>
+<pre><code class="language-sql">SELECT p.place_id, p.name,
+       SetSRID(CastToMultiPoint(CollectionExtract(GeomFromGeoJSON(p.geometry), 1)), 4326) AS geom
+FROM places_raw AS p
+WHERE p.geometry IS NOT NULL
+</code></pre>
+<p>Il layer virtuale mostra tutti i punti in WGS 84 (EPSG:4326), ma non le linee o i poligoni.</p>

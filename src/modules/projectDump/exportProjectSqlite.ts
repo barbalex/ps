@@ -8,7 +8,12 @@ import {
   projectTableWhere,
 } from '../../../scripts/project-dump-tables.mjs'
 import { quoteIdent, tableColumns } from './exportProjectDump.ts'
-import { geoPackageGeometry, initializeGeoPackage } from './geoPackage.ts'
+import {
+  collectionLayers,
+  geoPackageGeometry,
+  initializeGeoPackage,
+  registerGeoPackageTable,
+} from './geoPackage.ts'
 
 type Key = {
   table_name: string
@@ -65,6 +70,17 @@ export async function buildProjectSqlite(
         const columns = await tableColumns(tx, table)
         if (!columns.length) continue
         const layer = layers?.get(table)
+        const where = projectTableWhere(table, projectId)
+        const families =
+          layer?.type === 'GEOMETRYCOLLECTION' || layer?.type === 'GEOMETRY' ?
+            await collectionLayers(tx, table, layer.column_name, where)
+          : undefined
+        const mainType =
+          families ?
+            families.length === 1 ?
+              families[0].type
+            : undefined
+          : layer?.type
         const definitions = columns.map((c) => {
           let type = sqliteType(c.udt_name)
           if (layers && c.udt_name === 'geometry') {
@@ -87,7 +103,7 @@ export async function buildProjectSqlite(
               throw new Error(
                 `Unsupported GeoPackage geometry: ${table}.${c.column_name}`,
               )
-            type = layer.type
+            type = mainType ?? 'BLOB'
           }
           return `${quoteIdent(c.column_name)} ${type}`
         })
@@ -103,32 +119,53 @@ export async function buildProjectSqlite(
           `CREATE TABLE ${quoteIdent(table)} (${definitions.join(',')})`,
         )
         if (layers) {
-          sqlite.run(
-            'INSERT INTO gpkg_contents(table_name,identifier,data_type,srs_id) VALUES (?,?,?,?)',
-            [
-              table,
-              table,
-              layer ? 'features' : 'attributes',
-              layer ? layer.srid : null,
-            ],
-          )
-          if (layer)
-            sqlite.run(
-              'INSERT INTO gpkg_geometry_columns VALUES (?,?,?,?,0,0)',
-              [table, layer.column_name, layer.type, layer.srid],
-            )
+          registerGeoPackageTable(sqlite, table, layer?.column_name, mainType)
         }
         const select = columns.map((c) => {
           const col = quoteIdent(c.column_name)
-          if (c.udt_name === 'geometry')
-            return `${layers ? geoPackageGeometry(`t.${col}`) : `ST_AsGeoJSON(t.${col},17)`} AS ${col}`
+          if (c.udt_name === 'geometry') {
+            const source = `t.${col}`
+            const value = mainType ? geoPackageGeometry(families?.[0]?.sql ?? source)
+              : layers ? `ST_AsEWKB(${source})` : `ST_AsGeoJSON(${source},17)`
+            return `${value} AS ${col}`
+          }
           if (c.udt_name === 'bool') return `t.${col}::int AS ${col}`
           if (c.udt_name === 'bytea') return `t.${col}`
           // Bind exact PostgreSQL text, including bigint/decimal values that exceed JS precision.
           return `t.${col}::text AS ${col}`
         })
+        const parts = families && families.length > 1 ? families : []
+        const pk = keys.find(
+          (k) => k.table_name === table && k.kind === 'p',
+        )?.columns
+        const extra = parts.map((part) => {
+          if (pk?.length !== 1 || !layer)
+            throw new Error(`Missing geometry source key: ${table}`)
+          const id = quoteIdent(pk[0]),
+            name = quoteIdent(part.name),
+            col = quoteIdent(layer.column_name)
+          sqlite.run(
+            `CREATE TABLE ${name} (fid INTEGER PRIMARY KEY AUTOINCREMENT, ${id} TEXT NOT NULL UNIQUE REFERENCES ${quoteIdent(table)}(${id}), ${col} ${part.type} NOT NULL)`,
+          )
+          registerGeoPackageTable(
+            sqlite,
+            part.name,
+            layer.column_name,
+            part.type,
+          )
+          select.push(
+            `CASE WHEN NOT ST_IsEmpty(${part.sql}) THEN ${geoPackageGeometry(part.sql)} END AS ${name}`,
+          )
+          return {
+            key: pk[0],
+            alias: part.name,
+            insert: sqlite.prepare(
+              `INSERT INTO ${name} (${id},${col}) VALUES (?,?)`,
+            ),
+          }
+        })
         await tx.exec(
-          `DECLARE sqlite_rows CURSOR FOR SELECT ${select.join(',')} FROM ${quoteIdent(table)} t WHERE ${projectTableWhere(table, projectId)}`,
+          `DECLARE sqlite_rows CURSOR FOR SELECT ${select.join(',')} FROM ${quoteIdent(table)} t WHERE ${where}`,
         )
         const insert = sqlite.prepare(
           `INSERT INTO ${quoteIdent(table)} (${columnList(columns.map((c) => c.column_name))}) VALUES (${columns.map(() => '?').join(',')})`,
@@ -138,13 +175,19 @@ export async function buildProjectSqlite(
             const { rows } = await tx.query<Record<string, SqlValue>>(
               'FETCH 500 FROM sqlite_rows',
             )
-            for (const row of rows)
+            for (const row of rows) {
               insert.run(columns.map((c) => row[c.column_name]))
+              for (const part of extra) {
+                if (row[part.alias] !== null)
+                  part.insert.run([row[part.key], row[part.alias]])
+              }
+            }
             rowCount += rows.length
             if (rows.length < 500) break
           }
         } finally {
           insert.free()
+          for (const part of extra) part.insert.free()
         }
         await tx.exec('CLOSE sqlite_rows')
         tableCount++

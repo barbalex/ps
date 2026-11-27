@@ -1,5 +1,5 @@
 <h1>Exports</h1>
-<p><em>Last updated: 8 May 2026</em></p>
+<p><em>Last updated: 27 November 2026</em></p>
 <hr>
 <p>Exports make it possible to:</p>
 <ol>
@@ -15,3 +15,19 @@
 <p>Users with the role &quot;Owner&quot; or &quot;Designer&quot; can choose which of the prepared exports are available — and can create their own.</p>
 <p>Exports are available at the project and sub-project level (species/biotope).</p>
 <p>Want to filter the export? You can set any filter on the base table in the filter form and then apply it when running the export.</p>
+<h2>Open a project in QGIS</h2>
+<p>For a map, open the project and choose <strong>Export project → GeoPackage (.gpkg)</strong> in its header. Drag the downloaded file into QGIS and select the layers you want. GeoPackage is a SQLite database that tells QGIS which columns contain geometry and which coordinate system they use. No separate SpatiaLite export is needed.</p>
+<p>If all places are points, select <code>places</code>. If the table mixes points, lines and polygons, select the corresponding layers, such as <code>places_points</code> or <code>places_lines</code>. Use <code>place_id</code> to join them to the attributes in <code>places</code>. Records without geometry remain in the table but do not appear on the map.</p>
+<h3>Already have a plain SQLite export?</h3>
+<p><strong>SQLite (.sqlite)</strong> is useful for queries and joins. It stores geometry as GeoJSON text, so QGIS opens <code>places</code> as a table. To show its points without changing the file:</p>
+<ol>
+<li>Drag the <code>.sqlite</code> file into QGIS, add the <code>places</code> table and rename the layer <code>places_raw</code>.</li>
+<li>Choose <strong>Layer → Add Layer → Add/Edit Virtual Layer…</strong>.</li>
+<li>Paste this query and click <strong>Add</strong>:</li>
+</ol>
+<pre><code class="language-sql">SELECT p.place_id, p.name,
+       SetSRID(CastToMultiPoint(CollectionExtract(GeomFromGeoJSON(p.geometry), 1)), 4326) AS geom
+FROM places_raw AS p
+WHERE p.geometry IS NOT NULL
+</code></pre>
+<p>The virtual layer draws all point parts in WGS 84 (EPSG:4326). It does not draw lines or polygons.</p>

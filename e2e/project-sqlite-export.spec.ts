@@ -9,7 +9,9 @@ test('download relational SQLite and multi-layer GeoPackage snapshots for one pr
   const project = randomUUID(),
     other = randomUUID(),
     sub = randomUUID(),
-    place = randomUUID()
+    place = randomUUID(),
+    action = randomUUID(),
+    noShape = randomUUID()
   const email = `sqlite-${project}@example.com`,
     password = 'e2e-test-password-123'
   const userId = await ensureUser({ email, password, name: 'SQLite export' })
@@ -17,7 +19,10 @@ test('download relational SQLite and multi-layer GeoPackage snapshots for one pr
     psql(`SET electric.syncing=true; INSERT INTO projects(project_id,name) VALUES ('${project}','SQLite test'),('${other}','Other');
       UPDATE projects SET geometry=ST_Multi(ST_MakeEnvelope(6,45,8,47,4326)) WHERE project_id='${project}';
       INSERT INTO subprojects(subproject_id,project_id,name) VALUES ('${sub}','${project}','Survey');
-      INSERT INTO places(place_id,subproject_id,data,geometry) VALUES ('${place}','${sub}','{"nr":3}',ST_ForceCollection(ST_Point(7,46,4326)));`)
+      INSERT INTO places(place_id,subproject_id,data,geometry) VALUES ('${place}','${sub}','{"nr":3}',ST_ForceCollection(ST_Point(7,46,4326)));
+      INSERT INTO actions(action_id,place_id,geometry) VALUES ('${action}','${place}',
+        ST_GeomFromText('GEOMETRYCOLLECTION(MULTIPOINT((7 46),(8 47)),LINESTRING(7 46,8 47),POLYGON((7 46,8 46,8 47,7 46)))',4326)),
+        ('${noShape}','${place}',NULL);`)
     for (const projectId of [project, other])
       await grantRoles({
         email,
@@ -102,16 +107,14 @@ test('download relational SQLite and multi-layer GeoPackage snapshots for one pr
           .all(),
       ).toEqual(
         [
-          'actions',
-          'checks',
-          'observations',
-          'places',
-          'projects',
-          'vector_layer_geoms',
-        ].map((table_name) => ({
+          ['actions_lines', 'LINESTRING'],
+          ['actions_points', 'MULTIPOINT'],
+          ['actions_polygons', 'POLYGON'],
+          ['places', 'POINT'],
+          ['projects', 'MULTIPOLYGON'],
+        ].map(([table_name, geometry_type_name]) => ({
           table_name,
-          geometry_type_name:
-            table_name === 'projects' ? 'MULTIPOLYGON' : 'GEOMETRYCOLLECTION',
+          geometry_type_name,
           srs_id: 4326,
         })),
       )
@@ -135,10 +138,27 @@ test('download relational SQLite and multi-layer GeoPackage snapshots for one pr
         {
           place_id: place,
           label: 'Survey',
-          shape:
-            '47500001E610000001070000000100000001010000000000000000001C400000000000004740',
+          shape: '47500001E610000001010000000000000000001C400000000000004740',
         },
       ])
+      expect(
+        gpkg
+          .prepare('SELECT action_id FROM actions WHERE geometry IS NULL')
+          .all(),
+      ).toEqual([{ action_id: noShape }])
+      for (const layer of [
+        'actions_points',
+        'actions_lines',
+        'actions_polygons',
+      ]) {
+        expect(
+          gpkg
+            .prepare(
+              `SELECT action_id,place_id FROM ${layer} JOIN actions USING(action_id)`,
+            )
+            .all(),
+        ).toEqual([{ action_id: action, place_id: place }])
+      }
       expect(gpkg.prepare('PRAGMA foreign_key_check').all()).toEqual([])
     } finally {
       gpkg.close()
