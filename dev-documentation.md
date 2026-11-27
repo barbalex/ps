@@ -973,7 +973,15 @@ or to restore a deleted project — with its original ids.
   order, `projectTableWhere()` builds each table's project scope). Access
   rows (`project_users`, `*_roles`) are part of a dump; history tables,
   global catalogs and account-scoped fields are not.
-- **In the app:** project header → "Export to SQL dumpfile" writes the
+- **SQLite snapshot:** project header → “Export project” → “SQLite (.sqlite)”
+  downloads a database for analysis in SQLite tools, not for in-app restore.
+  It uses the same project tables and local row scope as the SQL dump, including
+  empty tables, and materializes generated labels. UUIDs, dates, JSON and exact
+  decimals are text, geometries are GeoJSON text, file bytes are BLOBs, and
+  foreign keys between exported tables are declared. References to excluded global
+  tables keep their UUID values without a constraint. If a referenced row is
+  missing from the locally synced project, the export warns rather than dropping data.
+- **SQL restore format:** project header → “Export project” → "Export to SQL dumpfile" writes the
   locally synced rows (`src/modules/projectDump/exportProjectDump.ts`) as one
   `INSERT … SELECT … FROM jsonb_populate_recordset(NULL::table, $ps_dump$[…]$ps_dump$)`
   statement per table chunk — valid SQL _and_ parseable without a SQL

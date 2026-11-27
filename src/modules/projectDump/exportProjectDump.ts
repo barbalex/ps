@@ -42,7 +42,7 @@ export const tableColumns = async (
   return res.rows
 }
 
-const quoteIdent = (name: string) => `"${name.replaceAll('"', '""')}"`
+export const quoteIdent = (name: string) => `"${name.replaceAll('"', '""')}"`
 
 export const dumpStatement = (
   table: string,
@@ -134,7 +134,7 @@ export const buildProjectDump = async (
   return { parts, rowCount, tableCount, projectName }
 }
 
-const safeFileName = (name: string) =>
+export const safeFileName = (name: string) =>
   name
     .normalize('NFKD')
     .replace(/[^\w.-]+/g, '_')

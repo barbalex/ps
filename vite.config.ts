@@ -163,6 +163,7 @@ export default defineConfig({
   ],
   envPrefix: ['VITE_', 'ELECTRIC_'],
   optimizeDeps: {
+    include: ['sql.js'],
     exclude: ['@electric-sql/pglite', '@electric-sql/pglite-tools'],
   },
   build: {
