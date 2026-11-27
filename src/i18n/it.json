@@ -1,6 +1,7 @@
 {
   "pdFormatMenu": "Esporta progetto",
-  "pdMissingReferences": "{count} riferimenti puntano a record non inclusi in questa esportazione SQLite locale.",
+  "pdExportTo": "Esporta in:",
+  "pdMissingReferences": "{count} riferimenti puntano a record non inclusi in questa esportazione locale.",
   "geometryExport": "Esporta geometrie",
   "geometryExportEmpty": "Questa lista non contiene geometrie.",
   "geometryImport": "Importa geometrie",
@@ -1417,7 +1418,7 @@
   "vectorLayer.wfs.valuesIncompleteBody": "Sono stati usati i valori degli oggetti attualmente caricati. I valori mancanti possono essere aggiunti come visualizzazione.",
   "vectorLayer.wfs.valuesUnreadable": "Non è stato possibile leggere i valori del campo «{field}»",
   "yoo7JY.offen": "aperto",
-  "pdExportTitle": "Esporta in un file dump SQL",
+  "pdExportTitle": "File dump SQL",
   "pdExportDone": "{count} righe da {tables} tabelle esportate (i dati sincronizzati localmente).",
   "pdExportError": "Esportazione non riuscita",
   "pdImportTitle": "Importa da un file dump SQL",

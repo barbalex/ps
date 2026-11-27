@@ -2691,7 +2691,10 @@
     "defaultMessage": "Export fehlgeschlagen"
   },
   "pdExportTitle": {
-    "defaultMessage": "In SQL-Dumpdatei exportieren"
+    "defaultMessage": "SQL-Dumpdatei"
+  },
+  "pdExportTo": {
+    "defaultMessage": "Exportieren nach:"
   },
   "pdFormatMenu": {
     "defaultMessage": "Projekt exportieren"
@@ -2712,7 +2715,7 @@
     "defaultMessage": "Import unterbrochen"
   },
   "pdMissingReferences": {
-    "defaultMessage": "{count} Verweise zeigen auf Datensätze ausserhalb dieses lokalen SQLite-Exports."
+    "defaultMessage": "{count} Verweise zeigen auf Datensätze ausserhalb dieses lokalen Exports."
   },
   "pfBGqS": {
     "defaultMessage": "Feldtauglich"

@@ -1000,7 +1000,12 @@ or to restore a deleted project — with its original ids.
   foreign keys between exported tables are declared. References to excluded global
   tables keep their UUID values without a constraint. If a referenced row is
   missing from the locally synced project, the export warns rather than dropping data.
-- **SQL restore format:** project header → “Export project” → "Export to SQL dumpfile" writes the
+- **GeoPackage snapshot:** “Export to:” → “GeoPackage (.gpkg)” downloads the same
+  relational snapshot, with native WGS 84 feature layers and nonspatial attribute
+  tables (including rows with no geometry). GeoPackage adds integer `fid` primary
+  keys; original UUID keys remain unique and are used for all project relations.
+  Open the file in a GIS such as QGIS. Like SQLite, it is not an app restore format.
+- **SQL restore format:** project header → “Export project” → “SQL dumpfile” writes the
   locally synced rows (`src/modules/projectDump/exportProjectDump.ts`) as one
   `INSERT … SELECT … FROM jsonb_populate_recordset(NULL::table, $ps_dump$[…]$ps_dump$)`
   statement per table chunk — valid SQL _and_ parseable without a SQL
@@ -1050,10 +1055,9 @@ area to existing PGlite databases without resetting their sync data. Both
 spatial filters and the three project-level quality controls use
 `project_area_matches`: coverage includes the perimeter, partial coverage
 counts as outside, and active modes exclude missing or empty geometries.
-The project header's area-filter button opens All / Inside / Outside. In
-the projects list, choose the project first; the button is highlighted if
-any listed project has an active area filter. Both menus use the same
-per-project setting as the map drawer and the tree.
+Choose a project first: its header's area-filter button opens All / Inside /
+Outside and is highlighted when active. The map drawer and tree use the
+same per-project setting.
 
 Vector layers with `type = 'own'` draw the project's own data tables on the
 map: `places`, `actions`, `checks` and the observation tables (`observations_assigned`,

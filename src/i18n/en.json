@@ -1,6 +1,7 @@
 {
   "pdFormatMenu": "Export project",
-  "pdMissingReferences": "{count} references point to records outside this local SQLite export.",
+  "pdExportTo": "Export to:",
+  "pdMissingReferences": "{count} references point to records outside this local export.",
   "geometryExport": "Export geometries",
   "geometryExportEmpty": "This list contains no geometries.",
   "geometryImport": "Import geometries",
@@ -1412,7 +1413,7 @@
   "vectorLayer.wfs.valuesIncompleteBody": "The values of the currently loaded objects were used. You can add missing values as a display by hand.",
   "vectorLayer.wfs.valuesUnreadable": "The values of the field «{field}» could not be read",
   "yoo7JY.offen": "open",
-  "pdExportTitle": "Export to SQL dumpfile",
+  "pdExportTitle": "SQL dumpfile",
   "pdExportDone": "{count} rows from {tables} tables exported (the locally synced data).",
   "pdExportError": "Export failed",
   "pdImportTitle": "Import from SQL dumpfile",

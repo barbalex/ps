@@ -8,6 +8,7 @@ import {
   projectTableWhere,
 } from '../../../scripts/project-dump-tables.mjs'
 import { quoteIdent, tableColumns } from './exportProjectDump.ts'
+import { geoPackageGeometry, initializeGeoPackage } from './geoPackage.ts'
 
 type Key = {
   table_name: string
@@ -29,6 +30,7 @@ function sqliteType(type: string) {
 export async function buildProjectSqlite(
   db: Pick<PGlite, 'transaction'>,
   projectId: string,
+  format: 'sqlite' | 'gpkg' = 'sqlite',
 ) {
   if (!isUuid(projectId)) throw new Error('Invalid project UUID')
   const SQL = await initSqlJs({ locateFile: () => wasmUrl })
@@ -57,26 +59,69 @@ export async function buildProjectSqlite(
       let rowCount = 0
       let tableCount = 0
       sqlite.run('PRAGMA foreign_keys=OFF; BEGIN')
+      const layers =
+        format === 'gpkg' ? await initializeGeoPackage(sqlite, tx) : undefined
       for (const table of names) {
         const columns = await tableColumns(tx, table)
         if (!columns.length) continue
-        const definitions = columns.map(
-          (c) => `${quoteIdent(c.column_name)} ${sqliteType(c.udt_name)}`,
-        )
+        const layer = layers?.get(table)
+        const definitions = columns.map((c) => {
+          let type = sqliteType(c.udt_name)
+          if (layers && c.udt_name === 'geometry') {
+            if (
+              !layer ||
+              layer.column_name !== c.column_name ||
+              layer.srid !== 4326 ||
+              layer.coord_dimension !== 2 ||
+              ![
+                'GEOMETRY',
+                'POINT',
+                'MULTIPOINT',
+                'LINESTRING',
+                'MULTILINESTRING',
+                'POLYGON',
+                'MULTIPOLYGON',
+                'GEOMETRYCOLLECTION',
+              ].includes(layer.type)
+            )
+              throw new Error(
+                `Unsupported GeoPackage geometry: ${table}.${c.column_name}`,
+              )
+            type = layer.type
+          }
+          return `${quoteIdent(c.column_name)} ${type}`
+        })
+        if (layers) definitions.unshift('fid INTEGER PRIMARY KEY AUTOINCREMENT')
         for (const k of keys.filter((k) => k.table_name === table)) {
           definitions.push(
             k.kind === 'p' ?
-              `PRIMARY KEY (${columnList(k.columns)})`
+              `${layers ? 'UNIQUE' : 'PRIMARY KEY'} (${columnList(k.columns)})`
             : `FOREIGN KEY (${columnList(k.columns)}) REFERENCES ${quoteIdent(k.parent!)} (${columnList(k.parent_columns)})`,
           )
         }
         sqlite.run(
           `CREATE TABLE ${quoteIdent(table)} (${definitions.join(',')})`,
         )
+        if (layers) {
+          sqlite.run(
+            'INSERT INTO gpkg_contents(table_name,identifier,data_type,srs_id) VALUES (?,?,?,?)',
+            [
+              table,
+              table,
+              layer ? 'features' : 'attributes',
+              layer ? layer.srid : null,
+            ],
+          )
+          if (layer)
+            sqlite.run(
+              'INSERT INTO gpkg_geometry_columns VALUES (?,?,?,?,0,0)',
+              [table, layer.column_name, layer.type, layer.srid],
+            )
+        }
         const select = columns.map((c) => {
           const col = quoteIdent(c.column_name)
           if (c.udt_name === 'geometry')
-            return `ST_AsGeoJSON(t.${col},17) AS ${col}`
+            return `${layers ? geoPackageGeometry(`t.${col}`) : `ST_AsGeoJSON(t.${col},17)`} AS ${col}`
           if (c.udt_name === 'bool') return `t.${col}::int AS ${col}`
           if (c.udt_name === 'bytea') return `t.${col}`
           // Bind exact PostgreSQL text, including bigint/decimal values that exceed JS precision.
@@ -86,7 +131,7 @@ export async function buildProjectSqlite(
           `DECLARE sqlite_rows CURSOR FOR SELECT ${select.join(',')} FROM ${quoteIdent(table)} t WHERE ${projectTableWhere(table, projectId)}`,
         )
         const insert = sqlite.prepare(
-          `INSERT INTO ${quoteIdent(table)} VALUES (${columns.map(() => '?').join(',')})`,
+          `INSERT INTO ${quoteIdent(table)} (${columnList(columns.map((c) => c.column_name))}) VALUES (${columns.map(() => '?').join(',')})`,
         )
         try {
           for (;;) {
@@ -113,7 +158,10 @@ export async function buildProjectSqlite(
       )
       return {
         blob: new Blob([new Uint8Array(sqlite.export())], {
-          type: 'application/vnd.sqlite3',
+          type:
+            layers ?
+              'application/geopackage+sqlite3'
+            : 'application/vnd.sqlite3',
         }),
         projectName: project.name,
         tableCount,
