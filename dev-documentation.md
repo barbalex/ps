@@ -1000,7 +1000,12 @@ or to restore a deleted project — with its original ids.
   foreign keys between exported tables are declared. References to excluded global
   tables keep their UUID values without a constraint. If a referenced row is
   missing from the locally synced project, the export warns rather than dropping data.
-- **SQL restore format:** project header → “Export project” → "Export to SQL dumpfile" writes the
+- **GeoPackage snapshot:** “Export to:” → “GeoPackage (.gpkg)” downloads the same
+  relational snapshot, with native WGS 84 feature layers and nonspatial attribute
+  tables (including rows with no geometry). GeoPackage adds integer `fid` primary
+  keys; original UUID keys remain unique and are used for all project relations.
+  Open the file in a GIS such as QGIS. Like SQLite, it is not an app restore format.
+- **SQL restore format:** project header → “Export project” → “SQL dumpfile” writes the
   locally synced rows (`src/modules/projectDump/exportProjectDump.ts`) as one
   `INSERT … SELECT … FROM jsonb_populate_recordset(NULL::table, $ps_dump$[…]$ps_dump$)`
   statement per table chunk — valid SQL _and_ parseable without a SQL

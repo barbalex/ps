@@ -1,7 +1,15 @@
 import { useState } from 'react'
 import * as fluentUiReactComponents from '@fluentui/react-components'
-const { Button, Menu, MenuTrigger, MenuPopover, MenuList, MenuItem, Spinner } =
-  fluentUiReactComponents
+const {
+  Button,
+  Menu,
+  MenuTrigger,
+  MenuPopover,
+  MenuList,
+  MenuGroupHeader,
+  MenuItem,
+  Spinner,
+} = fluentUiReactComponents
 import { MdFileDownload } from 'react-icons/md'
 import { useSetAtom } from 'jotai'
 import { usePGlite } from '@electric-sql/pglite-react'
@@ -25,24 +33,24 @@ export const ExportDumpButton = ({ projectId }: Props) => {
 
   const sqlTitle = formatMessage({
     id: 'pdExportTitle',
-    defaultMessage: 'In SQL-Dumpdatei exportieren',
+    defaultMessage: 'SQL-Dumpdatei',
   })
 
   const title = formatMessage({
     id: 'pdFormatMenu',
     defaultMessage: 'Projekt exportieren',
   })
-  const onClick = async (format: 'sql' | 'sqlite') => {
+  const onClick = async (format: 'sql' | 'sqlite' | 'gpkg') => {
     setExporting(true)
     try {
       let result: { rowCount: number; tableCount: number }
-      if (format === 'sqlite') {
+      if (format !== 'sql') {
         const { buildProjectSqlite } =
           await import('../../modules/projectDump/exportProjectSqlite.ts')
-        const snapshot = await buildProjectSqlite(db, projectId)
+        const snapshot = await buildProjectSqlite(db, projectId, format)
         saveAs(
           snapshot.blob,
-          `${safeFileName(snapshot.projectName ?? 'project')}_${new Date().toISOString().slice(0, 10)}.sqlite`,
+          `${safeFileName(snapshot.projectName ?? 'project')}_${new Date().toISOString().slice(0, 10)}.${format}`,
         )
         if (snapshot.missingReferences)
           addNotification({
@@ -52,7 +60,7 @@ export const ExportDumpButton = ({ projectId }: Props) => {
               {
                 id: 'pdMissingReferences',
                 defaultMessage:
-                  '{count} Verweise zeigen auf Datensätze ausserhalb dieses lokalen SQLite-Exports.',
+                  '{count} Verweise zeigen auf Datensätze ausserhalb dieses lokalen Exports.',
               },
               { count: snapshot.missingReferences },
             ),
@@ -105,9 +113,18 @@ export const ExportDumpButton = ({ projectId }: Props) => {
       </MenuTrigger>
       <MenuPopover>
         <MenuList>
+          <MenuGroupHeader>
+            {formatMessage({
+              id: 'pdExportTo',
+              defaultMessage: 'Exportieren nach:',
+            })}
+          </MenuGroupHeader>
           <MenuItem onClick={() => void onClick('sql')}>{sqlTitle}</MenuItem>
           <MenuItem onClick={() => void onClick('sqlite')}>
             SQLite (.sqlite)
+          </MenuItem>
+          <MenuItem onClick={() => void onClick('gpkg')}>
+            GeoPackage (.gpkg)
           </MenuItem>
         </MenuList>
       </MenuPopover>
