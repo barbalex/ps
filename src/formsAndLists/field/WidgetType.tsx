@@ -26,8 +26,9 @@ export const WidgetType = ({
   const normalizedFieldTypeId =
     typeof field_type_id === 'string' ? field_type_id.trim() : field_type_id
 
-  const widgetWhere = normalizedFieldTypeId
-    ? `
+  const widgetWhere =
+    normalizedFieldTypeId ?
+      `
     widget_type_id in (
       SELECT widget_type_id
       FROM widgets_for_fields

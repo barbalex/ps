@@ -4,6 +4,7 @@ import { useSearch, useParams } from '@tanstack/react-router'
 import { FieldFormInForm } from '../../FieldFormInForm.tsx'
 import { WidgetDragAndDrop } from './Widget/index.tsx'
 import { Widget } from './Widget/Widget.tsx'
+import { FieldInstructions } from '../../FieldInstructions.tsx'
 import { designingAtom } from '../../../../store.ts'
 import type { FieldsWithTypes } from '../index.tsx'
 
@@ -63,10 +64,32 @@ export const Field = ({
 
   if (!enableDragAndDrop) {
     return (
-      <Widget
+      <FieldInstructions text={field.instructions}>
+        <Widget
+          key={key}
+          name={field.name!}
+          field={field}
+          data={data}
+          table={table}
+          jsonFieldName={jsonFieldName}
+          idField={idField}
+          id={id}
+          orIndex={orIndex}
+          autoFocus={autoFocusValue}
+          ref={ref}
+          from={from}
+        />
+      </FieldInstructions>
+    )
+  }
+
+  return (
+    <FieldInstructions text={field.instructions}>
+      <WidgetDragAndDrop
         key={key}
-        name={field.name!}
         field={field}
+        fieldsCount={fieldsCount}
+        index={index}
         data={data}
         table={table}
         jsonFieldName={jsonFieldName}
@@ -77,24 +100,6 @@ export const Field = ({
         ref={ref}
         from={from}
       />
-    )
-  }
-
-  return (
-    <WidgetDragAndDrop
-      key={key}
-      field={field}
-      fieldsCount={fieldsCount}
-      index={index}
-      data={data}
-      table={table}
-      jsonFieldName={jsonFieldName}
-      idField={idField}
-      id={id}
-      orIndex={orIndex}
-      autoFocus={autoFocusValue}
-      ref={ref}
-      from={from}
-    />
+    </FieldInstructions>
   )
 }

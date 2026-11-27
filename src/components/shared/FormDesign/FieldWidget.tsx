@@ -4,20 +4,27 @@ import { useSetAtom } from 'jotai'
 
 import { TextField } from '../TextField.tsx'
 import { CheckboxField } from '../CheckboxField.tsx'
+import { NullableBooleanButtons } from '../NullableBooleanButtons.tsx'
 import { SwitchField } from '../SwitchField.tsx'
 import { TextArea } from '../TextArea.tsx'
+import { MarkdownField } from '../MarkdownField.tsx'
 import { DropdownField } from '../DropdownField.tsx'
 import { DropdownFieldFromList } from '../DropdownFieldFromList.tsx'
+import { MultiSelectFromList } from '../MultiSelectFromList.tsx'
 import { RadioGroupFromList } from '../RadioGroupFromList.tsx'
 import { DateField } from '../DateField.tsx'
 import { TimeFields } from '../TimeFields.tsx'
 import { DateTimeField } from '../DateTimeField.tsx'
 import { getValueFromChange } from '../../../modules/getValueFromChange.ts'
+import { updateCustomField } from '../../../modules/updateCustomField.ts'
 import { addOperationAtom } from '../../../store.ts'
 import type { FieldsWithTypes } from '../Jsonb/index.tsx'
 
 import styles from './FormDesign.module.css'
 import { useFormDesignRuntime } from './FormDesignRuntimeContext.tsx'
+import { useFormFields } from './useFormFields.ts'
+import { followupVisible } from '../../../modules/followupVisible.ts'
+import { FieldInstructions } from '../FieldInstructions.tsx'
 
 /**
  * Renders one field of a self-designed form — the counterpart of the
@@ -30,7 +37,11 @@ import { useFormDesignRuntime } from './FormDesignRuntimeContext.tsx'
  * - preview: looks editable but writes nothing (design editor preview)
  * - print: read-only (print view)
  */
-export const FieldWidget = ({ field }: { field: FieldsWithTypes }) => {
+export const FieldWidget = ({
+  field: configuredField,
+}: {
+  field: FieldsWithTypes
+}) => {
   const {
     data = {},
     mode,
@@ -38,50 +49,51 @@ export const FieldWidget = ({ field }: { field: FieldsWithTypes }) => {
     jsonFieldName,
     idField,
     id,
+    fields,
   } = useFormDesignRuntime()
+  const field = fields[configuredField.field_id] ?? configuredField
+  const allFields = useFormFields(table)
   const db = usePGlite()
   const addOperation = useSetAtom(addOperationAtom)
   const [validations, setValidations] = useState<
     Record<string, { state: 'error'; message: string }>
   >({})
+  if (
+    mode !== 'preview' &&
+    !followupVisible(field, allFields ?? Object.values(fields), data)
+  )
+    return null
 
   const name = field.name!
   const value = data?.[name] ?? ''
   const label = field.field_label ? field.field_label : field.name
-  const type = field.field_type === 'integer' ? 'number' : field.field_type
+  const type = field.field_type === 'integer' ? 'number' : 'text'
 
   const onChange = async (
     e: React.ChangeEvent<HTMLElement>,
     dataReturned?: unknown,
   ) => {
+    return save(
+      getValueFromChange(
+        e as Parameters<typeof getValueFromChange>[0],
+        dataReturned as Parameters<typeof getValueFromChange>[1],
+      ),
+    )
+  }
+  const save = async ({ name, value }: { name: string; value: unknown }) => {
     if (mode !== 'live') return
-    const { name, value } = getValueFromChange(
-      e as Parameters<typeof getValueFromChange>[0],
-      dataReturned as Parameters<typeof getValueFromChange>[1],
-    )
     // return if value has not changed
-    if (data[name] === value) return
-    // date widgets return a Date object even though it is not in the union
-    const valueAsObject = value as unknown as Date | null | undefined
-    const isDate = valueAsObject instanceof Date
-    const val = { ...data }
-    if (value === undefined) {
-      // need to remove the key from the json object
-      delete val[name]
-    } else {
-      // in json need to save date as iso string
-      val[name] = isDate ? valueAsObject.toISOString() : value
-    }
-
-    const prevRes = await db.query(
-      `select * from ${table} where ${idField} = $1`,
-      [id],
-    )
-    const prev = (prevRes?.rows?.[0] ?? {}) as Record<string, unknown>
+    if (data[name] === value && field.widget_type !== 'boolean-buttons') return
     try {
-      await db.query(
-        `update ${table} set ${jsonFieldName} = $1 where ${idField} = $2`,
-        [val, id],
+      await addOperation(
+        await updateCustomField(db, {
+          table,
+          idField,
+          id,
+          jsonFieldName,
+          name,
+          value,
+        }),
       )
     } catch (error) {
       console.log(`FormDesign, error updating table '${table}':`, error)
@@ -94,14 +106,6 @@ export const FieldWidget = ({ field }: { field: FieldsWithTypes }) => {
     setValidations((prev) => {
       const { [name]: _, ...rest } = prev
       return rest
-    })
-    addOperation({
-      table,
-      rowIdName: idField,
-      rowId: id,
-      operation: 'update',
-      draft: { [jsonFieldName]: val },
-      prev,
     })
   }
 
@@ -120,7 +124,12 @@ export const FieldWidget = ({ field }: { field: FieldsWithTypes }) => {
             label={label}
             name={name}
             value={value as string | number}
-            type={(type ?? 'text') as 'text' | 'number'}
+            type={type}
+            inputMode={field.field_type === 'decimal' ? 'decimal' : undefined}
+            numericSettings={
+              ['integer', 'decimal'].includes(field.field_type ?? '') ? field
+              : undefined
+            }
             onChange={onChange}
             {...validationProps}
           />
@@ -156,6 +165,32 @@ export const FieldWidget = ({ field }: { field: FieldsWithTypes }) => {
             {...validationProps}
           />
         )
+      case 'boolean-buttons':
+        return (
+          <NullableBooleanButtons
+            key={`${id}:${name}:${mode}`}
+            label={label ?? name}
+            value={data[name]}
+            preview={mode === 'preview'}
+            print={mode === 'print'}
+            validationMessage={validations[name]?.message}
+            onChange={(value) => save({ name, value })}
+          />
+        )
+      case 'markdown':
+      case 'rich-text':
+        return (
+          <MarkdownField
+            key={`${id}:${name}:${field.widget_type}:${mode}`}
+            rich={field.widget_type === 'rich-text'}
+            name={name}
+            label={label}
+            value={value as string}
+            print={mode === 'print'}
+            onSave={(value) => save({ name, value })}
+            {...validationProps}
+          />
+        )
       case 'textarea':
         return (
           <TextArea
@@ -176,14 +211,33 @@ export const FieldWidget = ({ field }: { field: FieldsWithTypes }) => {
             {...validationProps}
           />
         )
+      case 'multiselect-few':
+      case 'multiselect-many':
+        return (
+          <MultiSelectFromList
+            key={`${id}:${name}`}
+            label={label ?? name}
+            listId={field.list_id}
+            fieldType={field.field_type}
+            searchable={field.widget_type === 'multiselect-many'}
+            value={value}
+            preview={mode === 'preview'}
+            print={mode === 'print'}
+            validationMessage={validations[name]?.message}
+            onChange={(codes) => save({ name, value: codes })}
+          />
+        )
       case 'options-many':
         return (
           <DropdownFieldFromList
+            key={`${id}:${name}:${mode}`}
             name={name}
             label={label as string | undefined}
             list_id={field.list_id as string}
-            value={value as string}
-            onChange={onChange}
+            value={value}
+            preview={mode === 'preview'}
+            print={mode === 'print'}
+            onChange={(value) => save({ name, value })}
             {...validationProps}
           />
         )
@@ -235,7 +289,7 @@ export const FieldWidget = ({ field }: { field: FieldsWithTypes }) => {
             label={label}
             name={name}
             value={value as string | number}
-            type={(type ?? 'text') as 'text' | 'number'}
+            type={type}
             onChange={onChange}
             {...validationProps}
           />
@@ -244,7 +298,15 @@ export const FieldWidget = ({ field }: { field: FieldsWithTypes }) => {
   })()
 
   if (mode === 'print') {
-    return <div className={styles.printLock}>{widget}</div>
+    return (
+      <div className={styles.printLock}>
+        <FieldInstructions text={field.instructions}>
+          {widget}
+        </FieldInstructions>
+      </div>
+    )
   }
-  return widget
+  return (
+    <FieldInstructions text={field.instructions}>{widget}</FieldInstructions>
+  )
 }

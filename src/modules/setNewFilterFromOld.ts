@@ -6,12 +6,14 @@ export const setNewFilterFromOld = ({
   orFilters,
   orIndex,
   targetType,
+  keepNull = false,
 }: {
   name: string
   value: unknown
   orFilters: TableRowFilter[]
   orIndex: number
   targetType: string
+  keepNull?: boolean
 }) => {
   const useValueUnchanged =
     ['text', 'email', 'boolean', 'date'].includes(targetType) ||
@@ -20,7 +22,7 @@ export const setNewFilterFromOld = ({
   const isAppending = orIndex >= orFilters.length
   const newOrFilter = { ...existingOrFilter }
 
-  if (value !== undefined && value !== null && value !== '') {
+  if (value !== undefined && (value !== null || keepNull) && value !== '') {
     // radio inputs select exact enum values — wrap so SQL uses = instead of ILIKE
     const coercedValue =
       targetType === 'radio' && typeof value === 'string' ? { $eq: value }

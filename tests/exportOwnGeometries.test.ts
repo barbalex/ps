@@ -11,6 +11,7 @@ it('exports only mapped list members, with raw codes, display labels and collisi
         JSON.stringify({
           name: 'one',
           status: 0,
+          choices: [3,0,9],
           status_label: 'manual',
           NAME: 'two',
         }),
@@ -20,7 +21,8 @@ it('exports only mapped list members, with raw codes, display labels and collisi
     await db.exec(`UPDATE subprojects SET name='Survey' WHERE subproject_id='${ids.subproject}';
       INSERT INTO lists(list_id,project_id,value_type) VALUES ('50000000-1111-4000-8000-000000000001','${ids.project}','integer');
       INSERT INTO fields(name,level,list_id,project_id,table_name) VALUES ('status',1,'50000000-1111-4000-8000-000000000001','${ids.project}','places');
-      INSERT INTO list_values(list_id,value_integer) VALUES ('50000000-1111-4000-8000-000000000001',0);`)
+      INSERT INTO fields(name,level,list_id,project_id,table_name) VALUES ('choices',1,'50000000-1111-4000-8000-000000000001','${ids.project}','places');
+      INSERT INTO list_values(list_id,value_integer) VALUES ('50000000-1111-4000-8000-000000000001',0),('50000000-1111-4000-8000-000000000001',3);`)
     const blob = await exportOwnGeometries(
       db,
       'places',
@@ -39,6 +41,8 @@ it('exports only mapped list members, with raw codes, display labels and collisi
       data_status: 0,
       data_status_label: 'manual',
       data_status_label_2: '0',
+      data_choices: '[3,0,9]',
+      data_choices_label: '["3","0",null]',
     })
     expect(features[0].geometry.geometries[0].coordinates).toEqual([7, 46])
     expect(

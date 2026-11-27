@@ -15,7 +15,17 @@
 <li>Wahl der Anzahl Stufen für Orte (1 oder 2)</li>
 <li>Freie Benennung der Ort-Stufen</li>
 <li>Wahl, in welchen Ort-Stufen welche Fähigkeiten genutzt werden (Massnahmen, Kontrollen, Berichte etc.)</li>
-<li>Möglichkeit in vielen Tabellen eigene Felder zu ergänzen</li>
+<li>Möglichkeit in vielen Tabellen eigene Felder zu ergänzen<ul>
+<li>Unter <strong>Hinweise zur Eingabe</strong> kann eine Anleitung als Klartext stehen. Unter <strong>Folgefrage abhängig von</strong> ein anderes Feld desselben Formulars wählen und festlegen, ob es beantwortet, unbeantwortet oder mit einem bestimmten Wert beantwortet sein muss. Bei Listen den Code eingeben; bei Mehrfachauswahl genügt ein passender Code. <strong>Nein</strong> und null als Zahl gelten als Antworten. Ohne Bezugsfeld wird die Frage immer angezeigt. Ausblenden löscht keine Antwort. Filter und Entwurfsansicht zeigen weiterhin alle Felder.</li>
+<li>Für Ja/Nein-Felder <strong>boolean-buttons</strong> wählen, wenn <strong>Nein</strong> von <strong>Nicht beurteilt</strong> unterschieden werden muss. Neue Datensätze sind zunächst nicht beurteilt. Im Filter findet <strong>Nicht beurteilt</strong> unbeantwortete Felder; <strong>Alle</strong> hebt die Einschränkung auf. Für weitere Zustände eine Codeliste verwenden.</li>
+<li>Für Eingabefelder für Ganz- und Dezimalzahlen sind Einheit, Minimum, Maximum und Schrittweite optional einstellbar. Die Grenzen sind eingeschlossen. Die Schritte beginnen beim Minimum, sonst bei null. Beispiel: Minimum 0,5 und Schrittweite 1 erlauben 0,5, 1,5, 2,5 usw. Die Einheit wird nur angezeigt. Geänderte Einstellungen überschreiben keine bestehenden Daten.</li>
+<li>Für einen einzelnen Wert aus einer langen Liste <strong>options-many</strong> wählen. Einen Teil der Bezeichnung oder des Codes eingeben und einen Treffer auswählen. Die Suche allein ändert den gespeicherten Wert nicht.</li>
+<li>Für mehrere Werte aus einer Liste <strong>multiselect-few</strong> (Kontrollkästchen) oder <strong>multiselect-many</strong> (Suche) wählen. Die Liste muss zum Feldtyp passen: Text, Ganzzahl oder Dezimalzahl (numerische Liste). Beide Widgets speichern dieselbe Liste von Codes. Filter suchen standardmässig nach mindestens einem Wert. Mit <strong>Alle ausgewählten Werte müssen vorkommen</strong> werden alle verlangt. Geometrieexporte enthalten Codes und eine entsprechende <code>_label</code>-Spalte in der Reihenfolge der Auswahl.</li>
+<li>Im Markdown-Feld Text markieren und mit der Werkzeugleiste Überschriften, Fett- oder Kursivschrift, Listen oder Links einfügen. Auf schmalen Bildschirmen <strong>Weitere Formate</strong> öffnen. Strg (Mac: ⌘) + B, I oder K setzt Fettschrift, Kursivschrift oder einen Link.</li>
+<li>Mit <strong>text → rich-text</strong> erscheint die Formatierung direkt beim Schreiben. Die Werkzeugleiste bietet Überschriften, Fett- und Kursivschrift, Listen, Links sowie Rückgängig und Wiederholen. Beim Einfügen bleibt die unterstützte Formatierung erhalten. Auch offline werden die Notizen als Markdown gespeichert und formatiert gedruckt.</li>
+<li>Mit <strong>text → markdown</strong> lässt sich stattdessen der Markdown-Quelltext direkt bearbeiten, auch für Tabellen. <strong>Vorschau</strong> zeigt die formatierte Fassung.</li>
+</ul>
+</li>
 <li>Freie Definition und Import von Taxonomien</li>
 <li>Freie Definition und Import von Listen</li>
 <li>Wahl von Standard-Einheiten (aus selber definierten Listen)</li>

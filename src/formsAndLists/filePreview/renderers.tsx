@@ -1,5 +1,4 @@
-import ReactMarkdown from 'react-markdown'
-import remarkGfm from 'remark-gfm'
+import Markdown from '../../components/shared/Markdown.tsx'
 import { textFileLoader } from '@cyntler/react-doc-viewer'
 import type { DocRenderer } from '@cyntler/react-doc-viewer'
 
@@ -9,15 +8,12 @@ import styles from './index.module.css'
 // markdown via react-markdown: it renders to React elements instead of
 // dangerouslySetInnerHTML, so collaborator-uploaded files cannot inject
 // markup (rehype-raw deliberately stays out). remark-gfm adds tables,
-// strikethrough and task lists. The same stack will render the upcoming
-// editable markdown fields in forms
+// strikethrough and task lists, as in editable Markdown fields.
 export const markdownRenderer: DocRenderer = ({ mainState }) => {
   const fileData = mainState.currentDocument?.fileData
   return (
     <div className={styles.markdown}>
-      <ReactMarkdown remarkPlugins={[remarkGfm]}>
-        {String(fileData ?? '')}
-      </ReactMarkdown>
+      <Markdown source={String(fileData ?? '')} />
     </div>
   )
 }

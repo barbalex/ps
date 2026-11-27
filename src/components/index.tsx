@@ -234,6 +234,18 @@ export const Home = () => {
           <div className={styles.card}>
             <h3 className={styles.cardTitle}>
               <FormattedMessage
+                id="homeWorkflowTitle"
+                defaultMessage="Wähle deine bevorzugte Arbeitsweise"
+              />
+            </h3>
+            <FormattedMessage
+              id="homeWorkflowText"
+              defaultMessage="Du kannst deine Daten im hierarchischen Baum durchsuchen und bearbeiten. Oder du erledigst beides direkt auf der Karte, ohne sie zu verlassen."
+            />
+          </div>
+          <div className={styles.card}>
+            <h3 className={styles.cardTitle}>
+              <FormattedMessage
                 id="H5/rUM"
                 defaultMessage="Flexible Konfiguration"
               />

@@ -21,6 +21,14 @@ That is why arten-fördern.app is highly configurable:
 - Free naming of place levels
 - Choice of which features are used in which place levels (actions, checks, reports etc.)
 - Ability to add custom fields to many tables
+  - Add plain-text **Instructions for this field** to guide data entry. Under **Show as a follow-up to**, choose another field on the same form, then choose **answered**, **unanswered**, or **matches a specific value**. For a coded list enter the code; for a multiselect any selected matching code qualifies. **No** and zero are answers. Clearing the source selector makes the field unconditional again. Hiding a follow-up never deletes its answer. Filters and the designer still show all fields.
+  - For a boolean, choose **boolean-buttons** when **No** must be distinct from **Not assessed**. New records start as not assessed. In filters, **Not assessed** finds unanswered records; **All** removes the restriction. Use a coded list if more states are needed.
+  - For integer or decimal entry fields, designers can set a unit, minimum, maximum and step. All are optional. Bounds are inclusive; steps start at the minimum, or at zero if no minimum is set. For example, a minimum of 0.5 and a step of 1 allow 0.5, 1.5, 2.5 and so on. The unit is displayed, not stored with the number. Changing settings does not rewrite existing records.
+  - For a single choice from a long list, use **options-many**. Type part of a label or code, then select a match. Searching does not change the saved value.
+  - For several choices from a controlled list, choose **multiselect-few** (checkboxes) or **multiselect-many** (search). Pick a list matching the field type: text, integer or decimal (numeric list). Both widgets store the same array of codes. Filters match any selected value by default; enable **Match all selected values** to require every choice. Geometry exports include codes and a parallel `_label` column in selection order.
+  - In a Markdown field, select text and use the formatting bar for headings, bold, italics, lists or links. On narrow screens, open **More formats**. Ctrl (Mac: ⌘) + B, I or K applies bold, italics or a link.
+  - Choose **text → rich-text** to see formatting as you type. The toolbar offers headings, bold, italics, lists, links, undo and redo. Pasting retains supported formatting. Notes save as Markdown even offline and print with their formatting.
+  - Choose **text → markdown** to edit the Markdown source directly, including tables. **Preview** shows the formatted result.
 - Free definition and import of taxonomies
 - Free definition and import of lists
 - Selection of ready-made charts, ability to build custom ones

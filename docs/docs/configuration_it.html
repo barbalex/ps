@@ -16,7 +16,17 @@
 <li>Scelta del numero di livelli per i luoghi (1 o 2)</li>
 <li>Denominazione libera dei livelli dei luoghi</li>
 <li>Scelta delle funzionalità utilizzate per ogni livello di luogo (misure, controlli, rapporti ecc.)</li>
-<li>Possibilità di aggiungere campi personalizzati in molte tabelle</li>
+<li>Possibilità di aggiungere campi personalizzati in molte tabelle<ul>
+<li>Aggiungere <strong>Istruzioni per il campo</strong> in testo semplice. In <strong>Mostra come seguito del campo</strong>, scegliere un altro campo del modulo e indicare se deve avere una risposta, essere senza risposta o avere un valore specifico. Per un elenco inserire il codice; per una selezione multipla basta un codice corrispondente. <strong>No</strong> e zero sono risposte. Rimuovere il campo di riferimento per mostrare sempre la domanda. Nascondere un campo non cancella la risposta. I filtri e l’editor mostrano tutti i campi.</li>
+<li>Per un campo booleano, scegliere <strong>boolean-buttons</strong> per distinguere <strong>No</strong> da <strong>Non valutato</strong>. Nei nuovi record il campo è inizialmente non valutato. Nel filtro, <strong>Non valutato</strong> trova le risposte mancanti e <strong>Tutti</strong> rimuove la restrizione. Per ulteriori stati usare un elenco di codici.</li>
+<li>Per i campi di inserimento interi o decimali si possono impostare unità, minimo, massimo e passo. Sono tutti facoltativi. Gli estremi sono inclusi. Il passo parte dal minimo, oppure da zero se il minimo non è impostato. Ad esempio, un minimo di 0,5 e un passo di 1 consentono 0,5, 1,5, 2,5 e così via. L’unità viene solo visualizzata. La modifica delle impostazioni non cambia i dati esistenti.</li>
+<li>Per scegliere un solo valore da un elenco lungo, usare <strong>options-many</strong>. Digitare parte dell’etichetta o del codice, poi selezionare un risultato. La sola ricerca non modifica il valore salvato.</li>
+<li>Per selezionare più valori da un elenco scegliere <strong>multiselect-few</strong> (caselle di controllo) o <strong>multiselect-many</strong> (ricerca). L’elenco deve corrispondere al tipo di campo: testo, intero o decimale (elenco numerico). Entrambi salvano lo stesso array di codici. Il filtro cerca almeno un valore; per richiederli tutti attivare <strong>Richiedi tutti i valori selezionati</strong>. Le esportazioni di geometrie includono i codici e una colonna <code>_label</code> nello stesso ordine.</li>
+<li>Nei campi Markdown selezionare il testo e usare la barra per titoli, grassetto, corsivo, elenchi o link. Sugli schermi stretti aprire <strong>Altri formati</strong>. Ctrl (Mac: ⌘) + B, I o K applica il grassetto, il corsivo o inserisce un link.</li>
+<li>Scegliere <strong>text → rich-text</strong> per vedere la formattazione mentre si scrive. La barra offre titoli, grassetto, corsivo, elenchi, link, annulla e ripristina. Incollando si mantiene la formattazione supportata. Le note sono salvate in Markdown anche offline e stampate con la loro formattazione.</li>
+<li>Scegliere <strong>text → markdown</strong> per modificare direttamente il sorgente Markdown, anche per le tabelle. <strong>Anteprima</strong> mostra il risultato formattato.</li>
+</ul>
+</li>
 <li>Definizione e importazione libere di tassonomie</li>
 <li>Definizione e importazione libere di liste</li>
 <li>Selezione di grafici predefiniti, possibilità di creare i propri</li>

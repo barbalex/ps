@@ -1,4 +1,5 @@
 import type { FieldChangeData } from '../components/shared/fieldChange.ts'
+import { parseDecimal } from './parseDecimal.ts'
 
 export const getValueFromChange = (
   e: React.ChangeEvent<HTMLElement>,
@@ -9,8 +10,17 @@ export const getValueFromChange = (
   const target = e.target as EventTarget & HTMLInputElement
   const name = target.name
   const targetType = target.type
+  if (target.inputMode === 'decimal') {
+    return { value: parseDecimal(target.value), name, targetType }
+  }
 
   switch (targetType) {
+    case 'datetime-local':
+      return {
+        value: target.value ? new Date(target.value).toISOString() : null,
+        name,
+        targetType,
+      }
     case 'checkbox':
       return {
         value: (data as { checked?: boolean })?.checked,

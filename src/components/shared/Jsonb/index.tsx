@@ -6,6 +6,7 @@
 // 4. build input depending on field properties
 import { usePGlite } from '@electric-sql/pglite-react'
 import { useFormFields } from '../FormDesign/useFormFields.ts'
+import { followupVisible } from '../../../modules/followupVisible.ts'
 import { useLocation, useParams } from '@tanstack/react-router'
 import { useAtom, useSetAtom } from 'jotai'
 
@@ -155,6 +156,9 @@ export const Jsonb = ({
       []
     : dataKeys.filter((dataKey) => !fieldNamesDefined.includes(dataKey))
   const isHistory = from?.includes('histories')
+  if (!designing && !isHistory && !location.pathname.endsWith('filter')) {
+    fields = fields.filter((field) => followupVisible(field, allFields, data))
+  }
 
   return (
     <>
@@ -204,7 +208,11 @@ export const Jsonb = ({
           key="addField"
           tableName={table}
           level={
-            placeScopedFieldTables.has(table) ? (placeId2 ? 2 : 1) : undefined
+            placeScopedFieldTables.has(table) ?
+              placeId2 ?
+                2
+              : 1
+            : undefined
           }
           from={from}
         />

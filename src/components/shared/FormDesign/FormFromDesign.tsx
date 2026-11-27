@@ -50,7 +50,7 @@ export const FormFromDesign = ({
   const fieldsKey = fields
     .map(
       (f) =>
-        `${f.field_id}/${f.field_label ?? ''}/${f.name ?? ''}/${f.widget_type ?? ''}/${f.list_id ?? ''}`,
+        `${f.field_id}/${f.field_label ?? ''}/${f.name ?? ''}/${f.field_type ?? ''}/${f.widget_type ?? ''}/${f.list_id ?? ''}`,
     )
     .join('|')
   const labels: FormDesignLabels = {
@@ -74,8 +74,7 @@ export const FormFromDesign = ({
 
   const fieldsById = useMemo(() => {
     return Object.fromEntries(fields.map((f) => [f.field_id as string, f]))
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [fieldsKey])
+  }, [fields])
   const runtime = {
     fields: fieldsById,
     data,

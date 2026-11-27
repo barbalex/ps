@@ -37,6 +37,22 @@ export default interface FieldsHistory {
   updated_at: Date;
 
   updated_by: string | null;
+
+  numeric_unit: string | null;
+
+  numeric_min: number | null;
+
+  numeric_max: number | null;
+
+  numeric_step: number | null;
+
+  instructions: string | null;
+
+  followup_field_id: string | null;
+
+  followup_test: string | null;
+
+  followup_answer: string | null;
 }
 
 /**
@@ -83,6 +99,22 @@ export interface FieldsHistoryInitializer {
   updated_at?: Date;
 
   updated_by?: string | null;
+
+  numeric_unit?: string | null;
+
+  numeric_min?: number | null;
+
+  numeric_max?: number | null;
+
+  numeric_step?: number | null;
+
+  instructions?: string | null;
+
+  followup_field_id?: string | null;
+
+  followup_test?: string | null;
+
+  followup_answer?: string | null;
 }
 
 /**
@@ -124,4 +156,20 @@ export interface FieldsHistoryMutator {
   updated_at?: Date;
 
   updated_by?: string | null;
+
+  numeric_unit?: string | null;
+
+  numeric_min?: number | null;
+
+  numeric_max?: number | null;
+
+  numeric_step?: number | null;
+
+  instructions?: string | null;
+
+  followup_field_id?: string | null;
+
+  followup_test?: string | null;
+
+  followup_answer?: string | null;
 }

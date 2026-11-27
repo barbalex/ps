@@ -1460,6 +1460,9 @@
   "bgTkErr": {
     "defaultMessage": "✗ Fehler"
   },
+  "booleanNotAssessed": {
+    "defaultMessage": "Nicht beurteilt"
+  },
   "cLcHDr": {
     "defaultMessage": "Klicken zum Auswählen oder Datei ablegen. Akzeptiert .csv, .tsv, .xlsx, .xls, .ods, .txt."
   },
@@ -1625,6 +1628,9 @@
   "dbDump.failedTitle": {
     "defaultMessage": "Export failed"
   },
+  "decimalInvalid": {
+    "defaultMessage": "Bitte eine Dezimalzahl eingeben."
+  },
   "deleteAccountBtn": {
     "defaultMessage": "Konto löschen"
   },
@@ -1669,21 +1675,6 @@
   },
   "docsList": {
     "defaultMessage": "Dokumentation"
-  },
-  "dtFieldDate": {
-    "defaultMessage": "Datum"
-  },
-  "dtFieldHours": {
-    "defaultMessage": "Stunden"
-  },
-  "dtFieldMinutes": {
-    "defaultMessage": "Minuten"
-  },
-  "dtFieldMustBeSet": {
-    "defaultMessage": "muss gesetzt werden"
-  },
-  "dtFieldSelectDate": {
-    "defaultMessage": "Datum auswählen oder tippen"
   },
   "dupCnl": {
     "defaultMessage": "Import abbrechen"
@@ -1934,6 +1925,9 @@
   "field.taxonomies": {
     "defaultMessage": "Projekt: Taxonomien"
   },
+  "fieldInstructions": {
+    "defaultMessage": "Hinweise zur Eingabe"
+  },
   "fileDownload": {
     "defaultMessage": "Datei herunterladen"
   },
@@ -1942,6 +1936,24 @@
   },
   "filesOfflineHint": {
     "defaultMessage": "Erlaubt Offline-Dateien: Benutzer markieren einzelne Dateien im Datei-Formular, Designer alle Dateien einer Tabelle in der Stufen-Konfiguration. Ohne diese Einstellung werden keine Dateien offline gespeichert."
+  },
+  "followAnswer": {
+    "defaultMessage": "Erwartete Antwort"
+  },
+  "followAnswered": {
+    "defaultMessage": "Eine Antwort vorliegt"
+  },
+  "followEquals": {
+    "defaultMessage": "Die Antwort einem bestimmten Wert entspricht"
+  },
+  "followSource": {
+    "defaultMessage": "Folgefrage abhängig von"
+  },
+  "followUnanswered": {
+    "defaultMessage": "Keine Antwort vorliegt"
+  },
+  "followWhen": {
+    "defaultMessage": "Feld anzeigen, wenn"
   },
   "fz2AhZ": {
     "defaultMessage": "Projekt"
@@ -2098,6 +2110,12 @@
   },
   "homeMoreInfoTitle": {
     "defaultMessage": "Mehr Infos"
+  },
+  "homeWorkflowText": {
+    "defaultMessage": "Du kannst deine Daten im hierarchischen Baum durchsuchen und bearbeiten. Oder du erledigst beides direkt auf der Karte, ohne sie zu verlassen."
+  },
+  "homeWorkflowTitle": {
+    "defaultMessage": "Wähle deine bevorzugte Arbeitsweise"
   },
   "i43yle": {
     "defaultMessage": "markiert"
@@ -2284,6 +2302,9 @@
   },
   "layerShowInMapBtnTitle": {
     "defaultMessage": "Ebene in Karte anzeigen"
+  },
+  "localTimeInvalid": {
+    "defaultMessage": "Diese Ortszeit existiert nicht."
   },
   "logoutCancelBtn": {
     "defaultMessage": "Abbrechen"
@@ -2501,8 +2522,44 @@
   "mapZoomToLayer": {
     "defaultMessage": "Auf Layer zoomen"
   },
+  "mdBold": {
+    "defaultMessage": "Fett"
+  },
+  "mdBullets": {
+    "defaultMessage": "Aufzählung"
+  },
+  "mdHeading": {
+    "defaultMessage": "Überschrift"
+  },
+  "mdItalic": {
+    "defaultMessage": "Kursiv"
+  },
+  "mdLink": {
+    "defaultMessage": "Link einfügen"
+  },
+  "mdMore": {
+    "defaultMessage": "Weitere Formate"
+  },
+  "mdNumbers": {
+    "defaultMessage": "Nummerierte Liste"
+  },
+  "mdParagraph": {
+    "defaultMessage": "Absatz"
+  },
+  "mdStyle": {
+    "defaultMessage": "Textstil"
+  },
+  "mdSubheading": {
+    "defaultMessage": "Unterüberschrift"
+  },
   "mn58Sh": {
     "defaultMessage": "Dateien"
+  },
+  "multiListNeeded": {
+    "defaultMessage": "Eine passende Liste mit aktiven Werten wird benötigt."
+  },
+  "multiMatchAll": {
+    "defaultMessage": "Alle ausgewählten Werte müssen vorkommen"
   },
   "nDt0Pr": {
     "defaultMessage": "Keine Daten für die Vorschau"
@@ -2539,6 +2596,21 @@
   },
   "noT0gR": {
     "defaultMessage": "Taxonomien"
+  },
+  "numericInteger": {
+    "defaultMessage": "Bitte eine Ganzzahl eingeben."
+  },
+  "numericMax": {
+    "defaultMessage": "Maximum"
+  },
+  "numericMin": {
+    "defaultMessage": "Minimum"
+  },
+  "numericPositive": {
+    "defaultMessage": "Die Schrittweite muss grösser als null sein."
+  },
+  "numericStep": {
+    "defaultMessage": "Schrittweite"
   },
   "oG6LfB": {
     "defaultMessage": "Bericht-Mengen"
