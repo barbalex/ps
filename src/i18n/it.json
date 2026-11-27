@@ -1,4 +1,11 @@
 {
+  "fieldInstructions": "Istruzioni per il campo",
+  "followSource": "Mostra come seguito del campo",
+  "followWhen": "Mostra questo campo quando",
+  "followAnswered": "L’altro campo ha una risposta",
+  "followUnanswered": "L’altro campo non ha una risposta",
+  "followEquals": "La risposta corrisponde a un valore specifico",
+  "followAnswer": "Risposta prevista",
   "booleanNotAssessed": "Non valutato",
   "numericInteger": "Inserire un numero intero.",
   "numericPositive": "Il passo deve essere maggiore di zero.",

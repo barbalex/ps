@@ -1,4 +1,11 @@
 {
+  "fieldInstructions": "Consignes de saisie",
+  "followSource": "Afficher à la suite du champ",
+  "followWhen": "Afficher ce champ lorsque",
+  "followAnswered": "L’autre champ a une réponse",
+  "followUnanswered": "L’autre champ est sans réponse",
+  "followEquals": "La réponse correspond à une valeur précise",
+  "followAnswer": "Réponse attendue",
   "booleanNotAssessed": "Non évalué",
   "numericInteger": "Saisir un nombre entier.",
   "numericPositive": "Le pas doit être supérieur à zéro.",

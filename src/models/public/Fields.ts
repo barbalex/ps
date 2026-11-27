@@ -56,6 +56,14 @@ export default interface Fields {
   numeric_max: number | null;
 
   numeric_step: number | null;
+
+  instructions: string | null;
+
+  followup_field_id: FieldsFieldId | null;
+
+  followup_test: string | null;
+
+  followup_answer: string | null;
 }
 
 /**
@@ -112,6 +120,14 @@ export interface FieldsInitializer {
   numeric_max?: number | null;
 
   numeric_step?: number | null;
+
+  instructions?: string | null;
+
+  followup_field_id?: FieldsFieldId | null;
+
+  followup_test?: string | null;
+
+  followup_answer?: string | null;
 }
 
 /**
@@ -161,4 +177,12 @@ export interface FieldsMutator {
   numeric_max?: number | null;
 
   numeric_step?: number | null;
+
+  instructions?: string | null;
+
+  followup_field_id?: FieldsFieldId | null;
+
+  followup_test?: string | null;
+
+  followup_answer?: string | null;
 }

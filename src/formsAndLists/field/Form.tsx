@@ -6,6 +6,7 @@ import { TextField } from '../../components/shared/TextField.tsx'
 import { DropdownField } from '../../components/shared/DropdownField.tsx'
 import { SwitchField } from '../../components/shared/SwitchField.tsx'
 import { WidgetType } from './WidgetType.tsx'
+import { FollowupSettings } from './FollowupSettings.tsx'
 import { TableAndLevel } from './TableAndLevel.tsx'
 import type Fields from '../../models/public/Fields.ts'
 
@@ -104,6 +105,13 @@ export const FieldForm = ({
         field_type_id={fieldsRow.field_type_id}
         value={fieldsRow.widget_type_id}
       />
+      {fieldsRow.field_id && (
+        <FollowupSettings
+          row={fieldsRow}
+          onChange={onChange}
+          validations={validations}
+        />
+      )}
       {widget?.needs_list && (
         <DropdownField
           label={formatMessage({ id: '4+BE1s', defaultMessage: 'Liste' })}

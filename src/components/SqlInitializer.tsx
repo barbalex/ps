@@ -635,6 +635,7 @@ export const SqlInitializer = () => {
           immutableDateSql,
           createTablesSql,
           numericFieldSettingsSql,
+          fieldFollowupsSql,
           projectAreaSql,
           projectAreaLayerSql,
           triggersSql,
@@ -654,6 +655,7 @@ export const SqlInitializer = () => {
           import(`../sql/immutableDate.sql?raw`).then((m) => m.default),
           import(`../sql/createTables.sql?raw`).then((m) => m.default),
           import(`../sql/numericFieldSettings.sql?raw`).then((m) => m.default),
+          import(`../sql/fieldFollowups.sql?raw`).then((m) => m.default),
           import(`../sql/projectArea.sql?raw`).then((m) => m.default),
           import(`../sql/projectAreaLayer.sql?raw`).then((m) => m.default),
           import(`../sql/triggers.sql?raw`).then((m) => m.default),
@@ -675,6 +677,7 @@ export const SqlInitializer = () => {
             immutableDateSql,
             createTablesSql,
             numericFieldSettingsSql,
+            fieldFollowupsSql,
             projectAreaSql,
             projectAreaLayerSql,
             triggersSql,
@@ -760,6 +763,7 @@ export const SqlInitializer = () => {
           // heal existing local databases
           await exec(projectAreaSql, 'projectArea.sql')
           await exec(numericFieldSettingsSql, 'numericFieldSettings.sql')
+          await exec(fieldFollowupsSql, 'fieldFollowups.sql')
           await exec(projectAreaLayerSql, 'projectAreaLayer.sql')
           await exec(healTableViewRenameSql, 'healTableViewRenameSql')
           await exec(
@@ -808,6 +812,7 @@ export const SqlInitializer = () => {
         )
         await exec(createTablesSql, 'createTables.sql')
         await exec(numericFieldSettingsSql, 'numericFieldSettings.sql')
+        await exec(fieldFollowupsSql, 'fieldFollowups.sql')
         await exec(projectAreaSql, 'projectArea.sql')
         await exec(triggersSql, 'triggers.sql')
         await exec(projectAreaLayerSql, 'projectAreaLayer.sql')

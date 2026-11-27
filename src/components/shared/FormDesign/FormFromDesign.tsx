@@ -74,8 +74,7 @@ export const FormFromDesign = ({
 
   const fieldsById = useMemo(() => {
     return Object.fromEntries(fields.map((f) => [f.field_id as string, f]))
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [fieldsKey])
+  }, [fields])
   const runtime = {
     fields: fieldsById,
     data,

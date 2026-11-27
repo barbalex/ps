@@ -17,7 +17,7 @@ Custom form fields roadmap (places, checks, actions and other configurable forms
 - [x] Searchable single-select for long lists without changing existing values.
 - [x] Numeric field settings: unit, minimum, maximum and step. Decimal entry supports both point and comma.
 - [x] Explicit Yes / No / Not assessed buttons for nullable booleans. Use a coded list if more states are needed.
-- [ ] Field instructions and conditional follow-ups. Never erase a saved answer merely because its field is hidden.
+- [x] Field instructions and conditional follow-ups. Never erase a saved answer merely because its field is hidden.
 
 ---
 

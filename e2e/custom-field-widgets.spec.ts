@@ -36,7 +36,8 @@ test('Markdown and rich text round-trip through editing and print; decimal and l
     INSERT INTO fields (field_id, project_id, table_name, level, name, field_label, field_type_id, widget_type_id)
     SELECT f.id::uuid, '${projectId}', 'places', 1, f.name, f.name, ft.field_type_id, wt.widget_type_id
     FROM (VALUES ('${uuid(5)}','notes','text','markdown'), ('${uuid(6)}','amount','decimal','text'),
-      ('${uuid(7)}','visited','date-time','datetimepicker'), ('${uuid(9)}','legacy','text','rich-text')) AS f(id,name,ft,wt)
+      ('${uuid(7)}','visited','date-time','datetimepicker'), ('${uuid(9)}','legacy','text','rich-text'),
+      ('${uuid(14)}','detail','text','text')) AS f(id,name,ft,wt)
     JOIN field_types ft ON ft.name = f.ft JOIN widget_types wt ON wt.name = f.wt
     ON CONFLICT DO NOTHING;
     INSERT INTO lists (list_id,project_id,value_type) VALUES ('${uuid(10)}','${projectId}','text') ON CONFLICT DO NOTHING;
@@ -47,6 +48,7 @@ test('Markdown and rich text round-trip through editing and print; decimal and l
     FROM field_types ft, widget_types wt WHERE ft.name='text' AND wt.name='options-many' ON CONFLICT DO NOTHING;
     UPDATE places SET data = '{"species_choice":"Salix alba"}' WHERE place_id = '${placeId}';
     UPDATE fields SET numeric_unit=null, numeric_min=null, numeric_max=null, numeric_step=null WHERE field_id='${uuid(6)}';
+    UPDATE fields SET instructions=null, followup_field_id=null, followup_test=null, followup_answer=null WHERE field_id='${uuid(14)}';
   `)
   const userId = await ensureUser({ email, password, name: 'Widget tester' })
   await grantRoles({
@@ -93,6 +95,24 @@ test('Markdown and rich text round-trip through editing and print; decimal and l
       timeout: 60000,
     },
   )
+  await designer.goto(
+    `/data/projects/${projectId}/fields/${uuid(14)}?panes=form`,
+  )
+  const guidance = 'Explain how the amount was measured.'
+  const instructions = designer.locator('textarea[name="instructions"]')
+  await instructions.fill(guidance)
+  await instructions.blur()
+  await designer.locator('[name="followup_field_id"]').click()
+  await designer.getByRole('option', { name: 'amount', exact: true }).click()
+  await expect
+    .poll(
+      () =>
+        psql(
+          `SELECT followup_field_id FROM fields WHERE field_id='${uuid(14)}'`,
+        ),
+      { timeout: 60000 },
+    )
+    .toBe(uuid(6))
   await designer.close()
   await login(page, email, password)
   await page.goto(
@@ -234,6 +254,8 @@ test('Markdown and rich text round-trip through editing and print; decimal and l
 
   const amount = page.locator('input[name="amount"]')
   const amountField = page.locator('.fui-Field').filter({ has: amount })
+  const detail = page.locator('input[name="detail"]')
+  await expect(detail).toHaveCount(0)
   await expect(amountField.getByText('cm', { exact: true })).toBeVisible()
   for (const [input, saved] of [
     ['-1,25', -1.25],
@@ -244,7 +266,15 @@ test('Markdown and rich text round-trip through editing and print; decimal and l
     await amount.fill(input)
     await amount.blur()
     await expect.poll(data).toMatchObject({ amount: saved })
+    if (saved === -1.25) {
+      await expect(page.getByText(guidance)).toBeVisible()
+      await detail.fill('Measured twice')
+      await detail.blur()
+    }
   }
+  await expect(detail).toHaveCount(0)
+  await expect(page.getByText(guidance)).toHaveCount(0)
+  await expect.poll(data).toMatchObject({ detail: 'Measured twice' })
   const visited = page.locator('input[name="visited"]')
   for (const invalid of ['-1.5', '3', '0,1']) {
     await amount.fill(invalid)
@@ -265,7 +295,7 @@ test('Markdown and rich text round-trip through editing and print; decimal and l
   }
 
   const design = {
-    content: [5, 6, 9].map((n) => ({
+    content: [5, 6, 9, 14].map((n) => ({
       type: `field_${uuid(n)}`,
       props: { id: `widget-${n}` },
     })),
@@ -279,6 +309,8 @@ test('Markdown and rich text round-trip through editing and print; decimal and l
   await amount.fill('1,5')
   await amount.blur()
   await expect.poll(data).toMatchObject({ amount: 1.5 })
+  await expect(detail).toHaveValue('Measured twice')
+  await expect(page.getByText(guidance)).toBeVisible()
   await expect(rich.locator('ul li')).toHaveText('North')
   await expect(rich.locator('ol li')).toHaveText('South')
   await expect(notes).toHaveValue(source)

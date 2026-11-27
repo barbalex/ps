@@ -45,6 +45,14 @@ export default interface FieldsHistory {
   numeric_max: number | null;
 
   numeric_step: number | null;
+
+  instructions: string | null;
+
+  followup_field_id: string | null;
+
+  followup_test: string | null;
+
+  followup_answer: string | null;
 }
 
 /**
@@ -99,6 +107,14 @@ export interface FieldsHistoryInitializer {
   numeric_max?: number | null;
 
   numeric_step?: number | null;
+
+  instructions?: string | null;
+
+  followup_field_id?: string | null;
+
+  followup_test?: string | null;
+
+  followup_answer?: string | null;
 }
 
 /**
@@ -148,4 +164,12 @@ export interface FieldsHistoryMutator {
   numeric_max?: number | null;
 
   numeric_step?: number | null;
+
+  instructions?: string | null;
+
+  followup_field_id?: string | null;
+
+  followup_test?: string | null;
+
+  followup_answer?: string | null;
 }

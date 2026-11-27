@@ -1925,6 +1925,9 @@
   "field.taxonomies": {
     "defaultMessage": "Projekt: Taxonomien"
   },
+  "fieldInstructions": {
+    "defaultMessage": "Hinweise zur Eingabe"
+  },
   "fileDownload": {
     "defaultMessage": "Datei herunterladen"
   },
@@ -1933,6 +1936,24 @@
   },
   "filesOfflineHint": {
     "defaultMessage": "Erlaubt Offline-Dateien: Benutzer markieren einzelne Dateien im Datei-Formular, Designer alle Dateien einer Tabelle in der Stufen-Konfiguration. Ohne diese Einstellung werden keine Dateien offline gespeichert."
+  },
+  "followAnswer": {
+    "defaultMessage": "Erwartete Antwort"
+  },
+  "followAnswered": {
+    "defaultMessage": "Eine Antwort vorliegt"
+  },
+  "followEquals": {
+    "defaultMessage": "Die Antwort einem bestimmten Wert entspricht"
+  },
+  "followSource": {
+    "defaultMessage": "Folgefrage abhängig von"
+  },
+  "followUnanswered": {
+    "defaultMessage": "Keine Antwort vorliegt"
+  },
+  "followWhen": {
+    "defaultMessage": "Feld anzeigen, wenn"
   },
   "fz2AhZ": {
     "defaultMessage": "Projekt"

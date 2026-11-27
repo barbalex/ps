@@ -1,4 +1,11 @@
 {
+  "fieldInstructions": "Instructions for this field",
+  "followSource": "Show as a follow-up to",
+  "followWhen": "Show this field when",
+  "followAnswered": "The other field is answered",
+  "followUnanswered": "The other field is unanswered",
+  "followEquals": "The answer matches a specific value",
+  "followAnswer": "Expected answer",
   "booleanNotAssessed": "Not assessed",
   "numericInteger": "Enter a whole number.",
   "numericPositive": "Step must be greater than zero.",

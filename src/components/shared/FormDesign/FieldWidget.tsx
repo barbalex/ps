@@ -22,6 +22,9 @@ import type { FieldsWithTypes } from '../Jsonb/index.tsx'
 
 import styles from './FormDesign.module.css'
 import { useFormDesignRuntime } from './FormDesignRuntimeContext.tsx'
+import { useFormFields } from './useFormFields.ts'
+import { followupVisible } from '../../../modules/followupVisible.ts'
+import { FieldInstructions } from '../FieldInstructions.tsx'
 
 /**
  * Renders one field of a self-designed form — the counterpart of the
@@ -34,7 +37,11 @@ import { useFormDesignRuntime } from './FormDesignRuntimeContext.tsx'
  * - preview: looks editable but writes nothing (design editor preview)
  * - print: read-only (print view)
  */
-export const FieldWidget = ({ field }: { field: FieldsWithTypes }) => {
+export const FieldWidget = ({
+  field: configuredField,
+}: {
+  field: FieldsWithTypes
+}) => {
   const {
     data = {},
     mode,
@@ -42,12 +49,20 @@ export const FieldWidget = ({ field }: { field: FieldsWithTypes }) => {
     jsonFieldName,
     idField,
     id,
+    fields,
   } = useFormDesignRuntime()
+  const field = fields[configuredField.field_id] ?? configuredField
+  const allFields = useFormFields(table)
   const db = usePGlite()
   const addOperation = useSetAtom(addOperationAtom)
   const [validations, setValidations] = useState<
     Record<string, { state: 'error'; message: string }>
   >({})
+  if (
+    mode !== 'preview' &&
+    !followupVisible(field, allFields ?? Object.values(fields), data)
+  )
+    return null
 
   const name = field.name!
   const value = data?.[name] ?? ''
@@ -283,7 +298,15 @@ export const FieldWidget = ({ field }: { field: FieldsWithTypes }) => {
   })()
 
   if (mode === 'print') {
-    return <div className={styles.printLock}>{widget}</div>
+    return (
+      <div className={styles.printLock}>
+        <FieldInstructions text={field.instructions}>
+          {widget}
+        </FieldInstructions>
+      </div>
+    )
   }
-  return widget
+  return (
+    <FieldInstructions text={field.instructions}>{widget}</FieldInstructions>
+  )
 }
