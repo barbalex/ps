@@ -31,7 +31,7 @@ test('Markdown preview and print preserve source; decimal and local time persist
   })
   psql(`
     SET electric.syncing TO 'true';
-    UPDATE form_designs SET active = false WHERE form_design_id = '${uuid(8)}';
+    DELETE FROM form_designs WHERE form_design_id = '${uuid(8)}';
     INSERT INTO fields (field_id, project_id, table_name, level, name, field_label, field_type_id, widget_type_id)
     SELECT f.id::uuid, '${projectId}', 'places', 1, f.name, f.name, ft.field_type_id, wt.widget_type_id
     FROM (VALUES ('${uuid(5)}','notes','text','markdown'), ('${uuid(6)}','amount','decimal','text'),
@@ -64,6 +64,51 @@ test('Markdown preview and print preserve source; decimal and local time persist
   const notes = page.locator('textarea[name="notes"]')
   const source = '## Survey\n\n- **First** sighting\n- Second sighting'
   await expect(notes).toBeVisible({ timeout: 90_000 })
+  await notes.fill('Iris')
+  await notes.press('Control+a')
+  await page.getByRole('button', { name: /^(Bold|Fett)$/ }).click()
+  await expect(notes).toHaveValue('**Iris**')
+  expect(
+    await notes.evaluate((el) => (el as HTMLTextAreaElement).selectionStart),
+  ).toBe(2)
+  await notes.press('Control+z')
+  await expect(notes).toHaveValue('Iris')
+  await notes.press('End')
+  await notes.press('Control+i')
+  await page.keyboard.type('alba')
+  await expect(notes).toHaveValue('Iris*alba*')
+  await notes.fill('Iris\nSalix')
+  await notes.press('Control+a')
+  const viewport = page.viewportSize()!
+  await page.setViewportSize({ width: 390, height: 844 })
+  const more = page.getByRole('button', {
+    name: /More formats|Weitere Formate/,
+  })
+  await more.click()
+  await page
+    .getByRole('menuitem', { name: /Numbered list|Nummerierte Liste/ })
+    .click()
+  await expect(notes).toHaveValue('1. Iris\n2. Salix')
+  await page.setViewportSize(viewport)
+  await notes.fill('Survey')
+  await notes.press('Control+a')
+  await notes.press('Control+k')
+  const dialog = page.getByRole('dialog')
+  await expect(
+    dialog.getByRole('textbox', { name: 'Text', exact: true }),
+  ).toHaveValue('Survey')
+  await dialog
+    .getByRole('textbox', { name: 'URL' })
+    .fill('https://example.org/survey')
+  await dialog
+    .getByRole('button', { name: /Insert link|Link einfügen/ })
+    .click()
+  await expect(notes).toHaveValue('[Survey](https://example.org/survey)')
+  await notes.focus()
+  await notes.blur()
+  await expect
+    .poll(data)
+    .toMatchObject({ notes: '[Survey](https://example.org/survey)' })
   await notes.fill(source)
   await page.getByRole('button', { name: /^(Preview|Vorschau)$/ }).click()
   await expect(page.getByRole('heading', { name: 'Survey' })).toBeVisible()
@@ -106,16 +151,15 @@ test('Markdown preview and print preserve source; decimal and local time persist
   }
   psql(`SET electric.syncing TO 'true';
     INSERT INTO form_designs(form_design_id, project_id, table_name, active, design)
-    VALUES ('${uuid(8)}', '${projectId}', 'places', true, '${JSON.stringify(design)}')
-    ON CONFLICT (form_design_id) DO UPDATE SET active = true, design = excluded.design`)
+    VALUES ('${uuid(8)}', '${projectId}', 'places', true, '${JSON.stringify(design)}')`)
   await expect(page.locator('input[name="legacy"]')).toHaveCount(0)
   await expect(notes).toHaveValue(source)
   await notes.fill('# Designed form')
   await notes.blur()
   await expect.poll(data).toMatchObject({ notes: '# Designed form' })
-  await page.goto(
-    `/data/projects/${projectId}/subprojects/${subprojectId}/places/${placeId}/place?panes=form&formPrint=1`,
-  )
+  await page
+    .getByRole('button', { name: /Print form|Formular drucken/i })
+    .click()
   await expect(
     page.getByRole('heading', { name: 'Designed form' }),
   ).toBeVisible()

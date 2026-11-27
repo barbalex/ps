@@ -21,6 +21,7 @@ That is why arten-fördern.app is highly configurable:
 - Free naming of place levels
 - Choice of which features are used in which place levels (actions, checks, reports etc.)
 - Ability to add custom fields to many tables
+  - In a Markdown field, select text and use the formatting bar for headings, bold, italics, lists or links. On narrow screens, open **More formats**. Ctrl (Mac: ⌘) + B, I or K applies bold, italics or a link.
   - For formatted notes, choose **text → markdown**. Write headings, lists or tables on multiple lines and select **Preview** to check the result. Printing uses the formatted text; the record keeps the original Markdown. HTML is not executed. Existing rich-text fields remain editable as plain text.
 - Free definition and import of taxonomies
 - Free definition and import of lists

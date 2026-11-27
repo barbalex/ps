@@ -2498,6 +2498,36 @@
   "mapZoomToLayer": {
     "defaultMessage": "Auf Layer zoomen"
   },
+  "mdBold": {
+    "defaultMessage": "Fett"
+  },
+  "mdBullets": {
+    "defaultMessage": "Aufzählung"
+  },
+  "mdHeading": {
+    "defaultMessage": "Überschrift"
+  },
+  "mdItalic": {
+    "defaultMessage": "Kursiv"
+  },
+  "mdLink": {
+    "defaultMessage": "Link einfügen"
+  },
+  "mdMore": {
+    "defaultMessage": "Weitere Formate"
+  },
+  "mdNumbers": {
+    "defaultMessage": "Nummerierte Liste"
+  },
+  "mdParagraph": {
+    "defaultMessage": "Absatz"
+  },
+  "mdStyle": {
+    "defaultMessage": "Textstil"
+  },
+  "mdSubheading": {
+    "defaultMessage": "Unterüberschrift"
+  },
   "mn58Sh": {
     "defaultMessage": "Dateien"
   },
