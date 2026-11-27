@@ -31,7 +31,7 @@ export const useUrlFilter = (key: string) => {
   const setFilter = (nextFilter: TableRowFilter[]) => {
     // navigate() resolves its search updater type against the root route's
     // schema; the loose Record type is correct at runtime, so bridge it
-    navigate(
+    return navigate(
       {
         // undefined removes the param from the URL
         search: (prev: Record<string, unknown>) => ({

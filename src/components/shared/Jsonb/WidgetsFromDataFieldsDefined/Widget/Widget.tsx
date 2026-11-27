@@ -10,12 +10,14 @@ import { TextArea } from '../../../TextArea.tsx'
 import { MarkdownField } from '../../../MarkdownField.tsx'
 import { DropdownField } from '../../../DropdownField.tsx'
 import { DropdownFieldFromList } from '../../../DropdownFieldFromList.tsx'
+import { MultiSelectFromList } from '../../../MultiSelectFromList.tsx'
 import { RadioGroupFromList } from '../../../RadioGroupFromList.tsx'
 import { DateField } from '../../../DateField.tsx'
 import { TimeFields } from '../../../TimeFields.tsx'
 import { DateTimeField } from '../../../DateTimeField.tsx'
 import { EditField } from '../EditField.tsx'
 import { getValueFromChange } from '../../../../../modules/getValueFromChange.ts'
+import { updateCustomField } from '../../../../../modules/updateCustomField.ts'
 import { addOperationAtom } from '../../../../../store.ts'
 import { filterKeyFromTableAndLevel } from '../../../../../modules/filterKeyFromTableAndLevel.ts'
 import { useUrlFilter } from '../../../../../modules/useUrlFilter.ts'
@@ -80,30 +82,15 @@ export const Widget = ({
       ),
     )
   }
-  const save = async ({
-    name,
-    value,
-  }: Pick<ReturnType<typeof getValueFromChange>, 'name' | 'value'>) => {
+  const save = async ({ name, value }: { name: string; value: unknown }) => {
     // return if value has not changed
     if (data[name] === value) return
-    // date widgets return a Date object even though it is not in the union
-    const valueAsObject = value as unknown as Date | null | undefined
-    const isDate = valueAsObject instanceof Date
-    const val = { ...data }
-    if (value === undefined) {
-      // need to remove the key from the json object
-      delete val[name]
-    } else {
-      // in json need to save date as iso string
-      val[name] = isDate ? valueAsObject.toISOString() : value
-    }
-
     const isFilter = location.pathname.endsWith('filter')
 
     if (isFilter) {
       const newFilter = setNewFilterFromOld({
         name: `data.${name}`,
-        value: val[name],
+        value: value instanceof Date ? value.toISOString() : value,
         orFilters: filter,
         orIndex: orIndex as number,
         targetType: field.field_type as string,
@@ -112,15 +99,16 @@ export const Widget = ({
       return
     }
 
-    const prevRes = await db.query(
-      `select * from ${table} where ${idField} = $1`,
-      [id],
-    )
-    const prev = (prevRes?.rows?.[0] ?? {}) as Record<string, unknown>
     try {
-      await db.query(
-        `update ${table} set ${jsonFieldName} = $1 where ${idField} = $2`,
-        [val, id],
+      await addOperation(
+        await updateCustomField(db, {
+          table,
+          idField,
+          id,
+          jsonFieldName,
+          name,
+          value,
+        }),
       )
     } catch (error) {
       console.log(`Jsonb, error updating table '${table}':`, error)
@@ -134,15 +122,6 @@ export const Widget = ({
       const { [name]: _, ...rest } = prev
       return rest
     })
-    addOperation({
-      table,
-      rowIdName: idField,
-      rowId: id,
-      operation: 'update',
-      draft: { [jsonFieldName]: val },
-      prev,
-    })
-
     return
   }
 
@@ -162,6 +141,14 @@ export const Widget = ({
           value={value as string | number}
           type={type}
           inputMode={field.field_type === 'decimal' ? 'decimal' : undefined}
+          numericSettings={
+            (
+              !location.pathname.endsWith('filter') &&
+              ['integer', 'decimal'].includes(field.field_type ?? '')
+            ) ?
+              field
+            : undefined
+          }
           onChange={onChange}
           autoFocus={autoFocus}
           ref={ref as unknown as React.Ref<HTMLInputElement>}
@@ -258,14 +245,45 @@ export const Widget = ({
           validationMessage={validations[name]?.message}
         />
       )
+    case 'multiselect-few':
+    case 'multiselect-many': {
+      const isFilter = location.pathname.endsWith('filter')
+      return (
+        <MultiSelectFromList
+          key={`${id}:${name}:${orIndex ?? ''}`}
+          label={label ?? name}
+          listId={field.list_id}
+          fieldType={field.field_type}
+          searchable={field.widget_type === 'multiselect-many'}
+          value={value}
+          filter={isFilter}
+          validationMessage={validations[name]?.message}
+          autoFocus={autoFocus}
+          button={<EditField fieldId={field.field_id} />}
+          onChange={(codes, mode) => {
+            if (!isFilter) return save({ name, value: codes })
+            return setFilter(
+              setNewFilterFromOld({
+                name: `${jsonFieldName}.${name}`,
+                value: codes.length ? { [mode]: codes } : null,
+                orFilters: filter,
+                orIndex: orIndex!,
+                targetType: 'text',
+              }),
+            )
+          }}
+        />
+      )
+    }
     case 'options-many':
       return (
         <DropdownFieldFromList
+          key={`${id}:${name}:${orIndex ?? ''}`}
           name={name}
           label={label as string | undefined}
           list_id={field.list_id as string}
-          value={value as string}
-          onChange={onChange}
+          value={value}
+          onChange={(value) => save({ name, value })}
           autoFocus={autoFocus}
           ref={ref as unknown as React.Ref<HTMLInputElement>}
           button={<EditField fieldId={field.field_id} />}

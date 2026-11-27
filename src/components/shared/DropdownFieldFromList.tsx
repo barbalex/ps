@@ -1,21 +1,18 @@
-import * as fluentUiReactComponents from '@fluentui/react-components'
-const { Dropdown, Field, Option } = fluentUiReactComponents
+import { useState } from 'react'
+import { useIntl } from 'react-intl'
+import { Combobox, Field, Option } from '@fluentui/react-components'
 import { useLiveQuery } from '@electric-sql/pglite-react'
 
 import styles from './DropdownFieldFromList.module.css'
-
-type InputProps = React.ComponentProps<typeof fluentUiReactComponents.Input>
-type InputOnChangeData = Parameters<NonNullable<InputProps['onChange']>>[1]
 
 interface Props {
   name: string
   label?: string
   list_id: string
-  value: string
-  onChange: (
-    ev: React.ChangeEvent<HTMLInputElement>,
-    data: InputOnChangeData,
-  ) => void
+  value: unknown
+  onChange: (value: unknown) => void
+  preview?: boolean
+  print?: boolean
   autoFocus?: boolean
   ref?: React.Ref<HTMLInputElement>
   validationMessage?: string
@@ -29,36 +26,49 @@ export const DropdownFieldFromList = ({
   list_id,
   value,
   onChange,
+  preview,
+  print,
   autoFocus,
   ref,
   validationMessage,
   validationState,
   button,
 }: Props) => {
-  // consumers pass Fluent's (ev, data) change handlers; called here with fake events
-  const onChangeFake = onChange as unknown as (e: {
-    target: { name?: string; value?: unknown }
-  }) => void
-  const res = useLiveQuery(
-    `SELECT lv.list_value_id, lv.label, l.value_type,
+  const { formatMessage } = useIntl()
+  const [query, setQuery] = useState<string | null>(null)
+  const [previewValue, setPreviewValue] = useState<unknown>(value)
+  const current = preview ? previewValue : value
+  const res = useLiveQuery<
+    {
+      list_value_id: string
+      label: string
+      value_type: string
+      obsolete: boolean
+    } & Record<string, unknown>
+  >(
+    `SELECT lv.list_value_id, lv.label, lv.obsolete, l.value_type,
       lv.value_integer, lv.value_numeric, lv.value_text, lv.value_date, lv.value_datetime
      FROM list_values lv
      JOIN lists l ON l.list_id = lv.list_id
-     WHERE lv.list_id = $1`,
+     WHERE lv.list_id = $1
+     ORDER BY lv.obsolete, lv.label, lv.list_value_id`,
     [list_id],
   )
-  const rows = (res?.rows ?? []) as (Record<string, unknown> & {
-    list_value_id: string
-    label?: string | null
-    value_type?: string | null
-  })[]
-  const valueType = rows[0]?.value_type ?? null
-  const valueColumn = valueType ? `value_${valueType}` : null
-
-  const selectedRow = valueColumn
-    ? rows.find((row) => String(row[valueColumn]) === String(value))
-    : undefined
-  const selectedOptions = selectedRow ? [selectedRow.list_value_id] : []
+  const rows = (res?.rows ?? [])
+    .map((row) => {
+      const raw = row[`value_${row.value_type}`]
+      return { ...row, code: raw instanceof Date ? raw.toISOString() : raw }
+    })
+    .filter((row) => row.code != null)
+  const selectedRow = rows.find((row) => String(row.code) === String(current))
+  const selectedText = selectedRow?.label ?? String(current ?? '')
+  const needle = query?.trim().toLocaleLowerCase() ?? ''
+  const matches = rows.filter(
+    (row) =>
+      (!row.obsolete || row === selectedRow) &&
+      (row.label.toLocaleLowerCase().includes(needle) ||
+        String(row.code).toLocaleLowerCase().includes(needle)),
+  )
 
   return (
     <Field
@@ -68,31 +78,59 @@ export const DropdownFieldFromList = ({
       className={styles.field}
     >
       <div className={styles.row}>
-        <Dropdown
-          name={name}
-          value={selectedRow?.label ?? ''}
-          selectedOptions={selectedOptions}
-          onOptionSelect={(_e: unknown, data: { optionValue?: string }) => {
-            const row = rows.find((r) => r.list_value_id === data.optionValue)
-            if (!row) return
-            if (!row.value_type)
-              throw new Error(`List ${list_id} has no value_type set`)
-            onChangeFake({
-              target: { name, value: row[`value_${row.value_type}`] },
-            })
-          }}
-          appearance="underline"
-          className={styles.dd}
-          autoFocus={autoFocus}
-          ref={ref as unknown as React.Ref<HTMLButtonElement>}
-          clearable
-        >
-          {rows.map((row) => (
-            <Option key={row.list_value_id} value={row.list_value_id}>
-              {row.label as string}
-            </Option>
-          ))}
-        </Dropdown>
+        {print ?
+          <span>{selectedText}</span>
+        : <Combobox
+            name={name}
+            aria-label={label ?? name}
+            value={query ?? selectedText}
+            selectedOptions={
+              selectedRow ? [selectedRow.list_value_id]
+              : selectedText ?
+                [selectedText]
+              : []
+            }
+            onOpenChange={(_, { open }) =>
+              setQuery((previous) => (open ? (previous ?? '') : null))
+            }
+            onBlur={() => setQuery(null)}
+            onChange={(e) => setQuery(e.target.value)}
+            onOptionSelect={(event, { optionValue }) => {
+              // Fluent also emits a clear when typing stops matching the
+              // selection. Only an explicit clear should change the record.
+              if (!optionValue && event.type === 'change') return
+              const next =
+                rows.find((row) => row.list_value_id === optionValue)?.code ??
+                null
+              setQuery(null)
+              if (preview) setPreviewValue(next)
+              else onChange(next)
+            }}
+            appearance="underline"
+            className={styles.dd}
+            autoFocus={autoFocus}
+            ref={ref}
+            inlinePopup
+            clearable
+          >
+            {matches.map((row) => (
+              <Option
+                key={row.list_value_id}
+                value={row.list_value_id}
+              >
+                {row.label}
+              </Option>
+            ))}
+            {!matches.length && (
+              <Option disabled>
+                {formatMessage({
+                  id: 'mapCreateParentNone',
+                  defaultMessage: 'Keine Treffer',
+                })}
+              </Option>
+            )}
+          </Combobox>
+        }
         {!!button && button}
       </div>
     </Field>

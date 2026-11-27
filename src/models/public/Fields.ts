@@ -48,6 +48,14 @@ export default interface Fields {
   updated_at: Date;
 
   updated_by: string | null;
+
+  numeric_unit: string | null;
+
+  numeric_min: number | null;
+
+  numeric_max: number | null;
+
+  numeric_step: number | null;
 }
 
 /**
@@ -96,6 +104,14 @@ export interface FieldsInitializer {
   updated_at?: Date;
 
   updated_by?: string | null;
+
+  numeric_unit?: string | null;
+
+  numeric_min?: number | null;
+
+  numeric_max?: number | null;
+
+  numeric_step?: number | null;
 }
 
 /**
@@ -137,4 +153,12 @@ export interface FieldsMutator {
   updated_at?: Date;
 
   updated_by?: string | null;
+
+  numeric_unit?: string | null;
+
+  numeric_min?: number | null;
+
+  numeric_max?: number | null;
+
+  numeric_step?: number | null;
 }

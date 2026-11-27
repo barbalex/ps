@@ -1,4 +1,9 @@
 {
+  "numericInteger": "Inserire un numero intero.",
+  "numericPositive": "Il passo deve essere maggiore di zero.",
+  "numericMin": "Minimo",
+  "numericMax": "Massimo",
+  "numericStep": "Passo",
   "homeWorkflowTitle": "Scegli il modo di lavorare che preferisci",
   "homeWorkflowText": "Puoi consultare e modificare i tuoi dati nella struttura ad albero oppure direttamente sulla mappa, senza mai uscirne.",
   "pdFormatMenu": "Esporta progetto",
@@ -698,6 +703,8 @@
   "nDt0Pr": "Nessun dato da visualizzare",
   "prVw0A": "Anteprima",
   "mdStyle": "Stile del testo",
+  "multiListNeeded": "Configurare un elenco compatibile con valori attivi.",
+  "multiMatchAll": "Richiedi tutti i valori selezionati",
   "mdMore": "Altri formati",
   "mdParagraph": "Paragrafo",
   "mdHeading": "Titolo",

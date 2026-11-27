@@ -1,4 +1,9 @@
 {
+  "numericInteger": "Enter a whole number.",
+  "numericPositive": "Step must be greater than zero.",
+  "numericMin": "Minimum",
+  "numericMax": "Maximum",
+  "numericStep": "Step",
   "pdFormatMenu": "Export project",
   "pdExportTo": "Export to:",
   "pdMissingReferences": "{count} references point to records outside this local export.",
@@ -700,6 +705,8 @@
   "nDt0Pr": "No data to preview",
   "prVw0A": "Preview",
   "mdStyle": "Text style",
+  "multiListNeeded": "Configure a matching list with active values.",
+  "multiMatchAll": "Match all selected values",
   "mdMore": "More formats",
   "mdParagraph": "Paragraph",
   "mdHeading": "Heading",

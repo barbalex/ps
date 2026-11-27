@@ -12,6 +12,7 @@ import { postgis } from '@electric-sql/pglite-postgis'
 const SQL_FILES = [
   'immutableDate.sql',
   'createTables.sql',
+  'numericFieldSettings.sql',
   'projectArea.sql',
   'triggers.sql',
   'projectAreaLayer.sql',

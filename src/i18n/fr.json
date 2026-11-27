@@ -1,4 +1,9 @@
 {
+  "numericInteger": "Saisir un nombre entier.",
+  "numericPositive": "Le pas doit être supérieur à zéro.",
+  "numericMin": "Minimum",
+  "numericMax": "Maximum",
+  "numericStep": "Pas",
   "homeWorkflowTitle": "Choisis ta façon de travailler",
   "homeWorkflowText": "Tu peux parcourir et modifier tes données dans l’arborescence ou le faire directement sur la carte, sans la quitter.",
   "pdFormatMenu": "Exporter le projet",
@@ -698,6 +703,8 @@
   "nDt0Pr": "Aucune donnée à prévisualiser",
   "prVw0A": "Aperçu",
   "mdStyle": "Style de texte",
+  "multiListNeeded": "Configurer une liste compatible avec des valeurs actives.",
+  "multiMatchAll": "Exiger toutes les valeurs sélectionnées",
   "mdMore": "Autres formats",
   "mdParagraph": "Paragraphe",
   "mdHeading": "Titre",

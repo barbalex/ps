@@ -123,9 +123,14 @@ export async function exportOwnGeometries(
       (CASE WHEN jsonb_typeof(t.data)='object' OR t.data IS NULL THEN ARRAY['data'] ELSE ARRAY[]::text[] END) AS properties,
       CASE WHEN jsonb_typeof(t.data)='object' THEN t.data END AS data,${geometry} AS geometry,
       ${labels} AS labels, (SELECT jsonb_object_agg(f.name,
-        (SELECT lv.label FROM list_values lv WHERE lv.list_id=f.list_id
+        CASE WHEN jsonb_typeof(t.data->f.name)='array' THEN
+          (SELECT coalesce(jsonb_agg((SELECT lv.label FROM list_values lv WHERE lv.list_id=f.list_id
+             AND to_jsonb(lv)->('value_' || l.value_type) = choice.code
+             ORDER BY lv.list_value_id LIMIT 1) ORDER BY choice.ord), '[]'::jsonb)
+           FROM jsonb_array_elements(t.data->f.name) WITH ORDINALITY AS choice(code,ord))
+        ELSE to_jsonb((SELECT lv.label FROM list_values lv WHERE lv.list_id=f.list_id
            AND to_jsonb(lv)->>('value_' || l.value_type) = t.data->>f.name
-           ORDER BY lv.list_value_id LIMIT 1))
+           ORDER BY lv.list_value_id LIMIT 1)) END)
         FROM fields f JOIN lists l USING(list_id)
         WHERE ${fieldScope} AND f.table_name=$2 AND t.data ? f.name
       ) AS custom_labels

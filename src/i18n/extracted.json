@@ -2531,6 +2531,12 @@
   "mn58Sh": {
     "defaultMessage": "Dateien"
   },
+  "multiListNeeded": {
+    "defaultMessage": "Eine passende Liste mit aktiven Werten wird benötigt."
+  },
+  "multiMatchAll": {
+    "defaultMessage": "Alle ausgewählten Werte müssen vorkommen"
+  },
   "nDt0Pr": {
     "defaultMessage": "Keine Daten für die Vorschau"
   },
@@ -2566,6 +2572,21 @@
   },
   "noT0gR": {
     "defaultMessage": "Taxonomien"
+  },
+  "numericInteger": {
+    "defaultMessage": "Bitte eine Ganzzahl eingeben."
+  },
+  "numericMax": {
+    "defaultMessage": "Maximum"
+  },
+  "numericMin": {
+    "defaultMessage": "Minimum"
+  },
+  "numericPositive": {
+    "defaultMessage": "Die Schrittweite muss grösser als null sein."
+  },
+  "numericStep": {
+    "defaultMessage": "Schrittweite"
   },
   "oG6LfB": {
     "defaultMessage": "Bericht-Mengen"

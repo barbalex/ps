@@ -9,11 +9,13 @@ import { TextArea } from '../TextArea.tsx'
 import { MarkdownField } from '../MarkdownField.tsx'
 import { DropdownField } from '../DropdownField.tsx'
 import { DropdownFieldFromList } from '../DropdownFieldFromList.tsx'
+import { MultiSelectFromList } from '../MultiSelectFromList.tsx'
 import { RadioGroupFromList } from '../RadioGroupFromList.tsx'
 import { DateField } from '../DateField.tsx'
 import { TimeFields } from '../TimeFields.tsx'
 import { DateTimeField } from '../DateTimeField.tsx'
 import { getValueFromChange } from '../../../modules/getValueFromChange.ts'
+import { updateCustomField } from '../../../modules/updateCustomField.ts'
 import { addOperationAtom } from '../../../store.ts'
 import type { FieldsWithTypes } from '../Jsonb/index.tsx'
 
@@ -62,34 +64,20 @@ export const FieldWidget = ({ field }: { field: FieldsWithTypes }) => {
       ),
     )
   }
-  const save = async ({
-    name,
-    value,
-  }: Pick<ReturnType<typeof getValueFromChange>, 'name' | 'value'>) => {
+  const save = async ({ name, value }: { name: string; value: unknown }) => {
     if (mode !== 'live') return
     // return if value has not changed
     if (data[name] === value) return
-    // date widgets return a Date object even though it is not in the union
-    const valueAsObject = value as unknown as Date | null | undefined
-    const isDate = valueAsObject instanceof Date
-    const val = { ...data }
-    if (value === undefined) {
-      // need to remove the key from the json object
-      delete val[name]
-    } else {
-      // in json need to save date as iso string
-      val[name] = isDate ? valueAsObject.toISOString() : value
-    }
-
-    const prevRes = await db.query(
-      `select * from ${table} where ${idField} = $1`,
-      [id],
-    )
-    const prev = (prevRes?.rows?.[0] ?? {}) as Record<string, unknown>
     try {
-      await db.query(
-        `update ${table} set ${jsonFieldName} = $1 where ${idField} = $2`,
-        [val, id],
+      await addOperation(
+        await updateCustomField(db, {
+          table,
+          idField,
+          id,
+          jsonFieldName,
+          name,
+          value,
+        }),
       )
     } catch (error) {
       console.log(`FormDesign, error updating table '${table}':`, error)
@@ -102,14 +90,6 @@ export const FieldWidget = ({ field }: { field: FieldsWithTypes }) => {
     setValidations((prev) => {
       const { [name]: _, ...rest } = prev
       return rest
-    })
-    addOperation({
-      table,
-      rowIdName: idField,
-      rowId: id,
-      operation: 'update',
-      draft: { [jsonFieldName]: val },
-      prev,
     })
   }
 
@@ -130,6 +110,10 @@ export const FieldWidget = ({ field }: { field: FieldsWithTypes }) => {
             value={value as string | number}
             type={type}
             inputMode={field.field_type === 'decimal' ? 'decimal' : undefined}
+            numericSettings={
+              ['integer', 'decimal'].includes(field.field_type ?? '') ? field
+              : undefined
+            }
             onChange={onChange}
             {...validationProps}
           />
@@ -199,14 +183,33 @@ export const FieldWidget = ({ field }: { field: FieldsWithTypes }) => {
             {...validationProps}
           />
         )
+      case 'multiselect-few':
+      case 'multiselect-many':
+        return (
+          <MultiSelectFromList
+            key={`${id}:${name}`}
+            label={label ?? name}
+            listId={field.list_id}
+            fieldType={field.field_type}
+            searchable={field.widget_type === 'multiselect-many'}
+            value={value}
+            preview={mode === 'preview'}
+            print={mode === 'print'}
+            validationMessage={validations[name]?.message}
+            onChange={(codes) => save({ name, value: codes })}
+          />
+        )
       case 'options-many':
         return (
           <DropdownFieldFromList
+            key={`${id}:${name}:${mode}`}
             name={name}
             label={label as string | undefined}
             list_id={field.list_id as string}
-            value={value as string}
-            onChange={onChange}
+            value={value}
+            preview={mode === 'preview'}
+            print={mode === 'print'}
+            onChange={(value) => save({ name, value })}
             {...validationProps}
           />
         )

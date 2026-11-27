@@ -19,6 +19,7 @@ test.use({ timezoneId: 'Europe/Zurich' })
 
 test('Markdown and rich text round-trip through editing and print; decimal and local time persist typed values', async ({
   page,
+  browser,
 }) => {
   await ensureProjectFixture({
     projectId,
@@ -38,7 +39,14 @@ test('Markdown and rich text round-trip through editing and print; decimal and l
       ('${uuid(7)}','visited','date-time','datetimepicker'), ('${uuid(9)}','legacy','text','rich-text')) AS f(id,name,ft,wt)
     JOIN field_types ft ON ft.name = f.ft JOIN widget_types wt ON wt.name = f.wt
     ON CONFLICT DO NOTHING;
-    UPDATE places SET data = '{}' WHERE place_id = '${placeId}';
+    INSERT INTO lists (list_id,project_id,value_type) VALUES ('${uuid(10)}','${projectId}','text') ON CONFLICT DO NOTHING;
+    INSERT INTO list_values (list_value_id,list_id,value_text) VALUES
+      ('${uuid(11)}','${uuid(10)}','001'),('${uuid(12)}','${uuid(10)}','Salix alba') ON CONFLICT DO NOTHING;
+    INSERT INTO fields (field_id,project_id,table_name,level,name,field_label,field_type_id,widget_type_id,list_id)
+    SELECT '${uuid(13)}','${projectId}','places',1,'species_choice','Species choice',ft.field_type_id,wt.widget_type_id,'${uuid(10)}'
+    FROM field_types ft, widget_types wt WHERE ft.name='text' AND wt.name='options-many' ON CONFLICT DO NOTHING;
+    UPDATE places SET data = '{"species_choice":"Salix alba"}' WHERE place_id = '${placeId}';
+    UPDATE fields SET numeric_unit=null, numeric_min=null, numeric_max=null, numeric_step=null WHERE field_id='${uuid(6)}';
   `)
   const userId = await ensureUser({ email, password, name: 'Widget tester' })
   await grantRoles({
@@ -49,6 +57,43 @@ test('Markdown and rich text round-trip through editing and print; decimal and l
     subprojectIds: [subprojectId],
     placeIds: [placeId],
   })
+  const designer = await browser.newPage({
+    baseURL: test.info().project.use.baseURL,
+    ignoreHTTPSErrors: true,
+  })
+  await login(designer, email, password)
+  await designer.goto(
+    `/data/projects/${projectId}/fields/${uuid(6)}?panes=form`,
+  )
+  for (const [name, setting] of [
+    ['numeric_unit', 'mm'],
+    ['numeric_min', '-1,25'],
+    ['numeric_max', '2.75'],
+    ['numeric_step', '0,25'],
+  ]) {
+    const input = designer.locator(`input[name="${name}"]`)
+    await input.fill(setting)
+    await input.blur()
+  }
+  await expect
+    .poll(
+      () =>
+        psql(
+          `SELECT concat_ws('/',numeric_unit,numeric_min,numeric_max,numeric_step) FROM fields WHERE field_id='${uuid(6)}'`,
+        ),
+      { timeout: 60000 },
+    )
+    .toBe('mm/-1.25/2.75/0.25')
+  psql(
+    `SET electric.syncing TO 'true'; UPDATE fields SET numeric_unit='cm' WHERE field_id='${uuid(6)}'`,
+  )
+  await expect(designer.locator('input[name="numeric_unit"]')).toHaveValue(
+    'cm',
+    {
+      timeout: 60000,
+    },
+  )
+  await designer.close()
   await login(page, email, password)
   await page.goto(
     `/data/projects/${projectId}/subprojects/${subprojectId}/places/${placeId}/place?panes=form`,
@@ -66,6 +111,22 @@ test('Markdown and rich text round-trip through editing and print; decimal and l
   const rich = page.getByRole('textbox', { name: 'legacy', exact: true })
   const source = '## Survey\n\n- **First** sighting\n- Second sighting'
   await expect(notes).toBeVisible({ timeout: 90_000 })
+  const choice = page.getByRole('combobox', { name: 'Species choice' })
+  await expect(choice).toHaveValue('Salix alba')
+  await choice.click()
+  await choice.fill('ALBA')
+  await expect(page.getByRole('option', { name: 'Salix alba' })).toBeVisible()
+  await expect(page.getByRole('option', { name: '001' })).toHaveCount(0)
+  await choice.fill('not a species')
+  await choice.press('Escape')
+  await expect(choice).toHaveValue('Salix alba')
+  await expect.poll(data).toMatchObject({ species_choice: 'Salix alba' })
+  await choice.click()
+  await choice.fill('01')
+  await page.getByRole('option', { name: '001' }).click()
+  await expect.poll(data).toMatchObject({ species_choice: '001' })
+  await choice.locator('..').locator('.fui-Combobox__clearIcon').click()
+  await expect.poll(data).toMatchObject({ species_choice: null })
   await notes.fill('Iris')
   await notes.press('Control+a')
   await markdownField.getByRole('button', { name: /^(Bold|Fett)$/ }).click()
@@ -172,6 +233,8 @@ test('Markdown and rich text round-trip through editing and print; decimal and l
   await page.context().setOffline(false)
 
   const amount = page.locator('input[name="amount"]')
+  const amountField = page.locator('.fui-Field').filter({ has: amount })
+  await expect(amountField.getByText('cm', { exact: true })).toBeVisible()
   for (const [input, saved] of [
     ['-1,25', -1.25],
     ['2.75', 2.75],
@@ -183,6 +246,14 @@ test('Markdown and rich text round-trip through editing and print; decimal and l
     await expect.poll(data).toMatchObject({ amount: saved })
   }
   const visited = page.locator('input[name="visited"]')
+  for (const invalid of ['-1.5', '3', '0,1']) {
+    await amount.fill(invalid)
+    await amount.blur()
+    await expect(
+      amountField.locator('.fui-Field__validationMessage'),
+    ).toBeVisible()
+    expect(await data()).toMatchObject({ amount: null })
+  }
   for (const [input, saved] of [
     ['2026-06-18T12:00', '2026-06-18T10:00:00.000Z'],
     ['2026-01-18T00:00', '2026-01-17T23:00:00.000Z'],
@@ -203,7 +274,11 @@ test('Markdown and rich text round-trip through editing and print; decimal and l
   psql(`SET electric.syncing TO 'true';
     INSERT INTO form_designs(form_design_id, project_id, table_name, active, design)
     VALUES ('${uuid(8)}', '${projectId}', 'places', true, '${JSON.stringify(design)}')`)
-  await expect(visited).toHaveCount(0)
+  await expect(visited).toHaveCount(0, { timeout: 60000 })
+  await expect(amountField.getByText('cm', { exact: true })).toBeVisible()
+  await amount.fill('1,5')
+  await amount.blur()
+  await expect.poll(data).toMatchObject({ amount: 1.5 })
   await expect(rich.locator('ul li')).toHaveText('North')
   await expect(rich.locator('ol li')).toHaveText('South')
   await expect(notes).toHaveValue(source)

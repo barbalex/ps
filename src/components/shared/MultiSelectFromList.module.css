@@ -1,0 +1,16 @@
+.row {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+}
+
+.checks {
+  display: flex;
+  flex-direction: column;
+}
+.field {
+  border: 0;
+  padding: 0;
+  margin: 0;
+  min-width: 0;
+}

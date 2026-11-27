@@ -13,6 +13,7 @@ type Props = {
   table: string
   idField?: string
   where?: string
+  params?: (string | null)[]
   orderBy?: string
   value?: unknown
   onChange: (
@@ -36,6 +37,7 @@ export const DropdownField = ({
   table,
   idField, // defaults to name, used for cases where the id field is not the same as the name field (?)
   where,
+  params,
   orderBy = 'label asc',
   value,
   onChange,
@@ -57,6 +59,7 @@ export const DropdownField = ({
     `SELECT ${idField ?? name} AS value, ${labelField} AS text FROM ${table}${
       where ? ` WHERE ${where}` : ''
     } order by ${orderBy}`,
+    params,
   )
   const options = res?.rows ?? []
   const selectedOptions = options.filter(({ value: v }) => v === value)

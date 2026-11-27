@@ -89,6 +89,19 @@ const viewChecksSql = (
 describe('table views on checks', () => {
   beforeAll(setupData)
 
+  it('matches any or all selected codes by JSON type, not by substring or numeric coercion', async () => {
+    const codes = [0, "A'%$1"]
+    const match = async (operator: '$any' | '$all') => {
+      const where = filterStringFromFilter([{'data.tags': {[operator]: codes}}], 't')
+      return (await fixture.db.query<{id:number}>(
+        `SELECT id FROM (VALUES (1,$1::jsonb),(2,$2),(3,$3),(4,$4),(5,$5)) t(id,data) WHERE ${where} ORDER BY id`,
+        [codes, [0], ['0'], ["A'%$12"], []].map(tags => JSON.stringify({tags})),
+      )).rows.map(r => r.id)
+    }
+    expect(await match('$any')).toEqual([1,2])
+    expect(await match('$all')).toEqual([1])
+  })
+
   it('$eq filters exactly: Kontrolle does not match Freiwilligen-Kontrolle', async () => {
     const { db, ids } = fixture
 

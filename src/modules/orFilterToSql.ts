@@ -1,4 +1,5 @@
 import { validate as isUuid } from 'uuid'
+import { selectionFilter } from './multiselect.ts'
 
 // PGlite live queries format bound parameters through PostgreSQL format().
 // Keep literal percent signs and $n text out of that formatting pass.
@@ -19,6 +20,15 @@ export const orFilterToSql = (
     // data->>'column' = 'true'
     const isData = column.startsWith('data.')
     const columnName = isData ? column.substring(5) : column
+    const selection = isData && selectionFilter(value)
+    if (selection) {
+      const field = `(${tablePrefix ? `${tablePrefix}.` : ''}data -> ${literal(columnName)})`
+      const contains = (codes: (string | number)[]) =>
+        `${field} @> ${literal(JSON.stringify(codes))}::jsonb`
+      return selection.mode === '$all' ?
+          contains(selection.codes)
+        : `(${selection.codes.map((code) => contains([code])).join(' OR ')})`
+    }
     let columnDescriptor =
       isData ?
         `data ->> ${literal(columnName)}`
