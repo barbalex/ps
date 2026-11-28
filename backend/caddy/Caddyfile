@@ -6,7 +6,22 @@
   debug
 }
 
+# Baseline for every public host; a new site block imports it. Set up front so
+# the headers also reach responses Caddy generates itself (a 502 while an
+# upstream is down) — deferred ('?') headers do not. None of the upstreams
+# sends these; should one start to, switch that header to '?' to avoid a
+# duplicate. The app on Netlify sends the same set, see netlify.toml.
+(security_headers) {
+  header {
+    Strict-Transport-Security "max-age=31536000"
+    X-Content-Type-Options "nosniff"
+    X-Frame-Options "DENY"
+    Referrer-Policy "strict-origin-when-cross-origin"
+  }
+}
+
 auth.xn--arten-frdern-bjb.app {
+  import security_headers
   @auth_arten_preflight {
     method OPTIONS
     header Origin https://xn--arten-frdern-bjb.app
@@ -43,6 +58,7 @@ auth.xn--arten-frdern-bjb.app {
 # use caddy to cache requests to electric, see: https://electric-sql.com/docs/guides/deployment#caching-proxy
 # https://electric-sql.com/docs/api/http#caching
 sync.xn--arten-frdern-bjb.app {
+  import security_headers
   @syncPreflight method OPTIONS
   handle @syncPreflight {
     header Access-Control-Allow-Origin "*"
@@ -73,6 +89,7 @@ sync.xn--arten-frdern-bjb.app {
 }
 
 api.xn--arten-frdern-bjb.app {
+  import security_headers
   @arten_preflight {
     method OPTIONS
     header Origin https://xn--arten-frdern-bjb.app
@@ -100,6 +117,7 @@ api.xn--arten-frdern-bjb.app {
 }
 
 auth.promote-species.app {
+  import security_headers
   @auth_promote_preflight {
     method OPTIONS
     header Origin https://promote-species.app
@@ -173,6 +191,7 @@ auth.promote-species.app {
 # use caddy to cache requests to electric, see: https://electric-sql.com/docs/guides/deployment#caching-proxy
 # https://electric-sql.com/docs/api/http#caching
 sync.promote-species.app {
+  import security_headers
   @syncPreflight method OPTIONS
   handle @syncPreflight {
     header Access-Control-Allow-Origin "*"
@@ -203,6 +222,7 @@ sync.promote-species.app {
 }
 
 api.promote-species.app {
+  import security_headers
   @promote_preflight {
     method OPTIONS
     header Origin https://promote-species.app

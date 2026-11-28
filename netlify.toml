@@ -30,3 +30,18 @@
   for = "/sw-kill.js"
   [headers.values]
     Cache-Control = "no-cache"
+
+# Baseline for every response. Netlify sends the HSTS header by default; it is
+# spelled out so the policy is visible. No includeSubDomains: auth, api and
+# sync set their own (backend/caddy/Caddyfile), and a future subdomain stays
+# free to choose. The app is not framed anywhere, so framing is refused. Of the
+# policy-controlled features the app only uses geolocation.
+[[headers]]
+  for = "/*"
+  [headers.values]
+    Strict-Transport-Security = "max-age=31536000"
+    X-Content-Type-Options = "nosniff"
+    X-Frame-Options = "DENY"
+    Content-Security-Policy = "frame-ancestors 'none'"
+    Referrer-Policy = "strict-origin-when-cross-origin"
+    Permissions-Policy = "camera=(), microphone=(), geolocation=(self), payment=(), usb=()"
