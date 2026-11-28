@@ -23,6 +23,8 @@ export default interface FieldSorts {
   updated_at: Date;
 
   updated_by: string | null;
+
+  sorted_items: string[] | null;
 }
 
 /**
@@ -48,6 +50,8 @@ export interface FieldSortsInitializer {
   updated_at?: Date;
 
   updated_by?: string | null;
+
+  sorted_items?: string[] | null;
 }
 
 /**
@@ -70,4 +74,6 @@ export interface FieldSortsMutator {
   updated_at?: Date;
 
   updated_by?: string | null;
+
+  sorted_items?: string[] | null;
 }

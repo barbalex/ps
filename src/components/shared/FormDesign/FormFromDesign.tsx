@@ -1,31 +1,30 @@
 import { Suspense, useMemo } from 'react'
-import { useIntl } from 'react-intl'
-import { useAtomValue } from 'jotai'
 import type { Data } from '@puckeditor/core'
 
 import { LazyPuckRender } from '../lazyPuck.tsx'
 import { Loading } from '../Loading.tsx'
 import { normalizePuckDesign } from '../../../modules/normalizePuckDesign.ts'
-import { languageAtom } from '../../../store.ts'
+import type { FieldChangeHandler } from '../fieldChange.ts'
 import type { FieldsWithTypes } from '../Jsonb/index.tsx'
 
 import {
-  buildFormDesignConfig,
-  type FormDesignLabels,
-} from './buildFormDesignConfig.tsx'
-import {
   FormDesignRuntimeContext,
+  type FormColumns,
   type FormDesignMode,
 } from './FormDesignRuntimeContext.tsx'
+import { useFormDesignConfig } from './useFormDesignConfig.tsx'
 
 /**
- * Renders a saved form design with live widgets writing the row's jsonb —
- * the designed counterpart of the auto-generated Jsonb form. `mode` 'print'
- * renders the same design read-only for the print view.
+ * Renders a saved form design with live widgets writing the row — jsonb keys
+ * and real columns alike; the designed counterpart of the auto-generated
+ * Jsonb form. `mode` 'print' renders the same design read-only for the print
+ * view.
  */
 export const FormFromDesign = ({
   design,
   fields,
+  columns,
+  onChange,
   data,
   mode,
   table,
@@ -35,6 +34,10 @@ export const FormFromDesign = ({
 }: {
   design: unknown
   fields: FieldsWithTypes[]
+  /** the form's real columns — the design may place them */
+  columns?: FormColumns
+  /** the form's change handler — writes the real columns in live mode */
+  onChange?: FieldChangeHandler
   data: Record<string, unknown>
   mode: FormDesignMode
   table: string
@@ -42,35 +45,9 @@ export const FormFromDesign = ({
   idField: string
   id: string
 }) => {
-  const { formatMessage } = useIntl()
-  const language = useAtomValue(languageAtom)
-
   // the config must keep its identity while the user types: Puck remounts
   // the rendered components when the render functions change, losing focus
-  const fieldsKey = fields
-    .map(
-      (f) =>
-        `${f.field_id}/${f.field_label ?? ''}/${f.name ?? ''}/${f.field_type ?? ''}/${f.widget_type ?? ''}/${f.list_id ?? ''}`,
-    )
-    .join('|')
-  const labels: FormDesignLabels = {
-    layout: formatMessage({ id: 'bFgHiA', defaultMessage: 'Layout' }),
-    fields: formatMessage({ id: 'bC8AbC', defaultMessage: 'Felder' }),
-    grid: formatMessage({ id: 'bFhIjB', defaultMessage: 'Raster' }),
-    heading: formatMessage({ id: 'bFiJkC', defaultMessage: 'Titel' }),
-    image: formatMessage({ id: 'bFjKlD', defaultMessage: 'Bild' }),
-    spacer: formatMessage({ id: 'bFkLmE', defaultMessage: 'Abstand' }),
-    pageBreak: formatMessage({
-      id: 'bFlMnF',
-      defaultMessage: 'Seitenumbruch',
-    }),
-  }
-  const config = useMemo(() => {
-    return buildFormDesignConfig({ fields, labels })
-    // labels derive from the language; fieldsKey captures the field
-    // definitions — rebuilding on either is enough
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [fieldsKey, language])
+  const config = useFormDesignConfig({ fields, columns })
 
   const fieldsById = useMemo(() => {
     return Object.fromEntries(fields.map((f) => [f.field_id as string, f]))
@@ -83,6 +60,8 @@ export const FormFromDesign = ({
     jsonFieldName,
     idField,
     id,
+    columns,
+    onChange,
   }
 
   return (

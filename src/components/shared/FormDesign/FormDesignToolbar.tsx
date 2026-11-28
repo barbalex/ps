@@ -1,18 +1,15 @@
 import { useNavigate, useParams, useSearch } from '@tanstack/react-router'
-import { usePGlite, useLiveQuery } from '@electric-sql/pglite-react'
-import { useSetAtom, useAtomValue } from 'jotai'
+import { usePGlite } from '@electric-sql/pglite-react'
+import { useSetAtom } from 'jotai'
 import { useIntl } from 'react-intl'
 import * as fluentUiReactComponents from '@fluentui/react-components'
 import { PrintRegular } from '@fluentui/react-icons'
 import { MdDesignServices, MdEdit } from 'react-icons/md'
 
 import { createFormDesign } from '../../../modules/createRows.ts'
+import { useFormDesigns } from './useFormDesigns.ts'
 import type { FormDesignRow } from './useFormDesignRow.ts'
-import {
-  addOperationAtom,
-  addNotificationAtom,
-  userIdAtom,
-} from '../../../store.ts'
+import { addOperationAtom, addNotificationAtom } from '../../../store.ts'
 import styles from './FormDesign.module.css'
 
 const { Button, ToggleButton, Tooltip } = fluentUiReactComponents
@@ -37,24 +34,13 @@ export const FormDesignToolbar = ({
   const { projectId } = useParams({ strict: false })
   const navigate = useNavigate()
   const currentSearch = useSearch({ strict: false }) as Record<string, unknown>
-  const userId = useAtomValue(userIdAtom)
   const db = usePGlite()
   const addOperation = useSetAtom(addOperationAtom)
   const addNotification = useSetAtom(addNotificationAtom)
   const { formatMessage } = useIntl()
-
-  const resultProject = useLiveQuery(
-    `
-      SELECT pr.role
-      FROM project_roles pr
-      JOIN project_users pu ON pu.project_user_id = pr.project_user_id
-      WHERE pr.project_id = $1
-        AND (pu.auth_user_id = $2 OR pu.email = (SELECT email FROM users WHERE user_id = $2))
-    `,
-    [projectId, userId],
-  )
-  const userRole = resultProject?.rows?.[0]?.role
-  const userMayDesign = userRole === 'design' || userRole === 'own'
+  // loaded with the project's designs (FormDesignsProvider), so the toolbar
+  // renders together with the form instead of popping in after it
+  const { mayDesign: userMayDesign } = useFormDesigns()
 
   const openEditor = () =>
     navigate({ search: { ...currentSearch, formDesign: '1' } as never })

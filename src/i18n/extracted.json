@@ -1391,6 +1391,9 @@
   "bGgEfG": {
     "defaultMessage": "Design, mit dem der Bericht gedruckt wird. Standard: das aktive Design"
   },
+  "bGsTzK": {
+    "defaultMessage": "Nicht im Formular platziert (bleiben an ihrem festen Platz): {names}"
+  },
   "bHistProjSetting": {
     "defaultMessage": "Geschichte vergleichen"
   },

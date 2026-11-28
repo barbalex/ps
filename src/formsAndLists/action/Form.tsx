@@ -3,7 +3,10 @@ import type Actions from '../../models/public/Actions.ts'
 import { SwitchField } from '../../components/shared/SwitchField.tsx'
 import { JsonbOrFormDesign } from '../../components/shared/FormDesign/index.tsx'
 import { WithFormDesign } from '../../components/shared/FormDesign/WithFormDesign.tsx'
+import { FormColumn } from '../../components/shared/FormDesign/FormColumn.tsx'
+import type { FormColumns } from '../../components/shared/FormDesign/FormDesignRuntimeContext.tsx'
 import { jsonbDataFromRow } from '../../modules/jsonbDataFromRow.ts'
+import type { FieldChangeHandler } from '../../components/shared/fieldChange.ts'
 import type { getValueFromChange } from '../../modules/getValueFromChange.ts'
 import { useIntl } from 'react-intl'
 
@@ -42,10 +45,41 @@ export const ActionForm = ({
   const jsonbData = jsonbDataFromRow(row)
   const { formatMessage } = useIntl()
   // field components declare narrower Fluent change-data types than the shared handler
-  const onChangeField = onChange as unknown as (
-    e: React.ChangeEvent<HTMLElement>,
-    data?: unknown,
-  ) => void
+  const onChangeField = onChange as unknown as FieldChangeHandler
+
+  // the table's real columns: placeable in a form design like the jsonb
+  // keys, and drawn at their fixed position until a design places them
+  const columns: FormColumns = {
+    date: {
+      label: formatMessage({ id: 'bEoOtT', defaultMessage: 'Datum' }),
+      render: ({ label, onChange }) => (
+        <DateField
+          label={label}
+          name="date"
+          value={row.date}
+          onChange={onChange}
+          validationState={validations?.date?.state}
+          validationMessage={validations?.date?.message}
+        />
+      ),
+    },
+    relevant_for_reports: {
+      label: formatMessage({
+        id: 'bEpPuU',
+        defaultMessage: 'Relevant für Berichte',
+      }),
+      render: ({ label, onChange }) => (
+        <SwitchField
+          label={label}
+          name="relevant_for_reports"
+          value={row.relevant_for_reports as boolean | null | undefined}
+          onChange={onChange}
+          validationState={validations?.relevant_for_reports?.state}
+          validationMessage={validations?.relevant_for_reports?.message}
+        />
+      ),
+    },
+  }
 
   return (
     <WithFormDesign
@@ -54,26 +88,11 @@ export const ActionForm = ({
       id={row.action_id as string}
       data={jsonbData}
       from={from}
+      columns={columns}
+      onChange={onChangeField}
     >
-      <DateField
-        label={formatMessage({ id: 'bEoOtT', defaultMessage: 'Datum' })}
-        name="date"
-        value={row.date}
-        onChange={onChangeField}
-        validationState={validations?.date?.state}
-        validationMessage={validations?.date?.message}
-      />
-      <SwitchField
-        label={formatMessage({
-          id: 'bEpPuU',
-          defaultMessage: 'Relevant für Berichte',
-        })}
-        name="relevant_for_reports"
-        value={row.relevant_for_reports as boolean | null | undefined}
-        onChange={onChangeField}
-        validationState={validations?.relevant_for_reports?.state}
-        validationMessage={validations?.relevant_for_reports?.message}
-      />
+      <FormColumn column="date" />
+      <FormColumn column="relevant_for_reports" />
       <JsonbOrFormDesign
         table="actions"
         idField="action_id"

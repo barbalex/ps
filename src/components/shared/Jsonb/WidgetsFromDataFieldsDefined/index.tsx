@@ -1,4 +1,4 @@
-import { useState, useCallback, useEffect } from 'react'
+import { useState, useCallback, useEffect, useMemo } from 'react'
 import { monitorForElements } from '@atlaskit/pragmatic-drag-and-drop/adapter/element-adapter'
 import { extractClosestEdge } from '@atlaskit/pragmatic-drag-and-drop-hitbox/closest-edge/extract-closest-edge'
 import { reorder } from '@atlaskit/pragmatic-drag-and-drop/utils/reorder'
@@ -9,6 +9,7 @@ import { useSetAtom } from 'jotai'
 import { v7 as uuidv7 } from 'uuid'
 
 import { Field } from './Field.tsx'
+import { ColumnItem } from './ColumnItem.tsx'
 import { DragAndDropContext } from './DragAndDropContext.ts'
 import {
   getItemRegistry,
@@ -16,10 +17,31 @@ import {
   isItemData,
 } from '../../../shared/DragAndDrop/index.tsx'
 import { addOperationAtom } from '../../../../store.ts'
+import {
+  columnComponentType,
+  fieldComponentType,
+} from '../../../../modules/formDesignComponents.ts'
+import {
+  fieldIdsOfOrder,
+  withDisplayOrder,
+} from '../../../../modules/formItemOrder.ts'
 import type { FieldsWithTypes } from '../index.tsx'
+import type { FieldChangeHandler } from '../../fieldChange.ts'
+import type { FormColumns } from '../../FormDesign/FormDesignRuntimeContext.tsx'
+
+/** an item of the form's list: a jsonb field, or a real column of the table */
+export type FormItem =
+  { type: 'field'; field: FieldsWithTypes } | { type: 'column'; name: string }
+
+/** the item's name in the saved order (field_sorts.sorted_items) */
+const itemToken = (item: FormItem) =>
+  item.type === 'field' ?
+    fieldComponentType(item.field.field_id)
+  : columnComponentType(item.name)
 
 type Props = {
-  fields: FieldsWithTypes[]
+  /** the displayed items, in their order */
+  items: FormItem[]
   data: Record<string, unknown>
   table: string
   jsonFieldName: string
@@ -29,11 +51,23 @@ type Props = {
   autoFocus?: boolean
   ref?: React.Ref<HTMLDivElement>
   from?: string
+  /** the form's real columns and their write path — for column items */
+  columns?: FormColumns
+  onColumnChange?: FieldChangeHandler
+  /**
+   * The order of all of the form's items, displayed or not. Given, a move
+   * updates it and saves it next to the order of the fields alone; without
+   * it the list holds fields only and saves just their order.
+   */
+  itemOrder?: string[]
 }
 
-// TODO: Uncaught (in promise) error: invalid input syntax for type uuid: ""
+/**
+ * The items of an auto-generated form in their order — sortable while the
+ * project is in design mode. Saves the new order to field_sorts.
+ */
 export const WidgetsFromDataFieldsDefined = ({
-  fields,
+  items,
   data = {},
   table,
   jsonFieldName,
@@ -43,19 +77,19 @@ export const WidgetsFromDataFieldsDefined = ({
   autoFocus,
   ref,
   from,
+  columns,
+  onColumnChange,
+  itemOrder,
 }: Props) => {
   const addOperation = useSetAtom(addOperationAtom)
 
   const db = usePGlite()
   const { projectId } = useParams({ strict: false })
-  // TODO: drag and drop to order
-  // only if editing
-  // not if editingField
-  const fieldIds = fields.map((field) => field.field_id)
-  const [registry] = useState(getItemRegistry)
+  const displayed = useMemo(() => items.map(itemToken), [items])
 
   // Isolated instances of this component from one another
   const [instanceId] = useState(() => Symbol('instance-id'))
+  const [registry] = useState(getItemRegistry)
 
   const reorderItem = useCallback(
     async ({
@@ -75,11 +109,19 @@ export const WidgetsFromDataFieldsDefined = ({
         return
       }
 
-      const newSorting = reorder({
-        list: fieldIds,
+      const moved = reorder({
+        list: displayed,
         startIndex,
         finishIndex,
       })
+      const sortedFieldIds = fieldIdsOfOrder(moved)
+      // the displayed items take their new places in the whole order; the
+      // others (fields hidden right now) stay
+      const sortedItems =
+        itemOrder ?
+          withDisplayOrder({ order: itemOrder, displayed, reordered: moved })
+        : undefined
+
       // fetch field_sorts with same project_id and table_name
       const prevRes = await db.query(
         `SELECT * FROM field_sorts WHERE project_id = $1 AND table_name = $2`,
@@ -87,16 +129,28 @@ export const WidgetsFromDataFieldsDefined = ({
       )
       const prev = (prevRes?.rows?.[0] ?? {}) as Record<string, unknown>
       try {
-        db.query(
-          `
-            INSERT INTO field_sorts (project_id, table_name, sorted_field_ids) 
-            VALUES ($1, $2, $3) 
-            ON CONFLICT (project_id, table_name) DO UPDATE 
-              SET 
-                project_id = $1, 
-                table_name = $2, 
+        await db.query(
+          sortedItems ?
+            `
+            INSERT INTO field_sorts (project_id, table_name, sorted_field_ids, sorted_items)
+            VALUES ($1, $2, $3, $4)
+            ON CONFLICT (project_id, table_name) DO UPDATE
+              SET
+                project_id = $1,
+                table_name = $2,
+                sorted_field_ids = $3,
+                sorted_items = $4`
+          : `
+            INSERT INTO field_sorts (project_id, table_name, sorted_field_ids)
+            VALUES ($1, $2, $3)
+            ON CONFLICT (project_id, table_name) DO UPDATE
+              SET
+                project_id = $1,
+                table_name = $2,
                 sorted_field_ids = $3`,
-          [projectId, table, newSorting],
+          sortedItems ?
+            [projectId, table, sortedFieldIds, sortedItems]
+          : [projectId, table, sortedFieldIds],
         )
       } catch (error) {
         console.error('WidgetsFromDataFieldsDefined.reorderItem', error)
@@ -109,12 +163,13 @@ export const WidgetsFromDataFieldsDefined = ({
         draft: {
           project_id: projectId,
           table_name: table,
-          sorted_field_ids: newSorting,
+          sorted_field_ids: sortedFieldIds,
+          ...(sortedItems ? { sorted_items: sortedItems } : {}),
         },
         prev,
       })
     },
-    [db, fieldIds, projectId, table, addOperation],
+    [db, displayed, itemOrder, projectId, table, addOperation],
   )
 
   useEffect(() => {
@@ -134,10 +189,7 @@ export const WidgetsFromDataFieldsDefined = ({
           return
         }
 
-        const indexOfTarget = fields.findIndex(
-          (field) =>
-            field.field_id === (targetData.field as FieldsWithTypes).field_id,
-        )
+        const indexOfTarget = displayed.indexOf(targetData.itemId as string)
         if (indexOfTarget < 0) {
           return
         }
@@ -151,9 +203,9 @@ export const WidgetsFromDataFieldsDefined = ({
         })
       },
     })
-  }, [fields, instanceId, reorderItem])
+  }, [displayed, instanceId, reorderItem])
 
-  const getListLength = () => fields.length
+  const getListLength = () => items.length
 
   const dragAndDropContextValue = {
     registerItem: registry.register,
@@ -162,25 +214,43 @@ export const WidgetsFromDataFieldsDefined = ({
     getListLength,
   }
 
+  // the first field gets the form's auto focus, wherever it sits in the list
+  let fieldIndex = -1
+
   return (
     <DragAndDropContext.Provider value={dragAndDropContextValue}>
-      {fields.map((field, index) => (
-        <Field
-          key={field.field_id}
-          field={field}
-          fieldsCount={fields.length}
-          index={index}
-          data={data}
-          table={table}
-          jsonFieldName={jsonFieldName}
-          idField={idField}
-          id={id}
-          orIndex={orIndex}
-          autoFocus={autoFocus}
-          ref={ref}
-          from={from}
-        />
-      ))}
+      {items.map((item, index) => {
+        if (item.type === 'column') {
+          return (
+            <ColumnItem
+              key={itemToken(item)}
+              name={item.name}
+              index={index}
+              count={items.length}
+              columns={columns}
+              onChange={onColumnChange}
+            />
+          )
+        }
+        fieldIndex += 1
+        return (
+          <Field
+            key={item.field.field_id}
+            field={item.field}
+            fieldsCount={items.length}
+            index={index}
+            data={data}
+            table={table}
+            jsonFieldName={jsonFieldName}
+            idField={idField}
+            id={id}
+            orIndex={orIndex}
+            autoFocus={autoFocus && fieldIndex === 0}
+            ref={ref}
+            from={from}
+          />
+        )
+      })}
     </DragAndDropContext.Provider>
   )
 }

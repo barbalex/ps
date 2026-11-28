@@ -1,4 +1,4 @@
-import { useLiveQuery } from '@electric-sql/pglite-react'
+import { useFormDesigns } from './useFormDesigns.ts'
 
 export type FormDesignRow = {
   form_design_id: string
@@ -10,9 +10,11 @@ export type FormDesignRow = {
 }
 
 /**
- * Loads the design row of a form target — the plain form of a table
- * (no tableViewId) or a specific table view. Undefined while loading or
- * when no design exists yet.
+ * The design row of a form target — the plain form of a table (no
+ * tableViewId) or a specific table view — read from the project's designs
+ * (FormDesignsProvider). `row` is undefined while they load and when no
+ * design exists yet; `loaded` tells the two apart: until it is true,
+ * neither the designed nor the auto-generated form may render.
  */
 export const useFormDesignRow = ({
   projectId,
@@ -23,20 +25,15 @@ export const useFormDesignRow = ({
   table: string
   tableViewId?: string
 }) => {
-  const res = useLiveQuery<FormDesignRow>(
-    projectId ?
-      `SELECT form_design_id, project_id, table_name, table_view_id, active, design
-         FROM form_designs
-         WHERE project_id = $1 AND table_name = $2
-           AND table_view_id ${tableViewId ? '= $3' : 'IS NULL'}
-         LIMIT 1`
-      // account tables have no form designs; keep the hook unconditional
-    : `SELECT form_design_id, project_id, table_name, table_view_id, active, design
-         FROM form_designs WHERE false`,
-    projectId ?
-      tableViewId ? [projectId, table, tableViewId]
-      : [projectId, table]
-    : [],
+  const { designs } = useFormDesigns()
+  // account tables have no form designs
+  if (!projectId) return { row: undefined, loaded: true }
+  if (!designs) return { row: undefined, loaded: false }
+  const row = designs.find(
+    (design) =>
+      design.project_id === projectId &&
+      design.table_name === table &&
+      (design.table_view_id ?? null) === (tableViewId ?? null),
   )
-  return res?.rows?.[0]
+  return { row, loaded: true }
 }

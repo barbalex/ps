@@ -1487,6 +1487,7 @@ CREATE TABLE IF NOT EXISTS field_sorts(
   project_id uuid DEFAULT NULL REFERENCES projects(project_id) ON DELETE CASCADE ON UPDATE CASCADE DEFERRABLE INITIALLY DEFERRED,
   table_name text DEFAULT NULL,
   sorted_field_ids uuid[] DEFAULT NULL,
+  sorted_items text[] DEFAULT NULL,
   sys_period tstzrange DEFAULT NULL,
   created_at timestamptz NOT NULL DEFAULT now(),
   updated_at timestamptz NOT NULL DEFAULT now(),
@@ -1499,6 +1500,8 @@ CREATE INDEX IF NOT EXISTS field_sorts_table_name_idx ON field_sorts USING btree
 CREATE INDEX IF NOT EXISTS field_sorts_sorted_field_ids_idx ON field_sorts USING gin(sorted_field_ids);
 
 COMMENT ON TABLE field_sorts IS 'Stores the sort order of fields per table_name';
+COMMENT ON COLUMN field_sorts.sorted_field_ids IS 'The sorted data fields (fields.field_id) of the table, in order. Kept in step with sorted_items, which also holds them';
+COMMENT ON COLUMN field_sorts.sorted_items IS 'The order of the auto-generated form of the table: its real columns next to its data fields. Values name the items like the components of form_designs.design do: "field_<fields.field_id>" and "column_<column name>". Null = no order was saved, the form shows its fixed layout. Example: {"column_name","field_018f...","column_relevant_for_reports"}';
 
 --------------------------------------------------------------
 -- field_groups
