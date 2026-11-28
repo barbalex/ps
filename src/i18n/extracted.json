@@ -797,6 +797,9 @@
   "authEmailLabel": {
     "defaultMessage": "E-Mail"
   },
+  "authEmailNotVerified": {
+    "defaultMessage": "E-Mail-Adresse noch nicht bestätigt."
+  },
   "authEmailRequired": {
     "defaultMessage": "E-Mail ist erforderlich"
   },
@@ -881,12 +884,6 @@
   "authPreviewCredentialsHint": {
     "defaultMessage": "Während die App gebaut wird, kannst du mit einem Test-Benutzer anmelden: E-Mail test@test.ch, Passwort test-test"
   },
-  "authRegisterSuggestionBtn": {
-    "defaultMessage": "Jetzt registrieren"
-  },
-  "authRegisterSuggestionText": {
-    "defaultMessage": "Für diese E-Mail gibt es noch kein Konto. Möchtest du dich registrieren?"
-  },
   "authRequestPasswordResetBtn": {
     "defaultMessage": "Reset-Link senden"
   },
@@ -932,11 +929,20 @@
   "authSignUpToStart": {
     "defaultMessage": "Registrieren, um loszulegen"
   },
+  "authTwoFactorAppCodePlaceholder": {
+    "defaultMessage": "Code aus Authenticator-App eingeben"
+  },
   "authTwoFactorAppPrompt": {
     "defaultMessage": "Bitte den Code aus Ihrer Authenticator-App eingeben."
   },
+  "authTwoFactorAppVerifyFailed": {
+    "defaultMessage": "Authenticator-Code ungültig oder abgelaufen."
+  },
   "authTwoFactorCodeSent": {
     "defaultMessage": "2FA-Code gesendet. Bitte E-Mail prüfen und Code eingeben."
+  },
+  "authTwoFactorMethodApp": {
+    "defaultMessage": "Authenticator-App"
   },
   "authTwoFactorMethodEmail": {
     "defaultMessage": "E-Mail-Code"
@@ -946,6 +952,12 @@
   },
   "authTwoFactorSendFailed": {
     "defaultMessage": "2FA-Code konnte nicht gesendet werden. Bitte erneut versuchen."
+  },
+  "authTwoFactorTrustDevice": {
+    "defaultMessage": "Diesem Gerät für 30 Tage vertrauen"
+  },
+  "authTwoFactorTrustDeviceHint": {
+    "defaultMessage": "Nur auf Geräten aktivieren, die sonst niemand benutzt"
   },
   "authTwoFactorVerifyBtn": {
     "defaultMessage": "2FA-Code prüfen"
@@ -3471,7 +3483,7 @@
     "defaultMessage": "Zwei-Faktor-Authentifizierung aktiviert. Beim nächsten Login wird ein Code per E-Mail verlangt."
   },
   "twoFactorEnabledTotpSuccess": {
-    "defaultMessage": "2FA mit Authenticator-App ist aktiviert. Scanne den QR-Code und verwende danach App-Codes beim Login."
+    "defaultMessage": "Zwei-Faktor-Authentifizierung mit Authenticator-App ist aktiviert. Beim nächsten Login wird ein Code aus der App verlangt."
   },
   "twoFactorMethodAppLabel": {
     "defaultMessage": "Authenticator-App verwenden"
@@ -3481,6 +3493,9 @@
   },
   "twoFactorPasswordRequired": {
     "defaultMessage": "Bitte Passwort eingeben."
+  },
+  "twoFactorTotpConfirmHelp": {
+    "defaultMessage": "Gib danach den aktuellen Code aus der App ein, um die Einrichtung abzuschliessen."
   },
   "twoFactorTotpManualCodeLabel": {
     "defaultMessage": "Manueller Code"

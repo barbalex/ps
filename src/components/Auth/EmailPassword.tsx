@@ -10,6 +10,7 @@ import {
   getAuthBaseUrl,
   getAuthRequestHeaders,
 } from '../../modules/authClient.ts'
+import { getSignInErrorKind, type SignInErrorKind } from '../../modules/signInError.ts'
 import styles from './Auth.module.css'
 
 type TwoFactorMethod = 'otp' | 'totp'
@@ -76,7 +77,9 @@ export const EmailPassword = ({
   const [isPasswordResetLoading, setIsPasswordResetLoading] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState('')
-  const [showRegisterSuggestion, setShowRegisterSuggestion] = useState(false)
+  // the last sign-in attempt failed because the address was not confirmed
+  // yet: offer a new confirmation code right here
+  const [verificationRequired, setVerificationRequired] = useState(false)
   const [passwordVisibility, setPasswordVisibility] = useState({
     password: false,
     confirmPassword: false,
@@ -102,6 +105,8 @@ export const EmailPassword = ({
     [],
   )
   const [twoFactorMethod, setTwoFactorMethod] = useState<TwoFactorMethod>('otp')
+  // off by default: a trusted browser skips the second factor for 30 days
+  const [twoFactorTrustDevice, setTwoFactorTrustDevice] = useState(false)
   const [isTwoFactorLoading, setIsTwoFactorLoading] = useState(false)
   const [twoFactorMessage, setTwoFactorMessage] = useState('')
   const [twoFactorMessageIsError, setTwoFactorMessageIsError] = useState(false)
@@ -158,22 +163,18 @@ export const EmailPassword = ({
     return methods[0]
   }
 
-  const isCredentialErrorMessage = (message?: string) => {
-    const normalized = (message || '').toLowerCase()
-    return (
-      normalized.includes('invalid email or password') ||
-      normalized.includes('invalid credentials') ||
-      normalized.includes('user not found')
-    )
-  }
-
-  const getLocalizedSignInError = (message?: string) => {
-    const looksLikeCredentialError = isCredentialErrorMessage(message)
-
-    if (looksLikeCredentialError) {
+  const getLocalizedSignInError = (kind: SignInErrorKind, message?: string) => {
+    if (kind === 'credentials') {
       return formatMessage({
         id: 'authInvalidCredentials',
         defaultMessage: 'Ungültige E-Mail oder Passwort.',
+      })
+    }
+
+    if (kind === 'unverified') {
+      return formatMessage({
+        id: 'authEmailNotVerified',
+        defaultMessage: 'E-Mail-Adresse noch nicht bestätigt.',
       })
     }
 
@@ -252,7 +253,6 @@ export const EmailPassword = ({
 
   const handleRequestPasswordReset = async () => {
     setError('')
-    setShowRegisterSuggestion(false)
     setPasswordResetMessage('')
 
     if (!validateEmailOnly()) {
@@ -298,7 +298,6 @@ export const EmailPassword = ({
 
   const handleResetPasswordWithToken = async () => {
     setError('')
-    setShowRegisterSuggestion(false)
     setPasswordResetMessage('')
 
     const errors: typeof fieldErrors = {}
@@ -366,7 +365,9 @@ export const EmailPassword = ({
     setTwoFactorMessageIsError(false)
 
     try {
-      const result = await authClient.twoFactor.sendOtp({ trustDevice: true })
+      // the server ignores trustDevice here; it only matters when the code
+      // is verified
+      const result = await authClient.twoFactor.sendOtp()
       if (result.error) {
         throw new Error(result.error.message || 'two-factor otp send failed')
       }
@@ -405,11 +406,11 @@ export const EmailPassword = ({
         twoFactorMethod === 'totp'
           ? await authClient.twoFactor.verifyTotp({
               code,
-              trustDevice: true,
+              trustDevice: twoFactorTrustDevice,
             })
           : await authClient.twoFactor.verifyOtp({
               code,
-              trustDevice: true,
+              trustDevice: twoFactorTrustDevice,
             })
 
       if (result.error) {
@@ -442,7 +443,6 @@ export const EmailPassword = ({
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault()
     setError('')
-    setShowRegisterSuggestion(false)
     setPasswordResetMessage('')
 
     if (!isSignUp && twoFactorRequired) {
@@ -550,10 +550,13 @@ export const EmailPassword = ({
         }
 
         if (result.error) {
-          setShowRegisterSuggestion(
-            isCredentialErrorMessage(result.error.message),
-          )
-          setError(getLocalizedSignInError(result.error.message))
+          const signInError = result.error as {
+            code?: string
+            message?: string
+          }
+          const errorKind = getSignInErrorKind(signInError)
+          setVerificationRequired(errorKind === 'unverified')
+          setError(getLocalizedSignInError(errorKind, signInError.message))
         } else {
           await onLoggedIn(setError)
         }
@@ -576,10 +579,11 @@ export const EmailPassword = ({
     const nextIsSignUp = !isSignUp
     setIsSignUp(nextIsSignUp)
     setError('')
-    setShowRegisterSuggestion(false)
     setPasswordResetMessage('')
     setFieldErrors({})
+    setVerificationRequired(false)
     setTwoFactorRequired(false)
+    setTwoFactorTrustDevice(false)
     setTwoFactorMethods([])
     setTwoFactorMethod('otp')
     setTwoFactorCode('')
@@ -605,23 +609,6 @@ export const EmailPassword = ({
       ...current,
       [field]: !current[field],
     }))
-  }
-
-  const switchToSignUpFromError = () => {
-    setIsSignUp(true)
-    setShowRegisterSuggestion(false)
-    setError('')
-    setConfirmPassword('')
-    setFieldErrors({})
-    setShowForgotPassword(false)
-    setPasswordResetNewPassword('')
-    setPasswordResetMessage('')
-    setTwoFactorRequired(false)
-    setTwoFactorMethods([])
-    setTwoFactorMethod('otp')
-    setTwoFactorCode('')
-    setTwoFactorMessage('')
-    setTwoFactorMessageIsError(false)
   }
 
   const handleResendVerification = async () => {
@@ -716,6 +703,8 @@ export const EmailPassword = ({
   const onSwitchTwoFactorMethod = async (method: TwoFactorMethod) => {
     if (method === twoFactorMethod) return
     setTwoFactorMethod(method)
+    // the chosen method is offered first at the next sign-in
+    window.localStorage.setItem(TWO_FACTOR_PREFERRED_METHOD_KEY, method)
     setTwoFactorCode('')
     setTwoFactorMessage('')
     setTwoFactorMessageIsError(false)
@@ -747,28 +736,6 @@ export const EmailPassword = ({
           })}
         </div>
       )}
-      {showRegisterSuggestion && !isSignUp && (
-        <div className={styles.otpActions}>
-          <p className={styles.toggleText}>
-            {formatMessage({
-              id: 'authRegisterSuggestionText',
-              defaultMessage:
-                'Für diese E-Mail gibt es noch kein Konto. Möchtest du dich registrieren?',
-            })}
-          </p>
-          <button
-            type="button"
-            className={styles.toggleButton}
-            onClick={switchToSignUpFromError}
-            disabled={isLoading}
-          >
-            {formatMessage({
-              id: 'authRegisterSuggestionBtn',
-              defaultMessage: 'Jetzt registrieren',
-            })}
-          </button>
-        </div>
-      )}
       {passwordResetMessage && (
         <div className={styles.successMessage}>{passwordResetMessage}</div>
       )}
@@ -789,8 +756,9 @@ export const EmailPassword = ({
             value={email}
             onChange={(e) => {
               setEmail(e.target.value)
-              setShowRegisterSuggestion(false)
+              setVerificationRequired(false)
               setTwoFactorRequired(false)
+              setTwoFactorTrustDevice(false)
               setTwoFactorCode('')
               setTwoFactorMessage('')
               setTwoFactorMessageIsError(false)
@@ -806,7 +774,9 @@ export const EmailPassword = ({
           {fieldErrors.email && (
             <p className={styles.errorMessage}>{fieldErrors.email}</p>
           )}
-          {verificationExpired && !isSignUp && !emailVerifiedInForm && (
+          {(verificationExpired || verificationRequired) &&
+            !isSignUp &&
+            !emailVerifiedInForm && (
             <div
               className={`${styles.otpActions} ${styles.emailVerificationInline}`}
             >
@@ -894,8 +864,8 @@ export const EmailPassword = ({
               value={password}
               onChange={(e) => {
                 setPassword(e.target.value)
-                setShowRegisterSuggestion(false)
                 setTwoFactorRequired(false)
+                setTwoFactorTrustDevice(false)
                 setTwoFactorCode('')
                 setTwoFactorMessage('')
                 setTwoFactorMessageIsError(false)
@@ -952,28 +922,34 @@ export const EmailPassword = ({
 
         {!isSignUp && twoFactorRequired && (
           <div className={styles.otpActions}>
-            {twoFactorMethods.length > 1 && twoFactorMethod === 'totp' && (
+            {twoFactorMethods.length > 1 && (
+              // the label names the other method the account can use
               <div className={styles.toggleRow}>
                 <button
                   type="button"
                   className={styles.inlineTextLink}
-                  onClick={() => onSwitchTwoFactorMethod('otp')}
-                  disabled={
-                    isTwoFactorLoading ||
-                    isLoading ||
-                    (twoFactorMethod as string) === 'otp'
+                  onClick={() =>
+                    onSwitchTwoFactorMethod(
+                      twoFactorMethod === 'totp' ? 'otp' : 'totp',
+                    )
                   }
+                  disabled={isTwoFactorLoading || isLoading}
                 >
-                  {formatMessage({
-                    id: 'authTwoFactorMethodEmail',
-                    defaultMessage: 'E-Mail-Code',
-                  })}
+                  {twoFactorMethod === 'totp'
+                    ? formatMessage({
+                        id: 'authTwoFactorMethodEmail',
+                        defaultMessage: 'E-Mail-Code',
+                      })
+                    : formatMessage({
+                        id: 'authTwoFactorMethodApp',
+                        defaultMessage: 'Authenticator-App',
+                      })}
                 </button>
               </div>
             )}
             <input
               type="text"
-              className={styles.formInput}
+              className={`${styles.formInput} ${styles.fullWidthInput}`}
               value={twoFactorCode}
               onChange={(event) => setTwoFactorCode(event.target.value)}
               placeholder={formatMessage({
@@ -1011,6 +987,27 @@ export const EmailPassword = ({
                 {twoFactorMessage}
               </p>
             )}
+            <label className={styles.trustDevice}>
+              <input
+                type="checkbox"
+                checked={twoFactorTrustDevice}
+                onChange={(event) => setTwoFactorTrustDevice(event.target.checked)}
+                disabled={isTwoFactorLoading || isLoading}
+              />
+              <span className={styles.trustDeviceText}>
+                {formatMessage({
+                  id: 'authTwoFactorTrustDevice',
+                  defaultMessage: 'Diesem Gerät für 30 Tage vertrauen',
+                })}
+                <span className={styles.trustDeviceHint}>
+                  {formatMessage({
+                    id: 'authTwoFactorTrustDeviceHint',
+                    defaultMessage:
+                      'Nur auf Geräten aktivieren, die sonst niemand benutzt',
+                  })}
+                </span>
+              </span>
+            </label>
           </div>
         )}
 

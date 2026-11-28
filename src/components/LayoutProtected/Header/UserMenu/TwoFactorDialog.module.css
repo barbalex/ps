@@ -37,6 +37,11 @@
   margin-top: 6px;
 }
 
+.fullWidth {
+  width: 100%;
+  box-sizing: border-box;
+}
+
 .qrCode {
   width: 180px;
   height: 180px;
