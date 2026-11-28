@@ -69,7 +69,7 @@
     "@supabase/postgrest-js": "2.119.2",
     "@tanstack/react-query": "5.107.1",
     "@tanstack/react-router": "1.170.46",
-    "@tanstack/react-virtual": "3.14.26",
+    "@tanstack/react-virtual": "3.14.28",
     "@tanstack/router-plugin": "1.169.0",
     "@tiptap/core": "3.32.2",
     "@tiptap/markdown": "3.32.2",
