@@ -95,6 +95,13 @@ app.use(
   }),
 )
 
+// Session cookies and user data pass through these routes: no cache, in the
+// browser or anywhere in between, may keep a copy
+app.use(['/auth', '/api'], (_req, res, next) => {
+  res.setHeader('Cache-Control', 'no-store')
+  next()
+})
+
 // Rate limiting for the custom endpoints. better-auth's built-in limiter
 // (see auth.mjs) only covers the routes handled by better-auth itself; the
 // endpoints below bypass it. Buckets are per client IP and route, and
