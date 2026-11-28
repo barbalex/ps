@@ -89,6 +89,15 @@
   background: rgba(210, 60, 60, 0.08);
 }
 
+/* the informational counterpart of .warning — for notes like unplaced
+   columns, which stay visible at their fixed position */
+.hint {
+  padding: 8px;
+  margin-bottom: 8px;
+  border-left: 3px solid var(--colorBrandForeground1);
+  background: var(--colorBrandBackground2);
+}
+
 .emptyPreview {
   padding: 32px;
   text-align: center;

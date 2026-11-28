@@ -1,5 +1,4 @@
-import { useLocation, useParams, useSearch } from '@tanstack/react-router'
-import { useNavigate } from '@tanstack/react-router'
+import { useNavigate, useParams, useSearch } from '@tanstack/react-router'
 import { useAtom } from 'jotai'
 import { useIntl } from 'react-intl'
 import * as fluentUiReactComponents from '@fluentui/react-components'
@@ -11,7 +10,7 @@ import { designingAtom } from '../../../store.ts'
 
 import { FormFromDesign } from './FormFromDesign.tsx'
 import { FormDesignToolbar } from './FormDesignToolbar.tsx'
-import { useFormDesignRow } from './useFormDesignRow.ts'
+import { useFormDesignBinding } from './FormDesignBindingContext.tsx'
 import { useFormFields } from './useFormFields.ts'
 import styles from './FormDesign.module.css'
 
@@ -40,7 +39,9 @@ type Props = {
  * read-only for printing.
  *
  * The form target follows the url: the plain form of the table, or the
- * table view when the url carries a tableViewId.
+ * table view when the url carries a tableViewId. WithFormDesign supplies
+ * the target's design row, the form's real columns and whether a design may
+ * exist here and applies.
  */
 export const JsonbOrFormDesign = ({
   table,
@@ -55,7 +56,6 @@ export const JsonbOrFormDesign = ({
   fieldIds,
 }: Props) => {
   const { projectId, tableViewId } = useParams({ strict: false })
-  const location = useLocation()
   const navigate = useNavigate()
   const { formatMessage } = useIntl()
   const [designingMap] = useAtom(designingAtom)
@@ -64,24 +64,20 @@ export const JsonbOrFormDesign = ({
   const currentSearch = useSearch({ strict: false }) as Record<string, unknown>
   const formPrint = currentSearch.formPrint as string | undefined
 
-  // designed forms exist for project tables only — not for account tables,
-  // filter forms or history comparisons
-  const isFilter = location.pathname.endsWith('filter')
-  const isHistory = from?.includes('histories') ?? false
-  const eligible = !!projectId && !isFilter && !isHistory
-
-  const designRow = useFormDesignRow({
-    projectId: projectId ?? undefined,
-    table,
-    tableViewId,
-  })
-
-  const designApplies = !!designRow?.active && eligible
+  const {
+    designRow,
+    designable,
+    designApplies,
+    columns,
+    onChange,
+    columnsAfter,
+    columnsInList,
+  } = useFormDesignBinding()
 
   const fields = useFormFields(table) ?? []
 
   // print view of the designed form: read-only, with a print button
-  if (formPrint && designApplies) {
+  if (formPrint && designApplies && designRow) {
     const closePrint = () => {
       const { formPrint: _, ...rest } = currentSearch
       navigate({ search: rest as never })
@@ -107,6 +103,8 @@ export const JsonbOrFormDesign = ({
         <FormFromDesign
           design={designRow.design}
           fields={fields}
+          columns={columns}
+          onChange={onChange}
           data={data}
           mode="print"
           table={table}
@@ -120,7 +118,7 @@ export const JsonbOrFormDesign = ({
 
   return (
     <>
-      {eligible && (
+      {designable && (
         <FormDesignToolbar
           designRow={designRow}
           table={table}
@@ -128,10 +126,12 @@ export const JsonbOrFormDesign = ({
           designing={designing}
         />
       )}
-      {designApplies ?
+      {designApplies && designRow ?
         <FormFromDesign
           design={designRow.design}
           fields={fields}
+          columns={columns}
+          onChange={onChange}
           data={data}
           mode="live"
           table={table}
@@ -150,6 +150,13 @@ export const JsonbOrFormDesign = ({
           ref={ref}
           from={from}
           fieldIds={fieldIds}
+          // the columns are listed among the fields — the form's fixed
+          // column widgets step aside (see FormColumn)
+          sortedColumns={
+            columnsInList && columns ?
+              { columns, onChange, columnsAfter }
+            : undefined
+          }
         />
       }
     </>

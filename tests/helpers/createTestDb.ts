@@ -14,6 +14,7 @@ const SQL_FILES = [
   'createTables.sql',
   'numericFieldSettings.sql',
   'fieldFollowups.sql',
+  'fieldSortItems.sql',
   'projectArea.sql',
   'triggers.sql',
   'projectAreaLayer.sql',

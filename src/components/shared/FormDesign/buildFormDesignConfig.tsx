@@ -1,9 +1,15 @@
 import type { Config } from '@puckeditor/core'
 
 import type { FieldsWithTypes } from '../Jsonb/index.tsx'
+import {
+  columnComponentType,
+  fieldComponentType,
+} from '../../../modules/formDesignComponents.ts'
 
 import { FieldWidget } from './FieldWidget.tsx'
+import { ColumnWidget } from './ColumnWidget.tsx'
 import { Grid, Heading, FormImage, Spacer, PageBreak } from './components.tsx'
+import type { FormColumns } from './FormDesignRuntimeContext.tsx'
 
 export type FormDesignLabels = {
   /** drawer category holding the layout components */
@@ -24,20 +30,23 @@ const columnOptions = [2, 3, 4, 6].map((n) => ({
 
 /**
  * Builds the Puck config of a form design: one component per field of the
- * table plus the layout components (grid, heading, image, …). Used by both
- * the design editor (the widgets render from the runtime context but write
- * nothing) and the runtime renderer.
+ * table — its real columns and its jsonb keys alike — plus the layout
+ * components (grid, heading, image, …). Used by both the design editor (the
+ * widgets render from the runtime context but write nothing) and the runtime
+ * renderer.
  *
- * The field render functions only close over the field definition — the row
- * binding comes from FormDesignRuntimeContext — so the config identity
+ * The field render functions only close over the field or column name — the
+ * row binding comes from FormDesignRuntimeContext — so the config identity
  * stays stable while the user types (Puck would remount every widget
  * otherwise).
  */
 export const buildFormDesignConfig = ({
   fields,
+  columns,
   labels,
 }: {
   fields: FieldsWithTypes[]
+  columns?: FormColumns
   labels: FormDesignLabels
 }): Config => {
   const components: Record<string, unknown> = {
@@ -104,55 +113,38 @@ export const buildFormDesignConfig = ({
       render: PageBreak,
     },
   }
+  const columnEntries = Object.entries(columns ?? {})
   const categories: Record<string, { title: string; components: string[] }> = {
     layout: {
       title: labels.layout,
       components: ['Grid', 'Heading', 'FormImage', 'Spacer', 'PageBreak'],
     },
-    fields: { title: labels.fields, components: [] },
+    // the table's own columns first, then its jsonb keys
+    fields: {
+      title: labels.fields,
+      components: [
+        ...columnEntries.map(([name]) => columnComponentType(name)),
+        ...fields.map((field) => fieldComponentType(field.field_id)),
+      ],
+    },
+  }
+
+  for (const [name, column] of columnEntries) {
+    components[columnComponentType(name)] = {
+      label: column.label,
+      fields: {},
+      render: () => <ColumnWidget name={name} />,
+    }
   }
 
   for (const field of fields) {
-    const componentName = `field_${field.field_id}`
+    const componentName = fieldComponentType(field.field_id)
     components[componentName] = {
       label: field.field_label || field.name,
       fields: {},
       render: () => <FieldWidget field={field} />,
     }
-    categories.fields!.components.push(componentName)
   }
 
   return { components, categories } as unknown as Config
-}
-
-/**
- * The field_ids placed anywhere in a design — root content and grid slots —
- * used to warn about fields that exist but are not placed (they would be
- * invisible to users of the designed form).
- */
-export const placedFieldIds = (
-  design: unknown,
-  placed = new Set<string>(),
-): Set<string> => {
-  const items = (design as { content?: unknown[] } | null)?.content
-  if (!Array.isArray(items)) return placed
-  for (const item of items) {
-    if (!item || typeof item !== 'object') continue
-    const { type, props } = item as {
-      type?: unknown
-      props?: Record<string, unknown>
-    }
-    if (typeof type === 'string' && type.startsWith('field_')) {
-      placed.add(type.slice('field_'.length))
-    }
-    // slots hold nested item arrays (e.g. the Grid's children)
-    if (props) {
-      for (const value of Object.values(props)) {
-        if (Array.isArray(value) && value.length) {
-          placedFieldIds({ content: value }, placed)
-        }
-      }
-    }
-  }
-  return placed
 }

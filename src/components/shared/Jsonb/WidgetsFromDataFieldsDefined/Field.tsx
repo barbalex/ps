@@ -60,7 +60,6 @@ export const Field = ({
 
   const enableDragAndDrop = designing && !editingField
   const key = `${field.name}/${index}`
-  const autoFocusValue = autoFocus && index === 0
 
   if (!enableDragAndDrop) {
     return (
@@ -75,7 +74,7 @@ export const Field = ({
           idField={idField}
           id={id}
           orIndex={orIndex}
-          autoFocus={autoFocusValue}
+          autoFocus={autoFocus}
           ref={ref}
           from={from}
         />
@@ -96,7 +95,7 @@ export const Field = ({
         idField={idField}
         id={id}
         orIndex={orIndex}
-        autoFocus={autoFocusValue}
+        autoFocus={autoFocus}
         ref={ref}
         from={from}
       />

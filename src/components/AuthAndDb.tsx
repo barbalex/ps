@@ -13,6 +13,7 @@ import { SyncScopeReconciler } from './SyncScopeReconciler.tsx'
 import { InterruptedImportCleanup } from './InterruptedImportCleanup.tsx'
 import { LayoutProtected } from './LayoutProtected/index.tsx'
 import { FormFieldsProvider } from './shared/FormDesign/FormFieldsProvider.tsx'
+import { FormDesignsProvider } from './shared/FormDesign/FormDesignsProvider.tsx'
 import { Initiating } from './Initiating.tsx'
 import {
   pgliteDbAtom,
@@ -44,7 +45,11 @@ export const AuthAndDb = () => {
   return (
     <PGliteProvider db={pgliteDb as unknown as PGliteWithLive}>
       {isInDialog ? (
-        <FormFieldsProvider><Outlet /></FormFieldsProvider>
+        <FormFieldsProvider>
+          <FormDesignsProvider>
+            <Outlet />
+          </FormDesignsProvider>
+        </FormFieldsProvider>
       ) : (
         <>
           <SqlInitializer />
@@ -56,7 +61,11 @@ export const AuthAndDb = () => {
           {sqlInitializing || initialSyncing ? (
             <Initiating />
           ) : (
-            <FormFieldsProvider><LayoutProtected /></FormFieldsProvider>
+            <FormFieldsProvider>
+              <FormDesignsProvider>
+                <LayoutProtected />
+              </FormDesignsProvider>
+            </FormFieldsProvider>
           )}
         </>
       )}

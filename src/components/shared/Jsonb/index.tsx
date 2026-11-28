@@ -15,6 +15,16 @@ import { TextField } from '../TextField.tsx'
 import { accountTables } from '../../../formsAndLists/field/accountTables.ts'
 import { AddField } from './AddField.tsx'
 import { WidgetsFromDataFieldsDefined } from './WidgetsFromDataFieldsDefined/index.tsx'
+import type { FormItem } from './WidgetsFromDataFieldsDefined/index.tsx'
+import { useFieldSort } from '../FormDesign/useFormDesigns.ts'
+import type { FormColumns } from '../FormDesign/FormDesignRuntimeContext.tsx'
+import type { FieldChangeHandler } from '../fieldChange.ts'
+import { formItemOrder } from '../../../modules/formItemOrder.ts'
+import {
+  fieldComponentType,
+  isFieldComponentType,
+  nameOfComponentType,
+} from '../../../modules/formDesignComponents.ts'
 import { filterKeyFromTableAndLevel } from '../../../modules/filterKeyFromTableAndLevel.ts'
 import { placeScopedFieldTables } from '../../../modules/fieldTableLabel.ts'
 import { useUrlFilter } from '../../../modules/useUrlFilter.ts'
@@ -42,6 +52,18 @@ interface Props {
   from?: string
   /** restrict rendering to these field_ids (field group of a table view) */
   fieldIds?: string[]
+  /**
+   * The form's real columns, listed between the jsonb fields in an order
+   * designers can sort: the plain form of a table that has columns. Without
+   * it the list holds the jsonb fields alone.
+   */
+  sortedColumns?: {
+    columns: FormColumns
+    /** the form's change handler — writes the columns */
+    onChange?: FieldChangeHandler
+    /** the columns the form places after its fields; the others precede them */
+    columnsAfter: string[]
+  }
 }
 
 // and focus the name field on first render?
@@ -56,6 +78,7 @@ export const Jsonb = ({
   ref,
   from,
   fieldIds,
+  sortedColumns,
 }: Props) => {
   const isAccountTable = accountTables.includes(table)
   const { projectId, placeId, placeId2 } = useParams({ strict: false })
@@ -74,6 +97,7 @@ export const Jsonb = ({
   const addOperation = useSetAtom(addOperationAtom)
 
   const allFields = useFormFields(table)
+  const { row: fieldSort } = useFieldSort(table)
 
   // fields of groups used by a view of this table are reserved: they only
   // render in those views, not in the plain form. Designers still see all.
@@ -160,12 +184,54 @@ export const Jsonb = ({
     fields = fields.filter((field) => followupVisible(field, allFields, data))
   }
 
+  // the list of the form: its jsonb fields — plus, for a table with real
+  // columns, those columns sorted among them. The order is the saved one,
+  // else the form's fixed layout (columns before the fields, fields, columns
+  // after them)
+  const columnNames = Object.keys(sortedColumns?.columns ?? {})
+  const itemOrder =
+    sortedColumns ?
+      formItemOrder({
+        saved: fieldSort?.sorted_items,
+        columnsBefore: columnNames.filter(
+          (name) => !sortedColumns.columnsAfter.includes(name),
+        ),
+        columnsAfter: sortedColumns.columnsAfter.filter((name) =>
+          columnNames.includes(name),
+        ),
+        fields: allFields.map((field) => field.field_id),
+      })
+    : undefined
+  const displayedFieldIds = new Set(fields.map((field) => field.field_id))
+  const itemOfToken = (token: string): FormItem | undefined => {
+    if (isFieldComponentType(token)) {
+      const field = allFields.find(
+        (candidate) => fieldComponentType(candidate.field_id) === token,
+      )
+      // hidden fields (reserved, or a follow-up not asked right now) are not listed
+      return field && displayedFieldIds.has(field.field_id) ?
+          { type: 'field', field }
+        : undefined
+    }
+    const name = nameOfComponentType(token)
+    return name && sortedColumns?.columns[name] ?
+        { type: 'column', name }
+      : undefined
+  }
+  const items: FormItem[] =
+    itemOrder ?
+      itemOrder.flatMap((token) => itemOfToken(token) ?? [])
+    : fields.map((field) => ({ type: 'field' as const, field }))
+
   return (
     <>
-      {fields.length > 0 ?
+      {items.length > 0 ?
         <WidgetsFromDataFieldsDefined
           key="widgetsFromDataFieldsDefined"
-          fields={fields}
+          items={items}
+          itemOrder={itemOrder}
+          columns={sortedColumns?.columns}
+          onColumnChange={sortedColumns?.onChange}
           data={data}
           table={table}
           jsonFieldName={jsonFieldName}

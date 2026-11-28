@@ -636,6 +636,7 @@ export const SqlInitializer = () => {
           createTablesSql,
           numericFieldSettingsSql,
           fieldFollowupsSql,
+          fieldSortItemsSql,
           projectAreaSql,
           projectAreaLayerSql,
           triggersSql,
@@ -656,6 +657,7 @@ export const SqlInitializer = () => {
           import(`../sql/createTables.sql?raw`).then((m) => m.default),
           import(`../sql/numericFieldSettings.sql?raw`).then((m) => m.default),
           import(`../sql/fieldFollowups.sql?raw`).then((m) => m.default),
+          import(`../sql/fieldSortItems.sql?raw`).then((m) => m.default),
           import(`../sql/projectArea.sql?raw`).then((m) => m.default),
           import(`../sql/projectAreaLayer.sql?raw`).then((m) => m.default),
           import(`../sql/triggers.sql?raw`).then((m) => m.default),
@@ -678,6 +680,7 @@ export const SqlInitializer = () => {
             createTablesSql,
             numericFieldSettingsSql,
             fieldFollowupsSql,
+            fieldSortItemsSql,
             projectAreaSql,
             projectAreaLayerSql,
             triggersSql,
@@ -764,6 +767,7 @@ export const SqlInitializer = () => {
           await exec(projectAreaSql, 'projectArea.sql')
           await exec(numericFieldSettingsSql, 'numericFieldSettings.sql')
           await exec(fieldFollowupsSql, 'fieldFollowups.sql')
+          await exec(fieldSortItemsSql, 'fieldSortItems.sql')
           await exec(projectAreaLayerSql, 'projectAreaLayer.sql')
           await exec(healTableViewRenameSql, 'healTableViewRenameSql')
           await exec(
@@ -813,6 +817,7 @@ export const SqlInitializer = () => {
         await exec(createTablesSql, 'createTables.sql')
         await exec(numericFieldSettingsSql, 'numericFieldSettings.sql')
         await exec(fieldFollowupsSql, 'fieldFollowups.sql')
+        await exec(fieldSortItemsSql, 'fieldSortItems.sql')
         await exec(projectAreaSql, 'projectArea.sql')
         await exec(triggersSql, 'triggers.sql')
         await exec(projectAreaLayerSql, 'projectAreaLayer.sql')
