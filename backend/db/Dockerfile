@@ -51,7 +51,12 @@ RUN apt-get -qq update \
   && rm -rf /var/lib/apt/lists/*
 
 # mount SQL files directly into the Postgres containers’ initialization directory
+# Never bake a developer's mixed or full apf2 seed into the public image.
+RUN --mount=type=bind,source=init,target=/seed,ro \
+    --mount=type=bind,source=public-preview.sha256,target=/public-preview.sha256,ro \
+    cd /seed && sha256sum --strict -c /public-preview.sha256
 COPY ./init/ /docker-entrypoint-initdb.d/
+COPY public-preview-scope.sql /docker-entrypoint-initdb.d/26_publicPreviewScope.sql
 
 # Copy only the extensions built above. Copying the whole directories would also
 # replace the base image's own libraries (e.g. plpgsql.so) with the builder's,

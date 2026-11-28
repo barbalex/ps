@@ -485,6 +485,7 @@ const grantPreviewUserAccess = async () => {
     await client.query(
       `INSERT INTO project_users(project_id, email, auth_user_id, sys_period)
        SELECT project_id, $1, $2, tstzrange(now(), NULL) FROM projects
+       WHERE project_id IN ('018cfcf7-6424-7000-a100-851c5cc2c878','0195a101-0000-7000-8000-000000000001')
        ON CONFLICT (project_id, email) DO NOTHING`,
       [PREVIEW_TEST_EMAIL, userId],
     )
@@ -496,29 +497,41 @@ const grantPreviewUserAccess = async () => {
     )
     await client.query(
       `INSERT INTO project_roles(project_id, project_user_id, role, label, sys_period)
-       SELECT p.project_id, pu.project_user_id, 'own', roles_label(pu.project_user_id, 'own'::user_roles_enum), tstzrange(now(), NULL)
+       SELECT p.project_id, pu.project_user_id, r.role, roles_label(pu.project_user_id, r.role), tstzrange(now(), NULL)
        FROM projects p
+       JOIN (VALUES
+         ('018cfcf7-6424-7000-a100-851c5cc2c878'::uuid, 'own'::user_roles_enum),
+         ('0195a101-0000-7000-8000-000000000001'::uuid, 'write-specific'::user_roles_enum)
+       ) r(project_id,role) USING(project_id)
        JOIN project_users pu ON pu.project_id = p.project_id AND pu.email = $1
-       ON CONFLICT (project_user_id, project_id) DO NOTHING`,
+       ON CONFLICT (project_user_id, project_id) DO UPDATE SET role=EXCLUDED.role, label=EXCLUDED.label
+       WHERE project_roles.role IS DISTINCT FROM EXCLUDED.role`,
       [PREVIEW_TEST_EMAIL],
     )
     await client.query(
       `INSERT INTO subproject_roles(subproject_id, project_user_id, role, label, sys_period)
-       SELECT s.subproject_id, pr.project_user_id, pr.role, roles_label(pr.project_user_id, pr.role), tstzrange(now(), NULL)
+       SELECT s.subproject_id, pr.project_user_id, r.role, roles_label(pr.project_user_id, r.role), tstzrange(now(), NULL)
        FROM project_roles pr
        JOIN project_users pu ON pu.project_user_id = pr.project_user_id AND pu.email = $1
        JOIN subprojects s ON s.project_id = pr.project_id
-       ON CONFLICT (project_user_id, subproject_id) DO NOTHING`,
+       CROSS JOIN LATERAL (SELECT CASE WHEN s.project_id='0195a101-0000-7000-8000-000000000001' THEN 'write-all'::user_roles_enum ELSE pr.role END AS role) r
+       WHERE s.project_id='018cfcf7-6424-7000-a100-851c5cc2c878'
+          OR (s.project_id='0195a101-0000-7000-8000-000000000001' AND s.subproject_id='017d3472-d75d-735d-8197-b6db29e70db3')
+       ON CONFLICT (project_user_id, subproject_id) DO UPDATE SET role=EXCLUDED.role,label=EXCLUDED.label
+       WHERE subproject_roles.role IS DISTINCT FROM EXCLUDED.role`,
       [PREVIEW_TEST_EMAIL],
     )
     await client.query(
       `INSERT INTO place_roles(place_id, project_user_id, role, label, sys_period)
        SELECT p.place_id, pr.project_user_id, pr.role, roles_label(pr.project_user_id, pr.role), tstzrange(now(), NULL)
-       FROM project_roles pr
+       FROM subproject_roles pr
        JOIN project_users pu ON pu.project_user_id = pr.project_user_id AND pu.email = $1
-       JOIN subprojects s ON s.project_id = pr.project_id
+       JOIN subprojects s ON s.subproject_id = pr.subproject_id
        JOIN places p ON p.subproject_id = s.subproject_id
-       ON CONFLICT (project_user_id, place_id) DO NOTHING`,
+       WHERE s.project_id='018cfcf7-6424-7000-a100-851c5cc2c878'
+          OR (s.project_id='0195a101-0000-7000-8000-000000000001' AND s.subproject_id='017d3472-d75d-735d-8197-b6db29e70db3')
+       ON CONFLICT (project_user_id, place_id) DO UPDATE SET role=EXCLUDED.role,label=EXCLUDED.label
+       WHERE place_roles.role IS DISTINCT FROM EXCLUDED.role`,
       [PREVIEW_TEST_EMAIL],
     )
     await client.query('COMMIT')

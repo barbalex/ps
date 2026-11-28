@@ -342,7 +342,9 @@ export const auth = betterAuth({
     twoFactor({
       issuer: 'Promote Species',
       allowPasswordless: true,
-      skipVerificationOnEnable: true,
+      // no skipVerificationOnEnable: an authenticator app only counts as
+      // second factor once the user confirmed a code from it (verify-totp).
+      // Until then two_factor_enabled stays false and sign-in works without it
       twoFactorTable: 'auth_two_factors',
       otpOptions: {
         async sendOTP({ user, otp }, ctx) {

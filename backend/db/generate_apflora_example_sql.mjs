@@ -76,6 +76,16 @@ const WIDGET = {
 }
 
 const data = JSON.parse(readFileSync(jsonPath, 'utf8'))
+if (process.env.APF2_PUBLIC_PREVIEW === '1') {
+  const [art] = data.arts
+  if (data.arts.length !== 1 || art.ap.id !== '017d3472-d75d-735d-8197-b6db29e70db3' ||
+      art.taxonomie.artname !== 'Abies alba Mill.' || !process.env.APF2_SQL) {
+    throw new Error('Public preview requires a separately extracted Abies alba fixture and explicit output path')
+  }
+  // The test species' report examples include prose copied from real reports.
+  art.ap.berichte = art.ap.berichte.map(({ id, jahr }) => ({ id, jahr }))
+  art.ap.erfkrit = []
+}
 
 // deterministic uuidv7-shaped id; version/variant nibbles forced to 7/8
 const derivedId = (kind, key) => {

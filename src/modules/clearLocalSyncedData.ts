@@ -58,6 +58,9 @@ const clearPersistedSyncUiState = () => {
     'enforceDesktopNavigation',
     'enforceMobileNavigation',
     'isDesktopView',
+    // which second factor the user picked at sign-in ('totp' or 'otp'), so an
+    // authenticator app is offered again after signing out and back in
+    'twoFactorPreferredMethod',
   ])
 
   for (const key of Object.keys(window.localStorage)) {
